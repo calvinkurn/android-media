@@ -38,6 +38,7 @@ import com.tokopedia.hotel.destination.view.adapter.RecentSearchAdapter
 import com.tokopedia.hotel.destination.view.adapter.RecentSearchListener
 import com.tokopedia.hotel.destination.view.viewmodel.HotelDestinationViewModel
 import com.tokopedia.locationmanager.LocationDetectorHelper
+import com.tokopedia.locationmanager.RequestLocationType
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -317,9 +318,12 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
                         }
 
                         override fun onPermissionGranted() {
-                            locationDetectorHelper.getLocation(destinationViewModel.onGetLocation(), requireActivity(),
-                                    LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
-                                    requireActivity().getString(R.string.hotel_destination_need_permission))
+                            locationDetectorHelper.getLocation(
+                                destinationViewModel.onGetLocation(),
+                                requireActivity(),
+                                LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
+                                RequestLocationType.APPROXIMATE,
+                                requireActivity().getString(R.string.hotel_destination_need_permission))
                         }
 
                     }, getString(R.string.hotel_destination_need_permission))
