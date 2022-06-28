@@ -134,7 +134,7 @@ class TokoFoodHomeAdapterTypeFactory (
                 BannerComponentViewHolder(view, bannerComponentCallback, null)
             }
             CategoryWidgetV2ViewHolder.LAYOUT -> {
-                CategoryWidgetV2ViewHolder(view, categoryWidgetCallback)
+                CategoryWidgetV2ViewHolder(view, categoryWidgetCallback, cardInteraction = true)
             }
             // endregion
             else -> super.createViewHolder(view, type)
