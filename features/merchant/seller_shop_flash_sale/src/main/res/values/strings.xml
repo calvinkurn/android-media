@@ -277,9 +277,6 @@
     <string name="deleteproduct_dialog_title">Yakin ingin hapus produk dari campaign?</string>
     <string name="deleteproduct_dialog_desc">Produk yang dihapus tidak dapat didaftarkan ke campaign, ya.</string>
 
-    <string name="sfs_search_product">Cari produk</string>
-    <string name="sfs_manage_highlight">Atur Highlight</string>
-
     <!-- Campaign Detail -->
     <string name="campaign_detail">Detail Campaign</string>
 
