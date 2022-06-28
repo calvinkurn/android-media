@@ -129,25 +129,33 @@ class StepperStatusListView : LinearLayout {
                 show()
                 setImage(
                     stepperStatus.iconName,
-                    newLightEnable = if (stepperStatus.isIconActive) gn400Color else nn500Color
+                    newLightEnable = if (stepperStatus.isIconActive) gn400Color else nn500Color,
+                    newDarkEnable = if (stepperStatus.isIconActive) gn400Color else nn500Color,
                 )
             }
         }
     }
 
-    private fun updateStepperIcon(icOrderTrackingStatus: IconUnify?, stepperStatus: StepperStatusUiModel) {
+    private fun updateStepperIcon(
+        icOrderTrackingStatus: IconUnify?,
+        stepperStatus: StepperStatusUiModel
+    ) {
         val (gn400Color, nn500Color) = stepperColor
         icOrderTrackingStatus?.run {
             show()
             setImage(
                 stepperStatus.iconName,
-                newLightEnable = if (stepperStatus.isIconActive) gn400Color else nn500Color
+                newLightEnable = if (stepperStatus.isIconActive) gn400Color else nn500Color,
+                newDarkEnable = if (stepperStatus.isIconActive) gn400Color else nn500Color,
             )
             invalidate()
         }
     }
 
-    private fun updateStepperLine(viewOrderTrackingStatusLine: ImageUnify?, stepperStatus: StepperStatusUiModel) {
+    private fun updateStepperLine(
+        viewOrderTrackingStatusLine: ImageUnify?,
+        stepperStatus: StepperStatusUiModel
+    ) {
         val (gn400Color, nn500Color) = stepperColor
         viewOrderTrackingStatusLine?.run {
             show()

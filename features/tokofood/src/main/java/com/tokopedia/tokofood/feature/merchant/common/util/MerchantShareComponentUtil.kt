@@ -62,7 +62,7 @@ class MerchantShareComponentUtil(
             LinkerUtils.createShareRequest(Int.ZERO, linkerShareData, object : ShareCallback {
                 override fun urlCreated(linkerShareData: LinkerShareResult?) {
                     val shareString = String.format(
-                        "%s %s",
+                        SHARE_STR_FMT,
                         merchantShareComponent.previewTitle,
                         linkerShareData?.shareUri
                     )
@@ -89,7 +89,7 @@ class MerchantShareComponentUtil(
             id = merchantId,
             pageName = ShareComponentConstants.TOKOFOOD,
             previewTitle = tokoFoodMerchantProfile?.name.orEmpty(),
-            previewThumbnail = MERCHANT_THUMBNAIL_URL,
+            previewThumbnail = tokoFoodMerchantProfile?.imageURL.orEmpty(),
             txtDesc = context?.getString(
                 com.tokopedia.tokofood.R.string.desc_merchant_page_share,
                 tokoFoodMerchantProfile?.name.orEmpty()
@@ -105,7 +105,7 @@ class MerchantShareComponentUtil(
                 com.tokopedia.tokofood.R.string.og_desc_merchant_page_share,
                 tokoFoodMerchantProfile?.name.orEmpty()
             ).orEmpty(),
-            ogImage = MERCHANT_THUMBNAIL_URL
+            ogImage = tokoFoodMerchantProfile?.imageURL.orEmpty()
         )
     }
 
@@ -118,7 +118,7 @@ class MerchantShareComponentUtil(
             id = productUiModel.id,
             pageName = ShareComponentConstants.TOKOFOOD,
             previewTitle = productUiModel.name,
-            previewThumbnail = FOOD_THUMBNAIL_URL,
+            previewThumbnail = productUiModel.imageURL,
             txtDesc = context?.getString(
                 com.tokopedia.tokofood.R.string.desc_merchant_food_share,
                 productUiModel.name,
@@ -136,12 +136,11 @@ class MerchantShareComponentUtil(
                 productUiModel.name,
                 tokoFoodMerchantProfile?.name.orEmpty()
             ).orEmpty(),
-            ogImage = FOOD_THUMBNAIL_URL
+            ogImage = productUiModel.imageURL
         )
     }
 
     companion object {
-        const val FOOD_THUMBNAIL_URL = "https://images.tokopedia.net/img/tokofood/food_share.png"
-        const val MERCHANT_THUMBNAIL_URL = "https://images.tokopedia.net/img/tokofood/merchant_share.png"
+        const val SHARE_STR_FMT = "%s %s"
     }
 }
