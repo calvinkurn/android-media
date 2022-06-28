@@ -65,6 +65,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+import com.tokopedia.feedcomponent.bottomsheets.FeedUserCompleteOnboarding
 
 class UserProfileFragment : BaseDaggerFragment(),
     View.OnClickListener,
@@ -221,6 +222,9 @@ class UserProfileFragment : BaseDaggerFragment(),
         view?.findViewById<View>(R.id.view_profile_outer_ring)?.setOnClickListener(this)
         view?.findViewById<View>(R.id.btn_action_follow)?.setOnClickListener(this)
         view?.findViewById<View>(R.id.text_see_more)?.setOnClickListener(this)
+        feedFab.setOnClickListener {
+            FeedUserCompleteOnboarding().showNow(childFragmentManager)
+        }
 
         recyclerviewPost?.addOnScrollListener(feedFloatingButtonManager.scrollListener)
 //        recyclerviewPost?.let { feedFloatingButtonManager.setDelayForExpandFab(it) }

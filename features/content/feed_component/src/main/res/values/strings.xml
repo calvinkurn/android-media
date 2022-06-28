@@ -206,4 +206,14 @@
     <string name="feed_fab_create_content">Buat Konten</string>
     <string name="feed_fab_create_post">Buat Post</string>
 
+    <!-- Feed UGC Onboarding -->
+    <string name="feed_ugc_complete_onboarding_title">Bikin username dulu</string>
+    <string name="feed_ugc_complete_onboarding_desc">Sebelum buat postingan, bikin username yang unik supaya kamu lebih mudah dikenal.</string>
+    <string name="feed_ugc_complete_onboarding_username">Username</string>
+    <string name="feed_ugc_complete_onboarding_username_prepend">\@</string>
+    <string name="feed_ugc_complete_onboarding_tnc_title">Pastikan postinganmu nanti sesuai ketentuan berikut:</string>
+    <string name="feed_ugc_onboarding_tnc_1">Hanya posting pengalaman belanja di Tokopedia</string>
+    <string name="feed_ugc_onboarding_tnc_2">Tidak memposting foto/video yang ada unsur SARA &amp; dewasa (alkohol, rokok, kondom, dll)</string>
+    <string name="feed_ugc_onboarding_accept_tnc">Saya telah membaca Kebijakan Privasi dan setuju dengan Syarat &amp; Ketentuan</string>
+    <string name="feed_ugc_onboarding_continue">Lanjut</string>
 </resources>
