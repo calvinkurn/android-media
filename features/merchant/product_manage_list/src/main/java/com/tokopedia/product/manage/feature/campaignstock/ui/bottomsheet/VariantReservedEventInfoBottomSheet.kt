@@ -32,7 +32,7 @@ class VariantReservedEventInfoBottomSheet : BottomSheetUnify() {
             }?.let { cacheManager ->
                 cacheManager.get<VariantReservedEventInfoWrapper>(
                     VARIANT_RESERVED_EVENT_INFO_KEY,
-                    ReservedEventInfoUiModel::class.java
+                    VariantReservedEventInfoWrapper::class.java
                 )?.reservedEventInfoUiModels
             }
             variantName = arguments?.getString(VARIANT_RESERVED_NAME_KEY)
