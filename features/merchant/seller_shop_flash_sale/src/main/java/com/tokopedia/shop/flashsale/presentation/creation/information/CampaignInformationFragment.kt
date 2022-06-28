@@ -63,6 +63,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         private const val BUNDLE_KEY_PAGE_MODE = "page_mode"
         private const val BUNDLE_KEY_CAMPAIGN_ID = "campaign_id"
         private const val FIRST_STEP = 1
+        private const val SINGLE_LINE = 1
         private const val SPAN_COUNT = 6
         private const val HEX_COLOR_TEXT_FIELD_MAX_LENGTH = 6
         private const val ONE_HOUR = 1
@@ -298,6 +299,9 @@ class CampaignInformationFragment : BaseDaggerFragment() {
                 val validationResult = viewModel.validateCampaignName(text)
                 handleCampaignNameValidationResult(validationResult)
             }
+            tauCampaignName.textInputLayout.editText?.maxLines = SINGLE_LINE
+            tauCampaignName.textInputLayout.editText?.inputType = InputType.TYPE_CLASS_TEXT
+            tpgCampaignNameErrorMessage.gone()
 
             tauHexColor.setMaxLength(HEX_COLOR_TEXT_FIELD_MAX_LENGTH)
             tauHexColor.textInputLayout.editText?.doOnTextChanged { text ->
