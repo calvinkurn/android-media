@@ -10,5 +10,6 @@ enum class ManageProductErrorType {
     MIN_STOCK,
     MIN_STOCK_AND_OTHER,
     MAX_ORDER,
+    MIN_ORDER,
     NOT_ERROR
 }

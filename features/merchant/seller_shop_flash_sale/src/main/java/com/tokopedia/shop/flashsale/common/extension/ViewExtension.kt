@@ -2,6 +2,7 @@ package com.tokopedia.shop.flashsale.common.extension
 
 import android.animation.ValueAnimator
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Animation
 import android.view.animation.TranslateAnimation
@@ -77,7 +78,6 @@ fun View.disable() {
     this.isEnabled = false
 }
 
-
 fun View?.slideUp(duration: Int = 350) {
     this?.let {
         val animate = TranslateAnimation(0f, 0f, this.height.toFloat(), 0f)
@@ -120,6 +120,26 @@ fun View?.slideDown(duration: Int = 350) {
 
         })
         this.startAnimation(animate)
+    }
+}
+
+fun View.enableChildren(enable: Boolean) {
+    (this as? ViewGroup)?.let {
+        for (i in Int.ZERO..it.childCount) {
+            enableChildren(enable)
+        }
+    }
+    isEnabled = enable
+}
+
+fun disableEnableControls(enable: Boolean, vg: ViewGroup?) {
+    if (vg == null) return
+    for (i in Int.ZERO until vg.childCount) {
+        val child = vg.getChildAt(i)
+        child.isEnabled = enable
+        if (child is ViewGroup) {
+            disableEnableControls(enable, child)
+        }
     }
 }
 
