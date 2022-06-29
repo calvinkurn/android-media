@@ -47,10 +47,6 @@ internal fun <T: Any> Flow<T>.withCache(): Flow<CachedState<T>> {
     }
 }
 
-internal fun <T: Any> MutableStateFlow<T>.setValue(fn: T.() -> T) {
-    value = value.fn()
-}
-
 fun View.showErrorToast(
     message: String,
     duration: Int = Toaster.LENGTH_LONG,

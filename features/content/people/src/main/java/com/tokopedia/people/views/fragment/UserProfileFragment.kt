@@ -326,8 +326,6 @@ class UserProfileFragment @Inject constructor(
         observeUiEvent()
 
         addListObserver()
-        addSocialFollowErrorObserver()
-        addSocialUnFollowErrorObserver()
         addUserPostObserver()
         adduserPostErrorObserver()
     }
@@ -346,6 +344,10 @@ class UserProfileFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect { event ->
                 when(event) {
+                    is UserProfileUiEvent.ErrorFollowUnfollow -> {
+                        val message = if(event.message.isNotEmpty()) event.message else getDefaultErrorMessage()
+                        view?.showErrorToast(message)
+                    }
                     is UserProfileUiEvent.SuccessUpdateReminder -> {
                         view?.showToast(event.message)
                     }
@@ -355,7 +357,7 @@ class UserProfileFragment @Inject constructor(
                                 requireContext().getString(R.string.up_error_local_error)
                             }
                             else -> {
-                                event.throwable.message ?: requireContext().getString(abstractionR.string.default_request_error_unknown)
+                                event.throwable.message ?: getDefaultErrorMessage()
                             }
                         }
 
@@ -457,38 +459,6 @@ class UserProfileFragment @Inject constructor(
                         }
                     }
                 }
-            }
-        })
-
-    private fun addSocialFollowErrorObserver() =
-        viewModel.followErrorMessageLiveData.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                val snackBar = Toaster.build(
-                    btnAction as View,
-                    getString(com.tokopedia.people.R.string.up_error_follow),
-                    Toaster.LENGTH_LONG,
-                    Toaster.TYPE_ERROR
-                )
-
-                snackBar.show()
-
-                updateToUnFollowUi()
-            }
-        })
-
-    private fun addSocialUnFollowErrorObserver() =
-        viewModel.unFollowErrorMessageLiveData.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                val snackBar = Toaster.build(
-                    btnAction as View,
-                    getString(com.tokopedia.people.R.string.up_error_unfollow),
-                    Toaster.LENGTH_LONG,
-                    Toaster.TYPE_ERROR
-                )
-
-                snackBar.show()
-
-                updateToFollowUi()
             }
         })
 
@@ -693,6 +663,10 @@ class UserProfileFragment @Inject constructor(
             container?.displayedChild = PAGE_LOADING
             refreshLandingPageData()
         }
+    }
+
+    private fun getDefaultErrorMessage(): String {
+        return requireContext().getString(abstractionR.string.default_request_error_unknown)
     }
 
     override fun getScreenName(): String {

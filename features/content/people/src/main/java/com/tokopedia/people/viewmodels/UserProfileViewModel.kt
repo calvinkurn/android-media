@@ -12,17 +12,13 @@ import com.tokopedia.people.model.UserPostModel
 import kotlinx.coroutines.Dispatchers
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.people.domains.repository.UserProfileRepository
-import com.tokopedia.people.utils.setValue
 import com.tokopedia.people.views.uimodel.MutationUiModel
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.people.views.uimodel.profile.*
 import com.tokopedia.people.views.uimodel.state.UserProfileUiState
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 @UserProfileScope
@@ -44,12 +40,6 @@ class UserProfileViewModel @Inject constructor(
 
     private val playPostContent = MutableLiveData<Resources<UserPostModel>>()
     val playPostContentLiveData : LiveData<Resources<UserPostModel>> get() = playPostContent
-
-    private var followErrorMessage = MutableLiveData<Throwable>()
-    val followErrorMessageLiveData : LiveData<Throwable> get() = followErrorMessage
-
-    private var unFollowErrorMessage = MutableLiveData<Throwable>()
-    val unFollowErrorMessageLiveData : LiveData<Throwable> get() = unFollowErrorMessage
 
     private var userPostError = MutableLiveData<Throwable>()
     val userPostErrorLiveData : LiveData<Throwable> get() = userPostError
@@ -112,12 +102,12 @@ class UserProfileViewModel @Inject constructor(
             else ProfileType.NotLoggedIn
 
 
-            _profileInfo.value = profileInfo
-            _followInfo.value = followInfo
-            _profileType.value = profileType
+            _profileInfo.update { profileInfo }
+            _followInfo.update { followInfo }
+            _profileType.update { profileType }
 
             if(profileType == ProfileType.Self) {
-                _profileWhitelist.value = repo.getWhitelist(followInfo.userID)
+                _profileWhitelist.update {  repo.getWhitelist(followInfo.userID) }
             }
 
             /** TODO: refactor - gonna find a better way to trigger load video */
@@ -136,13 +126,15 @@ class UserProfileViewModel @Inject constructor(
 
             when(result) {
                 is MutationUiModel.Success -> {
-                    _followInfo.setValue { copy(status = !followInfo.status) }
-                    _profileInfo.value = repo.getProfile(followInfo.userID)
+                    _followInfo.update { it.copy(status = !followInfo.status) }
+                    _profileInfo.update {  repo.getProfile(followInfo.userID) }
                 }
-                is MutationUiModel.Error -> unFollowErrorMessage.value = Exception(result.message)
+                is MutationUiModel.Error -> {
+                    _uiEvent.emit(UserProfileUiEvent.ErrorFollowUnfollow(result.message))
+                }
             }
         }) {
-            unFollowErrorMessage.value = it
+            _uiEvent.emit(UserProfileUiEvent.ErrorFollowUnfollow(""))
         }
     }
 
