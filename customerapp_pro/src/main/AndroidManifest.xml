@@ -726,20 +726,21 @@
             android:name="APPSFLYER_KEY"
             android:value="@string/appsflyer_key_pro" />
 
-        <provider
-            android:name="com.facebook.internal.FacebookInitProvider"
-            android:authorities="${applicationId}.FacebookInitProvider"
-            android:exported="false"
-            tools:node="remove" />
-        <provider
-            android:name="com.facebook.FacebookContentProvider"
-            android:authorities="com.facebook.app.FacebookContentProvider126665634029576"
-            android:exported="true" />
-        <provider
-            android:name="androidx.startup.InitializationProvider"
-            android:authorities="${applicationId}.androidx-startup"
-            android:exported="false"
-            tools:node="merge">
+        <!-- uncomment this in the future -->
+<!--        <provider-->
+<!--            android:name="com.facebook.internal.FacebookInitProvider"-->
+<!--            android:authorities="${applicationId}.FacebookInitProvider"-->
+<!--            android:exported="false"-->
+<!--            tools:node="remove" />-->
+<!--        <provider-->
+<!--            android:name="com.facebook.FacebookContentProvider"-->
+<!--            android:authorities="com.facebook.app.FacebookContentProvider126665634029576"-->
+<!--            android:exported="true" />-->
+<!--        <provider-->
+<!--            android:name="androidx.startup.InitializationProvider"-->
+<!--            android:authorities="${applicationId}.androidx-startup"-->
+<!--            android:exported="false"-->
+<!--            tools:node="merge">-->
             <!-- If you are using androidx.startup to initialize other components -->
             <meta-data
                 android:name="androidx.work.WorkManagerInitializer"
