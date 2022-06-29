@@ -11,13 +11,11 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.FragmentSsfsManageHighlightedProductBinding
 import com.tokopedia.shop.flashsale.common.extension.*
+import com.tokopedia.shop.flashsale.common.extension.showLoading
 import com.tokopedia.shop.flashsale.common.preference.SharedPreferenceDataStore
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.HighlightableProduct
@@ -236,8 +234,8 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
     }
 
     private fun handleProducts(data: List<HighlightableProduct>) {
-        val currentItemCount = productAdapter.getItems().size.orZero()
-        val hasData = currentItemCount > Int.ZERO
+        val products = productAdapter.getItems()
+        val hasData = products.size.isMoreThanZero()
 
         if (data.isEmpty() && !hasData) {
             binding?.groupNoSearchResult?.visible()
@@ -249,6 +247,8 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
             binding?.groupNoSearchResult?.gone()
             refreshButton()
         }
+
+        refreshCounter(products)
     }
 
 
@@ -287,14 +287,21 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
         val products = productAdapter.getItems()
         val updatedProducts = viewModel.markAsSelected(products)
         productAdapter.submit(updatedProducts)
+        refreshCounter(updatedProducts)
     }
 
     private fun unselectProduct(selectedProduct: HighlightableProduct) {
         val products = productAdapter.getItems()
         val updatedProducts = viewModel.markAsUnselected(selectedProduct, products)
         productAdapter.submit(updatedProducts)
+        refreshCounter(updatedProducts)
     }
 
+    private fun refreshCounter(products: List<HighlightableProduct>) {
+        val selectedProductCount = products.filter { it.isSelected }.size
+        binding?.tpgSelectedProductCount?.isVisible = selectedProductCount.isMoreThanZero()
+        binding?.tpgSelectedProductCount?.text = String.format(getString(R.string.sfs_placeholder_selected_product_count), selectedProductCount)
+    }
 
     private fun clearSearchBar() {
         endlessRecyclerViewScrollListener?.resetState()
@@ -311,12 +318,14 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
         binding?.searchBar?.slideDown()
         binding?.cardView.slideDown()
         binding?.imgScrollUp.slideUp()
+        binding?.tpgSelectedProductCount.slideDown()
     }
 
     private fun handleScrollUpEvent() {
         binding?.searchBar?.slideUp()
         binding?.cardView.slideUp()
         binding?.imgScrollUp.slideDown()
+        binding?.tpgSelectedProductCount.slideUp()
     }
 
     private fun doFreshSearch() {
@@ -352,12 +361,14 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
     }
 
     private fun showContent() {
+        binding?.tpgSelectedProductCount?.visible()
         binding?.recyclerView?.visible()
         binding?.cardView?.visible()
         binding?.searchBar?.visible()
     }
 
     private fun hideContent() {
+        binding?.tpgSelectedProductCount?.gone()
         binding?.recyclerView?.gone()
         binding?.cardView?.gone()
         binding?.searchBar?.gone()

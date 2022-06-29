@@ -281,6 +281,7 @@
     <string name="sfs_highlight_product_first_coachmark">Klik di sini untuk memilih produk yang di highlight.</string>
     <string name="sfs_placeholder_product_order">#%d</string>
     <string name="sfs_error_message_product_already_selected">Hanya dapat memilih 1 varian untuk masing-masing produk.</string>
+    <string name="sfs_placeholder_selected_product_count">%d Produk Terpilih</string>
 
     <!--Delete Product-->
     <string name="deleteproduct_dialog_title">Yakin ingin hapus produk dari campaign?</string>
