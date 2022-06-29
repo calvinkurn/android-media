@@ -6,7 +6,7 @@ import com.google.gson.Gson
 import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.flight.R
-adjustimport com.tokopedia.flight.booking.data.FlightAddToCartData
+import com.tokopedia.flight.booking.data.FlightAddToCartData
 import com.tokopedia.flight.booking.data.FlightCheckoutData
 import com.tokopedia.flight.booking.data.FlightVerify
 import com.tokopedia.flight.booking.data.FlightVerifyParam
