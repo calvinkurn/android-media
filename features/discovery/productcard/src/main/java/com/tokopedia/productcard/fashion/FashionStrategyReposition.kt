@@ -1,6 +1,7 @@
 package com.tokopedia.productcard.fashion
 
 import android.content.Context
+import android.text.TextUtils
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -9,24 +10,25 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import com.tokopedia.productcard.renderLabelVariantSize
 import com.tokopedia.productcard.renderVariantColor
-import com.tokopedia.productcard.utils.LABEL_VARIANT_CHAR_LIMIT
 import com.tokopedia.productcard.utils.LABEL_VARIANT_WITH_LABEL_CHAR_LIMIT
+import com.tokopedia.productcard.utils.MAX_LABEL_VARIANT_COUNT
 import com.tokopedia.productcard.utils.SQUARE_IMAGE_RATIO
 import com.tokopedia.productcard.utils.applyConstraintSet
-import com.tokopedia.productcard.utils.getDimensionPixelSize
 import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.video_widget.VideoPlayerView
 import com.tokopedia.productcard.utils.renderLabelBestSeller
 import com.tokopedia.productcard.utils.renderLabelBestSellerCategorySide
 import com.tokopedia.productcard.utils.renderLabelBestSellerCategoryBottom
-import com.tokopedia.productcard.utils.setBottomCorners
 import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil
+import com.tokopedia.productcard.utils.renderLabelReposition
 import com.tokopedia.unifycomponents.toPx
 
 internal open class FashionStrategyReposition: FashionStrategy {
@@ -45,25 +47,18 @@ internal open class FashionStrategyReposition: FashionStrategy {
         )
     }
 
-    override fun setImageRadius(imageProduct: ImageView?, videoProduct: VideoPlayerView?) {
-        val cornerRadius: Int =
-            imageProduct?.getDimensionPixelSize(R.dimen.product_card_image_corner_radius_fashion) ?: 0
-        imageProduct?.setBottomCorners(cornerRadius)
-        videoProduct?.setBottomCorners(cornerRadius)
-    }
-
     override fun getImageHeight(imageWidth: Int): Int = imageWidth
 
-    override fun renderOverlayImageRoundedLabel(
-        labelImageBackground: ImageView?,
-        labelImage: Typography?,
+    override fun renderLabelReposition(
+        labelRepositionBackground: ImageView?,
+        labelReposition: Typography?,
         productCardModel: ProductCardModel,
     ) {
-        com.tokopedia.productcard.utils.renderOverlayImageRoundedLabel(
+        renderLabelReposition(
             true,
-            labelImageBackground,
-            labelImage,
-            productCardModel,
+            labelRepositionBackground,
+            labelReposition,
+            productCardModel.getLabelReposition(),
         )
     }
 
@@ -207,25 +202,27 @@ internal open class FashionStrategyReposition: FashionStrategy {
         val labelPriceNextToVariant = view.findViewById<Label?>(R.id.labelPriceNextToVariant)
 
         labelPrice?.initLabelGroup(null)
-        labelPriceNextToVariant?.initLabelGroup(productCardModel.getLabelPrice())
+
+        if (productCardModel.isShowDiscountOrSlashPrice())
+            labelPriceNextToVariant?.initLabelGroup(null)
+        else
+            labelPriceNextToVariant?.initLabelGroup(productCardModel.getLabelPrice())
     }
 
     override fun renderVariant(
         willShowVariant: Boolean,
         view: View,
         productCardModel: ProductCardModel,
-        colorSampleSize: Int,
     ) {
         val container = view.findViewById<LinearLayout?>(R.id.labelVariantWithLabelContainer)
+        val colorSampleSize = 10.toPx()
 
-        container?.shouldShowWithAction(willShowVariant) { labelVariantWithLabelContainer ->
+        container?.shouldShowWithAction(
+            willShowVariant && !productCardModel.isShowDiscountOrSlashPrice()
+        ) { labelVariantWithLabelContainer ->
             labelVariantWithLabelContainer.removeAllViews()
 
-            val renderedLabelGroupVariantList =
-                productCardModel.getRenderedLabelGroupVariantList(
-                    LABEL_VARIANT_WITH_LABEL_CHAR_LIMIT,
-                    productCardModel.getLabelPrice() == null,
-                )
+            val renderedLabelGroupVariantList = productCardModel.getRenderedLabelGroupVariantList()
             val renderedLabelVariantSizeList = renderedLabelGroupVariantList.filter { it.isSize() }
             val renderedLabelVariantColorList = renderedLabelGroupVariantList.filter { it.isColor() }
             val labelVariantSizeList = productCardModel.labelGroupVariantList.filter { it.isSize() }
@@ -247,5 +244,67 @@ internal open class FashionStrategyReposition: FashionStrategy {
         }
 
         view.findViewById<LinearLayout?>(R.id.labelVariantContainer).hide()
+    }
+
+    override fun renderShopBadge(view: View, productCardModel: ProductCardModel) {
+        val imageShopBadgeBelowRating = view.findViewById<ImageView?>(R.id.imageShopBadgeBelowRating)
+        val shopBadge = productCardModel.shopBadgeList.find { it.isShown && it.imageUrl.isNotEmpty() }
+        imageShopBadgeBelowRating?.shouldShowWithAction(productCardModel.isShowShopBadge()) {
+            it.loadIcon(shopBadge?.imageUrl ?: "")
+        }
+
+        val imageShopBadge = view.findViewById<ImageView?>(R.id.imageShopBadge)
+        imageShopBadge.hide()
+    }
+
+    override fun renderTextShopLocation(view: View, productCardModel: ProductCardModel) {
+        val textViewShopLocationBelowRating =
+            view.findViewById<Typography?>(R.id.textViewShopLocationBelowRating)
+        textViewShopLocationBelowRating?.shouldShowWithAction(
+            productCardModel.shopLocation.isNotEmpty()
+                && !productCardModel.willShowFulfillment()
+        ) {
+            TextAndContentDescriptionUtil.setTextAndContentDescription(
+                it,
+                productCardModel.shopLocation,
+                view.context.getString(R.string.content_desc_textViewShopLocation),
+            )
+        }
+
+        val textViewShopLocation =
+            view.findViewById<Typography?>(R.id.textViewShopLocation)
+
+        textViewShopLocation.hide()
+    }
+
+    override val sizeCharLimit: Int
+        get() = LABEL_VARIANT_WITH_LABEL_CHAR_LIMIT
+
+    override fun getLabelVariantSizeCount(
+        productCardModel: ProductCardModel,
+        colorVariantTaken: Int,
+    ): Int {
+        return if (productCardModel.getLabelPrice() == null
+            || !productCardModel.labelGroupVariantList.any { it.isColor() }
+        ) {
+            MAX_LABEL_VARIANT_COUNT
+        } else {
+            0
+        }
+    }
+
+    override fun setupProductNameLineCount(
+        textViewProductName: Typography?,
+        willShowVariant: Boolean,
+        productCardModel: ProductCardModel,
+    ) {
+        if (productCardModel.isShowDiscountOrSlashPrice()) {
+            textViewProductName?.isSingleLine = true
+        }
+        else {
+            textViewProductName?.isSingleLine = false
+            textViewProductName?.maxLines = 2
+            textViewProductName?.ellipsize = TextUtils.TruncateAt.END
+        }
     }
 }

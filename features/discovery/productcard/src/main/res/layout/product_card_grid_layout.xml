@@ -74,19 +74,19 @@
             tools:visibility="visible"/>
 
         <ImageView
-            android:id="@+id/labelImageBackground"
+            android:id="@+id/labelRepositionBackground"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:contentDescription="@null"
             android:background="@drawable/product_card_rounded_label"
-            app:layout_constraintStart_toStartOf="@id/labelImage"
-            app:layout_constraintTop_toTopOf="@id/labelImage"
-            app:layout_constraintEnd_toEndOf="@id/labelImage"
-            app:layout_constraintBottom_toBottomOf="@id/labelImage"
+            app:layout_constraintStart_toStartOf="@id/labelReposition"
+            app:layout_constraintTop_toTopOf="@id/labelReposition"
+            app:layout_constraintEnd_toEndOf="@id/labelReposition"
+            app:layout_constraintBottom_toBottomOf="@id/labelReposition"
             tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/labelImage"
+            android:id="@+id/labelReposition"
             android:layout_width="0dp"
             android:layout_height="@dimen/product_card_label_campaign_height"
             android:ellipsize="end"

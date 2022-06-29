@@ -17,6 +17,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Space
 import android.widget.TextView
+import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -39,6 +40,7 @@ import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.video_widget.VideoPlayerView
+import timber.log.Timber
 import com.tokopedia.unifyprinciples.R.color as unifyRColor
 
 internal val View.isVisible: Boolean
@@ -494,24 +496,24 @@ internal fun setupImageRatio(
     }
 }
 
-internal fun renderOverlayImageRoundedLabel(
+internal fun renderLabelReposition(
     isShow: Boolean,
-    labelImageBackground: ImageView?,
-    labelImage: Typography?,
-    productCardModel: ProductCardModel,
+    labelRepositionBackground: ImageView?,
+    labelReposition: Typography?,
+    labelGroup: ProductCardModel.LabelGroup?,
 ) {
     if (isShow) {
-        showOverlayImageRoundedLabel(
-            labelImageBackground,
-            labelImage,
-            productCardModel.getImageLabel(),
+        showRepositionLabel(
+            labelRepositionBackground,
+            labelReposition,
+            labelGroup,
         )
     } else {
-        labelImage?.hide()
+        labelReposition?.hide()
     }
 }
 
-private fun showOverlayImageRoundedLabel(
+private fun showRepositionLabel(
     labelBackground: ImageView?,
     textViewLabel: Typography?,
     labelGroup: ProductCardModel.LabelGroup?,
@@ -521,47 +523,58 @@ private fun showOverlayImageRoundedLabel(
             textViewLabel.text = labelGroup.title
 
             val context = textViewLabel.context
-            val textColor = try {
-                val staticWhiteColor = ContextCompat.getColor(
-                    context,
-                    unifyRColor.Unify_Static_White
-                )
-                if (labelGroup.isGimmick()) labelGroup.type.toUnifyTextColor(context)
-                else staticWhiteColor
-            } catch (throwable: Throwable) {
-                ContextCompat.getColor(
-                    context,
-                    unifyRColor.Unify_Static_White
-                )
-            }
-            textViewLabel.setTextColor(textColor)
+            textViewLabel.setTextColor(labelGroup.toRepositionLabelTextColor(context))
         }
 
+        var labelBackgroundColor = 0
         labelBackground?.context?.let { context ->
-            val backgroundColor = try {
-                val whiteColor = ContextCompat.getColor(
-                    context,
-                    unifyRColor.Unify_NN0
-                )
-                if (labelGroup.isGimmick()) whiteColor
-                else labelGroup.type.toUnifyTextColor(context)
-            } catch (throwable: Throwable) {
-                ContextCompat.getColor(
-                    context,
-                    unifyRColor.Unify_NN0
-                )
-            }
-
-            labelBackground.background?.colorFilter =
-                BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
-                    backgroundColor,
-                    BlendModeCompat.SRC_ATOP
-                )
+            labelBackgroundColor = labelGroup.toRepositionLabelBackground(context)
         }
 
+        labelBackground?.background?.colorFilter =
+            BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
+                labelBackgroundColor,
+                BlendModeCompat.SRC_ATOP
+            )
 
     } else {
         textViewLabel?.hide()
+    }
+}
+
+@ColorInt
+private fun ProductCardModel.LabelGroup.toRepositionLabelTextColor(context: Context): Int {
+    return try {
+        val staticWhiteColor = ContextCompat.getColor(
+            context,
+            unifyRColor.Unify_Static_White
+        )
+        if (isGimmick()) type.toUnifyTextColor(context)
+        else staticWhiteColor
+    } catch (throwable: Throwable) {
+        Timber.e(throwable)
+        ContextCompat.getColor(
+            context,
+            unifyRColor.Unify_Static_White
+        )
+    }
+}
+
+@ColorInt
+private fun ProductCardModel.LabelGroup.toRepositionLabelBackground(context: Context): Int {
+    return try {
+        val whiteColor = ContextCompat.getColor(
+            context,
+            unifyRColor.Unify_NN0
+        )
+        if (isGimmick()) whiteColor
+        else type.toUnifyTextColor(context)
+    } catch (throwable: Throwable) {
+        Timber.e(throwable)
+        ContextCompat.getColor(
+            context,
+            unifyRColor.Unify_NN0
+        )
     }
 }
 
@@ -583,26 +596,4 @@ internal fun creteVariantContainer(context: Context): LinearLayout {
         ContextCompat.getDrawable(context, R.drawable.product_card_label_group_variant_border)
 
     return layout
-}
-
-internal fun View.setBottomCorners(bottomCornerRadius: Int) {
-    val outlineProvider = object : ViewOutlineProvider() {
-        override fun getOutline(view: View, outline: Outline) {
-            val left = 0
-            val top = 0
-            val right = view.width
-            val bottom = view.height
-
-            outline.setRoundRect(
-                left,
-                top - bottomCornerRadius,
-                right,
-                bottom,
-                bottomCornerRadius.toFloat(),
-            )
-        }
-    }
-
-    this.outlineProvider = outlineProvider
-    this.clipToOutline = true
 }

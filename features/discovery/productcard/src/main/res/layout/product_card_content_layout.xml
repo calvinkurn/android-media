@@ -495,6 +495,44 @@
         tools:visibility="visible" />
 
     <ImageView
+        android:id="@+id/imageShopBadgeBelowRating"
+        android:contentDescription="@string/content_desc_imageShopBadge"
+        android:layout_width="@dimen/product_card_shop_badge_size"
+        android:layout_height="@dimen/product_card_shop_badge_size"
+        android:layout_marginTop="@dimen/product_card_shop_badge_margin_top"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewShopRating"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textViewShopLocationBelowRating"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/product_card_text_shop_location_height"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="@dimen/product_card_text_shop_location_margin_top"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:textColor="@color/Unify_N700_68"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/imageShopBadgeBelowRating"
+        app:layout_constraintTop_toBottomOf="@id/textViewShopRating"
+        app:layout_goneMarginStart="0dp"
+        app:layout_goneMarginLeft="0dp"
+        app:typographyType="body_3"
+        tools:text="Town Location"
+        tools:visibility="visible" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrierShopLocationBelowRating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="imageShopBadgeBelowRating, textViewShopLocationBelowRating"/>
+
+    <ImageView
         android:id="@+id/imageFreeOngkirPromo"
         android:contentDescription="@string/content_desc_imageFreeOngkirPromo"
         android:layout_width="wrap_content"
@@ -505,7 +543,7 @@
         android:scaleType="fitStart"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/imageShopRating"
+        app:layout_constraintTop_toBottomOf="@id/barrierShopLocationBelowRating"
         tools:layout_width="67dp"
         tools:visibility="visible" />
 

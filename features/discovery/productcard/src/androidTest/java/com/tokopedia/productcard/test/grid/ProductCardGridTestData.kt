@@ -36,10 +36,12 @@ internal val productCardGridTestData =
             testMixedVariantReposition(),
             testSizeVariantWithLabelPriceReposition(),
             testMixedVariantWithLabelPriceReposition(),
+            testMixedVariantWithLabelPriceAndSlashPriceReposition(),
             testLabelETAReposition(),
             testLabelGimmickReposition(),
             testLabelGimmickAndBestSellerReposition(),
             testLabelCampaignReposition(),
+            testShopLocationReposition(),
         )
 
 internal val productCardGridViewStubTestData =
@@ -51,10 +53,12 @@ internal val productCardGridViewStubTestData =
             testMixedVariantReposition(),
             testSizeVariantWithLabelPriceReposition(),
             testMixedVariantWithLabelPriceReposition(),
+            testMixedVariantWithLabelPriceAndSlashPriceReposition(),
             testLabelETAReposition(),
             testLabelGimmickReposition(),
             testLabelGimmickAndBestSellerReposition(),
             testLabelCampaignReposition(),
+            testShopLocationReposition(),
         )
 
 private fun testSimilarProductButton(): ProductCardModelMatcher {
@@ -326,6 +330,60 @@ private fun testMixedVariantWithLabelPriceReposition(): ProductCardModelMatcher 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
 
+private fun testMixedVariantWithLabelPriceAndSlashPriceReposition(): ProductCardModelMatcher {
+    val labelColor1 = ProductCardModel.LabelGroupVariant(typeVariant = TYPE_VARIANT_COLOR, hexColor = "#05056b")
+    val labelColor2 = ProductCardModel.LabelGroupVariant(typeVariant = TYPE_VARIANT_COLOR, hexColor = "#800000")
+    val labelColor3 = ProductCardModel.LabelGroupVariant(typeVariant = TYPE_VARIANT_COLOR, hexColor = "#f400a1")
+    val labelColor4 = ProductCardModel.LabelGroupVariant(typeVariant = TYPE_VARIANT_COLOR, hexColor = "#faf0be")
+    val labelColor5 = ProductCardModel.LabelGroupVariant(typeVariant = TYPE_VARIANT_COLOR, hexColor = "#ebcca3")
+    val labelCustom = ProductCardModel.LabelGroupVariant(typeVariant = TYPE_VARIANT_CUSTOM, title = "2")
+
+    val labelSize1 = ProductCardModel.LabelGroupVariant(typeVariant = TYPE_VARIANT_SIZE, title = "S")
+    val labelSize2 = ProductCardModel.LabelGroupVariant(typeVariant = TYPE_VARIANT_SIZE, title = "M")
+    val labelSize3 = ProductCardModel.LabelGroupVariant(typeVariant = TYPE_VARIANT_SIZE, title = "L")
+    val labelSize4 = ProductCardModel.LabelGroupVariant(typeVariant = TYPE_VARIANT_SIZE, title = "XL")
+    val labelSize5 = ProductCardModel.LabelGroupVariant(typeVariant = TYPE_VARIANT_SIZE, title = "XXL")
+
+    val labelPrice = LabelGroup(position = LABEL_PRICE, title = "Cashback", type = LIGHT_GREEN)
+
+    val productCardModel = ProductCardModel(
+        productName = "Test Mixed Variants, Price Label, and slash price - Reposition",
+        productImageUrl = productImageUrl,
+        formattedPrice = "Rp7.999.000",
+        discountPercentage = "20%",
+        slashedPrice = "Rp8.499.000",
+        labelGroupVariantList = listOf(
+            labelColor1,
+            labelColor2,
+            labelColor3,
+            labelColor4,
+            labelColor5,
+            labelSize1,
+            labelSize2,
+            labelSize3,
+            labelSize4,
+            labelSize5,
+            labelCustom,
+        ),
+        labelGroupList = listOf(labelPrice),
+        productListType = ProductCardModel.ProductListType.REPOSITION,
+    )
+
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.labelVariantContainer to isNotDisplayed(),
+        R.id.labelVariantWithLabelContainer to isNotDisplayed(),
+        R.id.labelPrice to isNotDisplayed(),
+        R.id.labelPriceNextToVariant to isNotDisplayed(),
+        R.id.labelDiscount to isDisplayedWithText(productCardModel.discountPercentage),
+        R.id.textViewSlashedPrice to isDisplayedWithText(productCardModel.slashedPrice),
+    )
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
 private fun testLabelETAReposition(): ProductCardModelMatcher {
     val labelPrice = LabelGroup(position = LABEL_PRICE, title = "Grosir", type = LIGHT_GREEN)
     val labelETA = LabelGroup(position = LABEL_ETA, title = "Tiba 28 Feb - 1 Mar", type = TEXT_DARK_GREY)
@@ -334,10 +392,6 @@ private fun testLabelETAReposition(): ProductCardModelMatcher {
         productName = "Label ETA - Reposition",
         productImageUrl = productImageUrl,
         formattedPrice = "Rp7.999.000",
-        shopBadgeList = mutableListOf<ProductCardModel.ShopBadge>().also { badges ->
-            badges.add(ProductCardModel.ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
-        },
-        shopLocation = "DKI Jakarta",
         countSoldRating = "4.5",
         freeOngkir = ProductCardModel.FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
         hasThreeDots = true,
@@ -351,8 +405,6 @@ private fun testLabelETAReposition(): ProductCardModelMatcher {
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
         R.id.labelPrice to isNotDisplayed(),
         R.id.labelPriceNextToVariant to isDisplayed(),
-        R.id.imageShopBadge to isDisplayed(),
-        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
         R.id.imageSalesRatingFloat to isDisplayed(),
         R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
         R.id.imageFreeOngkirPromo to isDisplayed(),
@@ -377,7 +429,7 @@ private fun testLabelGimmickReposition(): ProductCardModelMatcher {
     val productCardMatcher = mapOf(
         R.id.imageProduct to isDisplayed(),
         R.id.textViewGimmick to isNotDisplayed(),
-        R.id.labelImage to isDisplayedWithText(labelGimmick.title),
+        R.id.labelReposition to isDisplayedWithText(labelGimmick.title),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
     )
@@ -401,7 +453,7 @@ private fun testLabelGimmickAndBestSellerReposition(): ProductCardModelMatcher {
         R.id.imageProduct to isDisplayed(),
         R.id.textViewGimmick to isNotDisplayed(),
         R.id.labelBestSeller to isNotDisplayed(),
-        R.id.labelImage to isDisplayedWithText(labelBestSeller.title),
+        R.id.labelReposition to isDisplayedWithText(labelBestSeller.title),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
     )
@@ -426,6 +478,36 @@ private fun testLabelCampaignReposition(): ProductCardModelMatcher {
         R.id.labelCampaignBackground to isNotDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+    )
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testShopLocationReposition(): ProductCardModelMatcher {
+    val productCardModel = ProductCardModel(
+        productName = "Shop Location - Reposition",
+        productImageUrl = productImageUrl,
+        formattedPrice = "Rp7.999.000",
+        countSoldRating = "4.5",
+        freeOngkir = ProductCardModel.FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
+        shopBadgeList = mutableListOf<ProductCardModel.ShopBadge>().also { badges ->
+            badges.add(ProductCardModel.ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
+        },
+        shopLocation = "DKI Jakarta",
+        productListType = ProductCardModel.ProductListType.REPOSITION,
+    )
+
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isNotDisplayed(),
+        R.id.imageShopBadgeBelowRating to isDisplayed(),
+        R.id.textViewShopLocation to isNotDisplayed(),
+        R.id.textViewShopLocationBelowRating to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.imageSalesRatingFloat to isDisplayed(),
+        R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
     )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)

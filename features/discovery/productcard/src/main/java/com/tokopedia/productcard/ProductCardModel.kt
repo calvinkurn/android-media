@@ -293,18 +293,15 @@ data class ProductCardModel (
 
     fun willShowPrimaryButtonWishlist() = hasAddToCartWishlist || hasSimilarProductWishlist
 
-    fun getRenderedLabelGroupVariantList(
-        sizeCharLimit: Int,
-        renderBothVariantAndColor: Boolean = false,
-    ): List<LabelGroupVariant> {
-        val (colorVariant, sizeVariant, customVariant) = getSplittedLabelGroupVariant(sizeCharLimit)
+    fun getRenderedLabelGroupVariantList(): List<LabelGroupVariant> {
+        val (colorVariant, sizeVariant, customVariant) = getSplittedLabelGroupVariant()
 
         if (isLabelVariantCountBelowMinimum(colorVariant, sizeVariant))
             return listOf()
 
         val colorVariantTaken = getLabelVariantColorCount(colorVariant)
-        val sizeVariantTaken = if (renderBothVariantAndColor) MAX_LABEL_VARIANT_COUNT
-        else getLabelVariantSizeCount(colorVariantTaken)
+        val sizeVariantTaken =
+            fashionStrategy.getLabelVariantSizeCount(this, colorVariantTaken)
 
         return colorVariant.take(colorVariantTaken) +
                 sizeVariant.take(sizeVariantTaken) +
@@ -322,13 +319,7 @@ data class ProductCardModel (
                 MAX_LABEL_VARIANT_COUNT
             else 0
 
-    private fun getLabelVariantSizeCount(colorVariantTaken: Int): Int {
-        val hasLabelVariantColor = colorVariantTaken > 0
-
-        return if (hasLabelVariantColor) 0 else MAX_LABEL_VARIANT_COUNT
-    }
-
-    private fun getSplittedLabelGroupVariant(sizeCharLimit: Int):
+    private fun getSplittedLabelGroupVariant():
         Triple<List<LabelGroupVariant>, List<LabelGroupVariant>, List<LabelGroupVariant>> {
         var sizeVariantCount = 0
         var hiddenSizeVariant = 0
@@ -345,7 +336,7 @@ data class ProductCardModel (
                 element.isSize() -> {
                     val additionalSize = element.title.length + EXTRA_CHAR_SPACE
                     val isWithinCharLimit =
-                            (sizeVariantCount + additionalSize) <= sizeCharLimit
+                            (sizeVariantCount + additionalSize) <= fashionStrategy.sizeCharLimit
 
                     if (isWithinCharLimit) {
                         sizeVariant.add(element)
@@ -380,7 +371,7 @@ data class ProductCardModel (
         customVariant.add(labelGroupCustomVariant)
     }
 
-    fun getImageLabel(): LabelGroup? {
+    fun getLabelReposition(): LabelGroup? {
         return when {
             getLabelProductStatus() != null -> null
             getLabelBestSeller() != null -> getLabelBestSeller()

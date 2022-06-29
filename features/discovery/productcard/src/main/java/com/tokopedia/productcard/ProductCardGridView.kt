@@ -126,11 +126,11 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
     private val productCardFooterLayoutContainer: FrameLayout by lazy(NONE) {
         findViewById(R.id.productCardFooterLayoutContainer)
     }
-    private val labelImageBackground: ImageView by lazy(NONE) {
-        findViewById(R.id.labelImageBackground)
+    private val labelRepositionBackground: ImageView by lazy(NONE) {
+        findViewById(R.id.labelRepositionBackground)
     }
-    private val labelImage: Typography by lazy(NONE) {
-        findViewById(R.id.labelImage)
+    private val labelReposition: Typography by lazy(NONE) {
+        findViewById(R.id.labelReposition)
     }
     private var isUsingViewStub = false
 
@@ -179,7 +179,6 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
 
     override fun setProductModel(productCardModel: ProductCardModel) {
         imageProduct?.loadImage(productCardModel.productImageUrl)
-        productCardModel.fashionStrategy.setImageRadius(imageProduct, videoProduct)
 
         productCardModel.fashionStrategy.setupImageRatio(
             constraintLayoutProductCard,
@@ -239,9 +238,9 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
             CardUnify2.ANIMATE_OVERLAY_BOUNCE
         } else CardUnify2.ANIMATE_OVERLAY
 
-        productCardModel.fashionStrategy.renderOverlayImageRoundedLabel(
-            labelImageBackground,
-            labelImage,
+        productCardModel.fashionStrategy.renderLabelReposition(
+            labelRepositionBackground,
+            labelReposition,
             productCardModel,
         )
     }

@@ -37,8 +37,7 @@ internal class ProductCardModelTest {
             expectedRenderedLabelGroupVariant: List<LabelGroupVariant>,
     ) {
         val productCardModel = ProductCardModel(labelGroupVariantList = givenLabelGroupVariant)
-        val actualRenderedLabelGroupVariant =
-            productCardModel.getRenderedLabelGroupVariantList(LABEL_VARIANT_CHAR_LIMIT)
+        val actualRenderedLabelGroupVariant = productCardModel.getRenderedLabelGroupVariantList()
 
         assertThat(actualRenderedLabelGroupVariant, `is`(expectedRenderedLabelGroupVariant))
     }

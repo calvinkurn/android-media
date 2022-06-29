@@ -95,22 +95,17 @@ private fun View.renderTextProductName(productCardModel: ProductCardModel) {
 private fun View.renderLabelGroupVariant(productCardModel: ProductCardModel) {
     val textViewProductName = findViewById<Typography?>(R.id.textViewProductName)
     val willShowVariant = productCardModel.willShowVariant()
-    val colorSampleSize = 14.toPx()
 
-    if (willShowVariant) {
-        textViewProductName?.isSingleLine = true
-    }
-    else {
-        textViewProductName?.isSingleLine = false
-        textViewProductName?.maxLines = 2
-        textViewProductName?.ellipsize = TextUtils.TruncateAt.END
-    }
+    productCardModel.fashionStrategy.setupProductNameLineCount(
+        textViewProductName,
+        willShowVariant,
+        productCardModel,
+    )
 
     productCardModel.fashionStrategy.renderVariant(
         willShowVariant,
         this,
         productCardModel,
-        colorSampleSize,
     )
 }
 
@@ -279,18 +274,11 @@ private fun View.renderTextFulfillment(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderShopBadge(productCardModel: ProductCardModel) {
-    val imageShopBadge = findViewById<ImageView?>(R.id.imageShopBadge)
-    val shopBadge = productCardModel.shopBadgeList.find { it.isShown && it.imageUrl.isNotEmpty() }
-    imageShopBadge?.shouldShowWithAction(productCardModel.isShowShopBadge()) {
-        it.loadIcon(shopBadge?.imageUrl ?: "")
-    }
+    productCardModel.fashionStrategy.renderShopBadge(this, productCardModel)
 }
 
 private fun View.renderTextShopLocation(productCardModel: ProductCardModel) {
-    val textViewShopLocation = findViewById<Typography?>(R.id.textViewShopLocation)
-    textViewShopLocation?.shouldShowWithAction(productCardModel.shopLocation.isNotEmpty() && !productCardModel.willShowFulfillment()) {
-        TextAndContentDescriptionUtil.setTextAndContentDescription(it, productCardModel.shopLocation, context.getString(R.string.content_desc_textViewShopLocation))
-    }
+    productCardModel.fashionStrategy.renderTextShopLocation(this, productCardModel)
 }
 
 private fun View.renderRating(productCardModel: ProductCardModel) {
@@ -544,7 +532,7 @@ fun LinearLayout.renderVariantColor(
     if (hiddenColorCount > 0) {
         val additionalTextView = Typography(context)
         additionalTextView.setType(Typography.SMALL)
-        additionalTextView.text = " +$hiddenColorCount"
+        additionalTextView.text = ", +$hiddenColorCount"
 
         layout.addView(additionalTextView)
     }
@@ -570,7 +558,7 @@ fun LinearLayout.renderLabelVariantSize(
     var sizeText = listLabelVariant.joinToString(", ") { it.title }
 
     if (hiddenSizeCount > 0)
-        sizeText += " +$hiddenSizeCount"
+        sizeText += ", +$hiddenSizeCount"
 
     textContainer.text = sizeText
 

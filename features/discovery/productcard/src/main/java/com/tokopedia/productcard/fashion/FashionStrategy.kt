@@ -18,13 +18,11 @@ internal interface FashionStrategy {
         videoProduct: VideoPlayerView?,
     )
 
-    fun setImageRadius(imageProduct: ImageView?, videoProduct: VideoPlayerView?)
-
     fun getImageHeight(imageWidth: Int): Int
 
-    fun renderOverlayImageRoundedLabel(
-        labelImageBackground: ImageView?,
-        labelImage: Typography?,
+    fun renderLabelReposition(
+        labelRepositionBackground: ImageView?,
+        labelReposition: Typography?,
         productCardModel: ProductCardModel,
     )
 
@@ -72,6 +70,19 @@ internal interface FashionStrategy {
         willShowVariant: Boolean,
         view: View,
         productCardModel: ProductCardModel,
-        colorSampleSize: Int,
+    )
+
+    fun renderShopBadge(view: View, productCardModel: ProductCardModel)
+
+    fun renderTextShopLocation(view: View, productCardModel: ProductCardModel)
+
+    val sizeCharLimit: Int
+
+    fun getLabelVariantSizeCount(productCardModel: ProductCardModel, colorVariantTaken: Int): Int
+
+    fun setupProductNameLineCount(
+        textViewProductName: Typography?,
+        willShowVariant: Boolean,
+        productCardModel: ProductCardModel,
     )
 }
