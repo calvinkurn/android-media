@@ -28,6 +28,9 @@ class PlayTokonowAnalyticImpl @Inject constructor(private val userSession: UserS
         )
     }
 
+    /**
+     * Button Ganti Alamat
+     */
     override fun impressChooseAddress(channelId: String, channelType: PlayChannelType) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
@@ -54,12 +57,15 @@ class PlayTokonowAnalyticImpl @Inject constructor(private val userSession: UserS
         )
     }
 
+    /**
+     * Click cek jangkauan
+     */
     override fun clickInfoAddressWidget(channelId: String, channelType: PlayChannelType) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
                 KEY_EVENT to KEY_TRACK_VIEW_CONTENT_IRIS,
                 KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                KEY_EVENT_ACTION to "click - now info selengkapnya",
+                KEY_EVENT_ACTION to "click - now cek jangkauan",
                 KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
                 KEY_TRACKER_ID to "32238"
