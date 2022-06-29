@@ -151,6 +151,8 @@ class DiscoveryViewModelTest {
         every { bundle.getString(DiscoveryActivity.EMBED_CATEGORY, "") } returns "g"
         every { bundle.getString(DiscoveryActivity.RECOM_PRODUCT_ID, "") } returns "h"
         every { bundle.getString(DiscoveryActivity.CATEGORY_ID, "") } returns "i"
+        every { bundle.getString(DiscoveryActivity.DYNAMIC_SUBTITLE, "") } returns "j"
+        every { bundle.getString(DiscoveryActivity.TARGET_TITLE_ID, "") } returns "k"
 
         val discoComponentQuery : MutableMap<String, String?> = mutableMapOf(DiscoveryActivity.CATEGORY_ID to "p")
         com.tokopedia.discovery2.datamapper.discoComponentQuery = discoComponentQuery
@@ -164,7 +166,9 @@ class DiscoveryViewModelTest {
                 DiscoveryActivity.PIN_PRODUCT to "f",
                 DiscoveryActivity.EMBED_CATEGORY to "g",
                 DiscoveryActivity.RECOM_PRODUCT_ID to "h",
-                DiscoveryActivity.CATEGORY_ID to "p"
+                DiscoveryActivity.CATEGORY_ID to "p",
+                DiscoveryActivity.DYNAMIC_SUBTITLE to "j",
+                DiscoveryActivity.TARGET_TITLE_ID to "k"
         )
 
         viewModel.getQueryParameterMapFromBundle(bundle)
@@ -185,6 +189,8 @@ class DiscoveryViewModelTest {
         every { bundle.getString(DiscoveryActivity.EMBED_CATEGORY, "") } returns "g"
         every { bundle.getString(DiscoveryActivity.RECOM_PRODUCT_ID, "") } returns "h"
         every { bundle.getString(DiscoveryActivity.CATEGORY_ID, "") } returns "i"
+        every { bundle.getString(DiscoveryActivity.DYNAMIC_SUBTITLE, "") } returns "j"
+        every { bundle.getString(DiscoveryActivity.TARGET_TITLE_ID, "") } returns "k"
 
         val map : MutableMap<String, String?> = mutableMapOf(
                 DiscoveryActivity.SOURCE to "a",
@@ -195,7 +201,9 @@ class DiscoveryViewModelTest {
                 DiscoveryActivity.PIN_PRODUCT to "f",
                 DiscoveryActivity.EMBED_CATEGORY to "g",
                 DiscoveryActivity.RECOM_PRODUCT_ID to "h",
-                DiscoveryActivity.CATEGORY_ID to "i"
+                DiscoveryActivity.CATEGORY_ID to "i",
+                DiscoveryActivity.DYNAMIC_SUBTITLE to "j",
+                DiscoveryActivity.TARGET_TITLE_ID to "k"
         )
 
         viewModel.getQueryParameterMapFromBundle(bundle)
@@ -216,6 +224,8 @@ class DiscoveryViewModelTest {
         every { bundle.getString(DiscoveryActivity.EMBED_CATEGORY, "") } returns "g"
         every { bundle.getString(DiscoveryActivity.RECOM_PRODUCT_ID, "") } returns "h"
         every { bundle.getString(DiscoveryActivity.CATEGORY_ID, "") } returns "i"
+        every { bundle.getString(DiscoveryActivity.DYNAMIC_SUBTITLE, "") } returns "j"
+        every { bundle.getString(DiscoveryActivity.TARGET_TITLE_ID, "") } returns "k"
         val map : MutableMap<String, String?> = mutableMapOf(
                 DiscoveryActivity.SOURCE to "a",
                 DiscoveryActivity.COMPONENT_ID to "b",
@@ -225,7 +235,9 @@ class DiscoveryViewModelTest {
                 DiscoveryActivity.PIN_PRODUCT to "f",
                 DiscoveryActivity.EMBED_CATEGORY to "g",
                 DiscoveryActivity.RECOM_PRODUCT_ID to "h",
-                DiscoveryActivity.CATEGORY_ID to "i"
+                DiscoveryActivity.CATEGORY_ID to "i",
+                DiscoveryActivity.DYNAMIC_SUBTITLE to "j",
+                DiscoveryActivity.TARGET_TITLE_ID to "k"
         )
         val discoComponentQuery : MutableMap<String, String?> = mutableMapOf()
         com.tokopedia.discovery2.datamapper.discoComponentQuery = discoComponentQuery
@@ -299,6 +311,8 @@ class DiscoveryViewModelTest {
         every { uri.getQueryParameter(DiscoveryActivity.EMBED_CATEGORY) } returns "g"
         every { uri.getQueryParameter(DiscoveryActivity.RECOM_PRODUCT_ID) } returns "h"
         every { uri.getQueryParameter(DiscoveryActivity.CATEGORY_ID) } returns "i"
+        every { uri.getQueryParameter(DiscoveryActivity.DYNAMIC_SUBTITLE) } returns "j"
+        every { uri.getQueryParameter(DiscoveryActivity.TARGET_TITLE_ID) } returns "k"
 
         val map : MutableMap<String, String?> = mutableMapOf(
                 DiscoveryActivity.SOURCE to "a",
@@ -309,7 +323,9 @@ class DiscoveryViewModelTest {
                 DiscoveryActivity.PIN_PRODUCT to "f",
                 DiscoveryActivity.EMBED_CATEGORY to "g",
                 DiscoveryActivity.RECOM_PRODUCT_ID to "h",
-                DiscoveryActivity.CATEGORY_ID to "i"
+                DiscoveryActivity.CATEGORY_ID to "i",
+                DiscoveryActivity.DYNAMIC_SUBTITLE to "j",
+                DiscoveryActivity.TARGET_TITLE_ID to "k"
         )
 
         viewModel.getMapOfQueryParameter(uri)
