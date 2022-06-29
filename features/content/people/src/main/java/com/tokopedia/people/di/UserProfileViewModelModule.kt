@@ -18,12 +18,6 @@ abstract class UserProfileViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(UserProfileViewModel::class)
-    internal abstract fun bindsUserProfileViewModel(viewModel: UserProfileViewModel): ViewModel
-
-    @Binds
-    @IntoMap
     @ViewModelKey(FollowerFollowingViewModel::class)
     internal abstract fun bindsFollowerFollowingViewModel(viewModel: FollowerFollowingViewModel): ViewModel
-
 }

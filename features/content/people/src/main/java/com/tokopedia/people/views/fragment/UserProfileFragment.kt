@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -70,6 +71,7 @@ import com.tokopedia.people.utils.UserProfileUtils
 import com.tokopedia.people.utils.showErrorToast
 import com.tokopedia.people.utils.showToast
 import com.tokopedia.people.utils.withCache
+import com.tokopedia.people.viewmodels.factory.UserProfileViewModelFactory
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.people.views.uimodel.profile.ProfileType
@@ -81,7 +83,7 @@ import kotlinx.coroutines.flow.collectLatest
 import com.tokopedia.abstraction.R as abstractionR
 
 class UserProfileFragment @Inject constructor(
-    private val viewModelFactory: ViewModelFactory,
+    private val viewModelFactoryCreator: UserProfileViewModelFactory.Creator,
     private val userSession: UserSessionInterface,
     private val feedFloatingButtonManager: FeedFloatingButtonManager,
 ) : BaseDaggerFragment(),
@@ -141,9 +143,7 @@ class UserProfileFragment @Inject constructor(
         /** No need since we alr have constructor injection */
     }
 
-    private val viewModel: UserProfileViewModel by lazy {
-        ViewModelProviders.of(this, viewModelFactory).get(UserProfileViewModel::class.java)
-    }
+    private lateinit var viewModel: UserProfileViewModel
 
     private val mAdapter: UserPostBaseAdapter by lazy {
         UserPostBaseAdapter(
@@ -155,6 +155,17 @@ class UserProfileFragment @Inject constructor(
             userId,
             this
         )
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(
+            this,
+            viewModelFactoryCreator.create(
+                this,
+                requireArguments().getString(EXTRA_USERNAME) ?: ""
+            )
+        )[UserProfileViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -258,7 +269,7 @@ class UserProfileFragment @Inject constructor(
 
     private fun refreshLandingPageData(isRefreshPost: Boolean = false) {
         landedUserName?.let {
-            viewModel.submitAction(UserProfileAction.LoadProfile(it, isRefreshPost))
+            viewModel.submitAction(UserProfileAction.LoadProfile(isRefreshPost))
         }
     }
 
@@ -272,10 +283,13 @@ class UserProfileFragment @Inject constructor(
         view?.findViewById<View>(R.id.view_profile_outer_ring)?.setOnClickListener(this)
         view?.findViewById<View>(R.id.text_see_more)?.setOnClickListener(this)
         btnAction?.setOnClickListener {
-            if(viewModel.isFollow) userProfileTracker?.clickUnfollow(userId, viewModel.isSelfProfile)
-            else userProfileTracker?.clickFollow(userId, viewModel.isSelfProfile)
-
-            viewModel.submitAction(UserProfileAction.ClickFollowButton)
+            if(!userSession.isLoggedIn) {
+                startActivityForResult(
+                    RouteManager.getIntent(activity, ApplinkConst.LOGIN),
+                    REQUEST_CODE_LOGIN
+                )
+            }
+            else doFollowUnfollow(isFromLogin = false)
         }
         feedFab.setOnClickListener {
             FeedUserTnCOnboardingBottomSheet.getFragment(
@@ -654,6 +668,13 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
+    private fun doFollowUnfollow(isFromLogin: Boolean) {
+        if(viewModel.isFollowed) userProfileTracker?.clickUnfollow(userSession.userId, viewModel.isSelfProfile)
+        else userProfileTracker?.clickFollow(userSession.userId, viewModel.isSelfProfile)
+
+        viewModel.submitAction(UserProfileAction.ClickFollowButton(isFromLogin))
+    }
+
     private fun showGlobalError(type: Int) {
         container?.displayedChild = PAGE_ERROR
         globalError?.setType(type)
@@ -765,7 +786,7 @@ class UserProfileFragment @Inject constructor(
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
-            refreshLandingPageData()
+            doFollowUnfollow(isFromLogin = true)
         }
         else if(requestCode == REQUEST_CODE_PLAY_ROOM && resultCode == Activity.RESULT_OK) {
             val channelId = data?.extras?.getString(EXTRA_CHANNEL_ID) ?: return

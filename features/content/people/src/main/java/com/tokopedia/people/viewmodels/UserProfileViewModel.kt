@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.people.Resources
 import com.tokopedia.people.Success
-import com.tokopedia.people.di.UserProfileScope
 import com.tokopedia.people.domains.PlayPostContentUseCase
 import com.tokopedia.people.model.UserPostModel
 import kotlinx.coroutines.Dispatchers
@@ -18,18 +17,25 @@ import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.people.views.uimodel.profile.*
 import com.tokopedia.people.views.uimodel.state.UserProfileUiState
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.*
-import javax.inject.Inject
 
-@UserProfileScope
-class UserProfileViewModel @Inject constructor(
+class UserProfileViewModel @AssistedInject constructor(
+    @Assisted private val username: String,
     private var playVodUseCase: PlayPostContentUseCase,
     private val repo: UserProfileRepository,
     private val userSession: UserSessionInterface,
 ) : BaseViewModel(Dispatchers.Main) {
 
+    @AssistedFactory
+    interface Factory {
+        fun create(username: String): UserProfileViewModel
+    }
+
     /** Public Getter */
-    val isFollow: Boolean
+    val isFollowed: Boolean
         get() = _followInfo.value.status
 
     val isSelfProfile: Boolean
@@ -70,56 +76,31 @@ class UserProfileViewModel @Inject constructor(
 
     fun submitAction(action: UserProfileAction) {
         when(action) {
-            is UserProfileAction.LoadProfile -> handleLoadProfile(action.username, action.isRefresh)
-            UserProfileAction.ClickFollowButton -> handleClickFollowButton()
+            is UserProfileAction.LoadProfile -> handleLoadProfile(action.isRefresh)
+            is UserProfileAction.ClickFollowButton -> handleClickFollowButton(action.isFromLogin)
             is UserProfileAction.ClickUpdateReminder -> handleClickUpdateReminder(action.channelId, action.isActive)
         }
     }
 
     /** Handle Action */
-    private fun handleLoadProfile(username: String, isRefresh: Boolean) {
+    private fun handleLoadProfile(isRefresh: Boolean) {
         launchCatchError(block = {
-            val deferredProfileInfo = asyncCatchError(block = {
-                repo.getProfile(username)
-            }) {
-                _uiEvent.emit(UserProfileUiEvent.ErrorLoadProfile(it))
-                ProfileUiModel.Empty
-            }
-
-            val deferredFollowInfo = asyncCatchError(block = {
-                repo.getFollowInfo(listOf(username))
-            }) {
-                FollowInfoUiModel.Empty
-            }
-
-            val profileInfo = deferredProfileInfo.await() ?: ProfileUiModel.Empty
-            val followInfo = deferredFollowInfo.await() ?: FollowInfoUiModel.Empty
-            val profileType = if(userSession.isLoggedIn) {
-                if(userSession.userId == followInfo.userID)
-                    ProfileType.Self
-                else ProfileType.OtherUser
-            }
-            else ProfileType.NotLoggedIn
-
-
-            _profileInfo.update { profileInfo }
-            _followInfo.update { followInfo }
-            _profileType.update { profileType }
-
-            if(profileType == ProfileType.Self) {
-                _profileWhitelist.update {  repo.getWhitelist(followInfo.userID) }
-            }
-
-            /** TODO: refactor - gonna find a better way to trigger load video */
-            userPost.value = isRefresh
+            loadProfileInfo(isRefresh)
         }) {
             _uiEvent.emit(UserProfileUiEvent.ErrorLoadProfile(it))
         }
     }
 
-    private fun handleClickFollowButton() {
+    private fun handleClickFollowButton(isFromLogin: Boolean) {
         launchCatchError(block = {
+            if(isFromLogin) {
+                loadProfileInfo(false)
+            }
+
             val followInfo = _followInfo.value
+
+            if(userSession.isLoggedIn.not() || (isFollowed && isFromLogin) || isSelfProfile)
+                return@launchCatchError
 
             val result = if(followInfo.status) repo.unFollowProfile(followInfo.encryptedUserID)
                         else repo.followProfile(followInfo.encryptedUserID)
@@ -164,5 +145,41 @@ class UserProfileViewModel @Inject constructor(
         }, onError = {
             userPostError.value = it
         })
+    }
+
+    private suspend fun loadProfileInfo(isRefresh: Boolean) {
+        val deferredProfileInfo = asyncCatchError(block = {
+            repo.getProfile(username)
+        }) {
+            _uiEvent.emit(UserProfileUiEvent.ErrorLoadProfile(it))
+            ProfileUiModel.Empty
+        }
+
+        val deferredFollowInfo = asyncCatchError(block = {
+            repo.getFollowInfo(listOf(username))
+        }) {
+            FollowInfoUiModel.Empty
+        }
+
+        val profileInfo = deferredProfileInfo.await() ?: ProfileUiModel.Empty
+        val followInfo = deferredFollowInfo.await() ?: FollowInfoUiModel.Empty
+        val profileType = if(userSession.isLoggedIn) {
+            if(userSession.userId == followInfo.userID)
+                ProfileType.Self
+            else ProfileType.OtherUser
+        }
+        else ProfileType.NotLoggedIn
+
+
+        _profileInfo.update { profileInfo }
+        _followInfo.update { followInfo }
+        _profileType.update { profileType }
+
+        if(profileType == ProfileType.Self) {
+            _profileWhitelist.update {  repo.getWhitelist(followInfo.userID) }
+        }
+
+        /** TODO: refactor - gonna find a better way to trigger load video */
+        userPost.value = isRefresh
     }
 }
