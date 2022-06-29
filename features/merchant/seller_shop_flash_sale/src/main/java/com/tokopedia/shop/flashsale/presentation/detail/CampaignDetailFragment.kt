@@ -1,6 +1,8 @@
 package com.tokopedia.shop.flashsale.presentation.detail
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,12 +10,15 @@ import android.view.ViewGroup
 import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.seller_shop_flash_sale.R
@@ -23,13 +28,17 @@ import com.tokopedia.shop.flashsale.common.extension.formatTo
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.MerchantCampaignTNC
+import com.tokopedia.shop.flashsale.domain.entity.enums.isActive
 import com.tokopedia.shop.flashsale.domain.entity.enums.isAvailable
 import com.tokopedia.shop.flashsale.domain.entity.enums.isCancelled
 import com.tokopedia.shop.flashsale.domain.entity.enums.isFinished
 import com.tokopedia.shop.flashsale.domain.entity.enums.isOngoing
 import com.tokopedia.shop.flashsale.domain.entity.enums.isUpcoming
+import com.tokopedia.shop.flashsale.presentation.cancelation.CancelCampaignBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationActivity
 import com.tokopedia.shop.flashsale.presentation.creation.rule.bottomsheet.MerchantCampaignTNCBottomSheet
+import com.tokopedia.shop.flashsale.presentation.detail.bottomsheet.CampaignDetailMoreMenuBottomSheet
+import com.tokopedia.shop.flashsale.presentation.detail.bottomsheet.CampaignDetailMoreMenuClickListener
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
@@ -37,16 +46,18 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class CampaignDetailFragment : BaseDaggerFragment() {
+class CampaignDetailFragment : BaseDaggerFragment(), CampaignDetailMoreMenuClickListener {
 
     companion object {
         private const val BUNDLE_KEY_CAMPAIGN_ID = "campaign_id"
+        private const val BUNDLE_KEY_CAMPAIGN_NAME = "campaign_name"
 
         @JvmStatic
-        fun newInstance(campaignId: Long): CampaignDetailFragment {
+        fun newInstance(campaignId: Long, campaignName: String?): CampaignDetailFragment {
             return CampaignDetailFragment().apply {
                 arguments = Bundle().apply {
                     putLong(BUNDLE_KEY_CAMPAIGN_ID, campaignId)
+                    putString(BUNDLE_KEY_CAMPAIGN_NAME, campaignName)
                 }
             }
         }
@@ -55,6 +66,9 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
     private val campaignId by lazy { arguments?.getLong(BUNDLE_KEY_CAMPAIGN_ID) }
+    private val campaignName by lazy {
+        arguments?.getString(BUNDLE_KEY_CAMPAIGN_NAME) ?: getString(R.string.campaign_detail)
+    }
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(CampaignDetailViewModel::class.java) }
 
@@ -63,9 +77,8 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     private val btnMoreClickListener = object : View.OnClickListener {
         override fun onClick(v: View?) {
-            // TODO(*) : Show bottom sheet
+            viewModel.onMoreMenuClicked()
         }
-
     }
 
     override fun getScreenName(): String =
@@ -104,10 +117,36 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         observeCampaign()
         observeTNCClickEvent()
         observeEditCampaignEvent()
+        observeCancelCampaignEvent()
+        observeMoreMenuEvent()
+        observeActiveDialog()
+    }
+
+    private fun observeMoreMenuEvent() {
+        viewModel.moreMenuEvent.observe(viewLifecycleOwner) {
+            showMoreMenuBottomSheet(it)
+        }
+    }
+
+    private fun observeActiveDialog() {
+        childFragmentManager.registerFragmentLifecycleCallbacks(object :
+            FragmentManager.FragmentLifecycleCallbacks() {
+            override fun onFragmentResumed(fm: FragmentManager, f: Fragment) {
+                super.onFragmentResumed(fm, f)
+                when (f) {
+                    is CampaignDetailMoreMenuBottomSheet -> {
+                        f.setClickListener(this@CampaignDetailFragment)
+                    }
+                }
+            }
+        }, false)
     }
 
     private fun setUpToolbar() {
-        binding?.header?.setNavigationOnClickListener { activity?.finish() }
+        binding?.header?.apply {
+            headerTitle = campaignName
+            setNavigationOnClickListener { activity?.finish() }
+        }
     }
 
     private fun setUpClickListeners() {
@@ -128,6 +167,72 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 is EditCampaignActionResult.RegisteredEventCampaign -> showRegisteredEventCampaignEditErrorMessage()
             }
         }
+    }
+
+    private fun observeCancelCampaignEvent() {
+        viewModel.cancelCampaignActionResult.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is CancelCampaignActionResult.ActionAllowed -> showCancelCampaignDialog(result.campaign)
+                is CancelCampaignActionResult.RegisteredEventCampaign -> showRegisteredEventCampaignCancelErrorMessage()
+            }
+        }
+    }
+
+    @SuppressLint("ResourcePackage")
+    private fun showCancelCampaignDialog(campaign: CampaignUiModel) {
+        val bottomSheet = CancelCampaignBottomSheet(
+            campaign.campaignId,
+            campaign.campaignName,
+            campaign.status
+        ) {
+            val toasterMessage = if (campaign.status.isOngoing()) {
+                getString(R.string.campaign_detail_campaign_stopped_message, campaign.campaignName)
+            } else {
+                getString(
+                    R.string.campaign_detail_campaign_cancelled_message,
+                    campaign.campaignName
+                )
+            }
+            routeToCampaignListPage(toasterMessage)
+        }
+        bottomSheet.show(childFragmentManager)
+    }
+
+    private fun routeToCampaignListPage(toasterMessage: String = "") {
+        val result = Intent().apply {
+            putExtra(
+                CampaignDetailActivity.BUNDLE_KEY_CAMPAIGN_CANCELLATION_MESSAGE,
+                toasterMessage
+            )
+        }
+        activity?.run {
+            setResult(Activity.RESULT_OK, result)
+            finish()
+        }
+
+    }
+
+    @SuppressLint("ResourcePackage")
+    private fun showRegisteredEventCampaignCancelErrorMessage() {
+        val binding = binding ?: return
+        val errorMessage = getString(
+            R.string.campaign_detail_cancel_registered_event_campaign_message
+        )
+        val toaster = Toaster.build(
+            binding.root,
+            errorMessage,
+            Snackbar.LENGTH_SHORT,
+            Toaster.TYPE_ERROR,
+            getString(R.string.sfs_ok)
+        ) {}.apply {
+            val anchor = if (binding.cardButtonWrapper.isVisible) {
+                binding.cardButtonWrapper
+            } else {
+                binding.root
+            }
+            anchorView = anchor
+        }
+        toaster.show()
     }
 
     private fun routeToEditCampaignPage(campaignId: Long) {
@@ -172,18 +277,32 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     @SuppressLint("ResourcePackage")
     private fun displayCampaignDetailInformation(data: CampaignUiModel) {
         val binding = binding ?: return
-        binding.header.title = data.campaignName
-        val ivMore = binding.header.addRightIcon(R.drawable.ic_sfs_more)
-        ivMore.setOnClickListener(btnMoreClickListener)
+        handleCampaignToolbar(data)
         binding.tgCampaignDetailId.text = getString(
             R.string.campaign_detail_campaign_id,
             data.campaignId.toString()
         )
         handleCampaignStatusIndicator(data)
+        handleEventParticipation(data)
 
         handleEditCampaignButtonVisibility(data)
         handleShareButtonVisibility(data)
 
+        binding.tgCampaignStartDate.text = data.startDate.formatTo(DateConstant.DATE_TIME_WITH_DAY)
+        binding.tgCampaignEndDate.text = data.endDate.formatTo(DateConstant.DATE_TIME_WITH_DAY)
+    }
+
+    private fun handleCampaignToolbar(data: CampaignUiModel) {
+        val binding = binding ?: return
+        binding.header.title = data.campaignName
+        if (data.status.isActive()) {
+            val ivMore = binding.header.addRightIcon(R.drawable.ic_sfs_more)
+            ivMore.setOnClickListener(btnMoreClickListener)
+        }
+    }
+
+    private fun handleEventParticipation(data: CampaignUiModel) {
+        val binding = binding ?: return
         if (data.thematicParticipation) {
             binding.groupCampaignEventName.visible()
             binding.tgCampaignEventName.text = data.thematicInfo.name
@@ -198,9 +317,6 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             binding.groupCampaignEventName.hide()
             binding.tickerCampaignEventParticipation.hide()
         }
-
-        binding.tgCampaignStartDate.text = data.startDate.formatTo(DateConstant.DATE_TIME_WITH_DAY)
-        binding.tgCampaignEndDate.text = data.endDate.formatTo(DateConstant.DATE_TIME_WITH_DAY)
     }
 
     private fun handleEditCampaignButtonVisibility(data: CampaignUiModel) {
@@ -214,10 +330,10 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     private fun handleShareButtonVisibility(data: CampaignUiModel) {
         val binding = binding ?: return
-        if (data.status.isFinished()) {
-            binding.cardButtonWrapper.hide()
-        } else {
+        if (data.status.isActive()) {
             binding.cardButtonWrapper.visible()
+        } else {
+            binding.cardButtonWrapper.hide()
         }
     }
 
@@ -226,7 +342,11 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         val binding = binding ?: return
         when {
             campaign.status.isUpcoming() -> {
-                binding.tgCampaignStatus.setStatus(R.string.sfs_upcoming)
+                if (campaign.thematicParticipation) {
+                    binding.tgCampaignStatus.setStatus(R.string.sfs_selection)
+                } else {
+                    binding.tgCampaignStatus.setStatus(R.string.sfs_upcoming)
+                }
                 binding.tgCampaignStatus.textColor(R.color.Unify_YN400)
                 binding.imgCampaignStatusIndicator.setImageResource(R.drawable.ic_sfs_campaign_indicator_upcoming)
             }
@@ -298,5 +418,14 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             tncRequest = request
         )
             .show(childFragmentManager)
+    }
+
+    private fun showMoreMenuBottomSheet(campaign: CampaignUiModel) {
+        CampaignDetailMoreMenuBottomSheet.newInstance(campaign.campaignName, campaign.status)
+            .show(childFragmentManager)
+    }
+
+    override fun onMenuCancelCampaignClicked() {
+        viewModel.onCampaignCancelMenuClicked()
     }
 }

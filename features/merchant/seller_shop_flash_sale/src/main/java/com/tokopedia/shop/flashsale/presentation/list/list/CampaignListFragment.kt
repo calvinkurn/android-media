@@ -17,7 +17,11 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.seller_shop_flash_sale.R
@@ -26,7 +30,14 @@ import com.tokopedia.shop.flashsale.common.constant.Constant.EMPTY_STRING
 import com.tokopedia.shop.flashsale.common.constant.Constant.FIRST_PAGE
 import com.tokopedia.shop.flashsale.common.constant.Constant.ZERO
 import com.tokopedia.shop.flashsale.common.customcomponent.BaseSimpleListFragment
-import com.tokopedia.shop.flashsale.common.extension.*
+import com.tokopedia.shop.flashsale.common.extension.doOnDelayFinished
+import com.tokopedia.shop.flashsale.common.extension.setFragmentToUnifyBgColor
+import com.tokopedia.shop.flashsale.common.extension.showError
+import com.tokopedia.shop.flashsale.common.extension.showLoading
+import com.tokopedia.shop.flashsale.common.extension.showToaster
+import com.tokopedia.shop.flashsale.common.extension.slideDown
+import com.tokopedia.shop.flashsale.common.extension.slideUp
+import com.tokopedia.shop.flashsale.common.extension.stopLoading
 import com.tokopedia.shop.flashsale.common.share_component.ShareComponentInstanceBuilder
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.CampaignMeta
@@ -573,7 +584,12 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     }
 
     private fun handleViewCampaignDetail(campaign: CampaignUiModel) {
-        CampaignDetailActivity.start(requireActivity(), campaign.campaignId)
+        val intent = CampaignDetailActivity.buildIntent(
+            requireActivity(),
+            campaign.campaignId,
+            campaign.campaignName
+        )
+        startActivityForResult(intent, CampaignDetailActivity.REQUEST_CODE_CAMPAIGN_DETAIL)
     }
 
     private fun displayShareBottomSheet(thumbnailImageUrl : String, metadata: ShareComponentMetadata, ) {
@@ -696,14 +712,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
     private fun showCancelCampaignSuccess(campaign: CampaignUiModel) {
         val toasterMessage = String.format(findCancelCampaignSuccessWording(campaign.status), campaign.campaignName)
-        binding?.root showToaster toasterMessage
-
-        //Add some spare time caused by Backend write operation delay
-        doOnDelayFinished(REFRESH_CAMPAIGN_DELAY_DURATION_IN_MILLIS) {
-            binding?.loader?.visible()
-            getCampaigns(FIRST_PAGE)
-            onCancelCampaignSuccess()
-        }
+        showCancellationMessageThenUpdateData(toasterMessage)
     }
 
     private fun findCancelCampaignErrorWording(campaignStatus: CampaignStatus): String {
@@ -740,6 +749,28 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
         if (requestCode == REQUEST_CODE_CREATE_CAMPAIGN_INFO && resultCode == Activity.RESULT_OK) {
             binding?.cardView showToaster getString(R.string.sfs_saved_as_draft)
+        } else if(requestCode == CampaignDetailActivity.REQUEST_CODE_CAMPAIGN_DETAIL
+            && resultCode == Activity.RESULT_OK
+            && data != null) {
+            handleCancellationResultFromCampaignDetail(data)
+        }
+    }
+
+    private fun handleCancellationResultFromCampaignDetail(data: Intent) {
+        if(data.hasExtra(CampaignDetailActivity.BUNDLE_KEY_CAMPAIGN_CANCELLATION_MESSAGE)) {
+            val toasterMessage = data.getStringExtra(CampaignDetailActivity.BUNDLE_KEY_CAMPAIGN_CANCELLATION_MESSAGE) ?: return
+            showCancellationMessageThenUpdateData(toasterMessage)
+        }
+    }
+
+    private fun showCancellationMessageThenUpdateData(toasterMessage: String) {
+        binding?.root showToaster toasterMessage
+
+        //Add some spare time caused by Backend write operation delay
+        doOnDelayFinished(REFRESH_CAMPAIGN_DELAY_DURATION_IN_MILLIS) {
+            binding?.loader?.visible()
+            getCampaigns(FIRST_PAGE)
+            onCancelCampaignSuccess()
         }
     }
 

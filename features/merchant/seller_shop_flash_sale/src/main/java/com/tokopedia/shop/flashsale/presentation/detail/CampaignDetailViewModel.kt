@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.MerchantCampaignTNC
+import com.tokopedia.shop.flashsale.domain.entity.enums.isActive
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignDetailUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -38,6 +39,14 @@ class CampaignDetailViewModel @Inject constructor(
     private val _editCampaignActionResult = SingleLiveEvent<EditCampaignActionResult>()
     val editCampaignActionResult: LiveData<EditCampaignActionResult>
         get() = _editCampaignActionResult
+
+    private val _cancelCampaignActionResult = SingleLiveEvent<CancelCampaignActionResult>()
+    val cancelCampaignActionResult: LiveData<CancelCampaignActionResult>
+        get() = _cancelCampaignActionResult
+
+    private val _moreMenuEvent = SingleLiveEvent<CampaignUiModel>()
+    val moreMenuEvent: LiveData<CampaignUiModel>
+        get() = _moreMenuEvent
 
     fun getCampaignDetail(campaignId: Long) {
         this._campaignId = campaignId
@@ -85,6 +94,22 @@ class CampaignDetailViewModel @Inject constructor(
             _editCampaignActionResult.value = EditCampaignActionResult.RegisteredEventCampaign
         } else {
             _editCampaignActionResult.value = EditCampaignActionResult.Allowed(_campaignId)
+        }
+    }
+
+    fun onMoreMenuClicked() {
+        val campaign = _campaign.value
+        val campaignData = if (campaign is Success) campaign.data else return
+        _moreMenuEvent.postValue(campaignData)
+    }
+
+    fun onCampaignCancelMenuClicked() {
+        val campaign = _campaign.value
+        val campaignData = if (campaign is Success) campaign.data else return
+        if (campaignData.thematicParticipation) {
+            _cancelCampaignActionResult.value = CancelCampaignActionResult.RegisteredEventCampaign
+        } else if (campaignData.status.isActive()) {
+            _cancelCampaignActionResult.value = CancelCampaignActionResult.ActionAllowed(campaignData)
         }
     }
 }

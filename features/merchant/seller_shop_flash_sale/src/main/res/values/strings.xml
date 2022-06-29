@@ -27,6 +27,7 @@
     <string name="sfs_cancelled">Dibatalkan</string>
     <string name="sfs_start">Mulai</string>
     <string name="sfs_finish">Selesai</string>
+    <string name="sfs_selection">Seleksi</string>
     <string name="sfs_sold_count">Jumlah Terjual</string>
     <string name="sfs_active_reminder">Pengingat Aktif</string>
     <string name="sfs_product">Produk</string>
@@ -300,10 +301,13 @@
     <string name="campaign_detail_end_date_label">Tanggal berakhir</string>
     <string name="campaign_detail_edit_campaign_label">Ubah Campaign</string>
     <string name="campaign_detail_edit_registered_event_campaign_message">Campaign yang masuk ke partisipasi event hanya bisa diedit di versi desktop.</string>
+    <string name="campaign_detail_cancel_registered_event_campaign_message">Campaign yang masuk ke partisipasi event tidak dapat dihentikan.</string>
+    <string name="campaign_detail_campaign_cancelled_message">Campaign %s berhasil dibatalkan.</string>
+    <string name="campaign_detail_campaign_stopped_message">Campaign %s berhasil dihentikan.</string>
     <string name="campaign_detail_see_terms_and_condition_label">Lihat S&amp;K Pembelian</string>
     <string name="campaign_detail_product_list_title">Daftar Produk Campaign</string>
 
-    <string name="campaign_detail_campaign_performance_title">Performa Campaign 👇</string>
+    <string name="campaign_detail_campaign_performance_title">Performa Campaign</string>
 
     <string name="campaign_detail_ticker_event_participation_title">Flash Sale Toko ini terdaftar dalam partisipasi event Tokopedia</string>
     <string name="campaign_detail_ticker_event_participation_message">Kamu akan dapat notifikasi jika partisipasimu diterima/ditolak pada %s, ya.</string>
