@@ -1293,6 +1293,7 @@ class ProductListPresenter @Inject constructor(
         return map { option ->
             BroadMatchDataView(
                 keyword = option.title,
+                subtitle = option.subtitle,
                 applink = option.applink,
                 carouselOptionType = determineCarouselOptionType(type, option),
                 broadMatchItemDataViewList = option.product.mapIndexed { index, product ->
@@ -1323,7 +1324,8 @@ class ProductListPresenter @Inject constructor(
                         topAdsWishlistUrl = product.topAdsWishlistUrl,
                         componentId = product.componentId,
                     )
-                }
+                },
+                cardButton = option.cardButton
             )
         }
     }
@@ -2189,6 +2191,10 @@ class ProductListPresenter @Inject constructor(
         else broadMatchDataView.applink
 
         view.redirectionStartActivity(applink, broadMatchDataView.url)
+    }
+
+    override fun onBroadMatchViewAllCardClicked(broadMatchDataView: BroadMatchDataView) {
+        view.redirectionStartActivity(broadMatchDataView.cardButton.applink, null)
     }
     //endregion
 

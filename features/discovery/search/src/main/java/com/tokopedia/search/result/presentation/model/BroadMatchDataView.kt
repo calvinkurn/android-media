@@ -5,9 +5,11 @@ import com.tokopedia.discovery.common.analytics.SearchComponentTracking
 import com.tokopedia.discovery.common.analytics.searchComponentTracking
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
+import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView.CardButton
 
 data class BroadMatchDataView(
     val keyword: String = "",
+    val subtitle: String = "",
     val url: String = "",
     val applink: String = "",
     val isAppendTitleInTokopedia: Boolean = false,
@@ -17,6 +19,7 @@ data class BroadMatchDataView(
     val componentId: String = "",
     val trackingOption: Int = 0,
     val actualKeyword: String = "",
+    val cardButton: CardButton = CardButton(),
 ) : ImpressHolder(),
     Visitable<ProductListTypeFactory>,
     SearchComponentTracking by searchComponentTracking(
