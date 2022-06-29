@@ -111,7 +111,7 @@ object AddEditProductMapper {
         val productInputModel = ProductInputModel()
         if(productDraft.variantInputModel.isNotEmpty()) {
             productInputModel.variantInputModel = mapJsonToObject(productDraft.variantInputModel, VariantInputModel::class.java)
-            productInputModel.variantInputModel = fixVariantData(productInputModel.variantInputModel, productInputModel.shipmentInputModel)
+            productInputModel.variantInputModel.fixVariantData(productInputModel.shipmentInputModel)
         } else {
             productInputModel.variantInputModel = VariantInputModel()
         }
@@ -176,23 +176,15 @@ object AddEditProductMapper {
         )
     }
 
-    private fun fixVariantData(
-        variantInputModel: VariantInputModel,
-        shipmentInputModel: ShipmentInputModel
-    ): VariantInputModel {
-        val isOldVariantData = variantInputModel.hasVariant()
-                && variantInputModel.products.any { it.weight == null }
-        if (!isOldVariantData) return variantInputModel
+    private fun VariantInputModel.fixVariantData(shipmentInputModel: ShipmentInputModel) {
+        val isOldVariantData = hasVariant() && products.any { it.weight == null }
+        if (!isOldVariantData) return this
 
-        val fixedVariantInput = variantInputModel.copy()
         val weightUnit = getWeightUnitString(shipmentInputModel.weightUnit)
         val weight = GetProductMapper().convertToGram(shipmentInputModel.weight, weightUnit)
-        fixedVariantInput.products.forEach {
+        products.forEach {
             it.weight = weight
             it.weightUnit = UNIT_GRAM_STRING
         }
-        return fixedVariantInput
     }
 }
-
-
