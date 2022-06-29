@@ -135,7 +135,8 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
 
     sealed class WidgetType {
 
-        open val typeKey: String = ""
+        abstract val typeKey: String
+
         open val authorId: String = ""
         open val authorType: String = ""
         open val channelTag: String = ""
