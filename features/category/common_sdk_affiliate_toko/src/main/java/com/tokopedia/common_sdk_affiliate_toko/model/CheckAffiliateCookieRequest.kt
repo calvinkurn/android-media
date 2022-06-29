@@ -7,7 +7,9 @@ data class CheckAffiliateCookieRequest(
     @SerializedName("AdditionalParams")
     var additionalParams: List<AdditionalParam?>?,
     @SerializedName("PageDetail")
-    var pageDetail: PageDetail?
+    var pageDetail: PageDetail?,
+    @SerializedName("Header")
+    var header: Header?,
 ) {
     data class AdditionalParam(
         @SerializedName("Key")
@@ -16,6 +18,10 @@ data class CheckAffiliateCookieRequest(
         var value: String?
     )
 
+    data class Header(
+        @SerializedName("VisitorID")
+        var visitorID: String?
+    )
 
     data class PageDetail(
         @SerializedName("PageID")

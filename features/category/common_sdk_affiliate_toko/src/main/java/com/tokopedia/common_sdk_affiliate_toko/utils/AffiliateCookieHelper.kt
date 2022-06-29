@@ -69,7 +69,7 @@ class AffiliateCookieHelper @Inject constructor(
                     )
                 } else {
                     try {
-                        val response = checkCookieUseCase.checkAffiliateCookie(params)
+                        val response = checkCookieUseCase.checkAffiliateCookie(params,userSession.deviceId)
                         this.affiliateUUID = response.affiliateUuId ?: ""
                     } catch (e: Exception) {
                         Timber.e(e)

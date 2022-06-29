@@ -16,7 +16,8 @@ class CheckCookieUseCase @Inject constructor(
     }
 
     private fun createRequestParam(
-        param: AffiliateCookieParams
+        param: AffiliateCookieParams,
+        deviceId: String
     ): HashMap<String, Any> {
         return hashMapOf(
             INPUT_PARAM to CheckAffiliateCookieRequest(
@@ -28,17 +29,19 @@ class CheckCookieUseCase @Inject constructor(
                     param.affiliatePageDetail.verticalId,
                     param.affiliateUUID
                 ),
+                CheckAffiliateCookieRequest.Header(deviceId)
             )
         )
     }
 
    internal suspend fun checkAffiliateCookie(
-        param: AffiliateCookieParams
-    ): AffiliateCookieResponse {
+       param: AffiliateCookieParams,
+       deviceId: String
+   ): AffiliateCookieResponse {
         return commonAffiliateRepository.getGQLData(
             GQL_Check_Cookie,
             AffiliateCookieResponse::class.java,
-            createRequestParam(param)
+            createRequestParam(param,deviceId)
         )
     }
 }
