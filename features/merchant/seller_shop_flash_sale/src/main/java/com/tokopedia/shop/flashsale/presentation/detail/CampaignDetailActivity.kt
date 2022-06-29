@@ -10,24 +10,30 @@ class CampaignDetailActivity : BaseSimpleActivity() {
 
     companion object {
         private const val BUNDLE_KEY_CAMPAIGN_ID = "campaign_id"
+        private const val BUNDLE_KEY_CAMPAIGN_NAME = "campaign_name"
         private const val INVALID_CAMPAIGN_ID = -1L
 
+        const val BUNDLE_KEY_CAMPAIGN_CANCELLATION_MESSAGE = "campaign_cancellation_message"
+        const val REQUEST_CODE_CAMPAIGN_DETAIL = 101
+
         @JvmStatic
-        fun start(context: Context, campaignId: Long) {
-            val intent = Intent(context, CampaignDetailActivity::class.java).apply {
+        fun buildIntent(context: Context, campaignId: Long, campaignName: String) :Intent {
+            return Intent(context, CampaignDetailActivity::class.java).apply {
                 putExtra(BUNDLE_KEY_CAMPAIGN_ID, campaignId)
+                putExtra(BUNDLE_KEY_CAMPAIGN_NAME, campaignName)
             }
-            context.startActivity(intent)
         }
     }
 
-
     private val campaignId by lazy {
-        intent?.extras?.getLong(BUNDLE_KEY_CAMPAIGN_ID) ?: INVALID_CAMPAIGN_ID
+        intent?.getLongExtra(BUNDLE_KEY_CAMPAIGN_ID, INVALID_CAMPAIGN_ID) ?: INVALID_CAMPAIGN_ID
+    }
+    private val campaignName by lazy {
+        intent?.getStringExtra(BUNDLE_KEY_CAMPAIGN_NAME)
     }
 
     override fun getLayoutRes() = R.layout.ssfs_activity_campaign_detail
-    override fun getNewFragment() = CampaignDetailFragment.newInstance(campaignId)
+    override fun getNewFragment() = CampaignDetailFragment.newInstance(campaignId, campaignName)
     override fun getParentViewResourceID() = R.id.container
 
     override fun onCreate(savedInstanceState: Bundle?) {
