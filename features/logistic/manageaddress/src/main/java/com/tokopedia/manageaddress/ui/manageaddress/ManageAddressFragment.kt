@@ -114,7 +114,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener {
         }
 
         binding?.apply {
-            tabAdapter = activity?.let { ManageAddressViewPagerAdapter(it, fragmentPage()) }
+            tabAdapter = this@ManageAddressFragment?.let { ManageAddressViewPagerAdapter(it, fragmentPage()) }
             vpManageAddress.adapter = tabAdapter
             vpManageAddress.isUserInputEnabled = false
             TabsUnifyMediator(tlManageAddress, vpManageAddress) { tab, position ->
