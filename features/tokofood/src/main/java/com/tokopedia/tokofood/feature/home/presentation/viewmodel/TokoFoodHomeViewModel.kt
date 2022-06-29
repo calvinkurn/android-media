@@ -1,5 +1,7 @@
 package com.tokopedia.tokofood.feature.home.presentation.viewmodel
 
+import android.content.Context
+import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -15,6 +17,8 @@ import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWa
 import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticCommon.data.response.EligibleForAddressFeature
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
+import com.tokopedia.media.loader.loadImageWithEmptyTarget
+import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.tokofood.common.domain.usecase.KeroEditAddressUseCase
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.MERCHANT_TITLE
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutItemState
@@ -51,6 +55,7 @@ import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodProgress
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.image.ImageProcessingUtil
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -78,12 +83,15 @@ class TokoFoodHomeViewModel @Inject constructor(
         get() = _chooseAddress
     val eligibleForAnaRevamp: LiveData<Result<EligibleForAddressFeature>>
         get() = _eligibleForAnaRevamp
+    val homeImagePath: LiveData<String>
+        get() = _homeImagePath
 
     private val _homeLayoutList = MutableLiveData<Result<TokoFoodListUiModel>>()
     private val _updatePinPointState = MutableLiveData<Boolean>()
     private val _errorMessage = MutableLiveData<String>()
     private val _chooseAddress = MutableLiveData<Result<GetStateChosenAddressResponse>>()
     private val _eligibleForAnaRevamp = MutableLiveData<Result<EligibleForAddressFeature>>()
+    private val _homeImagePath = MutableLiveData<String>()
 
     private val homeLayoutItemList = mutableListOf<TokoFoodItemUiModel>()
     private var pageKey = INITIAL_PAGE_KEY_MERCHANT
@@ -248,6 +256,29 @@ class TokoFoodHomeViewModel @Inject constructor(
 
     fun setPageKey(pageNew:String) {
         pageKey = pageNew
+    }
+
+    fun saveHomeImageToPhoneStorage(context: Context?, shopSnippetUrl: String) {
+        launchCatchError(dispatchers.io, {
+            context?.let {
+                loadImageWithEmptyTarget(it, shopSnippetUrl, {
+                    fitCenter()
+                }, MediaBitmapEmptyTarget(
+                    onReady = { bitmap ->
+                        val savedFile = ImageProcessingUtil.writeImageToTkpdPath(
+                            bitmap,
+                            Bitmap.CompressFormat.PNG
+                        )
+
+                        if (savedFile != null) {
+                            _homeImagePath.postValue(savedFile.absolutePath)
+                        }
+                    }
+                ))
+            }
+        }, onError = {
+            it.printStackTrace()
+        })
     }
 
     private fun getMerchantList(localCacheModel: LocalCacheModel) {

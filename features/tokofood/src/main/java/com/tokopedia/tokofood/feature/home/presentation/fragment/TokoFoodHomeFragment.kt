@@ -548,6 +548,12 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                 }
             }
         }
+
+        viewLifecycleOwner.observe(viewModel.homeImagePath) {
+            if (it.isNotEmpty()) {
+                showUniversalShareBottomSheet(it)
+            }
+        }
     }
 
     private fun collectValue() {
@@ -844,13 +850,15 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     private fun shareClicked() {
         if (UniversalShareBottomSheet.isCustomSharingEnabled(context)) {
-            showUniversalShareBottomSheet()
+            context?.let {
+                viewModel.saveHomeImageToPhoneStorage(it, THUMBNAIL_AND_OG_IMAGE_SHARE_URL)
+            }
         } else {
             LinkerManager.getInstance().executeShareRequest(shareRequest(context, shareHomeTokoFood))
         }
     }
 
-    private fun showUniversalShareBottomSheet() {
+    private fun showUniversalShareBottomSheet(imageSaved: String) {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             init(this@TokoFoodHomeFragment)
             setUtmCampaignData(
@@ -864,7 +872,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                 tnImage = shareHomeTokoFood?.thumbNailImage.orEmpty()
             )
             setOgImageUrl(imgUrl = shareHomeTokoFood?.ogImageUrl.orEmpty())
-            imageSaved(THUMBNAIL_AND_OG_IMAGE_SHARE_URL)
+            imageSaved(imageSaved)
         }
 
         universalShareBottomSheet?.show(childFragmentManager, this)
