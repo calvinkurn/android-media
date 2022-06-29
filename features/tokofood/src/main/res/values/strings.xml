@@ -28,6 +28,7 @@
     <string name="home_category_empty_state_try_again">Coba Lagi</string>
     <!-- Mini Cart -->
     <string name="minicart_order">Pesan (%d)</string>
+    <string name="minicart_order_empty">Pesan</string>
 
     <!-- Purchase -->
     <string name="text_purchase_message_need_pinpoint"><![CDATA[Pengiriman &amp; estimasi tiba akan tampil di sini setelah pinpoint terdeteksi. <b><font color=#00AA5B>Atur Pinpoint</font></b>]]></string>
