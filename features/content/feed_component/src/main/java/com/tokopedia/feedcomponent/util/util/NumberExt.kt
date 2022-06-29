@@ -31,9 +31,9 @@ fun Number.productThousandFormatted(
     val exp = (Math.log(this.toDouble()) / Math.log(1000.00)).toInt()
     val number = this.toDouble() / Math.pow(1000.00, exp.toDouble())
      return buildString {
-        this.append(number.numberFormatted(digitAfterComa, roundingMode))
-        if(isASGCDetailPage) this.append(" ")
-        this.append(
+        append(number.numberFormatted(digitAfterComa, roundingMode))
+        if(isASGCDetailPage) append(" ")
+        append(
             listOf("rb", "jt", "M", "T")[exp - 1]
         )
     }
