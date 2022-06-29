@@ -47,6 +47,7 @@ import com.tokopedia.home_component.util.toSp
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.searchbar.helper.Ease
 import com.tokopedia.searchbar.helper.EasingInterpolator
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.coroutines.*
@@ -126,8 +127,7 @@ class BalanceAdapter(
         private var home_container_balance: ConstraintLayout? = itemView.findViewById(R.id.home_container_balance)
         private var home_iv_logo_shimmering: LoaderUnify? = itemView.findViewById(R.id.home_iv_logo_shimmering)
         private var home_progress_bar_balance_layout: ConstraintLayout? = itemView.findViewById(R.id.home_progress_bar_balance_layout)
-        private var home_tv_btn_action_balance: TextView = itemView.findViewById(R.id.home_tv_btn_action_balance)
-        private var home_iv_logo_balance: ImageView? = itemView.findViewById<ImageView>(R.id.home_iv_logo_balance)
+        private var home_iv_logo_balance: ImageUnify? = itemView.findViewById<ImageUnify>(R.id.home_iv_logo_balance)
         private var home_tv_balance: TextView = itemView.findViewById(R.id.home_tv_balance)
         private var home_container_action_balance: ConstraintLayout? = itemView.findViewById(R.id.home_container_action_balance)
         private var home_tv_reserve_balance: Typography? = itemView.findViewById(R.id.home_tv_reserve_balance)
@@ -155,7 +155,6 @@ class BalanceAdapter(
                 home_iv_logo_shimmering?.gone()
                 home_progress_bar_balance_layout?.gone()
             }
-            home_tv_btn_action_balance?.show()
 
             animationJob?.cancel()
 
@@ -164,7 +163,6 @@ class BalanceAdapter(
                     home_iv_logo_balance?.invisible()
 
                     home_tv_balance?.invisible()
-                    home_tv_btn_action_balance?.invisible()
 
                     if (!disableAnimation) {
                         home_iv_logo_shimmering?.show()
@@ -178,10 +176,8 @@ class BalanceAdapter(
                     home_container_action_balance?.show()
 
                     home_tv_balance?.show()
-                    home_tv_btn_action_balance?.show()
 
                     renderBalanceText(element?.balanceTitleTextAttribute, element?.balanceTitleTagAttribute, home_tv_balance)
-                    renderBalanceText(element?.balanceSubTitleTextAttribute, element?.balanceSubTitleTagAttribute, home_tv_btn_action_balance)
 
                     if (element.reserveBalance.isNotEmpty()) {
                         home_tv_reserve_balance?.visible()
@@ -277,118 +273,13 @@ class BalanceAdapter(
                             }
                     )
 
-                    home_tv_btn_action_balance?.handleItemCLickType(
-                            element = element,
-                            tokopointsAction = {
-                                listener?.actionTokoPointClicked(
-                                        element.applinkContainer,
-                                        element.redirectUrl,
-                                        if (element.mainPageTitle.isEmpty())
-                                            TITLE_HEADER_WEBSITE
-                                        else
-                                            element.mainPageTitle
-                                )
-                                OvoWidgetTracking.sendClickOnTokopointsBalanceWidgetTracker(isOvoAvailable, listener?.userId ?: "")
-                            },
-                            ovoWalletAction = {
-                                if (RouteManager.isSupportApplink(itemView.context, element.applinkActionText)) {
-                                    OvoWidgetTracking.sendClickOnOVOBalanceWidgetTracker(isOvoAvailable, listener?.userId ?: "")
-                                    val intentBalanceWallet = RouteManager.getIntent(itemView.context, element.applinkActionText)
-                                    itemView.context.startActivity(intentBalanceWallet)
-                                }
-                            },
-                            rewardsAction = {
-                                listener?.actionTokoPointClicked(
-                                        element.applinkContainer,
-                                        element.redirectUrl,
-                                        if (element.mainPageTitle.isEmpty())
-                                            TITLE_HEADER_WEBSITE
-                                        else
-                                            element.mainPageTitle
-                                )
-                                OvoWidgetTracking.sendClickOnRewardsBalanceWidgetTracker(isOvoAvailable, listener?.userId?:"")
-                            },
-                            couponsAction = {
-                                listener?.actionTokoPointClicked(
-                                        element.applinkContainer,
-                                        element.redirectUrl,
-                                        if (element.mainPageTitle.isEmpty())
-                                            TITLE_HEADER_WEBSITE
-                                        else
-                                            element.mainPageTitle
-                                )
-                                OvoWidgetTracking.sendClickOnCouponBalanceWidgetTracker(isOvoAvailable, listener?.userId?:"")
-                            },
-                            bboAction = {
-                                listener?.actionTokoPointClicked(
-                                        element.applinkContainer,
-                                        element.redirectUrl,
-                                        if (element.mainPageTitle.isEmpty())
-                                            TITLE_HEADER_WEBSITE
-                                        else
-                                            element.mainPageTitle
-                                )
 
-                                OvoWidgetTracking.sendClickOnBBOBalanceWidgetTracker(isOvoAvailable, listener?.userId ?: "0")
-                                //uncomment when we use new tracker
-                                //OvoWidgetTracking.sendClickOnBBONewTokopointsWidget(isOvoAvailable, listener?.userId ?: "")
-                            },
-                            walletTopupAction = {
-                                if (RouteManager.isSupportApplink(itemView.context, element.applinkContainer)) {
-                                    OvoWidgetTracking.sendClickOnOVOBalanceWidgetTracker(isOvoAvailable, listener?.userId ?: "")
-                                    OvoWidgetTracking.eventTopUpOvo(listener?.userId)
-                                    val intentBalanceWallet = RouteManager.getIntent(itemView.context, element.applinkContainer)
-                                    itemView.context.startActivity(intentBalanceWallet)
-                                }
-                            },
-                            walletOtherAction = {
-                                //handle click for type wallet other
-                                //handle click for type wallet other
-
-                            },
-                            walletPendingAction ={
-                                //handle click for type wallet pending
-                                if (itemView.context !is Activity && itemView.context is ContextWrapper) {
-                                    val context = (itemView.context as ContextWrapper).baseContext
-                                    val activity = context as Activity
-                                    activity.overridePendingTransition(R.anim.anim_slide_up_in, R.anim.anim_page_stay)
-                                }
-                                walletAnalytics.eventClickActivationOvoHomepage()
-                                val intentBalanceWallet = RouteManager.getIntent(itemView.context, element.applinkActionText)
-                                itemView.context.startActivity(intentBalanceWallet)
-                            },
-                            walletAppAction = {
-                                OvoWidgetTracking.sendClickOnNewWalletAppBalanceWidgetTracker(
-                                        subtitle = element.balanceSubTitleTextAttribute?.text?:"",
-                                        userId = listener?.userId?:""
-                                )
-                                listener?.onSectionItemClicked(element.redirectUrl)
-                            }
-                    )
-
-                    //interpolator
-                    element?.alternateBalanceDrawerItem?.let {
-                        this.element = element
-                        this.alternateDrawerItem = it
-                        if (!disableAnimation) {
-                            setDrawerItemWithAnimation()
-                        }
-                    }
                 }
                 BalanceDrawerItemModel.STATE_ERROR -> {
                     home_progress_bar_balance_layout?.gone()
                     home_container_action_balance?.show()
                     renderBalanceText(element.balanceTitleTextAttribute, element.balanceTitleTagAttribute, home_tv_balance)
-                    renderBalanceText(element.balanceSubTitleTextAttribute, element.balanceSubTitleTagAttribute, home_tv_btn_action_balance)
                     home_container_balance?.handleItemCLickType(
-                            element = element,
-                            ovoWalletAction = {listener?.onRetryWalletApp()},
-                            rewardsAction = {listener?.onRetryMembership()},
-                            bboAction = {listener?.onRetryMembership()},
-                            tokopointsAction = {listener?.onRetryMembership()},
-                            walletAppAction = { listener?.onRetryWalletApp() }
-                    )
-                    home_tv_btn_action_balance?.handleItemCLickType(
                             element = element,
                             ovoWalletAction = {listener?.onRetryWalletApp()},
                             rewardsAction = {listener?.onRetryMembership()},
@@ -422,7 +313,7 @@ class BalanceAdapter(
                     home_iv_logo_balance?.visible()
                     home_iv_logo_shimmering?.invisible()
 
-                    if (it.isNotEmpty()) home_iv_logo_balance?.loadImage(it)
+                    if (it.isNotEmpty()) home_iv_logo_balance?.setImageUrl(it)
                 }
             }
         }
@@ -503,11 +394,6 @@ class BalanceAdapter(
                 textAttr = title,
                 textView = home_tv_balance,
                 tagAttr = titleTag
-            )
-            renderBalanceText(
-                textAttr = subtitle,
-                textView = home_tv_btn_action_balance,
-                tagAttr = subtitleTag
             )
         }
 
