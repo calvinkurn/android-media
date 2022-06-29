@@ -825,6 +825,56 @@ class FlightBookingViewModelTest {
     }
 
     @Test
+    fun validateDataAndVerifyCart_contactEmailNotValidWithAtAndDotChar_validationFailed() {
+        // given
+        val query = ""
+        val totalPrice = 1000
+        val contactName = "Dummy name"
+        val contactEmail = "dummy@.gmail.com"
+        val contactPhone = ""
+        val contactCountry = ""
+        val checkVoucherQuery = ""
+        val addToCartQuery = ""
+        val idempotencyKey = ""
+        val getCartQuery = ""
+
+        mockkObject(PatternsCompat.EMAIL_ADDRESS)
+
+        // when
+        viewModel.validateDataAndVerifyCart(query, totalPrice, contactName, contactEmail,
+            contactPhone, contactCountry, checkVoucherQuery,
+            addToCartQuery, idempotencyKey, getCartQuery)
+
+        // then
+        viewModel.errorToastMessageData.value shouldBe R.string.flight_booking_contact_email_invalid_error
+    }
+
+    @Test
+    fun validateDataAndVerifyCart_contactEmailNotValidWithDotAndAtSymbol_validationFailed() {
+        // given
+        val query = ""
+        val totalPrice = 1000
+        val contactName = "Dummy name"
+        val contactEmail = "dummy.@gmail.com"
+        val contactPhone = ""
+        val contactCountry = ""
+        val checkVoucherQuery = ""
+        val addToCartQuery = ""
+        val idempotencyKey = ""
+        val getCartQuery = ""
+
+        mockkObject(PatternsCompat.EMAIL_ADDRESS)
+
+        // when
+        viewModel.validateDataAndVerifyCart(query, totalPrice, contactName, contactEmail,
+            contactPhone, contactCountry, checkVoucherQuery,
+            addToCartQuery, idempotencyKey, getCartQuery)
+
+        // then
+        viewModel.errorToastMessageData.value shouldBe R.string.flight_booking_contact_email_invalid_error
+    }
+
+    @Test
     fun validateDataAndVerifyCart_contactEmailContainsProhibitedChars_validationFailed() {
         // given
         val query = ""
