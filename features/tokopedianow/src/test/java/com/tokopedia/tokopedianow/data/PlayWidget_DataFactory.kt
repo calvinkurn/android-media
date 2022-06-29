@@ -42,12 +42,13 @@ fun createPlayWidgetChannel(channelId: String, totalView: String): PlayWidgetCha
 
 fun createPlayWidgetUiModel(
     title: String = "Video Menarik Untukmu!",
+    appLink: String = "tokopedia://webview?titlebar=false\\u0026url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fchannels%2F",
     isActionVisible: Boolean = true,
     items: List<PlayWidgetItemUiModel> = emptyList()
 ): PlayWidgetUiModel = PlayWidgetUiModel(
     title = title,
     actionTitle = "Lihat Semua",
-    actionAppLink = "tokopedia://webview?titlebar=false\\u0026url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fchannels%2F",
+    actionAppLink = appLink,
     isActionVisible = isActionVisible,
     config = createPlayWidgetConfigUiModel(),
     items = items,

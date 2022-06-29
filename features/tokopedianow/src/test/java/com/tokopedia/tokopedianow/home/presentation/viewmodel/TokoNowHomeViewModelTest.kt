@@ -9,12 +9,14 @@ import com.tokopedia.home_component.model.ChannelHeader
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.ChannelStyle
 import com.tokopedia.home_component.visitable.BannerDataModel
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.play.widget.analytic.ImpressionableModel
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase.WidgetType.TokoNowMediumWidget
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase.WidgetType.TokoNowSmallWidget
 import com.tokopedia.play.widget.ui.PlayWidgetState
@@ -3393,6 +3395,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val id = "1001"
         val title = "Medium Play Widget"
         val channelTag = "channel_tag"
+        val appLink = "tokopedia://now"
 
         val homeLayoutResponse = listOf(
             HomeLayoutResponse(
@@ -3400,6 +3403,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                 layout = "play_carousel",
                 header = Header(
                     name = title,
+                    applink = appLink,
                     serverTimeUnix = 0
                 ),
                 widgetParam = channelTag
@@ -3413,12 +3417,11 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
-        val widgetModel = playWidgetState.model.copy(title = title)
+        val widgetModel = playWidgetState.model.copy(title = title, actionAppLink = appLink)
         val widgetState = playWidgetState.copy(model = widgetModel)
 
         val playWidgetUiModel = HomePlayWidgetUiModel(
             id = id,
-            title = title,
             widgetType = TokoNowMediumWidget(channelTag),
             playWidgetState = widgetState,
             isAutoRefresh = false
@@ -3446,6 +3449,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val id = "1001"
         val title = "Small Play Widget"
         val channelTag = "channel_tag"
+        val appLink = "tokopedia://now"
 
         val homeLayoutResponse = listOf(
             HomeLayoutResponse(
@@ -3453,6 +3457,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                 layout = "play_carousel_small",
                 header = Header(
                     name = title,
+                    applink = appLink,
                     serverTimeUnix = 0
                 ),
                 widgetParam = channelTag
@@ -3466,12 +3471,11 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
-        val widgetModel = playWidgetState.model.copy(title = title)
+        val widgetModel = playWidgetState.model.copy(title = title, actionAppLink = appLink)
         val widgetState = playWidgetState.copy(model = widgetModel)
 
         val playWidgetUiModel = HomePlayWidgetUiModel(
             id = id,
-            title = title,
             widgetType = TokoNowSmallWidget(channelTag),
             playWidgetState = widgetState,
             isAutoRefresh = false
@@ -3499,6 +3503,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val id = "1001"
         val title = "Play Widget"
         val channelTag = "channel_tag"
+        val appLink = "tokopedia://now"
 
         val homeLayoutResponse = listOf(
             HomeLayoutResponse(
@@ -3506,6 +3511,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                 layout = "play_carousel",
                 header = Header(
                     name = title,
+                    applink = appLink,
                     serverTimeUnix = 0
                 ),
                 widgetParam = channelTag
@@ -3534,11 +3540,22 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val id = "1200"
         val title = "Auto Refresh Widget"
         val channelTag = "channel_tag"
-        val playWidgetState = PlayWidgetState()
+        val appLink = "tokopedia://now"
 
-        val widget = HomePlayWidgetUiModel(
+        val impressHolder = object : ImpressionableModel {
+            override val impressHolder: ImpressHolder = ImpressHolder()
+        }
+
+        val playWidgetState = PlayWidgetState(
+            model = createPlayWidgetUiModel(
+                title = title,
+                appLink = appLink
+            ),
+            impressHolder = impressHolder
+        )
+
+        val playWidgetUiModel = HomePlayWidgetUiModel(
             id = "1200",
-            title = title,
             widgetType = TokoNowMediumWidget(channelTag),
             playWidgetState = playWidgetState,
             isAutoRefresh = false
@@ -3550,30 +3567,35 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                 layout = "play_carousel",
                 header = Header(
                     name = title,
+                    applink = appLink,
                     serverTimeUnix = 0
                 ),
                 widgetParam = channelTag
             )
         )
 
+        val widgetState = PlayWidgetState(
+            model = createPlayWidgetUiModel(),
+            impressHolder = impressHolder
+        )
+
         onGetHomeLayoutData_thenReturn(homeLayoutResponse)
-        onGetPlayWidget_thenReturn(playWidgetState)
+        onGetPlayWidget_thenReturn(widgetState)
 
         viewModel.getHomeLayout(LocalCacheModel(), emptyList())
-        viewModel.autoRefreshPlayWidget(widget)
+        viewModel.autoRefreshPlayWidget(playWidgetUiModel)
 
-        val widgetModel = playWidgetState.model.copy(title = title)
-        val widgetState = playWidgetState.copy(model = widgetModel)
-
-        val playWidgetUiModel = widget.copy(
-            playWidgetState = widgetState,
+        val homePlayWidgetUiModel = HomePlayWidgetUiModel(
+            id = "1200",
+            widgetType = TokoNowMediumWidget(channelTag),
+            playWidgetState = playWidgetState,
             isAutoRefresh = true
         )
 
         val homeLayoutItems = listOf(
             TokoNowChooseAddressWidgetUiModel(id = "0"),
             HomeTickerUiModel(id = "1", tickers = emptyList()),
-            playWidgetUiModel
+            homePlayWidgetUiModel
         )
 
         val expectedResult = Success(HomeLayoutListUiModel(
@@ -3592,9 +3614,11 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val totalView = "30rb"
         val title = "Update Play Widget"
         val channelTag = "channel_tag"
+        val appLink = "tokopedia://now"
         val playWidgetState = PlayWidgetState(
             model = createPlayWidgetUiModel(
                 title = title,
+                appLink = appLink,
                 items = listOf(
                     PlayWidgetBannerUiModel(appLink = "", imageUrl = ""),
                     createPlayWidgetChannel(channelId = channelId, totalView = "10rb"),
@@ -3605,7 +3629,6 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         val widget = HomePlayWidgetUiModel(
             id = "1200",
-            title = title,
             widgetType = TokoNowMediumWidget(channelTag),
             playWidgetState = playWidgetState,
             isAutoRefresh = false
@@ -3617,6 +3640,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                 layout = "play_carousel",
                 header = Header(
                     name = title,
+                    applink = appLink,
                     serverTimeUnix = 0
                 ),
                 widgetParam = channelTag
@@ -3672,11 +3696,11 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val id = "1200"
         val title = "Auto Refresh Widget"
         val channelTag = "channel_tag"
+        val appLink = "tokopedia://now"
         val playWidgetState = PlayWidgetState()
 
         val widget = HomePlayWidgetUiModel(
             id = "1200",
-            title = title,
             widgetType = TokoNowSmallWidget(channelTag),
             playWidgetState = playWidgetState,
             isAutoRefresh = false
@@ -3688,6 +3712,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                 layout = "play_carousel",
                 header = Header(
                     name = title,
+                    applink = appLink,
                     serverTimeUnix = 0
                 ),
                 widgetParam = channelTag

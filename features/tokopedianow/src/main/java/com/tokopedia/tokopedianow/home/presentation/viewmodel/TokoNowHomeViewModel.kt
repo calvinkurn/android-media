@@ -712,16 +712,19 @@ class TokoNowHomeViewModel @Inject constructor(
         item: HomePlayWidgetUiModel,
         isAutoRefresh: Boolean
     ): HomePlayWidgetUiModel {
-        val title = item.title
+        val playWidgetState = item.playWidgetState
+        val title = playWidgetState.model.title
+        val appLink = playWidgetState.model.actionAppLink
+
         val widgetType = item.widgetType
         val response = playWidgetTools.getWidgetFromNetwork(
             widgetType = widgetType,
             coroutineContext = dispatchers.io
         )
         val state = playWidgetTools.mapWidgetToModel(response)
-        val model = state.model.copy(title = title)
+        val model = state.model.copy(title = title, actionAppLink = appLink)
         val widgetState = state.copy(model = model)
-        return HomePlayWidgetUiModel(item.id, title, widgetType, widgetState, isAutoRefresh)
+        return HomePlayWidgetUiModel(item.id, widgetType, widgetState, isAutoRefresh)
     }
 
     private fun addItemToCart(

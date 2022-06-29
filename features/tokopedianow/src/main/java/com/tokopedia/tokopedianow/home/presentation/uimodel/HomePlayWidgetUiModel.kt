@@ -6,7 +6,6 @@ import com.tokopedia.tokopedianow.home.presentation.adapter.HomeTypeFactory
 
 data class HomePlayWidgetUiModel(
     val id: String,
-    val title: String,
     val widgetType: WidgetType,
     val playWidgetState: PlayWidgetState = PlayWidgetState(isLoading = true),
     val isAutoRefresh: Boolean = false
