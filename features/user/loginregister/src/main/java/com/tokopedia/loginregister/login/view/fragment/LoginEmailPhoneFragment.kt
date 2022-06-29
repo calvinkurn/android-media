@@ -195,6 +195,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private var socmedButtonsContainer: LinearLayout? = null
     private var socmedBottomSheet: SocmedBottomSheet? = null
     private var socmedButton: UnifyButton? = null
+    private var loadingOverlay: View? = null
 
     private var currentEmail = ""
     private var tempValidateToken = ""
@@ -348,6 +349,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         bannerLogin = view.findViewById(R.id.banner_login)
         callTokopediaCare = view.findViewById(R.id.to_tokopedia_care)
         socmedButton = view.findViewById(R.id.socmed_btn)
+        loadingOverlay = view.findViewById(R.id.login_loading_overlay)
         return view
     }
 
@@ -363,15 +365,16 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        checkSeamless()
         fetchRemoteConfig()
         if(savedInstanceState == null) {
             clearData()
         }
-        initObserver()
         prepareView()
-        prepareArgData()
+        setupToolbar()
+        checkSeamless()
 
+        prepareArgData()
+        initObserver()
         if (!GlobalConfig.isSellerApp()) {
             if (isShowBanner) {
                 viewModel.getDynamicBannerData(DynamicBannerConstant.Page.LOGIN)
@@ -386,26 +389,26 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         partialRegisterInputView?.initKeyboardListener(view)
 
         autoFillWithDataFromLatestLoggedIn()
-
-        setupToolbar()
     }
 
     private fun checkSeamless() {
         if(isEnableSeamlessLogin) {
             showLoadingSeamless()
             viewModel.checkSeamlessEligiblity()
+        } else {
+            hideLoadingSeamless()
         }
     }
 
     private fun showLoadingSeamless() {
-        showLoadingLogin()
+        loadingOverlay?.show()
         if(activity is LoginActivity) {
             (activity as LoginActivity).supportActionBar?.hide()
         }
     }
 
     private fun hideLoadingSeamless() {
-        dismissLoadingLogin()
+        loadingOverlay?.hide()
         if(activity is LoginActivity) {
             (activity as LoginActivity).supportActionBar?.show()
         }
