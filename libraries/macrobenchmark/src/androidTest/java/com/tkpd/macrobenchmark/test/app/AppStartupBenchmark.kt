@@ -1,4 +1,4 @@
-package com.tkpd.macrobenchmark.test.home
+package com.tkpd.macrobenchmark.test.app
 
 import androidx.benchmark.macro.StartupMode
 import androidx.test.filters.LargeTest
@@ -13,7 +13,7 @@ import org.junit.runners.Parameterized
 
 /**
  * Created by DevAra
- * This test will measure MainParentActivity launch time with macro benchmark
+ * This test will measure App Startup Time launch time with macro benchmark
  *
  * @see [Testing documentation](http://d.android.com/tools/testing)
  */
@@ -21,20 +21,15 @@ import org.junit.runners.Parameterized
 @LargeTest
 @SdkSuppress(minSdkVersion = 29)
 @RunWith(Parameterized::class)
-class HomeStartupBenchmark(startupMode: StartupMode): BaseStartupBenchmark(startupMode) {
-    @Before
-    fun setupEnvironment() {
-        MacroDevOps.setupEnvironment(MacroIntent.Home.getHomeMacroSetupIntent())
-    }
-    override fun getIntent() = MacroIntent.Home.getHomeIntent()
+class AppStartupBenchmark(startupMode: StartupMode): BaseStartupBenchmark(startupMode) {
+    /**
+     * To disable introduction page
+     */
+    override fun getIntent() = MacroIntent.App.getAppLauncherIntent()
 
     override fun waitUntil() {
-        MacroInteration.waitForRecyclerViewContent(
-                MacroIntent.TKPD_PACKAGE_NAME,
-                MacroIntent.Home.RV_RESOURCE_ID
-        )
+        Thread.sleep(1000)
     }
 
-    override fun traceName() = "mp_home"
-
+    override fun traceName() = ""
 }

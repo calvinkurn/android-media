@@ -1,4 +1,4 @@
-package com.tkpd.macrobenchmark.test.os
+package com.tkpd.macrobenchmark.test.official_store
 
 import androidx.benchmark.macro.StartupMode
 import androidx.test.filters.LargeTest
@@ -21,7 +21,7 @@ import org.junit.runners.Parameterized
 @LargeTest
 @SdkSuppress(minSdkVersion = 29)
 @RunWith(Parameterized::class)
-class OSStartupBenchmark(startupMode: StartupMode): BaseStartupBenchmark(startupMode) {
+class OfficialStoreStartupBenchmark(startupMode: StartupMode): BaseStartupBenchmark(startupMode) {
     @Before
     fun setupEnvironment() {
         MacroDevOps.setupEnvironment(MacroIntent.OfficialStore.getOsMacroSetupIntent())
@@ -38,4 +38,7 @@ class OSStartupBenchmark(startupMode: StartupMode): BaseStartupBenchmark(startup
                 MacroIntent.OfficialStore.RV_RESOURCE_ID,
         )
     }
+
+    override fun traceName() = "mp_official_store"
+
 }

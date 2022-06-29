@@ -1,4 +1,4 @@
-package com.tkpd.macrobenchmark.test.os
+package com.tkpd.macrobenchmark.test.official_store
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.filters.SdkSuppress
@@ -19,7 +19,7 @@ import org.junit.runner.RunWith
 @LargeTest
 @SdkSuppress(minSdkVersion = 29)
 @RunWith(AndroidJUnit4::class)
-class OSFrameTimingBenchmark: BaseFrameTimingBenchmark() {
+class OfficialStoreFrameTimingBenchmark: BaseFrameTimingBenchmark() {
     @Before
     fun setupEnvironment() {
         MacroDevOps.setupEnvironment(MacroIntent.OfficialStore.getOsMacroSetupIntent())
