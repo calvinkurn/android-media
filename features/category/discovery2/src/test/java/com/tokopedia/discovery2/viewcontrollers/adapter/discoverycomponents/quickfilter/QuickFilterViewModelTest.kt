@@ -74,14 +74,17 @@ class QuickFilterViewModelTest {
     @Test
     fun `test for getTargetComponent when properties dynamic is true`(){
         val viewModel: QuickFilterViewModel = spyk(QuickFilterViewModel(application, componentsItem, 99))
-        val parentComponentsItem: ComponentsItem = spyk(ComponentsItem(id = "2",dynamicOriginalId = "3"))
+        val parentComponentsItem: ComponentsItem = mockk(relaxed = true)
         val properties: Properties = mockk(relaxed = true)
         every { properties.targetId } returns "3"
         every { properties.dynamic } returns true
+        every { getComponent(any(), any()) } returns parentComponentsItem
+        every { componentsItem.properties } returns properties
         every { componentsItem.parentComponentId } returns "2"
-        every { getComponent(componentsItem.parentComponentId, componentsItem.pageEndPoint) } returns parentComponentsItem
-
-        viewModel.getTargetComponent()
+        val componentItemList = ArrayList<ComponentsItem>()
+        val item = ComponentsItem(id = "2", dynamicOriginalId = "3")
+        componentItemList.add(item)
+        every { parentComponentsItem.getComponentsItem() } returns componentItemList
 
         TestCase.assertEquals(viewModel.getTargetComponent(),parentComponentsItem)
 
@@ -90,13 +93,16 @@ class QuickFilterViewModelTest {
     @Test
     fun `test for getTargetComponent when properties dynamic is false`(){
         val viewModel: QuickFilterViewModel = spyk(QuickFilterViewModel(application, componentsItem, 99))
-        val parentComponentsItem: ComponentsItem = spyk(ComponentsItem(id = "3",dynamicOriginalId = "3"))
+        val parentComponentsItem: ComponentsItem = mockk(relaxed = true)
         val properties: Properties = mockk(relaxed = true)
         every { properties.targetId } returns "3"
         every { properties.dynamic } returns false
-        every { componentsItem.parentComponentId } returns "3"
-        every { getComponent(componentsItem.parentComponentId, componentsItem.pageEndPoint) } returns parentComponentsItem
-
+        every { getComponent(any(), any()) } returns parentComponentsItem
+        every { componentsItem.properties } returns properties
+        val componentItemList = ArrayList<ComponentsItem>()
+        val item = ComponentsItem(id = "2")
+        componentItemList.add(item)
+        every { parentComponentsItem.getComponentsItem() } returns componentItemList
         viewModel.getTargetComponent()
 
         TestCase.assertEquals(viewModel.getTargetComponent(),parentComponentsItem)
@@ -104,14 +110,15 @@ class QuickFilterViewModelTest {
     }
 
     @Test
-    fun `test for getTargetComponent when properties dynamic is false and dynamicOriginalId is empty`(){
+    fun `test for getTargetComponent when properties dynamic is true and dynamicOriginalId is empty`(){
         val viewModel: QuickFilterViewModel = spyk(QuickFilterViewModel(application, componentsItem, 99))
-        val parentComponentsItem: ComponentsItem = spyk(ComponentsItem(id = "3"))
+        val parentComponentsItem: ComponentsItem  = mockk(relaxed = true)
         val properties: Properties = mockk(relaxed = true)
         every { properties.targetId } returns "3"
         every { properties.dynamic } returns true
+        every { getComponent(any(), any()) } returns parentComponentsItem
+        every { componentsItem.properties } returns properties
         every { componentsItem.parentComponentId } returns "3"
-        every { getComponent(componentsItem.parentComponentId, componentsItem.pageEndPoint) } returns parentComponentsItem
 
         viewModel.getTargetComponent()
 
@@ -125,6 +132,7 @@ class QuickFilterViewModelTest {
         val properties: Properties = mockk(relaxed = true)
         every { properties.targetId } returns "3"
         every { properties.dynamic } returns true
+        every { componentsItem.properties } returns properties
         every { componentsItem.parentComponentId } returns "3"
         every { getComponent(any(),any()) } returns null
 
