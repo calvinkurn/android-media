@@ -492,9 +492,11 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
          var month = ""
          var year = ""
          var day = 1
+        var dayInId = ""
         context?.let{
             val calMax = Calendar.getInstance()
             calMax.add(Calendar.MONTH, 2)
+            calMax.add(Calendar.DAY_OF_MONTH, 1)
             val yearMax = calMax.get(Calendar.YEAR)
             val monthMax = calMax.get(Calendar.MONTH)
             val dayMax = calMax.get(Calendar.DAY_OF_MONTH)
@@ -521,17 +523,19 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                          month = selectedCalendar?.getDisplayName(Calendar.MONTH, Calendar.LONG, LocaleUtils.getIDLocale()).toString()
                          year = selectedCalendar?.get(Calendar.YEAR).toString()
                          day = selectedCalendar?.get(Calendar.DAY_OF_WEEK)?:0
+                         dayInId =  getDayOfWeekID(day)
                         dismiss()
                     }
                 }
             }
+
+            datepickerObject.setOnDismissListener {
+                if (dayInId.isNotEmpty() && date.isNotEmpty() && month.isNotEmpty() && year.isNotEmpty()) {
+                    textFieldDuration?.textInputLayout?.editText?.setText(("$dayInId, $date $month $year"))
+                }
+            }
             childFragmentManager.let {
                 datepickerObject.show(it, "")
-            }
-            datepickerObject.setOnDismissListener {
-                selectedTime = selectedCalendar?.time.toString()
-               val dayInId =  getDayOfWeekID(day)
-                textFieldDuration?.textInputLayout?.editText?.setText(( "$dayInId, $date $month $year"))
             }
         }
     }
@@ -563,13 +567,21 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         if (errorCount == 0) {
             tmDashCreateViewModel.updateProgram(programUpdateResponse)
         } else {
-            TokomemberDashIntroActivity.openActivity(
-                arguments?.getInt(BUNDLE_SHOP_ID) ?: 0,arguments?.getString(BUNDLE_SHOP_AVATAR)?:"" ,arguments?.getString(
-                    BUNDLE_SHOP_NAME)?:"",
-                false,
-                this.context
-            )
-            activity?.finish()
+            if (programActionType == ProgramActionType.CREATE) {
+                TokomemberDashIntroActivity.openActivity(
+                    arguments?.getInt(BUNDLE_SHOP_ID) ?: 0,
+                    arguments?.getString(BUNDLE_SHOP_AVATAR) ?: "",
+                    arguments?.getString(
+                        BUNDLE_SHOP_NAME
+                    ) ?: "",
+                    false,
+                    this.context
+                )
+                activity?.finish()
+            } else{
+                activity?.finish()
+                activity?.onBackPressed()
+            }
         }
     }
 

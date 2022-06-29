@@ -19,9 +19,9 @@
     <string name="tm_bs_initial_btn_text">Pelajari Official Store</string>
     <string name="tm_kupon_membership">Kupon Membership</string>
     <string name="tm_premium_voucher_title">Untuk member Premium</string>
-    <string name="tm_premium_voucher_desc">Cashback Rp10.000</string>
+    <string name="tm_premium_voucher_desc">Cashback Rp20.000</string>
     <string name="tm_vip_voucher_title">Untuk member VIP</string>
-    <string name="tm_vip_voucher_desc">Cashback Rp10.000</string>
+    <string name="tm_vip_voucher_desc">Cashback Rp20.000</string>
     <string name="tm_period_kupon">Periode kupon</string>
     <string name="tm_chip_date">Masa Berlaku</string>
     <string name="tm_max_value_label">Estimasi Maks. Pengeluaran</string>
@@ -60,7 +60,7 @@
     <string name="tm_layout_no_access_title">Oops, kamu nggak punya akses untuk halaman ini</string>
     <string name="tm_layout_no_access_desc">Hubungi pemilik toko untuk bisa mengakses halaman ini, ya.</string>
     <string name="tm_layout_no_access_cta">Kembali ke Home</string>
-    <string name="tm_type_kupon">Type Kupon</string>
+    <string name="tm_type_kupon">Tipe Kupon</string>
     <string name="tm_jenis_cashback">Jenis Cashback</string>
     <string name="tm_kupon_title_single">Tampilan Kupon</string>
     <string name="tm_kupon_single_ticker">Biar mudah cepat, pakai rekomendasi kupon dan minimum pembelian untuk member kamu!</string>

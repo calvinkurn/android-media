@@ -39,7 +39,6 @@ import com.tokopedia.tokomember_seller_dashboard.model.mapper.TmCouponCreateMapp
 import com.tokopedia.tokomember_seller_dashboard.util.*
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.convertDateTime
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.getTimeInMillis
-import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDate
 import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.convertDateTimeRemoveTimeDiff
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.getDayOfWeekID
@@ -495,19 +494,30 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         bottomSheet.setUpBottomSheetListener(object : BottomSheetClickListener {
             override fun onButtonClick(errorCount: Int) {
                 when (errorCount) {
-                    0 -> tmDashCreateViewModel.validateProgram(  arguments?.getInt(
-                        BUNDLE_SHOP_ID
-                    ).toString(),
+                    0 -> tmDashCreateViewModel.validateProgram(
+                        arguments?.getInt(
+                            BUNDLE_SHOP_ID
+                        ).toString(),
                         getTimeInMillis(manualStartTimeProgram),
                         getTimeInMillis(manualEndTimeProgram),
-                        SOURCE_MULTIPLE_COUPON_CREATE)
+                        SOURCE_MULTIPLE_COUPON_CREATE
+                    )
                     else -> {
-                        (TokomemberDashIntroActivity.openActivity(
-                            arguments?.getInt(BUNDLE_SHOP_ID) ?: 0,arguments?.getString(BUNDLE_SHOP_AVATAR)?:"" ,arguments?.getString(
-                                BUNDLE_SHOP_NAME)?:"",
-                            false,
-                            context
-                        ))
+                        if (programActionType == ProgramActionType.CREATE) {
+                            (TokomemberDashIntroActivity.openActivity(
+                                arguments?.getInt(BUNDLE_SHOP_ID) ?: 0,
+                                arguments?.getString(BUNDLE_SHOP_AVATAR) ?: "",
+                                arguments?.getString(
+                                    BUNDLE_SHOP_NAME
+                                ) ?: "",
+                                false,
+                                context
+                            ))
+                            activity?.finish()
+                        } else {
+                            activity?.finish()
+                            activity?.onBackPressed()
+                        }
                     }
                 }
             }
@@ -699,7 +709,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
             benefitPercent = coupon?.cashBackPercentage,
             minPurchase = CurrencyFormatHelper.convertRupiahToInt(coupon?.minTransaki ?: ""),
             source = ANDROID,
-            quota = coupon?.quota?.toIntSafely()
+            quota = CurrencyFormatHelper.convertRupiahToInt(coupon?.quota?:"")
         )
 
         val cashBackValue = CurrencyFormatHelper.convertRupiahToInt(coupon?.maxCashback?:"")
@@ -728,7 +738,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 couponPremiumData?.minTransaki ?: ""
             ),
             source = ANDROID,
-            quota = couponPremiumData?.quota?.toIntSafely()
+            quota = CurrencyFormatHelper.convertRupiahToInt(couponPremiumData?.quota?:"")
         )
         val cashBackValue = CurrencyFormatHelper.convertRupiahToInt(couponPremiumData?.maxCashback?:"")
         when (couponPremiumData?.typeCashback) {
@@ -824,19 +834,19 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         textFieldProgramEndTime.setFirstIcon(R.drawable.tm_dash_clock)
 
         textFieldProgramStartDate.iconContainer.setOnClickListener {
-            clickDatePicker(textFieldProgramStartDate, 0)
+            clickDatePicker(textFieldProgramStartDate, 0 , DATE_TITLE , DATE_DESC_END)
         }
 
         textFieldProgramStartTime.iconContainer.setOnClickListener {
-            clickTimePicker(textFieldProgramStartTime, 0)
+            clickTimePicker(textFieldProgramStartTime, 0 , TIME_TITLE, TIME_TITLE_END)
         }
 
         textFieldProgramEndDate.iconContainer.setOnClickListener {
-            clickDatePicker(textFieldProgramEndDate, 1)
+            clickDatePicker(textFieldProgramEndDate, 1, DATE_TITLE_END, DATE_DESC_END)
         }
 
         textFieldProgramEndTime.iconContainer.setOnClickListener {
-            clickTimePicker(textFieldProgramEndTime, 1)
+            clickTimePicker(textFieldProgramEndTime, 1, TIME_TITLE, TIME_TITLE_END)
         }
 
     }
@@ -897,14 +907,21 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         couponEndTime = setTimeStart(manualEndTimeProgram)
     }
 
-    private fun clickDatePicker(textField: TextFieldUnify2, type: Int) {
+    private fun clickDatePicker(
+        textField: TextFieldUnify2,
+        type: Int,
+        title: String,
+        desc: String
+    ) {
         var date = ""
         var month = ""
         var year = ""
         var day = 0
+        var dayInId = ""
         context?.let {
             val calMax = Calendar.getInstance()
             calMax.add(Calendar.YEAR, 1)
+            calMax.add(Calendar.DAY_OF_MONTH, 1)
             val yearMax = calMax.get(Calendar.YEAR)
             val monthMax = calMax.get(Calendar.MONTH)
             val dayMax = calMax.get(Calendar.DAY_OF_MONTH)
@@ -923,8 +940,8 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
             currentDate.add(Calendar.DAY_OF_MONTH,1)
 
             val datepickerObject = DateTimePickerUnify(it, currentDate, currentDate, maxDate).apply {
-                setTitle(DATE_TITLE)
-                setInfo(DATE_DESC)
+                setTitle(title)
+                setInfo(desc)
                 setInfoVisible(true)
                 datePickerButton.let { button ->
                     button.setOnClickListener {
@@ -950,6 +967,8 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                                 }.toString()
                             }
                         }
+                        dayInId =  getDayOfWeekID(day)
+                        selectedTime = selectedCalendar?.time.toString()
                         dismiss()
                     }
                 }
@@ -958,14 +977,19 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 datepickerObject.show(fragmentManager, "")
             }
             datepickerObject.setOnDismissListener {
-                val dayInId =  getDayOfWeekID(day)
-                selectedTime = selectedCalendar?.time.toString()
-                textField.textInputLayout.editText?.setText(("$dayInId, $date $month $year"))
+                if (dayInId.isNotEmpty() && date.isNotEmpty() && month.isNotEmpty() && year.isNotEmpty()) {
+                    textField.textInputLayout.editText?.setText(("$dayInId, $date $month $year"))
+                }
             }
         }
     }
 
-    private fun clickTimePicker(textField: TextFieldUnify2, type: Int) {
+    private fun clickTimePicker(
+        textField: TextFieldUnify2,
+        type: Int,
+        title: String,
+        desc: String
+    ) {
         var selectedHour = ""
         var selectedMinute = ""
         context?.let { ctx ->
@@ -989,8 +1013,8 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 maxDate = maxTime,
                 type = DateTimePickerUnify.TYPE_TIMEPICKER
             ).apply {
-                setTitle(TIME_TITLE)
-                setInfo(TIME_DESC)
+                setTitle(title)
+                setInfo(desc)
                 setInfoVisible(true)
                 datePickerButton.setOnClickListener {
                     startTime = getDate()
@@ -1012,7 +1036,9 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 timerPickerUnify.show(it, "")
             }
             timerPickerUnify.setOnDismissListener {
-                textField.textInputLayout.editText?.setText(("$selectedHour : $selectedMinute WIB"))
+                if (selectedHour.isNotEmpty() && selectedMinute.isNotEmpty()) {
+                    textField.textInputLayout.editText?.setText(("$selectedHour : $selectedMinute WIB"))
+                }
             }
         }
     }

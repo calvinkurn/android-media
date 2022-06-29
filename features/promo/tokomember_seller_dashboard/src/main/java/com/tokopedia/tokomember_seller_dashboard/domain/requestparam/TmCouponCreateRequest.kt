@@ -8,7 +8,7 @@ import kotlinx.android.parcel.Parcelize
 data class TmCouponCreateRequest(
 
 	@SerializedName("benefit_max")
-	val benefitMax: Int? = null,
+	var benefitMax: Int? = null,
 
 	@SerializedName("target_buyer")
 	val targetBuyer: Int? = null,
