@@ -22,5 +22,7 @@ data class TickerItem(
     @SerializedName("color")
     val color: String,
     @SerializedName("layout")
-    val layout: String
+    val layout: String,
+    @SerializedName("ticker_type")
+    val tickerType: Int
 )
