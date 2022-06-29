@@ -20,7 +20,7 @@ object RollenceKey {
     const val BALANCE_VARIANT_OLD = "Existing Balance Widget"
     const val BALANCE_VARIANT_NEW = "New Balance Widget"
 
-    const val HOME_BEAUTY_FEST = "home_cantik"
+    const val SUPER_GRAPHIC_HEADER = "super_graphic_header"
 
     //home component rollence section
     const val HOME_COMPONENT_LEGO24BANNER_EXP = "lego24_new"

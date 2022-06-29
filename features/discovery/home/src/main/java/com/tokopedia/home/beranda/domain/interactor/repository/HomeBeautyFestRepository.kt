@@ -5,12 +5,7 @@ import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
 
 class HomeBeautyFestRepository {
     fun getBeautyFest(data: HomeDynamicChannelModel): Int {
-        //beauty fest event will qualify if contains "isChannelBeautyFest":true
-        return try {
-            if (data.isCache) HomeRevampFragment.BEAUTY_FEST_NOT_SET
-            else data.isBeautyFest
-        } catch (e: Exception) {
-            HomeRevampFragment.BEAUTY_FEST_NOT_SET
-        }
+        //TODO delete repository
+        return 99
     }
 }

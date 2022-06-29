@@ -132,7 +132,6 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationWidgetListener
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.remoteconfig.*
-import com.tokopedia.remoteconfig.RollenceKey.HOME_BEAUTY_FEST
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -259,12 +258,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val POSITION_ARRAY_CONTAINER_SIZE = 2
         private const val DEFAULT_MARGIN_VALUE = 0
         private const val POSITION_ARRAY_Y = 1
-        const val BEAUTY_FEST_FALSE = 0
-        const val BEAUTY_FEST_TRUE = 1
-        const val BEAUTY_FEST_NOT_SET = -1
-        private var beautyFestEvent = BEAUTY_FEST_NOT_SET
         private var counterBypassFirstNetworkHomeData = 0
-        private var eligibleBeautyFest = false
         private const val isPageRefresh = true
 
         @JvmStatic
@@ -376,9 +370,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private var fragmentCurrentScrollPosition: Int = -1
 
     @Suppress("TooGenericExceptionCaught")
-    private fun isEligibleForBeautyFest(): Boolean {
+    private fun isEligibleForSuperGraphicHeader(): Boolean {
         return try {
-            getAbTestPlatform().getString(HOME_BEAUTY_FEST, "") == HOME_BEAUTY_FEST && getUserSession().isLoggedIn
+            getAbTestPlatform().getString(RollenceKey.SUPER_GRAPHIC_HEADER, "") == RollenceKey.SUPER_GRAPHIC_HEADER
         } catch (e: Exception) {
             e.printStackTrace()
             false
@@ -410,7 +404,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getPageLoadTimeCallback()?.startCustomMetric(HomePerformanceConstant.KEY_PERFORMANCE_ON_CREATE_HOME)
-        beautyFestEvent = BEAUTY_FEST_NOT_SET
         fragmentCreatedForFirstTime = true
         context?.run {
             searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_revamp_searchbar_transition_range)
@@ -2816,5 +2809,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun deletePayLaterWidget() {
         getHomeViewModel().deletePayLaterWidget()
+    }
+
+    override fun isSuperGraphicHeaderActive(): Boolean {
+        return isEligibleForSuperGraphicHeader()
     }
 }
