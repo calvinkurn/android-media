@@ -5,7 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.tokofood.R
-import com.tokopedia.tokofood.common.util.TokofoodExt.getGlobalErrorType
+import com.tokopedia.tokofood.common.util.TokofoodExt.getPostPurchaseGlobalErrorType
 import com.tokopedia.tokofood.databinding.ItemTokofoodOrderTrackingErrorBinding
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingErrorUiModel
 
@@ -23,7 +23,7 @@ class OrderTrackingErrorViewHolder(itemView: View, private val listener: Listene
         with(binding) {
             globalErrorOrderTracking.run {
                 setPrimaryActionText()
-                setType(element.throwable.getGlobalErrorType())
+                setType(element.throwable.getPostPurchaseGlobalErrorType())
                 setActionClickListener {
                     listener.onErrorActionClicked()
                 }
