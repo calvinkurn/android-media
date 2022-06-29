@@ -1,50 +1,30 @@
 package com.tokopedia.feedcomponent.view.adapter.post
 
-import android.annotation.SuppressLint
 import android.os.Bundle
-import android.view.GestureDetector
-import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
-import android.widget.LinearLayout
-import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.transition.AutoTransition
-import androidx.transition.TransitionManager
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.adapterdelegate.BaseAdapterDelegate
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
-import com.tokopedia.adapterdelegate.BaseViewHolder
-import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
-import com.tokopedia.feedcomponent.util.util.doOnLayout
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
-import com.tokopedia.feedcomponent.view.transition.BackgroundColorTransition
-import com.tokopedia.feedcomponent.view.widget.PostTagView
-import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.toBitmap
-import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.unifyprinciples.R as unifyR
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.CarouselImageViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.CarouselVideoViewHolder
 
 /**
  * Created by kenny.hadisaputra on 24/06/22
  */
 internal class FeedPostCarouselAdapter(
-    dataSource: ViewHolder.DataSource,
-    listener: ViewHolder.Listener,
-) : BaseDiffUtilAdapter<FeedXMedia>() {
+    dataSource: DataSource,
+    imageListener: CarouselImageViewHolder.Listener,
+    videoListener: CarouselVideoViewHolder.Listener,
+) : BaseDiffUtilAdapter<FeedXMedia>(true) {
 
     init {
-        delegatesManager.addDelegate(Delegate(dataSource, listener))
+        delegatesManager
+            .addDelegate(CarouselImageDelegate(dataSource, imageListener))
+            .addDelegate(CarouselVideoDelegate(dataSource, videoListener))
     }
 
     override fun areItemsTheSame(oldItem: FeedXMedia, newItem: FeedXMedia): Boolean {
@@ -55,7 +35,8 @@ internal class FeedPostCarouselAdapter(
         oldItem: FeedXMedia,
         newItem: FeedXMedia
     ): Boolean {
-        return oldItem == newItem
+        return if (!oldItem.isImage) false
+        else oldItem == newItem
     }
 
     fun focusItemAt(position: Int) {
@@ -78,19 +59,34 @@ internal class FeedPostCarouselAdapter(
         )
     }
 
-    private class Delegate(
-        private val dataSource: ViewHolder.DataSource,
-        private val listener: ViewHolder.Listener,
-    ) : TypedAdapterDelegate<FeedXMedia, FeedXMedia, ViewHolder>(
+    fun onPause() {
+        val removeFocusPayload = Bundle().apply {
+            putBoolean(PAYLOAD_FOCUS, false)
+        }
+        notifyItemRangeChanged(0, itemCount, removeFocusPayload)
+    }
+
+    private class CarouselImageDelegate(
+        private val dataSource: DataSource,
+        private val listener: CarouselImageViewHolder.Listener,
+    ) : BaseAdapterDelegate<FeedXMedia, FeedXMedia, CarouselImageViewHolder>(
         R.layout.item_post_image_new
     ) {
-        override fun onBindViewHolder(item: FeedXMedia, holder: ViewHolder) {
+        override fun isForViewType(
+            itemList: List<FeedXMedia>,
+            position: Int,
+            isFlexibleType: Boolean
+        ): Boolean {
+            return itemList[position].isImage
+        }
+
+        override fun onBindViewHolder(item: FeedXMedia, holder: CarouselImageViewHolder) {
             holder.bind(item)
         }
 
         override fun onBindViewHolderWithPayloads(
             item: FeedXMedia,
-            holder: ViewHolder,
+            holder: CarouselImageViewHolder,
             payloads: Bundle
         ) {
             if (payloads.containsKey(PAYLOAD_FOCUS)) {
@@ -99,304 +95,54 @@ internal class FeedPostCarouselAdapter(
             } else super.onBindViewHolderWithPayloads(item, holder, payloads)
         }
 
-        override fun onCreateViewHolder(parent: ViewGroup, basicView: View): ViewHolder {
-            return ViewHolder.create(parent, dataSource, listener)
+        override fun onCreateViewHolder(parent: ViewGroup, basicView: View): CarouselImageViewHolder {
+            return CarouselImageViewHolder.create(parent, dataSource, listener)
         }
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    internal class ViewHolder(
-        itemView: View,
+    private class CarouselVideoDelegate(
         private val dataSource: DataSource,
-        private val listener: Listener,
-    ) : BaseViewHolder(itemView) {
-
-        private val postImage = itemView.findViewById<ImageUnify>(R.id.post_image)
-        private val postImageLayout = itemView.findViewById<ConstraintLayout>(R.id.post_image_layout)
-        private val llLihatProduct = itemView.findViewById<LinearLayout>(R.id.ll_lihat_product)
-        private val tvLihatProduct = itemView.findViewById<TextView>(R.id.tv_lihat_product)
-        private val likeAnim = itemView.findViewById<ImageUnify>(R.id.like_anim)
-
-        private val topAdsCard = itemView.findViewById<ConstraintLayout>(R.id.top_ads_detail_card)
-        private val topAdsProductName = itemView.findViewById<Typography>(R.id.top_ads_product_name)
-        private val topAdsChevron = topAdsCard.findViewById<IconUnify>(R.id.chevron)
-
-        private val animationLike = AnimationUtils.loadAnimation(
-            itemView.context,
-            android.R.anim.fade_in
-        )
-
-        private val postGestureDetector = GestureDetector(
-            itemView.context,
-            object : GestureDetector.SimpleOnGestureListener() {
-                override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
-                    changeTopAdsColorToGreen()
-                    listener.onImageClicked(this@ViewHolder)
-
-                    animateLihatProduct(
-                        toggleAllPostTagViews()
-                    )
-
-                    return true
-                }
-
-                override fun onDoubleTap(e: MotionEvent?): Boolean {
-                    onPostTagViews {
-                        it.hideExpandedViewIfShown()
-                    }
-                    animateLihatProduct(false)
-
-                    if (!dataSource.getFeedXCard().isTopAds) {
-                        likeAnim.startAnimation(animationLike)
-                    }
-
-                    return true
-                }
-
-                override fun onDown(e: MotionEvent?): Boolean {
-                    return true
-                }
-
-                override fun onLongPress(e: MotionEvent?) {
-                    changeTopAdsColorToGreen()
-                }
-            }
-        )
-
-        private val focusLihatProduct = Runnable {
-            animateLihatProduct(true)
+        private val listener: CarouselVideoViewHolder.Listener,
+    ) : BaseAdapterDelegate<FeedXMedia, FeedXMedia, CarouselVideoViewHolder>(
+        R.layout.item_post_video_new
+    ) {
+        override fun isForViewType(
+            itemList: List<FeedXMedia>,
+            position: Int,
+            isFlexibleType: Boolean
+        ): Boolean {
+            return !itemList[position].isImage
         }
 
-        private val focusTopAds = Runnable {
-            changeTopAdsColorToGreen()
+        override fun onBindViewHolder(item: FeedXMedia, holder: CarouselVideoViewHolder) {
+            holder.bind(item)
         }
 
-        init {
-            postImage.setOnTouchListener { _, event ->
-                postGestureDetector.onTouchEvent(event)
-                true
-            }
-
-            likeAnim.setImageDrawable(
-                MethodChecker.getDrawable(
-                    itemView.context,
-                    R.drawable.ic_thumb_filled
-                )
-            )
-
-            animationLike.setAnimationListener(object : Animation.AnimationListener {
-                override fun onAnimationStart(animation: Animation) {
-                    likeAnim.visible()
-                    listener.onLiked(this@ViewHolder)
-                }
-
-                override fun onAnimationEnd(animation: Animation) {
-                    likeAnim.gone()
-                }
-
-                override fun onAnimationRepeat(animation: Animation) {}
-            })
-
-            itemView.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
-                override fun onViewAttachedToWindow(v: View?) {
-
-                }
-
-                override fun onViewDetachedFromWindow(v: View?) {
-                    removeAllPendingCallbacks()
-                }
-            })
-        }
-
-        override fun onViewRecycled() {
-            super.onViewRecycled()
-            removeExistingPostTags()
-        }
-
-        fun focusMedia() {
-            removeAllPendingCallbacks()
-            itemView.postDelayed(focusLihatProduct, FOCUS_DELAY)
-            itemView.postDelayed(focusTopAds, FOCUS_TOP_ADS_DELAY)
-
-            onPostTagViews { it.resetView() }
-        }
-
-        fun removeFocus() {
-            removeAllPendingCallbacks()
-
-            onPostTagViews { it.hideExpandedViewIfShown() }
-        }
-
-        fun bind(item: FeedXMedia) {
-            val card = dataSource.getFeedXCard()
-
-            postImage.setImageUrl(item.mediaUrl)
-            llLihatProduct.showWithCondition(item.tagProducts.isNotEmpty())
-
-            setupTopAds(card, item)
-
-            itemView.doOnLayout {
-                removeExistingPostTags()
-                item.tagging.forEach { tagging ->
-                    val tagView = PostTagView(itemView.context, tagging)
-                    tagView.bindData(
-                        dynamicPostListener = dataSource.getDynamicPostListener(),
-                        products = if (card.isTypeProductHighlight && card.useASGCNewDesign) {
-                            card.products
-                        } else card.tags,
-                        width = it.width,
-                        height = it.height,
-                        positionInFeed = dataSource.getPositionInFeed(),
-                        bitmap = postImage?.drawable?.toBitmap(),
-                    )
-                    postImageLayout.addView(tagView)
-                }
-            }
-
-            llLihatProduct.setOnClickListener {
-                changeTopAdsColorToGreen()
-                listener.onLihatProductClicked(this, item)
-            }
-
-            itemView.addOnImpressionListener(item.impressHolder) {
-                listener.onImpressed(this)
-            }
-        }
-
-        private fun setupTopAds(card: FeedXCard, media: FeedXMedia) {
-            topAdsProductName.text = if (card.totalProducts > 1) {
-                itemView.context.getString(R.string.feeds_check_x_products, card.totalProducts)
-            } else itemView.context.getString(R.string.feeds_cek_sekarang)
-
-            topAdsCard.showWithCondition(
-                shouldShow = card.isTypeProductHighlight || card.isTypeVOD || card.isTopAds
-            )
-
-            topAdsCard.setOnClickListener {
-                changeTopAdsColorToGreen()
-                listener.onTopAdsCardClicked(this, media)
-            }
-            changeTopAdsColorToWhite()
-        }
-
-        private fun changeTopAdsColorToGreen() {
-            changeTopAdsColor(
-                primaryColor = MethodChecker.getColor(
-                    itemView.context,
-                    unifyR.color.Unify_G500
-                ),
-                secondaryColor = MethodChecker.getColor(
-                    itemView.context,
-                    unifyR.color.Unify_N0
-                ),
-            )
-        }
-
-        private fun changeTopAdsColorToWhite() {
-            changeTopAdsColor(
-                primaryColor = MethodChecker.getColor(
-                    itemView.context,
-                    unifyR.color.Unify_NN50
-                ),
-                secondaryColor = MethodChecker.getColor(
-                    itemView.context,
-                    unifyR.color.Unify_NN600
-                ),
-            )
-        }
-
-        private fun changeTopAdsColor(
-            primaryColor: Int,
-            secondaryColor: Int,
+        override fun onBindViewHolderWithPayloads(
+            item: FeedXMedia,
+            holder: CarouselVideoViewHolder,
+            payloads: Bundle
         ) {
-            TransitionManager.beginDelayedTransition(
-                itemView as ViewGroup,
-                BackgroundColorTransition()
-                    .addTarget(topAdsCard)
-            )
-            topAdsProductName.setTextColor(secondaryColor)
-            topAdsChevron.setColorFilter(secondaryColor)
-            topAdsCard.setBackgroundColor(primaryColor)
+            if (payloads.containsKey(PAYLOAD_FOCUS)) {
+                if (payloads.getBoolean(PAYLOAD_FOCUS)) holder.focusMedia()
+                else holder.removeFocus()
+            } else super.onBindViewHolderWithPayloads(item, holder, payloads)
         }
 
-        private fun removeExistingPostTags() {
-            (0 until postImageLayout.childCount).mapNotNull {
-                postImageLayout.getChildAt(it) as? PostTagView
-            }.forEach { postImageLayout.removeView(it) }
-
-            tvLihatProduct.gone()
-        }
-
-        private fun onPostTagViews(onTag: (PostTagView) -> Unit) {
-            (0 until postImageLayout.childCount).forEach {
-                val view = postImageLayout.getChildAt(it)
-                if (view is PostTagView) onTag(view)
-            }
-        }
-
-        private fun toggleAllPostTagViews(): Boolean {
-            var isAnyGoingToVisible = false
-            onPostTagViews {
-                val isGoingToVisible = it.toggleExpandedView()
-                if (!isAnyGoingToVisible) isAnyGoingToVisible = isGoingToVisible
-            }
-            return isAnyGoingToVisible
-        }
-
-        private fun animateLihatProduct(shouldShow: Boolean) {
-            TransitionManager.beginDelayedTransition(
-                llLihatProduct,
-                AutoTransition()
-                    .setDuration(ANIMATION_LIHAT_PRODUCT_DURATION)
-            )
-
-            tvLihatProduct.showWithCondition(shouldShow)
-        }
-
-        private fun removeAllPendingCallbacks() {
-            itemView.removeCallbacks(focusLihatProduct)
-            itemView.removeCallbacks(focusTopAds)
-        }
-
-        companion object {
-            private const val ANIMATION_LIHAT_PRODUCT_DURATION = 250L
-
-            fun create(
-                parent: ViewGroup,
-                dataSource: DataSource,
-                listener: Listener,
-            ) = ViewHolder(
-                LayoutInflater.from(parent.context)
-                    .inflate(
-                        R.layout.item_post_image_new,
-                        parent,
-                        false,
-                    ),
-                dataSource,
-                listener,
-            )
-        }
-
-        interface Listener {
-            fun onTopAdsCardClicked(viewHolder: ViewHolder, media: FeedXMedia)
-            fun onImageClicked(viewHolder: ViewHolder)
-            fun onLiked(viewHolder: ViewHolder)
-            fun onImpressed(viewHolder: ViewHolder)
-            fun onLihatProductClicked(viewHolder: ViewHolder, media: FeedXMedia)
-        }
-
-        interface DataSource {
-            fun getFeedXCard(): FeedXCard
-            fun getDynamicPostListener(): DynamicPostViewHolder.DynamicPostListener?
-            fun getPositionInFeed(): Int
+        override fun onCreateViewHolder(parent: ViewGroup, basicView: View): CarouselVideoViewHolder {
+            return CarouselVideoViewHolder.create(parent, dataSource, listener)
         }
     }
 
     companion object {
-        private const val FOCUS_POSITION_THRESHOLD = 2
-
         private const val PAYLOAD_FOCUS = "payload_focus"
-        private const val FOCUS_DELAY = 1000L
-        private const val FOCUS_TOP_ADS_DELAY = 2000L
+
+        private const val FOCUS_POSITION_THRESHOLD = 2
+    }
+
+    interface DataSource {
+        fun getFeedXCard(): FeedXCard
+        fun getDynamicPostListener(): DynamicPostViewHolder.DynamicPostListener?
+        fun getPositionInFeed(): Int
     }
 }

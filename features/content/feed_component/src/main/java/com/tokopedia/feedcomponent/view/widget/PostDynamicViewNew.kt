@@ -44,7 +44,9 @@ import com.tokopedia.feedcomponent.util.util.*
 import com.tokopedia.feedcomponent.view.adapter.post.FeedPostCarouselAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.CarouselImageViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.CarouselVideoViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineListener
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
@@ -178,7 +180,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     private var mData = FeedXCard()
 
     private val adapter = FeedPostCarouselAdapter(
-        dataSource = object : FeedPostCarouselAdapter.ViewHolder.DataSource {
+        dataSource = object : FeedPostCarouselAdapter.DataSource {
             override fun getFeedXCard(): FeedXCard {
                 return mData
             }
@@ -191,9 +193,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 return positionInFeed
             }
         },
-        listener = object : FeedPostCarouselAdapter.ViewHolder.Listener {
+        imageListener = object : CarouselImageViewHolder.Listener {
             override fun onTopAdsCardClicked(
-                viewHolder: FeedPostCarouselAdapter.ViewHolder,
+                viewHolder: CarouselImageViewHolder,
                 media: FeedXMedia,
             ) {
                 if (!mData.isTypeProductHighlight && !mData.isTypeVOD) {
@@ -213,7 +215,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 )
             }
 
-            override fun onImageClicked(viewHolder: FeedPostCarouselAdapter.ViewHolder) {
+            override fun onImageClicked(viewHolder: CarouselImageViewHolder) {
                 listener?.onImageClicked(
                     mData.id,
                     mData.typename,
@@ -222,7 +224,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 )
             }
 
-            override fun onLiked(viewHolder: FeedPostCarouselAdapter.ViewHolder) {
+            override fun onLiked(viewHolder: CarouselImageViewHolder) {
                 listener?.onLikeClick(
                     positionInFeed,
                     mData.id.toIntOrZero(),
@@ -235,7 +237,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 )
             }
 
-            override fun onImpressed(viewHolder: FeedPostCarouselAdapter.ViewHolder) {
+            override fun onImpressed(viewHolder: CarouselImageViewHolder) {
                 imagePostListener.userImagePostImpression(
                     positionInFeed,
                     pageControl.indicatorCurrentPosition,
@@ -275,7 +277,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             }
 
             override fun onLihatProductClicked(
-                viewHolder: FeedPostCarouselAdapter.ViewHolder,
+                viewHolder: CarouselImageViewHolder,
                 media: FeedXMedia,
             ) {
                 val listener = this@PostDynamicViewNew.listener ?: return
@@ -294,6 +296,49 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 )
             }
         },
+        videoListener = object : CarouselVideoViewHolder.Listener {
+            override fun onLihatProductClicked(
+                viewHolder: CarouselVideoViewHolder,
+                media: FeedXMedia
+            ) {
+                val listener = this@PostDynamicViewNew.listener ?: return
+
+                listener.onTagClicked(
+                    mData.id.toIntOrZero(),
+                    media.tagProducts,
+                    listener,
+                    mData.author.id,
+                    mData.typename,
+                    mData.followers.isFollowed,
+                    media.type,
+                    positionInFeed,
+                    mData.playChannelID,
+                    shopName = mData.author.name
+                )
+            }
+
+            override fun onMuteChanged(
+                viewHolder: CarouselVideoViewHolder,
+                media: FeedXMedia,
+                isMuted: Boolean
+            ) {
+                listener?.muteUnmuteVideo(
+                    mData.playChannelID,
+                    isMuted,
+                    mData.author.id,
+                    mData.followers.isFollowed,
+                    true,
+                    media.type,
+                )
+            }
+
+            override fun onVideoStopTrack(viewHolder: CarouselVideoViewHolder, lastPosition: Long) {
+                videoListener?.onVideoStopTrack(
+                    mData,
+                    lastPosition,
+                )
+            }
+        }
     )
     private val snapHelper = PagerSnapHelper()
     private val pageControlListener = object : RecyclerView.OnScrollListener() {
@@ -975,6 +1020,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     feedMedia.tagProducts = tags.map { globalCardProductList[it.tagIndex] }
                         .distinctBy { it.id }
                     feedMedia.isImageImpressedFirst = true
+
+                    if (!feedMedia.isImage) feedMedia.canPlay = false
                 }
                 adapter.setItemsAndAnimateChanges(media)
 
@@ -1002,6 +1049,11 @@ class PostDynamicViewNew @JvmOverloads constructor(
             val globalCardProductList = feedXCard.tags
             gridList.gone()
             commentButton.visible()
+
+        //TODO("Temporary code to prevent crash")
+        val mediaList = emptyList<FeedXMedia>()
+        adapter.setItemsAndAnimateChanges(mediaList)
+        pageControl.setIndicator(mediaList.size)
 //            carouselView.apply {
 //                stage.removeAllViews()
 //                indicatorPosition = CarouselUnify.INDICATOR_HIDDEN
@@ -1063,58 +1115,59 @@ class PostDynamicViewNew @JvmOverloads constructor(
         ratio: String,
         position: Int
     ): View? {
-        val postId = feedXCard.id
-        val videoItem = getVideoItem()
-        feedMedia.canPlay = false
-        feedMedia.videoView = videoItem
-        videoItem?.run {
-
-            val playButtonVideo = findViewById<ImageView>(R.id.ic_play)
-            val layoutVideo = findViewById<ConstraintLayout>(R.id.layout_main)
-            val videoPreviewImage = findViewById<ImageUnify>(R.id.videoPreviewImage)
-            val videoView = findViewById<View>(R.id.video_view)
-            val constraintSetForVideoCoveMedia = ConstraintSet()
-            constraintSetForVideoCoveMedia.clone(layoutVideo)
-            constraintSetForVideoCoveMedia.setDimensionRatio(videoPreviewImage.id, ratio)
-            constraintSetForVideoCoveMedia.setDimensionRatio(videoView.id, ratio)
-            constraintSetForVideoCoveMedia.applyTo(layoutVideo)
-
-            val layoutFrameView = findViewById<ConstraintLayout>(R.id.frame_video)
-            val layoutPlayerView = findViewById<PlayerView>(R.id.layout_video)
-            val constraintSetForVideoLayout = ConstraintSet()
-            constraintSetForVideoLayout.clone(layoutFrameView)
-            constraintSetForVideoLayout.setDimensionRatio(layoutPlayerView.id, ratio)
-            constraintSetForVideoLayout.applyTo(layoutFrameView)
-
-            videoPreviewImage?.setImageUrl(feedMedia.coverUrl)
-            playButtonVideo?.setOnClickListener {
-                playButtonVideo.gone()
-                playVideo(feedXCard, position)
-                }
-                video_lihat_product?.setOnClickListener {
-                    listener?.let { listener ->
-                        listener.onTagClicked(
-                                postId.toIntOrZero(),
-                                products,
-                                listener,
-                                id,
-                                type,
-                                isFollowed,
-                            feedMedia.type,
-                            positionInFeed,
-                            feedXCard.playChannelID,
-                            shopName = shopName
-                    )
-                }
-            }
-
-
-            volumeIcon.setOnClickListener {
-                changeMuteStateVideo(volumeIcon)
-                setMuteUnmuteVOD(volumeIcon, feedXCard.playChannelID, isFollowed, id,false, true, feedMedia.type)
-            }
-        }
-        return videoItem
+//        val postId = feedXCard.id
+//        val videoItem = getVideoItem()
+//        feedMedia.canPlay = false
+//        feedMedia.videoView = videoItem
+//        videoItem?.run {
+//
+//            val playButtonVideo = findViewById<ImageView>(R.id.ic_play)
+//            val layoutVideo = findViewById<ConstraintLayout>(R.id.layout_main)
+//            val videoPreviewImage = findViewById<ImageUnify>(R.id.videoPreviewImage)
+//            val videoView = findViewById<View>(R.id.video_view)
+//            val constraintSetForVideoCoveMedia = ConstraintSet()
+//            constraintSetForVideoCoveMedia.clone(layoutVideo)
+//            constraintSetForVideoCoveMedia.setDimensionRatio(videoPreviewImage.id, ratio)
+//            constraintSetForVideoCoveMedia.setDimensionRatio(videoView.id, ratio)
+//            constraintSetForVideoCoveMedia.applyTo(layoutVideo)
+//
+//            val layoutFrameView = findViewById<ConstraintLayout>(R.id.frame_video)
+//            val layoutPlayerView = findViewById<PlayerView>(R.id.layout_video)
+//            val constraintSetForVideoLayout = ConstraintSet()
+//            constraintSetForVideoLayout.clone(layoutFrameView)
+//            constraintSetForVideoLayout.setDimensionRatio(layoutPlayerView.id, ratio)
+//            constraintSetForVideoLayout.applyTo(layoutFrameView)
+//
+//            videoPreviewImage?.setImageUrl(feedMedia.coverUrl)
+//            playButtonVideo?.setOnClickListener {
+//                playButtonVideo.gone()
+//                playVideo(feedXCard, position)
+//                }
+//                video_lihat_product?.setOnClickListener {
+//                    listener?.let { listener ->
+//                        listener.onTagClicked(
+//                                postId.toIntOrZero(),
+//                                products,
+//                                listener,
+//                                id,
+//                                type,
+//                                isFollowed,
+//                            feedMedia.type,
+//                            positionInFeed,
+//                            feedXCard.playChannelID,
+//                            shopName = shopName
+//                    )
+//                }
+//            }
+//
+//
+//            volumeIcon.setOnClickListener {
+//                changeMuteStateVideo(volumeIcon)
+//                setMuteUnmuteVOD(volumeIcon, feedXCard.playChannelID, isFollowed, id,false, true, feedMedia.type)
+//            }
+//        }
+//        return videoItem
+        return null
     }
 
     private fun setVideoControl(
@@ -1134,7 +1187,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             tagProducts.add(postProductList[it.tagIndex])
         }
         videoItem?.run {
-            val layoutLihatProdukParent = findViewById<Typography>(R.id.video_lihat_product)
+            val layoutLihatProdukParent = findViewById<LinearLayout>(R.id.ll_lihat_product)
             if (tagProducts.isEmpty()) {
                 layoutLihatProdukParent?.gone()
             } else {
@@ -1161,13 +1214,13 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     videoPlayer = FeedExoPlayer(context)
                 layout_video?.player = videoPlayer?.getExoPlayer()
                 layout_video?.videoSurfaceView?.setOnClickListener {
-                    changeMuteStateVideo(volumeIcon)
-                    setMuteUnmuteVOD(volumeIcon, postId, feedXCard.followers.isFollowed, authorId, true, false, feedMedia.type)
+                    changeMuteStateVideo(volume_icon)
+                    setMuteUnmuteVOD(volume_icon, postId, feedXCard.followers.isFollowed, authorId, true, false, feedMedia.type)
 
                 }
 
                 videoPlayer?.start(feedMedia.mediaUrl, GridPostAdapter.isMute)
-                volumeIcon?.setImageResource(if (!GridPostAdapter.isMute) R.drawable.ic_feed_volume_up else R.drawable.ic_feed_volume_mute)
+                volume_icon?.setImageResource(if (!GridPostAdapter.isMute) R.drawable.ic_feed_volume_up else R.drawable.ic_feed_volume_mute)
                 videoPlayer?.setVideoStateListener(object : VideoStateListener {
                     override fun onInitialStateLoading() {
                         showVideoLoading()
@@ -1190,7 +1243,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
                             override fun onFinish() {
                                 timer_view.gone()
-                                volumeIcon?.gone()
+                                volume_icon?.gone()
                             }
                         }.start()
                     }
@@ -1762,6 +1815,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     internal fun onPause() {
         videoPlayer?.pause()
+        adapter.onPause()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
@@ -1922,6 +1976,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 feedXCard
             )
         }
+
+        adapter.focusItemAt(pageControl.indicatorCurrentPosition)
     }
     fun playVOD(feedXCard: FeedXCard, position: Int = feedXCard.lastCarouselIndex) {
         if (videoPlayer == null)
