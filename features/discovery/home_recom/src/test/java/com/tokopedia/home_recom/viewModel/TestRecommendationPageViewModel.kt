@@ -18,6 +18,7 @@ import com.tokopedia.home_recom.util.RecommendationDispatcherTest
 import com.tokopedia.home_recom.util.RecommendationRollenceController
 import com.tokopedia.home_recom.util.Status
 import com.tokopedia.home_recom.viewmodel.RecommendationPageViewModel
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -210,7 +211,7 @@ class TestRecommendationPageViewModel {
     }
 
     @Test
-    fun `get error add wishlist from network`(){
+    fun `given error when add wishlist then invoke callback false`(){
         var status: Boolean? = null
         val slot = slot<WishListActionListener>()
         every { addWishListUseCase.createObservable(any(), any(), capture(slot)) } answers {
@@ -223,7 +224,7 @@ class TestRecommendationPageViewModel {
     }
 
     @Test
-    fun `get success add topads wishlist from network`(){
+    fun `given success when add topads wishlist then invoke callback true`(){
         var status: Boolean? = null
         val slot = slot<Subscriber<WishlistModel>>()
         val mockWishlistModel = mockk<WishlistModel>(relaxed = true)
@@ -241,7 +242,23 @@ class TestRecommendationPageViewModel {
     }
 
     @Test
-    fun `get error add topads wishlist from network`(){
+    fun `given success but null when add topads wishlist then invoke callback false`(){
+        var status: Boolean? = null
+        val slot = slot<Subscriber<WishlistModel>>()
+        val mockWishlistModel = mockk<WishlistModel>(relaxed = true)
+
+        every { mockWishlistModel.data } returns null
+        every { topAdsWishlishedUseCase.execute(any(), capture(slot)) } answers {
+            slot.captured.onNext(mockWishlistModel)
+        }
+        viewModel.addWishlist(recommendationTopads.productId.toString(), recommendationTopads.wishlistUrl, true) { success, _ ->
+            status = success
+        }
+        assert(status == false)
+    }
+
+    @Test
+    fun `given error when add topads wishlist then invoke callback false`(){
         var status: Boolean? = null
         val slot = slot<Subscriber<WishlistModel>>()
 
@@ -333,7 +350,8 @@ class TestRecommendationPageViewModel {
     }
 
     @Test
-    fun `success buy now`(){
+    fun `given success when buy now then pass product to buyNowLiveData`(){
+        val product = ProductInfoDataModel(productDetailData = ProductDetailData())
         every {
             addToCartUseCase.createObservable(any())
         } returns Observable.just(AddToCartDataModel(
@@ -342,8 +360,9 @@ class TestRecommendationPageViewModel {
                         success = 1
                 )
         ))
-        viewModel.onBuyNow(ProductInfoDataModel(productDetailData = ProductDetailData()))
+        viewModel.onBuyNow(product)
         Assert.assertTrue(viewModel.buyNowLiveData.value?.status == Status.SUCCESS)
+        Assert.assertTrue(viewModel.buyNowLiveData.value?.data == product)
     }
 
     @Test
@@ -361,17 +380,24 @@ class TestRecommendationPageViewModel {
     }
 
     @Test
-    fun `error buy now`(){
+    fun `given success from network with error status when buy now then pass error`(){
         every {
             addToCartUseCase.createObservable(any())
         } returns Observable.just(AddToCartDataModel(
-                status = AddToCartDataModel.STATUS_OK,
-                data = DataModel(
-                        success = 0
-                )
+                status = AddToCartDataModel.STATUS_ERROR
         ))
         viewModel.onBuyNow(ProductInfoDataModel(productDetailData = ProductDetailData()))
-        Assert.assertTrue(viewModel.buyNowLiveData.value?.status == Status.ERROR)
+        Assert.assertTrue(viewModel.buyNowLiveData.value?.isError() == true)
+    }
+
+    @Test
+    fun `given error from network when buy now then pass error`(){
+        val error = TimeoutException()
+        every {
+            addToCartUseCase.createObservable(any())
+        } returns Observable.error(error)
+        viewModel.onBuyNow(ProductInfoDataModel(productDetailData = ProductDetailData()))
+        Assert.assertTrue(viewModel.buyNowLiveData.value?.isError() == true && viewModel.buyNowLiveData.value?.exception == error)
     }
 
     @Test
