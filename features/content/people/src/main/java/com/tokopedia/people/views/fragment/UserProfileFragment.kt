@@ -67,14 +67,18 @@ import com.tokopedia.people.views.activity.FollowerFollowingListingActivity
 import com.tokopedia.people.views.adapter.UserPostBaseAdapter
 import com.tokopedia.people.analytic.UserProfileTracker
 import com.tokopedia.people.utils.UserProfileUtils
+import com.tokopedia.people.utils.showErrorToast
+import com.tokopedia.people.utils.showToast
 import com.tokopedia.people.utils.withCache
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
+import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.people.views.uimodel.profile.ProfileType
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
 import com.tokopedia.people.views.uimodel.state.UserProfileUiState
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import com.tokopedia.abstraction.R as abstractionR
 
 class UserProfileFragment @Inject constructor(
     private val viewModelFactory: ViewModelFactory,
@@ -327,28 +331,6 @@ class UserProfileFragment @Inject constructor(
         addSocialUnFollowErrorObserver()
         addUserPostObserver()
         adduserPostErrorObserver()
-        addVideoPostReminderUpdateObserver()
-        addPostReminderErrorObserver()
-
-    }
-
-    private fun addPostReminderErrorObserver() {
-        viewModel.postReminderErrorMessageLiveData.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                when (it) {
-                    is UnknownHostException, is SocketTimeoutException -> {
-                        view?.let { it1 ->
-                            Toaster.build(
-                                it1,
-                                requireContext().getString(com.tokopedia.people.R.string.up_error_local_error),
-                                Toaster.LENGTH_LONG,
-                                Toaster.TYPE_ERROR
-                            ).show()
-                        }
-                    }
-                }
-            }
-        })
     }
 
     private fun observeUiState() {
@@ -363,9 +345,23 @@ class UserProfileFragment @Inject constructor(
 
     private fun observeUiEvent() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.uiEvent.collect {
-                when(it) {
+            viewModel.uiEvent.collect { event ->
+                when(event) {
+                    is UserProfileUiEvent.SuccessUpdateReminder -> {
+                        view?.showToast(event.message)
+                    }
+                    is UserProfileUiEvent.ErrorUpdateReminder -> {
+                        val message = when (event.throwable) {
+                            is UnknownHostException, is SocketTimeoutException -> {
+                                requireContext().getString(R.string.up_error_local_error)
+                            }
+                            else -> {
+                                event.throwable.message ?: requireContext().getString(abstractionR.string.default_request_error_unknown)
+                            }
+                        }
 
+                        view?.showErrorToast(message)
+                    }
                 }
             }
         }
@@ -541,30 +537,6 @@ class UserProfileFragment @Inject constructor(
                 snackBar.show()
 
                 updateToFollowUi()
-            }
-        })
-
-    private fun addVideoPostReminderUpdateObserver() =
-        viewModel.postReminderLiveData.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                when (it) {
-                    is Loading -> {
-
-                    }
-                    is Success -> {
-                        if (it?.data?.playToggleChannelReminder?.header?.status == SUCCESS_STATUS) {
-                            Toaster.build(
-                                btnAction as View,
-                                it.data.playToggleChannelReminder.header.message,
-                                Toaster.LENGTH_LONG,
-                                Toaster.TYPE_NORMAL
-                            ).show()
-                        }
-                    }
-                    is ErrorMessage -> {
-
-                    }
-                }
             }
         })
 
@@ -1045,8 +1017,7 @@ class UserProfileFragment @Inject constructor(
             )
         }
         else{
-
-            viewModel.updatePostReminderStatus(channelId, isActive)
+            viewModel.submitAction(UserProfileAction.ClickUpdateReminder(channelId, isActive))
             mAdapter.notifyItemChanged(pos)
         }
     }

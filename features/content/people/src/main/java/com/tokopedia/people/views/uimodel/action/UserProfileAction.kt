@@ -6,4 +6,8 @@ package com.tokopedia.people.views.uimodel.action
 sealed interface UserProfileAction {
 
     object ClickFollowButton: UserProfileAction
+    data class ClickUpdateReminder(
+        val channelId: String,
+        val isActive: Boolean,
+    ): UserProfileAction
 }

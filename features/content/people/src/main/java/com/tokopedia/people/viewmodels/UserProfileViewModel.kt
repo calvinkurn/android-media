@@ -60,12 +60,6 @@ class UserProfileViewModel @Inject constructor(
     private var userPostError = MutableLiveData<Throwable>()
     val userPostErrorLiveData : LiveData<Throwable> get() = userPostError
 
-    private var postReminder = MutableLiveData<Resources<VideoPostReimderModel>>()
-    val postReminderLiveData : LiveData<Resources<VideoPostReimderModel>> get() = postReminder
-
-    private var postReminderErrorMessage = MutableLiveData<Throwable>()
-    val postReminderErrorMessageLiveData : LiveData<Throwable> get() = postReminderErrorMessage
-
     private val _profileInfo = MutableStateFlow(ProfileUiModel.Empty)
     private val _followInfo = MutableStateFlow(FollowInfoUiModel.Empty)
     private val _profileWhitelist = MutableStateFlow(ProfileWhitelistUiModel.Empty)
@@ -93,6 +87,7 @@ class UserProfileViewModel @Inject constructor(
     fun submitAction(action: UserProfileAction) {
         when(action) {
             UserProfileAction.ClickFollowButton -> handleClickFollowButton()
+            is UserProfileAction.ClickUpdateReminder -> handleClickUpdateReminder(action.channelId, action.isActive)
         }
     }
 
@@ -105,7 +100,7 @@ class UserProfileViewModel @Inject constructor(
                         else repo.followProfile(followInfo.encryptedUserID)
 
             when(result) {
-                MutationUiModel.Success -> {
+                is MutationUiModel.Success -> {
                     _followInfo.setValue { copy(status = !followInfo.status) }
                     _profileInfo.value = repo.getProfile(followInfo.userID)
                 }
@@ -114,6 +109,21 @@ class UserProfileViewModel @Inject constructor(
         }) {
             unFollowErrorMessage.value = it
         }
+    }
+
+    private fun handleClickUpdateReminder(channelId: String, isActive: Boolean) {
+        launchCatchError(block = {
+            val result = repo.updateReminder(channelId, isActive)
+
+            _uiEvent.emit(
+                when(result) {
+                    is MutationUiModel.Success -> UserProfileUiEvent.SuccessUpdateReminder(result.message)
+                    is MutationUiModel.Error -> UserProfileUiEvent.ErrorUpdateReminder(Exception(result.message))
+                }
+            )
+        }, onError = {
+            _uiEvent.emit(UserProfileUiEvent.ErrorUpdateReminder(it))
+        })
     }
 
     /** TODO: move it to init() viewmodel */
@@ -168,18 +178,6 @@ class UserProfileViewModel @Inject constructor(
             } else throw NullPointerException("data is null")
         }, onError = {
             userPostError.value = it
-        })
-    }
-
-    /** TODO: refactor - gonna move to repo */
-    fun updatePostReminderStatus(channelId: String, isActive: Boolean) {
-        launchCatchError(block = {
-            val data = videoPostReminderUseCase.updateReminder(channelId, isActive)
-            if (data != null) {
-                postReminder.value = Success(data)
-            } else throw NullPointerException("data is null")
-        }, onError = {
-            postReminderErrorMessage.value = it
         })
     }
 }

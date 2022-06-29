@@ -19,4 +19,9 @@ interface UserProfileRepository {
     suspend fun followProfile(encryptedUserId: String): MutationUiModel
 
     suspend fun unFollowProfile(encryptedUserId: String): MutationUiModel
+
+    suspend fun updateReminder(
+        channelId: String,
+        isActive: Boolean,
+    ) : MutationUiModel
 }

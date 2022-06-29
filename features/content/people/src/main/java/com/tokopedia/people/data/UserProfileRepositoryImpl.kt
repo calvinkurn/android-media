@@ -68,4 +68,12 @@ class UserProfileRepositoryImpl @Inject constructor(
             mapper.mapUnfollow(result)
         }
     }
+
+    override suspend fun updateReminder(channelId: String, isActive: Boolean) : MutationUiModel {
+        return withContext(dispatcher.io) {
+            val result = videoPostReminderUseCase.updateReminder(channelId, isActive)
+
+            mapper.mapUpdateReminder(result)
+        }
+    }
 }

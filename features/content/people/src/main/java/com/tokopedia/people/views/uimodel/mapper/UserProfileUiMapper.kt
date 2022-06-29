@@ -1,12 +1,9 @@
 package com.tokopedia.people.views.uimodel.mapper
 
-import com.tokopedia.people.model.ProfileHeaderBase
 import com.tokopedia.people.views.uimodel.profile.*
 import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
 import com.tokopedia.feedcomponent.data.pojo.whitelist.Author
-import com.tokopedia.people.model.ProfileDoFollowModelBase
-import com.tokopedia.people.model.ProfileDoUnFollowModelBase
-import com.tokopedia.people.model.UserProfileIsFollow
+import com.tokopedia.people.model.*
 import com.tokopedia.people.views.uimodel.MutationUiModel
 import javax.inject.Inject
 
@@ -65,19 +62,27 @@ class UserProfileUiMapper @Inject constructor() {
 
     fun mapFollow(response: ProfileDoFollowModelBase): MutationUiModel {
         return with(response.profileFollowers) {
-            if(errorCode.isEmpty()) MutationUiModel.Success
+            if(errorCode.isEmpty()) MutationUiModel.Success()
             else MutationUiModel.Error(messages.firstOrNull() ?: "Gagal follow akun")
         }
     }
 
     fun mapUnfollow(response: ProfileDoUnFollowModelBase): MutationUiModel {
         return with(response.profileFollowers) {
-            if(data.isSuccess == SUCCESS_CODE) MutationUiModel.Success
+            if(data.isSuccess == SUCCESS_UNFOLLOW_CODE) MutationUiModel.Success()
             else MutationUiModel.Error(messages.firstOrNull() ?: "Gagal unfollow akun")
         }
     }
 
+    fun mapUpdateReminder(response: VideoPostReimderModel): MutationUiModel {
+        return with(response.playToggleChannelReminder) {
+            if(header.status == SUCCESS_UPDATE_REMINDER_CODE) MutationUiModel.Success(header.message)
+            else MutationUiModel.Error(header.message)
+        }
+    }
+
     companion object {
-        private const val SUCCESS_CODE = "1"
+        private const val SUCCESS_UPDATE_REMINDER_CODE = 200
+        private const val SUCCESS_UNFOLLOW_CODE = "1"
     }
 }
