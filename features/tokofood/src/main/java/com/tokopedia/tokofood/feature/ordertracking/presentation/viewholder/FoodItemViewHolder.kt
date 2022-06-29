@@ -26,8 +26,8 @@ class FoodItemViewHolder(view: View,
 
     override fun bind(element: FoodItemUiModel) {
         with(binding) {
-            setFoodName(element.foodName, element.priceStr)
-            setPriceQuantity(element.quantity)
+            setFoodName(element.foodName, element.quantity)
+            setPriceQuantity(element.priceStr)
             setupAddonVariantAdapter(element.addOnVariantList)
             setupNote(element.notes)
         }
@@ -36,7 +36,7 @@ class FoodItemViewHolder(view: View,
     private fun ItemTokofoodOrderTrackingFoodItemBinding.setFoodName(foodName: String, quantity: String) {
         tvFoodItemName.text = root.context.getString(
             com.tokopedia.tokofood.R.string.order_detail_qty_food_value,
-            foodName, quantity
+            quantity, foodName
         )
     }
 
