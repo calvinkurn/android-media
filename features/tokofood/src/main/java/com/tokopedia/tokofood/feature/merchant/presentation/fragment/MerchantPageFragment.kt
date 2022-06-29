@@ -231,9 +231,6 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     override fun onResume() {
         super.onResume()
-        if (viewModel.isUserSkipTheLoginPage(viewModel.visitedLoginPage, userSession.isLoggedIn)) {
-           activity?.finish()
-        }
         initializeMiniCartWidget()
         merchantPageAnalytics.openMerchantPage(
             merchantId,
@@ -1238,7 +1235,6 @@ class MerchantPageFragment : BaseMultiFragment(),
             val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
             startActivityForResult(intent, REQUEST_CODE_LOGIN)
         }
-        viewModel.visitedLoginPage = true
     }
 
     private fun validateAddressData() {

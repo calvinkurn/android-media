@@ -398,9 +398,4 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
             REQUEST_CODE_SET_PINPOINT -> onResultFromSetPinpoint(resultCode, data)
         }
     }
-
-
-    interface IOnBackPressed {
-        fun onBackPressed(): Boolean
-    }
 }
