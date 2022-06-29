@@ -557,7 +557,14 @@ class PlayBottomSheetFragment @Inject constructor(
                                     getString(R.string.play_toaster_tokonow_wording)
                                 )
                             } else if (event.product.isTokoNow && !partnerTokoNow) Triple(getString(R.string.play_add_to_cart_message_success_tokonow), ApplinkConstInternalMarketplace.CART, getString(R.string.play_toaster_tokonow_wording))
-                            else Triple(getString(R.string.play_add_to_cart_message_success), ApplinkConstInternalMarketplace.CART, getString(R.string.play_toaster_global_wording))
+                            else {
+                                newAnalytic.impressGlobalToaster(channelId = playViewModel.channelId, channelType = playViewModel.channelType)
+                                Triple(
+                                    getString(R.string.play_add_to_cart_message_success),
+                                    ApplinkConstInternalMarketplace.CART,
+                                    getString(R.string.play_toaster_global_wording)
+                                )
+                            }
 
                             doShowToaster(
                                 bottomSheetType = bottomInsetsType,
@@ -566,7 +573,9 @@ class PlayBottomSheetFragment @Inject constructor(
                                 actionText = toaster,
                                 actionClickListener = {
                                     RouteManager.route(requireContext(), route)
-                                    if (event.product.isTokoNow && partnerTokoNow) newAnalytic.clickLihatNowToaster(channelType = playViewModel.channelType, channelId = playViewModel.channelId)
+                                    if (event.product.isTokoNow && partnerTokoNow)
+                                        newAnalytic.clickLihatNowToaster(channelType = playViewModel.channelType, channelId = playViewModel.channelId)
+                                    else if(!event.product.isTokoNow) newAnalytic.clickGlobalToaster(channelType = playViewModel.channelType, channelId = playViewModel.channelId)
                                     else analytic.clickSeeToasterAfterAtc()
                                 }
                             )

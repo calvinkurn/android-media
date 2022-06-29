@@ -219,7 +219,7 @@ class PlayAnalytic(
         val (eventAction, eventLabel) = when (sectionInfo.config.type) {
             ProductSectionType.Upcoming -> Pair("$KEY_TRACK_CLICK - product in upcoming section", generateBaseEventLabel(productId = product.id, campaignId = sectionInfo.id))
             ProductSectionType.Active -> Pair("$KEY_TRACK_CLICK - product in ongoing section", generateBaseEventLabel(productId = product.id, campaignId = sectionInfo.id))
-            ProductSectionType.Tokonow -> Pair("$KEY_TRACK_CLICK - now product", "$mChannelId - ${product.id} - ${mChannelType.value}")
+            ProductSectionType.Tokonow -> Pair("$KEY_TRACK_CLICK - now product bottomsheet", "$mChannelId - ${product.id} - ${mChannelType.value}")
             else -> Pair(KEY_TRACK_CLICK, "$mChannelId - ${product.id} - ${mChannelType.value} - product in bottom sheet")
         }
 
@@ -427,12 +427,15 @@ class PlayAnalytic(
     }
 
     fun clickFeaturedProduct(featuredProduct: PlayProductUiModel.Product, position: Int) {
+        val (eventAction, eventLabel) = if(featuredProduct.isTokoNow)
+            Pair("$KEY_TRACK_CLICK - now product carousel", "$mChannelId - ${featuredProduct.id} - ${mChannelType.value} - featured product tagging")
+        else Pair(KEY_TRACK_CLICK,"$mChannelId - ${featuredProduct.id} - ${mChannelType.value} - featured product tagging")
         trackingQueue.putEETracking(
                 EventModel(
                     "productClick",
                     KEY_TRACK_GROUP_CHAT_ROOM,
-                    KEY_TRACK_CLICK,
-                    "$mChannelId - ${featuredProduct.id} - ${mChannelType.value} - featured product tagging"
+                    eventAction,
+                    eventLabel
                 ),
                 hashMapOf(
                     "ecommerce" to hashMapOf(

@@ -15,4 +15,7 @@ interface PlayTokonowAnalytic {
 
     fun impressNowToaster(channelId: String, channelType: PlayChannelType)
     fun clickLihatNowToaster(channelId: String, channelType: PlayChannelType)
+
+    fun impressGlobalToaster(channelId: String, channelType: PlayChannelType)
+    fun clickGlobalToaster(channelId: String, channelType: PlayChannelType)
 }
