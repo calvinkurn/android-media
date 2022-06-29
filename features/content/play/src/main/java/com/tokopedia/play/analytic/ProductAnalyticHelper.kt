@@ -37,7 +37,7 @@ class ProductAnalyticHelper(
     }
 
     fun sendImpressedFeaturedProducts() {
-        analytic.impressFeaturedProducts(getFinalProducts())
+        analytic.impressFeaturedProducts(getFinalProducts(), sectionInfo)
         clearProducts()
     }
 

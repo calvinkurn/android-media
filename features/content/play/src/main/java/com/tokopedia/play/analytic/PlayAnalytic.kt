@@ -392,15 +392,20 @@ class PlayAnalytic(
         )
     }
 
-    fun impressFeaturedProducts(products: List<Pair<PlayProductUiModel.Product, Int>>) {
+    fun impressFeaturedProducts(products: List<Pair<PlayProductUiModel.Product, Int>>, sectionInfo: ProductSectionUiModel.Section) {
         if (products.isEmpty()) return
+
+        val (eventAction, eventLabel) = when(sectionInfo.config.type){
+            ProductSectionType.Tokonow -> Pair("view - now product carousel","$mChannelId - ${products.first().first.id} - ${mChannelType.value}")
+            else -> Pair("view on featured product", "$mChannelId - ${products.first().first.id} - ${mChannelType.value} - featured product tagging")
+        }
 
         trackingQueue.putEETracking(
                 EventModel(
                         "productView",
                         KEY_TRACK_GROUP_CHAT_ROOM,
-                        "view on featured product",
-                        "$mChannelId - ${products.first().first.id} - ${mChannelType.value} - featured product tagging",
+                        eventAction,
+                        eventLabel,
                 ),
                 hashMapOf(
                         "ecommerce" to hashMapOf(
