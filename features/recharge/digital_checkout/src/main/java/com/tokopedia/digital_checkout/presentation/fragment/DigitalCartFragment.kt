@@ -400,7 +400,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             } else {
                 viewEmptyState.errorTitle.text = getString(R.string.digital_checkout_empty_state_title)
                 viewEmptyState.errorIllustration.loadImage(getString(R.string.digital_cart_default_error_img_url))
-                viewEmptyState.errorDescription.text = "${errMsg}. Kode Error: ($errCode)"
+                viewEmptyState.errorDescription.text = getString(com.tokopedia.digital_checkout.R.string.digital_cart_error_message, errMsg, errCode)
             }
 
             viewEmptyState.errorAction.text = getString(R.string.digital_checkout_empty_state_btn)
