@@ -31,7 +31,7 @@ class TokoFoodMiniCartWidget @JvmOverloads constructor(
     private var totalQuantity: Int = Int.ZERO
     set(value) {
         val ctaText =
-            if (totalQuantity <= Int.ZERO) {
+            if (value <= Int.ZERO) {
                 context?.getString(com.tokopedia.tokofood.R.string.minicart_order_empty).orEmpty()
             } else {
                 context?.getString(com.tokopedia.tokofood.R.string.minicart_order, value).orEmpty()
@@ -96,7 +96,12 @@ class TokoFoodMiniCartWidget @JvmOverloads constructor(
     }
 
     private fun renderError() {
-        viewBinding?.totalAmountMiniCart?.isTotalAmountDisabled = true
+        viewBinding?.totalAmountMiniCart?.run {
+            if (isTotalAmountLoading) {
+                isTotalAmountLoading = false
+            }
+            isTotalAmountDisabled = true
+        }
     }
 
     override fun onAttachedToWindow() {
