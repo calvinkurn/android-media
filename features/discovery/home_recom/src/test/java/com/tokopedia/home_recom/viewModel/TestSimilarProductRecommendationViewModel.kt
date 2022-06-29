@@ -2,7 +2,9 @@ package com.tokopedia.home_recom.viewModel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.home_recom.util.RecommendationDispatcherTest
+import com.tokopedia.home_recom.util.Response
 import com.tokopedia.home_recom.viewmodel.SimilarProductRecommendationViewModel
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
@@ -42,7 +44,7 @@ class TestSimilarProductRecommendationViewModel {
     private val topAdsWishlishedUseCase = mockk<TopAdsWishlishedUseCase>(relaxed = true)
     private val getRecommendationFilterChips = mockk<GetRecommendationFilterChips>(relaxed = true)
 
-    private val viewModel = SimilarProductRecommendationViewModel(
+    private val viewModel = spyk(SimilarProductRecommendationViewModel(
             dispatcher = RecommendationDispatcherTest(),
             singleRecommendationUseCase = getSingleRecommendationUseCase,
             topAdsWishlishedUseCase = topAdsWishlishedUseCase,
@@ -52,7 +54,7 @@ class TestSimilarProductRecommendationViewModel {
             getRecommendationFilterChips = getRecommendationFilterChips,
             addToWishlistV2UseCase = addToWishlistV2UseCase,
             deleteWishlistV2UseCase = deleteWishlistV2UseCase
-    )
+    ), recordPrivateCalls = true)
     private val recommendation = RecommendationItem(productId = 1234)
 
     @Test
@@ -83,15 +85,14 @@ class TestSimilarProductRecommendationViewModel {
     }
 
     @Test
-    fun `get error timeout data from network`(){
-        val slot = slot<Subscriber<RecommendationEntity.RecommendationData>>()
+    fun `given error timeout data from network when get recommendation then show error`(){
         coEvery { getRecommendationFilterChips.executeOnBackground() } returns RecommendationFilterChipsEntity.FilterAndSort()
         every { getSingleRecommendationUseCase.getRecomParams(any(), any(), any()) } returns RequestParams()
-        every { getSingleRecommendationUseCase.execute(any(), capture(slot)) } answers {
-            slot.captured.onError(TimeoutException())
-        }
+        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } throws TimeoutException()
         viewModel.getSimilarProductRecommendation(1, "", "", "")
-        Assert.assertTrue(viewModel.recommendationItem.value != null && viewModel.recommendationItem.value!!.isError())
+        Assert.assertTrue(viewModel.recommendationItem.value != null)
+        Assert.assertTrue(viewModel.recommendationItem.value?.isError() == true)
+        Assert.assertTrue(viewModel.recommendationItem.value?.exception is TimeoutException)
     }
 
     @Test
@@ -383,34 +384,6 @@ class TestSimilarProductRecommendationViewModel {
     }
 
     @Test
-    fun `get error remove empty click`(){
-        val filterChip = RecommendationFilterChipsEntity.FilterAndSort(
-                filterChip = listOf(RecommendationFilterChipsEntity.RecommendationFilterChip(title = "Penawaran", options = listOf(RecommendationFilterChipsEntity.Option(name = "Official Store", key = "os", value = "true")))),
-                sortChip = listOf(RecommendationFilterChipsEntity.RecommendationSortChip(name = "Terlaris", key = "terlaris", value = "true"))
-        )
-        coEvery { getRecommendationFilterChips.executeOnBackground() } returns filterChip
-        every { getSingleRecommendationUseCase.getRecomParams(any(), any(), any()) } returns RequestParams()
-        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } throws Exception()
-        viewModel.getRecommendationFromEmptyFilter( filterChip.filterChip.first().options.first(), "", "", "")
-        assert(viewModel.filterSortChip.value?.isError() == true)
-        assert(viewModel.recommendationItem.value?.isError() == true)
-    }
-
-    @Test
-    fun `get empty recom when empty filter click`(){
-        val filterChip = RecommendationFilterChipsEntity.FilterAndSort(
-                filterChip = listOf(RecommendationFilterChipsEntity.RecommendationFilterChip(title = "Penawaran", options = listOf(RecommendationFilterChipsEntity.Option(name = "Official Store", key = "os", value = "true")))),
-                sortChip = listOf(RecommendationFilterChipsEntity.RecommendationSortChip(name = "Terlaris", key = "terlaris", value = "true"))
-        )
-        coEvery { getRecommendationFilterChips.executeOnBackground() } returns filterChip
-        every { getSingleRecommendationUseCase.getRecomParams(any(), any(), any()) } returns RequestParams()
-        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns RecommendationEntity.RecommendationData()
-        viewModel.getRecommendationFromEmptyFilter( filterChip.filterChip.first().options.first(), "", "", "")
-        assert(viewModel.recommendationItem.value?.isEmpty() == true)
-        assert(viewModel.recommendationItem.value?.isEmpty() == true)
-    }
-
-    @Test
     fun `get selected sort`(){
         val filterChip = RecommendationFilterChipsEntity.FilterAndSort(
                 filterChip = listOf(RecommendationFilterChipsEntity.RecommendationFilterChip(title = "Penawaran", options = listOf(RecommendationFilterChipsEntity.Option(name = "Official Store", key = "os", value = "true", isActivated = true)))),
@@ -498,4 +471,60 @@ class TestSimilarProductRecommendationViewModel {
         Assert.assertEquals(viewModel.userId(), "1")
     }
 
+//    @Test
+//    fun `given current recommendationItem not null when load first page then set recommendationItem to null first`() {
+//        coEvery { viewModel.getProperty("_recommendationItem")?.invokeNoArgs("getValue") } answers {
+//            Response.success(Pair(listOf(RecommendationItem()), false))
+//        }
+//
+//        viewModel.getSimilarProductRecommendation(1, "", "", "")
+//
+//        Assert.assertTrue(viewModel.recommendationItem.value?.isSuccess() == true)
+//        Assert.assertTrue(viewModel.recommendationItem.value == null)
+//    }
+
+    @Test
+    fun `given empty when full filter click then pass empty value`(){
+        val filterChip = RecommendationFilterChipsEntity.FilterAndSort(
+            filterChip = listOf(RecommendationFilterChipsEntity.RecommendationFilterChip(title = "Penawaran", options = listOf(RecommendationFilterChipsEntity.Option(name = "Official Store", key = "os", value = "true")))),
+            sortChip = listOf(RecommendationFilterChipsEntity.RecommendationSortChip(name = "Terlaris", key = "terlaris", value = "true"))
+        )
+        coEvery { getRecommendationFilterChips.executeOnBackground() } returns filterChip
+        every { getSingleRecommendationUseCase.getRecomParams(any(), any(), any()) } returns RequestParams()
+        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns RecommendationEntity.RecommendationData(
+            recommendation = listOf(RecommendationEntity.Recommendation())
+        ) andThen RecommendationEntity.RecommendationData()
+
+        viewModel.getSimilarProductRecommendation(1, "", "", "")
+        assert(viewModel.filterSortChip.value?.isSuccess() == true)
+        assert(viewModel.recommendationItem.value?.isSuccess() == true)
+
+        viewModel.getRecommendationFromFullFilter(mapOf("terlaris" to "true"), mapOf("os" to "true"), "", "")
+        assert(viewModel.recommendationItem.value?.isEmpty() == true)
+    }
+
+    @Test
+    fun `given error when full filter click then show error`(){
+        val filterChip = RecommendationFilterChipsEntity.FilterAndSort(
+            filterChip = listOf(RecommendationFilterChipsEntity.RecommendationFilterChip(title = "Penawaran", options = listOf(RecommendationFilterChipsEntity.Option(name = "Official Store", key = "os", value = "true")))),
+            sortChip = listOf(RecommendationFilterChipsEntity.RecommendationSortChip(name = "Terlaris", key = "terlaris", value = "true"))
+        )
+        val error = MessageErrorException("error")
+
+        coEvery { getRecommendationFilterChips.executeOnBackground() } returns filterChip
+        every { getSingleRecommendationUseCase.getRecomParams(any(), any(), any()) } returns RequestParams()
+        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns RecommendationEntity.RecommendationData(
+            recommendation = listOf(RecommendationEntity.Recommendation())
+        ) andThenThrows error
+
+        viewModel.getSimilarProductRecommendation(1, "", "", "")
+        assert(viewModel.filterSortChip.value?.isSuccess() == true)
+        assert(viewModel.recommendationItem.value?.isSuccess() == true)
+
+        viewModel.getRecommendationFromFullFilter(mapOf("terlaris" to "true"), mapOf("os" to "true"), "", "")
+        assert(viewModel.filterSortChip.value?.isError() == true)
+        assert(viewModel.filterSortChip.value?.exception == error)
+        assert(viewModel.recommendationItem.value?.isError() == true)
+        assert(viewModel.recommendationItem.value?.exception?.message == error.message)
+    }
 }
