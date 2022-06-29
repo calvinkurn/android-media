@@ -1033,7 +1033,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     override fun onSuccessLoginEmail(loginTokenPojo: LoginTokenPojo?) {
         currentEmail = ""
         viewModel.getUserInfo()
-        clearTopAdsHeader()
     }
 
     private fun clearTopAdsHeader() {
@@ -1089,6 +1088,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             DataVisorWorker.scheduleWorker(it, true)
             AppAuthWorker.scheduleWorker(it, true)
             TwoFactorMluHelper.clear2FaInterval(it)
+            clearTopAdsHeader()
         }
 
         refreshRolloutVariant()

@@ -26,7 +26,7 @@ class TopAdsInterceptor constructor(val context: Context) : Interceptor {
     companion object {
         const val RESPONSE_HEADER_KEY = "Tkp-Enc-Sessionid"
         const val TOP_ADS_SHARED_PREF_KEY = "TopAdsSharedPreference"
-        const val TOP_ADS_TRACKING_KEY = "kpd-Tracking-ID"
+        const val TOP_ADS_TRACKING_KEY = "Tkpd-Tracking-ID"
     }
 }
 
