@@ -88,6 +88,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private static final String PARAM_BOOL_FALSE = "false";
     private static final int SHOP_MVC_LOCKED_TO_PRODUCT_TOTAL_SEGMENT = 3;
     private static final int SHOP_MVC_LOCKED_TO_PRODUCT_VOUCHER_SEGMENT = 1;
+    private static final String REDIRECTION_LINK_PARAM = "r";
+    private static final String USER_ID_PARAM = "uid";
 
     private final Activity context;
     private final DeepLinkView viewListener;
@@ -293,9 +295,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void doTopAdsOperation(Uri uriData) {
         Uri newUri = replaceUriParameter(uriData, userSession.getUserId());
-        String redirectionUrl = uriData.getQueryParameter("r");
+        String redirectionUrl = uriData.getQueryParameter(REDIRECTION_LINK_PARAM);
+        new TopAdsUrlHitter(context).hitClickUrlAndStoreHeader(this.getClass().getCanonicalName(),
+                newUri.toString(), "", "", "", userSession.isLoggedIn());
         RouteManager.route(context, redirectionUrl);
-        new TopAdsUrlHitter(context).hitClickUrlAndStoreHeader(this.getClass().getCanonicalName(), newUri.toString(),"","","", userSession.isLoggedIn());
     }
 
     private static Uri replaceUriParameter(Uri uri, String newValue) {
@@ -303,11 +306,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         final Uri.Builder newUri = uri.buildUpon().clearQuery();
         for (String param : params) {
             newUri.appendQueryParameter(param,
-                    param.equals("uid") ? newValue : uri.getQueryParameter(param));
+                    param.equals(USER_ID_PARAM) ? newValue : uri.getQueryParameter(param));
         }
-
         return newUri.build();
     }
+
     private void openSaldoDeposit() {
         RouteManager.route(context, ApplinkConst.SALDO);
     }

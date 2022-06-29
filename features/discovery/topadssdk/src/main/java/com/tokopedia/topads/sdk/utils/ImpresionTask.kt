@@ -6,6 +6,7 @@ import com.tokopedia.common.network.coroutines.RestRequestInteractor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.network.data.model.response.DataResponse
+import com.tokopedia.topads.sdk.TopAdsConstants.TopAdsClickUrlTrackerConstant.RESPONSE_HEADER_KEY
 import com.tokopedia.topads.sdk.listener.ImpressionListener
 import com.tokopedia.topads.sdk.listener.TopAdsHeaderResponseListener
 import com.tokopedia.topads.sdk.utils.ImpressionTaskAlert.Companion.getInstance
@@ -21,7 +22,7 @@ import java.io.IOException
 class ImpresionTask {
     private var impressionListener: ImpressionListener? = null
     private var topAdsHeaderResponseListener: TopAdsHeaderResponseListener? = null
-    private var taskAlert: ImpressionTaskAlert?
+    private var taskAlert: ImpressionTaskAlert? = null
     private var userSession: UserSessionInterface? = null
     private var fileName: String = ""
     private var methodName: String = ""
@@ -56,7 +57,8 @@ class ImpresionTask {
 
     constructor(className: String?, topAdsHeaderResponseListener: TopAdsHeaderResponseListener) {
         this.topAdsHeaderResponseListener = topAdsHeaderResponseListener
-        taskAlert = getInstance(className!!)
+        className?.let { taskAlert = getInstance(it) }
+
     }
 
     constructor(className: String?, userSession: UserSessionInterface?) {
@@ -95,18 +97,15 @@ class ImpresionTask {
         url?.let {
             GlobalScope.launch(Dispatchers.IO) {
                 try {
-                    if (taskAlert != null) {
-                        taskAlert!!.track(url, fileName, methodName, lineNumber)
-                    }
+                    taskAlert?.track(url, fileName, methodName, lineNumber)
+
                     //Request 1
                     val token = object : TypeToken<DataResponse<String>>() {}.type
                     val restRequest = RestRequest.Builder(url, token).build()
                     val headers = restRepository.getResponse(restRequest).headers;
                     if (topAdsHeaderResponseListener != null) {
                         if (headers != null) {
-                            topAdsHeaderResponseListener?.onSuccess(headers["Tkp-Enc-Sessionid"] ?: "")
-                        } else {
-                            topAdsHeaderResponseListener?.onFailed()
+                            topAdsHeaderResponseListener?.onSuccess(headers[RESPONSE_HEADER_KEY] ?: "")
                         }
                     }
                     Log.d("myHeaders", "execute: $headers")

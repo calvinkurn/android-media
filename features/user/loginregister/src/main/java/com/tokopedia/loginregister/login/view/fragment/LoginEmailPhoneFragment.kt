@@ -84,6 +84,8 @@ import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.discover.pojo.DiscoverData
 import com.tokopedia.loginregister.discover.pojo.ProviderData
 import com.tokopedia.loginregister.login.const.LoginConstants
+import com.tokopedia.loginregister.login.const.LoginConstants.TopAdsClickUrlTrackerConstant.RESPONSE_HEADER_KEY
+import com.tokopedia.loginregister.login.const.LoginConstants.TopAdsClickUrlTrackerConstant.TOP_ADS_SHARED_PREF_KEY
 import com.tokopedia.loginregister.login.di.LoginComponent
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckFingerprintResult
@@ -1035,9 +1037,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun clearTopAdsHeader() {
-        val sp = context?.getSharedPreferences("TopAdsSharedPreference", Context.MODE_PRIVATE)
+        val sp = context?.getSharedPreferences(TOP_ADS_SHARED_PREF_KEY, Context.MODE_PRIVATE)
         val editor = sp?.edit()
-        editor?.remove("Tkp-Enc-Sessionid")
+        editor?.remove(RESPONSE_HEADER_KEY)
         editor?.apply()
     }
 

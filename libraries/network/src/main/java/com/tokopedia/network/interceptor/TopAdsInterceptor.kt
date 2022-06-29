@@ -4,7 +4,6 @@ import android.content.Context
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
-import kotlin.Throws
 import java.io.IOException
 
 
@@ -18,9 +17,16 @@ class TopAdsInterceptor constructor(val context: Context) : Interceptor {
     }
 
     private fun addDebugHeader(newRequest: Request.Builder): Request.Builder {
-        val sp = context.getSharedPreferences("TopAdsSharedPreference", Context.MODE_PRIVATE)
-        val neeHeader = sp.getString("Tkp-Enc-Sessionid", "")
-        if (!neeHeader.isNullOrEmpty()) newRequest.addHeader("Tkpd-Tracking-ID", neeHeader)
+        val sp = context.getSharedPreferences(TOP_ADS_SHARED_PREF_KEY, Context.MODE_PRIVATE)
+        val newHeader = sp.getString(RESPONSE_HEADER_KEY, "")
+        if (!newHeader.isNullOrEmpty()) newRequest.addHeader(TOP_ADS_TRACKING_KEY, newHeader)
         return newRequest
     }
+
+    companion object {
+        const val RESPONSE_HEADER_KEY = "Tkp-Enc-Sessionid"
+        const val TOP_ADS_SHARED_PREF_KEY = "TopAdsSharedPreference"
+        const val TOP_ADS_TRACKING_KEY = "kpd-Tracking-ID"
+    }
 }
+

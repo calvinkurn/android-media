@@ -7,4 +7,9 @@ object TopAdsConstants {
     const val LAYOUT_6 = 6
     const val LAYOUT_8 = 8
     const val LAYOUT_9 = 9
+
+    object TopAdsClickUrlTrackerConstant{
+        const val RESPONSE_HEADER_KEY = "Tkp-Enc-Sessionid"
+        const val TOP_ADS_SHARED_PREF_KEY = "TopAdsSharedPreference"
+    }
 }
