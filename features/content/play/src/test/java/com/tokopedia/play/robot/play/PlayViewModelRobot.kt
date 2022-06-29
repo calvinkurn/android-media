@@ -99,7 +99,7 @@ class PlayViewModelRobot(
         castPlayerHelper,
         playShareExperience,
         playLog,
-        chatStreamsFactory
+        chatStreamsFactory,
     )
 
     fun createPage(channelData: PlayChannelData) {

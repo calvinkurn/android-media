@@ -84,14 +84,14 @@ class VideoAnalyticHelper(
             if (watchDurationModel.watchTime == null) watchDurationModel = watchDurationModel.copy(
                     watchTime = System.currentTimeMillis()
             )
-            watchDurationInSeconds = watchDurationModel.watchTime ?: 0L / 1000
+            watchDurationInSeconds = watchDurationModel.watchTime ?: 0L / DURATION_DIVIDER
         } else {
             val watchTime = watchDurationModel.watchTime
             if (watchTime != null) watchDurationModel = watchDurationModel.copy(
                     watchTime = null,
                     cumulationDuration = watchDurationModel.cumulationDuration + abs(System.currentTimeMillis() - watchTime)
             )
-            watchDurationInSeconds = watchDurationModel.cumulationDuration / 1000
+            watchDurationInSeconds = watchDurationModel.cumulationDuration / DURATION_DIVIDER
         }
         log.logWatchingDuration(watchDurationInSeconds.toString())
     }
@@ -110,11 +110,15 @@ class VideoAnalyticHelper(
     private fun sendVideoBufferingAnalytic() {
         analytic.trackVideoBuffering(
                 bufferCount = bufferTrackingModel.bufferCount,
-                bufferDurationInSecond = ((System.currentTimeMillis() - bufferTrackingModel.lastBufferMs) / 1000).toInt()
+                bufferDurationInSecond = ((System.currentTimeMillis() - bufferTrackingModel.lastBufferMs) / DURATION_DIVIDER).toInt()
         )
     }
 
     private fun sendErrorStateVideoAnalytic(errorMessage: String) {
         analytic.trackVideoError(errorMessage)
+    }
+
+    companion object {
+        private const val DURATION_DIVIDER = 1000
     }
 }
