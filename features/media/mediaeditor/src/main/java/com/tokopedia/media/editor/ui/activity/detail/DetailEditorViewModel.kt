@@ -26,8 +26,8 @@ class DetailEditorViewModel @Inject constructor(
     private var _intentUiModel = MutableLiveData<EditorDetailUiModel>()
     val intentUiModel: LiveData<EditorDetailUiModel> get() = _intentUiModel
 
-    private var _brightnessValue = MutableLiveData<ColorMatrixColorFilter>()
-    val brightnessValue: LiveData<ColorMatrixColorFilter> get() = _brightnessValue
+    private var _brightnessFilter = MutableLiveData<ColorMatrixColorFilter>()
+    val brightnessFilter: LiveData<ColorMatrixColorFilter> get() = _brightnessFilter
 
     private var _removeBackground = MutableLiveData<File?>()
     val removeBackground: LiveData<File?> get() = _removeBackground
@@ -37,7 +37,7 @@ class DetailEditorViewModel @Inject constructor(
     }
 
     fun setBrightness(value: Float) {
-        _brightnessValue.value = colorFilterRepository.brightness(value)
+        _brightnessFilter.value = colorFilterRepository.brightness(value)
     }
 
     fun setRemoveBackground(filePath: String) {

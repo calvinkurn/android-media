@@ -63,7 +63,7 @@ class DetailEditorFragment @Inject constructor(
     }
 
     private fun observeBrightness() {
-        viewModel.brightnessValue.observe(viewLifecycleOwner) {
+        viewModel.brightnessFilter.observe(viewLifecycleOwner) {
             viewBinding?.imgPreview?.colorFilter = it
         }
     }
