@@ -178,7 +178,7 @@ object AddEditProductMapper {
 
     private fun VariantInputModel.fixVariantData(shipmentInputModel: ShipmentInputModel) {
         val isOldVariantData = hasVariant() && products.any { it.weight == null }
-        if (!isOldVariantData) return this
+        if (!isOldVariantData) return
 
         val weightUnit = getWeightUnitString(shipmentInputModel.weightUnit)
         val weight = GetProductMapper().convertToGram(shipmentInputModel.weight, weightUnit)
