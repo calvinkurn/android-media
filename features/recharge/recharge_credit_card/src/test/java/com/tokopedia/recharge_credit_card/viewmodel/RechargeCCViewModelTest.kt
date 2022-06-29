@@ -348,6 +348,24 @@ class RechargeCCViewModelTest {
     }
 
     @Test
+    fun validateCCNumber_GivenMaskedCC_ReturnTrue() {
+        rechargeCCViewModel.prefixData = RechargeCCCatalogPrefix(
+            CatalogPrefixSelect(
+                prefixes = getMockPrefixes(),
+                validations = getMockValidations()
+            )
+        )
+        testCoroutineRule.runBlockingTest {
+            val clientNumber = MASKED_CC_NUMBER
+            rechargeCCViewModel.validateCCNumber(clientNumber)
+
+            val actualData = rechargeCCViewModel.prefixValidation
+            Assert.assertNotNull(actualData)
+            Assert.assertTrue(actualData.value == true)
+        }
+    }
+
+    @Test
     fun cancelValidatorJob_GivenNonNullJob_ShouldCancelJob() {
         testCoroutineRule.runBlockingTest {
             rechargeCCViewModel.validateCCNumber(VALID_CC_NUMBER)
@@ -519,5 +537,6 @@ class RechargeCCViewModelTest {
     companion object {
         private const val VALID_CC_NUMBER = "4111111111111111"
         private const val INVALID_CC_NUMBER = "0000000000000000"
+        private const val MASKED_CC_NUMBER = "411111******1111"
     }
 }
