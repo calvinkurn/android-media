@@ -10,6 +10,7 @@ import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.TokofoodItemAddOnLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.presentation.adapter.ProductOptionAdapter
 import com.tokopedia.tokofood.feature.merchant.presentation.decoration.ProductOptionDividerDecoration
+import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType
 import com.tokopedia.tokofood.feature.merchant.presentation.model.AddOnUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.model.OptionUiModel
 
@@ -90,7 +91,8 @@ class ProductAddOnViewHolder(
             setData(optionItems.onEach {
                 it.dataSetPosition = dataSetPosition
                 it.maxSelected = addOnUiModel.maxQty
-                it.canBeSelected = it.isSelected || totalSelected < addOnUiModel.maxQty
+                it.canBeSelected =
+                    it.selectionControlType == SelectionControlType.SINGLE_SELECTION || it.isSelected || totalSelected < addOnUiModel.maxQty
             })
         }
         binding.rvAddOnList.run {
