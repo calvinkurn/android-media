@@ -20,8 +20,8 @@ class GetTemporaryKeyUseCase @Inject constructor(
     }
 
     override fun graphqlQuery(): String = """
-       	query getTemporaryKey(${'$'}module: String!){
-            generate_key(module:${'$'}module) {
+       	query getTemporaryKey(${'$'}module: String!, ${'$'}current_token: String!){
+            generate_key(module:${'$'}module, current_token:${'$'}current_token) {
                 key
             }
         }""".trimIndent()

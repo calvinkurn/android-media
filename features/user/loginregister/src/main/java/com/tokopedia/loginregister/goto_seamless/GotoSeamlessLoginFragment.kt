@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.databinding.FragmentGotoSeamlessBinding
 import com.tokopedia.loginregister.goto_seamless.di.GotoSeamlessComponent
+import com.tokopedia.loginregister.goto_seamless.trackers.GotoSeamlessTracker
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -17,7 +18,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import javax.inject.Inject
 
-class GotoSeamlessLandingFragment: BaseDaggerFragment() {
+class GotoSeamlessLoginFragment: BaseDaggerFragment() {
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -48,6 +49,7 @@ class GotoSeamlessLandingFragment: BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViews()
+        GotoSeamlessTracker.viewGotoSeamlessPage()
         viewModel.gojekProfileData.observe(viewLifecycleOwner) {
             binding?.gotoSeamlessPrimaryBtn?.isLoading = false
             when(it) {
@@ -64,8 +66,19 @@ class GotoSeamlessLandingFragment: BaseDaggerFragment() {
 
         viewModel.loginResponse.observe(viewLifecycleOwner) {
             when(it) {
-                is Success -> successSeamlessLogin()
-                is Fail -> cancelSeamlessLoginFlow()
+                is Success -> {
+                    if(it.data.errors.isNotEmpty()) {
+                        val errorMsg = it.data.errors[0].message
+                        GotoSeamlessTracker.clickOnSeamlessButton("${GotoSeamlessTracker.Label.FAILED} - $errorMsg")
+                        cancelSeamlessLoginFlow()
+                    } else {
+                        successSeamlessLogin()
+                    }
+                }
+                is Fail -> {
+                    GotoSeamlessTracker.clickOnSeamlessButton("${GotoSeamlessTracker.Label.FAILED} - ${it.throwable.message}")
+                    cancelSeamlessLoginFlow()
+                }
             }
             binding?.gotoSeamlessPrimaryBtn?.isLoading = false
         }
@@ -75,6 +88,7 @@ class GotoSeamlessLandingFragment: BaseDaggerFragment() {
     }
 
     private fun successSeamlessLogin() {
+        GotoSeamlessTracker.clickOnSeamlessButton(GotoSeamlessTracker.Label.SUCCESS)
         activity?.setResult(Activity.RESULT_OK)
         activity?.finish()
     }
@@ -88,6 +102,7 @@ class GotoSeamlessLandingFragment: BaseDaggerFragment() {
         binding?.gotoSeamlessMainImg?.loadImage(ILLUSTRATION_IMG_URL)
 
         binding?.gotoSeamlessPrimaryBtn?.setOnClickListener {
+            GotoSeamlessTracker.clickOnSeamlessButton(GotoSeamlessTracker.Label.CLICK)
             val gojekProfileData = viewModel.gojekProfileData.value
             if(gojekProfileData is Success) {
                 binding?.gotoSeamlessPrimaryBtn?.isLoading = true
@@ -96,16 +111,22 @@ class GotoSeamlessLandingFragment: BaseDaggerFragment() {
         }
 
         binding?.gotoSeamlessSecondaryBtn?.setOnClickListener {
+            GotoSeamlessTracker.clickOnMasukAkunLain()
             cancelSeamlessLoginFlow()
         }
+    }
+
+    override fun onFragmentBackPressed(): Boolean {
+        GotoSeamlessTracker.clickOnBackBtn()
+        return super.onFragmentBackPressed()
     }
 
     companion object {
         private const val GOTO_SEAMLESS_SCREEN_NAME = "gotoSeamlessLandingScreen"
         const val ILLUSTRATION_IMG_URL = "https://images.tokopedia.net/img/android/user/loginregister/img_goto_illustration_2x.png"
 
-        fun createInstance(): GotoSeamlessLandingFragment {
-            return GotoSeamlessLandingFragment()
+        fun createInstance(): GotoSeamlessLoginFragment {
+            return GotoSeamlessLoginFragment()
         }
     }
 }

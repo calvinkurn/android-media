@@ -8,10 +8,10 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.loginregister.goto_seamless.di.DaggerGotoSeamlessComponent
 import com.tokopedia.loginregister.goto_seamless.di.GotoSeamlessComponent
 
-class GotoSeamlessLandingActivity: BaseSimpleActivity(), HasComponent<GotoSeamlessComponent> {
+class GotoSeamlessLoginActivity: BaseSimpleActivity(), HasComponent<GotoSeamlessComponent> {
 
     override fun getNewFragment(): Fragment {
-        return GotoSeamlessLandingFragment.createInstance()
+        return GotoSeamlessLoginFragment.createInstance()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

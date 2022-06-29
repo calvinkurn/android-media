@@ -188,7 +188,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         clearWebView()
         clearLocalChooseAddress()
         clearRegisterPushNotificationPref()
-
+        clearTemporaryTokenForSeamless()
         instance.refreshFCMTokenFromForeground(userSession.deviceId, true)
 
         tetraDebugger?.setUserId("")
@@ -273,6 +273,14 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         logoutLoading?.visibility = View.GONE
     }
 
+    private fun clearTemporaryTokenForSeamless() {
+        val sharedPrefs = getSharedPreferences(
+            GOTO_SEAMLESS_PREF,
+            Context.MODE_PRIVATE
+        )
+        sharedPrefs.edit().clear().apply()
+    }
+
     @SuppressLint("ObsoleteSdkInt")
     private fun clearWebView() {
         try {
@@ -296,6 +304,9 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         private const val KEY_PROFILE_PICTURE = "profile_picture"
         private const val CHOOSE_ADDRESS_PREF = "local_choose_address"
         private const val INVALID_TOKEN = "Token tidak valid."
+
+        const val GOTO_SEAMLESS_PREF = "goto_seamless_pref"
+        const val KEY_TEMPORARY = "temporary_key"
 
         /**
          * class [com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker]

@@ -5,5 +5,7 @@ import com.tokopedia.graphql.data.GqlParam
 
 data class GetTemporaryKeyParam(
     @SerializedName("module")
-    val module: String = ""
+    val module: String = "",
+    @SerializedName("current_token")
+    val currentToken: String = ""
 ): GqlParam

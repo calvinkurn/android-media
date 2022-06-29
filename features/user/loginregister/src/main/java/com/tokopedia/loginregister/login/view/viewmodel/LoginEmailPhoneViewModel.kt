@@ -17,6 +17,7 @@ import com.tokopedia.loginregister.common.view.ticker.domain.usecase.TickerInfoU
 import com.tokopedia.loginregister.discover.pojo.DiscoverData
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
 import com.tokopedia.loginregister.goto_seamless.GotoSeamlessHelper
+import com.tokopedia.loginregister.goto_seamless.GotoSeamlessPreference
 import com.tokopedia.loginregister.goto_seamless.model.GetTemporaryKeyParam
 import com.tokopedia.loginregister.goto_seamless.usecase.GetTemporaryKeyUseCase
 import com.tokopedia.loginregister.goto_seamless.usecase.GetTemporaryKeyUseCase.Companion.MODULE_GOTO_SEAMLESS
@@ -59,6 +60,7 @@ class LoginEmailPhoneViewModel @Inject constructor(
     private val loginFingerprintUseCase: LoginFingerprintUseCase,
     private val getTemporaryKeyUseCase: GetTemporaryKeyUseCase,
     private val gotoSeamlessHelper: GotoSeamlessHelper,
+    private val gotoSeamlessPreference: GotoSeamlessPreference,
     @Named(SessionModule.SESSION_MODULE)
     private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers
@@ -272,8 +274,12 @@ class LoginEmailPhoneViewModel @Inject constructor(
 
     fun getTemporaryKeyForSDK(tkpdProfile: ProfilePojo) {
         launchCatchError(block = {
-            val params = GetTemporaryKeyParam(module = MODULE_GOTO_SEAMLESS)
+            val params = GetTemporaryKeyParam(
+                module = MODULE_GOTO_SEAMLESS,
+                currentToken = gotoSeamlessPreference.getTemporaryToken()
+            )
             val result = getTemporaryKeyUseCase(params)
+            gotoSeamlessPreference.storeTemporaryToken(result.data.key)
             val profile = Profile(
                 accessToken = result.data.key,
                 name = tkpdProfile.profileInfo.fullName,

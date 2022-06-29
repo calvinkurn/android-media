@@ -3,7 +3,10 @@ package com.tokopedia.loginregister.login.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.encryption.security.AeadEncryptor
+import com.tokopedia.encryption.security.AeadEncryptorImpl
 import com.tokopedia.loginregister.common.view.bottomsheet.SocmedBottomSheet
+import com.tokopedia.loginregister.goto_seamless.GotoSeamlessPreference
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreferenceManager
 import dagger.Module
@@ -45,6 +48,14 @@ open class LoginModule {
 
     @Provides
     fun provideFingerprintPreferenceManager(@ApplicationContext context: Context): FingerprintPreference = FingerprintPreferenceManager(context)
+
+    @Provides
+    fun provideAeadEncryptor(@ApplicationContext context: Context): AeadEncryptor = AeadEncryptorImpl(context)
+
+    @Provides
+    fun provideGotoSeamlessPreference(@ApplicationContext context: Context, aeadEncryptor: AeadEncryptor): GotoSeamlessPreference {
+        return GotoSeamlessPreference(context, aeadEncryptor)
+    }
 
     companion object {
         const val NAMED_DISPATCHERS_IO = "DispatcherIO"

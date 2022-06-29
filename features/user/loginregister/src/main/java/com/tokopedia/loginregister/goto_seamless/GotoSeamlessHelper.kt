@@ -41,6 +41,18 @@ class GotoSeamlessHelper @Inject constructor(@ApplicationContext val context: Co
         ssoDataBridge.saveUserProfileData(context, profile)
     }
 
+    suspend fun updateUserProfileToSDK(profile: Profile) {
+        val ssoHostData = SSOHostData(
+            clientId = context.getString(com.tokopedia.keys.R.string.gojek_sso_client_id),
+            clientSecret = context.getString(com.tokopedia.keys.R.string.gojek_sso_client_secret),
+            Environment.Integration
+        )
+
+        val ssoDataBridge = SSOHostBridge.getSsoHostBridge()
+        ssoDataBridge.initBridge(context, ssoHostData)
+        ssoDataBridge.updateUserProfileData(context, profile)
+    }
+
     companion object {
         const val KEY_AUTH_CODE = "auth_code"
         const val KEY_ERROR = "error"

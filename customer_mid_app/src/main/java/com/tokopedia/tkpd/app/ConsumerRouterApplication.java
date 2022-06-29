@@ -102,7 +102,7 @@ import retrofit2.Callback;
 import rx.Observable;
 import timber.log.Timber;
 import com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker;
-
+import com.tokopedia.loginregister.goto_seamless.worker.TemporaryTokenWorker;
 
 /**
  * @author normansyahputa on 12/15/16.
@@ -188,7 +188,15 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         initTetraDebugger();
         initCMDependencies();
         initDataStoreMigration();
+        initSeamlessLoginWorker();
         return true;
+    }
+
+    private void initSeamlessLoginWorker() {
+        UserSessionInterface userSession = new UserSession(context);
+        if(userSession.isLoggedIn()) {
+            TemporaryTokenWorker.Companion.scheduleWorker(this);
+        }
     }
 
     private void initDataStoreMigration() {

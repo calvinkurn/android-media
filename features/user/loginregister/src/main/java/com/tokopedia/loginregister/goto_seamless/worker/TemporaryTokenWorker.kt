@@ -1,0 +1,95 @@
+package com.tokopedia.loginregister.goto_seamless.worker
+
+import android.content.Context
+import androidx.work.*
+import com.gojek.icp.identity.loginsso.data.models.Profile
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.loginregister.goto_seamless.GotoSeamlessHelper
+import com.tokopedia.loginregister.goto_seamless.GotoSeamlessPreference
+import com.tokopedia.loginregister.goto_seamless.di.DaggerGotoSeamlessComponent
+import com.tokopedia.loginregister.goto_seamless.model.GetTemporaryKeyParam
+import com.tokopedia.loginregister.goto_seamless.usecase.GetTemporaryKeyUseCase
+import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+
+class TemporaryTokenWorker(val appContext: Context, params: WorkerParameters) :
+    CoroutineWorker(appContext, params) {
+
+    @Inject
+    lateinit var getTemporaryKeyUseCase: GetTemporaryKeyUseCase
+
+    @Inject
+    lateinit var gotoSeamlessPreference: GotoSeamlessPreference
+
+    @Inject
+    lateinit var gotoSeamlessHelper: GotoSeamlessHelper
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
+    init {
+        DaggerGotoSeamlessComponent.builder()
+            .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
+            .build()
+            .inject(this)
+    }
+
+    override suspend fun doWork(): Result {
+        if(userSession.isLoggedIn) {
+            return withContext(Dispatchers.IO) {
+                try {
+                    println("tempTokenWorker: starting...")
+                    val params = GetTemporaryKeyParam(
+                        module = GetTemporaryKeyUseCase.MODULE_GOTO_SEAMLESS,
+                        currentToken = gotoSeamlessPreference.getTemporaryToken()
+                    )
+                    val result = getTemporaryKeyUseCase(params)
+                    if(result.data.key.isNotEmpty()) {
+                        gotoSeamlessPreference.storeTemporaryToken(result.data.key)
+                        val profile = Profile(
+                            accessToken = result.data.key,
+                            name = userSession.name,
+                            customerId = "",
+                            countryCode = "+62",
+                            phone = userSession.phoneNumber,
+                            email = userSession.email,
+                            profileImageUrl = userSession.profilePicture
+                        )
+                        gotoSeamlessHelper.updateUserProfileToSDK(profile)
+                        println("tempTokenWorker: success ($profile)")
+                    }
+                    Result.success()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    println("tempTokenWorker: failed (${e.message})")
+                    Result.failure()
+                }
+            }
+        } else {
+            println("tempTokenWorker: not logged in")
+            return Result.success()
+        }
+    }
+
+    companion object {
+        private const val WORKER_ID = "GOTO_SEAMLESS_WORKER"
+        fun scheduleWorker(appContext: Context) {
+            try {
+                val periodicWorker = PeriodicWorkRequest
+                    .Builder(TemporaryTokenWorker::class.java, 15, TimeUnit.MINUTES)
+                    .setConstraints(Constraints.NONE)
+                    .build()
+
+                WorkManager.getInstance(appContext).enqueueUniquePeriodicWork(
+                    WORKER_ID,
+                    ExistingPeriodicWorkPolicy.KEEP,
+                    periodicWorker
+                )
+            } catch (ex: Exception) {
+            }
+        }
+    }
+}
