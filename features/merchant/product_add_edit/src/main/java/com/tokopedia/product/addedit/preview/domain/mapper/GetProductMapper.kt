@@ -44,7 +44,7 @@ class GetProductMapper @Inject constructor() {
     )
 
     fun convertToGram(weight: Int, unit: String): Int {
-        return if (unit == UNIT_KILOGRAM_SRING) weight * UNIT_GRAM_TO_KILOGRAM_MULTIPLIER else weight
+        return if (unit == UNIT_KILOGRAM_STRING) weight * UNIT_GRAM_TO_KILOGRAM_MULTIPLIER else weight
     }
 
     private fun mapVariantInputModel(variant: Variant): VariantInputModel =
