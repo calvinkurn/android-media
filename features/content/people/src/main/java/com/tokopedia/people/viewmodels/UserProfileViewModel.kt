@@ -45,9 +45,6 @@ class UserProfileViewModel @Inject constructor(
     private val playPostContent = MutableLiveData<Resources<UserPostModel>>()
     val playPostContentLiveData : LiveData<Resources<UserPostModel>> get() = playPostContent
 
-    private var profileHeaderErrorMessage = MutableLiveData<Throwable>()
-    val profileHeaderErrorMessageLiveData : LiveData<Throwable> get() = profileHeaderErrorMessage
-
     private var followErrorMessage = MutableLiveData<Throwable>()
     val followErrorMessageLiveData : LiveData<Throwable> get() = followErrorMessage
 
@@ -90,13 +87,12 @@ class UserProfileViewModel @Inject constructor(
     }
 
     /** Handle Action */
-    /** TODO: call it on init */
     private fun handleLoadProfile(username: String, isRefresh: Boolean) {
         launchCatchError(block = {
             val deferredProfileInfo = asyncCatchError(block = {
                 repo.getProfile(username)
             }) {
-                profileHeaderErrorMessage.value = it
+                _uiEvent.emit(UserProfileUiEvent.ErrorLoadProfile(it))
                 ProfileUiModel.Empty
             }
 
@@ -127,7 +123,7 @@ class UserProfileViewModel @Inject constructor(
             /** TODO: refactor - gonna find a better way to trigger load video */
             userPost.value = isRefresh
         }) {
-            profileHeaderErrorMessage.value = it
+            _uiEvent.emit(UserProfileUiEvent.ErrorLoadProfile(it))
         }
     }
 

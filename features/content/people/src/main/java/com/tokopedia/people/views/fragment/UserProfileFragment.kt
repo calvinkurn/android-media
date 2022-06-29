@@ -326,7 +326,6 @@ class UserProfileFragment @Inject constructor(
         observeUiEvent()
 
         addListObserver()
-        addProfileHeaderErrorObserver()
         addSocialFollowErrorObserver()
         addSocialUnFollowErrorObserver()
         addUserPostObserver()
@@ -362,6 +361,21 @@ class UserProfileFragment @Inject constructor(
 
                         view?.showErrorToast(message)
                     }
+                    is UserProfileUiEvent.ErrorLoadProfile -> {
+                        showGlobalError(
+                            when (event.throwable) {
+                                is UnknownHostException, is SocketTimeoutException -> NO_CONNECTION
+                                is IllegalStateException -> PAGE_FULL
+                                is RuntimeException -> {
+                                    when (event.throwable.localizedMessage?.toIntOrNull()) {
+                                        ReponseStatus.NOT_FOUND -> PAGE_NOT_FOUND
+                                        else -> SERVER_ERROR
+                                    }
+                                }
+                                else -> SERVER_ERROR
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -389,68 +403,6 @@ class UserProfileFragment @Inject constructor(
                     }
                     is ErrorMessage -> {
                         mAdapter.onError()
-                    }
-                }
-            }
-        })
-
-    private fun addProfileHeaderErrorObserver() =
-        viewModel.profileHeaderErrorMessageLiveData.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                when (it) {
-                    is UnknownHostException, is SocketTimeoutException -> {
-                        container?.displayedChild = PAGE_ERROR
-                        globalError?.setType(NO_CONNECTION)
-                        globalError?.show()
-
-                        globalError?.setActionClickListener {
-                            container?.displayedChild = PAGE_LOADING
-                            refreshLandingPageData()
-                        }
-                    }
-                    is IllegalStateException -> {
-                        container?.displayedChild = PAGE_ERROR
-                        globalError?.setType(PAGE_FULL)
-                        globalError?.show()
-
-                        globalError?.setActionClickListener {
-                            container?.displayedChild = PAGE_LOADING
-                            refreshLandingPageData()
-                        }
-                    }
-                    is RuntimeException -> {
-                        when (it.localizedMessage?.toIntOrNull()) {
-                            ReponseStatus.NOT_FOUND -> {
-                                container?.displayedChild = PAGE_ERROR
-                                globalError?.setType(PAGE_NOT_FOUND)
-                                globalError?.show()
-
-                                globalError?.setActionClickListener {
-                                    container?.displayedChild = PAGE_LOADING
-                                    refreshLandingPageData()
-                                }
-                            }
-                            ReponseStatus.INTERNAL_SERVER_ERROR -> {
-                                container?.displayedChild = PAGE_ERROR
-                                globalError?.setType(SERVER_ERROR)
-                                globalError?.show()
-
-                                globalError?.setActionClickListener {
-                                    container?.displayedChild = PAGE_LOADING
-                                    refreshLandingPageData()
-                                }
-                            }
-                            else -> {
-                                container?.displayedChild = PAGE_ERROR
-                                globalError?.setType(SERVER_ERROR)
-                                globalError?.show()
-
-                                globalError?.setActionClickListener {
-                                    container?.displayedChild = PAGE_LOADING
-                                    refreshLandingPageData()
-                                }
-                            }
-                        }
                     }
                 }
             }
@@ -729,6 +681,17 @@ class UserProfileFragment @Inject constructor(
                 userProfileTracker?.clickBurgerMenu(userId, self = profileUserId == userId)
                 RouteManager.route(activity, APPLINK_MENU)
             }
+        }
+    }
+
+    private fun showGlobalError(type: Int) {
+        container?.displayedChild = PAGE_ERROR
+        globalError?.setType(type)
+        globalError?.show()
+
+        globalError?.setActionClickListener {
+            container?.displayedChild = PAGE_LOADING
+            refreshLandingPageData()
         }
     }
 
