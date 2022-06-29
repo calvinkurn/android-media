@@ -85,6 +85,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.SHAPE_FULL
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_WARNING
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -363,13 +364,13 @@ class MerchantPageFragment : BaseMultiFragment(),
         showLoader()
         context?.run {
             ChooseAddressUtils.getLocalizingAddressData(this)
-                    .let { addressData ->
-                        viewModel.getMerchantData(
-                                merchantId = merchantId,
-                                latlong = addressData.latLong,
-                                timezone = TimeZone.getDefault().id
-                        )
-                    }
+                .let { addressData ->
+                    viewModel.getMerchantData(
+                        merchantId = merchantId,
+                        latlong = addressData.latLong,
+                        timezone = TimeZone.getDefault().id
+                    )
+                }
         }
     }
 
@@ -392,10 +393,28 @@ class MerchantPageFragment : BaseMultiFragment(),
     private fun shareMerchantPage(
         tokoFoodMerchantProfile: TokoFoodMerchantProfile?
     ) {
+        merchantShareComponent = null
         merchantShareComponent = merchantShareComponentUtil?.getMerchantShareComponent(
             tokoFoodMerchantProfile,
             merchantId
         )
+        context?.let {
+            merchantShareComponent?.let { merchantShareComponent ->
+                SharingUtil.saveImageFromURLToStorage(
+                    it,
+                    merchantShareComponent.previewThumbnail
+                ) { storageImagePath ->
+                    showMerchantShareBottomSheet(merchantShareComponent, storageImagePath)
+                }
+            }
+        }
+    }
+
+    private fun showMerchantShareBottomSheet(
+        merchantShareComponent: MerchantShareComponent,
+        storageImagePath: String
+    ) {
+        universalShareBottomSheet = null
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             init(this@MerchantPageFragment)
             setUtmCampaignData(
@@ -403,15 +422,16 @@ class MerchantPageFragment : BaseMultiFragment(),
                 userId = userSession.userId.orEmpty(),
                 pageIdConstituents = listOf(
                     ShareComponentConstants.MERCHANT,
-                    merchantShareComponent?.id.orEmpty()
+                    merchantShareComponent.id
                 ),
                 feature = SHARE
             )
             setMetaData(
-                tnTitle = merchantShareComponent?.previewTitle.orEmpty(),
-                tnImage = merchantShareComponent?.previewThumbnail.orEmpty(),
+                tnTitle = merchantShareComponent.previewTitle,
+                tnImage = merchantShareComponent.previewThumbnail,
             )
-            setOgImageUrl(imgUrl = merchantShareComponent?.ogImage.orEmpty())
+            setOgImageUrl(imgUrl = merchantShareComponent.ogImage)
+            imageSaved(storageImagePath)
         }
 
         universalShareBottomSheet?.show(childFragmentManager, this)
@@ -421,35 +441,56 @@ class MerchantPageFragment : BaseMultiFragment(),
         tokoFoodMerchantProfile: TokoFoodMerchantProfile?,
         productUiModel: ProductUiModel
     ) {
+        merchantShareComponent = null
         merchantShareComponent = merchantShareComponentUtil?.getFoodShareComponent(
             tokoFoodMerchantProfile,
             productUiModel,
             merchantId
         )
-        universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
-            init(this@MerchantPageFragment)
-            setUtmCampaignData(
-                pageName = ShareComponentConstants.TOKOFOOD,
-                userId = userSession.userId.orEmpty(),
-                pageIdConstituents = listOf(
-                    ShareComponentConstants.Merchant.FOOD,
-                    merchantShareComponent?.id.orEmpty()
-                ),
-                feature = SHARE
-            )
-            setMetaData(
-                tnTitle = merchantShareComponent?.previewTitle.orEmpty(),
-                tnImage = merchantShareComponent?.previewThumbnail.orEmpty(),
-            )
-            setOgImageUrl(imgUrl = merchantShareComponent?.ogImage.orEmpty())
+        context?.let {
+            merchantShareComponent?.let { merchantShareComponent ->
+                SharingUtil.saveImageFromURLToStorage(
+                    it,
+                    merchantShareComponent.previewThumbnail
+                ) { storageImagePath ->
+                    showFoodShareBottomSheet(merchantShareComponent, storageImagePath)
+                }
+            }
         }
+    }
 
-        merchantPageAnalytics.impressShareBottomSheet(
-            merchantShareComponent?.id.orEmpty(),
-            userSession.userId.orEmpty()
-        )
+    private fun showFoodShareBottomSheet(
+        merchantShareComponent: MerchantShareComponent,
+        storageImagePath: String
+    ) {
+        universalShareBottomSheet = null
+        universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+            universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+                init(this@MerchantPageFragment)
+                setUtmCampaignData(
+                    pageName = ShareComponentConstants.TOKOFOOD,
+                    userId = userSession.userId.orEmpty(),
+                    pageIdConstituents = listOf(
+                        ShareComponentConstants.Merchant.FOOD,
+                        merchantShareComponent.id
+                    ),
+                    feature = SHARE
+                )
+                setMetaData(
+                    tnTitle = merchantShareComponent.previewTitle,
+                    tnImage = merchantShareComponent.previewThumbnail,
+                )
+                setOgImageUrl(imgUrl = merchantShareComponent.ogImage)
+                imageSaved(storageImagePath)
+            }
 
-        universalShareBottomSheet?.show(childFragmentManager, this)
+            merchantPageAnalytics.impressShareBottomSheet(
+                merchantShareComponent.id,
+                userSession.userId.orEmpty()
+            )
+
+            universalShareBottomSheet?.show(childFragmentManager, this)
+        }
     }
 
     private fun observeLiveData() {
@@ -589,9 +630,11 @@ class MerchantPageFragment : BaseMultiFragment(),
                             (pair.first as? String)?.let { cartId ->
                                 (pair.second as? CartTokoFoodData)?.carts?.firstOrNull()
                                     ?.let { product ->
-                                        val cardPositions = viewModel.productMap[product.productId]
+                                        val cardPositions =
+                                            viewModel.productMap[product.productId]
                                         cardPositions?.run {
-                                            val dataSetPosition = viewModel.getDataSetPosition(this)
+                                            val dataSetPosition =
+                                                viewModel.getDataSetPosition(this)
                                             val productUiModel =
                                                 productListAdapter?.getProductUiModel(
                                                     dataSetPosition
@@ -715,9 +758,11 @@ class MerchantPageFragment : BaseMultiFragment(),
                     val firstVisibleItemPos =
                         mLayoutManager?.findFirstVisibleItemPosition().orZero()
                     val productListItem =
-                        productListAdapter?.getProductListItems()?.filterIndexed { position, _ ->
-                            position == firstVisibleItemPos
-                        }?.firstOrNull { productItem -> productItem.productCategory.title.isNotBlank() }
+                        productListAdapter?.getProductListItems()
+                            ?.filterIndexed { position, _ ->
+                                position == firstVisibleItemPos
+                            }
+                            ?.firstOrNull { productItem -> productItem.productCategory.title.isNotBlank() }
                     productListItem?.let { productsItem ->
                         viewModel.filterNameSelected = productsItem.productCategory.title
                         setCategoryPlaceholder(viewModel.filterNameSelected)
@@ -960,7 +1005,8 @@ class MerchantPageFragment : BaseMultiFragment(),
         if (!productUiModel.isCustomizable) {
             activityViewModel?.deleteAllAtcAndAddProduct(updateParam, SOURCE)
         } else {
-            val productListItem = getProductItemList().find { it.productUiModel.id == productUiModel.id }
+            val productListItem =
+                getProductItemList().find { it.productUiModel.id == productUiModel.id }
             productListItem?.let {
                 navigateToOrderCustomizationPage(
                     it.productUiModel.cartId,
