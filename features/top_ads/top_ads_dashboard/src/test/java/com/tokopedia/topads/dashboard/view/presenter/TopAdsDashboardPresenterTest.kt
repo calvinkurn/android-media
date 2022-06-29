@@ -577,7 +577,7 @@ class TopAdsDashboardPresenterTest {
         Assert.assertTrue(!successCalled)
     }
 
-    @Test
+    /*@Test
     fun `editBudgetThroughInsight success`() {
         val expected = FinalAdResponse()
         var actual: FinalAdResponse.TopadsManageGroupAds? = null
@@ -596,7 +596,7 @@ class TopAdsDashboardPresenterTest {
         presenter.editBudgetThroughInsight(mutableListOf(), hashMapOf(), {}, {})
 
         verify { throwable.printStackTrace() }
-    }
+    }*/
 
     @Test
     fun `validateGroup success`() {
@@ -620,7 +620,8 @@ class TopAdsDashboardPresenterTest {
         verify { throwable.printStackTrace() }
     }
 
-    @Test
+
+    /*@Test
     fun `create group success`() {
         val expected = ResponseCreateGroup.TopadsCreateGroupAds()
         var actual: ResponseCreateGroup.TopadsCreateGroupAds? = null
@@ -632,6 +633,7 @@ class TopAdsDashboardPresenterTest {
         Assert.assertEquals(expected, actual)
     }
 
+
     @Test
     fun `create group error`() {
         every { createGroupUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
@@ -640,7 +642,7 @@ class TopAdsDashboardPresenterTest {
         var successCalled = false
         presenter.createGroup(hashMapOf()) {successCalled = true}
         Assert.assertTrue(!successCalled)
-    }
+    }*/
 
     @Test
     fun `get bid info success`() {
