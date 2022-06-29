@@ -26,20 +26,9 @@ class VariantReservedEventInfoBottomSheet : BottomSheetUnify() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (savedInstanceState == null) {
-            val cacheId = arguments?.getString(VARIANT_RESERVED_EVENT_INFO_CACHE_ID)
-            variantReservedEventInfoUiModels = context?.let {
-                SaveInstanceCacheManager(it, cacheId)
-            }?.let { cacheManager ->
-                cacheManager.get<VariantReservedEventInfoWrapper>(
-                    VARIANT_RESERVED_EVENT_INFO_KEY,
-                    VariantReservedEventInfoWrapper::class.java
-                )?.reservedEventInfoUiModels
-            }
-            variantName = arguments?.getString(VARIANT_RESERVED_NAME_KEY)
+            setVariantInfoFromArguments()
         } else {
-            variantReservedEventInfoUiModels =
-                savedInstanceState.getParcelableArrayList(VARIANT_RESERVED_EVENT_INFO_KEY)
-            variantName = savedInstanceState.getString(VARIANT_RESERVED_NAME_KEY)
+            restoreSavedVariantInfo(savedInstanceState)
         }
     }
 
@@ -79,6 +68,25 @@ class VariantReservedEventInfoBottomSheet : BottomSheetUnify() {
         show(fm, TAG)
     }
 
+    private fun setVariantInfoFromArguments() {
+        val cacheId = arguments?.getString(VARIANT_RESERVED_EVENT_INFO_CACHE_ID)
+        variantReservedEventInfoUiModels = context?.let {
+            SaveInstanceCacheManager(it, cacheId)
+        }?.let { cacheManager ->
+            cacheManager.get<VariantReservedEventInfoWrapper>(
+                VARIANT_RESERVED_EVENT_INFO_KEY,
+                VariantReservedEventInfoWrapper::class.java
+            )?.reservedEventInfoUiModels
+        }
+        variantName = arguments?.getString(VARIANT_RESERVED_NAME_KEY)
+    }
+
+    private fun restoreSavedVariantInfo(savedInstanceState: Bundle) {
+        variantReservedEventInfoUiModels =
+            savedInstanceState.getParcelableArrayList(VARIANT_RESERVED_EVENT_INFO_KEY)
+        variantName = savedInstanceState.getString(VARIANT_RESERVED_NAME_KEY)
+    }
+
     private fun setupView() {
         binding?.tvVariantOngoingPromotionName?.text = variantName.orEmpty()
         binding?.rvVariantOngoingPromotion?.run {
@@ -114,6 +122,4 @@ class VariantReservedEventInfoBottomSheet : BottomSheetUnify() {
             }
         }
     }
-
-
 }

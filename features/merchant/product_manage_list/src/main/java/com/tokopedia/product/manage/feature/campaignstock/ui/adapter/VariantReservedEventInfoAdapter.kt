@@ -33,7 +33,5 @@ class VariantReservedEventInfoAdapter(private val itemList: List<ReservedEventIn
         fun bind(uiModel: ReservedEventInfoUiModel) {
             binding.bind(itemView.context, uiModel)
         }
-
     }
-
 }
