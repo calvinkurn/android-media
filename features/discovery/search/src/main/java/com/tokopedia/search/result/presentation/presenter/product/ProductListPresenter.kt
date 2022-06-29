@@ -316,8 +316,6 @@ class ProductListPresenter @Inject constructor(
         searchProductLoadMoreUseCase.execute(useCaseRequestParams, getLoadMoreDataSubscriber(requestParams.parameters))
     }
 
-    private fun getSearchRows() = SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS
-
     private fun enrichWithAdditionalParams(requestParams: RequestParams) {
         val additionalParams = UrlParamUtils.getParamMap(additionalParams)
         requestParams.putAllString(additionalParams)
@@ -1021,7 +1019,8 @@ class ProductListPresenter @Inject constructor(
         view.removeLoading()
         view.setProductList(list)
         view.backToTop()
-        if (hasNextPage()) view.addLoading()
+        if (hasNextPage())
+            view.addLoading()
     }
 
     private fun addLastFilterDataView(
