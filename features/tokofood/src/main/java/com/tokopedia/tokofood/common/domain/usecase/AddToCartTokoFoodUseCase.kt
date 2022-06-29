@@ -66,7 +66,7 @@ class AddToCartTokoFoodUseCase @Inject constructor(
         setRequestParams(param)
 
         val response = executeOnBackground()
-        if (response.cartResponse.isSuccess()) {
+        if (response.cartResponse.isSuccess() || response.cartResponse.data.bottomSheet.isShowBottomSheet) {
             return response.cartResponse
         } else {
             throw MessageErrorException(response.cartResponse.getMessageIfError())
