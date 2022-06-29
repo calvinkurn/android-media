@@ -107,7 +107,8 @@
                     android:layout_alignBottom="@id/template_list"
                     android:layout_toRightOf="@id/template_list"
                     android:paddingLeft="@dimen/dp_topchat_6"
-                    app:srcCompat="@drawable/ic_information_topchat" />
+                    app:srcCompat="@drawable/ic_information_topchat"
+                    android:contentDescription="template_list_info" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_view"

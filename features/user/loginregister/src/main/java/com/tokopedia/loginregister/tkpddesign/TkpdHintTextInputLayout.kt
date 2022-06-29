@@ -577,19 +577,19 @@ class TkpdHintTextInputLayout : LinearLayout {
             mPasswordToggleView!!.post(object : Runnable {
                 override fun run() {
                     mPasswordToggleDummyDrawable!!.setBounds(
-                        0,
-                        0,
+                        ZERO,
+                        ZERO,
                         mPasswordToggleView!!.measuredWidth,
-                        1
+                        ONE
                     )
                     val compounds = TextViewCompat.getCompoundDrawablesRelative(editText!!)
                     // Store the user defined end compound drawable so that we can restore it later
-                    if (compounds[2] !== mPasswordToggleDummyDrawable) {
-                        mOriginalEditTextEndDrawable = compounds[2]
+                    if (compounds[TWO] !== mPasswordToggleDummyDrawable) {
+                        mOriginalEditTextEndDrawable = compounds[TWO]
                     }
                     TextViewCompat.setCompoundDrawablesRelative(
-                        editText!!, compounds[0], compounds[1],
-                        mPasswordToggleDummyDrawable, compounds[3]
+                        editText!!, compounds[ZERO], compounds[ONE],
+                        mPasswordToggleDummyDrawable, compounds[THREE]
                     )
 
                     // Copy over the EditText's padding so that we match
@@ -608,10 +608,10 @@ class TkpdHintTextInputLayout : LinearLayout {
                 // Make sure that we remove the dummy end compound drawable if it exists, and then
                 // clear it
                 val compounds = TextViewCompat.getCompoundDrawablesRelative(editText!!)
-                if (compounds[2] === mPasswordToggleDummyDrawable) {
+                if (compounds[TWO] === mPasswordToggleDummyDrawable) {
                     TextViewCompat.setCompoundDrawablesRelative(
-                        editText!!, compounds[0],
-                        compounds[1], mOriginalEditTextEndDrawable, compounds[3]
+                        editText!!, compounds[ZERO],
+                        compounds[ONE], mOriginalEditTextEndDrawable, compounds[THREE]
                     )
                     mPasswordToggleDummyDrawable = null
                 }
@@ -902,7 +902,11 @@ class TkpdHintTextInputLayout : LinearLayout {
     }
 
     companion object {
+        private const val ZERO = 0
+        private const val ONE = 1
+        private const val TWO = 2
         private const val THREE = 3
+        private const val FOUR = 4
         private const val FIVE = 5
         private const val NINE = 9
         private const val FOURTEEN = 14
