@@ -200,6 +200,13 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
 
     }
 
+    override fun onDestroyView() {
+        loaderDialog?.dialog?.dismiss()
+        loaderDialog = null
+        getRecyclerView(view)?.adapter = null
+        super.onDestroyView()
+    }
+
     private fun loadData() {
         showLoadingLayout()
         context?.let {
