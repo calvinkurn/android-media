@@ -90,6 +90,8 @@ class BroadMatchViewHolder(
                     freeOngkir = it.freeOngkirDataView.toProductCardModelFreeOngkir(),
                     isTopAds = it.isOrganicAds,
                     hasThreeDots = it.carouselProductType.hasThreeDots,
+                    discountPercentage = it.discountPercentage.toString(),
+                    slashedPrice = it.originalPrice,
                 )
             },
             carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
@@ -118,6 +120,11 @@ class BroadMatchViewHolder(
                 dataData.cardButton.title,
                 dataData.cardButton.applink,
             ),
+            carouselViewAllCardClickListener = object: CarouselProductCardListener.OnViewAllCardClickListener {
+                override fun onViewAllCardClick() {
+                    broadMatchListener.onBroadMatchViewAllCardClicked(dataData)
+                }
+            }
         )
     }
 

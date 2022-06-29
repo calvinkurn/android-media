@@ -1323,6 +1323,8 @@ class ProductListPresenter @Inject constructor(
                         topAdsClickUrl = product.topAdsClickUrl,
                         topAdsWishlistUrl = product.topAdsWishlistUrl,
                         componentId = product.componentId,
+                        originalPrice = product.originalPrice,
+                        discountPercentage = product.discountPercentage,
                     )
                 },
                 cardButton = option.cardButton
@@ -2177,14 +2179,7 @@ class ProductListPresenter @Inject constructor(
     override fun onBroadMatchSeeMoreClick(broadMatchDataView: BroadMatchDataView) {
         if (isViewNotAttached) return
 
-        when(val carouselOptionType = broadMatchDataView.carouselOptionType) {
-            is BroadMatch -> view.trackEventClickSeeMoreBroadMatch(broadMatchDataView)
-            is DynamicCarouselOption -> view.trackEventClickSeeMoreDynamicProductCarousel(
-                broadMatchDataView,
-                carouselOptionType.option.inspirationCarouselType,
-                carouselOptionType.option,
-            )
-        }
+        trackBroadMatchSeeMoreClick(broadMatchDataView)
 
         val applink = if (broadMatchDataView.applink.startsWith(ApplinkConst.DISCOVERY_SEARCH))
             view.modifyApplinkToSearchResult(broadMatchDataView.applink)
@@ -2194,7 +2189,26 @@ class ProductListPresenter @Inject constructor(
     }
 
     override fun onBroadMatchViewAllCardClicked(broadMatchDataView: BroadMatchDataView) {
-        view.redirectionStartActivity(broadMatchDataView.cardButton.applink, null)
+        if (isViewNotAttached) return
+
+        trackBroadMatchSeeMoreClick(broadMatchDataView)
+
+        val applink = if (broadMatchDataView.cardButton.applink.startsWith(ApplinkConst.DISCOVERY_SEARCH))
+            view.modifyApplinkToSearchResult(broadMatchDataView.cardButton.applink)
+        else broadMatchDataView.cardButton.applink
+
+        view.redirectionStartActivity(applink, null)
+    }
+
+    private fun trackBroadMatchSeeMoreClick(broadMatchDataView: BroadMatchDataView) {
+        when(val carouselOptionType = broadMatchDataView.carouselOptionType) {
+            is BroadMatch -> view.trackEventClickSeeMoreBroadMatch(broadMatchDataView)
+            is DynamicCarouselOption -> view.trackEventClickSeeMoreDynamicProductCarousel(
+                broadMatchDataView,
+                carouselOptionType.option.inspirationCarouselType,
+                carouselOptionType.option,
+            )
+        }
     }
     //endregion
 
