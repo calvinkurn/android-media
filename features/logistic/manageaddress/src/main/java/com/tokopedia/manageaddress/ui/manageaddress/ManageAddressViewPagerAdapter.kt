@@ -2,13 +2,12 @@ package com.tokopedia.manageaddress.ui.manageaddress
 
 import android.annotation.SuppressLint
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 
 /**
  * Created by irpan on 08/06/22.
  */
-class ManageAddressViewPagerAdapter(fragmentActivity: FragmentActivity, private val pages: List<Pair<String, Fragment>>) :
+class ManageAddressViewPagerAdapter(fragmentActivity: Fragment, pages: List<Pair<String, Fragment>>) :
     FragmentStateAdapter(fragmentActivity) {
 
     private var _pages: List<Pair<String, Fragment>> = listOf()
