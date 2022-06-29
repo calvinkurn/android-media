@@ -396,7 +396,7 @@ object TokoFoodHomeMapper {
                         TickerData(
                             title = tickerData.title,
                             description = tickerData.message,
-                            type = Ticker.TYPE_ANNOUNCEMENT
+                            type = tickerData.tickerType
                         )
                     )
             }
