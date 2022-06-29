@@ -189,6 +189,7 @@ class UserProfileFragment : BaseDaggerFragment(),
         swipeRefresh = view.findViewById(R.id.swipe_refresh_layout)
         feedFab = view.findViewById(R.id.up_feed_floating_button)
 
+        headerProfile = view.findViewById(R.id.header_profile)
         textBio = view.findViewById(R.id.text_bio)
         textSeeMore = view.findViewById(R.id.text_see_more)
         textUserName = view.findViewById(R.id.text_user_name)
@@ -647,9 +648,9 @@ class UserProfileFragment : BaseDaggerFragment(),
         }
 
 
-        if (userSession?.isLoggedIn == false) {
+        if (!userSession.isLoggedIn)
             updateToUnFollowUi()
-        }
+
         headerProfile?.title = curr.name
     }
 
@@ -704,141 +705,6 @@ class UserProfileFragment : BaseDaggerFragment(),
         btnAction?.buttonType = UnifyButton.Type.MAIN
     }
 
-//    private fun setMainUi(data: ProfileHeaderBase) {
-//
-//        val textBio = view?.findViewById<TextView>(R.id.text_bio)
-//        val textSeeMore = view?.findViewById<TextView>(R.id.text_see_more)
-//        val textUserName = view?.findViewById<TextView>(R.id.text_user_name)
-//        val textDisplayName = view?.findViewById<TextView>(R.id.text_display_name)
-//        val textContentCount = view?.findViewById<TextView>(R.id.text_content_count)
-//        val textFollowerCount = view?.findViewById<TextView>(R.id.text_follower_count)
-//        val textFollowingCount = view?.findViewById<TextView>(R.id.text_following_count)
-//
-//        btnAction = view?.findViewById<UnifyButton>(R.id.btn_action_follow)
-//
-//        if (data.profileHeader.profile.username.isNotBlank()) {
-//            textUserName?.show()
-//            textUserName?.text = "@" + data.profileHeader.profile.username
-//        }
-//        else{
-//            textUserName?.hide()
-//        }
-//
-//        textDisplayName?.text = data.profileHeader.profile.name
-//        textContentCount?.text =
-//            UserProfileUtils.getFormattedNumber(data.profileHeader.stats.totalPost)
-//        textFollowerCount?.text =
-//            UserProfileUtils.getFormattedNumber(data.profileHeader.stats.totalFollower)
-//        textFollowingCount?.text =
-//            UserProfileUtils.getFormattedNumber(data.profileHeader.stats.totalFollowing)
-//
-//        userProfileTracker?.openUserProfile(screenName = "feed user profile", profileUserId, live = data.profileHeader.profile.liveplaychannel.islive)
-//
-//        setProfileImg(data.profileHeader.profile)
-//
-//        displayName = data.profileHeader.profile.name
-//        mAdapter.displayName = displayName
-//        userName = data.profileHeader.profile.username
-//        mAdapter.setUserName(data.profileHeader.profile.username)
-//        totalFollowers = data.profileHeader.stats.totalFollowerFmt
-//        totalPosts =  data.profileHeader.stats.totalPostFmt
-//        totalFollowings = data.profileHeader.stats.totalFollowingFmt
-//        profileImage = data.profileHeader.profile.imageCover
-//        profileUserId = data.profileHeader.profile.userID
-//        userWebLink = data.profileHeader.profile.sharelink.weblink
-//        textBio?.maxLines = MAX_LINE
-//
-//        if(data.profileHeader.profile.biography.isNullOrEmpty()){
-//            textBio?.hide()
-//        }
-//        else{
-//            textBio?.show()
-//        }
-//
-//        data.profileHeader.profile.biography = data.profileHeader.profile.biography.replace("\n", "<br />")
-//        val textBioString = context?.let {
-//            HtmlLinkHelper(
-//                it,
-//                data.profileHeader.profile.biography
-//            ).spannedString
-//        } ?: ""
-//
-//        textBio?.let {
-//            textBio?.text = context?.let {
-//                HtmlLinkHelper(
-//                    it,
-//                    data.profileHeader.profile.biography
-//                ).spannedString
-//            }
-//
-//            if (textBioString.lines().count() > SEE_ALL_LINE) {
-//                if (isViewMoreClickedBio == true) {
-//                    textBio.maxLines = MAX_LINE
-//                    textSeeMore?.hide()
-//                } else {
-//                    textBio.maxLines = SEE_ALL_LINE
-//                    textSeeMore?.show()
-//                }
-//            } else {
-//                textSeeMore?.hide()
-//            }
-//        }
-//
-//
-//        if (userSession?.isLoggedIn == false) {
-//            updateToUnFollowUi()
-//            btnAction?.setOnClickListener {
-//                startActivityForResult(
-//                    RouteManager.getIntent(activity, ApplinkConst.LOGIN),
-//                    REQUEST_CODE_LOGIN
-//                )
-//            }
-//        }
-//        headerProfile?.title = data.profileHeader.profile.name
-//
-//    }
-
-//    private fun isProfileButtonVisible() : Boolean{
-//        return false
-//    }
-
-//    private fun setActionButton(followProfile: UserProfileIsFollow) {
-//
-//        if (!userSession?.userId.isNullOrBlank() && followProfile.profileHeader.items[0].userID == userSession?.userId) {
-//            btnAction?.text = getString(com.tokopedia.people.R.string.up_btn_profile)
-//            btnAction?.buttonVariant = UnifyButton.Variant.GHOST
-//            btnAction?.buttonType = UnifyButton.Type.ALTERNATE
-//
-//            if(isProfileButtonVisible()){
-//                btnAction?.show()
-//            } else {
-//                btnAction?.hide()
-//            }
-//
-//
-//            btnAction?.setOnClickListener(
-//                addProfileClickListener(
-//                    APPLINK_PROFILE,
-//                    followProfile.profileHeader.items[0].userID
-//                )
-//            )
-//        } else {
-//            val isFollowed = followProfile.profileHeader.items[0].status
-//            if (isFollowed) {
-//                updateToFollowUi()
-//            } else {
-//                updateToUnFollowUi()
-//            }
-//
-//            btnAction?.setOnClickListener(
-//                addDoFollowClickListener(
-//                    followProfile.profileHeader.items[0].encryptedUserID,
-//                    isFollowed
-//                )
-//            )
-//        }
-//    }
-
     private fun setProfileImg(profile: ProfileUiModel) {
         mAdapter.activityId = profile.liveInfo.channelId
 
@@ -862,9 +728,7 @@ class UserProfileFragment : BaseDaggerFragment(),
         }
     }
 
-
     private fun setHeader() {
-        headerProfile = view?.findViewById<HeaderUnify>(R.id.header_profile)
         headerProfile?.apply {
             setNavigationOnClickListener {
                 activity?.onBackPressed()
