@@ -1,6 +1,7 @@
 package com.tokopedia.tokofood.feature.ordertracking.presentation.navigator
 
 import androidx.fragment.app.Fragment
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
@@ -14,7 +15,7 @@ class OrderTrackingNavigator(
 
     fun goToHelpPage(orderId: String?, appUrl: String, merchantId: String) {
         orderId?.let { tracking.clickCallHelpInStickyButton(it, merchantId) }
-        TokofoodRouteManager.routePrioritizeInternal(fragment.context, appUrl)
+        RouteManager.route(fragment.context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, appUrl))
     }
 
     fun goToMerchantPage(trackingWrapperUiModel: TrackingWrapperUiModel, appUrl: String) {
