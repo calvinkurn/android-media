@@ -8,5 +8,5 @@ data class TmMerchantCouponUnifyRequest(
     var status: String = "",
     var token: String = "",
     var source: String = "",
-    var voucher: ArrayList<TmCouponCreateRequest> = arrayListOf()
+    var vouchers: ArrayList<TmCouponCreateRequest> = arrayListOf()
 ) : Parcelable

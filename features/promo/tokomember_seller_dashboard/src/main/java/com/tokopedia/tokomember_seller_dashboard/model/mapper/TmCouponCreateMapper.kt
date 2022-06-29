@@ -5,8 +5,8 @@ import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmCouponCre
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmMerchantCouponUnifyRequest
 import com.tokopedia.tokomember_seller_dashboard.model.TmSingleCouponData
 import com.tokopedia.tokomember_seller_dashboard.util.ANDROID
-import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil
-import java.util.*
+import com.tokopedia.tokomember_seller_dashboard.util.SOURCE_VOUCHER
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 
 object TmCouponCreateMapper {
 
@@ -70,17 +70,17 @@ object TmCouponCreateMapper {
             token = token,
             source = ANDROID,
             status = "",
-            voucher = voucherList
+            vouchers = voucherList
         )
     }
 
     fun mapCreateDataSingle(
         couponPremiumData: TmSingleCouponData?,
         tmCouponPremiumUploadId: String,
-        tmStartDateUnix: Calendar?,
-        tmEndDateUnix: Calendar?,
-        tmStartTimeUnix: Calendar?,
-        tmEndTimeUnix: Calendar?,
+        startDate: String?,
+        endDate: String?,
+        startTime: String?,
+        endTime: String?,
         token:String,
         imageSquare:String,
         imagePortrait: String,
@@ -90,30 +90,46 @@ object TmCouponCreateMapper {
 
         val voucherList = arrayListOf<TmCouponCreateRequest>()
         voucherList.add(0, TmCouponCreateRequest(
-            benefitIdr = maximumBenefit,
-            benefitMax = couponPremiumData?.maxCashback.toIntSafely(),
+            benefitIdr = couponPremiumData?.maxCashback?.let {
+                CurrencyFormatHelper.convertRupiahToInt(
+                    it
+                )
+            },
+            benefitMax = couponPremiumData?.maxCashback?.let {
+                CurrencyFormatHelper.convertRupiahToInt(
+                    it
+                )
+            },
             targetBuyer = 3,
             image = tmCouponPremiumUploadId,
             couponType = couponPremiumData?.typeCoupon,
-            minPurchase = couponPremiumData?.minTransaki.toIntSafely(),
+            minPurchase = couponPremiumData?.minTransaki?.let {
+                CurrencyFormatHelper.convertRupiahToInt(
+                    it
+                )
+            },
             minimumTierLevel = 1,
             benefitPercent = couponPremiumData?.cashBackPercentage,
-            quota = couponPremiumData?.quota.toIntSafely(),
+            quota = couponPremiumData?.quota?.let {
+                CurrencyFormatHelper.convertRupiahToInt(
+                    it
+                )
+            },
             imagePortrait = imagePortrait,
             imageSquare = imageSquare,
             isPublic = 0,
-            hourStart = tmStartTimeUnix?.let { TmDateUtil.getTimeFromUnix(it) },
-            dateStart = tmStartDateUnix?.let { TmDateUtil.getDateFromUnix(it) },
-            hourEnd = tmEndTimeUnix?.let { TmDateUtil.getTimeFromUnix(it) },
-            dateEnd = tmEndDateUnix?.let { TmDateUtil.getDateFromUnix(it) },
+            hourStart = startTime,
+            dateStart = startDate,
+            hourEnd = endTime,
+            dateEnd = endDate,
             benefitType = couponPremiumData?.typeCashback
         ))
 
         return TmMerchantCouponUnifyRequest(
             token = token,
-            source = ANDROID,
+            source = SOURCE_VOUCHER,
             status = "",
-            voucher = voucherList
+            vouchers = voucherList
         )
     }
 }

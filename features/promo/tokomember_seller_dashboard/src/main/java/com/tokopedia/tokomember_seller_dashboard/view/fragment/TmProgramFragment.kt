@@ -177,12 +177,15 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                             view?.let { v-> Toaster.build(v, RETRY , Toaster.LENGTH_LONG , Toaster.TYPE_ERROR ).show() }
                         }
                         else -> {
-                            handleErrorOnUpdate()
+                            handleErrorOnUpdate(it.data?.membershipCreateEditProgram?.resultStatus?.reason, it.data?.membershipCreateEditProgram?.resultStatus?.message?.firstOrNull())
                         }
                     }
                 }
                 TokoLiveDataResult.STATUS.ERROR ->{
-                    handleErrorOnUpdate()
+                    handleErrorOnUpdate(
+                        it.data?.membershipCreateEditProgram?.resultStatus?.reason,
+                        it.data?.membershipCreateEditProgram?.resultStatus?.message?.firstOrNull()
+                    )
                 }
                 else ->{}
             }
@@ -196,18 +199,27 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         }
     }
 
-    private fun handleErrorOnUpdate() {
+    private fun handleErrorOnUpdate(reason: String?, message: String?) {
         closeLoadingDialog()
-        val title = when(errorCount){
-            0-> ERROR_CREATING_TITLE
-            else -> ERROR_CREATING_TITLE_RETRY
+        val title = if(reason.isNullOrEmpty()) {
+            when (errorCount) {
+                0 -> ERROR_CREATING_TITLE
+                else -> ERROR_CREATING_TITLE_RETRY
+            }
+        }
+        else{
+            reason
+        }
+        var desc = ERROR_CREATING_DESC
+        if(!message.isNullOrEmpty()){
+            desc = message
         }
         val cta = when(errorCount){
             0-> ERROR_CREATING_CTA
             else -> ERROR_CREATING_CTA_RETRY
         }
         val bundle = Bundle()
-        val tmIntroBottomSheetModel = TmIntroBottomsheetModel(title, ERROR_CREATING_DESC , "", cta , errorCount = errorCount)
+        val tmIntroBottomSheetModel = TmIntroBottomsheetModel(title, desc , "", cta , errorCount = errorCount)
         bundle.putString(TokomemberBottomsheet.ARG_BOTTOMSHEET, Gson().toJson(tmIntroBottomSheetModel))
         val bottomSheet = TokomemberBottomsheet.createInstance(bundle)
         bottomSheet.setUpBottomSheetListener(this)
@@ -255,7 +267,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                 tmOpenFragmentCallback.openFragment(CreateScreenType.COUPON_MULTIPLE, bundle)
             }
             ProgramActionType.CREATE_FROM_COUPON -> {
-                tmOpenFragmentCallback.openFragment(CreateScreenType.COUPON_MULTIPLE, bundle)
+                tmOpenFragmentCallback.openFragment(CreateScreenType.COUPON_SINGLE, bundle)
             }
             ProgramActionType.EXTEND ->{
                 tmOpenFragmentCallback.openFragment(CreateScreenType.COUPON_MULTIPLE, bundle)
@@ -267,7 +279,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                 activity?.finish()
             }
             ProgramActionType.CREATE_BUAT ->{
-                tmOpenFragmentCallback.openFragment(CreateScreenType.COUPON_MULTIPLE_BUAT, bundle)
+                tmOpenFragmentCallback.openFragment(CreateScreenType.COUPON_MULTIPLE, bundle)
             }
         }
     }
@@ -360,10 +372,14 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
             textFieldTranskVip.isEnabled = false
             textFieldTranskPremium.isEnabled = false
             cardEditInfo.show()
+            textFieldDuration.isEnabled = false
+            textFieldDuration.iconContainer.isEnabled = false
         }
         else{
             textFieldTranskVip.isEnabled = true
             textFieldTranskPremium.isEnabled = true
+            textFieldDuration.isEnabled = true
+            textFieldDuration.iconContainer.isEnabled = true
             textFieldTranskPremium.editText.setText(membershipGetProgramForm?.programThreshold?.minThresholdLevel1.toString())
             textFieldTranskVip.editText.setText(membershipGetProgramForm?.programThreshold?.minThresholdLevel2.toString())
             cardEditInfo.hide()

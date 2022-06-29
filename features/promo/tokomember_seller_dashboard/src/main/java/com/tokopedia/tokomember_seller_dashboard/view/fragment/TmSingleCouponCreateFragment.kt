@@ -49,6 +49,8 @@ import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_DATA
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_AVATAR
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_NAME
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_VOUCHER_ID
+import com.tokopedia.tokomember_seller_dashboard.util.CASHBACK_IDR
+import com.tokopedia.tokomember_seller_dashboard.util.CASHBACK_PERCENTAGE
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_CASHBACK_PREVIEW
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_DISCOUNT_TYPE_IDR
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_DISCOUNT_TYPE_PERCENT
@@ -68,7 +70,6 @@ import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_DESC
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_RETRY
 import com.tokopedia.tokomember_seller_dashboard.util.ErrorState
-import com.tokopedia.tokomember_seller_dashboard.util.IDR
 import com.tokopedia.tokomember_seller_dashboard.util.LOADING_TEXT
 import com.tokopedia.tokomember_seller_dashboard.util.PREMIUM
 import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_VALIDATION_CTA_TEXT
@@ -341,14 +342,14 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         tokomemberDashCreateViewModel.tmProgramValidateLiveData.observe(viewLifecycleOwner,{
             when(it.status){
                 TokoLiveDataResult.STATUS.SUCCESS -> {
-                    if (it.data?.membershipValidateBenefit?.resultStatus?.code == "200") {
+                    if (it.data?.membershipValidateBenefit?.resultStatus?.code != "200") {
                         errorState.isValidateCouponError = false
 //                        updateCoupon()
                         uploadImagePremium()
                     } else {
                         closeLoadingDialog()
                         setButtonState()
-                        handleProgramPreValidateError()
+                        handleProgramPreValidateError(it.data.membershipValidateBenefit.resultStatus.reason, it.data.membershipValidateBenefit.resultStatus.message?.firstOrNull())
                     }
                 }
                 TokoLiveDataResult.STATUS.ERROR-> {
@@ -371,14 +372,53 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                             }
                             else{
                                 if (token != null && tmCouponDetail?.voucherImagePortrait != null && tmCouponDetail?.voucherImageSquare != null && couponPremiumData?.maxCashback != null) {
+
+                                    val timeEnd = if(tmCouponEndTimeUnix != null){
+                                        TmDateUtil.getTimeFromUnix(
+                                            tmCouponEndTimeUnix!!
+                                        )
+                                    }
+                                    else{
+                                        TmDateUtil.setTime(
+                                            programData?.timeWindow?.endTime.toString()
+                                        ).replace(" WIB", "")
+                                    }
+                                    val dateEnd = if(tmCouponEndDateUnix != null){
+                                        TmDateUtil.getDateFromUnix(
+                                            tmCouponEndDateUnix!!
+                                        )
+                                    }
+                                    else{
+                                        programData?.timeWindow?.endTime?.substringBefore("T")
+                                    }
+                                    val timeStart = if(tmCouponStartTimeUnix != null){
+                                        TmDateUtil.getTimeFromUnix(
+                                            tmCouponStartTimeUnix!!
+                                        )
+                                    }
+                                    else{
+                                        TmDateUtil.setTime(
+                                            programData?.timeWindow?.startTime.toString()
+                                        ).replace(" WIB", "")
+                                    }
+                                    val dateStart = if(tmCouponStartDateUnix != null){
+                                        TmDateUtil.getDateFromUnix(
+                                            tmCouponStartDateUnix!!
+                                        )
+                                    }
+                                    else{
+                                        programData?.timeWindow?.startTime?.substringBefore("T")
+                                    }
+
                                     val tmMerchantCouponCreateData =
+
                                         TmCouponCreateMapper.mapCreateDataSingle(
                                             couponPremiumData = couponPremiumData,
                                             tmCouponPremiumUploadId = it.data.uploadId,
-                                            tmStartDateUnix = tmCouponStartDateUnix,
-                                            tmEndDateUnix = tmCouponEndDateUnix,
-                                            tmStartTimeUnix = tmCouponStartTimeUnix,
-                                            tmEndTimeUnix = tmCouponEndTimeUnix,
+                                            startDate = dateStart,
+                                            endDate = dateEnd,
+                                            startTime  = timeStart,
+                                            endTime = timeEnd,
                                             token = token!!,
                                             imagePortrait = tmCouponDetail?.voucherImagePortrait!!,
                                             imageSquare = tmCouponDetail?.voucherImageSquare!!,
@@ -711,12 +751,24 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun handleProgramPreValidateError(){
+    private fun handleProgramPreValidateError(reason: String?, message: String?){
         setButtonState()
+        val title = if(reason.isNullOrEmpty()) {
+            PROGRAM_VALIDATION_ERROR_TITLE
+        }
+        else{
+            reason
+        }
+        val desc = if(message.isNullOrEmpty()) {
+            PROGRAM_VALIDATION_ERROR_DESC
+        }
+        else{
+            message
+        }
         val bundle = Bundle()
         val tmIntroBottomSheetModel = TmIntroBottomsheetModel(
-            PROGRAM_VALIDATION_ERROR_TITLE,
-            PROGRAM_VALIDATION_ERROR_DESC ,
+            title,
+            desc ,
             TM_ERROR_PROGRAM,
             PROGRAM_VALIDATION_CTA_TEXT
         )
@@ -814,17 +866,31 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
     }
 
     private fun preValidateCouponPremium(couponPremiumData: TmSingleCouponData?) {
-        tokomemberDashCreateViewModel.preValidateCoupon(
-            TmCouponValidateRequest(
-                targetBuyer = 3,
-                benefitType = IDR,
-                couponType = couponPremiumData?.typeCoupon,
-                benefitMax = CurrencyFormatHelper.convertRupiahToInt(couponPremiumData?.maxCashback?:""),
-                benefitPercent = couponPremiumData?.cashBackPercentage,
-                minPurchase = CurrencyFormatHelper.convertRupiahToInt(couponPremiumData?.minTransaki?:""),
-                source = ANDROID
-            )
+        val validationRequest = TmCouponValidateRequest(
+            targetBuyer = 3,
+            benefitType = couponPremiumData?.typeCashback,
+            couponType = couponPremiumData?.typeCoupon,
+            benefitPercent = couponPremiumData?.cashBackPercentage,
+            minPurchase = CurrencyFormatHelper.convertRupiahToInt(
+                couponPremiumData?.minTransaki ?: ""
+            ),
+            source = ANDROID,
+            quota = couponPremiumData?.quota?.let { CurrencyFormatHelper.convertRupiahToInt(it) }
         )
+        val cashBackValue = CurrencyFormatHelper.convertRupiahToInt(couponPremiumData?.maxCashback?:"")
+        when (couponPremiumData?.typeCashback) {
+            CASHBACK_IDR -> {
+                validationRequest.apply {
+                    benefitIdr = cashBackValue
+                }
+            }
+            CASHBACK_PERCENTAGE -> {
+                validationRequest.apply {
+                    benefitMax = cashBackValue
+                }
+            }
+        }
+        tokomemberDashCreateViewModel.preValidateCoupon(validationRequest)
     }
 
     private fun uploadImagePremium() {

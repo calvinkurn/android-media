@@ -111,7 +111,7 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
         tmTracker?.viewProgramListTabSection(arguments?.getInt(BUNDLE_SHOP_ID).toString())
 
         btnCreateProgram.setOnClickListener {
-            TmDashCreateActivity.openActivity(shopId, activity, CreateScreenType.PROGRAM, ProgramActionType.CREATE_BUAT, null, null, cardId)
+            TmDashCreateActivity.openActivity(shopId, activity, CreateScreenType.PROGRAM, ProgramActionType.CREATE_BUAT, REQUEST_CODE_REFRESH, null, cardId)
             tmTracker?.clickProgramListButton(shopId.toString())
         }
         setEmptyProgramListData()

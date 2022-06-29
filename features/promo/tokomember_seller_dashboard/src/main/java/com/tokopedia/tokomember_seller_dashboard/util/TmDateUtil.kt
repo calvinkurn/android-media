@@ -199,7 +199,6 @@ object TmDateUtil {
         val calendar = Calendar.getInstance(locale)
         date?.let {
             calendar.time = it
-            calendar.add(Calendar.HOUR, -1)
         }
         return (calendar.timeInMillis / 1000).toString()
     }
