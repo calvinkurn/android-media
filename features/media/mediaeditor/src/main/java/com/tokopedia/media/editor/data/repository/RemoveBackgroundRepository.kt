@@ -20,6 +20,15 @@ class RemoveBgRepositoryImpl @Inject constructor(
     private val services: EditorNetworkServices
 ) : RemoveBgRepository {
 
+    /**
+     * Because of we need to passing a File to request body of remove-background,
+     * First, we need to convert the image url/uri into bitmap.
+     * After that, convert the bitmap into File.
+     * Hence we can hit the remove background service.
+     *
+     * Since the remove-background returning as byteStream(),
+     * we need to convert back the byteArray into File.
+     */
     override suspend operator fun invoke(filePath: String): Flow<File?> {
         return flow {
             mapUriToFile(filePath)?.let {
