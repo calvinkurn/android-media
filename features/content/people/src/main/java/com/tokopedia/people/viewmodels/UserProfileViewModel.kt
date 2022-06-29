@@ -8,9 +8,7 @@ import com.tokopedia.people.Resources
 import com.tokopedia.people.Success
 import com.tokopedia.people.di.UserProfileScope
 import com.tokopedia.people.domains.PlayPostContentUseCase
-import com.tokopedia.people.domains.VideoPostReminderUseCase
 import com.tokopedia.people.model.UserPostModel
-import com.tokopedia.people.model.VideoPostReimderModel
 import kotlinx.coroutines.Dispatchers
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.people.domains.repository.UserProfileRepository
@@ -30,7 +28,6 @@ import javax.inject.Inject
 @UserProfileScope
 class UserProfileViewModel @Inject constructor(
     private var playVodUseCase: PlayPostContentUseCase,
-    private val videoPostReminderUseCase: VideoPostReminderUseCase,
     private val repo: UserProfileRepository,
     private val userSession: UserSessionInterface,
 ) : BaseViewModel(Dispatchers.Main) {
@@ -86,48 +83,15 @@ class UserProfileViewModel @Inject constructor(
 
     fun submitAction(action: UserProfileAction) {
         when(action) {
+            is UserProfileAction.LoadProfile -> handleLoadProfile(action.username, action.isRefresh)
             UserProfileAction.ClickFollowButton -> handleClickFollowButton()
             is UserProfileAction.ClickUpdateReminder -> handleClickUpdateReminder(action.channelId, action.isActive)
         }
     }
 
     /** Handle Action */
-    private fun handleClickFollowButton() {
-        launchCatchError(block = {
-            val followInfo = _followInfo.value
-
-            val result = if(followInfo.status) repo.unFollowProfile(followInfo.encryptedUserID)
-                        else repo.followProfile(followInfo.encryptedUserID)
-
-            when(result) {
-                is MutationUiModel.Success -> {
-                    _followInfo.setValue { copy(status = !followInfo.status) }
-                    _profileInfo.value = repo.getProfile(followInfo.userID)
-                }
-                is MutationUiModel.Error -> unFollowErrorMessage.value = Exception(result.message)
-            }
-        }) {
-            unFollowErrorMessage.value = it
-        }
-    }
-
-    private fun handleClickUpdateReminder(channelId: String, isActive: Boolean) {
-        launchCatchError(block = {
-            val result = repo.updateReminder(channelId, isActive)
-
-            _uiEvent.emit(
-                when(result) {
-                    is MutationUiModel.Success -> UserProfileUiEvent.SuccessUpdateReminder(result.message)
-                    is MutationUiModel.Error -> UserProfileUiEvent.ErrorUpdateReminder(Exception(result.message))
-                }
-            )
-        }, onError = {
-            _uiEvent.emit(UserProfileUiEvent.ErrorUpdateReminder(it))
-        })
-    }
-
-    /** TODO: move it to init() viewmodel */
-    fun getUserDetails(username: String, isRefresh: Boolean) {
+    /** TODO: call it on init */
+    private fun handleLoadProfile(username: String, isRefresh: Boolean) {
         launchCatchError(block = {
             val deferredProfileInfo = asyncCatchError(block = {
                 repo.getProfile(username)
@@ -167,6 +131,39 @@ class UserProfileViewModel @Inject constructor(
         }
     }
 
+    private fun handleClickFollowButton() {
+        launchCatchError(block = {
+            val followInfo = _followInfo.value
+
+            val result = if(followInfo.status) repo.unFollowProfile(followInfo.encryptedUserID)
+                        else repo.followProfile(followInfo.encryptedUserID)
+
+            when(result) {
+                is MutationUiModel.Success -> {
+                    _followInfo.setValue { copy(status = !followInfo.status) }
+                    _profileInfo.value = repo.getProfile(followInfo.userID)
+                }
+                is MutationUiModel.Error -> unFollowErrorMessage.value = Exception(result.message)
+            }
+        }) {
+            unFollowErrorMessage.value = it
+        }
+    }
+
+    private fun handleClickUpdateReminder(channelId: String, isActive: Boolean) {
+        launchCatchError(block = {
+            val result = repo.updateReminder(channelId, isActive)
+
+            _uiEvent.emit(
+                when(result) {
+                    is MutationUiModel.Success -> UserProfileUiEvent.SuccessUpdateReminder(result.message)
+                    is MutationUiModel.Error -> UserProfileUiEvent.ErrorUpdateReminder(Exception(result.message))
+                }
+            )
+        }, onError = {
+            _uiEvent.emit(UserProfileUiEvent.ErrorUpdateReminder(it))
+        })
+    }
 
     /** TODO: refactor - gonna move to repo */
     fun getUPlayVideos(group: String, cursor: String, sourceType: String, sourceId: String) {

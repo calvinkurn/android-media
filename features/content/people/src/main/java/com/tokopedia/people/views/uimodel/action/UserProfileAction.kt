@@ -5,9 +5,15 @@ package com.tokopedia.people.views.uimodel.action
  */
 sealed interface UserProfileAction {
 
+    data class LoadProfile(
+        val username: String,
+        val isRefresh: Boolean = false,
+    ) : UserProfileAction
+
     object ClickFollowButton: UserProfileAction
+
     data class ClickUpdateReminder(
         val channelId: String,
         val isActive: Boolean,
-    ): UserProfileAction
+    ) : UserProfileAction
 }

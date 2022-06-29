@@ -258,7 +258,7 @@ class UserProfileFragment @Inject constructor(
 
     private fun refreshLandingPageData(isRefreshPost: Boolean = false) {
         landedUserName?.let {
-            viewModel.getUserDetails(it, isRefreshPost)
+            viewModel.submitAction(UserProfileAction.LoadProfile(it, isRefreshPost))
         }
     }
 
