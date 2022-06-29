@@ -4,10 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.shop.flashsale.domain.entity.CampaignDetailMeta
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.MerchantCampaignTNC
 import com.tokopedia.shop.flashsale.domain.entity.enums.isActive
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignDetailUseCase
+import com.tokopedia.shop.flashsale.domain.usecase.aggregate.GetCampaignDetailMetaUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -17,6 +19,7 @@ import javax.inject.Inject
 
 class CampaignDetailViewModel @Inject constructor(
     private val getSellerCampaignDetailUseCase: GetSellerCampaignDetailUseCase,
+    private val getCampaignDetailMetaUseCase: GetCampaignDetailMetaUseCase,
     private val dispatchers: CoroutineDispatchers,
 ) : BaseViewModel(dispatchers.main) {
 
@@ -24,8 +27,8 @@ class CampaignDetailViewModel @Inject constructor(
         private const val INVALID_CAMPAIGN_ID = -1L
     }
 
-    private val _campaign = MutableLiveData<Result<CampaignUiModel>>()
-    val campaign: LiveData<Result<CampaignUiModel>>
+    private val _campaign = MutableLiveData<Result<CampaignDetailMeta>>()
+    val campaign: LiveData<Result<CampaignDetailMeta>>
         get() = _campaign
 
     private var _campaignId: Long = INVALID_CAMPAIGN_ID
@@ -57,7 +60,7 @@ class CampaignDetailViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                val campaign = getSellerCampaignDetailUseCase.execute(
+                val campaign = getCampaignDetailMetaUseCase.execute(
                     campaignId = _campaignId
                 )
                 _campaign.postValue(Success(campaign))
@@ -75,7 +78,8 @@ class CampaignDetailViewModel @Inject constructor(
 
     fun onTNCButtonClicked() {
         val campaign = _campaign.value
-        val campaignData = if (campaign is Success) campaign.data else return
+        val campaignMeta = if (campaign is Success) campaign.data else return
+        val campaignData = campaignMeta.campaign
         val paymentType = campaignData.paymentType
         val isUniqueBuyer = campaignData.isUniqueBuyer
         val isCampaignRelation = campaignData.isCampaignRelation
@@ -89,7 +93,8 @@ class CampaignDetailViewModel @Inject constructor(
 
     fun onEditCampaignClicked() {
         val campaign = _campaign.value
-        val campaignData = if (campaign is Success) campaign.data else return
+        val campaignMeta = if (campaign is Success) campaign.data else return
+        val campaignData = campaignMeta.campaign
         if (campaignData.thematicParticipation) {
             _editCampaignActionResult.value = EditCampaignActionResult.RegisteredEventCampaign
         } else {
@@ -99,13 +104,15 @@ class CampaignDetailViewModel @Inject constructor(
 
     fun onMoreMenuClicked() {
         val campaign = _campaign.value
-        val campaignData = if (campaign is Success) campaign.data else return
+        val campaignMeta = if (campaign is Success) campaign.data else return
+        val campaignData = campaignMeta.campaign
         _moreMenuEvent.postValue(campaignData)
     }
 
     fun onCampaignCancelMenuClicked() {
         val campaign = _campaign.value
-        val campaignData = if (campaign is Success) campaign.data else return
+        val campaignMeta = if (campaign is Success) campaign.data else return
+        val campaignData = campaignMeta.campaign
         if (campaignData.thematicParticipation) {
             _cancelCampaignActionResult.value = CancelCampaignActionResult.RegisteredEventCampaign
         } else if (campaignData.status.isActive()) {
