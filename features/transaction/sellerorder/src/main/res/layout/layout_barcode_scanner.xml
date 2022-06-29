@@ -19,7 +19,7 @@
         app:zxing_viewfinder_laser="@color/Unify_G400"
         app:zxing_viewfinder_mask="@color/_dms_zxing_custom_viewfinder_mask" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/zxing_status_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
