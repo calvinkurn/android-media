@@ -138,6 +138,10 @@ class BaseTokoFoodOrderTrackingFragment :
         }
         hideLoaderDriverCall()
         delayAutoRefreshFinishOrderTempJob?.cancel()
+        loaderDialog = null
+        delayAutoRefreshFinishOrderTempJob = null
+        orderLiveTrackingFragment = null
+        toolbarHandler = null
         super.onDestroy()
     }
 
