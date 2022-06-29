@@ -98,6 +98,9 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     lateinit var cartDetailInfoAdapter: DigitalCartDetailInfoAdapter
     lateinit var myBillsAdapter: DigitalMyBillsAdapter
 
+    //TODO will be update dynamically from getCart
+    private var isGoToPlusCheckout = true
+
     override fun getScreenName(): String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -365,6 +368,9 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         }
 
         showPromoTicker()
+
+        checkoutBottomViewWidget.isGoToPlusCheckout = isGoToPlusCheckout
+        checkoutBottomViewWidget.isCheckoutButtonEnabled = !isGoToPlusCheckout
 
         checkoutBottomViewWidget.setCheckoutButtonListener {
             viewModel.proceedToCheckout(getDigitalIdentifierParam())

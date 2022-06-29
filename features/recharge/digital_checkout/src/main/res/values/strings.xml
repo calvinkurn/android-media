@@ -45,4 +45,5 @@
         <item>Jika kamu melakukan transaksi manual untuk produk yang bisa dibayarkan berkali-kali (cth: Pulsa dan BPJS), Langganan kamu akan terus berjalan.\n</item>
         <item>Kamu bisa atur jadwal Langganan, periode Langganan, dan metode pembayaran kapan pun di halaman Langganan.</item>
     </string-array>
+    <string name="digital_cart_goto_plus_consent"><![CDATA[Saya menyetujui <b><a href=\"http://www.google.com\">Syarat & Ketentuan</a></b> serta <b><a href=\"http://www.google.com\">Kebijakan Privasi</b></b> Berlangganan GoTo PLUS.]]></string>
 </resources>
