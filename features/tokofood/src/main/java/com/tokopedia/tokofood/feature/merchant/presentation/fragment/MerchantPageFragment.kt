@@ -409,6 +409,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                 tnImage = merchantShareComponent?.previewThumbnail.orEmpty(),
             )
             setOgImageUrl(imgUrl = merchantShareComponent?.ogImage.orEmpty())
+            imageSaved(merchantShareComponent?.previewThumbnail.orEmpty())
         }
 
         universalShareBottomSheet?.show(childFragmentManager, this)
@@ -439,6 +440,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                 tnImage = merchantShareComponent?.previewThumbnail.orEmpty(),
             )
             setOgImageUrl(imgUrl = merchantShareComponent?.ogImage.orEmpty())
+            imageSaved(merchantShareComponent?.previewThumbnail.orEmpty())
         }
 
         merchantPageAnalytics.impressShareBottomSheet(
