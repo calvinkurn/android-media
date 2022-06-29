@@ -1232,7 +1232,7 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     private fun goToLoginPage() {
         context?.run {
-            val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
+            val intent = RouteManager.getIntent(this, ApplinkConst.LOGIN)
             startActivityForResult(intent, REQUEST_CODE_LOGIN)
         }
     }
