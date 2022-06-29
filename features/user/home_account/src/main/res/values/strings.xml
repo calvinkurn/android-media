@@ -257,5 +257,10 @@
     <string name="opt_batal">Batal</string>
     <string name="opt_ya_matikan">Ya, Matikan</string>
     <string name="opt_desc_clarification_data_usage">Sudah punya Profil di Feed? 👆\nKami akan kasih rekomendasi teman yang bisa kamu follow di situ, berdasarkan datamu di beberapa fitur yang tertera dalam halaman ini.</string>
+    <string name="opt_text_header_failed">Konten gagal ditampilkan</string>
+    <string name="opt_text_desc_failed">Klik ikon di samping buat coba lagi.</string>
+    <string name="opt_link_account">Sambungin Akun</string>
+    <string name="opt_failed_enabled_consent">Gagal mengaktifkan penggunaan data</string>
+    <string name="opt_failed_disabled_consent">Gagal menonaktifkan penggunaan data</string>
 
 </resources>

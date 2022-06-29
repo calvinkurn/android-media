@@ -1,5 +1,6 @@
 package com.tokopedia.home_account.linkaccount.view
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.TextPaint
@@ -9,19 +10,42 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.databinding.FragmentPrivacyAccountBinding
+import com.tokopedia.home_account.linkaccount.data.LinkStatus
+import com.tokopedia.home_account.linkaccount.data.LinkStatusResponse
+import com.tokopedia.home_account.linkaccount.data.UserAccountDataView
 import com.tokopedia.home_account.linkaccount.di.LinkAccountComponent
 import com.tokopedia.home_account.linkaccount.view.bottomsheet.ClarificationDataUsageBottomSheet
 import com.tokopedia.home_account.linkaccount.view.bottomsheet.VerificationEnabledDataUsageBottomSheet
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.home_account.linkaccount.viewmodel.LinkAccountViewModel
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.loaderdialog.LoaderDialog
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
+import java.text.SimpleDateFormat
+import java.util.*
+import javax.inject.Inject
 
 class PrivacyAccountFragment : BaseDaggerFragment() {
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var userSessionInterface: UserSessionInterface
+
+    private var viewModel: LinkAccountViewModel? = null
 
     private val binding : FragmentPrivacyAccountBinding? by viewBinding()
 
@@ -29,6 +53,11 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
     private var verificationEnabledDataUsageBottomSheet: VerificationEnabledDataUsageBottomSheet? = null
     private var verificationDisabledDataUsageDialog: DialogUnify? = null
     private var loaderDialog: LoaderDialog? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(LinkAccountViewModel::class.java)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,9 +75,221 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setViewDescPrivacyAccount()
+        initObserver()
+    }
 
-        binding?.switchPermissionDataUsage?.setOnCheckedChangeListener { buttonView, isChecked ->
-            buttonView.isChecked = !isChecked
+    private fun initObserver() {
+        setViewDataUsageLoading()
+        setViewLinkAccountLoading()
+        viewModel?.getConsentSocialNetwork()
+        viewModel?.getLinkStatus()
+
+        viewModel?.getUserConsent?.observe(viewLifecycleOwner) {
+            when(it) {
+                is Success -> {
+                    setViewDataUsageSuccess(it.data)
+                    setViewDataUsage(true)
+                    switchListener()
+                }
+                is Fail -> {
+                    setViewDataUsage(false)
+                }
+            }
+        }
+
+        viewModel?.linkStatus?.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    setViewLinkAccountSuccess(it.data)
+                    setViewLinkAccount(true)
+                }
+                is Fail -> {
+                    setViewLinkAccount(false)
+                }
+            }
+        }
+
+        viewModel?.setUserConsent?.observe(viewLifecycleOwner) {
+            showLoaderDialog(false)
+            val isChecked = binding?.switchPermissionDataUsage?.isChecked == true
+            when (it) {
+                is Success -> {
+                    if (it.data.isSuccess == SET_CONSENT_SUCCESS) {
+                        binding?.switchPermissionDataUsage?.isChecked = !isChecked
+                    } else {
+                        showToasterFailedSetConsent(isChecked)
+                    }
+                }
+                is Fail -> {
+                    showToasterFailedSetConsent(isChecked)
+                }
+            }
+        }
+    }
+
+    private fun setViewDataUsageSuccess(isActive: Boolean) {
+        binding?.switchPermissionDataUsage?.isChecked = isActive
+    }
+
+    private fun setViewDataUsage(isVisible: Boolean) {
+        binding?.apply {
+            incLoaderDataUsage.loaderHeader.gone()
+            incLoaderDataUsage.loaderDesc.gone()
+            incLoaderDataUsage.cardLoad.showWithCondition(!isVisible)
+            switchPermissionDataUsage.visibleWithCondition(isVisible)
+            txtHeaderPrivacyAccount.visibleWithCondition(isVisible)
+            txtDescPrivacyAccount.visibleWithCondition(isVisible)
+            dividerUnify.visibleWithCondition(isVisible)
+        }
+
+        if (!isVisible){
+            binding?.incLoaderDataUsage?.cardLoad?.apply {
+                title?.text = getString(R.string.opt_text_header_failed)
+                description?.text = getString(R.string.opt_text_desc_failed)
+            }
+            reloadDataUsageListener()
+        }
+    }
+
+    private fun reloadDataUsageListener() {
+        binding?.incLoaderDataUsage?.cardLoad?.setOnClickListener {
+            setViewDataUsageLoading()
+            viewModel?.getConsentSocialNetwork()
+        }
+    }
+
+    private fun setViewDataUsageLoading() {
+        binding?.apply {
+            incLoaderDataUsage.loaderHeader.show()
+            incLoaderDataUsage.loaderDesc.show()
+            incLoaderDataUsage.cardLoad.gone()
+            switchPermissionDataUsage.invisible()
+            txtHeaderPrivacyAccount.invisible()
+            txtDescPrivacyAccount.invisible()
+            dividerUnify.invisible()
+        }
+    }
+
+    private fun LinkStatus.toUserAccountDataView(): UserAccountDataView {
+        val phone = this.phoneNo.ifEmpty {
+            userSessionInterface.phoneNumber
+        }
+
+        return UserAccountDataView(
+            isLinked = status == STATUS_LINKED,
+            status = if(status == STATUS_LINKED) {
+                String.format(context?.getString(R.string.label_link_acc_phone) ?: "", phone)
+            } else {
+                context?.getString(R.string.label_link_acc_not_linked) ?: ""
+            },
+            partnerName = context?.getString(R.string.label_link_acc_gojek) ?: "",
+            linkDate = String.format(context?.getString(R.string.label_link_acc_linked_date) ?: "", formatDateLocalTimezone(linkedDate))
+        )
+    }
+
+    private fun getIndonesiaLocale() : Locale {
+        return try {
+            Locale("id", "ID")
+        }catch (e: Exception) {
+            Locale.getDefault()
+        }
+    }
+
+    private fun formatDateLocalTimezone(mDate: String): String {
+        return try {
+            val date = SimpleDateFormat(SERVER_DATE_FORMAT, getIndonesiaLocale())
+            date.timeZone = TimeZone.getTimeZone(TIMEZONE_UTC)
+            return SimpleDateFormat(LOCAL_DATE_FORMAT, getIndonesiaLocale()).format(date.parse(mDate) ?: "")
+        } catch (e: Exception) {
+            e.printStackTrace()
+            mDate
+        }
+    }
+
+    private fun setViewLinkAccountSuccess(data: LinkStatusResponse) {
+        if(data.response.linkStatus.isNotEmpty()) {
+            val linkStatus = data.response.linkStatus.first()
+            val item = linkStatus.toUserAccountDataView()
+
+            binding?.layoutItemLinkAccount?.apply {
+                tvHeaderLinkAccount.text = item.partnerName
+                tvLinkingAccount.showWithCondition(!item.isLinked)
+                icLinkAccount.showWithCondition(item.isLinked)
+                tvDescLinkAccount.text = item.status
+            }
+
+            linkedAccountListener(item.isLinked)
+        } else {
+            binding?.layoutItemLinkAccount?.root?.gone()
+        }
+    }
+
+    private fun linkedAccountListener(isLinked: Boolean) {
+        binding?.layoutItemLinkAccount?.root?.setOnClickListener {
+            if (isLinked) {
+                onViewAccountClicked()
+            } else {
+                onLinkAccountClicked()
+            }
+        }
+    }
+
+    private fun setViewLinkAccount(isVisible: Boolean) {
+        binding?.apply {
+            incLoaderLinkAccount.loaderHeader.gone()
+            incLoaderLinkAccount.loaderDesc.gone()
+            incLoaderLinkAccount.cardLoad.showWithCondition(!isVisible)
+            txtHeaderLinkAccount.visibleWithCondition(isVisible)
+            txtDescLinkAccount.visibleWithCondition(isVisible)
+            layoutItemLinkAccount.root.visibleWithCondition(isVisible)
+        }
+
+        if (!isVisible) {
+            binding?.incLoaderLinkAccount?.cardLoad?.apply {
+                title?.text = getString(R.string.opt_text_header_failed)
+                description?.text = getString(R.string.opt_text_desc_failed)
+            }
+
+            reloadLinkAccountListener()
+        }
+    }
+
+    private fun reloadLinkAccountListener() {
+        binding?.incLoaderLinkAccount?.cardLoad?.setOnClickListener {
+            setViewLinkAccountLoading()
+            viewModel?.getLinkStatus()
+        }
+    }
+
+    private fun setViewLinkAccountLoading() {
+        binding?.apply {
+            incLoaderLinkAccount.loaderHeader.show()
+            incLoaderLinkAccount.loaderDesc.show()
+            incLoaderLinkAccount.cardLoad.gone()
+            txtHeaderLinkAccount.invisible()
+            txtDescLinkAccount.invisible()
+            layoutItemLinkAccount.root.invisible()
+        }
+    }
+
+    private fun onLinkAccountClicked() {
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.LINK_ACCOUNT_WEBVIEW).apply {
+            putExtra(
+                ApplinkConstInternalGlobal.PARAM_LD,
+                LinkAccountWebviewFragment.BACK_BTN_APPLINK
+            )
+        }
+        startActivityForResult(intent, LINK_ACCOUNT_WEBVIEW_REQUEST)
+    }
+
+    private fun onViewAccountClicked() {
+        LinkAccountWebViewActivity.gotoSuccessPage(activity, ApplinkConst.HOME)
+    }
+
+    private fun switchListener() {
+        binding?.switchPermissionDataUsage?.setOnClickListener {
+            val isChecked = binding?.switchPermissionDataUsage?.isChecked == true
+            binding?.switchPermissionDataUsage?.isChecked = !isChecked
 
             if (!isChecked)
                 showVerificationDisabledDataUsage()
@@ -58,7 +299,6 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
     }
 
     private fun setViewDescPrivacyAccount() {
-        binding?.txtDescPrivacyAccount?.show()
         val message = getString(R.string.opt_desc)
         val spannable = SpannableString(message)
         spannable.setSpan(
@@ -87,51 +327,82 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
     }
 
     private fun showVerificationEnabledDataUsage() {
-        if (verificationEnabledDataUsageBottomSheet == null) {
-            verificationEnabledDataUsageBottomSheet = VerificationEnabledDataUsageBottomSheet()
+        verificationEnabledDataUsageBottomSheet = VerificationEnabledDataUsageBottomSheet()
 
-            verificationEnabledDataUsageBottomSheet?.setOnVerificationClickedListener {
-                verificationEnabledDataUsageBottomSheet?.dismiss()
-                showLoaderDialog(true)
-            }
+        verificationEnabledDataUsageBottomSheet?.setOnVerificationClickedListener {
+            verificationEnabledDataUsageBottomSheet?.dismiss()
+            showLoaderDialog(true)
+            viewModel?.setConsentSocialNetwork(true)
         }
+
         verificationEnabledDataUsageBottomSheet?.show(childFragmentManager, TAG_BOTTOM_SHEET_VERIFICATION)
     }
 
     private fun showVerificationDisabledDataUsage() {
-        if (verificationDisabledDataUsageDialog == null) {
-            verificationDisabledDataUsageDialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-            verificationDisabledDataUsageDialog?.setTitle(getString(R.string.opt_dialog_disabled_title))
-            verificationDisabledDataUsageDialog?.setDescription(getString(R.string.opt_dialog_disabled_sub_title))
-            verificationDisabledDataUsageDialog?.setPrimaryCTAText(getString(R.string.opt_ya_matikan))
-            verificationDisabledDataUsageDialog?.setSecondaryCTAText(getString(R.string.opt_batal))
+        verificationDisabledDataUsageDialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
 
-            verificationDisabledDataUsageDialog?.setPrimaryCTAClickListener {
-                verificationDisabledDataUsageDialog?.dismiss()
-                showLoaderDialog(true)
-            }
+        verificationDisabledDataUsageDialog?.apply {
+            setTitle(getString(R.string.opt_dialog_disabled_title))
+            setDescription(getString(R.string.opt_dialog_disabled_sub_title))
+            setPrimaryCTAText(getString(R.string.opt_ya_matikan))
+            setSecondaryCTAText(getString(R.string.opt_batal))
+        }
 
-            verificationDisabledDataUsageDialog?.setSecondaryCTAClickListener {
-                verificationDisabledDataUsageDialog?.dismiss()
-            }
+        verificationDisabledDataUsageDialog?.setPrimaryCTAClickListener {
+            verificationDisabledDataUsageDialog?.dismiss()
+            showLoaderDialog(true)
+            viewModel?.setConsentSocialNetwork(false)
+        }
+
+        verificationDisabledDataUsageDialog?.setSecondaryCTAClickListener {
+            verificationDisabledDataUsageDialog?.dismiss()
         }
 
         verificationDisabledDataUsageDialog?.show()
     }
 
     private fun showLoaderDialog(isShow: Boolean) {
-        if (loaderDialog == null) {
+        if (isShow) {
             loaderDialog = LoaderDialog(requireContext())
             loaderDialog?.setLoadingText(EMPTY_STRING)
-        }
-
-        if (isShow)
             loaderDialog?.show()
-        else
+        } else {
             loaderDialog?.dismiss()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(requestCode == LinkAccountFragment.LINK_ACCOUNT_WEBVIEW_REQUEST) {
+            setViewLinkAccountLoading()
+            viewModel?.getLinkStatus(userSessionInterface.phoneNumber.isEmpty())
+        }
+    }
+
+    private fun showToasterFailedSetConsent(isChecked: Boolean) {
+        showToasterError(getString(
+            if (isChecked) {
+                R.string.opt_failed_disabled_consent
+            } else {
+                R.string.opt_failed_enabled_consent
+            })
+        )
+    }
+
+    private fun showToasterError(errorMsg: String) {
+        Toaster.build(requireView(), errorMsg, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
     }
 
     companion object {
+
+        private const val SET_CONSENT_SUCCESS = 1
+
+        const val LINK_ACCOUNT_WEBVIEW_REQUEST = 100
+
+        private const val SERVER_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+        private const val LOCAL_DATE_FORMAT = "dd MMM yyyy"
+        private const val TIMEZONE_UTC = "UTC"
+
+        private const val STATUS_LINKED = "linked"
 
         private const val EMPTY_STRING = ""
 

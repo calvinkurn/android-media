@@ -2,10 +2,14 @@ package com.tokopedia.home_account.view
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.home_account.linkaccount.data.GetConsentDataModel
 import com.tokopedia.home_account.linkaccount.data.LinkStatus
 import com.tokopedia.home_account.linkaccount.data.LinkStatusResponse
+import com.tokopedia.home_account.linkaccount.data.SetConsentDataModel
+import com.tokopedia.home_account.linkaccount.domain.GetConsentUseCase
 import com.tokopedia.home_account.linkaccount.domain.GetLinkStatusUseCase
 import com.tokopedia.home_account.linkaccount.domain.GetUserProfile
+import com.tokopedia.home_account.linkaccount.domain.SetConsentUseCase
 import com.tokopedia.home_account.linkaccount.viewmodel.LinkAccountViewModel
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -29,6 +33,8 @@ class LinkAccountViewModelTest {
 
     private lateinit var viewModel: LinkAccountViewModel
 
+    private val getConsentUseCase = mockk<GetConsentUseCase>(relaxed = true)
+    private val setConsentUseCase = mockk<SetConsentUseCase>(relaxed = true)
     private val getLinkStatusUseCase = mockk<GetLinkStatusUseCase>(relaxed = true)
     private val getUserProfile = mockk<GetUserProfile>(relaxed = true)
     private val userSession = mockk<UserSessionInterface>(relaxed = true)
@@ -41,7 +47,7 @@ class LinkAccountViewModelTest {
 
     @Before
     fun setUp() {
-        viewModel = LinkAccountViewModel(getLinkStatusUseCase, getUserProfile, userSession, CoroutineTestDispatchersProvider)
+        viewModel = LinkAccountViewModel(getLinkStatusUseCase, getUserProfile, getConsentUseCase, setConsentUseCase, userSession, CoroutineTestDispatchersProvider)
         viewModel.linkStatus.observeForever(linkStatusResponse)
     }
 
@@ -160,6 +166,49 @@ class LinkAccountViewModelTest {
         viewModel.getLinkStatus(true)
 
         assertTrue((viewModel.linkStatus.value as Success).data.response.linkStatus[0].phoneNo == mockPhoneNo)
+    }
+
+    @Test
+    fun `on get consent then success`() {
+        val data = GetConsentDataModel()
+
+        coEvery { getConsentUseCase(Unit) } returns data
+        viewModel.getConsentSocialNetwork()
+
+        val result = viewModel.getUserConsent.value
+        assertTrue(Success(data.socialNetworkGetConsent.data.optIn) == result)
+    }
+
+    @Test
+    fun `on get consent then error`() {
+        coEvery { getConsentUseCase(Unit) } throws throwable
+        viewModel.getConsentSocialNetwork()
+
+        val result = viewModel.getUserConsent.value
+        assertTrue(Fail(throwable) == result)
+    }
+
+    @Test
+    fun `on set consent then success`() {
+        val value = true
+        val data = SetConsentDataModel()
+
+        coEvery { setConsentUseCase(value) } returns data
+        viewModel.setConsentSocialNetwork(value)
+
+        val result = viewModel.setUserConsent.value
+        assertTrue(Success(data.socialNetworkSetConsent.data) == result)
+    }
+
+    @Test
+    fun `on set consent then error`() {
+        val value = true
+
+        coEvery { setConsentUseCase(value) } throws throwable
+        viewModel.setConsentSocialNetwork(value)
+
+        val result = viewModel.setUserConsent.value
+        assertTrue(Fail(throwable) == result)
     }
 
 }
