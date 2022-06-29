@@ -22,7 +22,4 @@ internal data class CarouselViewAllCardModel(
     fun getOnSeeMoreClickListener() = carouselProductCardListenerInfo.onViewAllCardClickListener
 }
 
-data class CarouselViewAllCardData(
-    val title: String = "",
-    val applink: String = "",
-)
+data class CarouselViewAllCardData(val title: String = "")

@@ -72,6 +72,10 @@ class BroadMatchViewHolder(
 
     private fun setupRecyclerView(dataData: BroadMatchDataView){
         val products = dataData.broadMatchItemDataViewList
+        val viewAllCardData: CarouselViewAllCardData? =
+            if (dataData.cardButton.title.isNotEmpty())
+                CarouselViewAllCardData(dataData.cardButton.title)
+            else null
         broadMatchListener.productCardLifecycleObserver?.let {
             binding?.searchBroadMatchList?.productCardLifecycleObserver = it
         }
@@ -116,10 +120,7 @@ class BroadMatchViewHolder(
                     return products.getOrNull(carouselProductCardPosition)
                 }
             },
-            carouselViewAllCardData = CarouselViewAllCardData(
-                dataData.cardButton.title,
-                dataData.cardButton.applink,
-            ),
+            carouselViewAllCardData = viewAllCardData,
             carouselViewAllCardClickListener = object: CarouselProductCardListener.OnViewAllCardClickListener {
                 override fun onViewAllCardClick() {
                     broadMatchListener.onBroadMatchViewAllCardClicked(dataData)
