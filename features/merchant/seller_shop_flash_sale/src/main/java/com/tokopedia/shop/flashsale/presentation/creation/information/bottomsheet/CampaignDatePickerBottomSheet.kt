@@ -157,7 +157,6 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
     }
 
 
-
     private fun displayCalendar(campaigns: List<GroupedCampaign>) {
         val legends = campaigns.map { campaign ->
             val campaignCountWording =
@@ -167,10 +166,11 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
 
 
         val calendar = binding?.unifyCalendar?.calendarPickerView
-        calendar?.run {
-            init(minimumDate, maximumDate, legends)
-                .inMode(CalendarPickerView.SelectionMode.SINGLE)
-                .withSelectedDate(selectedDate)
+
+        val initializer = calendar?.init(minimumDate, maximumDate, legends)
+        initializer?.inMode(CalendarPickerView.SelectionMode.SINGLE)
+        if (selectedDate.after(minimumDate)) {
+            initializer?.withSelectedDate(selectedDate)
         }
 
         calendar?.setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
@@ -228,7 +228,7 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun handleRemainingQuota(remainingQuota : Int) {
+    private fun handleRemainingQuota(remainingQuota: Int) {
         if (remainingQuota == Constant.ZERO) {
             val monthName = dateManager.getCurrentDate().formatTo(DateConstant.MONTH)
             val emptyQuotaWording =
