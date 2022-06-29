@@ -760,7 +760,7 @@ open class TopChatViewStateImpl constructor(
         getAdapter().showRetryFor(it, retry)
     }
 
-    fun updateProductPreviews(mapProducts: ArrayMap<String, Attachment>) {
+    fun updateProductPreviews(mapProducts: ArrayList<Attachment>) {
         attachmentPreviewAdapter.updateDeferredAttachment(mapProducts)
     }
 

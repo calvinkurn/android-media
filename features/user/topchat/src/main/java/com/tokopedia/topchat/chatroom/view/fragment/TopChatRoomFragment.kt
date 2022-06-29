@@ -2626,6 +2626,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
         viewModel.chatAttachments.observe(viewLifecycleOwner, {
             updateAttachmentsView(it)
+        })
+
+        viewModel.chatAttachmentsPreview.observe(viewLifecycleOwner, {
             updateAttachmentsPreview(it)
         })
 
@@ -2765,7 +2768,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         })
     }
 
-    private fun updateAttachmentsPreview(products: ArrayMap<String, Attachment>) {
+    private fun updateAttachmentsPreview(products: ArrayList<Attachment>) {
         val previousReadyState = viewModel.isAttachmentPreviewReady()
         topchatViewState?.updateProductPreviews(products)
         val afterReadyState = viewModel.isAttachmentPreviewReady()

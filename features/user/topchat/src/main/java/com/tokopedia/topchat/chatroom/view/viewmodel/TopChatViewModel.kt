@@ -177,6 +177,10 @@ open class TopChatViewModel @Inject constructor(
     val chatAttachments: MutableLiveData<ArrayMap<String, Attachment>>
         get() = _chatAttachments
 
+    private val _chatAttachmentsPreview = MutableLiveData<ArrayList<Attachment>>()
+    val chatAttachmentsPreview: MutableLiveData<ArrayList<Attachment>>
+        get() = _chatAttachmentsPreview
+
     private val _chatListGroupSticker =
         MutableLiveData<Result<Pair<ChatListGroupStickerResponse, List<StickerGroup>>>>()
     val chatListGroupSticker: MutableLiveData<Result<Pair<ChatListGroupStickerResponse, List<StickerGroup>>>>
@@ -266,6 +270,7 @@ open class TopChatViewModel @Inject constructor(
     private var userLocationInfo = LocalCacheModel()
     private var attachmentsPreview: ArrayList<SendablePreview> = arrayListOf()
     private var pendingLoadProductPreview: ArrayList<String> = arrayListOf()
+    private val attachmentPreviewData: ArrayList<Attachment> = arrayListOf()
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
@@ -1080,13 +1085,21 @@ open class TopChatViewModel @Inject constructor(
                 )
                 val response = chatPreAttachPayload(param)
                 val mapAttachment = chatAttachmentMapper.map(response)
-                attachments.putAll(mapAttachment.toMap())
+                mapAttachment.forEach {
+                    attachmentPreviewData.add(it.value)
+                }
             }
-            _chatAttachments.value = attachments
+            _chatAttachmentsPreview.value = attachmentPreviewData
         }, onError = {
-            val errorMapAttachment = productIds.associateWith { ErrorAttachment() }
-            attachments.putAll(errorMapAttachment)
-            _chatAttachments.value = attachments
+            it.printStackTrace()
+            val errorMessage = it.message
+            val iteration = productIds.size - attachmentPreviewData.size
+            if (iteration > 0) {
+                for (i in 0 until iteration) {
+                    attachmentPreviewData.add(ErrorAttachment())
+                }
+            }
+            _chatAttachmentsPreview.value = attachmentPreviewData
         })
     }
 
@@ -1099,10 +1112,9 @@ open class TopChatViewModel @Inject constructor(
     }
 
     private fun showLoadingProductPreview(productIds: List<String>) {
-        val sendablePreviews: List<TopchatProductAttachmentPreviewUiModel> = productIds.map { productId ->
+        val sendablePreviews: List<TopchatProductAttachmentPreviewUiModel> = productIds.map {
             val builder = TopchatProductAttachmentPreviewUiModel.Builder()
                 .withRoomMetaData(roomMetaData)
-                .withProductId(productId)
             (builder as TopchatProductAttachmentPreviewUiModel.Builder).build()
         }
         attachmentsPreview.addAll(sendablePreviews)
@@ -1117,6 +1129,7 @@ open class TopChatViewModel @Inject constructor(
 
     fun clearAttachmentPreview() {
         attachmentsPreview.clear()
+        attachmentPreviewData.clear()
     }
 
     fun removeAttachmentPreview(sendablePreview: SendablePreview) {
