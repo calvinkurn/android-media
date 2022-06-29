@@ -9,4 +9,9 @@ object RechargeCCConst {
     const val VALIDATOR_DELAY_TIME = 2000L
 
     const val REQUEST_CODE_FAVORITE_NUMBER = 101
+
+    const val TOTAL_SYMBOLS = 19
+    const val TOTAL_DIGITS = 16
+    const val DIVIDER_MODULO = 5
+    const val DIVIDER = ' '
 }

@@ -39,6 +39,10 @@ import com.tokopedia.recharge_component.widget.validateContactName
 import com.tokopedia.recharge_credit_card.R
 import com.tokopedia.recharge_credit_card.toEditable
 import com.tokopedia.recharge_credit_card.util.RechargeCCConst.DEFAULT_MAX_SYMBOLS_LENGTH
+import com.tokopedia.recharge_credit_card.util.RechargeCCConst.DIVIDER
+import com.tokopedia.recharge_credit_card.util.RechargeCCConst.DIVIDER_MODULO
+import com.tokopedia.recharge_credit_card.util.RechargeCCConst.TOTAL_DIGITS
+import com.tokopedia.recharge_credit_card.util.RechargeCCConst.TOTAL_SYMBOLS
 import com.tokopedia.recharge_credit_card.util.RechargeCCUtil
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -114,6 +118,10 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(@NotNull context: C
                                     ))
                                     addTextChangedListener(this)
                                 }
+                            }
+
+                            if (input.length == TOTAL_SYMBOLS) {
+                                dismissDropDown()
                             }
                         }
                     }
@@ -408,12 +416,5 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(@NotNull context: C
     interface CreditCardActionListener {
         fun onClickNextButton(clientNumber: String)
         fun onManualInput()
-    }
-
-    companion object {
-        private const val TOTAL_SYMBOLS = 19
-        private const val TOTAL_DIGITS = 16
-        private const val DIVIDER_MODULO = 5
-        private const val DIVIDER = ' '
     }
 }

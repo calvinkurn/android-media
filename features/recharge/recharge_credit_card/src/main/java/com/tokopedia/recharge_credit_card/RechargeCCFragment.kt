@@ -233,7 +233,7 @@ class RechargeCCFragment :
                 val clientNumber = getInputNumber()
                 if (clientNumber.length in DEFAULT_MIN_CC_LENGTH..DEFAULT_MAX_CC_LENGTH) {
                     if (isValid) {
-                        if (!RechargeCCUtil.isCreditCardValid(clientNumber)) {
+                        if (!clientNumber.isMasked() && !RechargeCCUtil.isCreditCardValid(clientNumber)) {
                             setErrorInputField(getString(R.string.cc_error_invalid_number))
                         } else {
                             clearErrorState()
@@ -430,10 +430,24 @@ class RechargeCCFragment :
     }
 
     private fun onSuccessGetFavoriteChips(favoriteChips: List<FavoriteChipModel>) {
+        val dummy = listOf(
+            FavoriteChipModel(
+                clientNumber = "411111******1111",
+                clientName = "",
+                operatorId = "",
+                token = "hahahahaha"
+            ),
+            FavoriteChipModel(
+                clientNumber = "411111******4444",
+                clientName = "Misael",
+                operatorId = "",
+                token = "hahahahaha"
+            ),
+        )
         cc_widget_client_number.run {
-            setFilterChipShimmer(false, favoriteChips.isEmpty())
+            setFilterChipShimmer(false, dummy.isEmpty())
             setFavoriteNumber(
-                RechargeCCMapper.mapFavoriteChipsToWidgetModels(favoriteChips))
+                RechargeCCMapper.mapFavoriteChipsToWidgetModels(dummy))
         }
     }
 

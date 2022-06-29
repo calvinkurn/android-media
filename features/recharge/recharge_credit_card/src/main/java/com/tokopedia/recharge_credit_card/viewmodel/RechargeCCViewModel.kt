@@ -27,6 +27,7 @@ import com.tokopedia.recharge_credit_card.datamodel.RechargeCreditCard
 import com.tokopedia.recharge_credit_card.datamodel.RuleModel
 import com.tokopedia.recharge_credit_card.datamodel.TickerCreditCard
 import com.tokopedia.recharge_credit_card.datamodel.*
+import com.tokopedia.recharge_credit_card.isMasked
 import com.tokopedia.recharge_credit_card.util.RechargeCCConst
 import com.tokopedia.recharge_credit_card.util.RechargeCCUtil
 import kotlinx.coroutines.CoroutineDispatcher
@@ -185,12 +186,16 @@ class RechargeCCViewModel @Inject constructor(
 
     fun validateCCNumber(creditCard: String) {
         validatorJob = launchCatchError(block = {
-            var isValid = false
-            prefixData.prefixSelect.validations.forEach { validation ->
-                isValid = creditCard.matches(validation.rule.toRegex())
+            if (creditCard.isMasked()) {
+                _prefixValidation.postValue(true)
+            } else {
+                var isValid = false
+                prefixData.prefixSelect.validations.forEach { validation ->
+                    isValid = creditCard.matches(validation.rule.toRegex())
+                }
+                delay(RechargeCCConst.VALIDATOR_DELAY_TIME)
+                _prefixValidation.postValue(isValid)
             }
-            delay(RechargeCCConst.VALIDATOR_DELAY_TIME)
-            _prefixValidation.postValue(isValid)
         }) {
 
         }
