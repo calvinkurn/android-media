@@ -1,6 +1,7 @@
 package com.tokopedia.flight.booking.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.core.util.PatternsCompat
 import com.google.gson.Gson
 import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
@@ -26,11 +27,8 @@ import com.tokopedia.travel.country_code.presentation.model.TravelCountryPhoneCo
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.MockKAnnotations
-import io.mockk.coEvery
-import io.mockk.coVerify
+import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.mockk
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -790,6 +788,8 @@ class FlightBookingViewModelTest {
         val addToCartQuery = ""
         val idempotencyKey = ""
         val getCartQuery = ""
+
+        mockkObject(PatternsCompat.EMAIL_ADDRESS)
 
         // when
         viewModel.validateDataAndVerifyCart(query, totalPrice, contactName, contactEmail,
