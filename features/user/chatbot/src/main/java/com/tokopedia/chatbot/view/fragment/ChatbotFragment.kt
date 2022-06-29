@@ -40,6 +40,7 @@ import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
+import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.SESSION_CHANGE
 import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_FIVE
 import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_FOUR
 import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_ONE
@@ -529,7 +530,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     private fun managePreviousStateOfBubble(visitable: Visitable<*>) {
-        if(visitable is MessageUiModel){
+        if(visitable is MessageUiModel && visitable.attachmentType != SESSION_CHANGE){
             getViewState()?.hideInvoiceList()
             getViewState()?.hideHelpfullOptions()
         }
@@ -537,7 +538,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     private fun manageActionBubble(visitable: Visitable<*>) {
         when {
-            visitable is MessageUiModel  -> hideActionBubble()
+            (visitable is MessageUiModel && visitable.attachmentType != SESSION_CHANGE) -> hideActionBubble()
             visitable is AttachInvoiceSentUiModel && visitable.isSender -> hideActionBubble()
         }
     }

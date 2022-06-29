@@ -39,5 +39,6 @@ object ChatbotConstant {
 
     object AttachmentType {
         const val TYPE_SECURE_IMAGE_UPLOAD = "26"
+        const val SESSION_CHANGE = "31"
     }
 }
