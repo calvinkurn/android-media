@@ -57,7 +57,7 @@ internal constructor() {
             invoiceLinkAttributePojo.createTime = selectedInvoice.date.toString()
             invoiceLinkAttributePojo.description = selectedInvoice.description.toString()
             invoiceLinkAttributePojo.hrefUrl = selectedInvoice.invoiceUrl.toString()
-            invoiceLinkAttributePojo.id = selectedInvoice.invoiceId!!
+            invoiceLinkAttributePojo.id = selectedInvoice.invoiceId ?: 0
             invoiceLinkAttributePojo.imageUrl = selectedInvoice.topProductImage.toString()
             invoiceLinkAttributePojo.status = selectedInvoice.status.toString()
             invoiceLinkAttributePojo.statusId = selectedInvoice.statusId
