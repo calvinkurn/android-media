@@ -100,10 +100,28 @@ class PlayTokonowAnalyticImpl @Inject constructor(private val userSession: UserS
     }
 
     override fun impressNowToaster(channelId: String, channelType: PlayChannelType) {
-        TODO("Not yet implemented")
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            mapOf(
+                KEY_EVENT to KEY_TRACK_VIEW_CONTENT_IRIS,
+                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
+                KEY_EVENT_ACTION to "view - lihat now toaster",
+                KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
+                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+                KEY_TRACKER_ID to "32250"
+            )
+        )
     }
 
     override fun clickLihatNowToaster(channelId: String, channelType: PlayChannelType) {
-        TODO("Not yet implemented")
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            mapOf(
+                KEY_EVENT to KEY_TRACK_CLICK_CONTENT,
+                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
+                KEY_EVENT_ACTION to "click - lihat now toaster",
+                KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
+                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+                KEY_TRACKER_ID to "32251"
+            )
+        )
     }
 }

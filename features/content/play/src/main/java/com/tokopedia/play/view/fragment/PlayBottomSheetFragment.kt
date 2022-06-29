@@ -549,9 +549,14 @@ class PlayBottomSheetFragment @Inject constructor(
                             } else BottomInsetsType.ProductSheet //TEMPORARY
 
                             val partnerTokoNow = playViewModel.latestCompleteChannelData.partnerInfo.type == PartnerType.Tokonow
-                            val (wording, route, toaster) = if(event.product.isTokoNow && partnerTokoNow)
-                                Triple(getString(R.string.play_add_to_cart_message_success_mixed), getString(R.string.play_tokonow_minicart_applink), getString(R.string.play_toaster_tokonow_wording))
-                            else if (event.product.isTokoNow && !partnerTokoNow) Triple(getString(R.string.play_add_to_cart_message_success_tokonow), ApplinkConstInternalMarketplace.CART, getString(R.string.play_toaster_tokonow_wording))
+                            val (wording, route, toaster) = if(event.product.isTokoNow && partnerTokoNow) {
+                                newAnalytic.impressNowToaster(channelId = playViewModel.channelId, channelType = playViewModel.channelType)
+                                Triple(
+                                    getString(R.string.play_add_to_cart_message_success_mixed),
+                                    getString(R.string.play_tokonow_minicart_applink),
+                                    getString(R.string.play_toaster_tokonow_wording)
+                                )
+                            } else if (event.product.isTokoNow && !partnerTokoNow) Triple(getString(R.string.play_add_to_cart_message_success_tokonow), ApplinkConstInternalMarketplace.CART, getString(R.string.play_toaster_tokonow_wording))
                             else Triple(getString(R.string.play_add_to_cart_message_success), ApplinkConstInternalMarketplace.CART, getString(R.string.play_toaster_global_wording))
 
                             doShowToaster(
@@ -561,7 +566,8 @@ class PlayBottomSheetFragment @Inject constructor(
                                 actionText = toaster,
                                 actionClickListener = {
                                     RouteManager.route(requireContext(), route)
-                                    analytic.clickSeeToasterAfterAtc()
+                                    if (event.product.isTokoNow && partnerTokoNow) newAnalytic.clickLihatNowToaster(channelType = playViewModel.channelType, channelId = playViewModel.channelId)
+                                    else analytic.clickSeeToasterAfterAtc()
                                 }
                             )
 
