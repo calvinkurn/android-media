@@ -82,32 +82,21 @@
                 app:layout_constraintTop_toBottomOf="@+id/divider_campaign_ended"
                 app:typographyType="body_3" />
 
-<!--            <com.tokopedia.unifycomponents.CardUnify2-->
-<!--                android:id="@+id/card_campaign_end_performance"-->
-<!--                android:layout_width="0dp"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginStart="@dimen/unify_space_16"-->
-<!--                android:layout_marginTop="@dimen/unify_space_12"-->
-<!--                android:layout_marginEnd="@dimen/unify_space_16"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toBottomOf="@+id/tg_campaign_total_performance_label">-->
-<!--                <androidx.constraintlayout.widget.ConstraintLayout-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content">-->
-
-<!--                </androidx.constraintlayout.widget.ConstraintLayout>-->
-<!--            </com.tokopedia.unifycomponents.CardUnify2>-->
-
-            <com.tokopedia.unifycomponents.LocalLoad
+            <com.tokopedia.unifycomponents.CardUnify2
                 android:id="@+id/card_campaign_end_performance"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/unify_space_16"
                 android:layout_marginTop="@dimen/unify_space_12"
                 android:layout_marginEnd="@dimen/unify_space_16"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tg_campaign_total_performance_label"/>
+                app:layout_constraintTop_toBottomOf="@+id/tg_campaign_total_performance_label">
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.tokopedia.unifycomponents.CardUnify2>
 
             <View
                 android:id="@+id/divider_campaign_ended_performance"
