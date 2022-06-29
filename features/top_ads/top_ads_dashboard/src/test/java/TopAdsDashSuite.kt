@@ -1,5 +1,6 @@
 import com.tokopedia.topads.credit.history.view.viewmodel.TopAdsCreditHistoryViewModelTest
 import com.tokopedia.topads.dashboard.view.model.GroupDetailViewModelTest
+import com.tokopedia.topads.dashboard.view.presenter.DashboardPresenterTest
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsInsightPresenterTest
 import com.tokopedia.topads.dashboard.viewmodel.TopAdsDashboardViewModelTest
 import com.tokopedia.topads.dashboard.viewmodel.TopAdsEducationViewModel
@@ -20,6 +21,7 @@ import org.junit.runners.Suite
         GroupDetailViewModelTest::class,
         TopAdsDashboardViewModelTest::class,
         TopAdsEducationViewModelTest::class,
-        TopAdsInsightViewModelTest::class
+        TopAdsInsightViewModelTest::class,
+        DashboardPresenterTest::class
 )
 class TopAdsDashSuite
