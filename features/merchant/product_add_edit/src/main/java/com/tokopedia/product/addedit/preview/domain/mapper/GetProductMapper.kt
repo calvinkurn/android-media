@@ -13,7 +13,7 @@ import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConsta
 import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.UNIT_GRAM
 import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.UNIT_GRAM_STRING
 import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.UNIT_GRAM_TO_KILOGRAM_MULTIPLIER
-import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.UNIT_KILOGRAM_SRING
+import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.UNIT_KILOGRAM_STRING
 import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.UNIT_MONTH
 import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.UNIT_MONTH_STRING
 import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.UNIT_WEEK
