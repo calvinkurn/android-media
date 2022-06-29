@@ -318,14 +318,22 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
         binding?.searchBar?.slideDown()
         binding?.cardView.slideDown()
         binding?.imgScrollUp.slideUp()
-        binding?.tpgSelectedProductCount.slideDown()
+
+        if (viewModel.getSelectedProductIds().size.isMoreThanZero()) {
+            binding?.tpgSelectedProductCount.slideDown()
+        }
+
     }
 
     private fun handleScrollUpEvent() {
         binding?.searchBar?.slideUp()
         binding?.cardView.slideUp()
         binding?.imgScrollUp.slideDown()
-        binding?.tpgSelectedProductCount.slideUp()
+
+        if (viewModel.getSelectedProductIds().size.isMoreThanZero()) {
+            binding?.tpgSelectedProductCount.slideUp()
+        }
+
     }
 
     private fun doFreshSearch() {

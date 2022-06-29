@@ -200,10 +200,24 @@ class ManageHighlightedProductViewModel @Inject constructor(
         val selectedParentProductIds = selectedProducts.map { selectedProduct -> selectedProduct.parentId }
 
         return products
-            .map { product -> disableOtherVariantsWhoHasSameParentId(selectedProductsIds, selectedParentProductIds, product) }
+            .map { product ->
+                if (product.isParent() && product.id in selectedProductsIds) {
+                    enableProductIfParent(product)
+                } else {
+                    disableOtherVariantsWhoHasSameParentId(selectedProductsIds, selectedParentProductIds, product)
+                }
+            }
             .map { product -> disableAllUnselectedProductIfMaxSelectionReached(product, selectedParentProductIds) }
             .sortedByDescending { it.isSelected }
             .mapIndexed { index, product -> product.copy(position = index + OFFSET_BY_ONE) }
+    }
+
+    private fun enableProductIfParent(product: HighlightableProduct): HighlightableProduct {
+        return product.copy(
+            isSelected = true,
+            disabled = false,
+            disabledReason = HighlightableProduct.DisabledReason.NOT_DISABLED
+        )
     }
 
     private fun disableOtherVariantsWhoHasSameParentId(
@@ -211,13 +225,13 @@ class ManageHighlightedProductViewModel @Inject constructor(
         selectedParentProductIds: List<Long>,
         product: HighlightableProduct
     ): HighlightableProduct {
-        return if (product.parentId in selectedParentProductIds && product.id !in selectedProductsIds) {
+        return if (product.isVariant() && product.parentId in selectedParentProductIds && product.id !in selectedProductsIds) {
             product.copy(
                 isSelected = false,
                 disabled = true,
                 disabledReason = HighlightableProduct.DisabledReason.OTHER_PRODUCT_WITH_SAME_PARENT_ID_ALREADY_SELECTED
             )
-        } else if (product.parentId in selectedParentProductIds && product.id in selectedProductsIds) {
+        } else if (product.isVariant() && product.parentId in selectedParentProductIds && product.id in selectedProductsIds) {
             product.copy(
                 isSelected = true,
                 disabled = false,
@@ -278,4 +292,13 @@ class ManageHighlightedProductViewModel @Inject constructor(
             product
         }
     }
+
+    private fun HighlightableProduct.isParent(): Boolean {
+        return this.parentId == 0.toLong()
+    }
+
+    private fun HighlightableProduct.isVariant(): Boolean {
+        return this.parentId != 0.toLong()
+    }
+
 }
