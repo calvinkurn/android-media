@@ -1234,9 +1234,10 @@ class MerchantPageFragment : BaseMultiFragment(),
     private fun getProductItemList() = productListAdapter?.getProductListItems().orEmpty()
 
     private fun goToLoginPage() {
+        context?.run {
             val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
             startActivityForResult(intent, REQUEST_CODE_LOGIN)
-
+        }
         viewModel.visitedLoginPage = true
     }
 
@@ -1246,6 +1247,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                 when {
                     isNoAddress(addressData) -> {
                         if (isAddressManuallyUpdated()){
+                            viewModel.isAddressManuallyUpdated = false
                             navigateToNewFragment(
                                 ManageLocationFragment.createInstance(
                                     negativeCaseId = EMPTY_STATE_NO_ADDRESS,
@@ -1258,6 +1260,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                     }
                     isNoPinPoin(addressData) -> {
                         if (isAddressManuallyUpdated()){
+                            viewModel.isAddressManuallyUpdated = false
                             navigateToNewFragment(
                                 ManageLocationFragment.createInstance(
                                     negativeCaseId = EMPTY_STATE_NO_PIN_POINT,
@@ -1279,6 +1282,7 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     private fun onResultFromLogin(resultCode: Int) {
         if (resultCode == Activity.RESULT_OK) {
+            viewModel.isAddressManuallyUpdated = false
             validateAddressData()
         } else {
             activity?.finish()
@@ -1292,7 +1296,7 @@ class MerchantPageFragment : BaseMultiFragment(),
     private fun isAddressManuallyUpdated(): Boolean = viewModel.isAddressManuallyUpdated
 
     private fun setAddressManually() {
-        viewModel.getChooseAddress(SOURCE_ADDESS)
+        if (userSession.isLoggedIn) viewModel.getChooseAddress(SOURCE_ADDESS)
     }
 
     private fun isNoAddress(localCacheModel: LocalCacheModel): Boolean {
