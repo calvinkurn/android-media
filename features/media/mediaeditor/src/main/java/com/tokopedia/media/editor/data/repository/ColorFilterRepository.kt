@@ -1,15 +1,16 @@
-package com.tokopedia.media.editor.data.tool
+package com.tokopedia.media.editor.data.repository
 
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import javax.inject.Inject
 
-interface ColorFilterManager {
+interface ColorFilterRepository {
     fun brightness(value: Float): ColorMatrixColorFilter
     fun contrast(value: Float): ColorMatrixColorFilter
 }
 
-class ColorFilterManagerImpl @Inject constructor() : ColorFilterManager {
+class ColorFilterRepositoryImpl @Inject constructor() : ColorFilterRepository {
+
     override fun brightness(value: Float): ColorMatrixColorFilter {
         val cmB = ColorMatrix()
         cmB.set(
@@ -33,4 +34,5 @@ class ColorFilterManagerImpl @Inject constructor() : ColorFilterManager {
         val matrix = ColorMatrix(array)
         return ColorMatrixColorFilter(matrix)
     }
+
 }

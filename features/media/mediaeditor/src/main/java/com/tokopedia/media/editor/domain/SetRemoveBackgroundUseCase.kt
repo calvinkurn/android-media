@@ -16,6 +16,7 @@ class SetRemoveBackgroundUseCase @Inject constructor(
         return repository(params)
     }
 
+    // since we not use graphql service, then marks this as no-op.
     override fun graphqlQuery() = "" //no-op
 
 }

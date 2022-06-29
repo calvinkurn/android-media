@@ -7,9 +7,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
-import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.editor.R
+import com.tokopedia.media.editor.base.BaseEditorFragment
 import com.tokopedia.media.editor.databinding.FragmentDetailEditorBinding
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorViewModel
 import com.tokopedia.media.editor.ui.component.BrightnessToolUiComponent
@@ -23,7 +23,7 @@ import javax.inject.Inject
 
 class DetailEditorFragment @Inject constructor(
     viewModelFactory: ViewModelProvider.Factory
-) : TkpdBaseV4Fragment()
+) : BaseEditorFragment()
     , BrightnessToolUiComponent.Listener
     , RemoveBackgroundToolUiComponent.Listener {
 
@@ -47,11 +47,6 @@ class DetailEditorFragment @Inject constructor(
         )
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        initObservable()
-    }
-
     override fun onBrightnessValueChanged(value: Float) {
         viewModel.setBrightness(value)
     }
@@ -60,7 +55,7 @@ class DetailEditorFragment @Inject constructor(
         viewModel.setRemoveBackground(data.imageUrl)
     }
 
-    private fun initObservable() {
+    override fun initObserver() {
         observeIntentUiModel()
         observeLoader()
         observeBrightness()
@@ -88,10 +83,11 @@ class DetailEditorFragment @Inject constructor(
 
     private fun observeIntentUiModel() {
         viewModel.intentUiModel.observe(viewLifecycleOwner) {
+            // make this ui model as global variable
             data = it
 
-            renderImagePreview(it.imageUrl)
             renderUiComponent(it.editorToolType)
+            renderImagePreview(it.imageUrl)
         }
     }
 
@@ -101,16 +97,16 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
-    private fun renderImagePreview(imageUrl: String) {
-        viewBinding?.imgPreview?.loadImage(imageUrl) {
-            centerCrop()
-        }
-    }
-
     private fun renderUiComponent(@EditorToolType type: Int) {
         when (type) {
             EditorToolType.BRIGHTNESS -> brightnessComponent.setupView()
             EditorToolType.REMOVE_BACKGROUND -> removeBgComponent.setupView()
+        }
+    }
+
+    private fun renderImagePreview(imageUrl: String) {
+        viewBinding?.imgPreview?.loadImage(imageUrl) {
+            centerCrop()
         }
     }
 

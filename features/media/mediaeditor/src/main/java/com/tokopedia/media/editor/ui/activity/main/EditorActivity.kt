@@ -5,7 +5,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.media.editor.di.EditorInjector
-import com.tokopedia.media.editor.ui.activity.BaseEditorActivity
+import com.tokopedia.media.editor.base.BaseEditorActivity
 import com.tokopedia.picker.common.EXTRA_EDITOR_PARAM
 import com.tokopedia.picker.common.EditorParam
 import javax.inject.Inject

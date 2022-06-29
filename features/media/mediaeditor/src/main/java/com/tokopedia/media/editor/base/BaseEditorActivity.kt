@@ -1,4 +1,4 @@
-package com.tokopedia.media.editor.ui.activity
+package com.tokopedia.media.editor.base
 
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity

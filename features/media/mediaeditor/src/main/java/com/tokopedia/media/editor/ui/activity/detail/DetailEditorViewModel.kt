@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.media.editor.data.tool.ColorFilterManager
+import com.tokopedia.media.editor.data.repository.ColorFilterRepository
 import com.tokopedia.media.editor.domain.SetRemoveBackgroundUseCase
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import kotlinx.coroutines.flow.collect
@@ -16,7 +16,7 @@ import java.io.File
 import javax.inject.Inject
 
 class DetailEditorViewModel @Inject constructor(
-    private val colorFilterManager: ColorFilterManager,
+    private val colorFilterRepository: ColorFilterRepository,
     private val removeBackgroundUseCase: SetRemoveBackgroundUseCase
 ) : ViewModel() {
 
@@ -32,12 +32,12 @@ class DetailEditorViewModel @Inject constructor(
     private var _removeBackground = MutableLiveData<File?>()
     val removeBackground: LiveData<File?> get() = _removeBackground
 
-    fun setIntentOnUiModel(data: EditorDetailUiModel) {
+    fun setIntentDetailUiModel(data: EditorDetailUiModel) {
         _intentUiModel.postValue(data)
     }
 
     fun setBrightness(value: Float) {
-        _brightnessValue.value = colorFilterManager.brightness(value)
+        _brightnessValue.value = colorFilterRepository.brightness(value)
     }
 
     fun setRemoveBackground(filePath: String) {
