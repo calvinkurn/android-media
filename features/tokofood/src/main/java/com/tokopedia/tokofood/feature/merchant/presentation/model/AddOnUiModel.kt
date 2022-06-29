@@ -21,7 +21,7 @@ data class AddOnUiModel(
         val outOfStockWording: String = ""
 ) : Parcelable {
     @IgnoredOnParcel
-    val isMultipleMandatory = minQty > Int.ONE
+    val isMultipleMandatory = minQty >= Int.ONE && maxQty > minQty
 
     @IgnoredOnParcel
     val filteredOptions = options.filter { it.isVisible }

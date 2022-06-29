@@ -534,10 +534,16 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                             _trackerPaymentCheckoutData.emit(checkoutResponse.data)
                         }
                     } else {
+                        val checkoutGeneralData = response.checkoutGeneralTokoFood.data
+                        val errorMessage =
+                            checkoutGeneralData.error.takeIf { it.isNotBlank() }
+                                ?: checkoutGeneralData.getErrorMetadataObject()?.popupErrorMessage?.text?.takeIf { it.isNotBlank() }
+                                ?: checkoutGeneralData.getErrorMetadataObject()?.popupMessage?.text?.takeIf { it.isNotBlank() }
+                                ?: checkoutGeneralData.message
                         _uiEvent.value = PurchaseUiEvent(
                             state = PurchaseUiEvent.EVENT_FAILED_CHECKOUT_GENERAL_TOASTER,
                             data = response.checkoutGeneralTokoFood.data,
-                            throwable = MessageErrorException(response.checkoutGeneralTokoFood.data.message)
+                            throwable = MessageErrorException(errorMessage)
                         )
                     }
                 }

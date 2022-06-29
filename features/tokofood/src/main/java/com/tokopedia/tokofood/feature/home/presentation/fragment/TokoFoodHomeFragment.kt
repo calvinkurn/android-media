@@ -170,7 +170,8 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         private const val PAGE_TYPE_HOME = "home"
         private const val SHARE_URL = "https://www.tokopedia.com/gofood"
         private const val SHARE_DEEPLINK = "tokopedia://food/home"
-        private const val THUMBNAIL_AND_OG_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/tokofood/gofood.png"
+        private const val THUMBNAIL_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/tokofood/gofood.png"
+        private const val OG_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/gofood_home_og_image.jpg"
         const val SOURCE = "tokofood"
 
         fun createInstance(): TokoFoodHomeFragment {
@@ -191,7 +192,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     private var dividerHeight = 4
     private var totalScrolled = 0
     private val spaceZero: Int
-        get() = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0).toInt()
+       get() = context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)?.toInt() ?: 0
 
     override fun getScreenName(): String {
         return ""
@@ -401,15 +402,15 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     private fun loadLayout() {
-        viewModel.getLoadingState()
+        viewModel.showLoadingState()
     }
 
     private fun showNoPinPoin() {
-        viewModel.getNoPinPoinState()
+        viewModel.showNoPinPointState()
     }
 
     private fun showNoAddress() {
-        viewModel.getNoAddressState()
+        viewModel.showNoAddressState()
     }
 
     private fun getChooseAddress() {
@@ -548,6 +549,12 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                 }
             }
         }
+
+        viewLifecycleOwner.observe(viewModel.homeImagePath) {
+            if (it.isNotEmpty()) {
+                showUniversalShareBottomSheet(it)
+            }
+        }
     }
 
     private fun collectValue() {
@@ -581,7 +588,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     private fun onErrorGetHomeLayout(throwable: Throwable) {
-        viewModel.getErrorState(throwable)
+        viewModel.showErrorState(throwable)
         hideMiniCartHome()
     }
 
@@ -682,7 +689,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     private fun checkAddressDataAndServiceArea(){
         checkIfChooseAddressWidgetDataUpdated()
-        when{
+        when {
             hasNoAddress() && isAddressManuallyUpdate() -> showNoAddress()
             hasNoPinPoin() && isAddressManuallyUpdate() -> showNoPinPoin()
             !isAddressManuallyUpdate() -> getChooseAddress()
@@ -833,9 +840,9 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
             sharingText = context?.resources?.getString(R.string.home_share_main_text).orEmpty(),
             sharingUrl = SHARE_URL,
             sharingDeeplink = SHARE_DEEPLINK,
-            thumbNailImage = THUMBNAIL_AND_OG_IMAGE_SHARE_URL,
+            thumbNailImage = THUMBNAIL_IMAGE_SHARE_URL,
             thumbNailTitle = context?.resources?.getString(R.string.home_share_tn_title).orEmpty(),
-            ogImageUrl = THUMBNAIL_AND_OG_IMAGE_SHARE_URL,
+            ogImageUrl = OG_IMAGE_SHARE_URL,
             specificPageName = context?.resources?.getString(R.string.home_share_title).orEmpty(),
             specificPageDescription = context?.resources?.getString(R.string.home_share_desc).orEmpty(),
             linkerType = FOOD_TYPE
@@ -844,13 +851,15 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     private fun shareClicked() {
         if (UniversalShareBottomSheet.isCustomSharingEnabled(context)) {
-            showUniversalShareBottomSheet()
+            context?.let {
+                viewModel.saveHomeImageToPhoneStorage(it, OG_IMAGE_SHARE_URL)
+            }
         } else {
             LinkerManager.getInstance().executeShareRequest(shareRequest(context, shareHomeTokoFood))
         }
     }
 
-    private fun showUniversalShareBottomSheet() {
+    private fun showUniversalShareBottomSheet(imageSaved: String) {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             init(this@TokoFoodHomeFragment)
             setUtmCampaignData(
@@ -864,6 +873,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                 tnImage = shareHomeTokoFood?.thumbNailImage.orEmpty()
             )
             setOgImageUrl(imgUrl = shareHomeTokoFood?.ogImageUrl.orEmpty())
+            imageSaved(imageSaved)
         }
 
         universalShareBottomSheet?.show(childFragmentManager, this)

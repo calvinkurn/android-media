@@ -53,6 +53,11 @@ import com.tokopedia.unifycomponents.ticker.TickerData
 
 object TokoFoodHomeMapper {
 
+    private const val BE_TICKER_ANNOUNCEMENT = 0
+    private const val BE_TICKER_INFORMATION = 1
+    private const val BE_TICKER_WARNING = 2
+    private const val BE_TICKER_ERROR = 3
+
     val SUPPORTED_LAYOUT_TYPE = listOf(
         BANNER_CAROUSEL,
         LEGO_6_IMAGE,
@@ -396,10 +401,18 @@ object TokoFoodHomeMapper {
                         TickerData(
                             title = tickerData.title,
                             description = tickerData.message,
-                            type = Ticker.TYPE_ANNOUNCEMENT
+                            type = mapTickerType(tickerData.tickerType)
                         )
                     )
             }
             return uiTickerList
+    }
+
+    private fun mapTickerType(tickerType: Int): Int = when(tickerType) {
+        BE_TICKER_ANNOUNCEMENT -> Ticker.TYPE_ANNOUNCEMENT
+        BE_TICKER_INFORMATION -> Ticker.TYPE_INFORMATION
+        BE_TICKER_WARNING -> Ticker.TYPE_WARNING
+        BE_TICKER_ERROR -> Ticker.TYPE_ERROR
+        else -> Ticker.TYPE_ANNOUNCEMENT
     }
 }

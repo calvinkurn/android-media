@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 class AttachmentVariantOption(
         @SerializedName("id") // ex:23454
         @Expose
-        val id: Long = -1L,
+        val id: String = "-1",
 
         @SerializedName("value")
         @Expose

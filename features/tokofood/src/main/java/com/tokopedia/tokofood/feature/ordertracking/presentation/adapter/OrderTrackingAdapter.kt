@@ -61,15 +61,6 @@ class OrderTrackingAdapter(
         }
     }
 
-    inline fun <reified T: BaseOrderTrackingTypeFactory> updateLiveTrackingItem(newItem: T?) {
-        if (newItem != null) {
-            val oldItem = filterUiModel<T>()
-            oldItem?.let {
-                updateItem(oldItem, newItem)
-            }
-        }
-    }
-
     fun expandOrderDetail(newFoodItemList: List<BaseOrderTrackingTypeFactory>) {
         val foodItemCount = visitables.filterIsInstance<FoodItemUiModel>().count()
         if (foodItemCount == Int.ONE) {
@@ -115,6 +106,15 @@ class OrderTrackingAdapter(
         if (visitables.getOrNull(lastIndex) is LoadingModel) {
             visitables.removeAt(lastIndex)
             notifyItemRemoved(lastIndex)
+        }
+    }
+
+    inline fun <reified T: BaseOrderTrackingTypeFactory> updateLiveTrackingItem(newItem: T?) {
+        if (newItem != null) {
+            val oldItem = filterUiModel<T>()
+            oldItem?.let {
+                updateItem(oldItem, newItem)
+            }
         }
     }
 

@@ -48,8 +48,6 @@ class MerchantPageViewModel @Inject constructor(
     private val getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase
 ) : BaseViewModel(dispatchers.main) {
 
-    var visitedLoginPage = false
-
     private val getMerchantDataResultLiveData = SingleLiveEvent<Result<GetMerchantDataResponse>>()
     val getMerchantDataResult: SingleLiveEvent<Result<GetMerchantDataResponse>> get() = getMerchantDataResultLiveData
     private val _chooseAddress = MutableLiveData<Result<GetStateChosenAddressResponse>>()
@@ -102,9 +100,9 @@ class MerchantPageViewModel @Inject constructor(
     fun getChooseAddress(source: String){
         isAddressManuallyUpdated = true
         getChooseAddressWarehouseLocUseCase.getStateChosenAddress( {
-            _chooseAddress.postValue(Success(it))
+            _chooseAddress.value = Success(it)
         },{
-            _chooseAddress.postValue(Fail(it))
+            _chooseAddress.value = Fail(it)
         }, source)
     }
 
@@ -300,9 +298,5 @@ class MerchantPageViewModel @Inject constructor(
 
     fun isTickerDetailEmpty(tickerData: TokoFoodTickerDetail): Boolean {
         return tickerData.title.isBlank() && tickerData.subtitle.isBlank()
-    }
-
-    fun isUserSkipTheLoginPage(visitedLoginPage: Boolean , isLoggedIn: Boolean): Boolean {
-        return visitedLoginPage && !isLoggedIn
     }
 }

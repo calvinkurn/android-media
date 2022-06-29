@@ -133,7 +133,6 @@ class ProductEducationalBottomSheet : BottomSheetUnify() {
     private fun trackClick(button: String,
                            response: ProductEducationalResponse) {
         ProductEducationalTracker.onCloseOrButtonClicked(
-                typeFlag = typeParam,
                 button = button,
                 eduTitle = response.title,
                 eduDesc = response.description,
@@ -149,13 +148,12 @@ class ProductEducationalBottomSheet : BottomSheetUnify() {
             viewImpressed = true
             ProductEducationalTracker.onImpressView(
                     trackingQueue = trackingQueue,
-                    typeFlag = typeParam,
+                    position = 0,
                     eduTitle = response.title,
                     eduDesc = response.description,
                     productId = productId,
                     shopId = shopId,
                     userId = userSession.userId ?: "",
-                    position = 0,
                     eventCategory = response.eventCategory
             )
         }

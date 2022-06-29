@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.DriverCallBottomsheetBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -27,8 +28,10 @@ class DriverCallBottomSheet : BottomSheetUnify() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DriverCallBottomsheetBinding.inflate(inflater, container, false)
-        return binding?.root
+        val view = inflater.inflate(R.layout.driver_call_bottomsheet, container, false)
+        binding = DriverCallBottomsheetBinding.bind(view)
+        setChild(view)
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

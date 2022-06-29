@@ -16,6 +16,7 @@ object TokoFoodHomeTickerQuery: GqlQueryInterface {
                   message
                   color
                   layout
+                  ticker_type
                 }
             }
         }

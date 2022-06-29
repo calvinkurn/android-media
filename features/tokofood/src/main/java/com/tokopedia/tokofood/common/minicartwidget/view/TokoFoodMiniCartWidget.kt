@@ -7,6 +7,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.common.util.Result
@@ -27,14 +28,15 @@ class TokoFoodMiniCartWidget @JvmOverloads constructor(
 
     private var source: String = ""
 
-    var totalQuantity: Int = 0
+    private var totalQuantity: Int = Int.ZERO
     set(value) {
-        viewBinding?.totalAmountMiniCart?.setCtaText(
-            context?.getString(
-                com.tokopedia.tokofood.R.string.minicart_order,
-                value
-            ).orEmpty()
-        )
+        val ctaText =
+            if (totalQuantity <= Int.ZERO) {
+                context?.getString(com.tokopedia.tokofood.R.string.minicart_order_empty).orEmpty()
+            } else {
+                context?.getString(com.tokopedia.tokofood.R.string.minicart_order, value).orEmpty()
+            }
+        viewBinding?.totalAmountMiniCart?.setCtaText(ctaText)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
@@ -73,7 +75,10 @@ class TokoFoodMiniCartWidget @JvmOverloads constructor(
                 isTotalAmountLoading = false
             }
             setLabelTitle(miniCartUiModel.shopName)
-            setAmount(miniCartUiModel.totalPriceFmt)
+            val totalPrice =
+                miniCartUiModel.totalPriceFmt.takeIf { it.isNotBlank() }
+                    ?: context?.getString(com.tokopedia.tokofood.R.string.text_purchase_dash).orEmpty()
+            setAmount(totalPrice)
             totalQuantity = miniCartUiModel.totalProductQuantity
             amountCtaView.visible()
             amountCtaView.setOnClickListener {
