@@ -4,7 +4,10 @@ import com.tokopedia.people.model.ProfileHeaderBase
 import com.tokopedia.people.views.uimodel.profile.*
 import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
 import com.tokopedia.feedcomponent.data.pojo.whitelist.Author
+import com.tokopedia.people.model.ProfileDoFollowModelBase
+import com.tokopedia.people.model.ProfileDoUnFollowModelBase
 import com.tokopedia.people.model.UserProfileIsFollow
+import com.tokopedia.people.views.uimodel.MutationUiModel
 import javax.inject.Inject
 
 /**
@@ -58,5 +61,23 @@ class UserProfileUiMapper @Inject constructor() {
             hasUsername = response.whitelist.authors.find { it.type == Author.TYPE_USER }?.post?.hasUsername ?: false,
             hasAcceptTnc = response.whitelist.authors.find { it.type == Author.TYPE_USER }?.post?.hasAcceptTnc ?: false,
         )
+    }
+
+    fun mapFollow(response: ProfileDoFollowModelBase): MutationUiModel {
+        return with(response.profileFollowers) {
+            if(errorCode.isEmpty()) MutationUiModel.Success
+            else MutationUiModel.Error(messages.firstOrNull() ?: "Gagal follow akun")
+        }
+    }
+
+    fun mapUnfollow(response: ProfileDoUnFollowModelBase): MutationUiModel {
+        return with(response.profileFollowers) {
+            if(data.isSuccess == SUCCESS_CODE) MutationUiModel.Success
+            else MutationUiModel.Error(messages.firstOrNull() ?: "Gagal unfollow akun")
+        }
+    }
+
+    companion object {
+        private const val SUCCESS_CODE = "1"
     }
 }

@@ -8,29 +8,19 @@ import com.tokopedia.people.Resources
 import com.tokopedia.people.Success
 import com.tokopedia.people.di.UserProfileScope
 import com.tokopedia.people.domains.PlayPostContentUseCase
-import com.tokopedia.people.domains.ProfileFollowUseCase
-import com.tokopedia.people.domains.ProfileTheyFollowedUseCase
-import com.tokopedia.people.domains.ProfileUnfollowedUseCase
-import com.tokopedia.people.domains.UserDetailsUseCase
 import com.tokopedia.people.domains.VideoPostReminderUseCase
-import com.tokopedia.people.model.ProfileDoFollowModelBase
-import com.tokopedia.people.model.ProfileDoUnFollowModelBase
-import com.tokopedia.people.model.ProfileHeaderBase
 import com.tokopedia.people.model.UserPostModel
-import com.tokopedia.people.model.UserProfileIsFollow
 import com.tokopedia.people.model.VideoPostReimderModel
 import kotlinx.coroutines.Dispatchers
-import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase
-import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase.Companion.WHITELIST_ENTRY_POINT
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.people.domains.repository.UserProfileRepository
 import com.tokopedia.people.utils.setValue
+import com.tokopedia.people.views.uimodel.MutationUiModel
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.people.views.uimodel.profile.*
 import com.tokopedia.people.views.uimodel.state.UserProfileUiState
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -40,8 +30,6 @@ import javax.inject.Inject
 @UserProfileScope
 class UserProfileViewModel @Inject constructor(
     private var playVodUseCase: PlayPostContentUseCase,
-    private val useCaseDoFollow: ProfileFollowUseCase,
-    private val useCaseDoUnFollow: ProfileUnfollowedUseCase,
     private val videoPostReminderUseCase: VideoPostReminderUseCase,
     private val repo: UserProfileRepository,
     private val userSession: UserSessionInterface,
@@ -113,26 +101,22 @@ class UserProfileViewModel @Inject constructor(
         launchCatchError(block = {
             val followInfo = _followInfo.value
 
-            if(followInfo.status) {
-                /** TODO: refactor - gonna move to repo */
-                val data = useCaseDoUnFollow.doUnfollow(followInfo.encryptedUserID)
-                if (data != null) {
-                    _followInfo.setValue { copy(status = !followInfo.status) }
-                } else throw NullPointerException("data is null")
-            }
-            else {
-                val data = useCaseDoFollow.doFollow(followInfo.encryptedUserID)
-                if (data != null) {
-                    _followInfo.setValue { copy(status = !followInfo.status) }
-                } else throw NullPointerException("data is null")
-            }
+            val result = if(followInfo.status) repo.unFollowProfile(followInfo.encryptedUserID)
+                        else repo.followProfile(followInfo.encryptedUserID)
 
-            _profileInfo.value = repo.getProfile(followInfo.userID)
+            when(result) {
+                MutationUiModel.Success -> {
+                    _followInfo.setValue { copy(status = !followInfo.status) }
+                    _profileInfo.value = repo.getProfile(followInfo.userID)
+                }
+                is MutationUiModel.Error -> unFollowErrorMessage.value = Exception(result.message)
+            }
         }) {
             unFollowErrorMessage.value = it
         }
     }
 
+    /** TODO: move it to init() viewmodel */
     fun getUserDetails(username: String, isRefresh: Boolean) {
         launchCatchError(block = {
             val deferredProfileInfo = asyncCatchError(block = {

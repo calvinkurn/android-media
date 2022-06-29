@@ -6,6 +6,7 @@ import com.tokopedia.people.domains.repository.UserProfileRepository
 import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistNewUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase.Companion.WHITELIST_ENTRY_POINT
 import com.tokopedia.people.model.ProfileHeaderBase
+import com.tokopedia.people.views.uimodel.MutationUiModel
 import com.tokopedia.people.views.uimodel.mapper.UserProfileUiMapper
 import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
@@ -49,6 +50,22 @@ class UserProfileRepositoryImpl @Inject constructor(
             val result = getWhitelistNewUseCase.execute(WHITELIST_ENTRY_POINT, userId)
 
             mapper.mapUserWhitelist(result)
+        }
+    }
+
+    override suspend fun followProfile(encryptedUserId: String): MutationUiModel {
+        return withContext(dispatcher.io) {
+            val result = useCaseDoFollow.doFollow(encryptedUserId)
+
+            mapper.mapFollow(result)
+        }
+    }
+
+    override suspend fun unFollowProfile(encryptedUserId: String): MutationUiModel {
+        return withContext(dispatcher.io) {
+            val result = useCaseDoUnFollow.doUnfollow(encryptedUserId)
+
+            mapper.mapUnfollow(result)
         }
     }
 }

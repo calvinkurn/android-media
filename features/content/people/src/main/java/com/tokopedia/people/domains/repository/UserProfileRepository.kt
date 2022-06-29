@@ -1,5 +1,6 @@
 package com.tokopedia.people.domains.repository
 
+import com.tokopedia.people.views.uimodel.MutationUiModel
 import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileWhitelistUiModel
@@ -14,4 +15,8 @@ interface UserProfileRepository {
     suspend fun getFollowInfo(profileIdList: List<String>): FollowInfoUiModel
 
     suspend fun getWhitelist(userId: String): ProfileWhitelistUiModel
+
+    suspend fun followProfile(encryptedUserId: String): MutationUiModel
+
+    suspend fun unFollowProfile(encryptedUserId: String): MutationUiModel
 }
