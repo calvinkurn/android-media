@@ -37,6 +37,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
+import com.tokopedia.picker.common.utils.ImageCompressor
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
@@ -125,8 +126,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
 
     private fun getData() {
         if(checkoutId.isNotBlank()) {
-            //TODO Get Product Array from Checkout
-            //TODO Get Prescription ids from Checkout if API doesn't provide
+            uploadPrescriptionViewModel.getEPharmacyCheckoutDetail(checkoutId)
         }else if(orderId.isNotBlank()){
             uploadPrescriptionViewModel.getEPharmacyOrderDetail(orderId)
         }
@@ -183,6 +183,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
     }
 
     private fun onClickUploadPhotoButton() {
+        uploadPrescriptionViewModel.removeRejectedImages()
         openMediaPicker((MAX_MEDIA_ITEM)
                 - (uploadPrescriptionViewModel.prescriptionImages.value?.size ?: 0))
     }
@@ -373,14 +374,12 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
         fun newInstance(bundle: Bundle): UploadPrescriptionFragment {
             val fragment = UploadPrescriptionFragment()
             fragment.arguments = bundle
-
             return fragment
         }
     }
 
     override fun onCameraClick() {
-        openMediaPicker((MAX_MEDIA_ITEM)
-                - (uploadPrescriptionViewModel.prescriptionImages.value?.size ?: 0))
+        onClickUploadPhotoButton()
     }
 
     override fun onPrescriptionImageClick(adapterPosition: Int, image: PrescriptionImage) {

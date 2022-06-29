@@ -44,4 +44,4 @@ enum class EPharmacyPrescriptionStatus(val status : String){
 }
 
 const val EPharmacyImageQuality = 100
-const val EPharmacyImageQualityDecreaseFactor = 0.6
+const val EPharmacyImageQualityDecreaseFactor = 0.8

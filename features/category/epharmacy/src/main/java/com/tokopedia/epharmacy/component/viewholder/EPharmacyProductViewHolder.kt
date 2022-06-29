@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifyprinciples.Typography
 
 class EPharmacyProductViewHolder(private val view: View,
@@ -22,6 +23,7 @@ class EPharmacyProductViewHolder(private val view: View,
     private val shopIcon = view.findViewById<IconUnify>(R.id.shop_icon)
     private val productQuantity = view.findViewById<Typography>(R.id.product_quantity)
     private val productImageUnify = view.findViewById<ImageView>(R.id.product_image)
+    private val productCard = view.findViewById<CardUnify2>(R.id.product_image_card)
 
     companion object {
         val LAYOUT = R.layout.epharmacy_product_view_item
@@ -33,6 +35,7 @@ class EPharmacyProductViewHolder(private val view: View,
 
     private fun renderProductData(dataModel: EPharmacyProductDataModel) {
         dataModel.product?.apply {
+            productCard.cardType = CardUnify2.TYPE_BORDER_ACTIVE
             productText.text = name ?: ""
             productQuantity.text = quantity.toString()
             productImageUnify.loadImage(productImage)

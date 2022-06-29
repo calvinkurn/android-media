@@ -16,12 +16,15 @@ import com.tokopedia.epharmacy.usecase.GetEPharmacyOrderDetailUseCase
 import com.tokopedia.epharmacy.usecase.PostPrescriptionIdUseCase
 import com.tokopedia.epharmacy.usecase.UploadPrescriptionUseCase
 import com.tokopedia.epharmacy.utils.*
+import com.tokopedia.media.preview.managers.ImageCompressionManagerImpl
+import com.tokopedia.picker.common.utils.ImageCompressor
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import java.lang.reflect.Type
 import javax.inject.Inject
@@ -94,6 +97,26 @@ class UploadPrescriptionViewModel @Inject constructor(
 
     private fun onFailEPharmacyDetail(throwable: Throwable) {
         _productDetailLiveData.postValue(Fail(throwable))
+    }
+
+    fun getEPharmacyCheckoutDetail(checkoutId: String) {
+        getEPharmacyCheckoutDetailUseCase.cancelJobs()
+        getEPharmacyCheckoutDetailUseCase.getEPharmacyCheckoutDetail(
+            ::onAvailableEPharmacyCheckoutDetail,
+            ::onFailEPharmacyDetail,
+            checkoutId
+        )
+    }
+
+    private fun onAvailableEPharmacyCheckoutDetail(ePharmacyDetailResponse: EPharmacyDataResponse) {
+        ePharmacyDetailResponse.let { data ->
+            if(data.ePharmacyProducts?.isEmpty() == true)
+                onFailEPharmacyDetail(IllegalStateException("Data invalid"))
+            else {
+                _productDetailLiveData.postValue(Success(mapResponseInDataModel(data)))
+                _buttonLiveData.postValue(data.epharmacyButton?.key)
+            }
+        }
     }
 
     fun onSuccessGetPrescriptionImages(arrayList: ArrayList<PrescriptionImage?>) {
@@ -251,6 +274,16 @@ class UploadPrescriptionViewModel @Inject constructor(
 
     private fun convertToUploadImageResponse(typeRestResponseMap: Map<Type, RestResponse>):  EPharmacyPrescriptionUploadResponse{
         return typeRestResponseMap[EPharmacyPrescriptionUploadResponse::class.java]?.getData() as EPharmacyPrescriptionUploadResponse
+    }
+
+    fun removeRejectedImages(){
+        _prescriptionImages.value?.let { presImages ->
+            val rejectedImages = presImages.filter { it?.status == EPharmacyPrescriptionStatus.REJECTED.status }
+            if(rejectedImages.isNotEmpty()){
+                presImages.removeAll(rejectedImages)
+                _prescriptionImages.postValue(presImages)
+            }
+        }
     }
 
     fun removePrescriptionImageAt(index : Int){
