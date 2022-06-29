@@ -384,73 +384,120 @@ class TestSimilarProductRecommendationViewModel {
     }
 
     @Test
-    fun `get selected sort`(){
+    fun `given both selected when get selected sort filter then return key to value mapping`(){
+        val filterKey = "os"
+        val filterValue = "123"
+        val sortKey = "terlaris"
+        val sortValue = "234"
         val filterChip = RecommendationFilterChipsEntity.FilterAndSort(
-                filterChip = listOf(RecommendationFilterChipsEntity.RecommendationFilterChip(title = "Penawaran", options = listOf(RecommendationFilterChipsEntity.Option(name = "Official Store", key = "os", value = "true", isActivated = true)))),
-                sortChip = listOf(RecommendationFilterChipsEntity.RecommendationSortChip(name = "Terlaris", key = "terlaris", value = "true", isSelected = true))
+                filterChip = listOf(RecommendationFilterChipsEntity.RecommendationFilterChip(title = "Penawaran", options = listOf(RecommendationFilterChipsEntity.Option(name = "Official Store", key = filterKey, value = filterValue, isActivated = true)))),
+                sortChip = listOf(RecommendationFilterChipsEntity.RecommendationSortChip(name = "Terlaris", key = sortKey, value = sortValue, isSelected = true))
         )
         coEvery { getRecommendationFilterChips.executeOnBackground() } returns filterChip
         every { getSingleRecommendationUseCase.getRecomParams(any(), any(), any()) } returns RequestParams()
-        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns RecommendationEntity.RecommendationData()
+        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns RecommendationEntity.RecommendationData(
+            recommendation = listOf(RecommendationEntity.Recommendation())
+        )
         viewModel.getSimilarProductRecommendation(1, "" , "", "")
-        assert(viewModel.getSelectedSortFilter().isNotEmpty())
+
+        val result = viewModel.getSelectedSortFilter()
+        assert(result.isNotEmpty())
+        assert(result.size == 2)
+        assert(result[filterKey] == filterValue)
+        assert(result[SimilarProductRecommendationViewModel.KEY_SORT] == sortValue)
     }
 
     @Test
-    fun `get selected sort null`(){
+    fun `given only filter selected when get selected sort filter then return key to value mapping with sort using default value`(){
+        val filterKey = "os"
+        val filterValue = "123"
+        val sortKey = "terlaris"
+        val sortValue = "234"
         val filterChip = RecommendationFilterChipsEntity.FilterAndSort(
-                filterChip = listOf(RecommendationFilterChipsEntity.RecommendationFilterChip(title = "Penawaran", options = listOf(RecommendationFilterChipsEntity.Option(name = "Official Store", key = "os", value = "true", isActivated = true)))),
-                sortChip = listOf(RecommendationFilterChipsEntity.RecommendationSortChip(name = "Terlaris", key = "terlaris", value = "true", isSelected = false))
+            filterChip = listOf(RecommendationFilterChipsEntity.RecommendationFilterChip(title = "Penawaran", options = listOf(RecommendationFilterChipsEntity.Option(name = "Official Store", key = filterKey, value = filterValue, isActivated = true)))),
+            sortChip = listOf(RecommendationFilterChipsEntity.RecommendationSortChip(name = "Terlaris", key = sortKey, value = sortValue, isSelected = false))
         )
         coEvery { getRecommendationFilterChips.executeOnBackground() } returns filterChip
         every { getSingleRecommendationUseCase.getRecomParams(any(), any(), any()) } returns RequestParams()
-        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns RecommendationEntity.RecommendationData()
+        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns RecommendationEntity.RecommendationData(
+            recommendation = listOf(RecommendationEntity.Recommendation())
+        )
         viewModel.getSimilarProductRecommendation(1, "" , "", "")
-        assert(viewModel.getSelectedSortFilter().isNotEmpty())
+
+        val result = viewModel.getSelectedSortFilter()
+        assert(result.isNotEmpty())
+        assert(result.size == 2)
+        assert(result[filterKey] == filterValue)
+        assert(result[SimilarProductRecommendationViewModel.KEY_SORT] == SimilarProductRecommendationViewModel.DEFAULT_VALUE_SORT)
     }
 
     @Test
-    fun `get selected filter null`(){
+    fun `given only sort selected when get selected sort filter then return only sort key to value mapping`(){
+        val filterKey = "os"
+        val filterValue = "123"
+        val sortKey = "terlaris"
+        val sortValue = "234"
         val filterChip = RecommendationFilterChipsEntity.FilterAndSort(
-                filterChip = listOf(RecommendationFilterChipsEntity.RecommendationFilterChip(title = "Penawaran", options = listOf(RecommendationFilterChipsEntity.Option(name = "Official Store", key = "os", value = "true", isActivated = false)))),
-                sortChip = listOf(RecommendationFilterChipsEntity.RecommendationSortChip(name = "Terlaris", key = "terlaris", value = "true", isSelected = true))
+            filterChip = listOf(RecommendationFilterChipsEntity.RecommendationFilterChip(title = "Penawaran", options = listOf(RecommendationFilterChipsEntity.Option(name = "Official Store", key = filterKey, value = filterValue, isActivated = false)))),
+            sortChip = listOf(RecommendationFilterChipsEntity.RecommendationSortChip(name = "Terlaris", key = sortKey, value = sortValue, isSelected = true))
         )
         coEvery { getRecommendationFilterChips.executeOnBackground() } returns filterChip
         every { getSingleRecommendationUseCase.getRecomParams(any(), any(), any()) } returns RequestParams()
-        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns RecommendationEntity.RecommendationData()
+        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns RecommendationEntity.RecommendationData(
+            recommendation = listOf(RecommendationEntity.Recommendation())
+        )
         viewModel.getSimilarProductRecommendation(1, "" , "", "")
-        assert(viewModel.getSelectedSortFilter().isNotEmpty())
+
+        val result = viewModel.getSelectedSortFilter()
+        assert(result.isNotEmpty())
+        assert(result.size == 1)
+        assert(result[SimilarProductRecommendationViewModel.KEY_SORT] == sortValue)
     }
 
     @Test
-    fun `get selected filter key duplicate`(){
+    fun `given no sort and filter selected when get selected sort filter then return only sort key to default value mapping`(){
+        val filterKey = "os"
+        val filterValue = "123"
+        val sortKey = "terlaris"
+        val sortValue = "234"
         val filterChip = RecommendationFilterChipsEntity.FilterAndSort(
-                filterChip = listOf(RecommendationFilterChipsEntity.RecommendationFilterChip(title = "Lokasi", options = listOf(RecommendationFilterChipsEntity.Option(name = "Jabodetabek", key = "city_ids", value = "123", isActivated = true), RecommendationFilterChipsEntity.Option(name = "Surabaya", key = "city_ids", value = "1233", isActivated = true)))),
-                sortChip = listOf(RecommendationFilterChipsEntity.RecommendationSortChip(name = "Terlaris", key = "terlaris", value = "true", isSelected = true))
+            filterChip = listOf(RecommendationFilterChipsEntity.RecommendationFilterChip(title = "Penawaran", options = listOf(RecommendationFilterChipsEntity.Option(name = "Official Store", key = filterKey, value = filterValue, isActivated = false)))),
+            sortChip = listOf(RecommendationFilterChipsEntity.RecommendationSortChip(name = "Terlaris", key = sortKey, value = sortValue, isSelected = true))
         )
         coEvery { getRecommendationFilterChips.executeOnBackground() } returns filterChip
         every { getSingleRecommendationUseCase.getRecomParams(any(), any(), any()) } returns RequestParams()
-        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns RecommendationEntity.RecommendationData()
-        viewModel.getSimilarProductRecommendation(1, "" , "", "")
-        assert(viewModel.getSelectedSortFilter().isNotEmpty())
-    }
-
-    @Test
-    fun `get selected filter error`(){
-        val filterChip = RecommendationFilterChipsEntity.FilterAndSort(
-                filterChip = listOf(RecommendationFilterChipsEntity.RecommendationFilterChip(title = "Lokasi", options = listOf(RecommendationFilterChipsEntity.Option(name = "Jabodetabek", key = "city_ids", value = "123", isActivated = true), RecommendationFilterChipsEntity.Option(name = "Surabaya", key = "city_ids", value = "1233", isActivated = true)))),
-                sortChip = listOf(RecommendationFilterChipsEntity.RecommendationSortChip(name = "Terlaris", key = "terlaris", value = "true", isSelected = true))
+        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns RecommendationEntity.RecommendationData(
+            recommendation = listOf(RecommendationEntity.Recommendation())
         )
-        coEvery { getRecommendationFilterChips.executeOnBackground() } throws Exception()
-        every { getSingleRecommendationUseCase.getRecomParams(any(), any(), any()) } returns RequestParams()
-        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns RecommendationEntity.RecommendationData()
         viewModel.getSimilarProductRecommendation(1, "" , "", "")
-        assert(viewModel.getSelectedSortFilter().isNotEmpty())
+
+        val result = viewModel.getSelectedSortFilter()
+        assert(result.isNotEmpty())
+        assert(result.size == 1)
+        assert(result[SimilarProductRecommendationViewModel.KEY_SORT] == sortValue)
     }
 
     @Test
-    fun `get selected filter empty`(){
-        assert(viewModel.getSelectedSortFilter().size == 1)
+    fun `given duplicate filter selected when get selected sort filter then return filter key to both value mapping`(){
+        val filterKey = "city_ids"
+        val filterValue = "123"
+        val filterValue2 = "1234"
+        val sortKey = "terlaris"
+        val sortValue = "234"
+        val filterChip = RecommendationFilterChipsEntity.FilterAndSort(
+            filterChip = listOf(RecommendationFilterChipsEntity.RecommendationFilterChip(title = "Lokasi", options = listOf(RecommendationFilterChipsEntity.Option(name = "Jabodetabek", key = filterKey, value = filterValue, isActivated = true), RecommendationFilterChipsEntity.Option(name = "Surabaya", key = filterKey, value = filterValue2, isActivated = true)))),
+            sortChip = listOf(RecommendationFilterChipsEntity.RecommendationSortChip(name = "Terlaris", key = sortKey, value = sortValue, isSelected = false))
+        )
+        coEvery { getRecommendationFilterChips.executeOnBackground() } returns filterChip
+        every { getSingleRecommendationUseCase.getRecomParams(any(), any(), any()) } returns RequestParams()
+        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns RecommendationEntity.RecommendationData(
+            recommendation = listOf(RecommendationEntity.Recommendation())
+        )
+        viewModel.getSimilarProductRecommendation(1, "" , "", "")
+
+        val result = viewModel.getSelectedSortFilter()
+        assert(result.isNotEmpty())
+        assert(result[filterKey] == "$filterValue#$filterValue2")
     }
 
     @Test
@@ -470,18 +517,6 @@ class TestSimilarProductRecommendationViewModel {
         every { userSession.userId } returns "1"
         Assert.assertEquals(viewModel.userId(), "1")
     }
-
-//    @Test
-//    fun `given current recommendationItem not null when load first page then set recommendationItem to null first`() {
-//        coEvery { viewModel.getProperty("_recommendationItem")?.invokeNoArgs("getValue") } answers {
-//            Response.success(Pair(listOf(RecommendationItem()), false))
-//        }
-//
-//        viewModel.getSimilarProductRecommendation(1, "", "", "")
-//
-//        Assert.assertTrue(viewModel.recommendationItem.value?.isSuccess() == true)
-//        Assert.assertTrue(viewModel.recommendationItem.value == null)
-//    }
 
     @Test
     fun `given empty when full filter click then pass empty value`(){
