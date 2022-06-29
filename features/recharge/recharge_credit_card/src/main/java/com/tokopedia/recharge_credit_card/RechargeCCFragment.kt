@@ -430,24 +430,10 @@ class RechargeCCFragment :
     }
 
     private fun onSuccessGetFavoriteChips(favoriteChips: List<FavoriteChipModel>) {
-        val dummy = listOf(
-            FavoriteChipModel(
-                clientNumber = "411111******1111",
-                clientName = "",
-                operatorId = "",
-                token = "hahahahaha"
-            ),
-            FavoriteChipModel(
-                clientNumber = "411111******4444",
-                clientName = "Misael",
-                operatorId = "",
-                token = "hahahahaha"
-            ),
-        )
         cc_widget_client_number.run {
-            setFilterChipShimmer(false, dummy.isEmpty())
+            setFilterChipShimmer(false, favoriteChips.isEmpty())
             setFavoriteNumber(
-                RechargeCCMapper.mapFavoriteChipsToWidgetModels(dummy))
+                RechargeCCMapper.mapFavoriteChipsToWidgetModels(favoriteChips))
         }
     }
 
