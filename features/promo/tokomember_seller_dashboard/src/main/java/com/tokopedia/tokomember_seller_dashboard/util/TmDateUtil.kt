@@ -144,17 +144,6 @@ object TmDateUtil {
         }
     }
 
-    fun getTimeInMillis(dateStr: String): String {
-        val parseTime = SimpleDateFormat(SIMPLE_DATE_FORMAT_Z, locale)
-        parseTime.timeZone = TimeZone.getTimeZone(UTC)
-        val date = parseTime.parse(dateStr + "00")
-        return try {
-            (date?.time?.div(1000)).toString()
-        } catch (e: Exception) {
-            "0"
-        }
-    }
-
     fun getTimeInMillisEnd(dateStr: String): String {
         val parseTime = SimpleDateFormat(SIMPLE_DATE_FORMAT_Z, locale)
         parseTime.timeZone = TimeZone.getTimeZone(UTC)

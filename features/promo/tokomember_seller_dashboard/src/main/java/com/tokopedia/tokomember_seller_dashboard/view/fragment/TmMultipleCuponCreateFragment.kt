@@ -41,8 +41,6 @@ import com.tokopedia.tokomember_seller_dashboard.model.TmSingleCouponData
 import com.tokopedia.tokomember_seller_dashboard.model.ValidationError
 import com.tokopedia.tokomember_seller_dashboard.model.mapper.TmCouponCreateMapper
 import com.tokopedia.tokomember_seller_dashboard.util.*
-import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.convertDateTime
-import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.getTimeInMillis
 import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
 import com.tokopedia.tokomember_seller_dashboard.util.ANDROID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID
@@ -61,7 +59,6 @@ import com.tokopedia.tokomember_seller_dashboard.util.COUPON_HEADER_SUBTITLE
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_HEADER_TITLE
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_TERMS_CONDITION
 import com.tokopedia.tokomember_seller_dashboard.util.CREATE
-import com.tokopedia.tokomember_seller_dashboard.util.DATE_DESC
 import com.tokopedia.tokomember_seller_dashboard.util.DATE_TITLE
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA_RETRY
