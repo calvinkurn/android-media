@@ -864,6 +864,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                 tnImage = shareHomeTokoFood?.thumbNailImage.orEmpty()
             )
             setOgImageUrl(imgUrl = shareHomeTokoFood?.ogImageUrl.orEmpty())
+            imageSaved(THUMBNAIL_AND_OG_IMAGE_SHARE_URL)
         }
 
         universalShareBottomSheet?.show(childFragmentManager, this)
