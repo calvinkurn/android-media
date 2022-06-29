@@ -89,15 +89,6 @@
         tools:listitem="@layout/item_grid"
         tools:spanCount="@integer/int_3" />
 
-<!--    <com.tokopedia.carousel.CarouselUnify-->
-<!--        android:id="@+id/feed_carousel"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="@dimen/unify_space_12"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/gridList" />-->
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_carousel"
         android:layout_width="0dp"
