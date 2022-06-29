@@ -54,8 +54,9 @@ class PlayInteractiveLeaderboardMapper @Inject constructor(private val decodeHtm
     }
 
     fun mapChoices(choices: List<QuizResponse.Choice>, userPicksId: String): List<QuizChoicesUiModel> {
-        return choices.map { item: QuizResponse.Choice ->
+        return choices.mapIndexed { index, item: QuizResponse.Choice ->
             QuizChoicesUiModel(
+                index,
                 item.id,
                 decodeHtml.transform(item.text),
                 if(item.id == userPicksId)

@@ -1,7 +1,5 @@
 package com.tokopedia.navigation.presentation.fragment;
 
-import static com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED;
-
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -199,13 +197,14 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         adapter.notifyItemChanged(productCardOptionsModel.getProductPosition(), isAddWishlist);
 
         if (isAddWishlist) {
-            if (isUsingWishlistV2) showSuccessAddWishlistV2(productCardOptionsModel.getWishlistResult());
+            if (isUsingWishlistV2) {
+                showSuccessAddWishlistV2(productCardOptionsModel.getWishlistResult());
+                if (productCardOptionsModel.isTopAds()) onClickTopAdsWishlistV2(productCardOptionsModel);
+            }
             else showSuccessAddWishlist();
         } else {
-            if (isUsingWishlistV2) {
-                showSuccessRemoveWishlistV2(productCardOptionsModel.getWishlistResult());
-                if (productCardOptionsModel.isTopAds()) onClickTopAdsWishlistV2(productCardOptionsModel);
-            } else showSuccessRemoveWishlist();
+            if (isUsingWishlistV2) showSuccessRemoveWishlistV2(productCardOptionsModel.getWishlistResult());
+            else showSuccessRemoveWishlist();
         }
     }
 
@@ -274,7 +273,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     }
 
     private void handleWishlistActionFailedV2(ProductCardOptionsModel.WishlistResult wishlistResult) {
-        if (getView() == null) return;
+        if (getView() == null || getActivity() == null) return;
         View rootView = getView().getRootView();
 
         String errorMsg;
@@ -285,7 +284,12 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
             else errorMsg = getString(com.tokopedia.wishlist_common.R.string.on_failed_remove_from_wishlist_msg);
         }
 
-        AddRemoveWishlistV2Handler.INSTANCE.showWishlistV2ErrorToaster(errorMsg, rootView);
+        if (!wishlistResult.getCtaTextV2().isEmpty() && !wishlistResult.getCtaActionV2().isEmpty()) {
+            String ctaText = wishlistResult.getCtaTextV2();
+            AddRemoveWishlistV2Handler.INSTANCE.showWishlistV2ErrorToasterWithCta(errorMsg, ctaText, wishlistResult.getCtaActionV2(), rootView, getActivity());
+        } else {
+            AddRemoveWishlistV2Handler.INSTANCE.showWishlistV2ErrorToaster(errorMsg, rootView);
+        }
     }
 
     @Override
@@ -459,6 +463,9 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         productCardOptionsModel.setProductId(String.valueOf(recommendationItem.getProductId()));
         productCardOptionsModel.setTopAds(recommendationItem.isTopAds());
         productCardOptionsModel.setTopAdsWishlistUrl(recommendationItem.getWishlistUrl());
+        productCardOptionsModel.setTopAdsClickUrl(recommendationItem.getClickUrl());
+        productCardOptionsModel.setProductName(recommendationItem.getName());
+        productCardOptionsModel.setProductImageUrl(recommendationItem.getImageUrl());
         productCardOptionsModel.setProductPosition(productPosition);
 
         return productCardOptionsModel;
