@@ -219,7 +219,11 @@ class RechargeCCFragment :
         rechargeCCViewModel.prefixSelect.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is RechargeNetworkResult.Success -> {
-                    rechargeCCViewModel.validateCCNumber(cc_widget_client_number.getInputNumber())
+                    rechargeCCViewModel.run {
+                        checkPrefixNumber(cc_widget_client_number.getInputNumber())
+                        cancelValidatorJob()
+                        validateCCNumber(cc_widget_client_number.getInputNumber())
+                    }
                 }
                 is RechargeNetworkResult.Fail -> {
                     showErrorToaster(it.error)
@@ -449,8 +453,6 @@ class RechargeCCFragment :
                 setContactName(prefill.clientName)
                 setInputNumber(prefill.clientNumber)
                 token = prefill.token
-                operatorIdSelected = prefill.operatorId
-                productIdSelected = prefill.productId
             }
         }
     }
