@@ -1296,11 +1296,11 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     private fun isNoAddress(localCacheModel: LocalCacheModel): Boolean {
-        return (localCacheModel.address_id.isNullOrEmpty() || localCacheModel.address_id == "0")
+        return (localCacheModel.address_id.isNullOrEmpty() || localCacheModel.address_id == EMPTY_ADDRESS_ID)
     }
 
     private fun isNoPinPoin(localCacheModel: LocalCacheModel): Boolean {
-        return (!localCacheModel.address_id.isNullOrEmpty() || localCacheModel.address_id != "0")
+        return (!localCacheModel.address_id.isNullOrEmpty() || localCacheModel.address_id != EMPTY_ADDRESS_ID)
                 && (localCacheModel.lat.isNullOrEmpty() || localCacheModel.long.isNullOrEmpty() ||
                 localCacheModel.lat.equals(EMPTY_COORDINATE) || localCacheModel.long.equals(EMPTY_COORDINATE))
     }
@@ -1349,6 +1349,7 @@ class MerchantPageFragment : BaseMultiFragment(),
         private const val SHARE = "share"
         private const val SOURCE_ADDESS = "tokofood"
         private const val EMPTY_COORDINATE = "0.0"
+        private const val EMPTY_ADDRESS_ID = "0"
 
         private const val REQUEST_CODE_LOGIN = 123
         private const val SOURCE = "merchant_page"
