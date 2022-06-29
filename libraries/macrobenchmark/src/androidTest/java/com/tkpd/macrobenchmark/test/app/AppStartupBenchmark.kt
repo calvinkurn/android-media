@@ -28,10 +28,7 @@ class AppStartupBenchmark(startupMode: StartupMode): BaseStartupBenchmark(startu
     override fun getIntent() = MacroIntent.App.getAppLauncherIntent()
 
     override fun waitUntil() {
-        MacroInteration.waitForRecyclerViewContent(
-                MacroIntent.TKPD_PACKAGE_NAME,
-                MacroIntent.App.RV_RESOURCE_ID
-        )
+        Thread.sleep(1000)
     }
 
     override fun traceName() = ""
