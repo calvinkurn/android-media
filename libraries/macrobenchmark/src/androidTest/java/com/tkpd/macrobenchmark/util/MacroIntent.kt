@@ -46,7 +46,7 @@ object MacroIntent {
 
         fun getAppLauncherIntent(): Intent {
             val intent = Intent("com.tokopedia.internal.VIEW")
-            intent.data = Uri.parse("tokopedia-android-internal://home/navigation")
+            intent.data = Uri.parse("tokopedia-android-internal://home-setting/opt/macrobenchmark")
             return intent
         }
 
