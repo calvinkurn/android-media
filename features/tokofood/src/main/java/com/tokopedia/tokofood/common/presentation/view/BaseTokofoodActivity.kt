@@ -61,6 +61,9 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
         }
     }
 
+    /**
+     * Finish the activity when click back from error state address merchant
+     */
     override fun onBackPressed() {
         val existingFragment = this.supportFragmentManager.findFragmentByTag(ManageLocationFragment::class.java.name)
         if (existingFragment != null) {
