@@ -42,6 +42,7 @@ import com.tokopedia.digital_checkout.presentation.adapter.DigitalMyBillsAdapter
 import com.tokopedia.digital_checkout.presentation.adapter.vh.MyBillsActionListener
 import com.tokopedia.digital_checkout.presentation.viewmodel.DigitalCartViewModel
 import com.tokopedia.digital_checkout.presentation.widget.DigitalCartInputPriceWidget
+import com.tokopedia.digital_checkout.presentation.widget.DigitalCheckoutBottomViewWidget
 import com.tokopedia.digital_checkout.presentation.widget.DigitalCheckoutSimpleWidget
 import com.tokopedia.digital_checkout.utils.DeviceUtil
 import com.tokopedia.digital_checkout.utils.DigitalCurrencyUtil.getStringIdrFormat
@@ -68,6 +69,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_digital_checkout_page.*
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -75,7 +77,8 @@ import javax.inject.Inject
  */
 
 class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
-    DigitalCartInputPriceWidget.ActionListener {
+    DigitalCartInputPriceWidget.ActionListener,
+    DigitalCheckoutBottomViewWidget.OnClickConsentListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -371,7 +374,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
 
         checkoutBottomViewWidget.isGoToPlusCheckout = isGoToPlusCheckout
         checkoutBottomViewWidget.isCheckoutButtonEnabled = !isGoToPlusCheckout
-
+        checkoutBottomViewWidget.setonClickConsentListener(this@DigitalCartFragment)
         checkoutBottomViewWidget.setCheckoutButtonListener {
             viewModel.proceedToCheckout(getDigitalIdentifierParam())
         }
@@ -789,6 +792,14 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     private fun getPriceInput(): Double? {
         return if (inputPriceHolderView.getPriceInput() == null) return null
         else inputPriceHolderView.getPriceInput()?.toDouble()
+    }
+
+    override fun onTncClick() {
+        Timber.d("tos")
+    }
+
+    override fun onPrivacyPolicyClick() {
+        Timber.d("privacy")
     }
 
     companion object {

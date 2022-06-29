@@ -30,7 +30,6 @@ import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.layout_digital_checkout_bottom_view.view.*
 import org.jetbrains.annotations.NotNull
-import timber.log.Timber
 
 class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(@NotNull context: Context,
                                                                 attrs: AttributeSet? = null, defStyleAttr: Int = 0)
@@ -130,6 +129,8 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(@NotNull context
             btnCheckout.isEnabled = isEnabled
         }
 
+    private var onClickConsentListener: OnClickConsentListener? = null
+
     fun setDigitalPromoButtonListener(listener: () -> Unit) {
         digitalPromoBtnView.setOnClickListener { listener.invoke() }
     }
@@ -140,6 +141,10 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(@NotNull context
 
     fun setCheckoutButtonListener(listener: () -> Unit) {
         btnCheckout.setOnClickListener { listener.invoke() }
+    }
+
+    fun setonClickConsentListener(onClickConsentListener: OnClickConsentListener){
+        this.onClickConsentListener = onClickConsentListener
     }
 
     fun disableVoucherView() {
@@ -164,10 +169,10 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(@NotNull context
                 highlightColor = Color.TRANSPARENT
                 clickableLink(
                     Pair(context.getString(R.string.digital_cart_goto_plus_tos), {
-                        Timber.d("tos")
+                        onClickConsentListener?.onTncClick()
                     }),
                     Pair(context.getString(R.string.digital_cart_goto_plus_privacy_policy), {
-                        Timber.d("privacy")
+                        onClickConsentListener?.onPrivacyPolicyClick()
                     })
                 )
             }
@@ -208,5 +213,15 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(@NotNull context
         }
         this.movementMethod = LinkMovementMethod.getInstance()
         this.text = spannableString
+    }
+
+    interface OnClickConsentListener{
+        fun onTncClick()
+        fun onPrivacyPolicyClick()
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        onClickConsentListener = null
     }
 }
