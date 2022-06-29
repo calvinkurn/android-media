@@ -86,7 +86,9 @@ object TokoFoodPurchaseUiModelMapper {
             response.data.unavailableSections.firstOrNull()?.let { unavailableSection ->
                 unavailableSection.products.takeIf { it.isNotEmpty() }?.let { unavailableProducts ->
                     add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel())
-                    add(mapProductListHeaderUiModel(isEnabled, response.data.unavailableSectionHeader))
+                    response.data.unavailableSectionHeader.takeIf { it.isNotBlank() }?.let { unavailableSectionHeader ->
+                        add(mapProductListHeaderUiModel(isEnabled, unavailableSectionHeader))
+                    }
                     add(mapProductUnavailableReasonUiModel(isEnabled, unavailableSection.title))
                     addAll(unavailableProducts.map { mapProductUiModel(it, isEnabled, false) })
                     add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel())

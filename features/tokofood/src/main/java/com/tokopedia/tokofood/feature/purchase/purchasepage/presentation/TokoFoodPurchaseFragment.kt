@@ -430,6 +430,9 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                     (it.data as? CheckoutGeneralTokoFoodData)?.let { checkoutData ->
                         val errorMetadata = checkoutData.getErrorMetadataObject()
                         when {
+                            checkoutData.error.isNotEmpty() -> {
+                                showToasterError(checkoutData.error)
+                            }
                             errorMetadata?.popupErrorMessage?.text?.isNotEmpty() == true -> {
                                 showToasterFromMetadata(true, errorMetadata.popupErrorMessage)
                             }
@@ -437,7 +440,9 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                                 showToasterFromMetadata(false, errorMetadata.popupMessage)
                             }
                             else -> {
-                                showDefaultCheckoutGeneralError(checkoutData.message.takeIf { it.isNotBlank() })
+                                showDefaultCheckoutGeneralError(checkoutData.message.takeIf { errorMessage ->
+                                    errorMessage.isNotBlank()
+                                })
                             }
                         }
                     }
@@ -861,12 +866,23 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         }
     }
 
-
     private fun showToasterError(throwable: Throwable) {
         view?.let {
             Toaster.build(
                 view = it,
                 text = getErrorMessage(throwable),
+                duration = Toaster.LENGTH_SHORT,
+                type = Toaster.TYPE_ERROR,
+                actionText = getOkayMessage()
+            ).show()
+        }
+    }
+
+    private fun showToasterError(errorMessage: String) {
+        view?.let {
+            Toaster.build(
+                view = it,
+                text = errorMessage,
                 duration = Toaster.LENGTH_SHORT,
                 type = Toaster.TYPE_ERROR,
                 actionText = getOkayMessage()
