@@ -1787,7 +1787,7 @@ class NewShopPageFragment :
                 }
             }?.let { tabFragment ->
                 listShopPageTabModel.add(ShopPageTabModel(
-                    tabTitle = it.text,
+                    tabTitle = it.name,
                     tabFragment = tabFragment,
                     iconUrl = it.icon,
                     iconActiveUrl = it.iconFocus
