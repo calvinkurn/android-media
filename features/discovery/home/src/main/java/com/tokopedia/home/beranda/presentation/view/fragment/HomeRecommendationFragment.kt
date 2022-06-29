@@ -216,7 +216,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
                                 getString(R.string.home_error_connection),
                                 Snackbar.LENGTH_LONG,
                                 Toaster.TYPE_ERROR,
-                                getString(R.string.title_try_again),
+                                getString(com.tokopedia.abstraction.R.string.title_try_again),
                                 View.OnClickListener {
                                     endlessRecyclerViewScrollListener?.loadMoreNextPage()
                                 })
@@ -243,7 +243,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
         recyclerView?.adapter = adapter
         parentPool?.setMaxRecycledViews(
             LAYOUT,
-            20
+            MAX_RECYCLED_VIEWS
         )
         recyclerView?.setRecycledViewPool(parentPool)
         createEndlessRecyclerViewListener()
@@ -511,9 +511,9 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
         val staggeredGridLayoutManager = recyclerView?.layoutManager as StaggeredGridLayoutManager?
         if (staggeredGridLayoutManager != null && staggeredGridLayoutManager.findFirstVisibleItemPositions(
                 null
-            )[0] > 10
+            )[0] > BASE_POSITION
         ) {
-            recyclerView?.scrollToPosition(10)
+            recyclerView?.scrollToPosition(BASE_POSITION)
         }
         recyclerView?.smoothScrollToPosition(0)
     }
@@ -690,7 +690,14 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
 
         var msgError = ErrorHandler.getErrorMessage(activity, Throwable())
         if (wishlistResult.messageV2.isNotEmpty()) msgError = wishlistResult.messageV2
-        view?.let { AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(msgError, it) }
+
+        if (wishlistResult.ctaTextV2.isNotEmpty() && wishlistResult.ctaActionV2.isNotEmpty()) {
+            activity?.let { activity ->
+                view?.let { AddRemoveWishlistV2Handler.showWishlistV2ErrorToasterWithCta(msgError, wishlistResult.ctaTextV2, wishlistResult.ctaActionV2, it, activity) }
+            }
+        } else {
+            view?.let { AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(msgError, it) }
+        }
     }
 
     fun smoothScrollRecyclerViewByVelocity(distance: Int) {
@@ -714,6 +721,9 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
         private const val REQUEST_FROM_PDP = 349
         private const val DEFAULT_SPAN_COUNT = 2
         private const val CLICK_TYPE_WISHLIST = "&click_type=wishlist"
+
+        private const val MAX_RECYCLED_VIEWS = 20
+        private const val BASE_POSITION = 10
 
         fun newInstance(tabIndex: Int, recomId: Int, tabName: String): HomeRecommendationFragment {
             val homeFeedFragment = HomeRecommendationFragment()
