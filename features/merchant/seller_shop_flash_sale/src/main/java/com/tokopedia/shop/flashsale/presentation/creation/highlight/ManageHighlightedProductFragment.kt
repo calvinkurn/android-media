@@ -248,7 +248,7 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
             refreshButton()
         }
 
-        refreshCounter(products)
+        refreshCounter()
     }
 
 
@@ -287,18 +287,18 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
         val products = productAdapter.getItems()
         val updatedProducts = viewModel.markAsSelected(products)
         productAdapter.submit(updatedProducts)
-        refreshCounter(updatedProducts)
+        refreshCounter()
     }
 
     private fun unselectProduct(selectedProduct: HighlightableProduct) {
         val products = productAdapter.getItems()
         val updatedProducts = viewModel.markAsUnselected(selectedProduct, products)
         productAdapter.submit(updatedProducts)
-        refreshCounter(updatedProducts)
+        refreshCounter()
     }
 
-    private fun refreshCounter(products: List<HighlightableProduct>) {
-        val selectedProductCount = products.filter { it.isSelected }.size
+    private fun refreshCounter() {
+        val selectedProductCount = viewModel.getSelectedProductIds().size
         binding?.tpgSelectedProductCount?.isVisible = selectedProductCount.isMoreThanZero()
         binding?.tpgSelectedProductCount?.text = String.format(getString(R.string.sfs_placeholder_selected_product_count), selectedProductCount)
     }
