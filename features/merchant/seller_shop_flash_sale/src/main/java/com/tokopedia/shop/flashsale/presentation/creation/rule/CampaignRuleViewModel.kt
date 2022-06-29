@@ -414,13 +414,15 @@ class CampaignRuleViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                val eligibilityResult = validateCampaignCreationEligibilityUseCase.execute()
-                if (!eligibilityResult.isEligible) {
-                    _createCampaignActionState.postValue(
-                        CampaignRuleActionResult.ValidationFail(CampaignRuleValidationResult.NotEligible)
-                    )
-                    resetIsInSaveOrCreateAction()
-                    return@launchCatchError
+                if (campaignData.status.isDraft()) {
+                    val eligibilityResult = validateCampaignCreationEligibilityUseCase.execute()
+                    if (!eligibilityResult.isEligible) {
+                        _createCampaignActionState.postValue(
+                            CampaignRuleActionResult.ValidationFail(CampaignRuleValidationResult.NotEligible)
+                        )
+                        resetIsInSaveOrCreateAction()
+                        return@launchCatchError
+                    }
                 }
 
                 validAction(campaignData)
@@ -437,32 +439,37 @@ class CampaignRuleViewModel @Inject constructor(
     }
 
     fun onCreateCampaignButtonClicked() {
-        validateCampaignCreation {
-            _createCampaignActionState.postValue(CampaignRuleActionResult.ShowConfirmation)
-            resetIsInSaveOrCreateAction()
+        validateCampaignCreation { campaignData ->
+            if (campaignData.status.isDraft()) {
+                _createCampaignActionState.postValue(CampaignRuleActionResult.ShowConfirmation)
+                resetIsInSaveOrCreateAction()
+            } else {
+                val action = CampaignAction.Update(campaignId)
+                doCreateCampaign(campaignData, action)
+            }
         }
     }
 
-    fun doCreateCampaign() {
+    fun onCreateCampaignConfirmed() {
         validateCampaignCreation { campaignData ->
-            val action = if (campaignData.status.isDraft()) {
-                CampaignAction.Submit(campaignId)
-            } else {
-                CampaignAction.Update(campaignId)
-            }
-            val param = getCampaignCreationParam(campaignData, action)
-            val result = doSellerCampaignCreationUseCase.execute(param)
-            if (result.isSuccess) {
-                _createCampaignActionState.postValue(CampaignRuleActionResult.Success)
-                resetIsInSaveOrCreateAction()
-            } else {
-                _createCampaignActionState.postValue(
-                    CampaignRuleActionResult.Fail(
-                        CampaignRuleError(result.errorTitle, result.errorMessage)
-                    )
+            val action = CampaignAction.Submit(campaignId)
+            doCreateCampaign(campaignData, action)
+        }
+    }
+
+    private suspend fun doCreateCampaign(campaignData: CampaignUiModel, action: CampaignAction) {
+        val param = getCampaignCreationParam(campaignData, action)
+        val result = doSellerCampaignCreationUseCase.execute(param)
+        if (result.isSuccess) {
+            _createCampaignActionState.postValue(CampaignRuleActionResult.Success)
+            resetIsInSaveOrCreateAction()
+        } else {
+            _createCampaignActionState.postValue(
+                CampaignRuleActionResult.Fail(
+                    CampaignRuleError(result.errorTitle, result.errorMessage)
                 )
-                resetIsInSaveOrCreateAction()
-            }
+            )
+            resetIsInSaveOrCreateAction()
         }
     }
 

@@ -38,9 +38,11 @@ import com.tokopedia.shop.flashsale.common.extension.showLoading
 import com.tokopedia.shop.flashsale.common.extension.stopLoading
 import com.tokopedia.shop.flashsale.common.extension.toBulletSpan
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
+import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.MerchantCampaignTNC
 import com.tokopedia.shop.flashsale.domain.entity.RelatedCampaign
 import com.tokopedia.shop.flashsale.domain.entity.enums.PaymentType
+import com.tokopedia.shop.flashsale.domain.entity.enums.isDraft
 import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationActivity
 import com.tokopedia.shop.flashsale.presentation.creation.rule.adapter.OnRemoveRelatedCampaignListener
 import com.tokopedia.shop.flashsale.presentation.creation.rule.adapter.RelatedCampaignAdapter
@@ -496,17 +498,27 @@ class CampaignRuleFragment : BaseDaggerFragment(),
     private fun observeCampaign() {
         viewModel.campaign.observe(viewLifecycleOwner) { result ->
             when (result) {
-                is Success -> showCampaignRuleInputForm()
+                is Success -> showCampaignRuleInputForm(result.data)
                 is Fail -> showError(result.throwable)
             }
         }
     }
 
-    private fun showCampaignRuleInputForm() {
+    private fun showCampaignRuleInputForm(data: CampaignUiModel) {
         val binding = binding ?: return
-        binding.cardButtonWrapper.visible()
+        renderCampaignRuleButton(data)
         binding.wrapperCampaignRuleContent.visible()
         binding.loader.hide()
+    }
+
+    private fun renderCampaignRuleButton(data: CampaignUiModel) {
+        val binding = binding ?: return
+        binding.cardButtonWrapper.visible()
+        binding.btnCreateCampaign.text = if (data.status.isDraft()) {
+            getString(R.string.sfs_create_campaign)
+        } else {
+            getString(R.string.sfs_save_changes)
+        }
     }
 
     private fun showError(throwable: Throwable) {
@@ -696,6 +708,6 @@ class CampaignRuleFragment : BaseDaggerFragment(),
     }
 
     override fun onCreateCampaignButtonClicked() {
-        viewModel.doCreateCampaign()
+        viewModel.onCreateCampaignConfirmed()
     }
 }
