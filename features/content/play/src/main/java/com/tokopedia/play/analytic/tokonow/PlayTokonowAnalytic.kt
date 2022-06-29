@@ -13,17 +13,6 @@ interface PlayTokonowAnalytic {
     fun impressInfoNow(channelId: String, channelType: PlayChannelType)
     fun clickInfoNow(channelId: String, channelType: PlayChannelType)
 
-    /**
-     * Can be merged with the existing
-
-    fun impressCarouselNow()
-    fun clickCarouselNow()
-    fun impressProductNow()
-    fun clickProductNow()
-    fun clickATNow()
-    fun clickBuyNow()
-    fun impressNowToaster()
-    fun clickLihatNowToaster()
-
-     */
+    fun impressNowToaster(channelId: String, channelType: PlayChannelType)
+    fun clickLihatNowToaster(channelId: String, channelType: PlayChannelType)
 }

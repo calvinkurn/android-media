@@ -98,4 +98,12 @@ class PlayTokonowAnalyticImpl @Inject constructor(private val userSession: UserS
             )
         )
     }
+
+    override fun impressNowToaster(channelId: String, channelType: PlayChannelType) {
+        TODO("Not yet implemented")
+    }
+
+    override fun clickLihatNowToaster(channelId: String, channelType: PlayChannelType) {
+        TODO("Not yet implemented")
+    }
 }
