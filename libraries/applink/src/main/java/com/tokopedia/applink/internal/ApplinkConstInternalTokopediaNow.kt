@@ -40,4 +40,8 @@ object ApplinkConstInternalTokopediaNow {
     //TokoNowCategoryFilterActivity
     @JvmField
     val CATEGORY_FILTER = "$INTERNAL_TOKOPEDIA_NOW/category-filter?warehouse_id={warehouse_id}"
+
+    //TokoNowRecipeDetailActivity
+    @JvmField
+    val RECIPE_DETAIL = "$INTERNAL_TOKOPEDIA_NOW/recipe-detail?recipe_id={recipe_id}"
 }

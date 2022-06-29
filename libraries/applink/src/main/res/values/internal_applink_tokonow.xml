@@ -19,4 +19,5 @@
     <string name="path_tokopedia_now_repurchase_page" translatable="false">/repurchase-page</string>
     <string name="path_tokopedia_now_category_filter" translatable="false">/category-filter</string>
     <string name="path_tokopedia_now_educational_info" translatable="false">/educational-info</string>
+    <string name="path_tokopedia_now_recipe_detail" translatable="false">/recipe-detail</string>
 </resources>
