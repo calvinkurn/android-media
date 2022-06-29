@@ -11,6 +11,20 @@
         android:id="@+id/client_number_widget_base"
         layout="@layout/view_client_number_widget_base" />
 
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/client_number_widget_ticker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        app:descriptionText="@string/cc_ticker_desc"
+        app:tickerType="announcement"
+        app:tickerShapeType="loose"
+        app:layout_constraintTop_toBottomOf="@id/client_number_widget_base"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/client_number_widget_button"
         android:layout_width="match_parent"
@@ -24,7 +38,7 @@
         app:unifyButtonType="main"
         android:enabled="false"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/client_number_widget_base"
+        app:layout_constraintTop_toBottomOf="@id/client_number_widget_ticker"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 

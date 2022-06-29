@@ -620,7 +620,10 @@ class RechargeCCFragment :
         operatorId: String,
         inputNumberActionTypeIndex: Int
     ) {
-
+        cc_widget_client_number.run {
+            setContactName(clientName)
+            setInputNumber(clientNumber)
+        }
     }
 
     private fun handleCallbackAnySavedNumberCancel() {
