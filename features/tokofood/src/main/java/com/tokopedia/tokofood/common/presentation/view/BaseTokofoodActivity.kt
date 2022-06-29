@@ -17,6 +17,7 @@ import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsVie
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.feature.home.analytics.TokoFoodHomePageLoadTimeMonitoring
 import com.tokopedia.tokofood.feature.home.presentation.fragment.TokoFoodHomeFragment
+import com.tokopedia.tokofood.feature.merchant.presentation.fragment.ManageLocationFragment
 import javax.inject.Inject
 
 class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragmentsViewModel> {
@@ -58,6 +59,17 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
             // Move into existing same fragment in the back stack
             moveToExistedFragment(fragmentName)
         }
+    }
+
+    /**
+     * Finish the activity when click back from error state address merchant
+     */
+    override fun onBackPressed() {
+        val existingFragment = this.supportFragmentManager.findFragmentByTag(ManageLocationFragment::class.java.name)
+        if (existingFragment != null) {
+            this.finish()
+        }
+        super.onBackPressed()
     }
 
     /**

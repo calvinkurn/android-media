@@ -32,11 +32,13 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokofood.R
@@ -230,9 +232,6 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     override fun onResume() {
         super.onResume()
-        if (viewModel.isUserSkipTheLoginPage(viewModel.visitedLoginPage, userSession.isLoggedIn)) {
-            activity?.finish()
-        }
         initializeMiniCartWidget()
         merchantPageAnalytics.openMerchantPage(
             merchantId,
@@ -1282,31 +1281,37 @@ class MerchantPageFragment : BaseMultiFragment(),
             val intent = RouteManager.getIntent(this, ApplinkConst.LOGIN)
             startActivityForResult(intent, REQUEST_CODE_LOGIN)
         }
-        viewModel.visitedLoginPage = true
     }
 
     private fun validateAddressData() {
         context?.run {
             ChooseAddressUtils.getLocalizingAddressData(this).let { addressData ->
                 when {
-                    addressData.address_id.isBlank() && isAddressManuallyUpdated() -> {
-                        navigateToNewFragment(
-                            ManageLocationFragment.createInstance(
-                                negativeCaseId = EMPTY_STATE_NO_ADDRESS,
-                                merchantId = merchantId
+                    isNoAddress(addressData) -> {
+                        if (isAddressManuallyUpdated()){
+                            viewModel.isAddressManuallyUpdated = false
+                            navigateToNewFragment(
+                                ManageLocationFragment.createInstance(
+                                    negativeCaseId = EMPTY_STATE_NO_ADDRESS,
+                                    merchantId = merchantId
+                                )
                             )
-                        )
+                        } else {
+                            setAddressManually()
+                        }
                     }
-                    addressData.latLong.isBlank() && isAddressManuallyUpdated() -> {
-                        navigateToNewFragment(
-                            ManageLocationFragment.createInstance(
-                                negativeCaseId = EMPTY_STATE_NO_PIN_POINT,
-                                merchantId = merchantId
+                    isNoPinPoin(addressData) -> {
+                        if (isAddressManuallyUpdated()){
+                            viewModel.isAddressManuallyUpdated = false
+                            navigateToNewFragment(
+                                ManageLocationFragment.createInstance(
+                                    negativeCaseId = EMPTY_STATE_NO_PIN_POINT,
+                                    merchantId = merchantId
+                                )
                             )
-                        )
-                    }
-                    !isAddressManuallyUpdated() -> {
-                        setAddressManually()
+                        } else {
+                            setAddressManually()
+                        }
                     }
 
                     else -> {
@@ -1319,6 +1324,7 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     private fun onResultFromLogin(resultCode: Int) {
         if (resultCode == Activity.RESULT_OK) {
+            viewModel.isAddressManuallyUpdated = false
             validateAddressData()
         } else {
             activity?.finish()
@@ -1332,29 +1338,47 @@ class MerchantPageFragment : BaseMultiFragment(),
     private fun isAddressManuallyUpdated(): Boolean = viewModel.isAddressManuallyUpdated
 
     private fun setAddressManually() {
-        viewModel.getChooseAddress(SOURCE_ADDESS)
+        if (userSession.isLoggedIn) viewModel.getChooseAddress(SOURCE_ADDESS)
+    }
+
+    private fun isNoAddress(localCacheModel: LocalCacheModel): Boolean {
+        return (localCacheModel.address_id.isNullOrEmpty() || localCacheModel.address_id == EMPTY_ADDRESS_ID)
+    }
+
+    private fun isNoPinPoin(localCacheModel: LocalCacheModel): Boolean {
+        return (!localCacheModel.address_id.isNullOrEmpty() || localCacheModel.address_id != EMPTY_ADDRESS_ID)
+                && (localCacheModel.lat.isNullOrEmpty() || localCacheModel.long.isNullOrEmpty() ||
+                localCacheModel.lat.equals(EMPTY_COORDINATE) || localCacheModel.long.equals(EMPTY_COORDINATE))
     }
 
     private fun setupChooseAddress(data: GetStateChosenAddressResponse) {
         data.let { chooseAddressData ->
-            ChooseAddressUtils.updateLocalizingAddressDataFromOther(
-                context = requireContext(),
-                addressId = chooseAddressData.data.addressId.toString(),
-                cityId = chooseAddressData.data.cityId.toString(),
-                districtId = chooseAddressData.data.districtId.toString(),
-                lat = chooseAddressData.data.latitude,
-                long = chooseAddressData.data.longitude,
-                label = String.format(
-                    "%s %s",
-                    chooseAddressData.data.addressName,
-                    chooseAddressData.data.receiverName
-                ),
-                postalCode = chooseAddressData.data.postalCode,
-                warehouseId = chooseAddressData.tokonow.warehouseId.toString(),
-                shopId = chooseAddressData.tokonow.shopId.toString(),
-                warehouses = TokonowWarehouseMapper.mapWarehousesResponseToLocal(chooseAddressData.tokonow.warehouses),
-                serviceType = chooseAddressData.tokonow.serviceType
-            )
+            if (chooseAddressData.data.addressId.isMoreThanZero()
+                && chooseAddressData.data.latitude.isNotEmpty()
+                && chooseAddressData.data.longitude.isNotEmpty()
+                && chooseAddressData.data.latitude != EMPTY_COORDINATE
+                && chooseAddressData.data.longitude != EMPTY_COORDINATE) {
+                ChooseAddressUtils.updateLocalizingAddressDataFromOther(
+                    context = requireContext(),
+                    addressId = chooseAddressData.data.addressId.toString(),
+                    cityId = chooseAddressData.data.cityId.toString(),
+                    districtId = chooseAddressData.data.districtId.toString(),
+                    lat = chooseAddressData.data.latitude,
+                    long = chooseAddressData.data.longitude,
+                    label = String.format(
+                        "%s %s",
+                        chooseAddressData.data.addressName,
+                        chooseAddressData.data.receiverName
+                    ),
+                    postalCode = chooseAddressData.data.postalCode,
+                    warehouseId = chooseAddressData.tokonow.warehouseId.toString(),
+                    shopId = chooseAddressData.tokonow.shopId.toString(),
+                    warehouses = TokonowWarehouseMapper.mapWarehousesResponseToLocal(
+                        chooseAddressData.tokonow.warehouses
+                    ),
+                    serviceType = chooseAddressData.tokonow.serviceType
+                )
+            }
         }
         validateAddressData()
     }
@@ -1369,7 +1393,9 @@ class MerchantPageFragment : BaseMultiFragment(),
     companion object {
 
         private const val SHARE = "share"
-        const val SOURCE_ADDESS = "tokofood"
+        private const val SOURCE_ADDESS = "tokofood"
+        private const val EMPTY_COORDINATE = "0.0"
+        private const val EMPTY_ADDRESS_ID = "0"
 
         private const val REQUEST_CODE_LOGIN = 123
         private const val SOURCE = "merchant_page"
