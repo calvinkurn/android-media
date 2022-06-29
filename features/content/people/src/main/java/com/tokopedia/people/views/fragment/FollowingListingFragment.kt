@@ -8,11 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.ViewFlipper
-import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
@@ -24,27 +23,22 @@ import com.tokopedia.people.ErrorMessage
 import com.tokopedia.people.Loading
 import com.tokopedia.people.R
 import com.tokopedia.people.Success
-import com.tokopedia.people.di.DaggerUserProfileComponent
-import com.tokopedia.people.di.UserProfileModule
 import com.tokopedia.people.listener.FollowerFollowingListener
 import com.tokopedia.people.viewmodels.FollowerFollowingViewModel
 import com.tokopedia.people.views.adapter.ProfileFollowingAdapter
 import com.tokopedia.unifycomponents.LocalLoad
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
 
-class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, AdapterCallback,
+class FollowingListingFragment @Inject constructor(
+    private val viewModelFactory: ViewModelFactory,
+    private val userSession: UserSessionInterface,
+): BaseDaggerFragment(),
+    AdapterCallback,
     FollowerFollowingListener {
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
-
-    val userSessionInterface: UserSession by lazy {
-        UserSession(context)
-    }
 
     private var followersContainer: ViewFlipper? = null
     private var globalError: LocalLoad? = null
@@ -56,18 +50,13 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
         ViewModelProviders.of(this, viewModelFactory).get(FollowerFollowingViewModel::class.java)
     }
 
-
     private val mAdapter: ProfileFollowingAdapter by lazy {
         ProfileFollowingAdapter(
             mPresenter,
             this,
-            userSessionInterface,
+            userSession,
             this
         )
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(
@@ -75,9 +64,7 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        initInjector()
-
-        isLoggedIn = userSessionInterface.isLoggedIn
+        isLoggedIn = userSession.isLoggedIn
         return inflater.inflate(R.layout.up_fragment_psger_item, container, false)
     }
 
@@ -208,31 +195,20 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
     override fun onResume() {
         super.onResume()
 
-        if(isLoggedIn != userSessionInterface.isLoggedIn){
+        if(isLoggedIn != userSession.isLoggedIn){
             refreshMainUi()
-            isLoggedIn = userSessionInterface.isLoggedIn
+            isLoggedIn = userSession.isLoggedIn
         }
     }
 
     override fun initInjector() {
-        DaggerUserProfileComponent.builder()
-            .baseAppComponent(
-                (requireContext().applicationContext as BaseMainApplication).baseAppComponent
-            )
-            .build()
-            .inject(this)
-    }
-
-    override fun onClick(source: View) {
-        when (source.id) {
-
-        }
+        /** No need since we alr have constructor injection */
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == UserProfileFragment.REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
-            isLoggedIn = userSessionInterface.isLoggedIn
+            isLoggedIn = userSession.isLoggedIn
             refreshMainUi()
         } else if (requestCode == UserProfileFragment.REQUEST_CODE_USER_PROFILE){
             val position = data?.getIntExtra(UserProfileFragment.EXTRA_POSITION_OF_PROFILE, -1)
@@ -264,11 +240,11 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
         val textDescription = view?.findViewById<TextView>(R.id.text_error_empty_desc)
 
         val currentUserId = arguments?.getString(UserProfileFragment.EXTRA_USER_ID)
-        if (currentUserId == userSessionInterface.userId)
+        if (currentUserId == userSession.userId)
             textTitle?.text = getString(com.tokopedia.people.R.string.up_empty_page_my_following_title)
         else
             textTitle?.text = getString(com.tokopedia.people.R.string.up_empty_page_following_title)
-        textDescription?.showWithCondition(currentUserId == userSessionInterface.userId)
+        textDescription?.showWithCondition(currentUserId == userSession.userId)
         textDescription?.text = getString(com.tokopedia.people.R.string.up_empty_page_my_following_desc)
     }
 
@@ -298,10 +274,20 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
         const val PAGE_LOADING = 1
         const val PAGE_EMPTY = 3
 
-        fun newInstance(extras: Bundle): Fragment {
-            val fragment = FollowingListingFragment()
-            fragment.arguments = extras
-            return fragment
+        private const val TAG = "FollowerListingFragment"
+
+        fun getFragment(
+            fragmentManager: FragmentManager,
+            classLoader: ClassLoader,
+            bundle: Bundle,
+        ): FollowingListingFragment {
+            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? FollowingListingFragment
+            return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
+                classLoader,
+                FollowingListingFragment::class.java.name
+            ).apply {
+                arguments = bundle
+            } as FollowingListingFragment
         }
     }
 

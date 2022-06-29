@@ -22,12 +22,12 @@ import com.tokopedia.people.views.fragment.UserProfileFragment
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 
 open class ProfileFollowingAdapter(
     val viewModel: FollowerFollowingViewModel,
     val callback: AdapterCallback,
-    val userSession: UserSession,
+    val userSession: UserSessionInterface,
     val listener: FollowerFollowingListener
 ) : BaseAdapter<ProfileFollowerV2>(callback) {
 

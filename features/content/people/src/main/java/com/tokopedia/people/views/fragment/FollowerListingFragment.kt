@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.ViewFlipper
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
@@ -36,10 +37,9 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 
 
-class FollowerListingFragment : BaseDaggerFragment(), AdapterCallback, FollowerFollowingListener {
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
+class FollowerListingFragment @Inject constructor(
+    private val viewModelFactory: ViewModelFactory,
+): BaseDaggerFragment(), AdapterCallback, FollowerFollowingListener {
 
     private var followersContainer: ViewFlipper? = null
     private var globalError: LocalLoad? = null
@@ -69,7 +69,6 @@ class FollowerListingFragment : BaseDaggerFragment(), AdapterCallback, FollowerF
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        initInjector()
         isLoggedIn = userSessionInterface?.isLoggedIn
         return inflater.inflate(R.layout.up_fragment_psger_item, container, false)
     }
@@ -205,12 +204,7 @@ class FollowerListingFragment : BaseDaggerFragment(), AdapterCallback, FollowerF
     }
 
     override fun initInjector() {
-        DaggerUserProfileComponent.builder()
-            .baseAppComponent(
-                (requireContext().applicationContext as BaseMainApplication).baseAppComponent
-            )
-            .build()
-            .inject(this)
+        /** No need since we alr have constructor injection */
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -279,10 +273,20 @@ class FollowerListingFragment : BaseDaggerFragment(), AdapterCallback, FollowerF
         const val PAGE_LOADING = 1
         const val PAGE_EMPTY = 3
 
-        fun newInstance(extras: Bundle): Fragment {
-            val fragment = FollowerListingFragment()
-            fragment.arguments = extras
-            return fragment
+        private const val TAG = "FollowerListingFragment"
+
+        fun getFragment(
+            fragmentManager: FragmentManager,
+            classLoader: ClassLoader,
+            bundle: Bundle,
+        ): FollowerListingFragment {
+            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? FollowerListingFragment
+            return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
+                classLoader,
+                FollowerListingFragment::class.java.name
+            ).apply {
+                arguments = bundle
+            } as FollowerListingFragment
         }
     }
 

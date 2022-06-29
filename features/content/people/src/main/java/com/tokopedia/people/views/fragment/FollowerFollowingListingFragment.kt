@@ -4,9 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.viewpager.widget.ViewPager
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -14,8 +13,6 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.people.R
 import com.tokopedia.people.analytic.UserProfileTracker
-import com.tokopedia.people.di.DaggerUserProfileComponent
-import com.tokopedia.people.di.UserProfileModule
 import com.tokopedia.people.views.adapter.ProfileFollowUnfollowViewPagerAdapter
 import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.EXTRA_DISPLAY_NAME
 import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.EXTRA_IS_FOLLOWERS
@@ -25,27 +22,22 @@ import com.tokopedia.unifycomponents.TabsUnify
 import javax.inject.Inject
 
 
-class FollowerFollowingListingFragment : BaseDaggerFragment() {
+class FollowerFollowingListingFragment @Inject constructor(
+    private val viewModelFactory: ViewModelFactory,
+) : BaseDaggerFragment() {
 
     private var userId = ""
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
     var tabLayout: TabsUnify? = null
     var ffViewPager: ViewPager? = null
     var isFollowersTab: Boolean = true
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        initInjector()
         return inflater.inflate(R.layout.up_fragment_follower_following_listing, container, false)
     }
 
@@ -108,7 +100,13 @@ class FollowerFollowingListingFragment : BaseDaggerFragment() {
     private fun initViewPager(viewPager: ViewPager?) {
         adapter = ProfileFollowUnfollowViewPagerAdapter(requireFragmentManager())
 
-        arguments?.let { FollowerListingFragment.newInstance(it) }?.let {
+        arguments?.let {
+            FollowerListingFragment.getFragment(
+                childFragmentManager,
+                requireContext().classLoader,
+                it,
+            )
+        }?.let {
             adapter?.addFragment(
                 it,
                 arguments?.getString(
@@ -118,7 +116,14 @@ class FollowerFollowingListingFragment : BaseDaggerFragment() {
                         + " " + getString(com.tokopedia.people.R.string.up_lb_followers)
             )
         }
-        arguments?.let { FollowingListingFragment.newInstance(it) }?.let {
+
+        arguments?.let {
+            FollowingListingFragment.getFragment(
+                childFragmentManager,
+                requireContext().classLoader,
+                it,
+            )
+        }?.let {
             adapter?.addFragment(
                 it,
                 arguments?.getString(EXTRA_TOTAL_FOLLOWINGS, getString(R.string.up_lb_following))
@@ -173,27 +178,28 @@ class FollowerFollowingListingFragment : BaseDaggerFragment() {
     }
 
     override fun getScreenName(): String {
-        return SCREEN
+        return TAG
     }
-
 
     override fun initInjector() {
-        DaggerUserProfileComponent.builder()
-            .baseAppComponent(
-                (requireContext().applicationContext as BaseMainApplication).baseAppComponent
-            )
-            .build()
-            .inject(this)
+        /** No need since we alr have constructor injection */
     }
 
- 
-
     companion object {
-        const val SCREEN = "FollowerFollowingListFragment"
-        fun newInstance(extras: Bundle): Fragment {
-            val fragment = FollowerFollowingListingFragment()
-            fragment.arguments = extras
-            return fragment
+        private const val TAG = "FollowerFollowingListingFragment"
+
+        fun getFragment(
+            fragmentManager: FragmentManager,
+            classLoader: ClassLoader,
+            bundle: Bundle,
+        ): FollowerFollowingListingFragment {
+            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? FollowerFollowingListingFragment
+            return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
+                classLoader,
+                FollowerFollowingListingFragment::class.java.name
+            ).apply {
+                arguments = bundle
+            } as FollowerFollowingListingFragment
         }
     }
 }

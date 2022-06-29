@@ -10,6 +10,7 @@ import android.widget.TextView
 import android.widget.ViewFlipper
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
@@ -17,7 +18,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.AppBarLayout
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
@@ -46,12 +46,7 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.people.*
 import com.tokopedia.people.R
-import com.tokopedia.people.di.DaggerUserProfileComponent
-import com.tokopedia.people.di.UserProfileModule
 import com.tokopedia.people.views.itemdecoration.GridSpacingItemDecoration
-import com.tokopedia.people.model.Profile
-import com.tokopedia.people.model.ProfileHeaderBase
-import com.tokopedia.people.model.UserProfileIsFollow
 import com.tokopedia.people.viewmodels.UserProfileViewModel
 import com.tokopedia.people.views.activity.UserProfileActivity.Companion.EXTRA_USERNAME
 import com.tokopedia.unifycomponents.*
@@ -62,7 +57,6 @@ import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListe
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -75,8 +69,6 @@ import com.tokopedia.people.analytic.UserProfileTracker
 import com.tokopedia.people.utils.UserProfileUtils
 import com.tokopedia.people.utils.withCache
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
-import com.tokopedia.people.views.uimodel.profile.LinkUiModel
-import com.tokopedia.people.views.uimodel.profile.LivePlayChannelUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileType
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
 import com.tokopedia.people.views.uimodel.state.UserProfileUiState
@@ -84,7 +76,11 @@ import com.tokopedia.unifyprinciples.Typography
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 
-class UserProfileFragment : BaseDaggerFragment(),
+class UserProfileFragment @Inject constructor(
+    private val viewModelFactory: ViewModelFactory,
+    private val userSession: UserSessionInterface,
+    private val feedFloatingButtonManager: FeedFloatingButtonManager,
+) : BaseDaggerFragment(),
     View.OnClickListener,
     AdapterCallback,
     ShareBottomsheetListener,
@@ -92,15 +88,6 @@ class UserProfileFragment : BaseDaggerFragment(),
     PermissionListener,
     UserPostBaseAdapter.PlayWidgetCallback,
     FeedPlusContainerListener {
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
-
-    @Inject
-    lateinit var userSession: UserSessionInterface
-
-    @Inject
-    lateinit var feedFloatingButtonManager: FeedFloatingButtonManager
 
     private val gridLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
         GridLayoutManager(activity, 2)
@@ -146,6 +133,10 @@ class UserProfileFragment : BaseDaggerFragment(),
     private lateinit var viewLiveRing: View
     private lateinit var imgProfile: ImageUnify
 
+    override fun initInjector() {
+        /** No need since we alr have constructor injection */
+    }
+
     private val viewModel: UserProfileViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(UserProfileViewModel::class.java)
     }
@@ -160,11 +151,6 @@ class UserProfileFragment : BaseDaggerFragment(),
             userId,
             this
         )
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        initInjector()
-        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(
@@ -788,15 +774,6 @@ class UserProfileFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun initInjector() {
-        DaggerUserProfileComponent.builder()
-            .baseAppComponent(
-                (requireContext().applicationContext as BaseMainApplication).baseAppComponent
-            )
-            .build()
-            .inject(this)
-    }
-
     override fun onClick(source: View) {
         when (source.id) {
             R.id.text_following_count, R.id.text_following_label -> {
@@ -946,10 +923,20 @@ class UserProfileFragment : BaseDaggerFragment(),
         private const val EXTRA_IS_REMINDER = "EXTRA_IS_REMINDER"
         private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
 
-        fun newInstance(extras: Bundle): Fragment {
-            val fragment = UserProfileFragment()
-            fragment.arguments = extras
-            return fragment
+        private const val TAG = "UserProfileFragment"
+
+        fun getFragment(
+            fragmentManager: FragmentManager,
+            classLoader: ClassLoader,
+            bundle: Bundle,
+        ): UserProfileFragment {
+            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? UserProfileFragment
+            return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
+                classLoader,
+                UserProfileFragment::class.java.name
+            ).apply {
+                arguments = bundle
+            } as UserProfileFragment
         }
     }
 
