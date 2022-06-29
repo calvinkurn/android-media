@@ -36,9 +36,9 @@ import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_TYPE
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_NAME
 import com.tokopedia.tokomember_seller_dashboard.util.LOADING_TEXT
-import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDate
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDatePreview
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setTime
+import com.tokopedia.tokomember_seller_dashboard.util.TmPrefManager
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashHomeActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TmCouponPreviewAdapter
@@ -54,6 +54,7 @@ import javax.inject.Inject
 
 class TmDashPreviewFragment : BaseDaggerFragment() {
 
+    private var cardId = 0
     private var tmTracker: TmTracker? = null
     var shopViewPremium: TokomemberShopView? = null
     var shopViewVip: TokomemberShopView? = null
@@ -93,17 +94,29 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
         arguments?.getInt(BUNDLE_PROGRAM_TYPE, 0)?.let {
             programActionType = it
         }
-        if (programActionType == ProgramActionType.CREATE_FROM_COUPON || programActionType == ProgramActionType.CREATE_BUAT || programActionType == ProgramActionType.EXTEND) {
+        cardId = arguments?.getInt(BUNDLE_CARD_ID_IN_TOOLS) ?: 0
+        if (programActionType == ProgramActionType.EXTEND) {
+            viewBgPreview.hide()
             carouselPreview.hide()
+        }
+        else {
+            viewBgPreview.show()
+            carouselPreview.show()
             tmDashCreateViewModel.getProgramInfo(
                 arguments?.getInt(BUNDLE_PROGRAM_ID_IN_TOOLS) ?: 0,
                 arguments?.getInt(BUNDLE_SHOP_ID) ?: 0,
                 "create"
             )
-        } else {
-            carouselPreview.show()
-            tmDashCreateViewModel.getCardInfo(arguments?.getInt(BUNDLE_CARD_ID_IN_TOOLS) ?: 0)
+
+            if(cardId == 0) {
+                val prefManager = context?.let { TmPrefManager(it) }
+                prefManager?.cardId?.let {
+                    cardId = it
+                }
+            }
+            tmDashCreateViewModel.getCardInfo(cardId)
         }
+
         renderHeader()
         observeViewModel()
         renderButton()
@@ -201,9 +214,22 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
     }
 
     private fun renderHeader() {
+        var subtitle = ""
+        when(programActionType){
+            ProgramActionType.CREATE ->{
+                subtitle = "Langkah 4 dari 4"
+            }
+            ProgramActionType.CREATE_BUAT ->{
+                subtitle = "Langkah 3 dari 3"
+            }
+            ProgramActionType.EXTEND ->{
+                subtitle = "Langkah 3 dari 3"
+            }
+        }
         headerPreview?.apply {
             title = "Buat Program"
-            subtitle = "Langkah 4 dari 4"
+
+            this.subtitle = subtitle
             isShowBackButton = true
             setNavigationOnClickListener {
                 if(arguments?.getInt(BUNDLE_CREATE_SCREEN_TYPE) == CreateScreenType.PREVIEW_BUAT){

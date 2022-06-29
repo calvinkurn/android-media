@@ -103,10 +103,10 @@ object TmCouponCreateMapper {
     fun mapCreateDataSingle(
         couponPremiumData: TmSingleCouponData?,
         tmCouponPremiumUploadId: String,
-        tmStartDateUnix: Calendar?,
-        tmEndDateUnix: Calendar?,
-        tmStartTimeUnix: Calendar?,
-        tmEndTimeUnix: Calendar?,
+        startDate: String?,
+        endDate: String?,
+        startTime: String?,
+        endTime: String?,
         token:String,
         imageSquare:String,
         imagePortrait: String,
@@ -116,22 +116,38 @@ object TmCouponCreateMapper {
 
         val voucherList = arrayListOf<TmCouponCreateRequest>()
         voucherList.add(0, TmCouponCreateRequest(
-            benefitIdr = CurrencyFormatHelper.convertRupiahToInt(couponPremiumData?.maxCashback?:""),
-            benefitMax = CurrencyFormatHelper.convertRupiahToInt(couponPremiumData?.maxCashback?:""),
+            benefitIdr = couponPremiumData?.maxCashback?.let {
+                CurrencyFormatHelper.convertRupiahToInt(
+                    it
+                )
+            },
+            benefitMax = couponPremiumData?.maxCashback?.let {
+                CurrencyFormatHelper.convertRupiahToInt(
+                    it
+                )
+            },
             targetBuyer = 3,
             image = tmCouponPremiumUploadId,
             couponType = couponPremiumData?.typeCoupon,
-            minPurchase = CurrencyFormatHelper.convertRupiahToInt(couponPremiumData?.minTransaki?:""),
+            minPurchase = couponPremiumData?.minTransaki?.let {
+                CurrencyFormatHelper.convertRupiahToInt(
+                    it
+                )
+            },
             minimumTierLevel = 1,
             benefitPercent = couponPremiumData?.cashBackPercentage,
-            quota = CurrencyFormatHelper.convertRupiahToInt(couponPremiumData?.quota?:""),
+            quota = couponPremiumData?.quota?.let {
+                CurrencyFormatHelper.convertRupiahToInt(
+                    it
+                )
+            },
             imagePortrait = imagePortrait,
             imageSquare = imageSquare,
             isPublic = 0,
-            hourStart = tmStartTimeUnix?.let { TmDateUtil.getTimeFromUnix(it) },
-            dateStart = tmStartDateUnix?.let { TmDateUtil.getDateFromUnix(it) },
-            hourEnd = tmEndTimeUnix?.let { TmDateUtil.getTimeFromUnix(it) },
-            dateEnd = tmEndDateUnix?.let { TmDateUtil.getDateFromUnix(it) },
+            hourStart = startTime,
+            dateStart = startDate,
+            hourEnd = endTime,
+            dateEnd = endDate,
             benefitType = couponPremiumData?.typeCashback
         ))
 

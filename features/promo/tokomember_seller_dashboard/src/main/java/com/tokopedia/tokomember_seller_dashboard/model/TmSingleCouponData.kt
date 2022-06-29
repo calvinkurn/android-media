@@ -7,6 +7,6 @@ data class TmSingleCouponData(
     var maxCashback: String = "",
     var minTransaki: String = "",
     var cashBackPercentage: Int = 0,
-    var quota: String = "0",
+    var quota: String = "100",
     var imageUrl: String = ""
 )

@@ -110,6 +110,7 @@ const val ANDROID = "android"
 
 const val VOUCHER_ID = "voucher_id"
 const val SOURCE = "source"
+const val SOURCE_VOUCHER = "TokoMember-Voucher"
 
 const val COUPON_HEADER_TITLE = "Daftar Tokomember"
 const val COUPON_HEADER_TITLE_SINGLE = "Buat Kupon Membership"

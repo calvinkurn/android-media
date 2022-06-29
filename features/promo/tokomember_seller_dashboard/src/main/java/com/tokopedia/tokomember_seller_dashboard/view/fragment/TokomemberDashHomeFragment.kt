@@ -12,6 +12,7 @@ import com.bumptech.glide.request.transition.Transition
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.kotlin.extensions.view.hide
@@ -155,7 +156,12 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
             ivTicker.loadImage(data.iconImageUrl)
             tvTickerCta.setOnClickListener {
                 try {
-                    RouteManager.route(context, data.cta?.appLink)
+                    if(data.cta?.appLink.isNullOrEmpty() && data.cta?.urlMobile?.isNotEmpty() == true){
+                        RouteManager.route(context,String.format("%s?url=%s", ApplinkConst.WEBVIEW, data.cta.urlMobile))
+                    }
+                    else if(data.cta?.urlMobile.isNullOrEmpty() && data.cta?.appLink?.isNotEmpty() == true){
+                        RouteManager.route(context, data.cta.appLink)
+                    }
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }

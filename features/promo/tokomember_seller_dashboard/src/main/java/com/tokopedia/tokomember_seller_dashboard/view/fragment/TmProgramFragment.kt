@@ -16,8 +16,9 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
-import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.tokomember_common_widget.callbacks.ChipGroupCallback
 import com.tokopedia.tokomember_common_widget.util.CreateScreenType
@@ -30,10 +31,37 @@ import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetProgramForm
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramThreshold
 import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
 import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
-import com.tokopedia.tokomember_seller_dashboard.util.*
+import com.tokopedia.tokomember_seller_dashboard.util.ACTION_CREATE
+import com.tokopedia.tokomember_seller_dashboard.util.ACTION_DETAIL
+import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EDIT
+import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EXTEND
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID_IN_TOOLS
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_EDIT_PROGRAM
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID_IN_TOOLS
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_TYPE
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_AVATAR
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_NAME
+import com.tokopedia.tokomember_seller_dashboard.util.DATE_DESC
+import com.tokopedia.tokomember_seller_dashboard.util.DATE_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA_RETRY
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_DESC
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_RETRY
+import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_CTA
+import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_CTA_EDIT
+import com.tokopedia.tokomember_seller_dashboard.util.REFRESH
+import com.tokopedia.tokomember_seller_dashboard.util.RETRY
+import com.tokopedia.tokomember_seller_dashboard.util.SIMPLE_DATE_FORMAT
+import com.tokopedia.tokomember_seller_dashboard.util.TM_PROGRAM_EDIT_DIALOG_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.TM_PROGRAM_MIN_PURCHASE_ERROR
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.convertDateTime
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.getDayOfWeekID
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDate
+import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.mapper.ProgramUpdateMapper
 import com.tokopedia.tokomember_seller_dashboard.view.customview.BottomSheetClickListener
@@ -149,12 +177,15 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                             view?.let { v-> Toaster.build(v, RETRY , Toaster.LENGTH_LONG , Toaster.TYPE_ERROR ).show() }
                         }
                         else -> {
-                            handleErrorOnUpdate()
+                            handleErrorOnUpdate(it.data?.membershipCreateEditProgram?.resultStatus?.reason, it.data?.membershipCreateEditProgram?.resultStatus?.message?.firstOrNull())
                         }
                     }
                 }
                 TokoLiveDataResult.STATUS.ERROR ->{
-                    handleErrorOnUpdate()
+                    handleErrorOnUpdate(
+                        it.data?.membershipCreateEditProgram?.resultStatus?.reason,
+                        it.data?.membershipCreateEditProgram?.resultStatus?.message?.firstOrNull()
+                    )
                 }
                 else ->{}
             }
@@ -168,18 +199,27 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         }
     }
 
-    private fun handleErrorOnUpdate() {
+    private fun handleErrorOnUpdate(reason: String?, message: String?) {
         closeLoadingDialog()
-        val title = when(errorCount){
-            0-> ERROR_CREATING_TITLE
-            else -> ERROR_CREATING_TITLE_RETRY
+        val title = if(reason.isNullOrEmpty()) {
+            when (errorCount) {
+                0 -> ERROR_CREATING_TITLE
+                else -> ERROR_CREATING_TITLE_RETRY
+            }
+        }
+        else{
+            reason
+        }
+        var desc = ERROR_CREATING_DESC
+        if(!message.isNullOrEmpty()){
+            desc = message
         }
         val cta = when(errorCount){
             0-> ERROR_CREATING_CTA
             else -> ERROR_CREATING_CTA_RETRY
         }
         val bundle = Bundle()
-        val tmIntroBottomSheetModel = TmIntroBottomsheetModel(title, ERROR_CREATING_DESC , "", cta , errorCount = errorCount)
+        val tmIntroBottomSheetModel = TmIntroBottomsheetModel(title, desc , "", cta , errorCount = errorCount)
         bundle.putString(TokomemberBottomsheet.ARG_BOTTOMSHEET, Gson().toJson(tmIntroBottomSheetModel))
         val bottomSheet = TokomemberBottomsheet.createInstance(bundle)
         bottomSheet.setUpBottomSheetListener(this)
@@ -227,7 +267,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                 tmOpenFragmentCallback.openFragment(CreateScreenType.COUPON_MULTIPLE, bundle)
             }
             ProgramActionType.CREATE_FROM_COUPON -> {
-                tmOpenFragmentCallback.openFragment(CreateScreenType.COUPON_MULTIPLE, bundle)
+                tmOpenFragmentCallback.openFragment(CreateScreenType.COUPON_SINGLE, bundle)
             }
             ProgramActionType.EXTEND ->{
                 tmOpenFragmentCallback.openFragment(CreateScreenType.COUPON_MULTIPLE, bundle)
@@ -239,7 +279,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                 activity?.finish()
             }
             ProgramActionType.CREATE_BUAT ->{
-                tmOpenFragmentCallback.openFragment(CreateScreenType.COUPON_MULTIPLE_BUAT, bundle)
+                tmOpenFragmentCallback.openFragment(CreateScreenType.COUPON_MULTIPLE, bundle)
             }
         }
     }
@@ -332,10 +372,14 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
             textFieldTranskVip.isEnabled = false
             textFieldTranskPremium.isEnabled = false
             cardEditInfo.show()
+            textFieldDuration.isEnabled = false
+            textFieldDuration.iconContainer.isEnabled = false
         }
         else{
             textFieldTranskVip.isEnabled = true
             textFieldTranskPremium.isEnabled = true
+            textFieldDuration.isEnabled = true
+            textFieldDuration.iconContainer.isEnabled = true
             textFieldTranskPremium.editText.setText(membershipGetProgramForm?.programThreshold?.minThresholdLevel1.toString())
             textFieldTranskVip.editText.setText(membershipGetProgramForm?.programThreshold?.minThresholdLevel2.toString())
             cardEditInfo.hide()
@@ -580,7 +624,6 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                 activity?.finish()
             } else{
                 activity?.finish()
-                activity?.onBackPressed()
             }
         }
     }
