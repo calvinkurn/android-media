@@ -94,6 +94,7 @@ import com.tokopedia.tokomember_seller_dashboard.view.customview.BottomSheetClic
 import com.tokopedia.tokomember_seller_dashboard.view.customview.TmSingleCouponView
 import com.tokopedia.tokomember_seller_dashboard.view.customview.TokomemberBottomsheet
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmDashCreateViewModel
+import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmEligibilityViewModel
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmProgramListViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TextFieldUnify2
@@ -154,6 +155,11 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         viewModelProvider?.get(TmProgramListViewModel::class.java)
     }
 
+    private val tmEligibilityViewModel: TmEligibilityViewModel by lazy(LazyThreadSafetyMode.NONE) {
+        val viewModelProvider = ViewModelProvider(this, viewModelFactory.get())
+        viewModelProvider.get(TmEligibilityViewModel::class.java)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -167,6 +173,8 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         renderHeader()
         renderButton()
         observeViewModel()
+
+        tmEligibilityViewModel.getSellerInfo()
         shopName = arguments?.getString(BUNDLE_SHOP_NAME)?:""
         shopAvatar = arguments?.getString(BUNDLE_SHOP_AVATAR)?:""
         fromEdit = arguments?.getBoolean(ACTION_EDIT)?:false
@@ -201,6 +209,19 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
     }
 
     private fun observeViewModel() {
+
+
+        tmEligibilityViewModel.sellerInfoResultLiveData.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> {
+                    shopAvatar = it.data.userShopInfo?.info?.shopAvatar?:""
+                    shopName = it.data.userShopInfo?.info?.shopName?:""
+                    customViewSingleCoupon.setShopData(shopName, shopAvatar)
+                }
+                is Fail -> {
+                }
+            }
+        })
 
         tmProgramListViewModel?.tokomemberProgramListResultLiveData?.observe(viewLifecycleOwner, {
             when (it.status) {
@@ -289,7 +310,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                 }
                 TokoLiveDataResult.STATUS.SUCCESS -> {
                     errorState.isPreValidateVipError = false
-                    if (it.data?.voucherValidationPartial?.header?.messages?.size == 1){
+                    if (it.data?.voucherValidationPartial?.header?.messages?.size == 0){
                         val startTime = if(tmCouponStartDateUnix != null){
                             tmCouponStartDateUnix?.timeInMillis?.div(1000).toString()
                         } else{
@@ -904,6 +925,16 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
     private fun renderSingleCoupon() {
         tvLevelMember.show()
         chipGroupLevel.show()
+
+
+        chipGroupLevel.setCallback(object : ChipGroupCallback {
+            override fun chipSelected(position: Int) {
+                selectedChipPositionLevel = position
+            }
+        })
+
+        chipGroupLevel.setDefaultSelection(selectedChipPositionLevel)
+        chipGroupLevel.addChips(arrayListOf("Premium", "VIP"))
 
         initTotalTransactionAmount()
     }

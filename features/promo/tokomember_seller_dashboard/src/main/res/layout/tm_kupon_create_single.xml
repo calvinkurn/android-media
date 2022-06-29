@@ -57,7 +57,6 @@
                 android:id="@+id/chipGroupLevel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
                 android:layout_marginTop="@dimen/unify_space_8"
                 app:layout_constraintStart_toStartOf="@id/tvTitleKuponMembership"
                 app:layout_constraintTop_toBottomOf="@id/tvLevelMember" />

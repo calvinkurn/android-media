@@ -100,11 +100,14 @@ import com.tokopedia.tokomember_seller_dashboard.view.customview.BottomSheetClic
 import com.tokopedia.tokomember_seller_dashboard.view.customview.TmSingleCouponView
 import com.tokopedia.tokomember_seller_dashboard.view.customview.TokomemberBottomsheet
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmDashCreateViewModel
+import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmEligibilityViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import kotlinx.android.synthetic.main.tm_dash_kupon_create_container.*
 import kotlinx.android.synthetic.main.tm_dash_kupon_create_multiple.*
@@ -155,6 +158,12 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         viewModelProvider.get(TmDashCreateViewModel::class.java)
     }
 
+    private val tmEligibilityViewModel: TmEligibilityViewModel by lazy(LazyThreadSafetyMode.NONE) {
+        val viewModelProvider = ViewModelProvider(this, viewModelFactory.get())
+        viewModelProvider.get(TmEligibilityViewModel::class.java)
+    }
+
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
@@ -179,6 +188,8 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         renderHeader()
         renderButton()
         observeViewModel()
+
+        tmEligibilityViewModel.getSellerInfo()
         shopName = arguments?.getString(BUNDLE_SHOP_NAME) ?: ""
         shopAvatar = arguments?.getString(BUNDLE_SHOP_AVATAR) ?: ""
         programActionType = arguments?.getInt(BUNDLE_PROGRAM_TYPE, 0)?:0
@@ -195,6 +206,21 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
     }
 
     private fun observeViewModel() {
+
+
+        tmEligibilityViewModel.sellerInfoResultLiveData.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> {
+                    shopAvatar = it.data.userShopInfo?.info?.shopAvatar?:""
+                    shopName = it.data.userShopInfo?.info?.shopName?:""
+                    tmPremiumCoupon.setShopData(shopName, shopAvatar)
+                    tmVipCoupon.setShopData(shopName, shopAvatar)
+                }
+                is Fail -> {
+                }
+            }
+        })
+
 
         tmDashCreateViewModel.tmCouponInitialLiveData.observe(viewLifecycleOwner, {
             when (it.status) {
@@ -594,8 +620,8 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
 
         val bundle = Bundle()
         bundle.putInt(BUNDLE_CARD_ID, arguments?.getInt(BUNDLE_CARD_ID)?:0)
-        bundle.putString(BUNDLE_SHOP_AVATAR, arguments?.getString(BUNDLE_SHOP_AVATAR))
-        bundle.putString(BUNDLE_SHOP_NAME, arguments?.getString(BUNDLE_SHOP_NAME))
+        bundle.putString(BUNDLE_SHOP_AVATAR, shopAvatar)
+        bundle.putString(BUNDLE_SHOP_NAME, shopName)
         bundle.putInt(BUNDLE_CARD_ID_IN_TOOLS,arguments?.getInt(BUNDLE_CARD_ID_IN_TOOLS) ?: 0)
         bundle.putInt(BUNDLE_SHOP_ID, arguments?.getInt(BUNDLE_SHOP_ID) ?: 0)
         bundle.putInt(BUNDLE_PROGRAM_ID_IN_TOOLS, arguments?.getInt(BUNDLE_PROGRAM_ID_IN_TOOLS) ?: 0)
@@ -801,7 +827,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 val coupon = tmPremiumCoupon.getCouponView()
                 val file =  TmFileUtil.saveBitMap(ctx, coupon)
                 tmCouponListPremiumItemPreview = TmCouponListItemPreview(
-                    file.absolutePath, "Premium", couponPremiumData?.quota ?: ""
+                    file.absolutePath, "Premium", couponPremiumData?.quota ?: "100"
                 )
                 tmDashCreateViewModel.uploadImagePremium(file)
             }
@@ -814,7 +840,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 val coupon = tmVipCoupon.getCouponView()
                val file =  TmFileUtil.saveBitMap(ctx, coupon)
                 tmCouponListVipItemPreview = TmCouponListItemPreview(
-                    file.absolutePath, "VIP", couponVip?.quota ?: ""
+                    file.absolutePath, "VIP", couponVip?.quota ?: "100"
                 )
                 tmDashCreateViewModel.uploadImageVip(file)
             }
