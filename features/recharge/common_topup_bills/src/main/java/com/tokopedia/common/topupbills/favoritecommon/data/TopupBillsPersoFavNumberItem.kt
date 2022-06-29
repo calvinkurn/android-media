@@ -16,6 +16,10 @@ data class TopupBillsPersoFavNumberItem(
     val token: String = "",
     @SerializedName("subtitle")
     val subtitle: String = "",
+    @SerializedName("operatorID")
+    val operatorId: String = "",
+    @SerializedName("productID")
+    val productId: String = "",
     @SerializedName("trackingData")
     val trackingData: TopupBillsPersoFavNumberTrackingData = TopupBillsPersoFavNumberTrackingData()
 ): Parcelable

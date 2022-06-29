@@ -26,6 +26,8 @@ class DigitalPersoMapper @Inject constructor() {
             clientName = persoPrefillData.subtitle,
             clientNumber = persoPrefillData.title,
             token = persoPrefillData.token,
+            operatorId = persoPrefillData.operatorId,
+            productId = persoPrefillData.productId,
         )
     }
 

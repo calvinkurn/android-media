@@ -449,6 +449,8 @@ class RechargeCCFragment :
                 setContactName(prefill.clientName)
                 setInputNumber(prefill.clientNumber)
                 token = prefill.token
+                operatorIdSelected = prefill.operatorId
+                productIdSelected = prefill.productId
             }
         }
     }
