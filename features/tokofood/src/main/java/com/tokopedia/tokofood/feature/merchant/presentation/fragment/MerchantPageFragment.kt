@@ -464,32 +464,30 @@ class MerchantPageFragment : BaseMultiFragment(),
     ) {
         universalShareBottomSheet = null
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
-            universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
-                init(this@MerchantPageFragment)
-                setUtmCampaignData(
-                    pageName = ShareComponentConstants.TOKOFOOD,
-                    userId = userSession.userId.orEmpty(),
-                    pageIdConstituents = listOf(
-                        ShareComponentConstants.Merchant.FOOD,
-                        merchantShareComponent.id
-                    ),
-                    feature = SHARE
-                )
-                setMetaData(
-                    tnTitle = merchantShareComponent.previewTitle,
-                    tnImage = merchantShareComponent.previewThumbnail,
-                )
-                setOgImageUrl(imgUrl = merchantShareComponent.ogImage)
-                imageSaved(storageImagePath)
-            }
-
-            merchantPageAnalytics.impressShareBottomSheet(
-                merchantShareComponent.id,
-                userSession.userId.orEmpty()
+            init(this@MerchantPageFragment)
+            setUtmCampaignData(
+                pageName = ShareComponentConstants.TOKOFOOD,
+                userId = userSession.userId.orEmpty(),
+                pageIdConstituents = listOf(
+                    ShareComponentConstants.Merchant.FOOD,
+                    merchantShareComponent.id
+                ),
+                feature = SHARE
             )
-
-            universalShareBottomSheet?.show(childFragmentManager, this)
+            setMetaData(
+                tnTitle = merchantShareComponent.previewTitle,
+                tnImage = merchantShareComponent.previewThumbnail,
+            )
+            setOgImageUrl(imgUrl = merchantShareComponent.ogImage)
+            imageSaved(storageImagePath)
         }
+
+        merchantPageAnalytics.impressShareBottomSheet(
+            merchantShareComponent.id,
+            userSession.userId.orEmpty()
+        )
+
+        universalShareBottomSheet?.show(childFragmentManager, this)
     }
 
     private fun observeLiveData() {
@@ -910,7 +908,10 @@ class MerchantPageFragment : BaseMultiFragment(),
         }
     }
 
-    private fun showCustomOrderDetailBottomSheet(productUiModel: ProductUiModel, productPosition: Int) {
+    private fun showCustomOrderDetailBottomSheet(
+        productUiModel: ProductUiModel,
+        productPosition: Int
+    ) {
         customOrderDetailBottomSheet?.dismiss()
         val bundle = Bundle().apply {
             putInt(
@@ -931,7 +932,10 @@ class MerchantPageFragment : BaseMultiFragment(),
         merchantInfoBottomSheet?.show(childFragmentManager)
     }
 
-    override fun onProductCardClicked(productListItem: ProductListItem, cardPositions: Pair<Int, Int>) {
+    override fun onProductCardClicked(
+        productListItem: ProductListItem,
+        cardPositions: Pair<Int, Int>
+    ) {
         val productUiModel = productListItem.productUiModel
         // track click product card event
         merchantPageAnalytics.clickProductCard(
@@ -957,7 +961,10 @@ class MerchantPageFragment : BaseMultiFragment(),
         bottomSheet.show(childFragmentManager)
     }
 
-    override fun onAtcButtonClicked(productListItem: ProductListItem, cardPositions: Pair<Int, Int>) {
+    override fun onAtcButtonClicked(
+        productListItem: ProductListItem,
+        cardPositions: Pair<Int, Int>
+    ) {
         val productUiModel = productListItem.productUiModel
         if (activityViewModel?.shopId.isNullOrBlank() || activityViewModel?.shopId == merchantId) {
             // update product id - card positions map
@@ -969,16 +976,16 @@ class MerchantPageFragment : BaseMultiFragment(),
             // no customized product yet, navigate to customization page
             else if (productUiModel.isCustomizable) {
                 navigateToOrderCustomizationPage(
-                        cartId = productUiModel.cartId,
-                        productListItem = productListItem,
-                        cardPositions.first
+                    cartId = productUiModel.cartId,
+                    productListItem = productListItem,
+                    cardPositions.first
                 )
             }
             // add non customizable product to cart
             else {
                 val updateParam = viewModel.mapProductUiModelToAtcRequestParam(
-                        shopId = merchantId,
-                        productUiModel = productUiModel
+                    shopId = merchantId,
+                    productUiModel = productUiModel
                 )
                 activityViewModel?.addToCart(updateParam, SOURCE)
             }
@@ -989,9 +996,9 @@ class MerchantPageFragment : BaseMultiFragment(),
         // track click atc button event
         viewModel.merchantData?.let {
             merchantPageAnalytics.clickOnAtcButton(
-                    productListItem, merchantId,
-                    it.merchantProfile.name,
-                    cardPositions.first
+                productListItem, merchantId,
+                it.merchantProfile.name,
+                cardPositions.first
             )
         }
     }
@@ -1288,7 +1295,7 @@ class MerchantPageFragment : BaseMultiFragment(),
             ChooseAddressUtils.getLocalizingAddressData(this).let { addressData ->
                 when {
                     isNoAddress(addressData) -> {
-                        if (isAddressManuallyUpdated()){
+                        if (isAddressManuallyUpdated()) {
                             viewModel.isAddressManuallyUpdated = false
                             navigateToNewFragment(
                                 ManageLocationFragment.createInstance(
@@ -1301,7 +1308,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                         }
                     }
                     isNoPinPoin(addressData) -> {
-                        if (isAddressManuallyUpdated()){
+                        if (isAddressManuallyUpdated()) {
                             viewModel.isAddressManuallyUpdated = false
                             navigateToNewFragment(
                                 ManageLocationFragment.createInstance(
@@ -1348,7 +1355,9 @@ class MerchantPageFragment : BaseMultiFragment(),
     private fun isNoPinPoin(localCacheModel: LocalCacheModel): Boolean {
         return (!localCacheModel.address_id.isNullOrEmpty() || localCacheModel.address_id != EMPTY_ADDRESS_ID)
                 && (localCacheModel.lat.isNullOrEmpty() || localCacheModel.long.isNullOrEmpty() ||
-                localCacheModel.lat.equals(EMPTY_COORDINATE) || localCacheModel.long.equals(EMPTY_COORDINATE))
+                localCacheModel.lat.equals(EMPTY_COORDINATE) || localCacheModel.long.equals(
+            EMPTY_COORDINATE
+        ))
     }
 
     private fun setupChooseAddress(data: GetStateChosenAddressResponse) {
@@ -1357,7 +1366,8 @@ class MerchantPageFragment : BaseMultiFragment(),
                 && chooseAddressData.data.latitude.isNotEmpty()
                 && chooseAddressData.data.longitude.isNotEmpty()
                 && chooseAddressData.data.latitude != EMPTY_COORDINATE
-                && chooseAddressData.data.longitude != EMPTY_COORDINATE) {
+                && chooseAddressData.data.longitude != EMPTY_COORDINATE
+            ) {
                 ChooseAddressUtils.updateLocalizingAddressDataFromOther(
                     context = requireContext(),
                     addressId = chooseAddressData.data.addressId.toString(),
