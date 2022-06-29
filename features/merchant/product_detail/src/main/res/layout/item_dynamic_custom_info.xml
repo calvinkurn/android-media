@@ -28,7 +28,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@drawable/ic_power_merchant"
             tools:visibility="visible"
-            android:contentDescription="" />
+            android:contentDescription="custom_image" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/custom_title"

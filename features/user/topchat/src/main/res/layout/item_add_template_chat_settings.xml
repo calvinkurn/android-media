@@ -14,7 +14,7 @@
         android:layout_width="12dp"
         android:layout_height="match_parent"
         app:srcCompat="@drawable/ic_topchat_plus_green"
-        android:contentDescription="" />
+        android:contentDescription="setting" />
 
     <androidx.legacy.widget.Space
         android:layout_width="10dp"

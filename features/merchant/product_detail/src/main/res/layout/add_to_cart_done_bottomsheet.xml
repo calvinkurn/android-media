@@ -26,7 +26,7 @@
                 android:layout_gravity="center_vertical"
                 android:background="@null"
                 app:srcCompat="@drawable/ic_close_default"
-                android:contentDescription="" />
+                android:contentDescription="btn_close" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_title"

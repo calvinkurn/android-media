@@ -16,7 +16,7 @@
         android:src="@drawable/circle_red"
         android:visibility="visible"
         tools:src="@drawable/ic_chat_icon_account"
-        android:contentDescription="" />
+        android:contentDescription="icon" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title"
@@ -38,6 +38,7 @@
         android:layout_marginLeft="@dimen/spacing_lvl2"
         android:src="@drawable/circle_red"
         android:visibility="gone"
-        tools:visibility="visible" />
+        tools:visibility="visible"
+        android:contentDescription="circle" />
 
 </LinearLayout>

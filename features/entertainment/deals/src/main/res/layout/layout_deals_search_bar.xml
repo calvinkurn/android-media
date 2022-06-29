@@ -38,7 +38,7 @@
                         android:layout_marginStart="@dimen/deals_dp_12"
                         android:layout_marginLeft="@dimen/deals_dp_12"
                         app:srcCompat="@drawable/ic_system_action_back_grayscale_24"
-                        android:contentDescription="" />
+                        android:contentDescription="iv_button_back" />
 
 
                     <com.tokopedia.unifycomponents.SearchBarUnify
@@ -74,7 +74,7 @@
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:srcCompat="@drawable/ic_deals_location"
-                        android:contentDescription="" />
+                        android:contentDescription="icon map" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_location_name"

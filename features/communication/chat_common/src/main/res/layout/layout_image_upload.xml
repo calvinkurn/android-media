@@ -80,7 +80,7 @@
             android:scaleType="fitCenter"
             android:visibility="gone"
             tools:visibility="visible"
-            android:contentDescription="" />
+            android:contentDescription="image" />
 
     </androidx.cardview.widget.CardView>
 
@@ -93,7 +93,7 @@
         android:layout_toStartOf="@+id/card_group_chat_message"
         android:visibility="visible"
         app:srcCompat="@drawable/ic_error_to_send"
-        android:contentDescription="" />
+        android:contentDescription="left_action" />
 
     <ProgressBar
         android:id="@+id/progress_bar"
@@ -118,7 +118,7 @@
         android:layout_toStartOf="@+id/hour"
         android:adjustViewBounds="true"
         tools:src="@drawable/ic_read_thin"
-        android:contentDescription="" />
+        android:contentDescription="chat_status" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/hour"

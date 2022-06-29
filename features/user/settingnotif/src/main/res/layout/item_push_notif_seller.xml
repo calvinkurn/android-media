@@ -33,7 +33,7 @@
             android:layout_marginRight="@dimen/spacing_lvl3"
             android:layout_gravity="center_vertical"
             app:srcCompat="@drawable/ic_notifsetting_seller"
-            android:contentDescription="" />
+            android:contentDescription="img_icon" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txt_title"
@@ -51,7 +51,7 @@
             android:layout_gravity="center_vertical"
             android:padding="@dimen/spacing_lvl2"
             app:srcCompat="@drawable/ic_notifsetting_arrow_right_grey"
-            android:contentDescription="" />
+            android:contentDescription="Notifikasi Penjual" />
 
     </LinearLayout>
 

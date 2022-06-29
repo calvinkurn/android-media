@@ -24,7 +24,7 @@
             android:scaleType="centerCrop"
             android:src="@color/Unify_N50"
             app:layout_constraintTop_toTopOf="parent"
-            android:contentDescription="" />
+            android:contentDescription="iv_product" />
 
 
         <com.tokopedia.unifyprinciples.Typography
@@ -86,7 +86,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="fitCenter"
-                    android:contentDescription="" />
+                    android:contentDescription="brand" />
 
             </androidx.cardview.widget.CardView>
         </LinearLayout>
@@ -101,7 +101,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tv_sales_price"
             app:srcCompat="@drawable/ic_hotlist"
-            android:contentDescription="" />
+            android:contentDescription="tag" />
 
 
         <com.tokopedia.unifyprinciples.Typography

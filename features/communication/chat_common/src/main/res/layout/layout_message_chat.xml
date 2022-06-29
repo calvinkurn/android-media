@@ -101,7 +101,7 @@
         android:layout_toStartOf="@+id/hour"
         android:adjustViewBounds="true"
         tools:src="@drawable/ic_read_thin"
-        android:contentDescription="" />
+        android:contentDescription="chat_status" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/hour"

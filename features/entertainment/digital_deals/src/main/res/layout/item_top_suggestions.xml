@@ -29,7 +29,7 @@
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
             app:srcCompat="@drawable/bg_shimmer_home_bg"
-            android:contentDescription="" />
+            android:contentDescription="iv_brand" />
 
     </androidx.cardview.widget.CardView>
 

@@ -89,7 +89,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_loading_toped"
                 tools:srcCompat="@tools:sample/backgrounds/scenic"
-                android:contentDescription="" />
+                android:contentDescription="product_image" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </RelativeLayout>
 

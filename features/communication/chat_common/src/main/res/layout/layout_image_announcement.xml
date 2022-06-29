@@ -36,7 +36,7 @@
             android:visibility="visible"
             tools:src="@tools:sample/avatars"
             tools:visibility="visible"
-            android:contentDescription="" />
+            android:contentDescription="image" />
 
         <Button
             android:id="@+id/btn_check"

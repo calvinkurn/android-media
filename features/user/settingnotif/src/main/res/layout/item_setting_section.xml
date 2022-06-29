@@ -18,7 +18,7 @@
         android:layout_marginEnd="@dimen/spacing_lvl3"
         android:layout_gravity="center_vertical"
         app:srcCompat="@drawable/ic_notifsetting_notification"
-        android:contentDescription="" />
+        android:contentDescription="ic_section" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_section_title"
