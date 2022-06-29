@@ -22,42 +22,33 @@ fun Number.numberFormatted(digitAfterComa: Int = 1, roundingMode: RoundingMode):
 
 fun Number.productThousandFormatted(
     digitAfterComa: Int = 1,
-    roundingMode: RoundingMode = RoundingMode.FLOOR
+    roundingMode: RoundingMode = RoundingMode.FLOOR,
+    formatLimit : Int = 10000,
+    isASGCDetailPage: Boolean = false
 ): String {
-    val formatLimit = 10000
     if (toDouble() < formatLimit) return decimalThousandFormatted()
 
     val exp = (Math.log(this.toDouble()) / Math.log(1000.00)).toInt()
     val number = this.toDouble() / Math.pow(1000.00, exp.toDouble())
-    return "${number.numberFormatted(digitAfterComa, roundingMode)}${
-        listOf(
-            "rb",
-            "jt",
-            "M",
-            "T"
-        )[exp - 1]
-    }"
+    return if (isASGCDetailPage)
+        "${number.numberFormatted(digitAfterComa, roundingMode)}${
+            listOf(
+                " rb",
+                " jt",
+                " M",
+                " T"
+            )[exp - 1]
+        }"
+    else
+        "${number.numberFormatted(digitAfterComa, roundingMode)}${
+            listOf(
+                "rb",
+                "jt",
+                "M",
+                "T"
+            )[exp - 1]
+        }"
 }
-
-fun Number.productThousandFormattedForASGCDetail(
-    digitAfterComa: Int = 1,
-    roundingMode: RoundingMode = RoundingMode.FLOOR
-): String {
-    val formatLimit = 1000
-    if (toDouble() < formatLimit) return decimalThousandFormatted()
-
-    val exp = (Math.log(this.toDouble()) / Math.log(1000.00)).toInt()
-    val number = this.toDouble() / Math.pow(1000.00, exp.toDouble())
-    return "${number.numberFormatted(digitAfterComa, roundingMode)}${
-        listOf(
-            " rb",
-            " jt",
-            " M",
-            " T"
-        )[exp - 1]
-    }"
-}
-
 
 fun Number.decimalThousandFormatted(): String =
     NumberFormat.getIntegerInstance(Locale("in", "id")).format(this)

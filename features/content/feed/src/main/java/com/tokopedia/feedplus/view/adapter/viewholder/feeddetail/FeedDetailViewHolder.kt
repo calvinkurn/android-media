@@ -5,7 +5,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.feedcomponent.util.util.productThousandFormattedForASGCDetail
+import com.tokopedia.feedcomponent.util.util.productThousandFormatted
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.view.listener.FeedPlusDetailListener
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -48,7 +48,7 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
             }
 
             rating.text = String.format("%.1f", productFeedDetailViewModelNew.rating.toDouble() / RATING_FORMAT)
-            val soldInfoText = getString(com.tokopedia.feedcomponent.R.string.feed_common_terjual) + " " + productFeedDetailViewModelNew.totalSold.productThousandFormattedForASGCDetail()
+            val soldInfoText = getString(com.tokopedia.feedcomponent.R.string.feed_common_terjual) + " " + productFeedDetailViewModelNew.totalSold.productThousandFormatted(formatLimit = 1000, isASGCDetailPage = true)
 
             soldInfo.text = soldInfoText
             star.showWithCondition(productFeedDetailViewModelNew.rating != 0)
