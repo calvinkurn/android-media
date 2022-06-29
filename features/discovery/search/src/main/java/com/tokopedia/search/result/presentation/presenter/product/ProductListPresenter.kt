@@ -435,14 +435,12 @@ class ProductListPresenter @Inject constructor(
         val list = createProductItemVisitableList(productDataView, searchParameter).toMutableList()
         productList.addAll(list)
 
-        val searchProduct = searchProductModel.searchProduct
-
         processHeadlineAdsLoadMore(searchProductModel, list)
         processTopAdsImageViewModel(searchParameter, list)
         processInspirationWidgetPosition(searchParameter, list)
         processInspirationCarouselPosition(searchParameter, list)
-        processBannerAndBroadmatchInSamePosition(searchProduct, list)
-        processBanner(searchProduct, list)
+        processBannerAndBroadmatchInSamePosition(list)
+        processBanner(list)
         processBroadMatch(list)
         addSearchInTokopedia(list)
 
@@ -999,8 +997,8 @@ class ProductListPresenter @Inject constructor(
             processInspirationWidgetPosition(searchParameter, list)
         }
 
-        processBannerAndBroadmatchInSamePosition(searchProduct, list)
-        processBanner(searchProduct, list)
+        processBannerAndBroadmatchInSamePosition(list)
+        processBanner(list)
 
         runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_BROADMATCH) {
             processBroadMatch(list)
@@ -1346,8 +1344,7 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun processBannerAndBroadmatchInSamePosition(
-            searchProduct: SearchProductModel.SearchProduct,
-            list: MutableList<Visitable<*>>,
+        list: MutableList<Visitable<*>>,
     ) {
         val bannerDataView = bannerDataView ?: return
         val relatedDataView = relatedDataView ?: return
@@ -1381,7 +1378,7 @@ class ProductListPresenter @Inject constructor(
         }
     }
 
-    private fun processBanner(searchProduct: SearchProductModel.SearchProduct, list: MutableList<Visitable<*>>) {
+    private fun processBanner(list: MutableList<Visitable<*>>) {
         try {
             if (!isShowBanner()) return
             val bannerDataView = bannerDataView ?: return
