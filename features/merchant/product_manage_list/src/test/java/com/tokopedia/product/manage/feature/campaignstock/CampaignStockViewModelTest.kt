@@ -27,15 +27,12 @@ import com.tokopedia.product.manage.feature.campaignstock.ui.util.CampaignStockM
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.domain.interactor.model.adminrevamp.ProductStockWarehouse
 import com.tokopedia.shop.common.domain.interactor.model.adminrevamp.ShopLocationResponse
-import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
-import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -1327,39 +1324,10 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
         verifyGetCampaignStockAllocationNotCalled()
     }
 
-    @Test
-    fun `given non-empty ticker data when multilocation TRUE than show ticker `() {
-        val isMultiLocationShop = true
-        onGetIsMultiLocationShop_thenReturn(isMultiLocationShop)
-        onGetTickerData_thenReturn(listOf(mockk()))
-
-        viewModel.getTickerData()
-        val actualResult = viewModel.tickerData.value
-        assert(!actualResult.isNullOrEmpty())
-    }
-
-    @Test
-    fun `given empty ticker data when multilocation FALSE than don't show ticker `() {
-        val isMultiLocationShop = false
-        onGetIsMultiLocationShop_thenReturn(isMultiLocationShop)
-        onGetTickerData_thenReturn(listOf())
-
-        viewModel.getTickerData()
-        val actualResult = viewModel.tickerData.value
-
-        assert(actualResult.isNullOrEmpty())
-    }
-
     private fun onGetCampaignStock_thenReturn(getStockAllocationData: GetStockAllocationData) {
         coEvery {
             campaignStockAllocationUseCase.executeOnBackground()
         } returns getStockAllocationData
-    }
-
-    private fun onGetTickerData_thenReturn(tickerData: List<TickerData>) {
-        every {
-            tickerStaticDataProvider.getTickers(any())
-        } returns tickerData
     }
 
     private fun onGetCampaignStock_thenReturn(error: Throwable) {
@@ -1384,12 +1352,6 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
         coEvery {
             editStatusUseCase.executeOnBackground()
         } returns response
-    }
-
-    private fun onGetIsMultiLocationShop_thenReturn(isMultiLocationShop: Boolean) {
-        coEvery {
-            userSession.isMultiLocationShop
-        } returns isMultiLocationShop
     }
 
     private fun onEditStatus_thenThrow(ex: Exception) {
