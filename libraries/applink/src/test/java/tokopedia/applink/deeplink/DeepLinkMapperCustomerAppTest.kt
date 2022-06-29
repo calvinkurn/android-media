@@ -8,8 +8,8 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.account.DeeplinkMapperAccount
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.home.DeeplinkMapperHome
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
@@ -2403,11 +2403,5 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val internalApplink = ApplinkConstInternalContent.INTERNAL_FEED_CREATION_SHOP_SEARCH
 
         assertEqualsDeepLinkMapper(applink, internalApplink)
-    }
-
-    private fun foodRollenceEnabler(){
-        every {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.KEY_ROLLENCE_FOOD, "")
-        } returns RollenceKey.KEY_ROLLENCE_FOOD
     }
 }
