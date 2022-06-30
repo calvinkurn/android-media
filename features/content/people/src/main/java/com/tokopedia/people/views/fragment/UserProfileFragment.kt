@@ -109,7 +109,6 @@ class UserProfileFragment @Inject constructor(
     private var userPostContainer: ViewFlipper? = null
     private var globalError: GlobalError? = null
     private var globalErrorPost: LocalLoad? = null
-    private var isSwipeRefresh: Boolean? = null
     private var isNewlyCreated: Boolean? = false
     private var shouldRefreshRecyclerView: Boolean? = false
     private var isViewMoreClickedBio: Boolean? = false
@@ -203,7 +202,6 @@ class UserProfileFragment @Inject constructor(
 
 
         swipeRefresh.setOnRefreshListener {
-            isSwipeRefresh = true
             refreshLandingPageData(true)
         }
 
@@ -477,11 +475,9 @@ class UserProfileFragment @Inject constructor(
             live = curr.liveInfo.isLive
         )
 
-        if (isSwipeRefresh == true) {
+        if(swipeRefresh.isRefreshing) {
             swipeRefresh.isRefreshing = false
-            isSwipeRefresh = !isSwipeRefresh!!
         }
-
         container?.displayedChild = PAGE_CONTENT
 
 
