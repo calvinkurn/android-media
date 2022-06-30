@@ -233,6 +233,7 @@ class MerchantPageFragment : BaseMultiFragment(),
             activity?.finish()
         }
         initializeMiniCartWidget()
+        updateUiFromLastUpdated()
         merchantPageAnalytics.openMerchantPage(
             merchantId,
             viewModel.merchantData?.merchantProfile?.opsHourFmt?.isWarning.orFalse()
@@ -682,6 +683,20 @@ class MerchantPageFragment : BaseMultiFragment(),
         activityViewModel?.let {
             binding?.miniCartWidget?.initialize(it, viewLifecycleOwner.lifecycleScope, SOURCE)
         }
+    }
+
+    private fun updateUiFromLastUpdated() {
+        activityViewModel?.lastUpdatedEvent?.value?.let { lastUpdatedEvent ->
+            when(lastUpdatedEvent.state) {
+                UiEvent.EVENT_SUCCESS_ADD_TO_CART -> {
+                    onSuccessAddCart(lastUpdatedEvent.data?.getSuccessUpdateResultPair())
+                }
+                UiEvent.EVENT_SUCCESS_UPDATE_CART -> {
+                    onSuccessUpdateCart(lastUpdatedEvent.data?.getSuccessUpdateResultPair())
+                }
+            }
+        }
+        activityViewModel?.resetLastUpdatedUiEvent()
     }
 
     private fun setupMerchantLogo() {
