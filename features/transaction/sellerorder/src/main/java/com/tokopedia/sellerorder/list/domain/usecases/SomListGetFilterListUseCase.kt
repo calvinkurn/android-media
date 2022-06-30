@@ -37,6 +37,12 @@ class SomListGetFilterListUseCase @Inject constructor(
         private val QUERY = """
             query GetOrderFilterSom {
               orderFilterSom {
+                quick_filter_list {
+                  id
+                  key
+                  text
+                  type
+                }
                 status_list {
                   order_status_id
                   key
@@ -55,11 +61,6 @@ class SomListGetFilterListUseCase @Inject constructor(
                   text
                   value
                 }
-              }
-              orderTypeList {
-                id
-                key
-                name
               }
               status
             }

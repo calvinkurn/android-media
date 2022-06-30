@@ -11,7 +11,7 @@ data class SomFilterResponse(
     val orderFilterSom: OrderFilterSom = OrderFilterSom()
 ) {
     data class OrderFilterSom(
-        @SerializedName("order_type")
+        @SerializedName("order_types")
         @Expose
         val orderTypeList: List<OrderType> = listOf(),
         @Expose
