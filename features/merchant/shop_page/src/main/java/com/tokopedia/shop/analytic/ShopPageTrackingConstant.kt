@@ -155,6 +155,7 @@ object ShopPageTrackingConstant {
     const val MULTIPLE_TYPE = "multiple"
     const val SINGLE_TYPE = "single"
     const val BUNDLE_ADD_TO_CART = "add to cart"
+    const val BUNDLING_ADD_TO_CART = "add_to_cart"
 
     //label
     const val CLICK_SHARE = "click share"
@@ -270,6 +271,7 @@ object ShopPageTrackingConstant {
     const val EVENT_LABEL = "eventLabel"
     const val EVENT_PROMO_ID = "promoId"
     const val EVENT_PRODUCT_ID = "productId"
+    const val TRACKER_ID = "trackerId"
     const val SHOP_ID = "shopId"
     const val USER_ID = "userId"
     const val SHOP_NAME = "shop_name"

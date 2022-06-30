@@ -1590,15 +1590,18 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                         productQuantity = selectedMultipleBundle.minOrder
                 )
             }
+            shopPageHomeTracking.clickAtcProductBundleMultiple(
+                    shopId = shopId,
+                    userId = userId,
+                    bundleId = selectedMultipleBundle.bundleId,
+                    bundleName = bundleName,
+                    bundlePriceCut = selectedMultipleBundle.discountPercentage.toString(),
+                    bundlePrice = selectedMultipleBundle.displayPriceRaw,
+                    quantity = selectedMultipleBundle.minOrder.toString(),
+                    shopName = shopName,
+                    shopType = customDimensionShopPage.shopType.orEmpty()
+            )
         }
-        shopPageHomeTracking.clickAtcProductBundleMultiple(
-                shopId = shopId,
-                userId = userId,
-                bundleId = selectedMultipleBundle.bundleId,
-                bundleName = bundleName,
-                bundlePriceCut = selectedMultipleBundle.discountPercentage.toString(),
-                bundlePrice = selectedMultipleBundle.displayPriceRaw
-        )
     }
 
     override fun addSingleBundleToCart(
@@ -1633,17 +1636,20 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                         productQuantity = selectedBundle.minOrder
                 )
             }
+            shopPageHomeTracking.clickAtcProductBundleSingle(
+                    shopId = shopId,
+                    userId = userId,
+                    bundleId = selectedBundle.bundleId,
+                    bundleName = bundleName,
+                    bundlePriceCut = selectedBundle.discountPercentage.toString(),
+                    bundlePrice = selectedBundle.displayPriceRaw,
+                    selectedPackage = selectedBundle.minOrderWording,
+                    productId = bundleProducts.productId,
+                    quantity = selectedBundle.minOrder.toString(),
+                    shopName = shopName,
+                    shopType = customDimensionShopPage.shopType.orEmpty()
+            )
         }
-        shopPageHomeTracking.clickAtcProductBundleSingle(
-                shopId = shopId,
-                userId = userId,
-                bundleId = selectedBundle.bundleId,
-                bundleName = bundleName,
-                bundlePriceCut = selectedBundle.discountPercentage.toString(),
-                bundlePrice = selectedBundle.displayPriceRaw,
-                selectedPackage = selectedBundle.minOrderWording,
-                productId = bundleProducts.productId
-        )
     }
 
     private fun handleOnFinishAtcBundle(
