@@ -20,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shopadmin.R
+import com.tokopedia.shopadmin.common.analytics.ShopAdminTrackers
 import com.tokopedia.shopadmin.common.constants.AdminImageUrl
 import com.tokopedia.shopadmin.common.constants.AdminStatus
 import com.tokopedia.shopadmin.common.utils.getGlobalErrorType
@@ -55,6 +56,9 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var invitationConfirmationParam: InvitationConfirmationParam
+
+    @Inject
+    lateinit var shopAdminTrackers: ShopAdminTrackers
 
     private val viewModel by lazy {
         ViewModelProvider(
@@ -257,6 +261,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
                     com.tokopedia.shopadmin.R.string.desc_invitation_rejected,
                     invitationConfirmationParam.getShopName()
                 )
+                shopAdminTrackers.impressRejectedStatus()
                 inflateInvitationRejected(titleRejected, descRejected)
             }
         }
@@ -283,6 +288,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
                 com.tokopedia.shopadmin.R.string.desc_invitation_rejected,
                 invitationConfirmationParam.getShopName()
             )
+            shopAdminTrackers.impressionRejectedPage()
             inflateInvitationRejected(titleRejected, descRejected)
         }
     }
@@ -391,6 +397,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
     }
 
     private fun setInvitationExpired() {
+        shopAdminTrackers.impressExpiredStatus()
         expiredBinding?.run {
             imgInvitationExpires.setImageUrl(AdminImageUrl.IL_INVITATION_EXPIRES)
             btnInvitationExpires.setOnClickListener {
@@ -427,9 +434,11 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
                 adminInvitationWithNoEmailSection.root.show()
                 setAccessAcceptedBtnDisabled()
                 emailTypingListener()
+                shopAdminTrackers.impressInvitationPageNoInputEmail()
             } else {
                 adminInvitationWithEmailSection.root.show()
                 adminInvitationWithNoEmailSection.root.hide()
+                shopAdminTrackers.impressInvitationPageInputEmail()
             }
         }
     }
@@ -480,9 +489,11 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
     private fun actionConfirmationButton() {
         confirmationBinding?.run {
             btnAccessReject.setOnClickListener {
+                shopAdminTrackers.clickInvitationPageReject()
                 showRejectConfirmationDialog()
             }
             btnAccessAccept.setOnClickListener {
+                shopAdminTrackers.clickInvitationPageAccept()
                 if (userSession.email.isNullOrBlank()) {
                     navigator.goToOtp(getEmailFromTextField(), userSession.phoneNumber.orEmpty())
                 } else {

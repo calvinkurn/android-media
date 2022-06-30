@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shopadmin.R
+import com.tokopedia.shopadmin.common.analytics.ShopAdminTrackers
 import com.tokopedia.shopadmin.common.constants.AdminImageUrl
 import com.tokopedia.shopadmin.common.presentation.navigator.goToPlayStoreOrSellerApp
 import com.tokopedia.shopadmin.common.utils.getGlobalErrorType
@@ -39,6 +40,9 @@ class AdminInvitationAcceptedFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var shopAdminTrackers: ShopAdminTrackers
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(InvitationAcceptedViewModel::class.java)
@@ -71,6 +75,11 @@ class AdminInvitationAcceptedFragment : BaseDaggerFragment() {
 
     override fun initInjector() {
         getComponent(AdminInvitationAcceptedComponent::class.java).inject(this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        shopAdminTrackers.impressionAcceptedPage()
     }
 
     private fun setShopAdminBackground() {
