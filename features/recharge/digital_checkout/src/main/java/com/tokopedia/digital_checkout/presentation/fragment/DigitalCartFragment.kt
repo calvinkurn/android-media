@@ -47,6 +47,7 @@ import com.tokopedia.digital_checkout.presentation.widget.DigitalCheckoutBottomV
 import com.tokopedia.digital_checkout.presentation.widget.DigitalCheckoutSimpleWidget
 import com.tokopedia.digital_checkout.utils.DeviceUtil
 import com.tokopedia.digital_checkout.utils.DigitalCurrencyUtil.getStringIdrFormat
+import com.tokopedia.digital_checkout.utils.GoToPlusUtil
 import com.tokopedia.digital_checkout.utils.PromoDataUtil.mapToStatePromoCheckout
 import com.tokopedia.digital_checkout.utils.analytics.DigitalAnalytics
 import com.tokopedia.globalerror.GlobalError
@@ -69,7 +70,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_digital_checkout_page.*
-import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -77,8 +77,7 @@ import javax.inject.Inject
  */
 
 class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
-    DigitalCartInputPriceWidget.ActionListener,
-    DigitalCheckoutBottomViewWidget.OnClickConsentListener {
+    DigitalCartInputPriceWidget.ActionListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -373,10 +372,40 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
 
         showPromoTicker()
 
-        checkoutBottomViewWidget.setOnClickConsentListener(this@DigitalCartFragment)
+        val detailConsentBottomSheet = BottomSheetUnify()
+        detailConsentBottomSheet.isFullpage = true
+        checkoutBottomViewWidget.setOnClickConsentListener(object : DigitalCheckoutBottomViewWidget.OnClickConsentListener{
+            override fun onTncClick() {
+                detailConsentBottomSheet.setTitle(getString(R.string.digital_cart_goto_plus_tos))
+                showBottomSheet(detailConsentBottomSheet, TNC_FILENAME)
+            }
+            override fun onPrivacyPolicyClick() {
+                detailConsentBottomSheet.setTitle(getString(R.string.digital_cart_goto_plus_privacy_policy))
+                showBottomSheet(detailConsentBottomSheet, PRIVACY_POLICY_FILENAME)
+            }
+        })
+
         checkoutBottomViewWidget.setCheckoutButtonListener {
             viewModel.proceedToCheckout(getDigitalIdentifierParam())
         }
+    }
+
+    private fun showBottomSheet(bottomSheetUnify: BottomSheetUnify, fileName: String){
+        bottomSheetUnify.setChild(LinearLayout(context).apply {
+            layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            orientation = LinearLayout.VERTICAL
+            GoToPlusUtil.getWebViewLoaded(
+                parentView = this,
+                context = context,
+                filename = fileName,
+                onButtonClick = {
+                    bottomSheetUnify.dismiss()
+                })
+        })
+        bottomSheetUnify.show(childFragmentManager, CONSENT_BOTTOM_SHEET_TAG)
     }
 
     private fun showError(error: Throwable) {
@@ -797,14 +826,6 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         return context?.resources?.getDimensionPixelSize(id) ?: 0
     }
 
-    override fun onTncClick() {
-        Timber.d("tos")
-    }
-
-    override fun onPrivacyPolicyClick() {
-        Timber.d("privacy")
-    }
-
     companion object {
         const val ARG_PASS_DATA = "ARG_PASS_DATA"
         const val ARG_SUBSCRIPTION_PARAMS = "ARG_SUBSCRIPTION_PARAMS"
@@ -821,6 +842,9 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         private const val SUBSCRIPTION_BOTTOM_SHEET_TAG = "SUBSCRIPTION_BOTTOM_SHEET_TAG"
         private const val LEADING_MARGIN_SPAN = 16
 
+        private const val TNC_FILENAME = "goto_plus_term_of_service.html"
+        private const val PRIVACY_POLICY_FILENAME = "goto_plus_privacy_policy.html"
+        private const val CONSENT_BOTTOM_SHEET_TAG = "goto plus consent bottom sheet"
 
         fun newInstance(
             passData: DigitalCheckoutPassData?,
