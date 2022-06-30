@@ -228,21 +228,18 @@ class OrderCustomizationFragment : BaseMultiFragment(),
                     if (viewModel.isEditingCustomOrder(cartId)) {
                         activityViewModel?.updateCart(
                             updateParam = updateParam,
-                            source = SOURCE,
-                            needToSetLastUpdated = true
+                            source = SOURCE
                         )
                     } else {
                         if (isChangeMerchant) {
                             activityViewModel?.deleteAllAtcAndAddProduct(
                                 updateParam = updateParam,
-                                source = SOURCE,
-                                needToSetLastUpdated = true
+                                source = SOURCE
                             )
                         } else {
                             activityViewModel?.addToCart(
                                 updateParam = updateParam,
-                                source = SOURCE,
-                                needToSetLastUpdated = true
+                                source = SOURCE
                             )
                         }
                         //hit trackers

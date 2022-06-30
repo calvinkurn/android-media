@@ -128,7 +128,6 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
             actvt.title = getFragmentTitle()
             actvt.setUpActionBar(getFragmentToolbar())
         }
-        activityViewModel?.resetLastUpdatedUiEvent()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

@@ -22,7 +22,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
@@ -236,7 +235,6 @@ class MerchantPageFragment : BaseMultiFragment(),
             activity?.finish()
         }
         initializeMiniCartWidget()
-        updateUiFromLastUpdated()
         merchantPageAnalytics.openMerchantPage(
             merchantId,
             viewModel.merchantData?.merchantProfile?.opsHourFmt?.isWarning.orFalse()
@@ -690,20 +688,6 @@ class MerchantPageFragment : BaseMultiFragment(),
         activityViewModel?.let {
             binding?.miniCartWidget?.initialize(it, viewLifecycleOwner.lifecycleScope, SOURCE)
         }
-    }
-
-    private fun updateUiFromLastUpdated() {
-        activityViewModel?.lastUpdatedEvent?.value?.let { lastUpdatedEvent ->
-            when(lastUpdatedEvent.state) {
-                UiEvent.EVENT_SUCCESS_ADD_TO_CART -> {
-                    onSuccessAddCart(lastUpdatedEvent.data?.getSuccessUpdateResultPair())
-                }
-                UiEvent.EVENT_SUCCESS_UPDATE_CART -> {
-                    onSuccessUpdateCart(lastUpdatedEvent.data?.getSuccessUpdateResultPair())
-                }
-            }
-        }
-        activityViewModel?.resetLastUpdatedUiEvent()
     }
 
     private fun setupMerchantLogo() {

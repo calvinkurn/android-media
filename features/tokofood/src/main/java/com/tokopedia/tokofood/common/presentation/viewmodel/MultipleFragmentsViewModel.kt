@@ -1,9 +1,6 @@
 package com.tokopedia.tokofood.common.presentation.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -25,7 +22,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -51,10 +47,6 @@ class MultipleFragmentsViewModel @Inject constructor(
     private val miniCartUiModelState =
         MutableStateFlow<Result<MiniCartUiModel>>(Result.Success(MiniCartUiModel()))
     val miniCartFlow = miniCartUiModelState.asStateFlow()
-
-    private val _lastUpdatedEvent = MutableLiveData<UiEvent?>()
-    val lastUpdatedEvent: LiveData<UiEvent?>
-        get() = _lastUpdatedEvent
 
     val shopId: String
         get() = cartDataState.value?.shop?.shopId.orEmpty()
@@ -126,21 +118,18 @@ class MultipleFragmentsViewModel @Inject constructor(
     }
 
     fun deleteAllAtcAndAddProduct(updateParam: UpdateParam,
-                                  source: String,
-                                  needToSetLastUpdated: Boolean = false) {
+                                  source: String) {
         launchCatchError(block = {
             val removeCartParam = getRemoveAllProductParamByIdList()
             if (removeCartParam.carts.isNotEmpty()) {
-                val uiEvent = UiEvent(state = UiEvent.EVENT_HIDE_LOADING_ADD_TO_CART)
-                if (needToSetLastUpdated) {
-                    _lastUpdatedEvent.value = uiEvent
-                }
-                cartDataValidationState.emit(uiEvent)
+                cartDataValidationState.emit(
+                    UiEvent(state = UiEvent.EVENT_HIDE_LOADING_ADD_TO_CART)
+                )
                 withContext(dispatchers.io) {
                     removeCartTokoFoodUseCase.get().execute(removeCartParam)
                 }.let {
                     loadCartList(source)
-                    addToCart(updateParam, source, needToSetLastUpdated)
+                    addToCart(updateParam, source)
                 }
             }
         }, onError = {
@@ -233,8 +222,7 @@ class MultipleFragmentsViewModel @Inject constructor(
     }
 
     fun updateCart(updateParam: UpdateParam,
-                   source: String,
-                   needToSetLastUpdated: Boolean = false) {
+                   source: String) {
         launchCatchError(block = {
             withContext(dispatchers.io) {
                 updateCartTokoFoodUseCase.get().execute(updateParam)
@@ -246,15 +234,12 @@ class MultipleFragmentsViewModel @Inject constructor(
                     )
                 )
                 loadCartList(source)
-                val uiEvent =
+                cartDataValidationState.emit(
                     UiEvent(
                         state = UiEvent.EVENT_SUCCESS_UPDATE_CART,
                         data = updateParam to it.data
                     )
-                if (needToSetLastUpdated) {
-                    _lastUpdatedEvent.value = uiEvent
-                }
-                cartDataValidationState.emit(uiEvent)
+                )
             }
         }, onError = {
             cartDataValidationState.emit(
@@ -267,8 +252,7 @@ class MultipleFragmentsViewModel @Inject constructor(
     }
 
     fun addToCart(updateParam: UpdateParam,
-                  source: String,
-                  needToSetLastUpdated: Boolean = false) {
+                  source: String) {
         launchCatchError(block = {
             withContext(dispatchers.io) {
                 addToCartTokoFoodUseCase.get().execute(updateParam)
@@ -288,15 +272,12 @@ class MultipleFragmentsViewModel @Inject constructor(
                         )
                     )
                     loadCartList(source)
-                    val uiEvent =
+                    cartDataValidationState.emit(
                         UiEvent(
                             state = UiEvent.EVENT_SUCCESS_ADD_TO_CART,
                             data = updateParam to it.data
                         )
-                    cartDataValidationState.emit(uiEvent)
-                    if (needToSetLastUpdated) {
-                        _lastUpdatedEvent.value = uiEvent
-                    }
+                    )
                 }
             }
         }, onError = {
@@ -318,10 +299,6 @@ class MultipleFragmentsViewModel @Inject constructor(
                 )
             )
         }
-    }
-
-    fun resetLastUpdatedUiEvent()  {
-        _lastUpdatedEvent.value = null
     }
 
     private fun loadCartList(source: String) {
