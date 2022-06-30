@@ -7,14 +7,10 @@ import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.airbnb.lottie.LottieAnimationView
-import com.airbnb.lottie.LottieCompositionFactory
-import com.airbnb.lottie.LottieDrawable
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.shop.common.util.ShopUtil.isUrlJson
 import com.tokopedia.shop.common.util.ShopUtil.isUrlPng
 import com.tokopedia.shop.databinding.ShopPageDynamicTabViewBinding
 import com.tokopedia.shop.databinding.ShopPageTabViewBinding
@@ -88,16 +84,11 @@ internal class ShopPageFragmentPagerAdapter(
 
     private fun setDynamicTabIcon(binding: ShopPageDynamicTabViewBinding, position: Int, isActive: Boolean) {
         binding.shopPageDynamicTabViewIcon.hide()
-        binding.shopPageDynamicTabViewIconLottie.hide()
         ctx?.let {
             val iconUrl: String = if (isActive) {
                 listShopPageTabModel.getOrNull(position)?.iconActiveUrl.orEmpty()
-//                "https://www.freeiconspng.com/uploads/sun-icon-31.png"
-//                "https://assets.tokopedia.net/asts/android/shop_page/lottie/logo_campaign.json"
             } else {
                 listShopPageTabModel.getOrNull(position)?.iconUrl.orEmpty()
-//                "https://www.freeiconspng.com/uploads/sun-icon-31.png"
-//                "https://assets.tokopedia.net/asts/android/shop_page/lottie/logo_campaign.json"
             }
             when {
                 iconUrl.isUrlPng() -> {
@@ -107,25 +98,7 @@ internal class ShopPageFragmentPagerAdapter(
                         isEnabled = true
                     }
                 }
-                iconUrl.isUrlJson() -> {
-                    binding.shopPageDynamicTabViewIconLottie.apply {
-                        show()
-                        setupAnimation(iconUrl, this)
-                    }
-                }
                 else -> {}
-            }
-        }
-    }
-
-    private fun setupAnimation(iconLottie: String, lottieIcon: LottieAnimationView) {
-        ctx?.let {
-            val lottieCompositionLottieTask = LottieCompositionFactory.fromUrl(it, iconLottie)
-            lottieCompositionLottieTask.addListener { result ->
-                lottieIcon.setComposition(result)
-                lottieIcon.visibility = View.VISIBLE
-                lottieIcon.playAnimation()
-                lottieIcon.repeatCount = LottieDrawable.INFINITE
             }
         }
     }
