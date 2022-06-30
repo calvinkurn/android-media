@@ -7,7 +7,9 @@ sealed interface UserProfileAction {
 
     data class LoadProfile(val isRefresh: Boolean = false) : UserProfileAction
 
-    data class ClickFollowButton(val isFromLogin: Boolean): UserProfileAction
+    data class LoadPlayVideo(val cursor: String) : UserProfileAction
+
+    data class ClickFollowButton(val isFromLogin: Boolean) : UserProfileAction
 
     data class ClickUpdateReminder(
         val channelId: String,

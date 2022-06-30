@@ -6,6 +6,7 @@ import com.tokopedia.people.domains.repository.UserProfileRepository
 import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistNewUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase.Companion.WHITELIST_ENTRY_POINT
 import com.tokopedia.people.model.ProfileHeaderBase
+import com.tokopedia.people.model.UserPostModel
 import com.tokopedia.people.views.uimodel.MutationUiModel
 import com.tokopedia.people.views.uimodel.mapper.UserProfileUiMapper
 import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
@@ -75,5 +76,18 @@ class UserProfileRepositoryImpl @Inject constructor(
 
             mapper.mapUpdateReminder(result)
         }
+    }
+
+    override suspend fun getPlayVideo(username: String, cursor: String): UserPostModel {
+        return withContext(dispatcher.io) {
+            val data = playVodUseCase.getPlayPost(VAL_FEEDS_PROFILE, cursor, VAL_SOURCE_BUYER, username)
+
+            data
+        }
+    }
+
+    companion object {
+        private const val VAL_FEEDS_PROFILE = "feeds-profile"
+        private const val VAL_SOURCE_BUYER = "buyer"
     }
 }

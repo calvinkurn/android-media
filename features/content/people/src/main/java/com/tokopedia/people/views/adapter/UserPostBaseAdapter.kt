@@ -15,6 +15,7 @@ import com.tokopedia.people.viewmodels.UserProfileViewModel
 import com.tokopedia.people.analytic.UserProfileTracker
 import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.VAL_FEEDS_PROFILE
 import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.VAL_SOURCE_BUYER
+import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.reminded
@@ -63,12 +64,7 @@ open class UserPostBaseAdapter(
         super.loadData(currentPageIndex, *args)
         if (args.isNotEmpty()) {
             args[0]?.let {
-                viewModel.getUPlayVideos(
-                    VAL_FEEDS_PROFILE,
-                    cursor,
-                    VAL_SOURCE_BUYER,
-                    it
-                )
+                viewModel.submitAction(UserProfileAction.LoadPlayVideo(cursor))
             }
         }
     }

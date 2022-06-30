@@ -1,5 +1,6 @@
 package com.tokopedia.people.domains.repository
 
+import com.tokopedia.people.model.UserPostModel
 import com.tokopedia.people.views.uimodel.MutationUiModel
 import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
@@ -24,4 +25,9 @@ interface UserProfileRepository {
         channelId: String,
         isActive: Boolean,
     ) : MutationUiModel
+
+    suspend fun getPlayVideo(
+        username: String,
+        cursor: String,
+    ): UserPostModel
 }

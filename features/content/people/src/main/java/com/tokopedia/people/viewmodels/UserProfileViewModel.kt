@@ -24,7 +24,6 @@ import kotlinx.coroutines.flow.*
 
 class UserProfileViewModel @AssistedInject constructor(
     @Assisted private val username: String,
-    private var playVodUseCase: PlayPostContentUseCase,
     private val repo: UserProfileRepository,
     private val userSession: UserSessionInterface,
 ) : BaseViewModel(Dispatchers.Main) {
@@ -34,13 +33,10 @@ class UserProfileViewModel @AssistedInject constructor(
         fun create(username: String): UserProfileViewModel
     }
 
-    /** Public Getter */
-    val isFollowed: Boolean
-        get() = _followInfo.value.status
-
-    val isSelfProfile: Boolean
-        get() = _profileType.value == ProfileType.Self
-
+    /**
+     * play video will be moved to dedicated fragment when
+     * developing another tab user profile eventually. so gonna leave as is for now
+     * */
     private val userPost = MutableLiveData<Boolean>()
     val userPostLiveData : LiveData<Boolean> get() = userPost
 
@@ -49,6 +45,17 @@ class UserProfileViewModel @AssistedInject constructor(
 
     private var userPostError = MutableLiveData<Throwable>()
     val userPostErrorLiveData : LiveData<Throwable> get() = userPostError
+
+
+
+
+
+    /** Public Getter */
+    val isFollowed: Boolean
+        get() = _followInfo.value.status
+
+    val isSelfProfile: Boolean
+        get() = _profileType.value == ProfileType.Self
 
     private val _profileInfo = MutableStateFlow(ProfileUiModel.Empty)
     private val _followInfo = MutableStateFlow(FollowInfoUiModel.Empty)
@@ -77,6 +84,7 @@ class UserProfileViewModel @AssistedInject constructor(
     fun submitAction(action: UserProfileAction) {
         when(action) {
             is UserProfileAction.LoadProfile -> handleLoadProfile(action.isRefresh)
+            is UserProfileAction.LoadPlayVideo -> handleLoadPlayVideo(action.cursor)
             is UserProfileAction.ClickFollowButton -> handleClickFollowButton(action.isFromLogin)
             is UserProfileAction.ClickUpdateReminder -> handleClickUpdateReminder(action.channelId, action.isActive)
         }
@@ -89,6 +97,21 @@ class UserProfileViewModel @AssistedInject constructor(
         }) {
             _uiEvent.emit(UserProfileUiEvent.ErrorLoadProfile(it))
         }
+    }
+
+    /**
+     * play video will be moved to dedicated fragment when
+     * developing another tab user profile eventually. so gonna leave as is for now
+     * */
+    private fun handleLoadPlayVideo(cursor: String) {
+        launchCatchError(block = {
+            val data = repo.getPlayVideo(username, cursor)
+            if (data != null) {
+                playPostContent.value = Success(data)
+            } else throw NullPointerException("data is null")
+        }, onError = {
+            userPostError.value = it
+        })
     }
 
     private fun handleClickFollowButton(isFromLogin: Boolean) {
@@ -134,19 +157,7 @@ class UserProfileViewModel @AssistedInject constructor(
         })
     }
 
-    /** TODO: refactor - gonna move to repo */
-    fun getUPlayVideos(group: String, cursor: String, sourceType: String, sourceId: String) {
-        launchCatchError(block = {
-            val data = playVodUseCase.getPlayPost(group, cursor, sourceType, sourceId)
-            if (data != null) {
-                playPostContent.value = Success(data)
-
-            } else throw NullPointerException("data is null")
-        }, onError = {
-            userPostError.value = it
-        })
-    }
-
+    /** Helper */
     private suspend fun loadProfileInfo(isRefresh: Boolean) {
         val deferredProfileInfo = asyncCatchError(block = {
             repo.getProfile(username)
@@ -179,7 +190,10 @@ class UserProfileViewModel @AssistedInject constructor(
             _profileWhitelist.update {  repo.getWhitelist(followInfo.userID) }
         }
 
-        /** TODO: refactor - gonna find a better way to trigger load video */
+        /**
+         * play video will be moved to dedicated fragment when
+         * developing another tab user profile eventually. so gonna leave as is for now
+         * */
         userPost.value = isRefresh
     }
 }
