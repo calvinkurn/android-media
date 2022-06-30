@@ -623,7 +623,8 @@ class PlayBottomSheetFragment @Inject constructor(
         view: ProductSheetViewComponent
     ) {
         newAnalytic.clickInfoNow(channelId = playViewModel.channelId, channelType = playViewModel.channelType)
-        openPageByApplink(ApplinkConstInternalTokopediaNow.EDUCATIONAL_INFO , pipMode = false)
+        val appLink = "${ApplinkConstInternalTokopediaNow.EDUCATIONAL_INFO}?source=play&channel_id=${playViewModel.channelId}&state=${playViewModel.channelType}"
+        openPageByApplink(appLink , pipMode = false)
     }
 
     override fun onInformationImpressed(view: ProductSheetViewComponent) {
