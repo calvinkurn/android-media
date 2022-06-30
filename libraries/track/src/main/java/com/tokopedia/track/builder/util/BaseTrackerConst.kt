@@ -97,7 +97,6 @@ abstract class BaseTrackerConst {
         const val ITEM_NAME = "item_name"
         const val ITEM_VARIANT = "item_variant"
         const val PRICE = "price"
-        const val QUANTITY = "quantity"
     }
 
     protected object Value {
