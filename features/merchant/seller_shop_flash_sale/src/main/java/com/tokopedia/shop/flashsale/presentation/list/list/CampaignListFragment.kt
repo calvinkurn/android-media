@@ -696,7 +696,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
     private fun showCancelCampaignSuccess(campaign: CampaignUiModel) {
         val toasterMessage = String.format(findCancelCampaignSuccessWording(campaign.status), campaign.campaignName)
-        binding?.root showToaster toasterMessage
+        binding?.cardView showToaster toasterMessage
 
         //Add some spare time caused by Backend write operation delay
         doOnDelayFinished(REFRESH_CAMPAIGN_DELAY_DURATION_IN_MILLIS) {
