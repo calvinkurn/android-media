@@ -68,7 +68,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         private const val HEX_COLOR_TEXT_FIELD_MAX_LENGTH = 6
         private const val ONE_HOUR = 1
         private const val THRESHOLD = 12
-        private const val SEVEN_DAY = 7
+        private const val SIX_DAYS = 6
         private const val THREE_MONTH = 3
         private const val TWO_HOURS = 2
         private const val THIRTY_MINUTE = 30
@@ -537,7 +537,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         val startDate = viewModel.getSelectedStartDate().advanceMinuteBy(THIRTY_MINUTE)
         val endDate = viewModel.normalizeEndDate(viewModel.getSelectedEndDate(), startDate)
         val minimumDate = viewModel.getSelectedStartDate().advanceMinuteBy(THIRTY_MINUTE)
-        val maximumEndDate = viewModel.getSelectedStartDate().advanceDayBy(SEVEN_DAY)
+        val maximumEndDate = viewModel.getSelectedStartDate().advanceDayBy(SIX_DAYS)
 
         val bottomSheet = CampaignDatePickerBottomSheet.newInstance(endDate, minimumDate, maximumEndDate)
         bottomSheet.setOnDateTimePicked { newEndDate ->

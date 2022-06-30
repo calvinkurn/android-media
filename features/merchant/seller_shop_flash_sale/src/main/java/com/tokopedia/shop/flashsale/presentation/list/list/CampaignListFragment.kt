@@ -764,7 +764,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     }
 
     private fun showCancellationMessageThenUpdateData(toasterMessage: String) {
-        binding?.root showToaster toasterMessage
+        binding?.cardView showToaster toasterMessage
 
         //Add some spare time caused by Backend write operation delay
         doOnDelayFinished(REFRESH_CAMPAIGN_DELAY_DURATION_IN_MILLIS) {
