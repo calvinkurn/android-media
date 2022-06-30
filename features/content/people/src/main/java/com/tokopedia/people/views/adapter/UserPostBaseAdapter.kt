@@ -25,8 +25,6 @@ open class UserPostBaseAdapter(
     val viewModel: UserProfileViewModel,
     val callback: AdapterCallback,
     private var userName: String = "",
-    val userProfileTracker: UserProfileTracker?,
-    val profileUserId: String,
     val userId: String,
     val playWidgetCallback: PlayWidgetCallback,
     val onLoadMore: (cursor: String) -> Unit,

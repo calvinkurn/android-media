@@ -84,6 +84,7 @@ import com.tokopedia.abstraction.R as abstractionR
 
 class UserProfileFragment @Inject constructor(
     private val viewModelFactoryCreator: UserProfileViewModelFactory.Creator,
+    private var userProfileTracker: UserProfileTracker,
     private val userSession: UserSessionInterface,
     private val feedFloatingButtonManager: FeedFloatingButtonManager,
 ) : BaseDaggerFragment(),
@@ -122,7 +123,6 @@ class UserProfileFragment @Inject constructor(
     private var isNewlyCreated: Boolean? = false
     private var shouldRefreshRecyclerView: Boolean? = false
     private var isViewMoreClickedBio: Boolean? = false
-    private var userProfileTracker: UserProfileTracker? = null
     private var screenShotDetector: ScreenshotDetector? = null
     private lateinit var swipeRefresh: SwipeToRefresh
     private lateinit var feedFab: FeedFloatingButton
@@ -150,8 +150,6 @@ class UserProfileFragment @Inject constructor(
             viewModel,
             this,
             userName,
-            userProfileTracker,
-            profileUserId,
             userId,
             this
         ) { cursor ->
@@ -175,7 +173,6 @@ class UserProfileFragment @Inject constructor(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        userProfileTracker = UserProfileTracker()
         return inflater.inflate(R.layout.up_fragment_user_profile, container, false)
     }
 
@@ -619,7 +616,7 @@ class UserProfileFragment @Inject constructor(
             textLive.setOnClickListener(null)
             textLive.setOnClickListener(null)
             imgProfile.setOnClickListener{
-                userProfileTracker?.clickProfilePicture(userId, profileUserId == userId, profile.liveInfo.channelId)
+                userProfileTracker.clickProfilePicture(userId, profileUserId == userId, profile.liveInfo.channelId)
             }
         }
     }
@@ -628,7 +625,7 @@ class UserProfileFragment @Inject constructor(
         headerProfile?.apply {
             setNavigationOnClickListener {
                 activity?.onBackPressed()
-                userProfileTracker?.clickBack(userId, self = profileUserId == userId)
+                userProfileTracker.clickBack(userId, self = profileUserId == userId)
             }
 
             val imgShare = addRightIcon(0)
@@ -645,9 +642,9 @@ class UserProfileFragment @Inject constructor(
 
             imgShare.setOnClickListener {
                 showUniversalShareBottomSheet()
-                userProfileTracker?.clickShare(userId, self = profileUserId == userId)
-                userProfileTracker?.clickShareButton(userId, self = profileUserId == userId)
-                userProfileTracker?.viewShareChannel(userId, profileUserId == userId)
+                userProfileTracker.clickShare(userId, self = profileUserId == userId)
+                userProfileTracker.clickShareButton(userId, self = profileUserId == userId)
+                userProfileTracker.viewShareChannel(userId, profileUserId == userId)
             }
 
             val imgMenu = addRightIcon(0)
@@ -664,15 +661,15 @@ class UserProfileFragment @Inject constructor(
             )
 
             imgMenu.setOnClickListener {
-                userProfileTracker?.clickBurgerMenu(userId, self = profileUserId == userId)
+                userProfileTracker.clickBurgerMenu(userId, self = profileUserId == userId)
                 RouteManager.route(activity, APPLINK_MENU)
             }
         }
     }
 
     private fun doFollowUnfollow(isFromLogin: Boolean) {
-        if(viewModel.isFollowed) userProfileTracker?.clickUnfollow(userSession.userId, viewModel.isSelfProfile)
-        else userProfileTracker?.clickFollow(userSession.userId, viewModel.isSelfProfile)
+        if(viewModel.isFollowed) userProfileTracker.clickUnfollow(userSession.userId, viewModel.isSelfProfile)
+        else userProfileTracker.clickFollow(userSession.userId, viewModel.isSelfProfile)
 
         submitAction(UserProfileAction.ClickFollowButton(isFromLogin))
     }
@@ -713,7 +710,7 @@ class UserProfileFragment @Inject constructor(
     override fun onClick(source: View) {
         when (source.id) {
             R.id.text_following_count, R.id.text_following_label -> {
-                userProfileTracker?.clickFollowing(userId, profileUserId == userId)
+                userProfileTracker.clickFollowing(userId, profileUserId == userId)
                 startActivity(activity?.let {
                     FollowerFollowingListingActivity.getCallingIntent(
                         it,
@@ -723,7 +720,7 @@ class UserProfileFragment @Inject constructor(
             }
 
             R.id.text_follower_count, R.id.text_follower_label -> {
-                userProfileTracker?.clickFollowers(userId, profileUserId == userId)
+                userProfileTracker.clickFollowers(userId, profileUserId == userId)
                 UserProfileTracker().openFollowersTab(
                     profileUserId
                 )
@@ -736,7 +733,7 @@ class UserProfileFragment @Inject constructor(
             }
 
             R.id.text_see_more -> {
-                userProfileTracker?.clickSelengkapnya(userId, profileUserId == userId)
+                userProfileTracker.clickSelengkapnya(userId, profileUserId == userId)
                 val textBio = view?.findViewById<TextView>(R.id.text_bio)
                 val btnSeeAll = view?.findViewById<TextView>(R.id.text_see_more)
                 textBio?.maxLines = MAX_LINE
@@ -920,11 +917,11 @@ class UserProfileFragment @Inject constructor(
 
                         when(UniversalShareBottomSheet.getShareBottomSheetType()){
                             UniversalShareBottomSheet.SCREENSHOT_SHARE_SHEET ->{
-                                userProfileTracker?.clickChannelScreenshotShareBottomsheet(userId, profileUserId == userId)
+                                userProfileTracker.clickChannelScreenshotShareBottomsheet(userId, profileUserId == userId)
                             }
                             UniversalShareBottomSheet.CUSTOM_SHARE_SHEET ->{
                                 shareModel.channel?.let { it1 ->
-                                    userProfileTracker?.clickShareChannel(userId, profileUserId == userId, it1)
+                                    userProfileTracker.clickShareChannel(userId, profileUserId == userId, it1)
                                 }
                             }
                         }
@@ -941,13 +938,13 @@ class UserProfileFragment @Inject constructor(
 
     override fun screenShotTaken() {
         showUniversalShareBottomSheet()
-        userProfileTracker?.viewScreenshotShareBottomsheet(userId, profileUserId == userId)
+        userProfileTracker.viewScreenshotShareBottomsheet(userId, profileUserId == userId)
         //add tracking for the screenshot bottom sheet
     }
 
     override fun permissionAction(action: String, label: String) {
         //add tracking for the permission dialog for screenshot sharing
-        userProfileTracker?.clickAccessMedia(userId, profileUserId == userId, label)
+        userProfileTracker.clickAccessMedia(userId, profileUserId == userId, label)
     }
 
     override fun onRequestPermissionsResult(

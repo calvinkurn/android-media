@@ -1,6 +1,8 @@
 package com.tokopedia.people.analytic
 
-class UserProfileTracker {
+import javax.inject.Inject
+
+class UserProfileTracker @Inject constructor() {
 
     fun openUserProfile(screenName: String, userId: String, live: Boolean){
         val label = if(live){
