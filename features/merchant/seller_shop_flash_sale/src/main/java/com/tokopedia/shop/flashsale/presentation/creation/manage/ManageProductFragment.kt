@@ -299,36 +299,40 @@ class ManageProductFragment :
         binding?.recyclerViewProduct?.post {
             val btnAddProductAnchorView = binding?.tpgAddProduct
             val coachMarkItems = arrayListOf<CoachMark2Item>()
-            val view = binding?.recyclerViewProduct?.getChildAt(RECYCLERVIEW_ITEM_FIRST_INDEX)
-            val holder = view?.let { binding?.recyclerViewProduct?.findContainingViewHolder(it) }
-            holder?.let {
-                coachMarkItems.add(
-                    CoachMark2Item(
-                        holder.itemView.findViewById(R.id.btn_update_product),
-                        "",
-                        getString(R.string.manage_product_first_list_coachmark),
-                        CoachMark2.POSITION_BOTTOM
-                    )
-                )
-                btnAddProductAnchorView?.let {
+            try {
+                val view = binding?.recyclerViewProduct?.getChildAt(RECYCLERVIEW_ITEM_FIRST_INDEX)
+                val holder = view?.let { binding?.recyclerViewProduct?.findContainingViewHolder(it) }
+                holder?.let {
                     coachMarkItems.add(
                         CoachMark2Item(
-                            it,
+                            holder.itemView.findViewById(R.id.btn_update_product),
                             "",
-                            getString(R.string.manage_product_second_list_coachmark),
+                            getString(R.string.manage_product_first_list_coachmark),
                             CoachMark2.POSITION_BOTTOM
                         )
                     )
-                }
+                    btnAddProductAnchorView?.let {
+                        coachMarkItems.add(
+                            CoachMark2Item(
+                                it,
+                                "",
+                                getString(R.string.manage_product_second_list_coachmark),
+                                CoachMark2.POSITION_BOTTOM
+                            )
+                        )
+                    }
 
-                val coachMark = activity?.let { it -> CoachMark2(it) }
-                coachMark?.showCoachMark(coachMarkItems)
-                coachMark?.onFinishListener = {
-                    sharedPreference.markManageProductCoachMarkComplete()
+                    val coachMark = activity?.let { it -> CoachMark2(it) }
+                    coachMark?.showCoachMark(coachMarkItems)
+                    coachMark?.onFinishListener = {
+                        sharedPreference.markManageProductCoachMarkComplete()
+                    }
+                    coachMark?.onDismissListener = {
+                        sharedPreference.markManageProductCoachMarkComplete()
+                    }
                 }
-                coachMark?.onDismissListener = {
-                    sharedPreference.markManageProductCoachMarkComplete()
-                }
+            } catch (t: Throwable) {
+                t.printStackTrace()
             }
         }
     }
