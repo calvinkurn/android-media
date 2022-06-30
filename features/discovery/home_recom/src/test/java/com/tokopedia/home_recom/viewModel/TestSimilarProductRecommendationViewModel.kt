@@ -2,7 +2,6 @@ package com.tokopedia.home_recom.viewModel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.home_recom.util.RecommendationDispatcherTest
-import com.tokopedia.home_recom.util.Response
 import com.tokopedia.home_recom.viewmodel.SimilarProductRecommendationViewModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
@@ -303,6 +302,34 @@ class TestSimilarProductRecommendationViewModel {
         viewModel.getRecommendationFromQuickFilter("", "", "")
         assert(viewModel.filterSortChip.value?.isSuccess() == true)
         assert(viewModel.recommendationItem.value?.isEmpty() == true)
+    }
+
+    @Test
+    fun `given selected full filter when getRecommendationFromQuickFilter then deselect filter`(){
+        val filterKey = "os"
+        val filterValue = "123"
+        val filterActivated = true
+        val filterChip = RecommendationFilterChipsEntity.RecommendationFilterChip(title = "Penawaran", options = listOf(RecommendationFilterChipsEntity.Option(name = "Official Store", key = filterKey, value = filterValue, isActivated = filterActivated)))
+        val sortKey = "terlaris"
+        val sortValue = "234"
+        val filterSortChip = RecommendationFilterChipsEntity.FilterAndSort(
+            filterChip = listOf(filterChip),
+            sortChip = listOf(RecommendationFilterChipsEntity.RecommendationSortChip(name = "Terlaris", key = sortKey, value = sortValue, isSelected = true))
+        )
+        coEvery { getRecommendationFilterChips.executeOnBackground() } returns filterSortChip
+        every { getSingleRecommendationUseCase.getRecomParams(any(), any(), any()) } returns RequestParams()
+        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns RecommendationEntity.RecommendationData(
+            recommendation = listOf(
+                RecommendationEntity.Recommendation()
+            )
+        )
+
+        viewModel.getSimilarProductRecommendation(1, "", "", "")
+        assert(viewModel.filterSortChip.value?.isSuccess() == true)
+        assert(viewModel.filterSortChip.value?.data?.filterAndSort?.filterChip?.first()?.options?.first()?.isActivated == filterActivated)
+        viewModel.getRecommendationFromQuickFilter("Official Store", "", "")
+        assert(viewModel.filterSortChip.value?.isSuccess() == true)
+        assert(viewModel.filterSortChip.value?.data?.filterAndSort?.filterChip?.first()?.options?.first()?.isActivated == !filterActivated)
     }
 
     @Test
