@@ -8,8 +8,6 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -240,15 +238,6 @@ class ProductNotificationCardUnify(
         }
     }
 
-    fun goToPdp(product: ProductData?) {
-        if (product == null) return
-        RouteManager.route(
-                context,
-                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                product.productId.toString()
-        )
-    }
-
     private fun initField(
             listener: NotificationItemListener?,
             notification: NotificationUiModel?,
@@ -298,9 +287,8 @@ class ProductNotificationCardUnify(
     private fun bindProductClick(product: ProductData) {
         setOnClickListener {
             notification?.let{
-                listener?.trackProductClick(it, product, adapterPosition ?: 0)
+                listener?.onProductClicked(it, product, adapterPosition ?: 0)
             }
-            goToPdp(product)
         }
     }
 

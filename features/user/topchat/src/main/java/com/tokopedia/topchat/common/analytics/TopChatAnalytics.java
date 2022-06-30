@@ -223,7 +223,7 @@ public class TopChatAnalytics {
         ));
     }
 
-    public void trackHeaderClicked(long shopId) {
+    public void trackHeaderClicked(String shopId) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Name.CHAT_DETAIL,
                 Category.CHAT_DETAIL,
@@ -280,7 +280,7 @@ public class TopChatAnalytics {
                 ""));
     }
 
-    public void trackClickUnblockChat(long shopId) {
+    public void trackClickUnblockChat(String shopId) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 ChatSettingsAnalytics.EVENT_NAME,
                 ChatSettingsAnalytics.CHAT_OPEN_CATEGORY,
@@ -331,7 +331,7 @@ public class TopChatAnalytics {
                 product.getCategory(),
                 product.getVariants().toString(),
                 null,
-                product.getPriceInt(),
+                product.getPriceNumber(),
                 null,
                 getFrom(product),
                 PRODUCT_INDEX,
@@ -364,7 +364,7 @@ public class TopChatAnalytics {
         String eventLabel = product.getEventLabelImpression(amISeller);
         Bundle itemBundle = new Bundle();
         itemBundle.putString(EE_PARAM_ITEM_ID, product.getIdString());
-        itemBundle.putDouble(EE_PARAM_PRICE, product.getPriceInt() + 0.0);
+        itemBundle.putDouble(EE_PARAM_PRICE, product.getPriceNumber() + 0.0);
         itemBundle.putString(EE_PARAM_ITEM_NAME, product.getProductName());
         itemBundle.putString(EE_PARAM_ITEM_BRAND, "none");
         itemBundle.putString(EE_PARAM_ITEM_VARIANT, "[]");
@@ -636,7 +636,7 @@ public class TopChatAnalytics {
     }
 
     // 23136
-    public void eventViewTickerReminder(long shopId) {
+    public void eventViewTickerReminder(String shopId) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 createGeneralEvent(
                         Name.VIEW_CHAT_DETAIL,
@@ -651,7 +651,7 @@ public class TopChatAnalytics {
     }
 
     // 23137
-    public void eventClickTickerReminderCta(long shopId) {
+    public void eventClickTickerReminderCta(String shopId) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 createGeneralEvent(
                         Name.CHAT_DETAIL,
@@ -666,7 +666,7 @@ public class TopChatAnalytics {
     }
 
     // 23138
-    public void eventCloseTickerReminder(long shopId) {
+    public void eventCloseTickerReminder(String shopId) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 createGeneralEvent(
                         Name.CHAT_DETAIL,
@@ -680,7 +680,7 @@ public class TopChatAnalytics {
         );
     }
 
-    public void eventViewSrw(long shopId, String userId) {
+    public void eventViewSrw(String shopId, String userId) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 createGeneralEvent(
                         Name.VIEW_CHAT_DETAIL,
@@ -695,7 +695,7 @@ public class TopChatAnalytics {
     }
 
     // 23139
-    public void eventClickChatSetting(long shopId) {
+    public void eventClickChatSetting(String shopId) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 createGeneralEvent(
                         Name.CHAT_DETAIL,
@@ -710,7 +710,7 @@ public class TopChatAnalytics {
     }
 
     public void eventClickSrw(
-            long shopId, String userId, String productIds, QuestionUiModel element
+            String shopId, String userId, String productIds, QuestionUiModel element
     ) {
         String eventLabel = "buyer - " +
                 shopId + " - " + userId + " - " +

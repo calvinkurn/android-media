@@ -8,6 +8,7 @@ import com.tokopedia.attachinvoice.R
 import com.tokopedia.attachinvoice.data.Invoice
 import com.tokopedia.attachinvoice.data.OrderStatusCode
 import com.tokopedia.attachinvoice.databinding.ItemAttachinvoiceBinding
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.toPx
 
@@ -59,7 +60,7 @@ class AttachInvoiceViewHolder(private val binding: ItemAttachinvoiceBinding, val
     }
 
     private fun bindLabelInvoiceStatus(element: Invoice) {
-        val labelType = getLabelType(element.statusId)
+        val labelType = getLabelType(element.statusId.toIntSafely())
         binding.labelInfo.text = element.status
         binding.labelInfo.setLabelType(labelType)
     }
