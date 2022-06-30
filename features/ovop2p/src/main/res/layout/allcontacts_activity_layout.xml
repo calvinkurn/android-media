@@ -3,15 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
-    android:paddingBottom="16dp">
+    android:layout_marginLeft="@dimen/unify_space_16"
+    android:layout_marginRight="@dimen/unify_space_16"
+    android:paddingBottom="@dimen/unify_space_16">
 
     <ImageView
         android:id="@+id/scanqr_imgvw"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="@dimen/unify_space_16"
         app:srcCompat="@drawable/ic_icon_qr_code"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -20,9 +20,9 @@
         android:id="@+id/scan_qr_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
+        android:layout_marginLeft="@dimen/unify_space_16"
         android:text="@string/ovop2p_trnsfe_to"
-        android:textColor="@color/clr_06b3ba"
+        android:textColor="@color/ovop2p_dms_clr_06b3ba"
         app:layout_constraintBottom_toBottomOf="@+id/scanqr_imgvw"
         app:layout_constraintStart_toEndOf="@id/scanqr_imgvw"
         app:layout_constraintTop_toTopOf="@+id/scanqr_imgvw" />
@@ -30,9 +30,9 @@
     <View
         android:id="@+id/dvdr"
         android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_marginTop="16dp"
-        android:background="@color/clr_dee0e2"
+        android:layout_height="@dimen/unify_space_2"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:background="@color/ovop2p_dms_clr_dee0e2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/scanqr_imgvw" />
 
