@@ -13,6 +13,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.play.widget.R
 import com.tokopedia.unifyprinciples.R as unifyR
+import com.tokopedia.play_common.R as playCommonR
 import com.tokopedia.play.widget.player.PlayVideoPlayer
 import com.tokopedia.play.widget.player.PlayVideoPlayerReceiver
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
@@ -74,7 +75,7 @@ class PlayWidgetCardLargeChannelView : FrameLayout, PlayVideoPlayerReceiver {
         tvStartTime = view.findViewById(R.id.play_widget_channel_date)
         tvTitle = view.findViewById(R.id.play_widget_channel_title)
         tvAuthor = view.findViewById(R.id.play_widget_channel_name)
-        tvTotalView = view.findViewById(R.id.viewer)
+        tvTotalView = view.findViewById(playCommonR.id.viewer)
         ivGiveaway = view.findViewById(R.id.iv_giveaway)
         ivPromoLabel = llPromoDetail.findViewById(R.id.promo_image)
 
