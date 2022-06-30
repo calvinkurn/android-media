@@ -54,7 +54,7 @@ class ProductMainThumbnailAdapter(val listener: ProductMainThumbnailListener?,
                                   position: Int,
                                   payloads: MutableList<Any>) {
         if (payloads.isNotEmpty()) {
-            (holder as? ProductMainThumbnailViewHolder)?.bind(currentList[position], payloads)
+            (holder as? ProductMainThumbnailViewHolder)?.bind(currentList[position], position, payloads)
         } else {
             super.onBindViewHolder(holder, position, payloads)
         }
@@ -84,20 +84,20 @@ class ProductMainThumbnailAdapter(val listener: ProductMainThumbnailListener?,
 
             binding.pdpImgThumbnail.loadImage(element.media.urlOriginal)
             setupBackground(element)
-            setupClickThumbnail(element)
+            setupClickThumbnail(position, element)
         }
 
         override fun bind(element: ThumbnailDataModel) {
         }
 
-        fun bind(element: ThumbnailDataModel, payloads: MutableList<Any>) {
+        fun bind(element: ThumbnailDataModel, position: Int, payloads: MutableList<Any>) {
             if (payloads.isEmpty()) {
                 return
             }
 
             if ((payloads[0] as? Bundle)?.getInt(PAYLOAD_ACTIVATED) == Int.ONE) {
                 setupBackground(element)
-                setupClickThumbnail(element)
+                setupClickThumbnail(position, element)
             }
         }
 
@@ -113,7 +113,7 @@ class ProductMainThumbnailAdapter(val listener: ProductMainThumbnailListener?,
             }
         }
 
-        private fun setupClickThumbnail(element: ThumbnailDataModel) {
+        private fun setupClickThumbnail(position: Int, element: ThumbnailDataModel) {
             view.setOnClickListener {
                 if (!element.isSelected) {
                     listener?.onThumbnailClicked(element)
