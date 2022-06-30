@@ -2181,28 +2181,24 @@ class ProductListPresenter @Inject constructor(
 
     override fun onBroadMatchSeeMoreClick(broadMatchDataView: BroadMatchDataView) {
         if (isViewNotAttached) return
-
         trackBroadMatchSeeMoreClick(broadMatchDataView)
 
-        val applink = if (broadMatchDataView.applink.startsWith(ApplinkConst.DISCOVERY_SEARCH))
-            view.modifyApplinkToSearchResult(broadMatchDataView.applink)
-        else broadMatchDataView.applink
-
+        val applink = getModifiedApplinkToSearchResultIfNeeded(broadMatchDataView.applink)
         view.redirectionStartActivity(applink, broadMatchDataView.url)
     }
 
     override fun onBroadMatchViewAllCardClicked(broadMatchDataView: BroadMatchDataView) {
         if (isViewNotAttached) return
-
         trackBroadMatchSeeMoreClick(broadMatchDataView)
 
-        val applink =
-            if (broadMatchDataView.cardButton.applink.startsWith(ApplinkConst.DISCOVERY_SEARCH))
-                view.modifyApplinkToSearchResult(broadMatchDataView.cardButton.applink)
-             else
-                 broadMatchDataView.cardButton.applink
-
+        val applink = getModifiedApplinkToSearchResultIfNeeded(broadMatchDataView.cardButton.applink)
         view.redirectionStartActivity(applink, null)
+    }
+
+    private fun getModifiedApplinkToSearchResultIfNeeded(applink: String): String {
+        return if (applink.startsWith(ApplinkConst.DISCOVERY_SEARCH))
+            view.modifyApplinkToSearchResult(applink)
+        else applink
     }
 
     private fun trackBroadMatchSeeMoreClick(broadMatchDataView: BroadMatchDataView) {
