@@ -8,6 +8,6 @@ sealed interface UserProfileUiEvent {
 
     data class ErrorFollowUnfollow(val message: String): UserProfileUiEvent
 
-    data class SuccessUpdateReminder(val message: String): UserProfileUiEvent
+    data class SuccessUpdateReminder(val message: String, val position: Int): UserProfileUiEvent
     data class ErrorUpdateReminder(val throwable: Throwable): UserProfileUiEvent
 }

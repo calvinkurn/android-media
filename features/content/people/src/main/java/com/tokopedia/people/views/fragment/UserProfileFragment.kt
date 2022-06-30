@@ -342,6 +342,7 @@ class UserProfileFragment @Inject constructor(
                         view?.showErrorToast(message)
                     }
                     is UserProfileUiEvent.SuccessUpdateReminder -> {
+                        mAdapter.notifyItemChanged(event.position)
                         view?.showToast(event.message)
                     }
                     is UserProfileUiEvent.ErrorUpdateReminder -> {
@@ -745,7 +746,7 @@ class UserProfileFragment @Inject constructor(
             doFollowUnfollow(isFromLogin = true)
         }
         else if(requestCode == REQUEST_CODE_LOGIN_TO_SET_REMINDER && resultCode == Activity.RESULT_OK) {
-
+            submitAction(UserProfileAction.ClickUpdateReminder)
         }
         else if(requestCode == REQUEST_CODE_PLAY_ROOM && resultCode == Activity.RESULT_OK) {
             val channelId = data?.extras?.getString(EXTRA_CHANNEL_ID) ?: return
@@ -926,6 +927,8 @@ class UserProfileFragment @Inject constructor(
     }
 
     override fun updatePostReminderStatus(channelId: String, isActive: Boolean, pos: Int) {
+        submitAction(UserProfileAction.SaveReminderActivityResult(channelId, pos, isActive))
+
         if(userSession.isLoggedIn.not()){
             startActivityForResult(
                 RouteManager.getIntent(activity, ApplinkConst.LOGIN),
@@ -933,8 +936,7 @@ class UserProfileFragment @Inject constructor(
             )
         }
         else{
-            submitAction(UserProfileAction.ClickUpdateReminder(channelId, isActive))
-            mAdapter.notifyItemChanged(pos)
+            submitAction(UserProfileAction.ClickUpdateReminder)
         }
     }
 

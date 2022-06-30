@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.people.Resources
 import com.tokopedia.people.Success
-import com.tokopedia.people.domains.PlayPostContentUseCase
 import com.tokopedia.people.model.UserPostModel
 import kotlinx.coroutines.Dispatchers
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
@@ -15,6 +14,7 @@ import com.tokopedia.people.views.uimodel.MutationUiModel
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.people.views.uimodel.profile.*
+import com.tokopedia.people.views.uimodel.saved.SavedReminderData
 import com.tokopedia.people.views.uimodel.state.UserProfileUiState
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
@@ -81,6 +81,7 @@ class UserProfileViewModel @AssistedInject constructor(
     val profileWebLink: String
         get() = _profileInfo.value.shareLink.webLink
 
+    private val _savedReminderData = MutableStateFlow<SavedReminderData>(SavedReminderData.NoData)
     private val _profileInfo = MutableStateFlow(ProfileUiModel.Empty)
     private val _followInfo = MutableStateFlow(FollowInfoUiModel.Empty)
     private val _profileWhitelist = MutableStateFlow(ProfileWhitelistUiModel.Empty)
@@ -110,7 +111,9 @@ class UserProfileViewModel @AssistedInject constructor(
             is UserProfileAction.LoadProfile -> handleLoadProfile(action.isRefresh)
             is UserProfileAction.LoadPlayVideo -> handleLoadPlayVideo(action.cursor)
             is UserProfileAction.ClickFollowButton -> handleClickFollowButton(action.isFromLogin)
-            is UserProfileAction.ClickUpdateReminder -> handleClickUpdateReminder(action.channelId, action.isActive)
+            UserProfileAction.ClickUpdateReminder -> handleClickUpdateReminder()
+            is UserProfileAction.SaveReminderActivityResult -> handleSaveReminderActivityResult(action.channelId, action.position, action.isActive)
+            is UserProfileAction.RemoveReminderActivityResult -> handleRemoveReminderActivityResult()
         }
     }
 
@@ -166,19 +169,44 @@ class UserProfileViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleClickUpdateReminder(channelId: String, isActive: Boolean) {
+    private fun handleClickUpdateReminder() {
         launchCatchError(block = {
-            val result = repo.updateReminder(channelId, isActive)
+            val data = _savedReminderData.value
 
-            _uiEvent.emit(
-                when(result) {
-                    is MutationUiModel.Success -> UserProfileUiEvent.SuccessUpdateReminder(result.message)
-                    is MutationUiModel.Error -> UserProfileUiEvent.ErrorUpdateReminder(Exception(result.message))
-                }
-            )
+            if(data is SavedReminderData.Saved) {
+                val result = repo.updateReminder(data.channelId, data.isActive)
+
+                _uiEvent.emit(
+                    when(result) {
+                        is MutationUiModel.Success -> {
+                            submitAction(UserProfileAction.RemoveReminderActivityResult)
+                            UserProfileUiEvent.SuccessUpdateReminder(result.message, data.position)
+                        }
+                        is MutationUiModel.Error -> UserProfileUiEvent.ErrorUpdateReminder(Exception(result.message))
+                    }
+                )
+            }
         }, onError = {
             _uiEvent.emit(UserProfileUiEvent.ErrorUpdateReminder(it))
         })
+    }
+
+    private fun handleSaveReminderActivityResult(
+        channelId: String,
+        position: Int,
+        isActive: Boolean,
+    ) {
+        _savedReminderData.update {
+            SavedReminderData.Saved(
+                channelId = channelId,
+                position = position,
+                isActive = isActive,
+            )
+        }
+    }
+
+    private fun handleRemoveReminderActivityResult() {
+        _savedReminderData.update { SavedReminderData.NoData }
     }
 
     /** Helper */
