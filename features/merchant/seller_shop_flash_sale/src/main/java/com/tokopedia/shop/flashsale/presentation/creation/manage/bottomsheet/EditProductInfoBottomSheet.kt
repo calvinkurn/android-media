@@ -6,17 +6,21 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsBottomsheetEditProductInfoBinding
 import com.tokopedia.shop.flashsale.common.extension.disableEnableControls
+import com.tokopedia.shop.flashsale.common.util.DiscountUtil.getDiscountPercent
+import com.tokopedia.shop.flashsale.common.util.DiscountUtil.getDiscountPrice
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductErrorType
 import com.tokopedia.shop.flashsale.domain.entity.enums.ProductInputValidationResult
 import com.tokopedia.shop.flashsale.presentation.creation.manage.viewmodel.EditProductInfoViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -177,6 +181,16 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
                 if (btnSaveNext.isLoading) return@setOnClickListener
                 submitInput(shouldLoadNextData = false)
             }
+            tfCampaignPrice.textField?.editText?.afterTextChanged {
+                if (switchPrice.isChecked) return@afterTextChanged
+                tfCampaignPricePercent.text =
+                    getDiscountPercent(it.toLongOrZero(), productInput.originalPrice).toString()
+            }
+            tfCampaignPricePercent.textField?.editText?.afterTextChanged {
+                if (!switchPrice.isChecked) return@afterTextChanged
+                tfCampaignPrice.text =
+                    getDiscountPrice(it.toLongOrZero(), productInput.originalPrice).toString()
+            }
         }
     }
 
@@ -247,7 +261,21 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
         isMinError: Boolean = false,
         isMaxError: Boolean = false
     ) {
-        val priceField = binding?.tfCampaignPrice?.textField
+        val usingPercentInput = binding?.switchPrice?.isChecked.orFalse()
+        val priceField: TextFieldUnify2?
+        val maxErrorValue: String
+        val minErrorValue: String
+
+        if (usingPercentInput) {
+            priceField = binding?.tfCampaignPricePercent?.textField
+            maxErrorValue = "Min. ${validationResult.minPricePercent}%"
+            minErrorValue = "Maks. ${validationResult.maxPricePercent}%"
+        } else {
+            priceField = binding?.tfCampaignPrice?.textField
+            maxErrorValue = "Maks. " + validationResult.maxPrice.getCurrencyFormatted()
+            minErrorValue = "Min. " + validationResult.minPrice.getCurrencyFormatted()
+        }
+
         priceField?.isInputError = true
 
         when {
@@ -255,10 +283,10 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
                 priceField?.setMessage("Wajib diisi")
             }
             isMaxError -> {
-                priceField?.setMessage("Maks. " + validationResult.maxPrice.getCurrencyFormatted())
+                priceField?.setMessage(maxErrorValue)
             }
             isMinError -> {
-                priceField?.setMessage("Min. " + validationResult.minPrice.getCurrencyFormatted())
+                priceField?.setMessage(minErrorValue)
             }
         }
     }

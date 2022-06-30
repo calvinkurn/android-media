@@ -7,5 +7,7 @@ data class ProductInputValidationResult(
     val maxStock: Int = 0,
     val minStock: Int = 0,
     val maxOrder: Long = 0,
-    val minOrder: Long = 0
+    val minOrder: Long = 0,
+    val maxPricePercent: Long = 0,
+    val minPricePercent: Long = 0
 )

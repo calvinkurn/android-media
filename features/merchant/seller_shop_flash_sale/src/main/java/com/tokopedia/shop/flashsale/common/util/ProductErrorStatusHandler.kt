@@ -78,7 +78,7 @@ class ProductErrorStatusHandler @Inject constructor(@ApplicationContext private 
         val minDiscountedPrice = getProductMinDiscountedPrice(productMapData.originalPrice)
         val result: MutableList<ManageProductErrorType> = mutableListOf()
 
-        if (productMapData.discountedPrice > productMapData.originalPrice) result.add(MAX_DISCOUNT_PRICE)
+        if (productMapData.discountedPrice >= productMapData.originalPrice) result.add(MAX_DISCOUNT_PRICE)
         if (productMapData.customStock > productMapData.originalStock) result.add(MAX_STOCK)
         if (productMapData.discountedPrice < minDiscountedPrice) result.add(MIN_DISCOUNT_PRICE)
         if (productMapData.customStock < MIN_CAMPAIGN_STOCK) result.add(MIN_STOCK)
@@ -93,6 +93,8 @@ class ProductErrorStatusHandler @Inject constructor(@ApplicationContext private 
             minStock = MIN_CAMPAIGN_STOCK,
             minOrder = MIN_CAMPAIGN_ORDER,
             maxOrder = productMapData.customStock,
+            minPricePercent = DiscountUtil.getPercentLong(MIN_CAMPAIGN_DISCOUNT_PERCENTAGE),
+            maxPricePercent = DiscountUtil.getPercentLong(MAX_CAMPAIGN_DISCOUNT_PERCENTAGE)
         )
     }
 

@@ -92,7 +92,8 @@ class TextFieldLabelView : BaseCustomView {
 
     private fun setupTextListener() {
         textField?.editText?.afterTextChanged {
-            tfText?.text = it
+            val text = "$prependText $it$appendText"
+            tfText?.text = text
         }
     }
 
