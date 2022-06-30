@@ -121,7 +121,7 @@ class ManageHighlightedProductViewModel @Inject constructor(
         val selectedParentProductIds = selectedProducts.map { selectedProduct -> selectedProduct.parentId }
 
         return currentPageProducts.map { product ->
-            if (product.parentId in selectedParentProductIds && product.id !in selectedProductsIds) {
+            if (product.isVariant() && product.parentId in selectedParentProductIds && product.id !in selectedProductsIds) {
                 product.copy(
                     isSelected = false,
                     disabled = true,
