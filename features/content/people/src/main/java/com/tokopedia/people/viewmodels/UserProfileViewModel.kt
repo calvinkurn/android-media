@@ -129,7 +129,7 @@ class UserProfileViewModel @AssistedInject constructor(
      * */
     private fun handleLoadPlayVideo(cursor: String) {
         launchCatchError(block = {
-            val data = repo.getPlayVideo(username, cursor)
+            val data = repo.getPlayVideo(profileUserID, cursor)
             if (data != null) {
                 playPostContent.value = Success(data)
             } else throw NullPointerException("data is null")
