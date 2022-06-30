@@ -91,11 +91,30 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
                 ) {
                     val productItem = element.productList.getOrNull(carouselProductCardPosition)
                         ?: return
-                    shopHomeCarouselProductListener.onProductAtcDefaultClick(
-                        productItem,
-                        productItem.minimumOrder,
-                        element.name
-                    )
+                    if (productItem.isEnableDirectPurchase) {
+                        shopHomeCarouselProductListener.onProductAtcDefaultClick(
+                            productItem,
+                            productItem.minimumOrder,
+                            element.name
+                        )
+                    } else {
+                        if (element.name == REMINDER) {
+                            shopHomeCarouselProductListener.onCarouselPersonalizationReminderProductItemClickAddToCart(
+                                adapterPosition,
+                                carouselProductCardPosition,
+                                element,
+                                productItem
+                            )
+                        } else {
+                            shopHomeCarouselProductListener.onCarouselPersonalizationProductItemClickAddToCart(
+                                adapterPosition,
+                                carouselProductCardPosition,
+                                element,
+                                productItem,
+                                isOcc = isAtcOcc(element.name)
+                            )
+                        }
+                    }
                 }
             }
 

@@ -110,11 +110,29 @@ class ShopHomeCarousellProductViewHolder(
                     override fun onItemAddToCart(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                         val shopProductViewModel = shopHomeProductViewModelList.getOrNull(carouselProductCardPosition)
                                 ?: return
-                        shopHomeCarouselProductListener.onProductAtcDefaultClick(
-                            shopProductViewModel,
-                            shopProductViewModel.minimumOrder,
-                            shopHomeCarousellProductUiModel?.name.orEmpty()
-                        )
+                        if (shopProductViewModel.isEnableDirectPurchase) {
+                            shopHomeCarouselProductListener.onProductAtcDefaultClick(
+                                shopProductViewModel,
+                                shopProductViewModel.minimumOrder,
+                                shopHomeCarousellProductUiModel?.name.orEmpty()
+                            )
+                        } else {
+                            if (!isEtalaseCarousel()) {
+                                shopHomeCarouselProductListener.onCarouselProductItemClickAddToCart(
+                                    adapterPosition,
+                                    carouselProductCardPosition,
+                                    shopHomeCarousellProductUiModel,
+                                    shopProductViewModel
+                                )
+                            } else {
+                                shopHomeCarouselProductListener.onCarouselProductShowcaseItemClickAddToCart(
+                                    adapterPosition,
+                                    carouselProductCardPosition,
+                                    shopHomeCarousellProductUiModel,
+                                    shopProductViewModel
+                                )
+                            }
+                        }
                     }
 
                 },
