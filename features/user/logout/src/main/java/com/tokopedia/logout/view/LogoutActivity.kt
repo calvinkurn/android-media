@@ -46,6 +46,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.user.session.datastore.UserSessionAbTestPlatform
 import com.tokopedia.user.session.datastore.UserSessionDataStore
 import com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker
 import com.tokopedia.user.session.util.EncoderDecoder
@@ -180,6 +181,9 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         }.show()
     }
 
+    private fun isEnableDataStore(): Boolean =
+        UserSessionAbTestPlatform.isDataStoreEnable(applicationContext)
+
     private fun clearData() {
         hideLoading()
         clearStickyLogin()
@@ -202,19 +206,8 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         userSession.clearToken()
         userSession.logoutSession()
 
+        clearDataStore()
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
-
-        GlobalScope.launch {
-            try {
-                userSessionDataStore.clearDataStore()
-            } catch (e: Exception) {
-                val data = mapOf(
-                    "method" to "logout_activity",
-                    "error" to Log.getStackTraceString(e).take(MAX_STACKTRACE_LENGTH)
-                )
-                log(Priority.P2, DataStoreMigrationWorker.USER_SESSION_LOGGER_TAG, data)
-            }
-        }
 
         if (isReturnToHome) {
             if (GlobalConfig.isSellerApp()) {
@@ -235,6 +228,21 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         }
     }
 
+    private fun clearDataStore() {
+        if(isEnableDataStore()) {
+            GlobalScope.launch {
+                try {
+                    userSessionDataStore.clearDataStore()
+                } catch (e: Exception) {
+                    val data = mapOf(
+                        "method" to "logout_activity",
+                        "error" to Log.getStackTraceString(e).take(MAX_STACKTRACE_LENGTH)
+                    )
+                    log(Priority.P2, DataStoreMigrationWorker.USER_SESSION_LOGGER_TAG, data)
+                }
+            }
+        }
+    }
 
     fun dismissAllActivedNotifications() {
         val notificationManager =
