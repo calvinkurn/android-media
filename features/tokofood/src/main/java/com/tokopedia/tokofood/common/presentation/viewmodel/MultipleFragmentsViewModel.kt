@@ -274,15 +274,12 @@ class MultipleFragmentsViewModel @Inject constructor(
                 addToCartTokoFoodUseCase.get().execute(updateParam)
             }.let {
                 if (it.data.bottomSheet.isShowBottomSheet) {
-                    val uiEvent =
+                    cartDataValidationState.emit(
                         UiEvent(
                             state = UiEvent.EVENT_PHONE_VERIFICATION,
                             data = it.data.bottomSheet
                         )
-                    cartDataValidationState.emit(uiEvent)
-                    if (needToSetLastUpdated) {
-                        _lastUpdatedEvent.value = uiEvent
-                    }
+                    )
                 } else {
                     cartDataValidationState.emit(
                         UiEvent(
