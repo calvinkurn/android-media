@@ -143,7 +143,7 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(@NotNull context
         btnCheckout.setOnClickListener { listener.invoke() }
     }
 
-    fun setonClickConsentListener(onClickConsentListener: OnClickConsentListener){
+    fun setOnClickConsentListener(onClickConsentListener: OnClickConsentListener){
         this.onClickConsentListener = onClickConsentListener
     }
 
