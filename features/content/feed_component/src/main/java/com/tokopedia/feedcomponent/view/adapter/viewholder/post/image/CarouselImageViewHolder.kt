@@ -20,7 +20,6 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.util.util.doOnLayout
 import com.tokopedia.feedcomponent.view.adapter.post.FeedPostCarouselAdapter
-import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.transition.BackgroundColorTransition
 import com.tokopedia.feedcomponent.view.widget.PostTagView
 import com.tokopedia.iconunify.IconUnify
@@ -67,6 +66,7 @@ internal class CarouselImageViewHolder(
                 animateLihatProduct(
                     toggleAllPostTagViews()
                 )
+                itemView.removeCallbacks(hideLihatProduct)
 
                 return true
             }
@@ -94,8 +94,12 @@ internal class CarouselImageViewHolder(
         }
     )
 
-    private val focusLihatProduct = Runnable {
+    private val showLihatProduct = Runnable {
         animateLihatProduct(true)
+    }
+
+    private val hideLihatProduct = Runnable {
+        animateLihatProduct(false)
     }
 
     private val focusTopAds = Runnable {
@@ -146,7 +150,11 @@ internal class CarouselImageViewHolder(
 
     fun focusMedia() {
         removeAllPendingCallbacks()
-        itemView.postDelayed(focusLihatProduct, FOCUS_DELAY)
+        itemView.postDelayed(showLihatProduct, FOCUS_SHOW_LIHAT_PRODUK_DELAY)
+        itemView.postDelayed(
+            hideLihatProduct,
+            FOCUS_SHOW_LIHAT_PRODUK_DELAY + FOCUS_HIDE_LIHAT_PRODUK_DELAY
+        )
         itemView.postDelayed(focusTopAds, FOCUS_TOP_ADS_DELAY)
 
         onPostTagViews { it.resetView() }
@@ -285,12 +293,14 @@ internal class CarouselImageViewHolder(
     }
 
     private fun removeAllPendingCallbacks() {
-        itemView.removeCallbacks(focusLihatProduct)
+        itemView.removeCallbacks(showLihatProduct)
+        itemView.removeCallbacks(hideLihatProduct)
         itemView.removeCallbacks(focusTopAds)
     }
 
     companion object {
-        private const val FOCUS_DELAY = 1000L
+        private const val FOCUS_SHOW_LIHAT_PRODUK_DELAY = 1000L
+        private const val FOCUS_HIDE_LIHAT_PRODUK_DELAY = 3000L
         private const val FOCUS_TOP_ADS_DELAY = 2000L
 
         private const val ANIMATION_LIHAT_PRODUCT_DURATION = 250L
