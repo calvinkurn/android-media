@@ -22,8 +22,8 @@ class OrderTrackingErrorViewHolder(itemView: View, private val listener: Listene
     override fun bind(element: OrderTrackingErrorUiModel) {
         with(binding) {
             globalErrorOrderTracking.run {
-                setPrimaryActionText()
                 setType(element.throwable.getPostPurchaseGlobalErrorType())
+                setPrimaryActionText()
                 setActionClickListener {
                     listener.onErrorActionClicked()
                 }

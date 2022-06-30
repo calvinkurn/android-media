@@ -9,7 +9,7 @@ data class TokoFoodHomeUSPResponse (
 
 data class USPResponse(
     @SerializedName("list")
-    val list:List<USP>,
+    val list:List<USP> = emptyList(),
     @SerializedName("footer")
     val footer: String = "",
     @SerializedName("imageURL")
