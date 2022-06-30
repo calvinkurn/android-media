@@ -109,7 +109,6 @@ class UserProfileFragment @Inject constructor(
     private var userPostContainer: ViewFlipper? = null
     private var globalError: GlobalError? = null
     private var globalErrorPost: LocalLoad? = null
-    private var isNewlyCreated: Boolean? = false
     private var shouldRefreshRecyclerView: Boolean? = false
     private var isViewMoreClickedBio: Boolean? = false
     private var screenShotDetector: ScreenshotDetector? = null
@@ -205,8 +204,6 @@ class UserProfileFragment @Inject constructor(
             refreshLandingPageData(true)
         }
 
-        //Get landing page, profile header page
-        isNewlyCreated = true;
         refreshLandingPageData(true)
         container?.displayedChild = PAGE_LOADING
 
@@ -663,16 +660,6 @@ class UserProfileFragment @Inject constructor(
 
     private fun submitAction(action: UserProfileAction) {
         viewModel.submitAction(action)
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        if (isNewlyCreated == true) {
-            isNewlyCreated = false
-        } else {
-            refreshLandingPageData()
-        }
     }
 
     override fun onClick(source: View) {
