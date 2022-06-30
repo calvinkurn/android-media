@@ -17,6 +17,7 @@ import com.tokopedia.seller_shop_flash_sale.databinding.FragmentSsfsManageHighli
 import com.tokopedia.shop.flashsale.common.extension.*
 import com.tokopedia.shop.flashsale.common.extension.showLoading
 import com.tokopedia.shop.flashsale.common.preference.SharedPreferenceDataStore
+import com.tokopedia.shop.flashsale.common.tracker.ShopFlashSaleTracker
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.HighlightableProduct
 import com.tokopedia.shop.flashsale.domain.entity.ProductSubmissionResult
@@ -61,6 +62,10 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var preferenceDataStore: SharedPreferenceDataStore
+
+
+    @Inject
+    lateinit var tracker: ShopFlashSaleTracker
 
     private val campaignId by lazy {
         arguments?.getLong(BUNDLE_KEY_CAMPAIGN_ID).orZero()
@@ -154,6 +159,7 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
     private fun setupButton() {
         binding?.run {
             btnProceed.setOnClickListener {
+                tracker.sendClickButtonProceedOnManageHighlightPageEvent()
                 binding?.btnProceed?.showLoading()
                 viewModel.submitHighlightedProducts(campaignId, productAdapter.getItems())
             }

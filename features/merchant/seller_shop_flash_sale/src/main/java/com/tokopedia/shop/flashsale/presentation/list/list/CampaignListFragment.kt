@@ -39,6 +39,7 @@ import com.tokopedia.shop.flashsale.common.extension.slideDown
 import com.tokopedia.shop.flashsale.common.extension.slideUp
 import com.tokopedia.shop.flashsale.common.extension.stopLoading
 import com.tokopedia.shop.flashsale.common.share_component.ShareComponentInstanceBuilder
+import com.tokopedia.shop.flashsale.common.tracker.ShopFlashSaleTracker
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.CampaignMeta
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
@@ -129,6 +130,9 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     @Inject
     lateinit var shareComponentInstanceBuilder: ShareComponentInstanceBuilder
 
+    @Inject
+    lateinit var tracker: ShopFlashSaleTracker
+
     private var binding by autoClearedNullable<SsfsFragmentCampaignListBinding>()
     private var isFirstLoad = true
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
@@ -182,6 +186,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
     private fun setupView() {
         binding?.btnCreateCampaign?.setOnClickListener {
+            tracker.sendClickCreateCampaignEvent()
             viewModel.getShopDecorStatus()
             binding?.btnCreateCampaign.showLoading()
         }

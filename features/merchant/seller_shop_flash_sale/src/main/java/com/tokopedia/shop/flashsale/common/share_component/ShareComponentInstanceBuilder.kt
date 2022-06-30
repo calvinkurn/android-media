@@ -15,6 +15,7 @@ import com.tokopedia.shop.flashsale.common.constant.DateConstant
 import com.tokopedia.shop.flashsale.common.extension.digitsOnly
 import com.tokopedia.shop.flashsale.common.extension.formatTo
 import com.tokopedia.shop.flashsale.common.resource.ResourceProvider
+import com.tokopedia.shop.flashsale.common.tracker.ShopFlashSaleTracker
 import com.tokopedia.shop.flashsale.domain.entity.CampaignBanner
 import com.tokopedia.shop.flashsale.domain.entity.enums.CAMPAIGN_STATUS_ID_ONGOING
 import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
@@ -27,7 +28,8 @@ import javax.inject.Inject
 
 class ShareComponentInstanceBuilder @Inject constructor(
     private val userSession: UserSessionInterface,
-    private val resourceProvider: ResourceProvider
+    private val resourceProvider: ResourceProvider,
+    private val tracker: ShopFlashSaleTracker
 ) {
 
     companion object {
@@ -68,6 +70,7 @@ class ShareComponentInstanceBuilder @Inject constructor(
             val listener = object : ShareBottomsheetListener {
 
                 override fun onShareOptionClicked(shareModel: ShareModel) {
+                    tracker.sendClickShareEvent(shareModel.channel.orEmpty())
                     handleShareOptionSelection(param, isOngoing, shareModel, onShareOptionClick)
                 }
 
