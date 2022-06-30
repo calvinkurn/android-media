@@ -9,7 +9,6 @@ import com.tokopedia.topchat.chattemplate.analytics.ChatTemplateAnalytics
 import android.content.Intent
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.unifyprinciples.R
 
 open class EditTemplateChatActivity : BaseSimpleActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,7 +17,8 @@ open class EditTemplateChatActivity : BaseSimpleActivity() {
             val message = intent.extras!!.getString(InboxMessageConstant.PARAM_MESSAGE)
             setToolbarTitle(message == null)
         }
-        toolbar.setBackgroundColor(MethodChecker.getColor(this, R.color.Unify_Background))
+        toolbar.setBackgroundColor(MethodChecker.getColor(
+            this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
     }
 
     override fun getNewFragment(): Fragment {

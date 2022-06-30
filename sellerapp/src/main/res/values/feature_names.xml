@@ -206,6 +206,7 @@
     <string name="title_som_scan_barcode">Scan Resi</string>
     <string name="title_som_booking_code">Detail Kode Booking</string>
     <string name="title_logistic_info">Informasi Terkait Kurir</string>
+    <string name="title_reschedule_pickup_activity">Ubah Jadwal Pick-up</string>
 
 
     <!-- Dynamic feature for Umrah-->
