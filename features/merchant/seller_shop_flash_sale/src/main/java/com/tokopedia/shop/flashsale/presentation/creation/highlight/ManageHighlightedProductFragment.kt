@@ -71,7 +71,7 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
 
     private val productAdapter by lazy {
-        HighlightedProductAdapter(onProductSelectionChange)
+        HighlightedProductAdapter(preferenceDataStore, onProductSelectionChange)
     }
 
     override fun getScreenName(): String = ManageHighlightedProductFragment::class.java.canonicalName.orEmpty()
