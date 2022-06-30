@@ -18,6 +18,7 @@ import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductErrorType
 import com.tokopedia.shop.flashsale.domain.entity.enums.ProductInputValidationResult
+import com.tokopedia.shop.flashsale.presentation.creation.manage.model.WarehouseUiModel
 import com.tokopedia.shop.flashsale.presentation.creation.manage.viewmodel.EditProductInfoViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TextFieldUnify2
@@ -152,8 +153,12 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
     }
 
     private fun setupWarehouseListObserver() {
-        viewModel.warehouseList.observe(viewLifecycleOwner) {
-            warehouseBottomSheet = WarehouseBottomSheet.newInstance(ArrayList(it))
+        viewModel.warehouseList.observe(viewLifecycleOwner) { warehouseList ->
+            val selectedWarehouse = warehouseList.firstOrNull { it.isSelected }
+            binding?.spinnerShopLocation?.text = selectedWarehouse?.name.orEmpty()
+            warehouseBottomSheet = WarehouseBottomSheet.newInstance(ArrayList(warehouseList)).apply {
+                setOnSubmitListener(::onSubmitWarehouse)
+            }
         }
     }
 
@@ -335,6 +340,10 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
     private fun displayError(errorMessage: String) {
         binding?.tickerError?.setHtmlDescription(errorMessage)
         binding?.tickerError?.show()
+    }
+
+    private fun onSubmitWarehouse(warehouseList: List<WarehouseUiModel>) {
+        viewModel.setWarehouseList(warehouseList)
     }
 
     private fun onEditDataSuccess() {

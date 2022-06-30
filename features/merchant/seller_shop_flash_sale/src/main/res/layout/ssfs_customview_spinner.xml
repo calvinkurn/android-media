@@ -13,8 +13,8 @@
         android:id="@+id/layout_spinner"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingBottom="14dp"
         android:gravity="center"
-        android:paddingTop="5dp"
         android:orientation="horizontal">
 
         <com.tokopedia.unifyprinciples.Typography

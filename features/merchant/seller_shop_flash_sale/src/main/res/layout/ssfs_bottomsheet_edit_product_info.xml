@@ -116,10 +116,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            app:spinner_placeholder_text="Lokasi Seller"
+            app:spinner_placeholder_text="Pilih lokasi"
             app:spinner_title_text="Pilih lokasi"
-            app:layout_constraintTop_toBottomOf="@+id/divCampaignPrice"
-            app:unify_text_field_label="Pilih lokasi" />
+            app:spinner_message="Hanya bisa pilih satu lokasi"
+            app:layout_constraintTop_toBottomOf="@+id/divCampaignPrice" />
 
         <com.tokopedia.unifycomponents.TextFieldUnify2
             android:id="@+id/tfStock"

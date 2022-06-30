@@ -8,7 +8,8 @@ object WarehouseUiModelMapper {
         WarehouseUiModel(
             id = it.warehouseId,
             name = it.warehouseName,
-            stock = it.stock.toLong()
+            stock = it.stock.toLong(),
+            isSelected = it.chosenWarehouse
         )
     }
 }

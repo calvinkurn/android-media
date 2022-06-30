@@ -29,4 +29,8 @@ class WarehouseAdapter: RecyclerView.Adapter<WarehouseViewHolder>() {
     fun setItems(warehouses: List<WarehouseUiModel>) {
         items = warehouses
     }
+
+    fun getItems(): List<WarehouseUiModel> {
+        return items
+    }
 }

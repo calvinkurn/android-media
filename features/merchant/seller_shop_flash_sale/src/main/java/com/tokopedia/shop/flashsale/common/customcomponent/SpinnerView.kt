@@ -33,6 +33,12 @@ class SpinnerView : BaseCustomView {
             refreshViews()
         }
 
+    var message: String = ""
+        set(value) {
+            field = value
+            refreshViews()
+        }
+
     var tfBorder: TextFieldUnify2? = null
     var layoutSpinner: LinearLayout? = null
     var tvSpinner: Typography? = null
@@ -82,6 +88,7 @@ class SpinnerView : BaseCustomView {
             try {
                 titleText = styledAttributes.getString(R.styleable.SpinnerView_spinner_title_text).orEmpty()
                 placeholderText = styledAttributes.getString(R.styleable.SpinnerView_spinner_placeholder_text).orEmpty()
+                message = styledAttributes.getString(R.styleable.SpinnerView_spinner_message).orEmpty()
             } finally {
                 styledAttributes.recycle()
             }
@@ -90,6 +97,7 @@ class SpinnerView : BaseCustomView {
 
     private fun refreshViews() {
         tfBorder?.labelText?.text = titleText
+        tfBorder?.setMessage(message)
         if (text.isEmpty()) {
             tvSpinner?.text = placeholderText
             tvSpinner?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))

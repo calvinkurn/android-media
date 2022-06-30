@@ -13,10 +13,10 @@ object EditProductMapper {
     fun map(
         product: SellerCampaignProductList.Product?,
         productMap: SellerCampaignProductList.ProductMapData?,
-        warehouse: List<WarehouseUiModel>?
+        warehouses: List<WarehouseUiModel>?
     ) = productMap?.let {
         val productId = product?.productId?.toLongOrNull().orZero()
-        val warehouseID = warehouse?.firstOrNull()?.id?.toLongOrNull().orZero()
+        val warehouseID = warehouses.getSelected()
         listOf(it.mapToRequest(productId, warehouseID))
     } ?: emptyList()
 
@@ -34,4 +34,9 @@ object EditProductMapper {
         ),
         maxOrder = maxOrder
     )
+
+    private fun List<WarehouseUiModel>?.getSelected() = this
+        ?.firstOrNull{ it.isSelected }
+        ?.id?.toLongOrNull()
+        .orZero()
 }

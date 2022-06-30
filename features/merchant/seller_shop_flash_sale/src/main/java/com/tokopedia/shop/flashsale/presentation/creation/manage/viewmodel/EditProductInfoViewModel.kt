@@ -86,4 +86,7 @@ class EditProductInfoViewModel @Inject constructor(
         )
     }
 
+    fun setWarehouseList(warehouseList: List<WarehouseUiModel>) {
+        _warehouseList.postValue(warehouseList)
+    }
 }

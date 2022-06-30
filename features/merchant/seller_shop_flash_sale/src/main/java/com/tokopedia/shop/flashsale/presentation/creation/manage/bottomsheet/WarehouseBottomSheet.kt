@@ -32,6 +32,7 @@ class WarehouseBottomSheet: BottomSheetUnify() {
     private val warehouses: ArrayList<WarehouseUiModel>? by lazy {
         arguments?.getParcelableArrayList(KEY_WAREHOUSES)
     }
+    private var onSubmitlistener: (List<WarehouseUiModel>) -> Unit = {}
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,10 +50,18 @@ class WarehouseBottomSheet: BottomSheetUnify() {
         binding?.rvWarehouses?.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         binding?.rvWarehouses?.adapter = warehouseAdapter
         warehouseAdapter.setItems(warehouses?.toList().orEmpty())
+        binding?.btnSubmit?.setOnClickListener {
+            onSubmitlistener(warehouseAdapter.getItems())
+            dismiss()
+        }
     }
 
     fun show(fragmentManager: FragmentManager) {
         show(fragmentManager, TAG)
+    }
+
+    fun setOnSubmitListener(listener: (List<WarehouseUiModel>) -> Unit) {
+        onSubmitlistener = listener
     }
 
 }
