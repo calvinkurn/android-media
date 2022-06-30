@@ -1,33 +1,27 @@
 package com.tokopedia.media.editor.ui.component
 
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.ViewGroup
-import android.widget.EditText
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.editor.R
+import com.tokopedia.media.editor.ui.component.slider.MediaEditorSlider
 import com.tokopedia.picker.common.basecomponent.UiComponent
 
 class BrightnessToolUiComponent constructor(
     viewGroup: ViewGroup,
     private val listener: Listener
-) : UiComponent(viewGroup, R.id.uc_tool_brightness) {
+) : UiComponent(viewGroup, R.id.uc_tool_brightness), MediaEditorSlider.Listener {
 
-    private val edtBrightnessValue: EditText = findViewById(R.id.edt_brightness)
+    private val brightnessSlider: MediaEditorSlider = findViewById(R.id.slider_brightness)
 
     fun setupView() {
         container().show()
 
-        edtBrightnessValue.addTextChangedListener(object : TextWatcher {
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val value = s.toString().toFloat()
-                listener.onBrightnessValueChanged(if (value > 0f) value else 0f)
-            }
+        brightnessSlider.setRangeSliderValue(0,200,1)
+        brightnessSlider.listener = this
+    }
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun afterTextChanged(s: Editable?) {}
-
-        })
+    override fun valueUpdated(step: Int, value: Float) {
+        listener.onBrightnessValueChanged(value)
     }
 
     interface Listener {

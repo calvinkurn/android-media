@@ -10,11 +10,12 @@
     android:padding="10dp"
     tools:visibility="visible">
 
-    <EditText
-        android:id="@+id/edt_brightness"
+    <com.tokopedia.media.editor.ui.component.slider.MediaEditorSlider
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:id="@+id/slider_brightness"
+        android:visibility="visible"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Nilai Brightness"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
