@@ -93,6 +93,7 @@ import com.tokopedia.tokofood.feature.home.presentation.viewmodel.TokoFoodHomeVi
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -549,12 +550,6 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                 }
             }
         }
-
-        viewLifecycleOwner.observe(viewModel.homeImagePath) {
-            if (it.isNotEmpty()) {
-                showUniversalShareBottomSheet(it)
-            }
-        }
     }
 
     private fun collectValue() {
@@ -852,7 +847,12 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     private fun shareClicked() {
         if (UniversalShareBottomSheet.isCustomSharingEnabled(context)) {
             context?.let {
-                viewModel.saveHomeImageToPhoneStorage(it, OG_IMAGE_SHARE_URL)
+                SharingUtil.saveImageFromURLToStorage(
+                    it,
+                    OG_IMAGE_SHARE_URL
+                ) { storageImagePath ->
+                    showUniversalShareBottomSheet(storageImagePath)
+                }
             }
         } else {
             LinkerManager.getInstance().executeShareRequest(shareRequest(context, shareHomeTokoFood))
