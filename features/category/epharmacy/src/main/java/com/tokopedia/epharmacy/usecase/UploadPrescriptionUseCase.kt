@@ -2,7 +2,6 @@ package com.tokopedia.epharmacy.usecase
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.net.Uri
 import android.util.Base64
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.network.coroutines.usecase.RestRequestUseCase
@@ -14,14 +13,8 @@ import com.tokopedia.epharmacy.network.response.EPharmacyPrescriptionUploadRespo
 import com.tokopedia.epharmacy.utils.EPharmacyImageQuality
 import com.tokopedia.epharmacy.utils.EPharmacyImageQualityDecreaseFactor
 import com.tokopedia.media.preview.managers.ImageCompressionManager
-import com.tokopedia.media.preview.managers.ImageCompressionManagerImpl
-import com.tokopedia.picker.common.utils.ImageCompressor
-import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.image.ImageProcessingUtil.getCompressFormat
-import kotlinx.coroutines.flow.first
 import okio.utf8Size
 import java.io.ByteArrayOutputStream
-import java.io.File
 import java.lang.reflect.Type
 import javax.inject.Inject
 
@@ -32,7 +25,6 @@ class UploadPrescriptionUseCase @Inject constructor(
 
     private var localFilePath: String = ""
     private var id : Long = 0L
-    private var userAccessToken = ""
 
     override suspend fun executeOnBackground(): Map<Type, RestResponse> {
         val base64ImageString = getBase64OfPrescriptionImage(localFilePath, EPharmacyImageQuality)
@@ -52,14 +44,9 @@ class UploadPrescriptionUseCase @Inject constructor(
         )))
     }
 
-    fun setBase64Image(id : Long, localPath: String, accessToken : String) {
-        try {
-            this.id = (id + 1)
-            this.localFilePath = localPath
-            this.userAccessToken = accessToken
-        } catch (e: Exception) {
-
-        }
+    fun setBase64Image(id : Long, localPath: String) {
+        this.id = (id + 1)
+        this.localFilePath = localPath
     }
 
     private fun getBase64OfPrescriptionImage(localFilePath: String, quality : Int): String {
@@ -78,18 +65,20 @@ class UploadPrescriptionUseCase @Inject constructor(
             return if(encodedString.utf8Size(0,encodedString.length) >= MAX_BYTES && quality > MIN_QUALITY){
                 getBase64OfPrescriptionImage(localFilePath , (quality * EPharmacyImageQualityDecreaseFactor).toInt())
             } else
-                "data:image/jpeg;base64,${encodedString}"
+                "${IMAGE_DATA_PREFIX}${encodedString}"
         }catch (e : Exception){
+            // TODO Log in Crashlytics
             e.printStackTrace()
             ""
         }
     }
 
     companion object {
-        private const val ENDPOINT_URL = "https://api-staging.tokopedia.com/epharmacy/prescription/upload"
+        private const val ENDPOINT_URL = "https://epharmacy-staging.tokopedia.com/prescription/upload"
         private const val KEY_FORMAT_VALUE="FILE"
         private const val KEY_SOURCE_VALUE="buyer"
         private const val MAX_BYTES = 4_000_000
         private const val MIN_QUALITY = 60
+        private const val IMAGE_DATA_PREFIX = "data:image/jpeg;base64,"
     }
 }

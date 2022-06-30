@@ -28,7 +28,6 @@ import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyPrescriptionDataModel
 import com.tokopedia.epharmacy.di.EPharmacyComponent
-import com.tokopedia.epharmacy.network.response.EpharmacyButton
 import com.tokopedia.epharmacy.network.response.PrescriptionImage
 import com.tokopedia.epharmacy.utils.*
 import com.tokopedia.epharmacy.viewmodel.UploadPrescriptionViewModel
@@ -37,12 +36,14 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
-import com.tokopedia.picker.common.utils.ImageCompressor
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
@@ -107,6 +108,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
         observeButtonData()
         observePrescriptionImages()
         observeUploadPrescriptionIdsData()
+        observerUploadPrescriptionError()
     }
 
     private fun initViews(view: View) {
@@ -183,7 +185,6 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
     }
 
     private fun onClickUploadPhotoButton() {
-        uploadPrescriptionViewModel.removeRejectedImages()
         openMediaPicker((MAX_MEDIA_ITEM)
                 - (uploadPrescriptionViewModel.prescriptionImages.value?.size ?: 0))
     }
@@ -273,10 +274,33 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
                     }
                 }
                 is Fail -> {
-
+                    if (it.throwable is UnknownHostException
+                        || it.throwable is SocketTimeoutException) {
+                        //global_error.setType(GlobalError.NO_CONNECTION)
+                    } else {
+                        it.throwable.message?.let { errorMessage ->
+                            showToast(errorMessage)
+                        }
+                    }
                 }
             }
         })
+    }
+
+    private fun observerUploadPrescriptionError() {
+        uploadPrescriptionViewModel.uploadError.observe(viewLifecycleOwner,{ error ->
+            when(error){
+                is EPharmacyUploadBackendError -> showToast(error.errMsg)
+                is EPharmacyUploadEmptyImageError -> showToast(error.errMsg)
+                is EPharmacyUploadNoPrescriptionIdError -> showToast(error.errMsg)
+            }
+        })
+    }
+
+    private fun showToast(message : String) {
+        view?.let { it ->
+            Toaster.build(it,message).show()
+        }
     }
 
     private fun sendResultToCheckout() {

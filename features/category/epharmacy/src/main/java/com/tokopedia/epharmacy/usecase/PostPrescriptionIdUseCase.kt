@@ -7,7 +7,6 @@ import com.tokopedia.epharmacy.utils.DEFAULT_ZERO_VALUE
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import rx.functions.ActionN
 import javax.inject.Inject
 
 @GqlQuery("GQL_POST_PRESCRIPTION_IDS_QUERY",GQL_POST_PRESCRIPTION_IDS_QUERY)

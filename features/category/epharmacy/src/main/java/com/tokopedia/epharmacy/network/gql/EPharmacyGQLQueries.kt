@@ -6,9 +6,12 @@ const val GQL_FETCH_ORDER_DETAILS_QUERY = """
       form {
           shopId
           shopName
+          shopType
+          shopLocation
           paymentDate
           invoiceRefNum
           orderPdf
+          isReuploadEnabled
           products {
             productId
             name
@@ -21,7 +24,10 @@ const val GQL_FETCH_ORDER_DETAILS_QUERY = """
             rejectReason
             expiredAt
             status
-            data
+            prescription_data{
+                format
+                value
+            }
           }
           epharmacyButton {
             text
@@ -50,16 +56,30 @@ const val GQL_POST_PRESCRIPTION_IDS_QUERY: String = """mutation confirmPrescript
 
 const val GQL_FETCH_CHECKOUT_DETAILS_QUERY = """
     query GetPrescriptionsByCheckoutId(${'$'}checkout_id: String!) {
-    getPrescriptionsByCheckoutId(checkout_id: ${'$'}checkout_id) {
-      prescriptions {
-        prescriptionId: prescription_id
-        prescriptionData: prescription_data {
-          format
-          value
+      getPrescriptionsByCheckoutId(checkout_id: ${'$'}checkout_id) {
+        checkoutId: checkout_id
+        prescriptions {
+          prescriptionId: prescription_id
+          prescriptionData: prescription_data {
+            format
+            value
+          }
+          status
+          createdAt: created_at
         }
-        status
-        createdAt: created_at
+        productsInfo: products_info {
+          shopId: shop_id
+          shopName: shop_name
+          shopType: shop_type
+          shopLocation: shop_location
+          products {
+              productId: product_id
+              name
+              quantity
+              productImage: product_image
+              itemWeight: item_weight
+          }
+        }
       }
     }
-}
 """

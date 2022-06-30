@@ -35,7 +35,7 @@ class EPharmacyProductViewHolder(private val view: View,
 
     private fun renderProductData(dataModel: EPharmacyProductDataModel) {
         dataModel.product?.apply {
-            productCard.cardType = CardUnify2.TYPE_BORDER_ACTIVE
+            productCard.cardType = CardUnify2.TYPE_BORDER
             productText.text = name ?: ""
             productQuantity.text = quantity.toString()
             productImageUnify.loadImage(productImage)

@@ -22,6 +22,7 @@ class EPharmacyPrescriptionGalleryItemViewHolder(private val viewItem: View) : R
 
     private var cardView = viewItem.findViewById<CardUnify2>(R.id.card_view)
     private var reloadIcon = viewItem.findViewById<IconUnify>(R.id.retry_upload_button)
+    private var overlay = viewItem.findViewById<ImageUnify>(R.id.overlay)
     private var cameraIcon = viewItem.findViewById<ImageUnify>(R.id.camera_button)
     private var cancelButton = viewItem.findViewById<ImageUnify>(R.id.cross_image_button)
     private var image = viewItem.findViewById<ImageUnify>(R.id.prescription_image)
@@ -43,6 +44,7 @@ class EPharmacyPrescriptionGalleryItemViewHolder(private val viewItem: View) : R
                 .into(image)
             cameraIcon.show()
             reloadIcon.hide()
+            overlay.hide()
             cancelButton.hide()
         }
     }
@@ -60,8 +62,8 @@ class EPharmacyPrescriptionGalleryItemViewHolder(private val viewItem: View) : R
     }
 
     private fun renderImageUi(model: PrescriptionImage) {
-        if(!model.data.isNullOrBlank()){
-            val imgByteArray: ByteArray = Base64.decode(model.data, Base64.DEFAULT)
+        if(!model.prescriptionData?.value.isNullOrBlank()){
+            val imgByteArray: ByteArray = Base64.decode(model.prescriptionData?.value, Base64.DEFAULT)
             Glide.with(viewItem.context)
                 .asBitmap()
                 .load(imgByteArray)
@@ -74,14 +76,13 @@ class EPharmacyPrescriptionGalleryItemViewHolder(private val viewItem: View) : R
     }
 
     private fun renderCancelUi(model: PrescriptionImage) {
-        if(model.status == EPharmacyPrescriptionStatus.REJECTED.status
-            || model.status == EPharmacyPrescriptionStatus.SELECTED.status){
+        if(model.status == EPharmacyPrescriptionStatus.APPROVED.status){
+            cancelButton.hide()
+        }else {
             cancelButton.show()
             cancelButton.setOnClickListener {
                 actionListener?.onPrescriptionCrossImageClick(adapterPosition)
             }
-        }else {
-            cancelButton.hide()
         }
     }
 
@@ -96,10 +97,12 @@ class EPharmacyPrescriptionGalleryItemViewHolder(private val viewItem: View) : R
     private fun renderReloadUi(model: PrescriptionImage) {
         if(model.isUploadFailed){
             reloadIcon.show()
+            overlay.show()
             reloadIcon.setOnClickListener {
                 actionListener?.onPrescriptionReLoadButtonClick(adapterPosition,model)
             }
         }else {
+            overlay.hide()
             reloadIcon.hide()
         }
     }

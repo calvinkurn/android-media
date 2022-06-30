@@ -18,7 +18,7 @@ data class EPharmacyDataResponse(
     val paymentDate: String?,
     @SerializedName(value = "prescription_images", alternate = ["prescriptions"])
     val prescriptionImages: ArrayList<PrescriptionImage?>?,
-    @SerializedName("products")
+    @SerializedName(value = "products", alternate = ["products_info"])
     val ePharmacyProducts: List<EPharmacyProduct?>?,
     @SerializedName("shop_id")
     val shopId: Long?,
@@ -29,7 +29,11 @@ data class EPharmacyDataResponse(
     @SerializedName("shop_location")
     val shopLocation: String?,
     @SerializedName("is_reupload_enabled")
-    val isReUploadEnabled: Boolean?
+    val isReUploadEnabled: Boolean = false,
+    @SerializedName("error_msg")
+    val errorMessage: String?,
+    @SerializedName("checkoutId")
+    val checkoutId: String?,
 )
 
 data class EpharmacyButton(
@@ -51,11 +55,9 @@ data class EpharmacyTicker(
 )
 
 data class PrescriptionImage(
-    @SerializedName("data")
-    val `data`: String?,
     @SerializedName("expired_at")
     val expiredAt: String?,
-    @SerializedName("prescription_id")
+    @SerializedName(value = "prescription_id",alternate = ["prescription_id"])
     var prescriptionId: Long?,
     @SerializedName("reject_reason")
     val rejectReason: String?,
@@ -66,12 +68,12 @@ data class PrescriptionImage(
     @SerializedName("is_upload_success")
     var isUploadSuccess: Boolean = true,
     @SerializedName("is_deletable")
-    var isDeletable: Boolean = false,
+    var isDeletable: Boolean = true,
     @SerializedName("is_upload_failed")
     var isUploadFailed: Boolean = false,
     @SerializedName("local_path")
     var localPath: String? = "",
-    @SerializedName("prescription_data")
+    @SerializedName(value  = "prescription_data" , alternate = ["prescriptionData"])
     var prescriptionData: PrescriptionData?
 ){
     data class PrescriptionData(
@@ -88,7 +90,7 @@ data class EPharmacyProduct(
     @SerializedName("name")
     val name: String?,
     @SerializedName("product_id")
-    val productId: Long?,
+    val productId: String?,
     @SerializedName("product_image")
     val productImage: String?,
     @SerializedName("quantity")
@@ -103,11 +105,6 @@ data class EPharmacyProduct(
     var shopLocation: String?,
     @SerializedName("store_type")
     var shopType: String?,
-)
-
-data class Header(
-    @SerializedName("code")
-    val code: Int?,
-    @SerializedName("server_prosess_time")
-    val serverProsessTime: String?
+    @SerializedName(value = "products")
+    val ePharmacyProducts: List<EPharmacyProduct?>?,
 )

@@ -10,21 +10,20 @@ import com.tokopedia.epharmacy.component.model.EPharmacyPrescriptionDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyProductDataModel
 import com.tokopedia.epharmacy.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.epharmacy.di.qualifier.CoroutineMainDispatcher
-import com.tokopedia.epharmacy.network.response.*
+import com.tokopedia.epharmacy.network.response.EPharmacyDataResponse
+import com.tokopedia.epharmacy.network.response.EPharmacyPrescriptionUploadResponse
+import com.tokopedia.epharmacy.network.response.EPharmacyUploadPrescriptionIdsResponse
+import com.tokopedia.epharmacy.network.response.PrescriptionImage
 import com.tokopedia.epharmacy.usecase.GetEPharmacyCheckoutDetailUseCase
 import com.tokopedia.epharmacy.usecase.GetEPharmacyOrderDetailUseCase
 import com.tokopedia.epharmacy.usecase.PostPrescriptionIdUseCase
 import com.tokopedia.epharmacy.usecase.UploadPrescriptionUseCase
 import com.tokopedia.epharmacy.utils.*
-import com.tokopedia.media.preview.managers.ImageCompressionManagerImpl
-import com.tokopedia.picker.common.utils.ImageCompressor
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import java.lang.reflect.Type
 import javax.inject.Inject
@@ -38,9 +37,6 @@ class UploadPrescriptionViewModel @Inject constructor(
     @CoroutineMainDispatcher private val dispatcherMain: CoroutineDispatcher
 )  : BaseViewModel(dispatcherBackground){
 
-    @Inject
-    lateinit var userSession: UserSessionInterface
-
     private val _productDetailLiveData = MutableLiveData<Result<EPharmacyDataModel>>()
     val productDetailLiveDataResponse: LiveData<Result<EPharmacyDataModel>> = _productDetailLiveData
 
@@ -49,6 +45,9 @@ class UploadPrescriptionViewModel @Inject constructor(
 
     private val _buttonLiveData = MutableLiveData<String?>()
     val buttonLiveData: LiveData<String?> = _buttonLiveData
+
+    private val _uploadError = MutableLiveData<EPharmacyUploadError>()
+    val uploadError: LiveData<EPharmacyUploadError> = _uploadError
 
     private val _prescriptionImages = MutableLiveData<ArrayList<PrescriptionImage?>>()
     val prescriptionImages: LiveData<ArrayList<PrescriptionImage?>> = _prescriptionImages
@@ -67,20 +66,27 @@ class UploadPrescriptionViewModel @Inject constructor(
             if(data.ePharmacyProducts?.isEmpty() == true)
                 onFailEPharmacyDetail(IllegalStateException("Data invalid"))
             else {
-                _productDetailLiveData.postValue(Success(mapResponseInDataModel(data)))
-                _buttonLiveData.postValue(data.epharmacyButton?.key)
+                _productDetailLiveData.postValue(Success(mapOrderResponseInDataModel(data)))
+                if(data.isReUploadEnabled){
+                    _buttonLiveData.postValue(EPharmacyButtonKey.RE_UPLOAD.key)
+                }else {
+                    _buttonLiveData.postValue(EPharmacyButtonKey.CHECK.key)
+                }
             }
         }
     }
 
-    private fun mapResponseInDataModel(data: EPharmacyDataResponse) : EPharmacyDataModel{
+    private fun mapOrderResponseInDataModel(data: EPharmacyDataResponse) : EPharmacyDataModel{
         val listOfComponents = arrayListOf<BaseEPharmacyDataModel>()
+        // Remove Rejected Images TODO ask backend to do this
+        val arrayListPrescriptions = arrayListOf<PrescriptionImage?>()
         data.prescriptionImages?.forEach { prescriptionImage ->
-            prescriptionImage?.isUploadSuccess = true
-            prescriptionImage?.isDeletable = true
+            if(prescriptionImage?.status != EPharmacyPrescriptionStatus.REJECTED.status){
+                arrayListPrescriptions.add(prescriptionImage)
+            }
         }
         val prescriptionDataModel = EPharmacyPrescriptionDataModel(PRESCRIPTION_COMPONENT,
-            PRESCRIPTION_COMPONENT, data.prescriptionImages)
+            PRESCRIPTION_COMPONENT, arrayListPrescriptions)
         listOfComponents.add(prescriptionDataModel)
         data.ePharmacyProducts?.forEachIndexed { index, eProduct ->
             if(index == 0){
@@ -89,7 +95,7 @@ class UploadPrescriptionViewModel @Inject constructor(
                 eProduct?.shopLocation = data.shopLocation
                 eProduct?.shopType = data.shopType
             }
-            listOfComponents.add(EPharmacyProductDataModel(PRODUCT_COMPONENT, eProduct?.productId.toString(),
+            listOfComponents.add(EPharmacyProductDataModel(PRODUCT_COMPONENT, eProduct?.productId ?: eProduct.hashCode().toString(),
                 eProduct))
         }
         return EPharmacyDataModel(listOfComponents)
@@ -113,16 +119,46 @@ class UploadPrescriptionViewModel @Inject constructor(
             if(data.ePharmacyProducts?.isEmpty() == true)
                 onFailEPharmacyDetail(IllegalStateException("Data invalid"))
             else {
-                _productDetailLiveData.postValue(Success(mapResponseInDataModel(data)))
-                _buttonLiveData.postValue(data.epharmacyButton?.key)
+                _productDetailLiveData.postValue(Success(mapCheckoutResponseInDataModel(data)))
+                if(ePharmacyDetailResponse.prescriptionImages.isNullOrEmpty()){
+                    _buttonLiveData.postValue(EPharmacyButtonKey.CHECK.key)
+                }else {
+                    _buttonLiveData.postValue(EPharmacyButtonKey.RE_UPLOAD.key)
+                }
             }
         }
+    }
+
+    private fun mapCheckoutResponseInDataModel(data: EPharmacyDataResponse) : EPharmacyDataModel{
+        val listOfComponents = arrayListOf<BaseEPharmacyDataModel>()
+        // Remove Rejected Images TODO ask backend to do this
+        val arrayListPrescriptions = arrayListOf<PrescriptionImage?>()
+        data.prescriptionImages?.forEach { prescriptionImage ->
+            if(prescriptionImage?.status != EPharmacyPrescriptionStatus.REJECTED.status){
+                arrayListPrescriptions.add(prescriptionImage)
+            }
+        }
+        val prescriptionDataModel = EPharmacyPrescriptionDataModel(PRESCRIPTION_COMPONENT,
+            PRESCRIPTION_COMPONENT, arrayListPrescriptions)
+        listOfComponents.add(prescriptionDataModel)
+        data.ePharmacyProducts?.forEachIndexed { index, eProduct ->
+//            eProduct?.ePharmacyProducts?.forEachIndexed { indexProduct , ePharmacyProduct ->
+//                if(indexProduct == 0){
+//                    ePharmacyProduct?.shopId = eProduct.shopId
+//                    ePharmacyProduct?.shopName = eProduct.shopName
+//                    ePharmacyProduct?.shopLocation = eProduct.shopLocation
+//                    ePharmacyProduct?.shopType = eProduct.shopType
+//                }
+//                listOfComponents.add(EPharmacyProductDataModel(PRODUCT_COMPONENT, ePharmacyProduct?.productId ?: eProduct.hashCode().toString(),
+//                    eProduct))
+//            }
+        }
+        return EPharmacyDataModel(listOfComponents)
     }
 
     fun onSuccessGetPrescriptionImages(arrayList: ArrayList<PrescriptionImage?>) {
         _prescriptionImages.postValue(arrayList)
     }
-
 
     fun addSelectedPrescriptionImages(originalPaths: List<String>) {
         _prescriptionImages.value.let {
@@ -143,7 +179,7 @@ class UploadPrescriptionViewModel @Inject constructor(
     }
 
     private fun changeToLoadingState(arrayList: ArrayList<PrescriptionImage?>?, localPath :String) {
-        arrayList?.add(PrescriptionImage("","",DEFAULT_ZERO_VALUE,"",
+        arrayList?.add(PrescriptionImage("",DEFAULT_ZERO_VALUE,"",
             EPharmacyPrescriptionStatus.SELECTED.status,
             isUploading = true,
             isUploadSuccess = false,
@@ -166,16 +202,19 @@ class UploadPrescriptionViewModel @Inject constructor(
         launchCatchError(block = {
             uploadImageToServer(uniquePositionId, path)
         }, onError = {
-            uploadFailed(uniquePositionId , it)
+            uploadFailed(uniquePositionId , EPharmacyUploadBackendError(it.message ?: ""))
         })
 
     }
 
     private suspend fun uploadImageToServer(uniquePositionId: Int, localFilePath : String) {
         if (localFilePath.isNotBlank()){
-            uploadPrescriptionUseCase.setBase64Image(uniquePositionId.toLong(),localFilePath, userSession.accessToken)
+            uploadPrescriptionUseCase.setBase64Image(uniquePositionId.toLong(),localFilePath)
             val result = withContext(dispatcherBackground) {
                 convertToUploadImageResponse(uploadPrescriptionUseCase.executeOnBackground())
+            }
+            val errorMessage = result.data?.firstOrNull()?.errorMsg?.let { errorMessage ->
+                if(errorMessage.isNotBlank()){ errorMessage } else { "" }
             }
             _prescriptionImages.value?.get(uniquePositionId)?.apply {
                 result.data?.firstOrNull()?.let { uploadResult ->
@@ -184,7 +223,7 @@ class UploadPrescriptionViewModel @Inject constructor(
                         isUploading = false
                         prescriptionId = uploadResult.prescriptionId
                     }else {
-                        uploadFailed(uniquePositionId, Throwable("No Prescription Id"))
+                        uploadFailed(uniquePositionId, EPharmacyUploadNoPrescriptionIdError(errorMessage ?: ""))
                     }
                 }?: kotlin.run {
                     isUploadSuccess = false
@@ -193,8 +232,9 @@ class UploadPrescriptionViewModel @Inject constructor(
                 }
             }
             _prescriptionImages.postValue(_prescriptionImages.value)
+
         }else {
-            uploadFailed(uniquePositionId, Throwable("Empty Image"))
+            uploadFailed(uniquePositionId, EPharmacyUploadEmptyImageError("Image Not Found"))
         }
         withContext(dispatcherMain){
             checkPrescriptionImages()
@@ -204,13 +244,9 @@ class UploadPrescriptionViewModel @Inject constructor(
     private fun checkPrescriptionImages() {
         var successImagesCount = 0
         var failedImageCount = 0
-        var rejectedImages = 0
         val presImageSize  = _prescriptionImages.value?.size ?: 0
         _prescriptionImages.value?.forEach { presImage ->
             when {
-                presImage?.status == EPharmacyPrescriptionStatus.REJECTED.status -> {
-                    rejectedImages += 1
-                }
                 presImage?.isUploadSuccess == true -> {
                     successImagesCount += 1
                 }
@@ -223,7 +259,7 @@ class UploadPrescriptionViewModel @Inject constructor(
             EPharmacyButtonKey.DONE_DISABLED.key
         }else {
             if(successImagesCount == presImageSize
-                && rejectedImages == 0 && presImageSize != 0){
+                &&  presImageSize != 0){
                 EPharmacyButtonKey.DONE.key
             }else {
                 EPharmacyButtonKey.RE_UPLOAD.key
@@ -232,13 +268,14 @@ class UploadPrescriptionViewModel @Inject constructor(
         _buttonLiveData.postValue(key)
     }
 
-    private fun uploadFailed(uniquePositionId : Int, exception : Throwable){
+    private fun uploadFailed(uniquePositionId : Int, ePharmacyUploadError: EPharmacyUploadError){
         _prescriptionImages.value?.get(uniquePositionId)?.apply {
             isUploadSuccess = false
             isUploading = false
             isUploadFailed = true
         }
         _prescriptionImages.postValue(_prescriptionImages.value)
+        _uploadError.postValue(ePharmacyUploadError)
         checkPrescriptionImages()
     }
 
@@ -274,16 +311,6 @@ class UploadPrescriptionViewModel @Inject constructor(
 
     private fun convertToUploadImageResponse(typeRestResponseMap: Map<Type, RestResponse>):  EPharmacyPrescriptionUploadResponse{
         return typeRestResponseMap[EPharmacyPrescriptionUploadResponse::class.java]?.getData() as EPharmacyPrescriptionUploadResponse
-    }
-
-    fun removeRejectedImages(){
-        _prescriptionImages.value?.let { presImages ->
-            val rejectedImages = presImages.filter { it?.status == EPharmacyPrescriptionStatus.REJECTED.status }
-            if(rejectedImages.isNotEmpty()){
-                presImages.removeAll(rejectedImages)
-                _prescriptionImages.postValue(presImages)
-            }
-        }
     }
 
     fun removePrescriptionImageAt(index : Int){
