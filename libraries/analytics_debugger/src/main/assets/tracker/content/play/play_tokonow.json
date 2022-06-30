@@ -7,7 +7,6 @@
       "eventAction": "view - out of now coverage",
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - (live|vod)",
-      "trackerId": "32235",
       "businessUnit": "play",
       "currentSite": "tokopediamarketplace",
       "sessionIris": ".*",
@@ -18,7 +17,6 @@
       "eventAction": "click - now cek jangkauan",
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - (live|vod)",
-      "trackerId": "32238",
       "businessUnit": "play",
       "currentSite": "tokopediamarketplace",
       "sessionIris": ".*",
@@ -29,7 +27,6 @@
       "eventAction": "click - ganti alamat",
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - (live|vod)",
-      "trackerId": "32239",
       "businessUnit": "play",
       "currentSite": "tokopediamarketplace"
     },
@@ -38,7 +35,6 @@
       "eventAction": "view - now product carousel",
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - \\d+ - (live|vod)",
-      "trackerId": "32244",
       "businessUnit": "play",
       "currentSite": "tokopediamarketplace",
       "item_list": "/groupchat - featured product",
@@ -61,7 +57,6 @@
       "eventAction": "click - now product carousel",
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - \\d+ - (live|vod)",
-      "trackerId": "32245",
       "businessUnit": "content",
       "currentSite": "tokopediamarketplace",
       "item_list": "/groupchat - featured product",
@@ -84,7 +79,6 @@
       "eventAction": "view - now product bottomsheet",
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - \\d+ - (live|vod)",
-      "trackerId": "32246",
       "businessUnit": "play",
       "currentSite": "tokopediamarketplace",
       "item_list": "/groupchat - bottom sheet",
@@ -107,7 +101,6 @@
       "eventAction": "click - now product bottomsheet",
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - \\d+ - (live|vod)",
-      "trackerId": "32247",
       "businessUnit": "play",
       "currentSite": "tokopediamarketplace",
       "item_list": "/groupchat - bottom sheet now",
@@ -130,7 +123,6 @@
       "eventAction": "click - atc now product",
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - \\d+ - (live|vod)",
-      "trackerId": "32248",
       "businessUnit": "play",
       "currentSite": "tokopediamarketplace",
       "items": [
@@ -157,7 +149,6 @@
       "eventAction": "click - buy now product",
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - \\d+ - (live|vod)",
-      "trackerId": "32249",
       "businessUnit": "play",
       "currentSite": "tokopediamarketplace",
       "items": [
@@ -184,7 +175,6 @@
       "eventAction": "view - now toaster",
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - (live|vod)",
-      "trackerId": "32250",
       "businessUnit": "play",
       "currentSite": "tokopediamarketplace"
     },
@@ -193,7 +183,6 @@
       "eventAction": "click - lihat now toaster",
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - (live|vod)",
-      "trackerId": "32251",
       "businessUnit": "play",
       "currentSite": "tokopediamarketplace"
     },
@@ -202,7 +191,6 @@
       "eventAction": "view - now info bottomsheet",
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - (live|vod)",
-      "trackerId": "32252",
       "businessUnit": "play",
       "currentSite": "tokopediamarketplace"
     },
@@ -211,7 +199,6 @@
       "eventAction": "click - now info bottomsheet",
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - (live|vod)",
-      "trackerId": "32253",
       "businessUnit": "play",
       "currentSite": "tokopediamarketplace"
     },
@@ -220,7 +207,6 @@
       "eventAction": "view - now usp bottomsheet",
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - (live|vod)",
-      "trackerId": "32254",
       "businessUnit": "play",
       "currentSite": "tokopediamarketplace"
     },
@@ -229,7 +215,6 @@
       "eventAction": "click - now syarat dan ketentuan bottomsheet",
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - (live|vod)",
-      "trackerId": "32255",
       "businessUnit": "play",
       "currentSite": "tokopediamarketplace"
     },
@@ -238,7 +223,6 @@
       "eventAction": "click - kunjungi now usp bottomsheet",
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - (live|vod)",
-      "trackerId": "32256",
       "businessUnit": "play",
       "currentSite": "tokopediamarketplace",
       "sessionIris": ".*",
@@ -249,7 +233,6 @@
       "eventAction": "view - lihat keranjang",
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - (live|vod)",
-      "trackerId": "33066",
       "businessUnit": "play",
       "currentSite": "tokopediamarketplace"
     },
@@ -258,7 +241,6 @@
       "eventAction": "click - lihat keranjang",
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - (live|vod)",
-      "trackerId": "33067",
       "businessUnit": "play",
       "currentSite": "tokopediamarketplace"
     },
@@ -267,7 +249,6 @@
       "eventAction": "click - jam operasional",
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - (live|vod)",
-      "trackerId": "33119",
       "businessUnit": "play",
       "currentSite": "tokopediamarketplace"
     }
