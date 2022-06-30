@@ -10,7 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginLeft="@dimen/layout_lvl2"
         app:has_divider_left_padding="false" />
 
     <com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel
