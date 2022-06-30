@@ -13,10 +13,10 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -26,12 +26,9 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsCampaignDetailPerformanceLayoutBinding
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignDetailBinding
-import com.tokopedia.shop.flashsale.common.constant.CampaignDetailConstant.PRODUCT_LIST_SIZE
 import com.tokopedia.shop.flashsale.common.constant.DateConstant
 import com.tokopedia.shop.flashsale.common.extension.convertRupiah
-import com.tokopedia.shop.flashsale.common.customcomponent.BaseSimpleListFragment
 import com.tokopedia.shop.flashsale.common.extension.formatTo
-import com.tokopedia.shop.flashsale.common.extension.showError
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.CampaignDetailMeta
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
@@ -56,8 +53,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class CampaignDetailFragment :
-    BaseSimpleListFragment<CampaignDetailProductListAdapter, SellerCampaignProductList.Product>(),
+class CampaignDetailFragment : BaseDaggerFragment(),
     CampaignDetailMoreMenuClickListener {
 
     companion object {
@@ -294,7 +290,13 @@ class CampaignDetailFragment :
     }
 
     private fun showProductList(data: SellerCampaignProductList) {
-        renderList(data.productList, false)
+        binding?.apply {
+            rvProductList.layoutManager =
+                LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            campaignDetailProductListAdapter.clearAll()
+            campaignDetailProductListAdapter.submit(data.productList)
+            rvProductList.adapter = campaignDetailProductListAdapter
+        }
     }
 
     @SuppressLint("ResourcePackage")
@@ -492,51 +494,5 @@ class CampaignDetailFragment :
 
     override fun onMenuCancelCampaignClicked() {
         viewModel.onCampaignCancelMenuClicked()
-    }
-
-    override fun createAdapter(): CampaignDetailProductListAdapter? {
-        return campaignDetailProductListAdapter
-    }
-
-    override fun getRecyclerView(view: View): RecyclerView? {
-        return binding?.rvProductList
-    }
-
-    override fun getSwipeRefreshLayout(view: View): SwipeRefreshLayout? {
-        return null
-    }
-
-    override fun getPerPage(): Int {
-        return PRODUCT_LIST_SIZE
-    }
-
-    override fun addElementToAdapter(list: List<SellerCampaignProductList.Product>) {
-        adapter?.submit(list)
-    }
-
-    override fun loadData(page: Int) { }
-
-    override fun clearAdapterData() {
-        adapter?.clearAll()
-    }
-
-    override fun onShowLoading() {
-
-    }
-
-    override fun onHideLoading() {
-
-    }
-
-    override fun onDataEmpty() {
-
-    }
-
-    override fun onGetListError(message: String) {
-        view?.showError(message)
-    }
-
-    override fun onScrolled(xScrollAmount: Int, yScrollAmount: Int) {
-
     }
 }

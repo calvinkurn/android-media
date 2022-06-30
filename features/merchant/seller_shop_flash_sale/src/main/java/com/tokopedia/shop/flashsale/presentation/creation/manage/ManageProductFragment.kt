@@ -8,9 +8,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -37,8 +39,7 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.concurrent.schedule
 
-class ManageProductFragment :
-    BaseSimpleListFragment<ManageProductListAdapter, SellerCampaignProductList.Product>() {
+class ManageProductFragment : BaseDaggerFragment() {
 
     companion object {
         private const val BUNDLE_KEY_CAMPAIGN_ID = "campaignId"
@@ -106,6 +107,7 @@ class ManageProductFragment :
         super.onViewCreated(view, savedInstanceState)
         setFragmentToUnifyBgColor()
         setupView()
+        viewModel.getProducts(campaignId, LIST_TYPE)
         observeProductList()
         observeRemoveProductsStatus()
         observeBannerType()
@@ -179,7 +181,7 @@ class ManageProductFragment :
         viewModel.removeProductsStatus.observe(viewLifecycleOwner) {
             if (it is Success) {
                 doOnDelayFinished(DELAY) {
-                    loadInitialData()
+                    viewModel.getProducts(campaignId, LIST_TYPE)
                 }
             } else if (it is Fail) {
                 view?.showError(it.throwable)
@@ -208,9 +210,12 @@ class ManageProductFragment :
         viewModel.setProductInfoCompletion(productList)
         viewModel.getBannerType(productList)
         viewModel.getCampaignDetail(campaignId)
-        manageProductListAdapter.clearAll()
-        renderList(productList.productList, false)
         binding?.apply {
+            recyclerViewProduct.layoutManager =
+                LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            manageProductListAdapter.clearAll()
+            manageProductListAdapter.submit(productList.productList)
+            recyclerViewProduct.adapter = manageProductListAdapter
             tpgProductCount.text = String.format(
                 getString(R.string.manage_product_placeholder_product_count),
                 productList.totalProduct
@@ -301,7 +306,8 @@ class ManageProductFragment :
             val coachMarkItems = arrayListOf<CoachMark2Item>()
             try {
                 val view = binding?.recyclerViewProduct?.getChildAt(RECYCLERVIEW_ITEM_FIRST_INDEX)
-                val holder = view?.let { binding?.recyclerViewProduct?.findContainingViewHolder(it) }
+                val holder =
+                    view?.let { binding?.recyclerViewProduct?.findContainingViewHolder(it) }
                 holder?.let {
                     coachMarkItems.add(
                         CoachMark2Item(
@@ -416,51 +422,5 @@ class ManageProductFragment :
                 }
             }
         }
-    }
-
-    override fun createAdapter(): ManageProductListAdapter {
-        return manageProductListAdapter
-    }
-
-    override fun getRecyclerView(view: View): RecyclerView? {
-        return binding?.recyclerViewProduct
-    }
-
-    override fun getSwipeRefreshLayout(view: View): SwipeRefreshLayout? {
-        return null
-    }
-
-    override fun getPerPage(): Int {
-        return PAGE_SIZE
-    }
-
-    override fun addElementToAdapter(list: List<SellerCampaignProductList.Product>) {
-        adapter?.submit(list)
-    }
-
-    override fun loadData(page: Int) {
-        viewModel.getProducts(campaignId, LIST_TYPE)
-    }
-
-    override fun clearAdapterData() {
-        adapter?.clearAll()
-    }
-
-    override fun onShowLoading() {}
-
-    override fun onHideLoading() {
-        loaderDialog?.dialog?.hide()
-    }
-
-    override fun onDataEmpty() {
-        showEmptyState()
-    }
-
-    override fun onGetListError(message: String) {
-        view?.showError(message)
-    }
-
-    override fun onScrolled(xScrollAmount: Int, yScrollAmount: Int) {
-
     }
 }
