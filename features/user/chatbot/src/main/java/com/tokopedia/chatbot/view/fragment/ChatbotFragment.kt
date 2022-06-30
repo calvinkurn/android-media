@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -66,6 +65,7 @@ import com.tokopedia.chatbot.ChatbotConstant.REQUEST_CODE_CHAT_VIDEO
 import com.tokopedia.chatbot.ChatbotConstant.REQUEST_SUBMIT_CSAT
 import com.tokopedia.chatbot.ChatbotConstant.REQUEST_SUBMIT_FEEDBACK
 import com.tokopedia.chatbot.ChatbotConstant.TOKOPEDIA_ATTACH_INVOICE_REQ_CODE
+import com.tokopedia.chatbot.ChatbotConstant.VIDEO_URL
 import com.tokopedia.chatbot.ChatbotConstant.VideoUpload.MAX_DURATION_FOR_VIDEO
 import com.tokopedia.chatbot.ChatbotConstant.VideoUpload.MAX_MEDIA_COUNT
 import com.tokopedia.chatbot.ChatbotConstant.VideoUpload.SOURCE_ID_FOR_VIDEO_UPLOAD
@@ -101,6 +101,7 @@ import com.tokopedia.chatbot.view.ChatbotInternalRouter
 import com.tokopedia.chatbot.view.activity.ChatBotCsatActivity
 import com.tokopedia.chatbot.view.activity.ChatBotProvideRatingActivity
 import com.tokopedia.chatbot.view.activity.ChatbotActivity
+import com.tokopedia.chatbot.view.activity.ChatbotVideoActivity
 import com.tokopedia.chatbot.view.adapter.ChatbotAdapter
 import com.tokopedia.chatbot.view.adapter.ChatbotTypeFactoryImpl
 import com.tokopedia.chatbot.view.adapter.MediaRetryBottomSheetAdapter
@@ -587,18 +588,21 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     private fun pickVideoFromDevice(){
 
-        activity?.let {
-            val intent = context?.let { context ->
-                MediaPicker.intentWithGalleryFirst(context) {
-                    pageSource(PageSource.ChatBot)
-                    modeType(ModeType.VIDEO_ONLY)
-                    multipleSelectionMode()
-                    maxMediaItem(MAX_MEDIA_COUNT)
-                    maxVideoDuration(MAX_DURATION_FOR_VIDEO)
-                }
-            }
-            startActivityForResult(intent, REQUEST_CODE_CHAT_VIDEO)
-        }
+        val intent = Intent(activity, ChatbotVideoActivity::class.java)
+        intent.putExtra(VIDEO_URL,"https://vod-staging.tokopedia.com/view/adaptive.m3u8?id=1ddff7546032491c884bb4d33d4afab0")
+        startActivity(intent)
+//        activity?.let {
+//            val intent = context?.let { context ->
+//                MediaPicker.intentWithGalleryFirst(context) {
+//                    pageSource(PageSource.ChatBot)
+//                    modeType(ModeType.VIDEO_ONLY)
+//                    multipleSelectionMode()
+//                    maxMediaItem(MAX_MEDIA_COUNT)
+//                    maxVideoDuration(MAX_DURATION_FOR_VIDEO)
+//                }
+//            }
+//            startActivityForResult(intent, REQUEST_CODE_CHAT_VIDEO)
+//        }
     }
 
     private fun pickImageFromDevice() {

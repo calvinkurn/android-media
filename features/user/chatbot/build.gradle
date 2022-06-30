@@ -73,6 +73,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.pushNotification)
     implementation rootProject.ext.miscDependencies.viewModelKtx
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
+    implementation project(rootProject.ext.libraries.videoplayer)
 }
 
 project.ext {
@@ -83,3 +84,4 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
+apply plugin: 'org.jetbrains.kotlin.android'

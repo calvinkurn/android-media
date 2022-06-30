@@ -66,7 +66,7 @@ object ChatbotConstant {
     }
 
     const val CONTACT_US_APPLINK = "tokopedia-android-internal://customercare-inbox-list"
-
+    const val VIDEO_URL = "chatbot-video-url"
 
     object VideoUpload {
         const val SOURCE_ID_FOR_VIDEO_UPLOAD = "fLapDZ"

@@ -1,6 +1,7 @@
 package com.tokopedia.chatbot.view.adapter.viewholder
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
@@ -20,6 +21,7 @@ import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
 import com.tokopedia.chatbot.util.ChatBotTimeConverter
 import com.tokopedia.chatbot.util.ViewUtil
+import com.tokopedia.chatbot.view.activity.ContactUsMigrationActivity
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.VideoUploadListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
