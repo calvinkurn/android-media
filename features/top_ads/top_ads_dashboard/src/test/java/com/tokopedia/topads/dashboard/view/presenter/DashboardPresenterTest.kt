@@ -4,6 +4,7 @@ import android.content.res.Resources
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
+import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.model.DashGroupListResponse
 import com.tokopedia.topads.common.data.model.GroupListDataItem
 import com.tokopedia.topads.common.data.model.ResponseCreateGroup
@@ -18,99 +19,141 @@ import com.tokopedia.topads.common.data.response.nongroupItem.ProductStatisticsR
 import com.tokopedia.topads.common.data.response.nongroupItem.WithoutGroupDataItem
 import com.tokopedia.topads.common.domain.interactor.*
 import com.tokopedia.topads.common.domain.usecase.*
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.model.*
 import com.tokopedia.topads.dashboard.data.model.insightkey.InsightKeyData
 import com.tokopedia.topads.dashboard.domain.interactor.*
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardView
-import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpData
-import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
-import com.tokopedia.topads.headline.data.Ad
-import com.tokopedia.topads.headline.data.Data
 import com.tokopedia.topads.headline.data.ShopAdInfo
-import com.tokopedia.topads.headline.data.TopadsGetShopInfoV2
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.junit.*
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
-import timber.log.Timber
+import org.junit.Assert
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import java.util.*
+import kotlin.math.exp
 
-@ExperimentalCoroutinesApi
-@RunWith(JUnit4::class)
-class TopAdsDashboardPresenterTest {
+class DashboardPresenterTest {
 
+    @ExperimentalCoroutinesApi
     @get:Rule
     val rule = CoroutineTestRule()
 
     @get:Rule
     val rule2 = InstantTaskExecutorRule()
 
-    private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase = mockk(relaxed = true)
-    private val shopAdInfoUseCase: GraphqlUseCase<ShopAdInfo> = mockk(relaxed = true)
-    private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase = mockk(relaxed = true)
-    private val topAdsGetGroupDataUseCase: TopAdsGetGroupDataUseCase = mockk(relaxed = true)
-    private val topAdsGetGroupStatisticsUseCase: TopAdsGetGroupStatisticsUseCase =
-        mockk(relaxed = true)
-    private val topAdsGetProductStatisticsUseCase: TopAdsGetProductStatisticsUseCase =
-        mockk(relaxed = true)
-    private val topAdsGetProductKeyCountUseCase: TopAdsGetProductKeyCountUseCase =
-        mockk(relaxed = true)
-    private val topAdsGetGroupListUseCase: TopAdsGetGroupListUseCase = mockk(relaxed = true)
-    private val topAdsGroupActionUseCase: TopAdsGroupActionUseCase = mockk(relaxed = true)
-    private val topAdsProductActionUseCase: TopAdsProductActionUseCase = mockk(relaxed = true)
-    private val topAdsGetGroupProductDataUseCase: TopAdsGetGroupProductDataUseCase =
-        mockk(relaxed = true)
-    private val topAdsInsightUseCase: TopAdsInsightUseCase = mockk(relaxed = true)
-    private val getStatisticUseCase: TopAdsGetStatisticsUseCase = mockk(relaxed = true)
-    private val budgetRecomUseCase: GraphqlUseCase<DailyBudgetRecommendationModel> =
-        mockk(relaxed = true)
-    private val productRecomUseCase: GraphqlUseCase<ProductRecommendationModel> =
-        mockk(relaxed = true)
-    private val topAdsEditUseCase: TopAdsEditUseCase = mockk(relaxed = true)
-    private val validGroupUseCase: TopAdsGroupValidateNameUseCase = mockk(relaxed = true)
-    private val createGroupUseCase: CreateGroupUseCase = mockk(relaxed = true)
-    private val bidInfoUseCase: BidInfoUseCase = mockk(relaxed = true)
-    private val groupInfoUseCase: GroupInfoUseCase = mockk(relaxed = true)
-    private val autoTopUpUSeCase: TopAdsAutoTopUpUSeCase = mockk(relaxed = true)
-    private val adsStatusUseCase: GraphqlUseCase<AdStatusResponse> = mockk(relaxed = true)
-    private val autoAdsStatusUseCase: GraphqlUseCase<AutoAdsResponse> = mockk(relaxed = true)
-    private val getExpiryDateUseCase: GraphqlUseCase<ExpiryDateResponse> = mockk(relaxed = true)
-    private val getHiddenTrialUseCase: GraphqlUseCase<FreeTrialShopListResponse> =
-        mockk(relaxed = true)
-    private val whiteListedUserUseCase: GetWhiteListedUserUseCase = mockk(relaxed = true)
-    private val topAdsGetDeletedAdsUseCase: TopAdsGetDeletedAdsUseCase = mockk(relaxed = true)
-    private var userSession: UserSessionInterface = mockk(relaxed = true)
-    private val res: Resources = mockk(relaxed = true)
-    private lateinit var throwable: Throwable
-
-    var view: TopAdsDashboardView = mockk(relaxed = true)
+    private val topAdsGetShopDepositUseCase = mockk<TopAdsGetDepositUseCase>(relaxed = true)
+    private val shopAdInfoUseCase = mockk<GraphqlUseCase<ShopAdInfo>>(relaxed = true)
+    private val gqlGetShopInfoUseCase = mockk<GQLGetShopInfoUseCase>(relaxed = true)
+    private val topAdsGetGroupDataUseCase = mockk<TopAdsGetGroupDataUseCase>(relaxed = true)
+    private val topAdsGetGroupStatisticsUseCase =
+        mockk<TopAdsGetGroupStatisticsUseCase>(relaxed = true)
+    private val topAdsGetProductStatisticsUseCase =
+        mockk<TopAdsGetProductStatisticsUseCase>(relaxed = true)
+    private val topAdsGetProductKeyCountUseCase =
+        mockk<TopAdsGetProductKeyCountUseCase>(relaxed = true)
+    private val topAdsGetGroupListUseCase = mockk<TopAdsGetGroupListUseCase>(relaxed = true)
+    private val topAdsGroupActionUseCase = mockk<TopAdsGroupActionUseCase>(relaxed = true)
+    private val topAdsProductActionUseCase = mockk<TopAdsProductActionUseCase>(relaxed = true)
+    private val topAdsGetGroupProductDataUseCase =
+        mockk<TopAdsGetGroupProductDataUseCase>(relaxed = true)
+    private val topAdsInsightUseCase = mockk<TopAdsInsightUseCase>(relaxed = true)
+    private val getStatisticUseCase = mockk<TopAdsGetStatisticsUseCase>(relaxed = true)
+    private val budgetRecomUseCase =
+        mockk<GraphqlUseCase<DailyBudgetRecommendationModel>>(relaxed = true)
+    private val productRecomUseCase =
+        mockk<GraphqlUseCase<ProductRecommendationModel>>(relaxed = true)
+    private val validGroupUseCase = mockk<TopAdsGroupValidateNameUseCase>(relaxed = true)
+    private val topAdsCreateUseCase = mockk<TopAdsCreateUseCase>(relaxed = true)
+    private val bidInfoUseCase = mockk<BidInfoUseCase>(relaxed = true)
+    private val groupInfoUseCase = mockk<GroupInfoUseCase>(relaxed = true)
+    private val autoTopUpUSeCase = mockk<TopAdsAutoTopUpUSeCase>(relaxed = true)
+    private val adsStatusUseCase = mockk<GraphqlUseCase<AdStatusResponse>>(relaxed = true)
+    private val autoAdsStatusUseCase = mockk<GraphqlUseCase<AutoAdsResponse>>(relaxed = true)
+    private val getExpiryDateUseCase = mockk<GraphqlUseCase<ExpiryDateResponse>>(relaxed = true)
+    private val getHiddenTrialUseCase =
+        mockk<GraphqlUseCase<FreeTrialShopListResponse>>(relaxed = true)
+    private val whiteListedUserUseCase = mockk<GetWhiteListedUserUseCase>(relaxed = true)
+    private val topAdsGetDeletedAdsUseCase = mockk<TopAdsGetDeletedAdsUseCase>(relaxed = true)
+    private val userSession = mockk<UserSessionInterface>(relaxed = true)
+    private val throwable: Throwable = mockk(relaxed = true)
+    private val view: TopAdsDashboardView = mockk(relaxed = true)
+    private val res = mockk<Resources>(relaxed = true)
     private val presenter by lazy {
         TopAdsDashboardPresenter(
-            topAdsGetShopDepositUseCase, shopAdInfoUseCase,
-            gqlGetShopInfoUseCase, topAdsGetGroupDataUseCase,
-            topAdsGetGroupStatisticsUseCase, topAdsGetProductStatisticsUseCase,
-            topAdsGetProductKeyCountUseCase, topAdsGetGroupListUseCase,
-            topAdsGroupActionUseCase, topAdsProductActionUseCase,
-            topAdsGetGroupProductDataUseCase, topAdsInsightUseCase,
-            getStatisticUseCase, budgetRecomUseCase,
-            productRecomUseCase, topAdsEditUseCase,
-            validGroupUseCase, createGroupUseCase,
-            bidInfoUseCase, groupInfoUseCase, autoTopUpUSeCase, adsStatusUseCase,
-            autoAdsStatusUseCase, getExpiryDateUseCase,
-            getHiddenTrialUseCase, whiteListedUserUseCase,
+            topAdsGetShopDepositUseCase,
+            shopAdInfoUseCase,
+            gqlGetShopInfoUseCase,
+            topAdsGetGroupDataUseCase,
+            topAdsGetGroupStatisticsUseCase,
+            topAdsGetProductStatisticsUseCase,
+            topAdsGetProductKeyCountUseCase,
+            topAdsGetGroupListUseCase,
+            topAdsGroupActionUseCase,
+            topAdsProductActionUseCase,
+            topAdsGetGroupProductDataUseCase,
+            topAdsInsightUseCase,
+            getStatisticUseCase,
+            budgetRecomUseCase,
+            productRecomUseCase,
+            validGroupUseCase,
+            topAdsCreateUseCase,
+            bidInfoUseCase,
+            groupInfoUseCase,
+            autoTopUpUSeCase,
+            adsStatusUseCase,
+            autoAdsStatusUseCase,
+            getExpiryDateUseCase,
+            getHiddenTrialUseCase,
+            whiteListedUserUseCase,
             topAdsGetDeletedAdsUseCase,
-            userSession
+            userSession,
         )
     }
+    private val param: RequestParams = mockk(relaxed = true)
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
         presenter.attachView(view)
-        throwable = spyk(Throwable())
+        every { userSession.shopId } returns "123"
+    }
+
+    @Test
+    fun `setProductActionMoveGroup success test`() {
+        var successCalled = false
+        val fakeParam: RequestParams = mockk(relaxed = true)
+
+        every {
+            topAdsCreateUseCase.createRequestParamMoveGroup(any(),
+                TopAdsDashboardConstant.SOURCE_DASH, any(), ParamObject.ACTION_ADD)
+        } returns fakeParam
+
+        presenter.setProductActionMoveGroup("", listOf()) { successCalled = true }
+
+        coVerify {
+            topAdsCreateUseCase.execute(fakeParam)
+        }
+        Assert.assertTrue(successCalled)
+    }
+
+    @Test
+    fun `setProductActionMoveGroup error test`() {
+        var successCalled = false
+
+        every {
+            topAdsCreateUseCase.createRequestParamMoveGroup(any(),
+                TopAdsDashboardConstant.SOURCE_DASH, any(), ParamObject.ACTION_ADD)
+        } throws throwable
+
+        presenter.setProductActionMoveGroup("", listOf()) { successCalled = true }
+
+        verify { throwable.printStackTrace() }
+        Assert.assertEquals(successCalled, false)
     }
 
     @Test
@@ -154,6 +197,7 @@ class TopAdsDashboardPresenterTest {
 
         verify { view.onErrorGetStatisticsInfo(throwable) }
     }
+
 
     @Test
     fun `getGroupStatisticsData success`() {
@@ -232,7 +276,7 @@ class TopAdsDashboardPresenterTest {
             secondArg<(Throwable) -> Unit>().invoke(throwable)
         }
 
-        presenter.getCountProductKeyword(res, listOf(), {})
+        presenter.getCountProductKeyword(res, listOf()) {}
 
         verify { throwable.printStackTrace() }
     }
@@ -527,7 +571,7 @@ class TopAdsDashboardPresenterTest {
         }
 
         var successCalled = false
-        presenter.getAutoAdsStatus(res) {successCalled = true}
+        presenter.getAutoAdsStatus(res) { successCalled = true }
         Assert.assertTrue(!successCalled)
     }
 
@@ -550,7 +594,7 @@ class TopAdsDashboardPresenterTest {
             secondArg<(Throwable) -> Unit>().invoke(throwable)
         }
         var successCalled = false
-        presenter.getProductRecommendation {successCalled = true}
+        presenter.getProductRecommendation { successCalled = true }
         Assert.assertTrue(!successCalled)
     }
 
@@ -572,27 +616,37 @@ class TopAdsDashboardPresenterTest {
             secondArg<(Throwable) -> Unit>().invoke(throwable)
         }
         var successCalled = false
-        presenter.getDailyBudgetRecommendation {successCalled = true}
+        presenter.getDailyBudgetRecommendation { successCalled = true }
         Assert.assertTrue(!successCalled)
     }
 
     @Test
     fun `editBudgetThroughInsight success`() {
+        val param: RequestParams = mockk()
         val expected = FinalAdResponse()
         var actual: FinalAdResponse.TopadsManageGroupAds? = null
 
-        coEvery { topAdsEditUseCase.execute(any()) } returns expected
+        coEvery { topAdsCreateUseCase.execute(param) } returns expected
+        coEvery {
+            topAdsCreateUseCase.createRequestParamEditBudgetInsight(any(),
+                any(), any(), any())
+        } returns param
 
-        presenter.editBudgetThroughInsight(mutableListOf(), hashMapOf(), { actual = it }, {})
+        presenter.editBudgetThroughInsight(mutableListOf(), 0f, "", 0.0, { actual = it }, {})
 
         Assert.assertEquals(expected.topadsManageGroupAds, actual)
     }
 
     @Test
     fun `editBudgetThroughInsight error check`() {
-        coEvery { topAdsEditUseCase.execute(any()) } throws throwable
+        coEvery {
+            topAdsCreateUseCase.createRequestParamEditBudgetInsight(any(),
+                any(),
+                any(),
+                any())
+        } throws throwable
 
-        presenter.editBudgetThroughInsight(mutableListOf(), hashMapOf(), {}, {})
+        presenter.editBudgetThroughInsight(mutableListOf(), 0f, "", 0.0, {}, {})
 
         verify { throwable.printStackTrace() }
     }
@@ -619,26 +673,20 @@ class TopAdsDashboardPresenterTest {
         verify { throwable.printStackTrace() }
     }
 
+
     @Test
     fun `create group success`() {
-        val expected = ResponseCreateGroup.TopadsCreateGroupAds()
-        var actual: ResponseCreateGroup.TopadsCreateGroupAds? = null
+        var error: String? = ""
+        every {
+            topAdsCreateUseCase.createRequestParamActionCreate(mutableListOf(),
+                "", 0.0, 0.0)
+        } returns param
 
-        every { createGroupUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
-            firstArg<(ResponseCreateGroup.TopadsCreateGroupAds) -> Unit>().invoke(expected)
-        }
-        presenter.createGroup(hashMapOf()) { actual = it }
-        Assert.assertEquals(expected, actual)
-    }
+        presenter.createGroup(listOf(), "", 0.0, 0.0) { error = it }
 
-    @Test
-    fun `create group error`() {
-        every { createGroupUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
-            secondArg<(Throwable) -> Unit>().invoke(throwable)
-        }
-        var successCalled = false
-        presenter.createGroup(hashMapOf()) {successCalled = true}
-        Assert.assertTrue(!successCalled)
+        coVerify { topAdsCreateUseCase.execute(param) }
+
+        Assert.assertEquals(error, null)
     }
 
     @Test
@@ -658,7 +706,7 @@ class TopAdsDashboardPresenterTest {
             secondArg<(Throwable) -> Unit>().invoke(throwable)
         }
         var successCalled = false
-        presenter.getBidInfo(listOf()) {successCalled = true}
+        presenter.getBidInfo(listOf()) { successCalled = true }
         Assert.assertTrue(!successCalled)
     }
 
@@ -688,7 +736,7 @@ class TopAdsDashboardPresenterTest {
         val expected = WhiteListUserResponse.TopAdsGetShopWhitelistedFeature()
         var actual: WhiteListUserResponse.TopAdsGetShopWhitelistedFeature? = null
 
-        val isFinished : () -> Unit = spyk()
+        val isFinished: () -> Unit = spyk()
         every { whiteListedUserUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
             firstArg<(WhiteListUserResponse.TopAdsGetShopWhitelistedFeature) -> Unit>().invoke(
                 expected)
