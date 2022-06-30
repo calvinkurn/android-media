@@ -589,7 +589,6 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                             activity?.finish()
                         } else {
                             activity?.finish()
-                            activity?.onBackPressed()
                         }
                     }
                 }

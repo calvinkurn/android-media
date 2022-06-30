@@ -134,7 +134,7 @@ class UserProfileFragment : BaseDaggerFragment(),
         super.onViewCreated(view, savedInstanceState)
         userSession = UserSession(context)
         userId = userSession?.userId?:""
-        container = view.findViewById(R.id.container)
+        container = view.findViewById(R.id.container_header)
         userPostContainer = view.findViewById(R.id.vp_rv_post)
         globalError = view.findViewById(R.id.global_error)
         globalErrorPost = view.findViewById(R.id.global_error_post)
@@ -405,6 +405,18 @@ class UserProfileFragment : BaseDaggerFragment(),
                             container?.displayedChild = PAGE_LOADING
                             refreshLandingPageData()
                         }
+                    }
+                    is NullPointerException ->{
+                        container?.displayedChild = PAGE_ERROR
+                        globalError?.setType(PAGE_NOT_FOUND)
+                        globalError?.errorAction?.text = getString(com.tokopedia.people.R.string.up_error_page_sec_btn_txt)
+                        globalError?.errorSecondaryAction?.gone()
+                        globalError?.show()
+
+                        globalError?.setActionClickListener {
+                            goToHomePage()
+                        }
+
                     }
                     is RuntimeException -> {
                         when (it.localizedMessage?.toIntOrNull()) {
@@ -816,6 +828,12 @@ class UserProfileFragment : BaseDaggerFragment(),
 
     override fun getScreenName(): String {
         return ""
+    }
+    private fun goToHomePage() {
+        val intent = RouteManager.getIntent(context, ApplinkConst.HOME)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
+        activity?.finish()
     }
 
     override fun onResume() {

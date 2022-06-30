@@ -6,7 +6,6 @@
 /features/content/interest_pick_common                  @tokopedia/android-minionlance-dev
 /features/content/kol/                  				@tokopedia/android-minionlance-dev
 /features/content/kol_common/           				@tokopedia/android-minionlance-dev
-/features/content/profile/              				@tokopedia/android-minionlance-dev
 /features/content/people/                               @tokopedia/android-minionlance-dev
 /features/content/feed_component/       				@tokopedia/android-minionlance-dev
 /features/merchant/feed_shop/                           @tokopedia/android-minionlance-dev
@@ -187,6 +186,7 @@
 /features/logistic/activation/                          @tokopedia/android-minionbob-dev
 /features/logistic/localizationchooseaddress/           @tokopedia/android-minionbob-dev
 /features/logistic/localizationchooseaddress_common/    @tokopedia/android-minionbob-dev
+/features/logistic/logisticseller/                      @tokopedia/android-minionbob-dev
 /features/discovery/home_wishlist/                     	@tokopedia/android-minionbob-dev
 /features/discovery/wishlist_common/                	@tokopedia/android-minionbob-dev
 

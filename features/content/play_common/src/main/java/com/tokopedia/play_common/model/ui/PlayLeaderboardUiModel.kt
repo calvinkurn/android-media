@@ -27,6 +27,7 @@ data class PlayLeaderboardUiModel(
     val otherParticipant: Long,
     val emptyLeaderBoardCopyText: String = "",
     val reward: String = "",
+    val endsIn: Int = 0,
     val leaderBoardType: LeadeboardType = LeadeboardType.Unknown,
     val id: String,
     val impressHolder: ImpressHolder = ImpressHolder(),
