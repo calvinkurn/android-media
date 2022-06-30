@@ -100,7 +100,6 @@ class UserProfileFragment @Inject constructor(
         GridLayoutManager(activity, 2)
     }
 
-    var btnAction: UnifyButton? = null
     var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var recyclerviewPost: RecyclerView? = null
     private var headerProfile: HeaderUnify? = null
@@ -112,6 +111,7 @@ class UserProfileFragment @Inject constructor(
     private var shouldRefreshRecyclerView: Boolean? = false
     private var isViewMoreClickedBio: Boolean? = false
     private var screenShotDetector: ScreenshotDetector? = null
+    private lateinit var btnAction: UnifyButton
     private lateinit var swipeRefresh: SwipeToRefresh
     private lateinit var feedFab: FeedFloatingButton
 
@@ -261,7 +261,7 @@ class UserProfileFragment @Inject constructor(
         view?.findViewById<View>(R.id.text_live)?.setOnClickListener(this)
         view?.findViewById<View>(R.id.view_profile_outer_ring)?.setOnClickListener(this)
         view?.findViewById<View>(R.id.text_see_more)?.setOnClickListener(this)
-        btnAction?.setOnClickListener {
+        btnAction.setOnClickListener {
             if(!userSession.isLoggedIn) {
                 startActivityForResult(
                     RouteManager.getIntent(activity, ApplinkConst.LOGIN),
@@ -522,10 +522,10 @@ class UserProfileFragment @Inject constructor(
         ) return
 
         when(value.profileType) {
-            ProfileType.NotLoggedIn -> btnAction?.show()
+            ProfileType.NotLoggedIn -> btnAction.show()
             ProfileType.OtherUser -> {
                 with(value) {
-                    btnAction?.show()
+                    btnAction.show()
                     if (followInfo.status)
                         updateToFollowUi()
                     else
@@ -533,7 +533,7 @@ class UserProfileFragment @Inject constructor(
                 }
             }
             ProfileType.Unknown,
-            ProfileType.Self -> btnAction?.hide()
+            ProfileType.Self -> btnAction.hide()
         }
     }
 
@@ -552,15 +552,15 @@ class UserProfileFragment @Inject constructor(
     }
 
     private fun updateToFollowUi() {
-        btnAction?.text =  getString(R.string.up_btn_text_following)
-        btnAction?.buttonVariant = UnifyButton.Variant.GHOST
-        btnAction?.buttonType = UnifyButton.Type.ALTERNATE
+        btnAction.text =  getString(R.string.up_btn_text_following)
+        btnAction.buttonVariant = UnifyButton.Variant.GHOST
+        btnAction.buttonType = UnifyButton.Type.ALTERNATE
     }
 
     private fun updateToUnFollowUi() {
-        btnAction?.text = getString(R.string.up_btn_text_follow)
-        btnAction?.buttonVariant = UnifyButton.Variant.FILLED
-        btnAction?.buttonType = UnifyButton.Type.MAIN
+        btnAction.text = getString(R.string.up_btn_text_follow)
+        btnAction.buttonVariant = UnifyButton.Variant.FILLED
+        btnAction.buttonType = UnifyButton.Type.MAIN
     }
 
     private fun setProfileImg(profile: ProfileUiModel) {
