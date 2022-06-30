@@ -7,11 +7,11 @@ data class Shipment(
     @SerializedName("awb")
     val awb: String = "",
     @SerializedName("id")
-    val id: Long = 0L,
+    val id: String = "0",
     @SerializedName("name")
     val name: String = "",
     @SerializedName("productId")
-    val productId: Long = 0L,
+    val productId: String = "0",
     @SerializedName("productName")
     val productName: String = ""
 )

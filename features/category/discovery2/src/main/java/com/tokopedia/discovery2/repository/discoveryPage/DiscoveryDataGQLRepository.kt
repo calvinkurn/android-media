@@ -3,6 +3,7 @@ package com.tokopedia.discovery2.repository.discoveryPage
 import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.discovery2.Constant.ChooseAddressQueryParams.USER_ADDRESS_KEY
+import com.tokopedia.discovery2.Constant.QueryParamConstants.QUERY_PARAMS_KEY
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.DataResponse
@@ -36,6 +37,7 @@ class DiscoveryDataGQLRepository @Inject constructor(val getGQLString: (Int) -> 
             val addMap: MutableMap<String, Any>? =
                 (Utils.addAddressQueryMapWithWareHouse(localCacheModel) as? MutableMap<String, Any>)
             val filterMap = addMap?: mutableMapOf()
+            (it[QUERY_PARAMS_KEY] as? MutableMap<String, Any>)?.let { it1 -> filterMap.putAll(it1) }
             filterMap[ACCEPT_SECTION] = true
             queryMap[Utils.FILTERS] = Utils.getQueryString(filterMap)
         }
