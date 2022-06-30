@@ -8,5 +8,4 @@
     <string name="on_failed_remove_from_wishlist_msg">Gagal menghapus wishlist</string>
     <string name="on_failed_add_to_wishlist_msg">Gagal menambahkan wishlist</string>
     <string name="add_to_wishlist_invalid">Produk invalid</string>
-    <string name="wishlist_common_error_msg">Terjadi kesalahan, mohon dicoba kembali</string>
 </resources>

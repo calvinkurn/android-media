@@ -15,4 +15,6 @@ object ApplinkConstInternalPurchasePlatform {
 
     // WishlistV2Activity
     const val WISHLIST_V2 = "$INTERNAL_TRANSACTION/wishlist"
+    const val WISHLIST_COLLECTION = "$INTERNAL_TRANSACTION/wishlist-collection"
+    const val WISHLIST_COLLECTION_BOTTOMSHEET = "$INTERNAL_TRANSACTION/wishlist-collection-bottomsheet"
 }

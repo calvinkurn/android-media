@@ -1,25 +1,20 @@
-package com.tokopedia.wishlistcommon.view.adapter
+package com.tokopedia.wishlistcollection.view.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.wishlist_common.databinding.AddWishlistCollectionAdditionalSectionTextItemBinding
-import com.tokopedia.wishlist_common.databinding.AddWishlistCollectionCreateNewItemBinding
-import com.tokopedia.wishlist_common.databinding.AddWishlistCollectionItemBinding
-import com.tokopedia.wishlist_common.databinding.AddWishlistCollectionMainSectionTextItemBinding
-import com.tokopedia.wishlistcommon.data.BottomSheetWishlistCollectionTypeLayoutData
+import com.tokopedia.wishlist.databinding.AddWishlistCollectionAdditionalSectionTextItemBinding
+import com.tokopedia.wishlist.databinding.AddWishlistCollectionCreateNewItemBinding
+import com.tokopedia.wishlist.databinding.AddWishlistCollectionItemBinding
+import com.tokopedia.wishlist.databinding.AddWishlistCollectionMainSectionTextItemBinding
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TYPE_COLLECTION_ADDITIONAL_SECTION
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TYPE_COLLECTION_ITEM
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TYPE_COLLECTION_MAIN_SECTION
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TYPE_CREATE_NEW_COLLECTION
-import com.tokopedia.wishlistcommon.view.adapter.viewholder.BottomSheetWishlistCollectionAdditionalItemViewHolder
-import com.tokopedia.wishlistcommon.view.adapter.viewholder.BottomSheetWishlistCollectionCreateItemViewHolder
-import com.tokopedia.wishlistcommon.view.adapter.viewholder.BottomSheetWishlistCollectionItemViewHolder
-import com.tokopedia.wishlistcommon.view.adapter.viewholder.BottomSheetWishlistCollectionMainItemViewHolder
 
 class BottomSheetCollectionWishlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     // private var actionListener: ActionListener? = null
-    private var listTypeData = mutableListOf<BottomSheetWishlistCollectionTypeLayoutData>()
+    private var listTypeData = mutableListOf<com.tokopedia.wishlistcollection.data.BottomSheetWishlistCollectionTypeLayoutData>()
 
     companion object {
         const val LAYOUT_MAIN_SECTION = 0
@@ -39,19 +34,27 @@ class BottomSheetCollectionWishlistAdapter : RecyclerView.Adapter<RecyclerView.V
         return when (viewType) {
             LAYOUT_MAIN_SECTION  -> {
                 val binding = AddWishlistCollectionMainSectionTextItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-                BottomSheetWishlistCollectionMainItemViewHolder(binding)
+                com.tokopedia.wishlistcollection.view.adapter.viewholder.BottomSheetWishlistCollectionMainItemViewHolder(
+                    binding
+                )
             }
             LAYOUT_ADDITIONAL_SECTION -> {
                 val binding = AddWishlistCollectionAdditionalSectionTextItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-                BottomSheetWishlistCollectionAdditionalItemViewHolder(binding)
+                com.tokopedia.wishlistcollection.view.adapter.viewholder.BottomSheetWishlistCollectionAdditionalItemViewHolder(
+                    binding
+                )
             }
             LAYOUT_COLLECTION_ITEM -> {
                 val binding = AddWishlistCollectionItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-                BottomSheetWishlistCollectionItemViewHolder(binding)
+                com.tokopedia.wishlistcollection.view.adapter.viewholder.BottomSheetWishlistCollectionItemViewHolder(
+                    binding
+                )
             }
             LAYOUT_CREATE_NEW_COLLECTION -> {
                 val binding = AddWishlistCollectionCreateNewItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-                BottomSheetWishlistCollectionCreateItemViewHolder(binding)
+                com.tokopedia.wishlistcollection.view.adapter.viewholder.BottomSheetWishlistCollectionCreateItemViewHolder(
+                    binding
+                )
             }
             else -> throw IllegalArgumentException("Invalid view type")
         }
@@ -61,16 +64,16 @@ class BottomSheetCollectionWishlistAdapter : RecyclerView.Adapter<RecyclerView.V
         val element = listTypeData[position]
         when (element.typeLayout) {
             TYPE_COLLECTION_MAIN_SECTION -> {
-                (holder as BottomSheetWishlistCollectionMainItemViewHolder).bind(element)
+                (holder as com.tokopedia.wishlistcollection.view.adapter.viewholder.BottomSheetWishlistCollectionMainItemViewHolder).bind(element)
             }
             TYPE_COLLECTION_ADDITIONAL_SECTION -> {
-                (holder as BottomSheetWishlistCollectionAdditionalItemViewHolder).bind(element)
+                (holder as com.tokopedia.wishlistcollection.view.adapter.viewholder.BottomSheetWishlistCollectionAdditionalItemViewHolder).bind(element)
             }
             TYPE_COLLECTION_ITEM -> {
-                (holder as BottomSheetWishlistCollectionItemViewHolder).bind(element)
+                (holder as com.tokopedia.wishlistcollection.view.adapter.viewholder.BottomSheetWishlistCollectionItemViewHolder).bind(element)
             }
             TYPE_CREATE_NEW_COLLECTION -> {
-                (holder as BottomSheetWishlistCollectionCreateItemViewHolder).bind(element)
+                (holder as com.tokopedia.wishlistcollection.view.adapter.viewholder.BottomSheetWishlistCollectionCreateItemViewHolder).bind(element)
             }
         }
     }
@@ -90,7 +93,7 @@ class BottomSheetCollectionWishlistAdapter : RecyclerView.Adapter<RecyclerView.V
         }
     }
 
-    fun addList(list: List<BottomSheetWishlistCollectionTypeLayoutData>) {
+    fun addList(list: List<com.tokopedia.wishlistcollection.data.BottomSheetWishlistCollectionTypeLayoutData>) {
         listTypeData.clear()
         listTypeData.addAll(list)
         notifyDataSetChanged()

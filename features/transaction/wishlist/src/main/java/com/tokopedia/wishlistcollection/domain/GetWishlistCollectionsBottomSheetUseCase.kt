@@ -1,4 +1,4 @@
-package com.tokopedia.wishlistcommon.domain
+package com.tokopedia.wishlistcollection.domain
 
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -8,7 +8,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.UseCase
-import com.tokopedia.wishlistcommon.data.response.GetWishlistCollectionsBottomSheetResponse
+import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionsBottomSheetResponse
 import com.tokopedia.wishlistcommon.util.GQL_GET_WISHLIST_COLLECTIONS_BOTTOMSHEET
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.PARAMS

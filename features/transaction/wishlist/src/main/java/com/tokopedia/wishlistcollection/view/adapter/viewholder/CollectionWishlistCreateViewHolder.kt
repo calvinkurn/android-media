@@ -3,7 +3,7 @@ package com.tokopedia.wishlistcollection.view.adapter.viewholder
 import android.widget.GridLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.wishlistcollection.data.model.CollectionWishlistTypeLayoutData
-import com.tokopedia.wishlistcollection.data.model.response.CollectionWishlistResponse
+import com.tokopedia.wishlistcollection.data.response.CollectionWishlistResponse
 import com.tokopedia.wishlist.databinding.CollectionWishlistCreateItemBinding
 import com.tokopedia.wishlist.util.WishlistV2Consts.CREATE_NEW_COLLECTION_BG_IMAGE
 import com.tokopedia.wishlist.util.WishlistV2Utils

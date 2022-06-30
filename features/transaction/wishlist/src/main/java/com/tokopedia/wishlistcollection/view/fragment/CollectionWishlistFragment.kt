@@ -21,7 +21,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wishlist.R
 import com.tokopedia.wishlistcollection.data.model.CollectionWishlistTypeLayoutData
-import com.tokopedia.wishlistcollection.data.model.response.CollectionWishlistResponse
+import com.tokopedia.wishlistcollection.data.response.CollectionWishlistResponse
 import com.tokopedia.wishlist.databinding.FragmentCollectionWishlistBinding
 import com.tokopedia.wishlistcollection.di.CollectionWishlistModule
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_COLLECTION_CREATE

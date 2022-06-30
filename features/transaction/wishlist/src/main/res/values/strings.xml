@@ -46,4 +46,5 @@
     <string name="wishlist_v2_default_message_deletion_progress">Wishlist kamu lagi dibersihkan. Sambil menunggu, kamu tetap bisa beraktivitas di Tokopedia. ⏳ </string>
 
     <string name="collection_label_new">Koleksi Baru</string>
+    <string name="wishlist_common_error_msg">Terjadi kesalahan, mohon dicoba kembali</string>
 </resources>

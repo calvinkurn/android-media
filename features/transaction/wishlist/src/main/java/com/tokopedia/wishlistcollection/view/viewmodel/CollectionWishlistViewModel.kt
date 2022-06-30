@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.wishlistcollection.data.model.response.CollectionWishlistResponse
+import com.tokopedia.wishlistcollection.data.response.CollectionWishlistResponse
 import com.tokopedia.wishlistcollection.domain.GetWishlistCollectionUseCase
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

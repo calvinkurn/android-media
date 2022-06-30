@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.wishlistcollection.data.model.CollectionWishlistTypeLayoutData
-import com.tokopedia.wishlistcollection.data.model.response.CollectionWishlistResponse
+import com.tokopedia.wishlistcollection.data.response.CollectionWishlistResponse
 import com.tokopedia.wishlist.databinding.CollectionWishlistTickerItemBinding
 import com.tokopedia.wishlistcollection.view.adapter.CollectionWishlistAdapter
 

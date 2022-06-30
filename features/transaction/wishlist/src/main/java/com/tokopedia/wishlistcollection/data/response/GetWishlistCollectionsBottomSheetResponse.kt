@@ -1,4 +1,4 @@
-package com.tokopedia.wishlistcommon.data.response
+package com.tokopedia.wishlistcollection.data.response
 
 import com.google.gson.annotations.SerializedName
 
@@ -13,42 +13,42 @@ data class GetWishlistCollectionsBottomSheetResponse(
 	) {
 		data class GetWishlistCollectionsBottomsheet(
 
-			@SerializedName("error_message")
+            @SerializedName("error_message")
 			val errorMessage: List<String> = emptyList(),
 
-			@SerializedName("data")
+            @SerializedName("data")
 			val data: Data = Data(),
 
-			@SerializedName("status")
+            @SerializedName("status")
 			val status: String = ""
 		) {
 			data class Data(
 
-				@SerializedName("title")
+                @SerializedName("title")
 				val title: String = "",
 
-				@SerializedName("title_button")
+                @SerializedName("title_button")
 				val titleButton: TitleButton = TitleButton(),
 
-				@SerializedName("notification")
+                @SerializedName("notification")
 				val notification: String = "",
 
-				@SerializedName("main_section")
+                @SerializedName("main_section")
 				val mainSection: MainSection = MainSection(),
 
-				@SerializedName("additional_section")
+                @SerializedName("additional_section")
 				val additionalSection: AdditionalSection = AdditionalSection(),
 
-				@SerializedName("placeholder")
+                @SerializedName("placeholder")
 				val placeholder: Placeholder = Placeholder(),
 
-				@SerializedName("total_collection")
+                @SerializedName("total_collection")
 				val totalCollection: Int = 0,
 
-				@SerializedName("max_limit_collection")
+                @SerializedName("max_limit_collection")
 				val maxLimitCollection: Int = 0,
 
-				@SerializedName("wording_max_limit_collection")
+                @SerializedName("wording_max_limit_collection")
 				val wordingMaxLimitCollection: String = ""
 			) {
 				data class TitleButton(
@@ -68,10 +68,10 @@ data class GetWishlistCollectionsBottomSheetResponse(
 
 				data class MainSection(
 
-					@SerializedName("collections")
+                    @SerializedName("collections")
 					val collections: List<CollectionsItem> = emptyList(),
 
-					@SerializedName("text")
+                    @SerializedName("text")
 					val text: String = ""
 				) {
 					data class CollectionsItem(
@@ -101,10 +101,10 @@ data class GetWishlistCollectionsBottomSheetResponse(
 
 				data class AdditionalSection(
 
-					@SerializedName("collections")
+                    @SerializedName("collections")
 					val collections: List<MainSection.CollectionsItem> = emptyList(),
 
-					@SerializedName("text")
+                    @SerializedName("text")
 					val text: String = ""
 				)
 

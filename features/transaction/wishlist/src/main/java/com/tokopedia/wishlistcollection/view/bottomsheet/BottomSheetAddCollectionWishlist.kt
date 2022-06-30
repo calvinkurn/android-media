@@ -1,4 +1,4 @@
-package com.tokopedia.wishlistcommon.view.bottomsheet
+package com.tokopedia.wishlistcollection.view.bottomsheet
 
 import android.app.Activity
 import android.content.Context
@@ -22,12 +22,9 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import com.tokopedia.wishlist_common.R
-import com.tokopedia.wishlist_common.databinding.BottomsheetAddWishlistCollectionBinding
-import com.tokopedia.wishlistcommon.data.BottomSheetWishlistCollectionTypeLayoutData
-import com.tokopedia.wishlistcommon.data.response.GetWishlistCollectionsBottomSheetResponse
-import com.tokopedia.wishlistcommon.di.BottomSheetWishlistCollectionComponent
-import com.tokopedia.wishlistcommon.di.DaggerBottomSheetWishlistCollectionComponent
+import com.tokopedia.wishlist.databinding.BottomsheetAddWishlistCollectionBinding
+import com.tokopedia.wishlist.R
+import com.tokopedia.wishlistcollection.di.DaggerBottomSheetWishlistCollectionComponent
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OK
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.PRODUCT_IDs
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.SOURCE
@@ -35,15 +32,15 @@ import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TYPE_COLLECTION_
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TYPE_COLLECTION_ITEM
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TYPE_COLLECTION_MAIN_SECTION
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TYPE_CREATE_NEW_COLLECTION
-import com.tokopedia.wishlistcommon.view.adapter.BottomSheetCollectionWishlistAdapter
-import com.tokopedia.wishlistcommon.view.viewmodel.BottomSheetAddCollectionViewModel
+import com.tokopedia.wishlistcollection.view.viewmodel.BottomSheetAddCollectionViewModel
 import java.util.ArrayList
 import javax.inject.Inject
 
-class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<BottomSheetWishlistCollectionComponent> {
+class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tokopedia.wishlistcollection.di.BottomSheetWishlistCollectionComponent> {
     private var binding by autoClearedNullable<BottomsheetAddWishlistCollectionBinding>()
     private val userSession: UserSessionInterface by lazy { UserSession(activity) }
-    private val collectionAdapter = BottomSheetCollectionWishlistAdapter()
+    private val collectionAdapter =
+        com.tokopedia.wishlistcollection.view.adapter.BottomSheetCollectionWishlistAdapter()
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -144,7 +141,7 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<BottomS
         }
     }
 
-    private fun updateBottomSheet(dataGetBottomSheetCollections: GetWishlistCollectionsBottomSheetResponse.Data.GetWishlistCollectionsBottomsheet.Data) {
+    private fun updateBottomSheet(dataGetBottomSheetCollections: com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionsBottomSheetResponse.Data.GetWishlistCollectionsBottomsheet.Data) {
         setTitle(dataGetBottomSheetCollections.title)
         setAction(dataGetBottomSheetCollections.titleButton.text) {
             if (dataGetBottomSheetCollections.titleButton.action == OPEN_WISHLIST_COLLECTION) {
@@ -153,26 +150,51 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<BottomS
         }
     }
 
-    private fun mapDataCollectionsBottomSheet(data: GetWishlistCollectionsBottomSheetResponse.Data.GetWishlistCollectionsBottomsheet.Data): ArrayList<BottomSheetWishlistCollectionTypeLayoutData> {
-        val listData = arrayListOf<BottomSheetWishlistCollectionTypeLayoutData>()
-        listData.add(BottomSheetWishlistCollectionTypeLayoutData(data.mainSection.text, TYPE_COLLECTION_MAIN_SECTION))
+    private fun mapDataCollectionsBottomSheet(data: com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionsBottomSheetResponse.Data.GetWishlistCollectionsBottomsheet.Data): ArrayList<com.tokopedia.wishlistcollection.data.BottomSheetWishlistCollectionTypeLayoutData> {
+        val listData = arrayListOf<com.tokopedia.wishlistcollection.data.BottomSheetWishlistCollectionTypeLayoutData>()
+        listData.add(
+            com.tokopedia.wishlistcollection.data.BottomSheetWishlistCollectionTypeLayoutData(
+                data.mainSection.text,
+                TYPE_COLLECTION_MAIN_SECTION
+            )
+        )
 
         data.mainSection.collections.forEach { mainSectionItem ->
-            listData.add(BottomSheetWishlistCollectionTypeLayoutData(mainSectionItem, TYPE_COLLECTION_ITEM))
+            listData.add(
+                com.tokopedia.wishlistcollection.data.BottomSheetWishlistCollectionTypeLayoutData(
+                    mainSectionItem,
+                    TYPE_COLLECTION_ITEM
+                )
+            )
         }
 
         if (data.additionalSection.text.isNotEmpty()) {
-            listData.add(BottomSheetWishlistCollectionTypeLayoutData(data.additionalSection.text, TYPE_COLLECTION_ADDITIONAL_SECTION))
+            listData.add(
+                com.tokopedia.wishlistcollection.data.BottomSheetWishlistCollectionTypeLayoutData(
+                    data.additionalSection.text,
+                    TYPE_COLLECTION_ADDITIONAL_SECTION
+                )
+            )
         }
 
         if (data.additionalSection.collections.isNotEmpty()) {
             data.additionalSection.collections.forEach { additionalItem ->
-                listData.add(BottomSheetWishlistCollectionTypeLayoutData(additionalItem, TYPE_COLLECTION_ITEM))
+                listData.add(
+                    com.tokopedia.wishlistcollection.data.BottomSheetWishlistCollectionTypeLayoutData(
+                        additionalItem,
+                        TYPE_COLLECTION_ITEM
+                    )
+                )
             }
         }
 
         if (data.placeholder.text.isNotEmpty()) {
-            listData.add(BottomSheetWishlistCollectionTypeLayoutData(data.placeholder, TYPE_CREATE_NEW_COLLECTION))
+            listData.add(
+                com.tokopedia.wishlistcollection.data.BottomSheetWishlistCollectionTypeLayoutData(
+                    data.placeholder,
+                    TYPE_CREATE_NEW_COLLECTION
+                )
+            )
         }
         return listData
     }
@@ -196,7 +218,7 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<BottomS
         RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
     }
 
-    override fun getComponent(): BottomSheetWishlistCollectionComponent {
+    override fun getComponent(): com.tokopedia.wishlistcollection.di.BottomSheetWishlistCollectionComponent {
         return DaggerBottomSheetWishlistCollectionComponent.builder()
             .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
             .build()

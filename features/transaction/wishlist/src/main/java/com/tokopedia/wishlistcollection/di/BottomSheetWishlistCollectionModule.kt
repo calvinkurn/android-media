@@ -1,4 +1,4 @@
-package com.tokopedia.wishlistcommon.di
+package com.tokopedia.wishlistcollection.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext

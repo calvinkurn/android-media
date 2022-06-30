@@ -1,11 +1,11 @@
-package com.tokopedia.wishlistcommon.di
+package com.tokopedia.wishlistcollection.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
-import com.tokopedia.wishlistcommon.view.viewmodel.BottomSheetAddCollectionViewModel
+import com.tokopedia.wishlistcollection.view.viewmodel.BottomSheetAddCollectionViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
