@@ -6,11 +6,13 @@ import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.shop.flashsale.common.extension.removeTimeZone
 import com.tokopedia.shop.flashsale.domain.entity.CampaignAction
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.MerchantCampaignTNC
 import com.tokopedia.shop.flashsale.domain.entity.RelatedCampaign
 import com.tokopedia.shop.flashsale.domain.entity.enums.PaymentType
+import com.tokopedia.shop.flashsale.domain.entity.enums.isDraft
 import com.tokopedia.shop.flashsale.domain.usecase.DoSellerCampaignCreationUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignDetailUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.aggregate.ValidateCampaignCreationEligibilityUseCase
@@ -368,12 +370,20 @@ class CampaignRuleViewModel @Inject constructor(
                     _saveDraftActionState.postValue(CampaignRuleActionResult.Success)
                     resetIsInSaveOrCreateAction()
                 } else {
-                    _saveDraftActionState.postValue(CampaignRuleActionResult.Fail(Throwable(result.errorDescription)))
+                    _saveDraftActionState.postValue(
+                        CampaignRuleActionResult.Fail(
+                            CampaignRuleError(result.errorTitle, result.errorMessage)
+                        )
+                    )
                     resetIsInSaveOrCreateAction()
                 }
             },
             onError = { error ->
-                _saveDraftActionState.postValue(CampaignRuleActionResult.Fail(error))
+                _saveDraftActionState.postValue(
+                    CampaignRuleActionResult.Fail(
+                        CampaignRuleError(cause = error)
+                    )
+                )
                 resetIsInSaveOrCreateAction()
             }
         )
@@ -404,45 +414,62 @@ class CampaignRuleViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                val eligibilityResult = validateCampaignCreationEligibilityUseCase.execute()
-                if (!eligibilityResult.isEligible) {
-                    _createCampaignActionState.postValue(
-                        CampaignRuleActionResult.ValidationFail(CampaignRuleValidationResult.NotEligible)
-                    )
-                    resetIsInSaveOrCreateAction()
-                    return@launchCatchError
+                if (campaignData.status.isDraft()) {
+                    val eligibilityResult = validateCampaignCreationEligibilityUseCase.execute()
+                    if (!eligibilityResult.isEligible) {
+                        _createCampaignActionState.postValue(
+                            CampaignRuleActionResult.ValidationFail(CampaignRuleValidationResult.NotEligible)
+                        )
+                        resetIsInSaveOrCreateAction()
+                        return@launchCatchError
+                    }
                 }
 
                 validAction(campaignData)
             },
             onError = { error ->
-                _createCampaignActionState.postValue(CampaignRuleActionResult.Fail(error))
+                _createCampaignActionState.postValue(
+                    CampaignRuleActionResult.Fail(
+                        CampaignRuleError(cause = error)
+                    )
+                )
                 resetIsInSaveOrCreateAction()
             }
         )
     }
 
     fun onCreateCampaignButtonClicked() {
-        validateCampaignCreation {
-            _createCampaignActionState.postValue(CampaignRuleActionResult.ShowConfirmation)
-            resetIsInSaveOrCreateAction()
+        validateCampaignCreation { campaignData ->
+            if (campaignData.status.isDraft()) {
+                _createCampaignActionState.postValue(CampaignRuleActionResult.ShowConfirmation)
+                resetIsInSaveOrCreateAction()
+            } else {
+                val action = CampaignAction.Update(campaignId)
+                doCreateCampaign(campaignData, action)
+            }
         }
     }
 
-    fun doCreateCampaign() {
+    fun onCreateCampaignConfirmed() {
         validateCampaignCreation { campaignData ->
-            val param = getCampaignCreationParam(
-                campaignData,
-                CampaignAction.Submit(campaignId)
+            val action = CampaignAction.Submit(campaignId)
+            doCreateCampaign(campaignData, action)
+        }
+    }
+
+    private suspend fun doCreateCampaign(campaignData: CampaignUiModel, action: CampaignAction) {
+        val param = getCampaignCreationParam(campaignData, action)
+        val result = doSellerCampaignCreationUseCase.execute(param)
+        if (result.isSuccess) {
+            _createCampaignActionState.postValue(CampaignRuleActionResult.Success)
+            resetIsInSaveOrCreateAction()
+        } else {
+            _createCampaignActionState.postValue(
+                CampaignRuleActionResult.Fail(
+                    CampaignRuleError(result.errorTitle, result.errorMessage)
+                )
             )
-            val result = doSellerCampaignCreationUseCase.execute(param)
-            if (result.isSuccess) {
-                _createCampaignActionState.postValue(CampaignRuleActionResult.Success)
-                resetIsInSaveOrCreateAction()
-            } else {
-                _createCampaignActionState.postValue(CampaignRuleActionResult.Fail(Throwable(result.errorDescription)))
-                resetIsInSaveOrCreateAction()
-            }
+            resetIsInSaveOrCreateAction()
         }
     }
 
@@ -456,14 +483,15 @@ class CampaignRuleViewModel @Inject constructor(
         return DoSellerCampaignCreationUseCase.Param(
             action = action,
             campaignName = campaignData.campaignName,
-            scheduledStart = campaignData.startDate,
-            scheduledEnd = campaignData.endDate,
-            teaserDate = campaignData.upcomingDate,
+            scheduledStart = campaignData.startDate.removeTimeZone(),
+            scheduledEnd = campaignData.endDate.removeTimeZone(),
+            teaserDate = campaignData.upcomingDate.removeTimeZone(),
             firstColor = campaignData.gradientColor.first,
             secondColor = campaignData.gradientColor.second,
             campaignRelation = campaignRelations,
             paymentType = selectedPaymentType,
             isCampaignRuleSubmit = isCampaignRuleSubmit,
+            showTeaser = campaignData.useUpcomingWidget,
         )
     }
 
