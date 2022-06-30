@@ -21,6 +21,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
+import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood.BRAND_UID_PARAM
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood.CUISINE_PARAM
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood.OPTION_PARAM
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood.PAGE_TITLE_PARAM
@@ -116,6 +117,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
     private var option: Int = 0
     private var sortBy: Int = 0
     private var cuisine: String = ""
+    private var brandUId: String = ""
     private var rvCategory: RecyclerView? = null
     private var miniCartCategory: TokoFoodMiniCartWidget? = null
     private var swipeLayout: SwipeRefreshLayout? = null
@@ -134,6 +136,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
         option = uri.getQueryParameter(OPTION_PARAM).toIntOrZero()
         cuisine = uri.getQueryParameter(CUISINE_PARAM) ?: ""
         sortBy = uri.getQueryParameter(SORT_BY_PARAM).toIntOrZero()
+        brandUId = uri.getQueryParameter(BRAND_UID_PARAM) ?: ""
     }
 
     override fun onCreateView(
@@ -378,6 +381,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
                 option = option,
                 sortBy = sortBy,
                 cuisine = cuisine,
+                brandUId = brandUId
             )
         }
     }
@@ -415,7 +419,8 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
                 localCacheModel = it,
                 option = option,
                 sortBy = sortBy,
-                cuisine = cuisine
+                cuisine = cuisine,
+                brandUId = brandUId
             )
         }
     }

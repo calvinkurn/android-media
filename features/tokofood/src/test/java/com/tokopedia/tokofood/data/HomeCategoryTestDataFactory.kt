@@ -156,7 +156,7 @@ fun createHomeTickerDataModel(tickers: List<TickerData> = listOf(createTickerDat
 fun createTickerData(
     title: String = "TokoFood Title",
     description: String = "TokoFood Description",
-    type: Int = Ticker.TYPE_ANNOUNCEMENT
+    type: Int = Ticker.TYPE_ERROR
 ): TickerData {
     return TickerData(title = title, description = description, type = type)
 }
@@ -170,7 +170,8 @@ fun createTicker(): TokoFoodHomeTickerResponse {
                     title = "TokoFood Title",
                     message = "TokoFood Description",
                     color = "#FFF",
-                    layout = "default"
+                    layout = "default",
+                    tickerType = 3
                 )
 
             )
