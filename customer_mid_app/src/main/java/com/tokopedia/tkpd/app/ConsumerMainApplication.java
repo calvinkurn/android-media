@@ -160,17 +160,17 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     }
 
     private void initializationNewRelic() {
-        WeaveInterface initNrWeave = new WeaveInterface() {
-            @NotNull
-            @Override
-            public Object execute() {
-                if (!remoteConfig.getBoolean(RemoteConfigKey.ENABLE_INIT_NR_IN_ACTIVITY)) {
+        if (!remoteConfig.getBoolean(RemoteConfigKey.ENABLE_INIT_NR_IN_ACTIVITY)) {
+            WeaveInterface initNrWeave = new WeaveInterface() {
+                @NotNull
+                @Override
+                public Object execute() {
                     NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_MA).start(ConsumerMainApplication.this);
+                    return true;
                 }
-                return true;
-            }
-        };
-        Weaver.Companion.executeWeaveCoRoutineNow(initNrWeave);
+            };
+            Weaver.Companion.executeWeaveCoRoutineNow(initNrWeave);
+        }
     }
 
     private void checkAppPackageNameAsync() {
