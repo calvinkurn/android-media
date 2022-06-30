@@ -66,7 +66,8 @@
                 android:background="@color/grey_300"
                 android:padding="@dimen/dp_1"
                 android:scaleType="fitXY"
-                android:src="@color/colorAccent" />
+                android:src="@color/colorAccent"
+                android:contentDescription="attach_invoice_item_product_image" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/attach_invoice_item_product_name"

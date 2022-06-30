@@ -105,7 +105,7 @@ class TkpdHintTextInputLayout : LinearLayout {
         init()
     }
 
-    @TargetApi(21)
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     constructor(
         context: Context?,
         attrs: AttributeSet?,
@@ -155,7 +155,7 @@ class TkpdHintTextInputLayout : LinearLayout {
                     mHintTextSize.toInt()
                 ).toFloat()
             }
-            if (Build.VERSION.SDK_INT >= 21) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 mHintTypeface = readFontFamilyTypeface(mHintAppearance)
             }
             hintArr.recycle()
