@@ -1059,6 +1059,20 @@ class MerchantPageFragment : BaseMultiFragment(),
         }
     }
 
+    override fun onUpdateProductQty(productId: String, quantity: Int, cardPositions: Pair<Int, Int>) {
+        viewModel.productMap[productId] = cardPositions
+        val dataSetPosition = viewModel.getDataSetPosition(cardPositions)
+        val productUiModel = productListAdapter?.getProductUiModel(dataSetPosition)
+        productUiModel?.orderQty = quantity
+        productUiModel?.run {
+            val updateParam = viewModel.mapProductUiModelToAtcRequestParam(
+                    shopId = merchantId,
+                    productUiModel = productUiModel
+            )
+            activityViewModel?.updateQuantity(updateParam, SOURCE)
+        }
+    }
+
     override fun onIncreaseQtyButtonClicked(
         productId: String,
         quantity: Int,

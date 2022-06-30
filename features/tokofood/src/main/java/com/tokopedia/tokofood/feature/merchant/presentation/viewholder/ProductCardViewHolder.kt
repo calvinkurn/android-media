@@ -2,13 +2,10 @@ package com.tokopedia.tokofood.feature.merchant.presentation.viewholder
 
 import android.content.Context
 import android.graphics.Paint
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.TokofoodProductCardLayoutBinding
@@ -25,6 +22,7 @@ class ProductCardViewHolder(
         fun onAtcButtonClicked(productListItem: ProductListItem, cardPositions: Pair<Int, Int>)
         fun onAddNoteButtonClicked(productId: String, orderNote: String, cardPositions: Pair<Int, Int>)
         fun onDeleteButtonClicked(cartId: String, productId: String, cardPositions: Pair<Int, Int>)
+        fun onUpdateProductQty(productId: String, quantity: Int, cardPositions: Pair<Int, Int>)
         fun onIncreaseQtyButtonClicked(productId: String, quantity: Int, cardPositions: Pair<Int, Int>)
         fun onDecreaseQtyButtonClicked(productId: String, quantity: Int, cardPositions: Pair<Int, Int>)
         fun onImpressProductCard(productListItem: ProductListItem, position: Int)
@@ -72,6 +70,28 @@ class ProductCardViewHolder(
                 cardPositions = Pair(dataSetPosition, adapterPosition)
             )
         }
+
+        binding.qeuProductQtyEditor.editText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                val productUiModel = binding.root.getTag(R.id.product_ui_model) as ProductUiModel
+                val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
+                val quantity = p0.toString().toIntOrZero()
+                if (quantity != productUiModel.orderQty && quantity >= Int.ONE) {
+                    clickListener.onUpdateProductQty(
+                            productId = productUiModel.id,
+                            quantity = quantity,
+                            cardPositions = Pair(dataSetPosition, adapterPosition)
+                    )
+                }
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+            }
+        })
+
         binding.qeuProductQtyEditor.setAddClickListener {
             val productUiModel = binding.root.getTag(R.id.product_ui_model) as ProductUiModel
             val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
