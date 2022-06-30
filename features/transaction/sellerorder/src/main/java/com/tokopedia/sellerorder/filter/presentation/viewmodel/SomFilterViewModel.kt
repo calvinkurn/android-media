@@ -13,7 +13,6 @@ import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_SORT
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_TYPE_ORDER
 import com.tokopedia.sellerorder.common.util.Utils
-import com.tokopedia.sellerorder.common.util.Utils.formatDate
 import com.tokopedia.sellerorder.filter.domain.mapper.GetSomFilterMapper
 import com.tokopedia.sellerorder.filter.domain.usecase.GetSomOrderFilterUseCase
 import com.tokopedia.sellerorder.filter.presentation.bottomsheet.SomFilterDateBottomSheet
@@ -21,6 +20,7 @@ import com.tokopedia.sellerorder.filter.presentation.model.BaseSomFilter
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterDateUiModel
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
+import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUtil
 import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.coroutines.Fail
@@ -138,7 +138,9 @@ class SomFilterViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
             if (startDate != null && endDate != null) {
                 somFilterDate.date = "${Utils.format(startDate.time, SomFilterDateBottomSheet.PATTER_DATE_EDT)} - ${Utils.format(endDate.time, SomFilterDateBottomSheet.PATTER_DATE_EDT)}"
             } else {
-                somFilterDate.date = "${Utils.getNPastMonthTimeText(3, SomFilterDateBottomSheet.PATTER_DATE_EDT)} - ${Utils.getNowTimeStamp().formatDate(SomFilterDateBottomSheet.PATTER_DATE_EDT)}"
+                somFilterDate.date = SomFilterUtil.getDefaultDateFilter(
+                    SomFilterDateBottomSheet.PATTER_DATE_EDT
+                ).let { "${it.first} - ${it.second}" }
             }
 
             if (somFilterUiModel.isEmpty()) {
@@ -220,7 +222,7 @@ class SomFilterViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                 }
                 when(somFilter.nameFilter) {
                     FILTER_SORT -> {
-                        somListGetOrderListParam.sortBy = SomConsts.SORT_BY_PAYMENT_DATE_DESCENDING
+                        somListGetOrderListParam.sortBy = SomFilterUtil.getDefaultSortBy(SomConsts.STATUS_ALL_ORDER)
                     }
                     FILTER_STATUS_ORDER -> {
                         somListGetOrderListParam.statusList = emptyList()
@@ -236,8 +238,9 @@ class SomFilterViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                     }
                 }
             }
-            somListGetOrderListParam.startDate = Utils.getNPastMonthTimeText(3)
-            somListGetOrderListParam.endDate = Utils.getNowTimeStamp().formatDate(SomConsts.PATTERN_DATE_PARAM)
+            val defaultDateFilter = SomFilterUtil.getDefaultDateFilter()
+            somListGetOrderListParam.startDate = defaultDateFilter.first
+            somListGetOrderListParam.endDate = defaultDateFilter.second
             _resetFilterResult.postValue(Success(somFilterUiModel))
             _somFilterOrderListParam.postValue(Success(somListGetOrderListParam))
         }, onError = {

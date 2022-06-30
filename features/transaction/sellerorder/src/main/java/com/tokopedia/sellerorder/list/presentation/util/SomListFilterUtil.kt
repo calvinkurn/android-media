@@ -8,22 +8,6 @@ import com.tokopedia.usecase.coroutines.Success
 
 object SomListFilterUtil {
 
-    fun updateSelectedStatusOrderFilter(
-        somFilterUiModelList: MutableList<SomFilterUiModel>,
-        status: SomListFilterUiModel.Status
-    ) {
-        somFilterUiModelList.find {
-            it.nameFilter == SomConsts.FILTER_STATUS_ORDER
-        }?.somFilterData?.find {
-            it.key == status.key
-        }?.run {
-            isSelected = status.isChecked
-            childStatus.forEach {
-                it.isChecked = status.isChecked
-            }
-        }
-    }
-
     fun selectSomFilterSortBy(somFilterUiModelList: MutableList<SomFilterUiModel>, sortId: Long) {
         somFilterUiModelList.find {
             it.nameFilter == SomConsts.FILTER_SORT

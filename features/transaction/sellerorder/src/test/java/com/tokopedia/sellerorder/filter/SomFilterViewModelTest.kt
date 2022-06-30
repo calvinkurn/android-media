@@ -8,6 +8,7 @@ import com.tokopedia.sellerorder.filter.presentation.bottomsheet.SomFilterDateBo
 import com.tokopedia.sellerorder.filter.presentation.model.BaseSomFilter
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterDateUiModel
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
+import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUtil
 import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 import com.tokopedia.sellerorder.util.observeAwaitValue
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -70,7 +71,9 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
     @Test
     fun `when given empty start and end date then get som filter data should use default date value`() {
         val mockSomFilterUiModel = getMockSomFilterList()
-        val expected = "${Utils.getNPastMonthTimeText(3, SomFilterDateBottomSheet.PATTER_DATE_EDT)} - ${Utils.getNPastMonthTimeText(0, SomFilterDateBottomSheet.PATTER_DATE_EDT)}"
+        val expected = SomFilterUtil.getDefaultDateFilter(
+            SomFilterDateBottomSheet.PATTER_DATE_EDT
+        ).let { "${it.first} - ${it.second}" }
         somFilterViewModel.getSomListGetOrderListParam().startDate = ""
         somFilterViewModel.getSomListGetOrderListParam().endDate = ""
         coEvery {
@@ -87,7 +90,9 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
     @Test
     fun `when given empty end date then get som filter data should use default date value`() {
         val mockSomFilterUiModel = getMockSomFilterList()
-        val expected = "${Utils.getNPastMonthTimeText(3, SomFilterDateBottomSheet.PATTER_DATE_EDT)} - ${Utils.getNPastMonthTimeText(0, SomFilterDateBottomSheet.PATTER_DATE_EDT)}"
+        val expected = SomFilterUtil.getDefaultDateFilter(
+            SomFilterDateBottomSheet.PATTER_DATE_EDT
+        ).let { "${it.first} - ${it.second}" }
         somFilterViewModel.getSomListGetOrderListParam().startDate = Utils.getNPastMonthTimeText(5)
         somFilterViewModel.getSomListGetOrderListParam().endDate = ""
         coEvery {
@@ -104,7 +109,9 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
     @Test
     fun `when given empty start date then get som filter data should use default date value`() {
         val mockSomFilterUiModel = getMockSomFilterList()
-        val expected = "${Utils.getNPastMonthTimeText(3, SomFilterDateBottomSheet.PATTER_DATE_EDT)} - ${Utils.getNPastMonthTimeText(0, SomFilterDateBottomSheet.PATTER_DATE_EDT)}"
+        val expected = SomFilterUtil.getDefaultDateFilter(
+            SomFilterDateBottomSheet.PATTER_DATE_EDT
+        ).let { "${it.first} - ${it.second}" }
         somFilterViewModel.getSomListGetOrderListParam().startDate = ""
         somFilterViewModel.getSomListGetOrderListParam().endDate = Utils.getNPastMonthTimeText(2)
         coEvery {
@@ -348,7 +355,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
         val indexOfSelectedSortFilterItem = mockSomFilterUiModels.filterIsInstance<SomFilterUiModel>()
                 .find {
                     it.nameFilter == idFilter
-                }!!.somFilterData.indexOfFirst { it.id == SomConsts.SORT_ASCENDING.toLong() }
+                }!!.somFilterData.indexOfFirst { it.id == SomConsts.SORT_BY_PAYMENT_DATE_ASCENDING }
         coEvery {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels

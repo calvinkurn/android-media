@@ -93,6 +93,7 @@ import com.tokopedia.sellerorder.filter.presentation.bottomsheet.SomFilterBottom
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterCancelWrapper
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModelWrapper
+import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUtil
 import com.tokopedia.sellerorder.list.di.DaggerSomListComponent
 import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 import com.tokopedia.sellerorder.list.presentation.adapter.SomListOrderAdapter
@@ -849,11 +850,8 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     private fun setDefaultSortByValue() {
-        if (viewModel.getTabActive() == KEY_CONFIRM_SHIPPING) {
-            viewModel.setSortOrderBy(SomConsts.SORT_BY_PAYMENT_DATE_ASCENDING)
-        } else {
-            viewModel.setSortOrderBy(SomConsts.SORT_BY_PAYMENT_DATE_DESCENDING)
-        }
+        val defaultSortByValue = SomFilterUtil.getDefaultSortBy(viewModel.getTabActive())
+        viewModel.setSortOrderBy(defaultSortByValue)
     }
 
     private fun getOrderBy(orderId: String): String {
@@ -2511,7 +2509,11 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         this.shouldScrollToTop = true
         isLoadingInitialData = true
         viewModel.updateSomFilterUiModelList(somFilterUiModelList)
-        somListSortFilterTab?.updateCounterSortFilter(somFilterUiModelList)
+        somListSortFilterTab?.updateCounterSortFilter(
+            somFilterUiModelList = somFilterUiModelList,
+            startDate = filterData.startDate,
+            endDate = filterData.endDate
+        )
         val selectedStatusFilterKey = somFilterUiModelList.find {
             it.nameFilter == SomConsts.FILTER_STATUS_ORDER
         }?.somFilterData?.find {

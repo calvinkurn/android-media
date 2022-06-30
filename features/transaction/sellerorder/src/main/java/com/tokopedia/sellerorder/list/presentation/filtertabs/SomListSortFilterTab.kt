@@ -1,9 +1,11 @@
 package com.tokopedia.sellerorder.list.presentation.filtertabs
 
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
+import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUtil
 import com.tokopedia.sellerorder.list.presentation.models.SomListFilterUiModel
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
@@ -17,9 +19,17 @@ class SomListSortFilterTab(
 
     private var filterItems: ArrayList<SortFilterItem> = arrayListOf()
     private var somListFilterUiModel: SomListFilterUiModel? = null
+    private var selectedCount: Int = Int.ZERO
 
     init {
         sortFilter.chipItems = arrayListOf()
+        sortFilter.indicatorNotifView?.viewTreeObserver?.addOnPreDrawListener {
+            if (selectedCount != sortFilter.indicatorCounter) {
+                sortFilter.indicatorCounter = selectedCount
+                return@addOnPreDrawListener false
+            }
+            true
+        }
         setupParentFilter()
     }
 
@@ -66,29 +76,57 @@ class SomListSortFilterTab(
 
     private fun onTabClicked(sortFilterItem: SortFilterItem, quickFilter: SomListFilterUiModel.QuickFilter) {
         sortFilterItem.toggleSelected()
-        quickFilter.isChecked = sortFilterItem.type == ChipsUnify.TYPE_SELECTED
+        quickFilter.isChecked = if (sortFilterItem.type == ChipsUnify.TYPE_SELECTED) {
+            selectedCount++
+            true
+        } else {
+            selectedCount--
+            false
+        }
+        updateCounter()
         listener.onTabClicked(quickFilter, true)
     }
 
-    fun updateCounterSortFilter(somFilterUiModelList: List<SomFilterUiModel>) {
+    private fun setupParentFilter() {
+        sortFilter.parentListener = { listener.onParentSortFilterClicked() }
+    }
+
+    private fun updateCounter() {
+        sortFilter.indicatorCounter = selectedCount
+    }
+
+    fun updateCounterSortFilter(
+        somFilterUiModelList: List<SomFilterUiModel>,
+        startDate: String,
+        endDate: String
+    ) {
+        val selectedOrderStatusFilter = somFilterUiModelList.find {
+            it.nameFilter == SomConsts.FILTER_STATUS_ORDER
+        }?.somFilterData?.firstOrNull { it.isSelected }?.key ?: SomConsts.STATUS_ALL_ORDER
+        val defaultDateFilter = SomFilterUtil.getDefaultDateFilter()
+        val defaultSortByFilter = SomFilterUtil.getDefaultSortBy(selectedOrderStatusFilter)
         var count = 0
         somFilterUiModelList.forEach {
-            if (it.nameFilter != SomConsts.FILTER_STATUS_ORDER) {
-                it.somFilterData.forEach { somFilter ->
-                    if (somFilter.isSelected) count++
+            if (it.nameFilter == SomConsts.FILTER_SORT) {
+                it.somFilterData.forEach {
+                    if (it.isSelected && it.id != defaultSortByFilter) count++
+                }
+            } else {
+                it.somFilterData.forEach {
+                    if (it.isSelected) count++
                 }
             }
         }
+        if (startDate != defaultDateFilter.first || endDate != defaultDateFilter.second) count++
+        selectedCount = count
+        updateCounter()
     }
 
     fun show(somListFilterUiModel: SomListFilterUiModel) {
         this.somListFilterUiModel = somListFilterUiModel
         updateTabs(somListFilterUiModel.quickFilterList)
         sortFilter.show()
-    }
-
-    private fun setupParentFilter() {
-        sortFilter.parentListener = { listener.onParentSortFilterClicked() }
+        updateCounter()
     }
 
     fun isFilterApplied(): Boolean {
