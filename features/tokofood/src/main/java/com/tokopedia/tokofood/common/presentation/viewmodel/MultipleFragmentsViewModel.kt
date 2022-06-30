@@ -300,7 +300,7 @@ class MultipleFragmentsViewModel @Inject constructor(
         }
     }
 
-    private fun loadCartList(source: String) {
+    fun loadCartList(source: String) {
         launchCatchError(block = {
             miniCartUiModelState.emit(Result.Loading())
             withContext(dispatchers.io) {
