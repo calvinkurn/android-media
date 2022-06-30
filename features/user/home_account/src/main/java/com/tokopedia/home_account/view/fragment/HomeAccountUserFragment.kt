@@ -195,7 +195,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     }
 
     private fun isEnablePrivacyAccount(): Boolean  {
-        return getRemoteConfig().getBoolean(REMOTE_CONFIG_KEY_PRIVACY_ACCOUNT, true)
+        return getRemoteConfig().getBoolean(REMOTE_CONFIG_KEY_PRIVACY_ACCOUNT, false)
     }
 
     private fun isEnableExplicitProfileMenu(): Boolean {
