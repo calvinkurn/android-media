@@ -589,8 +589,7 @@
             "original_price": "",
             "discount_percentage": 0
           },
-          "label_group": [],
-          "customvideo_url" : ""
+          "label_group": []
         },
         "shop": {
           "id": "300769",
@@ -676,8 +675,7 @@
               "type": "textDarkOrange",
               "title": "Produk Terbaru"
             }
-          ],
-          "customvideo_url" : ""
+          ]
         },
         "shop": {
           "id": "6102281",
@@ -779,8 +777,7 @@
               "type": "lightGreen",
               "title": "Grosir"
             }
-          ],
-          "customvideo_url" : ""
+          ]
         },
         "shop": {
           "id": "686944",
@@ -866,8 +863,7 @@
               "type": "textDarkOrange",
               "title": "Produk Terbaru"
             }
-          ],
-          "customvideo_url" : ""
+          ]
         },
         "shop": {
           "id": "6102281",
@@ -942,8 +938,7 @@
             "original_price": "",
             "discount_percentage": 0
           },
-          "label_group": [],
-          "customvideo_url" : ""
+          "label_group": []
         },
         "shop": {
           "id": "300769",
@@ -1029,8 +1024,7 @@
               "type": "textDarkOrange",
               "title": "Produk Terbaru"
             }
-          ],
-          "customvideo_url" : ""
+          ]
         },
         "shop": {
           "id": "2029058",

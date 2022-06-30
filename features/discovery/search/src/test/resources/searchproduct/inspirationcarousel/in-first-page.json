@@ -484,8 +484,7 @@
             "original_price": "",
             "discount_percentage": 0
           },
-          "label_group": [],
-          "customvideo_url" : ""
+          "label_group": []
         },
         "shop": {
           "id": "7130049",
@@ -561,8 +560,7 @@
             "original_price": "",
             "discount_percentage": 0
           },
-          "label_group": [],
-          "customvideo_url" : ""
+          "label_group": []
         },
         "shop": {
           "id": "1072265",
@@ -638,8 +636,7 @@
             "original_price": "",
             "discount_percentage": 0
           },
-          "label_group": [],
-          "customvideo_url" : ""
+          "label_group": []
         },
         "shop": {
           "id": "410698",
@@ -715,8 +712,7 @@
             "original_price": "Rp 298.000",
             "discount_percentage": 57
           },
-          "label_group": [],
-          "customvideo_url" : ""
+          "label_group": []
         },
         "shop": {
           "id": "5024370",
@@ -803,8 +799,7 @@
               "type": "textDarkOrange",
               "title": "Produk Terbaru"
             }
-          ],
-          "customvideo_url" : ""
+          ]
         },
         "shop": {
           "id": "7130049",
@@ -886,8 +881,7 @@
               "type": "textDarkOrange",
               "title": "Produk Terbaru"
             }
-          ],
-          "customvideo_url" : ""
+          ]
         },
         "shop": {
           "id": "4799799",
