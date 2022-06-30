@@ -24,7 +24,6 @@ import com.tokopedia.play.widget.ui.widget.large.PlayWidgetCardLargeChannelView
 open class UserPostBaseAdapter(
     val viewModel: UserProfileViewModel,
     val callback: AdapterCallback,
-    private var userName: String = "",
     val userId: String,
     val playWidgetCallback: PlayWidgetCallback,
     val onLoadMore: (cursor: String) -> Unit,
@@ -42,10 +41,6 @@ open class UserPostBaseAdapter(
         override fun bindView(item: PlayPostContentItem, position: Int) {
             setData(this, item, position)
         }
-    }
-
-    public fun setUserName(userName: String) {
-        this.userName = userName
     }
 
     override fun getItemViewHolder(

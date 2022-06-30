@@ -100,8 +100,6 @@ class UserProfileFragment @Inject constructor(
         GridLayoutManager(activity, 2)
     }
 
-    var landedUserName: String? = null
-    var displayName: String = ""
     var userName: String = ""
     var userWebLink: String = ""
     var profileUserId: String = ""
@@ -149,7 +147,6 @@ class UserProfileFragment @Inject constructor(
         UserPostBaseAdapter(
             viewModel,
             this,
-            userName,
             userId,
             this
         ) { cursor ->
@@ -221,7 +218,6 @@ class UserProfileFragment @Inject constructor(
 
         //Get landing page, profile header page
         isNewlyCreated = true;
-        landedUserName = requireArguments().getString(EXTRA_USERNAME)
         refreshLandingPageData(true)
         container?.displayedChild = PAGE_LOADING
 
@@ -267,9 +263,7 @@ class UserProfileFragment @Inject constructor(
     }
 
     private fun refreshLandingPageData(isRefreshPost: Boolean = false) {
-        landedUserName?.let {
-            submitAction(UserProfileAction.LoadProfile(isRefreshPost))
-        }
+        submitAction(UserProfileAction.LoadProfile(isRefreshPost))
     }
 
     private fun initListener() {
@@ -511,10 +505,6 @@ class UserProfileFragment @Inject constructor(
         textFollowerCount.text = UserProfileUtils.getFormattedNumber(curr.stats.totalFollower)
         textFollowingCount.text = UserProfileUtils.getFormattedNumber(curr.stats.totalFollowing)
 
-        displayName = curr.name
-        userName = curr.username
-        mAdapter.setUserName(curr.username)
-
         /** TODO: will be removed soon */
         totalFollowers = curr.stats.totalFollowerFmt
         totalPosts =  curr.stats.totalPostFmt
@@ -744,8 +734,8 @@ class UserProfileFragment @Inject constructor(
 
     private fun getFollowersBundle(isFollowers: Boolean): Bundle {
         val bundle = Bundle()
-        bundle.putString(EXTRA_DISPLAY_NAME, displayName)
-        bundle.putString(EXTRA_USER_NAME, userName)
+        bundle.putString(EXTRA_DISPLAY_NAME, viewModel.displayName)
+        bundle.putString(EXTRA_USER_NAME, viewModel.profileUsername)
         bundle.putString(EXTRA_USER_ID, profileUserId)
         bundle.putString(EXTRA_PROFILE_USER_ID, profileUserId)
         bundle.putString(EXTRA_TOTAL_FOLLOWINGS, totalFollowings)
@@ -811,7 +801,7 @@ class UserProfileFragment @Inject constructor(
                 )
             }
             setMetaData(
-                tnTitle = displayName,
+                tnTitle = viewModel.displayName,
                 tnImage = profileImage
             )
             setOgImageUrl(profileImage)
@@ -873,26 +863,24 @@ class UserProfileFragment @Inject constructor(
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
-        var desc = userName
-
-        desc = if (desc.isBlank()) {
-            "Lihat foto & video menarik dari Tokopedia $displayName, yuk! 😍"
-        } else {
-            "Lihat foto & video menarik dari Tokopedia $displayName (@$userName), yuk! 😍"
+        val desc = buildString {
+            append("Lihat foto & video menarik dari Tokopedia ${viewModel.displayName}")
+            if(viewModel.profileUsername.isBlank()) append(" (@${viewModel.profileUsername})")
+            append(", yuk! \uD83D\uDE0D")
         }
 
         val linkerShareData = DataMapper.getLinkerShareData(LinkerData().apply {
             type = LinkerData.USER_PROFILE_SOCIAL
             uri = userWebLink
-            id = this@UserProfileFragment.userName
+            id = viewModel.profileUsername
             //set and share in the Linker Data
             feature = shareModel.feature
             channel = shareModel.channel
             campaign = shareModel.campaign
-            ogTitle = if (userName.isBlank()) {
-                displayName
+            ogTitle = if (viewModel.profileUsername.isBlank()) {
+                viewModel.displayName
             } else {
-                "$displayName (@$userName)"
+                "${viewModel.displayName} (@${viewModel.profileUsername})"
             }
             ogDescription = "$totalFollowers Follower $totalFollowings Following $totalPosts Post"
             if (shareModel.ogImgUrl != null && shareModel.ogImgUrl?.isNotEmpty() == true) {

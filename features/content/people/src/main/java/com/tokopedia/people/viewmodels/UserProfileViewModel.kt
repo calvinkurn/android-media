@@ -51,6 +51,12 @@ class UserProfileViewModel @AssistedInject constructor(
 
 
     /** Public Getter */
+    val displayName: String
+        get() = _profileInfo.value.name
+
+    val profileUsername: String
+        get() = _profileInfo.value.username
+
     val isFollowed: Boolean
         get() = _followInfo.value.status
 
