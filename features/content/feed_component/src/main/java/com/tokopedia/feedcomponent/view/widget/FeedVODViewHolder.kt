@@ -38,18 +38,12 @@ import kotlinx.coroutines.*
 
 class FeedVODViewHolder @JvmOverloads constructor(
     context: Context,
-    feedXCard: FeedXCard,
-    feedXMedia: FeedXMedia,
-    ratio: String,
-    products: List<FeedXProduct>,
     attrs: AttributeSet? = null,
-    positionInFeed: Int,
     defStyleAttr: Int = 0,
 ) : ConstraintLayout(context, attrs, defStyleAttr), LifecycleObserver {
     private val layoutVideo: ConstraintLayout
     private val vodPreviewImage: ImageUnify
     private val videoView: View
-    private val mRatio: String
     private val layoutFrameView: ConstraintLayout
     private val layoutPlayerView : PlayerView
     private val vodLihatProdukBtn : Typography
@@ -60,15 +54,15 @@ class FeedVODViewHolder @JvmOverloads constructor(
     private val vodTimerView : Typography
     private val vodFrozenView : View
     private val vodLoader : LoaderUnify
-    private lateinit var mListener : DynamicPostViewHolder.DynamicPostListener
+    private var mListener : DynamicPostViewHolder.DynamicPostListener? = null
     private var mOnClickVolumeListener: (() -> Unit)? = null
     private var mUpdateViewsText: ((String) -> Unit)? = null
-    private val mFeedXMedia: FeedXMedia
-    private var mFeedXCard: FeedXCard
-    private var mfinalPostId: Int
-    private var mPostionInFeed: Int
+    private var mFeedXMedia: FeedXMedia? = null
+    private var mFeedXCard: FeedXCard? = null
+    private var mfinalPostId: Int = 0
+    private var mPostionInFeed: Int = 0
     private var mIsMute : Boolean = false
-
+    private var mRatio: String = "1"
     private var isPaused = false
     private var handlerAnim: Handler? = null
     private var productVideoJob: Job? = null
@@ -91,7 +85,6 @@ class FeedVODViewHolder @JvmOverloads constructor(
             ViewGroup.LayoutParams.MATCH_PARENT
         )
         view?.layoutParams = param
-        mfinalPostId = if (feedXCard.typename == TYPE_FEED_X_CARD_PLAY) feedXCard.playChannelID.toIntOrZero() else feedXCard.id.toIntOrZero()
 
         layoutVideo = findViewById(R.id.vod_layout_main)
         vodPreviewImage = findViewById(R.id.vod_videoPreviewImage)
@@ -106,11 +99,23 @@ class FeedVODViewHolder @JvmOverloads constructor(
         vodFrozenView = findViewById(R.id.vod_frozen_view)
         vodLoader = findViewById(R.id.vod_loader)
         vodTimerView = findViewById(R.id.vod_timer_view)
+    }
+
+    fun setData(
+        feedXCard: FeedXCard,
+        feedXMedia: FeedXMedia,
+        ratio: String,
+        products: List<FeedXProduct>,
+        positionInFeed: Int
+    ) {
         this.mRatio = ratio
         this.mFeedXMedia = feedXMedia
         this.mFeedXCard = feedXCard
         this.mProducts = products
         this.mPostionInFeed = positionInFeed
+
+        mfinalPostId = if (feedXCard.typename == TYPE_FEED_X_CARD_PLAY) feedXCard.playChannelID.toIntOrZero() else feedXCard.id.toIntOrZero()
+
 
     }
 
@@ -133,7 +138,7 @@ class FeedVODViewHolder @JvmOverloads constructor(
         mIsMute = isMute
         setConstraintsForVODLayout()
         setConstraintsForFrameView()
-        vodPreviewImage.setImageUrl(mFeedXMedia.coverUrl)
+        mFeedXMedia?.let { vodPreviewImage.setImageUrl(it.coverUrl) }
 
         setListenersOnVODViewElements()
         updateVolumeButtonState()
@@ -141,39 +146,52 @@ class FeedVODViewHolder @JvmOverloads constructor(
     }
     private fun setListenersOnVODViewElements(){
         vodLihatProdukBtn.setOnClickListener {
-            mListener.let { listener ->
-                listener.onTagClicked(
-                    mfinalPostId,
-                    mProducts,
-                    listener,
-                    mFeedXCard.author.id,
-                    mFeedXCard.typename,
-                    mFeedXCard.followers.isFollowed,
-                    mFeedXCard.type,
-                    mPostionInFeed,
-                    playChannelId = mFeedXCard.playChannelID,
-                    shopName = mFeedXCard.author.name
-                )
+            mListener?.let { listener ->
+                mFeedXCard?.let {
+                    listener.onTagClicked(
+                        mfinalPostId,
+                        mProducts,
+                        listener,
+                        it.author.id,
+                        it.typename,
+                        it.followers.isFollowed,
+                        it.type,
+                        mPostionInFeed,
+                        playChannelId = it.playChannelID,
+                        shopName = it.author.name
+                    )
+                }
             }
         }
         vodFullScreenIcon.setOnClickListener {
             isPaused = true
             vodLanjutMemontomBtn.gone()
             vodFrozenView.gone()
-            mListener.onFullScreenCLick(mFeedXCard, mPostionInFeed, mFeedXCard.appLink, 0L, shouldTrack = true, true)
+            mFeedXCard?.let {
+                mListener?.onFullScreenCLick(
+                    it,
+                    mPostionInFeed,
+                    it.appLink,
+                    0L,
+                    shouldTrack = true,
+                    true
+                )
+            }
         }
         vodLanjutMemontomBtn.setOnClickListener {
             vodLanjutMemontomBtn.gone()
             vodFrozenView.gone()
             videoPlayer?.getExoPlayer()?.currentPosition?.let { currentTime ->
-                mListener.onFullScreenCLick(
-                    mFeedXCard,
-                    mPostionInFeed,
-                    mFeedXCard.appLink,
-                    currentTime,
-                    false,
-                    false
-                )
+                mFeedXCard?.let {
+                    mListener?.onFullScreenCLick(
+                        it,
+                        mPostionInFeed,
+                        it.appLink,
+                        currentTime,
+                        false,
+                        false
+                    )
+                }
             }
         }
         vodVolumeIcon.setOnClickListener {
@@ -209,7 +227,16 @@ class FeedVODViewHolder @JvmOverloads constructor(
                 vodVolumeIcon.gone()
             }
         }
-        mListener.muteUnmuteVideo(mFeedXCard.playChannelID, isMute, mFeedXCard.author.id, mFeedXCard.followers.isFollowed, true, mFeedXMedia.type)
+        mFeedXCard?.let {
+            mListener?.muteUnmuteVideo(
+                it.playChannelID,
+                isMute,
+                it.author.id,
+                it.followers.isFollowed,
+                true,
+                mFeedXMedia?.type?:""
+            )
+        }
         if (!vodVolumeIcon.isVisible)
             vodVolumeIcon.visible()
         if (isVideoTap){
@@ -224,7 +251,7 @@ class FeedVODViewHolder @JvmOverloads constructor(
         mShouldTrack = true
         isPaused = false
         if (videoPlayer == null)
-            mFeedXMedia.canPlay = true
+            mFeedXMedia?.canPlay = true
         vodLanjutMemontomBtn.gone()
         vodFrozenView.gone()
         if (mProducts.isEmpty()) {
@@ -267,14 +294,14 @@ class FeedVODViewHolder @JvmOverloads constructor(
         productVideoJob = scope.launch {
             layoutPlayerView.player = videoPlayer?.getExoPlayer()
             layoutPlayerView.videoSurfaceView?.setOnClickListener {
-                if (mFeedXMedia.mediaUrl.isNotEmpty() && !isVODVideoViewFrozen) {
+                if (mFeedXMedia?.mediaUrl?.isNotEmpty() == true && !isVODVideoViewFrozen) {
                     mIsMute = !mIsMute
                     videoPlayer?.toggleVideoVolume(mIsMute)
                     changeMuteStateVideoVOD(mIsMute)
                     setMuteUnmuteVOD(isVideoTap = true, isMute = mIsMute)
                 }
             }
-            videoPlayer?.start(mFeedXMedia.mediaUrl, mIsMute)
+            mFeedXMedia?.let { videoPlayer?.start(it.mediaUrl, mIsMute) }
             vodVolumeIcon.visible()
             videoPlayer?.setVideoStateListener(object : VideoStateListener {
                 override fun onInitialStateLoading() {
@@ -299,14 +326,16 @@ class FeedVODViewHolder @JvmOverloads constructor(
                 }
 
                 override fun onVideoStateChange(stopDuration: Long, videoDuration: Long) {
-                    mFeedXMedia.canPlay = false
-                    mListener.addVODView(
-                        mFeedXCard,
-                        mFeedXCard.playChannelID,
-                        mPostionInFeed,
-                        (videoPlayer?.getExoPlayer()?.currentPosition ?: 0L) / TIME_SECOND,
-                        false
-                    )
+                    mFeedXMedia?.canPlay = false
+                    mFeedXCard?.let {
+                        mListener?.addVODView(
+                            it,
+                            it.playChannelID,
+                            mPostionInFeed,
+                            (videoPlayer?.getExoPlayer()?.currentPosition ?: 0L) / TIME_SECOND,
+                            false
+                        )
+                    }
 
                 }
             })
@@ -317,24 +346,28 @@ class FeedVODViewHolder @JvmOverloads constructor(
         feedAddViewJob = scope.launch {
             delay(TIME_FIVE_SEC)
             if (!isPaused) {
-                val view = mFeedXCard.views
-                val count = view.count + 1
-                if (view.count != 0) {
-                    val viewText = MethodChecker.fromHtml(
-                        context.getString(
-                            R.string.feed_component_viewed_count_text,
-                            count.productThousandFormatted(1)
+                val view = mFeedXCard?.views
+                val count = view?.count?.let { it + 1 }
+                count?.let {
+                    if (view.count != 0) {
+                        val viewText = MethodChecker.fromHtml(
+                            context.getString(
+                                R.string.feed_component_viewed_count_text,
+                                it.productThousandFormatted(1)
+                            )
                         )
-                    )
-                    mUpdateViewsText?.invoke(viewText.toString())
+                        mUpdateViewsText?.invoke(viewText.toString())
+                    }
                 }
-                mListener.addVODView(
-                    mFeedXCard,
-                    mFeedXCard.playChannelID,
-                    mPostionInFeed,
-                    TIME_FIVE_SEC,
-                    true
-                )
+                mFeedXCard?.let {
+                    mListener?.addVODView(
+                        it,
+                        it.playChannelID,
+                        mPostionInFeed,
+                        TIME_FIVE_SEC,
+                        true
+                    )
+                }
                 mShouldTrack = false
             }
         }
@@ -454,7 +487,7 @@ class FeedVODViewHolder @JvmOverloads constructor(
             videoPlayer = null
             layoutPlayerView.player = null
         }
-        mFeedXMedia.canPlay = false
+        mFeedXMedia?.canPlay = false
     }
 
     companion object {

@@ -136,6 +136,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     private var shopName: Typography
     private var shopMenuIcon: IconUnify
     private var carouselView: CarouselUnify
+    private var feedVODViewHolder: FeedVODViewHolder
     private var pageControl: PageControl
     private var likeButton: IconUnify
     private var commentButton: IconUnify
@@ -178,6 +179,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             shopName = findViewById(R.id.shop_name)
             shopMenuIcon = findViewById(R.id.menu_button)
             carouselView = findViewById(R.id.feed_carousel)
+            feedVODViewHolder = findViewById(R.id.feed_vod_viewholder)
             pageControl = findViewById(R.id.page_indicator)
             likeButton = findViewById(R.id.like_button)
             commentButton = findViewById(R.id.comment_button)
@@ -1127,18 +1129,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
             val media = feedXCard.media
             val globalCardProductList = feedXCard.tags
             gridList.gone()
-            carouselView.visible()
+            carouselView.gone()
             commentButton.visible()
-            carouselView.apply {
-                stage.removeAllViews()
-                indicatorPosition = CarouselUnify.INDICATOR_HIDDEN
-                if (media.size > 1) {
-                    pageControl.show()
-                    pageControl.setIndicator(media.size)
-                    pageControl.indicatorCurrentPosition = activeIndex
-                } else {
-                    pageControl.hide()
-                }
+            pageControl.hide()
                 var ratio = VOD_VIDEO_RATIO
 
                  if (feedXCard.media.isNotEmpty() && feedXCard.media.first().type == TYPE_LONG_VIDEO) {
@@ -1148,7 +1141,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     else
                         getRatioIfLandscape(feedXCard.mediaRatio)
                 }
-                media.forEach { feedMedia ->
+                    val feedMedia = media.first()
                     val tags = feedMedia.tagging
                     val tagProducts = mutableListOf<FeedXProduct>()
                     tags.map {
@@ -1162,14 +1155,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                 feedMedia,
                                 tagProducts,
                                 ratio
-                        )?.let {
-                            addItem(
-                                    it
-                            )
-                        }
-                }
-            }
-
+                        )
+        feedVODViewHolder.visible()
 
     }
 
@@ -1331,29 +1318,26 @@ class PostDynamicViewNew @JvmOverloads constructor(
             feedMedia: FeedXMedia,
             products: List<FeedXProduct>,
             ratio: String
-    ): View? {
+    ) {
         feedMedia.canPlay = false
-        val vodItem =  FeedVODViewHolder(
-        context,
-        feedXCard,
-        feedMedia,
-        ratio,
-        products,
-        positionInFeed = positionInFeed
+        feedVODViewHolder.setData(
+            feedXCard,
+            feedMedia,
+            ratio,
+            products,
+            positionInFeed = positionInFeed
         )
-        feedMedia.vodView = vodItem
+        feedMedia.vodView = feedVODViewHolder
         if (videoPlayer == null)
             videoPlayer = FeedExoPlayer(context)
-        vodItem.bindData(GridPostAdapter.isMute)
-        listener?.let { vodItem.setListener(it) }
-        vodItem.updateLikedText {
+        feedVODViewHolder.bindData(GridPostAdapter.isMute)
+        listener?.let { feedVODViewHolder.setListener(it) }
+        feedVODViewHolder.updateLikedText {
             likedText.text = it
         }
-        vodItem.setChangeVolumeStateCallback {
+        feedVODViewHolder.setChangeVolumeStateCallback {
             GridPostAdapter.isMute = !GridPostAdapter.isMute
         }
-
-        return vodItem
     }
 
     private fun setMuteUnmuteSgcVideo(volumeIcon: ImageView?, postId: String, isFollowed: Boolean, activityId: String, isVideoTap: Boolean, isVOD: Boolean, mediaType: String) {
