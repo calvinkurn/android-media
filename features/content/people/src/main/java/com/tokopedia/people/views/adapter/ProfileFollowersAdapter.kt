@@ -136,7 +136,7 @@ open class ProfileFollowersAdapter(
                     if (!userSession?.isLoggedIn) {
                         listener.callstartActivityFromFragment(
                             ApplinkConst.LOGIN,
-                            UserProfileFragment.REQUEST_CODE_LOGIN
+                            UserProfileFragment.REQUEST_CODE_LOGIN_TO_FOLLOW
                         )
                     } else {
                         UserProfileTracker().clickUnfollowFromFollowers(userSession.userId, item.profile.userID == userSession.userId)
@@ -166,7 +166,7 @@ open class ProfileFollowersAdapter(
                     if (!userSession?.isLoggedIn) {
                         listener.callstartActivityFromFragment(
                             ApplinkConst.LOGIN,
-                            UserProfileFragment.REQUEST_CODE_LOGIN
+                            UserProfileFragment.REQUEST_CODE_LOGIN_TO_FOLLOW
                         )
                     } else {
                         UserProfileTracker().clickFollowFromFollowers(userSession.userId, item.profile.userID == userSession.userId)

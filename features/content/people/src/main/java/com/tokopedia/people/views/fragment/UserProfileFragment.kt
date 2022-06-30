@@ -265,7 +265,7 @@ class UserProfileFragment @Inject constructor(
             if(!userSession.isLoggedIn) {
                 startActivityForResult(
                     RouteManager.getIntent(activity, ApplinkConst.LOGIN),
-                    REQUEST_CODE_LOGIN
+                    REQUEST_CODE_LOGIN_TO_FOLLOW
                 )
             }
             else doFollowUnfollow(isFromLogin = false)
@@ -741,8 +741,11 @@ class UserProfileFragment @Inject constructor(
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
+        if (requestCode == REQUEST_CODE_LOGIN_TO_FOLLOW && resultCode == Activity.RESULT_OK) {
             doFollowUnfollow(isFromLogin = true)
+        }
+        else if(requestCode == REQUEST_CODE_LOGIN_TO_SET_REMINDER && resultCode == Activity.RESULT_OK) {
+
         }
         else if(requestCode == REQUEST_CODE_PLAY_ROOM && resultCode == Activity.RESULT_OK) {
             val channelId = data?.extras?.getString(EXTRA_CHANNEL_ID) ?: return
@@ -788,7 +791,8 @@ class UserProfileFragment @Inject constructor(
         const val APPLINK_MENU = "tokopedia://navigation/main"
         const val APPLINK_PROFILE = "tokopedia://setting/profile"
         const val OFFSET_USERINFO = 136F
-        const val REQUEST_CODE_LOGIN = 1
+        const val REQUEST_CODE_LOGIN_TO_FOLLOW = 1
+        const val REQUEST_CODE_LOGIN_TO_SET_REMINDER = 2
         const val REQUEST_CODE_USER_PROFILE = 99
         const val EXTRA_POSITION_OF_PROFILE = "profile_position"
         const val EXTRA_FOLLOW_UNFOLLOW_STATUS = "follow_unfollow_status"
@@ -925,7 +929,7 @@ class UserProfileFragment @Inject constructor(
         if(userSession.isLoggedIn.not()){
             startActivityForResult(
                 RouteManager.getIntent(activity, ApplinkConst.LOGIN),
-                REQUEST_CODE_LOGIN
+                REQUEST_CODE_LOGIN_TO_SET_REMINDER,
             )
         }
         else{

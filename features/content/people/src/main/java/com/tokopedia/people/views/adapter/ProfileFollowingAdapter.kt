@@ -132,7 +132,7 @@ open class ProfileFollowingAdapter(
                     if (!userSession.isLoggedIn) {
                         listener.callstartActivityFromFragment(
                             ApplinkConst.LOGIN,
-                            UserProfileFragment.REQUEST_CODE_LOGIN
+                            UserProfileFragment.REQUEST_CODE_LOGIN_TO_FOLLOW
                         )
                     } else {
                         UserProfileTracker().clickUnfollowFromFollowing(userSession.userId, item.profile.userID == userSession.userId)
@@ -165,7 +165,7 @@ open class ProfileFollowingAdapter(
                     if (!userSession.isLoggedIn) {
                         listener.callstartActivityFromFragment(
                             ApplinkConst.LOGIN,
-                            UserProfileFragment.REQUEST_CODE_LOGIN
+                            UserProfileFragment.REQUEST_CODE_LOGIN_TO_FOLLOW
                         )
                     } else {
                         UserProfileTracker().clickFollowFromFollowing(userSession.userId, item.profile.userID == userSession.userId)

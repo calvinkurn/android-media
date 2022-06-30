@@ -209,7 +209,7 @@ class FollowerListingFragment @Inject constructor(
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == UserProfileFragment.REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
+        if (requestCode == UserProfileFragment.REQUEST_CODE_LOGIN_TO_FOLLOW && resultCode == Activity.RESULT_OK) {
             isLoggedIn = userSessionInterface.isLoggedIn
             refreshMainUi()
         } else if (requestCode == UserProfileFragment.REQUEST_CODE_USER_PROFILE){
