@@ -8,48 +8,51 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentManageProductBinding
-import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductList
 import com.tokopedia.shop.flashsale.common.customcomponent.BaseSimpleListFragment
 import com.tokopedia.shop.flashsale.common.extension.*
+import com.tokopedia.shop.flashsale.common.preference.SharedPreferenceDataStore
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType.*
 import com.tokopedia.shop.flashsale.presentation.creation.highlight.ManageHighlightedProductActivity
-import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationFragment
 import com.tokopedia.shop.flashsale.presentation.creation.manage.adapter.ManageProductListAdapter
 import com.tokopedia.shop.flashsale.presentation.creation.manage.dialog.ProductDeleteDialog
+import com.tokopedia.shop.flashsale.presentation.creation.manage.dialog.showSuccessSaveCampaignDraft
 import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListActivity
-import com.tokopedia.shop.flashsale.presentation.list.list.CampaignListFragment
 import com.tokopedia.shop.flashsale.presentation.list.list.listener.RecyclerViewScrollListener
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.coroutines.GlobalScope
 import java.util.*
 import javax.inject.Inject
 import kotlin.concurrent.schedule
 
-class ManageProductFragment :
-    BaseSimpleListFragment<ManageProductListAdapter, SellerCampaignProductList.Product>() {
+class ManageProductFragment : BaseDaggerFragment() {
 
     companion object {
         private const val BUNDLE_KEY_CAMPAIGN_ID = "campaignId"
         private const val SECOND_STEP = 2
         private const val PAGE_SIZE = 50
         private const val LIST_TYPE = 0
+        private const val RECYCLERVIEW_ITEM_FIRST_INDEX = 0
         private const val DELAY = 1000L
         private const val REQUEST_CODE = 123
         private const val EMPTY_STATE_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/flash-sale-toko/ic_no_active_campaign.png"
-        private const val REDIRECT_TO_CAMPAIGN_LIST_PAGE_DELAY: Long = 1_500
+        private const val INCOMPLETE_PRODUCT_IMAGE_URL =
+            "https://images.tokopedia.net/img/android/campaign/flash-sale-toko/product_incomplete.png"
         private const val SCROLL_ANIMATION_DELAY = 500L
 
         @JvmStatic
@@ -64,6 +67,9 @@ class ManageProductFragment :
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var sharedPreference: SharedPreferenceDataStore
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ManageProductViewModel::class.java) }
@@ -86,6 +92,7 @@ class ManageProductFragment :
             .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
             .build()
             .inject(this)
+        sharedPreference.isCampaignInfoCoachMarkDismissed()
     }
 
     override fun onCreateView(
@@ -100,6 +107,7 @@ class ManageProductFragment :
         super.onViewCreated(view, savedInstanceState)
         setFragmentToUnifyBgColor()
         setupView()
+        viewModel.getProducts(campaignId, LIST_TYPE)
         observeProductList()
         observeRemoveProductsStatus()
         observeBannerType()
@@ -118,16 +126,18 @@ class ManageProductFragment :
                 if (manageProductListAdapter.itemCount < PAGE_SIZE) {
                     showChooseProductPage()
                 } else {
-                    view.showErrorWithCta(
-                        getString(R.string.manage_product_maximum_product_error),
-                        getString(R.string.action_oke)
+                    view.showError(
+                        getString(R.string.manage_product_maximum_product_error)
                     )
                 }
             }
+            imageIncompleteProductInfo.setImageUrl(INCOMPLETE_PRODUCT_IMAGE_URL)
             btnSaveDraft.setOnClickListener {
-                root showToaster getString(R.string.sfs_saved_as_draft)
-                doOnDelayFinished(REDIRECT_TO_CAMPAIGN_LIST_PAGE_DELAY) {
-                    routeToCampaignListPage()
+                context?.let { ctx ->
+                    showSuccessSaveCampaignDraft(
+                        ctx,
+                        viewModel.campaignName,
+                        action = { routeToCampaignListPage() })
                 }
             }
             btnContinue.setOnClickListener {
@@ -135,6 +145,13 @@ class ManageProductFragment :
             }
         }
         setupScrollListener()
+    }
+
+    private fun handleCoachMark() {
+        val shouldShowCoachMark = !sharedPreference.isManageProcudtCoachMarkDismissed()
+        if (shouldShowCoachMark && manageProductListAdapter.itemCount.isMoreThanZero()) {
+            showCoachMark()
+        }
     }
 
     private fun observeProductList() {
@@ -164,7 +181,7 @@ class ManageProductFragment :
         viewModel.removeProductsStatus.observe(viewLifecycleOwner) {
             if (it is Success) {
                 doOnDelayFinished(DELAY) {
-                    loadInitialData()
+                    viewModel.getProducts(campaignId, LIST_TYPE)
                 }
             } else if (it is Fail) {
                 view?.showError(it.throwable)
@@ -192,14 +209,19 @@ class ManageProductFragment :
         viewModel.setProductErrorMessage(productList)
         viewModel.setProductInfoCompletion(productList)
         viewModel.getBannerType(productList)
-        manageProductListAdapter.clearAll()
-        renderList(productList.productList, false)
+        viewModel.getCampaignDetail(campaignId)
         binding?.apply {
+            recyclerViewProduct.layoutManager =
+                LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            manageProductListAdapter.clearAll()
+            manageProductListAdapter.submit(productList.productList)
+            recyclerViewProduct.adapter = manageProductListAdapter
             tpgProductCount.text = String.format(
                 getString(R.string.manage_product_placeholder_product_count),
                 productList.totalProduct
             )
         }
+        handleCoachMark()
     }
 
     private fun setupScrollListener() {
@@ -236,9 +258,8 @@ class ManageProductFragment :
                 if (manageProductListAdapter.itemCount < PAGE_SIZE) {
                     showChooseProductPage()
                 } else {
-                    view.showErrorWithCta(
-                        getString(R.string.manage_product_maximum_product_error),
-                        getString(R.string.action_oke)
+                    view.showError(
+                        getString(R.string.manage_product_maximum_product_error)
                     )
                 }
             }
@@ -276,6 +297,49 @@ class ManageProductFragment :
             tickerErrorProductInfo.gone()
             cardIncompleteProductInfo.gone()
             btnContinue.enable()
+        }
+    }
+
+    private fun showCoachMark() {
+        binding?.recyclerViewProduct?.post {
+            val btnAddProductAnchorView = binding?.tpgAddProduct
+            val coachMarkItems = arrayListOf<CoachMark2Item>()
+            try {
+                val view = binding?.recyclerViewProduct?.getChildAt(RECYCLERVIEW_ITEM_FIRST_INDEX)
+                val holder =
+                    view?.let { binding?.recyclerViewProduct?.findContainingViewHolder(it) }
+                holder?.let {
+                    coachMarkItems.add(
+                        CoachMark2Item(
+                            holder.itemView.findViewById(R.id.btn_update_product),
+                            "",
+                            getString(R.string.manage_product_first_list_coachmark),
+                            CoachMark2.POSITION_BOTTOM
+                        )
+                    )
+                    btnAddProductAnchorView?.let {
+                        coachMarkItems.add(
+                            CoachMark2Item(
+                                it,
+                                "",
+                                getString(R.string.manage_product_second_list_coachmark),
+                                CoachMark2.POSITION_BOTTOM
+                            )
+                        )
+                    }
+
+                    val coachMark = activity?.let { it -> CoachMark2(it) }
+                    coachMark?.showCoachMark(coachMarkItems)
+                    coachMark?.onFinishListener = {
+                        sharedPreference.markManageProductCoachMarkComplete()
+                    }
+                    coachMark?.onDismissListener = {
+                        sharedPreference.markManageProductCoachMarkComplete()
+                    }
+                }
+            } catch (t: Throwable) {
+                t.printStackTrace()
+            }
         }
     }
 
@@ -326,7 +390,7 @@ class ManageProductFragment :
                 EMPTY_BANNER -> {
                     cardIncompleteProductInfo.slideDown()
                 }
-                ERROR_BANNER -> {
+                else -> {
                     tickerErrorProductInfo.slideDown()
                 }
             }
@@ -340,7 +404,7 @@ class ManageProductFragment :
                 EMPTY_BANNER -> {
                     cardIncompleteProductInfo.slideUp()
                 }
-                ERROR_BANNER -> {
+                else -> {
                     tickerErrorProductInfo.slideUp()
                 }
             }
@@ -358,51 +422,5 @@ class ManageProductFragment :
                 }
             }
         }
-    }
-
-    override fun createAdapter(): ManageProductListAdapter {
-        return manageProductListAdapter
-    }
-
-    override fun getRecyclerView(view: View): RecyclerView? {
-        return binding?.recyclerViewProduct
-    }
-
-    override fun getSwipeRefreshLayout(view: View): SwipeRefreshLayout? {
-        return null
-    }
-
-    override fun getPerPage(): Int {
-        return PAGE_SIZE
-    }
-
-    override fun addElementToAdapter(list: List<SellerCampaignProductList.Product>) {
-        adapter?.submit(list)
-    }
-
-    override fun loadData(page: Int) {
-        viewModel.getProducts(campaignId, LIST_TYPE)
-    }
-
-    override fun clearAdapterData() {
-        adapter?.clearAll()
-    }
-
-    override fun onShowLoading() {}
-
-    override fun onHideLoading() {
-        loaderDialog?.dialog?.hide()
-    }
-
-    override fun onDataEmpty() {
-        showEmptyState()
-    }
-
-    override fun onGetListError(message: String) {
-        view?.showError(message)
-    }
-
-    override fun onScrolled(xScrollAmount: Int, yScrollAmount: Int) {
-
     }
 }

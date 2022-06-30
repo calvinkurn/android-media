@@ -139,7 +139,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:text="@string/manage_product_separator_label"
+        android:text="@string/separator_label"
         android:textColor="@color/grey_600"
         app:layout_constraintBottom_toBottomOf="@+id/tpg_stock_product"
         app:layout_constraintStart_toEndOf="@+id/tpg_stock_product"

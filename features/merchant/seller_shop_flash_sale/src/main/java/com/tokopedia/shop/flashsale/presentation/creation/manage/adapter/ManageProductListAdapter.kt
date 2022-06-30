@@ -1,7 +1,6 @@
 package com.tokopedia.shop.flashsale.presentation.creation.manage.adapter
 
 import android.graphics.Paint
-import android.text.Html
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.text.HtmlCompat
@@ -9,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsItemManageProductBinding
-import com.tokopedia.shop.flashsale.common.extension.convertRupiah
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList.Product
 import com.tokopedia.unifyprinciples.Typography
 
@@ -72,7 +70,7 @@ class ManageProductListAdapter(
                         labelDiscount.visible()
                         tpgDiscountedPrice.visible()
                         tpgDiscountedPrice.text =
-                            product.productMapData.discountedPrice.convertRupiah()
+                            product.productMapData.discountedPrice.getCurrencyFormatted()
                         labelDiscount.text = "${product.productMapData.discountPercentage}%"
                         tpgOriginalPrice.text = product.formattedPrice
                         tpgOriginalPrice.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG

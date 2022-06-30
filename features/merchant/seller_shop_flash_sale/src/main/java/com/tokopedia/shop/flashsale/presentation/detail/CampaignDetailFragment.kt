@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -33,6 +34,7 @@ import com.tokopedia.shop.flashsale.domain.entity.CampaignDetailMeta
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.MerchantCampaignTNC
 import com.tokopedia.shop.flashsale.domain.entity.enums.isActive
+import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
 import com.tokopedia.shop.flashsale.domain.entity.enums.isAvailable
 import com.tokopedia.shop.flashsale.domain.entity.enums.isCancelled
 import com.tokopedia.shop.flashsale.domain.entity.enums.isFinished
@@ -43,6 +45,7 @@ import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignIn
 import com.tokopedia.shop.flashsale.presentation.creation.rule.bottomsheet.MerchantCampaignTNCBottomSheet
 import com.tokopedia.shop.flashsale.presentation.detail.bottomsheet.CampaignDetailMoreMenuBottomSheet
 import com.tokopedia.shop.flashsale.presentation.detail.bottomsheet.CampaignDetailMoreMenuClickListener
+import com.tokopedia.shop.flashsale.presentation.detail.adapter.CampaignDetailProductListAdapter
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
@@ -50,7 +53,8 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class CampaignDetailFragment : BaseDaggerFragment(), CampaignDetailMoreMenuClickListener {
+class CampaignDetailFragment : BaseDaggerFragment(),
+    CampaignDetailMoreMenuClickListener {
 
     companion object {
         private const val BUNDLE_KEY_CAMPAIGN_ID = "campaign_id"
@@ -80,6 +84,10 @@ class CampaignDetailFragment : BaseDaggerFragment(), CampaignDetailMoreMenuClick
 
     private var binding by autoClearedNullable<SsfsFragmentCampaignDetailBinding>()
     private var errorToaster: Snackbar? = null
+
+    private val campaignDetailProductListAdapter by lazy {
+        CampaignDetailProductListAdapter()
+    }
 
     private val btnMoreClickListener = object : View.OnClickListener {
         override fun onClick(v: View?) {
@@ -276,8 +284,19 @@ class CampaignDetailFragment : BaseDaggerFragment(), CampaignDetailMoreMenuClick
     private fun showCampaignDetailContent(data: CampaignDetailMeta) {
         val binding = binding ?: return
         displayCampaignDetailInformation(data)
+        showProductList(data.productList)
         binding.wrapperCampaignDetailContent.visible()
         binding.loader.hide()
+    }
+
+    private fun showProductList(data: SellerCampaignProductList) {
+        binding?.apply {
+            rvProductList.layoutManager =
+                LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            campaignDetailProductListAdapter.clearAll()
+            campaignDetailProductListAdapter.submit(data.productList)
+            rvProductList.adapter = campaignDetailProductListAdapter
+        }
     }
 
     @SuppressLint("ResourcePackage")

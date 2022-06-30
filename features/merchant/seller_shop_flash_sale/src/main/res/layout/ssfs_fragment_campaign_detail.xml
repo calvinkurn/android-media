@@ -375,8 +375,6 @@
                 android:id="@+id/rv_product_list"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_marginStart="@dimen/unify_space_16"
-                android:layout_marginEnd="@dimen/unify_space_16"
                 android:layout_marginBottom="@dimen/unify_space_16"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintHeight_min="wrap"
@@ -386,7 +384,6 @@
                 android:id="@+id/group_product_list"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
                 app:constraint_referenced_ids="tg_campaign_product_list_title, rv_product_list"
                 tools:visibility="visible" />
 
