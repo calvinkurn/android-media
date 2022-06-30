@@ -63,10 +63,10 @@ class CampaignDetailProductListAdapter :
         }
 
         private fun Typography.setProductSku(sku: String) {
-            if (sku.isNotEmpty()) {
-                this.text = context.getString(R.string.campaign_detail_SKU_placeholder, sku)
+            this.text = if (sku.isNotEmpty()) {
+                context.getString(R.string.campaign_detail_SKU_placeholder, sku)
             } else {
-                this.text = context.getString(R.string.campaign_detail_SKU_placeholder, "-")
+                context.getString(R.string.campaign_detail_SKU_placeholder, "-")
             }
         }
 

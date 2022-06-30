@@ -294,7 +294,7 @@ class CampaignDetailFragment :
     }
 
     private fun showProductList(data: SellerCampaignProductList) {
-        renderList(data.productList, hasNextPage = data.productList.size == getPerPage())
+        renderList(data.productList, false)
     }
 
     @SuppressLint("ResourcePackage")
