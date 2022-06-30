@@ -238,7 +238,13 @@ class TmDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback {
             PROGRAM ->{
                 bundle.let { TmProgramFragment.newInstance(it) }.let { addFragment(it, "") }
             }
-            COUPON_SINGLE ->{}
+            COUPON_SINGLE ->{
+                bundle.let { tmCouponListRefreshCallback?.let { it1 ->
+                    TmSingleCouponCreateFragment.newInstance(it,
+                        it1
+                    )
+                } }?.let { addFragment(it, "") }
+            }
             COUPON_MULTIPLE ->{
                 bundle.let { TmMultipleCuponCreateFragment.newInstance(it) }.let { addFragment(it, "") }
             }

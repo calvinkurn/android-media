@@ -40,7 +40,6 @@ import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
 import com.tokopedia.tokomember_seller_dashboard.model.TmSingleCouponData
 import com.tokopedia.tokomember_seller_dashboard.model.ValidationError
 import com.tokopedia.tokomember_seller_dashboard.model.mapper.TmCouponCreateMapper
-import com.tokopedia.tokomember_seller_dashboard.util.*
 import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
 import com.tokopedia.tokomember_seller_dashboard.util.ANDROID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID
@@ -59,7 +58,9 @@ import com.tokopedia.tokomember_seller_dashboard.util.COUPON_HEADER_SUBTITLE
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_HEADER_TITLE
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_TERMS_CONDITION
 import com.tokopedia.tokomember_seller_dashboard.util.CREATE
+import com.tokopedia.tokomember_seller_dashboard.util.DATE_DESC_END
 import com.tokopedia.tokomember_seller_dashboard.util.DATE_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.DATE_TITLE_END
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA_RETRY
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_DESC
@@ -78,8 +79,8 @@ import com.tokopedia.tokomember_seller_dashboard.util.SIMPLE_DATE_FORMAT
 import com.tokopedia.tokomember_seller_dashboard.util.SOURCE_MULTIPLE_COUPON_CREATE
 import com.tokopedia.tokomember_seller_dashboard.util.TERMS
 import com.tokopedia.tokomember_seller_dashboard.util.TERNS_AND_CONDITION
-import com.tokopedia.tokomember_seller_dashboard.util.TIME_DESC
 import com.tokopedia.tokomember_seller_dashboard.util.TIME_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.TIME_TITLE_END
 import com.tokopedia.tokomember_seller_dashboard.util.TM_ERROR_PROGRAM
 import com.tokopedia.tokomember_seller_dashboard.util.TM_TNC
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.convertDateTime
@@ -626,7 +627,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
             couponEndDate,
             couponStartTime,
             couponEndTime,
-            tmToken, imageSquare, imagePortrait, maxBenefit
+            tmToken, imageSquare, imagePortrait, maxBenefit, programActionType
         )
 
         val bundle = Bundle()
@@ -650,6 +651,10 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 manualEndTimeProgram= timeWindow?.endTime?:""
             }
             ProgramActionType.CREATE_BUAT -> {
+                manualStartTimeProgram = timeWindow?.startTime?:""
+                manualEndTimeProgram= timeWindow?.endTime?:""
+            }
+            ProgramActionType.CREATE_FROM_COUPON -> {
                 manualStartTimeProgram = timeWindow?.startTime?:""
                 manualEndTimeProgram= timeWindow?.endTime?:""
             }

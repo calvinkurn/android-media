@@ -62,6 +62,8 @@ const val ADD_QUOTA = "addQuota"
 
 const val LOADING_TEXT = "<b>Makan pepaya minum jus durian</b>" + "<br>" +
         "Tunggu ya, program lagi disiapkan!"
+const val TM_SUMMARY_DIALOG_TITLE = "<b>Tunggu Sebentar, ya</b>" + "<br>" +
+"Kami sedang membuat kuponmu"
 
 const val ERROR_CREATING_TITLE = "Ada gangguan di rumah Toped"
 const val ERROR_CREATING_TITLE_RETRY= "Yaah, pengaturan TokoMember  gagal disimpan"
@@ -139,9 +141,6 @@ const val TM_DIALOG_CANCEL_CTA_SECONDARY_COUPON = "Batal"
 const val PROGRAM_CTA = "Buat Program"
 const val PROGRAM_CTA_EDIT = "Simpan"
 
-const val TM_PROGRAM_EDIT_DIALOG_TITLE = "Makan pepaya minum jus durian\n" +
-        "Tunggu ya, program lagi disiapkan!"
-
 const val TM_PROGRAM_MIN_PURCHASE_ERROR = "Tidak boleh melebihi level VIP (Level 2)"
 const val COUPON_TYPE_SHIPPING = 1
 const val COUPON_TYPE_DISCOUNT = 2
@@ -183,6 +182,3 @@ const val MIN_TRANSACTION_OVERFLOW = "Harus kurang dari min. transaksi."
 const val MIN_DISCOUNT_LABEL = "Min. Rp10.000"
 const val MAX_DISCOUNT_LABEL = "Maks. Rp99.999.99"
 const val MAX_DISCOUNT_OVERFLOW = "Harus kurang dari min. transaksi."
-
-const val TM_SINGLE_COUPON_SOURCE = "TokoMember-Voucher"
-const val TM_MULTIPLE_COUPON_SOURCE = "TokoMember-Create"

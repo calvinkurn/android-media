@@ -32,9 +32,9 @@ import com.tokopedia.tokomember_seller_dashboard.util.CANCEL
 import com.tokopedia.tokomember_seller_dashboard.util.EDIT
 import com.tokopedia.tokomember_seller_dashboard.util.EXTEND
 import com.tokopedia.tokomember_seller_dashboard.util.LOADED
+import com.tokopedia.tokomember_seller_dashboard.util.LOADING_TEXT
 import com.tokopedia.tokomember_seller_dashboard.util.REFRESH
 import com.tokopedia.tokomember_seller_dashboard.util.REQUEST_CODE_REFRESH
-import com.tokopedia.tokomember_seller_dashboard.util.TM_PROGRAM_EDIT_DIALOG_TITLE
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TmDashCreateActivity
@@ -265,7 +265,7 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
         loaderDialog?.loaderText?.apply {
             setType(Typography.DISPLAY_2)
         }
-        loaderDialog?.setLoadingText(Html.fromHtml(TM_PROGRAM_EDIT_DIALOG_TITLE))
+        loaderDialog?.setLoadingText(Html.fromHtml(LOADING_TEXT))
         loaderDialog?.show()
     }
 
