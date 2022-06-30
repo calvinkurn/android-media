@@ -5,4 +5,6 @@
     <dimen name="editor_thumbnail_rounded">4dp</dimen>
     <dimen name="editor_thumbnail_border">3dp</dimen>
     <dimen name="editor_thumbnail_selected_padding">2dp</dimen>
+
+    <dimen name="media_editor_slider_height">10dp</dimen>
 </resources>
