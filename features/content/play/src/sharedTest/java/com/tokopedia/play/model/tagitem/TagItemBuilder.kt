@@ -38,7 +38,8 @@ interface TagItemBuilder {
         price: ProductPrice = OriginalPrice("0", 0.0),
         minQty: Int = 1,
         isFreeShipping: Boolean = false,
-        appLink: String = ""
+        appLink: String = "",
+        isTokoNow: Boolean = false,
     ): PlayProductUiModel.Product
 
     fun buildMerchantVoucher(
