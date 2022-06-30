@@ -103,7 +103,7 @@ object DigitalCheckoutQueries {
         }
     """
 
-    fun getCancelVoucherCartQuery() = """
+    const val CANCEL_VOUCHER_CHART_QUERY = """
         mutation clearCacheAutoApplyStack(${'$'}serviceID: String!, ${'$'}promoCode:[String], ${'$'}isOCC: Boolean) {
           clearCacheAutoApplyStack(serviceID:${'$'}serviceID, promoCode: ${'$'}promoCode, isOCC: ${'$'}isOCC) { 
             Success
@@ -112,5 +112,5 @@ object DigitalCheckoutQueries {
             error
           }
         }
-    """.trimIndent()
+    """
 }
