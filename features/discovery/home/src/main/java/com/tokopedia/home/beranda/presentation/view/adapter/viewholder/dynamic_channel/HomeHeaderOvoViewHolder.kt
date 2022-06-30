@@ -3,7 +3,9 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 import android.view.View
 import android.widget.FrameLayout
 import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.discovery.common.utils.toDpInt
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.helper.benchmark.TRACE_ON_BIND_HEADER_OVO
@@ -62,15 +64,11 @@ class HomeHeaderOvoViewHolder(itemView: View,
     }
 
     private fun renderHeaderImage() {
-        val headerBackgroundHomeImage = itemView.findViewById<ImageUnify>(R.id.header_background_home_image)
-        val headerBackgroundHome = itemView.findViewById<View>(R.id.header_background_home)
+        val headerBackgroundHome = itemView.findViewById<ImageUnify>(R.id.header_background_home)
         if (listener.isSuperGraphicHeaderActive()) {
-            headerBackgroundHomeImage.visible()
-            headerBackgroundHomeImage.setImageUrl(IMAGE_HEADER_MOBILE)
-            headerBackgroundHome.invisible()
+            headerBackgroundHome.setImageUrl(IMAGE_HEADER_MOBILE)
         } else {
-            headerBackgroundHomeImage.gone()
-            headerBackgroundHome.visible()
+            headerBackgroundHome.setColorFilter(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500), android.graphics.PorterDuff.Mode.SRC_IN);
         }
     }
 
