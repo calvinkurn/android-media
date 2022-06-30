@@ -100,6 +100,7 @@ dependencies {
 
     //Logistic
     implementation projectOrAar(rootProject.ext.features.logisticorder)
+    implementation projectOrAar(rootProject.ext.features.logisticseller)
     implementation projectOrAar(rootProject.ext.features.logisticaddaddress)
     implementation projectOrAar(rootProject.ext.features.manageaddress)
 
@@ -161,5 +162,4 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.buyerorder)
     implementation projectOrAar(rootProject.ext.features.snapshot)
     implementation projectOrAar(rootProject.ext.features.buyercancellationorder)
-    implementation projectOrAar(rootProject.ext.features.people)
 }

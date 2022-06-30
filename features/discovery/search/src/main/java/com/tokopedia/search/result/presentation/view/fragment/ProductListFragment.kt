@@ -404,7 +404,7 @@ class ProductListFragment: BaseDaggerFragment(),
             productListener = this,
             tickerListener = this,
             suggestionListener = this,
-            globalNavListener = GlobalNavListenerDelegate(trackingQueue, activity),
+            globalNavListener = GlobalNavListenerDelegate(trackingQueue, activity, iris),
             bannerAdsListener = this,
             emptyStateListener = EmptyStateListenerDelegate(
                 activity,
@@ -1995,11 +1995,18 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun setProductCount(productCountText: String?) {
-        sortFilterBottomSheet?.setResultCountText(String.format(
+        sortFilterBottomSheet?.setResultCountText(getFilterCountText(productCountText))
+    }
+
+    private fun getFilterCountText(productCountText: String?): String =
+        if (productCountText.isNullOrBlank()) {
+            getString(com.tokopedia.filter.R.string.bottom_sheet_filter_finish_button_no_count)
+        } else {
+            String.format(
                 getString(com.tokopedia.filter.R.string.bottom_sheet_filter_finish_button_template_text),
                 productCountText
-        ))
-    }
+            )
+        }
     //endregion
 
     //region TopAdsImageView / TDN

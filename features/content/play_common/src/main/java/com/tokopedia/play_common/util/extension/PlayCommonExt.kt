@@ -330,6 +330,12 @@ fun View.showKeyboard() {
     imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
 }
 
+fun EditText.showKeyboard(isShow: Boolean) {
+    val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    if (isShow) imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
+    else imm.hideSoftInputFromWindow(this.windowToken, 0)
+}
+
 data class CachedState<T>(val prevValue: T? = null, val value: T) {
 
     fun <V> isValueChanged(prop: KProperty1<T, V>): Boolean {
@@ -357,6 +363,7 @@ fun <T: Any> Flow<T>.withCache(): Flow<CachedState<T>> {
     }
 }
 
+@Deprecated("Use MutableStateFlow.update")
 fun <T: Any> MutableStateFlow<T>.setValue(fn: T.() -> T) {
     value = value.fn()
 }
