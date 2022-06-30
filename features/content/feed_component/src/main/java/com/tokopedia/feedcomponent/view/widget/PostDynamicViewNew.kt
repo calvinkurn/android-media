@@ -1868,6 +1868,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
             videoPlayer = null
             layout_video?.player = null
         }
+
+        adapter.removeAllFocus(pageControl.indicatorCurrentPosition)
     }
     private fun hideTaggingOnDetach(feedXCard: FeedXCard) {
         val cardProducts: List<FeedXProduct> = feedXCard.tags

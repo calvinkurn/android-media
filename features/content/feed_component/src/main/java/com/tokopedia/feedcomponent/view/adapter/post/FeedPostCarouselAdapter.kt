@@ -59,6 +59,17 @@ internal class FeedPostCarouselAdapter(
         )
     }
 
+    fun removeAllFocus(position: Int) {
+        val removeFocusPayload = Bundle().apply {
+            putBoolean(PAYLOAD_FOCUS, false)
+        }
+        notifyItemRangeChanged(
+            position - FOCUS_POSITION_THRESHOLD,
+            2 * FOCUS_POSITION_THRESHOLD + 1,
+            removeFocusPayload
+        )
+    }
+
     fun onPause() {
         val removeFocusPayload = Bundle().apply {
             putBoolean(PAYLOAD_FOCUS, false)

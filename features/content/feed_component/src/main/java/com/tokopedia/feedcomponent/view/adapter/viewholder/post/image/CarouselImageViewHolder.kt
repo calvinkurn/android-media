@@ -25,6 +25,7 @@ import com.tokopedia.feedcomponent.view.widget.PostTagView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.kotlin.extensions.view.visible
@@ -150,6 +151,10 @@ internal class CarouselImageViewHolder(
 
     fun focusMedia() {
         removeAllPendingCallbacks()
+
+        val isExpanded = tvLihatProduct.isVisible
+        if (isExpanded) return
+
         itemView.postDelayed(showLihatProduct, FOCUS_SHOW_LIHAT_PRODUK_DELAY)
         itemView.postDelayed(
             hideLihatProduct,
@@ -162,8 +167,7 @@ internal class CarouselImageViewHolder(
 
     fun removeFocus() {
         removeAllPendingCallbacks()
-
-        onPostTagViews { it.hideExpandedViewIfShown() }
+        resetUi()
     }
 
     fun bind(item: FeedXMedia) {
@@ -248,6 +252,8 @@ internal class CarouselImageViewHolder(
         primaryColor: Int,
         secondaryColor: Int,
     ) {
+        itemView.removeCallbacks(focusTopAds)
+
         TransitionManager.beginDelayedTransition(
             itemView as ViewGroup,
             BackgroundColorTransition()
@@ -296,6 +302,12 @@ internal class CarouselImageViewHolder(
         itemView.removeCallbacks(showLihatProduct)
         itemView.removeCallbacks(hideLihatProduct)
         itemView.removeCallbacks(focusTopAds)
+    }
+
+    private fun resetUi() {
+        onPostTagViews { it.hideExpandedViewIfShown() }
+        tvLihatProduct.gone()
+        changeTopAdsColorToWhite()
     }
 
     companion object {
