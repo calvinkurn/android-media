@@ -18,9 +18,11 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 import com.tokopedia.abstraction.R;
 import com.tokopedia.abstraction.common.utils.view.MenuTintUtils;
+import com.tokopedia.unifyprinciples.Typography;
 
 import static com.tokopedia.utils.view.DarkModeUtil.isDarkMode;
 
@@ -82,6 +84,7 @@ abstract class BaseToolbarActivity extends BaseActivity {
     protected void setupLayout(Bundle savedInstanceState) {
         setContentView(getLayoutRes());
         toolbar = (Toolbar) findViewById(getToolbarResourceID());
+        changeToolbarFontToOSO();
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -161,7 +164,7 @@ abstract class BaseToolbarActivity extends BaseActivity {
                 drawable.setColorFilter(ContextCompat.getColor(this,
                         com.tokopedia.unifyprinciples.R.color.Unify_NN900), PorterDuff.Mode.SRC_ATOP);
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -175,6 +178,19 @@ abstract class BaseToolbarActivity extends BaseActivity {
             menuItem.setTitle(spanString);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private void changeToolbarFontToOSO() {
+        for (int i = 0; i < toolbar.getChildCount(); i++) {
+            View item = toolbar.getChildAt(i);
+            if (item instanceof TextView) {
+                if (((TextView) item).getText().equals(toolbar.getTitle())) {
+                    ((TextView) item).setTypeface(Typography.Companion.getFontType(this, true, Typography.DISPLAY_1));
+                } else if (((TextView) item).getText().equals(toolbar.getSubtitle())) {
+                    ((TextView) item).setTypeface(Typography.Companion.getFontType(this, false, Typography.DISPLAY_3));
+                }
+            }
         }
     }
 }
