@@ -143,8 +143,8 @@ class LoginEmailPhoneViewModel @Inject constructor(
     val loginBiometricResponse: LiveData<Result<LoginToken>>
         get() = mutableLoginBiometricResponse
 
-    private val mutableGetTemporaryKeyResponse = MutableLiveData<Result<Profile>>()
-    val getTemporaryKeyResponse: LiveData<Result<Profile>>
+    private val mutableGetTemporaryKeyResponse = MutableLiveData<Boolean>()
+    val getTemporaryKeyResponse: LiveData<Boolean>
         get() = mutableGetTemporaryKeyResponse
 
     fun registerCheck(id: String) {
@@ -283,15 +283,16 @@ class LoginEmailPhoneViewModel @Inject constructor(
             val profile = Profile(
                 accessToken = result.data.key,
                 name = tkpdProfile.profileInfo.fullName,
-                customerId = "",
+                customerId = tkpdProfile.profileInfo.userId,
                 countryCode = "+62",
                 phone = tkpdProfile.profileInfo.phone,
                 email = tkpdProfile.profileInfo.email,
                 profileImageUrl = tkpdProfile.profileInfo.profilePicture
             )
-            mutableGetTemporaryKeyResponse.value = Success(profile)
+            gotoSeamlessHelper.saveUserProfileToSDK(profile)
+            mutableGetTemporaryKeyResponse.value = true
         }, onError = {
-            mutableGetTemporaryKeyResponse.value = Fail(it)
+            mutableGetTemporaryKeyResponse.value = false
         })
     }
 
@@ -399,7 +400,6 @@ class LoginEmailPhoneViewModel @Inject constructor(
                 val result = gotoSeamlessHelper.getGojekProfile()
                 mutableNavigateToGojekSeamless.value = result.authCode.isNotEmpty()
             } catch (e: Exception) {
-                e.printStackTrace()
                 mutableNavigateToGojekSeamless.value = false
             }
         }

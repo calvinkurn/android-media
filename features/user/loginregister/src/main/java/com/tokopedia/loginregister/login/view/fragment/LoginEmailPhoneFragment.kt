@@ -25,8 +25,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.lifecycle.lifecycleScope
-import com.gojek.icp.identity.loginsso.data.models.Profile
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -85,6 +83,7 @@ import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.discover.pojo.DiscoverData
 import com.tokopedia.loginregister.discover.pojo.ProviderData
 import com.tokopedia.loginregister.goto_seamless.GotoSeamlessHelper
+import com.tokopedia.loginregister.goto_seamless.GotoSeamlessLoginFragment
 import com.tokopedia.loginregister.goto_seamless.worker.TemporaryTokenWorker
 import com.tokopedia.loginregister.login.const.LoginConstants
 import com.tokopedia.loginregister.login.const.LoginConstants.Request.REQUEST_GOTO_SEAMLESS
@@ -137,7 +136,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.image.ImageUtils
 import kotlinx.android.synthetic.main.fragment_login_with_phone.*
 import kotlinx.android.synthetic.main.layout_partial_register_input.*
-import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -402,16 +400,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private fun showLoadingSeamless() {
         loadingOverlay?.show()
-        if(activity is LoginActivity) {
-            (activity as LoginActivity).supportActionBar?.hide()
-        }
+        (activity as? LoginActivity)?.supportActionBar?.hide()
     }
 
     private fun hideLoadingSeamless() {
         loadingOverlay?.hide()
-        if(activity is LoginActivity) {
-            (activity as LoginActivity).supportActionBar?.show()
-        }
+        (activity as? LoginActivity)?.supportActionBar?.show()
     }
 
     private fun prepareArgData() {
@@ -571,21 +565,15 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         })
 
         viewModel.getTemporaryKeyResponse.observe(viewLifecycleOwner) {
-            if(it is Success) {
+            if(it) {
                 context?.run {
                     TemporaryTokenWorker.scheduleWorker(applicationContext)
                 }
-                saveProfileToSDK(it.data)
             }
             onSuccessLogin()
         }
     }
 
-    private fun saveProfileToSDK(profile: Profile) {
-        lifecycleScope.launch {
-            gotoSeamlessHelper.saveUserProfileToSDK(profile)
-        }
-    }
 
     private fun onSuccessRegisterCheckFingerprint(data: RegisterCheckFingerprintResult) {
         activity?.let {
@@ -1615,6 +1603,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                     }
                     Activity.RESULT_CANCELED -> {
                         activity?.finish()
+                    }
+                    GotoSeamlessLoginFragment.RESULT_OTHER_ACCS -> {
+                        hideLoadingSeamless()
                     }
                     else -> {
                         activity?.finish()

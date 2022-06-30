@@ -40,7 +40,6 @@ class GotoSeamlessLoginViewModel @Inject constructor(
                 val result = gotoSeamlessHelper.getGojekProfile()
                 mutableGojekProfileData.value = Success(result)
             } catch (e: Exception) {
-                e.printStackTrace()
                 mutableGojekProfileData.value = Fail(e)
             }
         }

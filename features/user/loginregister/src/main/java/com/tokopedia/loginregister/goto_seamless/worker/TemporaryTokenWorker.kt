@@ -41,7 +41,6 @@ class TemporaryTokenWorker(val appContext: Context, params: WorkerParameters) :
         if(userSession.isLoggedIn) {
             return withContext(Dispatchers.IO) {
                 try {
-                    println("tempTokenWorker: starting...")
                     val params = GetTemporaryKeyParam(
                         module = GetTemporaryKeyUseCase.MODULE_GOTO_SEAMLESS,
                         currentToken = gotoSeamlessPreference.getTemporaryToken()
@@ -52,24 +51,20 @@ class TemporaryTokenWorker(val appContext: Context, params: WorkerParameters) :
                         val profile = Profile(
                             accessToken = result.data.key,
                             name = userSession.name,
-                            customerId = "",
+                            customerId = userSession.userId,
                             countryCode = "+62",
                             phone = userSession.phoneNumber,
                             email = userSession.email,
                             profileImageUrl = userSession.profilePicture
                         )
                         gotoSeamlessHelper.updateUserProfileToSDK(profile)
-                        println("tempTokenWorker: success ($profile)")
                     }
                     Result.success()
                 } catch (e: Exception) {
-                    e.printStackTrace()
-                    println("tempTokenWorker: failed (${e.message})")
                     Result.failure()
                 }
             }
         } else {
-            println("tempTokenWorker: not logged in")
             return Result.success()
         }
     }

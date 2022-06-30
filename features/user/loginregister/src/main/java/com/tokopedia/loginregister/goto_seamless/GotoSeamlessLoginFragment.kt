@@ -93,6 +93,11 @@ class GotoSeamlessLoginFragment: BaseDaggerFragment() {
         activity?.finish()
     }
 
+    private fun loginWithDifferentAccFlow() {
+        activity?.setResult(RESULT_OTHER_ACCS)
+        activity?.finish()
+    }
+
     private fun cancelSeamlessLoginFlow() {
         activity?.setResult(Activity.RESULT_CANCELED)
         activity?.finish()
@@ -112,7 +117,7 @@ class GotoSeamlessLoginFragment: BaseDaggerFragment() {
 
         binding?.gotoSeamlessSecondaryBtn?.setOnClickListener {
             GotoSeamlessTracker.clickOnMasukAkunLain()
-            cancelSeamlessLoginFlow()
+            loginWithDifferentAccFlow()
         }
     }
 
@@ -124,6 +129,8 @@ class GotoSeamlessLoginFragment: BaseDaggerFragment() {
     companion object {
         private const val GOTO_SEAMLESS_SCREEN_NAME = "gotoSeamlessLandingScreen"
         const val ILLUSTRATION_IMG_URL = "https://images.tokopedia.net/img/android/user/loginregister/img_goto_illustration_2x.png"
+
+        const val RESULT_OTHER_ACCS = 235
 
         fun createInstance(): GotoSeamlessLoginFragment {
             return GotoSeamlessLoginFragment()

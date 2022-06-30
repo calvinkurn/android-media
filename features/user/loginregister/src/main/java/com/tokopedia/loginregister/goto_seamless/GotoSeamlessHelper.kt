@@ -14,10 +14,13 @@ import javax.inject.Inject
 
 class GotoSeamlessHelper @Inject constructor(@ApplicationContext val context: Context) {
 
+    private val environment = if(GlobalConfig.DEBUG) Environment.Integration else Environment.Prod
+    private val appId = if(GlobalConfig.isSellerApp()) GlobalConfig.PACKAGE_SELLER_APP else GlobalConfig.PACKAGE_CONSUMER_APP
+
     suspend fun getSsoData(): Map<String, String> {
-        return ClientSSOBridge(appID = GlobalConfig.PACKAGE_CONSUMER_APP, appVersion = GlobalConfig.VERSION_NAME).retrieveSSOData(
+        return ClientSSOBridge(appID = appId, appVersion = GlobalConfig.VERSION_NAME).retrieveSSOData(
             context = context,
-            environment = Environment.Integration
+            environment = environment
         )
     }
 
@@ -33,7 +36,7 @@ class GotoSeamlessHelper @Inject constructor(@ApplicationContext val context: Co
         val ssoHostData = SSOHostData(
             clientId = context.getString(com.tokopedia.keys.R.string.gojek_sso_client_id),
             clientSecret = context.getString(com.tokopedia.keys.R.string.gojek_sso_client_secret),
-            Environment.Integration
+            environment
         )
 
         val ssoDataBridge = SSOHostBridge.getSsoHostBridge()
@@ -45,7 +48,7 @@ class GotoSeamlessHelper @Inject constructor(@ApplicationContext val context: Co
         val ssoHostData = SSOHostData(
             clientId = context.getString(com.tokopedia.keys.R.string.gojek_sso_client_id),
             clientSecret = context.getString(com.tokopedia.keys.R.string.gojek_sso_client_secret),
-            Environment.Integration
+            environment
         )
 
         val ssoDataBridge = SSOHostBridge.getSsoHostBridge()
