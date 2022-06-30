@@ -95,7 +95,7 @@ data class CheckoutTokoFoodData(
                 summaryDetail.totalPrice
             } else {
                 // From cart list gql
-                shoppingSummary.costBreakdown.totalCartPrice.originalAmount.getCurrencyFormatted()
+                shoppingSummary.costBreakdown.totalCartPrice.amount.getCurrencyFormatted()
             }
         return MiniCartUiModel(
             shopName = shop.name,
