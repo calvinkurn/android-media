@@ -22,8 +22,8 @@
         android:layout_marginTop="@dimen/pdp_fintech_widget_14_dp"
         android:layout_marginEnd="@dimen/pdp_fintech_widget_16_dp"
         android:textColor="@color/Unify_N700_96"
-        android:textSize="@dimen/sp_14"
-        android:textStyle="bold"
+        app:typographyWeight="bold"
+        app:typographyType="display_2"
         tools:text = "Demo Title"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/divider1" />
