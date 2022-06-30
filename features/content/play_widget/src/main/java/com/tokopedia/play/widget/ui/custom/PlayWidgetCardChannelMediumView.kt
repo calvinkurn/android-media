@@ -132,16 +132,11 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
 
         setOnClickListener {
             mListener?.onChannelClicked(it, model)
-            mListener?.onLabelPromoClicked(this, model)
         }
 
         ivAction.setOnClickListener {
             mListener?.onMenuActionButtonClicked(this, model)
         }
-
-        llPromoDetail.isVisibleOnTheScreen(onViewVisible = {
-            mListener?.onLabelPromoImpressed(this, model)
-        }, onViewNotVisible = {})
     }
 
     private fun setActiveModel(model: PlayWidgetChannelUiModel) {
@@ -263,16 +258,6 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         fun onMenuActionButtonClicked(
                 view: View,
                 item: PlayWidgetChannelUiModel
-        )
-
-        fun onLabelPromoClicked(
-            view: View,
-            item: PlayWidgetChannelUiModel
-        )
-
-        fun onLabelPromoImpressed(
-            view: View,
-            item: PlayWidgetChannelUiModel
         )
     }
 }
