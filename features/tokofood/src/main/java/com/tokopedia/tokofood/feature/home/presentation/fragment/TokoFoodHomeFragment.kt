@@ -93,6 +93,7 @@ import com.tokopedia.tokofood.feature.home.presentation.viewmodel.TokoFoodHomeVi
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -222,7 +223,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     override fun navigateToNewFragment(fragment: Fragment) {
-        (activity as? BaseMultiFragActivity)?.navigateToNewFragment(fragment)
+        (activity as? BaseTokofoodActivity)?.navigateToNewFragment(fragment)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -327,9 +328,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
             .buildUpon()
             .appendQueryParameter(DeeplinkMapperTokoFood.PARAM_MERCHANT_ID, merchant.id)
             .build()
-        TokofoodRouteManager.mapUriToFragment(merchantPageUri)?.let { merchantPageFragment ->
-            navigateToNewFragment(merchantPageFragment)
-        }
+        TokofoodRouteManager.routePrioritizeInternal(context, merchantPageUri.toString())
     }
 
     override fun onImpressMerchant(merchant: Merchant, horizontalPosition: Int) {
@@ -547,12 +546,6 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                     )
                     showToaster(it.throwable.message)
                 }
-            }
-        }
-
-        viewLifecycleOwner.observe(viewModel.homeImagePath) {
-            if (it.isNotEmpty()) {
-                showUniversalShareBottomSheet(it)
             }
         }
     }
@@ -852,7 +845,12 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     private fun shareClicked() {
         if (UniversalShareBottomSheet.isCustomSharingEnabled(context)) {
             context?.let {
-                viewModel.saveHomeImageToPhoneStorage(it, OG_IMAGE_SHARE_URL)
+                SharingUtil.saveImageFromURLToStorage(
+                    it,
+                    OG_IMAGE_SHARE_URL
+                ) { storageImagePath ->
+                    showUniversalShareBottomSheet(storageImagePath)
+                }
             }
         } else {
             LinkerManager.getInstance().executeShareRequest(shareRequest(context, shareHomeTokoFood))

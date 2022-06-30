@@ -88,7 +88,7 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
             // It means that we are trying to add new fragment but currently the same instance of that fragment resides as initial fragment in this activity
             // Later, this should not add the fragment transaction into backstack, because there will be double fragments in the stack
             val isNavigatingToInitialWithNewFragment =
-                isSingleTask && getFragmentCount() <= NAVIGATE_TO_INITIAL_FRAGMENT_COUNT
+                isSingleTask && supportFragmentManager.backStackEntryCount < NAVIGATE_TO_INITIAL_FRAGMENT_COUNT
             addNewFragment(fragment, true, isNavigatingToInitialWithNewFragment)
         } else {
             navigateToNewFragment(fragment)
@@ -154,7 +154,7 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
                 supportFragmentManager.popBackStack()
             } else {
                 val destinationFragmentIndex = getDestinationFragmentIndex(backStackCount, destinationFragmentName)
-                popBackStackUntilDestination(backStackCount, destinationFragmentIndex, destinationFragmentName)
+                popBackStackUntilDestination(backStackCount, false, destinationFragmentIndex, destinationFragmentName)
             }
         } catch (ex: Exception) {
             popDestinationBackStack(destinationFragmentName)
@@ -169,14 +169,13 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
      */
     private fun popExistedFragment(destinationFragmentName: String) {
         try {
-            var backStackCount = supportFragmentManager.backStackEntryCount
+            val backStackCount = supportFragmentManager.backStackEntryCount
             if (backStackCount <= Int.ONE) {
                 // Means that the fragment is existed but not yet added into the back stack.
                 supportFragmentManager.popBackStack()
             } else {
-                backStackCount++
                 val destinationFragmentIndex = getDestinationFragmentIndex(backStackCount, destinationFragmentName)
-                popBackStackUntilDestination(backStackCount, destinationFragmentIndex, destinationFragmentName)
+                popBackStackUntilDestination(backStackCount, true, destinationFragmentIndex, destinationFragmentName)
             }
         } catch (ex: Exception) {
             popDestinationBackStack(destinationFragmentName)
@@ -196,10 +195,10 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
                                             destinationFragmentName: String): Int {
         var destinationFragmentIndex = RecyclerView.NO_POSITION
         for (i in Int.ZERO until backStackCount) {
-            supportFragmentManager.getBackStackEntryAt(i).name.let { existedFragmentName ->
-                if (destinationFragmentName == existedFragmentName) {
-                    destinationFragmentIndex = i
-                }
+            val existedFragmentName = supportFragmentManager.getBackStackEntryAt(i).name
+            if (destinationFragmentName == existedFragmentName) {
+                destinationFragmentIndex = i + Int.ONE
+                break
             }
         }
         return destinationFragmentIndex
@@ -213,10 +212,17 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
      * @param   destinationFragmentName     the name of the destination fragment
      */
     private fun popBackStackUntilDestination(backStackCount: Int,
+                                             shouldPopSimilarFragment: Boolean,
                                              destinationFragmentIndex: Int,
                                              destinationFragmentName: String) {
         if (destinationFragmentIndex > RecyclerView.NO_POSITION) {
-            val popStackCount = backStackCount - destinationFragmentIndex - Int.ONE
+            val extraCount =
+                if (shouldPopSimilarFragment) {
+                    Int.ONE
+                } else {
+                    Int.ZERO
+                }
+            val popStackCount = backStackCount - destinationFragmentIndex + extraCount
             if (popStackCount > Int.ZERO) {
                 repeat(popStackCount) {
                     supportFragmentManager.popBackStack()
