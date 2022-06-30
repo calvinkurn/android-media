@@ -50,7 +50,7 @@ object TokoFoodHomeCategoryCommonAnalytics: BaseTrackerConst() {
                     putString(Items.ITEM_NAME, it.productName)
                     putString(Items.ITEM_VARIANT, it.productId)
                     putDouble(Items.PRICE, it.price)
-                    putInt(Items.QUANTITY, it.quantity)
+                    putInt(TokoFoodAnalytics.KEY_QUANTITY, it.quantity)
                     putString(TrackerConstant.SHOP_ID, data.shop.shopId)
                     putString(TokoFoodAnalytics.KEY_SHOP_NAME, data.shop.name)
                     putString(TokoFoodAnalytics.KEY_SHOP_TYPE, EMPTY_DATA)

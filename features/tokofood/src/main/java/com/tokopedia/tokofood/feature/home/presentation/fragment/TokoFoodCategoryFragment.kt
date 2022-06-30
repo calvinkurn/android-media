@@ -42,6 +42,7 @@ import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
 import com.tokopedia.tokofood.common.minicartwidget.view.TokoFoodMiniCartWidget
 import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
+import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.common.util.Constant
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
@@ -198,7 +199,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
     }
 
     override fun navigateToNewFragment(fragment: Fragment) {
-        (activity as? BaseMultiFragActivity)?.navigateToNewFragment(fragment)
+        (activity as? BaseTokofoodActivity)?.navigateToNewFragment(fragment)
     }
 
     override fun onClickRetryError() {

@@ -94,7 +94,7 @@ object TokoFoodPurchaseAnalytics: BaseTrackerConst() {
                     putString(Items.ITEM_ID, it.productId)
                     putString(Items.ITEM_CATEGORY, it.categoryId)
                     putDouble(Items.PRICE, it.price)
-                    putInt(Items.QUANTITY, it.quantity)
+                    putInt(TokoFoodAnalytics.KEY_QUANTITY, it.quantity)
                     putString(TrackerConstant.SHOP_ID, data.shop.shopId)
                     putString(TokoFoodAnalytics.KEY_SHOP_NAME, data.shop.name)
                 }
