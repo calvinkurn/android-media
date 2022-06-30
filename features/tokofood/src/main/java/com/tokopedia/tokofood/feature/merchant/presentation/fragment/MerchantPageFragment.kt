@@ -43,6 +43,7 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAdd
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.constants.ShareComponentConstants
+import com.tokopedia.tokofood.common.domain.response.CartTokoFoodBottomSheet
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
 import com.tokopedia.tokofood.common.presentation.UiEvent
@@ -586,6 +587,18 @@ class MerchantPageFragment : BaseMultiFragment(),
                     UiEvent.EVENT_SUCCESS_ADD_TO_CART -> {
                         onSuccessAddCart(it.data?.getSuccessUpdateResultPair())
                     }
+                    UiEvent.EVENT_PHONE_VERIFICATION -> {
+                        val bottomSheetData = it.data as? CartTokoFoodBottomSheet
+                        bottomSheetData?.run {
+                            if (isShowBottomSheet) {
+                                val bottomSheet = PhoneNumberVerificationBottomSheet.createInstance(
+                                        bottomSheetData = this,
+                                        clickListener = this@MerchantPageFragment
+                                )
+                                bottomSheet.show(childFragmentManager)
+                            }
+                        }
+                    }
                     UiEvent.EVENT_SUCCESS_UPDATE_CART -> {
                         onSuccessUpdateCart(it.data?.getSuccessUpdateResultPair())
                     }
@@ -672,15 +685,10 @@ class MerchantPageFragment : BaseMultiFragment(),
                                     (pair.second as? CartTokoFoodData)?.let { cartTokoFoodData ->
                                         cartTokoFoodData.carts.firstOrNull { data -> data.productId == requestParam.productId }
                                             ?.let { cartTokoFood ->
-                                                val cardPositions =
-                                                    viewModel.productMap[requestParam.productId]
+                                                val cardPositions = viewModel.productMap[requestParam.productId]
                                                 cardPositions?.run {
-                                                    val dataSetPosition =
-                                                        viewModel.getDataSetPosition(this)
-                                                    val productUiModel =
-                                                        productListAdapter?.getProductUiModel(
-                                                            dataSetPosition
-                                                        )
+                                                    val dataSetPosition = viewModel.getDataSetPosition(this)
+                                                    val productUiModel = productListAdapter?.getProductUiModel(dataSetPosition)
                                                     if (productUiModel?.isCustomizable == true) {
                                                         productListAdapter?.updateCustomOrderQty(
                                                             cartId = cartTokoFood.cartId,
@@ -830,23 +838,12 @@ class MerchantPageFragment : BaseMultiFragment(),
     private fun onSuccessAddCart(addCartData: Pair<UpdateParam, CartTokoFoodData>?) {
         addCartData?.let { (updateParam, cartTokoFoodData) ->
             updateParam.productList.firstOrNull()?.let { requestParam ->
-                if (cartTokoFoodData.bottomSheet.isShowBottomSheet) {
-                    val bottomSheet =
-                        PhoneNumberVerificationBottomSheet.createInstance(
-                            bottomSheetData = cartTokoFoodData.bottomSheet,
-                            clickListener = this@MerchantPageFragment
-                        )
-                    bottomSheet.show(childFragmentManager)
-                }
                 cartTokoFoodData.carts.firstOrNull { data -> data.productId == requestParam.productId }
                     ?.let { cartTokoFood ->
-                        val cardPositions =
-                            viewModel.productMap[requestParam.productId]
+                        val cardPositions = viewModel.productMap[requestParam.productId]
                         cardPositions?.run {
-                            val dataSetPosition =
-                                viewModel.getDataSetPosition(this)
-                            val adapterPosition =
-                                viewModel.getAdapterPosition(this)
+                            val dataSetPosition = viewModel.getDataSetPosition(this)
+                            val adapterPosition = viewModel.getAdapterPosition(this)
                             productListAdapter?.updateProductUiModel(
                                 cartTokoFood = cartTokoFood,
                                 dataSetPosition = dataSetPosition,
@@ -858,9 +855,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                                     ) ?: ProductUiModel()
                                 )
                             )
-                            val productUiModel = productListAdapter?.getProductUiModel(
-                                dataSetPosition
-                            ) ?: ProductUiModel()
+                            val productUiModel = productListAdapter?.getProductUiModel(dataSetPosition) ?: ProductUiModel()
                             if (productUiModel.customOrderDetails.size > Int.ONE) {
                                 showCustomOrderDetailBottomSheet(
                                     productUiModel, dataSetPosition
