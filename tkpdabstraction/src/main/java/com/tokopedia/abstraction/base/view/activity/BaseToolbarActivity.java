@@ -182,13 +182,15 @@ abstract class BaseToolbarActivity extends BaseActivity {
     }
 
     private void changeToolbarFontToOSO() {
-        for (int i = 0; i < toolbar.getChildCount(); i++) {
-            View item = toolbar.getChildAt(i);
-            if (item instanceof TextView) {
-                if (((TextView) item).getText().equals(toolbar.getTitle())) {
-                    ((TextView) item).setTypeface(Typography.Companion.getFontType(this, true, Typography.DISPLAY_1));
-                } else if (((TextView) item).getText().equals(toolbar.getSubtitle())) {
-                    ((TextView) item).setTypeface(Typography.Companion.getFontType(this, false, Typography.DISPLAY_3));
+        if (toolbar != null && toolbar.getChildCount() > 0) {
+            for (int i = 0; i < toolbar.getChildCount(); i++) {
+                View item = toolbar.getChildAt(i);
+                if (item instanceof TextView) {
+                    if (((TextView) item).getText().equals(toolbar.getTitle())) {
+                        ((TextView) item).setTypeface(Typography.Companion.getFontType(this, true, Typography.DISPLAY_1));
+                    } else if (((TextView) item).getText().equals(toolbar.getSubtitle())) {
+                        ((TextView) item).setTypeface(Typography.Companion.getFontType(this, false, Typography.DISPLAY_3));
+                    }
                 }
             }
         }
