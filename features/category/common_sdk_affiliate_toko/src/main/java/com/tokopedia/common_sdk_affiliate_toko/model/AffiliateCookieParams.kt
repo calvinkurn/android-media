@@ -1,5 +1,7 @@
 package com.tokopedia.common_sdk_affiliate_toko.model
 
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateSdkConstant
+
 
 internal class AffiliateCookieParams(
     val affiliateUUID: String,
@@ -55,7 +57,7 @@ sealed class AffiliateSdkPageSource(
      */
     class PDP(shopId: String, productInfo: AffiliateSdkProductInfo) :
         AffiliateSdkPageSource(shopId, productInfo) {
-        override fun getType() = "pdp"
+        override fun getType() = AffiliateSdkConstant.PDP
     }
 
     /**
@@ -65,7 +67,7 @@ sealed class AffiliateSdkPageSource(
      */
     class Shop(shopId: String = "") :
         AffiliateSdkPageSource(shopId) {
-        override fun getType() = "shop"
+        override fun getType() = AffiliateSdkConstant.SHOP
 
     }
 }

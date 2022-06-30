@@ -54,8 +54,7 @@ class AffiliateCookieHelper @Inject constructor(
                 if (affiliateUUID.isNotEmpty()) {
                     createCookieUseCase.createCookieRequest(
                         params,
-                        userSession.deviceId,
-                        userSession.androidId
+                        userSession.deviceId
                     )
                 }
             }
@@ -64,8 +63,7 @@ class AffiliateCookieHelper @Inject constructor(
                 if (affiliateUUID.isNotEmpty()) {
                     createCookieUseCase.createCookieRequest(
                         params,
-                        userSession.deviceId,
-                        userSession.androidId
+                        userSession.deviceId
                     )
                 } else {
                     try {
@@ -90,7 +88,7 @@ class AffiliateCookieHelper @Inject constructor(
         if (affiliateUUID.isNotEmpty()) {
             return Uri.parse(productUrl)
                 .buildUpon()
-                .appendQueryParameter("aff_unique_id", affiliateUUID)
+                .appendQueryParameter(AffiliateSdkConstant.AFFILIATE_UUID, affiliateUUID)
                 .build()
                 .toString()
         }

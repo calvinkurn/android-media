@@ -7,6 +7,7 @@ import com.tokopedia.common_sdk_affiliate_toko.model.CreateAffiliateCookieRespon
 import com.tokopedia.common_sdk_affiliate_toko.model.toCreateCookieAdditionParam
 import com.tokopedia.common_sdk_affiliate_toko.raw.GQL_Create_Cookie
 import com.tokopedia.common_sdk_affiliate_toko.repository.CommonAffiliateRepository
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateSdkConstant
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.track.TrackApp
 import javax.inject.Inject
@@ -20,23 +21,21 @@ class CreateCookieUseCase @Inject constructor(
 
     private fun createRequestParam(
         param: AffiliateCookieParams,
-        deviceId: String,
-        androidVersion: String
+        deviceId: String
     ): HashMap<String, Any> {
         return hashMapOf(
-            INPUT_PARAM to affiliateCookieDTO(param, deviceId, androidVersion)
+            INPUT_PARAM to affiliateCookieDTO(param, deviceId)
         )
     }
 
     private fun affiliateCookieDTO(
         param: AffiliateCookieParams,
-        deviceId: String,
-        androidVersion: String
+        deviceId: String
     ): CreateAffiliateCookieRequest {
         return CreateAffiliateCookieRequest(
             param.toCreateCookieAdditionParam(),
             CreateAffiliateCookieRequest.AffiliateDetail(param.affiliateUUID),
-            CreateAffiliateCookieRequest.CookieLevel(if (param.affiliatePageDetail.source is AffiliateSdkPageSource.PDP) "Product" else "Page"),
+            CreateAffiliateCookieRequest.CookieLevel(if (param.affiliatePageDetail.source is AffiliateSdkPageSource.PDP) AffiliateSdkConstant.PRODUCT else AffiliateSdkConstant.PAGE),
             CreateAffiliateCookieRequest.Header(
                 TrackApp.getInstance().gtm.irisSessionId,
                 param.uuid,
@@ -52,7 +51,7 @@ class CreateCookieUseCase @Inject constructor(
                 param.affiliatePageDetail.verticalId
             ),
             CreateAffiliateCookieRequest.PlatformDetail(
-                platform = "android",
+                platform = AffiliateSdkConstant.PLATFORM,
                 GlobalConfig.VERSION_NAME
             ),
             CreateAffiliateCookieRequest.ProductDetail(
@@ -66,13 +65,12 @@ class CreateCookieUseCase @Inject constructor(
 
     internal suspend fun createCookieRequest(
         param: AffiliateCookieParams,
-        deviceId: String,
-        androidVersion: String
+        deviceId: String
     ): CreateAffiliateCookieResponse {
         return commonAffiliateRepository.getGQLData(
             GQL_Create_Cookie,
             CreateAffiliateCookieResponse::class.java,
-            createRequestParam(param, deviceId, androidVersion)
+            createRequestParam(param, deviceId)
 
         )
     }
