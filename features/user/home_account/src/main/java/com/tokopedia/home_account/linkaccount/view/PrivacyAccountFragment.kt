@@ -18,6 +18,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.home_account.R
+import com.tokopedia.home_account.analytics.HomeAccountAnalytics
 import com.tokopedia.home_account.databinding.FragmentPrivacyAccountBinding
 import com.tokopedia.home_account.linkaccount.data.LinkStatus
 import com.tokopedia.home_account.linkaccount.data.LinkStatusResponse
@@ -45,6 +46,9 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
 
+    @Inject
+    lateinit var homeAccountAnalytics: HomeAccountAnalytics
+
     private var viewModel: LinkAccountViewModel? = null
 
     private val binding : FragmentPrivacyAccountBinding? by viewBinding()
@@ -53,6 +57,8 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
     private var verificationEnabledDataUsageBottomSheet: VerificationEnabledDataUsageBottomSheet? = null
     private var verificationDisabledDataUsageDialog: DialogUnify? = null
     private var loaderDialog: LoaderDialog? = null
+
+    private var isLoading = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,12 +93,12 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
         viewModel?.getUserConsent?.observe(viewLifecycleOwner) {
             when(it) {
                 is Success -> {
-                    setViewDataUsageSuccess(it.data)
-                    setViewDataUsage(true)
+                    setViewDataUsage(it.data)
+                    setVisibilityDataUsage(true)
                     switchListener()
                 }
                 is Fail -> {
-                    setViewDataUsage(false)
+                    setVisibilityDataUsage(false)
                 }
             }
         }
@@ -100,11 +106,11 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
         viewModel?.linkStatus?.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    setViewLinkAccountSuccess(it.data)
-                    setViewLinkAccount(true)
+                    setViewLinkAccount(it.data)
+                    setVisibilityLinkAccount(true)
                 }
                 is Fail -> {
-                    setViewLinkAccount(false)
+                    setVisibilityLinkAccount(false)
                 }
             }
         }
@@ -127,11 +133,11 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setViewDataUsageSuccess(isActive: Boolean) {
+    private fun setViewDataUsage(isActive: Boolean) {
         binding?.switchPermissionDataUsage?.isChecked = isActive
     }
 
-    private fun setViewDataUsage(isVisible: Boolean) {
+    private fun setVisibilityDataUsage(isVisible: Boolean) {
         binding?.apply {
             incLoaderDataUsage.loaderHeader.gone()
             incLoaderDataUsage.loaderDesc.gone()
@@ -206,7 +212,7 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setViewLinkAccountSuccess(data: LinkStatusResponse) {
+    private fun setViewLinkAccount(data: LinkStatusResponse) {
         if(data.response.linkStatus.isNotEmpty()) {
             val linkStatus = data.response.linkStatus.first()
             val item = linkStatus.toUserAccountDataView()
@@ -215,7 +221,7 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
                 tvHeaderLinkAccount.text = item.partnerName
                 tvLinkingAccount.showWithCondition(!item.isLinked)
                 icLinkAccount.showWithCondition(item.isLinked)
-                tvDescLinkAccount.text = item.status
+                tvDescLinkAccount.text = item.status.plus(if (item.isLinked) item.linkDate else "")
             }
 
             linkedAccountListener(item.isLinked)
@@ -234,7 +240,7 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setViewLinkAccount(isVisible: Boolean) {
+    private fun setVisibilityLinkAccount(isVisible: Boolean) {
         binding?.apply {
             incLoaderLinkAccount.loaderHeader.gone()
             incLoaderLinkAccount.loaderDesc.gone()
@@ -273,6 +279,7 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
     }
 
     private fun onLinkAccountClicked() {
+        homeAccountAnalytics.trackClickHubungkanLinkAccountPage()
         val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.LINK_ACCOUNT_WEBVIEW).apply {
             putExtra(
                 ApplinkConstInternalGlobal.PARAM_LD,
@@ -283,18 +290,22 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
     }
 
     private fun onViewAccountClicked() {
+        homeAccountAnalytics.trackClickViewStatusLinkAccountPage()
         LinkAccountWebViewActivity.gotoSuccessPage(activity, ApplinkConst.HOME)
     }
 
     private fun switchListener() {
-        binding?.switchPermissionDataUsage?.setOnClickListener {
-            val isChecked = binding?.switchPermissionDataUsage?.isChecked == true
-            binding?.switchPermissionDataUsage?.isChecked = !isChecked
+        binding?.switchPermissionDataUsage?.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (!isLoading){
+                buttonView.isChecked = !isChecked
 
-            if (!isChecked)
-                showVerificationDisabledDataUsage()
-            else
-                showVerificationEnabledDataUsage()
+                if (!isChecked)
+                    showVerificationDisabledDataUsage()
+                else
+                    showVerificationEnabledDataUsage()
+            } else {
+                isLoading = false
+            }
         }
     }
 
@@ -366,6 +377,7 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
             loaderDialog = LoaderDialog(requireContext())
             loaderDialog?.setLoadingText(EMPTY_STRING)
             loaderDialog?.show()
+            isLoading = true
         } else {
             loaderDialog?.dismiss()
         }
@@ -379,6 +391,7 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
     }
 
     private fun showToasterFailedSetConsent(isChecked: Boolean) {
+        isLoading = false
         showToasterError(getString(
             if (isChecked) {
                 R.string.opt_failed_disabled_consent
@@ -390,6 +403,11 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
 
     private fun showToasterError(errorMsg: String) {
         Toaster.build(requireView(), errorMsg, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+    }
+
+    override fun onFragmentBackPressed(): Boolean {
+        homeAccountAnalytics.trackClickBackLinkAccount()
+        return super.onFragmentBackPressed()
     }
 
     companion object {

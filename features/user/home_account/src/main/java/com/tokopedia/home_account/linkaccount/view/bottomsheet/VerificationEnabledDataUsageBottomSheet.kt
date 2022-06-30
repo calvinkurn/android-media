@@ -97,20 +97,21 @@ class VerificationEnabledDataUsageBottomSheet : BottomSheetUnify() {
     private fun goToTermAndCondition() {
         RouteManager.route(activity, String.format(
             STRING_FORMAT, ApplinkConst.WEBVIEW,
-            "${TokopediaUrl.getInstance().MOBILEWEB}$ARTICLE_PATH"
+            "${TokopediaUrl.getInstance().MOBILEWEB}$TERM_AND_CONDITION_PATH"
         ))
     }
 
     private fun goToPrivacyPolicy() {
         RouteManager.route(activity, String.format(
             STRING_FORMAT, ApplinkConst.WEBVIEW,
-            "${TokopediaUrl.getInstance().MOBILEWEB}$ARTICLE_PATH"
+            "${TokopediaUrl.getInstance().MOBILEWEB}$PRIVACY_POLICY_PATH"
         ))
     }
 
     companion object {
         private const val STRING_FORMAT = "%s?url=%s"
-        private const val ARTICLE_PATH = "help/article/syarat-dan-ketentuan-kupon-megacashback"
+        private const val TERM_AND_CONDITION_PATH = "help/article/syarat-dan-ketentuan-kupon-megacashback"
+        private const val PRIVACY_POLICY_PATH = "privacy"
         private const val TERM_AND_CONDITION = "Syarat & Ketentuan"
         private const val PRIVACY_POLICY = "Kebijakan Privasi"
         private const val SOURCE_IMAGE_HEADER = "https://images.tokopedia.net/img/android/user/optinout/img_privacy_account_verification.png"

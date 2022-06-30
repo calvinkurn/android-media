@@ -194,8 +194,8 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         getComponent(HomeAccountUserComponents::class.java).inject(this)
     }
 
-    private fun isEnableLinkAccount(): Boolean  {
-        return getRemoteConfig().getBoolean(REMOTE_CONFIG_KEY_ACCOUNT_LINKING, true)
+    private fun isEnablePrivacyAccount(): Boolean  {
+        return getRemoteConfig().getBoolean(REMOTE_CONFIG_KEY_PRIVACY_ACCOUNT, true)
     }
 
     private fun isEnableExplicitProfileMenu(): Boolean {
@@ -841,7 +841,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             if (isFirstItemIsProfile()) {
                 removeItemAt(0)
             }
-            addItem(0, mapper.mapToProfileDataView(buyerAccount, isEnableLinkAccount = isEnableLinkAccount()))
+            addItem(0, mapper.mapToProfileDataView(buyerAccount, isEnableLinkAccount = isEnablePrivacyAccount()))
             notifyDataSetChanged()
         }
         hideLoading()
@@ -999,10 +999,10 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             settingsMenuIterator.shouldRemove(
                 when(value.id) {
                     AccountConstants.SettingCode.SETTING_LINK_ACCOUNT -> {
-                        isEnableLinkAccount()
+                        isEnablePrivacyAccount()
                     }
                     AccountConstants.SettingCode.SETTING_PRIVACY_ACCOUNT -> {
-                        !isEnableLinkAccount()
+                        !isEnablePrivacyAccount()
                     }
                     AccountConstants.SettingCode.SETTING_EXPLICIT_PROFILE -> {
                         !isEnableExplicitProfileMenu()
@@ -1690,7 +1690,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         private const val USER_CENTRALIZED_ASSET_CONFIG_USER_PAGE = "user_page"
 
         private const val REMOTE_CONFIG_KEY_HOME_ACCOUNT_BIOMETRIC_OFFERING = "android_user_home_account_biometric_offering"
-        private const val REMOTE_CONFIG_KEY_ACCOUNT_LINKING = "android_user_link_account_entry_point"
+        private const val REMOTE_CONFIG_KEY_PRIVACY_ACCOUNT = "android_user_privacy_account_enabled"
         private const val EXPLICIT_PROFILE_MENU_ROLLOUT = "explicit_android"
         private const val CLICK_TYPE_WISHLIST = "&click_type=wishlist"
 
