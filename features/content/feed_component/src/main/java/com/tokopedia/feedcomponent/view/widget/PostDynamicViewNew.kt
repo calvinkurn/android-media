@@ -1024,6 +1024,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     if (!feedMedia.isImage) feedMedia.canPlay = false
                 }
                 adapter.setItemsAndAnimateChanges(media)
+                rvCarousel.addOneTimeGlobalLayoutListener {
+                    rvCarousel.scrollToPosition(feedXCard.lastCarouselIndex)
+                }
 
                 if (feedXCard.isTopAds) {
                     likedText.hide()
@@ -1653,6 +1656,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
         seeAllCommentText.hide()
 
         adapter.setItemsAndAnimateChanges(mediaList)
+        rvCarousel.addOneTimeGlobalLayoutListener {
+            rvCarousel.scrollToPosition(feedXCard.lastCarouselIndex)
+        }
+
         feedXCard.media = mediaList
         feedXCard.tags = feedXCard.products
     }
@@ -2090,7 +2097,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 },TIME_FOUR_SEC)
         }
 
-        adapter.focusItemAt(pageControl.indicatorCurrentPosition)
+        adapter.focusItemAt(feedXCard.lastCarouselIndex)
     }
 
     private fun getVideoItem(): View? {
