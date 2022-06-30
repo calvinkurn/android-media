@@ -223,6 +223,7 @@ class PlayAnalytic(
             else -> Pair(KEY_TRACK_CLICK, "$mChannelId - ${product.id} - ${mChannelType.value} - product in bottom sheet")
         }
 
+        val actionField = "/groupchat - bottom sheet"
         trackingQueue.putEETracking(
                 EventModel(
                         "productClick",
@@ -233,7 +234,7 @@ class PlayAnalytic(
                 hashMapOf (
                     "ecommerce" to hashMapOf(
                         "click" to hashMapOf(
-                            "actionField" to hashMapOf( "list" to "/groupchat - bottom sheet" ),
+                            "actionField" to hashMapOf( "list" to if(sectionInfo.config.type == ProductSectionType.Tokonow) "$actionField now" else actionField),
                             "products" to  listOf(convertProductToHashMapWithList(product, position + 1, "bottom sheet"))
                         )
                     )
@@ -428,7 +429,7 @@ class PlayAnalytic(
 
     fun clickFeaturedProduct(featuredProduct: PlayProductUiModel.Product, position: Int) {
         val (eventAction, eventLabel) = if(featuredProduct.isTokoNow)
-            Pair("$KEY_TRACK_CLICK - now product carousel", "$mChannelId - ${featuredProduct.id} - ${mChannelType.value} - featured product tagging")
+            Pair("$KEY_TRACK_CLICK - now product carousel", "$mChannelId - ${featuredProduct.id} - ${mChannelType.value}")
         else Pair(KEY_TRACK_CLICK,"$mChannelId - ${featuredProduct.id} - ${mChannelType.value} - featured product tagging")
         trackingQueue.putEETracking(
                 EventModel(

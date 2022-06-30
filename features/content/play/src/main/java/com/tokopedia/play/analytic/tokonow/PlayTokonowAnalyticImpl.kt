@@ -84,7 +84,7 @@ class PlayTokonowAnalyticImpl @Inject constructor(private val userSession: UserS
     override fun clickInfoNow(channelId: String, channelType: PlayChannelType) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
-                KEY_EVENT to KEY_TRACK_VIEW_CONTENT_IRIS,
+                KEY_EVENT to KEY_TRACK_CLICK_CONTENT,
                 KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
                 KEY_EVENT_ACTION to "click - now info bottomsheet",
                 KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
