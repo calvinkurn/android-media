@@ -54,8 +54,14 @@ class UserProfileViewModel @AssistedInject constructor(
     val displayName: String
         get() = _profileInfo.value.name
 
+    val profileUserID: String
+        get() = _profileInfo.value.userID
+
     val profileUsername: String
         get() = _profileInfo.value.username
+
+    val profileCover: String
+        get() = _profileInfo.value.imageCover
 
     val totalFollower: String
         get() = _profileInfo.value.stats.totalFollowerFmt
@@ -71,6 +77,9 @@ class UserProfileViewModel @AssistedInject constructor(
 
     val isSelfProfile: Boolean
         get() = _profileType.value == ProfileType.Self
+
+    val profileWebLink: String
+        get() = _profileInfo.value.shareLink.webLink
 
     private val _profileInfo = MutableStateFlow(ProfileUiModel.Empty)
     private val _followInfo = MutableStateFlow(FollowInfoUiModel.Empty)
