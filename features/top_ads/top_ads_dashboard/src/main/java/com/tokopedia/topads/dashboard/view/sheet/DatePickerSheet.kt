@@ -1,5 +1,6 @@
 package com.tokopedia.topads.dashboard.view.sheet
 
+import android.annotation.SuppressLint
 import android.content.Context
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.tokopedia.kotlin.extensions.view.getResDrawable
@@ -110,6 +111,7 @@ class DatePickerSheet {
 
     companion object {
 
+        @SuppressLint("UnifyComponentUsage")
         fun newInstance(context: Context, index: Int, range: String): DatePickerSheet {
             val fragment = DatePickerSheet()
             fragment.dialog = BottomSheetDialog(context,
