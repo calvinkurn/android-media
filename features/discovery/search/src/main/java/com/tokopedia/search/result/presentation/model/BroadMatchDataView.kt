@@ -5,7 +5,6 @@ import com.tokopedia.discovery.common.analytics.SearchComponentTracking
 import com.tokopedia.discovery.common.analytics.searchComponentTracking
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
-import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView.CardButton
 
 data class BroadMatchDataView(
     val keyword: String = "",
@@ -34,4 +33,6 @@ data class BroadMatchDataView(
     override fun type(typeFactory: ProductListTypeFactory): Int {
         return typeFactory.type(this)
     }
+
+    data class CardButton(val title: String = "", val applink: String = "")
 }

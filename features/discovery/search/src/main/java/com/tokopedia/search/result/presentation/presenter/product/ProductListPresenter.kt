@@ -1327,7 +1327,10 @@ class ProductListPresenter @Inject constructor(
                         discountPercentage = product.discountPercentage,
                     )
                 },
-                cardButton = option.cardButton
+                cardButton = BroadMatchDataView.CardButton(
+                    option.cardButton.title,
+                    option.cardButton.applink,
+                ),
             )
         }
     }

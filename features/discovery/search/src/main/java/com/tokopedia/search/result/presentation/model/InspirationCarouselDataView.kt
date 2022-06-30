@@ -192,10 +192,7 @@ class InspirationCarouselDataView(
         }
     }
 
-    class CardButton(
-        val title: String = "",
-        val applink: String = "",
-    )
+    data class CardButton(val title: String = "", val applink: String = "")
 }
 
 
