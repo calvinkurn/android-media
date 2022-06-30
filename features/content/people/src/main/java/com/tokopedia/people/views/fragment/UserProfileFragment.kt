@@ -154,7 +154,9 @@ class UserProfileFragment @Inject constructor(
             profileUserId,
             userId,
             this
-        )
+        ) { cursor ->
+            submitAction(UserProfileAction.LoadPlayVideo(cursor))
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -269,7 +271,7 @@ class UserProfileFragment @Inject constructor(
 
     private fun refreshLandingPageData(isRefreshPost: Boolean = false) {
         landedUserName?.let {
-            viewModel.submitAction(UserProfileAction.LoadProfile(isRefreshPost))
+            submitAction(UserProfileAction.LoadProfile(isRefreshPost))
         }
     }
 
@@ -672,7 +674,7 @@ class UserProfileFragment @Inject constructor(
         if(viewModel.isFollowed) userProfileTracker?.clickUnfollow(userSession.userId, viewModel.isSelfProfile)
         else userProfileTracker?.clickFollow(userSession.userId, viewModel.isSelfProfile)
 
-        viewModel.submitAction(UserProfileAction.ClickFollowButton(isFromLogin))
+        submitAction(UserProfileAction.ClickFollowButton(isFromLogin))
     }
 
     private fun showGlobalError(type: Int) {
@@ -692,6 +694,10 @@ class UserProfileFragment @Inject constructor(
 
     override fun getScreenName(): String {
         return ""
+    }
+
+    private fun submitAction(action: UserProfileAction) {
+        viewModel.submitAction(action)
     }
 
     override fun onResume() {
@@ -975,7 +981,7 @@ class UserProfileFragment @Inject constructor(
             )
         }
         else{
-            viewModel.submitAction(UserProfileAction.ClickUpdateReminder(channelId, isActive))
+            submitAction(UserProfileAction.ClickUpdateReminder(channelId, isActive))
             mAdapter.notifyItemChanged(pos)
         }
     }

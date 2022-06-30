@@ -29,6 +29,7 @@ open class UserPostBaseAdapter(
     val profileUserId: String,
     val userId: String,
     val playWidgetCallback: PlayWidgetCallback,
+    val onLoadMore: (cursor: String) -> Unit,
 ) : BaseAdapter<PlayPostContentItem>(callback), PlayWidgetCardLargeChannelView.Listener {
 
     var activityId = ""
@@ -64,7 +65,7 @@ open class UserPostBaseAdapter(
         super.loadData(currentPageIndex, *args)
         if (args.isNotEmpty()) {
             args[0]?.let {
-                viewModel.submitAction(UserProfileAction.LoadPlayVideo(cursor))
+                onLoadMore(cursor)
             }
         }
     }
