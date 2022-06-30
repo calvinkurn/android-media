@@ -231,12 +231,21 @@ class OrderCustomizationFragment : BaseMultiFragment(),
                     )
                     binding?.atcButton?.isLoading = true
                     if (viewModel.isEditingCustomOrder(cartId)) {
-                        activityViewModel?.updateCart(updateParam = updateParam, source = SOURCE)
+                        activityViewModel?.updateCart(
+                            updateParam = updateParam,
+                            source = SOURCE
+                        )
                     } else {
                         if (isChangeMerchant) {
-                            activityViewModel?.deleteAllAtcAndAddProduct(updateParam = updateParam, source = SOURCE)
+                            activityViewModel?.deleteAllAtcAndAddProduct(
+                                updateParam = updateParam,
+                                source = SOURCE
+                            )
                         } else {
-                            activityViewModel?.addToCart(updateParam = updateParam, source = SOURCE)
+                            activityViewModel?.addToCart(
+                                updateParam = updateParam,
+                                source = SOURCE
+                            )
                         }
                         //hit trackers
                         merchantPageAnalytics.clickOnOrderVariantPage(
