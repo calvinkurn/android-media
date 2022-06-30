@@ -1,6 +1,5 @@
 package com.tokopedia.shop.common.data.model
 
-import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -62,11 +61,6 @@ data class ShopPageGetDynamicTabResponse(
                 @SerializedName("homeLayoutData")
                 @Expose
                 val homeLayoutData: HomeLayoutData = HomeLayoutData(),
-
-                @SuppressLint("Invalid Data Type")
-                @SerializedName("widgetIDList")
-                @Expose
-                val widgetIdList: List<WidgetIdList> = listOf(),
             )
         }
     }
