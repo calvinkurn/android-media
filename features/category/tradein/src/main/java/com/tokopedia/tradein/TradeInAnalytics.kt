@@ -174,8 +174,8 @@ class TradeInAnalytics @Inject constructor(
     fun expandDropDown(is3PL : Boolean, imei : String, isDiagnosed : Boolean) {
         val map = mutableMapOf<String, Any>(
             EVENT to CLICK_PG,
-            EVENT_CATEGORY to TRADE_IN_CLICK_DROPDOWN,
-            EVENT_ACTION to TRADE_IN_START_PAGE,
+            EVENT_CATEGORY to TRADE_IN_START_PAGE,
+            EVENT_ACTION to TRADE_IN_CLICK_DROPDOWN,
             EVENT_LABEL to (if(isDiagnosed) "with test" else "without test")
                     + " - "
                     + (if(imei.isNotEmpty()) "with IMEI" else "without IMEI")
