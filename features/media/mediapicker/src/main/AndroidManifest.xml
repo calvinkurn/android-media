@@ -28,7 +28,7 @@
         </activity>
 
         <activity
-            android:name=".picker.ui.activity.main.PickerActivity"
+            android:name=".picker.ui.activity.picker.PickerActivity"
             android:screenOrientation="portrait"
             android:exported="false">
             <intent-filter>

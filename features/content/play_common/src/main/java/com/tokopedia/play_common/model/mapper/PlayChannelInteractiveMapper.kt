@@ -10,6 +10,7 @@ import javax.inject.Inject
 /**
  * Created by jegul on 07/07/21
  */
+@Deprecated("use PlayInteractiveMapper")
 class PlayChannelInteractiveMapper @Inject constructor() {
 
     fun mapInteractive(input: GiveawayResponse) = PlayCurrentInteractiveModel(

@@ -19,6 +19,10 @@ infix fun View?.showError(errorMessage : String) {
     Toaster.build(this ?: return, errorMessage, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
 }
 
+infix fun View?.showErrorLongDuration(errorMessage : String) {
+    Toaster.build(this ?: return, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+}
+
 infix fun View?.showToaster(message : String) {
     Toaster.build(
         this ?: return,

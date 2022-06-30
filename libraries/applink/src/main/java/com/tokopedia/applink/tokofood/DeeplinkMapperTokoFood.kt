@@ -4,6 +4,7 @@ import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConsInternalHome
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
@@ -21,6 +22,7 @@ object DeeplinkMapperTokoFood {
     const val PAGE_TITLE_PARAM = "pageTitle"
     const val OPTION_PARAM = "option"
     const val CUISINE_PARAM = "cuisine"
+    const val BRAND_UID_PARAM = "brand_uid"
     const val SORT_BY_PARAM = "sortBy"
 
     fun mapperInternalApplinkTokoFood(uri: Uri): String {
@@ -32,6 +34,7 @@ object DeeplinkMapperTokoFood {
                 isMatchPattern(ApplinkConst.TokoFood.POST_PURCHASE, uri) -> getTokoFoodPostPurchaseInternalAppLink(uri)
                 isMatchPattern(ApplinkConst.TokoFood.MERCHANT, uri) -> getTokoFoodMerchantInternalAppLink(
                     getUriIdList(ApplinkConst.TokoFood.MERCHANT, uri), uri)
+                url.startsWith(ApplinkConst.TokoFood.TOKOFOOD_ORDER) -> { ApplinkConstInternalOrder.UNIFY_ORDER_TOKOFOOD }
                 else -> url
             }
         } else {
@@ -66,6 +69,7 @@ object DeeplinkMapperTokoFood {
         val option = uri.getQueryParameter(OPTION_PARAM) ?: ""
         val cuisine = uri.getQueryParameter(CUISINE_PARAM) ?: ""
         val sortBy = uri.getQueryParameter(SORT_BY_PARAM) ?: ""
+        val brandUId = uri.getQueryParameter(BRAND_UID_PARAM) ?: ""
 
         return Uri.parse(ApplinkConstInternalTokoFood.CATEGORY)
             .buildUpon()
@@ -73,6 +77,7 @@ object DeeplinkMapperTokoFood {
             .appendQueryParameter(OPTION_PARAM, option)
             .appendQueryParameter(CUISINE_PARAM, cuisine)
             .appendQueryParameter(SORT_BY_PARAM, sortBy)
+            .appendQueryParameter(BRAND_UID_PARAM, brandUId)
             .build().toString()
     }
 

@@ -38,7 +38,7 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
 
     @Test
     fun `when getting loading state should run and give the success result`() {
-        viewModel.getLoadingState()
+        viewModel.showLoadingState()
 
         val expectedResponse = createLoadingState()
 
@@ -47,7 +47,7 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
 
     @Test
     fun `when getting no pin poin state should run and give the success result`() {
-        viewModel.getNoPinPoinState()
+        viewModel.showNoPinPointState()
 
         val expectedResponse = createNoPinPoinState()
 
@@ -56,7 +56,7 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
 
     @Test
     fun `when getting no address state should run and give the success result`() {
-        viewModel.getNoAddressState()
+        viewModel.showNoAddressState()
 
         val expectedResponse = createNoAddressState()
 
@@ -67,7 +67,7 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
     fun `when getting error state should run and give the error result`() {
         val throwable = Throwable("Error Timeout")
 
-        viewModel.getErrorState(throwable)
+        viewModel.showErrorState(throwable)
 
         verifyGetErrorLayoutShown()
     }
@@ -102,7 +102,7 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
 
     @Test
     fun `when check is page showing empty state location should return true`() {
-        viewModel.getNoAddressState()
+        viewModel.showNoAddressState()
 
         val actualResponse = viewModel.isShownEmptyState()
 
@@ -693,7 +693,7 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
 
     @Test
     fun `when there is no address state and user request load more should not load more`() {
-        viewModel.getNoAddressState()
+        viewModel.showNoAddressState()
         val expectedResponse = createNoAddressState()
         val containLastItemIndex = 5
         val itemCount = 6
@@ -708,7 +708,7 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
     fun `when there is error state and user request load more should not load more`() {
         val throwable = Throwable("Error Timeout")
 
-        viewModel.getErrorState(throwable)
+        viewModel.showErrorState(throwable)
 
         val containLastItemIndex = 5
         val itemCount = 6

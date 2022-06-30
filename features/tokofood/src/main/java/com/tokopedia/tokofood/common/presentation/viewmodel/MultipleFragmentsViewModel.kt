@@ -323,6 +323,7 @@ class MultipleFragmentsViewModel @Inject constructor(
 
     private suspend fun setMiniCartValue(data: CheckoutTokoFoodData?) {
         if (data == null) {
+            miniCartUiModelState.emit(Result.Success(MiniCartUiModel()))
             cartDataValidationState.emit(UiEvent(state = UiEvent.EVENT_FAILED_LOAD_CART))
         } else {
             miniCartUiModelState.emit(Result.Success(data.getMiniCartUiModel()))

@@ -40,7 +40,6 @@ object RollenceKey {
     // end of Recommendation page section
 
     //User
-    const val USER_DARK_MODE_TOGGLE = "dark_mode_nakama_v2"
     const val EXPERIMENT_NAME_REVIEW_CREDIBILITY = "review_credibility"
     const val VARIANT_REVIEW_CREDIBILITY_WITHOUT_BOTTOM_SHEET = "without_bottomsheet"
     const val VARIANT_REVIEW_CREDIBILITY_WITH_BOTTOM_SHEET = "with_bottomsheet"

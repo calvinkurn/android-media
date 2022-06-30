@@ -13,17 +13,21 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.tokofood.common.domain.response.CartTokoFoodBottomSheet
 import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.common.util.TokofoodExt.copyParcelable
+import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.FragmentOrderCustomizationLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.analytics.MerchantPageAnalytics
 import com.tokopedia.tokofood.feature.merchant.di.DaggerMerchantPageComponent
 import com.tokopedia.tokofood.feature.merchant.presentation.adapter.CustomListAdapter
+import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.PhoneNumberVerificationBottomSheet
 import com.tokopedia.tokofood.feature.merchant.presentation.model.AddOnUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomListItem
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
@@ -42,7 +46,8 @@ import javax.inject.Inject
 @ExperimentalCoroutinesApi
 class OrderCustomizationFragment : BaseMultiFragment(),
     ProductAddOnViewHolder.OnAddOnSelectListener,
-    OrderNoteInputViewHolder.OnNoteTextChangeListener {
+    OrderNoteInputViewHolder.OnNoteTextChangeListener,
+    PhoneNumberVerificationBottomSheet.OnButtonCtaClickListener {
 
     companion object {
 
@@ -263,6 +268,19 @@ class OrderCustomizationFragment : BaseMultiFragment(),
                         binding?.atcButton?.isLoading = false
                         parentFragmentManager.popBackStack()
                     }
+                    UiEvent.EVENT_PHONE_VERIFICATION -> {
+                        binding?.atcButton?.isLoading = false
+                        val bottomSheetData = it.data as? CartTokoFoodBottomSheet
+                        bottomSheetData?.run {
+                            if (isShowBottomSheet) {
+                                val bottomSheet = PhoneNumberVerificationBottomSheet.createInstance(
+                                        bottomSheetData = this,
+                                        clickListener = this@OrderCustomizationFragment
+                                )
+                                bottomSheet.show(childFragmentManager)
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -328,5 +346,13 @@ class OrderCustomizationFragment : BaseMultiFragment(),
 
     override fun onNoteTextChanged(orderNote: String, dataSetPosition: Int) {
         customListAdapter?.updateOrderNote(orderNote, dataSetPosition)
+    }
+
+    override fun onButtonCtaClickListener(appLink: String) {
+        var applicationLink = ApplinkConstInternalGlobal.ADD_PHONE
+        if (appLink.isNotEmpty()) applicationLink = appLink
+        context?.run {
+            TokofoodRouteManager.routePrioritizeInternal(this, applicationLink)
+        }
     }
 }
