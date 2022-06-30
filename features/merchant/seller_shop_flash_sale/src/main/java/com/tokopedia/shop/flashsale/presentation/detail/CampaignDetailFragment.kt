@@ -13,9 +13,10 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -25,14 +26,18 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsCampaignDetailPerformanceLayoutBinding
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignDetailBinding
+import com.tokopedia.shop.flashsale.common.constant.CampaignDetailConstant.PRODUCT_LIST_SIZE
 import com.tokopedia.shop.flashsale.common.constant.DateConstant
 import com.tokopedia.shop.flashsale.common.extension.convertRupiah
+import com.tokopedia.shop.flashsale.common.customcomponent.BaseSimpleListFragment
 import com.tokopedia.shop.flashsale.common.extension.formatTo
+import com.tokopedia.shop.flashsale.common.extension.showError
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.CampaignDetailMeta
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.MerchantCampaignTNC
 import com.tokopedia.shop.flashsale.domain.entity.enums.isActive
+import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
 import com.tokopedia.shop.flashsale.domain.entity.enums.isAvailable
 import com.tokopedia.shop.flashsale.domain.entity.enums.isCancelled
 import com.tokopedia.shop.flashsale.domain.entity.enums.isFinished
@@ -43,6 +48,7 @@ import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignIn
 import com.tokopedia.shop.flashsale.presentation.creation.rule.bottomsheet.MerchantCampaignTNCBottomSheet
 import com.tokopedia.shop.flashsale.presentation.detail.bottomsheet.CampaignDetailMoreMenuBottomSheet
 import com.tokopedia.shop.flashsale.presentation.detail.bottomsheet.CampaignDetailMoreMenuClickListener
+import com.tokopedia.shop.flashsale.presentation.detail.adapter.CampaignDetailProductListAdapter
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
@@ -50,7 +56,9 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class CampaignDetailFragment : BaseDaggerFragment(), CampaignDetailMoreMenuClickListener {
+class CampaignDetailFragment :
+    BaseSimpleListFragment<CampaignDetailProductListAdapter, SellerCampaignProductList.Product>(),
+    CampaignDetailMoreMenuClickListener {
 
     companion object {
         private const val BUNDLE_KEY_CAMPAIGN_ID = "campaign_id"
@@ -80,6 +88,10 @@ class CampaignDetailFragment : BaseDaggerFragment(), CampaignDetailMoreMenuClick
 
     private var binding by autoClearedNullable<SsfsFragmentCampaignDetailBinding>()
     private var errorToaster: Snackbar? = null
+
+    private val campaignDetailProductListAdapter by lazy {
+        CampaignDetailProductListAdapter()
+    }
 
     private val btnMoreClickListener = object : View.OnClickListener {
         override fun onClick(v: View?) {
@@ -276,8 +288,13 @@ class CampaignDetailFragment : BaseDaggerFragment(), CampaignDetailMoreMenuClick
     private fun showCampaignDetailContent(data: CampaignDetailMeta) {
         val binding = binding ?: return
         displayCampaignDetailInformation(data)
+        showProductList(data.productList)
         binding.wrapperCampaignDetailContent.visible()
         binding.loader.hide()
+    }
+
+    private fun showProductList(data: SellerCampaignProductList) {
+        renderList(data.productList, hasNextPage = data.productList.size == getPerPage())
     }
 
     @SuppressLint("ResourcePackage")
@@ -475,5 +492,51 @@ class CampaignDetailFragment : BaseDaggerFragment(), CampaignDetailMoreMenuClick
 
     override fun onMenuCancelCampaignClicked() {
         viewModel.onCampaignCancelMenuClicked()
+    }
+
+    override fun createAdapter(): CampaignDetailProductListAdapter? {
+        return campaignDetailProductListAdapter
+    }
+
+    override fun getRecyclerView(view: View): RecyclerView? {
+        return binding?.rvProductList
+    }
+
+    override fun getSwipeRefreshLayout(view: View): SwipeRefreshLayout? {
+        return null
+    }
+
+    override fun getPerPage(): Int {
+        return PRODUCT_LIST_SIZE
+    }
+
+    override fun addElementToAdapter(list: List<SellerCampaignProductList.Product>) {
+        adapter?.submit(list)
+    }
+
+    override fun loadData(page: Int) { }
+
+    override fun clearAdapterData() {
+        adapter?.clearAll()
+    }
+
+    override fun onShowLoading() {
+
+    }
+
+    override fun onHideLoading() {
+
+    }
+
+    override fun onDataEmpty() {
+
+    }
+
+    override fun onGetListError(message: String) {
+        view?.showError(message)
+    }
+
+    override fun onScrolled(xScrollAmount: Int, yScrollAmount: Int) {
+
     }
 }
