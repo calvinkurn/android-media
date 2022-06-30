@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
@@ -313,5 +314,9 @@ class ReadReviewHeader @JvmOverloads constructor(
             this.title = title
             type = ChipsUnify.TYPE_SELECTED
         }
+    }
+
+    fun getReviewRatingContainer(): ConstraintLayout {
+        return binding.containerReviewRating
     }
 }
