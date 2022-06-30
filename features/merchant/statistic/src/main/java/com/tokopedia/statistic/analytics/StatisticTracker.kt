@@ -3,6 +3,7 @@ package com.tokopedia.statistic.analytics
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.sellerhomecommon.presentation.model.BarChartWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.DateFilterItem
@@ -72,8 +73,8 @@ object StatisticTracker {
             label = arrayOf(
                 model.dataKey,
                 state,
-                cardValue,
-                description
+                cardValue.parseAsHtml(),
+                description.parseAsHtml()
             ).joinToString(TrackingConstant.SEPARATOR)
         )
 
@@ -93,7 +94,7 @@ object StatisticTracker {
                 TrackingConstant.CLICK_WIDGET_CARD,
                 "${model.dataKey} $state"
             ).joinToString(TrackingConstant.SEPARATOR),
-            cardValue
+            cardValue.parseAsHtml().toString()
         )
 
         TrackingHelper.sendGeneralEvent(map)
