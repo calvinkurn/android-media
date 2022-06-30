@@ -611,7 +611,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         this.visitables = list;
         adapter.addElement(list);
         int index = 0;
-        if (pageNum == 0) {
+        if (pageNum == 0 && !headlineIndexList.isEmpty()) {
             headlineExperimentPosition = headlineIndexList.get(0);
         } else if (headlineIndexList.size() == HEADLINE_ADS_BANNER_COUNT && pageNum < HEADLINE_ADS_BANNER_COUNT) {
             headlineExperimentPosition = headlineIndexList.get(1);
