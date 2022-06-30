@@ -5,7 +5,11 @@ import com.tokopedia.track.TrackApp
 
 const val KEY_TRACKER_ID = "trackerId"
 
-object SettingToupTracker {
+object SettingTopupTracker {
+
+    object TrackerId {
+        const val CLICK_ATUR_AUTO_TOPUP = "31869"
+    }
 
     private const val CLICK_TOP_ADS = "clickTopAds"
     private const val DEFAULT_BUSINESS_UNIT = "ads solution"
@@ -16,7 +20,7 @@ object SettingToupTracker {
     fun clickAturAutoTopUp() {
         sendAnalytics(
             eventAction = CLICK_ATUR_AUTO_TOP_UP,
-            trackerId = "31869",
+            trackerId = TrackerId.CLICK_ATUR_AUTO_TOPUP,
             eventCategory = SELLER_DASHBOARD,
         )
     }
