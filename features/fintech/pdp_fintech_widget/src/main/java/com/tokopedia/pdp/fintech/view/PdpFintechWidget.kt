@@ -196,7 +196,6 @@ class PdpFintechWidget @JvmOverloads constructor(
         loggedIn: Boolean
     ) {
         try {
-            fintechWidgetViewHolder.removeWidget()
             if (this.productID == productID && this.logInStatus == loggedIn && priceToChip.isNotEmpty()) {
                 if (idToPriceMap[productID] != null)
                     getChipDataAndUpdate(idToPriceMap[productID]?.price)

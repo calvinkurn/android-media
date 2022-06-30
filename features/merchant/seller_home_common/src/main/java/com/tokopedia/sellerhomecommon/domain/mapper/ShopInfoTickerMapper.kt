@@ -2,6 +2,7 @@ package com.tokopedia.sellerhomecommon.domain.mapper
 
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.sellerhomecommon.common.SellerHomeCommonUtils
 import com.tokopedia.sellerhomecommon.domain.model.GetShopInfoTickerResponse
 import com.tokopedia.sellerhomecommon.presentation.model.TickerItemUiModel
@@ -30,7 +31,7 @@ class ShopInfoTickerMapper @Inject constructor() :
             val ticker = it.statusInfo
             return@map TickerItemUiModel(
                 id = String.EMPTY,
-                title = ticker.title,
+                title = ticker.title.parseAsHtml().toString(),
                 message = ticker.message,
                 redirectUrl = SellerHomeCommonUtils.extractUrls(ticker.message)
                     .getOrNull(Int.ZERO)

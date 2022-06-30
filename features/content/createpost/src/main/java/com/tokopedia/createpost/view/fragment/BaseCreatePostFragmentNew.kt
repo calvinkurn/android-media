@@ -26,6 +26,7 @@ import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.createpost.common.view.viewmodel.MediaModel
 import com.tokopedia.createpost.view.util.ConnectionLiveData
 import com.tokopedia.createpost.view.viewmodel.HeaderViewModel
+import com.tokopedia.imagepicker_insta.common.ui.model.FeedAccountUiModel
 import com.tokopedia.feedcomponent.bottomsheets.FeedNetworkErrorBottomSheet
 import com.tokopedia.kotlin.extensions.view.hideLoading
 import com.tokopedia.kotlin.extensions.view.showLoading
@@ -145,14 +146,26 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
         feedContentForm: FeedContentForm,
         isFromTemplateToken: Boolean,
     ) {
-        updateHeader(feedContentForm.authors)
+        val feedAccountList = feedContentForm.authors.map {
+            FeedAccountUiModel(
+                id = it.id,
+                name = it.name,
+                iconUrl = it.thumbnail,
+                badge = it.badge,
+                type = it.type,
+                hasUsername = feedContentForm.hasUsername,
+                hasAcceptTnc = feedContentForm.hasAcceptTnc,
+            )
+        }
 
-        createPostModel.shopName = feedContentForm.authors.first().name
+        activityListener?.setFeedAccountList(feedAccountList)
+        createPostModel.shopName = feedAccountList.firstOrNull { it.isShop }?.name ?: ""
+        createPostModel.shopBadge = feedAccountList.firstOrNull { it.isShop }?.badge ?: ""
         createPostModel.token = feedContentForm.token
         createPostModel.maxImage = feedContentForm.media.maxMedia
         createPostModel.allowImage = feedContentForm.media.allowImage
         createPostModel.allowVideo = feedContentForm.media.allowVideo
-        createPostModel.maxProduct = 5
+        createPostModel.maxProduct = feedContentForm.maxTag
         createPostModel.defaultPlaceholder = feedContentForm.defaultPlaceholder
         if (createPostModel.caption.isEmpty()) createPostModel.caption = feedContentForm.caption
 
@@ -163,22 +176,14 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
                     it.type)
             })
         }
+        createPostModel.productTagSources = feedContentForm.productTagSources
         createContentPostViewModel.setNewContentData(createPostModel)
-
     }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putParcelable(VIEW_MODEL, createPostModel)
     }
-    private fun updateHeader(authors: List<Author>) {
-            activityListener?.updateHeader(HeaderViewModel(
-                authors.first().name,
-                authors.first().thumbnail,
-                authors.first().badge
-            ))
-
-    }
-
 
     override fun onErrorGetContentForm(message: String, throwable: Throwable?) {
         throwable?.let {

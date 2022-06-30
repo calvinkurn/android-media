@@ -844,8 +844,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             boolean isCanClearCache = remoteConfig.getBoolean(KEY_CLEAR_CACHE, false);
             if (isCanClearCache && url.contains(CLEAR_CACHE_PREFIX)) {
                 Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalUserPlatform.LOGOUT);
-                intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_RETURN_HOME, false);
-                intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_CLEAR_DATA_ONLY, true);
+                intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_IS_RETURN_HOME, false);
+                intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_IS_CLEAR_DATA_ONLY, true);
                 startActivityForResult(intent, REQUEST_CODE_LOGOUT);
             } else {
                 startActivityForResult(RouteManager.getIntent(getActivity(), url), REQUEST_CODE_LOGIN);

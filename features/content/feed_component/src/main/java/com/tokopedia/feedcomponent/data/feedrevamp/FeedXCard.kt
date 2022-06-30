@@ -61,6 +61,10 @@ data class FeedXCard(
     var appLink: String = "",
     @SerializedName("webLink")
     var webLink: String = "",
+    @SerializedName("appLinkProductList")
+    var appLinkProductList: String = "",
+    @SerializedName("webLinkProductList")
+    var webLinkProductList: String = "",
     @SerializedName("actionButtonLabel")
     var actionButtonLabel: String = "",
     @SerializedName("actionButtonOperationWeb")
@@ -115,6 +119,8 @@ data class FeedXCard(
             deletable = deletable,
             appLink = appLink,
             webLink = webLink,
+            webLinkProductList = webLinkProductList,
+            appLinkProductList = appLinkProductList,
             actionButtonLabel = actionButtonLabel,
             actionButtonOperationApp = actionButtonOperationApp,
             actionButtonOperationWeb = actionButtonOperationWeb,

@@ -65,6 +65,9 @@ object ChatbotConstant {
         const val FALSE = "false"
     }
 
+    const val CONTACT_US_APPLINK = "tokopedia-android-internal://customercare-inbox-list"
+
+
     object VideoUpload {
         const val SOURCE_ID_FOR_VIDEO_UPLOAD = "fLapDZ"
         const val MAX_MEDIA_COUNT = 6

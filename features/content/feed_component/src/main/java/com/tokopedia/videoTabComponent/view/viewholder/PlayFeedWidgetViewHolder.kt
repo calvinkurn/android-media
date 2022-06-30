@@ -15,7 +15,7 @@ class PlayFeedWidgetViewHolder private constructor() {
 
     internal class Jumbo private constructor(
         itemView: View,
-        private val coordinator: PlayWidgetCoordinatorVideoTab
+        private val coordinator: PlayWidgetCoordinatorVideoTab,
     ) : RecyclerView.ViewHolder(itemView) {
 
         private val view: PlayWidgetJumboView = itemView as PlayWidgetJumboView
@@ -31,14 +31,14 @@ class PlayFeedWidgetViewHolder private constructor() {
         companion object {
             fun create(
                 itemView: View,
-                coordinator: PlayWidgetCoordinatorVideoTab
+                coordinator: PlayWidgetCoordinatorVideoTab,
             ) = Jumbo(itemView, coordinator)
         }
     }
 
      class Large private constructor(
         itemView: View,
-        private val coordinator: PlayWidgetCoordinatorVideoTab
+        private val coordinator: PlayWidgetCoordinatorVideoTab,
     ) : RecyclerView.ViewHolder(itemView) {
 
         private val view: PlayWidgetLargeView = itemView as PlayWidgetLargeView
@@ -54,14 +54,14 @@ class PlayFeedWidgetViewHolder private constructor() {
         companion object {
             fun create(
                 itemView: View,
-                coordinator: PlayWidgetCoordinatorVideoTab
+                coordinator: PlayWidgetCoordinatorVideoTab,
             ) = Large(itemView, coordinator)
         }
     }
 
     internal class Medium private constructor(
         itemView: View,
-        private val coordinator: PlayWidgetCoordinatorVideoTab
+        private val coordinator: PlayWidgetCoordinatorVideoTab,
     ) : RecyclerView.ViewHolder(itemView) {
 
         private val view: PlayWidgetMediumView = itemView as PlayWidgetMediumView
@@ -77,7 +77,7 @@ class PlayFeedWidgetViewHolder private constructor() {
         companion object {
             fun create(
                 itemView: View,
-                coordinator: PlayWidgetCoordinatorVideoTab
+                coordinator: PlayWidgetCoordinatorVideoTab,
             ) = Medium(itemView, coordinator)
         }
     }
