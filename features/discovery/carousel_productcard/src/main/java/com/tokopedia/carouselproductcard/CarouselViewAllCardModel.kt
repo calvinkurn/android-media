@@ -19,7 +19,7 @@ internal data class CarouselViewAllCardModel(
         return typeFactory.type(this)
     }
 
-    fun getOnSeeMoreClickListener() = carouselProductCardListenerInfo.onViewAllCardClickListener
+    fun getOnViewAllCardClickListener() = carouselProductCardListenerInfo.onViewAllCardClickListener
 }
 
 data class CarouselViewAllCardData(val title: String = "")

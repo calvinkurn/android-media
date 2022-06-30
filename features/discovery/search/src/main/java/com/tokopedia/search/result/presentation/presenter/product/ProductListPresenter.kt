@@ -2196,9 +2196,11 @@ class ProductListPresenter @Inject constructor(
 
         trackBroadMatchSeeMoreClick(broadMatchDataView)
 
-        val applink = if (broadMatchDataView.cardButton.applink.startsWith(ApplinkConst.DISCOVERY_SEARCH))
-            view.modifyApplinkToSearchResult(broadMatchDataView.cardButton.applink)
-        else broadMatchDataView.cardButton.applink
+        val applink =
+            if (broadMatchDataView.cardButton.applink.startsWith(ApplinkConst.DISCOVERY_SEARCH))
+                view.modifyApplinkToSearchResult(broadMatchDataView.cardButton.applink)
+             else
+                 broadMatchDataView.cardButton.applink
 
         view.redirectionStartActivity(applink, null)
     }

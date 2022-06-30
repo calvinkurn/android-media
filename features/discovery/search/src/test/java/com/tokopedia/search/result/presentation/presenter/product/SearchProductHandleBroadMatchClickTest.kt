@@ -15,7 +15,7 @@ import rx.Subscriber
 
 private const val broadMatchResponseCode0Page1Position1 = "searchproduct/broadmatch/response-code-0-page-1-position-1.json"
 private const val dynamicProductCarousel = "searchproduct/inspirationcarousel/dynamic-product.json"
-private const val dealsCarouselWithCardButton= "searchproduct/inspirationcarousel/deals-with-card-button.json"
+private const val dealsCarouselWithCardButton = "searchproduct/inspirationcarousel/deals-with-card-button.json"
 
 internal class SearchProductHandleBroadMatchClick: ProductListPresenterTestFixtures() {
 

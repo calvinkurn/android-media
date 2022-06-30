@@ -25,7 +25,7 @@ internal class CarouselViewAllCardViewHolder(
     }
 
     private fun bindClickListener(model: CarouselViewAllCardModel) {
-        val onViewAllCardClickListener = model.getOnSeeMoreClickListener()
+        val onViewAllCardClickListener = model.getOnViewAllCardClickListener()
 
         binding?.carouselProductViewAllCard?.setCta("") {
             onViewAllCardClickListener?.onViewAllCardClick()

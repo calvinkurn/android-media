@@ -62,14 +62,30 @@ internal class CarouselProductCardGridActivityTest: AppCompatActivity() {
             item?.bindCarouselProductCardViewGrid(
                 productCardModelList = productCardModelList,
                 recyclerViewPool = recycledViewPool,
-                carouselProductCardOnItemATCNonVariantClickListener = object: CarouselProductCardListener.OnATCNonVariantClickListener {
-                    override fun onATCNonVariantClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int, quantity: Int) {
-                        Toast.makeText(itemView.context, "ATC non variant position $carouselProductCardPosition, quantity $quantity", Toast.LENGTH_SHORT).show()
+                carouselProductCardOnItemATCNonVariantClickListener =
+                object: CarouselProductCardListener.OnATCNonVariantClickListener {
+                    override fun onATCNonVariantClick(
+                        productCardModel: ProductCardModel,
+                        carouselProductCardPosition: Int,
+                        quantity: Int,
+                    ) {
+                        Toast.makeText(
+                            itemView.context,
+                            "ATC non variant position $carouselProductCardPosition, quantity $quantity",
+                            Toast.LENGTH_SHORT,
+                        ).show()
                     }
                 },
-                carouselProductCardOnItemAddVariantClickListener = object: CarouselProductCardListener.OnAddVariantClickListener {
-                    override fun onAddVariantClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
-                        Toast.makeText(itemView.context, "ATC variant position $carouselProductCardPosition", Toast.LENGTH_SHORT).show()
+                carouselProductCardOnItemAddVariantClickListener =
+                object: CarouselProductCardListener.OnAddVariantClickListener {
+                    override fun onAddVariantClick(
+                        productCardModel: ProductCardModel,
+                        carouselProductCardPosition: Int,
+                    ) {
+                        Toast.makeText(itemView.context,
+                            "ATC variant position $carouselProductCardPosition",
+                            Toast.LENGTH_SHORT,
+                        ).show()
                     }
                 },
                 showSeeMoreCard = true,
