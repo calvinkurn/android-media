@@ -67,6 +67,7 @@ class BalanceAdapter(
 
     companion object {
         var disableAnimation: Boolean = false
+        private const val FIRST_POSITION = 0
     }
 
     @Suppress("TooGenericExceptionCaught")
@@ -131,6 +132,7 @@ class BalanceAdapter(
         private var home_tv_balance: TextView = itemView.findViewById(R.id.home_tv_balance)
         private var home_container_action_balance: ConstraintLayout? = itemView.findViewById(R.id.home_container_action_balance)
         private var home_tv_reserve_balance: Typography? = itemView.findViewById(R.id.home_tv_reserve_balance)
+        private var divider: View? = itemView.findViewById(R.id.divider_balance)
 
         fun bind(drawerItem: BalanceDrawerItemModel?,
                  listener: HomeCategoryListener?,
@@ -156,6 +158,12 @@ class BalanceAdapter(
                 home_progress_bar_balance_layout?.gone()
             }
 
+            if (adapterPosition == FIRST_POSITION) {
+                divider?.invisible()
+            } else {
+                divider?.show()
+            }
+
             animationJob?.cancel()
 
             when (element?.state) {
@@ -175,13 +183,16 @@ class BalanceAdapter(
                     home_iv_logo_balance?.show()
                     home_container_action_balance?.show()
 
-                    home_tv_balance?.show()
+                    home_tv_balance.show()
 
-                    renderBalanceText(element?.balanceTitleTextAttribute, element?.balanceTitleTagAttribute, home_tv_balance)
+                    val balanceText = element.balanceTitleTextAttribute?.text ?: ""
 
-                    if (element.reserveBalance.isNotEmpty()) {
+                    home_tv_balance.text = balanceText
+
+                    val reserveBalance = element.balanceSubTitleTextAttribute?.text ?: ""
+                    if (reserveBalance.isNotEmpty()) {
                         home_tv_reserve_balance?.visible()
-                        home_tv_reserve_balance?.text = element.reserveBalance
+                        home_tv_reserve_balance?.text = reserveBalance
                     } else {
                         home_tv_reserve_balance?.gone()
                     }
@@ -278,7 +289,6 @@ class BalanceAdapter(
                 BalanceDrawerItemModel.STATE_ERROR -> {
                     home_progress_bar_balance_layout?.gone()
                     home_container_action_balance?.show()
-                    renderBalanceText(element.balanceTitleTextAttribute, element.balanceTitleTagAttribute, home_tv_balance)
                     home_container_balance?.handleItemCLickType(
                             element = element,
                             ovoWalletAction = {listener?.onRetryWalletApp()},
@@ -315,138 +325,6 @@ class BalanceAdapter(
 
                     if (it.isNotEmpty()) home_iv_logo_balance?.setImageUrl(it)
                 }
-            }
-        }
-
-        fun setDrawerItemWithAnimation() {
-            if (listener?.needToRotateTokopoints() == true) {
-                animationJob?.cancel()
-                if (animationJob == null || animationJob?.isActive == false) {
-                    animationJob = launch {
-                        alternateDrawerItem?.forEach { alternateItem ->
-                            delay(DRAWER_DELAY_ANIMATION)
-                            renderItemAnimation(alternateItem, slideDirection = DIRECTION_UP)
-                            delay(DRAWER_DELAY_ANIMATION)
-                        }
-                        delay(DRAWER_DELAY_ANIMATION)
-                        element?.let {
-                            element?.let { renderItemAnimation(it, slideDirection = DIRECTION_DOWN) }
-                        }
-                    }
-                }
-                listener?.setRotateTokopointsDone(true)
-            }
-        }
-
-        private suspend fun renderItemAnimation(item: BalanceDrawerItemModel, slideDirection: Int = DIRECTION_DOWN) {
-            var title: BalanceTextAttribute? = null
-            var subtitle: BalanceTextAttribute? = null
-            var titleTag: BalanceTagAttribute? = null
-            var subtitleTag: BalanceTagAttribute? = null
-            val slideIn =
-                if (slideDirection == DIRECTION_DOWN) AnimationUtils.loadAnimation(itemView.context, R.anim.search_bar_slide_down_in) else
-                    AnimationUtils.loadAnimation(itemView.context, R.anim.search_bar_slide_up_in)
-            slideIn.interpolator = EasingInterpolator(Ease.QUART_OUT)
-            val slideOut =
-                if (slideDirection == DIRECTION_DOWN) AnimationUtils.loadAnimation(itemView.context, R.anim.slide_out_down) else
-                    AnimationUtils.loadAnimation(itemView.context, R.anim.slide_out_up)
-            slideOut.interpolator = EasingInterpolator(Ease.QUART_IN)
-            slideOut.setAnimationListener(object : Animation.AnimationListener {
-                override fun onAnimationRepeat(animation: Animation?) {}
-                override fun onAnimationEnd(animation: Animation?) {
-                    title = item.balanceTitleTextAttribute
-                    subtitle = item.balanceSubTitleTextAttribute
-                    titleTag = item.balanceTitleTagAttribute
-                    subtitleTag = item.balanceSubTitleTagAttribute
-                    setItemText(title, titleTag, subtitle, subtitleTag)
-                    home_container_action_balance?.startAnimation(slideIn)
-                }
-
-                override fun onAnimationStart(animation: Animation?) {}
-            })
-            home_container_action_balance?.startAnimation(slideOut)
-
-            home_container_action_balance?.addOnAttachStateChangeListener(object:
-                View.OnAttachStateChangeListener {
-                override fun onViewAttachedToWindow(v: View?) {
-
-                }
-
-                override fun onViewDetachedFromWindow(v: View?) {
-                    animationJob?.cancel()
-                    title = element?.balanceTitleTextAttribute
-                    subtitle = element?.balanceSubTitleTextAttribute
-                    titleTag = element?.balanceTitleTagAttribute
-                    subtitleTag = element?.balanceSubTitleTagAttribute
-                    setItemText(title, titleTag, subtitle, subtitleTag)
-                    home_container_action_balance?.removeOnAttachStateChangeListener(this)
-                }
-            })
-        }
-
-        private fun setItemText(
-            title: BalanceTextAttribute?,
-            titleTag: BalanceTagAttribute?,
-            subtitle: BalanceTextAttribute?,
-            subtitleTag: BalanceTagAttribute?
-        ) {
-            renderBalanceText(
-                textAttr = title,
-                textView = home_tv_balance,
-                tagAttr = titleTag
-            )
-        }
-
-        private fun renderBalanceText(textAttr: BalanceTextAttribute?, tagAttr: BalanceTagAttribute?, textView: TextView, textSize: Int = R.dimen.home_balance_default_text_size) {
-            textView.setTypeface(null, Typeface.NORMAL)
-
-            textView.background = null
-            textView.text = null
-            textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, itemView.context.resources.getDimension(textSize))
-            if (tagAttr != null && tagAttr.text.isNotEmpty()) {
-                renderTagAttribute(tagAttr, textView)
-            } else if (textAttr != null && textAttr.text.isNotEmpty()) {
-                renderTextAttribute(textAttr, textView)
-            } else if ((tagAttr == null && textAttr == null) || (tagAttr != null && tagAttr.text.isEmpty()) || (textAttr != null && textAttr.text.isEmpty())) {
-                textView.gone()
-            }
-        }
-
-        private fun renderTagAttribute(tagAttr: BalanceTagAttribute, textView: TextView) {
-            if (tagAttr.backgroundColour.isNotEmpty() && tagAttr.backgroundColour.isHexColor()) {
-                val drawable = ContextCompat.getDrawable(itemView.context, R.drawable.bg_tokopoints_rounded)
-                (drawable as GradientDrawable?)?.let {
-                    it.setColorFilter(Color.parseColor(tagAttr.backgroundColour), PorterDuff.Mode.SRC_ATOP)
-                    textView.background = it
-                    val horizontalPadding = 2f.toDpInt()
-                    textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, 8f.toSp())
-                    textView.setTypeface(null, Typeface.NORMAL)
-                    textView.setPadding(horizontalPadding, 0, horizontalPadding, 0)
-                }
-                textView.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-            } else {
-                textView.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
-            }
-            if (tagAttr.text.isNotEmpty()) {
-                textView.text = tagAttr.text
-            }
-        }
-
-        private fun renderTextAttribute(textAttr: BalanceTextAttribute, textView: TextView) {
-            if (textAttr.colour.isNotEmpty() && textAttr.colour.isHexColor()) {
-                textView.setTextColor(Color.parseColor(textAttr.colour).invertIfDarkMode(itemView.context))
-            } else if (textAttr.colourRef != null) {
-                textView.setTextColor(ContextCompat.getColor(itemView.context, textAttr.colourRef))
-            } else {
-                textView.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
-            }
-            if (textAttr.isBold) {
-                textView.setTypeface(textView.typeface, Typeface.BOLD)
-            } else {
-                textView.setTypeface(textView.typeface, Typeface.NORMAL)
-            }
-            if (textAttr.text.isNotEmpty()) {
-                textView.text = textAttr.text
             }
         }
 

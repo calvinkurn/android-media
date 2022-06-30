@@ -120,7 +120,7 @@ class BalanceWidgetView: FrameLayout {
             val viewholder = rvBalance?.findViewHolderForAdapterPosition(position)
             viewholder?.let {
                 (it as? BalanceAdapter.Holder)?.let {
-                    it.setDrawerItemWithAnimation()
+//                    it.setDrawerItemWithAnimation()
                 }
             }
         }
