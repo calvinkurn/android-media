@@ -86,5 +86,11 @@ data class ProductProfile (
     var isUpcomingCampaign: Boolean = false,
 
     @SerializedName("location_stock")
-    var locationStock: LocationStock = LocationStock()
+    var locationStock: LocationStock = LocationStock(),
+
+    @SerializedName("android_url")
+    var androidUrl: String = "",
+
+    @SerializedName("ios_url")
+    var iosUrl: String = ""
 )

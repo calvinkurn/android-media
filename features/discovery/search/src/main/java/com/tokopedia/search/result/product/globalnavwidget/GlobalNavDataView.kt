@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.discovery.common.analytics.SearchComponentTracking
 import com.tokopedia.discovery.common.analytics.searchComponentTracking
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel.GlobalSearchNavigation
@@ -21,12 +22,12 @@ class GlobalNavDataView(
     val isShowTopAds: Boolean = false,
     val itemList: List<Item> = listOf(),
     val componentId: String = "",
-    val trackingOption: Int = 0,
+    val trackingOption: String = "0",
     val dimension90: String = "",
     val info: String = "",
 ): Visitable<ProductListTypeFactory?>, ImpressHolder(),
     SearchComponentTracking by searchComponentTracking(
-        trackingOption = trackingOption,
+        trackingOption = trackingOption.toIntOrZero(),
         keyword = keyword,
         valueName = title,
         componentId = componentId,
@@ -52,11 +53,11 @@ class GlobalNavDataView(
         val logoUrl: String = "",
         val position: Int = 0,
         val componentId: String = "",
-        val trackingOption: Int = 0,
+        val trackingOption: String = "0",
         val keyword: String = "",
         val dimension90: String = "",
     ) : SearchComponentTracking by searchComponentTracking(
-        trackingOption = trackingOption,
+        trackingOption = trackingOption.toIntOrZero(),
         keyword = keyword,
         valueName = name,
         componentId = componentId,
