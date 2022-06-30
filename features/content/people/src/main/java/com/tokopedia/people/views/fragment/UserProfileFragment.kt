@@ -100,13 +100,9 @@ class UserProfileFragment @Inject constructor(
         GridLayoutManager(activity, 2)
     }
 
-    var userName: String = ""
     var userWebLink: String = ""
     var profileUserId: String = ""
     var profileImage: String = ""
-    var totalFollowings: String = ""
-    var totalFollowers: String = ""
-    var totalPosts: String = ""
     var btnAction: UnifyButton? = null
     var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var recyclerviewPost: RecyclerView? = null
@@ -506,9 +502,6 @@ class UserProfileFragment @Inject constructor(
         textFollowingCount.text = UserProfileUtils.getFormattedNumber(curr.stats.totalFollowing)
 
         /** TODO: will be removed soon */
-        totalFollowers = curr.stats.totalFollowerFmt
-        totalPosts =  curr.stats.totalPostFmt
-        totalFollowings = curr.stats.totalFollowingFmt
         profileImage = curr.imageCover
         profileUserId = curr.userID
         userWebLink = curr.shareLink.webLink
@@ -738,8 +731,8 @@ class UserProfileFragment @Inject constructor(
         bundle.putString(EXTRA_USER_NAME, viewModel.profileUsername)
         bundle.putString(EXTRA_USER_ID, profileUserId)
         bundle.putString(EXTRA_PROFILE_USER_ID, profileUserId)
-        bundle.putString(EXTRA_TOTAL_FOLLOWINGS, totalFollowings)
-        bundle.putString(EXTRA_TOTAL_FOLLOWERS, totalFollowers)
+        bundle.putString(EXTRA_TOTAL_FOLLOWINGS, viewModel.totalFollowing)
+        bundle.putString(EXTRA_TOTAL_FOLLOWERS, viewModel.totalFollower)
         bundle.putBoolean(EXTRA_IS_FOLLOWERS, isFollowers)
         return bundle
     }
@@ -882,7 +875,7 @@ class UserProfileFragment @Inject constructor(
             } else {
                 "${viewModel.displayName} (@${viewModel.profileUsername})"
             }
-            ogDescription = "$totalFollowers Follower $totalFollowings Following $totalPosts Post"
+            ogDescription = "${viewModel.totalFollower} Follower ${viewModel.totalFollowing} Following ${viewModel.totalPost} Post"
             if (shareModel.ogImgUrl != null && shareModel.ogImgUrl?.isNotEmpty() == true) {
                 ogImageUrl = shareModel.ogImgUrl
             }

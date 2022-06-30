@@ -57,6 +57,15 @@ class UserProfileViewModel @AssistedInject constructor(
     val profileUsername: String
         get() = _profileInfo.value.username
 
+    val totalFollower: String
+        get() = _profileInfo.value.stats.totalFollowerFmt
+
+    val totalFollowing: String
+        get() = _profileInfo.value.stats.totalFollowingFmt
+
+    val totalPost: String
+        get() = _profileInfo.value.stats.totalPostFmt
+
     val isFollowed: Boolean
         get() = _followInfo.value.status
 
