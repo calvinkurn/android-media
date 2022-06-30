@@ -68,7 +68,7 @@ class TokoFoodCategoryViewModel @Inject constructor(
     }
 
     fun getCategoryLayout(localCacheModel: LocalCacheModel, option: Int = 0,
-                          sortBy: Int = 0, cuisine: String = "") {
+                          sortBy: Int = 0, cuisine: String = "", brandUId: String = "") {
         launchCatchError(block = {
             categoryLayoutItemList.clear()
             val categoryResponse = withContext(dispatchers.io) {
@@ -77,6 +77,7 @@ class TokoFoodCategoryViewModel @Inject constructor(
                     option = option,
                     sortBy = sortBy,
                     cuisine = cuisine,
+                    brandUId = brandUId,
                     pageKey = pageKey)
             }
 
@@ -98,13 +99,14 @@ class TokoFoodCategoryViewModel @Inject constructor(
     }
 
     fun onScrollProductList(containsLastItemIndex: Int, itemCount: Int, localCacheModel: LocalCacheModel, option: Int = 0,
-                            sortBy: Int = 0, cuisine: String = "") {
+                            sortBy: Int = 0, cuisine: String = "", brandUId: String = "") {
         if(shouldLoadMore(containsLastItemIndex, itemCount)) {
             showProgressBar()
             loadMoreMerchant(localCacheModel = localCacheModel,
                 option = option,
                 sortBy = sortBy,
-                cuisine = cuisine
+                cuisine = cuisine,
+                brandUId = brandUId
             )
         }
     }
@@ -119,7 +121,7 @@ class TokoFoodCategoryViewModel @Inject constructor(
     }
 
     private fun loadMoreMerchant(localCacheModel: LocalCacheModel, option: Int,
-                                 sortBy: Int, cuisine: String) {
+                                 sortBy: Int, cuisine: String, brandUId: String) {
         launchCatchError(block = {
             val categoryResponse = withContext(dispatchers.io) {
                 tokoFoodMerchantListUseCase.execute(
@@ -127,7 +129,9 @@ class TokoFoodCategoryViewModel @Inject constructor(
                     option = option,
                     sortBy = sortBy,
                     cuisine = cuisine,
-                    pageKey = pageKey)
+                    pageKey = pageKey,
+                    brandUId = brandUId
+                )
             }
 
             setPageKey(categoryResponse.data.nextPageKey)

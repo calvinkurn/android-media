@@ -22,6 +22,7 @@ object DeeplinkMapperTokoFood {
     const val PAGE_TITLE_PARAM = "pageTitle"
     const val OPTION_PARAM = "option"
     const val CUISINE_PARAM = "cuisine"
+    const val BRAND_UID_PARAM = "brand_uid"
     const val SORT_BY_PARAM = "sortBy"
 
     fun mapperInternalApplinkTokoFood(uri: Uri): String {
@@ -68,6 +69,7 @@ object DeeplinkMapperTokoFood {
         val option = uri.getQueryParameter(OPTION_PARAM) ?: ""
         val cuisine = uri.getQueryParameter(CUISINE_PARAM) ?: ""
         val sortBy = uri.getQueryParameter(SORT_BY_PARAM) ?: ""
+        val brandUId = uri.getQueryParameter(BRAND_UID_PARAM) ?: ""
 
         return Uri.parse(ApplinkConstInternalTokoFood.CATEGORY)
             .buildUpon()
@@ -75,6 +77,7 @@ object DeeplinkMapperTokoFood {
             .appendQueryParameter(OPTION_PARAM, option)
             .appendQueryParameter(CUISINE_PARAM, cuisine)
             .appendQueryParameter(SORT_BY_PARAM, sortBy)
+            .appendQueryParameter(BRAND_UID_PARAM, brandUId)
             .build().toString()
     }
 

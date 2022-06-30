@@ -16,11 +16,10 @@ object CustomOrderDetailsMapper {
 
     fun mapTokoFoodProductsToCustomOrderDetails(tokoFoodProducts: List<CheckoutTokoFoodProduct>): MutableList<CustomOrderDetail> {
         return tokoFoodProducts.map { product ->
-            val subtotal = calculateSubtotalPrice(product)
             CustomOrderDetail(
                 cartId = product.cartId,
-                subTotal = subtotal,
-                subTotalFmt = subtotal.getCurrencyFormatted(),
+                subTotal = product.price,
+                subTotalFmt = product.price.getCurrencyFormatted(),
                 qty = product.quantity,
                 customListItems = mapTokoFoodVariantsToCustomListItems(
                     variants = product.variants,
@@ -28,18 +27,6 @@ object CustomOrderDetailsMapper {
                 )
             )
         }.toMutableList()
-    }
-
-    private fun calculateSubtotalPrice(product: CheckoutTokoFoodProduct): Double {
-        val quantity = product.quantity
-        val baseProductPrice = product.price
-        var subTotalPrice = baseProductPrice
-        product.variants.forEach { variant ->
-            val selectedOptions = variant.options.filter { it.isSelected }
-            val subTotalOptionPrice = selectedOptions.sumOf { it.price }
-            subTotalPrice += subTotalOptionPrice
-        }
-        return subTotalPrice * quantity
     }
 
     private fun mapTokoFoodVariantsToCustomListItems(variants: List<CheckoutTokoFoodProductVariant>, orderNote: String): List<CustomListItem> {
