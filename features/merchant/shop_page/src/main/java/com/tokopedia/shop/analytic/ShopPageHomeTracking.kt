@@ -148,17 +148,21 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.THEMATIC_WIDGET_PROD
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.THEMATIC_WIDGET_SEE_ALL_CLICK
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TRACKER_ID
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TRACKER_ID_CLICK_MULTIPLE_BUNDLE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TRACKER_ID_CLICK_SINGLE_BUNDLE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.UNFOLLOW
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.USER_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_FINISHED_BANNER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_FINISHED_CAMPAIGN
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_HOME
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_MULTIPLE_BUNDLING
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_NO_SEE_CAMPAIGN
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_ONGOING_BANNER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_ONGOING_CAMPAIGN
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_SEE_CAMPAIGN
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_SHOP_DECOR
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_SHOP_PAGE_THEMATIC
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_SINGLE_BUNDLING
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_STRING_ZERO
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_UPCOMING_BANNER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_UPCOMING_CAMPAIGN
@@ -2071,12 +2075,10 @@ class ShopPageHomeTracking(
             shopName: String,
             shopType: String
     ) {
-        val bundlingType = "multiple bundling"
         val bundle = Bundle()
-
         val itemBundle = Bundle().apply {
             putString(CATEGORY_ID, "")
-            putString(DIMENSION_117, bundlingType)
+            putString(DIMENSION_117, VALUE_MULTIPLE_BUNDLING)
             putString(DIMENSION_118, bundleId)
             putString(DIMENSION_40, joinDash(SHOPPAGE, PRODUCT_BUNDLING, MULTIPLE_TYPE))
             putString(DIMENSION_87, SHOP_PAGE)
@@ -2118,12 +2120,10 @@ class ShopPageHomeTracking(
             shopName: String,
             shopType: String
     ) {
-        val bundlingType = "single bundling"
         val bundle = Bundle()
-
         val itemBundle = Bundle().apply {
             putString(CATEGORY_ID, "")
-            putString(DIMENSION_117, bundlingType)
+            putString(DIMENSION_117, VALUE_SINGLE_BUNDLING)
             putString(DIMENSION_118, bundleId)
             putString(DIMENSION_40, joinDash(SHOPPAGE, PRODUCT_BUNDLING, SINGLE_TYPE))
             putString(DIMENSION_87, SHOP_PAGE)
@@ -2163,14 +2163,11 @@ class ShopPageHomeTracking(
             bundlePosition: Int,
             clickedProduct: ShopHomeBundleProductUiModel
     ) {
-        val trackerId = "25998"
-        val bundlingType = "multiple bundling"
         val bundle = Bundle()
-
         val itemBundle = Bundle().apply {
-            putString(DIMENSION_117, bundlingType)
+            putString(DIMENSION_117, VALUE_MULTIPLE_BUNDLING)
             putString(DIMENSION_118, bundleId)
-            putString(DIMENSION_40, joinDash(SHOPPAGE, PRODUCT_BUNDLING, bundlingType))
+            putString(DIMENSION_40, joinDash(SHOPPAGE, PRODUCT_BUNDLING, MULTIPLE_TYPE))
             putString(INDEX, bundlePosition.toString())
             putString(ITEM_BRAND, "")
             putString(ITEM_CATEGORY, "")
@@ -2184,11 +2181,12 @@ class ShopPageHomeTracking(
         bundle.putString(TrackAppUtils.EVENT_ACTION, joinDash(CLICK, MULTIPLE_BUNDLE_WIDGET, PRODUCT))
         bundle.putString(TrackAppUtils.EVENT_CATEGORY, SHOP_PAGE_BUYER)
         bundle.putString(TrackAppUtils.EVENT_LABEL, joinDash(bundleId, bundleName, bundlePriceCut))
-        bundle.putString(TRACKER_ID, trackerId)
+        bundle.putString(TRACKER_ID, TRACKER_ID_CLICK_MULTIPLE_BUNDLE)
         bundle.putString(BUSINESS_UNIT, PHYSICAL_GOODS)
         bundle.putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
         bundle.putString(SHOP_ID, userId)
         bundle.putString(USER_ID, shopId)
+        bundle.putString(ITEM_LIST, joinDash(SHOPPAGE, bundleName))
         bundle.putParcelableArrayList(ITEMS, arrayListOf(itemBundle))
 
         sendEnhanceEcommerceDataLayerEvent(PRODUCT_CLICK, bundle)
@@ -2205,14 +2203,11 @@ class ShopPageHomeTracking(
             clickedProduct: ShopHomeBundleProductUiModel,
             selectedPackage: String
     ) {
-        val trackerId = "25999"
-        val bundlingType = "single bundling"
         val bundle = Bundle()
-
         val itemBundle = Bundle().apply {
-            putString(DIMENSION_117, bundlingType)
+            putString(DIMENSION_117, VALUE_SINGLE_BUNDLING)
             putString(DIMENSION_118, bundleId)
-            putString(DIMENSION_40, joinDash(SHOPPAGE, PRODUCT_BUNDLING, bundlingType))
+            putString(DIMENSION_40, joinDash(SHOPPAGE, PRODUCT_BUNDLING, SINGLE_TYPE))
             putString(INDEX, bundlePosition.toString())
             putString(ITEM_BRAND, "")
             putString(ITEM_CATEGORY, "")
@@ -2226,12 +2221,13 @@ class ShopPageHomeTracking(
         bundle.putString(TrackAppUtils.EVENT_ACTION, joinDash(CLICK, SINGLE_BUNDLE_WIDGET, PRODUCT))
         bundle.putString(TrackAppUtils.EVENT_CATEGORY, SHOP_PAGE_BUYER)
         bundle.putString(TrackAppUtils.EVENT_LABEL, joinDash(bundleId, bundleName, bundlePriceCut, selectedPackage))
-        bundle.putString(TRACKER_ID, trackerId)
+        bundle.putString(TRACKER_ID, TRACKER_ID_CLICK_SINGLE_BUNDLE)
         bundle.putString(BUSINESS_UNIT, PHYSICAL_GOODS)
         bundle.putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
         bundle.putString(PRODUCT_ID, clickedProduct.productId)
         bundle.putString(SHOP_ID, userId)
         bundle.putString(USER_ID, shopId)
+        bundle.putString(ITEM_LIST, joinDash(SHOPPAGE, bundleName))
         bundle.putParcelableArrayList(ITEMS, arrayListOf(itemBundle))
 
         sendEnhanceEcommerceDataLayerEvent(PRODUCT_CLICK, bundle)

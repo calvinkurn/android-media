@@ -30,6 +30,7 @@ object ShopPageTrackingConstant {
     const val VIEW_ITEM = "view_item"
     const val VIEW_ITEM_LIST = "view_item_list"
     const val SELECT_CONTENT = "select_content"
+    const val BUNDLING_ADD_TO_CART = "add_to_cart"
 
     //category
     const val SHOP_PAGE_SELLER = "shop page - seller"
@@ -155,7 +156,6 @@ object ShopPageTrackingConstant {
     const val MULTIPLE_TYPE = "multiple"
     const val SINGLE_TYPE = "single"
     const val BUNDLE_ADD_TO_CART = "add to cart"
-    const val BUNDLING_ADD_TO_CART = "add_to_cart"
 
     //label
     const val CLICK_SHARE = "click share"
@@ -379,6 +379,13 @@ object ShopPageTrackingConstant {
     const val VALUE_SHOP_DECOR_PLAY = "Play"
     const val VALUE_STRING_ZERO = "0"
     const val VALUE_SHOP_PAGE_THEMATIC = "/shoppagethematic"
+    const val VALUE_MULTIPLE_BUNDLING = "multiple bundling"
+    const val VALUE_SINGLE_BUNDLING = "single bundling"
+
+    //trackerId
+    const val TRACKER_ID_CLICK_MULTIPLE_BUNDLE = "25998"
+    const val TRACKER_ID_CLICK_SINGLE_BUNDLE = "25999"
+
 
     //dimension83
     const val BOE = "BoE"
