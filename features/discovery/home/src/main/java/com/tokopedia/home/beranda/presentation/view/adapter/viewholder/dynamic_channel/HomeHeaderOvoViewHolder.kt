@@ -5,7 +5,7 @@ import android.widget.FrameLayout
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.discovery.common.utils.toDpInt
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.helper.benchmark.TRACE_ON_BIND_HEADER_OVO
@@ -15,7 +15,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.BalanceWidgetView
 import com.tokopedia.home.databinding.HomeHeaderOvoBinding
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt.getFullToolbarHeight
 import com.tokopedia.unifycomponents.ImageUnify
@@ -32,8 +31,9 @@ class HomeHeaderOvoViewHolder(itemView: View,
         @LayoutRes
         val LAYOUT = R.layout.home_header_ovo
         private const val IMAGE_HEADER_MOBILE = "https://dhabawidhikari.com/wp-content/uploads/2022/06/header_phone.png"
-        private const val IMAGE_HEADER_TABLET_700 = "https://dhabawidhikari.com/wp-content/uploads/2022/06/header_tablet_700_px.png"
-        private const val IMAGE_HEADER_ABOVE_700 = "https://dhabawidhikari.com/wp-content/uploads/2022/06/header_tablet_800_px.png"
+        private const val IMAGE_HEADER_BELOW_800 = "https://dhabawidhikari.com/wp-content/uploads/2022/06/header_tablet_700_px.png"
+        private const val IMAGE_HEADER_ABOVE_800 = "https://dhabawidhikari.com/wp-content/uploads/2022/06/header_tablet_800_px.png"
+        private const val TABLET_WIDTH_800_PX = 800
     }
 
     override fun bind(element: HomeHeaderDataModel) {
@@ -66,9 +66,25 @@ class HomeHeaderOvoViewHolder(itemView: View,
     private fun renderHeaderImage() {
         val headerBackgroundHome = itemView.findViewById<ImageUnify>(R.id.header_background_home)
         if (listener.isSuperGraphicHeaderActive()) {
-            headerBackgroundHome.setImageUrl(IMAGE_HEADER_MOBILE)
+            if (DeviceScreenInfo.isTablet(itemView.context)) {
+                val width = itemView.context.resources.displayMetrics.widthPixels
+                val density = itemView.context.resources.displayMetrics.density
+                val widthPx = (width / density).toInt()
+                if (widthPx >= TABLET_WIDTH_800_PX) {
+                    headerBackgroundHome.setImageUrl(IMAGE_HEADER_ABOVE_800)
+                } else {
+                    headerBackgroundHome.setImageUrl(IMAGE_HEADER_BELOW_800)
+                }
+            } else { // for mobile
+                headerBackgroundHome.setImageUrl(IMAGE_HEADER_MOBILE)
+            }
         } else {
-            headerBackgroundHome.setColorFilter(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500), android.graphics.PorterDuff.Mode.SRC_IN);
+            headerBackgroundHome.setColorFilter(
+                ContextCompat.getColor(
+                    itemView.context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                ), android.graphics.PorterDuff.Mode.SRC_IN
+            );
         }
     }
 
