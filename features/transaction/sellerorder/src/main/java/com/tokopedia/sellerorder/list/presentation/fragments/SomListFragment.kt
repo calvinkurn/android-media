@@ -170,7 +170,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         private const val BUTTON_ENTER_LEAVE_ANIMATION_DURATION = 300L
         private const val TICKER_ENTER_LEAVE_ANIMATION_DURATION = 300L
         private const val TICKER_ENTER_LEAVE_ANIMATION_DELAY = 10L
-        private const val RECYCLER_VIEW_MIN_VERTICAL_SCROLL_THRESHOLD = 100
         private const val RV_TOP_POSITION = 0
 
         private const val KEY_LAST_SELECTED_ORDER_ID = "lastSelectedOrderId"
@@ -246,7 +245,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     private var somFilterBottomSheet: SomFilterBottomSheet? = null
     private var pendingAction: SomPendingAction? = null
     private var tickerIsReady = false
-    private var wasChangingTab = false
     private var coachMarkManager: SomListCoachMarkManager? = null
 
     protected var somListLoadTimeMonitoring: SomListLoadTimeMonitoring? = null
@@ -393,6 +391,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
 
     override fun onSwipeRefresh() {
         shouldScrollToTop = true
+        somListBinding?.rvSomList?.itemAnimator = defaultItemAnimator
         loadInitialData()
         coachMarkManager?.dismissCoachMark()
     }
@@ -410,9 +409,9 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
 
     override fun onTabClicked(
         quickFilter: SomListFilterUiModel.QuickFilter,
-        shouldScrollToTop: Boolean,
-        fromClickTab: Boolean
+        shouldScrollToTop: Boolean
     ) {
+        somListBinding?.rvSomList?.itemAnimator = fadeRightAnimator
         if (quickFilter.isChecked) {
             if (quickFilter.isOrderTypeFilter()) {
                 viewModel.addOrderTypeFilter(quickFilter.id)
@@ -426,9 +425,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 viewModel.removeShippingFilter(quickFilter.id)
             }
         }
-        if (fromClickTab) {
-            wasChangingTab = fromClickTab
-        }
         if (viewModel.isMultiSelectEnabled) {
             context.let { context ->
                 if (context == null || !DeviceScreenInfo.isTablet(context)) {
@@ -436,16 +432,22 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                         somListLayoutManager?.findViewByPosition(it)
                             ?.findViewById<View>(R.id.btnQuickAction)
                             ?.addOneTimeGlobalLayoutListener {
-                                refreshOrdersOnTabClicked(shouldScrollToTop, fromClickTab)
+                                refreshOrders(
+                                    shouldScrollToTop = shouldScrollToTop,
+                                    refreshFilter = true
+                                )
                             }
                     }
                 } else {
-                    refreshOrdersOnTabClicked(shouldScrollToTop, fromClickTab)
+                    refreshOrders(
+                        shouldScrollToTop = shouldScrollToTop,
+                        refreshFilter = true
+                    )
                 }
             }
             onToggleMultiSelectClicked()
         } else {
-            refreshOrdersOnTabClicked(shouldScrollToTop, fromClickTab)
+            refreshOrders(shouldScrollToTop = shouldScrollToTop, refreshFilter = true)
         }
     }
 
@@ -482,28 +484,12 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
 
     override fun onClickOrderStatusFilterTab(
         status: SomListFilterUiModel.Status,
-        shouldScrollToTop: Boolean,
-        fromClickTab: Boolean
+        shouldScrollToTop: Boolean
     ) {
-        if (status.key != viewModel.getTabActive() && fromClickTab) {
-            wasChangingTab = true
-        }
-        somListBinding?.rvSomList?.itemAnimator =
-            if (wasChangingTab && !fromClickTab) {
-                defaultItemAnimator
-            } else {
-                fadeRightAnimator
-            }
-        if (status.key == viewModel.getTabActive()) {
-            wasChangingTab = false
-        }
-        if (fromClickTab) {
-            viewModel.setStatusOrderFilter(status.id)
-            setDefaultSortByValue()
-            SomAnalytics.eventClickStatusFilter(status.id.map { it.toString() }, status.status)
-        } else {
-            viewModel.setStatusOrderFilter(viewModel.getDataOrderListParams().statusList)
-        }
+        somListBinding?.rvSomList?.itemAnimator = fadeRightAnimator
+        viewModel.setStatusOrderFilter(status.id)
+        setDefaultSortByValue()
+        SomAnalytics.eventClickStatusFilter(status.id.map { it.toString() }, status.status)
         if (viewModel.isMultiSelectEnabled) {
             context.let { context ->
                 if (context == null || !DeviceScreenInfo.isTablet(context)) {
@@ -515,19 +501,28 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                         if (viewHolderView != null) {
                             viewHolderView.findViewById<View>(R.id.btnQuickAction)
                                 ?.addOneTimeGlobalLayoutListener {
-                                    refreshOrdersOnTabClicked(shouldScrollToTop, fromClickTab)
+                                    refreshOrders(
+                                        shouldScrollToTop = shouldScrollToTop,
+                                        refreshFilter = true
+                                    )
                                 }
                         } else if (i == lastVisibleItemIndex) {
-                            refreshOrdersOnTabClicked(shouldScrollToTop, fromClickTab)
+                            refreshOrders(
+                                shouldScrollToTop = shouldScrollToTop,
+                                refreshFilter = true
+                            )
                         }
                     }
                 } else {
-                    refreshOrdersOnTabClicked(shouldScrollToTop, fromClickTab)
+                    refreshOrders(
+                        shouldScrollToTop = shouldScrollToTop,
+                        refreshFilter = true
+                    )
                 }
             }
             onToggleMultiSelectClicked()
         } else {
-            refreshOrdersOnTabClicked(shouldScrollToTop, fromClickTab)
+            refreshOrders(shouldScrollToTop = shouldScrollToTop, refreshFilter = true)
         }
     }
 
@@ -809,7 +804,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     )
                     val orderRejectRequest = SomRejectRequestParam(
                         orderId = selectedOrderId,
-                        rCode = "0",
+                        rCode = Int.ZERO.toString(),
                         reason = reasonBuyer
                     )
                     rejectOrder(orderRejectRequest)
@@ -850,8 +845,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     private fun setDefaultSortByValue() {
-        val defaultSortByValue = SomFilterUtil.getDefaultSortBy(viewModel.getTabActive())
-        viewModel.setSortOrderBy(defaultSortByValue)
+        viewModel.setSortOrderBy(SomFilterUtil.getDefaultSortBy(viewModel.getTabActive()))
     }
 
     private fun getOrderBy(orderId: String): String {
@@ -1737,12 +1731,8 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 2. First realtime (cloud) data with any differences from the previous cached data (if first realtime data is coming after cached data)
                 3. First data
              */
-            if (shouldRefreshOrders(
-                    result.data.refreshOrder,
-                    realtimeDataChangeCount
-                )
-            ) {
-                onClickOrderStatusFilterTab(activeFilter, shouldScrollToTop, false)
+            if (shouldRefreshOrders(result.data.refreshOrder, realtimeDataChangeCount)) {
+                refreshOrders(shouldScrollToTop, false)
             }
         }
     }
@@ -2521,7 +2511,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         }?.key
 
         if (viewModel.getTabActive() != selectedStatusFilterKey.orEmpty()) {
-            wasChangingTab = true
+            somListBinding?.rvSomList?.itemAnimator = fadeRightAnimator
         }
 
         viewModel.updateGetOrderListParams(filterData)
@@ -2656,7 +2646,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         }
     }
 
-    private fun refreshOrdersOnTabClicked(shouldScrollToTop: Boolean, refreshFilter: Boolean) {
+    private fun refreshOrders(shouldScrollToTop: Boolean, refreshFilter: Boolean) {
         this.shouldScrollToTop = shouldScrollToTop
         val loadOrderListImmediately = shouldReloadOrderListImmediately()
         if (refreshFilter) {
@@ -2736,7 +2726,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         somListHeaderBinding?.icSomListNavigationBack?.run {
             showWithCondition(showBackButton())
             setOnClickListener {
-                onFragmentBackPressed()
+                activity?.onBackPressed()
             }
         }
         somListHeaderBinding?.icSomListMenuWaitingPayment?.setOnClickListener {

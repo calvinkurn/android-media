@@ -95,8 +95,7 @@ class SomListOrderStatusFilterTab(
     interface Listener {
         fun onClickOrderStatusFilterTab(
             status: SomListFilterUiModel.Status,
-            shouldScrollToTop: Boolean,
-            fromClickTab: Boolean = true
+            shouldScrollToTop: Boolean
         )
     }
 
@@ -106,8 +105,7 @@ class SomListOrderStatusFilterTab(
                 selected.isChecked = true
                 listener.onClickOrderStatusFilterTab(
                     status = selected,
-                    shouldScrollToTop = true,
-                    fromClickTab = true
+                    shouldScrollToTop = true
                 )
             }
         }

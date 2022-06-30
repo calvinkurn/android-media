@@ -139,6 +139,6 @@ class SomListSortFilterTab(
 
     interface SomListSortFilterTabClickListener {
         fun onParentSortFilterClicked()
-        fun onTabClicked(quickFilter: SomListFilterUiModel.QuickFilter, shouldScrollToTop: Boolean, fromClickTab: Boolean = true)
+        fun onTabClicked(quickFilter: SomListFilterUiModel.QuickFilter, shouldScrollToTop: Boolean)
     }
 }
