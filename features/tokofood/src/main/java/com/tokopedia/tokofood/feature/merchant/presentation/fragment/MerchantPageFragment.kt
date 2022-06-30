@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
@@ -46,6 +48,7 @@ import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
 import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
+import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.common.util.Constant
 import com.tokopedia.tokofood.common.util.TokofoodExt.getSuccessUpdateResultPair
@@ -280,6 +283,10 @@ class MerchantPageFragment : BaseMultiFragment(),
             validateAddressData()
         }
 
+    }
+
+    override fun navigateToNewFragment(fragment: Fragment) {
+        (activity as? BaseTokofoodActivity)?.navigateToNewFragment(fragment)
     }
 
     private fun setBackgroundDefaultColor() {

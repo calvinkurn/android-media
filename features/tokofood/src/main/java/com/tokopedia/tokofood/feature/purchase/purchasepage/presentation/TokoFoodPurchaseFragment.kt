@@ -164,7 +164,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     }
 
     override fun navigateToNewFragment(fragment: Fragment) {
-        (activity as? BaseMultiFragActivity)?.navigateToNewFragment(fragment)
+        (activity as? BaseTokofoodActivity)?.navigateToNewFragment(fragment)
     }
 
     override fun onItemClicked(t: Visitable<*>?) {

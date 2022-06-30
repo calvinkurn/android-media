@@ -221,7 +221,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     override fun navigateToNewFragment(fragment: Fragment) {
-        (activity as? BaseMultiFragActivity)?.navigateToNewFragment(fragment)
+        (activity as? BaseTokofoodActivity)?.navigateToNewFragment(fragment)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -326,9 +326,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
             .buildUpon()
             .appendQueryParameter(DeeplinkMapperTokoFood.PARAM_MERCHANT_ID, merchant.id)
             .build()
-        TokofoodRouteManager.mapUriToFragment(merchantPageUri)?.let { merchantPageFragment ->
-            navigateToNewFragment(merchantPageFragment)
-        }
+        TokofoodRouteManager.routePrioritizeInternal(context, merchantPageUri.toString())
     }
 
     override fun onImpressMerchant(merchant: Merchant, horizontalPosition: Int) {

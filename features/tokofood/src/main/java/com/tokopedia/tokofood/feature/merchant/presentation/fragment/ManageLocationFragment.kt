@@ -256,9 +256,7 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
                 .buildUpon()
                 .appendQueryParameter(DeeplinkMapperTokoFood.PARAM_MERCHANT_ID, merchantId)
                 .build()
-        TokofoodRouteManager.mapUriToFragment(merchantPageUri)?.let { merchantPageFragment ->
-            navigateToNewFragment(merchantPageFragment)
-        }
+        TokofoodRouteManager.routePrioritizeInternal(context, merchantPageUri.toString())
     }
 
     private fun navigateToSetPinpoint() {
