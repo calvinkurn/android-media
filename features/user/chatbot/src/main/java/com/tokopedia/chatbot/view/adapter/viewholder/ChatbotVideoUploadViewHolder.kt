@@ -73,7 +73,7 @@ class ChatbotVideoUploadViewHolder(
         itemView?.context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
             ?: 0f
 
-    override fun bind(element: VideoUploadUiModel?) {
+    override fun bind(element: VideoUploadUiModel) {
         if (element == null) return
         super.bind(element)
         prerequisiteUISetup(element)
@@ -253,7 +253,7 @@ class ChatbotVideoUploadViewHolder(
         }
     }
 
-    override fun setHeaderDate(element: BaseChatUiModel?) {
+    override fun setHeaderDate(element: BaseChatUiModel) {
         if (date == null) return
         val time = element?.replyTime?.let {
             ChatBotTimeConverter.getDateIndicatorTime(
@@ -262,7 +262,7 @@ class ChatbotVideoUploadViewHolder(
                 itemView.context.getString(com.tokopedia.chat_common.R.string.chat_yesterday_date)
             )
         }
-        date.text = time
+        date?.text = time
         if (date != null && element?.isShowDate == true
             && !TextUtils.isEmpty(time)
         ) {
@@ -272,7 +272,8 @@ class ChatbotVideoUploadViewHolder(
         }
     }
 
-    override fun getDateId(): Int = R.id.date
+    override val dateId: Int
+        get() = R.id.date
 
     protected val chatStatus: ImageView? = itemView?.findViewById(getReadStatusId())
 
@@ -292,7 +293,7 @@ class ChatbotVideoUploadViewHolder(
     }
 
     protected open fun bindClickListener(element: VideoUploadUiModel) {
-        view.setOnClickListener { view ->
+        view?.setOnClickListener { view ->
             if (element.videoUrl != null && element.replyTime != null) {
                 //  listener.onVideoUploadClicked(element.videoUrl!!, element.replyTime!!)
             }
@@ -323,7 +324,8 @@ class ChatbotVideoUploadViewHolder(
         setVisibility(chatStatus, View.VISIBLE)
     }
 
-    protected open fun alignHour(alignment: Int, hour: TextView) {
+    //TODO check
+    protected open fun alignHour(alignment: Int, hour: TextView?) {
         setAlignParent(alignment, hour)
     }
 
@@ -346,7 +348,6 @@ class ChatbotVideoUploadViewHolder(
         }
     }
 
-    @SuppressLint("DefaultLocale")
     protected fun prerequisiteUISetup(element: VideoUploadUiModel) {
         action?.visibility = View.GONE
         progressBarSendImage?.visibility = View.GONE
@@ -385,7 +386,5 @@ class ChatbotVideoUploadViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.item_chatbot_chat_video_upload
         private val ROLE_USER = "User"
-        private val BLUR_WIDTH = 30
-        private val BLUR_HEIGHT = 30
     }
 }

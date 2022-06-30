@@ -818,14 +818,14 @@ class ChatbotPresenter @Inject constructor(
     ) {
         val originalFile = File(videoUploadUiModel.videoUrl)
 
-        videoUploadJob = launchCatchError(
+        launchCatchError(
             block = {
                 val param = uploaderUseCase.createParams(
                     filePath = originalFile,
                     sourceId = sourceId
                 )
                 //TODO check
-                if (videoUploadJob.isActive) {
+//                if (videoUploadJob.isActive) {
                     when (val result = uploaderUseCase.invoke(param)) {
                         is UploadResult.Success -> {
                             sendVideoAttachment(result.videoUrl, startTime, messageId)
@@ -834,12 +834,12 @@ class ChatbotPresenter @Inject constructor(
                             onErrorVideoUpload(result.message, videoUploadUiModel)
                         }
                     }
-                }
+           //     }
             },
             onError = {
                 onErrorVideoUpload(it.message ?: "", videoUploadUiModel)
             }
-        ) as CompletableJob
+        )
         //TODO check this
     }
 
@@ -852,17 +852,17 @@ class ChatbotPresenter @Inject constructor(
     }
 
     override fun cancelVideoUpload(file: String, sourceId: String,  onErrorVideoUpload: (Throwable) -> Unit) {
-        videoUploadJob = launchCatchError(
-            block = {
-                uploaderUseCase.abortUpload(
-                    filePath = file,
-                    sourceId = sourceId
-            )
-                videoUploadJob.cancel()
-            },
-            onError = {
-                onErrorVideoUpload(it)
-            }
-        ) as CompletableJob
+//        videoUploadJob = launchCatchError(
+//            block = {
+//                uploaderUseCase.abortUpload(
+//                    filePath = file,
+//                    sourceId = sourceId
+//            )
+//                videoUploadJob.cancel()
+//            },
+//            onError = {
+//                onErrorVideoUpload(it)
+//            }
+//        ) as CompletableJob
     }
 }

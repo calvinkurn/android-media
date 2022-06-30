@@ -71,6 +71,6 @@ object ChatbotConstant {
     object VideoUpload {
         const val SOURCE_ID_FOR_VIDEO_UPLOAD = "fLapDZ"
         const val MAX_MEDIA_COUNT = 6
-        const val MAX_DURATION_FOR_VIDEO = 300000L
+        const val MAX_DURATION_FOR_VIDEO = 300000
     }
 }
