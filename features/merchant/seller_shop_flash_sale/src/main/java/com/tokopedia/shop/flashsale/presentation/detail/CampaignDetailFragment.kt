@@ -20,12 +20,16 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.seller_shop_flash_sale.R
+import com.tokopedia.seller_shop_flash_sale.databinding.SsfsCampaignDetailPerformanceLayoutBinding
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignDetailBinding
 import com.tokopedia.shop.flashsale.common.constant.DateConstant
+import com.tokopedia.shop.flashsale.common.extension.convertRupiah
 import com.tokopedia.shop.flashsale.common.extension.formatTo
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
+import com.tokopedia.shop.flashsale.domain.entity.CampaignDetailMeta
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.MerchantCampaignTNC
 import com.tokopedia.shop.flashsale.domain.entity.enums.isActive
@@ -51,6 +55,8 @@ class CampaignDetailFragment : BaseDaggerFragment(), CampaignDetailMoreMenuClick
     companion object {
         private const val BUNDLE_KEY_CAMPAIGN_ID = "campaign_id"
         private const val BUNDLE_KEY_CAMPAIGN_NAME = "campaign_name"
+        private const val CAMPAIGN_ENDED_IMAGE_URL =
+            "https://images.tokopedia.net/img/android/campaign/flash-sale-toko/ic_campaign_detail_ended.png"
 
         @JvmStatic
         fun newInstance(campaignId: Long, campaignName: String?): CampaignDetailFragment {
@@ -267,7 +273,7 @@ class CampaignDetailFragment : BaseDaggerFragment(), CampaignDetailMoreMenuClick
         }
     }
 
-    private fun showCampaignDetailContent(data: CampaignUiModel) {
+    private fun showCampaignDetailContent(data: CampaignDetailMeta) {
         val binding = binding ?: return
         displayCampaignDetailInformation(data)
         binding.wrapperCampaignDetailContent.visible()
@@ -275,21 +281,63 @@ class CampaignDetailFragment : BaseDaggerFragment(), CampaignDetailMoreMenuClick
     }
 
     @SuppressLint("ResourcePackage")
-    private fun displayCampaignDetailInformation(data: CampaignUiModel) {
+    private fun displayCampaignDetailInformation(data: CampaignDetailMeta) {
         val binding = binding ?: return
-        handleCampaignToolbar(data)
+        val campaign = data.campaign
+        handleCampaignToolbar(campaign)
+        handleCampaignPerformanceData(data)
         binding.tgCampaignDetailId.text = getString(
             R.string.campaign_detail_campaign_id,
-            data.campaignId.toString()
+            campaign.campaignId.toString()
         )
-        handleCampaignStatusIndicator(data)
-        handleEventParticipation(data)
+        handleCampaignStatusIndicator(campaign)
+        handleEventParticipation(campaign)
 
-        handleEditCampaignButtonVisibility(data)
-        handleShareButtonVisibility(data)
+        handleEditCampaignButtonVisibility(campaign)
+        handleShareButtonVisibility(campaign)
 
-        binding.tgCampaignStartDate.text = data.startDate.formatTo(DateConstant.DATE_TIME_WITH_DAY)
-        binding.tgCampaignEndDate.text = data.endDate.formatTo(DateConstant.DATE_TIME_WITH_DAY)
+        binding.tgCampaignStartDate.text =
+            campaign.startDate.formatTo(DateConstant.DATE_TIME_WITH_DAY)
+        binding.tgCampaignEndDate.text = campaign.endDate.formatTo(DateConstant.DATE_TIME_WITH_DAY)
+    }
+
+    private fun handleCampaignPerformanceData(data: CampaignDetailMeta) {
+        if (data.campaign.status.isFinished()) {
+            handleCampaignFinished(data)
+        } else if (data.campaign.status.isOngoing()) {
+            handleCampaignOngoing(data)
+        }
+    }
+
+    private fun handleCampaignOngoing(
+        data: CampaignDetailMeta
+    ) {
+        val binding = binding ?: return
+        binding.groupCampaignPerformance.visible()
+        val inflatedView = binding.vsCampaignPerformance.inflate()
+        val campaignDetailPerformanceBinding =
+            SsfsCampaignDetailPerformanceLayoutBinding.bind(inflatedView)
+        campaignDetailPerformanceBinding.run {
+            tgPerformanceTotalProductSold.text = data.productList.totalProductSold.toString()
+            tgPerformanceTotalIncome.text = data.productList.totalIncome.convertRupiah()
+            tgPerformanceTotalProductQuantity.text = data.productList.totalProductQty.toString()
+        }
+    }
+
+    private fun handleCampaignFinished(
+        data: CampaignDetailMeta
+    ) {
+        val binding = binding ?: return
+        binding.imgCampaignEnd.loadImage(CAMPAIGN_ENDED_IMAGE_URL)
+        binding.groupCampaignEnded.visible()
+        val inflatedView = binding.vsCampaignEndPerformance.inflate()
+        val campaignDetailPerformanceBinding =
+            SsfsCampaignDetailPerformanceLayoutBinding.bind(inflatedView)
+        campaignDetailPerformanceBinding.run {
+            tgPerformanceTotalProductSold.text = data.productList.totalProductSold.toString()
+            tgPerformanceTotalIncome.text = data.productList.totalIncome.convertRupiah()
+            tgPerformanceTotalProductQuantity.text = data.productList.totalProductQty.toString()
+        }
     }
 
     private fun handleCampaignToolbar(data: CampaignUiModel) {
