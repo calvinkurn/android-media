@@ -17,15 +17,11 @@ class TimePickerHandler @Inject constructor(private val param: Param) {
         val selectedDateFromCalendar: Date,
         val defaultDate: Date,
         val minimumDate: Date,
+        val maximumDate: Date,
         val title: String,
         val info: String,
         val buttonWording: String
     )
-
-    companion object {
-        private const val LAST_HOUR_OF_A_DAY = 23
-        private const val LAST_MINUTE = 59
-    }
 
     fun show(
         context: Context,
@@ -33,16 +29,8 @@ class TimePickerHandler @Inject constructor(private val param: Param) {
         onTimePicked: (Date) -> Unit
     ) {
         val minTime = buildMinTime()
-
-        val defaultTime = GregorianCalendar(LocaleConstant.INDONESIA).apply {
-            set(Calendar.HOUR_OF_DAY, param.defaultDate.extractHour())
-            set(Calendar.MINUTE, param.defaultDate.extractMinute())
-        }
-
-        val maxTime = GregorianCalendar(LocaleConstant.INDONESIA).apply {
-            set(Calendar.HOUR_OF_DAY, LAST_HOUR_OF_A_DAY)
-            set(Calendar.MINUTE, LAST_MINUTE)
-        }
+        val defaultTime = buildDefaultTime()
+        val maxTime = buildMaxTime()
 
         val dateTimePicker = DateTimePickerUnify(
             context,
@@ -90,6 +78,22 @@ class TimePickerHandler @Inject constructor(private val param: Param) {
                 set(Calendar.HOUR_OF_DAY, Constant.ZERO)
                 set(Calendar.MINUTE, Constant.ZERO)
             }
+        }
+    }
+
+    private fun buildDefaultTime(): GregorianCalendar {
+        return GregorianCalendar(LocaleConstant.INDONESIA).apply {
+            set(Calendar.HOUR_OF_DAY, param.defaultDate.extractHour())
+            set(Calendar.MINUTE, param.defaultDate.extractMinute())
+            set(Calendar.SECOND, 0)
+        }
+    }
+
+    private fun buildMaxTime(): GregorianCalendar {
+        return GregorianCalendar(LocaleConstant.INDONESIA).apply {
+            set(Calendar.HOUR_OF_DAY, param.maximumDate.extractHour())
+            set(Calendar.MINUTE, param.maximumDate.extractMinute())
+            set(Calendar.SECOND, 0)
         }
     }
 }

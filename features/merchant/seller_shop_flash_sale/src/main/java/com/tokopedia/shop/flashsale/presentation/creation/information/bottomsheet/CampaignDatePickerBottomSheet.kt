@@ -179,6 +179,7 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
                     date,
                     selectedDate,
                     minimumDate,
+                    maximumDate,
                     onTimePicked = { dateTime -> doOnDelayFinished { onDateTimePicked(dateTime) } }
                 )
             }
@@ -199,6 +200,7 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
         selectedDateFromCalendar: Date,
         defaultDate: Date,
         minimumDate: Date,
+        maximumDate: Date,
         onTimePicked: (Date) -> Unit
     ) {
         val title = getString(R.string.sfs_select_campaign_time)
@@ -211,6 +213,7 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
             selectedDateFromCalendar,
             defaultDate,
             minimumDate,
+            maximumDate,
             title,
             info,
             buttonWording

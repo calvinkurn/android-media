@@ -127,7 +127,7 @@ class CampaignInformationViewModel @Inject constructor(
 
         }
 
-        if (campaignName in forbiddenWords) {
+        if (campaignName.lowercase() in forbiddenWords) {
             return  CampaignNameValidationResult.CampaignNameHasForbiddenWords
 
         }
