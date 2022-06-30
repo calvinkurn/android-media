@@ -512,7 +512,6 @@ class UserProfileFragment @Inject constructor(
         textFollowingCount.text = UserProfileUtils.getFormattedNumber(curr.stats.totalFollowing)
 
         displayName = curr.name
-        mAdapter.displayName = displayName
         userName = curr.username
         mAdapter.setUserName(curr.username)
 

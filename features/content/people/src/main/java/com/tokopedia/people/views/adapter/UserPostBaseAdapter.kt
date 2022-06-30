@@ -89,7 +89,7 @@ open class UserPostBaseAdapter(
     }
 
     private fun setData(holder: ViewHolder, playPostContent: PlayPostContentItem, position: Int) {
-        holder.playWidgetLargeView.setModel(UserProfileVideoMapper.map(playPostContent, "", displayName))
+        holder.playWidgetLargeView.setModel(UserProfileVideoMapper.map(playPostContent, ""))
         holder.playWidgetLargeView.setListener(this)
 
     }

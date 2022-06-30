@@ -45,6 +45,10 @@ const val PLAY_VIDEO_QUERY = """
                             type
                           }
                         }
+                        partner {
+                          id
+                          name
+                        }
                         app_link
                         web_link
                         display_type
