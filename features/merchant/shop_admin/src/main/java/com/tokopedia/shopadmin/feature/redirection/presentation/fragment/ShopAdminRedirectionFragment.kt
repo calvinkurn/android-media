@@ -89,12 +89,17 @@ class ShopAdminRedirectionFragment : BaseDaggerFragment() {
     }
 
     private fun redirectCreateShopIfFail() {
-        val errorMessage =
-            getString(com.tokopedia.shopadmin.R.string.error_message_shop_admin_redirection)
-        val intent = RouteManager.getIntent(context, ApplinkConst.CREATE_SHOP)
-        intent.putExtra(ShopAdminDeepLinkMapper.ARGS_ERROR_MESSAGE_FROM_SHOP_ADMIN, errorMessage)
-        activity?.setResult(Activity.RESULT_OK, intent)
-        activity?.finish()
+        context?.let {
+            val errorMessage =
+                it.getString(com.tokopedia.shopadmin.R.string.error_message_shop_admin_redirection)
+            val intent = RouteManager.getIntent(it, ApplinkConst.CREATE_SHOP)
+            intent.putExtra(
+                ShopAdminDeepLinkMapper.ARGS_ERROR_MESSAGE_FROM_SHOP_ADMIN,
+                errorMessage
+            )
+            activity?.setResult(Activity.RESULT_OK, intent)
+            activity?.finish()
+        }
     }
 
     private fun redirectionShopAdmin(adminTypeUiModel: AdminTypeUiModel) {
@@ -116,10 +121,12 @@ class ShopAdminRedirectionFragment : BaseDaggerFragment() {
             ApplinkConstInternalGlobal.PHONE_SHOP_CREATION
         }
 
-        val intent = RouteManager.getIntent(context, ApplinkConst.CREATE_SHOP)
-        intent.putExtra(ShopAdminDeepLinkMapper.ARGS_APPLINK_FROM_SHOP_ADMIN, appLink)
-        activity?.setResult(Activity.RESULT_OK, intent)
-        activity?.finish()
+        context?.let {
+            val intent = RouteManager.getIntent(it, ApplinkConst.CREATE_SHOP)
+            intent.putExtra(ShopAdminDeepLinkMapper.ARGS_APPLINK_FROM_SHOP_ADMIN, appLink)
+            activity?.setResult(Activity.RESULT_OK, intent)
+            activity?.finish()
+        }
     }
 
     private fun isShopAdminInSA(adminTypeUiModel: AdminTypeUiModel): Boolean {
@@ -134,10 +141,12 @@ class ShopAdminRedirectionFragment : BaseDaggerFragment() {
             ApplinkConstInternalGlobal.PHONE_SHOP_CREATION
         }
 
-        val intent = RouteManager.getIntent(context, ApplinkConst.CREATE_SHOP)
-        intent.putExtra(ShopAdminDeepLinkMapper.ARGS_APPLINK_FROM_SHOP_ADMIN, appLink)
-        activity?.setResult(Activity.RESULT_OK, intent)
-        activity?.finish()
+        context?.let {
+            val intent = RouteManager.getIntent(it, ApplinkConst.CREATE_SHOP)
+            intent.putExtra(ShopAdminDeepLinkMapper.ARGS_APPLINK_FROM_SHOP_ADMIN, appLink)
+            activity?.setResult(Activity.RESULT_OK, intent)
+            activity?.finish()
+        }
     }
 
     private fun isShopAdminMA(adminTypeUiModel: AdminTypeUiModel): Boolean {

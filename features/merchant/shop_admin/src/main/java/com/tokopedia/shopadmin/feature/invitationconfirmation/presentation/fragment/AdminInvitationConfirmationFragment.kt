@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
@@ -294,7 +295,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
                 invitationConfirmationParam.setAdminType(adminStatus)
                 viewModel.fetchShopAdminInfo()
             }
-            AdminStatus.EXPIRED -> inflateInvitationExpired()
+            AdminStatus.EXPIRED, String.EMPTY -> inflateInvitationExpired()
             else -> activity?.finish()
         }
     }
