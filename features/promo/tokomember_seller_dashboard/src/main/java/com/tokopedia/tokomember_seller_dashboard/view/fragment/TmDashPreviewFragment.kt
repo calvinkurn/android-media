@@ -98,16 +98,15 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
         if (programActionType == ProgramActionType.EXTEND) {
             viewBgPreview.hide()
             carouselPreview.hide()
-        }
-        else {
-            viewBgPreview.show()
-            carouselPreview.show()
             tmDashCreateViewModel.getProgramInfo(
                 arguments?.getInt(BUNDLE_PROGRAM_ID_IN_TOOLS) ?: 0,
                 arguments?.getInt(BUNDLE_SHOP_ID) ?: 0,
                 "create"
             )
-
+        }
+        else {
+            viewBgPreview.show()
+            carouselPreview.show()
             if(cardId == 0) {
                 val prefManager = context?.let { TmPrefManager(it) }
                 prefManager?.cardId?.let {

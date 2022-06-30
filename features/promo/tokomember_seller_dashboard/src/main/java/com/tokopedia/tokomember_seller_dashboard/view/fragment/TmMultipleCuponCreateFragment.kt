@@ -78,7 +78,6 @@ import com.tokopedia.tokomember_seller_dashboard.util.SIMPLE_DATE_FORMAT
 import com.tokopedia.tokomember_seller_dashboard.util.SOURCE_MULTIPLE_COUPON_CREATE
 import com.tokopedia.tokomember_seller_dashboard.util.TERMS
 import com.tokopedia.tokomember_seller_dashboard.util.TERNS_AND_CONDITION
-import com.tokopedia.tokomember_seller_dashboard.util.TIME_DESC
 import com.tokopedia.tokomember_seller_dashboard.util.TIME_TITLE
 import com.tokopedia.tokomember_seller_dashboard.util.TM_ERROR_PROGRAM
 import com.tokopedia.tokomember_seller_dashboard.util.TM_TNC
@@ -588,7 +587,6 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                             activity?.finish()
                         } else {
                             activity?.finish()
-                            activity?.onBackPressed()
                         }
                     }
                 }
