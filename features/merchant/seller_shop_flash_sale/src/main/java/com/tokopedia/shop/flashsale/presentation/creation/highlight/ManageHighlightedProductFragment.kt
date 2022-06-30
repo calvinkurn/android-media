@@ -393,7 +393,7 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
         if (isSuccess) {
             CampaignRuleActivity.start(requireActivity(), campaignId)
         } else {
-            binding?.root showError result.errorMessage
+            displayError(result)
         }
     }
 
@@ -402,12 +402,18 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
         if (isSuccess) {
             routeToCampaignListPage()
         } else {
-            binding?.root showError result.errorMessage
+            displayError(result)
         }
     }
 
     private fun routeToCampaignListPage() {
         val context = context ?: return
         CampaignListActivity.start(context, isClearTop = true)
+    }
+
+    private fun displayError(result: ProductSubmissionResult) {
+        val productsErrorMessage = result.failedProducts.joinToString(",") { it.message }
+        val errorMessage = productsErrorMessage.ifEmpty { result.errorMessage }
+        binding?.root showError errorMessage
     }
 }
