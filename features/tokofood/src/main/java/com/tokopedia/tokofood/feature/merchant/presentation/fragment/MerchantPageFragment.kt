@@ -857,9 +857,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                             )
                             val productUiModel = productListAdapter?.getProductUiModel(dataSetPosition) ?: ProductUiModel()
                             if (productUiModel.customOrderDetails.size > Int.ONE) {
-                                showCustomOrderDetailBottomSheet(
-                                    productUiModel, dataSetPosition
-                                )
+                                showCustomOrderDetailBottomSheet(productUiModel, dataSetPosition)
                             }
                         }
                     }
@@ -903,10 +901,7 @@ class MerchantPageFragment : BaseMultiFragment(),
         }
     }
 
-    private fun showCustomOrderDetailBottomSheet(
-        productUiModel: ProductUiModel,
-        productPosition: Int
-    ) {
+    private fun showCustomOrderDetailBottomSheet(productUiModel: ProductUiModel, productPosition: Int) {
         customOrderDetailBottomSheet?.dismiss()
         val bundle = Bundle().apply {
             putInt(
@@ -927,10 +922,8 @@ class MerchantPageFragment : BaseMultiFragment(),
         merchantInfoBottomSheet?.show(childFragmentManager)
     }
 
-    override fun onProductCardClicked(
-        productListItem: ProductListItem,
-        cardPositions: Pair<Int, Int>
-    ) {
+    override fun onProductCardClicked(productListItem: ProductListItem, cardPositions: Pair<Int, Int>) {
+        if (viewModel.isProductDetailBottomSheetVisible) return
         val productUiModel = productListItem.productUiModel
         // track click product card event
         merchantPageAnalytics.clickProductCard(
@@ -940,6 +933,7 @@ class MerchantPageFragment : BaseMultiFragment(),
             merchantId
         )
         val bottomSheet = ProductDetailBottomSheet.createInstance(productUiModel, this)
+        bottomSheet.setOnDismissListener { viewModel.isProductDetailBottomSheetVisible = false }
         bottomSheet.setListener(this@MerchantPageFragment)
         bottomSheet.sendTrackerInMerchantPage {
             viewModel.merchantData?.let {
@@ -954,12 +948,10 @@ class MerchantPageFragment : BaseMultiFragment(),
         bottomSheet.setSelectedCardPositions(cardPositions)
         bottomSheet.setProductListItem(productListItem)
         bottomSheet.show(childFragmentManager)
+        viewModel.isProductDetailBottomSheetVisible = true
     }
 
-    override fun onAtcButtonClicked(
-        productListItem: ProductListItem,
-        cardPositions: Pair<Int, Int>
-    ) {
+    override fun onAtcButtonClicked(productListItem: ProductListItem, cardPositions: Pair<Int, Int>) {
         val productUiModel = productListItem.productUiModel
         if (activityViewModel?.shopId.isNullOrBlank() || activityViewModel?.shopId == merchantId) {
             // update product id - card positions map

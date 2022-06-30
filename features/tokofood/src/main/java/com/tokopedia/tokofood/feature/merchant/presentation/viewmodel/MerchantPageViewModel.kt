@@ -5,13 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.tokofood.common.domain.response.CartTokoFood
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProduct
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProductVariant
 import com.tokopedia.tokofood.common.presentation.mapper.CustomOrderDetailsMapper.mapTokoFoodProductsToCustomOrderDetails
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.util.ResourceProvider
@@ -23,15 +20,7 @@ import com.tokopedia.tokofood.feature.merchant.presentation.enums.ProductListIte
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType.MULTIPLE_SELECTION
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType.SINGLE_SELECTION
 import com.tokopedia.tokofood.feature.merchant.presentation.mapper.TokoFoodMerchantUiModelMapper
-import com.tokopedia.tokofood.feature.merchant.presentation.model.AddOnUiModel
-import com.tokopedia.tokofood.feature.merchant.presentation.model.CarouselData
-import com.tokopedia.tokofood.feature.merchant.presentation.model.CategoryUiModel
-import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomListItem
-import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomOrderDetail
-import com.tokopedia.tokofood.feature.merchant.presentation.model.MerchantOpsHour
-import com.tokopedia.tokofood.feature.merchant.presentation.model.OptionUiModel
-import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductListItem
-import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.model.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -61,6 +50,8 @@ class MerchantPageViewModel @Inject constructor(
     var selectedProducts: List<CheckoutTokoFoodProduct> = listOf()
 
     var isAddressManuallyUpdated = false
+
+    var isProductDetailBottomSheetVisible = false
 
     fun getDataSetPosition(cardPositions: Pair<Int, Int>): Int {
         return cardPositions.first
