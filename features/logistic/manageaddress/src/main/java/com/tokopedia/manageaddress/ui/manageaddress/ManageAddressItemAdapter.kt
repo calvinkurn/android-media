@@ -47,8 +47,7 @@ class ManageAddressItemAdapter : RecyclerView.Adapter<ManageAddressItemAdapter.M
     }
 
     interface FromFriendAddressItemAdapterListener {
-        fun onSaveAddressSharedClicked(peopleAddress: RecipientAddressModel)
-        fun onDeleteAddressSharedClicked(peopleAddress: RecipientAddressModel)
+        fun onCheckedChangeListener(index: Int, isChecked: Boolean)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ManageAddressViewHolder {
@@ -65,22 +64,30 @@ class ManageAddressItemAdapter : RecyclerView.Adapter<ManageAddressItemAdapter.M
         holder.bindData(addressList[position])
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     fun addList(data: List<RecipientAddressModel>) {
         addressList.addAll(data)
-        notifyDataSetChanged()
+        refreshAdapter()
+    }
+
+    fun initAddressList(data: MutableList<RecipientAddressModel>) {
+        addressList = data
     }
 
     @SuppressLint("NotifyDataSetChanged")
+    fun refreshAdapter() {
+        notifyDataSetChanged()
+    }
+
     fun clearData() {
         selectedPos = RecyclerView.NO_POSITION
         addressList.clear()
-        notifyDataSetChanged()
+        refreshAdapter()
     }
 
-    inner class ManageAddressViewHolder(private val binding: ItemManagePeopleAddressBinding,
-                                        private val manageAddressListener: MainAddressItemAdapterListener? = null,
-                                        private val addressSharedListener: FromFriendAddressItemAdapterListener? = null,
+    inner class ManageAddressViewHolder(
+        private val binding: ItemManagePeopleAddressBinding,
+        private val manageAddressListener: MainAddressItemAdapterListener? = null,
+        private val addressSharedListener: FromFriendAddressItemAdapterListener? = null,
     ) : RecyclerView.ViewHolder(binding.root) {
         val assetMoreBtn = AppCompatResources.getDrawable(itemView.context, R.drawable.ic_more_horiz)
 
@@ -121,7 +128,14 @@ class ManageAddressItemAdapter : RecyclerView.Adapter<ManageAddressItemAdapter.M
                 } else {
                     binding.cardAddress.cardType = CardUnify.TYPE_BORDER
                 }
+                setupCheckedSharedAddress(data)
                 setListener(data)
+            }
+        }
+
+        private fun setupCheckedSharedAddress(data: RecipientAddressModel) {
+            if (addressSharedListener != null) {
+                binding.cbSelectAddress.isChecked = data.isSelected
             }
         }
 
@@ -133,9 +147,11 @@ class ManageAddressItemAdapter : RecyclerView.Adapter<ManageAddressItemAdapter.M
                     showIconShare()
                     setPrimaryButton(data)
                 }
+                binding.cbSelectAddress.gone()
             } else if (addressSharedListener != null) {
                 showIconGift()
                 setAddressSharedButton()
+                binding.cbSelectAddress.visible()
             }
         }
 
@@ -156,14 +172,10 @@ class ManageAddressItemAdapter : RecyclerView.Adapter<ManageAddressItemAdapter.M
             binding.btnPrimary.gone()
             binding.btnSecondary.gone()
             binding.lblMainAddress.gone()
-            binding.btnSave.gone()
-            binding.btnDelete.gone()
         }
 
         private fun setPrimaryButton(peopleAddress: RecipientAddressModel) {
             binding.btnPrimary.visible()
-            binding.btnSave.gone()
-            binding.btnDelete.gone()
             if (peopleAddress.addressStatus == 2) {
                 binding.lblMainAddress.visible()
                 binding.btnSecondary.gone()
@@ -177,11 +189,9 @@ class ManageAddressItemAdapter : RecyclerView.Adapter<ManageAddressItemAdapter.M
             binding.btnPrimary.gone()
             binding.lblMainAddress.gone()
             binding.btnSecondary.gone()
-            binding.btnSave.visible()
-            binding.btnDelete.visible()
         }
 
-        private fun getShownPhoneNumber(phoneNumber: String) : String {
+        private fun getShownPhoneNumber(phoneNumber: String): String {
             return if (addressSharedListener != null) {
                 phoneNumber.hidePhone()
             } else {
@@ -189,7 +199,7 @@ class ManageAddressItemAdapter : RecyclerView.Adapter<ManageAddressItemAdapter.M
             }
         }
 
-        private fun getShownAddress(address: String) : String {
+        private fun getShownAddress(address: String): String {
             return if (addressSharedListener != null) {
                 address.hideAddress()
             } else {
@@ -201,14 +211,14 @@ class ManageAddressItemAdapter : RecyclerView.Adapter<ManageAddressItemAdapter.M
             val chars = this.toCharArray()
 
             forEachIndexed { index, _ ->
-                if (index.isNotModulusTwo()) chars[index] = '*'
+                if (index.isModulusTwo()) chars[index] = '*'
             }
 
             return String(chars)
         }
 
-        private fun Int.isNotModulusTwo(): Boolean {
-            return this > 2 && this % 2 == 1
+        private fun Int.isModulusTwo(): Boolean {
+            return this > 1 && this % 2 == 0
         }
 
         private fun String.hideAddress(): String {
@@ -223,7 +233,7 @@ class ManageAddressItemAdapter : RecyclerView.Adapter<ManageAddressItemAdapter.M
         }
 
         private fun setVisibility(peopleAddress: RecipientAddressModel) {
-            if(peopleAddress.latitude.isNullOrZero()|| peopleAddress.longitude.isNullOrZero()) {
+            if (peopleAddress.latitude.isNullOrZero() || peopleAddress.longitude.isNullOrZero()) {
                 val colorGrey = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
                 binding.imgLocationState.setImage(IconUnify.LOCATION_OFF, colorGrey, colorGrey)
                 binding.tvPinpointState.text = itemView.context.getString(R.string.no_pinpoint)
@@ -259,11 +269,8 @@ class ManageAddressItemAdapter : RecyclerView.Adapter<ManageAddressItemAdapter.M
             }
 
             addressSharedListener?.apply {
-                binding.btnSave.setOnClickListener {
-                    onSaveAddressSharedClicked(peopleAddress)
-                }
-                binding.btnDelete.setOnClickListener {
-                    onDeleteAddressSharedClicked(peopleAddress)
+                binding.cbSelectAddress.setOnCheckedChangeListener { _, isChecked ->
+                    onCheckedChangeListener(layoutPosition, isChecked)
                 }
             }
         }

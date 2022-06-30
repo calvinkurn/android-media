@@ -2,6 +2,7 @@ package com.tokopedia.manageaddress.ui.manageaddress.fromfriend
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
 import com.tokopedia.logisticCommon.domain.response.ShareAddressResponse
 import com.tokopedia.manageaddress.domain.usecase.DeleteFromFriendAddressUseCase
@@ -19,18 +20,21 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class AddressSharedViewModelTest {
+class FromFriendViewModelTest {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private val getShareAddressUseCase = mockk<GetAddressSharedListUseCase>(relaxed = true)
     private val saveShareAddressUseCase = mockk<SaveFromFriendAddressUseCase>(relaxed = true)
-    private val deleteFromFriendAddressUseCase = mockk<DeleteFromFriendAddressUseCase>(relaxed = true)
+    private val deleteFromFriendAddressUseCase =
+        mockk<DeleteFromFriendAddressUseCase>(relaxed = true)
     private val getShareAddressObserver =
         mockk<Observer<FromFriendAddressListState<AddressListModel>>>(relaxed = true)
-    private val saveShareAddressObserver = mockk<Observer<FromFriendAddressActionState>>(relaxed = true)
-    private val deleteShareAddressObserver = mockk<Observer<FromFriendAddressActionState>>(relaxed = true)
+    private val saveShareAddressObserver =
+        mockk<Observer<FromFriendAddressActionState>>(relaxed = true)
+    private val deleteShareAddressObserver =
+        mockk<Observer<FromFriendAddressActionState>>(relaxed = true)
 
     lateinit var viewModel: FromFriendViewModel
 
@@ -65,33 +69,6 @@ class AddressSharedViewModelTest {
     }
 
     @Test
-    fun `verify load more when on loading get share address do nothing`() {
-        val currentPage = viewModel.page
-        viewModel.isOnLoadingGetAddress = true
-
-        viewModel.onLoadMore("")
-
-        Assert.assertEquals(viewModel.page, currentPage)
-    }
-
-    @Test
-    fun `verify when load more get share address success`() {
-        val mockResponse = AddressListModel()
-        val currentPage = viewModel.page
-
-        coEvery {
-            getShareAddressUseCase.invoke(any())
-        } returns mockResponse
-
-        viewModel.onLoadMore("")
-
-        Assert.assertEquals(viewModel.page, currentPage + 1)
-        verify {
-            getShareAddressObserver.onChanged(FromFriendAddressListState.Success(mockResponse))
-        }
-    }
-
-    @Test
     fun `verify when get share address error`() {
         coEvery {
             getShareAddressUseCase.invoke(any())
@@ -111,7 +88,6 @@ class AddressSharedViewModelTest {
 
     @Test
     fun `verify when save share address is success`() {
-        val fakeAddressId = "1"
         val mockResponse = spyk(ShareAddressResponse().apply {
             shareAddressResponse = spyk(
                 ShareAddressResponse.ShareAddressResponse(
@@ -124,7 +100,7 @@ class AddressSharedViewModelTest {
             saveShareAddressUseCase.invoke(any())
         } returns mockResponse
 
-        viewModel.saveAddress(fakeAddressId)
+        viewModel.saveAddress()
 
         verify {
             saveShareAddressObserver.onChanged(FromFriendAddressActionState.Success)
@@ -133,7 +109,6 @@ class AddressSharedViewModelTest {
 
     @Test
     fun `verify when save share address not success`() {
-        val fakeAddressId = "1"
         val fakeErrorMessage = "error message"
         val mockResponse = spyk(ShareAddressResponse().apply {
             shareAddressResponse = spyk(
@@ -148,21 +123,25 @@ class AddressSharedViewModelTest {
             saveShareAddressUseCase.invoke(any())
         } returns mockResponse
 
-        viewModel.saveAddress(fakeAddressId)
+        viewModel.saveAddress()
 
         verify {
-            saveShareAddressObserver.onChanged(FromFriendAddressActionState.Fail(null, fakeErrorMessage))
+            saveShareAddressObserver.onChanged(
+                FromFriendAddressActionState.Fail(
+                    null,
+                    fakeErrorMessage
+                )
+            )
         }
     }
 
     @Test
     fun `verify when save share address error`() {
-        val fakeAddressId = "1"
         coEvery {
             saveShareAddressUseCase.invoke(any())
         } throws mockThrowable
 
-        viewModel.saveAddress(fakeAddressId)
+        viewModel.saveAddress()
 
         verify {
             saveShareAddressObserver.onChanged(
@@ -176,7 +155,9 @@ class AddressSharedViewModelTest {
 
     @Test
     fun `verify when delete share address is success`() {
-        val fakeAddressId = "1"
+        val addressList = arrayListOf<RecipientAddressModel>(spyk(), spyk())
+        viewModel.chosenAddrId = 0L
+        viewModel.addressList.addAll(addressList)
         val mockResponse = spyk(ShareAddressResponse().apply {
             shareAddressResponse = spyk(
                 ShareAddressResponse.ShareAddressResponse(
@@ -189,9 +170,11 @@ class AddressSharedViewModelTest {
             deleteFromFriendAddressUseCase.invoke(any())
         } returns mockResponse
 
-        viewModel.deleteAddress(fakeAddressId)
+        viewModel.onCheckedAddress(0, true)
+        viewModel.deleteAddress()
         Thread.sleep(3100)
 
+        Assert.assertEquals(viewModel.addressList.size, addressList.size - 1)
         verify {
             deleteShareAddressObserver.onChanged(FromFriendAddressActionState.Success)
         }
@@ -199,7 +182,6 @@ class AddressSharedViewModelTest {
 
     @Test
     fun `verify when delete share address not success`() {
-        val fakeAddressId = "1"
         val fakeErrorMessage = "error message"
         val mockResponse = spyk(ShareAddressResponse().apply {
             shareAddressResponse = spyk(
@@ -214,7 +196,7 @@ class AddressSharedViewModelTest {
             deleteFromFriendAddressUseCase.invoke(any())
         } returns mockResponse
 
-        viewModel.deleteAddress(fakeAddressId)
+        viewModel.deleteAddress()
         Thread.sleep(3100)
 
         verify {
@@ -229,12 +211,11 @@ class AddressSharedViewModelTest {
 
     @Test
     fun `verify when delete share address error`() {
-        val fakeAddressId = "1"
         coEvery {
             deleteFromFriendAddressUseCase.invoke(any())
         } throws mockThrowable
 
-        viewModel.deleteAddress(fakeAddressId)
+        viewModel.deleteAddress()
         Thread.sleep(3100)
 
         verify {
@@ -248,12 +229,36 @@ class AddressSharedViewModelTest {
     }
 
     @Test
-    fun `verify when cancel delete share address error`() {
-        val fakeAddressId = "1"
-        viewModel.deleteAddress(fakeAddressId)
+    fun `verify when cancel delete share address`() {
+        viewModel.deleteAddress()
+        viewModel.onCancelDeleteAddress()
         Thread.sleep(1000)
-        viewModel.isCancelDelete = true
 
-        Assert.assertEquals(viewModel.deleteAddressState.value, null)
+        verify {
+            deleteShareAddressObserver.onChanged(
+                FromFriendAddressActionState.Loading(false)
+            )
+        }
+    }
+
+    @Test
+    fun `verify when on checked address is correctly`() {
+        viewModel.addressList.add(spyk())
+
+        viewModel.onCheckedAddress(0, isChecked = true)
+
+        Assert.assertTrue(viewModel.isHaveAddressList)
+        Assert.assertTrue(viewModel.getSelectedAddressList().isNotEmpty())
+    }
+
+    @Test
+    fun `verify when set all list selected is correctly`() {
+        viewModel.addressList.add(spyk())
+
+        viewModel.setAllListSelected(true)
+        viewModel.isNeedUpdateAllList = true
+
+        Assert.assertTrue(viewModel.isAllSelected)
+        Assert.assertTrue(viewModel.isNeedUpdateAllList)
     }
 }

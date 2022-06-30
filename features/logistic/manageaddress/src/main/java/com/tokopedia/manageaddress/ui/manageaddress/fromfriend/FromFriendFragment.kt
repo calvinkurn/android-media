@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,9 +11,9 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.ui.shareaddress.ShareAddressBottomSheet
 import com.tokopedia.logisticCommon.ui.shareaddress.ShareAddressBottomSheet.Companion.TAG_SHARE_ADDRESS
 import com.tokopedia.manageaddress.di.ManageAddressComponent
@@ -24,7 +23,6 @@ import com.tokopedia.manageaddress.ui.manageaddress.ManageAddressItemAdapter
 import com.tokopedia.manageaddress.util.ManageAddressConstant
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.databinding.FragmentFromFriendBinding
-import com.tokopedia.manageaddress.ui.manageaddress.fromfriend.FromFriendViewModel.Companion.FIRST_PAGE
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -51,6 +49,8 @@ class FromFriendFragment : BaseDaggerFragment(),
 
     private var binding by autoClearedNullable<FragmentFromFriendBinding>()
 
+    private var mListener: Listener? = null
+
     override fun initInjector() {
         getComponent(ManageAddressComponent::class.java).inject(this)
     }
@@ -69,14 +69,27 @@ class FromFriendFragment : BaseDaggerFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setChosenAddrId()
+        initCbAllAddress()
         initRequestAddressView()
         initRecyclerView()
         initObserver()
-        searchFromFriendAddressList()
+        initButtonClickListener()
+        doSearchAddressList()
     }
 
     private fun setChosenAddrId() {
         viewModel.chosenAddrId = getChosenAddrId()
+    }
+
+    private fun initCbAllAddress() {
+        binding?.cbAllAddress?.setOnCheckedChangeListener { _, isChecked ->
+            if (viewModel.isNeedUpdateAllList) {
+                viewModel.setAllListSelected(isChecked)
+                refreshListAndButton()
+            } else {
+                viewModel.isNeedUpdateAllList = true
+            }
+        }
     }
 
     private fun initRequestAddressView() {
@@ -87,77 +100,99 @@ class FromFriendFragment : BaseDaggerFragment(),
 
     private fun initRecyclerView() {
         binding?.rvAddressList?.let {
+            adapter.initAddressList(viewModel.addressList)
             it.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             it.adapter = adapter
         }
-
-        binding?.svAddressList?.setOnScrollChangeListener(
-            NestedScrollView.OnScrollChangeListener { v, _, scrollY, _, _ ->
-                v?.let {
-                    val currentHeight = (v.getChildAt(0).measuredHeight - v.measuredHeight)
-                    if (scrollY == currentHeight) {
-                        viewModel.onLoadMore("")
-                    }
-                }
-            })
     }
 
     private fun initObserver() {
         viewModel.getFromFriendAddressState.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is FromFriendAddressListState.Success -> {
-                    binding?.run {
-                        globalError.gone()
-                    }
-                    if (viewModel.page == FIRST_PAGE) {
-                        adapter.clearData()
-                        updateSaveAllButton(it.data.listAddress.isNotEmpty())
-                    }
-                    updateData(it.data.listAddress)
-                }
-                is FromFriendAddressListState.Fail -> {
-                    if (it.throwable != null) {
-                        handleError(it.throwable)
-                    }
-                }
-                is FromFriendAddressListState.Loading -> {
-                    viewModel.isOnLoadingGetAddress = it.isShowLoading
-                    binding?.swipeRefresh?.isRefreshing = it.isShowLoading
-                }
+                is FromFriendAddressListState.Success -> onSuccessGetList()
+                is FromFriendAddressListState.Fail -> onFailedGetList(it.throwable)
+                is FromFriendAddressListState.Loading -> onLoadingGetList(it.isShowLoading)
             }
         })
 
         viewModel.saveAddressState.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is FromFriendAddressActionState.Success -> {
-                }
-                is FromFriendAddressActionState.Fail -> {
-                    showToaster(
-                        it.errorMessage,
-                        Toaster.TYPE_ERROR
-                    )
-                }
-                is FromFriendAddressActionState.Loading -> {
-                    binding?.swipeRefresh?.isRefreshing = it.isShowLoading
-                }
+                is FromFriendAddressActionState.Success -> onSuccessSaveAddress()
+                is FromFriendAddressActionState.Fail -> showToaster(it.errorMessage, Toaster.TYPE_ERROR)
+                is FromFriendAddressActionState.Loading -> onLoadingSaveAddress(it.isShowLoading)
             }
         })
 
         viewModel.deleteAddressState.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is FromFriendAddressActionState.Success -> {
-                }
-                is FromFriendAddressActionState.Fail -> {
-                    showToaster(
-                        it.errorMessage,
-                        Toaster.TYPE_ERROR
-                    )
-                }
-                is FromFriendAddressActionState.Loading -> {
-                    binding?.swipeRefresh?.isRefreshing = it.isShowLoading
-                }
+                is FromFriendAddressActionState.Success -> onSuccessDeleteAddress()
+                is FromFriendAddressActionState.Fail -> onFailedDeleteAddress(it.errorMessage)
+                is FromFriendAddressActionState.Loading -> refreshListAndButton()
             }
         })
+    }
+
+    private fun refreshListAndButton() {
+        refreshList()
+        updateButton()
+    }
+
+    private fun onSuccessGetList() {
+        binding?.apply {
+            svAddressList.visible()
+            globalError.gone()
+        }
+        refreshList()
+    }
+
+    private fun onFailedGetList(throwable: Throwable?) {
+        if (throwable != null) {
+            handleError(throwable)
+        }
+    }
+
+    private fun onLoadingGetList(isShowLoading: Boolean) {
+        binding?.apply {
+            swipeRefresh.isRefreshing = isShowLoading
+            cbAllAddress.isVisible = viewModel.isHaveAddressList && isShowLoading.not()
+        }
+    }
+
+    private fun onSuccessSaveAddress() {
+        showToaster(getString(R.string.succes_save_share_address), Toaster.TYPE_NORMAL)
+        mListener?.onSuccessSaveShareAddress()
+    }
+
+    private fun onLoadingSaveAddress(isLoading: Boolean) {
+        binding?.btnSave?.isLoading = isLoading
+    }
+
+    private fun onSuccessDeleteAddress() {
+        doSearchAddressList()
+    }
+
+    private fun onFailedDeleteAddress(errorMessage: String) {
+        refreshListAndButton()
+        showToaster(errorMessage, Toaster.TYPE_ERROR)
+    }
+
+    private fun initButtonClickListener(){
+        binding?.apply {
+            btnDelete.setOnClickListener {
+                viewModel.deleteAddress()
+                showToaster(
+                    getString(R.string.success_delete_share_address),
+                    Toaster.TYPE_NORMAL,
+                    getString(R.string.action_cancel_delete_address)
+                ) {
+                    viewModel.onCancelDeleteAddress()
+                }
+            }
+
+            btnSave.setOnClickListener {
+                viewModel.saveAddress()
+            }
+        }
     }
 
     private fun handleError(throwable: Throwable) {
@@ -174,7 +209,6 @@ class FromFriendFragment : BaseDaggerFragment(),
                     )
                     ReponseStatus.NOT_FOUND -> showGlobalError(GlobalError.PAGE_NOT_FOUND)
                     ReponseStatus.INTERNAL_SERVER_ERROR -> showGlobalError(GlobalError.SERVER_ERROR)
-
                     else -> {
                         view?.let {
                             showGlobalError(GlobalError.SERVER_ERROR)
@@ -203,10 +237,10 @@ class FromFriendFragment : BaseDaggerFragment(),
             globalError.setType(type)
             globalError.setActionClickListener {
                 context?.let {
-                    searchFromFriendAddressList()
+                    doSearchAddressList()
                 }
             }
-            rvAddressList.gone()
+            svAddressList.gone()
             globalError.visible()
         }
     }
@@ -225,21 +259,25 @@ class FromFriendFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun updateData(data: List<RecipientAddressModel>) {
-        adapter.addList(data)
+    private fun refreshList() {
+        adapter.refreshAdapter()
     }
 
-    private fun updateSaveAllButton(isVisible: Boolean) {
-        binding?.viewBtnSaveAll?.apply {
-            if (isVisible) {
-                visible()
+    private fun updateButton() {
+        val checkedAddressSize = viewModel.getSelectedAddressList().size
+        val isEnable = checkedAddressSize > 0
+        binding?.apply {
+            btnDelete.isEnabled = isEnable
+            btnSave.isEnabled = isEnable
+            btnSave.text = if (isEnable) {
+                getString(R.string.btn_save_with_total, checkedAddressSize.toString())
             } else {
-                gone()
+                getString(R.string.btn_save)
             }
         }
     }
 
-    private fun searchFromFriendAddressList() {
+    private fun doSearchAddressList() {
         if(arguments != null) {
             val searchQuery = requireArguments().getString(ARG_EXTRA_SEARCH_QUERY, "")
             viewModel.onSearchAdrress(searchQuery)
@@ -259,18 +297,18 @@ class FromFriendFragment : BaseDaggerFragment(),
         return chosenAddrId
     }
 
-    override fun onSaveAddressSharedClicked(peopleAddress: RecipientAddressModel) {
-        viewModel.saveAddress(peopleAddress.id)
+    override fun onCheckedChangeListener(index: Int, isChecked: Boolean) {
+        viewModel.onCheckedAddress(index, isChecked)
+        updateCbAllAddress()
+        updateButton()
     }
 
-    override fun onDeleteAddressSharedClicked(peopleAddress: RecipientAddressModel) {
-        viewModel.deleteAddress(peopleAddress.id)
-        showToaster(
-            getString(R.string.success_delete_address),
-            Toaster.TYPE_NORMAL,
-            getString(R.string.action_cancel_delete_address)
-        ) {
-            viewModel.isCancelDelete = true
+    private fun updateCbAllAddress() {
+        binding?.cbAllAddress?.apply {
+            if (isChecked != viewModel.isAllSelected) {
+                viewModel.isNeedUpdateAllList = false
+                isChecked = viewModel.isAllSelected
+            }
         }
     }
 
@@ -288,15 +326,20 @@ class FromFriendFragment : BaseDaggerFragment(),
         bottomSheetRequestAddress?.show(parentFragmentManager, TAG_SHARE_ADDRESS)
     }
 
+    interface Listener {
+        fun onSuccessSaveShareAddress()
+    }
+
     companion object {
         private const val ARG_EXTRA_SEARCH_QUERY = "ARG_EXTRA_SEARCH_QUERY"
 
-        fun newInstance(searchQuery: String?): FromFriendFragment {
+        fun newInstance(searchQuery: String?, listener: Listener): FromFriendFragment {
             val bundle = Bundle()
             bundle.putString(ARG_EXTRA_SEARCH_QUERY, searchQuery ?: "")
 
             return FromFriendFragment().apply {
                 arguments = bundle
+                mListener = listener
             }
         }
     }

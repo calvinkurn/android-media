@@ -49,9 +49,12 @@ import javax.inject.Inject
  * Fragment that hold tab layout and viewpager
  * inside it have MainAddressFragment and FromFriendFragment
  */
-class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener {
+class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener,
+    FromFriendFragment.Listener {
 
     companion object {
+        private const val MAIN_ADDRESS_FRAGMENT_POSITION = 0
+
         fun newInstance(bundle: Bundle): ManageAddressFragment {
             return ManageAddressFragment().apply {
                 arguments = bundle
@@ -157,7 +160,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener {
             Pair(getString(R.string.tablayout_label_main), MainAddressFragment.newInstance(bundleData())),
             Pair(
                 getString(R.string.tablayout_label_from_friend),
-                FromFriendFragment.newInstance(viewModel.savedQuery)
+                FromFriendFragment.newInstance(viewModel.savedQuery, this)
             )
         )
     }
@@ -270,5 +273,11 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener {
         }
     }
 
+    override fun onSuccessSaveShareAddress() {
+        binding?.vpManageAddress?.currentItem = MAIN_ADDRESS_FRAGMENT_POSITION
+        viewModel.savedQuery = ""
+        setSearchView(viewModel.savedQuery)
+        performSearch(viewModel.savedQuery)
+    }
 }
 

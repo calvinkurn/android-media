@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
 import com.tokopedia.logisticCommon.domain.request.AddressRequest
 import com.tokopedia.manageaddress.domain.usecase.DeleteFromFriendAddressUseCase
@@ -38,25 +39,17 @@ class FromFriendViewModel @Inject constructor(
     val deleteAddressState: LiveData<FromFriendAddressActionState>
         get() = _deleteAddressState
 
-    var page = FIRST_PAGE
     var chosenAddrId = 0L
-    var isOnLoadingGetAddress = false
-    var isCanLoadMore = true
     var isCancelDelete = false
-
-    fun onLoadMore(searchKey: String) {
-        if (isOnLoadingGetAddress || isCanLoadMore.not()) {
-            return
-        } else {
-            page++
-        }
-
-        getFromFriendAddressList(searchKey)
-    }
+    val addressList = mutableListOf<RecipientAddressModel>()
+    private val temporaryList = arrayListOf<RecipientAddressModel>()
+    val isHaveAddressList: Boolean
+        get() = addressList.isNotEmpty()
+    val isAllSelected: Boolean
+        get() = getSelectedAddressList().size == addressList.size
+    var isNeedUpdateAllList = true
 
     fun onSearchAdrress(searchKey: String) {
-        page = FIRST_PAGE
-        isCanLoadMore = true
         getFromFriendAddressList(searchKey)
     }
 
@@ -65,13 +58,19 @@ class FromFriendViewModel @Inject constructor(
             showGetShareAddressLoading(true)
             val param = getAddressRequest(searchKey)
             val result = getFromFriendAdrressListUseCase(param)
-            isCanLoadMore = result.listAddress.isNotEmpty()
+            updateAddressList(result.listAddress)
             _getFromFriendAddressState.value = FromFriendAddressListState.Success(result)
             showGetShareAddressLoading(false)
         }, onError = {
-            _getFromFriendAddressState.value = FromFriendAddressListState.Fail(it, it.message.orEmpty())
+            _getFromFriendAddressState.value =
+                FromFriendAddressListState.Fail(it, it.message.orEmpty())
             showGetShareAddressLoading(false)
         })
+    }
+
+    private fun updateAddressList(resultList: List<RecipientAddressModel>) {
+        addressList.clear()
+        addressList.addAll(resultList)
     }
 
     private fun showGetShareAddressLoading(isShowLoading: Boolean) {
@@ -81,7 +80,7 @@ class FromFriendViewModel @Inject constructor(
     private fun getAddressRequest(searchKey: String): AddressRequest {
         return AddressRequest(
             searchKey = searchKey,
-            page = page,
+            page = FIRST_PAGE,
             showAddress = true,
             showCorner = false,
             limit = GET_FRIEND_ADDRESS_LIMIT,
@@ -91,10 +90,19 @@ class FromFriendViewModel @Inject constructor(
         )
     }
 
-    fun saveAddress(addressId: String) {
+    fun getSelectedAddressList(): List<RecipientAddressModel> {
+        return addressList.filter { it.isSelected }
+    }
+
+    private fun getSelectedAddressId(): List<String> {
+        return getSelectedAddressList().map { it.id }
+    }
+
+    fun saveAddress() {
         launchCatchError(block = {
             showSaveAddressLoading(true)
-            val result = saveAddressUseCase(addressId)
+            val param = getSelectedAddressId()
+            val result = saveAddressUseCase(param.toString())
             _saveAddressState.value = if (result.shareAddressResponse.isSuccess) {
                 FromFriendAddressActionState.Success
             } else {
@@ -111,8 +119,12 @@ class FromFriendViewModel @Inject constructor(
         _saveAddressState.value = FromFriendAddressActionState.Loading(isShowLoading)
     }
 
-    fun deleteAddress(addressId: String) = launch {
+    fun deleteAddress() = launch {
         isCancelDelete = false
+        val param = getSelectedAddressId()
+        updateTemporaryList()
+        updateAddressList(getUnSelectAddressList().toTypedArray())
+        onDeletingAddress(true)
         delay(TOAST_SHOWING_TIME)
 
         if (isCancelDelete) {
@@ -120,22 +132,55 @@ class FromFriendViewModel @Inject constructor(
         }
 
         launchCatchError(block = {
-            showDeleteAddressLoading(true)
-            val result = deleteAddressUseCase(addressId)
+            val result = deleteAddressUseCase(param.toString())
             _deleteAddressState.value = if (result.shareAddressResponse.isSuccess) {
+                temporaryList.clear()
                 FromFriendAddressActionState.Success
             } else {
+                updateAddressList(temporaryList)
                 FromFriendAddressActionState.Fail(null, result.shareAddressResponse.error)
             }
-            showDeleteAddressLoading(false)
+            onDeletingAddress(false)
         }, onError = {
-            _deleteAddressState.value = FromFriendAddressActionState.Fail(it, it.message.orEmpty())
-            showDeleteAddressLoading(false)
+            updateAddressList(temporaryList)
+            _deleteAddressState.value =
+                FromFriendAddressActionState.Fail(it, it.message.orEmpty())
+            onDeletingAddress(false)
         })
     }
 
-    private fun showDeleteAddressLoading(isShowLoading: Boolean) {
+    fun onCancelDeleteAddress() {
+        isCancelDelete = true
+        updateAddressList(temporaryList)
+        onDeletingAddress(false)
+    }
+
+    private fun updateTemporaryList() {
+        temporaryList.clear()
+        temporaryList.addAll(addressList.toTypedArray())
+    }
+
+    private fun getUnSelectAddressList(): List<RecipientAddressModel> {
+        return addressList.filter { it.isSelected.not() }
+    }
+
+    private fun updateAddressList(currentList: Array<RecipientAddressModel>) {
+        addressList.clear()
+        addressList.addAll(currentList)
+    }
+
+    private fun onDeletingAddress(isShowLoading: Boolean) {
         _deleteAddressState.value = FromFriendAddressActionState.Loading(isShowLoading)
+    }
+
+    fun onCheckedAddress(index: Int, isChecked: Boolean) {
+        addressList.getOrNull(index)?.isSelected = isChecked
+    }
+
+    fun setAllListSelected(isSelected: Boolean) {
+        addressList.forEach {
+            it.isSelected = isSelected
+        }
     }
 
     companion object {
