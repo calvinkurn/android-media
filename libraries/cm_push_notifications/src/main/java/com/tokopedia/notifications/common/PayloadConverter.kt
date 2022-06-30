@@ -220,7 +220,7 @@ object PayloadConverter {
         model.webHookParam = data.webHookParam
 
         model.payloadExtra = getPayloadExtras(data)
-        model.groupId = data.groupId
+        model.groupId = data.groupId ?: 0
         model.groupName = data.groupName
         return model
     }

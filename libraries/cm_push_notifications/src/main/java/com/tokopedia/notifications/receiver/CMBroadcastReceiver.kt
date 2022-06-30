@@ -95,7 +95,6 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
             if (action != null) {
                 when (action) {
                     CMConstant.ReceiverAction.ACTION_ON_NOTIFICATION_DISMISS -> {
-                        onDismissGroupNotification(baseNotificationModel, context)
                         NotificationManagerCompat.from(context).cancel(notificationId)
                         sendClickPushEvent(context, IrisAnalyticsEvents.PUSH_DISMISSED, baseNotificationModel, CMConstant.NotificationType.GENERAL)
                     }
@@ -107,6 +106,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
 
                     CMConstant.ReceiverAction.ACTION_NOTIFICATION_CLICK -> {
                         handleNotificationClick(context, intent, notificationId, baseNotificationModel)
+                        clearGroupNotificationFromTray(baseNotificationModel, context)
                         if (baseNotificationModel != null) {
                             sendElementClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, baseNotificationModel, CMConstant.NotificationType.GENERAL, baseNotificationModel.elementId)
                         }
@@ -203,15 +203,13 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
         }
     }
 
-    private fun onDismissGroupNotification(
+    private fun clearGroupNotificationFromTray(
         baseNotificationModel: BaseNotificationModel?,
         context: Context
     ) {
         baseNotificationModel?.groupId?.let { id ->
-            if (id.toString().isNotBlank()) {
-                val cancelManager = NotificationCancelManager()
-                cancelManager.clearNotificationsByGroup(context, id)
-                cancelManager.deleteGroupNotificationFromDb(context, id)
+            if (id.toString().isNotBlank() && id != 0) {
+                NotificationCancelManager().clearNotificationsByGroup(context, id)
             }
         }
     }

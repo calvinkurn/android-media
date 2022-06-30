@@ -73,13 +73,7 @@ abstract class BaseNotification internal constructor(
 
             builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             builder.setSmallIcon(drawableIcon)
-            baseNotificationModel.groupId?.let { id ->
-                baseNotificationModel.groupName?.let { grpName ->
-                    if(id.toString().isNotBlank()) {
-                        setGroup(builder, id, grpName)
-                    }
-                }
-            }
+            setGroup(builder)
             setSoundProperties(builder)
             setNotificationIcon(builder)
             return builder
@@ -102,13 +96,7 @@ abstract class BaseNotification internal constructor(
 
             builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             builder.setSmallIcon(drawableIcon)
-            baseNotificationModel.groupId?.let { id ->
-                baseNotificationModel.groupName?.let { grpName ->
-                    if(id.toString().isNotBlank()) {
-                        setGroup(builder, id, grpName)
-                    }
-                }
-            }
+            setGroup(builder)
             setSoundProperties(builder)
             return builder
         }
@@ -124,23 +112,22 @@ abstract class BaseNotification internal constructor(
             )
             builder.setSmallIcon(drawableIcon)
             builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-            baseNotificationModel.groupId?.let { id ->
-                baseNotificationModel.groupName?.let { grpName ->
-                    if(id.toString().isNotBlank()) {
-                        setGroup(builder, id, grpName)
-                    }
-                }
-            }
             builder.setStyle(NotificationCompat.InboxStyle()
                 .setSummaryText(baseNotificationModel.subText))
+            setGroup(builder)
             builder.setGroupSummary(true)
             setSoundProperties(builder)
             return builder.build()
         }
 
-    private fun setGroup(builder: NotificationCompat.Builder, groupId: Int, groupName: String) {
-        val groupKey = groupId.toString() + groupName
-        builder.setGroup(groupKey)
+    private fun setGroup(builder: NotificationCompat.Builder) {
+        baseNotificationModel.groupId.let { id ->
+            if(id.toString().isNotBlank() && id != 0) {
+                val groupKey = id.toString()
+                builder.setGroup(groupKey)
+            }
+        }
+
     }
 
     /*

@@ -31,10 +31,6 @@ class PushRepository private constructor(val context: Context) {
         return pushDataStore.getNotificationByGroup(groupId)
     }
 
-    suspend fun deleteNotificationByGroup(groupId: Int) {
-        return pushDataStore.deleteNotificationByGroup(groupId)
-    }
-
     companion object {
         @Volatile
         private var INSTANCE: PushRepository? = null

@@ -45,8 +45,4 @@ class PushDataStore(private val baseNotificationDao: BaseNotificationDao) : IPus
         }
     }
 
-    override suspend fun deleteNotificationByGroup(groupId: Int) {
-        return baseNotificationDao.deleteNotificationByGroup(groupId)
-    }
-
 }

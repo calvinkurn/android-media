@@ -8,7 +8,7 @@ import androidx.core.app.NotificationManagerCompat
 import com.tokopedia.notifications.common.CMRemoteConfigUtils
 import com.tokopedia.notifications.model.BaseNotificationModel
 import com.tokopedia.remoteconfig.RemoteConfigKey.CM_CAMPAIGN_ID_EXCLUDE_LIST
-import com.tokopedia.remoteconfig.RemoteConfigKey.NOTIFICATION_TRAY_CLEAR
+import com.tokopedia.remoteconfig.RemoteConfigKey.NOTIFICATION_TRAY_CLEAR_V2
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 import com.tokopedia.notifications.database.pushRuleEngine.PushRepository.Companion.getInstance as pushRepository
@@ -31,7 +31,7 @@ open class NotificationCancelManager: CoroutineScope {
     fun clearNotifications(context: Context) {
         val remoteConfig = CMRemoteConfigUtils(context)
 
-        if (remoteConfig.getBooleanRemoteConfig(NOTIFICATION_TRAY_CLEAR, false)) {
+        if (remoteConfig.getBooleanRemoteConfig(NOTIFICATION_TRAY_CLEAR_V2, false)) {
             cancellableItems(context, remoteConfig) { notifications ->
                 kotlin.runCatching {
                     notifications.forEach {
@@ -48,6 +48,7 @@ open class NotificationCancelManager: CoroutineScope {
                 notifications.forEach {
                     cancelNotificationManager(context, it.notificationId)
                 }
+                cancelNotificationManager(context, groupId)
             }
         }
     }
@@ -64,16 +65,6 @@ open class NotificationCancelManager: CoroutineScope {
                     invoke(notifications
                         .filter { it.campaignId != 0L }
                     )
-                }
-            }
-        }
-    }
-
-    fun deleteGroupNotificationFromDb(context: Context, groupId: Int) {
-        launch {
-            withContext(Dispatchers.Main) {
-                runCatching {
-                    pushRepository(context).deleteNotificationByGroup(groupId)
                 }
             }
         }

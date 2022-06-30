@@ -233,9 +233,8 @@ class PushController(val context: Context) : CoroutineScope {
         baseNotification: BaseNotification,
         notificationManager: NotificationManager
     ) {
-        baseNotificationModel.groupId?.let { id ->
-            val groupId = id.toString()
-            if (groupId.isNotBlank()) {
+        baseNotificationModel.groupId.let { id ->
+            if (id.toString().isNotBlank() && id != 0) {
                 val summaryNotification = baseNotification.summaryNotificationBuilder
                 notificationManager.notify(id, summaryNotification)
             }

@@ -31,6 +31,4 @@ abstract class BaseNotificationDao {
     @Query("SELECT * FROM BaseNotificationModel WHERE groupId = :groupId")
     abstract fun getNotificationByGroup(groupId: Int): List<BaseNotificationModel>
 
-    @Query("DELETE FROM BaseNotificationModel WHERE groupId = :groupId")
-    abstract fun deleteNotificationByGroup(groupId: Int)
 }

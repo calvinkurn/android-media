@@ -12,5 +12,4 @@ interface IPushDataStore {
     suspend fun deleteNotification(olderThanExpiryMillis: Long, status: NotificationStatus)
     suspend fun getNotification(): List<BaseNotificationModel>
     suspend fun getNotificationByGroup(groupId: Int): List<BaseNotificationModel>
-    suspend fun deleteNotificationByGroup(groupId: Int)
 }
