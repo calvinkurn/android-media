@@ -94,8 +94,9 @@ class BroadMatchViewHolder(
                     freeOngkir = it.freeOngkirDataView.toProductCardModelFreeOngkir(),
                     isTopAds = it.isOrganicAds,
                     hasThreeDots = it.carouselProductType.hasThreeDots,
-                    discountPercentage = it.discountPercentage.toString(),
-                    slashedPrice = it.originalPrice,
+                    discountPercentage = if (it.discountPercentage > 0) "${it.discountPercentage}%"
+                                         else "",
+                    slashedPrice = if (it.discountPercentage > 0) it.originalPrice else "",
                 )
             },
             carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
