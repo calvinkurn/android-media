@@ -105,7 +105,6 @@ class UserProfileFragment @Inject constructor(
     private var recyclerviewPost: RecyclerView? = null
     private var headerProfile: HeaderUnify? = null
     private var appBarLayout: AppBarLayout? = null
-    private var userId = ""
     private var container: ViewFlipper? = null
     private var userPostContainer: ViewFlipper? = null
     private var globalError: GlobalError? = null
@@ -140,7 +139,7 @@ class UserProfileFragment @Inject constructor(
         UserPostBaseAdapter(
             viewModel,
             this,
-            userId,
+            userSession.userId,
             this
         ) { cursor ->
             submitAction(UserProfileAction.LoadPlayVideo(cursor))
@@ -170,7 +169,6 @@ class UserProfileFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         feedFloatingButtonManager.setInitialData(this)
 
-        userId = userSession.userId
         container = view.findViewById(R.id.container)
         userPostContainer = view.findViewById(R.id.vp_rv_post)
         globalError = view.findViewById(R.id.global_error)
@@ -590,7 +588,7 @@ class UserProfileFragment @Inject constructor(
             textLive.setOnClickListener(null)
             textLive.setOnClickListener(null)
             imgProfile.setOnClickListener{
-                userProfileTracker.clickProfilePicture(userId, viewModel.profileUsername == userId, profile.liveInfo.channelId)
+                userProfileTracker.clickProfilePicture(userSession.userId, self = viewModel.isSelfProfile, profile.liveInfo.channelId)
             }
         }
     }
@@ -599,7 +597,7 @@ class UserProfileFragment @Inject constructor(
         headerProfile?.apply {
             setNavigationOnClickListener {
                 activity?.onBackPressed()
-                userProfileTracker.clickBack(userId, self = viewModel.isSelfProfile)
+                userProfileTracker.clickBack(userSession.userId, self = viewModel.isSelfProfile)
             }
 
             val imgShare = addRightIcon(0)
@@ -616,9 +614,9 @@ class UserProfileFragment @Inject constructor(
 
             imgShare.setOnClickListener {
                 showUniversalShareBottomSheet()
-                userProfileTracker.clickShare(userId, self = viewModel.isSelfProfile)
-                userProfileTracker.clickShareButton(userId, self = viewModel.isSelfProfile)
-                userProfileTracker.viewShareChannel(userId, self = viewModel.isSelfProfile)
+                userProfileTracker.clickShare(userSession.userId, self = viewModel.isSelfProfile)
+                userProfileTracker.clickShareButton(userSession.userId, self = viewModel.isSelfProfile)
+                userProfileTracker.viewShareChannel(userSession.userId, self = viewModel.isSelfProfile)
             }
 
             val imgMenu = addRightIcon(0)
@@ -635,7 +633,7 @@ class UserProfileFragment @Inject constructor(
             )
 
             imgMenu.setOnClickListener {
-                userProfileTracker.clickBurgerMenu(userId, self = viewModel.isSelfProfile)
+                userProfileTracker.clickBurgerMenu(userSession.userId, self = viewModel.isSelfProfile)
                 RouteManager.route(activity, APPLINK_MENU)
             }
         }
@@ -684,7 +682,7 @@ class UserProfileFragment @Inject constructor(
     override fun onClick(source: View) {
         when (source.id) {
             R.id.text_following_count, R.id.text_following_label -> {
-                userProfileTracker.clickFollowing(userId, self = viewModel.isSelfProfile)
+                userProfileTracker.clickFollowing(userSession.userId, self = viewModel.isSelfProfile)
                 startActivity(activity?.let {
                     FollowerFollowingListingActivity.getCallingIntent(
                         it,
@@ -694,7 +692,7 @@ class UserProfileFragment @Inject constructor(
             }
 
             R.id.text_follower_count, R.id.text_follower_label -> {
-                userProfileTracker.clickFollowers(userId, self = viewModel.isSelfProfile)
+                userProfileTracker.clickFollowers(userSession.userId, self = viewModel.isSelfProfile)
                 UserProfileTracker().openFollowersTab(viewModel.profileUserID)
                 startActivity(activity?.let {
                     FollowerFollowingListingActivity.getCallingIntent(
@@ -705,7 +703,7 @@ class UserProfileFragment @Inject constructor(
             }
 
             R.id.text_see_more -> {
-                userProfileTracker.clickSelengkapnya(userId, self = viewModel.isSelfProfile)
+                userProfileTracker.clickSelengkapnya(userSession.userId, self = viewModel.isSelfProfile)
                 val textBio = view?.findViewById<TextView>(R.id.text_bio)
                 val btnSeeAll = view?.findViewById<TextView>(R.id.text_see_more)
                 textBio?.maxLines = MAX_LINE
@@ -887,11 +885,11 @@ class UserProfileFragment @Inject constructor(
 
                         when(UniversalShareBottomSheet.getShareBottomSheetType()){
                             UniversalShareBottomSheet.SCREENSHOT_SHARE_SHEET ->{
-                                userProfileTracker.clickChannelScreenshotShareBottomsheet(userId, self = viewModel.isSelfProfile)
+                                userProfileTracker.clickChannelScreenshotShareBottomsheet(userSession.userId, self = viewModel.isSelfProfile)
                             }
                             UniversalShareBottomSheet.CUSTOM_SHARE_SHEET ->{
                                 shareModel.channel?.let { it1 ->
-                                    userProfileTracker.clickShareChannel(userId, self = viewModel.isSelfProfile, it1)
+                                    userProfileTracker.clickShareChannel(userSession.userId, self = viewModel.isSelfProfile, it1)
                                 }
                             }
                         }
@@ -908,13 +906,13 @@ class UserProfileFragment @Inject constructor(
 
     override fun screenShotTaken() {
         showUniversalShareBottomSheet()
-        userProfileTracker.viewScreenshotShareBottomsheet(userId, self = viewModel.isSelfProfile)
+        userProfileTracker.viewScreenshotShareBottomsheet(userSession.userId, self = viewModel.isSelfProfile)
         //add tracking for the screenshot bottom sheet
     }
 
     override fun permissionAction(action: String, label: String) {
         //add tracking for the permission dialog for screenshot sharing
-        userProfileTracker.clickAccessMedia(userId, self = viewModel.isSelfProfile, label)
+        userProfileTracker.clickAccessMedia(userSession.userId, self = viewModel.isSelfProfile, label)
     }
 
     override fun onRequestPermissionsResult(
