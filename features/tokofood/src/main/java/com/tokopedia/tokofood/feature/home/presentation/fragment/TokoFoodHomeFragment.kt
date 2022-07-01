@@ -101,6 +101,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
@@ -156,6 +157,8 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         )
     }
     private val loadMoreListener by lazy { createLoadMoreListener() }
+
+    private var collectJob: Job? = null
 
     companion object {
         private const val ITEM_VIEW_CACHE_SIZE = 20
@@ -243,7 +246,6 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        collectValue()
         setupUi()
         setupNavToolbar()
         setupRecycleView()
@@ -253,17 +255,27 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         loadLayout()
     }
 
+    override fun onStart() {
+        super.onStart()
+        initializeMiniCartHome()
+        collectValue()
+    }
+
     override fun onResume() {
         super.onResume()
         if (isChooseAddressWidgetDataUpdated()) {
             onRefreshLayout()
         }
-        initializeMiniCartHome()
     }
 
     override fun onPause() {
         super.onPause()
         trackingQueue.sendAll()
+    }
+
+    override fun onStop() {
+        collectJob?.cancel()
+        super.onStop()
     }
 
     override fun getFragmentPage(): Fragment = this
@@ -551,7 +563,8 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     private fun collectValue() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+        // TODO: Upgrade androidx.lifecycle:lifecycle-runtime-ktx to 2.4.0
+        collectJob = viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             activityViewModel?.cartDataValidationFlow?.collect { uiEvent ->
                 when(uiEvent.state) {
                     UiEvent.EVENT_SUCCESS_VALIDATE_CHECKOUT -> {
@@ -582,7 +595,6 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     private fun onErrorGetHomeLayout(throwable: Throwable) {
         viewModel.showErrorState(throwable)
-        hideMiniCartHome()
     }
 
     private fun onHideHomeLayout(data: TokoFoodListUiModel) {
@@ -595,13 +607,12 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         onOpenHomepage()
         showHomeLayout(data)
         getLayoutComponentData()
-        initializeMiniCartHome()
+        activityViewModel?.loadCartList(SOURCE)
         stopRenderPerformanceMonitoring()
     }
 
     private fun onLoadingHomelayout(data: TokoFoodListUiModel) {
         hideJumpToTop()
-        hideMiniCartHome()
         showHomeLayout(data)
         checkAddressDataAndServiceArea()
     }
