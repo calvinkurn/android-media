@@ -17,6 +17,7 @@ import com.tokopedia.carouselproductcard.CarouselProductCardListener.OnItemImpre
 import com.tokopedia.carouselproductcard.CarouselProductCardListener.OnItemThreeDotsClickListener
 import com.tokopedia.carouselproductcard.CarouselProductCardListener.OnSeeMoreClickListener
 import com.tokopedia.carouselproductcard.CarouselProductCardListener.OnViewAllCardClickListener
+import com.tokopedia.carouselproductcard.R.dimen
 import com.tokopedia.carouselproductcard.helper.StartSnapHelper
 import com.tokopedia.productcard.ProductCardLifecycleObserver
 import com.tokopedia.productcard.ProductCardModel
@@ -292,7 +293,7 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope, CarouselProductC
 
     private fun RecyclerView.LayoutManager?.scrollToPositionWithOffset(scrollToPosition: Int) {
         if (this is LinearLayoutManager) {
-            scrollToPositionWithOffset(scrollToPosition, context.applicationContext.resources.getDimensionPixelOffset(R.dimen.dp_16))
+            scrollToPositionWithOffset(scrollToPosition, context.applicationContext.resources.getDimensionPixelOffset(dimen.dp_16))
         }
     }
 
