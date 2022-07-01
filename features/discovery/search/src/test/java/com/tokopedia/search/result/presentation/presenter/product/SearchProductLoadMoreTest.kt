@@ -15,6 +15,7 @@ import io.mockk.*
 import org.junit.Test
 import rx.Subscriber
 
+private const val searchProductFirstPage8ProductsJSON = "searchproduct/loaddata/first-page-8-products.json"
 private const val searchProductThirdPageJSON = "searchproduct/loaddata/third-page.json"
 
 internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
@@ -201,7 +202,7 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
 
         every { searchProductLoadMoreUseCase.execute(capture(requestParamsSlot), any()) }.answers {
             secondArg<Subscriber<SearchProductModel>>().complete(searchProductModelSecondPage)
-        } andThen {
+        } andThenAnswer {
             secondArg<Subscriber<SearchProductModel>>().complete(searchProductModelThirdPage)
         }
 
@@ -215,5 +216,20 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
 
         val expectedStart = 16
         `Then verify load more use case request params`(expectedStart, searchProductModelSecondPage.searchProduct.header.additionalParams)
+    }
+
+    @Test
+    fun `do not load more if all product is fetched`() {
+        val testException = TestException()
+        val searchProductModelFirstPage = searchProductFirstPage8ProductsJSON.jsonToObject<SearchProductModel>()
+        `Given Search Product API will return SearchProductModel`(searchProductModelFirstPage)
+        `Given Search Product Load More API will throw exception`(testException)
+        `Given Product List Presenter already Load Data`()
+
+        `When Product List Presenter Load More Data`(mapOf())
+
+        verify (exactly = 0) {
+            searchProductLoadMoreUseCase.execute(any(), any())
+        }
     }
 }

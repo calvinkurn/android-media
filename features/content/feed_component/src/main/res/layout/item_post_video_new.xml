@@ -109,39 +109,40 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/video_lihat_product"
-        android:layout_width="@dimen/unify_space_24"
-        android:layout_height="@dimen/layout_lvl3"
+        android:layout_width="@dimen/layout_lvl4"
+        android:layout_height="@dimen/layout_lvl4"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl4"
-        android:background="@drawable/feed_bg_lihat_produk"
-        android:drawablePadding="@dimen/unify_space_4"
+        android:background="@drawable/feed_bg_lihat_produk_large"
+        android:drawablePadding="@dimen/unify_space_8"
         android:drawableTint="@color/feed_dms_produk_tag_heading_color"
+        android:gravity="center_vertical|start"
         android:ellipsize="end"
-        android:gravity="center_vertical|left"
-        android:minWidth="@dimen/unify_space_24"
-        android:paddingStart="@dimen/feed_component_dp_6"
+        android:minWidth="@dimen/unify_space_32"
+        android:paddingStart="@dimen/feed_component_dp_7"
+        android:paddingEnd="@dimen/unify_space_2"
         android:paddingTop="@dimen/unify_space_2"
         android:paddingBottom="@dimen/unify_space_2"
         android:singleLine="true"
         android:text="@string/feed_post_tag_text"
         android:textColor="@color/feed_dms_produk_tag_heading_color"
         android:alpha="0.9"
-        app:drawableLeftCompat="@drawable/feed_ic_product"
+        app:drawableLeftCompat="@drawable/feed_ic_product_large"
         app:layout_constraintBottom_toBottomOf="@id/layout_main"
         app:layout_constraintStart_toStartOf="@id/layout_main"
-        app:typographyType="body_3"
+        app:typographyType="body_2"
         app:typographyWeight="bold" />
 
 
     <ImageView
         android:id="@+id/volumeIcon"
-        android:layout_width="@dimen/layout_lvl3"
-        android:layout_height="@dimen/layout_lvl3"
+        android:layout_width="@dimen/layout_lvl4"
+        android:layout_height="@dimen/layout_lvl4"
         android:layout_marginEnd="@dimen/unify_space_16"
         android:layout_marginBottom="@dimen/unify_space_16"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_feed_volume_mute"
+        app:srcCompat="@drawable/ic_feed_volume_mute_large"
         android:contentDescription="@string/feed_post_content_video_volume_btn_desc" />
 
 
