@@ -28,7 +28,7 @@
         app:typographyType="display_3"
         app:typographyWeight="reguler"
         app:layout_constraintStart_toStartOf="@id/tvOrderDetailRestoLabel"
-        app:layout_constraintTop_toBottomOf="@id/tvOrderDetailRestoLabel" />
+        app:layout_constraintTop_toBottomOf="@id/tvOrderDetailRestoValue" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvOrderDetailRestoValue"
@@ -41,6 +41,7 @@
         android:textColor="@color/Unify_N700_96"
         app:typographyType="display_3"
         app:typographyWeight="bold"
+        app:layout_constraintBottom_toTopOf="@id/tvOrderDetailDestinationLabel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/guideline1"
         app:layout_constraintTop_toTopOf="parent" />
@@ -50,7 +51,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="12dp"
         tools:text="Rumah \n0812345678 \nTokopedia Tower, Mailing Room Jl. Letjen s parman kav.77 Slipi, Jakarta barat 14410"
         android:textColor="@color/Unify_N700_96"
         app:typographyType="display_3"
@@ -59,7 +59,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/guideline1"
         app:layout_constraintEnd_toEndOf="@id/tvOrderDetailRestoValue"
-        app:layout_constraintTop_toBottomOf="@id/tvOrderDetailRestoValue" />
+        app:layout_constraintTop_toTopOf="@id/tvOrderDetailDestinationLabel" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline1"

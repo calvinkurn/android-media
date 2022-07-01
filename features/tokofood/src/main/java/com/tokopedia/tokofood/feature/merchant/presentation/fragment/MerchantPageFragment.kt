@@ -863,7 +863,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                             val isSameCustomProductExist = productUiModel.customOrderDetails.firstOrNull { it.qty > Int.ONE } != null
                             val isMultipleCustomProductMade = productUiModel.customOrderDetails.size > Int.ONE
                             if (isSameCustomProductExist || isMultipleCustomProductMade) {
-                                showCustomOrderDetailBottomSheet(productUiModel, dataSetPosition)
+                                showCustomOrderDetailBottomSheet(productUiModel, this)
                             }
                         }
                     }
@@ -899,7 +899,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                             showCustomOrderDetailBottomSheet(
                                 productListAdapter?.getProductUiModel(
                                     dataSetPosition
-                                ) ?: ProductUiModel(), dataSetPosition
+                                ) ?: ProductUiModel(), this
                             )
                         }
                     }
@@ -907,12 +907,16 @@ class MerchantPageFragment : BaseMultiFragment(),
         }
     }
 
-    private fun showCustomOrderDetailBottomSheet(productUiModel: ProductUiModel, productPosition: Int) {
+    private fun showCustomOrderDetailBottomSheet(productUiModel: ProductUiModel, cardPositions: Pair<Int, Int>) {
         customOrderDetailBottomSheet?.dismiss()
         val bundle = Bundle().apply {
             putInt(
                 CustomOrderDetailBottomSheet.BUNDLE_KEY_PRODUCT_POSITION,
-                productPosition
+                cardPositions.first
+            )
+            putInt(
+                CustomOrderDetailBottomSheet.BUNDLE_KEY_ADAPTER_POSITION,
+                cardPositions.second
             )
             putParcelable(
                 CustomOrderDetailBottomSheet.BUNDLE_KEY_PRODUCT_UI_MODEL,
@@ -964,14 +968,14 @@ class MerchantPageFragment : BaseMultiFragment(),
             viewModel.productMap[productUiModel.id] = cardPositions
             // customized product exists navigate to custom order detail bottom sheet
             if (productUiModel.isCustomizable && productUiModel.isAtc) {
-                showCustomOrderDetailBottomSheet(productUiModel, cardPositions.first)
+                showCustomOrderDetailBottomSheet(productUiModel, cardPositions)
             }
             // no customized product yet, navigate to customization page
             else if (productUiModel.isCustomizable) {
                 navigateToOrderCustomizationPage(
                     cartId = productUiModel.cartId,
                     productListItem = productListItem,
-                    cardPositions.first
+                    cardPositions
                 )
             }
             // add non customizable product to cart
@@ -984,7 +988,7 @@ class MerchantPageFragment : BaseMultiFragment(),
             }
         } else {
             // product added from different merchant
-            showChangeMerchantBottomSheet(productUiModel, cardPositions.first)
+            showChangeMerchantBottomSheet(productUiModel, cardPositions)
         }
         // track click atc button event
         viewModel.merchantData?.let {
@@ -999,7 +1003,7 @@ class MerchantPageFragment : BaseMultiFragment(),
     override fun changeMerchantConfirmAddToCart(
         updateParam: UpdateParam,
         productUiModel: ProductUiModel,
-        productPosition: Int
+        cardPositions: Pair<Int, Int>
     ) {
         if (!productUiModel.isCustomizable) {
             activityViewModel?.deleteAllAtcAndAddProduct(updateParam, SOURCE)
@@ -1010,7 +1014,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                 navigateToOrderCustomizationPage(
                     it.productUiModel.cartId,
                     it,
-                    productPosition,
+                    cardPositions,
                     true
                 )
             }
@@ -1089,18 +1093,18 @@ class MerchantPageFragment : BaseMultiFragment(),
         }
     }
 
-    override fun onNavigateToOrderCustomizationPage(cartId: String, productUiModel: ProductUiModel, productPosition: Int) {
+    override fun onNavigateToOrderCustomizationPage(cartId: String, productUiModel: ProductUiModel, cardPositions: Pair<Int, Int>) {
         if (activityViewModel?.shopId.isNullOrBlank() || activityViewModel?.shopId == merchantId) {
             val productListItem = getProductItemList().find { it.productUiModel.id == productUiModel.id }
             if (productListItem != null) {
                 navigateToOrderCustomizationPage(
                     cartId = cartId,
                     productListItem = productListItem,
-                    productPosition = productPosition
+                    cardPositions
                 )
             }
         } else {
-            showChangeMerchantBottomSheet(productUiModel, productPosition)
+            showChangeMerchantBottomSheet(productUiModel, cardPositions)
         }
     }
 
@@ -1213,12 +1217,14 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     private fun showChangeMerchantBottomSheet(
         productUiModel: ProductUiModel,
-        productPosition: Int
+        cardPositions: Pair<Int, Int>
     ) {
         val updateParam = viewModel.mapProductUiModelToAtcRequestParam(
             shopId = merchantId,
             productUiModel = productUiModel
         )
+
+        viewModel.productMap[productUiModel.id] = cardPositions
 
         val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
 
@@ -1236,7 +1242,11 @@ class MerchantPageFragment : BaseMultiFragment(),
             )
             putInt(
                 ChangeMerchantBottomSheet.KEY_PRODUCT_POSITION,
-                productPosition
+                cardPositions.first
+            )
+            putInt(
+                ChangeMerchantBottomSheet.KEY_ADAPTER_POSITION,
+                cardPositions.second
             )
             putParcelable(
                 ChangeMerchantBottomSheet.KEY_PRODUCT_UI_MODEL,
@@ -1254,7 +1264,7 @@ class MerchantPageFragment : BaseMultiFragment(),
     private fun navigateToOrderCustomizationPage(
         cartId: String,
         productListItem: ProductListItem,
-        productPosition: Int,
+        cardPositions: Pair<Int, Int>,
         isChangeMerchant: Boolean = false
     ) {
         viewModel.productListItems = productListAdapter?.getProductListItems() ?: mutableListOf()
@@ -1264,7 +1274,7 @@ class MerchantPageFragment : BaseMultiFragment(),
             productListItem,
             merchantId,
             viewModel.merchantData?.merchantProfile?.name.orEmpty(),
-            productPosition
+            cardPositions.first
         )
 
         cacheManager?.put(

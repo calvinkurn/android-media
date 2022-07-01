@@ -30,6 +30,10 @@ class ChangeMerchantBottomSheet : BottomSheetUnify() {
         arguments?.getInt(KEY_PRODUCT_POSITION, Int.ZERO) ?: Int.ZERO
     }
 
+    private val adapterPosition by lazy {
+        arguments?.getInt(KEY_ADAPTER_POSITION, Int.ZERO) ?: Int.ZERO
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -79,7 +83,7 @@ class ChangeMerchantBottomSheet : BottomSheetUnify() {
                 changeMerchantListener?.changeMerchantConfirmAddToCart(
                     updateParam,
                     productUiModel,
-                    productPosition
+                    Pair(productPosition, adapterPosition)
                 )
             }
             dismiss()
@@ -102,7 +106,7 @@ class ChangeMerchantBottomSheet : BottomSheetUnify() {
         fun changeMerchantConfirmAddToCart(
             updateParam: UpdateParam,
             productUiModel: ProductUiModel,
-            productPosition: Int
+            cardPositions: Pair<Int, Int>
         )
     }
 
@@ -121,6 +125,7 @@ class ChangeMerchantBottomSheet : BottomSheetUnify() {
         const val KEY_CACHE_MANAGER_ID = "key_cache_manager_id_change_merchant"
         const val KEY_PRODUCT_UI_MODEL = "key_product_ui_model"
         const val KEY_PRODUCT_POSITION = "key_product_position"
+        const val KEY_ADAPTER_POSITION = "key_adapter_position"
 
         val TAG: String = ChangeMerchantBottomSheet::class.java.simpleName
     }
