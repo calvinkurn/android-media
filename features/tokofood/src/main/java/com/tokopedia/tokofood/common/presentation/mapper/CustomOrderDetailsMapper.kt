@@ -39,7 +39,7 @@ object CustomOrderDetailsMapper {
                     when {
                         option.priceFmt.isNotBlank() -> option.priceFmt
                         option.price > 0.0 -> option.price.getCurrencyFormatted()
-                        else -> String.EMPTY
+                        else -> null
                     }
                 OptionUiModel(
                     isSelected = option.isSelected,

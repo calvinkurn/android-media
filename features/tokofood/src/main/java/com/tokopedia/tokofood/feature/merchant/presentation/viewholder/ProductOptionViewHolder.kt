@@ -25,7 +25,7 @@ class ProductOptionViewHolder(private val binding: TokofoodItemAddOnItemLayoutBi
         binding.tvTokofoodAddOnItemTitle.text = title
     }
 
-    private fun setDescription(description: String,
+    private fun setDescription(description: String?,
                                isOutOfStock: Boolean) {
         if (isOutOfStock) {
             binding.tvTokofoodAddOnItemDesc.invisible()
@@ -33,11 +33,7 @@ class ProductOptionViewHolder(private val binding: TokofoodItemAddOnItemLayoutBi
         } else {
             binding.tvTokofoodAddOnItemDesc.run {
                 val priceDesc =
-                    if (description.isBlank()) {
-                        itemView.context?.getString(com.tokopedia.tokofood.R.string.text_free).orEmpty()
-                    } else {
-                        description
-                    }
+                    description ?: itemView.context?.getString(com.tokopedia.tokofood.R.string.text_free).orEmpty()
                 visible()
                 text = priceDesc
             }
