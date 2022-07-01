@@ -278,7 +278,7 @@ class PlayUserInteractionFragment @Inject constructor(
     override fun onPause() {
         super.onPause()
         isOpened = false
-        productAnalyticHelper.sendImpressedFeaturedProducts()
+        productAnalyticHelper.sendImpressedFeaturedProducts(partner = playViewModel.latestCompleteChannelData.partnerInfo.type)
         analytic.getTrackingQueue().sendAll()
     }
 

@@ -393,11 +393,11 @@ class PlayAnalytic(
         )
     }
 
-    fun impressFeaturedProducts(products: List<Pair<PlayProductUiModel.Product, Int>>, sectionInfo: ProductSectionUiModel.Section) {
+    fun impressFeaturedProducts(products: List<Pair<PlayProductUiModel.Product, Int>>, isGeneral: Boolean = true) {
         if (products.isEmpty()) return
 
-        val (eventAction, eventLabel) = when(sectionInfo.config.type){
-            ProductSectionType.Tokonow -> Pair("view - now product carousel","$mChannelId - ${products.first().first.id} - ${mChannelType.value}")
+        val (eventAction, eventLabel) = when(isGeneral){
+            false -> Pair("view - now product carousel","$mChannelId - ${products.first().first.id} - ${mChannelType.value}")
             else -> Pair("view on featured product", "$mChannelId - ${products.first().first.id} - ${mChannelType.value} - featured product tagging")
         }
 
