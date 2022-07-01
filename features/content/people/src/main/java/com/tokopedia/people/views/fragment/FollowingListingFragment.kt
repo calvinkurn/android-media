@@ -12,7 +12,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.applink.RouteManager
@@ -36,7 +36,7 @@ import javax.inject.Inject
 class FollowingListingFragment @Inject constructor(
     private val viewModelFactory: ViewModelFactory,
     private val userSession: UserSessionInterface,
-): BaseDaggerFragment(),
+): TkpdBaseV4Fragment(),
     AdapterCallback,
     FollowerFollowingListener {
 
@@ -199,10 +199,6 @@ class FollowingListingFragment @Inject constructor(
             refreshMainUi()
             isLoggedIn = userSession.isLoggedIn
         }
-    }
-
-    override fun initInjector() {
-        /** No need since we alr have constructor injection */
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

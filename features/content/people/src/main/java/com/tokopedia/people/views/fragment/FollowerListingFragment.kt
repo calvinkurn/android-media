@@ -8,13 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.ViewFlipper
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.applink.RouteManager
@@ -25,8 +23,6 @@ import com.tokopedia.people.ErrorMessage
 import com.tokopedia.people.Loading
 import com.tokopedia.people.R
 import com.tokopedia.people.Success
-import com.tokopedia.people.di.DaggerUserProfileComponent
-import com.tokopedia.people.di.UserProfileModule
 import com.tokopedia.people.listener.FollowerFollowingListener
 import com.tokopedia.people.viewmodels.FollowerFollowingViewModel
 import com.tokopedia.people.views.adapter.ProfileFollowersAdapter
@@ -39,7 +35,7 @@ import javax.inject.Inject
 
 class FollowerListingFragment @Inject constructor(
     private val viewModelFactory: ViewModelFactory,
-): BaseDaggerFragment(), AdapterCallback, FollowerFollowingListener {
+): TkpdBaseV4Fragment(), AdapterCallback, FollowerFollowingListener {
 
     private var followersContainer: ViewFlipper? = null
     private var globalError: LocalLoad? = null
@@ -201,10 +197,6 @@ class FollowerListingFragment @Inject constructor(
             refreshMainUi()
             isLoggedIn = userSessionInterface.isLoggedIn
         }
-    }
-
-    override fun initInjector() {
-        /** No need since we alr have constructor injection */
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

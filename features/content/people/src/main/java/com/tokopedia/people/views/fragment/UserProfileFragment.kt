@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -14,7 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.appbar.AppBarLayout
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
@@ -79,7 +78,7 @@ class UserProfileFragment @Inject constructor(
     private var userProfileTracker: UserProfileTracker,
     private val userSession: UserSessionInterface,
     private val feedFloatingButtonManager: FeedFloatingButtonManager,
-) : BaseDaggerFragment(),
+) : TkpdBaseV4Fragment(),
     AdapterCallback,
     ShareBottomsheetListener,
     ScreenShotListener,
@@ -105,19 +104,10 @@ class UserProfileFragment @Inject constructor(
     private val mainBinding: UpLayoutUserProfileHeaderBinding
         get() = _binding!!.mainLayout
 
-    override fun initInjector() {
-        /** No need since we alr have constructor injection */
-    }
-
     private lateinit var viewModel: UserProfileViewModel
 
     private val mAdapter: UserPostBaseAdapter by lazy {
-        UserPostBaseAdapter(
-            viewModel,
-            this,
-            userSession.userId,
-            this
-        ) { cursor ->
+        UserPostBaseAdapter(this, this) { cursor ->
             submitAction(UserProfileAction.LoadPlayVideo(cursor))
         }
     }

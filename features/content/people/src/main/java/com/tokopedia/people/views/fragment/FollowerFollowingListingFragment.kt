@@ -6,8 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.viewpager.widget.ViewPager
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.gone
@@ -22,16 +21,13 @@ import com.tokopedia.unifycomponents.TabsUnify
 import javax.inject.Inject
 
 
-class FollowerFollowingListingFragment @Inject constructor(
-    private val viewModelFactory: ViewModelFactory,
-) : BaseDaggerFragment() {
+class FollowerFollowingListingFragment @Inject constructor() : TkpdBaseV4Fragment() {
 
     private var userId = ""
 
     var tabLayout: TabsUnify? = null
     var ffViewPager: ViewPager? = null
     var isFollowersTab: Boolean = true
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -177,13 +173,7 @@ class FollowerFollowingListingFragment @Inject constructor(
         }
     }
 
-    override fun getScreenName(): String {
-        return TAG
-    }
-
-    override fun initInjector() {
-        /** No need since we alr have constructor injection */
-    }
+    override fun getScreenName(): String = TAG
 
     companion object {
         private const val TAG = "FollowerFollowingListingFragment"

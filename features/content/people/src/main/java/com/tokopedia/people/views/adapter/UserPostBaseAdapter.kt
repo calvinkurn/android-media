@@ -3,35 +3,24 @@ package com.tokopedia.people.views.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.library.baseadapter.BaseAdapter
-import com.tokopedia.library.baseadapter.BaseItem
 import com.tokopedia.people.R
 import com.tokopedia.people.model.PlayPostContentItem
 import com.tokopedia.people.model.UserPostModel
 import com.tokopedia.people.utils.UserProfileVideoMapper
-import com.tokopedia.people.viewmodels.UserProfileViewModel
-import com.tokopedia.people.analytic.UserProfileTracker
-import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.VAL_FEEDS_PROFILE
-import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.VAL_SOURCE_BUYER
-import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.reminded
 import com.tokopedia.play.widget.ui.widget.large.PlayWidgetCardLargeChannelView
 
 open class UserPostBaseAdapter(
-    val viewModel: UserProfileViewModel,
-    val callback: AdapterCallback,
-    val userId: String,
+    callback: AdapterCallback,
     val playWidgetCallback: PlayWidgetCallback,
     val onLoadMore: (cursor: String) -> Unit,
 ) : BaseAdapter<PlayPostContentItem>(callback), PlayWidgetCardLargeChannelView.Listener {
 
-    protected var cList: MutableList<BaseItem>? = null
-    public var cursor: String = ""
-    var displayName = ""
+    var cursor: String = ""
 
     inner class ViewHolder(view: View) : BaseVH(view) {
         internal var playWidgetLargeView: PlayWidgetCardLargeChannelView =
@@ -63,18 +52,14 @@ open class UserPostBaseAdapter(
     }
 
     fun onSuccess(data: UserPostModel) {
-        if (data == null
-            || data.playGetContentSlot == null
-            || data.playGetContentSlot.data == null
-            || data.playGetContentSlot.data.size == 0
-        ) {
+        if (data.playGetContentSlot.data.size == 0) {
             loadCompleted(mutableListOf(), data)
             isLastPage = true
             cursor = ""
         } else {
             data.playGetContentSlot.data.firstOrNull()?.items?.let { loadCompleted(it, data) }
-            isLastPage = data?.playGetContentSlot?.playGetContentSlot?.nextCursor?.isEmpty()
-            cursor = data?.playGetContentSlot?.playGetContentSlot?.nextCursor;
+            isLastPage = data.playGetContentSlot.playGetContentSlot.nextCursor.isEmpty()
+            cursor = data.playGetContentSlot.playGetContentSlot.nextCursor
         }
     }
 
@@ -105,16 +90,6 @@ open class UserPostBaseAdapter(
         return -1
     }
 
-
-    override fun onViewAttachedToWindow(vh: RecyclerView.ViewHolder) {
-        super.onViewAttachedToWindow(vh)
-
-        if (vh is ViewHolder) {
-            val holder = vh as ViewHolder
-            val data = items[holder.adapterPosition] ?: return
-        }
-    }
-
     fun updatePlayWidgetLatestData(
         channelId: String,
         totalView: String?,
@@ -141,14 +116,6 @@ open class UserPostBaseAdapter(
         notifyItemChanged(position)
     }
 
-    companion object {
-        const val COMING_SOON = "COMING_SOON"
-        const val UPCOMING = "UPCOMING"
-        const val WATCH_AGAIN = "WATCH_AGAIN"
-        const val DATE_FORMAT_INPUT = "yyyy-MM-dd'T'HH:mm:ss"
-        const val DATE_FORMAT_OUTPUT = "dd MMM yyyy - HH:mm"
-    }
-
     override fun onChannelClicked(view: View, item: PlayWidgetChannelUiModel) {
         playWidgetCallback.onPlayWidgetLargeClick(item.appLink)
     }
@@ -170,7 +137,6 @@ open class UserPostBaseAdapter(
     override fun onLabelPromoImpressed(view: View, item: PlayWidgetChannelUiModel) {
         //add tracker later
     }
-
 
     interface PlayWidgetCallback {
         fun updatePostReminderStatus(channelId: String, isActive: Boolean, pos: Int)
