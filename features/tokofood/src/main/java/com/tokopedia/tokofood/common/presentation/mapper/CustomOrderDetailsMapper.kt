@@ -1,5 +1,6 @@
 package com.tokopedia.tokofood.common.presentation.mapper
 
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
@@ -34,12 +35,18 @@ object CustomOrderDetailsMapper {
         val customListItems = mutableListOf<CustomListItem>()
         val addOns = variants.map { variant ->
             val options = variant.options.map { option ->
+                val formattedPrice =
+                    when {
+                        option.priceFmt.isNotBlank() -> option.priceFmt
+                        option.price > 0.0 -> option.price.getCurrencyFormatted()
+                        else -> null
+                    }
                 OptionUiModel(
                     isSelected = option.isSelected,
                     id = option.optionId,
                     name = option.name,
                     price = option.price,
-                    priceFmt = option.priceFmt,
+                    priceFmt = formattedPrice,
                     selectionControlType = mapSelectionRulesToSelectionControlType(variant.rules.selectionRules)
                 )
             }

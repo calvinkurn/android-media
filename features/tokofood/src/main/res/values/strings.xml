@@ -98,6 +98,7 @@
     <string name="text_orders">%s Pesanan</string>
     <string name="text_order_note">Catatan</string>
     <string name="text_out_of_stock">Stok habis</string>
+    <string name="text_free">Gratis</string>
     <string name="action_merchant_ok">Oke</string>
     <string name="action_order">Pesan</string>
     <string name="action_edit">Ubah</string>

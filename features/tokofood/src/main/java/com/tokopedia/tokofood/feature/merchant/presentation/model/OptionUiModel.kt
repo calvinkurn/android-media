@@ -14,7 +14,7 @@ data class OptionUiModel(
         val status: Int = 0,
         val name: String = "",
         val price: Double = 0.0,
-        val priceFmt: String = "",
+        val priceFmt: String? = "",
         val selectionControlType: SelectionControlType
 ) : Parcelable {
     @IgnoredOnParcel
