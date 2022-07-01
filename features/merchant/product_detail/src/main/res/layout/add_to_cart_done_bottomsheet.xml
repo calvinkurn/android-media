@@ -47,7 +47,6 @@
                 android:gravity="end|right"
                 android:textColor="@color/Unify_G400"
                 app:typographyType="display_2"
-                app:typographyType="display_2"
                 android:visibility="gone" />
 
         </LinearLayout>
