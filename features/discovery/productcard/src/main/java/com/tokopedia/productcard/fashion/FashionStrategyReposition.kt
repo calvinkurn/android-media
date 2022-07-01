@@ -15,8 +15,10 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import com.tokopedia.productcard.renderLabelVariantSize
 import com.tokopedia.productcard.renderVariantColor
+import com.tokopedia.productcard.utils.COLOR_WITH_LABEL_LIMIT
 import com.tokopedia.productcard.utils.LABEL_VARIANT_WITH_LABEL_CHAR_LIMIT
 import com.tokopedia.productcard.utils.MAX_LABEL_VARIANT_COUNT
+import com.tokopedia.productcard.utils.MIN_LABEL_VARIANT_COUNT
 import com.tokopedia.productcard.utils.SQUARE_IMAGE_RATIO
 import com.tokopedia.productcard.utils.applyConstraintSet
 import com.tokopedia.productcard.utils.initLabelGroup
@@ -30,6 +32,7 @@ import com.tokopedia.unifycomponents.Label
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil
 import com.tokopedia.productcard.utils.renderLabelReposition
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.productcard.utils.renderLabelCampaign
 
 internal open class FashionStrategyReposition: FashionStrategy {
     override fun setupImageRatio(
@@ -123,11 +126,6 @@ internal open class FashionStrategyReposition: FashionStrategy {
         productCardModel: ProductCardModel,
     ): Int = 0
 
-    override fun renderTextETA(view: View, productCardModel: ProductCardModel) {
-        val textViewETA = view.findViewById<Typography?>(R.id.textViewETA)
-        textViewETA?.initLabelGroup(null)
-    }
-
     override fun getLabelETAHeight(context: Context, productCardModel: ProductCardModel): Int = 0
 
     override fun getLabelCampaignHeight(
@@ -140,13 +138,12 @@ internal open class FashionStrategyReposition: FashionStrategy {
         textViewLabelCampaign: Typography?,
         productCardModel: ProductCardModel,
     ) {
-        val isShowCampaign = false
-
-        com.tokopedia.productcard.utils.renderLabelCampaign(
+        val isShowCampaign = productCardModel.isShowLabelCampaign()
+        renderLabelCampaign(
             isShowCampaign,
             labelCampaignBackground,
             textViewLabelCampaign,
-            productCardModel
+            productCardModel,
         )
     }
 
@@ -215,7 +212,7 @@ internal open class FashionStrategyReposition: FashionStrategy {
         productCardModel: ProductCardModel,
     ) {
         val container = view.findViewById<LinearLayout?>(R.id.labelVariantWithLabelContainer)
-        val colorSampleSize = 10.toPx()
+        val colorSampleSize = 12.toPx()
 
         container?.shouldShowWithAction(
             willShowVariant && !productCardModel.isShowDiscountOrSlashPrice()
@@ -280,6 +277,9 @@ internal open class FashionStrategyReposition: FashionStrategy {
     override val sizeCharLimit: Int
         get() = LABEL_VARIANT_WITH_LABEL_CHAR_LIMIT
 
+    override val colorLimit: Int
+        get() = COLOR_WITH_LABEL_LIMIT
+
     override fun getLabelVariantSizeCount(
         productCardModel: ProductCardModel,
         colorVariantTaken: Int,
@@ -291,6 +291,14 @@ internal open class FashionStrategyReposition: FashionStrategy {
         } else {
             0
         }
+    }
+
+    override fun getLabelVariantColorCount(
+        colorVariant: List<ProductCardModel.LabelGroupVariant>,
+    ): Int {
+        return if (colorVariant.size >= MIN_LABEL_VARIANT_COUNT)
+            colorLimit
+        else 0
     }
 
     override fun setupProductNameLineCount(

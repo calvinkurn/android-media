@@ -17,8 +17,10 @@ import com.tokopedia.productcard.addLabelVariantColor
 import com.tokopedia.productcard.addLabelVariantCustom
 import com.tokopedia.productcard.addLabelVariantSize
 import com.tokopedia.productcard.moveLabelPriceConstraint
+import com.tokopedia.productcard.utils.COLOR_WITH_LABEL_LIMIT
 import com.tokopedia.productcard.utils.LABEL_VARIANT_CHAR_LIMIT
 import com.tokopedia.productcard.utils.MAX_LABEL_VARIANT_COUNT
+import com.tokopedia.productcard.utils.MIN_LABEL_VARIANT_COUNT
 import com.tokopedia.productcard.utils.SQUARE_IMAGE_RATIO
 import com.tokopedia.productcard.utils.applyConstraintSet
 import com.tokopedia.productcard.utils.initLabelGroup
@@ -160,11 +162,6 @@ internal open class FashionStrategyControl: FashionStrategy {
         else 0
     }
 
-    override fun renderTextETA(view: View, productCardModel: ProductCardModel) {
-        val textViewETA = view.findViewById<Typography?>(R.id.textViewETA)
-        textViewETA?.initLabelGroup(productCardModel.getLabelETA())
-    }
-
     override fun getLabelETAHeight(context: Context, productCardModel: ProductCardModel): Int {
         val labelETA = productCardModel.getLabelETA()
 
@@ -187,7 +184,7 @@ internal open class FashionStrategyControl: FashionStrategy {
             isShowCampaign,
             labelCampaignBackground,
             textViewLabelCampaign,
-            productCardModel
+            productCardModel,
         )
     }
 
@@ -314,6 +311,9 @@ internal open class FashionStrategyControl: FashionStrategy {
     override val sizeCharLimit: Int
         get() = LABEL_VARIANT_CHAR_LIMIT
 
+    override val colorLimit: Int
+        get() = MAX_LABEL_VARIANT_COUNT
+
     override fun getLabelVariantSizeCount(
         productCardModel: ProductCardModel,
         colorVariantTaken: Int,
@@ -321,6 +321,14 @@ internal open class FashionStrategyControl: FashionStrategy {
         val hasLabelVariantColor = colorVariantTaken > 0
 
         return if (hasLabelVariantColor) 0 else MAX_LABEL_VARIANT_COUNT
+    }
+
+    override fun getLabelVariantColorCount(
+        colorVariant: List<ProductCardModel.LabelGroupVariant>,
+    ): Int {
+        return if (colorVariant.size >= MIN_LABEL_VARIANT_COUNT)
+            colorLimit
+        else 0
     }
 
     override fun setupProductNameLineCount(

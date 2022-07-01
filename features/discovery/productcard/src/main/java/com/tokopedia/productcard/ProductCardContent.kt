@@ -130,10 +130,14 @@ fun LinearLayout.addLabelVariantColor(
 
 internal fun createColorSampleDrawable(context: Context, colorString: String): GradientDrawable {
     val gradientDrawable = GradientDrawable()
+    val strokeWidth = 1.toPx()
 
     gradientDrawable.shape = GradientDrawable.OVAL
     gradientDrawable.cornerRadii = floatArrayOf(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f)
-    gradientDrawable.setStroke(2, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N100))
+    gradientDrawable.setStroke(
+        strokeWidth,
+        ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN200),
+    )
     gradientDrawable.setColor(safeParseColor(colorString))
 
     return gradientDrawable
@@ -450,7 +454,8 @@ private fun View.renderTextShipping(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderTextETA(productCardModel: ProductCardModel) {
-    productCardModel.fashionStrategy.renderTextETA(this, productCardModel)
+    val textViewETA = findViewById<Typography?>(R.id.textViewETA)
+    textViewETA?.initLabelGroup(productCardModel.getLabelETA())
 }
 
 private fun View.configureWideContent(productCardModel: ProductCardModel) {
@@ -516,10 +521,10 @@ fun LinearLayout.renderVariantColor(
 
     listLabelVariant.forEachIndexed { index, labelGroupVariant ->
         val gradientDrawable = createColorSampleDrawable(context, labelGroupVariant.hexColor)
-        val colorInsetRatio = -5
+        val colorOffset = (-2).toPx()
 
         val layoutParams = LinearLayout.LayoutParams(colorSampleSize, colorSampleSize)
-        layoutParams.marginStart = if (index > 0) colorSampleSize / colorInsetRatio else 0
+        layoutParams.marginStart = if (index > 0) colorOffset else 0
 
         val colorSampleImageView = ImageView(context)
         colorSampleImageView.setImageDrawable(gradientDrawable)

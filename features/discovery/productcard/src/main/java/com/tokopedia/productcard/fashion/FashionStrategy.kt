@@ -48,8 +48,6 @@ internal interface FashionStrategy {
 
     fun getTextCategoryBottomHeight(context: Context, productCardModel: ProductCardModel): Int
 
-    fun renderTextETA(view: View, productCardModel: ProductCardModel)
-
     fun getLabelETAHeight(context: Context, productCardModel: ProductCardModel): Int
 
     fun renderLabelCampaign(
@@ -78,7 +76,11 @@ internal interface FashionStrategy {
 
     val sizeCharLimit: Int
 
+    val colorLimit: Int
+
     fun getLabelVariantSizeCount(productCardModel: ProductCardModel, colorVariantTaken: Int): Int
+
+    fun getLabelVariantColorCount(colorVariant: List<ProductCardModel.LabelGroupVariant>): Int
 
     fun setupProductNameLineCount(
         textViewProductName: Typography?,

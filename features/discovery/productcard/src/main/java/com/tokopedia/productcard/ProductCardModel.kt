@@ -299,7 +299,7 @@ data class ProductCardModel (
         if (isLabelVariantCountBelowMinimum(colorVariant, sizeVariant))
             return listOf()
 
-        val colorVariantTaken = getLabelVariantColorCount(colorVariant)
+        val colorVariantTaken = fashionStrategy.getLabelVariantColorCount(colorVariant)
         val sizeVariantTaken =
             fashionStrategy.getLabelVariantSizeCount(this, colorVariantTaken)
 
@@ -313,11 +313,6 @@ data class ProductCardModel (
             sizeVariant: List<LabelGroupVariant>
     ) = colorVariant.size < MIN_LABEL_VARIANT_COUNT
             && sizeVariant.size < MIN_LABEL_VARIANT_COUNT
-
-    private fun getLabelVariantColorCount(colorVariant: List<LabelGroupVariant>) =
-            if (colorVariant.size >= MIN_LABEL_VARIANT_COUNT)
-                MAX_LABEL_VARIANT_COUNT
-            else 0
 
     private fun getSplittedLabelGroupVariant():
         Triple<List<LabelGroupVariant>, List<LabelGroupVariant>, List<LabelGroupVariant>> {
