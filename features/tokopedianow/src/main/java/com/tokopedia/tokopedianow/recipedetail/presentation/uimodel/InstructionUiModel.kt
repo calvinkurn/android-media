@@ -6,12 +6,9 @@ import com.tokopedia.tokopedianow.recipedetail.presentation.adapter.RecipeInstru
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class IngredientUiModel(
-    val name: String,
-    val quantity: Int,
-    val unit: String,
-    val isLastItem: Boolean = false
-): Visitable<RecipeInstructionTypeFactory>, Parcelable {
+data class InstructionUiModel(
+    val htmlText: String
+) : Visitable<RecipeInstructionTypeFactory>, Parcelable {
 
     override fun type(typeFactory: RecipeInstructionTypeFactory): Int {
         return typeFactory.type(this)

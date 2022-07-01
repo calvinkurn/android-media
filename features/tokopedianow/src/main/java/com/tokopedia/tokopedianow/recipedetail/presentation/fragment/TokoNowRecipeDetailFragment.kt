@@ -16,12 +16,13 @@ import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowRecipeDetailBi
 import com.tokopedia.tokopedianow.recipedetail.di.component.DaggerRecipeDetailComponent
 import com.tokopedia.tokopedianow.recipedetail.presentation.adapter.RecipeDetailAdapter
 import com.tokopedia.tokopedianow.recipedetail.presentation.adapter.RecipeDetailAdapterTypeFactory
+import com.tokopedia.tokopedianow.recipedetail.presentation.view.RecipeDetailView
 import com.tokopedia.tokopedianow.recipedetail.presentation.viewmodel.TokoNowRecipeDetailViewModel
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class TokoNowRecipeDetailFragment: Fragment() {
+class TokoNowRecipeDetailFragment: Fragment(), RecipeDetailView {
 
     companion object {
         private const val KEY_PARAM_RECIPE_ID = "recipe_id"
@@ -36,7 +37,7 @@ class TokoNowRecipeDetailFragment: Fragment() {
 
     private var binding by autoClearedNullable<FragmentTokopedianowRecipeDetailBinding>()
 
-    private val adapter by lazy { RecipeDetailAdapter(RecipeDetailAdapterTypeFactory()) }
+    private val adapter by lazy { RecipeDetailAdapter(RecipeDetailAdapterTypeFactory(this)) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -59,6 +60,8 @@ class TokoNowRecipeDetailFragment: Fragment() {
         injectDependencies()
         super.onAttach(context)
     }
+
+    override fun getFragmentActivity() = activity
 
     private fun setupRecyclerView() {
         binding?.rvRecipeDetail?.apply {

@@ -17,6 +17,8 @@ class RecipeInfoViewHolder(itemView: View): AbstractViewHolder<RecipeInfoUiModel
 
     companion object {
         val LAYOUT = R.layout.item_tokopedianow_recipe_info
+
+        private const val MAX_LABEL_COUNT = 3
     }
 
     private var binding: ItemTokopedianowRecipeInfoBinding? by viewBinding()
@@ -55,7 +57,20 @@ class RecipeInfoViewHolder(itemView: View): AbstractViewHolder<RecipeInfoUiModel
 
     private fun renderLabel(recipe: RecipeInfoUiModel) {
         val viewIds = mutableListOf<Int>()
-        recipe.labels.forEachIndexed { index, label ->
+        val labelCount = recipe.labels.count()
+        val labels = mutableListOf<String>()
+
+        if(labelCount > MAX_LABEL_COUNT) {
+            val otherLabelCount = labelCount - MAX_LABEL_COUNT
+            val otherLabelText = itemView.context.resources.getString(
+                R.string.tokopedianow_recipe_other_label, otherLabelCount)
+            labels.addAll(recipe.labels.take(MAX_LABEL_COUNT))
+            labels.add(otherLabelText)
+        } else {
+            labels.addAll(recipe.labels)
+        }
+
+        labels.forEachIndexed { index, label ->
             val viewId = if(index == 0) {
                 binding?.labelRecipe?.text = label
                 binding?.labelRecipe?.show()
