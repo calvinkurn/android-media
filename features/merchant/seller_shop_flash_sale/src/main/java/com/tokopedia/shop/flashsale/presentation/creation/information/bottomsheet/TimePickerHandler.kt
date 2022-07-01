@@ -13,7 +13,14 @@ import javax.inject.Inject
 
 class TimePickerHandler @Inject constructor(private val param: Param) {
 
+    companion object {
+        private const val LAST_HOUR_OF_A_DAY = 23
+        private const val LAST_MINUTE = 59
+    }
+
+
     data class Param(
+        val mode : TimePickerSelectionMode,
         val selectedDateFromCalendar: Date,
         val defaultDate: Date,
         val minimumDate: Date,
@@ -82,18 +89,25 @@ class TimePickerHandler @Inject constructor(private val param: Param) {
     }
 
     private fun buildDefaultTime(): GregorianCalendar {
+        val hour = param.defaultDate.extractHour()
+        val minute = param.defaultDate.extractMinute()
         return GregorianCalendar(LocaleConstant.INDONESIA).apply {
-            set(Calendar.HOUR_OF_DAY, param.defaultDate.extractHour())
-            set(Calendar.MINUTE, param.defaultDate.extractMinute())
-            set(Calendar.SECOND, 0)
+            set(Calendar.HOUR_OF_DAY, hour)
+            set(Calendar.MINUTE, minute)
         }
     }
 
     private fun buildMaxTime(): GregorianCalendar {
-        return GregorianCalendar(LocaleConstant.INDONESIA).apply {
-            set(Calendar.HOUR_OF_DAY, param.maximumDate.extractHour())
-            set(Calendar.MINUTE, param.maximumDate.extractMinute())
-            set(Calendar.SECOND, 0)
+        return if (param.mode == TimePickerSelectionMode.START_TIME) {
+            GregorianCalendar(LocaleConstant.INDONESIA).apply {
+                set(Calendar.HOUR_OF_DAY, LAST_HOUR_OF_A_DAY)
+                set(Calendar.MINUTE, LAST_MINUTE)
+            }
+        } else {
+            GregorianCalendar(LocaleConstant.INDONESIA).apply {
+                set(Calendar.HOUR_OF_DAY, param.maximumDate.extractHour())
+                set(Calendar.MINUTE, param.maximumDate.extractMinute())
+            }
         }
     }
 }
