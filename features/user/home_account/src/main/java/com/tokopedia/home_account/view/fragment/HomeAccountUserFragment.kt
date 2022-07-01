@@ -841,7 +841,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             if (isFirstItemIsProfile()) {
                 removeItemAt(0)
             }
-            addItem(0, mapper.mapToProfileDataView(buyerAccount, isEnableLinkAccount = isEnablePrivacyAccount()))
+            addItem(0, mapper.mapToProfileDataView(buyerAccount))
             notifyDataSetChanged()
         }
         hideLoading()
