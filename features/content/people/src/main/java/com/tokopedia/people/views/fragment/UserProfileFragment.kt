@@ -106,7 +106,6 @@ class UserProfileFragment @Inject constructor(
     private var headerProfile: HeaderUnify? = null
     private var appBarLayout: AppBarLayout? = null
     private var userPostContainer: ViewFlipper? = null
-    private var globalErrorPost: LocalLoad? = null
     private var shouldRefreshRecyclerView: Boolean? = false
     private var isViewMoreClickedBio: Boolean? = false
     private var screenShotDetector: ScreenshotDetector? = null
@@ -161,7 +160,6 @@ class UserProfileFragment @Inject constructor(
         feedFloatingButtonManager.setInitialData(this)
 
         userPostContainer = view.findViewById(R.id.vp_rv_post)
-        globalErrorPost = view.findViewById(R.id.global_error_post)
         appBarLayout = view.findViewById(R.id.app_bar_layout)
 
         headerProfile = view.findViewById(R.id.header_profile)
@@ -357,17 +355,18 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
-    private fun addUserPostObserver() =
-        viewModel.userPostLiveData.observe(viewLifecycleOwner, Observer {
+    private fun addUserPostObserver() {
+        viewModel.userPostLiveData.observe(viewLifecycleOwner) {
             it?.let {
                 if (it) {
                     initUserPost(viewModel.profileUserID)
                 }
             }
-        })
+        }
+    }
 
-    private fun addListObserver() =
-        viewModel.playPostContentLiveData.observe(viewLifecycleOwner, Observer {
+    private fun addListObserver() {
+        viewModel.playPostContentLiveData.observe(viewLifecycleOwner) {
             it?.let {
                 when (it) {
                     is Loading -> {
@@ -382,59 +381,21 @@ class UserProfileFragment @Inject constructor(
                     }
                 }
             }
-        })
+        }
+    }
 
-    private fun adduserPostErrorObserver() =
-        viewModel.userPostErrorLiveData.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                when (it) {
-                    is UnknownHostException, is SocketTimeoutException -> {
-                        userPostContainer?.displayedChild = PAGE_ERROR
+    private fun adduserPostErrorObserver() {
+        viewModel.userPostErrorLiveData.observe(viewLifecycleOwner) {
+            with(mainBinding) {
+                userPostContainer?.displayedChild = PAGE_ERROR
 
-                        globalErrorPost?.refreshBtn?.setOnClickListener {
-                            userPostContainer?.displayedChild = PAGE_LOADING
-                            initUserPost(viewModel.profileUserID)
-                        }
-                    }
-                    is IllegalStateException -> {
-                        userPostContainer?.displayedChild = PAGE_ERROR
-
-                        globalErrorPost?.refreshBtn?.setOnClickListener {
-                            userPostContainer?.displayedChild = PAGE_LOADING
-                            initUserPost(viewModel.profileUserID)
-                        }
-                    }
-                    is RuntimeException -> {
-                        when (it.localizedMessage?.toIntOrNull()) {
-                            ReponseStatus.NOT_FOUND -> {
-                                userPostContainer?.displayedChild = PAGE_ERROR
-
-                                globalErrorPost?.refreshBtn?.setOnClickListener {
-                                    userPostContainer?.displayedChild = PAGE_LOADING
-                                    initUserPost(viewModel.profileUserID)
-                                }
-                            }
-                            ReponseStatus.INTERNAL_SERVER_ERROR -> {
-                                userPostContainer?.displayedChild = PAGE_ERROR
-
-                                globalErrorPost?.refreshBtn?.setOnClickListener {
-                                    userPostContainer?.displayedChild = PAGE_LOADING
-                                    initUserPost(viewModel.profileUserID)
-                                }
-                            }
-                            else -> {
-                                userPostContainer?.displayedChild = PAGE_ERROR
-
-                                globalErrorPost?.refreshBtn?.setOnClickListener {
-                                    userPostContainer?.displayedChild = PAGE_LOADING
-                                    initUserPost(viewModel.profileUserID)
-                                }
-                            }
-                        }
-                    }
+                globalErrorPost.refreshBtn?.setOnClickListener {
+                    userPostContainer?.displayedChild = PAGE_LOADING
+                    initUserPost(viewModel.profileUserID)
                 }
             }
-        })
+        }
+    }
 
     private fun addLiveClickListener(appLink: String) = View.OnClickListener {
         RouteManager.route(context, appLink)
