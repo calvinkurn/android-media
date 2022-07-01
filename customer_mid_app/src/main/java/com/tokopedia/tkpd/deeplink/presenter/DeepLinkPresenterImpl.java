@@ -90,6 +90,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private static final int SHOP_MVC_LOCKED_TO_PRODUCT_VOUCHER_SEGMENT = 1;
     private static final String REDIRECTION_LINK_PARAM = "r";
     private static final String USER_ID_PARAM = "uid";
+    private static final String ENV_PARAM = "t";
+    private static final String ENV_VALUE = "android";
 
     private final Activity context;
     private final DeepLinkView viewListener;
@@ -294,19 +296,24 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void doTopAdsOperation(Uri uriData) {
-        Uri newUri = replaceUriParameter(uriData, userSession.getUserId());
+        Uri newUri = replaceUriParameter(uriData, userSession);
         String redirectionUrl = uriData.getQueryParameter(REDIRECTION_LINK_PARAM);
         new TopAdsUrlHitter(context).hitClickUrlAndStoreHeader(this.getClass().getCanonicalName(),
                 newUri.toString(), "", "", "", userSession.isLoggedIn());
         RouteManager.route(context, redirectionUrl);
     }
 
-    private static Uri replaceUriParameter(Uri uri, String newValue) {
+    private static Uri replaceUriParameter(Uri uri, UserSessionInterface userSession) {
         final Set<String> params = uri.getQueryParameterNames();
         final Uri.Builder newUri = uri.buildUpon().clearQuery();
         for (String param : params) {
-            newUri.appendQueryParameter(param,
-                    param.equals(USER_ID_PARAM) ? newValue : uri.getQueryParameter(param));
+            if (param.equals(USER_ID_PARAM)) {
+                newUri.appendQueryParameter(param, userSession.getUserId());
+            } else if (param.equals(ENV_PARAM)) {
+                newUri.appendQueryParameter(param, ENV_VALUE);
+            } else {
+                newUri.appendQueryParameter(param, uri.getQueryParameter(param));
+            }
         }
         return newUri.build();
     }
