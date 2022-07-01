@@ -1,7 +1,7 @@
 package com.tokopedia.chatbot.view.adapter.viewholder
 
-import android.annotation.SuppressLint
-import android.content.Intent
+import android.R.attr.path
+import android.graphics.drawable.Drawable
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
@@ -13,6 +13,8 @@ import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.model.GlideUrl
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.Target
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.BaseChatUiModel
@@ -21,7 +23,6 @@ import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
 import com.tokopedia.chatbot.util.ChatBotTimeConverter
 import com.tokopedia.chatbot.util.ViewUtil
-import com.tokopedia.chatbot.view.activity.ContactUsMigrationActivity
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.VideoUploadListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -31,6 +32,7 @@ import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.concurrent.TimeUnit
+
 
 class ChatbotVideoUploadViewHolder(
     itemView: View?,
@@ -178,13 +180,37 @@ class ChatbotVideoUploadViewHolder(
     fun loadThumbnail(imageview: ImageView, videoUrl: String?) {
         try {
             if (imageview != null) {
-                Glide.with(imageview.context)
-                    .load(videoUrl)
-                    .fitCenter()
-                    .dontAnimate()
-                    .placeholder(R.drawable.chatbot_video_placeholder)
-                    .error(com.tokopedia.abstraction.R.drawable.error_drawable)
-                    .into(imageview)
+                var thumbnail = layoutPosition*1000
+                val options = RequestOptions().frame(thumbnail.toLong())
+                Glide.with(imageview.context).load(videoUrl).apply(options).into(imageview)
+
+//                val requestOptions = RequestOptions()
+//                requestOptions.placeholder(R.drawable.chatbot_video_placeholder)
+//                requestOptions.error(com.tokopedia.abstraction.R.drawable.error_drawable)
+//
+//
+//                Glide.with(imageview.context)
+//                    .load("https://www.youtube.com/watch?v=T9jERRXml_o&ab_channel=DeeplinaDeka")
+//                    .apply(requestOptions)
+//                    .thumbnail(Glide.with(imageview.context).load("https://www.youtube.com/watch?v=T9jERRXml_o&ab_channel=DeeplinaDeka"))
+//                    .into(imageview)
+
+//                val requestOptions = RequestOptions()
+//                requestOptions.placeholder(R.drawable.chatbot_video_placeholder)
+//                requestOptions.error(com.tokopedia.abstraction.R.drawable.error_drawable)
+//                Glide.with(imageview.context)
+//                    .load(videoUrl)
+//                    .apply(requestOptions)
+//                    .thumbnail(Glide.with(imageview.context).load(videoUrl))
+//                    .into(imageview)
+//                Glide.with(imageview.context)
+//                    .load(videoUrl)
+//                    .fitCenter()
+//                    .dontAnimate()
+//                    .placeholder(R.drawable.chatbot_video_placeholder)
+//                        //TODO change this
+//                    .error(com.tokopedia.abstraction.R.drawable.error_drawable)
+//                    .into(imageview)
             }
         } catch (e: Exception) {
             if (imageview.context != null) {
