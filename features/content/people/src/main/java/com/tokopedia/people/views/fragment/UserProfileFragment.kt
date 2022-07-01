@@ -79,7 +79,6 @@ import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.people.views.uimodel.profile.ProfileType
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
 import com.tokopedia.people.views.uimodel.state.UserProfileUiState
-import com.tokopedia.unifyprinciples.Typography
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import com.tokopedia.abstraction.R as abstractionR
@@ -113,7 +112,6 @@ class UserProfileFragment @Inject constructor(
     private var shouldRefreshRecyclerView: Boolean? = false
     private var isViewMoreClickedBio: Boolean? = false
     private var screenShotDetector: ScreenshotDetector? = null
-    private lateinit var feedFab: FeedFloatingButton
 
     private var _binding: UpFragmentUserProfileBinding? = null
 
@@ -169,7 +167,6 @@ class UserProfileFragment @Inject constructor(
         globalError = view.findViewById(R.id.global_error)
         globalErrorPost = view.findViewById(R.id.global_error_post)
         appBarLayout = view.findViewById(R.id.app_bar_layout)
-        feedFab = view.findViewById(R.id.up_feed_floating_button)
 
         headerProfile = view.findViewById(R.id.header_profile)
 
@@ -256,7 +253,7 @@ class UserProfileFragment @Inject constructor(
                 }
                 else doFollowUnfollow(isFromLogin = false)
             }
-            feedFab.setOnClickListener {
+            fabUserProfile.setOnClickListener {
                 FeedUserTnCOnboardingBottomSheet.getFragment(
                     childFragmentManager,
                     requireActivity().classLoader
@@ -539,7 +536,7 @@ class UserProfileFragment @Inject constructor(
             prev.profileWhitelist == value.profileWhitelist
         ) return
 
-        feedFab.showWithCondition(
+        mainBinding.fabUserProfile.showWithCondition(
             value.profileType == ProfileType.Self && value.profileWhitelist.isWhitelist
         )
     }
@@ -945,10 +942,10 @@ class UserProfileFragment @Inject constructor(
     }
 
     override fun expandFab() {
-        feedFab.expand()
+        mainBinding.fabUserProfile.expand()
     }
 
     override fun shrinkFab() {
-        feedFab.shrink()
+        mainBinding.fabUserProfile.shrink()
     }
 }
