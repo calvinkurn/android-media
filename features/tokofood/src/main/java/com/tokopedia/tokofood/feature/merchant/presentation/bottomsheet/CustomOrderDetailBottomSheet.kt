@@ -29,7 +29,7 @@ class CustomOrderDetailBottomSheet :
         fun onNavigateToOrderCustomizationPage(
             cartId: String,
             productUiModel: ProductUiModel,
-            productPosition: Int
+            cardPositions: Pair<Int, Int>
         )
     }
 
@@ -37,6 +37,7 @@ class CustomOrderDetailBottomSheet :
 
         const val BUNDLE_KEY_PRODUCT_UI_MODEL = "bundle_key_custom_order_detail"
         const val BUNDLE_KEY_PRODUCT_POSITION = "bundle_key_product_position_custom_order_detail"
+        const val BUNDLE_KEY_ADAPTER_POSITION = "bundle_key_adapter_position_custom_order_detail"
 
         @JvmStatic
         fun createInstance(
@@ -58,6 +59,8 @@ class CustomOrderDetailBottomSheet :
     private var adapter: OrderDetailAdapter = OrderDetailAdapter(this)
 
     private var productPosition: Int? = null
+
+    private var adapterPosition: Int? = null
 
     private var productUiModel: ProductUiModel? = null
 
@@ -97,7 +100,7 @@ class CustomOrderDetailBottomSheet :
             productUiModel?.let { productUiModel ->
                 clickListener?.onNavigateToOrderCustomizationPage(
                     cartId = "", productUiModel = productUiModel,
-                    productPosition.orZero()
+                    Pair(productPosition.orZero(), adapterPosition.orZero())
                 )
             }
         }
@@ -114,6 +117,7 @@ class CustomOrderDetailBottomSheet :
     private fun setDataFromArgs() {
         val productPosition = arguments?.getInt(BUNDLE_KEY_PRODUCT_POSITION).orZero()
         this.productPosition = productPosition
+        this.adapterPosition = arguments?.getInt(BUNDLE_KEY_ADAPTER_POSITION).orZero()
         val productUiParcelable = arguments?.getParcelable(BUNDLE_KEY_PRODUCT_UI_MODEL) ?: ProductUiModel()
         this.productUiModel = productUiParcelable.copyParcelable()
     }
@@ -133,7 +137,7 @@ class CustomOrderDetailBottomSheet :
             clickListener?.onNavigateToOrderCustomizationPage(
                 cartId = cartId,
                 productUiModel = it,
-                productPosition.orZero()
+                Pair(productPosition.orZero(), adapterPosition.orZero())
             )
         }
     }
