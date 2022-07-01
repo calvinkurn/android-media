@@ -190,7 +190,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     private var shareHomeTokoFood: TokoFoodHomeShare? = null
     private var localCacheModel: LocalCacheModel? = null
     private var pageLoadTimeMonitoring: TokoFoodHomePageLoadTimeMonitoring? = null
-    private var dividerHeight = 4
+    private var heightDivider = 4
     private var totalScrolled = 0
     private val spaceZero: Int
        get() = context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)?.toInt() ?: 0
@@ -955,7 +955,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     private fun setupJumpToTop(recyclerView: RecyclerView, dy: Int) {
         totalScrolled += dy
         binding?.root?.height?.let {
-            if (totalScrolled > (it / dividerHeight)) {
+            if (totalScrolled > (it / heightDivider)) {
                 showJumpToTop(recyclerView)
             } else {
                 hideJumpToTop()
