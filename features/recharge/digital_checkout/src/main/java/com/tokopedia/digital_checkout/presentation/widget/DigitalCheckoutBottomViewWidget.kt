@@ -129,7 +129,7 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(@NotNull context
             btnCheckout.isEnabled = isEnabled
         }
 
-    private var onClickConsentListener: OnClickConsentListener? = null
+    private var onClickConsentListener: (() -> Unit)? = null
 
     fun setDigitalPromoButtonListener(listener: () -> Unit) {
         digitalPromoBtnView.setOnClickListener { listener.invoke() }
@@ -143,8 +143,8 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(@NotNull context
         btnCheckout.setOnClickListener { listener.invoke() }
     }
 
-    fun setOnClickConsentListener(onClickConsentListener: OnClickConsentListener){
-        this.onClickConsentListener = onClickConsentListener
+    fun setOnClickConsentListener(listener: () -> Unit){
+        onClickConsentListener = listener
     }
 
     fun disableVoucherView() {
@@ -169,10 +169,10 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(@NotNull context
                 highlightColor = Color.TRANSPARENT
                 clickableLink(
                     Pair(context.getString(R.string.digital_cart_goto_plus_tos), {
-                        onClickConsentListener?.onTncClick()
+                        onClickConsentListener?.invoke()
                     }),
                     Pair(context.getString(R.string.digital_cart_goto_plus_privacy_policy), {
-                        onClickConsentListener?.onPrivacyPolicyClick()
+                        onClickConsentListener?.invoke()
                     })
                 )
             }
@@ -213,11 +213,6 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(@NotNull context
         }
         this.movementMethod = LinkMovementMethod.getInstance()
         this.text = spannableString
-    }
-
-    interface OnClickConsentListener{
-        fun onTncClick()
-        fun onPrivacyPolicyClick()
     }
 
     override fun onDetachedFromWindow() {
