@@ -96,7 +96,7 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:text="@string/home_back_to_home"
-            android:textColor="@color/Neutral_N600"
+            android:textColor="@color/Unify_N600"
             app:typographyType="heading_5" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
