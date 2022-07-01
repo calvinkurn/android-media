@@ -634,8 +634,9 @@ class UserProfileFragment @Inject constructor(
     }
 
     private fun doFollowUnfollow(isFromLogin: Boolean) {
-        if(viewModel.isFollowed) userProfileTracker.clickUnfollow(userSession.userId, viewModel.isSelfProfile)
-        else userProfileTracker.clickFollow(userSession.userId, viewModel.isSelfProfile)
+        if(viewModel.isFollowed.not() || isFromLogin)
+            userProfileTracker.clickFollow(userSession.userId, viewModel.isSelfProfile)
+        else userProfileTracker.clickUnfollow(userSession.userId, viewModel.isSelfProfile)
 
         submitAction(UserProfileAction.ClickFollowButton(isFromLogin))
     }
