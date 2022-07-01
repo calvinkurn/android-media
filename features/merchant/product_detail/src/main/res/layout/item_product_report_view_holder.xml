@@ -33,7 +33,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/product_report_ic"
         app:layout_constraintTop_toTopOf="@id/product_report_ic"
-        app:typographyType="body_3"
+        app:typographyType="display_2"
         tools:text="Produk bermasalah? Laporkan" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
