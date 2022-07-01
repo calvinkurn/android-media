@@ -29,6 +29,10 @@ class RecipeTabViewHolder(
         view.getFragmentActivity()?.let {
             val recipeTab = binding?.recipeTab
             val viewPager = binding?.viewPager
+            val ingredientTabTitle = itemView.context.resources.getString(
+                R.string.tokopedianow_recipe_ingredient_tab_title)
+            val instructionTabTitle = itemView.context.resources.getString(
+                R.string.tokopedianow_recipe_instruction_tab_title)
 
             val ingredientFragment = TokoNowRecipeIngredientFragment.newInstance()
             val instructionFragment = TokoNowRecipeInstructionFragment.newInstance(tab.instruction)
@@ -39,8 +43,8 @@ class RecipeTabViewHolder(
             }
 
             recipeTab?.apply {
-                addNewTab("Belanja Bahan")
-                addNewTab("Bahan & Cara Masak")
+                addNewTab(ingredientTabTitle)
+                addNewTab(instructionTabTitle)
                 addOnTabSelectedListener(viewPager)
             }
 
