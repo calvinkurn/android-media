@@ -312,7 +312,7 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
     }
 
     @Test
-    fun `when updateNotes success, should set ui event state to success update notes`() {
+    fun `when updateNotes success, should load cart`() {
         runBlocking {
             val successResponse =
                 JsonResourcesUtil.createSuccessResponse<MiniCartTokoFoodResponse>(
@@ -330,7 +330,7 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
                     viewModel.updateNotes(updateParam, SOURCE)
                 },
                 then = {
-                    val expectedUiEventState = UiEvent.EVENT_SUCCESS_UPDATE_NOTES
+                    val expectedUiEventState = UiEvent.EVENT_SUCCESS_LOAD_CART
                     assertEquals(expectedUiEventState, it)
                 }
             )
@@ -393,7 +393,7 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
     }
 
     @Test
-    fun `when updateQuantity success, should set ui event state to success update quantity`() {
+    fun `when updateQuantity success, should loadCart`() {
         runBlocking {
             val successResponse =
                 JsonResourcesUtil.createSuccessResponse<MiniCartTokoFoodResponse>(
@@ -411,7 +411,7 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
                     viewModel.updateQuantity(updateParam, SOURCE)
                 },
                 then = {
-                    val expectedUiEventState = UiEvent.EVENT_SUCCESS_UPDATE_QUANTITY
+                    val expectedUiEventState = UiEvent.EVENT_SUCCESS_LOAD_CART
                     assertEquals(expectedUiEventState, it)
                 }
             )
@@ -474,7 +474,7 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
     }
 
     @Test
-    fun `when updateCart success, should set ui event state to success update cart`() {
+    fun `when updateCart success, should load cart`() {
         runBlocking {
             val successResponse =
                 JsonResourcesUtil.createSuccessResponse<MiniCartTokoFoodResponse>(
@@ -492,7 +492,7 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
                     viewModel.updateCart(updateParam, SOURCE)
                 },
                 then = {
-                    val expectedUiEventState = UiEvent.EVENT_SUCCESS_UPDATE_CART
+                    val expectedUiEventState = UiEvent.EVENT_SUCCESS_LOAD_CART
                     assertEquals(expectedUiEventState, it)
                 }
             )
@@ -526,7 +526,7 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
     }
 
     @Test
-    fun `when addToCart success, should set ui event state to success add to cart`() {
+    fun `when addToCart success, should load mini cart`() {
         runBlocking {
             val successResponse =
                 JsonResourcesUtil.createSuccessResponse<MiniCartTokoFoodResponse>(
@@ -538,16 +538,9 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
             onAddToCart_shouldReturn(updateParam, getSuccessUpdateCartResponse())
 
             viewModel.loadInitial(SOURCE)
-
-            collectFromSharedFlow(
-                whenAction = {
-                    viewModel.addToCart(updateParam, SOURCE)
-                },
-                then = {
-                    val expectedUiEventState = UiEvent.EVENT_SUCCESS_ADD_TO_CART
-                    assertEquals(expectedUiEventState, it)
-                }
-            )
+            viewModel.addToCart(updateParam, SOURCE)
+            val expectedUiEventState = UiEvent.EVENT_SUCCESS_LOAD_CART
+            assertEquals(expectedUiEventState, viewModel.cartDataValidationFlow.value.state)
         }
     }
 
