@@ -12,6 +12,7 @@ import javax.inject.Inject
  * @author by astidhiyaa on 17/06/22
  */
 class PlayTokonowAnalyticImpl @Inject constructor(private val userSession: UserSessionInterface): PlayTokonowAnalytic {
+
     private val userId: String
         get() = userSession.userId
 
@@ -23,6 +24,8 @@ class PlayTokonowAnalyticImpl @Inject constructor(private val userSession: UserS
                 KEY_EVENT_ACTION to "view - out of now coverage",
                 KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                KEY_USER_ID to userId,
             )
         )
     }
@@ -38,6 +41,7 @@ class PlayTokonowAnalyticImpl @Inject constructor(private val userSession: UserS
                 KEY_EVENT_ACTION to "view - ganti alamat",
                 KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
             )
         )
     }
@@ -50,6 +54,7 @@ class PlayTokonowAnalyticImpl @Inject constructor(private val userSession: UserS
                 KEY_EVENT_ACTION to "click - ganti alamat",
                 KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
             )
         )
     }
@@ -65,6 +70,8 @@ class PlayTokonowAnalyticImpl @Inject constructor(private val userSession: UserS
                 KEY_EVENT_ACTION to "click - now cek jangkauan",
                 KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                KEY_USER_ID to userId,
             )
         )
     }
@@ -77,6 +84,7 @@ class PlayTokonowAnalyticImpl @Inject constructor(private val userSession: UserS
                 KEY_EVENT_ACTION to "view - now info bottomsheet",
                 KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
             )
         )
     }
@@ -89,6 +97,7 @@ class PlayTokonowAnalyticImpl @Inject constructor(private val userSession: UserS
                 KEY_EVENT_ACTION to "click - now info bottomsheet",
                 KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
             )
         )
     }
@@ -101,6 +110,7 @@ class PlayTokonowAnalyticImpl @Inject constructor(private val userSession: UserS
                 KEY_EVENT_ACTION to "view - now toaster",
                 KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
             )
         )
     }
@@ -113,6 +123,7 @@ class PlayTokonowAnalyticImpl @Inject constructor(private val userSession: UserS
                 KEY_EVENT_ACTION to "click - lihat now toaster",
                 KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
             )
         )
     }
