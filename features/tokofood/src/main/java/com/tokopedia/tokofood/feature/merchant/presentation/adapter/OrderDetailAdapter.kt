@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.tokofood.databinding.TokofoodItemOrderInfoLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomOrderDetail
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.OrderDetailViewHolder
@@ -38,9 +39,9 @@ class OrderDetailAdapter(private val clickListener: OrderDetailViewHolder.OnOrde
         return customOrderDetails
     }
 
-    fun removeCustomProduct(dataSetPosition: Int, adapterPosition: Int) {
+    fun removeCustomProduct(cartId: String, adapterPosition: Int) {
         try {
-            customOrderDetails.removeAt(dataSetPosition)
+            customOrderDetails.removeFirst { it.cartId == cartId }
             notifyItemRemoved(adapterPosition)
         } catch (e: Exception) {
             e.printStackTrace()

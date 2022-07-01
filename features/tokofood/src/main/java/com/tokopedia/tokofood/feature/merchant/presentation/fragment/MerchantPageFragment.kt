@@ -855,14 +855,14 @@ class MerchantPageFragment : BaseMultiFragment(),
                                 dataSetPosition = dataSetPosition,
                                 adapterPosition = adapterPosition,
                                 customOrderDetail = viewModel.mapCartTokoFoodToCustomOrderDetail(
-                                    cartTokoFood,
-                                    productListAdapter?.getProductUiModel(
-                                        dataSetPosition
-                                    ) ?: ProductUiModel()
+                                    cartTokoFood = cartTokoFood,
+                                    productUiModel = productListAdapter?.getProductUiModel(dataSetPosition) ?: ProductUiModel()
                                 )
                             )
                             val productUiModel = productListAdapter?.getProductUiModel(dataSetPosition) ?: ProductUiModel()
-                            if (productUiModel.customOrderDetails.size > Int.ONE) {
+                            val isSameCustomProductExist = productUiModel.customOrderDetails.firstOrNull { it.qty > Int.ONE } != null
+                            val isMultipleCustomProductMade = productUiModel.customOrderDetails.size > Int.ONE
+                            if (isSameCustomProductExist || isMultipleCustomProductMade) {
                                 showCustomOrderDetailBottomSheet(productUiModel, dataSetPosition)
                             }
                         }
@@ -1089,14 +1089,9 @@ class MerchantPageFragment : BaseMultiFragment(),
         }
     }
 
-    override fun onNavigateToOrderCustomizationPage(
-        cartId: String,
-        productUiModel: ProductUiModel,
-        productPosition: Int
-    ) {
+    override fun onNavigateToOrderCustomizationPage(cartId: String, productUiModel: ProductUiModel, productPosition: Int) {
         if (activityViewModel?.shopId.isNullOrBlank() || activityViewModel?.shopId == merchantId) {
-            val productListItem =
-                getProductItemList().find { it.productUiModel.id == productUiModel.id }
+            val productListItem = getProductItemList().find { it.productUiModel.id == productUiModel.id }
             if (productListItem != null) {
                 navigateToOrderCustomizationPage(
                     cartId = cartId,

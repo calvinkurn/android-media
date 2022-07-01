@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
@@ -281,11 +282,25 @@ class MerchantPageViewModel @Inject constructor(
     }
 
     fun mapCartTokoFoodToCustomOrderDetail(cartTokoFood: CartTokoFood, productUiModel: ProductUiModel): CustomOrderDetail {
-        return TokoFoodMerchantUiModelMapper.mapCartTokoFoodToCustomOrderDetails(
+        resetMasterData(productUiModel.customListItems)
+        return TokoFoodMerchantUiModelMapper.mapCartTokoFoodToCustomOrderDetail(
                 cartTokoFood = cartTokoFood,
                 productUiModel = productUiModel
         )
     }
+
+    private fun resetMasterData(customListItems: List<CustomListItem>): List<CustomListItem> {
+        customListItems.forEach {
+            it.orderNote = String.EMPTY
+            it.addOnUiModel?.isSelected = false
+            it.addOnUiModel?.options?.forEach { optionUiModel ->
+                optionUiModel.isSelected = false
+            }
+            it.addOnUiModel?.selectedAddOns = listOf()
+        }
+        return customListItems
+    }
+
 
     fun isTickerDetailEmpty(tickerData: TokoFoodTickerDetail): Boolean {
         return tickerData.title.isBlank() && tickerData.subtitle.isBlank()
