@@ -67,6 +67,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
@@ -104,6 +105,8 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
         )
     }
     private val loadMoreListener by lazy { createLoadMoreListener() }
+
+    private var collectJob: Job? = null
 
     companion object {
         private const val ITEM_VIEW_CACHE_SIZE = 20
@@ -151,7 +154,6 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        collectValue()
         setupUi()
         setupNavToolbar()
         setupRecycleView()
@@ -166,14 +168,20 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
         parentActivity = activity as? HasViewModel<MultipleFragmentsViewModel>
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
         initializeMiniCartCategory()
+        collectValue()
     }
 
     override fun onPause() {
         super.onPause()
         trackingQueue.sendAll()
+    }
+
+    override fun onStop() {
+        collectJob?.cancel()
+        super.onStop()
     }
 
     override fun getFragmentTitle(): String {
@@ -233,11 +241,12 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
     }
 
     private fun onRefreshLayout() {
+        activityViewModel?.loadCartList(MINI_CART_SOURCE)
         loadLayout()
     }
 
     private fun collectValue() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+        collectJob = viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             activityViewModel?.cartDataValidationFlow?.collect { uiEvent ->
                 when(uiEvent.state) {
                     UiEvent.EVENT_SUCCESS_VALIDATE_CHECKOUT -> {
@@ -345,7 +354,6 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
 
     private fun onErrorGetCategoryLayout(throwable: Throwable) {
         viewModel.showErrorState(throwable)
-        hideMiniCartCategory()
     }
 
     private fun onShowCategoryLayout(data: TokoFoodListUiModel) {

@@ -253,7 +253,7 @@ object IconList {
         override fun get(pageSource: String, disableRouteManager: Boolean, disableDefaultGtmTracker: Boolean, onClick: ()-> Unit): IconToolbar {
             return IconToolbar(
                     id = ID_WISHLIST,
-                    imageRes = R.drawable.unify_wishlist_avd_new,
+                    imageRes = com.tokopedia.unifycomponents.R.drawable.unify_wishlist_avd_new,
                     applink = "",
                     iconType = IconToolbar.TYPE_ANIMATED,
                     disableRouteManager = disableRouteManager,

@@ -63,9 +63,9 @@
           }
         ]
       },
-      "unavailable_section_header": "",
+      "unavailable_section_header": "Produk tidak tersedia",
       "unavailable_sections": [{
-        "title": "",
+        "title": "Stok habis",
         "products": [
           {
             "cart_id": 1171,

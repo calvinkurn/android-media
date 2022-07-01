@@ -5,6 +5,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProduct
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProductVariant
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProductVariantSelectionRules
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.CustomListItemType
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType
 import com.tokopedia.tokofood.feature.merchant.presentation.model.AddOnUiModel
@@ -39,7 +40,7 @@ object CustomOrderDetailsMapper {
                     name = option.name,
                     price = option.price,
                     priceFmt = option.priceFmt,
-                    selectionControlType = if (variant.rules.selectionRules.maxQuantity > Int.ONE) SelectionControlType.MULTIPLE_SELECTION else SelectionControlType.SINGLE_SELECTION
+                    selectionControlType = mapSelectionRulesToSelectionControlType(variant.rules.selectionRules)
                 )
             }
             CustomListItem(
@@ -60,6 +61,15 @@ object CustomOrderDetailsMapper {
         customListItems.addAll(addOns)
         customListItems.add(noteInput)
         return customListItems.toList()
+    }
+
+    private fun mapSelectionRulesToSelectionControlType(selectionRules: CheckoutTokoFoodProductVariantSelectionRules): SelectionControlType {
+        return when {
+            selectionRules.type == CheckoutTokoFoodProductVariantSelectionRules.SELECT_MANY -> SelectionControlType.MULTIPLE_SELECTION
+            selectionRules.type == CheckoutTokoFoodProductVariantSelectionRules.SELECT_ONE -> SelectionControlType.SINGLE_SELECTION
+            selectionRules.maxQuantity > Int.ONE -> SelectionControlType.MULTIPLE_SELECTION
+            else -> SelectionControlType.SINGLE_SELECTION
+        }
     }
 
 }

@@ -2,7 +2,6 @@ package com.tokopedia.tokofood.common.analytics
 
 object TokoFoodAnalytics {
 
-    const val KEY_BUSINESS_UNIT = ""
     const val KEY_DIMENSION_45 = "dimension45"
     const val KEY_DIMENSION_49 = "dimension49"
     const val KEY_DIMENSION_79 = "dimension79"
@@ -12,6 +11,7 @@ object TokoFoodAnalytics {
     const val KEY_SHOP_TYPE = "shop_type"
     const val KEY_CATEGORY_ID = "category_id"
     const val KEY_ITEMS = "items"
+    const val KEY_QUANTITY = "quantity"
 
     // Event Name
     const val EVENT_CHECKOUT_PROGRESS = "checkout_progress"
