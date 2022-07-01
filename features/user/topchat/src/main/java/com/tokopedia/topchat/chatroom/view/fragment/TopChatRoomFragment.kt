@@ -2768,7 +2768,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         })
     }
 
-    private fun updateAttachmentsPreview(products: ArrayList<Attachment>) {
+    private fun updateAttachmentsPreview(products: ArrayMap<String, Attachment>) {
         val previousReadyState = viewModel.isAttachmentPreviewReady()
         topchatViewState?.updateProductPreviews(products)
         val afterReadyState = viewModel.isAttachmentPreviewReady()

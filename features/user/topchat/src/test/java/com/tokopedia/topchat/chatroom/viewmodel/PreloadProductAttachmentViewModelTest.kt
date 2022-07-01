@@ -34,7 +34,7 @@ class PreloadProductAttachmentViewModelTest: BaseTopChatViewModelTest() {
         viewModel.loadProductPreview(listOf(product.id))
 
         // Then
-        assertEquals(viewModel.attachments.size, 1)
+        assertEquals(viewModel.attachmentPreviewData.size, 1)
     }
 
     @Test
@@ -49,7 +49,7 @@ class PreloadProductAttachmentViewModelTest: BaseTopChatViewModelTest() {
         viewModel.reloadCurrentAttachment()
 
         // Then
-        assertEquals(viewModel.attachments.size, 1)
+        assertEquals(viewModel.attachmentPreviewData.size, 1)
     }
 
     @Test

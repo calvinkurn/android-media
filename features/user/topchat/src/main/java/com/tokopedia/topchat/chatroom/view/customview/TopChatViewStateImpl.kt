@@ -760,8 +760,12 @@ open class TopChatViewStateImpl constructor(
         getAdapter().showRetryFor(it, retry)
     }
 
-    fun updateProductPreviews(mapProducts: ArrayList<Attachment>) {
-        attachmentPreviewAdapter.updateDeferredAttachment(mapProducts)
+    fun updateProductPreviews(mapProducts: ArrayMap<String, Attachment>) {
+        val listProductPreview = arrayListOf<Attachment>()
+        mapProducts.forEach {
+            listProductPreview.add(it.value)
+        }
+        attachmentPreviewAdapter.updateDeferredAttachment(listProductPreview)
     }
 
     override fun showAttachmentPreview(attachmentPreview: ArrayList<SendablePreview>) {

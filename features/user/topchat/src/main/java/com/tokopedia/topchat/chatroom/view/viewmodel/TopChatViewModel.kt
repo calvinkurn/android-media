@@ -24,7 +24,6 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
@@ -177,8 +176,8 @@ open class TopChatViewModel @Inject constructor(
     val chatAttachments: MutableLiveData<ArrayMap<String, Attachment>>
         get() = _chatAttachments
 
-    private val _chatAttachmentsPreview = MutableLiveData<ArrayList<Attachment>>()
-    val chatAttachmentsPreview: MutableLiveData<ArrayList<Attachment>>
+    private val _chatAttachmentsPreview = MutableLiveData<ArrayMap<String, Attachment>>()
+    val chatAttachmentsPreview: LiveData<ArrayMap<String, Attachment>>
         get() = _chatAttachmentsPreview
 
     private val _chatListGroupSticker =
@@ -265,12 +264,12 @@ open class TopChatViewModel @Inject constructor(
 
     var attachProductWarehouseId = "0"
     val attachments: ArrayMap<String, Attachment> = ArrayMap()
+    val attachmentPreviewData: ArrayMap<String, Attachment> = ArrayMap()
     var roomMetaData: RoomMetaData = RoomMetaData()
     val onGoingStockUpdate: ArrayMap<String, UpdateProductStockResult> = ArrayMap()
     private var userLocationInfo = LocalCacheModel()
     private var attachmentsPreview: ArrayList<SendablePreview> = arrayListOf()
     private var pendingLoadProductPreview: ArrayList<String> = arrayListOf()
-    private val attachmentPreviewData: ArrayList<Attachment> = arrayListOf()
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
@@ -1073,7 +1072,7 @@ open class TopChatViewModel @Inject constructor(
         clearAttachmentPreview()
         launchCatchError(block = {
             showLoadingProductPreview(productIds)
-            if (!alreadyHasAttachmentData(productIds)) {
+            if (!alreadyHasProductPreviewAttachmentData(productIds)) {
                 val param = GetChatPreAttachPayloadUseCase.Param(
                     ids = productIds.joinToString(separator = ","),
                     msgId = roomMetaData.msgId.toLongOrZero(),
@@ -1085,36 +1084,29 @@ open class TopChatViewModel @Inject constructor(
                 )
                 val response = chatPreAttachPayload(param)
                 val mapAttachment = chatAttachmentMapper.map(response)
-                mapAttachment.forEach {
-                    attachmentPreviewData.add(it.value)
-                }
+                attachmentPreviewData.putAll(mapAttachment.toMap())
             }
             _chatAttachmentsPreview.value = attachmentPreviewData
         }, onError = {
-            it.printStackTrace()
-            val errorMessage = it.message
-            val iteration = productIds.size - attachmentPreviewData.size
-            if (iteration > 0) {
-                for (i in 0 until iteration) {
-                    attachmentPreviewData.add(ErrorAttachment())
-                }
-            }
+            val errorMapAttachment = productIds.associateWith { ErrorAttachment() }
+            attachmentPreviewData.putAll(errorMapAttachment)
             _chatAttachmentsPreview.value = attachmentPreviewData
         })
     }
 
-    private fun alreadyHasAttachmentData(productIds: List<String>): Boolean {
+    private fun alreadyHasProductPreviewAttachmentData(productIds: List<String>): Boolean {
         for (productId in productIds) {
-            if (!attachments.contains(productId)
-                    || attachments[productId] is ErrorAttachment) return false
+            if (!attachmentPreviewData.contains(productId)
+                    || attachmentPreviewData[productId] is ErrorAttachment) return false
         }
         return true
     }
 
     private fun showLoadingProductPreview(productIds: List<String>) {
-        val sendablePreviews: List<TopchatProductAttachmentPreviewUiModel> = productIds.map {
+        val sendablePreviews: List<TopchatProductAttachmentPreviewUiModel> = productIds.map { productId ->
             val builder = TopchatProductAttachmentPreviewUiModel.Builder()
                 .withRoomMetaData(roomMetaData)
+                .withProductId(productId)
             (builder as TopchatProductAttachmentPreviewUiModel.Builder).build()
         }
         attachmentsPreview.addAll(sendablePreviews)
