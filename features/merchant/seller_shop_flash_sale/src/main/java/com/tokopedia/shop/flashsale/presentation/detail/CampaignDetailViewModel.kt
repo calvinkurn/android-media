@@ -7,9 +7,12 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.flashsale.domain.entity.CampaignDetailMeta
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.MerchantCampaignTNC
+import com.tokopedia.shop.flashsale.domain.entity.aggregate.ShareComponentMetadata
 import com.tokopedia.shop.flashsale.domain.entity.enums.isActive
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignDetailUseCase
+import com.tokopedia.shop.flashsale.domain.usecase.aggregate.GenerateCampaignBannerUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.aggregate.GetCampaignDetailMetaUseCase
+import com.tokopedia.shop.flashsale.domain.usecase.aggregate.GetShareComponentMetadataUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -20,6 +23,8 @@ import javax.inject.Inject
 class CampaignDetailViewModel @Inject constructor(
     private val getSellerCampaignDetailUseCase: GetSellerCampaignDetailUseCase,
     private val getCampaignDetailMetaUseCase: GetCampaignDetailMetaUseCase,
+    private val getShareComponentMetadataUseCase: GetShareComponentMetadataUseCase,
+    private val generateCampaignBannerUseCase: GenerateCampaignBannerUseCase,
     private val dispatchers: CoroutineDispatchers,
 ) : BaseViewModel(dispatchers.main) {
 
@@ -50,6 +55,16 @@ class CampaignDetailViewModel @Inject constructor(
     private val _moreMenuEvent = SingleLiveEvent<CampaignUiModel>()
     val moreMenuEvent: LiveData<CampaignUiModel>
         get() = _moreMenuEvent
+
+    private val _shareComponentThumbnailImageUrl = MutableLiveData<Result<String>>()
+    val shareComponentThumbnailImageUrl: LiveData<Result<String>>
+        get() = _shareComponentThumbnailImageUrl
+
+    private val _shareComponentMetadata = MutableLiveData<Result<ShareComponentMetadata>>()
+    val shareComponentMetadata: LiveData<Result<ShareComponentMetadata>>
+        get() = _shareComponentMetadata
+
+    private var thumbnailImageUrl = ""
 
     fun getCampaignDetail(campaignId: Long) {
         this._campaignId = campaignId
@@ -118,5 +133,39 @@ class CampaignDetailViewModel @Inject constructor(
         } else if (campaignData.status.isActive()) {
             _cancelCampaignActionResult.value = CancelCampaignActionResult.ActionAllowed(campaignData)
         }
+    }
+
+    fun getShareComponentThumbnailImageUrl(campaignId: Long) {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val metadata = generateCampaignBannerUseCase.execute(campaignId)
+                _shareComponentThumbnailImageUrl.postValue(Success(metadata))
+            },
+            onError = { error ->
+                _shareComponentThumbnailImageUrl.postValue(Fail(error))
+            }
+        )
+    }
+
+    fun getShareComponentMetadata(campaignId: Long) {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val metadata = getShareComponentMetadataUseCase.execute(campaignId)
+                _shareComponentMetadata.postValue(Success(metadata))
+            },
+            onError = { error ->
+                _shareComponentMetadata.postValue(Fail(error))
+            }
+        )
+    }
+
+    fun setThumbnailImageUrl(thumbnailImageUrl: String) {
+        this.thumbnailImageUrl = thumbnailImageUrl
+    }
+
+    fun getThumbnailImageUrl(): String {
+        return thumbnailImageUrl
     }
 }
