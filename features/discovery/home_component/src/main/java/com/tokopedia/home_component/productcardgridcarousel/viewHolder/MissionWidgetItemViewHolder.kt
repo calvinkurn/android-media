@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.HomeBannerItemMissionWidgetBinding
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMissionWidgetDataModel
-import com.tokopedia.home_component.util.ImageUnifyUtils.cornerRadiusTop
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
@@ -42,7 +41,6 @@ class MissionWidgetItemViewHolder(
                 element.missionWidgetComponentListener.onMissionImpressed(element, adapterPosition)
             }
             imageMissionWidget.setImageUrl(element.imageURL)
-            imageMissionWidget.cornerRadiusTop()
             titleMissionWidget.text = element.title
             subtitleMissionWidget.height = element.subtitleHeight
             subtitleMissionWidget.text = element.subTitle
