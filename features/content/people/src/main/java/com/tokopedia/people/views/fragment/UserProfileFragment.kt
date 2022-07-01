@@ -115,10 +115,6 @@ class UserProfileFragment @Inject constructor(
     private var screenShotDetector: ScreenshotDetector? = null
     private lateinit var feedFab: FeedFloatingButton
 
-    private lateinit var textLive: Typography
-    private lateinit var viewLiveRing: View
-    private lateinit var imgProfile: ImageUnify
-
     private var _binding: UpFragmentUserProfileBinding? = null
 
     private val binding: UpFragmentUserProfileBinding
@@ -176,10 +172,6 @@ class UserProfileFragment @Inject constructor(
         feedFab = view.findViewById(R.id.up_feed_floating_button)
 
         headerProfile = view.findViewById(R.id.header_profile)
-
-        textLive = view.findViewById(R.id.text_live)
-        viewLiveRing = view.findViewById(R.id.view_profile_outer_ring)
-        imgProfile = view.findViewById(R.id.img_profile_image)
 
         initObserver()
         initListener()
@@ -567,22 +559,24 @@ class UserProfileFragment @Inject constructor(
     private fun setProfileImg(profile: ProfileUiModel) {
         mAdapter.activityId = profile.liveInfo.channelId
 
-        imgProfile.urlSrc = profile.imageCover
+        with(mainBinding) {
+            imgProfileImage.urlSrc = profile.imageCover
 
-        if (profile.liveInfo.isLive) {
-            viewLiveRing.show()
-            textLive.show()
+            if (profile.liveInfo.isLive) {
+                viewProfileOuterRing.show()
+                textLive.show()
 
-            textLive.setOnClickListener(addLiveClickListener(profile.liveInfo.channelLink.appLink))
-            imgProfile.setOnClickListener(addLiveClickListener(profile.liveInfo.channelLink.appLink))
-        } else {
-            viewLiveRing.visibility = View.INVISIBLE
-            textLive.hide()
+                textLive.setOnClickListener(addLiveClickListener(profile.liveInfo.channelLink.appLink))
+                imgProfileImage.setOnClickListener(addLiveClickListener(profile.liveInfo.channelLink.appLink))
+            } else {
+                viewProfileOuterRing.visibility = View.INVISIBLE
+                textLive.hide()
 
-            textLive.setOnClickListener(null)
-            textLive.setOnClickListener(null)
-            imgProfile.setOnClickListener{
-                userProfileTracker.clickProfilePicture(userSession.userId, self = viewModel.isSelfProfile, profile.liveInfo.channelId)
+                textLive.setOnClickListener(null)
+                textLive.setOnClickListener(null)
+                imgProfileImage.setOnClickListener{
+                    userProfileTracker.clickProfilePicture(userSession.userId, self = viewModel.isSelfProfile, profile.liveInfo.channelId)
+                }
             }
         }
     }
