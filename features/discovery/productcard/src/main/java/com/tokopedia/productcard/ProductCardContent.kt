@@ -535,9 +535,11 @@ fun LinearLayout.renderVariantColor(
     }
 
     if (hiddenColorCount > 0) {
+        val additionalTextMarginLeft = 2.toPx()
         val additionalTextView = Typography(context)
         additionalTextView.setType(Typography.SMALL)
-        additionalTextView.text = ", +$hiddenColorCount"
+        additionalTextView.text = "+$hiddenColorCount"
+        additionalTextView.setMargin(additionalTextMarginLeft, 0, 0, 0)
 
         layout.addView(additionalTextView)
     }
