@@ -6,7 +6,9 @@
     android:background="@color/Unify_Background"
     android:measureAllChildren="false">
 
-    <include layout="@layout/up_layout_user_profile_header" />
+    <include
+        android:id="@+id/main_layout"
+        layout="@layout/up_layout_user_profile_header" />
 
     <include layout="@layout/up_shimmer_user_profile_header" />
 

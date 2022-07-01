@@ -67,6 +67,8 @@ import com.tokopedia.feedcomponent.bottomsheets.onboarding.FeedUserTnCOnboarding
 import com.tokopedia.people.views.activity.FollowerFollowingListingActivity
 import com.tokopedia.people.views.adapter.UserPostBaseAdapter
 import com.tokopedia.people.analytic.UserProfileTracker
+import com.tokopedia.people.databinding.UpFragmentUserProfileBinding
+import com.tokopedia.people.databinding.UpLayoutUserProfileHeaderBinding
 import com.tokopedia.people.utils.UserProfileUtils
 import com.tokopedia.people.utils.showErrorToast
 import com.tokopedia.people.utils.showToast
@@ -112,11 +114,8 @@ class UserProfileFragment @Inject constructor(
     private var isViewMoreClickedBio: Boolean? = false
     private var screenShotDetector: ScreenshotDetector? = null
     private lateinit var btnAction: UnifyButton
-    private lateinit var swipeRefresh: SwipeToRefresh
     private lateinit var feedFab: FeedFloatingButton
 
-    private lateinit var textBio: Typography
-    private lateinit var textSeeMore: Typography
     private lateinit var textUserName: Typography
     private lateinit var textDisplayName: Typography
     private lateinit var textContentCount: Typography
@@ -126,6 +125,14 @@ class UserProfileFragment @Inject constructor(
     private lateinit var textLive: Typography
     private lateinit var viewLiveRing: View
     private lateinit var imgProfile: ImageUnify
+
+    private var _binding: UpFragmentUserProfileBinding? = null
+
+    private val binding: UpFragmentUserProfileBinding
+        get() = _binding!!
+
+    private val mainBinding: UpLayoutUserProfileHeaderBinding
+        get() = _binding!!.mainLayout
 
     override fun initInjector() {
         /** No need since we alr have constructor injection */
@@ -160,7 +167,8 @@ class UserProfileFragment @Inject constructor(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.up_fragment_user_profile, container, false)
+        _binding = UpFragmentUserProfileBinding.inflate(inflater, container, false)
+        return _binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -172,12 +180,9 @@ class UserProfileFragment @Inject constructor(
         globalError = view.findViewById(R.id.global_error)
         globalErrorPost = view.findViewById(R.id.global_error_post)
         appBarLayout = view.findViewById(R.id.app_bar_layout)
-        swipeRefresh = view.findViewById(R.id.swipe_refresh_layout)
         feedFab = view.findViewById(R.id.up_feed_floating_button)
 
         headerProfile = view.findViewById(R.id.header_profile)
-        textBio = view.findViewById(R.id.text_bio)
-        textSeeMore = view.findViewById(R.id.text_see_more)
         textUserName = view.findViewById(R.id.text_user_name)
         textDisplayName = view.findViewById(R.id.text_display_name)
         textContentCount = view.findViewById(R.id.text_content_count)
@@ -198,9 +203,7 @@ class UserProfileFragment @Inject constructor(
             activity?.finish()
         }
 
-
-
-        swipeRefresh.setOnRefreshListener {
+        mainBinding.swipeRefreshLayout.setOnRefreshListener {
             refreshLandingPageData(true)
         }
 
@@ -211,15 +214,15 @@ class UserProfileFragment @Inject constructor(
             shouldRefreshRecyclerView = verticalOffset == 0
         })
 
-        view.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)
-            ?.setOnChildScrollUpCallback(object : SwipeRefreshLayout.OnChildScrollUpCallback {
-                override fun canChildScrollUp(parent: SwipeRefreshLayout, child: View?): Boolean {
-                    if (recyclerviewPost != null) {
-                        return recyclerviewPost!!.canScrollVertically(-1) || !shouldRefreshRecyclerView!!
-                    }
-                    return false
+        mainBinding.swipeRefreshLayout.setOnChildScrollUpCallback(object : SwipeRefreshLayout.OnChildScrollUpCallback {
+            override fun canChildScrollUp(parent: SwipeRefreshLayout, child: View?): Boolean {
+                if (recyclerviewPost != null) {
+                    return recyclerviewPost!!.canScrollVertically(-1) || !shouldRefreshRecyclerView!!
                 }
-            })
+                return false
+            }
+        })
+
         context?.let {
             screenShotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
                 it,
@@ -234,6 +237,8 @@ class UserProfileFragment @Inject constructor(
         super.onDestroyView()
         recyclerviewPost?.removeOnScrollListener(feedFloatingButtonManager.scrollListener)
         feedFloatingButtonManager.cancel()
+
+        _binding = null
     }
 
     override fun onAttachFragment(childFragment: Fragment) {
@@ -473,9 +478,10 @@ class UserProfileFragment @Inject constructor(
             live = curr.liveInfo.isLive
         )
 
-        if(swipeRefresh.isRefreshing) {
-            swipeRefresh.isRefreshing = false
+        if(mainBinding.swipeRefreshLayout.isRefreshing) {
+            mainBinding.swipeRefreshLayout.isRefreshing = false
         }
+
         container?.displayedChild = PAGE_CONTENT
 
 
@@ -492,18 +498,18 @@ class UserProfileFragment @Inject constructor(
 
         /** Setup Bio */
         val displayBioText = HtmlLinkHelper(requireContext(), curr.biography).spannedString
-        textBio.text = displayBioText
+        mainBinding.textBio.text = displayBioText
 
         if (displayBioText?.lines()?.count().orZero() > SEE_ALL_LINE) {
             if (isViewMoreClickedBio == true) {
-                textBio.maxLines = MAX_LINE
-                textSeeMore.hide()
+                mainBinding.textBio.maxLines = MAX_LINE
+                mainBinding.textSeeMore.hide()
             } else {
-                textBio.maxLines = SEE_ALL_LINE
-                textSeeMore.show()
+                mainBinding.textBio.maxLines = SEE_ALL_LINE
+                mainBinding.textSeeMore.show()
             }
         } else {
-            textSeeMore.hide()
+            mainBinding.textSeeMore.hide()
         }
 
 
