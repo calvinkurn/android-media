@@ -9,7 +9,6 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/food_cardview_background_dms_color"
         android:padding="@dimen/unify_space_8">
 
         <com.tokopedia.unifycomponents.ImageUnify
