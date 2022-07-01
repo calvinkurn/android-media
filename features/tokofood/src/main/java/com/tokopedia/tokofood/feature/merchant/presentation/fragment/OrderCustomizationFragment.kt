@@ -181,7 +181,16 @@ class OrderCustomizationFragment : BaseMultiFragment(),
             // no selections
             if (!isAtc) {
                 binding?.subtotalProductPriceLabel?.text = priceFmt
-            } else binding?.subtotalProductPriceLabel?.text = subTotalFmt
+            } else {
+                customOrderDetails.firstOrNull { it.cartId == cartId }?.let { customOrderDetail ->
+                    val subTotalPrice = viewModel.calculateSubtotalPrice(
+                            baseProductPrice = viewModel.baseProductPrice,
+                            quantity = customOrderDetail.qty,
+                            addOnUiModels = customOrderDetail.customListItems.map { it.addOnUiModel }
+                    )
+                    binding?.subtotalProductPriceLabel?.text = viewModel.formatSubtotalPrice(subTotalPrice)
+                }
+            }
 
             // setup quantity editor
             binding?.qeuProductQtyEditor?.setAddClickListener {
@@ -192,8 +201,7 @@ class OrderCustomizationFragment : BaseMultiFragment(),
                     quantity = quantity,
                     addOnUiModels = addOnUiModels ?: listOf()
                 )
-                binding?.subtotalProductPriceLabel?.text =
-                    viewModel.formatSubtotalPrice(subTotalPrice)
+                binding?.subtotalProductPriceLabel?.text = viewModel.formatSubtotalPrice(subTotalPrice)
             }
             binding?.qeuProductQtyEditor?.setSubstractListener {
                 val addOnUiModels = customListAdapter?.getCustomListItems()?.map { it.addOnUiModel }
@@ -203,8 +211,7 @@ class OrderCustomizationFragment : BaseMultiFragment(),
                     quantity = quantity,
                     addOnUiModels = addOnUiModels ?: listOf()
                 )
-                binding?.subtotalProductPriceLabel?.text =
-                    viewModel.formatSubtotalPrice(subTotalPrice)
+                binding?.subtotalProductPriceLabel?.text = viewModel.formatSubtotalPrice(subTotalPrice)
             }
 
             // setup atc button click listener
