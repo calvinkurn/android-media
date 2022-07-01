@@ -103,7 +103,6 @@ class UserProfileFragment @Inject constructor(
     }
 
     var universalShareBottomSheet: UniversalShareBottomSheet? = null
-    private var headerProfile: HeaderUnify? = null
     private var appBarLayout: AppBarLayout? = null
     private var shouldRefreshRecyclerView: Boolean? = false
     private var isViewMoreClickedBio: Boolean? = false
@@ -159,8 +158,6 @@ class UserProfileFragment @Inject constructor(
         feedFloatingButtonManager.setInitialData(this)
 
         appBarLayout = view.findViewById(R.id.app_bar_layout)
-
-        headerProfile = view.findViewById(R.id.header_profile)
 
         initObserver()
         initListener()
@@ -526,7 +523,7 @@ class UserProfileFragment @Inject constructor(
     }
 
     private fun setHeader() {
-        headerProfile?.apply {
+        mainBinding.headerProfile.apply {
             setNavigationOnClickListener {
                 activity?.onBackPressed()
                 userProfileTracker.clickBack(userSession.userId, self = viewModel.isSelfProfile)
