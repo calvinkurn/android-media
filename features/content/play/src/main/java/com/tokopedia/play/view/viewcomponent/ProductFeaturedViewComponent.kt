@@ -32,16 +32,16 @@ class ProductFeaturedViewComponent(
         }
     )
 
-    private fun getScrollListener(section: ProductSectionUiModel.Section) = object: RecyclerView.OnScrollListener(){
+    private val scrollListener = object: RecyclerView.OnScrollListener(){
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            if (newState == RecyclerView.SCROLL_STATE_IDLE) sendImpression(section)
+            if (newState == RecyclerView.SCROLL_STATE_IDLE) sendImpression()
         }
     }
 
-    private fun getLayoutManager(section: ProductSectionUiModel.Section) = object : LinearLayoutManager(rvProductFeatured.context, RecyclerView.HORIZONTAL, false) {
+    private val layoutManager = object : LinearLayoutManager(rvProductFeatured.context, RecyclerView.HORIZONTAL, false) {
         override fun onLayoutCompleted(state: RecyclerView.State?) {
             super.onLayoutCompleted(state)
-            listener.onProductFeaturedImpressed(this@ProductFeaturedViewComponent, getVisibleProducts(section), section)
+            listener.onProductFeaturedImpressed(this@ProductFeaturedViewComponent, getVisibleProducts())
         }
     }
 
@@ -51,21 +51,19 @@ class ProductFeaturedViewComponent(
 
     init {
         rvProductFeatured.itemAnimator = null
+        rvProductFeatured.layoutManager = layoutManager
         rvProductFeatured.adapter = adapter
         rvProductFeatured.addItemDecoration(defaultItemDecoration)
+        rvProductFeatured.addOnScrollListener(scrollListener)
     }
 
     fun setFeaturedProducts(products: List<ProductSectionUiModel>, maxProducts: Int) {
         if (products != adapter.getItems()) invalidateItemDecorations()
-        val section = products.filterIsInstance<ProductSectionUiModel.Section>().first()
-
-        rvProductFeatured.layoutManager = getLayoutManager(section)
-        rvProductFeatured.addOnScrollListener(getScrollListener(section))
 
         val featuredItems = getFinalFeaturedItems(products, maxProducts)
         adapter.setItemsAndAnimateChanges(featuredItems)
 
-        sendImpression(section)
+        sendImpression()
     }
 
     fun showIfNotEmpty() {
@@ -109,9 +107,9 @@ class ProductFeaturedViewComponent(
 
     private fun getPlaceholder() = List(TOTAL_PLACEHOLDER) { PlayProductUiModel.Placeholder }
 
-    private fun sendImpression(section: ProductSectionUiModel.Section) {
+    private fun sendImpression() {
         if (isProductsInitialized) {
-            listener.onProductFeaturedImpressed(this@ProductFeaturedViewComponent, getVisibleProducts(section), section)
+            listener.onProductFeaturedImpressed(this@ProductFeaturedViewComponent, getVisibleProducts())
         } else isProductsInitialized = true
     }
 
@@ -120,17 +118,17 @@ class ProductFeaturedViewComponent(
      */
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
-        rvProductFeatured.removeOnScrollListener(getScrollListener(section = ProductSectionUiModel.Section.Empty))
+        rvProductFeatured.removeOnScrollListener(scrollListener)
     }
 
     /**
      * Analytic Helper
      */
-    private fun getVisibleProducts(section: ProductSectionUiModel.Section): List<Pair<PlayProductUiModel.Product, Int>> {
+    private fun getVisibleProducts(): List<Pair<PlayProductUiModel.Product, Int>> {
         val products = adapter.getItems()
         if (products.isNotEmpty()) {
-            val startPosition = getLayoutManager(section).findFirstCompletelyVisibleItemPosition()
-            val endPosition = getLayoutManager(section).findLastVisibleItemPosition()
+            val startPosition = layoutManager.findFirstCompletelyVisibleItemPosition()
+            val endPosition = layoutManager.findLastVisibleItemPosition()
             if (startPosition > -1 && endPosition < products.size) return products.slice(startPosition..endPosition)
                     .filterIsInstance<PlayProductUiModel.Product>()
                     .mapIndexed { index, item ->
@@ -146,7 +144,7 @@ class ProductFeaturedViewComponent(
 
     interface Listener {
 
-        fun onProductFeaturedImpressed(view: ProductFeaturedViewComponent, products: List<Pair<PlayProductUiModel.Product, Int>>, section: ProductSectionUiModel.Section)
+        fun onProductFeaturedImpressed(view: ProductFeaturedViewComponent, products: List<Pair<PlayProductUiModel.Product, Int>>)
         fun onProductFeaturedClicked(view: ProductFeaturedViewComponent, product: PlayProductUiModel.Product, position: Int)
     }
 }

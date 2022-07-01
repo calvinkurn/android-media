@@ -493,8 +493,8 @@ class PlayUserInteractionFragment @Inject constructor(
     /**
      * Product Featured View Component Listener
      */
-    override fun onProductFeaturedImpressed(view: ProductFeaturedViewComponent, products: List<Pair<PlayProductUiModel.Product, Int>>, section: ProductSectionUiModel.Section) {
-        productAnalyticHelper.trackImpressedProducts(products, section)
+    override fun onProductFeaturedImpressed(view: ProductFeaturedViewComponent, products: List<Pair<PlayProductUiModel.Product, Int>>) {
+        productAnalyticHelper.trackImpressedProducts(products)
     }
 
     override fun onProductFeaturedClicked(view: ProductFeaturedViewComponent, product: PlayProductUiModel.Product, position: Int) {
@@ -816,7 +816,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 renderLikeBubbleView(state.like)
                 renderStatsInfoView(state.totalView)
                 renderRealTimeNotificationView(state.rtn)
-                renderViewAllProductView(state.tagItems, state.bottomInsets, state.address)
+                renderViewAllProductView(state.tagItems, state.bottomInsets, state.address, state.partner)
                 renderFeaturedProductView(prevState?.tagItems, state.tagItems, state.bottomInsets, state.status, state.address)
                 renderQuickReplyView(prevState?.quickReply, state.quickReply, prevState?.bottomInsets, state.bottomInsets, state.channel)
                 renderKebabMenuView(state.kebabMenu)
@@ -1621,8 +1621,9 @@ class PlayUserInteractionFragment @Inject constructor(
         tagItem: TagItemUiModel,
         bottomInsets: Map<BottomInsetsType, BottomInsetsState>,
         address: AddressWidgetUiState,
+        partner: PlayPartnerInfo
     ) {
-        if(!bottomInsets.isAnyShown || !address.shouldShow) productSeeMoreView?.show()
+        if(!bottomInsets.isAnyShown && !address.shouldShow) productSeeMoreView?.show()
         else productSeeMoreView?.hide()
 
         val productListSize = tagItem.product.productSectionList.filterIsInstance<ProductSectionUiModel.Section>().sumOf {
@@ -1692,6 +1693,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun renderAddressWidget(addressUiState: AddressWidgetUiState){
         if(addressUiState.shouldShow){
             chooseAddressView?.show()
+            productFeaturedView?.hide()
         } else {
             chooseAddressView?.hide()
         }
