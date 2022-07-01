@@ -278,3 +278,15 @@ package com.tokopedia.wishlistcommon.util
                 }
               }
             }"""
+
+    const val GQL_GET_WISHLIST_COLLECTION_NAMES = """
+             query GetWishlistCollectionNames {
+                  get_wishlist_collection_names{
+                    error_message
+                    status
+                    data{
+                      id
+                      name
+                    }
+                  }
+                }"""

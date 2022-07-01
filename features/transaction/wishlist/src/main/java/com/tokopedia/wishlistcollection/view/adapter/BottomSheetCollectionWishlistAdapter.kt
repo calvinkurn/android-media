@@ -7,13 +7,14 @@ import com.tokopedia.wishlist.databinding.AddWishlistCollectionAdditionalSection
 import com.tokopedia.wishlist.databinding.AddWishlistCollectionCreateNewItemBinding
 import com.tokopedia.wishlist.databinding.AddWishlistCollectionItemBinding
 import com.tokopedia.wishlist.databinding.AddWishlistCollectionMainSectionTextItemBinding
+import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionBottomSheetFragment
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TYPE_COLLECTION_ADDITIONAL_SECTION
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TYPE_COLLECTION_ITEM
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TYPE_COLLECTION_MAIN_SECTION
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TYPE_CREATE_NEW_COLLECTION
 
 class BottomSheetCollectionWishlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    // private var actionListener: ActionListener? = null
+    private var actionListener: ActionListener? = null
     private var listTypeData = mutableListOf<com.tokopedia.wishlistcollection.data.BottomSheetWishlistCollectionTypeLayoutData>()
 
     companion object {
@@ -23,10 +24,10 @@ class BottomSheetCollectionWishlistAdapter : RecyclerView.Adapter<RecyclerView.V
         const val LAYOUT_CREATE_NEW_COLLECTION = 3
     }
 
-    /*interface ActionListener {
+    interface ActionListener {
         fun onCollectionItemClicked()
         fun onCreateNewCollectionClicked()
-    }*/
+    }
 
     /*init { setHasStableIds(true) }*/
 
@@ -73,7 +74,7 @@ class BottomSheetCollectionWishlistAdapter : RecyclerView.Adapter<RecyclerView.V
                 (holder as com.tokopedia.wishlistcollection.view.adapter.viewholder.BottomSheetWishlistCollectionItemViewHolder).bind(element)
             }
             TYPE_CREATE_NEW_COLLECTION -> {
-                (holder as com.tokopedia.wishlistcollection.view.adapter.viewholder.BottomSheetWishlistCollectionCreateItemViewHolder).bind(element)
+                (holder as com.tokopedia.wishlistcollection.view.adapter.viewholder.BottomSheetWishlistCollectionCreateItemViewHolder).bind(element, actionListener)
             }
         }
     }
@@ -99,7 +100,7 @@ class BottomSheetCollectionWishlistAdapter : RecyclerView.Adapter<RecyclerView.V
         notifyDataSetChanged()
     }
 
-    /*fun setActionListener(bottomsheet: BottomSheetAddCollectionWishlist) {
-        this.actionListener = bottomsheet
-    }*/
+    fun setActionListener(fragment: WishlistCollectionBottomSheetFragment) {
+        this.actionListener = fragment
+    }
 }

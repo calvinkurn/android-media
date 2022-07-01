@@ -23,7 +23,7 @@ class CollectionWishlistCreateViewHolder(
                 binding.labelNewCollection.text = item.dataObject.text
                 if (item.dataObject.action == CREATE_COLLECTION) {
                     binding.wishlistCollectionCreateNew.setImageUrl(CREATE_NEW_COLLECTION_BG_IMAGE)
-                    binding.root.setOnClickListener { actionListener?.onCreateNewCollection() }
+                    binding.rlCreateWishlistCollection.setOnClickListener {}
                 }
             }
         }

@@ -1137,7 +1137,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 view?.let { Toaster.build(it, getString(Rv2.string.wishlist_v2_terlama_disimpan),
                     Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show() }
             }
-
         })
         bottomSheetCleaner.show(childFragmentManager)
     }

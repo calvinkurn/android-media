@@ -47,4 +47,7 @@
 
     <string name="collection_label_new">Koleksi Baru</string>
     <string name="wishlist_common_error_msg">Terjadi kesalahan, mohon dicoba kembali</string>
+    <string name="collection_bottomsheet_label">Nama Koleksi</string>
+    <string name="collection_create_bottomsheet_button_label">Buat Koleksi</string>
+    <string name="collection_create_bottomsheet_title">Buat koleksi baru</string>
 </resources>

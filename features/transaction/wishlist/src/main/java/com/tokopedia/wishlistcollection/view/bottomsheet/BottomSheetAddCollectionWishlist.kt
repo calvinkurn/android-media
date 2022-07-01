@@ -25,6 +25,8 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wishlist.databinding.BottomsheetAddWishlistCollectionBinding
 import com.tokopedia.wishlist.R
 import com.tokopedia.wishlistcollection.di.DaggerBottomSheetWishlistCollectionComponent
+import com.tokopedia.wishlistcollection.view.adapter.BottomSheetCollectionWishlistAdapter
+import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionBottomSheetFragment
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OK
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.PRODUCT_IDs
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.SOURCE
@@ -39,8 +41,7 @@ import javax.inject.Inject
 class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tokopedia.wishlistcollection.di.BottomSheetWishlistCollectionComponent> {
     private var binding by autoClearedNullable<BottomsheetAddWishlistCollectionBinding>()
     private val userSession: UserSessionInterface by lazy { UserSession(activity) }
-    private val collectionAdapter =
-        com.tokopedia.wishlistcollection.view.adapter.BottomSheetCollectionWishlistAdapter()
+    private val collectionAdapter = BottomSheetCollectionWishlistAdapter()
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -224,11 +225,7 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tok
             .build()
     }
 
-    /*override fun onCollectionItemClicked() {
-        println("++ collection item is selected")
+    fun setActionListener(wishlistCollectionBottomSheetFragment: WishlistCollectionBottomSheetFragment) {
+        collectionAdapter.setActionListener(wishlistCollectionBottomSheetFragment)
     }
-
-    override fun onCreateNewCollectionClicked() {
-        println("++ show bottomsheet create new collection")
-    }*/
 }
