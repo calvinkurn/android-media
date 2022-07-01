@@ -116,8 +116,6 @@ class UserProfileFragment @Inject constructor(
     private lateinit var btnAction: UnifyButton
     private lateinit var feedFab: FeedFloatingButton
 
-    private lateinit var textUserName: Typography
-    private lateinit var textDisplayName: Typography
     private lateinit var textContentCount: Typography
     private lateinit var textFollowerCount: Typography
     private lateinit var textFollowingCount: Typography
@@ -183,8 +181,6 @@ class UserProfileFragment @Inject constructor(
         feedFab = view.findViewById(R.id.up_feed_floating_button)
 
         headerProfile = view.findViewById(R.id.header_profile)
-        textUserName = view.findViewById(R.id.text_user_name)
-        textDisplayName = view.findViewById(R.id.text_display_name)
         textContentCount = view.findViewById(R.id.text_content_count)
         textFollowerCount = view.findViewById(R.id.text_follower_count)
         textFollowingCount = view.findViewById(R.id.text_following_count)
@@ -488,10 +484,10 @@ class UserProfileFragment @Inject constructor(
         /** Setup Profile Info */
         setProfileImg(curr)
 
-        textUserName.shouldShowWithAction(curr.username.isNotBlank()) {
-            textUserName.text = getString(R.string.up_username_template, curr.username)
+        mainBinding.textUserName.shouldShowWithAction(curr.username.isNotBlank()) {
+            mainBinding.textUserName.text = getString(R.string.up_username_template, curr.username)
         }
-        textDisplayName.text = curr.name
+        mainBinding.textDisplayName.text = curr.name
         textContentCount.text = UserProfileUtils.getFormattedNumber(curr.stats.totalPost)
         textFollowerCount.text = UserProfileUtils.getFormattedNumber(curr.stats.totalFollower)
         textFollowingCount.text = UserProfileUtils.getFormattedNumber(curr.stats.totalFollowing)
