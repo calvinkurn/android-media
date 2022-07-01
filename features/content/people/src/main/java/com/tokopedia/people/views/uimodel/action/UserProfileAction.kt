@@ -11,7 +11,7 @@ sealed interface UserProfileAction {
 
     data class ClickFollowButton(val isFromLogin: Boolean) : UserProfileAction
 
-    object ClickUpdateReminder : UserProfileAction
+    data class ClickUpdateReminder(val isFromLogin: Boolean) : UserProfileAction
 
     data class SaveReminderActivityResult(
         val channelId: String,

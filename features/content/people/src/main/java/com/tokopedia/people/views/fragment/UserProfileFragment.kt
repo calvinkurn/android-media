@@ -747,7 +747,7 @@ class UserProfileFragment @Inject constructor(
             doFollowUnfollow(isFromLogin = true)
         }
         else if(requestCode == REQUEST_CODE_LOGIN_TO_SET_REMINDER && resultCode == Activity.RESULT_OK) {
-            submitAction(UserProfileAction.ClickUpdateReminder)
+            submitAction(UserProfileAction.ClickUpdateReminder(true))
         }
         else if(requestCode == REQUEST_CODE_PLAY_ROOM && resultCode == Activity.RESULT_OK) {
             val channelId = data?.extras?.getString(EXTRA_CHANNEL_ID) ?: return
@@ -937,7 +937,7 @@ class UserProfileFragment @Inject constructor(
             )
         }
         else{
-            submitAction(UserProfileAction.ClickUpdateReminder)
+            submitAction(UserProfileAction.ClickUpdateReminder(false))
         }
     }
 

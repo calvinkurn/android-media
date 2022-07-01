@@ -111,7 +111,7 @@ class UserProfileViewModel @AssistedInject constructor(
             is UserProfileAction.LoadProfile -> handleLoadProfile(action.isRefresh)
             is UserProfileAction.LoadPlayVideo -> handleLoadPlayVideo(action.cursor)
             is UserProfileAction.ClickFollowButton -> handleClickFollowButton(action.isFromLogin)
-            UserProfileAction.ClickUpdateReminder -> handleClickUpdateReminder()
+            is UserProfileAction.ClickUpdateReminder -> handleClickUpdateReminder(action.isFromLogin)
             is UserProfileAction.SaveReminderActivityResult -> handleSaveReminderActivityResult(action.channelId, action.position, action.isActive)
             is UserProfileAction.RemoveReminderActivityResult -> handleRemoveReminderActivityResult()
         }
@@ -169,8 +169,12 @@ class UserProfileViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleClickUpdateReminder() {
+    private fun handleClickUpdateReminder(isFromLogin: Boolean) {
         launchCatchError(block = {
+            if(isFromLogin) {
+                loadProfileInfo(false)
+            }
+
             val data = _savedReminderData.value
 
             if(data is SavedReminderData.Saved) {
