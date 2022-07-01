@@ -9,6 +9,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/food_cardview_background_dms_color"
         android:padding="@dimen/unify_space_8">
 
         <com.tokopedia.unifycomponents.ImageUnify
@@ -25,7 +26,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/overlay_rounded_corners_background"
             android:text="@string/text_sold_out"
-            android:textColor="@color/Unify_Static_White"
+            android:textColor="@color/Unify_NN0"
             app:layout_constraintBottom_toBottomOf="@id/productImage"
             app:layout_constraintEnd_toEndOf="@id/productImage"
             app:layout_constraintStart_toStartOf="@id/productImage"
