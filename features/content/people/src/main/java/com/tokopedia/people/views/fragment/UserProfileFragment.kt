@@ -105,7 +105,6 @@ class UserProfileFragment @Inject constructor(
     private var recyclerviewPost: RecyclerView? = null
     private var headerProfile: HeaderUnify? = null
     private var appBarLayout: AppBarLayout? = null
-    private var container: ViewFlipper? = null
     private var userPostContainer: ViewFlipper? = null
     private var globalError: GlobalError? = null
     private var globalErrorPost: LocalLoad? = null
@@ -162,7 +161,6 @@ class UserProfileFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         feedFloatingButtonManager.setInitialData(this)
 
-        container = view.findViewById(R.id.container)
         userPostContainer = view.findViewById(R.id.vp_rv_post)
         globalError = view.findViewById(R.id.global_error)
         globalErrorPost = view.findViewById(R.id.global_error_post)
@@ -184,7 +182,7 @@ class UserProfileFragment @Inject constructor(
         }
 
         refreshLandingPageData(true)
-        container?.displayedChild = PAGE_LOADING
+        binding.rootContainer.displayedChild = PAGE_LOADING
 
         appBarLayout?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener {appBarLayout, verticalOffset ->
             shouldRefreshRecyclerView = verticalOffset == 0
@@ -461,7 +459,7 @@ class UserProfileFragment @Inject constructor(
             mainBinding.swipeRefreshLayout.isRefreshing = false
         }
 
-        container?.displayedChild = PAGE_CONTENT
+        binding.rootContainer.displayedChild = PAGE_CONTENT
 
 
         /** Setup Profile Info */
@@ -633,12 +631,12 @@ class UserProfileFragment @Inject constructor(
     }
 
     private fun showGlobalError(type: Int) {
-        container?.displayedChild = PAGE_ERROR
+        binding.rootContainer.displayedChild = PAGE_ERROR
         globalError?.setType(type)
         globalError?.show()
 
         globalError?.setActionClickListener {
-            container?.displayedChild = PAGE_LOADING
+            binding.rootContainer.displayedChild = PAGE_LOADING
             refreshLandingPageData()
         }
     }
