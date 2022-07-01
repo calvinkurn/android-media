@@ -271,12 +271,12 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openPowerMechant(uriData);
                     screenName = "";
                     break;
-                case DeepLinkChecker.DEALS:
-                case DeepLinkChecker.OTHER:
                 case DeepLinkChecker.TOKOFOOD:
                     openTokoFood(uriData);
                     screenName = "";
                     break;
+                case DeepLinkChecker.DEALS:
+                case DeepLinkChecker.OTHER:
                 default:
                     prepareOpenWebView(uriData);
                     screenName = uriData.getPath();
