@@ -20,6 +20,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.DRAFT
 import com.tokopedia.tokomember_seller_dashboard.util.EDIT
 import com.tokopedia.tokomember_seller_dashboard.util.ENDED
 import com.tokopedia.tokomember_seller_dashboard.util.EXTEND
+import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil
 import com.tokopedia.tokomember_seller_dashboard.util.WAITING
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberOptionsMenuBottomsheet
 import com.tokopedia.unifycomponents.ImageUnify
@@ -121,7 +122,6 @@ class TokomemberDashProgramVh(itemView: View, val fragmentManager: FragmentManag
                 btn_edit.setOnClickListener {
                     item.id?.toInt()?.let { it1 -> programActions.option(EXTEND, programId = it1, shopId = shopId) }
                 }
-
             }
             ENDED ->{
                 programStatus.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN400)))
@@ -135,7 +135,7 @@ class TokomemberDashProgramVh(itemView: View, val fragmentManager: FragmentManag
     }
 
     private fun getDate(time: String): String {
-        return time.substringBefore(" ")
+        return TmDateUtil.setDatePreview(time)
     }
 
     private fun getTime(time: String): String {

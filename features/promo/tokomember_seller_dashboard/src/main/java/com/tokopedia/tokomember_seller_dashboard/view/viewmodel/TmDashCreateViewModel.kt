@@ -13,6 +13,7 @@ import com.tokopedia.tokomember_seller_dashboard.domain.TmKuponCreateValidateUse
 import com.tokopedia.tokomember_seller_dashboard.domain.TmKuponInitialUsecase
 import com.tokopedia.tokomember_seller_dashboard.domain.TmKuponProgramValidateUsecase
 import com.tokopedia.tokomember_seller_dashboard.domain.TmKuponUpdateUsecase
+import com.tokopedia.tokomember_seller_dashboard.domain.TmSingleCouponCreateUsecase
 import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberCardColorMapperUsecase
 import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashCardUsecase
 import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashEditCardUsecase
@@ -21,10 +22,22 @@ import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashUpdateProg
 import com.tokopedia.tokomember_seller_dashboard.domain.TokomemeberCardBgUsecase
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.ProgramUpdateDataInput
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmCardModifyInput
+import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmCouponCreateRequest
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmCouponUpdateRequest
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmCouponValidateRequest
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmMerchantCouponUnifyRequest
-import com.tokopedia.tokomember_seller_dashboard.model.*
+import com.tokopedia.tokomember_seller_dashboard.model.CardData
+import com.tokopedia.tokomember_seller_dashboard.model.CardDataTemplate
+import com.tokopedia.tokomember_seller_dashboard.model.CouponCreateMultiple
+import com.tokopedia.tokomember_seller_dashboard.model.CouponCreateSingle
+import com.tokopedia.tokomember_seller_dashboard.model.MemberShipValidateResponse
+import com.tokopedia.tokomember_seller_dashboard.model.MembershipCreateEditCardResponse
+import com.tokopedia.tokomember_seller_dashboard.model.ProgramDetailData
+import com.tokopedia.tokomember_seller_dashboard.model.ProgramUpdateResponse
+import com.tokopedia.tokomember_seller_dashboard.model.TmCouponDetailResponseData
+import com.tokopedia.tokomember_seller_dashboard.model.TmCouponInitialResponse
+import com.tokopedia.tokomember_seller_dashboard.model.TmKuponUpdateMVResponse
+import com.tokopedia.tokomember_seller_dashboard.model.TmVoucherValidationPartialResponse
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.util.UploadPremiumCouponError
 import com.tokopedia.tokomember_seller_dashboard.util.UploadVipCouponError
@@ -53,6 +66,7 @@ class TmDashCreateViewModel @Inject constructor(
     private val tokomemberDashUpdateProgramUsecase: TokomemberDashUpdateProgramUsecase,
     private val tmKuponCreateValidateUsecase: TmKuponCreateValidateUsecase,
     private val tmKuponCreateUsecase:TmKuponCreateUsecase,
+    private val tmSingleCouponCreateUsecase: TmSingleCouponCreateUsecase,
     private val tmKuponUpdateUsecase: TmKuponUpdateUsecase,
     private val tmKuponProgramValidateUsecase: TmKuponProgramValidateUsecase,
     private val tmKuponInitialUsecase:TmKuponInitialUsecase,
@@ -89,6 +103,10 @@ class TmDashCreateViewModel @Inject constructor(
     private val _tmCouponCreateLiveData = MutableLiveData<Result<CouponCreateMultiple>>()
     val tmCouponCreateLiveData: LiveData<Result<CouponCreateMultiple>> =
         _tmCouponCreateLiveData
+
+    private val _tmSingleCouponCreateLiveData = MutableLiveData<Result<CouponCreateSingle>>()
+    val tmSingleCouponCreateLiveData: LiveData<Result<CouponCreateSingle>> =
+        _tmSingleCouponCreateLiveData
 
     private val _tmCouponUpdateLiveData = MutableLiveData<TokoLiveDataResult<TmKuponUpdateMVResponse>>()
     val tmCouponUpdateLiveData: LiveData<TokoLiveDataResult<TmKuponUpdateMVResponse>> =
@@ -195,6 +213,15 @@ class TmDashCreateViewModel @Inject constructor(
             _tmCouponCreateLiveData.postValue(Success(it))
         }, {
             _tmCouponCreateLiveData.postValue(Fail(it))
+        },tmMerchantCouponUnifyRequest)
+    }
+
+    fun createSingleCoupon(tmMerchantCouponUnifyRequest: TmCouponCreateRequest){
+        tmSingleCouponCreateUsecase.cancelJobs()
+        tmSingleCouponCreateUsecase.createSingleCoupon( {
+            _tmSingleCouponCreateLiveData.postValue(Success(it))
+        }, {
+            _tmSingleCouponCreateLiveData.postValue(Fail(it))
         },tmMerchantCouponUnifyRequest)
     }
 

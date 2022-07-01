@@ -62,5 +62,11 @@ data class TmCouponCreateRequest(
 	val couponType: String? = null,
 
 	@SerializedName("hour_start")
-	val hourStart: String? = null
+	val hourStart: String? = null,
+
+	@SerializedName("token")
+	var token: String? = null,
+
+	@SerializedName("source")
+	var source: String? = null
 ) : Parcelable

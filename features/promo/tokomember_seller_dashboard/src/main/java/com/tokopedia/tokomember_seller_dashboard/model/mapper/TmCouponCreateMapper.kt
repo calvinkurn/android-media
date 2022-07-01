@@ -123,7 +123,7 @@ object TmCouponCreateMapper {
         imageSquare:String,
         imagePortrait: String,
         maximumBenefit: Int
-    ): TmMerchantCouponUnifyRequest {
+    ): TmCouponCreateRequest {
         //Mutation Mapper
 
         val voucherList = arrayListOf<TmCouponCreateRequest>()
@@ -167,13 +167,9 @@ object TmCouponCreateMapper {
             }
         }
 
-        voucherList.add(tmCouponCreateRequest)
+        tmCouponCreateRequest.source = "android-sellerapp"
+        tmCouponCreateRequest.token = token
 
-        return TmMerchantCouponUnifyRequest(
-            token = token,
-            source = "",
-            status = "",
-            vouchers = voucherList
-        )
+        return tmCouponCreateRequest
     }
 }

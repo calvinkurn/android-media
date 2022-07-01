@@ -81,22 +81,6 @@ class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) :
             item.voucherStatus
         }
 
-        if(item.remainingQuota == item.voucherQuota){
-            btnAddQuota.show()
-            btnAddQuota.setOnClickListener {
-                item.voucherId?.let { it1 -> item.voucherTypeFormatted?.let { it2 ->
-                    item.voucherQuota?.let { it3 ->
-                        tmCouponActions.option(ADD_QUOTA, it1,
-                            it2, it3
-                        )
-                    }
-                } }
-            }
-        }
-        else{
-            btnAddQuota.hide()
-        }
-
         when(item.voucherStatus){
             COUPON_DELETED ->{
                 optionMenu.hide()
@@ -164,6 +148,7 @@ class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) :
                 viewStatus.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_GN500))
             }
             COUPON_ENDED ->{
+                ivCoupon.loadImage(R.drawable.tm_ic_member_grey)
                 optionMenu.hide()
                 btnAddQuota.hide()
                 tvCouponState.text = "Berakhir"
@@ -171,6 +156,7 @@ class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) :
                 viewStatus.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN400))
             }
             COUPON_STOPPED ->{
+                ivCoupon.loadImage(R.drawable.tm_ic_member_grey)
                 optionMenu.hide()
                 btnAddQuota.hide()
                 tvCouponState.text = "Berakhir"
@@ -178,6 +164,28 @@ class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) :
                 viewStatus.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN400))
             }
         }
+
+        if(item.remainingQuota == item.voucherQuota){
+            tvCouponState.text = "Kuota Habis"
+            viewStatus.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_YN500))
+            tvCouponState.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_YN500)))
+            btnAddQuota.show()
+            btnAddQuota.setOnClickListener {
+                item.voucherId?.let { it1 -> item.voucherTypeFormatted?.let { it2 ->
+                    item.voucherQuota?.let { it3 ->
+                        item.voucherDiscountAmtMax?.let { it4 ->
+                            tmCouponActions.option(ADD_QUOTA, it1,
+                                it2, it3, it4
+                            )
+                        }
+                    }
+                } }
+            }
+        }
+        else{
+            btnAddQuota.hide()
+        }
+
         if(item.voucherStatus == COUPON_ON_GOING && item.remainingQuota == 0){
             optionMenu.setOnClickListener {
                 item.voucherId?.let { it1 ->

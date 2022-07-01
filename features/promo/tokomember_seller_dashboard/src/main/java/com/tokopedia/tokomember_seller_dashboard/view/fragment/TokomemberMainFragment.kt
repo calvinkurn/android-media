@@ -86,7 +86,6 @@ class TokomemberMainFragment : BaseDaggerFragment() {
                   } else{
                       viewFlipperIntro?.displayedChild = 2
                       headerNoAccess.show()
-
                       headerNoAccess.title = context?.getString(R.string.tm_tokomember).toString()
                       headerNoAccess.setNavigationOnClickListener {
                           activity?.finish()

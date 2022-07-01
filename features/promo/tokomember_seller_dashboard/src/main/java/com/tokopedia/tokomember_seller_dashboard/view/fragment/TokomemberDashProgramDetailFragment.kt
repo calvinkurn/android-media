@@ -1,11 +1,13 @@
 package com.tokopedia.tokomember_seller_dashboard.view.fragment
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
@@ -19,9 +21,12 @@ import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetProgramForm
 import com.tokopedia.tokomember_seller_dashboard.util.ACTION_DETAIL
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
+import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_DETAIL_ACTIVE
+import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_DETAIL_WAITING
 import com.tokopedia.tokomember_seller_dashboard.util.TM_DETAIL_BG
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmDashCreateViewModel
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import kotlinx.android.synthetic.main.tm_dash_program_detail_fragment.*
 import javax.inject.Inject
 
@@ -91,12 +96,34 @@ class TokomemberDashProgramDetailFragment : BaseDaggerFragment() {
     private fun setMainUi(membershipGetProgramForm: MembershipGetProgramForm?) {
         tvProgramPeriod.text = "${membershipGetProgramForm?.programForm?.timeWindow?.startTime} - ${membershipGetProgramForm?.programForm?.timeWindow?.endTime}"
         tvMemberCount.text = membershipGetProgramForm?.programForm?.analytics?.totalNewMember
+        tvProgramStatus.visibility = View.VISIBLE
+        tvProgramStatus.text = membershipGetProgramForm?.programForm?.statusStr
+        when(membershipGetProgramForm?.programForm?.statusStr){
+            PROGRAM_DETAIL_ACTIVE ->{
+                tvProgramStatus.backgroundTintList = context?.let {
+                    ContextCompat.getColor(
+                        it, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                }?.let { ColorStateList.valueOf(it) }
+            }
+            PROGRAM_DETAIL_WAITING -> {
+                tvProgramStatus.backgroundTintList = context?.let {
+                    ContextCompat.getColor(
+                        it, com.tokopedia.unifyprinciples.R.color.Unify_YN400)
+                }?.let { ColorStateList.valueOf(it) }
+            }
+            else -> {
+                tvProgramStatus.backgroundTintList = context?.let {
+                    ContextCompat.getColor(
+                        it, com.tokopedia.unifyprinciples.R.color.Unify_NN400)
+                }?.let { ColorStateList.valueOf(it) }
+            }
+        }
         tvTransactionCount.text = membershipGetProgramForm?.programForm?.analytics?.trxCount
         tvIncome.text = membershipGetProgramForm?.programForm?.analytics?.totalIncome
         tvName.text = membershipGetProgramForm?.programForm?.name
-        tvTransactionPremium.text = membershipGetProgramForm?.programForm?.tierLevels?.firstOrNull()?.threshold.toString()
+        tvTransactionPremium.text = "Rp" + CurrencyFormatHelper.convertToRupiah(membershipGetProgramForm?.programForm?.tierLevels?.firstOrNull()?.threshold.toString())
         tvMemberCountPremium.text = membershipGetProgramForm?.levelInfo?.levelList?.firstOrNull()?.totalMember
-        tvTransactionVip.text = membershipGetProgramForm?.programForm?.tierLevels?.getOrNull(1)?.threshold.toString()
+        tvTransactionVip.text = "Rp" + CurrencyFormatHelper.convertToRupiah(membershipGetProgramForm?.programForm?.tierLevels?.getOrNull(1)?.threshold.toString())
         tvMemberCountVip.text = membershipGetProgramForm?.levelInfo?.levelList?.getOrNull(1)?.totalMember
 
         childFragmentManager.beginTransaction().add(R.id.frameCouponList, TokomemberDashCouponFragment.newInstance(arguments), tag).addToBackStack(tag).commit()
