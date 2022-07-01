@@ -32,8 +32,14 @@ class ProductOptionViewHolder(private val binding: TokofoodItemAddOnItemLayoutBi
             binding.tvTokofoodAddOnItemOutOfStock.visible()
         } else {
             binding.tvTokofoodAddOnItemDesc.run {
+                val priceDesc =
+                    if (description.isBlank()) {
+                        itemView.context?.getString(com.tokopedia.tokofood.R.string.text_free).orEmpty()
+                    } else {
+                        description
+                    }
                 visible()
-                text = description
+                text = priceDesc
             }
             binding.tvTokofoodAddOnItemOutOfStock.invisible()
         }
