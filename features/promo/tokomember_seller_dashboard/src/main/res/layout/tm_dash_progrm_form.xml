@@ -136,11 +136,12 @@
                 android:id="@+id/iconInfo"
                 android:layout_width="@dimen/tm_dash_dp_14"
                 android:layout_height="@dimen/tm_dash_dp_14"
+                android:paddingTop="@dimen/unify_space_2"
                 android:layout_marginStart="@dimen/unify_space_4"
                 app:icon_name="INFORMATION"
+                app:layout_constraintTop_toTopOf="@+id/tvDetailLevel"
                 app:layout_constraintBottom_toBottomOf="@id/tvDetailLevel"
-                app:layout_constraintStart_toEndOf="@id/tvDetailLevel"
-                app:layout_constraintTop_toTopOf="@id/tvDetailLevel" />
+                app:layout_constraintStart_toEndOf="@id/tvDetailLevel"/>
 
             <com.tokopedia.unifycomponents.TextFieldUnify2
                 android:id="@+id/textFieldTranskPremium"
@@ -162,7 +163,7 @@
                 android:id="@+id/tickerInfo"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/unify_space_48"
-                android:layout_marginTop="@dimen/unify_space_16"
+                android:layout_marginTop="@dimen/unify_space_12"
                 android:layout_marginEnd="@dimen/unify_space_16"
                 android:visibility="gone"
                 app:closeButtonVisibility="gone"

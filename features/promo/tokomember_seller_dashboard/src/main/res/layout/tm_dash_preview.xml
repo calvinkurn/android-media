@@ -10,7 +10,9 @@
     tools:ignore="MissingDefaultResource"
     android:focusable="true">
 
+<!--
     <include layout="@layout/tm_dash_preview_shimmer"/>
+-->
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollContainer"
@@ -57,10 +59,10 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/headerPreview" />
 
-            <com.tokopedia.iconunify.IconUnify
+            <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/iconInfoProgram"
                 android:layout_width="@dimen/unify_space_16"
-                android:layout_height="@dimen/tm_dash_dp_20"
+                android:layout_height="@dimen/tm_dash_dp_24"
                 android:layout_marginStart="@dimen/unify_space_16"
                 android:layout_marginTop="@dimen/unify_space_16"
                 app:srcCompat="@drawable/tm_icon_system"

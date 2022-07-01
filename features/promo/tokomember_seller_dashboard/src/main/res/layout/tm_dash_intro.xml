@@ -31,6 +31,16 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
+                <com.tokopedia.header.HeaderUnify
+                    android:id="@+id/header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/unify_space_16"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:unify_header_is_show_back_button="true"
+                    app:unify_header_transparent_mode="false" />
+
                 <View
                     android:id="@+id/viewBgSelector"
                     android:layout_width="match_parent"
@@ -61,27 +71,17 @@
                 android:id="@+id/cardTokmemberParent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginTop="@dimen/tm_dash_dp_60"
+                android:layout_marginStart="@dimen/unify_space_8"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
-
-                <com.tokopedia.header.HeaderUnify
-                    android:id="@+id/header"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/unify_space_16"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:unify_header_transparent_mode="true"
-                    app:unify_header_is_show_back_button="true"/>
 
                 <com.tokopedia.unifycomponents.CardUnify
                     android:id="@+id/cardTokomember"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/unify_space_16"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/header">
+                    app:layout_constraintTop_toTopOf="parent">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/tokomemberCardContainer"
@@ -120,6 +120,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/unify_space_2"
                     android:layout_marginEnd="@dimen/unify_space_16"
+                    android:layout_marginStart="@dimen/unify_space_8"
                     android:textColor="@color/Unify_N0"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@id/cardTokomember"
@@ -132,6 +133,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/unify_space_12"
+                    android:layout_marginStart="@dimen/unify_space_8"
                     android:layout_marginEnd="@dimen/unify_space_16"
                     android:textColor="@color/Unify_N0"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -146,7 +148,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/unify_space_16"
-                android:layout_marginTop="@dimen/unify_space_16"
+                android:layout_marginTop="@dimen/unify_space_24"
                 android:layout_marginEnd="@dimen/unify_space_16"
                 app:layout_constraintStart_toStartOf="@id/cardTokmemberParent"
                 app:layout_constraintTop_toBottomOf="@+id/containerBgvideo" />

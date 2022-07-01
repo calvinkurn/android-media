@@ -92,7 +92,11 @@ class TmIntroFragment : BaseDaggerFragment(),
             tmTracker?.viewIntroPage(it.toString())
             tmIntroViewModel.getIntroInfo(it)
             btnContinue.setOnClickListener { _ ->
-                openCreationActivity()
+                if (openBS) {
+                    redirectSellerOs()
+                } else {
+                    openCreationActivity()
+                }
                 tmTracker?.clickIntroLanjut(it.toString())
             }
         }
@@ -131,31 +135,7 @@ class TmIntroFragment : BaseDaggerFragment(),
     private fun populateUI(membershipData: MembershipData) {
 
         if(openBS){
-            val bundle = Bundle()
-            val tmIntroBottomsheetModel = TmIntroBottomsheetModel(
-                TM_NOT_ELIGIBLE_TITLE,
-                TM_NOT_ELIGIBLE_DESC,
-                TM_SELLER_NO_OS,
-                TM_NOT_ELIGIBLE_CTA
-            )
-            bundle.putString(TokomemberBottomsheet.ARG_BOTTOMSHEET, Gson().toJson(tmIntroBottomsheetModel))
-            val bottomSheet = TokomemberBottomsheet.createInstance(bundle)
-            bottomSheet.setUpBottomSheetListener(object : BottomSheetClickListener{
-                override fun onButtonClick(errorCount: Int) {
-                    arguments?.getInt(BUNDLE_SHOP_ID, 0)?.let {
-                        tmTracker?.clickButtonBsNonOs(it.toString())
-                    }
-                    RouteManager.route(context,String.format("%s?url=%s", ApplinkConst.WEBVIEW,TM_SELLER_INTRO_OS))
-                    bottomSheet.dismiss()
-                }
-            })
-            bottomSheet.setOnDismissListener {
-                arguments?.getInt(BUNDLE_SHOP_ID, 0)?.let {
-                    tmTracker?.clickDismissBsNonOs(it.toString())
-                }
-                bottomSheet.dismiss()
-            }
-            bottomSheet.show( childFragmentManager,"")
+            redirectSellerOs()
         }
         animateViews()
         val headerData = membershipData.membershipGetSellerOnboarding?.sellerHomeContent?.sellerHomeText
@@ -174,6 +154,34 @@ class TmIntroFragment : BaseDaggerFragment(),
         videoUrl = membershipData.membershipGetSellerOnboarding?.sellerHomeContent?.sellerHomeInfo?.infoURL?:""
          setVideoView(
             videoUrl?:"")
+    }
+
+    private fun redirectSellerOs(){
+        val bundle = Bundle()
+        val tmIntroBottomsheetModel = TmIntroBottomsheetModel(
+            TM_NOT_ELIGIBLE_TITLE,
+            TM_NOT_ELIGIBLE_DESC,
+            TM_SELLER_NO_OS,
+            TM_NOT_ELIGIBLE_CTA
+        )
+        bundle.putString(TokomemberBottomsheet.ARG_BOTTOMSHEET, Gson().toJson(tmIntroBottomsheetModel))
+        val bottomSheet = TokomemberBottomsheet.createInstance(bundle)
+        bottomSheet.setUpBottomSheetListener(object : BottomSheetClickListener{
+            override fun onButtonClick(errorCount: Int) {
+                arguments?.getInt(BUNDLE_SHOP_ID, 0)?.let {
+                    tmTracker?.clickButtonBsNonOs(it.toString())
+                }
+                RouteManager.route(context,String.format("%s?url=%s", ApplinkConst.WEBVIEW,TM_SELLER_INTRO_OS))
+                bottomSheet.dismiss()
+            }
+        })
+        bottomSheet.setOnDismissListener {
+            arguments?.getInt(BUNDLE_SHOP_ID, 0)?.let {
+                tmTracker?.clickDismissBsNonOs(it.toString())
+            }
+            bottomSheet.dismiss()
+        }
+        bottomSheet.show( childFragmentManager,"")
     }
 
     private fun animateViews(){

@@ -167,7 +167,12 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
 
         tmDashCreateViewModel.tokomemberProgramUpdateResultLiveData.observe(viewLifecycleOwner,{
             when(it.status){
+
+                TokoLiveDataResult.STATUS.LOADING ->{
+                    openLoadingDialog()
+                }
                 TokoLiveDataResult.STATUS.SUCCESS -> {
+                    closeLoadingDialog()
                     when (it.data?.membershipCreateEditProgram?.resultStatus?.code) {
                         CODE_SUCCESS -> {
                             programCreationId = it?.data.membershipCreateEditProgram.programSeller?.id?:0
@@ -182,12 +187,12 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                     }
                 }
                 TokoLiveDataResult.STATUS.ERROR ->{
+                    closeLoadingDialog()
                     handleErrorOnUpdate(
                         it.data?.membershipCreateEditProgram?.resultStatus?.reason,
                         it.data?.membershipCreateEditProgram?.resultStatus?.message?.firstOrNull()
                     )
                 }
-                else ->{}
             }
         })
     }
@@ -455,7 +460,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                     super.onNumberChanged(number)
                     if (number > programThreshold?.maxThresholdLevel1 ?: 0) {
                         textFieldTranskPremium.isInputError = true
-                        textFieldTranskPremium.setMessage("Maks Rp${CurrencyFormatHelper.convertToRupiah(programThreshold?.maxThresholdLevel1.toString())}")
+                        textFieldTranskPremium.setMessage("Maks. Rp${CurrencyFormatHelper.convertToRupiah(programThreshold?.maxThresholdLevel1.toString())}")
                     } else if (number <= programThreshold?.maxThresholdLevel1 ?: 0 && number > 0) {
                         tickerInfo.show()
                         if (textFieldTranskVip.editText.text.toString()
@@ -484,11 +489,11 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                     when {
                         number> programThreshold?.maxThresholdLevel2 ?: 0 -> {
                             textFieldTranskVip.isInputError = true
-                            textFieldTranskVip.setMessage("Maks Rp${CurrencyFormatHelper.convertToRupiah(programThreshold?.maxThresholdLevel2.toString())}")
+                            textFieldTranskVip.setMessage("Maks. Rp${CurrencyFormatHelper.convertToRupiah(programThreshold?.maxThresholdLevel2.toString())}")
                         }
                         number < programThreshold?.minThresholdLevel2 ?: 0 -> {
                             textFieldTranskVip.isInputError = true
-                            textFieldTranskVip.setMessage("Min Rp${CurrencyFormatHelper.convertToRupiah(programThreshold?.minThresholdLevel2.toString())}")
+                            textFieldTranskVip.setMessage("Min. Rp${CurrencyFormatHelper.convertToRupiah(programThreshold?.minThresholdLevel2.toString())}")
                         }
                         else -> {
                             textFieldTranskVip.isInputError = false
