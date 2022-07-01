@@ -572,8 +572,13 @@ class PlayBottomSheetFragment @Inject constructor(
                                 actionText = toaster,
                                 actionClickListener = {
                                     RouteManager.route(requireContext(), route)
-                                    if (event.product.isTokoNow && partnerTokoNow)
-                                        newAnalytic.clickLihatNowToaster(channelType = playViewModel.channelType, channelId = playViewModel.channelId)
+                                    if (event.product.isTokoNow && partnerTokoNow) {
+                                        newAnalytic.clickLihatNowToaster(
+                                            channelType = playViewModel.channelType,
+                                            channelId = playViewModel.channelId
+                                        )
+                                        analytic.clickSeeToasterAfterAtc()
+                                    }
                                     else if(!event.product.isTokoNow) newAnalytic.clickGlobalToaster(channelType = playViewModel.channelType, channelId = playViewModel.channelId)
                                     else analytic.clickSeeToasterAfterAtc()
                                 }
