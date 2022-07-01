@@ -27,7 +27,7 @@ class AddOnInfoViewHolder(private val binding: TokofoodItemAddOnInfoLayoutBindin
             val startIndex = addOnName.length
             val endIndex = startIndex + addOnValues.length
             val spannableString = SpannableString(fullText)
-            val addOnNameColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black)
+            val addOnNameColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
             spannableString.setSpan(ForegroundColorSpan(addOnNameColor), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             binding.tpgAddOn.text = spannableString
         }

@@ -32,7 +32,7 @@ class OrderDetailViewHolder(
             clickListener.onEditButtonClicked(cartId = customOrderDetail.cartId)
         }
         binding.removeFromCartButton.setOnClickListener {
-            val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
+            binding.root.getTag(R.id.dataset_position) as Int
             val customOrderDetail = binding.root.getTag(R.id.custom_order_detail) as CustomOrderDetail
             clickListener.onDeleteButtonClicked(adapterPosition =  adapterPosition, cartId = customOrderDetail.cartId)
         }
