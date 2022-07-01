@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.flashsale.common.extension.digitsOnly
 import com.tokopedia.shop.flashsale.common.extension.isNumber
+import com.tokopedia.shop.flashsale.common.tracker.ShopFlashSaleTracker
 import com.tokopedia.shop.flashsale.domain.entity.CampaignMeta
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.CampaignCreationEligibility
@@ -31,6 +32,7 @@ class CampaignListViewModel @Inject constructor(
     private val validateCampaignCreationEligibility: ValidateCampaignCreationEligibilityUseCase,
     private val generateCampaignBannerUseCase: GenerateCampaignBannerUseCase,
     private val getShopDecorStatusUseCase: GetShopDecorStatusUseCase,
+    private val tracker: ShopFlashSaleTracker
 ) : BaseViewModel(dispatchers.main) {
 
     private val _campaigns = MutableLiveData<Result<CampaignMeta>>()
@@ -142,6 +144,8 @@ class CampaignListViewModel @Inject constructor(
 
 
     fun getShopDecorStatus() {
+        tracker.sendClickCreateCampaignEvent()
+
         launchCatchError(
             dispatchers.io,
             block = {

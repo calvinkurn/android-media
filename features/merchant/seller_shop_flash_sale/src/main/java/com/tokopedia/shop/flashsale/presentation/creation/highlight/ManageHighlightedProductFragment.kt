@@ -63,10 +63,6 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
     @Inject
     lateinit var preferenceDataStore: SharedPreferenceDataStore
 
-
-    @Inject
-    lateinit var tracker: ShopFlashSaleTracker
-
     private val campaignId by lazy {
         arguments?.getLong(BUNDLE_KEY_CAMPAIGN_ID).orZero()
     }
@@ -159,7 +155,6 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
     private fun setupButton() {
         binding?.run {
             btnProceed.setOnClickListener {
-                tracker.sendClickButtonProceedOnManageHighlightPageEvent()
                 binding?.btnProceed?.showLoading()
                 viewModel.submitHighlightedProducts(campaignId, productAdapter.getItems())
             }

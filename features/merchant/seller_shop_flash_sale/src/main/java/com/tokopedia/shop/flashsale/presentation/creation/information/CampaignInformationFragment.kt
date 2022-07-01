@@ -33,7 +33,6 @@ import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant.CAMPA
 import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant.CAMPAIGN_TEASER_NORMAL_STEP_SIZE
 import com.tokopedia.shop.flashsale.common.extension.*
 import com.tokopedia.shop.flashsale.common.preference.SharedPreferenceDataStore
-import com.tokopedia.shop.flashsale.common.tracker.ShopFlashSaleTracker
 import com.tokopedia.shop.flashsale.common.util.DateManager
 import com.tokopedia.shop.flashsale.common.util.doOnTextChanged
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
@@ -105,9 +104,6 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var sharedPreference: SharedPreferenceDataStore
-
-    @Inject
-    lateinit var tracker: ShopFlashSaleTracker
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(CampaignInformationViewModel::class.java) }
@@ -320,7 +316,6 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         binding?.run {
             btnDraft.setOnClickListener { validateDraft() }
             btnCreateCampaign.setOnClickListener {
-                tracker.sendClickButtonProceedOnCampaignInfoPageEvent()
                 viewModel.validateInput(pageMode, getCurrentSelection(), Date())
             }
             btnApply.setOnClickListener {
