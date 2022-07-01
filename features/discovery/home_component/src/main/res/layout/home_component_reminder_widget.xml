@@ -23,7 +23,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/ic_close_reminder_recommendation"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_2" />
+        app:typographyType="display_1"
+        app:typographyWeight="bold"/>
 
     <ImageView
         android:id="@+id/ic_close_reminder_recommendation"
@@ -95,7 +96,7 @@
                 app:layout_constraintLeft_toRightOf="@id/ic_reminder_recommendation_product"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="body_3" />
+                app:typographyType="display_3" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/reminder_recommendation_text_sub"
@@ -108,7 +109,7 @@
                 app:layout_constraintLeft_toRightOf="@id/ic_reminder_recommendation_product"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/reminder_recommendation_text_main"
-                app:typographyType="body_3" />
+                app:typographyType="display_3" />
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btn_reminder_recommendation"

@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 import androidx.annotation.LayoutRes;
 import androidx.annotation.Nullable;
@@ -24,6 +25,7 @@ import androidx.core.content.ContextCompat;
 
 import com.tokopedia.abstraction.R;
 import com.tokopedia.abstraction.common.utils.view.MenuTintUtils;
+import com.tokopedia.unifyprinciples.Typography;
 
 /**
  * Created by nathan on 7/11/17.
@@ -75,6 +77,7 @@ public abstract class BaseToolbarActivity extends BaseActivity {
     protected void setupLayout(Bundle savedInstanceState) {
         setContentView(getLayoutRes());
         toolbar = getInitToolbarView();
+        changeToolbarFontToOSO();
     }
 
     private @Nullable Toolbar getInitToolbarView(){
@@ -164,7 +167,7 @@ public abstract class BaseToolbarActivity extends BaseActivity {
                 drawable.setColorFilter(ContextCompat.getColor(this,
                         com.tokopedia.unifyprinciples.R.color.Unify_NN900), PorterDuff.Mode.SRC_ATOP);
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -178,6 +181,21 @@ public abstract class BaseToolbarActivity extends BaseActivity {
             menuItem.setTitle(spanString);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private void changeToolbarFontToOSO() {
+        if (toolbar != null && toolbar.getChildCount() > 0) {
+            for (int i = 0; i < toolbar.getChildCount(); i++) {
+                View item = toolbar.getChildAt(i);
+                if (item instanceof TextView) {
+                    if (((TextView) item).getText().equals(toolbar.getTitle())) {
+                        ((TextView) item).setTypeface(Typography.Companion.getFontType(this, true, Typography.DISPLAY_1));
+                    } else if (((TextView) item).getText().equals(toolbar.getSubtitle())) {
+                        ((TextView) item).setTypeface(Typography.Companion.getFontType(this, false, Typography.DISPLAY_3));
+                    }
+                }
+            }
         }
     }
 }
