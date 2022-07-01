@@ -29,7 +29,6 @@ open class UserPostBaseAdapter(
     val onLoadMore: (cursor: String) -> Unit,
 ) : BaseAdapter<PlayPostContentItem>(callback), PlayWidgetCardLargeChannelView.Listener {
 
-    var activityId = ""
     protected var cList: MutableList<BaseItem>? = null
     public var cursor: String = ""
     var displayName = ""

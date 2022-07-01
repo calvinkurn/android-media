@@ -80,7 +80,6 @@ class UserProfileFragment @Inject constructor(
     private val userSession: UserSessionInterface,
     private val feedFloatingButtonManager: FeedFloatingButtonManager,
 ) : BaseDaggerFragment(),
-    View.OnClickListener,
     AdapterCallback,
     ShareBottomsheetListener,
     ScreenShotListener,
@@ -93,9 +92,10 @@ class UserProfileFragment @Inject constructor(
     }
 
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
-    private var shouldRefreshRecyclerView: Boolean? = false
-    private var isViewMoreClickedBio: Boolean? = false
     private var screenShotDetector: ScreenshotDetector? = null
+
+    private var shouldRefreshRecyclerView: Boolean = false
+    private var isViewMoreClickedBio: Boolean = false
 
     private var _binding: UpFragmentUserProfileBinding? = null
 
@@ -167,7 +167,7 @@ class UserProfileFragment @Inject constructor(
         })
 
         mainBinding.swipeRefreshLayout.setOnChildScrollUpCallback { _, _ ->
-            mainBinding.rvPost.canScrollVertically(-1) || !shouldRefreshRecyclerView!!
+            mainBinding.rvPost.canScrollVertically(-1) || !shouldRefreshRecyclerView
         }
 
         context?.let {
@@ -206,15 +206,18 @@ class UserProfileFragment @Inject constructor(
 
     private fun initListener() {
         mainBinding.apply {
-            val fragmentReference = this@UserProfileFragment
-            textFollowingLabel.setOnClickListener(fragmentReference)
-            textFollowingCount.setOnClickListener(fragmentReference)
-            textFollowerLabel.setOnClickListener(fragmentReference)
-            textFollowerCount.setOnClickListener(fragmentReference)
-            imgProfileImage.setOnClickListener(fragmentReference)
-            textLive.setOnClickListener(fragmentReference)
-            viewProfileOuterRing.setOnClickListener(fragmentReference)
-            textSeeMore.setOnClickListener(fragmentReference)
+            textFollowingLabel.setOnClickListener { goToFollowingFollowerPage(false) }
+            textFollowingCount.setOnClickListener { goToFollowingFollowerPage(false) }
+            textFollowerLabel.setOnClickListener { goToFollowingFollowerPage(true) }
+            textFollowerCount.setOnClickListener { goToFollowingFollowerPage(true) }
+
+            textSeeMore.setOnClickListener {
+                userProfileTracker.clickSelengkapnya(userSession.userId, self = viewModel.isSelfProfile)
+                textBio.maxLines = MAX_LINE
+                textSeeMore.hide()
+                isViewMoreClickedBio = true
+            }
+
             btnActionFollow.setOnClickListener {
                 if(!userSession.isLoggedIn) {
                     startActivityForResult(
@@ -224,6 +227,7 @@ class UserProfileFragment @Inject constructor(
                 }
                 else doFollowUnfollow(isFromLogin = false)
             }
+
             fabUserProfile.setOnClickListener {
                 FeedUserTnCOnboardingBottomSheet.getFragment(
                     childFragmentManager,
@@ -361,17 +365,17 @@ class UserProfileFragment @Inject constructor(
     private fun adduserPostErrorObserver() {
         viewModel.userPostErrorLiveData.observe(viewLifecycleOwner) {
             with(mainBinding) {
-                userPostContainer?.displayedChild = PAGE_ERROR
+                userPostContainer.displayedChild = PAGE_ERROR
 
                 globalErrorPost.refreshBtn?.setOnClickListener {
-                    userPostContainer?.displayedChild = PAGE_LOADING
+                    userPostContainer.displayedChild = PAGE_LOADING
                     initUserPost(viewModel.profileUserID)
                 }
             }
         }
     }
 
-    private fun addLiveClickListener(appLink: String) = View.OnClickListener {
+    private fun addLiveClickListener(appLink: String) {
         RouteManager.route(context, appLink)
     }
 
@@ -485,8 +489,6 @@ class UserProfileFragment @Inject constructor(
     }
 
     private fun setProfileImg(profile: ProfileUiModel) {
-        mAdapter.activityId = profile.liveInfo.channelId
-
         with(mainBinding) {
             imgProfileImage.urlSrc = profile.imageCover
 
@@ -494,13 +496,13 @@ class UserProfileFragment @Inject constructor(
                 viewProfileOuterRing.show()
                 textLive.show()
 
-                textLive.setOnClickListener(addLiveClickListener(profile.liveInfo.channelLink.appLink))
-                imgProfileImage.setOnClickListener(addLiveClickListener(profile.liveInfo.channelLink.appLink))
+                val appLink = profile.liveInfo.channelLink.appLink
+                textLive.setOnClickListener { addLiveClickListener(appLink) }
+                imgProfileImage.setOnClickListener { addLiveClickListener(appLink) }
             } else {
                 viewProfileOuterRing.visibility = View.INVISIBLE
                 textLive.hide()
 
-                textLive.setOnClickListener(null)
                 textLive.setOnClickListener(null)
                 imgProfileImage.setOnClickListener{
                     userProfileTracker.clickProfilePicture(userSession.userId, self = viewModel.isSelfProfile, profile.liveInfo.channelId)
@@ -592,38 +594,16 @@ class UserProfileFragment @Inject constructor(
         viewModel.submitAction(action)
     }
 
-    override fun onClick(source: View) {
-        when (source.id) {
-            R.id.text_following_count, R.id.text_following_label -> {
-                userProfileTracker.clickFollowing(userSession.userId, self = viewModel.isSelfProfile)
-                startActivity(activity?.let {
-                    FollowerFollowingListingActivity.getCallingIntent(
-                        it,
-                        getFollowersBundle(false)
-                    )
-                })
-            }
+    private fun goToFollowingFollowerPage(isFollowers: Boolean) {
+        if(isFollowers) userProfileTracker.clickFollowers(userSession.userId, self = viewModel.isSelfProfile)
+        else userProfileTracker.clickFollowing(userSession.userId, self = viewModel.isSelfProfile)
 
-            R.id.text_follower_count, R.id.text_follower_label -> {
-                userProfileTracker.clickFollowers(userSession.userId, self = viewModel.isSelfProfile)
-                UserProfileTracker().openFollowersTab(viewModel.profileUserID)
-                startActivity(activity?.let {
-                    FollowerFollowingListingActivity.getCallingIntent(
-                        it,
-                        getFollowersBundle(true)
-                    )
-                })
-            }
-
-            R.id.text_see_more -> {
-                userProfileTracker.clickSelengkapnya(userSession.userId, self = viewModel.isSelfProfile)
-                val textBio = view?.findViewById<TextView>(R.id.text_bio)
-                val btnSeeAll = view?.findViewById<TextView>(R.id.text_see_more)
-                textBio?.maxLines = MAX_LINE
-                btnSeeAll?.hide()
-                isViewMoreClickedBio = true;
-            }
-        }
+        startActivity(activity?.let {
+            FollowerFollowingListingActivity.getCallingIntent(
+                it,
+                getFollowersBundle(isFollowers)
+            )
+        })
     }
 
     private fun getFollowersBundle(isFollowers: Boolean): Bundle {
