@@ -43,11 +43,9 @@ import com.tokopedia.digital_checkout.presentation.adapter.DigitalMyBillsAdapter
 import com.tokopedia.digital_checkout.presentation.adapter.vh.MyBillsActionListener
 import com.tokopedia.digital_checkout.presentation.viewmodel.DigitalCartViewModel
 import com.tokopedia.digital_checkout.presentation.widget.DigitalCartInputPriceWidget
-import com.tokopedia.digital_checkout.presentation.widget.DigitalCheckoutBottomViewWidget
 import com.tokopedia.digital_checkout.presentation.widget.DigitalCheckoutSimpleWidget
 import com.tokopedia.digital_checkout.utils.DeviceUtil
 import com.tokopedia.digital_checkout.utils.DigitalCurrencyUtil.getStringIdrFormat
-import com.tokopedia.digital_checkout.utils.GoToPlusUtil
 import com.tokopedia.digital_checkout.utils.PromoDataUtil.mapToStatePromoCheckout
 import com.tokopedia.digital_checkout.utils.analytics.DigitalAnalytics
 import com.tokopedia.globalerror.GlobalError
@@ -372,40 +370,14 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
 
         showPromoTicker()
 
-        val detailConsentBottomSheet = BottomSheetUnify()
-        detailConsentBottomSheet.isFullpage = true
-        checkoutBottomViewWidget.setOnClickConsentListener(object : DigitalCheckoutBottomViewWidget.OnClickConsentListener{
-            override fun onTncClick() {
-                detailConsentBottomSheet.setTitle(getString(R.string.digital_cart_goto_plus_tos))
-                showBottomSheet(detailConsentBottomSheet, TNC_FILENAME)
-            }
-            override fun onPrivacyPolicyClick() {
-                detailConsentBottomSheet.setTitle(getString(R.string.digital_cart_goto_plus_privacy_policy))
-                showBottomSheet(detailConsentBottomSheet, PRIVACY_POLICY_FILENAME)
-            }
-        })
-
         checkoutBottomViewWidget.setCheckoutButtonListener {
             viewModel.proceedToCheckout(getDigitalIdentifierParam())
         }
-    }
 
-    private fun showBottomSheet(bottomSheetUnify: BottomSheetUnify, fileName: String){
-        bottomSheetUnify.setChild(LinearLayout(context).apply {
-            layoutParams = ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-            orientation = LinearLayout.VERTICAL
-            GoToPlusUtil.getWebViewLoaded(
-                parentView = this,
-                context = context,
-                filename = fileName,
-                onButtonClick = {
-                    bottomSheetUnify.dismiss()
-                })
-        })
-        bottomSheetUnify.show(childFragmentManager, CONSENT_BOTTOM_SHEET_TAG)
+        checkoutBottomViewWidget.setOnClickConsentListener {
+            RouteManager.route(context, GOTO_PLUS_TNC_APPLINK)
+        }
+
     }
 
     private fun showError(error: Throwable) {
@@ -842,9 +814,8 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         private const val SUBSCRIPTION_BOTTOM_SHEET_TAG = "SUBSCRIPTION_BOTTOM_SHEET_TAG"
         private const val LEADING_MARGIN_SPAN = 16
 
-        private const val TNC_FILENAME = "goto_plus_term_of_service.html"
-        private const val PRIVACY_POLICY_FILENAME = "goto_plus_privacy_policy.html"
-        private const val CONSENT_BOTTOM_SHEET_TAG = "goto plus consent bottom sheet"
+        private const val TNC_URL = "https://www.tokopedia.com/help/article/tnc-gotoplus"
+        private const val GOTO_PLUS_TNC_APPLINK = "tokopedia://webview?url=$TNC_URL&titlebar=false"
 
         fun newInstance(
             passData: DigitalCheckoutPassData?,
