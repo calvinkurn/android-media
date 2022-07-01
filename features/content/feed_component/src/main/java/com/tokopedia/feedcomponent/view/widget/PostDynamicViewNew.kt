@@ -243,6 +243,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 val data = mData
                 val position = viewHolder.adapterPosition
 
+                if (position == RecyclerView.NO_POSITION) return
+
                 if (data.isTypeProductHighlight) {
 
                     if (data.products.isEmpty() ||
