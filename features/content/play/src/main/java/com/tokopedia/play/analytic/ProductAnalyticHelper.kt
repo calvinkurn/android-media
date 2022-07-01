@@ -33,7 +33,6 @@ class ProductAnalyticHelper(
     }
 
     fun sendImpressedProductSheets() {
-        sendImpressedBottomSheetProducts()
         sendImpressedPrivateVoucher()
     }
 

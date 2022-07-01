@@ -184,7 +184,7 @@ class PlayBottomSheetFragment @Inject constructor(
         products: List<Pair<PlayProductUiModel.Product, Int>>,
         sectionInfo: ProductSectionUiModel.Section
     ) {
-        trackImpressedProduct(products, sectionInfo)
+        if(playViewModel.bottomInsets.isProductSheetsShown) analytic.impressBottomSheetProducts(products, sectionInfo)
     }
 
     override fun onProductCountChanged(view: ProductSheetViewComponent) {
@@ -601,10 +601,6 @@ class PlayBottomSheetFragment @Inject constructor(
             is UiString.Text -> uiString.text
             is UiString.Resource -> getString(uiString.resource)
         }
-    }
-
-    private fun trackImpressedProduct(products: List<Pair<PlayProductUiModel.Product, Int>>, sectionInfo: ProductSectionUiModel.Section) {
-        if (playViewModel.bottomInsets.isProductSheetsShown) productAnalyticHelper.trackImpressedProducts(products, sectionInfo)
     }
 
     override fun onReminderClicked(

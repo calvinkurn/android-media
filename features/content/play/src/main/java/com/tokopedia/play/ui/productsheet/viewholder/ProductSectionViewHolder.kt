@@ -125,7 +125,14 @@ class ProductSectionViewHolder(
         btnInfo.setOnClickListener {
             listener.onInformationClicked(item)
         }
+
+        itemView.addOnImpressionListener(item.impressHolder){
+            listener.onProductImpressed(sectionInfo = item, product = getFinalProduct(item.productList))
+        }
     }
+
+    private fun getFinalProduct(productList: List<PlayProductUiModel.Product>): List<Pair<PlayProductUiModel.Product, Int>> =
+        productList.mapIndexed { index, product -> Pair(product, index) }
 
     private fun setupBackground(background: ProductSectionUiModel.Section.BackgroundUiModel) {
         if (background.gradients.isNotEmpty()) {
@@ -161,20 +168,6 @@ class ProductSectionViewHolder(
     private fun getTimeDiff(serverTime: Date, currentTime: Date): Date {
         val diff = serverTime.time - currentTime.time
         return currentTime.addTimeToSpesificDate(Calendar.MILLISECOND, diff.toInt())
-    }
-
-    private fun getVisibleProducts(layoutManagerProductList: LinearLayoutManager): List<Pair<PlayProductUiModel.Product, Int>> {
-        val products = adapter.getItems()
-        if (products.isNotEmpty()) {
-            val startPosition = layoutManagerProductList.findFirstCompletelyVisibleItemPosition()
-            val endPosition = layoutManagerProductList.findLastCompletelyVisibleItemPosition()
-            if (startPosition > -1 && endPosition < products.size) return products.slice(startPosition..endPosition)
-                .filterIsInstance<PlayProductUiModel.Product>()
-                .mapIndexed { index, item ->
-                    Pair(item, startPosition + index)
-                }
-        }
-        return emptyList()
     }
 
     private fun resetBackground(){
