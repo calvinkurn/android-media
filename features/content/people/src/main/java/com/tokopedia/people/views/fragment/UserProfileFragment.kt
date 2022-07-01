@@ -106,7 +106,6 @@ class UserProfileFragment @Inject constructor(
     private var headerProfile: HeaderUnify? = null
     private var appBarLayout: AppBarLayout? = null
     private var userPostContainer: ViewFlipper? = null
-    private var globalError: GlobalError? = null
     private var globalErrorPost: LocalLoad? = null
     private var shouldRefreshRecyclerView: Boolean? = false
     private var isViewMoreClickedBio: Boolean? = false
@@ -162,7 +161,6 @@ class UserProfileFragment @Inject constructor(
         feedFloatingButtonManager.setInitialData(this)
 
         userPostContainer = view.findViewById(R.id.vp_rv_post)
-        globalError = view.findViewById(R.id.global_error)
         globalErrorPost = view.findViewById(R.id.global_error_post)
         appBarLayout = view.findViewById(R.id.app_bar_layout)
 
@@ -631,13 +629,15 @@ class UserProfileFragment @Inject constructor(
     }
 
     private fun showGlobalError(type: Int) {
-        binding.rootContainer.displayedChild = PAGE_ERROR
-        globalError?.setType(type)
-        globalError?.show()
+        with(binding) {
+            rootContainer.displayedChild = PAGE_ERROR
+            globalError.setType(type)
+            globalError.show()
 
-        globalError?.setActionClickListener {
-            binding.rootContainer.displayedChild = PAGE_LOADING
-            refreshLandingPageData()
+            globalError.setActionClickListener {
+                binding.rootContainer.displayedChild = PAGE_LOADING
+                refreshLandingPageData()
+            }
         }
     }
 
