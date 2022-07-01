@@ -656,6 +656,10 @@ class UserProfileFragment @Inject constructor(
         return requireContext().getString(abstractionR.string.default_request_error_unknown)
     }
 
+    private fun getUsernameWithAdd(): String {
+        return requireContext().getString(R.string.up_username_template, viewModel.profileUsername)
+    }
+
     override fun getScreenName(): String {
         return ""
     }
@@ -835,7 +839,7 @@ class UserProfileFragment @Inject constructor(
     override fun onShareOptionClicked(shareModel: ShareModel) {
         val desc = buildString {
             append("Lihat foto & video menarik dari Tokopedia ${viewModel.displayName}")
-            if(viewModel.profileUsername.isBlank()) append(" (@${viewModel.profileUsername})")
+            if(viewModel.profileUsername.isBlank()) append(" (${getUsernameWithAdd()})")
             append(", yuk! \uD83D\uDE0D")
         }
 
@@ -850,7 +854,7 @@ class UserProfileFragment @Inject constructor(
             ogTitle = if (viewModel.profileUsername.isBlank()) {
                 viewModel.displayName
             } else {
-                "${viewModel.displayName} (@${viewModel.profileUsername})"
+                "${viewModel.displayName} (${getUsernameWithAdd()})"
             }
             ogDescription = "${viewModel.totalFollower} Follower ${viewModel.totalFollowing} Following ${viewModel.totalPost} Post"
             if (shareModel.ogImgUrl != null && shareModel.ogImgUrl?.isNotEmpty() == true) {
