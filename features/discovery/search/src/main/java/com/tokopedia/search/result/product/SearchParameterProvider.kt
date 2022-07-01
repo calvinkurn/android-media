@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.product.searchparameterprovider
+package com.tokopedia.search.result.product
 
 import com.tokopedia.discovery.common.model.SearchParameter
 

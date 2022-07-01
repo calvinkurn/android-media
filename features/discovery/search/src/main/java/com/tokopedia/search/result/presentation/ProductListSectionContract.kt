@@ -16,6 +16,7 @@ import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.product.pagination.Pagination
 import com.tokopedia.sortfilter.SortFilterItem
 import org.json.JSONArray
 
@@ -24,7 +25,7 @@ interface ProductListSectionContract {
         fun addProductList(list: List<Visitable<*>>)
         fun setProductList(list: List<Visitable<*>>)
         fun addRecommendationList(list: List<Visitable<*>>)
-        fun showNetworkError(startRow: Int, throwable: Throwable?)
+        fun showNetworkError(throwable: Throwable?)
         val queryKey: String
         fun setBannedProductsErrorMessage(bannedProductsErrorMessageAsList: List<Visitable<*>>)
         fun trackEventImpressionBannedProducts(isEmptySearch: Boolean)
@@ -120,18 +121,15 @@ interface ProductListSectionContract {
         fun trackEventApplyDropdownQuickFilter(optionList: List<Option>?)
     }
 
-    interface Presenter : CustomerPresenter<View>{
+    interface Presenter : CustomerPresenter<View>, Pagination {
         fun loadMoreData(searchParameter: Map<String, Any>)
         fun loadData(searchParameter: Map<String, Any>)
         val pageComponentId: String
         val userId: String
         val isUserLoggedIn: Boolean
-        val deviceId: String
         val dynamicFilterModel: DynamicFilterModel?
         fun onPriceFilterTickerDismissed()
         val isTickerHasDismissed: Boolean
-        fun clearData()
-        val startFrom: Int
         fun onViewCreated()
         fun onViewVisibilityChanged(isViewVisible: Boolean, isViewAdded: Boolean)
         fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel?)
