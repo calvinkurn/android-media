@@ -22,7 +22,7 @@ import com.tokopedia.url.TokopediaUrl
 
 object DeeplinkMapperMarketplace {
 
-    private const val PARAM_SOURCE = "source"
+    private const val PARAM_SOURCE = "review-source"
     private const val REVIEW_FULL_PAGE_SOURCE = "header"
     private const val ACTION_REVIEW = "review"
 
