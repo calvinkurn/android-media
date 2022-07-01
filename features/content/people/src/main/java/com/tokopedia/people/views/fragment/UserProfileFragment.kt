@@ -113,12 +113,7 @@ class UserProfileFragment @Inject constructor(
     private var shouldRefreshRecyclerView: Boolean? = false
     private var isViewMoreClickedBio: Boolean? = false
     private var screenShotDetector: ScreenshotDetector? = null
-    private lateinit var btnAction: UnifyButton
     private lateinit var feedFab: FeedFloatingButton
-
-    private lateinit var textContentCount: Typography
-    private lateinit var textFollowerCount: Typography
-    private lateinit var textFollowingCount: Typography
 
     private lateinit var textLive: Typography
     private lateinit var viewLiveRing: View
@@ -181,10 +176,6 @@ class UserProfileFragment @Inject constructor(
         feedFab = view.findViewById(R.id.up_feed_floating_button)
 
         headerProfile = view.findViewById(R.id.header_profile)
-        textContentCount = view.findViewById(R.id.text_content_count)
-        textFollowerCount = view.findViewById(R.id.text_follower_count)
-        textFollowingCount = view.findViewById(R.id.text_following_count)
-        btnAction = view.findViewById(R.id.btn_action_follow)
 
         textLive = view.findViewById(R.id.text_live)
         viewLiveRing = view.findViewById(R.id.view_profile_outer_ring)
@@ -254,36 +245,39 @@ class UserProfileFragment @Inject constructor(
     }
 
     private fun initListener() {
-        view?.findViewById<View>(R.id.text_following_label)?.setOnClickListener(this)
-        view?.findViewById<View>(R.id.text_following_count)?.setOnClickListener(this)
-        view?.findViewById<View>(R.id.text_follower_label)?.setOnClickListener(this)
-        view?.findViewById<View>(R.id.text_follower_count)?.setOnClickListener(this)
-        view?.findViewById<View>(R.id.img_profile_image)?.setOnClickListener(this)
-        view?.findViewById<View>(R.id.text_live)?.setOnClickListener(this)
-        view?.findViewById<View>(R.id.view_profile_outer_ring)?.setOnClickListener(this)
-        view?.findViewById<View>(R.id.text_see_more)?.setOnClickListener(this)
-        btnAction.setOnClickListener {
-            if(!userSession.isLoggedIn) {
-                startActivityForResult(
-                    RouteManager.getIntent(activity, ApplinkConst.LOGIN),
-                    REQUEST_CODE_LOGIN_TO_FOLLOW
-                )
+        mainBinding.apply {
+            val fragmentReference = this@UserProfileFragment
+            textFollowingLabel.setOnClickListener(fragmentReference)
+            textFollowingCount.setOnClickListener(fragmentReference)
+            textFollowerLabel.setOnClickListener(fragmentReference)
+            textFollowerCount.setOnClickListener(fragmentReference)
+            imgProfileImage.setOnClickListener(fragmentReference)
+            textLive.setOnClickListener(fragmentReference)
+            viewProfileOuterRing.setOnClickListener(fragmentReference)
+            textSeeMore.setOnClickListener(fragmentReference)
+            btnActionFollow.setOnClickListener {
+                if(!userSession.isLoggedIn) {
+                    startActivityForResult(
+                        RouteManager.getIntent(activity, ApplinkConst.LOGIN),
+                        REQUEST_CODE_LOGIN_TO_FOLLOW
+                    )
+                }
+                else doFollowUnfollow(isFromLogin = false)
             }
-            else doFollowUnfollow(isFromLogin = false)
-        }
-        feedFab.setOnClickListener {
-            FeedUserTnCOnboardingBottomSheet.getFragment(
-                childFragmentManager,
-                requireActivity().classLoader
-            ).showNow(childFragmentManager)
+            feedFab.setOnClickListener {
+                FeedUserTnCOnboardingBottomSheet.getFragment(
+                    childFragmentManager,
+                    requireActivity().classLoader
+                ).showNow(childFragmentManager)
 //            FeedUserCompleteOnboardingBottomSheet.getFragment(
 //                childFragmentManager,
 //                requireActivity().classLoader
 //            ).showNow(childFragmentManager)
-        }
+            }
 
-        recyclerviewPost?.addOnScrollListener(feedFloatingButtonManager.scrollListener)
+            recyclerviewPost?.addOnScrollListener(feedFloatingButtonManager.scrollListener)
 //        recyclerviewPost?.let { feedFloatingButtonManager.setDelayForExpandFab(it) }
+        }
     }
 
     private fun initUserPost(userId: String) {
@@ -484,35 +478,37 @@ class UserProfileFragment @Inject constructor(
         /** Setup Profile Info */
         setProfileImg(curr)
 
-        mainBinding.textUserName.shouldShowWithAction(curr.username.isNotBlank()) {
-            mainBinding.textUserName.text = getString(R.string.up_username_template, curr.username)
-        }
-        mainBinding.textDisplayName.text = curr.name
-        textContentCount.text = UserProfileUtils.getFormattedNumber(curr.stats.totalPost)
-        textFollowerCount.text = UserProfileUtils.getFormattedNumber(curr.stats.totalFollower)
-        textFollowingCount.text = UserProfileUtils.getFormattedNumber(curr.stats.totalFollowing)
-
-        /** Setup Bio */
-        val displayBioText = HtmlLinkHelper(requireContext(), curr.biography).spannedString
-        mainBinding.textBio.text = displayBioText
-
-        if (displayBioText?.lines()?.count().orZero() > SEE_ALL_LINE) {
-            if (isViewMoreClickedBio == true) {
-                mainBinding.textBio.maxLines = MAX_LINE
-                mainBinding.textSeeMore.hide()
-            } else {
-                mainBinding.textBio.maxLines = SEE_ALL_LINE
-                mainBinding.textSeeMore.show()
+        with(mainBinding) {
+            textUserName.shouldShowWithAction(curr.username.isNotBlank()) {
+                textUserName.text = getString(R.string.up_username_template, curr.username)
             }
-        } else {
-            mainBinding.textSeeMore.hide()
+            textDisplayName.text = curr.name
+            textContentCount.text = UserProfileUtils.getFormattedNumber(curr.stats.totalPost)
+            textFollowerCount.text = UserProfileUtils.getFormattedNumber(curr.stats.totalFollower)
+            textFollowingCount.text = UserProfileUtils.getFormattedNumber(curr.stats.totalFollowing)
+
+            /** Setup Bio */
+            val displayBioText = HtmlLinkHelper(requireContext(), curr.biography).spannedString
+            textBio.text = displayBioText
+
+            if (displayBioText?.lines()?.count().orZero() > SEE_ALL_LINE) {
+                if (isViewMoreClickedBio == true) {
+                    textBio.maxLines = MAX_LINE
+                    textSeeMore.hide()
+                } else {
+                    textBio.maxLines = SEE_ALL_LINE
+                    textSeeMore.show()
+                }
+            } else {
+                textSeeMore.hide()
+            }
+
+
+            if (!userSession.isLoggedIn)
+                updateToUnFollowUi()
+
+            headerProfile?.title = curr.name
         }
-
-
-        if (!userSession.isLoggedIn)
-            updateToUnFollowUi()
-
-        headerProfile?.title = curr.name
     }
 
     private fun renderFollowInfo(
@@ -524,19 +520,21 @@ class UserProfileFragment @Inject constructor(
             prev.profileType == value.profileType
         ) return
 
-        when(value.profileType) {
-            ProfileType.NotLoggedIn -> btnAction.show()
-            ProfileType.OtherUser -> {
-                with(value) {
-                    btnAction.show()
-                    if (followInfo.status)
-                        updateToFollowUi()
-                    else
-                        updateToUnFollowUi()
+        with(mainBinding) {
+            when(value.profileType) {
+                ProfileType.NotLoggedIn -> btnActionFollow.show()
+                ProfileType.OtherUser -> {
+                    with(value) {
+                        btnActionFollow.show()
+                        if (followInfo.status)
+                            updateToFollowUi()
+                        else
+                            updateToUnFollowUi()
+                    }
                 }
+                ProfileType.Unknown,
+                ProfileType.Self -> btnActionFollow.hide()
             }
-            ProfileType.Unknown,
-            ProfileType.Self -> btnAction.hide()
         }
     }
 
@@ -555,15 +553,15 @@ class UserProfileFragment @Inject constructor(
     }
 
     private fun updateToFollowUi() {
-        btnAction.text =  getString(R.string.up_btn_text_following)
-        btnAction.buttonVariant = UnifyButton.Variant.GHOST
-        btnAction.buttonType = UnifyButton.Type.ALTERNATE
+        mainBinding.btnActionFollow.text =  getString(R.string.up_btn_text_following)
+        mainBinding.btnActionFollow.buttonVariant = UnifyButton.Variant.GHOST
+        mainBinding.btnActionFollow.buttonType = UnifyButton.Type.ALTERNATE
     }
 
     private fun updateToUnFollowUi() {
-        btnAction.text = getString(R.string.up_btn_text_follow)
-        btnAction.buttonVariant = UnifyButton.Variant.FILLED
-        btnAction.buttonType = UnifyButton.Type.MAIN
+        mainBinding.btnActionFollow.text = getString(R.string.up_btn_text_follow)
+        mainBinding.btnActionFollow.buttonVariant = UnifyButton.Variant.FILLED
+        mainBinding.btnActionFollow.buttonType = UnifyButton.Type.MAIN
     }
 
     private fun setProfileImg(profile: ProfileUiModel) {
