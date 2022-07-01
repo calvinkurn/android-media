@@ -45,6 +45,7 @@ private const val QUERY = """
                       is_selected
                       name
                       price
+                      price_fmt
                     }
                   }
                 }
@@ -72,6 +73,7 @@ private const val QUERY = """
                       option_id
                       name
                       price
+                      price_fmt
                     }
                   }
                 }
