@@ -173,14 +173,14 @@ class PostTagView @JvmOverloads constructor(
 
     }
 
-    fun showExpandedView(): Boolean {
-        val isProductDotVisible = productTagDot.isVisible
-
-        if (productTagDot.isVisible) {
+    fun toggleExpandedView(): Boolean {
+        val isGoingToVisible = if (productTagDot.isVisible) {
             productTagDot.gone()
             showBubbleViewWithAnimation(productTagExpandedView, position, finalPointerView)
+            true
         } else if (finalPointerView.isVisible && productTagExpandedView.isVisible) {
             hideBubbleViewWithAnimation(productTagExpandedView, position, finalPointerView)
+            false
         } else if (!initialBubbleVisible) {
             val params = productTagExpandedView.layoutParams as MarginLayoutParams
             if (position == POSITION_BOTTOM) {
@@ -193,11 +193,12 @@ class PostTagView @JvmOverloads constructor(
             }
             productTagExpandedView.layoutParams = params
             showBubbleViewWithAnimation(productTagExpandedView, position, finalPointerView)
+            true
         } else {
             showBubbleViewWithAnimation(productTagExpandedView, position, finalPointerView)
-
+            true
         }
-        return isProductDotVisible
+        return isGoingToVisible
 
     }
     fun hideExpandedViewIfShown(): Boolean {

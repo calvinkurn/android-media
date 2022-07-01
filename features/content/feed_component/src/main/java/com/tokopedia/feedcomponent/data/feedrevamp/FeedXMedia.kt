@@ -4,6 +4,7 @@ import android.view.View
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.feedcomponent.view.widget.FeedVODViewHolder
+import com.tokopedia.kotlin.model.ImpressHolder
 
 data class FeedXMedia(
     @SerializedName("id")
@@ -28,6 +29,10 @@ data class FeedXMedia(
     var vodView: FeedVODViewHolder? = null,
     @Transient
     var imageView: View? = null,
+
+    @Transient
+    var tagProducts: List<FeedXProduct> = emptyList(),
+
     var canPlay: Boolean = false,
     var isImageImpressedFirst: Boolean = true,
     var productName : String= "",
@@ -37,5 +42,15 @@ data class FeedXMedia(
     val isCashback : Boolean = false,
     val cashBackFmt:String = "",
     val variant:Int = 1
-)
+) {
+
+    val isImage: Boolean
+        get() = type == TYPE_IMAGE
+
+    val impressHolder = ImpressHolder()
+
+    companion object {
+        private const val TYPE_IMAGE = "image"
+    }
+}
 
