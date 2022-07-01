@@ -254,7 +254,7 @@
     <!--Manage Product-->
     <string name="manage_product_complete_product_info_warning_label">Klik <b>Ubah</b> untuk melengkapi informasi produk ini, ya.</string>
     <string name="manage_product_ubah_label">Ubah</string>
-    <string name="manage_product_separator_label">|</string>
+    <string name="separator_label">|</string>
     <string name="manage_product">Kelola Produk</string>
     <string name="manage_product_incomplete_product_info_label">Beberapa produk memiliki info yang belum lengkap. Lengkapi dulu, ya!</string>
     <string name="manage_product_placeholder_product_count">(%s Produk)</string>
@@ -273,6 +273,8 @@
     <string name="error_msg_min_campaign_stock">Stok campaign Min. 1</string>
     <string name="error_msg_max_campaign_order">Maksimum pembelian tidak boleh melebihi stok utama</string>
     <string name="error_msg_other">&#160;dan terjadi kesalahan lainnya</string>
+    <string name="manage_product_first_list_coachmark">Klik Ubah di setiap produk untuk mengubah atau memperbaiki informasi tiap produk.</string>
+    <string name="manage_product_second_list_coachmark">Klik di sini untuk menambah produk, ya.</string>
 
     <!--Manage Product Highlight -->
     <string name="sfs_manage_highlight">Atur Highlight</string>
@@ -315,5 +317,9 @@
 
     <string name="campaign_detail_sharing_message">Bagikan campaign untuk tingkatkan jumlah pesanan, yuk!</string>
     <string name="campaign_detail_sharing_button">Bagikan</string>
+
+    <string name="campaign_detail_SKU_placeholder">SKU: %s</string>
+    <string name="campaign_detail_campaign_stock_label">Stok Campaign</string>
+    <string name="campaign_detail_campaign_price_label">Harga Campaign</string>
 
 </resources>
