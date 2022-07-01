@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: 'androidx.navigation.safeargs.kotlin'
-apply from: "../../../compile-instrument-test.gradle"
+apply from: "../../compile-instrument-test.gradle"
 
 android{
     buildFeatures {
@@ -81,6 +81,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    implementation 'androidx.appcompat:appcompat:1.4.2'
+    implementation 'com.google.android.material:material:1.4.0'
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
@@ -125,7 +127,10 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.features.navigationCommon)
     implementation projectOrAar(rootProject.ext.features.medialoader)
+
+    wearApp project(':wearosapp')
     implementation 'com.google.android.gms:play-services-wearable:17.1.0'
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.3.9"
 
 }
 
@@ -136,6 +141,6 @@ project.ext {
     artifactName ="home-nav-release"
 }
 
-apply from: '../../../publish_local.gradle'
-apply from: '../../../sonar_config.gradle'
-apply from: '../../../jacoco_task.gradle'
+apply from: '../../publish_local.gradle'
+apply from: '../../sonar_config.gradle'
+apply from: '../../jacoco_task.gradle'
