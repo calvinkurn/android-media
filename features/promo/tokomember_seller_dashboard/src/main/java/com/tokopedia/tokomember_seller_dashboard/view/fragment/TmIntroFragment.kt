@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -14,6 +15,7 @@ import android.view.WindowManager
 import android.view.animation.AnimationUtils
 import android.widget.RelativeLayout
 import android.widget.ViewFlipper
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ViewModelProvider
@@ -234,6 +236,7 @@ class TmIntroFragment : BaseDaggerFragment(),
             isShowBackButton = true
             headerSubTitle =""
             headerTitle =""
+            transparentMode = true
 
             setNavigationOnClickListener {
                 activity?.onBackPressed()
