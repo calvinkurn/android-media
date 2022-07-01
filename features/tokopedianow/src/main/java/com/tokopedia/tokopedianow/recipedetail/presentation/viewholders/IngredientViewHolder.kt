@@ -33,9 +33,10 @@ class IngredientViewHolder(itemView: View) : AbstractViewHolder<IngredientUiMode
     private fun renderLastItem(ingredient: IngredientUiModel) {
         if (ingredient.isLastItem) {
             val marginBottom = itemView.context.resources.getDimensionPixelSize(
-                com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4
-            )
-            itemView.setMargin(0, 0, 0, marginBottom)
+                com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
+            val marginZero = itemView.context.resources.getDimensionPixelSize(
+                com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+            itemView.setMargin(marginZero, marginZero, marginZero, marginBottom)
             binding?.bottomDivider?.hide()
         }
     }
