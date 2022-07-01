@@ -17,7 +17,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.model.TickerItem
@@ -131,7 +130,10 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
 
                             }
                         })
-                    ivShopIcon.loadImageRounded(it.data?.membershipGetSellerAnalyticsTopSection?.shopProfile?.shop?.avatar, 10F)
+                    Glide.with(ivShopIcon)
+                        .load(it.data?.membershipGetSellerAnalyticsTopSection?.shopProfile?.shop?.avatar)
+                        .circleCrop()
+                        .into(ivShopIcon)
                     tvShopName.text = it.data?.membershipGetSellerAnalyticsTopSection?.shopProfile?.shop?.name
                     renderTicker(it.data?.membershipGetSellerAnalyticsTopSection?.ticker)
                     val prefManager = context?.let { it1 -> TmPrefManager(it1) }
