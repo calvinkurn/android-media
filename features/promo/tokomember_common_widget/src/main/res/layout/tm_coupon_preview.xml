@@ -12,6 +12,7 @@
         android:layout_height="@dimen/tm_cmn_dp_58"
         android:layout_marginStart="@dimen/tm_cmn_dp_14"
         android:layout_marginTop="@dimen/unify_space_16"
+        app:unify_image_type="circle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

@@ -10,7 +10,7 @@
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ivSection"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/tm_dash_dp_250"
         android:layout_marginTop="@dimen/tm_dash_dp_34"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

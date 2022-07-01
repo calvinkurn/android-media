@@ -39,7 +39,7 @@ class TokomemberChipGroup @JvmOverloads constructor(
     fun addChip(text: String){
         val chip = context?.let { ChipsUnify(it) }
         val param = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        param.setMargins(dpToPx(8).roundToInt(), 0, 0, 0)
+        param.setMargins(0, 0, dpToPx(8).roundToInt(), 0)
         chip?.chip_text?.text = text
         chip?.layoutParams = param
         chip?.setOnClickListener {

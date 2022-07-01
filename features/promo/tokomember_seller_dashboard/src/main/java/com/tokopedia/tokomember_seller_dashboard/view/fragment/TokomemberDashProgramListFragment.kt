@@ -224,7 +224,7 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
                 dialog?.setTitle("Yakin batalkan program?")
                 dialog?.setDescription("Pengaturan yang dibuat akan hilang kalau kamu batalkan proses pengaturan TokoMember, lho.")
                 dialog?.setPrimaryCTAText("Lanjutkan")
-                dialog?.setSecondaryCTAText("Batalkan Program")
+                dialog?.setSecondaryCTAText("Batalkan Ubah Program")
                 dialog?.setPrimaryCTAClickListener {
                     tmDashCreateViewModel.getProgramInfo(programId,shopId, ACTION_CANCEL)
                     dialog.dismiss()

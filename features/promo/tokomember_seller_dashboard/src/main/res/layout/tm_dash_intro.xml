@@ -28,6 +28,9 @@
                     android:id="@+id/ivBg"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/tm_dash_dp_310"
+                    app:unify_image_corner_radius="0"
+                    app:unify_image_type="rect"
+                    app:unify_image_placeholder="@color/Unify_G100"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -61,7 +64,6 @@
                 android:id="@+id/cardTokmemberParent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/unify_space_16"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
@@ -79,7 +81,7 @@
                     android:id="@+id/cardTokomember"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/unify_space_16"
+                    android:layout_marginStart="@dimen/unify_space_8"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/header">
 
@@ -120,6 +122,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/unify_space_2"
                     android:layout_marginEnd="@dimen/unify_space_16"
+                    android:layout_marginStart="@dimen/unify_space_8"
                     android:textColor="@color/Unify_N0"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@id/cardTokomember"
@@ -132,6 +135,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/unify_space_12"
+                    android:layout_marginStart="@dimen/unify_space_8"
                     android:layout_marginEnd="@dimen/unify_space_16"
                     android:textColor="@color/Unify_N0"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -146,7 +150,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/unify_space_16"
-                android:layout_marginTop="@dimen/unify_space_16"
+                android:layout_marginTop="@dimen/unify_space_24"
                 android:layout_marginEnd="@dimen/unify_space_16"
                 app:layout_constraintStart_toStartOf="@id/cardTokmemberParent"
                 app:layout_constraintTop_toBottomOf="@+id/containerBgvideo" />
