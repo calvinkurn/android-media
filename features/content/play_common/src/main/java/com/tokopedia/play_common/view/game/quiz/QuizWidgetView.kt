@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -77,6 +78,10 @@ class QuizWidgetView : ConstraintLayout {
 
     fun setTitle(title: String) {
         binding.quizHeader.setupQuiz(title)
+    }
+
+    fun hideTimer(){
+        binding.layoutTimer.root.hide()
     }
 
     fun setTargetTime(targetTime: Calendar, onFinished: () -> Unit) {

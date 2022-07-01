@@ -8,7 +8,8 @@ data class GlobalNavWidgetModel(
         val background: String = "",
         val clickSeeAllApplink: String = "",
         val clickSeeAllUrl: String = "",
-        val itemList: List<Item> = listOf()
+        val itemList: List<Item> = listOf(),
+        val info: String = "",
 ) {
 
     data class Item(

@@ -76,7 +76,7 @@ class OrderSummaryPageActivityGoCicilTest {
 
                 assertInstallmentSummary(
                         installmentFee = "Rp0",
-                        installmentTerm = "3 months",
+                        installmentTerm = "3 Bulan",
                         installmentPerPeriod = "Rp673.867",
                         installmentFirstDate = "28 Februari 2022",
                         installmentLastDate = "28 Mei 2022"
@@ -116,7 +116,7 @@ class OrderSummaryPageActivityGoCicilTest {
 
                 assertInstallmentSummary(
                         installmentFee = "Rp111.106",
-                        installmentTerm = "2 months",
+                        installmentTerm = "2 Bulan",
                         installmentPerPeriod = "Rp1.066.353",
                         installmentFirstDate = "28 Februari 2022",
                         installmentLastDate = "28 April 2022"
@@ -176,7 +176,7 @@ class OrderSummaryPageActivityGoCicilTest {
 
                 assertInstallmentSummary(
                         installmentFee = "Rp111.106",
-                        installmentTerm = "2 months",
+                        installmentTerm = "2 Bulan",
                         installmentPerPeriod = "Rp1.066.353",
                         installmentFirstDate = "28 Februari 2022",
                         installmentLastDate = "28 April 2022"

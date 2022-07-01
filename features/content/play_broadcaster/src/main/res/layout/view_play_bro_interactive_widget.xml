@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="end"
+    android:orientation="vertical"
+    tools:background="@color/Unify_GN100"
+    >
+
+    <com.tokopedia.play_common.view.game.GameSmallWidgetView
+        android:id="@+id/view_interactive_active"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <com.tokopedia.play_common.view.game.InteractiveFinishView
+        android:id="@+id/view_interactive_finish"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginTop="@dimen/play_dp_12"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <com.tokopedia.play_common.view.game.GameResultWidgetView
+        android:layout_gravity="end"
+        android:id="@+id/view_game_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+</LinearLayout>

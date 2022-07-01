@@ -3,6 +3,7 @@ package com.tokopedia.feedcomponent.data.feedrevamp
 import android.view.View
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
+import com.tokopedia.feedcomponent.view.widget.FeedVODViewHolder
 import com.tokopedia.kotlin.model.ImpressHolder
 
 data class FeedXMedia(
@@ -24,6 +25,8 @@ data class FeedXMedia(
     var mods: List<String> = listOf(),
     @Transient
     var videoView: View? = null,
+    @Transient
+    var vodView: FeedVODViewHolder? = null,
     @Transient
     var imageView: View? = null,
 

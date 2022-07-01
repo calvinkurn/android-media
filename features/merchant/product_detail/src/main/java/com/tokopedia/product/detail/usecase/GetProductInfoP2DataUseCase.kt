@@ -67,7 +67,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             productView
             wishlistCount
             shopCommitment {
-              result {
+              result {  
                 isNowActive
                 staticMessages {
                   pdpMessage
@@ -84,6 +84,12 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
               scoreMap
             }
             shopInfo {
+              shopMultilocation {
+                warehouseCount
+                eduLink {
+                    appLink
+                }
+              }
               closedInfo {
                 closedNote
                 reason

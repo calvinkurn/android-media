@@ -235,6 +235,7 @@ object ShopDiscountManageDiscountMapper {
     private fun mapToListSubmittedProductData(data: List<DoSlashPriceProductSubmissionResponse.DoSlashPriceProductSubmission.Data>): List<ShopDiscountSlashPriceProductSubmissionUiModel.SubmittedProductData> {
         return data.map {
             ShopDiscountSlashPriceProductSubmissionUiModel.SubmittedProductData(
+                name = it.name,
                 success = it.success,
                 message = it.message
             )

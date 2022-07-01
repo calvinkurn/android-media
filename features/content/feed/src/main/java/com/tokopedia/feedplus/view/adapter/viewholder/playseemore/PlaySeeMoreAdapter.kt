@@ -5,7 +5,6 @@ import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
-import com.tokopedia.videoTabComponent.callback.PlayWidgetCardClickListener
 import com.tokopedia.videoTabComponent.domain.delegate.PlayWidgetViewAdapterDelegate
 import com.tokopedia.videoTabComponent.domain.model.data.PlayFeedUiModel
 import com.tokopedia.videoTabComponent.domain.model.data.PlayWidgetLargeUiModel
@@ -15,13 +14,12 @@ import com.tokopedia.videoTabComponent.view.coordinator.PlayWidgetCoordinatorVid
  * Created by jegul on 07/10/20
  */
 class PlaySeeMoreAdapter(
-    coordinator: PlayWidgetCoordinatorVideoTab,
-    clickListener: PlayWidgetCardClickListener
+    coordinator: PlayWidgetCoordinatorVideoTab
 ) : BaseDiffUtilAdapter<PlayFeedUiModel>(isFlexibleType = true) {
 
     init {
         delegatesManager
-                .addDelegate(PlayWidgetViewAdapterDelegate.Large(coordinator, clickListener))
+                .addDelegate(PlayWidgetViewAdapterDelegate.Large(coordinator))
     }
 
     override fun areItemsTheSame(oldItem: PlayFeedUiModel, newItem: PlayFeedUiModel): Boolean {

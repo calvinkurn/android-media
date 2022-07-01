@@ -226,6 +226,7 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
     private fun collectVideoPlaybackUiState() {
         videoPlaybackUiStateCollector = videoPlaybackUiStateCollector?.takeIf { !it.isCompleted } ?: launch {
             reviewVideoPlayerViewModel.videoPlaybackUiState.collectLatest {
+                sharedReviewMediaGalleryViewModel.updateIsPlayingVideo(it.isPlaying())
                 when (it) {
                     is ReviewVideoPlaybackUiState.Inactive -> {
                         trackStopped(ceil(it.currentPosition / 1000f).toLong())

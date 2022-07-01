@@ -102,6 +102,16 @@
         tools:listitem="@layout/item_post_video_new"
         />
 
+    <com.tokopedia.feedcomponent.view.widget.FeedVODViewHolder
+        android:id="@+id/feed_vod_viewholder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rv_carousel" />
+
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/like_button"
         android:layout_width="@dimen/layout_lvl3"
@@ -110,7 +120,7 @@
         android:layout_marginTop="@dimen/unify_space_12"
         app:icon_name="THUMB"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rv_carousel" />
+        app:layout_constraintTop_toBottomOf="@id/feed_vod_viewholder" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/comment_button"
