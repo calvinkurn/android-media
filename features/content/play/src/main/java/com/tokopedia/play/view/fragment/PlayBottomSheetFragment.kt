@@ -131,7 +131,6 @@ class PlayBottomSheetFragment @Inject constructor(
 
     override fun onPause() {
         super.onPause()
-        productAnalyticHelper.sendImpressedProductSheets()
         analytic.getTrackingQueue().sendAll()
     }
 
@@ -654,6 +653,7 @@ class PlayBottomSheetFragment @Inject constructor(
                 voucherList = tagItem.voucher.voucherList,
                 title = bottomSheetTitle,
             )
+            productAnalyticHelper.sendImpressedProductSheets()
         } else {
             productSheetView.showEmpty(emptyBottomSheetInfoUi)
         }
