@@ -2128,9 +2128,10 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val cuisine = "Coffee"
         val option = "1"
         val sortBy = "2"
+        val brandUId = "226ea0d5-c763-40dc-aad3-9a233ed04f86"
         val expectedDeepLink =
-            "${ApplinkConstInternalTokoFood.CATEGORY}?pageTitle=${pageTitle}&option=${option}&cuisine=${cuisine}&sortBy=$sortBy"
-        val appLink = "${ApplinkConst.TokoFood.CATEGORY}?pageTitle=${pageTitle}&option=${option}&cuisine=${cuisine}&sortBy=$sortBy"
+            "${ApplinkConstInternalTokoFood.CATEGORY}?pageTitle=${pageTitle}&option=${option}&cuisine=${cuisine}&sortBy=$sortBy&brand_uid=${brandUId}"
+        val appLink = "${ApplinkConst.TokoFood.CATEGORY}?pageTitle=${pageTitle}&option=${option}&cuisine=${cuisine}&sortBy=$sortBy&brand_uid=${brandUId}"
         foodRollenceEnabler()
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }

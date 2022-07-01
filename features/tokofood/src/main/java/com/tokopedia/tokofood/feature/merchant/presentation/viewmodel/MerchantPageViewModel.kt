@@ -18,6 +18,7 @@ import com.tokopedia.tokofood.feature.merchant.domain.usecase.GetMerchantDataUse
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.CarouselDataType
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.CustomListItemType
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.ProductListItemType
+import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType.MULTIPLE_SELECTION
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType.SINGLE_SELECTION
 import com.tokopedia.tokofood.feature.merchant.presentation.mapper.TokoFoodMerchantUiModelMapper
@@ -217,12 +218,12 @@ class MerchantPageViewModel @Inject constructor(
                 isRequired = variant.isRequired,
                 maxQty = variant.maxQty,
                 minQty = variant.minQty,
-                options = mapOptionDetailsToOptionUiModels(variant.maxQty, variant.options),
+                options = mapOptionDetailsToOptionUiModels(variant.minQty, variant.maxQty, variant.options),
                 outOfStockWording = resourceProvider.getOutOfStockWording().orEmpty()
         )
     }
 
-    private fun mapOptionDetailsToOptionUiModels(maxQty: Int, optionDetails: List<TokoFoodCatalogVariantOptionDetail>): List<OptionUiModel> {
+    private fun mapOptionDetailsToOptionUiModels(minQty: Int, maxQty: Int, optionDetails: List<TokoFoodCatalogVariantOptionDetail>): List<OptionUiModel> {
         return optionDetails.map { optionDetail ->
             OptionUiModel(
                     isSelected = false,
@@ -231,8 +232,16 @@ class MerchantPageViewModel @Inject constructor(
                     name = optionDetail.name,
                     price = optionDetail.price,
                     priceFmt = optionDetail.priceFmt,
-                    selectionControlType = if (maxQty > Int.ONE) MULTIPLE_SELECTION else SINGLE_SELECTION
+                    selectionControlType = getSelectionControlType(minQty, maxQty)
             )
+        }
+    }
+
+    private fun getSelectionControlType(minQty: Int, maxQty: Int): SelectionControlType {
+        return when {
+            maxQty > Int.ONE -> MULTIPLE_SELECTION
+            minQty == Int.ZERO && maxQty == Int.ONE -> MULTIPLE_SELECTION
+            else -> SINGLE_SELECTION
         }
     }
 
