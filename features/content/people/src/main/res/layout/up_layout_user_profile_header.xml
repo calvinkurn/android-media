@@ -298,7 +298,7 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <ViewFlipper
-            android:id="@+id/vp_rv_post"
+            android:id="@+id/user_post_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"

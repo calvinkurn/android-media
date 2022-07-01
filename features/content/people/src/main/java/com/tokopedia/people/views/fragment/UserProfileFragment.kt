@@ -105,7 +105,6 @@ class UserProfileFragment @Inject constructor(
     private var recyclerviewPost: RecyclerView? = null
     private var headerProfile: HeaderUnify? = null
     private var appBarLayout: AppBarLayout? = null
-    private var userPostContainer: ViewFlipper? = null
     private var shouldRefreshRecyclerView: Boolean? = false
     private var isViewMoreClickedBio: Boolean? = false
     private var screenShotDetector: ScreenshotDetector? = null
@@ -159,7 +158,6 @@ class UserProfileFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         feedFloatingButtonManager.setInitialData(this)
 
-        userPostContainer = view.findViewById(R.id.vp_rv_post)
         appBarLayout = view.findViewById(R.id.app_bar_layout)
 
         headerProfile = view.findViewById(R.id.header_profile)
@@ -669,15 +667,15 @@ class UserProfileFragment @Inject constructor(
     }
 
     override fun onEmptyList(rawObject: Any?) {
-        userPostContainer?.displayedChild = PAGE_EMPTY
+        mainBinding.userPostContainer.displayedChild = PAGE_EMPTY
     }
 
     override fun onStartFirstPageLoad() {
-        userPostContainer?.displayedChild = PAGE_LOADING
+        mainBinding.userPostContainer.displayedChild = PAGE_LOADING
     }
 
     override fun onFinishFirstPageLoad(itemCount: Int, rawObject: Any?) {
-        userPostContainer?.displayedChild = PAGE_CONTENT
+        mainBinding.userPostContainer.displayedChild = PAGE_CONTENT
     }
 
     override fun onStartPageLoad(pageNumber: Int) {
