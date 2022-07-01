@@ -4,7 +4,7 @@
     android:shape="oval">
 
     <solid
-        android:color="@color/cardunify_background"/>
+        android:color="@color/food_cardview_background_dms_color"/>
 
     <size
         android:width="24dp"

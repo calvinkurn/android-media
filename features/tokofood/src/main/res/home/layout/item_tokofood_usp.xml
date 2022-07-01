@@ -26,7 +26,7 @@
                 android:id="@+id/usp_main_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/cardunify_background"
+                android:background="@color/food_cardview_background_dms_color"
                 android:paddingStart="8dp"
                 android:paddingTop="16dp"
                 android:paddingEnd="8dp">
