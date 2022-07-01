@@ -297,7 +297,7 @@ class ChatbotVideoUploadViewHolder(
     protected open fun bindClickListener(element: VideoUploadUiModel) {
         view?.setOnClickListener { view ->
             if (element.videoUrl != null && element.replyTime != null) {
-                //  listener.onVideoUploadClicked(element.videoUrl!!, element.replyTime!!)
+                  listener.onUploadedVideoClicked(element.videoUrl ?: "")
             }
         }
     }

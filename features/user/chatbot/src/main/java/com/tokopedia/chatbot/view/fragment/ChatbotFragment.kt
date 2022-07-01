@@ -588,21 +588,21 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     private fun pickVideoFromDevice(){
 
-        val intent = Intent(activity, ChatbotVideoActivity::class.java)
-        intent.putExtra(VIDEO_URL,"https://vod-staging.tokopedia.com/view/adaptive.m3u8?id=1ddff7546032491c884bb4d33d4afab0")
-        startActivity(intent)
-//        activity?.let {
-//            val intent = context?.let { context ->
-//                MediaPicker.intentWithGalleryFirst(context) {
-//                    pageSource(PageSource.ChatBot)
-//                    modeType(ModeType.VIDEO_ONLY)
-//                    multipleSelectionMode()
-//                    maxMediaItem(MAX_MEDIA_COUNT)
-//                    maxVideoDuration(MAX_DURATION_FOR_VIDEO)
-//                }
-//            }
-//            startActivityForResult(intent, REQUEST_CODE_CHAT_VIDEO)
-//        }
+//        val intent = Intent(activity, ChatbotVideoActivity::class.java)
+//        intent.putExtra(VIDEO_URL,"https://vod-staging.tokopedia.com/view/adaptive.m3u8?id=1ddff7546032491c884bb4d33d4afab0")
+//        startActivity(intent)
+        activity?.let {
+            val intent = context?.let { context ->
+                MediaPicker.intentWithGalleryFirst(context) {
+                    pageSource(PageSource.ChatBot)
+                    modeType(ModeType.VIDEO_ONLY)
+                    multipleSelectionMode()
+                    maxMediaItem(MAX_MEDIA_COUNT)
+                    maxVideoDuration(MAX_DURATION_FOR_VIDEO)
+                }
+            }
+            startActivityForResult(intent, REQUEST_CODE_CHAT_VIDEO)
+        }
     }
 
     private fun pickImageFromDevice() {
@@ -1432,6 +1432,15 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         presenter.cancelVideoUpload(video.videoUrl!!,SOURCE_ID_FOR_VIDEO_UPLOAD, onError())
         //UI changes - what to do when the user cancels the video upload with progress bar clicked
         getViewState()?.showRetryUploadVideos(video,true)
+    }
+
+    override fun onUploadedVideoClicked(videoUrl: String) {
+        val intent = Intent(activity, ChatbotVideoActivity::class.java)
+        intent.putExtra(
+            VIDEO_URL,
+            videoUrl
+        )
+        startActivity(intent)
     }
 
     private fun createRetryMediaUploadBottomSheet(element: SendableUiModel) {
