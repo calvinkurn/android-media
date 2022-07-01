@@ -120,6 +120,9 @@ class ProductSectionViewHolder(
             }
             ProductSectionType.Tokonow -> {
                 btnInfo.showWithCondition(item.config.title.isNotEmpty())
+                btnInfo.addOnImpressionListener(item.impressHolder){
+                    listener.onInformationImpressed()
+                }
                 tvTimerInfo.hide()
                 timerSection.hide()
             }
@@ -140,10 +143,6 @@ class ProductSectionViewHolder(
 
         btnInfo.setOnClickListener {
             listener.onInformationClicked(item)
-        }
-
-        btnInfo.addOnImpressionListener(item.impressHolder){
-            listener.onInformationImpressed()
         }
     }
 
