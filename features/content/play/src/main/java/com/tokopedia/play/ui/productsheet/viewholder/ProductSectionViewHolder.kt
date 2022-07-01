@@ -1,7 +1,6 @@
 package com.tokopedia.play.ui.productsheet.viewholder
 
 import android.view.View
-import android.view.ViewTreeObserver
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.LayoutRes
@@ -46,25 +45,6 @@ class ProductSectionViewHolder(
 
     private lateinit var adapter: ProductLineAdapter
 
-    private fun setupOnScrollListener(sectionInfo: ProductSectionUiModel.Section){
-        itemView.viewTreeObserver.addOnScrollChangedListener (object : ViewTreeObserver.OnScrollChangedListener {
-            override fun onScrollChanged() {
-                itemView.isVisibleOnTheScreen(onViewVisible = {
-                    listener.onProductImpressed(getVisibleProducts(layoutManagerProductList(sectionInfo)), sectionInfo)} ,
-                    onViewNotVisible = {
-                        itemView.viewTreeObserver.removeOnScrollChangedListener(this)
-                    })
-            }
-        })
-    }
-
-    private fun layoutManagerProductList(sectionInfo: ProductSectionUiModel.Section) = object : LinearLayoutManager(rvProducts.context, RecyclerView.VERTICAL, false) {
-        override fun onLayoutCompleted(state: RecyclerView.State?) {
-            super.onLayoutCompleted(state)
-            listener.onProductImpressed(getVisibleProducts(this), sectionInfo)
-        }
-    }
-
     private fun setupListener(sectionInfo: ProductSectionUiModel.Section) = object : ProductLineViewHolder.Listener {
         override fun onBuyProduct(product: PlayProductUiModel.Product) {
             listener.onBuyProduct(product, sectionInfo)
@@ -77,14 +57,15 @@ class ProductSectionViewHolder(
         override fun onClickProductCard(product: PlayProductUiModel.Product, position: Int) {
             listener.onClickProductCard(product, sectionInfo, position)
         }
+    }
 
+    init {
+        rvProducts.layoutManager = LinearLayoutManager(rvProducts.context, RecyclerView.VERTICAL, false)
     }
 
     fun bind(item: ProductSectionUiModel.Section) {
         resetBackground()
-        setupOnScrollListener(sectionInfo = item)
         adapter = ProductLineAdapter(setupListener(item))
-        rvProducts.layoutManager = layoutManagerProductList(item)
         rvProducts.adapter = adapter
 
         tvSectionTitle.shouldShowWithAction(item.config.title.isNotEmpty()){
