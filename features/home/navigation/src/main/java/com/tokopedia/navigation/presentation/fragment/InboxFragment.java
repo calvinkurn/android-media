@@ -618,19 +618,17 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
                 headlineExperimentPosition = headlineIndexList.get(1);
                 index = 1;
             }
-        }
-
-
-        if ((headlineExperimentPosition != HEADLINE_POS_NOT_TO_BE_ADDED || (headlineIndexList.size() == HEADLINE_ADS_BANNER_COUNT && pageNum < HEADLINE_ADS_BANNER_COUNT))
-                && headlineExperimentPosition <= adapter.getList().size() && (!isAdded || (headlineIndexList.size() == HEADLINE_ADS_BANNER_COUNT && pageNum < HEADLINE_ADS_BANNER_COUNT))) {
-            if (isTopAdsBannerAdded) {
-                adapter.addElement(headlineExperimentPosition + SHIFTING_INDEX,
-                        new TopadsHeadlineUiModel(headlineData, 0, index));
-            } else {
-                adapter.addElement(headlineExperimentPosition,
-                        new TopadsHeadlineUiModel(headlineData, 0, index));
+            if ((headlineExperimentPosition != HEADLINE_POS_NOT_TO_BE_ADDED || (headlineIndexList.size() == HEADLINE_ADS_BANNER_COUNT && pageNum < HEADLINE_ADS_BANNER_COUNT))
+                    && headlineExperimentPosition <= adapter.getList().size() && (!isAdded || (headlineIndexList.size() == HEADLINE_ADS_BANNER_COUNT && pageNum < HEADLINE_ADS_BANNER_COUNT))) {
+                if (isTopAdsBannerAdded) {
+                    adapter.addElement(headlineExperimentPosition + SHIFTING_INDEX,
+                            new TopadsHeadlineUiModel(headlineData, 0, index));
+                } else {
+                    adapter.addElement(headlineExperimentPosition,
+                            new TopadsHeadlineUiModel(headlineData, 0, index));
+                }
+                isAdded = true;
             }
-            isAdded = true;
         }
 
         if (toAdsBannerExperimentPosition != TOP_ADS_BANNER_POS_NOT_TO_BE_ADDED
