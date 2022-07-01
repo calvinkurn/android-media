@@ -557,11 +557,11 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
             permissionCheckerHelper = new PermissionCheckerHelper();
 
-            String[] permission = new String[]{
+            String[] permissions = new String[]{
                     PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
                     PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION
             };
-            permissionCheckerHelper.checkPermissions(this, permission, new PermissionCheckerHelper.PermissionCheckListener() {
+            permissionCheckerHelper.checkPermissions(this, permissions, new PermissionCheckerHelper.PermissionCheckListener() {
                 @Override
                 public void onPermissionDenied(String permissionText) {
                     callback.invoke(origin, false, false);
