@@ -1003,6 +1003,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             } else {
                 val globalCardProductList = feedXCard.tags
                 gridList.gone()
+                feedVODViewHolder.gone()
                 rvCarousel.visible()
                 commentButton.visible()
                 pageControl.apply {
@@ -1047,6 +1048,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         val globalCardProductList = feedXCard.tags
         gridList.gone()
         commentButton.visible()
+        rvCarousel.gone()
         val mediaList = emptyList<FeedXMedia>()
         adapter.setItemsAndAnimateChanges(mediaList)
         pageControl.setIndicator(mediaList.size)
@@ -1080,72 +1082,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
         )
         feedVODViewHolder.visible()
 
-    }
-
-    private fun setVideoCarouselView(
-        feedMedia: FeedXMedia,
-        feedXCard: FeedXCard,
-        products: List<FeedXProduct>,
-        id: String,
-        type: String,
-        isFollowed: Boolean,
-        shopName: String,
-        ratio: String,
-        position: Int
-    ): View? {
-//        val postId = feedXCard.id
-//        val videoItem = getVideoItem()
-//        feedMedia.canPlay = false
-//        feedMedia.videoView = videoItem
-//        videoItem?.run {
-//
-//            val playButtonVideo = findViewById<ImageView>(R.id.ic_play)
-//            val layoutVideo = findViewById<ConstraintLayout>(R.id.layout_main)
-//            val videoPreviewImage = findViewById<ImageUnify>(R.id.videoPreviewImage)
-//            val videoView = findViewById<View>(R.id.video_view)
-//            val constraintSetForVideoCoveMedia = ConstraintSet()
-//            constraintSetForVideoCoveMedia.clone(layoutVideo)
-//            constraintSetForVideoCoveMedia.setDimensionRatio(videoPreviewImage.id, ratio)
-//            constraintSetForVideoCoveMedia.setDimensionRatio(videoView.id, ratio)
-//            constraintSetForVideoCoveMedia.applyTo(layoutVideo)
-//
-//            val layoutFrameView = findViewById<ConstraintLayout>(R.id.frame_video)
-//            val layoutPlayerView = findViewById<PlayerView>(R.id.layout_video)
-//            val constraintSetForVideoLayout = ConstraintSet()
-//            constraintSetForVideoLayout.clone(layoutFrameView)
-//            constraintSetForVideoLayout.setDimensionRatio(layoutPlayerView.id, ratio)
-//            constraintSetForVideoLayout.applyTo(layoutFrameView)
-//
-//            videoPreviewImage?.setImageUrl(feedMedia.coverUrl)
-//            playButtonVideo?.setOnClickListener {
-//                playButtonVideo.gone()
-//                playVideo(feedXCard, position)
-//                }
-//                video_lihat_product?.setOnClickListener {
-//                    listener?.let { listener ->
-//                        listener.onTagClicked(
-//                                postId.toIntOrZero(),
-//                                products,
-//                                listener,
-//                                id,
-//                                type,
-//                                isFollowed,
-//                            feedMedia.type,
-//                            positionInFeed,
-//                            feedXCard.playChannelID,
-//                            shopName = shopName
-//                    )
-//                }
-//            }
-//
-//
-//            volumeIcon.setOnClickListener {
-//                changeMuteStateVideo(volumeIcon)
-//                setMuteUnmuteVOD(volumeIcon, feedXCard.playChannelID, isFollowed, id,false, true, feedMedia.type)
-//            }
-//        }
-//        return videoItem
-        return null
     }
 
     private fun setVideoControl(
@@ -1319,7 +1255,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
         val products = feedXCard.products
         val totalProducts = feedXCard.products.size
         gridList.gone()
-
+        rvCarousel.visible()
+        feedVODViewHolder.gone()
         pageControl.apply {
             setIndicator(
                 if (totalProducts <= MAX_PRODUCT_TO_SHOW_IN_ASGC_CAROUSEL) totalProducts
