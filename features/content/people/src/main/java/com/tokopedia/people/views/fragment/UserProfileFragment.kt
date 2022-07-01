@@ -7,33 +7,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.ViewFlipper
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
-import com.tokopedia.feedcomponent.view.custom.FeedFloatingButton
-import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.GlobalError.Companion.NO_CONNECTION
 import com.tokopedia.globalerror.GlobalError.Companion.PAGE_FULL
 import com.tokopedia.globalerror.GlobalError.Companion.PAGE_NOT_FOUND
 import com.tokopedia.globalerror.GlobalError.Companion.SERVER_ERROR
 import com.tokopedia.globalerror.ReponseStatus
-import com.tokopedia.header.HeaderUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.*
@@ -102,8 +92,7 @@ class UserProfileFragment @Inject constructor(
         GridLayoutManager(activity, 2)
     }
 
-    var universalShareBottomSheet: UniversalShareBottomSheet? = null
-    private var appBarLayout: AppBarLayout? = null
+    private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var shouldRefreshRecyclerView: Boolean? = false
     private var isViewMoreClickedBio: Boolean? = false
     private var screenShotDetector: ScreenshotDetector? = null
@@ -157,8 +146,6 @@ class UserProfileFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         feedFloatingButtonManager.setInitialData(this)
 
-        appBarLayout = view.findViewById(R.id.app_bar_layout)
-
         initObserver()
         initListener()
         setHeader()
@@ -175,7 +162,7 @@ class UserProfileFragment @Inject constructor(
         refreshLandingPageData(true)
         binding.rootContainer.displayedChild = PAGE_LOADING
 
-        appBarLayout?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener {appBarLayout, verticalOffset ->
+        mainBinding.appBarUserProfile.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
             shouldRefreshRecyclerView = verticalOffset == 0
         })
 
