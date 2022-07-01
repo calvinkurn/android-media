@@ -11,8 +11,8 @@ import com.tokopedia.home_component.util.toDpInt
 class MissionWidgetItemDecoration : RecyclerView.ItemDecoration() {
     companion object {
         private const val FIRST_POSITION = 0
-        private var OUTSIDE_MARGIN = 16f.toDpInt()
-        private var INNER_MARGIN = 4f.toDpInt()
+        private var OUTSIDE_MARGIN = 14f.toDpInt()
+        private var INNER_MARGIN = 2f.toDpInt()
     }
 
     override fun getItemOffsets(

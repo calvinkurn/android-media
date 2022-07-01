@@ -3,9 +3,9 @@
     android:id="@+id/card_container_mission_widget"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    app:cardUseCompatPadding="true"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    app:card_type="border">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
@@ -16,8 +16,6 @@
             android:layout_width="@dimen/home_mission_widget_image_size"
             android:layout_height="@dimen/home_mission_widget_image_size"
             android:contentDescription="@string/content_desc_mission_widget"
-            android:layout_marginHorizontal="1dp"
-            android:layout_marginTop="1dp"
             app:unify_image_corner_radius="0"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
