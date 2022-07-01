@@ -168,7 +168,7 @@ class ChatbotPresenter @Inject constructor(
     private var isErrorOnLeaveQueue = false
     private lateinit var chatResponse:ChatSocketPojo
     private val job= SupervisorJob()
-    private var videoUploadJob = Job()
+    private var videoUploadJob : Job = Job()
 
     init {
         mSubscription = CompositeSubscription()
@@ -818,14 +818,14 @@ class ChatbotPresenter @Inject constructor(
     ) {
         val originalFile = File(videoUploadUiModel.videoUrl)
 
-        launchCatchError(
+        videoUploadJob =  launchCatchError(
             block = {
                 val param = uploaderUseCase.createParams(
                     filePath = originalFile,
                     sourceId = sourceId
                 )
                 //TODO check
-//                if (videoUploadJob.isActive) {
+                if (videoUploadJob.isActive) {
                     when (val result = uploaderUseCase.invoke(param)) {
                         is UploadResult.Success -> {
                             sendVideoAttachment(result.videoUrl, startTime, messageId)
@@ -834,13 +834,12 @@ class ChatbotPresenter @Inject constructor(
                             onErrorVideoUpload(result.message, videoUploadUiModel)
                         }
                     }
-           //     }
+                }
             },
             onError = {
                 onErrorVideoUpload(it.message ?: "", videoUploadUiModel)
             }
         )
-        //TODO check this
     }
 
     override fun sendVideoAttachment(filePath: String, startTime: String, messageId: String) {
@@ -852,17 +851,17 @@ class ChatbotPresenter @Inject constructor(
     }
 
     override fun cancelVideoUpload(file: String, sourceId: String,  onErrorVideoUpload: (Throwable) -> Unit) {
-//        videoUploadJob = launchCatchError(
-//            block = {
-//                uploaderUseCase.abortUpload(
-//                    filePath = file,
-//                    sourceId = sourceId
-//            )
-//                videoUploadJob.cancel()
-//            },
-//            onError = {
-//                onErrorVideoUpload(it)
-//            }
-//        ) as CompletableJob
+        launchCatchError(
+            block = {
+                uploaderUseCase.abortUpload(
+                    filePath = file,
+                    sourceId = sourceId
+            )
+                videoUploadJob.cancel()
+            },
+            onError = {
+                onErrorVideoUpload(it)
+            }
+        )
     }
 }
