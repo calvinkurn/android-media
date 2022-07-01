@@ -6,6 +6,8 @@
 
     <string name="title_invitation_expires">Oops, undangan akses admin sudah tidak berlaku</string>
     <string name="desc_invitation_expires">Kamu telah melewati batas waktu yang ditentukan untuk menerima undangan akses. hubungi pemilik toko jika ini merupakan kesalahan, ya.</string>
+    <string name="desc_invitation_expires_empty">Jika ini merupakan kesalahan, hubungi pemilik toko, ya.</string>
+
 
     <string name="title_invitation_has_been_rejected">Kamu telah menolak akses admin sebelumnya</string>
     <string name="title_invitation_rejected">Akses admin berhasil ditolak</string>

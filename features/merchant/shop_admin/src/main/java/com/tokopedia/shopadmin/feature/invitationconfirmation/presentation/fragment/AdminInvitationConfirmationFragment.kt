@@ -301,7 +301,18 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
                 invitationConfirmationParam.setAdminType(adminStatus)
                 viewModel.fetchShopAdminInfo()
             }
-            AdminStatus.EXPIRED, String.EMPTY -> inflateInvitationExpired()
+            AdminStatus.EXPIRED -> {
+                val descRejected =
+                    context?.getString(com.tokopedia.shopadmin.R.string.desc_invitation_expires)
+                        .orEmpty()
+                inflateInvitationExpired(descRejected)
+            }
+            String.EMPTY -> {
+                val descRejected =
+                    context?.getString(com.tokopedia.shopadmin.R.string.desc_invitation_expires_empty)
+                        .orEmpty()
+                inflateInvitationExpired(descRejected)
+            }
             else -> activity?.finish()
         }
     }
@@ -348,7 +359,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun inflateInvitationExpired() {
+    private fun inflateInvitationExpired(descExpired: String) {
         hideLoading()
         setupToolbar(false)
         confirmationBinding?.root?.hide()
@@ -361,7 +372,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
             } else {
                 vsInvitationExpired?.show()
             }
-            setInvitationExpired()
+            setInvitationExpired(descExpired)
         }
     }
 
@@ -396,9 +407,10 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setInvitationExpired() {
+    private fun setInvitationExpired(descExpired: String) {
         shopAdminTrackers.impressExpiredStatus()
         expiredBinding?.run {
+            tvInvitationExpiresDesc.text = descExpired
             imgInvitationExpires.setImageUrl(AdminImageUrl.IL_INVITATION_EXPIRES)
             btnInvitationExpires.setOnClickListener {
                 navigator.goToButtonOrToolbarActionPage()
