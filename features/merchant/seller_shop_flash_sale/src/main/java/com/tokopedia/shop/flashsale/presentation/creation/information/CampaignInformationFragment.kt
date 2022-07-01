@@ -43,6 +43,7 @@ import com.tokopedia.shop.flashsale.domain.entity.Gradient
 import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignStatus
 import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
 import com.tokopedia.shop.flashsale.domain.entity.enums.PaymentType
+import com.tokopedia.shop.flashsale.domain.entity.enums.isDraft
 import com.tokopedia.shop.flashsale.presentation.creation.information.adapter.GradientColorAdapter
 import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.CampaignDatePickerBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.CampaignTeaserInformationBottomSheet
@@ -693,7 +694,15 @@ class CampaignInformationFragment : BaseDaggerFragment() {
                 campaign.upcomingDate.removeTimeZone()
             )
             quantityEditor.editText.setText(upcomingTimeInHours.toString())
-            quantityEditor.maxValue = upcomingTimeInHours
+
+            val maxValue = if (campaign.status.isDraft()) {
+                viewModel.getTeaserQuantityEditorMaxValue(campaign.startDate.removeTimeZone(), Date())
+            } else {
+                upcomingTimeInHours
+            }
+
+            quantityEditor.maxValue = maxValue
+
             handleSwitchTeaser(campaign.useUpcomingWidget)
             renderSelectedColor(campaign)
         }
