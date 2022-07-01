@@ -30,12 +30,13 @@ class HomeHeaderOvoViewHolder(itemView: View,
         @LayoutRes
         val LAYOUT = R.layout.home_header_ovo
         private const val SUPER_GRAPHIC_HEADER = "https://dhabawidhikari.com/wp-content/uploads/2022/06/super_graphic_header_big.png"
+        private const val POSITION_TOP_WIDGET = 0f
     }
 
     override fun bind(element: HomeHeaderDataModel) {
         BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_HEADER_OVO)
-        renderEmptySpace()
         renderHeaderImage()
+        renderEmptySpace()
         element.headerDataModel?.let {
             resetView()
             when(it.homeBalanceModel.balanceType) {
@@ -60,13 +61,12 @@ class HomeHeaderOvoViewHolder(itemView: View,
     }
 
     private fun renderHeaderImage() {
-        val headerBackgroundHome = itemView.findViewById<ImageUnify>(R.id.header_background_home)
+        binding?.containerSuperGraphicHeader?.y = POSITION_TOP_WIDGET
         if (listener.isSuperGraphicHeaderActive()) {
-            headerBackgroundHome.y = 0f
-            headerBackgroundHome.visible()
-            headerBackgroundHome.setImageUrl(SUPER_GRAPHIC_HEADER)
+            binding?.headerBackgroundHome?.visible()
+            binding?.headerBackgroundHome?.setImageUrl(SUPER_GRAPHIC_HEADER)
         } else {
-            headerBackgroundHome.invisible()
+            binding?.headerBackgroundHome?.invisible()
         }
     }
 
