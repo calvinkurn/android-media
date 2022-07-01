@@ -30,8 +30,6 @@ class MediaEditorSlider(context: Context, attributeSet: AttributeSet) :
     private var sliderWidth = 0f
     private var thumbWidth = 0f
 
-    private val trackActiveColor: Int = ContextCompat.getColor(context, PrincipleR.color.Unify_GN400)
-
     var listener: Listener? = null
 
     private var sliderStepNumber = DEFAULT_SLIDER_STEP
@@ -48,8 +46,6 @@ class MediaEditorSlider(context: Context, attributeSet: AttributeSet) :
     private var sliderInitialPosition = DEFAULT_START_VALUE
 
     init {
-
-        initSliderTrack()
         updateSliderTextValue()
 
         post {
@@ -73,15 +69,23 @@ class MediaEditorSlider(context: Context, attributeSet: AttributeSet) :
         resetSlider()
     }
 
-    private fun moveThumb() {
-        if (sliderInitialPosition == sliderStartValue) return
+    private fun moveThumb(){
+        if(sliderInitialPosition == sliderStartValue) return
+
+        // got step size on px
         val stepSize = (sliderWidth - thumbWidth) / sliderStepNumber
 
-        val targetStep = sliderInitialPosition / sliderStepValue
+        // got difference value between move target and center start position value
+        val diffTargetWithCenter =
+            if (sliderInitialPosition < sliderStartValue) sliderStartValue - sliderInitialPosition
+            else sliderInitialPosition - sliderStartValue
+
+        // got how many step needed to move from center
+        val targetStep = diffTargetWithCenter / sliderStepValue
 
         val targetX = targetStep * stepSize
 
-        sliderThumb.x = if (sliderInitialPosition > sliderStartValue) {
+        sliderThumb.x = if(sliderInitialPosition > sliderStartValue) {
             targetX + sliderThumb.x
         } else {
             sliderThumb.x - targetX
@@ -159,13 +163,6 @@ class MediaEditorSlider(context: Context, attributeSet: AttributeSet) :
     private fun xToStep(xKoor: Float): Int {
         val stepSize = (sliderWidth - thumbWidth) / sliderStepNumber
         return (round(xKoor / stepSize).toInt())
-    }
-
-    private fun initSliderTrack() {
-        sliderTrackActive.setLine(
-            resources.getDimension(R.dimen.media_editor_slider_height),
-            trackActiveColor
-        )
     }
 
     companion object {

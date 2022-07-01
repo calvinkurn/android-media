@@ -2,11 +2,13 @@ package com.tokopedia.media.editor.ui.component.slider
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.ColorInt
+import androidx.core.content.ContextCompat
+import com.tokopedia.media.editor.R
+import com.tokopedia.unifyprinciples.R as PrincipleR
 
 class MediaEditorSliderTrack(context: Context, attributeSet: AttributeSet) :
     View(context, attributeSet) {
@@ -17,8 +19,8 @@ class MediaEditorSliderTrack(context: Context, attributeSet: AttributeSet) :
     private var yCenter = 0f
 
     init {
-        paint.strokeWidth = DEFAULT_STROKE_WIDTH
-        paint.color = DEFAULT_COLOR
+        paint.strokeWidth = resources.getDimension(R.dimen.media_editor_slider_height)
+        paint.color = ContextCompat.getColor(context, PrincipleR.color.Unify_GN400)
 
         post {
             yCenter = (height / 2).toFloat()
@@ -41,10 +43,5 @@ class MediaEditorSliderTrack(context: Context, attributeSet: AttributeSet) :
         canvas?.let {
             canvas.drawLine(xStart, yCenter, xEnd, yCenter, paint)
         }
-    }
-
-    companion object {
-        private const val DEFAULT_STROKE_WIDTH = 5f
-        private const val DEFAULT_COLOR = Color.RED
     }
 }
