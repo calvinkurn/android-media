@@ -683,9 +683,21 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     private fun checkAddressDataAndServiceArea(){
         checkIfChooseAddressWidgetDataUpdated()
         when {
-            hasNoAddress() && isAddressManuallyUpdate() -> showNoAddress()
-            hasNoPinPoin() && isAddressManuallyUpdate() -> showNoPinPoin()
-            !isAddressManuallyUpdate() -> getChooseAddress()
+            hasNoAddress() -> {
+                if (isAddressManuallyUpdate()){
+                    showNoAddress()
+                } else {
+                    getChooseAddress()
+                }
+
+            }
+            hasNoPinPoin() -> {
+                if (isAddressManuallyUpdate()){
+                    showNoPinPoin()
+                } else {
+                    getChooseAddress()
+                }
+            }
             else -> showLayout()
         }
     }
