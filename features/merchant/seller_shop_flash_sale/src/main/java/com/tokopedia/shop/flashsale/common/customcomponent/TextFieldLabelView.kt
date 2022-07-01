@@ -4,9 +4,9 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
-import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.seller_shop_flash_sale.R
+import com.tokopedia.shop.flashsale.common.util.doOnTextChanged
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.unifyprinciples.Typography
@@ -91,7 +91,7 @@ class TextFieldLabelView : BaseCustomView {
     }
 
     private fun setupTextListener() {
-        textField?.editText?.afterTextChanged {
+        textField?.editText?.doOnTextChanged {
             val text = "$prependText $it$appendText"
             tfText?.text = text
         }

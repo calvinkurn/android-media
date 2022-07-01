@@ -47,6 +47,7 @@ class EditProductInfoViewModel @Inject constructor(
         get() = _isLoading
 
     val hasWarehouse = Transformations.map(warehouseList) {
+        // TODO: move to constant or utils
         it.size > 1
     }
 

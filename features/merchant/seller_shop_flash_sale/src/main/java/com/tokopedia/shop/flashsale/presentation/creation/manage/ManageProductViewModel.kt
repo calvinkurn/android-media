@@ -2,6 +2,7 @@ package com.tokopedia.shop.flashsale.presentation.creation.manage
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.isZero
@@ -44,6 +45,10 @@ class ManageProductViewModel @Inject constructor(
     private val _removeProductsStatus = MutableLiveData<Result<Boolean>>()
     val removeProductsStatus: LiveData<Result<Boolean>>
         get() = _removeProductsStatus
+
+    val incompleteProducts = Transformations.map(products) {
+        ManageProductMapper.filterInfoNotCompleted(it)
+    }
 
     fun getProducts(
         campaignId: Long,

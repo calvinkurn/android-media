@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsBottomsheetWarehouseBinding
 import com.tokopedia.shop.flashsale.presentation.creation.manage.adapter.WarehouseAdapter
 import com.tokopedia.shop.flashsale.presentation.creation.manage.model.WarehouseUiModel
@@ -46,13 +47,25 @@ class WarehouseBottomSheet: BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setTitle("Pilih lokasi")
-        binding?.rvWarehouses?.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-        binding?.rvWarehouses?.adapter = warehouseAdapter
-        warehouseAdapter.setItems(warehouses?.toList().orEmpty())
-        binding?.btnSubmit?.setOnClickListener {
-            onSubmitlistener(warehouseAdapter.getItems())
-            dismiss()
+        setTitle(getString(R.string.editproduct_bs_warehouse_title))
+        setupContents()
+        setupListAdapter()
+    }
+
+    private fun setupListAdapter() {
+        val warehouseList = warehouses?.toList().orEmpty()
+        warehouseAdapter.setItems(warehouseList)
+    }
+
+    private fun setupContents() {
+        binding?.run {
+            rvWarehouses.layoutManager =
+                LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+            rvWarehouses.adapter = warehouseAdapter
+            btnSubmit.setOnClickListener {
+                onSubmitlistener(warehouseAdapter.getItems())
+                dismiss()
+            }
         }
     }
 
@@ -63,5 +76,4 @@ class WarehouseBottomSheet: BottomSheetUnify() {
     fun setOnSubmitListener(listener: (List<WarehouseUiModel>) -> Unit) {
         onSubmitlistener = listener
     }
-
 }

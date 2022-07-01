@@ -16,24 +16,20 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentManageProductBinding
-import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductList
 import com.tokopedia.shop.flashsale.common.customcomponent.BaseSimpleListFragment
 import com.tokopedia.shop.flashsale.common.extension.*
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType.*
 import com.tokopedia.shop.flashsale.presentation.creation.highlight.ManageHighlightedProductActivity
-import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationFragment
 import com.tokopedia.shop.flashsale.presentation.creation.manage.adapter.ManageProductListAdapter
 import com.tokopedia.shop.flashsale.presentation.creation.manage.bottomsheet.EditProductInfoBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.manage.dialog.ProductDeleteDialog
 import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListActivity
-import com.tokopedia.shop.flashsale.presentation.list.list.CampaignListFragment
 import com.tokopedia.shop.flashsale.presentation.list.list.listener.RecyclerViewScrollListener
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.coroutines.GlobalScope
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -74,9 +70,7 @@ class ManageProductFragment :
     private val campaignId by lazy { arguments?.getLong(BUNDLE_KEY_CAMPAIGN_ID).orZero() }
     private val manageProductListAdapter by lazy {
         ManageProductListAdapter(
-            onEditClicked = {
-                null
-            },
+            onEditClicked = ::editProduct,
             onDeleteClicked = ::deleteProduct
         )
     }
@@ -103,6 +97,7 @@ class ManageProductFragment :
         setFragmentToUnifyBgColor()
         setupView()
         observeProductList()
+        observeIncompleteProducts()
         observeRemoveProductsStatus()
         observeBannerType()
     }
@@ -146,10 +141,6 @@ class ManageProductFragment :
                 is Success -> {
                     hideLoader()
                     if (result.data.productList.size.isMoreThanZero()) {
-                        val bottomsheet = EditProductInfoBottomSheet.newInstance(
-                            ArrayList( result.data.productList)
-                        )
-                        bottomsheet.show(childFragmentManager)
                         displayProducts(result.data)
                         hideEmptyState()
                     } else {
@@ -163,6 +154,12 @@ class ManageProductFragment :
                     result.throwable.localizedMessage?.let { view.showError(it) }
                 }
             }
+        }
+    }
+
+    private fun observeIncompleteProducts() {
+        viewModel.incompleteProducts.observe(viewLifecycleOwner) {
+            if (it.isNotEmpty()) showEditProductBottomSheet(it)
         }
     }
 
@@ -303,12 +300,26 @@ class ManageProductFragment :
         }
     }
 
+    private fun showEditProductBottomSheet(productList: List<SellerCampaignProductList.Product>) {
+        val bottomSheet = EditProductInfoBottomSheet.newInstance(ArrayList(productList))
+        bottomSheet.setOnEditProductSuccessListener {
+            doOnDelayFinished(DELAY) {
+                loadInitialData()
+            }
+        }
+        bottomSheet.show(childFragmentManager)
+    }
+
     private fun showChooseProductPage() {
         val context = context ?: return
         val intent = Intent(context, ChooseProductActivity::class.java).apply {
             putExtra(ChooseProductActivity.BUNDLE_KEY_CAMPAIGN_ID, campaignId.toString())
         }
         startActivityForResult(intent, REQUEST_CODE)
+    }
+
+    private fun editProduct(product: SellerCampaignProductList.Product) {
+        showEditProductBottomSheet(listOf(product))
     }
 
     private fun deleteProduct(product: SellerCampaignProductList.Product) {

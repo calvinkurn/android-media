@@ -10,8 +10,9 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsBottomsheetEditProductInfoBinding
-import com.tokopedia.shop.flashsale.common.extension.disableEnableControls
+import com.tokopedia.shop.flashsale.common.extension.*
 import com.tokopedia.shop.flashsale.common.util.DiscountUtil.getDiscountPercent
 import com.tokopedia.shop.flashsale.common.util.DiscountUtil.getDiscountPrice
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
@@ -30,6 +31,9 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
     companion object {
         private const val KEY_PRODUCTS = "PRODUCTS"
         private const val TAG = "EditProductInfoBottomSheet"
+        private const val PRODUCT_REMAINING_VISIBILITY_THRESHOLD = 1
+        private const val MAX_LENGTH_NUMBER_INPUT = 11
+        private const val MAX_LENGTH_PERCENT_INPUT = 3
 
         fun newInstance(productList: ArrayList<SellerCampaignProductList.Product>): EditProductInfoBottomSheet {
             val fragment = EditProductInfoBottomSheet()
@@ -42,16 +46,17 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
 
     @Inject
     lateinit var viewModel: EditProductInfoViewModel
-
     private var binding by autoClearedNullable<SsfsBottomsheetEditProductInfoBinding>()
     private var warehouseBottomSheet: WarehouseBottomSheet? = null
-    private val productList: ArrayList<SellerCampaignProductList.Product>? by lazy {
-        arguments?.getParcelableArrayList(KEY_PRODUCTS)
-    }
     private var productInput = SellerCampaignProductList.ProductMapData()
     private var productIndex = Int.ZERO
     private var isDataFirstLoaded = true
     private var shouldLoadNextData = false
+    private var onEditProductSuccessListener: () -> Unit = {}
+
+    private val productList: ArrayList<SellerCampaignProductList.Product>? by lazy {
+        arguments?.getParcelableArrayList(KEY_PRODUCTS)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,7 +74,7 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        setTitle("Ubah informasi produk")
+        setTitle(getString(R.string.editproduct_bs_title))
         setupContent()
         super.onViewCreated(view, savedInstanceState)
 
@@ -170,41 +175,67 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
 
     private fun setupContent() {
         binding?.run {
-            spinnerShopLocation.setOnClickListener {
-                warehouseBottomSheet?.show(childFragmentManager)
-            }
+            setupShopLocationSpinner(this)
+            setupSaveButtons(this)
+            setupTextInputViews(this)
+            setFieldsInputMode(this)
+        }
+    }
+
+    private fun setupShopLocationSpinner(binding: SsfsBottomsheetEditProductInfoBinding) {
+        binding.spinnerShopLocation.setOnClickListener {
+            warehouseBottomSheet?.show(childFragmentManager)
+        }
+    }
+
+    private fun setFieldsInputMode(binding: SsfsBottomsheetEditProductInfoBinding) {
+        with(binding) {
+            tfCampaignPrice.textField.setModeToNumberDelimitedInput(MAX_LENGTH_NUMBER_INPUT)
+            tfCampaignPricePercent.textField.setModeToNumberDelimitedInput(MAX_LENGTH_PERCENT_INPUT)
+            tfStock.setModeToNumberDelimitedInput(MAX_LENGTH_NUMBER_INPUT)
+            tfMaxSold.setModeToNumberDelimitedInput(MAX_LENGTH_NUMBER_INPUT)
+        }
+    }
+
+    private fun setupTextInputViews(binding: SsfsBottomsheetEditProductInfoBinding) {
+        with(binding) {
             switchPrice.setOnCheckedChangeListener { _, isChecked ->
                 tfCampaignPrice.enabledEditing = !isChecked
                 tfCampaignPricePercent.enabledEditing = isChecked
             }
-            btnSaveNext.setOnClickListener {
-                if (btnSaveNext.isLoading) return@setOnClickListener
-                val shouldLoadNextData = productIndex.inc() < productList?.size.orZero()
-                submitInput(shouldLoadNextData)
-            }
-            btnSave.setOnClickListener {
-                if (btnSaveNext.isLoading) return@setOnClickListener
-                submitInput(shouldLoadNextData = false)
-            }
             tfCampaignPrice.textField?.editText?.afterTextChanged {
                 if (switchPrice.isChecked) return@afterTextChanged
+                // TODO: move to viewmodel
                 tfCampaignPricePercent.text =
-                    getDiscountPercent(it.toLongOrZero(), productInput.originalPrice).toString()
+                    getDiscountPercent(it.filterDigit().toLongOrZero(), productInput.originalPrice).toString()
             }
             tfCampaignPricePercent.textField?.editText?.afterTextChanged {
                 if (!switchPrice.isChecked) return@afterTextChanged
+                // TODO: move to viewmodel
                 tfCampaignPrice.text =
-                    getDiscountPrice(it.toLongOrZero(), productInput.originalPrice).toString()
+                    getDiscountPrice(it.filterDigit().toLongOrZero(), productInput.originalPrice).toString()
             }
+        }
+    }
+
+    private fun setupSaveButtons(binding: SsfsBottomsheetEditProductInfoBinding) {
+        binding.btnSaveNext.setOnClickListener {
+            if (binding.btnSaveNext.isLoading) return@setOnClickListener
+            val shouldLoadNextData = productIndex.inc() < productList?.size.orZero()
+            submitInput(shouldLoadNextData)
+        }
+        binding.btnSave.setOnClickListener {
+            if (binding.btnSaveNext.isLoading) return@setOnClickListener
+            submitInput(shouldLoadNextData = false)
         }
     }
 
     private fun submitInput(shouldLoadNextData: Boolean) {
         this.shouldLoadNextData = shouldLoadNextData
         binding?.run {
-            productInput.customStock = tfStock.editText.text.toString().toLongOrZero()
-            productInput.maxOrder = tfMaxSold.editText.text.toString().toIntSafely()
-            productInput.discountedPrice = tfCampaignPrice.textField?.editText?.text.toString().toLongOrZero()
+            productInput.customStock = tfStock.getTextLong()
+            productInput.maxOrder = tfMaxSold.getTextInt()
+            productInput.discountedPrice = tfCampaignPrice.textField.getTextLong()
             viewModel.setProductInput(productInput)
         }
     }
@@ -250,13 +281,13 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
 
         when {
             orderField?.editText?.text?.toString().orEmpty().isEmpty() -> {
-                orderField?.setMessage("Wajib diisi")
+                orderField?.setMessage(getString(R.string.editproduct_required_text))
             }
             isMaxError -> {
-                orderField?.setMessage("Tidak boleh melebihi stok utama")
+                orderField?.setMessage(getString(R.string.editproduct_order_exceed_stock_error))
             }
             isMinError -> {
-                orderField?.setMessage("Min. " + validationResult.minOrder)
+                orderField?.setMessage(getString(R.string.editproduct_min_prefix) + validationResult.minOrder)
             }
         }
     }
@@ -273,19 +304,19 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
 
         if (usingPercentInput) {
             priceField = binding?.tfCampaignPricePercent?.textField
-            maxErrorValue = "Min. ${validationResult.minPricePercent}%"
-            minErrorValue = "Maks. ${validationResult.maxPricePercent}%"
+            maxErrorValue = getString(R.string.editproduct_min_percent_text, validationResult.minPricePercent)
+            minErrorValue = getString(R.string.editproduct_max_percent_text, validationResult.maxPricePercent)
         } else {
             priceField = binding?.tfCampaignPrice?.textField
-            maxErrorValue = "Maks. " + validationResult.maxPrice.getCurrencyFormatted()
-            minErrorValue = "Min. " + validationResult.minPrice.getCurrencyFormatted()
+            maxErrorValue = getString(R.string.editproduct_max_prefix) + validationResult.maxPrice.getCurrencyFormatted()
+            minErrorValue = getString(R.string.editproduct_min_prefix) + validationResult.minPrice.getCurrencyFormatted()
         }
 
         priceField?.isInputError = true
 
         when {
             priceField?.editText?.text?.toString().orEmpty().isEmpty() -> {
-                priceField?.setMessage("Wajib diisi")
+                priceField?.setMessage(getString(R.string.editproduct_required_text))
             }
             isMaxError -> {
                 priceField?.setMessage(maxErrorValue)
@@ -306,13 +337,13 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
 
         when {
             stockField?.editText?.text?.toString().orEmpty().isEmpty() -> {
-                stockField?.setMessage("Wajib diisi")
+                stockField?.setMessage(getString(R.string.editproduct_required_text))
             }
             isMaxError -> {
-                stockField?.setMessage("Maks. " + validationResult.maxStock)
+                stockField?.setMessage(getString(R.string.editproduct_max_prefix) + validationResult.maxStock)
             }
             isMinError -> {
-                stockField?.setMessage("Min. " + validationResult.minStock)
+                stockField?.setMessage(getString(R.string.editproduct_min_prefix) + validationResult.minStock)
             }
         }
     }
@@ -323,8 +354,8 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
             tfStock.isInputError = false
             tfMaxSold.isInputError = false
             tfCampaignPrice.textField?.setMessage("")
-            tfStock.setMessage("Total Stok: " + productInput.originalStock)
-            tfMaxSold.setMessage("Batas maks. pembelian produk")
+            tfStock.setMessage(getString(R.string.editproduct_stock_total_text, productInput.originalStock))
+            tfMaxSold.setMessage(getString(R.string.edit_product_max_transaction_text))
         }
     }
 
@@ -333,7 +364,7 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
             tfCampaignPrice.text = productInput.discountedPrice.toString()
             tfStock.editText.setText(productInput.customStock.toString())
             tfMaxSold.editText.setText(productInput.maxOrder.toString())
-            tfStock.setMessage("Total stok ${productInput.originalStock}")
+            tfStock.setMessage(getString(R.string.editproduct_stock_total_text, productInput.originalStock))
         }
     }
 
@@ -351,15 +382,24 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
             loadNextData()
         } else {
             dismiss()
+            onEditProductSuccessListener()
         }
     }
 
     private fun updateProductEditCounter() {
-        val counter = productList?.size.orZero() - productIndex
-        binding?.typographyProductRemaining?.text = "Produk dengan info belum lengkap: $counter"
+        val productCount = productList?.size.orZero()
+        val counter = productCount - productIndex
+        binding?.typographyProductRemaining?.apply {
+            isVisible = productCount > PRODUCT_REMAINING_VISIBILITY_THRESHOLD
+            text = getString(R.string.editproduct_counter_text, counter)
+        }
     }
 
     fun show(fragmentManager: FragmentManager) {
         show(fragmentManager, TAG)
+    }
+
+    fun setOnEditProductSuccessListener(listener: () -> Unit) {
+        onEditProductSuccessListener = listener
     }
 }
