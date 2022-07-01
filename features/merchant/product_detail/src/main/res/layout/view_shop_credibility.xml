@@ -95,8 +95,8 @@
         app:layout_constrainedWidth="true"
         app:layout_constraintStart_toStartOf="@id/shop_credibility_last_active"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/shop_credibility_last_active"
-        app:typographyType="display_3"
+        app:layout_constraintTop_toBottomOf="@+id/shop_credibility_last_active"
+        app:typographyType="body_3"
         tools:text="• Kota Tangerang Selatan" />
 
     <com.tokopedia.iconunify.IconUnify
@@ -109,7 +109,7 @@
         app:layout_constraintTop_toTopOf="@+id/shop_credibility_location"
         app:layout_constraintBottom_toBottomOf="@+id/shop_credibility_location"
         app:layout_constraintStart_toEndOf="@+id/shop_credibility_location"
-        />
+        tools:visibility="visible" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/shop_credibility_icon_1"
