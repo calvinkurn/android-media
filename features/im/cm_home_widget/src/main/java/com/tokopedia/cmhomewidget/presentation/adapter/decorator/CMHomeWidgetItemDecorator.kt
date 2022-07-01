@@ -62,8 +62,7 @@ class CMHomeWidgetItemDecorator @Inject constructor() :
                 ratio = CMHomeWidgetViewAllCardViewHolder.RATIO_WIDTH
             }
             //this ratio will only applied if single item is there in adapter for Payment HTDW
-            CMHomeWidgetPaymentCardViewHolder.LAYOUT,
-            CMHomeWidgetPaymentCardShimmerViewHolder.LAYOUT-> {
+            CMHomeWidgetPaymentCardViewHolder.LAYOUT -> {
                 ratio = CMHomeWidgetPaymentCardViewHolder.RATIO_WIDTH
                 if (totalItems == 1) {
                     ratio = CMHomeWidgetPaymentCardViewHolder.SINGLE_ITEM_RATIO_WIDTH
