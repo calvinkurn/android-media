@@ -1344,7 +1344,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         clickAttachProductMenu()
         chatSrwUseCase.response = chatSrwUseCase.multipleQuestions
         getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generate3PreAttachPayload(DEFAULT_PRODUCT_ID)
+            generate3PreAttachPayload()
         intendingAttachProduct(3)
         clickPlusIconMenu()
         clickAttachProductMenu()
@@ -1367,7 +1367,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         // When
         intendingAttachProduct(3)
         getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generate3PreAttachPayload(DEFAULT_PRODUCT_ID)
+            generate3PreAttachPayload()
         clickPlusIconMenu()
         clickAttachProductMenu()
         chatSrwUseCase.response = chatSrwUseCase.multipleQuestions

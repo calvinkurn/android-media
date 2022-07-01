@@ -1072,34 +1072,24 @@ open class TopChatViewModel @Inject constructor(
         clearAttachmentPreview()
         launchCatchError(block = {
             showLoadingProductPreview(productIds)
-            if (!alreadyHasProductPreviewAttachmentData(productIds)) {
-                val param = GetChatPreAttachPayloadUseCase.Param(
-                    ids = productIds.joinToString(separator = ","),
-                    msgId = roomMetaData.msgId.toLongOrZero(),
-                    type = GetChatPreAttachPayloadUseCase.Param.TYPE_PRODUCT,
-                    addressID = userLocationInfo.address_id.toLongOrZero(),
-                    districtID = userLocationInfo.district_id.toLongOrZero(),
-                    postalCode = userLocationInfo.postal_code,
-                    latlon = userLocationInfo.latLong
-                )
-                val response = chatPreAttachPayload(param)
-                val mapAttachment = chatAttachmentMapper.map(response)
-                attachmentPreviewData.putAll(mapAttachment.toMap())
-            }
+            val param = GetChatPreAttachPayloadUseCase.Param(
+                ids = productIds.joinToString(separator = ","),
+                msgId = roomMetaData.msgId.toLongOrZero(),
+                type = GetChatPreAttachPayloadUseCase.Param.TYPE_PRODUCT,
+                addressID = userLocationInfo.address_id.toLongOrZero(),
+                districtID = userLocationInfo.district_id.toLongOrZero(),
+                postalCode = userLocationInfo.postal_code,
+                latlon = userLocationInfo.latLong
+            )
+            val response = chatPreAttachPayload(param)
+            val mapAttachment = chatAttachmentMapper.map(response)
+            attachmentPreviewData.putAll(mapAttachment.toMap())
             _chatAttachmentsPreview.value = attachmentPreviewData
         }, onError = {
             val errorMapAttachment = productIds.associateWith { ErrorAttachment() }
             attachmentPreviewData.putAll(errorMapAttachment)
             _chatAttachmentsPreview.value = attachmentPreviewData
         })
-    }
-
-    private fun alreadyHasProductPreviewAttachmentData(productIds: List<String>): Boolean {
-        for (productId in productIds) {
-            if (!attachmentPreviewData.contains(productId)
-                    || attachmentPreviewData[productId] is ErrorAttachment) return false
-        }
-        return true
     }
 
     private fun showLoadingProductPreview(productIds: List<String>) {

@@ -179,7 +179,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         chatAttachmentUseCase.response = chatAttachmentResponse
         launchChatRoomActivity()
         getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generate3PreAttachPayload(exProductId)
+            generate3PreAttachPayload()
         intending(hasExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, SOURCE_TOPCHAT))
             .respondWith(
                 Instrumentation.ActivityResult(
@@ -428,7 +428,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         for (i in 0 until totalProduct) {
             products.add(
                     ResultProduct(
-                            exProductId,
+                            i.toString(),
                             "tokopedia://product/1111",
                             ProductPreviewAttribute.productThumbnail,
                             "Rp ${i + 1}5.000.000",
