@@ -10,9 +10,7 @@
     tools:ignore="MissingDefaultResource"
     android:focusable="true">
 
-<!--
     <include layout="@layout/tm_dash_preview_shimmer"/>
--->
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollContainer"
