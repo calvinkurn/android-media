@@ -40,10 +40,6 @@ class CMHomeWidgetViewHolderTypeFactoryImpl @Inject constructor(
         return CMHomeWidgetPaymentCardViewHolder.LAYOUT
     }
 
-    override fun type(cmHomeWidgetPaymentCardShimmerData: CMHomeWidgetPaymentCardShimmerData): Int {
-        return CMHomeWidgetPaymentCardShimmerViewHolder.LAYOUT
-    }
-
     override fun createViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -75,11 +71,6 @@ class CMHomeWidgetViewHolderTypeFactoryImpl @Inject constructor(
                 CMHomeWidgetPaymentCardViewHolder(
                     getPaymentCardBinding(parent),
                     cmHomeWidgetPaymentCardListener
-                )
-            }
-            CMHomeWidgetPaymentCardShimmerViewHolder.LAYOUT -> {
-                CMHomeWidgetPaymentCardShimmerViewHolder(
-                    getPaymentCardShimmerBinding(parent)
                 )
             }
             else -> {
@@ -126,14 +117,6 @@ class CMHomeWidgetViewHolderTypeFactoryImpl @Inject constructor(
 
     private fun getPaymentCardBinding(parent: ViewGroup): LayoutCmHomeWidgetPaymentCardBinding {
         return LayoutCmHomeWidgetPaymentCardBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false
-        )
-    }
-
-    private fun getPaymentCardShimmerBinding(parent: ViewGroup): LayoutCmHomeWidgetPaymentCardShimmerBinding {
-        return LayoutCmHomeWidgetPaymentCardShimmerBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
