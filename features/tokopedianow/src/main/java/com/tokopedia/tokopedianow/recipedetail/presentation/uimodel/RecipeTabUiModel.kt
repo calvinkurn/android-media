@@ -4,8 +4,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.recipedetail.presentation.adapter.RecipeDetailTypeFactory
 
 class RecipeTabUiModel(
-    val ingredientTab: List<IngredientTabUiModel>,
-    val howToCookTab: List<HowToCookTabUiModel>
+    val ingredient: IngredientTabUiModel,
+    val instruction: InstructionTabUiModel
 ): Visitable<RecipeDetailTypeFactory> {
 
     override fun type(typeFactory: RecipeDetailTypeFactory): Int {

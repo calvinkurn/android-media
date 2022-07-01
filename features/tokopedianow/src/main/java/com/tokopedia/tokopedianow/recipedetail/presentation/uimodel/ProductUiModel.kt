@@ -1,3 +1,7 @@
 package com.tokopedia.tokopedianow.recipedetail.presentation.uimodel
 
-data class ProductUiModel(val id: String)
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
+data class ProductUiModel(val id: String): Parcelable

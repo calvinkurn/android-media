@@ -179,4 +179,10 @@
     <string name="tokopedianow_recipe_info_label">Tokopedia NOW!</string>
     <string name="tokopedianow_recipe_portion">%1$d Orang</string>
     <string name="tokopedianow_recipe_duration">%1$d Menit</string>
+    <string name="tokopedianow_recipe_ingredient_quantity">%1$d %2$s</string>
+    <string name="tokopedianow_recipe_other_label">+ %1$d lainnya</string>
+    <string name="tokopedianow_recipe_ingredient_section_title">Bahan-bahan</string>
+    <string name="tokopedianow_recipe_instruction_section_title">Cara membuat</string>
+    <string name="tokopedianow_recipe_ingredient_tab_title">Belanja Bahan</string>
+    <string name="tokopedianow_recipe_instruction_tab_title"><![CDATA[Bahan & Cara Masak]]></string>
 </resources>
