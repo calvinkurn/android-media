@@ -4,7 +4,7 @@ import javax.inject.Inject
 
 class UserProfileTracker @Inject constructor() {
 
-    fun openUserProfile(screenName: String, userId: String, live: Boolean){
+    fun openUserProfile(userId: String, live: Boolean){
         val label = if(live){
             "live"
         } else{
@@ -14,7 +14,7 @@ class UserProfileTracker @Inject constructor() {
         map[UserProfileAnalytics.Constants.EVENT] = UserProfileAnalytics.Event.EVENT_OPEN_SCREEN
         map[UserProfileAnalytics.Constants.BUSINESS_UNIT] = UserProfileAnalytics.Constants.CONTENT
         map[UserProfileAnalytics.Constants.CURRENT_SITE] = UserProfileAnalytics.Constants.TOKOPEDIA_MARKETPLACE
-        map[UserProfileAnalytics.Constants.SCREEN_NAME] = "$screenName - $label"
+        map[UserProfileAnalytics.Constants.SCREEN_NAME] = "feed user profile - $label"
         map[UserProfileAnalytics.Constants.USER_ID] = userId
 
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)

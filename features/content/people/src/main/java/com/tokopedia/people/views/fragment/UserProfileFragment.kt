@@ -387,7 +387,6 @@ class UserProfileFragment @Inject constructor(
         if(prev == curr || curr == ProfileUiModel.Empty) return
 
         userProfileTracker.openUserProfile(
-            screenName = "feed user profile",
             viewModel.profileUserID,
             live = curr.liveInfo.isLive
         )
@@ -416,7 +415,7 @@ class UserProfileFragment @Inject constructor(
             textBio.text = displayBioText
 
             if (displayBioText?.lines()?.count().orZero() > SEE_ALL_LINE) {
-                if (isViewMoreClickedBio == true) {
+                if (isViewMoreClickedBio) {
                     textBio.maxLines = MAX_LINE
                     textSeeMore.hide()
                 } else {
@@ -431,7 +430,7 @@ class UserProfileFragment @Inject constructor(
             if (!userSession.isLoggedIn)
                 updateToUnFollowUi()
 
-            headerProfile?.title = curr.name
+            headerProfile.title = curr.name
         }
     }
 
