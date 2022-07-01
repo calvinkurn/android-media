@@ -10,15 +10,17 @@ import com.tokopedia.search.result.presentation.view.typefactory.ProductListType
 import com.tokopedia.search.result.product.ViewUpdater
 import com.tokopedia.search.result.product.performancemonitoring.PerformanceMonitoringProvider
 import com.tokopedia.search.result.product.performancemonitoring.stopPerformanceMonitoring
-import com.tokopedia.unifyprinciples.R
+import com.tokopedia.search.utils.contextprovider.ContextProvider
+import com.tokopedia.search.utils.contextprovider.WeakReferenceContextProvider
 import javax.inject.Inject
 
 class RecyclerViewUpdater @Inject constructor(
     performanceMonitoringProvider: PerformanceMonitoringProvider,
     @SearchContext
-    private val context: Context,
+    context: Context,
 ): ViewUpdater,
-    ProductListAdapter.OnItemChangeView {
+    ProductListAdapter.OnItemChangeView,
+    ContextProvider by WeakReferenceContextProvider(context) {
 
     var recyclerView: RecyclerView? = null
         private set
@@ -61,7 +63,8 @@ class RecyclerViewUpdater @Inject constructor(
         ProductItemDecoration(getSpacing())
 
     private fun getSpacing(): Int =
-        context.resources
+        context
+            ?.resources
             ?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
             ?: 0
 
