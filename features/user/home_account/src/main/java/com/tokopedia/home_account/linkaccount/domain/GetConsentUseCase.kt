@@ -28,12 +28,13 @@ class GetConsentUseCase @Inject constructor(
 
     override suspend fun execute(params: Unit): GetConsentDataModel {
         val parameters = mapOf(
-            PARAM_RELATION_TYPE to 1
+            PARAM_RELATION_TYPE to VALUE_RELATION_TYPE
         )
         return graphqlRepository.request(graphqlQuery(), parameters)
     }
 
     companion object {
         private const val PARAM_RELATION_TYPE = "relationType"
+        private const val VALUE_RELATION_TYPE = 1
     }
 }

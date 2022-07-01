@@ -29,7 +29,7 @@ class LinkAccountViewModel @Inject constructor(
     private val setConsentUseCase: SetConsentUseCase,
     private val userSession: UserSessionInterface,
     dispatcher: CoroutineDispatchers
-): BaseViewModel(dispatcher.io), LifecycleObserver {
+): BaseViewModel(dispatcher.main), LifecycleObserver {
 
     private val _linkStatus = MutableLiveData<Result<LinkStatusResponse>>()
     val linkStatus: LiveData<Result<LinkStatusResponse>> get() = _linkStatus
@@ -52,27 +52,27 @@ class LinkAccountViewModel @Inject constructor(
                 }
             }
 
-            _linkStatus.postValue(Success(result))
+            _linkStatus.value = Success(result)
         }, onError = {
-            _linkStatus.postValue(Fail(it))
+            _linkStatus.value = Fail(it)
         })
     }
 
     fun getConsentSocialNetwork() {
         launchCatchError(coroutineContext, {
             val response = getConsentUseCase(Unit)
-            _getUserConsent.postValue(Success(response.socialNetworkGetConsent.data.optIn))
+            _getUserConsent.value = Success(response.socialNetworkGetConsent.data.optIn)
         }) {
-            _getUserConsent.postValue(Fail(it))
+            _getUserConsent.value = Fail(it)
         }
     }
 
     fun setConsentSocialNetwork(consentValue: Boolean) {
         launchCatchError(coroutineContext, {
             val response = setConsentUseCase(consentValue)
-            _setUserConsent.postValue(Success(response.socialNetworkSetConsent.data))
+            _setUserConsent.value = Success(response.socialNetworkSetConsent.data)
         }) {
-            _setUserConsent.postValue(Fail(it))
+            _setUserConsent.value = Fail(it)
         }
     }
 }

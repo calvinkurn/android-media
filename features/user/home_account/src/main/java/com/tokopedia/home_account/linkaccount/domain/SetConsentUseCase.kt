@@ -28,7 +28,7 @@ class SetConsentUseCase @Inject constructor(
     override suspend fun execute(params: Boolean): SetConsentDataModel {
         val parameters = mapOf(
             PARAM_OPT_IN to params,
-            PARAM_RELATION_TYPE to 1
+            PARAM_RELATION_TYPE to VALUE_RELATION_TYPE
         )
         return graphqlRepository.request(graphqlQuery(), parameters)
     }
@@ -36,5 +36,6 @@ class SetConsentUseCase @Inject constructor(
     companion object {
         private const val PARAM_OPT_IN = "optIn"
         private const val PARAM_RELATION_TYPE = "relationType"
+        private const val VALUE_RELATION_TYPE = 1
     }
 }
