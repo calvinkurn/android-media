@@ -956,6 +956,7 @@ class PlayViewModel @AssistedInject constructor(
         updateChannelStatus()
 
         updateChannelInfo(channelData)
+        playLog.setupRemoteConfig(isMonitoringLogEnabled)
     }
 
     fun defocusPage(shouldPauseVideo: Boolean) {
@@ -2359,13 +2360,6 @@ class PlayViewModel @AssistedInject constructor(
             metaTitle = shareInfo.metaTitle,
             metaDescription = shareInfo.metaDescription,
         )
-    }
-
-    fun handleInetSpeed(speedInMBps: Int) {
-        //Also, setup remote config value
-        playLog.setupRemoteConfig(isMonitoringLogEnabled)
-
-        playLog.logDownloadSpeed(speedInMBps)
     }
 
     fun getUserReportList(){

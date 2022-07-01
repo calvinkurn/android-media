@@ -75,6 +75,7 @@ class VideoAnalyticHelper(
         }
 
         if(bufferTrackingModel.bufferCount > 0 && watchDurationModel.cumulationDuration > 30){
+            log.logDownloadSpeed(PlayLiveRoomMetricsCommon.getInetSpeed())
             log.sendAll(channelData.id, channelData.videoMetaInfo.videoPlayer)
         }
     }

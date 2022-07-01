@@ -226,7 +226,7 @@ class PlayVideoFragment @Inject constructor(
                     PlayParentViewModel::class.java
                 )
         }
-        playViewModel.handleInetSpeed(PlayLiveRoomMetricsCommon.getInetSpeed(requireContext()))
+        playLog.logDownloadSpeed(PlayLiveRoomMetricsCommon.getInetSpeed())
         playLog.sendAll(playViewModel.channelId, playViewModel.latestCompleteChannelData.videoMetaInfo.videoPlayer)
     }
 
