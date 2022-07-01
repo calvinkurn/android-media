@@ -17,11 +17,9 @@ import com.tokopedia.productcard.test.utils.productImageUrl
 import com.tokopedia.productcard.test.utils.withDrawable
 import com.tokopedia.productcard.utils.LABEL_BEST_SELLER
 import com.tokopedia.productcard.utils.LABEL_CAMPAIGN
-import com.tokopedia.productcard.utils.LABEL_ETA
 import com.tokopedia.productcard.utils.LABEL_GIMMICK
 import com.tokopedia.productcard.utils.LABEL_PRICE
 import com.tokopedia.productcard.utils.LIGHT_GREEN
-import com.tokopedia.productcard.utils.TEXT_DARK_GREY
 import com.tokopedia.productcard.utils.TYPE_VARIANT_COLOR
 import com.tokopedia.productcard.utils.TYPE_VARIANT_CUSTOM
 import com.tokopedia.productcard.utils.TYPE_VARIANT_SIZE
@@ -37,10 +35,9 @@ internal val productCardGridTestData =
             testSizeVariantWithLabelPriceReposition(),
             testMixedVariantWithLabelPriceReposition(),
             testMixedVariantWithLabelPriceAndSlashPriceReposition(),
-            testLabelETAReposition(),
             testLabelGimmickReposition(),
             testLabelGimmickAndBestSellerReposition(),
-            testLabelCampaignReposition(),
+            testLabelCampaignNoCampaignVariant(),
             testShopLocationReposition(),
         )
 
@@ -54,10 +51,9 @@ internal val productCardGridViewStubTestData =
             testSizeVariantWithLabelPriceReposition(),
             testMixedVariantWithLabelPriceReposition(),
             testMixedVariantWithLabelPriceAndSlashPriceReposition(),
-            testLabelETAReposition(),
             testLabelGimmickReposition(),
             testLabelGimmickAndBestSellerReposition(),
-            testLabelCampaignReposition(),
+            testLabelCampaignNoCampaignVariant(),
             testShopLocationReposition(),
         )
 
@@ -384,37 +380,6 @@ private fun testMixedVariantWithLabelPriceAndSlashPriceReposition(): ProductCard
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
 
-private fun testLabelETAReposition(): ProductCardModelMatcher {
-    val labelPrice = LabelGroup(position = LABEL_PRICE, title = "Grosir", type = LIGHT_GREEN)
-    val labelETA = LabelGroup(position = LABEL_ETA, title = "Tiba 28 Feb - 1 Mar", type = TEXT_DARK_GREY)
-
-    val productCardModel = ProductCardModel(
-        productName = "Label ETA - Reposition",
-        productImageUrl = productImageUrl,
-        formattedPrice = "Rp7.999.000",
-        countSoldRating = "4.5",
-        freeOngkir = ProductCardModel.FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
-        hasThreeDots = true,
-        labelGroupList = listOf(labelPrice, labelETA),
-        productListType = ProductCardModel.ProductListType.REPOSITION,
-    )
-
-    val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
-        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
-        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
-        R.id.labelPrice to isNotDisplayed(),
-        R.id.labelPriceNextToVariant to isDisplayed(),
-        R.id.imageSalesRatingFloat to isDisplayed(),
-        R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
-        R.id.imageFreeOngkirPromo to isDisplayed(),
-        R.id.imageThreeDots to isDisplayed(),
-        R.id.textViewETA to isNotDisplayed(),
-    )
-
-    return ProductCardModelMatcher(productCardModel, productCardMatcher)
-}
-
 private fun testLabelGimmickReposition(): ProductCardModelMatcher {
     val labelGimmick = LabelGroup(position = LABEL_GIMMICK, title = "Sisa 5", type = "#ef144a")
 
@@ -461,7 +426,7 @@ private fun testLabelGimmickAndBestSellerReposition(): ProductCardModelMatcher {
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
 
-private fun testLabelCampaignReposition(): ProductCardModelMatcher {
+private fun testLabelCampaignNoCampaignVariant(): ProductCardModelMatcher {
     val labelCampaign = LabelGroup(position = LABEL_CAMPAIGN, title = "Waktu Indonesia Belanja", imageUrl = campaignLabelUrl)
 
     val productCardModel = ProductCardModel(
@@ -469,7 +434,7 @@ private fun testLabelCampaignReposition(): ProductCardModelMatcher {
         productImageUrl = productImageUrl,
         formattedPrice = "Rp7.999.000",
         labelGroupList = listOf(labelCampaign),
-        productListType = ProductCardModel.ProductListType.REPOSITION,
+        productListType = ProductCardModel.ProductListType.NO_CAMPAIGN,
     )
 
     val productCardMatcher = mapOf(
