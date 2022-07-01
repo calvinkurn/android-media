@@ -82,6 +82,7 @@ import com.tokopedia.people.views.uimodel.state.UserProfileUiState
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import com.tokopedia.abstraction.R as abstractionR
+import com.tokopedia.unifyprinciples.R as unifyR
 
 class UserProfileFragment @Inject constructor(
     private val viewModelFactoryCreator: UserProfileViewModelFactory.Creator,
@@ -102,7 +103,6 @@ class UserProfileFragment @Inject constructor(
     }
 
     var universalShareBottomSheet: UniversalShareBottomSheet? = null
-    private var recyclerviewPost: RecyclerView? = null
     private var headerProfile: HeaderUnify? = null
     private var appBarLayout: AppBarLayout? = null
     private var shouldRefreshRecyclerView: Boolean? = false
@@ -182,14 +182,9 @@ class UserProfileFragment @Inject constructor(
             shouldRefreshRecyclerView = verticalOffset == 0
         })
 
-        mainBinding.swipeRefreshLayout.setOnChildScrollUpCallback(object : SwipeRefreshLayout.OnChildScrollUpCallback {
-            override fun canChildScrollUp(parent: SwipeRefreshLayout, child: View?): Boolean {
-                if (recyclerviewPost != null) {
-                    return recyclerviewPost!!.canScrollVertically(-1) || !shouldRefreshRecyclerView!!
-                }
-                return false
-            }
-        })
+        mainBinding.swipeRefreshLayout.setOnChildScrollUpCallback { _, _ ->
+            mainBinding.rvPost.canScrollVertically(-1) || !shouldRefreshRecyclerView!!
+        }
 
         context?.let {
             screenShotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
@@ -203,7 +198,7 @@ class UserProfileFragment @Inject constructor(
 
     override fun onDestroyView() {
         super.onDestroyView()
-        recyclerviewPost?.removeOnScrollListener(feedFloatingButtonManager.scrollListener)
+        mainBinding.rvPost.removeOnScrollListener(feedFloatingButtonManager.scrollListener)
         feedFloatingButtonManager.cancel()
 
         _binding = null
@@ -256,24 +251,21 @@ class UserProfileFragment @Inject constructor(
 //            ).showNow(childFragmentManager)
             }
 
-            recyclerviewPost?.addOnScrollListener(feedFloatingButtonManager.scrollListener)
+            mainBinding.rvPost.addOnScrollListener(feedFloatingButtonManager.scrollListener)
 //        recyclerviewPost?.let { feedFloatingButtonManager.setDelayForExpandFab(it) }
         }
     }
 
     private fun initUserPost(userId: String) {
-        recyclerviewPost = view?.findViewById(R.id.recycler_view)
         gridLayoutManager.spanSizeLookup = getSpanSizeLookUp()
 
 
-        recyclerviewPost?.layoutManager = gridLayoutManager
-        if (recyclerviewPost?.itemDecorationCount == 0) {
-            context?.resources?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1)
-                ?.let {
-                    recyclerviewPost?.addItemDecoration(GridSpacingItemDecoration(2, it, false))
-                }
+        mainBinding.rvPost.layoutManager = gridLayoutManager
+        if (mainBinding.rvPost.itemDecorationCount == 0) {
+            val spacing = requireContext().resources.getDimensionPixelOffset(unifyR.dimen.spacing_lvl1)
+            mainBinding.rvPost.addItemDecoration(GridSpacingItemDecoration(2, spacing, false))
         }
-        recyclerviewPost?.adapter = mAdapter
+        mainBinding.rvPost.adapter = mAdapter
         mAdapter.resetAdapter()
         mAdapter.cursor = ""
         mAdapter.startDataLoading(userId)

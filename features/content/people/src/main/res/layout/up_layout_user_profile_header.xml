@@ -307,7 +307,7 @@
             app:layout_constraintTop_toBottomOf="@+id/linear_button">
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recycler_view"
+                    android:id="@+id/rv_post"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/unify_space_12"
