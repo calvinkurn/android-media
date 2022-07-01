@@ -38,7 +38,7 @@ open class UserPostBaseAdapter(
             view.findViewById(R.id.play_widget_large_view)
 
         override fun bindView(item: PlayPostContentItem, position: Int) {
-            setData(this, item, position)
+            setData(this, item)
         }
     }
 
@@ -82,14 +82,10 @@ open class UserPostBaseAdapter(
         loadCompletedWithError()
     }
 
-    private fun setData(holder: ViewHolder, playPostContent: PlayPostContentItem, position: Int) {
+    private fun setData(holder: ViewHolder, playPostContent: PlayPostContentItem) {
         holder.playWidgetLargeView.setModel(UserProfileVideoMapper.map(playPostContent, ""))
         holder.playWidgetLargeView.setListener(this)
-
     }
-
-
-
 
     private fun addVideoPostReminderClickCallBack(
         channelId: String,
