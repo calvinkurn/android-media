@@ -1,11 +1,14 @@
 package com.tokopedia.tokomember_seller_dashboard.model.mapper
 
+import com.tokopedia.tokomember_common_widget.util.ProgramActionType
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmCouponCreateRequest
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmMerchantCouponUnifyRequest
 import com.tokopedia.tokomember_seller_dashboard.model.TmSingleCouponData
-import com.tokopedia.tokomember_seller_dashboard.util.*
+import com.tokopedia.tokomember_seller_dashboard.util.CASHBACK_IDR
+import com.tokopedia.tokomember_seller_dashboard.util.CASHBACK_PERCENTAGE
+import com.tokopedia.tokomember_seller_dashboard.util.SOURCE_MULTIPLE_COUPON_CREATE
+import com.tokopedia.tokomember_seller_dashboard.util.SOURCE_MULTIPLE_COUPON_EXTEND
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
-import java.util.*
 
 object TmCouponCreateMapper {
 
@@ -18,10 +21,11 @@ object TmCouponCreateMapper {
         tmEndDateUnix: String,
         tmStartTimeUnix: String,
         tmEndTimeUnix: String,
-        token:String,
-        imageSquare:String,
+        token: String,
+        imageSquare: String,
         imagePortrait: String,
-        maximumBenefit: Int
+        maximumBenefit: Int,
+        programActionType: Int
     ): TmMerchantCouponUnifyRequest {
         //Mutation Mapper
 
@@ -36,7 +40,7 @@ object TmCouponCreateMapper {
             quota = CurrencyFormatHelper.convertRupiahToInt(couponPremiumData?.quota?:""),
             imagePortrait = imagePortrait,
             imageSquare = imageSquare,
-            isPublic = 0,
+            isPublic = 1,
             hourStart = tmStartTimeUnix,
             dateStart = tmStartDateUnix,
             hourEnd = tmEndTimeUnix,
@@ -68,7 +72,7 @@ object TmCouponCreateMapper {
             quota = CurrencyFormatHelper.convertRupiahToInt(couponVip?.quota?:""),
             imagePortrait = imagePortrait,
             imageSquare = imageSquare,
-            isPublic = 0,
+            isPublic = 1,
             hourStart = tmStartTimeUnix,
             dateStart = tmStartDateUnix,
             hourEnd = tmEndTimeUnix,
@@ -92,9 +96,17 @@ object TmCouponCreateMapper {
         }
         voucherList.add(1, voucherTwo)
 
+        var source = SOURCE_MULTIPLE_COUPON_CREATE
+
+        when(programActionType){
+            ProgramActionType.EXTEND ->{
+                source = SOURCE_MULTIPLE_COUPON_EXTEND
+            }
+        }
+
         return TmMerchantCouponUnifyRequest(
             token = token,
-            source = TM_MULTIPLE_COUPON_SOURCE,
+            source = source,
             status = "",
             vouchers = voucherList
         )
@@ -115,17 +127,7 @@ object TmCouponCreateMapper {
         //Mutation Mapper
 
         val voucherList = arrayListOf<TmCouponCreateRequest>()
-        voucherList.add(0, TmCouponCreateRequest(
-            benefitIdr = couponPremiumData?.maxCashback?.let {
-                CurrencyFormatHelper.convertRupiahToInt(
-                    it
-                )
-            },
-            benefitMax = couponPremiumData?.maxCashback?.let {
-                CurrencyFormatHelper.convertRupiahToInt(
-                    it
-                )
-            },
+        val tmCouponCreateRequest = TmCouponCreateRequest(
             targetBuyer = 3,
             image = tmCouponPremiumUploadId,
             couponType = couponPremiumData?.typeCoupon,
@@ -143,17 +145,33 @@ object TmCouponCreateMapper {
             },
             imagePortrait = imagePortrait,
             imageSquare = imageSquare,
-            isPublic = 0,
+            isPublic = 1,
             hourStart = startTime,
             dateStart = startDate,
             hourEnd = endTime,
             dateEnd = endDate,
             benefitType = couponPremiumData?.typeCashback
-        ))
+        )
+        when (couponPremiumData?.typeCashback) {
+            CASHBACK_IDR -> {
+                tmCouponCreateRequest.apply {
+                    benefitIdr = CurrencyFormatHelper.convertRupiahToInt(couponPremiumData.maxCashback?:"")
+                    benefitMax = CurrencyFormatHelper.convertRupiahToInt(couponPremiumData.maxCashback?:"")
+                }
+            }
+            CASHBACK_PERCENTAGE -> {
+                tmCouponCreateRequest.apply {
+                    benefitMax = CurrencyFormatHelper.convertRupiahToInt(couponPremiumData.maxCashback?:"")
+                    benefitIdr = 0
+                }
+            }
+        }
+
+        voucherList.add(tmCouponCreateRequest)
 
         return TmMerchantCouponUnifyRequest(
             token = token,
-            source = TM_SINGLE_COUPON_SOURCE,
+            source = "",
             status = "",
             vouchers = voucherList
         )

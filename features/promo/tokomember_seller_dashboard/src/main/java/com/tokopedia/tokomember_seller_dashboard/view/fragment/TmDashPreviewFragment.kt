@@ -35,7 +35,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID_IN_TOOLS
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_TYPE
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_NAME
-import com.tokopedia.tokomember_seller_dashboard.util.LOADING_TEXT
+import com.tokopedia.tokomember_seller_dashboard.util.TM_SUMMARY_DIALOG_TITLE
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDatePreview
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setTime
 import com.tokopedia.tokomember_seller_dashboard.util.TmPrefManager
@@ -186,7 +186,7 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
                                 it.data.merchantPromotionCreateMultipleMV?.message ?: "",
                                 Toaster.LENGTH_LONG,
                                 Toaster.TYPE_ERROR
-                            )
+                            ).show()
                         }
                     }
                 }
@@ -198,7 +198,7 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
                             it.throwable.localizedMessage ?: "",
                             Toaster.LENGTH_LONG,
                             Toaster.TYPE_ERROR
-                        )
+                        ).show()
                     }
                 }
             }
@@ -219,6 +219,9 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
                 subtitle = "Langkah 4 dari 4"
             }
             ProgramActionType.CREATE_BUAT ->{
+                subtitle = "Langkah 3 dari 3"
+            }
+            ProgramActionType.CREATE_FROM_COUPON ->{
                 subtitle = "Langkah 3 dari 3"
             }
             ProgramActionType.EXTEND ->{
@@ -271,7 +274,7 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
         loaderDialog?.loaderText?.apply {
             setType(Typography.DISPLAY_2)
         }
-        loaderDialog?.setLoadingText(Html.fromHtml(LOADING_TEXT))
+        loaderDialog?.setLoadingText(Html.fromHtml(TM_SUMMARY_DIALOG_TITLE))
         loaderDialog?.show()
     }
 

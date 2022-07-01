@@ -51,12 +51,12 @@ import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA_RETRY
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_DESC
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_RETRY
+import com.tokopedia.tokomember_seller_dashboard.util.LOADING_TEXT
 import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_CTA
 import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_CTA_EDIT
 import com.tokopedia.tokomember_seller_dashboard.util.REFRESH
 import com.tokopedia.tokomember_seller_dashboard.util.RETRY
 import com.tokopedia.tokomember_seller_dashboard.util.SIMPLE_DATE_FORMAT
-import com.tokopedia.tokomember_seller_dashboard.util.TM_PROGRAM_EDIT_DIALOG_TITLE
 import com.tokopedia.tokomember_seller_dashboard.util.TM_PROGRAM_MIN_PURCHASE_ERROR
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.convertDateTime
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.getDayOfWeekID
@@ -272,7 +272,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                 tmOpenFragmentCallback.openFragment(CreateScreenType.COUPON_MULTIPLE, bundle)
             }
             ProgramActionType.CREATE_FROM_COUPON -> {
-                tmOpenFragmentCallback.openFragment(CreateScreenType.COUPON_SINGLE, bundle)
+                tmOpenFragmentCallback.openFragment(CreateScreenType.COUPON_MULTIPLE, bundle)
             }
             ProgramActionType.EXTEND ->{
                 tmOpenFragmentCallback.openFragment(CreateScreenType.COUPON_MULTIPLE, bundle)
@@ -392,7 +392,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         membershipGetProgramForm?.timePeriodList?.getOrNull(0)?.months?.let {
             periodInMonth = it
         }
-        if (programActionType == ProgramActionType.CREATE || programActionType == ProgramActionType.CREATE_BUAT) {
+        if (programActionType == ProgramActionType.CREATE || programActionType == ProgramActionType.CREATE_BUAT || programActionType == ProgramActionType.CREATE_FROM_COUPON) {
             val currentDate = GregorianCalendar(locale)
             currentDate.add(Calendar.DAY_OF_MONTH,1)
             val dayInId =  getDayOfWeekID(currentDate.get(Calendar.DAY_OF_WEEK))
@@ -639,7 +639,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         loaderDialog?.loaderText?.apply {
             setType(Typography.DISPLAY_2)
         }
-        loaderDialog?.setLoadingText(Html.fromHtml(TM_PROGRAM_EDIT_DIALOG_TITLE))
+        loaderDialog?.setLoadingText(Html.fromHtml(LOADING_TEXT))
         loaderDialog?.show()
     }
 

@@ -342,14 +342,14 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         tokomemberDashCreateViewModel.tmProgramValidateLiveData.observe(viewLifecycleOwner,{
             when(it.status){
                 TokoLiveDataResult.STATUS.SUCCESS -> {
-                    if (it.data?.membershipValidateBenefit?.resultStatus?.code != "200") {
+                    if (it.data?.membershipValidateBenefit?.resultStatus?.code == "200") {
                         errorState.isValidateCouponError = false
 //                        updateCoupon()
                         uploadImagePremium()
                     } else {
                         closeLoadingDialog()
                         setButtonState()
-                        handleProgramPreValidateError(it.data.membershipValidateBenefit.resultStatus.reason, it.data.membershipValidateBenefit.resultStatus.message?.firstOrNull())
+                        handleProgramPreValidateError(it.data?.membershipValidateBenefit?.resultStatus?.reason, it?.data?.membershipValidateBenefit?.resultStatus?.message?.firstOrNull())
                     }
                 }
                 TokoLiveDataResult.STATUS.ERROR-> {
@@ -776,7 +776,12 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         val bottomSheet = TokomemberBottomsheet.createInstance(bundle)
         bottomSheet.setUpBottomSheetListener(object : BottomSheetClickListener {
             override fun onButtonClick(errorCount: Int) {
-                prefManager?.shopId?.let { TmDashCreateActivity.openActivity(it, activity, CreateScreenType.PROGRAM, ProgramActionType.CREATE_FROM_COUPON, null, null) }
+                val cardId = prefManager?.cardId
+                prefManager?.shopId?.let { shopId ->
+                    if (cardId != null) {
+                        TmDashCreateActivity.openActivity(shopId, activity, CreateScreenType.PROGRAM, ProgramActionType.CREATE_FROM_COUPON, null, null, cardId = cardId)
+                    }
+                }
                 bottomSheet.dismiss()
                 activity?.finish()
             }
