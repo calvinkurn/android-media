@@ -138,8 +138,8 @@ class CustomOrderDetailBottomSheet :
         }
     }
 
-    override fun onDeleteButtonClicked(dataSetPosition: Int, adapterPosition: Int, cartId: String) {
-        adapter.removeCustomProduct(dataSetPosition, adapterPosition)
+    override fun onDeleteButtonClicked(adapterPosition: Int, cartId: String) {
+        adapter.removeCustomProduct(cartId, adapterPosition)
         productUiModel?.let { clickListener?.onDeleteCustomOrderButtonClicked(cartId, it.id) }
         if (adapter.getCustomOrderDetails().isEmpty()) dismiss()
     }

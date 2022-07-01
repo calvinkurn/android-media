@@ -163,14 +163,15 @@ class OrderCustomizationFragment : BaseMultiFragment(),
         val isChangeMerchant = arguments?.getBoolean(BUNDLE_KEY_IS_CHANGE_MERCHANT, false) ?: false
 
         context?.run {
-            if (cartId.isNotBlank()) binding?.atcButton?.text =
-                getString(com.tokopedia.tokofood.R.string.action_update)
+            if (cartId.isNotBlank()) binding?.atcButton?.text = getString(com.tokopedia.tokofood.R.string.action_update)
         }
 
         productUiModel?.apply {
-
             binding?.tpgProductName?.text = name
-            binding?.qeuProductQtyEditor?.setValue(orderQty)
+            // set the product quantity based on custom order qty
+            customOrderDetails.firstOrNull { it.cartId == cartId }?.let { customOrderDetail ->
+                binding?.qeuProductQtyEditor?.setValue(customOrderDetail.qty)
+            }
 
             val customListItems = viewModel.getCustomListItems(cartId, this)
             customListItems.run { setupCustomList(this) }

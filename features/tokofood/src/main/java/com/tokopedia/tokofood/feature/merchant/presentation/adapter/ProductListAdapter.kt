@@ -86,12 +86,22 @@ class ProductListAdapter(private val clickListener: OnProductCardItemClickListen
         customOrderDetail: CustomOrderDetail? = null
     ) {
         productListItems.getOrNull(dataSetPosition)?.productUiModel?.apply {
-            cartId = cartTokoFood.cartId
-            orderQty = cartTokoFood.quantity
-            orderNote = cartTokoFood.getMetadata()?.notes.orEmpty()
-            isAtc = cartTokoFood.quantity.isMoreThanZero()
-            customOrderDetail?.let { customOrderDetails.add(it) }
-
+            var sameCustomProductExist = false
+            val sameCustomProduct = this.customOrderDetails.firstOrNull { it.cartId == cartTokoFood.cartId }
+            sameCustomProductExist = sameCustomProduct != null
+            if (sameCustomProductExist) {
+                if (!isCustomizable) cartId = cartTokoFood.cartId
+                orderQty = cartTokoFood.quantity
+                orderNote = cartTokoFood.getMetadata()?.notes.orEmpty()
+                isAtc = cartTokoFood.quantity.isMoreThanZero()
+                sameCustomProduct?.apply { qty += 1 }
+            } else {
+                if (!isCustomizable) cartId = cartTokoFood.cartId
+                orderQty = cartTokoFood.quantity
+                orderNote = cartTokoFood.getMetadata()?.notes.orEmpty()
+                isAtc = cartTokoFood.quantity.isMoreThanZero()
+                customOrderDetail?.let { customOrderDetails.add(it) }
+            }
             notifyItemChanged(adapterPosition)
         }
     }

@@ -2,6 +2,7 @@ package com.tokopedia.tokofood.feature.merchant.presentation.mapper
 
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.tokofood.common.constants.ShareComponentConstants
 import com.tokopedia.tokofood.common.domain.metadata.CartMetadataVariantTokoFood
@@ -9,14 +10,9 @@ import com.tokopedia.tokofood.common.domain.response.CartTokoFood
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductParam
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductVariantParam
+import com.tokopedia.tokofood.common.util.TokofoodExt.copyParcelable
 import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCategoryFilter
-import com.tokopedia.tokofood.feature.merchant.presentation.model.AddOnUiModel
-import com.tokopedia.tokofood.feature.merchant.presentation.model.CategoryFilterListUiModel
-import com.tokopedia.tokofood.feature.merchant.presentation.model.CategoryFilterWrapperUiModel
-import com.tokopedia.tokofood.feature.merchant.presentation.model.CategoryUiModel
-import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomListItem
-import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomOrderDetail
-import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.model.*
 
 object TokoFoodMerchantUiModelMapper {
 
@@ -80,7 +76,7 @@ object TokoFoodMerchantUiModelMapper {
         return variantParams.toList()
     }
 
-    fun mapCartTokoFoodToCustomOrderDetails(cartTokoFood: CartTokoFood, productUiModel: ProductUiModel): CustomOrderDetail {
+    fun mapCartTokoFoodToCustomOrderDetail(cartTokoFood: CartTokoFood, productUiModel: ProductUiModel): CustomOrderDetail {
         val selectedCustomListItems = mapCartTokoFoodVariantsToSelectedCustomListItems(
                 orderNote = cartTokoFood.getMetadata()?.notes.orEmpty(),
                 masterData = productUiModel.customListItems,
@@ -118,7 +114,7 @@ object TokoFoodMerchantUiModelMapper {
         masterData: List<CustomListItem>,
         selectedVariants: List<CartMetadataVariantTokoFood>
     ): List<CustomListItem> {
-        val selectedCustomListItems = masterData.toMutableList()
+        val selectedCustomListItems = deepCopyMasterData(masterData)
         val optionMap = selectedVariants.groupBy { it.variantId }
         optionMap.keys.forEach { variantId ->
             val selectedOptionIds = optionMap[variantId]?.map { it.optionId } ?: listOf()
@@ -134,6 +130,31 @@ object TokoFoodMerchantUiModelMapper {
         val customOrderWidgetUiModel = selectedCustomListItems.firstOrNull() { it.addOnUiModel == null }
         customOrderWidgetUiModel?.orderNote = orderNote
         return selectedCustomListItems.toList()
+    }
+
+    private fun deepCopyMasterData(masterData: List<CustomListItem>): List<CustomListItem> {
+        val copy = mutableListOf<CustomListItem>()
+        masterData.forEach { customListItem ->
+            val itemCopy = CustomListItem(
+                    listItemType = customListItem.listItemType,
+                    addOnUiModel = customListItem.addOnUiModel?.run {
+                        AddOnUiModel(
+                                id = this.id,
+                                name = this.name,
+                                isError = this.isError,
+                                isRequired = this.isRequired,
+                                isSelected = this.isSelected,
+                                selectedAddOns = listOf(),
+                                maxQty = this.maxQty,
+                                minQty = this.minQty,
+                                options = this.options,
+                                outOfStockWording = this.outOfStockWording
+                        )
+                    }
+            )
+            copy.add(itemCopy)
+        }
+        return copy
     }
 
     fun mapProductListItemToCategoryFilterUiModel(

@@ -855,17 +855,15 @@ class MerchantPageFragment : BaseMultiFragment(),
                                 dataSetPosition = dataSetPosition,
                                 adapterPosition = adapterPosition,
                                 customOrderDetail = viewModel.mapCartTokoFoodToCustomOrderDetail(
-                                    cartTokoFood,
-                                    productListAdapter?.getProductUiModel(
-                                        dataSetPosition
-                                    ) ?: ProductUiModel()
+                                    cartTokoFood = cartTokoFood,
+                                    productUiModel = productListAdapter?.getProductUiModel(dataSetPosition) ?: ProductUiModel()
                                 )
                             )
                             val productUiModel = productListAdapter?.getProductUiModel(dataSetPosition) ?: ProductUiModel()
-                            if (productUiModel.customOrderDetails.size > Int.ONE) {
-                                showCustomOrderDetailBottomSheet(
-                                    productUiModel, dataSetPosition
-                                )
+                            val isSameCustomProductExist = productUiModel.customOrderDetails.firstOrNull { it.qty > Int.ONE } != null
+                            val isMultipleCustomProductMade = productUiModel.customOrderDetails.size > Int.ONE
+                            if (isSameCustomProductExist || isMultipleCustomProductMade) {
+                                showCustomOrderDetailBottomSheet(productUiModel, dataSetPosition)
                             }
                         }
                     }
@@ -909,10 +907,7 @@ class MerchantPageFragment : BaseMultiFragment(),
         }
     }
 
-    private fun showCustomOrderDetailBottomSheet(
-        productUiModel: ProductUiModel,
-        productPosition: Int
-    ) {
+    private fun showCustomOrderDetailBottomSheet(productUiModel: ProductUiModel, productPosition: Int) {
         customOrderDetailBottomSheet?.dismiss()
         val bundle = Bundle().apply {
             putInt(
@@ -933,10 +928,8 @@ class MerchantPageFragment : BaseMultiFragment(),
         merchantInfoBottomSheet?.show(childFragmentManager)
     }
 
-    override fun onProductCardClicked(
-        productListItem: ProductListItem,
-        cardPositions: Pair<Int, Int>
-    ) {
+    override fun onProductCardClicked(productListItem: ProductListItem, cardPositions: Pair<Int, Int>) {
+        if (viewModel.isProductDetailBottomSheetVisible) return
         val productUiModel = productListItem.productUiModel
         // track click product card event
         merchantPageAnalytics.clickProductCard(
@@ -946,6 +939,7 @@ class MerchantPageFragment : BaseMultiFragment(),
             merchantId
         )
         val bottomSheet = ProductDetailBottomSheet.createInstance(productUiModel, this)
+        bottomSheet.setOnDismissListener { viewModel.isProductDetailBottomSheetVisible = false }
         bottomSheet.setListener(this@MerchantPageFragment)
         bottomSheet.sendTrackerInMerchantPage {
             viewModel.merchantData?.let {
@@ -960,12 +954,10 @@ class MerchantPageFragment : BaseMultiFragment(),
         bottomSheet.setSelectedCardPositions(cardPositions)
         bottomSheet.setProductListItem(productListItem)
         bottomSheet.show(childFragmentManager)
+        viewModel.isProductDetailBottomSheetVisible = true
     }
 
-    override fun onAtcButtonClicked(
-        productListItem: ProductListItem,
-        cardPositions: Pair<Int, Int>
-    ) {
+    override fun onAtcButtonClicked(productListItem: ProductListItem, cardPositions: Pair<Int, Int>) {
         val productUiModel = productListItem.productUiModel
         if (activityViewModel?.shopId.isNullOrBlank() || activityViewModel?.shopId == merchantId) {
             // update product id - card positions map
@@ -1097,14 +1089,9 @@ class MerchantPageFragment : BaseMultiFragment(),
         }
     }
 
-    override fun onNavigateToOrderCustomizationPage(
-        cartId: String,
-        productUiModel: ProductUiModel,
-        productPosition: Int
-    ) {
+    override fun onNavigateToOrderCustomizationPage(cartId: String, productUiModel: ProductUiModel, productPosition: Int) {
         if (activityViewModel?.shopId.isNullOrBlank() || activityViewModel?.shopId == merchantId) {
-            val productListItem =
-                getProductItemList().find { it.productUiModel.id == productUiModel.id }
+            val productListItem = getProductItemList().find { it.productUiModel.id == productUiModel.id }
             if (productListItem != null) {
                 navigateToOrderCustomizationPage(
                     cartId = cartId,

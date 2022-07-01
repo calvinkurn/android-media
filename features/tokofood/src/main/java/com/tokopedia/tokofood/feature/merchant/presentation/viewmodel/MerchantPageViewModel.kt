@@ -4,14 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.tokofood.common.domain.response.CartTokoFood
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProduct
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProductVariant
 import com.tokopedia.tokofood.common.presentation.mapper.CustomOrderDetailsMapper.mapTokoFoodProductsToCustomOrderDetails
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.util.ResourceProvider
@@ -24,15 +23,7 @@ import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionContr
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType.MULTIPLE_SELECTION
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType.SINGLE_SELECTION
 import com.tokopedia.tokofood.feature.merchant.presentation.mapper.TokoFoodMerchantUiModelMapper
-import com.tokopedia.tokofood.feature.merchant.presentation.model.AddOnUiModel
-import com.tokopedia.tokofood.feature.merchant.presentation.model.CarouselData
-import com.tokopedia.tokofood.feature.merchant.presentation.model.CategoryUiModel
-import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomListItem
-import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomOrderDetail
-import com.tokopedia.tokofood.feature.merchant.presentation.model.MerchantOpsHour
-import com.tokopedia.tokofood.feature.merchant.presentation.model.OptionUiModel
-import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductListItem
-import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.model.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -62,6 +53,8 @@ class MerchantPageViewModel @Inject constructor(
     var selectedProducts: List<CheckoutTokoFoodProduct> = listOf()
 
     var isAddressManuallyUpdated = false
+
+    var isProductDetailBottomSheetVisible = false
 
     fun getDataSetPosition(cardPositions: Pair<Int, Int>): Int {
         return cardPositions.first
@@ -299,11 +292,25 @@ class MerchantPageViewModel @Inject constructor(
     }
 
     fun mapCartTokoFoodToCustomOrderDetail(cartTokoFood: CartTokoFood, productUiModel: ProductUiModel): CustomOrderDetail {
-        return TokoFoodMerchantUiModelMapper.mapCartTokoFoodToCustomOrderDetails(
+        resetMasterData(productUiModel.customListItems)
+        return TokoFoodMerchantUiModelMapper.mapCartTokoFoodToCustomOrderDetail(
                 cartTokoFood = cartTokoFood,
                 productUiModel = productUiModel
         )
     }
+
+    private fun resetMasterData(customListItems: List<CustomListItem>): List<CustomListItem> {
+        customListItems.forEach {
+            it.orderNote = String.EMPTY
+            it.addOnUiModel?.isSelected = false
+            it.addOnUiModel?.options?.forEach { optionUiModel ->
+                optionUiModel.isSelected = false
+            }
+            it.addOnUiModel?.selectedAddOns = listOf()
+        }
+        return customListItems
+    }
+
 
     fun isTickerDetailEmpty(tickerData: TokoFoodTickerDetail): Boolean {
         return tickerData.title.isBlank() && tickerData.subtitle.isBlank()

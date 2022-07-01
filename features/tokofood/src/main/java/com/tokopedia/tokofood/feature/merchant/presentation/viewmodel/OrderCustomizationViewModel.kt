@@ -43,6 +43,7 @@ class OrderCustomizationViewModel @Inject constructor(
             it.addOnUiModel?.options?.forEach { optionUiModel ->
                 optionUiModel.isSelected = false
             }
+            it.addOnUiModel?.selectedAddOns = listOf()
         }
         return customListItems
     }
