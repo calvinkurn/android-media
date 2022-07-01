@@ -97,6 +97,7 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.resources.isDarkMode
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
@@ -246,6 +247,7 @@ class MerchantPageFragment : BaseMultiFragment(),
         super.onViewCreated(view, savedInstanceState)
         setupAppBarLayoutListener()
         setBackgroundDefaultColor()
+        setHeaderBackground()
         setupMerchantLogo()
         setupMerchantProfileCarousel()
         setupProductList()
@@ -296,6 +298,18 @@ class MerchantPageFragment : BaseMultiFragment(),
                     com.tokopedia.unifyprinciples.R.color.Unify_Background
                 )
             )
+        }
+    }
+
+    private fun setHeaderBackground() {
+        context?.let {
+            val backgroundResourceId =
+                if (it.isDarkMode()) {
+                    com.tokopedia.tokofood.R.drawable.header_background_dark
+                } else {
+                    com.tokopedia.tokofood.R.drawable.header_background
+                }
+            binding?.bgMerchantHeader?.setBackgroundResource(backgroundResourceId)
         }
     }
 

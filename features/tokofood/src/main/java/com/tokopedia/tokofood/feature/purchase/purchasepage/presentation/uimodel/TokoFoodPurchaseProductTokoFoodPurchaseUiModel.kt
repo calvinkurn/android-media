@@ -27,12 +27,12 @@ data class TokoFoodPurchaseProductTokoFoodPurchaseUiModel(
         val variants: List<CheckoutTokoFoodProductVariant> = listOf()
 ) : Visitable<TokoFoodPurchaseAdapterTypeFactory>, BaseTokoFoodPurchaseUiModel() {
 
-        fun getSubtotalPrice(): Double {
-                return price + getVariantsTotal()
+        fun getBasePrice(): Double {
+                return price - getVariantsTotal()
         }
 
-        fun getSubtotalPriceFmt(): String {
-                return getSubtotalPrice().getCurrencyFormatted()
+        fun getBasePriceFmt(): String {
+                return getBasePrice().getCurrencyFormatted()
         }
 
         private fun getVariantsTotal(): Double {

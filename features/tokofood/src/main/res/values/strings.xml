@@ -112,7 +112,7 @@
     <string name="desc_change_merchant_label">Boleh, kok. Tapi, menu yang kamu pilih dari resto sebelumnya akan terhapus, ya.</string>
     <string name="btn_confirm_order_change_merchant">Iya, Pesan</string>
     <string name="btn_cancel_order_change_merchant">Nggak Jadi</string>
-
+    <string name="text_header_order_custom">Custom pesanan</string>
 
     <!-- Order Tracking -->
     <string name="order_tracking_invoice_number_label">No. Invoice</string>
