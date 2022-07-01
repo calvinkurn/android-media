@@ -666,6 +666,15 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
         return (if(tradeInHomePageVM.is3PLSelected.value == true) "ditukar di indomaret" else "ditukar di alamatmu")
     }
 
+    override fun needToTrackTokoNow(): Boolean {
+        return true
+    }
+
+    override fun onClickChooseAddressTokoNowTracker() {
+        tradeInAnalytics.clickAttemptChangeAddress(tradeInHomePageVM.is3PLSelected.value ?: false)
+        super.onClickChooseAddressTokoNowTracker()
+    }
+
     override fun onLocalizingAddressLoginSuccess() {
 
     }
