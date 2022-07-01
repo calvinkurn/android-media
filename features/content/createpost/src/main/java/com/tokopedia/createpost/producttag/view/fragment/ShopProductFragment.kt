@@ -127,6 +127,10 @@ class ShopProductFragment @Inject constructor(
             errorSecondaryAction.gone()
         }
 
+        binding.sbShopProduct.searchBarPlaceholder = requireContext().getString(
+            R.string.cc_product_tag_search_hint_template, viewModel.selectedShop.shopName
+        )
+
         binding.sbShopProduct.searchBarTextField.setOnTouchListener { _, motionEvent ->
             if(motionEvent.action == MotionEvent.ACTION_UP) {
                 analytic.clickSearchBarOnShop()
