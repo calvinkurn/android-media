@@ -511,9 +511,9 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
     }
 
     private fun setUpDiagnosticReviewData(diagnosticReview: ArrayList<TradeInDetailModel.GetTradeInDetail.LogisticOption.DiagnosticReview>) {
-        val textSize = 14.0f
+        val textSize = TradeinConstants.TEXT_SIZE_14F
         view?.findViewById<LinearLayout>(R.id.linear_layout_hp_kamu)?.removeAllViews()
-        if(diagnosticReview.size>=3) {
+        if(diagnosticReview.size>=TradeinConstants.TRADE_IN_DIAGNOSTIC_REVIEW_LIMIT) {
             for (i in 0..2) {
                 val doubleTextView = DoubleTextView(activity, LinearLayout.HORIZONTAL)
                 doubleTextView.apply {
@@ -664,6 +664,15 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
 
     override fun getEventLabelHostPage(): String {
         return (if(tradeInHomePageVM.is3PLSelected.value == true) "ditukar di indomaret" else "ditukar di alamatmu")
+    }
+
+    override fun needToTrackTokoNow(): Boolean {
+        return true
+    }
+
+    override fun onClickChooseAddressTokoNowTracker() {
+        tradeInAnalytics.clickAttemptChangeAddress(tradeInHomePageVM.is3PLSelected.value ?: false)
+        super.onClickChooseAddressTokoNowTracker()
     }
 
     override fun onLocalizingAddressLoginSuccess() {
