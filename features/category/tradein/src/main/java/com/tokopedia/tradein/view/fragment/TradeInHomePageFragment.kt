@@ -511,9 +511,9 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
     }
 
     private fun setUpDiagnosticReviewData(diagnosticReview: ArrayList<TradeInDetailModel.GetTradeInDetail.LogisticOption.DiagnosticReview>) {
-        val textSize = 14.0f
+        val textSize = TradeinConstants.TEXT_SIZE_14F
         view?.findViewById<LinearLayout>(R.id.linear_layout_hp_kamu)?.removeAllViews()
-        if(diagnosticReview.size>=3) {
+        if(diagnosticReview.size>=TradeinConstants.TRADE_IN_DIAGNOSTIC_REVIEW_LIMIT) {
             for (i in 0..2) {
                 val doubleTextView = DoubleTextView(activity, LinearLayout.HORIZONTAL)
                 doubleTextView.apply {
