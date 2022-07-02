@@ -254,7 +254,7 @@ class TradeInAnalytics @Inject constructor(
             EVENT_CATEGORY to TRADE_IN_START_PAGE,
             EVENT_ACTION to "click exchange methods",
             EVENT_LABEL to if(is3PL){
-                "indomaret: " + (if(is3PLAvailable) "available" else "unavailable") + " - price_range_indomaret: $price3Pl"
+                " - indomaret: " + (if(is3PLAvailable) "available" else "unavailable") + " - price_range_indomaret: $price3Pl"
             } else {
                 "alamatmu: " + (if(is1PLAvailable) "available" else "unavailable")+" - price_range_alamatmu: $price1PL"
             },
