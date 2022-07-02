@@ -61,16 +61,6 @@ class SellerViewHolder(
         binding?.usrShopInfo?.setWeight(Typography.BOLD)
     }
 
-    private fun setShopInfoRegular() {
-        binding?.usrShopInfo?.setTextColor(
-            ContextCompat.getColor(
-                itemView.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_N700
-            )
-        )
-        binding?.usrShopInfo?.setWeight(Typography.REGULAR)
-    }
-
     override fun bind(element: ProfileSellerDataModel) {
         binding?.run {
             btnTryAgainShopInfo.setOnClickListener{mainNavListener.onErrorShopInfoRefreshClicked(adapterPosition)}
@@ -104,7 +94,7 @@ class SellerViewHolder(
                     shopInfo =
                         itemView.context?.getString(R.string.account_header_register_store)
                             .orEmpty()
-                    setShopInfoRegular()
+                    setShopInfoBold()
                 } else {
                     shopInfo = MethodChecker.fromHtml(element.shopName)
                     setShopInfoBold()

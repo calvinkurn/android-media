@@ -12,6 +12,8 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -39,10 +41,13 @@ class DateFilterBottomSheet : BaseBottomSheet<BottomsheetStcSelectDateRangeBindi
         const val TAG = "DateFilterBottomSheet"
         private const val KEY_DATE_FILTERS = "date_filter_items"
         private const val KEY_IDENTIFIER_DESCRIPTION = "date_filter_identifier_desctiption"
+        private const val KEY_PAGE_SOURCE = "page_source"
+        private const val TOP_MARGIN = 36
 
         fun newInstance(
             dateFilters: List<DateFilterItem>,
-            identifierDescription: String
+            identifierDescription: String,
+            pageSource: String
         ): DateFilterBottomSheet {
             return DateFilterBottomSheet().apply {
                 clearContentPadding = true
@@ -51,18 +56,16 @@ class DateFilterBottomSheet : BaseBottomSheet<BottomsheetStcSelectDateRangeBindi
                 arguments = Bundle().apply {
                     putParcelableArrayList(KEY_DATE_FILTERS, ArrayList(dateFilters))
                     putString(KEY_IDENTIFIER_DESCRIPTION, identifierDescription)
+                    putString(KEY_PAGE_SOURCE, pageSource)
                 }
             }
         }
     }
 
     private var applyChangesCallback: ((DateFilterItem) -> Unit)? = null
-    private val mAdapter: DateFilterAdapter? by lazy {
-        DateFilterAdapter(this, childFragmentManager)
-    }
-    private val items: List<DateFilterItem> by lazy {
-        arguments?.getParcelableArrayList<DateFilterItem>(KEY_DATE_FILTERS).orEmpty()
-    }
+    private var mAdapter: DateFilterAdapter? = null
+    private var items: List<DateFilterItem> = emptyList()
+    private var pageSource = String.EMPTY
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -76,6 +79,8 @@ class DateFilterBottomSheet : BaseBottomSheet<BottomsheetStcSelectDateRangeBindi
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        initVars()
+
         super.onViewCreated(view, savedInstanceState)
         dismissBottomSheet(view)
     }
@@ -133,6 +138,12 @@ class DateFilterBottomSheet : BaseBottomSheet<BottomsheetStcSelectDateRangeBindi
         }
     }
 
+    private fun initVars() {
+        this.mAdapter = DateFilterAdapter(this, childFragmentManager)
+        this.pageSource = arguments?.getString(KEY_PAGE_SOURCE, String.EMPTY).orEmpty()
+        this.items = arguments?.getParcelableArrayList<DateFilterItem>(KEY_DATE_FILTERS).orEmpty()
+    }
+
     private fun showFilterItems() {
         binding?.run {
             rvStcDateRage.run {
@@ -167,18 +178,19 @@ class DateFilterBottomSheet : BaseBottomSheet<BottomsheetStcSelectDateRangeBindi
             icStcExclusiveFeature.isVisible = !isRegularMerchant
             stcFilterExclusiveIdentifier.isVisible = isRegularMerchant
             stcFilterExclusiveIdentifier.setOnCtaClickListener {
-                StatisticTracker.sendClickEventOnCloseDateFilter(userSession.userId)
+                StatisticTracker.sendClickEventOnCloseDateFilter(pageSource)
                 dismiss()
             }
             if (isRegularMerchant) {
                 val identifierDescription = arguments
                     ?.getString(KEY_IDENTIFIER_DESCRIPTION).orEmpty()
                 stcFilterExclusiveIdentifier.setDescription(identifierDescription)
-                viewStcFilterHeader.setMargin(0, 0, 0, 0)
+                stcFilterExclusiveIdentifier.setPageSource(pageSource)
+                viewStcFilterHeader.setMargin(Int.ZERO, Int.ZERO, Int.ZERO, Int.ZERO)
                 viewStcFilterHeader.setBackgroundResource(R.drawable.bg_stc_filter_header_rm)
             } else {
-                val topMargin = it.dpToPx(36).toInt()
-                viewStcFilterHeader.setMargin(0, topMargin, 0, 0)
+                val topMargin = it.dpToPx(TOP_MARGIN).toInt()
+                viewStcFilterHeader.setMargin(Int.ZERO, topMargin, Int.ZERO, Int.ZERO)
                 viewStcFilterHeader.setBackgroundResource(R.drawable.bg_stc_filter_header)
             }
 
@@ -186,7 +198,7 @@ class DateFilterBottomSheet : BaseBottomSheet<BottomsheetStcSelectDateRangeBindi
                 StatisticTracker.sendImpressionExclusiveFeatureDateFilter(userSession.userId)
             }
             if (stcFilterExclusiveIdentifier.isVisible) {
-                StatisticTracker.sendImpressionExclusiveIdentifierDateFilter(userSession.userId)
+                StatisticTracker.sendImpressionExclusiveIdentifierDateFilter(pageSource)
             }
         }
     }
