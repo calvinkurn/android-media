@@ -171,7 +171,10 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
                     (findViewById<ImageUnify>(R.id.product_image)).setImageUrl(it.productImage!!)
                 }
                 if (!it.shopBadge.isNullOrEmpty()) {
+                    (findViewById<ImageUnify>(R.id.image_shop_badge)).show()
                     (findViewById<ImageUnify>(R.id.image_shop_badge)).setImageUrl(it.shopBadge!!)
+                } else {
+                    (findViewById<ImageUnify>(R.id.image_shop_badge)).hide()
                 }
                 findViewById<Typography>(R.id.shop_name).text = it.shopName
                 findViewById<Typography>(R.id.shop_location).text = it.shopLocation
