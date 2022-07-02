@@ -10,4 +10,5 @@
     <string name="train_calender_label_day_name_thursday">Kam</string>
     <string name="train_calender_label_day_name_friday">Jum</string>
     <string name="train_calender_label_day_name_saturday">Sab</string>
+    <string name="flight_calender_choose_date_hint">Pilih Tanggal</string>
 </resources>
