@@ -1,10 +1,8 @@
 package com.tokopedia.shop.flashsale.common.customcomponent
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.text.InputType.TYPE_NULL
 import android.util.AttributeSet
-import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
@@ -42,7 +40,6 @@ class SpinnerView : BaseCustomView {
     var tfBorder: TextFieldUnify2? = null
     var layoutSpinner: LinearLayout? = null
     var tvSpinner: Typography? = null
-    private var onClickListener: () -> Unit = {}
 
     constructor(context: Context) : super(context) {
         init(null)
@@ -71,13 +68,9 @@ class SpinnerView : BaseCustomView {
         tfBorder?.setInputType(TYPE_NULL)
     }
 
-    @SuppressLint("ClickableViewAccessibility")
     private fun setupLayoutOnClick(layoutSpinner: LinearLayout?) {
-        layoutSpinner?.setOnTouchListener { _, event ->
-            if (event.action == MotionEvent.ACTION_UP) {
-                onClickListener.invoke()
-            }
-            return@setOnTouchListener true
+        layoutSpinner?.setOnClickListener {
+            this@SpinnerView.performClick()
         }
     }
 
@@ -105,9 +98,5 @@ class SpinnerView : BaseCustomView {
             tvSpinner?.text = text
             tvSpinner?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
         }
-    }
-
-    fun setOnClickListener(onClickListener: () -> Unit) {
-        this.onClickListener = onClickListener
     }
 }

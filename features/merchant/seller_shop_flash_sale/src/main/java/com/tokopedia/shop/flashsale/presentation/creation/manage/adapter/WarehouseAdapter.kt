@@ -13,18 +13,23 @@ class WarehouseAdapter: RecyclerView.Adapter<WarehouseViewHolder>() {
         return WarehouseViewHolder(rootView, ::itemOnClick)
     }
 
-    private fun itemOnClick(position: Int) {
-        items.forEachIndexed { index, warehouseUiModel ->
-            warehouseUiModel.isSelected = (index == position)
-        }
-        notifyDataSetChanged()
-    }
-
     override fun onBindViewHolder(holder: WarehouseViewHolder, position: Int) {
         holder.bind(items[position])
     }
 
     override fun getItemCount() = items.size
+
+    private fun itemOnClick(position: Int) {
+        items.forEachIndexed { index, warehouseUiModel ->
+            if (warehouseUiModel.isSelected) setItemSelected(index, false)
+            if (index == position) setItemSelected(index, true)
+        }
+    }
+
+    private fun setItemSelected(index: Int, isSelected: Boolean) {
+        items.getOrNull(index)?.isSelected = isSelected
+        notifyItemChanged(index)
+    }
 
     fun setItems(warehouses: List<WarehouseUiModel>) {
         items = warehouses

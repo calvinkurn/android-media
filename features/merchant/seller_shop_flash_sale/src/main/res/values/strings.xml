@@ -282,6 +282,7 @@
     <string name="editproduct_bs_title">Ubah informasi produk</string>
     <string name="editproduct_counter_text">Produk dengan info belum lengkap: %d</string>
     <string name="editproduct_stock_total_text">Total stok %d</string>
+    <string name="editproduct_stock_text">Stok %d</string>
     <string name="edit_product_max_transaction_text">Batas maks. pembelian produk</string>
     <string name="editproduct_required_text">Wajib diisi</string>
     <string name="editproduct_max_prefix">Maks. </string>
@@ -289,5 +290,5 @@
     <string name="editproduct_max_percent_text">Maks. %d</string>
     <string name="editproduct_min_percent_text">Min. %d</string>
     <string name="editproduct_order_exceed_stock_error">Tidak boleh melebihi stok utama</string>
-    <string name="editproduct_bs_warehouse_title">Pilih lokasi</string>
+    <string name="editproduct_bs_warehouse_title">Pilih lokasi</string><string name="sda">\"Stok: \"</string>
 </resources>

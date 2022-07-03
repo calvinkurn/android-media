@@ -28,19 +28,25 @@ class WarehouseViewHolder(
 
     private val binding: SsfsItemWarehouseBinding? by viewBinding()
 
-    fun bind(item: WarehouseUiModel) {
+    init {
         binding?.apply {
-            typographyWarehouseName.text = item.name
-            typographyStock.text = "Stok: " + item.stock
-            checkboxItem.isChecked = item.isSelected
-            checkboxItem.isEnabled = item.stock.isMoreThanZero()
-            root.isEnabled = item.stock.isMoreThanZero()
             root.setOnClickListener {
                 itemOnClick(adapterPosition)
             }
             checkboxItem.setOnClickListener {
                 itemOnClick(adapterPosition)
             }
+        }
+    }
+
+    fun bind(item: WarehouseUiModel) {
+        binding?.apply {
+            val stockText = itemView.context.getString(R.string.editproduct_stock_text, item.stock)
+            typographyWarehouseName.text = item.name
+            typographyStock.text = stockText
+            checkboxItem.isChecked = item.isSelected
+            checkboxItem.isEnabled = item.stock.isMoreThanZero()
+            root.isEnabled = item.stock.isMoreThanZero()
         }
     }
 }
