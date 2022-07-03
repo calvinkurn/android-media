@@ -14,7 +14,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
@@ -23,7 +22,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
@@ -58,15 +56,14 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.unifyprinciples.R as unifyPrinciplesR
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.item_post_image_new.view.*
 import kotlinx.android.synthetic.main.item_post_long_video_vod.view.*
 import kotlinx.android.synthetic.main.item_post_video_new.view.*
 import kotlinx.coroutines.*
 import java.net.URLEncoder
-import kotlin.collections.ArrayList
 import kotlin.math.round
+import com.tokopedia.unifyprinciples.R as unifyPrinciplesR
 
 private const val TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT: String = "FeedXCardProductsHighlight"
 private const val TYPE_USE_ASGC_NEW_DESIGN: String = "use_new_design"
@@ -1187,8 +1184,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
             positionInFeed = positionInFeed
         )
         feedMedia.vodView = feedVODViewHolder
-        if (videoPlayer == null)
-            videoPlayer = FeedExoPlayer(context)
         feedVODViewHolder.bindData(GridPostAdapter.isMute)
         listener?.let { feedVODViewHolder.setListener(it) }
         feedVODViewHolder.updateLikedText {
@@ -1489,6 +1484,15 @@ class PostDynamicViewNew @JvmOverloads constructor(
     fun attach(
         model: Visitable<*>? = null
     ) {
+        if (model is DynamicPostUiModel) {
+            model?.feedXCard?.media?.firstOrNull()?.canPlay = false
+            model?.feedXCard?.let { hideTaggingOnDetach(it) }
+            if (model.feedXCard.typename == TYPE_FEED_X_CARD_PLAY ||(model.feedXCard.typename == TYPE_FEED_X_CARD_POST && model.feedXCard.media.first().type == TYPE_LONG_VIDEO)){
+                val feedXCard = model.feedXCard
+                val media = feedXCard.media.first()
+                media.vodView?.onViewAttached()
+            }
+        }
 
     }
 
@@ -1659,10 +1663,13 @@ class PostDynamicViewNew @JvmOverloads constructor(
     }
 
     fun setVideo(isFragmentVisible: Boolean) {
-        if (isFragmentVisible)
+        if (isFragmentVisible) {
+            feedVODViewHolder.onResume()
             videoPlayer?.resume()
-        else
+        } else {
+            feedVODViewHolder.onPause()
             videoPlayer?.pause()
+        }
     }
 
     fun bindImage(cardProducts: List<FeedXProduct>, media: FeedXMedia, feedXCard: FeedXCard) {
@@ -1749,18 +1756,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
         adapter.focusItemAt(feedXCard.lastCarouselIndex)
     }
-
-    private fun getVideoItem(): View? {
-        val videoItem = View.inflate(context, R.layout.item_post_video_new, null)
-        val param = LinearLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT
-        )
-        videoItem?.layoutParams = param
-        return videoItem
-    }
-
-
     private fun shouldContinueToShowLihatProduct(layout: ConstraintLayout) : Boolean{
         var isInflatedBubbleShowing = false
         for (i in 0 until layout.childCount) {
