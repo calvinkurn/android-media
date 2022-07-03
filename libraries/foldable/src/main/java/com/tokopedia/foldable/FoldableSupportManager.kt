@@ -28,12 +28,11 @@ class FoldableSupportManager(
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     open fun onCreate() {
-        Log.e("Activity Callback", "OnCreate")
+
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     open fun onStart() {
-        Log.e("Activity Callback", "OnStart")
         layoutUpdatesJob = CoroutineScope(Dispatchers.Main).launch {
             windowInfoRepo.windowLayoutInfo()
                 .collect { newLayoutInfo ->
@@ -44,26 +43,22 @@ class FoldableSupportManager(
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     open fun onStop() {
-        Log.e("Activity Callback", "OnStop")
         layoutUpdatesJob?.cancel()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     open fun onResume() {
-        Log.e("Activity Callback", "OnResume")
 
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     open fun onPause() {
-        Log.e("Activity Callback", "OnPause")
 
     }
 
 //    https://stackoverflow.com/questions/47656728/is-it-mandatory-to-remove-yourself-as-an-observer-from-android-lifecycle
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     open fun onDestroy() {
-    Log.e("Activity Callback", "OnDestroy")
 
     }
 
