@@ -34,6 +34,8 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
         private const val PRODUCT_REMAINING_VISIBILITY_THRESHOLD = 1
         private const val MAX_LENGTH_NUMBER_INPUT = 11
         private const val MAX_LENGTH_PERCENT_INPUT = 3
+        private const val NUMBER_INITIAL_VALUE = ""
+        private const val PERCENT_INITIAL_VALUE = "-"
 
         fun newInstance(productList: List<SellerCampaignProductList.Product>): EditProductInfoBottomSheet {
             val fragment = EditProductInfoBottomSheet()
@@ -205,9 +207,12 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
             }
             tfCampaignPrice.textField?.editText?.afterTextChanged {
                 if (switchPrice.isChecked) return@afterTextChanged
-                // TODO: move to viewmodel
-                tfCampaignPricePercent.text =
-                    getDiscountPercent(it.filterDigit().toLongOrZero(), productInput.originalPrice).toString()
+                if (it.isEmpty()) tfCampaignPricePercent.text = PERCENT_INITIAL_VALUE
+                else {
+                    // TODO: move to viewmodel
+                    tfCampaignPricePercent.text =
+                        getDiscountPercent(it.filterDigit().toLongOrZero(), productInput.originalPrice).toString()
+                }
             }
             tfCampaignPricePercent.textField?.editText?.afterTextChanged {
                 if (!switchPrice.isChecked) return@afterTextChanged
@@ -360,10 +365,14 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
     }
 
     private fun resetInputData() {
+        val discountedPrice = productInput.discountedPrice.toStringOrInitialValue(NUMBER_INITIAL_VALUE)
+        val customStock = productInput.customStock.toStringOrInitialValue(NUMBER_INITIAL_VALUE)
+        val maxOrder = productInput.maxOrder.toLong().toStringOrInitialValue(NUMBER_INITIAL_VALUE)
+
         binding?.apply {
-            tfCampaignPrice.text = productInput.discountedPrice.toString()
-            tfStock.editText.setText(productInput.customStock.toString())
-            tfMaxSold.editText.setText(productInput.maxOrder.toString())
+            tfCampaignPrice.text = discountedPrice
+            tfStock.editText.setText(customStock)
+            tfMaxSold.editText.setText(maxOrder)
             tfStock.setMessage(getString(R.string.editproduct_stock_total_text, productInput.originalStock))
         }
     }
@@ -392,6 +401,14 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
         binding?.typographyProductRemaining?.apply {
             isVisible = productCount > PRODUCT_REMAINING_VISIBILITY_THRESHOLD
             text = getString(R.string.editproduct_counter_text, counter)
+        }
+    }
+
+    private fun Long.toStringOrInitialValue(initialValue: String): String {
+        return if (isMoreThanZero()) {
+            toString()
+        } else {
+            initialValue
         }
     }
 

@@ -32,16 +32,18 @@ fun TextFieldUnify2?.setModeToNumberDelimitedInput(maxLength: Int) {
         override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
             try {
                 val cleanedText = charSequence?.toString()?.filter { it.isDigit() }.orEmpty()
-                val parsedLong = cleanedText.toLongOrZero()
-                val formattedText = parsedLong.getNumberFormatted()
-                val lengthDiff = formattedText.length - charSequence?.length.orZero()
-                val cursorPosition = start + count + lengthDiff
-                val fixedPosition = cursorPosition.coerceIn(Int.ZERO, formattedText.length)
+                if (cleanedText.isNotEmpty()) {
+                    val parsedLong = cleanedText.toLongOrZero()
+                    val formattedText = parsedLong.getNumberFormatted()
+                    val lengthDiff = formattedText.length - charSequence?.length.orZero()
+                    val cursorPosition = start + count + lengthDiff
+                    val fixedPosition = cursorPosition.coerceIn(Int.ZERO, formattedText.length)
 
-                textFieldInput.removeTextChangedListener(this)
-                textFieldInput.setText(formattedText)
-                textFieldInput.setSelection(fixedPosition)
-                textFieldInput.addTextChangedListener(this)
+                    textFieldInput.removeTextChangedListener(this)
+                    textFieldInput.setText(formattedText)
+                    textFieldInput.setSelection(fixedPosition)
+                    textFieldInput.addTextChangedListener(this)
+                }
             } catch (e: Exception) {
                 // TODO: Log to crashlytics
             }
