@@ -23,7 +23,6 @@ class FoldableInfo(newLayoutInfo: WindowLayoutInfo) {
         foldingFeature = getFoldingFeature(newLayoutInfo)
     }
 
-
     fun isTableTopMode(): Boolean {
         return foldingFeature?.let {
             it.state == FoldingFeature.STATE_HALF_OPENED &&
@@ -45,6 +44,12 @@ class FoldableInfo(newLayoutInfo: WindowLayoutInfo) {
     fun isHalfOpen(): Boolean {
         return foldingFeature?.let { it ->
             it.state == FoldingFeature.STATE_HALF_OPENED
+        } ?: false
+    }
+
+    fun isFlat(): Boolean {
+        return foldingFeature?.let { it ->
+            it.state == FoldingFeature.STATE_FLAT
         } ?: false
     }
 
@@ -108,7 +113,6 @@ class FoldableInfo(newLayoutInfo: WindowLayoutInfo) {
 
         return featureRectInView
     }
-
 
     fun alignSeparatorViewToFoldingFeatureBounds(
         constraintSet: ConstraintSet,
