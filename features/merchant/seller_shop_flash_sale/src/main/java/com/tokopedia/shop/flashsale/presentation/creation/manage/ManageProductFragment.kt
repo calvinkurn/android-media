@@ -1,6 +1,5 @@
 package com.tokopedia.shop.flashsale.presentation.creation.manage
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -9,8 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -20,7 +17,6 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentManageProductBinding
-import com.tokopedia.shop.flashsale.common.customcomponent.BaseSimpleListFragment
 import com.tokopedia.shop.flashsale.common.extension.*
 import com.tokopedia.shop.flashsale.common.preference.SharedPreferenceDataStore
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
@@ -106,7 +102,7 @@ class ManageProductFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         setFragmentToUnifyBgColor()
         setupView()
-        viewModel.getProducts(campaignId, LIST_TYPE)
+        loadProductsData()
         observeProductList()
         observeIncompleteProducts()
         observeRemoveProductsStatus()
@@ -211,6 +207,10 @@ class ManageProductFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun loadProductsData() {
+        viewModel.getProducts(campaignId, LIST_TYPE)
+    }
+
     private fun displayProducts(productList: SellerCampaignProductList) {
         viewModel.setProductErrorMessage(productList)
         viewModel.setProductInfoCompletion(productList)
@@ -249,7 +249,6 @@ class ManageProductFragment : BaseDaggerFragment() {
         }
     }
 
-    @SuppressLint("ResourcePackage")
     private fun showEmptyState() {
         binding?.apply {
             emptyState.visible()
@@ -371,7 +370,7 @@ class ManageProductFragment : BaseDaggerFragment() {
         val bottomSheet = EditProductInfoBottomSheet.newInstance(productList)
         bottomSheet.setOnEditProductSuccessListener {
             doOnDelayFinished(DELAY) {
-                loadInitialData()
+                loadProductsData()
             }
         }
         bottomSheet.show(childFragmentManager)
