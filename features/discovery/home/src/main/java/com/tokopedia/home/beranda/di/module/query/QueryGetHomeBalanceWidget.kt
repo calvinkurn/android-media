@@ -15,10 +15,10 @@ internal object QueryGetHomeBalanceWidget {
             "        {\n" +
             "           getHomeBalanceWidget{\n" +
             "               balances{\n" +
-            "               title\n" +
-            "               type\n" +
-            "               data\n" +
-            "            }\n" +
-            "           }" +
+            "                  title\n" +
+            "                  type\n" +
+            "                  data\n" +
+            "               }\n" +
+            "            }" +
             "        }"
 }

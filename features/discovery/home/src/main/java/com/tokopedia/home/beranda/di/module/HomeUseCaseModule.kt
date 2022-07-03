@@ -10,27 +10,13 @@ import com.tokopedia.home.beranda.data.datasource.local.HomeRoomDataSource
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeRecommendationMapper
+import com.tokopedia.home.beranda.data.model.GetHomeBalanceWidgetData
 import com.tokopedia.home.beranda.data.model.HomeAtfData
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerListHomeData
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
 import com.tokopedia.home.beranda.di.HomeScope
-import com.tokopedia.home.beranda.di.module.query.HomeFeedQuery
-import com.tokopedia.home.beranda.di.module.query.SuggestedReviewQuery
-import com.tokopedia.home.beranda.di.module.query.DismissSuggestedQuery
-import com.tokopedia.home.beranda.di.module.query.TokopoinstListQuery
-import com.tokopedia.home.beranda.di.module.query.PendingCashbackQuery
-import com.tokopedia.home.beranda.di.module.query.BusinessWidgetQuery
-import com.tokopedia.home.beranda.di.module.query.BusinessUnitDataQuery
-import com.tokopedia.home.beranda.di.module.query.RecommendationQuery
-import com.tokopedia.home.beranda.di.module.query.PopularKeywordGqlQuery
-import com.tokopedia.home.beranda.di.module.query.DynamicChannelQuery
-import com.tokopedia.home.beranda.di.module.query.HomeQuery
-import com.tokopedia.home.beranda.di.module.query.HomeDataRevampQuery
-import com.tokopedia.home.beranda.di.module.query.HomeIconQuery
-import com.tokopedia.home.beranda.di.module.query.HomeSlidesQuery
-import com.tokopedia.home.beranda.di.module.query.AtfQuery
-import com.tokopedia.home.beranda.di.module.query.CloseChannelQuery
+import com.tokopedia.home.beranda.di.module.query.*
 import com.tokopedia.home.beranda.domain.gql.CloseChannelMutation
 import com.tokopedia.home.beranda.domain.gql.ProductrevDismissSuggestion
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedContentGqlResponse
@@ -167,6 +153,14 @@ class HomeUseCaseModule {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<TokopointsDrawerListHomeData>(graphqlRepository)
         useCase.setGraphqlQuery(TokopoinstListQuery())
         return GetHomeTokopointsListDataUseCase(useCase)
+    }
+
+    @Provides
+    @HomeScope
+    fun provideGetHomeBalanceWidgetUseCase(graphqlRepository: GraphqlRepository): GetHomeBalanceWidgetUseCase {
+        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<GetHomeBalanceWidgetData>(graphqlRepository)
+        useCase.setGraphqlQuery(GetHomeBalanceWidgetQuery())
+        return GetHomeBalanceWidgetUseCase(useCase)
     }
 
     @Provides
