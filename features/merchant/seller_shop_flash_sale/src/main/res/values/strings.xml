@@ -28,6 +28,7 @@
     <string name="sfs_cancelled">Dibatalkan</string>
     <string name="sfs_start">Mulai</string>
     <string name="sfs_finish">Selesai</string>
+    <string name="sfs_selection">Seleksi</string>
     <string name="sfs_sold_count">Jumlah Terjual</string>
     <string name="sfs_active_reminder">Pengingat Aktif</string>
     <string name="sfs_product">Produk</string>
@@ -63,6 +64,14 @@
     <string name="sfs_placeholder_active_campaign">Aktif (%s)</string>
     <string name="sfs_placeholder_finished_campaign">Riwayat Campaign (%s)</string>
     <string name="sfs_placeholder_draft">Draft (%s)</string>
+    <string name="sfs_placeholder_fst_introduction_secondary_description">Kamu juga bisa atur tampilan halaman Home tokomu nanti di %s</string>
+    <string name="sfs_shop_decor">Dekorasi Toko</string>
+
+    <string name="sfs_fst_introduction_title">Fitur Flash Sale ini akan tampil di halaman Home</string>
+    <string name="sfs_fst_introduction_description">Flash Sale yang berhasil dibuat akan tampil di halaman Home tokomu sesuai dengan waktu yang sudah diatur.</string>
+    <string name="sfs_start_create_flash_sale">Mulai Buat Flash Sale</string>
+    <string name="sfs_later">Nanti saja</string>
+
 
     <!--Share Component-->
     <string name="sfs_share_description_upcoming">Segera hadir, Flash Sale dari %s di \@Tokopedia. Mulai %s pukul %s</string>
@@ -246,7 +255,7 @@
     <!--Manage Product-->
     <string name="manage_product_complete_product_info_warning_label">Klik <b>Ubah</b> untuk melengkapi informasi produk ini, ya.</string>
     <string name="manage_product_ubah_label">Ubah</string>
-    <string name="manage_product_separator_label">|</string>
+    <string name="separator_label">|</string>
     <string name="manage_product">Kelola Produk</string>
     <string name="manage_product_incomplete_product_info_label">Beberapa produk memiliki info yang belum lengkap. Lengkapi dulu, ya!</string>
     <string name="manage_product_placeholder_product_count">(%s Produk)</string>
@@ -265,6 +274,8 @@
     <string name="error_msg_min_campaign_stock">Stok campaign Min. 1</string>
     <string name="error_msg_max_campaign_order">Maksimum pembelian tidak boleh melebihi stok utama</string>
     <string name="error_msg_other">&#160;dan terjadi kesalahan lainnya</string>
+    <string name="manage_product_first_list_coachmark">Klik Ubah di setiap produk untuk mengubah atau memperbaiki informasi tiap produk.</string>
+    <string name="manage_product_second_list_coachmark">Klik di sini untuk menambah produk, ya.</string>
 
     <!--Manage Product Highlight -->
     <string name="sfs_manage_highlight">Atur Highlight</string>
@@ -273,6 +284,8 @@
     <string name="sfs_successfully_highlighted">Produkmu berhasil di-highlight.</string>
     <string name="sfs_highlight_product_first_coachmark">Klik di sini untuk memilih produk yang di highlight.</string>
     <string name="sfs_placeholder_product_order">#%d</string>
+    <string name="sfs_error_message_product_already_selected">Hanya dapat memilih 1 varian untuk masing-masing produk.</string>
+    <string name="sfs_placeholder_selected_product_count">%d Produk Terpilih</string>
 
     <!--Delete Product-->
     <string name="deleteproduct_dialog_title">Yakin ingin hapus produk dari campaign?</string>
@@ -291,4 +304,37 @@
     <string name="editproduct_min_percent_text">Min. %d</string>
     <string name="editproduct_order_exceed_stock_error">Tidak boleh melebihi stok utama</string>
     <string name="editproduct_bs_warehouse_title">Pilih lokasi</string><string name="sda">\"Stok: \"</string>
+
+    <!-- Campaign Detail -->
+    <string name="campaign_detail">Detail Campaign</string>
+
+    <string name="campaign_detail_campaign_ended_title">Selamat, campaign kamu telah berakhir!</string>
+    <string name="campaign_detail_campaign_ended_message">Sampai jumpa di campaign lainnya, ya!</string>
+
+    <string name="campaign_detail_campaign_total_performance">Total Performa Campaign</string>
+
+    <string name="campaign_detail_campaign_id">CampaignID: %s</string>
+    <string name="campaign_detail_event_name_label">Event terdaftar</string>
+    <string name="campaign_detail_start_date_label">Tanggal dimulai</string>
+    <string name="campaign_detail_end_date_label">Tanggal berakhir</string>
+    <string name="campaign_detail_edit_campaign_label">Ubah Campaign</string>
+    <string name="campaign_detail_edit_registered_event_campaign_message">Campaign yang masuk ke partisipasi event hanya bisa diedit di versi desktop.</string>
+    <string name="campaign_detail_cancel_registered_event_campaign_message">Campaign yang masuk ke partisipasi event tidak dapat dihentikan.</string>
+    <string name="campaign_detail_campaign_cancelled_message">Campaign %s berhasil dibatalkan.</string>
+    <string name="campaign_detail_campaign_stopped_message">Campaign %s berhasil dihentikan.</string>
+    <string name="campaign_detail_see_terms_and_condition_label">Lihat S&amp;K Pembelian</string>
+    <string name="campaign_detail_product_list_title">Daftar Produk Campaign</string>
+
+    <string name="campaign_detail_campaign_performance_title">Performa Campaign</string>
+
+    <string name="campaign_detail_ticker_event_participation_title">Flash Sale Toko ini terdaftar dalam partisipasi event Tokopedia</string>
+    <string name="campaign_detail_ticker_event_participation_message">Kamu akan dapat notifikasi jika partisipasimu diterima/ditolak pada %s, ya.</string>
+
+    <string name="campaign_detail_sharing_message">Bagikan campaign untuk tingkatkan jumlah pesanan, yuk!</string>
+    <string name="campaign_detail_sharing_button">Bagikan</string>
+
+    <string name="campaign_detail_SKU_placeholder">SKU: %s</string>
+    <string name="campaign_detail_campaign_stock_label">Stok Campaign</string>
+    <string name="campaign_detail_campaign_price_label">Harga Campaign</string>
+
 </resources>

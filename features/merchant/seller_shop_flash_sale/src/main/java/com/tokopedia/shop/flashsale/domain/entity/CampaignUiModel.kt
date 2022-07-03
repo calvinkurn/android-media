@@ -27,7 +27,10 @@ data class CampaignUiModel(
     val isCampaignRelation: Boolean,
     val relatedCampaigns: List<RelatedCampaign> = emptyList(),
     val isCampaignRuleSubmit: Boolean,
-    val relativeTimeDifferenceInMinute: Long
+    val relativeTimeDifferenceInMinute: Long,
+    val thematicInfo: ThematicInfo,
+    val reviewStartDate: Date,
+    val reviewEndDate: Date,
 ) {
     data class ProductSummary(
         val totalItem: Int,
@@ -36,5 +39,13 @@ data class CampaignUiModel(
         val submittedProduct: Int,
         val deletedProduct: Int,
         val visibleProductCount: Int
+    )
+
+    data class ThematicInfo(
+        val id: Long,
+        val subId: Long,
+        val name: String,
+        val status: Long,
+        val statusString: String
     )
 }

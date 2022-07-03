@@ -157,7 +157,6 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
     }
 
 
-
     private fun displayCalendar(campaigns: List<GroupedCampaign>) {
         val legends = campaigns.map { campaign ->
             val campaignCountWording =
@@ -167,10 +166,11 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
 
 
         val calendar = binding?.unifyCalendar?.calendarPickerView
-        calendar?.run {
-            init(minimumDate, maximumDate, legends)
-                .inMode(CalendarPickerView.SelectionMode.SINGLE)
-                .withSelectedDate(selectedDate)
+
+        val initializer = calendar?.init(minimumDate, maximumDate, legends)
+        initializer?.inMode(CalendarPickerView.SelectionMode.SINGLE)
+        if (selectedDate.after(minimumDate)) {
+            initializer?.withSelectedDate(selectedDate)
         }
 
         calendar?.setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
@@ -179,6 +179,7 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
                     date,
                     selectedDate,
                     minimumDate,
+                    maximumDate,
                     onTimePicked = { dateTime -> doOnDelayFinished { onDateTimePicked(dateTime) } }
                 )
             }
@@ -199,6 +200,7 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
         selectedDateFromCalendar: Date,
         defaultDate: Date,
         minimumDate: Date,
+        maximumDate: Date,
         onTimePicked: (Date) -> Unit
     ) {
         val title = getString(R.string.sfs_select_campaign_time)
@@ -211,6 +213,7 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
             selectedDateFromCalendar,
             defaultDate,
             minimumDate,
+            maximumDate,
             title,
             info,
             buttonWording
@@ -228,7 +231,7 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun handleRemainingQuota(remainingQuota : Int) {
+    private fun handleRemainingQuota(remainingQuota: Int) {
         if (remainingQuota == Constant.ZERO) {
             val monthName = dateManager.getCurrentDate().formatTo(DateConstant.MONTH)
             val emptyQuotaWording =

@@ -2,10 +2,12 @@ package com.tokopedia.shop.flashsale.common.extension
 
 import com.tokopedia.shop.flashsale.common.constant.LocaleConstant
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 import java.util.concurrent.TimeUnit
 
-private const val WIB_TIME_OFFSET = 7
 private const val ONE_MONTH_OFFSET = 1
 
 fun Date.formatTo(desiredOutputFormat: String, locale: Locale = LocaleConstant.INDONESIA): String {
@@ -113,7 +115,10 @@ fun Date.extractYear(): Int {
     return calendar.get(Calendar.YEAR)
 }
 
-fun Date.localFormatTo(desiredOutputFormat: String, locale: Locale = LocaleConstant.INDONESIA): String {
+fun Date.localFormatTo(
+    desiredOutputFormat: String,
+    locale: Locale = LocaleConstant.INDONESIA
+): String {
     return try {
         val outputFormat = SimpleDateFormat(desiredOutputFormat, locale)
         val output = outputFormat.format(this)
@@ -125,10 +130,22 @@ fun Date.localFormatTo(desiredOutputFormat: String, locale: Locale = LocaleConst
 
 fun Date.removeTimeZone(): Date {
     val calendar = Calendar.getInstance()
-    calendar.time = this
-    calendar.add(Calendar.HOUR_OF_DAY, -WIB_TIME_OFFSET)
+    calendar.timeInMillis = this.time + calendar.timeZoneOffsetInMillis
     return calendar.time
 }
+
+/**
+ * This method will return time-zone offset in millis,
+ * calculation based on recommended formula from now deprecated [Date.getTimezoneOffset]:
+ *
+ * > replaced by -(Calendar.get(Calendar.ZONE_OFFSET) + Calendar.get(Calendar.DST_OFFSET)) / (60 * 1000)
+ *
+ * However we need it in millis, so no need to divide with (60 * 1000) anymore.
+ *
+ * @return the time-zone offset, in millis, for the current time zone.
+ */
+private val Calendar.timeZoneOffsetInMillis: Int
+    get() = -(get(Calendar.ZONE_OFFSET) + get(Calendar.DST_OFFSET))
 
 fun Date.minuteDifference(): Long {
     val calendar = Calendar.getInstance()

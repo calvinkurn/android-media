@@ -69,6 +69,8 @@ data class GetSellerCampaignListResponse(
             val submissionStartDate: Long = 0,
             @SerializedName("thematic_participation")
             val thematicParticipation: Boolean = false,
+            @SerializedName("thematic_info")
+            val thematicInfo: ThematicInfo,
             @SerializedName("use_upcoming_widget")
             val useUpcomingWidget: Boolean = false,
         ) {
@@ -100,6 +102,20 @@ data class GetSellerCampaignListResponse(
                 val id: Long,
                 @SerializedName("name")
                 val name: String,
+            )
+
+            data class ThematicInfo(
+                @SuppressLint("Invalid Data Type")
+                @SerializedName("thematic_id")
+                val id: Long,
+                @SerializedName("thematic_sub_id")
+                val subId: Long,
+                @SerializedName("thematic_name")
+                val name: String,
+                @SerializedName("status")
+                val status: Long,
+                @SerializedName("status_str")
+                val statusString: String,
             )
 
         }

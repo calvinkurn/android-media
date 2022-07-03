@@ -63,11 +63,12 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         private const val BUNDLE_KEY_PAGE_MODE = "page_mode"
         private const val BUNDLE_KEY_CAMPAIGN_ID = "campaign_id"
         private const val FIRST_STEP = 1
+        private const val SINGLE_LINE = 1
         private const val SPAN_COUNT = 6
         private const val HEX_COLOR_TEXT_FIELD_MAX_LENGTH = 6
         private const val ONE_HOUR = 1
         private const val THRESHOLD = 12
-        private const val SEVEN_DAY = 7
+        private const val SIX_DAYS = 6
         private const val THREE_MONTH = 3
         private const val TWO_HOURS = 2
         private const val THIRTY_MINUTE = 30
@@ -298,6 +299,9 @@ class CampaignInformationFragment : BaseDaggerFragment() {
                 val validationResult = viewModel.validateCampaignName(text)
                 handleCampaignNameValidationResult(validationResult)
             }
+            tauCampaignName.textInputLayout.editText?.maxLines = SINGLE_LINE
+            tauCampaignName.textInputLayout.editText?.inputType = InputType.TYPE_CLASS_TEXT
+            tpgCampaignNameErrorMessage.invisible()
 
             tauHexColor.setMaxLength(HEX_COLOR_TEXT_FIELD_MAX_LENGTH)
             tauHexColor.textInputLayout.editText?.doOnTextChanged { text ->
@@ -352,7 +356,11 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             tauEndDate.editText.setText(defaultEndDate)
 
             tauStartDate.editText.inputType = InputType.TYPE_NULL
+            tauStartDate.editText.isFocusable = false
+
             tauEndDate.editText.inputType = InputType.TYPE_NULL
+            tauEndDate.editText.isFocusable = false
+
             tauStartDate.editText.setOnClickListener { displayStartDatePicker() }
             tauEndDate.editText.setOnClickListener { displayEndDatePicker() }
         }
@@ -529,7 +537,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         val startDate = viewModel.getSelectedStartDate().advanceMinuteBy(THIRTY_MINUTE)
         val endDate = viewModel.normalizeEndDate(viewModel.getSelectedEndDate(), startDate)
         val minimumDate = viewModel.getSelectedStartDate().advanceMinuteBy(THIRTY_MINUTE)
-        val maximumEndDate = viewModel.getSelectedStartDate().advanceDayBy(SEVEN_DAY)
+        val maximumEndDate = viewModel.getSelectedStartDate().advanceDayBy(SIX_DAYS)
 
         val bottomSheet = CampaignDatePickerBottomSheet.newInstance(endDate, minimumDate, maximumEndDate)
         bottomSheet.setOnDateTimePicked { newEndDate ->

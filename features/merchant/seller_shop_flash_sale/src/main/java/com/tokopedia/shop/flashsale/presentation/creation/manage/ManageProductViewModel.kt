@@ -8,12 +8,14 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.shop.flashsale.common.util.ProductErrorStatusHandler
 import com.tokopedia.shop.flashsale.data.request.GetSellerCampaignProductListRequest
+import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType.*
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductErrorType.*
 import com.tokopedia.shop.flashsale.domain.entity.enums.ProductionSubmissionAction
 import com.tokopedia.shop.flashsale.domain.usecase.DoSellerCampaignProductSubmissionUseCase
+import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignDetailUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignProductListUseCase
 import com.tokopedia.shop.flashsale.presentation.creation.manage.mapper.ManageProductMapper
 import com.tokopedia.usecase.coroutines.Fail
@@ -26,6 +28,7 @@ class ManageProductViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getSellerCampaignProductListUseCase: GetSellerCampaignProductListUseCase,
     private val doSellerCampaignProductSubmissionUseCase: DoSellerCampaignProductSubmissionUseCase,
+    private val getSellerCampaignDetailUseCase: GetSellerCampaignDetailUseCase,
     private val productErrorStatusHandler: ProductErrorStatusHandler
 ) : BaseViewModel(dispatchers.main) {
 
@@ -49,6 +52,8 @@ class ManageProductViewModel @Inject constructor(
     val incompleteProducts = Transformations.map(products) {
         ManageProductMapper.filterInfoNotCompleted(it)
     }
+    
+    var campaignName = ""
 
     fun getProducts(
         campaignId: Long,
@@ -71,6 +76,18 @@ class ManageProductViewModel @Inject constructor(
                 _products.postValue(Fail(error))
             }
         )
+    }
+
+    fun getCampaignDetail(campaignId: Long) {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val result = getSellerCampaignDetailUseCase.execute(campaignId)
+                campaignName = result.campaignName
+            },
+            onError = {}
+        )
+
     }
 
     fun setProductErrorMessage(productList: SellerCampaignProductList) {

@@ -1,11 +1,16 @@
 package com.tokopedia.shop.flashsale.presentation.creation.highlight.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsItemProductHighlightBinding
@@ -13,18 +18,19 @@ import com.tokopedia.shop.flashsale.common.extension.convertRupiah
 import com.tokopedia.shop.flashsale.common.extension.disable
 import com.tokopedia.shop.flashsale.common.extension.enable
 import com.tokopedia.shop.flashsale.common.extension.strikethrough
+import com.tokopedia.shop.flashsale.common.preference.SharedPreferenceDataStore
 import com.tokopedia.shop.flashsale.domain.entity.HighlightableProduct
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 
 class HighlightedProductAdapter(
+    private val preferenceDataStore: SharedPreferenceDataStore,
     private val onProductSelectionChange: (HighlightableProduct, Boolean) -> Unit
 ) : RecyclerView.Adapter<HighlightedProductAdapter.HighlightedProductViewHolder>() {
 
     companion object {
         private const val ALPHA_DISABLED = 0.5f
         private const val ALPHA_ENABLED = 1.0f
-        private const val ONE = 1
     }
 
     private var products: MutableList<HighlightableProduct> = mutableListOf()
@@ -50,12 +56,6 @@ class HighlightedProductAdapter(
     override fun onBindViewHolder(holder: HighlightedProductViewHolder, position: Int) {
         val isLoading = isLoading && (position == products.lastIndex)
         holder.bind(products[position], onProductSelectionChange, isLoading)
-    }
-
-    fun addData(items: List<HighlightableProduct>) {
-        val previousProductsSize = this.products.size
-        this.products.addAll(items)
-        notifyItemRangeChanged(previousProductsSize, this.products.size)
     }
 
     fun submit(products: List<HighlightableProduct>) {
@@ -102,10 +102,31 @@ class HighlightedProductAdapter(
             binding.loader.isVisible = isLoading
             binding.tpgOriginalPrice.setPrice(product.originalPrice)
             binding.tpgOriginalPrice.strikethrough()
-            binding.tpgProductOrder.isVisible = product.isSelected
-            binding.tpgProductOrder.setPosition(product.position)
+            handleDisplayErrorMessage(product)
             handleSwitchAppearance(product, onProductSelectionChange)
             handleCardSelectable(product.disabled)
+            handleProductOrderNumber(product)
+            handleCoachMark(binding.switchUnify)
+        }
+
+        private fun handleCoachMark(anchorView: View) {
+            val shouldShowCoachMark = !preferenceDataStore.isHighlightCampaignProductDismissed()
+            if (shouldShowCoachMark && itemCount.isMoreThanZero() && adapterPosition == 0) {
+                showCoachMark(anchorView)
+            }
+        }
+
+        private fun handleDisplayErrorMessage(product: HighlightableProduct) {
+            binding.tpgErrorMessage.isVisible = product.isOtherProductAlreadySelected()
+        }
+
+        private fun handleProductOrderNumber(product: HighlightableProduct) {
+            if (product.isSelected) {
+                binding.tpgProductOrder.setPosition(product.position)
+                binding.tpgProductOrder.visible()
+            } else {
+                binding.tpgProductOrder.invisible()
+            }
         }
 
         private fun handleSwitchAppearance(
@@ -119,20 +140,6 @@ class HighlightedProductAdapter(
                 onProductSelectionChange(product, isChecked)
                 binding.switchUnify.isChecked = !isChecked
             }
-        }
-
-        private fun Label.setPercentage(percentage: Int) {
-            val formattedPercentage = String.format(this.context.getString(R.string.sfs_placeholder_percent), percentage)
-            this.text = formattedPercentage
-        }
-
-        private fun Typography.setPrice(price: Long) {
-            this.text = price.convertRupiah()
-        }
-
-        private fun Typography.setPosition(position: Int) {
-            val formattedPosition = String.format(this.context.getString(R.string.sfs_placeholder_product_order), position)
-            this.text = formattedPosition
         }
 
         private fun handleCardSelectable(disabled: Boolean) {
@@ -151,6 +158,46 @@ class HighlightedProductAdapter(
                 binding.switchUnify.enable()
                 binding.labelDiscountPercentage.opacityLevel = ALPHA_ENABLED
             }
+        }
+
+        private fun Label.setPercentage(percentage: Int) {
+            val formattedPercentage = String.format(this.context.getString(R.string.sfs_placeholder_percent), percentage)
+            this.text = formattedPercentage
+        }
+
+        private fun Typography.setPrice(price: Long) {
+            this.text = price.convertRupiah()
+        }
+
+        private fun Typography.setPosition(position: Int) {
+            val formattedPosition = String.format(this.context.getString(R.string.sfs_placeholder_product_order), position)
+            this.text = formattedPosition
+        }
+
+        private fun HighlightableProduct.isOtherProductAlreadySelected(): Boolean {
+            return this.disabledReason == HighlightableProduct.DisabledReason.OTHER_PRODUCT_WITH_SAME_PARENT_ID_ALREADY_SELECTED
+        }
+
+        private fun showCoachMark(anchorView: View) {
+            val coachMark = CoachMark2(anchorView.context)
+            coachMark.showCoachMark(populateCoachMarkItems(anchorView), null)
+            coachMark.onFinishListener = {
+                preferenceDataStore.markHighlightCampaignProductComplete()
+            }
+            coachMark.onDismissListener = {
+                preferenceDataStore.markHighlightCampaignProductComplete()
+            }
+        }
+
+        private fun populateCoachMarkItems(anchorView : View): ArrayList<CoachMark2Item> {
+            return arrayListOf(
+                CoachMark2Item(
+                    anchorView,
+                    anchorView.context.getString(R.string.sfs_highlight_product_first_coachmark),
+                    "",
+                    CoachMark2.POSITION_BOTTOM
+                )
+            )
         }
 
     }
