@@ -12,7 +12,10 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentManageProductBinding
@@ -32,7 +35,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 import kotlin.concurrent.schedule
 
 class ManageProductFragment :
@@ -301,7 +303,7 @@ class ManageProductFragment :
     }
 
     private fun showEditProductBottomSheet(productList: List<SellerCampaignProductList.Product>) {
-        val bottomSheet = EditProductInfoBottomSheet.newInstance(ArrayList(productList))
+        val bottomSheet = EditProductInfoBottomSheet.newInstance(productList)
         bottomSheet.setOnEditProductSuccessListener {
             doOnDelayFinished(DELAY) {
                 loadInitialData()

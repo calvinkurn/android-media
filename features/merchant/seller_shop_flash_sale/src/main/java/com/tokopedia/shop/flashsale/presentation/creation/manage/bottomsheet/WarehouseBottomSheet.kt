@@ -19,10 +19,10 @@ class WarehouseBottomSheet: BottomSheetUnify() {
         private const val TAG = "WarehouseBottomSheet"
         private const val KEY_WAREHOUSES = "WAREHOUSES"
 
-        fun newInstance(warehouses: ArrayList<WarehouseUiModel>): WarehouseBottomSheet {
+        fun newInstance(warehouses: List<WarehouseUiModel>): WarehouseBottomSheet {
             val fragment = WarehouseBottomSheet()
             fragment.arguments = Bundle().apply {
-                putParcelableArrayList(KEY_WAREHOUSES,  warehouses)
+                putParcelableArrayList(KEY_WAREHOUSES,  ArrayList(warehouses))
             }
             return fragment
         }

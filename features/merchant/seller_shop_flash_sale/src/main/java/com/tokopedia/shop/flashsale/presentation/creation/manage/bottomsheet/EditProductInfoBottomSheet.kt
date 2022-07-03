@@ -35,10 +35,10 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
         private const val MAX_LENGTH_NUMBER_INPUT = 11
         private const val MAX_LENGTH_PERCENT_INPUT = 3
 
-        fun newInstance(productList: ArrayList<SellerCampaignProductList.Product>): EditProductInfoBottomSheet {
+        fun newInstance(productList: List<SellerCampaignProductList.Product>): EditProductInfoBottomSheet {
             val fragment = EditProductInfoBottomSheet()
             fragment.arguments = Bundle().apply {
-                putParcelableArrayList(KEY_PRODUCTS, productList)
+                putParcelableArrayList(KEY_PRODUCTS, ArrayList(productList))
             }
             return fragment
         }
@@ -161,7 +161,7 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
         viewModel.warehouseList.observe(viewLifecycleOwner) { warehouseList ->
             val selectedWarehouse = warehouseList.firstOrNull { it.isSelected }
             binding?.spinnerShopLocation?.text = selectedWarehouse?.name.orEmpty()
-            warehouseBottomSheet = WarehouseBottomSheet.newInstance(ArrayList(warehouseList)).apply {
+            warehouseBottomSheet = WarehouseBottomSheet.newInstance(warehouseList).apply {
                 setOnSubmitListener(::onSubmitWarehouse)
             }
         }
