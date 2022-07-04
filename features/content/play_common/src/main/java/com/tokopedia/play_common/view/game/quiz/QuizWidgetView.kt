@@ -1,12 +1,8 @@
 package com.tokopedia.play_common.view.game.quiz
 
-import android.animation.Animator
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.dynamicanimation.animation.SpringAnimation
 import androidx.dynamicanimation.animation.SpringForce
@@ -60,40 +56,6 @@ class QuizWidgetView : ConstraintLayout {
             mListener?.onQuizOptionClicked(item)
         }
     })
-
-    private val clickRotateMinAnimation = ObjectAnimator.ofFloat(
-        binding.root, View.ROTATION, 0f, -9f
-    )
-
-    private val clickRotateMaxAnimation = ObjectAnimator.ofFloat(
-        binding.root, View.ROTATION, 0f, 9f
-    )
-
-    private val clickScaleXAnimation = ObjectAnimator.ofFloat(
-        binding.root, View.SCALE_X, 0.8f, 1f
-    )
-    private val clickScaleYAnimation = ObjectAnimator.ofFloat(
-        binding.root, View.SCALE_Y, 0.8f, 1f
-    )
-
-    private val answerFalseAnimator = AnimatorSet().apply {
-        playTogether(clickScaleXAnimation, clickScaleYAnimation)
-        playSequentially(clickRotateMinAnimation, clickRotateMaxAnimation)
-    }
-
-    private val animationListener = object : Animator.AnimatorListener {
-        override fun onAnimationStart(animation: Animator?) {}
-
-        override fun onAnimationEnd(animation: Animator?) {
-            binding.root.rotation = 0f
-            binding.root.scaleX = 1f
-            binding.root.scaleY = 1f
-        }
-
-        override fun onAnimationCancel(animation: Animator?) {}
-
-        override fun onAnimationRepeat(animation: Animator?) {}
-    }
 
     init {
         binding.rvQuizQuestion.apply {
@@ -165,8 +127,8 @@ class QuizWidgetView : ConstraintLayout {
     }
 
     private fun animateWrongAnswer(){
-        rotateAnim()
         scaleAnim()
+        rotateAnim()
     }
 
     private fun scaleAnim(){
@@ -190,7 +152,7 @@ class QuizWidgetView : ConstraintLayout {
 
     private val rotate = AnimationUtils.addSpringAnim(
         view = binding.root, property = SpringAnimation.ROTATION, startPosition = -9f,
-        finalPosition = 0f, stiffness = SpringForce.STIFFNESS_MEDIUM, dampingRatio = SpringForce.DAMPING_RATIO_HIGH_BOUNCY
+        finalPosition = 0f, stiffness = SpringForce.STIFFNESS_VERY_LOW, dampingRatio = SpringForce.DAMPING_RATIO_LOW_BOUNCY
     )
 
     interface Listener {
