@@ -321,5 +321,7 @@
     <string name="campaign_detail_SKU_placeholder">SKU: %s</string>
     <string name="campaign_detail_campaign_stock_label">Stok Campaign</string>
     <string name="campaign_detail_campaign_price_label">Harga Campaign</string>
+    <string name="campaign_detail_remaining_label">Sisa</string>
+    <string name="campaign_detail_sold_label">Terjual</string>
 
 </resources>

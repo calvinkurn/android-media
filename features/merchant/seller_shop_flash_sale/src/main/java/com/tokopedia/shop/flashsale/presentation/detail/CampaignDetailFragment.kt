@@ -398,7 +398,7 @@ class CampaignDetailFragment : BaseDaggerFragment(),
         handleCampaignPerformanceData(data)
         handleCampaignStatusIndicator(campaign)
         handleEventParticipation(campaign)
-
+        setProductListAdapterCampaignStatus(campaign)
         handleEditCampaignButtonVisibility(campaign)
         handleShareButtonVisibility(campaign)
 
@@ -532,6 +532,10 @@ class CampaignDetailFragment : BaseDaggerFragment(),
                 binding.imgCampaignStatusIndicator.setImageResource(R.drawable.ic_sfs_campaign_indicator_cancelled)
             }
         }
+    }
+
+    private fun setProductListAdapterCampaignStatus(campaign: CampaignUiModel) {
+        campaignDetailProductListAdapter.campaignStatus = campaign.status
     }
 
     private fun showError(throwable: Throwable) {
