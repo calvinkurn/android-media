@@ -34,6 +34,22 @@ object PromoCreationStaticData {
     ): PromoCreationListUiModel {
         val promoItems = mutableListOf(
             PromoCreationUiModel(
+                R.drawable.ic_sah_flash_sale_toko,
+                resourceProvider.getPromoCreationTitleFlashSaleToko(),
+                resourceProvider.getPromoCreationDescFlashSaleToko(),
+                resourceProvider.getPromoCreationNewInfoFlashSaleToko(),
+                ApplinkConst.SellerApp.SELLER_SHOP_FLASH_SALE,
+                resourceProvider.getPromoCreationLabelFlashSaleToko(),
+            ),
+            PromoCreationUiModel(
+                R.drawable.ic_sah_tokomember,
+                resourceProvider.getPromoCreationTitleTokoMember(),
+                resourceProvider.getPromoCreationDescriptionTokoMember(),
+                String.EMPTY,
+                ApplinkConst.SellerApp.TOKOMEMBER,
+                resourceProvider.getPromoCreationLabelTokoMember()
+            ),
+            PromoCreationUiModel(
                 R.drawable.ic_tokopedia_play,
                 resourceProvider.getPromoCreationTitleTokopediaPlay(),
                 resourceProvider.getPromoCreationDescriptionTokopediaPlay(),
@@ -43,14 +59,6 @@ object PromoCreationStaticData {
                 } else {
                     ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER
                 }
-            ),
-            PromoCreationUiModel(
-                R.drawable.ic_sah_tokomember,
-                resourceProvider.getPromoCreationTitleTokoMember(),
-                resourceProvider.getPromoCreationDescriptionTokoMember(),
-                String.EMPTY,
-                ApplinkConst.SellerApp.TOKOMEMBER,
-                resourceProvider.getPromoCreationLabelTokoMember()
             ),
         )
 
@@ -66,8 +74,9 @@ object PromoCreationStaticData {
                     R.drawable.ic_sah_slash_price,
                     resourceProvider.getPromoCreationTitleSlashPrice(),
                     resourceProvider.getPromoCreationDescriptionSlashPrice(),
-                    "",
-                    slashPriceApplink
+                    resourceProvider.getPromoCreationNewInfoSlashPrice(),
+                    slashPriceApplink,
+                    resourceProvider.getPromoCreationLabelSlashPrice()
                 )
             )
         }
@@ -145,17 +154,6 @@ object PromoCreationStaticData {
                 )
             )
         }
-
-        promoItems.add(
-            PromoCreationUiModel(
-                R.drawable.ic_sah_tokomember,
-                resourceProvider.getPromoCreationTitleTokoMember(),
-                resourceProvider.getPromoCreationDescriptionTokoMember(),
-                "",
-                "",
-                resourceProvider.getPromoCreationLabelTokoMember()
-            )
-        )
 
         return PromoCreationListUiModel(
             items = promoItems,

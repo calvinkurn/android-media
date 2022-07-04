@@ -19,6 +19,7 @@ class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiM
     var onFreeShippingClicked: (() -> Unit)? = null
     var onProductCouponImpression: (() -> Unit)? = null
     var onProductCouponClicked: (() -> Unit)? = null
+    var onFlashSaleTokoCLicked: ((String) -> Unit)? = null
 
     companion object {
         val RES_LAYOUT = centralized_promo_item_promo_creation
@@ -98,6 +99,9 @@ class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiM
             isProductCouponPromo(title) -> {
                 onProductCouponClicked?.invoke()
             }
+            isFlashSaleToko(title) -> {
+                onFlashSaleTokoCLicked?.invoke(title)
+            }
             else -> {
                 CentralizedPromoTracking.sendClickPromoCreation(title)
             }
@@ -110,6 +114,10 @@ class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiM
 
     private fun isProductCouponPromo(title: String): Boolean {
         return title == getString(R.string.centralized_promo_promo_creation_voucher_product_title)
+    }
+
+    private fun isFlashSaleToko(title: String): Boolean {
+        return title == getString(R.string.centralized_promo_promo_creation_flash_sale_toko_title)
     }
 
 }
