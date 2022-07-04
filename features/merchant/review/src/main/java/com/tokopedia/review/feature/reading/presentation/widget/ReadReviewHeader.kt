@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.review.R
 import com.tokopedia.review.databinding.WidgetReadReviewHeaderBinding
@@ -289,11 +290,11 @@ class ReadReviewHeader @JvmOverloads constructor(
         }
     }
 
-    fun setSeeAll(listener: ReviewGalleryHeaderListener) {
+    fun setSeeAll(show: Boolean, listener: ReviewGalleryHeaderListener? = null) {
         binding.readReviewSeeAll.apply {
-            show()
+            showWithCondition(show)
             setOnClickListener {
-                listener.onSeeAllClicked()
+                listener?.onSeeAllClicked()
             }
         }
     }
