@@ -2,6 +2,7 @@ package com.tokopedia.home_account.view
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.home_account.getOrAwaitValue
 import com.tokopedia.home_account.linkaccount.data.GetConsentDataModel
 import com.tokopedia.home_account.linkaccount.data.LinkStatus
 import com.tokopedia.home_account.linkaccount.data.LinkStatusResponse
@@ -175,7 +176,7 @@ class LinkAccountViewModelTest {
         coEvery { getConsentUseCase(Unit) } returns data
         viewModel.getConsentSocialNetwork()
 
-        val result = viewModel.getUserConsent.value
+        val result = viewModel.getUserConsent.getOrAwaitValue()
         assertTrue(Success(data.socialNetworkGetConsent.data.optIn) == result)
     }
 
@@ -184,7 +185,7 @@ class LinkAccountViewModelTest {
         coEvery { getConsentUseCase(Unit) } throws throwable
         viewModel.getConsentSocialNetwork()
 
-        val result = viewModel.getUserConsent.value
+        val result = viewModel.getUserConsent.getOrAwaitValue()
         assertTrue(Fail(throwable) == result)
     }
 
@@ -196,7 +197,7 @@ class LinkAccountViewModelTest {
         coEvery { setConsentUseCase(value) } returns data
         viewModel.setConsentSocialNetwork(value)
 
-        val result = viewModel.setUserConsent.value
+        val result = viewModel.setUserConsent.getOrAwaitValue()
         assertTrue(Success(data.socialNetworkSetConsent.data) == result)
     }
 
@@ -207,7 +208,7 @@ class LinkAccountViewModelTest {
         coEvery { setConsentUseCase(value) } throws throwable
         viewModel.setConsentSocialNetwork(value)
 
-        val result = viewModel.setUserConsent.value
+        val result = viewModel.setUserConsent.getOrAwaitValue()
         assertTrue(Fail(throwable) == result)
     }
 

@@ -12,7 +12,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 
 class ClarificationDataUsageBottomSheet : BottomSheetUnify() {
 
-    private var _binding : LayoutBottomSheetClarificationDataUsageBinding? = null
+    private var _binding: LayoutBottomSheetClarificationDataUsageBinding? = null
     private val binding get() = _binding
 
     override fun onCreateView(

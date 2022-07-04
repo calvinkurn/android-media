@@ -13,7 +13,7 @@ class GetConsentUseCase @Inject constructor(
     dispatcher: CoroutineDispatchers
 ) : CoroutineUseCase<Unit, GetConsentDataModel>(dispatcher.io) {
 
-    override fun graphqlQuery(): String  =
+    override fun graphqlQuery(): String =
         """
             mutation SocialNetworkGetConsent(${'$'}relationType: Int!) {
               SocialNetworkGetConsent(relationType:${'$'}relationType){

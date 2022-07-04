@@ -42,6 +42,11 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val viewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(
+            LinkAccountViewModel::class.java
+        )
+    }
 
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
@@ -49,21 +54,15 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
     @Inject
     lateinit var homeAccountAnalytics: HomeAccountAnalytics
 
-    private var viewModel: LinkAccountViewModel? = null
-
-    private val binding : FragmentPrivacyAccountBinding? by viewBinding()
+    private val binding: FragmentPrivacyAccountBinding? by viewBinding()
 
     private var clarificationDataUsageBottomSheet: ClarificationDataUsageBottomSheet? = null
-    private var verificationEnabledDataUsageBottomSheet: VerificationEnabledDataUsageBottomSheet? = null
+    private var verificationEnabledDataUsageBottomSheet: VerificationEnabledDataUsageBottomSheet? =
+        null
     private var verificationDisabledDataUsageDialog: DialogUnify? = null
     private var loaderDialog: LoaderDialog? = null
 
     private var isLoading = false
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(LinkAccountViewModel::class.java)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -87,11 +86,11 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
     private fun initObserver() {
         setViewDataUsageLoading()
         setViewLinkAccountLoading()
-        viewModel?.getConsentSocialNetwork()
-        viewModel?.getLinkStatus()
+        viewModel.getConsentSocialNetwork()
+        viewModel.getLinkStatus()
 
-        viewModel?.getUserConsent?.observe(viewLifecycleOwner) {
-            when(it) {
+        viewModel.getUserConsent.observe(viewLifecycleOwner) {
+            when (it) {
                 is Success -> {
                     setViewDataUsage(it.data)
                     setVisibilityDataUsage(true)
@@ -103,7 +102,7 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
             }
         }
 
-        viewModel?.linkStatus?.observe(viewLifecycleOwner) {
+        viewModel.linkStatus.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     setViewLinkAccount(it.data)
@@ -115,7 +114,7 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
             }
         }
 
-        viewModel?.setUserConsent?.observe(viewLifecycleOwner) {
+        viewModel.setUserConsent.observe(viewLifecycleOwner) {
             showLoaderDialog(false)
             val isChecked = binding?.switchPermissionDataUsage?.isChecked == true
             when (it) {
@@ -148,7 +147,7 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
             dividerUnify.visibleWithCondition(isVisible)
         }
 
-        if (!isVisible){
+        if (!isVisible) {
             binding?.incLoaderDataUsage?.cardLoad?.apply {
                 title?.text = getString(R.string.opt_text_header_failed)
                 description?.text = getString(R.string.opt_text_desc_failed)
@@ -160,7 +159,7 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
     private fun reloadDataUsageListener() {
         binding?.incLoaderDataUsage?.cardLoad?.setOnClickListener {
             setViewDataUsageLoading()
-            viewModel?.getConsentSocialNetwork()
+            viewModel.getConsentSocialNetwork()
         }
     }
 
@@ -181,22 +180,26 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
             userSessionInterface.phoneNumber
         }
 
+        val statusLinked = status == STATUS_LINKED
         return UserAccountDataView(
-            isLinked = status == STATUS_LINKED,
-            status = if(status == STATUS_LINKED) {
+            isLinked = statusLinked,
+            status = if (statusLinked) {
                 String.format(context?.getString(R.string.label_link_acc_phone) ?: "", phone)
             } else {
                 context?.getString(R.string.label_link_acc_not_linked) ?: ""
             },
             partnerName = context?.getString(R.string.label_link_acc_gojek) ?: "",
-            linkDate = String.format(context?.getString(R.string.label_link_acc_linked_date) ?: "", formatDateLocalTimezone(linkedDate))
+            linkDate = String.format(
+                context?.getString(R.string.label_link_acc_linked_date) ?: "",
+                formatDateLocalTimezone(linkedDate)
+            )
         )
     }
 
-    private fun getIndonesiaLocale() : Locale {
+    private fun getIndonesiaLocale(): Locale {
         return try {
-            Locale("id", "ID")
-        }catch (e: Exception) {
+            Locale(LANGUAGE_CODE, COUNTRY_CODE)
+        } catch (e: Exception) {
             Locale.getDefault()
         }
     }
@@ -205,15 +208,17 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
         return try {
             val date = SimpleDateFormat(SERVER_DATE_FORMAT, getIndonesiaLocale())
             date.timeZone = TimeZone.getTimeZone(TIMEZONE_UTC)
-            return SimpleDateFormat(LOCAL_DATE_FORMAT, getIndonesiaLocale()).format(date.parse(mDate) ?: "")
+            SimpleDateFormat(
+                LOCAL_DATE_FORMAT,
+                getIndonesiaLocale()
+            ).format(date.parse(mDate) ?: "")
         } catch (e: Exception) {
-            e.printStackTrace()
             mDate
         }
     }
 
     private fun setViewLinkAccount(data: LinkStatusResponse) {
-        if(data.response.linkStatus.isNotEmpty()) {
+        if (data.response.linkStatus.isNotEmpty()) {
             val linkStatus = data.response.linkStatus.first()
             val item = linkStatus.toUserAccountDataView()
 
@@ -263,7 +268,7 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
     private fun reloadLinkAccountListener() {
         binding?.incLoaderLinkAccount?.cardLoad?.setOnClickListener {
             setViewLinkAccountLoading()
-            viewModel?.getLinkStatus()
+            viewModel.getLinkStatus()
         }
     }
 
@@ -280,12 +285,14 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
 
     private fun onLinkAccountClicked() {
         homeAccountAnalytics.trackClickHubungkanLinkAccountPage()
-        val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.LINK_ACCOUNT_WEBVIEW).apply {
-            putExtra(
-                ApplinkConstInternalGlobal.PARAM_LD,
-                LinkAccountWebviewFragment.BACK_BTN_APPLINK
-            )
-        }
+        val intent =
+            RouteManager.getIntent(activity, ApplinkConstInternalGlobal.LINK_ACCOUNT_WEBVIEW)
+                .apply {
+                    putExtra(
+                        ApplinkConstInternalGlobal.PARAM_LD,
+                        LinkAccountWebviewFragment.BACK_BTN_APPLINK
+                    )
+                }
         startActivityForResult(intent, LINK_ACCOUNT_WEBVIEW_REQUEST)
     }
 
@@ -296,13 +303,14 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
 
     private fun switchListener() {
         binding?.switchPermissionDataUsage?.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (!isLoading){
+            if (!isLoading) {
                 buttonView.isChecked = !isChecked
 
-                if (!isChecked)
+                if (!isChecked) {
                     showVerificationDisabledDataUsage()
-                else
+                } else {
                     showVerificationEnabledDataUsage()
+                }
             } else {
                 isLoading = false
             }
@@ -319,7 +327,10 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
                 }
 
                 override fun updateDrawState(ds: TextPaint) {
-                    ds.color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                    ds.color = MethodChecker.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_G500
+                    )
                 }
             },
             message.indexOf(TEXT_LINK_DESC_PRIVACY_ACCOUNT),
@@ -331,10 +342,13 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
     }
 
     private fun showClarificationDataUsage() {
-        if (clarificationDataUsageBottomSheet == null){
+        if (clarificationDataUsageBottomSheet == null) {
             clarificationDataUsageBottomSheet = ClarificationDataUsageBottomSheet()
         }
-        clarificationDataUsageBottomSheet?.show(childFragmentManager, TAG_BOTTOM_SHEET_CLARIFICATION)
+        clarificationDataUsageBottomSheet?.show(
+            childFragmentManager,
+            TAG_BOTTOM_SHEET_CLARIFICATION
+        )
     }
 
     private fun showVerificationEnabledDataUsage() {
@@ -343,14 +357,18 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
         verificationEnabledDataUsageBottomSheet?.setOnVerificationClickedListener {
             verificationEnabledDataUsageBottomSheet?.dismiss()
             showLoaderDialog(true)
-            viewModel?.setConsentSocialNetwork(true)
+            viewModel.setConsentSocialNetwork(true)
         }
 
-        verificationEnabledDataUsageBottomSheet?.show(childFragmentManager, TAG_BOTTOM_SHEET_VERIFICATION)
+        verificationEnabledDataUsageBottomSheet?.show(
+            childFragmentManager,
+            TAG_BOTTOM_SHEET_VERIFICATION
+        )
     }
 
     private fun showVerificationDisabledDataUsage() {
-        verificationDisabledDataUsageDialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+        verificationDisabledDataUsageDialog =
+            DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
 
         verificationDisabledDataUsageDialog?.apply {
             setTitle(getString(R.string.opt_dialog_disabled_title))
@@ -362,7 +380,7 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
         verificationDisabledDataUsageDialog?.setPrimaryCTAClickListener {
             verificationDisabledDataUsageDialog?.dismiss()
             showLoaderDialog(true)
-            viewModel?.setConsentSocialNetwork(false)
+            viewModel.setConsentSocialNetwork(false)
         }
 
         verificationDisabledDataUsageDialog?.setSecondaryCTAClickListener {
@@ -384,20 +402,22 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if(requestCode == LinkAccountFragment.LINK_ACCOUNT_WEBVIEW_REQUEST) {
+        if (requestCode == LINK_ACCOUNT_WEBVIEW_REQUEST) {
             setViewLinkAccountLoading()
-            viewModel?.getLinkStatus(userSessionInterface.phoneNumber.isEmpty())
+            viewModel.getLinkStatus(userSessionInterface.phoneNumber.isEmpty())
         }
     }
 
     private fun showToasterFailedSetConsent(isChecked: Boolean) {
         isLoading = false
-        showToasterError(getString(
-            if (isChecked) {
-                R.string.opt_failed_disabled_consent
-            } else {
-                R.string.opt_failed_enabled_consent
-            })
+        showToasterError(
+            getString(
+                if (isChecked) {
+                    R.string.opt_failed_disabled_consent
+                } else {
+                    R.string.opt_failed_enabled_consent
+                }
+            )
         )
     }
 
@@ -413,15 +433,15 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
     companion object {
 
         private const val SET_CONSENT_SUCCESS = 1
-
         const val LINK_ACCOUNT_WEBVIEW_REQUEST = 100
 
         private const val SERVER_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
         private const val LOCAL_DATE_FORMAT = "dd MMM yyyy"
         private const val TIMEZONE_UTC = "UTC"
+        private const val LANGUAGE_CODE = "id"
+        private const val COUNTRY_CODE = "ID"
 
         private const val STATUS_LINKED = "linked"
-
         private const val EMPTY_STRING = ""
 
         private const val TAG_BOTTOM_SHEET_CLARIFICATION = "TAG BOTTOM SHEET CLARIFICATION"

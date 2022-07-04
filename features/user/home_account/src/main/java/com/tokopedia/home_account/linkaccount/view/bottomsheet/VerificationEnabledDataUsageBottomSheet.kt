@@ -20,7 +20,7 @@ import com.tokopedia.url.TokopediaUrl
 
 class VerificationEnabledDataUsageBottomSheet : BottomSheetUnify() {
 
-    private var _binding : LayoutBottomSheetEnabledDataUsageBinding? = null
+    private var _binding: LayoutBottomSheetEnabledDataUsageBinding? = null
     private val binding get() = _binding
 
     private var btnVerificationClickedListener: (() -> Unit)? = null
@@ -67,8 +67,12 @@ class VerificationEnabledDataUsageBottomSheet : BottomSheetUnify() {
                     override fun onClick(view: View) {
                         goToTermAndCondition()
                     }
+
                     override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                        ds.color = MethodChecker.getColor(
+                            context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_G500
+                        )
                     }
                 },
                 message.indexOf(TERM_AND_CONDITION),
@@ -80,8 +84,12 @@ class VerificationEnabledDataUsageBottomSheet : BottomSheetUnify() {
                     override fun onClick(view: View) {
                         goToPrivacyPolicy()
                     }
+
                     override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                        ds.color = MethodChecker.getColor(
+                            context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_G500
+                        )
                     }
                 },
                 message.indexOf(PRIVACY_POLICY),
@@ -95,17 +103,21 @@ class VerificationEnabledDataUsageBottomSheet : BottomSheetUnify() {
     }
 
     private fun goToTermAndCondition() {
-        RouteManager.route(activity, String.format(
-            STRING_FORMAT, ApplinkConst.WEBVIEW,
-            "${TokopediaUrl.getInstance().MOBILEWEB}$TERM_AND_CONDITION_PATH"
-        ))
+        RouteManager.route(
+            activity, String.format(
+                STRING_FORMAT, ApplinkConst.WEBVIEW,
+                "${TokopediaUrl.getInstance().MOBILEWEB}$TERM_AND_CONDITION_PATH"
+            )
+        )
     }
 
     private fun goToPrivacyPolicy() {
-        RouteManager.route(activity, String.format(
-            STRING_FORMAT, ApplinkConst.WEBVIEW,
-            "${TokopediaUrl.getInstance().MOBILEWEB}$PRIVACY_POLICY_PATH"
-        ))
+        RouteManager.route(
+            activity, String.format(
+                STRING_FORMAT, ApplinkConst.WEBVIEW,
+                "${TokopediaUrl.getInstance().MOBILEWEB}$PRIVACY_POLICY_PATH"
+            )
+        )
     }
 
     companion object {
