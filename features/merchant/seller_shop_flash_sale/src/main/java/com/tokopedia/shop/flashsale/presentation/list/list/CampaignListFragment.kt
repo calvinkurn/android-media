@@ -766,7 +766,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
     private fun showFeatureIntroductionDialog() {
         val dialog = FeatureIntroductionDialog()
-        dialog.setOnPrimaryActionClick { CampaignInformationActivity.start(requireActivity()) }
+        dialog.setOnPrimaryActionClick { launchCampaignInformationPage() }
         dialog.setOnHyperlinkClick { routeToShopDecorationArticle() }
         dialog.show(requireActivity())
     }

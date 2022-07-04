@@ -8,7 +8,9 @@ import com.tokopedia.shop.flashsale.common.constant.LocaleConstant
 import com.tokopedia.shop.flashsale.common.extension.extractHour
 import com.tokopedia.shop.flashsale.common.extension.extractMinute
 import com.tokopedia.shop.flashsale.common.extension.toCalendar
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.GregorianCalendar
 import javax.inject.Inject
 
 class TimePickerHandler @Inject constructor(private val param: Param) {
@@ -75,16 +77,13 @@ class TimePickerHandler @Inject constructor(private val param: Param) {
     }
 
     private fun buildMinTime(): GregorianCalendar {
-        return if (param.selectedDateFromCalendar.before(param.minimumDate)) {
-            GregorianCalendar(LocaleConstant.INDONESIA).apply {
-                set(Calendar.HOUR_OF_DAY, param.minimumDate.extractHour())
-                set(Calendar.MINUTE, param.minimumDate.extractMinute())
-            }
-        } else {
+        return if (param.mode == TimePickerSelectionMode.START_TIME) {
             GregorianCalendar(LocaleConstant.INDONESIA).apply {
                 set(Calendar.HOUR_OF_DAY, Constant.ZERO)
                 set(Calendar.MINUTE, Constant.ZERO)
             }
+        } else {
+            findCampaignMaxEndDateByRule(param)
         }
     }
 
@@ -97,17 +96,37 @@ class TimePickerHandler @Inject constructor(private val param: Param) {
         }
     }
 
-    private fun buildMaxTime(): GregorianCalendar {
-        return if (param.mode == TimePickerSelectionMode.START_TIME) {
+    private fun buildMaxTime(): Calendar {
+        return GregorianCalendar(LocaleConstant.INDONESIA).apply {
+            set(Calendar.HOUR_OF_DAY, LAST_HOUR_OF_A_DAY)
+            set(Calendar.MINUTE, LAST_MINUTE)
+        }
+    }
+
+    private fun findCampaignMaxEndDateByRule(param: Param): GregorianCalendar {
+        val isSameDay = isSameDay(param.minimumDate, param.selectedDateFromCalendar)
+        return if (isSameDay) {
             GregorianCalendar(LocaleConstant.INDONESIA).apply {
-                set(Calendar.HOUR_OF_DAY, LAST_HOUR_OF_A_DAY)
-                set(Calendar.MINUTE, LAST_MINUTE)
+                set(Calendar.HOUR_OF_DAY, param.minimumDate.extractHour())
+                set(Calendar.MINUTE, param.minimumDate.extractMinute())
             }
         } else {
             GregorianCalendar(LocaleConstant.INDONESIA).apply {
-                set(Calendar.HOUR_OF_DAY, param.maximumDate.extractHour())
-                set(Calendar.MINUTE, param.maximumDate.extractMinute())
+                set(Calendar.HOUR_OF_DAY, 0)
+                set(Calendar.MINUTE, 0)
             }
         }
+    }
+
+    private fun isSameDay(startDate : Date, endDate :Date) : Boolean {
+        val startDateCalendar = Calendar.getInstance()
+        startDateCalendar.time = startDate
+        val startDateDayOfYear = startDateCalendar.get(Calendar.DAY_OF_YEAR)
+
+        val endDateCalendar = Calendar.getInstance()
+        endDateCalendar.time = endDate
+        val endDateDayOfYear = endDateCalendar.get(Calendar.DAY_OF_YEAR)
+
+        return startDateDayOfYear == endDateDayOfYear
     }
 }
