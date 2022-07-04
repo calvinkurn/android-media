@@ -97,8 +97,9 @@ class FeedUGCCompleteOnboardingStrategy @Inject constructor(
                 _isSubmit.update { true }
 
                 val validateUsernameResult = checkUsername()
+                _usernameState.update { validateUsernameResult }
+
                 if(validateUsernameResult is UsernameState.Invalid) {
-                    _usernameState.update { validateUsernameResult }
                     return@launchCatchError
                 }
 
