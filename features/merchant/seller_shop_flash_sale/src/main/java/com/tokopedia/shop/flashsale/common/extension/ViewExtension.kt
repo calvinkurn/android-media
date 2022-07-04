@@ -126,22 +126,14 @@ fun View?.slideDown(duration: Int = DEFAULT_SCROLL_ANIMATION_DURATION) {
     }
 }
 
-fun View.enableChildren(enable: Boolean) {
-    (this as? ViewGroup)?.let {
-        for (i in Int.ZERO..it.childCount) {
-            enableChildren(enable)
-        }
-    }
-    isEnabled = enable
-}
-
-fun disableEnableControls(enable: Boolean, vg: ViewGroup?) {
-    if (vg == null) return
-    for (i in Int.ZERO until vg.childCount) {
-        val child = vg.getChildAt(i)
-        child.isEnabled = enable
-        if (child is ViewGroup) {
-            disableEnableControls(enable, child)
+fun ViewGroup?.setLayoutEnabled(enable: Boolean) {
+    if (this != null) {
+        for (i in Int.ZERO until childCount) {
+            val child = getChildAt(i)
+            child.isEnabled = enable
+            if (child is ViewGroup) {
+                child.setLayoutEnabled(enable)
+            }
         }
     }
 }

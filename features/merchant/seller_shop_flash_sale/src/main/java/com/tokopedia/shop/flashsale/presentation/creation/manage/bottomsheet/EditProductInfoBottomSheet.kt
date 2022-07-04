@@ -107,7 +107,7 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
         viewModel.isLoading.observe(viewLifecycleOwner) {
             binding?.btnSave?.isLoading = it
             binding?.btnSaveNext?.isLoading = it
-            disableEnableControls(!it, binding?.layoutInput)
+            binding?.layoutInput?.setLayoutEnabled(!it)
         }
     }
 
