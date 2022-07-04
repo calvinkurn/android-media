@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant.CAMPAIGN_TEASER_MAXIMUM_UPCOMING_HOUR
 import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant.CAMPAIGN_TEASER_MINIMUM_UPCOMING_HOUR
 import com.tokopedia.shop.flashsale.common.extension.hourOnly
+import com.tokopedia.shop.flashsale.common.tracker.ShopFlashSaleTracker
 import com.tokopedia.shop.flashsale.common.util.DateManager
 import com.tokopedia.shop.flashsale.domain.entity.CampaignAction
 import com.tokopedia.shop.flashsale.domain.entity.CampaignCreationResult
@@ -32,7 +33,8 @@ class CampaignInformationViewModel @Inject constructor(
     private val doSellerCampaignCreationUseCase: DoSellerCampaignCreationUseCase,
     private val getSellerCampaignDetailUseCase: GetSellerCampaignDetailUseCase,
     private val getSellerCampaignAttributeUseCase: GetSellerCampaignAttributeUseCase,
-    private val dateManager: DateManager
+    private val dateManager: DateManager,
+    private val tracker: ShopFlashSaleTracker
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
@@ -136,6 +138,8 @@ class CampaignInformationViewModel @Inject constructor(
     }
 
     fun validateInput(mode: PageMode, selection: Selection, now: Date) {
+        tracker.sendClickButtonProceedOnCampaignInfoPageEvent()
+
         if (mode == PageMode.CREATE && selection.remainingQuota == Int.ZERO) {
             _areInputValid.value = ValidationResult.NoRemainingQuota
             return

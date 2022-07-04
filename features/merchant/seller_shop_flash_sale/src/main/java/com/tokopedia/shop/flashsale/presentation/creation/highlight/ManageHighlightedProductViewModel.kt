@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.removeFirst
+import com.tokopedia.shop.flashsale.common.tracker.ShopFlashSaleTracker
 import com.tokopedia.shop.flashsale.data.request.GetSellerCampaignProductListRequest
 import com.tokopedia.shop.flashsale.domain.entity.HighlightableProduct
 import com.tokopedia.shop.flashsale.domain.entity.ProductSubmissionResult
@@ -24,7 +25,8 @@ class ManageHighlightedProductViewModel @Inject constructor(
     private val getSellerCampaignProductListUseCase: GetSellerCampaignProductListUseCase,
     private val doSellerCampaignProductSubmissionUseCase: DoSellerCampaignProductSubmissionUseCase,
     private val mapper: HighlightableProductRequestMapper,
-    private val highlightProductUiMapper: HighlightProductUiMapper
+    private val highlightProductUiMapper: HighlightProductUiMapper,
+    private val tracker: ShopFlashSaleTracker
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
@@ -147,6 +149,8 @@ class ManageHighlightedProductViewModel @Inject constructor(
     }
 
     fun submitHighlightedProducts(campaignId: Long, products: List<HighlightableProduct>) {
+        tracker.sendClickButtonProceedOnManageHighlightPageEvent()
+
         launchCatchError(
             dispatchers.io,
             block = {
