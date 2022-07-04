@@ -44,9 +44,9 @@ object CampaignStockMapper {
                     isActive = variant.status == ProductStatus.ACTIVE,
                     isAllStockEmpty = isAllStockEmpty,
                     access = variant.access,
-                    isCampaign = variant.isCampaign,
+                    isCampaign = variant.isCampaign && !sellable.campaignTypeList.isNullOrEmpty(),
                     campaignTypeList = mapVariantCampaignTypeToProduct(
-                        variant.campaignTypeList
+                        sellable.campaignTypeList
                     )
                 )
             }.toList()
@@ -59,7 +59,7 @@ object CampaignStockMapper {
             with(dataModel.eventInfo) {
                 ReservedEventInfoUiModel(
                     eventType = eventType,
-                    campaignName = campaignType.name,
+                    campaignName = eventName,
                     campaignIconUrl = campaignType.iconUrl,
                     startTime = getPeriodString(startTimeNanos),
                     endTime = getPeriodString(endTimeNanos),

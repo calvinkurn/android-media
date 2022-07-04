@@ -16,7 +16,7 @@ class CampaignStockAllocationUseCase @Inject constructor(
 
     companion object {
         private const val QUERY = "query getStockAllocation (\$productIds: String!, \$shopId: String!, \$warehouseID: String) {\n" +
-                "  GetStockAllocation(productIDs: \$productIds, shopID: \$shopId, sellerWh: true, warehouseID: \$warehouseID %1s) {\n" +
+                "  GetStockAllocation(productIDs: \$productIds, shopID: \$shopId, sellerWh: true, warehouseID: \$warehouseID, extraInfo:{campaignMultiloc: true%1s}) {\n" +
                 "    header {\n" +
                 "      process_time\n" +
                 "      messages\n" +
@@ -69,7 +69,7 @@ class CampaignStockAllocationUseCase @Inject constructor(
                 "  }\n" +
                 "}"
 
-        private const val BUNDLE_EXTRA_INFO_QUERY = ",extraInfo:{bundle:true}"
+        private const val BUNDLE_EXTRA_INFO_QUERY = ", bundle:true"
 
         private const val PRODUCT_IDS_KEY = "productIds"
         private const val SHOP_ID_KEY = "shopId"
