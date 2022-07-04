@@ -26,6 +26,7 @@ import com.tokopedia.play_common.util.PlayLiveRoomMetricsCommon
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import java.util.concurrent.ConcurrentLinkedQueue
+import kotlin.math.floor
 import kotlin.properties.Delegates
 
 /**
@@ -309,10 +310,10 @@ class PlayVideoWrapper private constructor(
         return mediaSource.createMediaSource(uri)
     }
 
-    fun getDownstreamBandwidth(): Long {
-        val convertedTransferredData = transferredData / MBPS_DIVIDER
+    fun getDownstreamBandwidth(): Float {
+        val convertedTransferredData = transferredData.toFloat() / MBPS_DIVIDER.toFloat()
         val timeOffset = endTime - startTime
-        return if(timeOffset > 0) convertedTransferredData / timeOffset else 0
+        return if(timeOffset > 0) floor(convertedTransferredData) else 0.0f
     }
 
     private fun getErrorHandlingPolicy(): LoadErrorHandlingPolicy {
