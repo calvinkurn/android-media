@@ -468,12 +468,16 @@ class UserProfileFragment @Inject constructor(
         mainBinding.btnActionFollow.text =  getString(R.string.up_btn_text_following)
         mainBinding.btnActionFollow.buttonVariant = UnifyButton.Variant.GHOST
         mainBinding.btnActionFollow.buttonType = UnifyButton.Type.ALTERNATE
+
+        activity?.intent?.putExtra(EXTRA_FOLLOW_UNFOLLOW_STATUS, EXTRA_VALUE_IS_FOLLOWED)
     }
 
     private fun updateToUnFollowUi() {
         mainBinding.btnActionFollow.text = getString(R.string.up_btn_text_follow)
         mainBinding.btnActionFollow.buttonVariant = UnifyButton.Variant.FILLED
         mainBinding.btnActionFollow.buttonType = UnifyButton.Type.MAIN
+
+        activity?.intent?.putExtra(EXTRA_FOLLOW_UNFOLLOW_STATUS, EXTRA_VALUE_IS_NOT_FOLLOWED)
     }
 
     private fun setProfileImg(profile: ProfileUiModel) {
