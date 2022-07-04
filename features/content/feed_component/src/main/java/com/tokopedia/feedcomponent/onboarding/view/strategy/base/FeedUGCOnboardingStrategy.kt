@@ -6,6 +6,7 @@ import com.tokopedia.feedcomponent.onboarding.view.uimodel.event.FeedUGCOnboardi
 import com.tokopedia.feedcomponent.onboarding.view.uimodel.state.FeedUGCOnboardingUiState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -13,9 +14,9 @@ import kotlinx.coroutines.flow.Flow
  */
 abstract class FeedUGCOnboardingStrategy {
 
-    private val dispatchers = CoroutineDispatchersProvider
-    protected var job: Job? = null
-    protected val scope = CoroutineScope(dispatchers.computation)
+    protected val dispatchers = CoroutineDispatchersProvider
+    protected var job: Job = SupervisorJob()
+    protected val scope = CoroutineScope(dispatchers.computation + job)
 
     abstract val uiState: Flow<FeedUGCOnboardingUiState>
     abstract val uiEvent: Flow<FeedUGCOnboardingUiEvent>
@@ -23,6 +24,6 @@ abstract class FeedUGCOnboardingStrategy {
     abstract fun submitAction(action: FeedUGCOnboardingAction)
 
     fun onCleared() {
-        job?.cancel()
+        job.cancel()
     }
 }

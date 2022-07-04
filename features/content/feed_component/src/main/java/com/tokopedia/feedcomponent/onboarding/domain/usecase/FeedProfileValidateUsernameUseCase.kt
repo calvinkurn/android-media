@@ -27,7 +27,7 @@ class FeedProfileValidateUsernameUseCase @Inject constructor(
 
         const val QUERY_NAME = "FeedProfileValidateUsernameUseCaseQuery"
         const val QUERY = """
-            mutation FeedXProfileValidateUsername(${"$$KEY_USERNAME"}: String!){
+            query FeedXProfileValidateUsername(${"$$KEY_USERNAME"}: String!){
               feedXProfileValidateUsername(
                 $KEY_USERNAME: ${"$$KEY_USERNAME"}
               ){

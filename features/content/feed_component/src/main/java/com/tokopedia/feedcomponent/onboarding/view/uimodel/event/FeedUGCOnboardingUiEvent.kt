@@ -7,7 +7,5 @@ sealed interface FeedUGCOnboardingUiEvent {
 
     object ErrorAcceptTnc : FeedUGCOnboardingUiEvent
 
-    data class UsernameInvalid(
-        val message: String,
-    ) : FeedUGCOnboardingUiEvent
+    object ErrorCheckUsername : FeedUGCOnboardingUiEvent
 }

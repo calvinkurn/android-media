@@ -221,7 +221,7 @@ class UserProfileFragment @Inject constructor(
             fabUserProfile.setOnClickListener {
                 if(viewModel.needOnboarding) {
                     val bundle = Bundle().apply {
-                        putString(FeedUGCOnboardingParentFragment.KEY_USERNAME, viewModel.profileUsername)
+                        putString(FeedUGCOnboardingParentFragment.KEY_USERNAME, "")
                     }
                     childFragmentManager.beginTransaction()
                         .add(FeedUGCOnboardingParentFragment::class.java, bundle, FeedUGCOnboardingParentFragment.TAG)

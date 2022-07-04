@@ -9,6 +9,8 @@ sealed interface FeedUGCOnboardingAction {
         val username: String
     ) : FeedUGCOnboardingAction
 
+    object CheckUsername : FeedUGCOnboardingAction
+
     object CheckTnc : FeedUGCOnboardingAction
 
     object ClickNext : FeedUGCOnboardingAction
