@@ -542,6 +542,15 @@ public interface ApplinkConst {
         String REPURCHASE = "tokopedia://now/repurchase-page";
     }
 
+    interface TokoFood {
+        String MAIN_PATH = "tokopedia://food";
+        String HOME = "tokopedia://food/home";
+        String CATEGORY = "tokopedia://food/category";
+        String MERCHANT = "tokopedia://food/merchant/{merchantId}?product_id={product_id}";
+        String POST_PURCHASE = "tokopedia://food/postpurchase/{orderId}";
+        String TOKOFOOD_ORDER = "tokopedia://food/order";
+    }
+
     interface TokoMart {
         String HOME = "tokopedia://tokomart";
         String SEARCH = "tokopedia://tokomart/search";
