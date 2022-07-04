@@ -470,7 +470,7 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
 
     private fun isPrepaid(): Boolean {
         return !templateTelco.isNullOrEmpty() &&
-                templateTelco.equals(DeeplinkMapperDigitalConst.TEMPLATE_PREPAID_TELCO)
+                templateTelco.equals(DeeplinkMapperDigitalConst.TEMPLATE_OLD_PREPAID_TELCO)
     }
 
     private fun isPostPaid(): Boolean {

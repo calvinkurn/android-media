@@ -6,20 +6,20 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.CATEGORY_ID_ELECTRONIC_MONEY
+import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.CATEGORY_ID_PAKET_DATA
+import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.CATEGORY_ID_PULSA
+import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.CATEGORY_ID_ROAMING
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.NEW_MENU_ID_PAKET_DATA
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.NEW_MENU_ID_PULSA
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.NEW_MENU_ID_ROAMING
-import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.OLD_CATEGORY_ID_PAKET_DATA
-import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.OLD_CATEGORY_ID_PULSA
-import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.OLD_CATEGORY_ID_ROAMING
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.RECHARGE_SUBHOMEPAGE_PLATFORM_ID
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_ID_CC
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_ID_ELECTRONIC_MONEY
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_ID_GENERAL
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_ID_VOUCHER
+import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_OLD_PREPAID_TELCO
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_PAKET_DATA_DIGITAL_PDP
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_POSTPAID_TELCO
-import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_PREPAID_TELCO
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_PULSA_DIGITAL_PDP
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_ROAMING_DIGITAL_PDP
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_TAGIHAN_LISTRIK_DIGITAL_PDP
@@ -122,17 +122,17 @@ object DeeplinkMapperDigital {
                 it == TEMPLATE_ID_CC -> {
                     ApplinkConsInternalDigital.CREDIT_CARD_TEMPLATE
                 }
-                it == TEMPLATE_PREPAID_TELCO && categoryId == OLD_CATEGORY_ID_PULSA -> {
+                it == TEMPLATE_OLD_PREPAID_TELCO && categoryId == CATEGORY_ID_PULSA -> {
                     ApplinkConsInternalDigital.DIGITAL_PDP_PULSA+"?$TEMPLATE_CATEGORY_ID=$categoryId" +
                             "&$MENU_ID_PARAM=$NEW_MENU_ID_PULSA&$TEMPLATE_PARAM=$TEMPLATE_PULSA_DIGITAL_PDP" +
                             "&$PARAM_PRODUCT_ID=$productId&$PARAM_CLIENT_NUMBER=$clientNumber"
                 }
-                it == TEMPLATE_PREPAID_TELCO && categoryId == OLD_CATEGORY_ID_PAKET_DATA -> {
+                it == TEMPLATE_OLD_PREPAID_TELCO && categoryId == CATEGORY_ID_PAKET_DATA -> {
                     ApplinkConsInternalDigital.DIGITAL_PDP_PAKET_DATA+"?$TEMPLATE_CATEGORY_ID=$categoryId" +
                             "&$MENU_ID_PARAM=$NEW_MENU_ID_PAKET_DATA&$TEMPLATE_PARAM=$TEMPLATE_PAKET_DATA_DIGITAL_PDP" +
                             "&$PARAM_PRODUCT_ID=$productId&$PARAM_CLIENT_NUMBER=$clientNumber"
                 }
-                it == TEMPLATE_PREPAID_TELCO && categoryId == OLD_CATEGORY_ID_ROAMING -> {
+                it == TEMPLATE_OLD_PREPAID_TELCO && categoryId == CATEGORY_ID_ROAMING -> {
                     ApplinkConsInternalDigital.DIGITAL_PDP_PAKET_DATA+"?$TEMPLATE_CATEGORY_ID=$categoryId" +
                             "&$MENU_ID_PARAM=$NEW_MENU_ID_ROAMING&$TEMPLATE_PARAM=$TEMPLATE_ROAMING_DIGITAL_PDP" +
                             "&$PARAM_PRODUCT_ID=$productId&$PARAM_CLIENT_NUMBER=$clientNumber"
@@ -167,8 +167,8 @@ object DeeplinkMapperDigital {
         val uri = Uri.parse(deeplink)
         return uri.getQueryParameter(TEMPLATE_PARAM)?.let {
             when(it){
-                TEMPLATE_PREPAID_TELCO -> {
-                    UriUtil.buildUri(ApplinkConsInternalDigital.ADD_TELCO, TEMPLATE_PREPAID_TELCO)
+                TEMPLATE_OLD_PREPAID_TELCO -> {
+                    UriUtil.buildUri(ApplinkConsInternalDigital.ADD_TELCO, TEMPLATE_OLD_PREPAID_TELCO)
                 }
                 TEMPLATE_POSTPAID_TELCO -> {
                     UriUtil.buildUri(ApplinkConsInternalDigital.ADD_TELCO, TEMPLATE_POSTPAID_TELCO)
