@@ -206,7 +206,7 @@ object TmDateUtil {
     }
 
     fun setTimeStartSingle(startTime: String?): String? {
-        val parseTime = SimpleDateFormat(SIMPLE_DATE_FORMAT_Z, locale)
+        val parseTime = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
         parseTime.timeZone = TimeZone.getTimeZone(UTC)
         val date = parseTime.parse(startTime + "00")
         return try {
@@ -215,14 +215,15 @@ object TmDateUtil {
                 calendar.time = it
                 calendar.add(Calendar.HOUR, 4)
             }
-            (calendar.timeInMillis / 1000).toString()
+            parseTime.format(calendar.time)
+
         } catch (e: Exception) {
             "0"
         }
     }
 
     fun setTimeStartSingleWaiting(startTime: String?): String? {
-        val parseTime = SimpleDateFormat(SIMPLE_DATE_FORMAT_Z, locale)
+        val parseTime = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
         parseTime.timeZone = TimeZone.getTimeZone(UTC)
         val date = parseTime.parse(startTime + "00")
         return try {
@@ -232,13 +233,13 @@ object TmDateUtil {
                 calendar.set(Calendar.HOUR, 0)
                 calendar.set(Calendar.MINUTE, 30)
             }
-            (calendar.timeInMillis / 1000).toString()
+            parseTime.format(calendar.time)
         } catch (e: Exception) {
             "0"
         }
     }
     fun setTimeEndSingleWaiting(startTime: String?): String? {
-        val parseTime = SimpleDateFormat(SIMPLE_DATE_FORMAT_Z, locale)
+        val parseTime = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
         parseTime.timeZone = TimeZone.getTimeZone(UTC)
         val date = parseTime.parse(startTime + "00")
         return try {
@@ -248,7 +249,7 @@ object TmDateUtil {
                 calendar.set(Calendar.HOUR, 23)
                 calendar.set(Calendar.MINUTE, 30)
             }
-            (calendar.timeInMillis / 1000).toString()
+            parseTime.format(calendar.time)
         } catch (e: Exception) {
             "0"
         }

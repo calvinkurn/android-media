@@ -165,7 +165,7 @@ class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) :
             }
         }
 
-        if(item.remainingQuota == item.voucherQuota){
+        if(item.remainingQuota == 0){
             tvCouponState.text = "Kuota Habis"
             viewStatus.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_YN500))
             tvCouponState.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_YN500)))
@@ -175,7 +175,7 @@ class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) :
                     item.voucherQuota?.let { it3 ->
                         item.voucherDiscountAmtMax?.let { it4 ->
                             tmCouponActions.option(ADD_QUOTA, it1,
-                                it2, it3, it4
+                                it2.lowercase(), it3, it4
                             )
                         }
                     }

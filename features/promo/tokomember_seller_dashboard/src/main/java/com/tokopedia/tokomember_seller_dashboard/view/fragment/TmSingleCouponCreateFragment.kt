@@ -451,6 +451,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                             }
                         }
                         is UploadResult.Error ->{
+                            closeLoadingDialog()
                             view?.let { it ->
                                 Toaster.build(
                                     it,
@@ -485,8 +486,10 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                     renderUIForEdit(it.data?.merchantPromotionGetMVDataByID?.data)
                     renderProgram()
                     renderSingleCoupon()
+                    closeLoadingDialog()
                 }
                 TokoLiveDataResult.STATUS.ERROR ->{
+                    closeLoadingDialog()
                     //open error bottom sheet
                     val tmModel = TmIntroBottomsheetModel("", "", "", "", "", errorCount)
                     val bundle = Bundle()

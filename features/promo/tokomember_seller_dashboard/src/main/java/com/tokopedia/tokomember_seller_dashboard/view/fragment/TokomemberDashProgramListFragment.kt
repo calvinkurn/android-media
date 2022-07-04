@@ -42,6 +42,7 @@ import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberDashProg
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.mapper.ProgramUpdateMapper
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmDashCreateViewModel
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmProgramListViewModel
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.tm_dash_program_fragment.*
 import kotlinx.android.synthetic.main.tm_layout_no_access.*
@@ -182,6 +183,7 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
                     if(it.data?.membershipCreateEditProgram?.resultStatus?.code=="200"){
                         closeLoadingDialog()
                         tmProgramListViewModel?.refreshList(REFRESH)
+                        view?.let { it1 -> Toaster.build(it1, "Program dibatalkan.", Toaster.LENGTH_SHORT).show() }
                     }
                     else{
                         closeLoadingDialog()
@@ -223,8 +225,8 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
                 val dialog = context?.let { DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE) }
                 dialog?.setTitle("Yakin batalkan program?")
                 dialog?.setDescription("Pengaturan yang dibuat akan hilang kalau kamu batalkan proses pengaturan TokoMember, lho.")
-                dialog?.setPrimaryCTAText("Lanjutkan")
-                dialog?.setSecondaryCTAText("Batalkan Ubah Program")
+                dialog?.setSecondaryCTAText("Lanjutkan")
+                dialog?.setPrimaryCTAText("Batalkan Ubah Program")
                 dialog?.setPrimaryCTAClickListener {
                     tmDashCreateViewModel.getProgramInfo(programId,shopId, ACTION_CANCEL)
                     dialog.dismiss()
