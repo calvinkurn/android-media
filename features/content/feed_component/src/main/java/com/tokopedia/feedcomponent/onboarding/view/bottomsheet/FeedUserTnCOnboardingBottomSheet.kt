@@ -1,4 +1,4 @@
-package com.tokopedia.feedcomponent.bottomsheets.onboarding
+package com.tokopedia.feedcomponent.onboarding.view.bottomsheet
 
 import android.os.Bundle
 import android.view.LayoutInflater
