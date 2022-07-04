@@ -5,13 +5,10 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.lifecycleScope
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.databinding.FragmentTokofoodOrderTrackingBinding
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.OrderTrackingAdapter
-import com.tokopedia.tokofood.feature.ordertracking.presentation.navigator.OrderTrackingNavigator
 import com.tokopedia.tokofood.feature.ordertracking.presentation.toolbar.OrderTrackingToolbarHandler
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ActionButtonsUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderStatusLiveTrackingUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewmodel.TokoFoodOrderTrackingViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -23,7 +20,6 @@ class TokoFoodOrderLiveTrackingFragment(
     private val binding: FragmentTokofoodOrderTrackingBinding?,
     private val viewModel: TokoFoodOrderTrackingViewModel,
     private val orderTrackingAdapter: OrderTrackingAdapter,
-    private val navigator: OrderTrackingNavigator,
     private val toolbarHandler: OrderTrackingToolbarHandler?
 ) : LifecycleObserver {
 
@@ -33,17 +29,6 @@ class TokoFoodOrderLiveTrackingFragment(
     private fun onResumeListener(owner: LifecycleOwner) {
         this.lifecycleOwner = owner
         observeOrderLiveTracking()
-    }
-
-    fun setupStickyButton(primaryActionButton: ActionButtonsUiModel.ActionButton) {
-        binding?.run {
-            containerOrderTrackingActionsButton.hide()
-            containerOrderTrackingHelpButton.apply {
-                setOrderTrackingNavigator(navigator)
-                setupHelpButton(viewModel.getOrderId(), primaryActionButton)
-                show()
-            }
-        }
     }
 
     fun setSwipeRefreshDisabled() {
@@ -59,6 +44,7 @@ class TokoFoodOrderLiveTrackingFragment(
                         viewModel.updateOrderId(viewModel.getOrderId())
                     }
                     is Fail -> {
+                        logExceptionToServerLogger(it.throwable)
                         viewModel.updateOrderId(viewModel.getOrderId())
                     }
                 }
@@ -72,7 +58,20 @@ class TokoFoodOrderLiveTrackingFragment(
             orderTrackingAdapter.updateLiveTrackingItem(tickerInfoData)
             orderTrackingAdapter.updateLiveTrackingItem(orderTrackingStatusInfoUiModel)
             orderTrackingAdapter.updateEtaLiveTracking(estimationUiModel)
+            orderTrackingAdapter.updateLiveTrackingItem(estimationUiModel)
             orderTrackingAdapter.updateLiveTrackingItem(invoiceOrderNumberUiModel)
         }
+    }
+
+    private fun logExceptionToServerLogger(
+        throwable: Throwable
+    ) {
+        TokofoodErrorLogger.logExceptionToServerLogger(
+            TokofoodErrorLogger.PAGE.POST_PURCHASE,
+            throwable,
+            TokofoodErrorLogger.ErrorType.ERROR_POOL_POST_PURCHASE,
+            viewModel.userSession.deviceId.orEmpty(),
+            TokofoodErrorLogger.ErrorDescription.POOL_BASED_ERROR
+        )
     }
 }

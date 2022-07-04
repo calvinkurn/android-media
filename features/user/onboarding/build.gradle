@@ -67,7 +67,6 @@ dependencies {
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.dagger

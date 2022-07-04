@@ -1,6 +1,5 @@
 package com.tokopedia.tokofood.postpurchase
 
-import androidx.lifecycle.viewModelScope
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokofood.feature.ordertracking.domain.model.TokoFoodOrderDetailResponse
 import com.tokopedia.tokofood.feature.ordertracking.domain.model.TokoFoodOrderStatusResponse
@@ -11,14 +10,12 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
-import junit.framework.Assert.assertEquals
-import junit.framework.Assert.assertTrue
 import kotlinx.coroutines.async
-import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
 
@@ -46,7 +43,11 @@ class TokoFoodOrderTrackingViewModelTest : TokoFoodOrderTrackingViewModelTestFix
             assertEquals(orderDetailResultUiModel.orderStatusKey, actualResult.orderStatusKey)
             assertEquals(orderDetailResultUiModel.orderDetailList, actualResult.orderDetailList)
             assertEquals(orderDetailResultUiModel.foodItemList, actualResult.foodItemList)
+            assertEquals(viewModel.getMerchantData()?.merchantId, orderDetailResultUiModel.merchantData.merchantId)
+            assertEquals(viewModel.getMerchantData()?.merchantName, orderDetailResultUiModel.merchantData.merchantName)
             assertTrue(viewModel.getFoodItems().isNotEmpty())
+            assertTrue(viewModel.userSession.userId.isNullOrBlank())
+            assertTrue(viewModel.getMerchantData() != null)
         }
     }
 
@@ -67,7 +68,17 @@ class TokoFoodOrderTrackingViewModelTest : TokoFoodOrderTrackingViewModelTestFix
 
             val actualResult = (viewModel.orderDetailResult.value as Fail).throwable::class.java
             val expectedResult = errorException::class.java
-            Assert.assertEquals(expectedResult, actualResult)
+            assertEquals(expectedResult, actualResult)
+        }
+    }
+
+    @Test
+    fun `when set savedStateHandle should return the orderId has value`() {
+        runBlocking {
+            viewModel.updateOrderId(ORDER_ID_DUMMY)
+            viewModel.onSavedInstanceState()
+            viewModel.onRestoreSavedInstanceState()
+            assertEquals(ORDER_ID_DUMMY, viewModel.getOrderId())
         }
     }
 
@@ -110,7 +121,7 @@ class TokoFoodOrderTrackingViewModelTest : TokoFoodOrderTrackingViewModelTestFix
 
             val actualResult = (viewModel.driverPhoneNumber.value as Fail).throwable::class.java
             val expectedResult = errorException::class.java
-            Assert.assertEquals(expectedResult, actualResult)
+            assertEquals(expectedResult, actualResult)
         }
     }
 
@@ -133,7 +144,7 @@ class TokoFoodOrderTrackingViewModelTest : TokoFoodOrderTrackingViewModelTestFix
             }
 
             viewModel.updateOrderId(ORDER_ID_DUMMY)
-            delay(5000L)
+            delay(6000L)
 
             val actualResult = result.await() as Success
             assertEquals(orderDetailResultUiModel.orderStatusKey, actualResult.data.orderStatusKey)
@@ -152,7 +163,15 @@ class TokoFoodOrderTrackingViewModelTest : TokoFoodOrderTrackingViewModelTestFix
             }
 
             result.cancel()
-            viewModel.viewModelScope.coroutineContext.cancelChildren()
+        }
+    }
+
+    @Test
+    fun `when the orderId is empty then there is no action`() {
+        runBlocking {
+            val orderIdEmpty = ""
+            viewModel.updateOrderId(orderIdEmpty)
+            assertEquals(orderIdEmpty, viewModel.getOrderId())
         }
     }
 
@@ -170,7 +189,7 @@ class TokoFoodOrderTrackingViewModelTest : TokoFoodOrderTrackingViewModelTestFix
             }
 
             viewModel.updateOrderId(ORDER_ID_DUMMY)
-            delay(5000L)
+            delay(6000L)
 
             val actualResult = result.await() as Fail
             assertEquals(errorException::class.java, actualResult.throwable::class.java)
@@ -180,7 +199,6 @@ class TokoFoodOrderTrackingViewModelTest : TokoFoodOrderTrackingViewModelTestFix
             }
 
             result.cancel()
-            viewModel.viewModelScope.coroutineContext.cancelChildren()
         }
     }
 
@@ -213,7 +231,11 @@ class TokoFoodOrderTrackingViewModelTest : TokoFoodOrderTrackingViewModelTestFix
             } returns orderDetailResultUiModel
 
             viewModel.updateOrderId(ORDER_ID_DUMMY)
-            delay(5000L)
+            delay(6000L)
+
+            coVerify {
+                getTokoFoodOrderStatusUseCase.get().execute(ORDER_ID_DUMMY)
+            }
 
             assertEquals(ORDER_ID_DUMMY, viewModel.getOrderId())
 
@@ -230,8 +252,6 @@ class TokoFoodOrderTrackingViewModelTest : TokoFoodOrderTrackingViewModelTestFix
             coVerify {
                 getTokoFoodOrderDetailUseCase.get().execute(ORDER_ID_DUMMY)
             }
-
-            viewModel.viewModelScope.coroutineContext.cancelChildren()
         }
     }
 
@@ -259,16 +279,14 @@ class TokoFoodOrderTrackingViewModelTest : TokoFoodOrderTrackingViewModelTestFix
             } throws errorException
 
             viewModel.updateOrderId(ORDER_ID_DUMMY)
-            delay(5000L)
-
-            coVerify {
-                getTokoFoodOrderStatusUseCase.get().execute(ORDER_ID_DUMMY)
-            }
+            delay(6000L)
 
             val actualResult = (viewModel.orderCompletedLiveTracking.observeAwaitValue() as Fail)
             assertEquals(errorException::class.java, actualResult.throwable::class.java)
 
-            viewModel.viewModelScope.coroutineContext.cancelChildren()
+            coVerify {
+                getTokoFoodOrderStatusUseCase.get().execute(ORDER_ID_DUMMY)
+            }
         }
     }
 
@@ -301,9 +319,17 @@ class TokoFoodOrderTrackingViewModelTest : TokoFoodOrderTrackingViewModelTestFix
             } returns orderDetailResultUiModel
 
             viewModel.updateOrderId(ORDER_ID_DUMMY)
-            delay(5000L)
+            delay(6000L)
 
             assertEquals(ORDER_ID_DUMMY, viewModel.getOrderId())
+
+            val actualResult =
+                (viewModel.orderCompletedLiveTracking.observeAwaitValue() as Success).data
+            assertEquals(orderDetailResultUiModel.orderStatusKey, actualResult.orderStatusKey)
+            assertEquals(orderDetailResultUiModel.orderDetailList, actualResult.orderDetailList)
+            assertEquals(orderDetailResultUiModel.foodItemList, actualResult.foodItemList)
+            assertEquals(viewModel.getMerchantData()?.merchantId, orderDetailResultUiModel.merchantData.merchantId)
+            assertEquals(viewModel.getMerchantData()?.merchantName, orderDetailResultUiModel.merchantData.merchantName)
 
             coVerify {
                 getTokoFoodOrderStatusUseCase.get().execute(ORDER_ID_DUMMY)
@@ -312,14 +338,6 @@ class TokoFoodOrderTrackingViewModelTest : TokoFoodOrderTrackingViewModelTestFix
             coVerify {
                 getTokoFoodOrderDetailUseCase.get().execute(ORDER_ID_DUMMY)
             }
-
-            val actualResult =
-                (viewModel.orderCompletedLiveTracking.observeAwaitValue() as Success).data
-            assertEquals(orderDetailResultUiModel.orderStatusKey, actualResult.orderStatusKey)
-            assertEquals(orderDetailResultUiModel.orderDetailList, actualResult.orderDetailList)
-            assertEquals(orderDetailResultUiModel.foodItemList, actualResult.foodItemList)
-
-            viewModel.viewModelScope.coroutineContext.cancelChildren()
         }
     }
 
@@ -347,17 +365,14 @@ class TokoFoodOrderTrackingViewModelTest : TokoFoodOrderTrackingViewModelTestFix
             } throws errorException
 
             viewModel.updateOrderId(ORDER_ID_DUMMY)
-            delay(5000L)
-
-            coVerify {
-                getTokoFoodOrderStatusUseCase.get().execute(ORDER_ID_DUMMY)
-            }
+            delay(6000L)
 
             val actualResult = (viewModel.orderCompletedLiveTracking.observeAwaitValue() as Fail)
             assertEquals(errorException::class.java, actualResult.throwable::class.java)
 
-
-            viewModel.viewModelScope.coroutineContext.cancelChildren()
+            coVerify {
+                getTokoFoodOrderStatusUseCase.get().execute(ORDER_ID_DUMMY)
+            }
         }
     }
 }

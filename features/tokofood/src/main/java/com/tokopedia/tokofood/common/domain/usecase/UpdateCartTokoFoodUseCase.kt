@@ -1,46 +1,20 @@
 package com.tokopedia.tokofood.common.domain.usecase
 
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.graphql.coroutines.data.extensions.request
+import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.domain.flow.FlowUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokofood.common.address.TokoFoodChosenAddressRequestHelper
-import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
 import com.tokopedia.tokofood.common.domain.additionalattributes.CartAdditionalAttributesTokoFood
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodResponse
 import com.tokopedia.tokofood.common.domain.response.UpdateCartTokoFoodResponse
 import com.tokopedia.tokofood.common.presentation.mapper.UpdateProductMapper
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class UpdateCartTokoFoodUseCase @Inject constructor(
-    private val repository: GraphqlRepository,
-    private val chosenAddressRequestHelper: TokoFoodChosenAddressRequestHelper,
-    dispatchers: CoroutineDispatchers
-): FlowUseCase<UpdateParam, CartTokoFoodResponse>(dispatchers.io) {
-
-    private val isDebug = false
-
-    companion object {
-        private const val PARAMS_KEY = "params"
-
-        private fun generateParams(param: UpdateParam,
-                                   additionalAttr: String): Map<String, Any> {
-            val cartParam = UpdateProductMapper.getProductParamById(
-                param.productList,
-                additionalAttr,
-                param.shopId
-            )
-            return mapOf(PARAMS_KEY to cartParam)
-        }
-    }
-
-    override fun graphqlQuery(): String = """
-        mutation UpdateCartTokofood($${PARAMS_KEY}: UpdateCartGeneralParams!) {
-          update_cart_general(params: $${PARAMS_KEY}) {
+private const val QUERY = """
+        mutation UpdateCartTokofood(${'$'}params: UpdateCartGeneralParams!) {
+          update_cart_general(params: ${'$'}params) {
             message
             status
             data {
@@ -59,31 +33,45 @@ class UpdateCartTokoFoodUseCase @Inject constructor(
             }
           }
         }
-    """.trimIndent()
+    """
 
-    override suspend fun execute(params: UpdateParam): Flow<CartTokoFoodResponse> = flow {
-        if (isDebug) {
-            kotlinx.coroutines.delay(1000)
-            emit(getDummyResponse())
+@GqlQuery("UpdateCartTokofood", QUERY)
+class UpdateCartTokoFoodUseCase @Inject constructor(
+    repository: GraphqlRepository,
+    private val chosenAddressRequestHelper: TokoFoodChosenAddressRequestHelper
+): GraphqlUseCase<UpdateCartTokoFoodResponse>(repository) {
+
+    init {
+        setTypeClass(UpdateCartTokoFoodResponse::class.java)
+        setGraphqlQuery(UpdateCartTokofood())
+    }
+
+    suspend fun execute(updateParam: UpdateParam): CartTokoFoodResponse {
+        val param = generateParams(
+            updateParam,
+            CartAdditionalAttributesTokoFood(chosenAddressRequestHelper.getChosenAddress()).generateString()
+        )
+        setRequestParams(param)
+        val response = executeOnBackground()
+        if (response.cartResponse.isSuccess()) {
+            return response.cartResponse
         } else {
-            val param = generateParams(
-                params,
-                CartAdditionalAttributesTokoFood(chosenAddressRequestHelper.getChosenAddress()).generateString()
-            )
-            val response =
-                repository.request<Map<String, Any>, UpdateCartTokoFoodResponse>(graphqlQuery(), param)
-            if (response.cartResponse.isSuccess()) {
-                emit(response.cartResponse)
-            } else {
-                throw MessageErrorException(response.cartResponse.getMessageIfError())
-            }
+            throw MessageErrorException(response.cartResponse.getMessageIfError())
         }
     }
 
-    private fun getDummyResponse(): CartTokoFoodResponse {
-        return CartTokoFoodResponse(
-            status = TokoFoodCartUtil.SUCCESS_STATUS
-        )
+    companion object {
+        private const val PARAMS_KEY = "params"
+
+        private fun generateParams(updateParam: UpdateParam,
+                                   additionalAttr: String): Map<String, Any> {
+            val cartParam = UpdateProductMapper.getUpdateProductParamById(
+                updateParam.productList,
+                additionalAttr,
+                updateParam.shopId
+            )
+            return mapOf(PARAMS_KEY to cartParam)
+        }
     }
 
 }

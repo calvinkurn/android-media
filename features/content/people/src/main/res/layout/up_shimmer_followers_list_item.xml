@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/container"
+    android:id="@+id/container_item_follower_shimmer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/Unify_Background"
     android:paddingStart="@dimen/unify_space_16"
-    android:paddingTop="@dimen/unify_space_8"
+    android:paddingTop="@dimen/user_profile_margin_8"
     android:paddingEnd="@dimen/unify_space_16"
-    android:paddingBottom="@dimen/unify_space_8">
+    android:paddingBottom="@dimen/user_profile_margin_8">
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/img_profile_image"
@@ -45,7 +45,7 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/btn_action_follow"
-        android:layout_width="@dimen/cp_dp_88"
+        android:layout_width="@dimen/user_profile_dp_88"
         android:layout_height="@dimen/unify_space_24"
         app:layout_constraintBottom_toBottomOf="@+id/img_profile_image"
         app:layout_constraintEnd_toEndOf="parent"

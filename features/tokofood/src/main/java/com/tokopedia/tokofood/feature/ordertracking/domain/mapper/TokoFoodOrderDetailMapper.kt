@@ -6,6 +6,7 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.BaseOrd
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ActionButtonsUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.AddonVariantItemUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.FoodItemUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.MerchantDataUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDetailResultUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ToolbarLiveTrackingUiModel
 import javax.inject.Inject
@@ -33,10 +34,15 @@ class TokoFoodOrderDetailMapper @Inject constructor(
         return OrderDetailResultUiModel(
             orderDetailList,
             foodItems,
+            mapMerchantToMerchantDataUiModel(orderDetailResponse.merchant),
             orderStatus,
             mapToActionButtons(orderDetailResponse),
             mapToToolbarLiveTrackingUiModel(orderDetailResponse)
         )
+    }
+
+    private fun mapMerchantToMerchantDataUiModel(merchant: TokoFoodOrderDetailResponse.TokofoodOrderDetail.Merchant): MerchantDataUiModel {
+        return MerchantDataUiModel(merchant.merchantId, merchant.displayName)
     }
 
     private fun mapFoodItemListUiModel(
@@ -46,6 +52,10 @@ class TokoFoodOrderDetailMapper @Inject constructor(
         return mutableListOf<BaseOrderTrackingTypeFactory>().apply {
             addAll(foodList.map {
                 FoodItemUiModel(
+                    cartId = it.cartId,
+                    categoryId = it.categoryId,
+                    categoryName = it.categoryName,
+                    itemId = it.itemId,
                     foodName = it.displayName,
                     quantity = it.quantity,
                     priceStr = it.price,

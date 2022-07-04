@@ -35,7 +35,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/pdp_info_title"
             tools:src="@drawable/ic_product_fintech_qr_normal_24"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            android:contentDescription="pdp_icon" />
 
         <ImageView
             android:id="@+id/pdp_arrow_right"
@@ -46,7 +47,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/pdp_info_title"
             app:srcCompat="@drawable/ic_arrow_right_info"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            android:contentDescription="pdp_arrow_right" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/pdp_info_title"
@@ -58,7 +60,7 @@
             app:layout_constraintEnd_toStartOf="@+id/pdp_arrow_right"
             app:layout_constraintStart_toEndOf="@+id/pdp_icon"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="heading_4"
+            app:typographyType="paragraph_1"
             app:typographyWeight="bold"
             tools:text="Varian Produk"
             tools:visibility="visible" />
@@ -74,7 +76,7 @@
             app:layout_constraintEnd_toStartOf="@+id/pdp_arrow_right"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/pdp_info_title"
-            app:typographyType="body_2"
+            app:typographyType="display_2"
             tools:text="@string/ktp_protection" />
 
         <include

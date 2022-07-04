@@ -5,21 +5,26 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.loaderdialog.LoaderDialog
+import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
+import com.tokopedia.tokofood.common.util.TokofoodExt.showErrorToaster
+import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.FragmentTokofoodOrderTrackingBinding
 import com.tokopedia.tokofood.feature.ordertracking.analytics.TokoFoodPostPurchaseAnalytics
-import com.tokopedia.tokofood.feature.ordertracking.di.component.TokoFoodOrderTrackingComponent
+import com.tokopedia.tokofood.feature.ordertracking.di.component.DaggerTokoFoodOrderTrackingComponent
 import com.tokopedia.tokofood.feature.ordertracking.domain.constants.OrderStatusType
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.OrderTrackingAdapter
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.OrderTrackingAdapterTypeFactoryImpl
@@ -32,6 +37,7 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.toolbar.OrderTr
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ActionButtonsUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverPhoneNumberUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverSectionUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.MerchantDataUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDetailResultUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDetailToggleCtaUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingErrorUiModel
@@ -39,10 +45,13 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.Tempora
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ToolbarLiveTrackingUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.TrackingWrapperUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewmodel.TokoFoodOrderTrackingViewModel
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 import javax.inject.Inject
 
@@ -71,25 +80,35 @@ class BaseTokoFoodOrderTrackingFragment :
         OrderTrackingNavigator(this, tracking)
     }
 
+    private val orderId by lazy {
+        arguments?.getString(DeeplinkMapperTokoFood.PATH_ORDER_ID).orEmpty()
+    }
+
     private var toolbarHandler: OrderTrackingToolbarHandler? = null
 
     private var binding by autoClearedNullable<FragmentTokofoodOrderTrackingBinding>()
 
     private var orderLiveTrackingFragment: TokoFoodOrderLiveTrackingFragment? = null
 
-    private val orderId: String by lazy(LazyThreadSafetyMode.NONE) {
-        arguments?.getString(DeeplinkMapperTokoFood.PATH_ORDER_ID).orEmpty()
-    }
+    private var delayAutoRefreshFinishOrderTempJob: Job? = null
+
+    private var loaderDialog: LoaderDialog? = null
 
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        getComponent(TokoFoodOrderTrackingComponent::class.java).inject(this)
+        activity?.let {
+            DaggerTokoFoodOrderTrackingComponent
+                .builder()
+                .baseAppComponent((it.applicationContext as BaseMainApplication).baseAppComponent)
+                .build()
+                .inject(this)
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        tracking.viewOrderDetailPage("")
+        tracking.viewOrderDetailPage(viewModel.getMerchantData()?.merchantId.orEmpty())
     }
 
     override fun onCreateView(
@@ -117,6 +136,12 @@ class BaseTokoFoodOrderTrackingFragment :
         orderLiveTrackingFragment?.let {
             lifecycle.removeObserver(it)
         }
+        hideLoaderDriverCall()
+        delayAutoRefreshFinishOrderTempJob?.cancel()
+        loaderDialog = null
+        delayAutoRefreshFinishOrderTempJob = null
+        orderLiveTrackingFragment = null
+        toolbarHandler = null
         super.onDestroy()
     }
 
@@ -138,19 +163,27 @@ class BaseTokoFoodOrderTrackingFragment :
     }
 
     override fun onTickerLinkClick(linkUrl: String) {
-        context?.let { RouteManager.route(it, linkUrl) }
-    }
-
-    override fun onAutoRefreshTempFinishOrder(orderDetailResultUiModel: OrderDetailResultUiModel) {
-        with(orderDetailResultUiModel) {
-            orderTrackingAdapter.removeOrderTrackingData()
-            orderTrackingAdapter.updateOrderTracking(orderDetailList)
-            updateViewsOrderCompleted(actionButtonsUiModel, toolbarLiveTrackingUiModel, orderStatusKey)
+        context?.let {
+            TokofoodRouteManager.routePrioritizeInternal(it, linkUrl)
         }
     }
 
+    override fun onAutoRefreshTempFinishOrder(orderDetailResultUiModel: OrderDetailResultUiModel) {
+        delayAutoRefreshFinishOrderTempJob?.cancel()
+        delayAutoRefreshFinishOrderTempJob =
+            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+                delay(TWO_SECONDS)
+                with(orderDetailResultUiModel) {
+                    orderTrackingAdapter.removeOrderTrackingData()
+                    orderTrackingAdapter.updateOrderTracking(orderDetailList)
+                    setToolbarLiveTracking(toolbarLiveTrackingUiModel, orderDetailResultUiModel.orderStatusKey)
+                }
+            }
+    }
+
     override fun onClickDriverCall() {
-        tracking.clickCallDriverIcon(orderId, "")
+        tracking.clickCallDriverIcon(orderId, viewModel.getMerchantData()?.merchantId.orEmpty())
+        showLoaderDriverCall()
         viewModel.fetchDriverPhoneNumber(orderId)
     }
 
@@ -158,8 +191,26 @@ class BaseTokoFoodOrderTrackingFragment :
         fetchOrderDetail()
     }
 
+    override fun onInvoiceOrderClicked(invoiceNumber: String, invoiceUrl: String) {
+        navigator.goToPrintInvoicePage(invoiceUrl, invoiceNumber)
+    }
+
     override val parentPool: RecyclerView.RecycledViewPool
         get() = binding?.rvOrderTracking?.recycledViewPool ?: RecyclerView.RecycledViewPool()
+
+    private fun showLoaderDriverCall() {
+        context?.let {
+            loaderDialog = LoaderDialog(it).apply {
+                dialog.setCancelable(false)
+                dialog.setCanceledOnTouchOutside(false)
+            }
+            loaderDialog?.show()
+        }
+    }
+
+    private fun hideLoaderDriverCall() {
+        if (loaderDialog?.dialog?.isShowing == true) loaderDialog?.dialog?.dismiss()
+    }
 
     private fun setupToolbar() {
         toolbarHandler = OrderTrackingToolbarHandler(WeakReference(activity), binding)
@@ -190,11 +241,17 @@ class BaseTokoFoodOrderTrackingFragment :
                     setupViews(
                         it.data.orderStatusKey,
                         it.data.actionButtonsUiModel,
-                        it.data.toolbarLiveTrackingUiModel
+                        it.data.toolbarLiveTrackingUiModel,
+                        it.data.merchantData,
                     )
                     fetchOrderLiveTracking(orderId)
                 }
                 is Fail -> {
+                    logExceptionToServerLogger(
+                        it.throwable,
+                        TokofoodErrorLogger.ErrorType.ERROR_PAGE,
+                        TokofoodErrorLogger.ErrorDescription.RENDER_PAGE_ERROR
+                    )
                     orderTrackingAdapter.showError(OrderTrackingErrorUiModel(it.throwable))
                 }
             }
@@ -203,12 +260,22 @@ class BaseTokoFoodOrderTrackingFragment :
 
     private fun observeDriverPhoneNumber() {
         observe(viewModel.driverPhoneNumber) {
+            hideLoaderDriverCall()
             when (it) {
                 is Success -> {
                     updateDriverCall(it.data)
                 }
                 is Fail -> {
-                    showErrorToaster("")
+                    logExceptionToServerLogger(
+                        it.throwable,
+                        TokofoodErrorLogger.ErrorType.ERROR_DRIVER_PHONE_NUMBER,
+                        TokofoodErrorLogger.ErrorDescription.ERROR_DRIVER_PHONE_NUMBER
+                    )
+                    view?.showErrorToaster(
+                        context?.getString(
+                            com.tokopedia.tokofood.R.string.error_message_hit_driver_phone_number
+                        ).orEmpty()
+                    )
                 }
             }
         }
@@ -234,7 +301,7 @@ class BaseTokoFoodOrderTrackingFragment :
         )
         driverCallBottomSheet.setTrackingListener {
             tracking.clickCallDriverCtaInBottomSheet(
-                orderId, ""
+                orderId, viewModel.getMerchantData()?.merchantId.orEmpty()
             )
         }
         driverCallBottomSheet.show(childFragmentManager)
@@ -253,6 +320,11 @@ class BaseTokoFoodOrderTrackingFragment :
                     updateOrderCompleted(it.data)
                 }
                 is Fail -> {
+                    logExceptionToServerLogger(
+                        it.throwable,
+                        TokofoodErrorLogger.ErrorType.ERROR_COMPLETED_ORDER_POST_PURCHASE,
+                        TokofoodErrorLogger.ErrorDescription.RENDER_PAGE_ERROR
+                    )
                     orderTrackingAdapter.showError(OrderTrackingErrorUiModel(it.throwable))
                 }
             }
@@ -273,7 +345,8 @@ class BaseTokoFoodOrderTrackingFragment :
                 updateViewsOrderCompleted(
                     actionButtonsUiModel,
                     toolbarLiveTrackingUiModel,
-                    orderStatusKey
+                    orderStatusKey,
+                    orderDetailResultUiModel.merchantData
                 )
             }
         }
@@ -288,21 +361,22 @@ class BaseTokoFoodOrderTrackingFragment :
     private fun setupViews(
         orderStatus: String,
         actionButtonsUiModel: ActionButtonsUiModel,
-        toolbarLiveTrackingUiModel: ToolbarLiveTrackingUiModel
+        toolbarLiveTrackingUiModel: ToolbarLiveTrackingUiModel,
+        merchantData: MerchantDataUiModel,
     ) {
         binding?.run {
             if (orderStatus in listOf(OrderStatusType.COMPLETED, OrderStatusType.CANCELLED)) {
                 updateViewsOrderCompleted(
                     actionButtonsUiModel,
                     toolbarLiveTrackingUiModel,
-                    orderStatus
+                    orderStatus,
+                    merchantData
                 )
             } else {
                 orderLiveTrackingFragment = TokoFoodOrderLiveTrackingFragment(
                     binding,
                     viewModel,
                     orderTrackingAdapter,
-                    navigator,
                     toolbarHandler
                 )
                 orderLiveTrackingFragment?.let { lifecycle.addObserver(it) }
@@ -318,9 +392,14 @@ class BaseTokoFoodOrderTrackingFragment :
     private fun updateViewsOrderCompleted(
         actionButtonsUiModel: ActionButtonsUiModel,
         toolbarLiveTrackingUiModel: ToolbarLiveTrackingUiModel,
-        orderStatus: String
+        orderStatus: String,
+        merchantDataModel: MerchantDataUiModel
     ) {
-        setupStickyButton(actionButtonsUiModel)
+        if (orderStatus == OrderStatusType.COMPLETED) {
+            setupStickyActionButton(actionButtonsUiModel, merchantDataModel)
+        } else {
+            setupStickyHelpButton(actionButtonsUiModel.primaryActionButton)
+        }
         setSwipeRefreshEnabled()
         setToolbarLiveTracking(toolbarLiveTrackingUiModel, orderStatus)
     }
@@ -332,8 +411,41 @@ class BaseTokoFoodOrderTrackingFragment :
     ) {
         orderLiveTrackingFragment?.apply {
             setSwipeRefreshDisabled()
-            setupStickyButton(actionButtonsUiModel.primaryActionButton)
+            setupStickyHelpButton(actionButtonsUiModel.primaryActionButton)
             setToolbarLiveTracking(toolbarLiveTrackingUiModel, orderStatus)
+        }
+    }
+
+    private fun setupStickyHelpButton(primaryActionButton: ActionButtonsUiModel.ActionButton) {
+        binding?.run {
+            containerOrderTrackingActionsButton.hide()
+            containerOrderTrackingHelpButton.apply {
+                setOrderTrackingNavigator(navigator)
+                setupHelpButton(
+                    viewModel.getOrderId(),
+                    primaryActionButton,
+                    viewModel.getMerchantData()
+                )
+                show()
+            }
+        }
+    }
+
+    private fun setupStickyActionButton(
+        actionButtons: ActionButtonsUiModel,
+        merchantData: MerchantDataUiModel
+    ) {
+        binding?.run {
+            containerOrderTrackingHelpButton.hide()
+            containerOrderTrackingActionsButton.apply {
+                setOrderTrackingNavigator(navigator)
+                setupActionButtons(
+                    TrackingWrapperUiModel(orderId, viewModel.getFoodItems(), merchantData),
+                    actionButtons,
+                    childFragmentManager
+                )
+                show()
+            }
         }
     }
 
@@ -345,21 +457,6 @@ class BaseTokoFoodOrderTrackingFragment :
         toolbarHandler?.setToolbarScrolling(orderStatus)
     }
 
-    private fun setupStickyButton(actionButtons: ActionButtonsUiModel) {
-        binding?.run {
-            containerOrderTrackingHelpButton.hide()
-            containerOrderTrackingActionsButton.apply {
-                setOrderTrackingNavigator(navigator)
-                setupActionButtons(
-                    TrackingWrapperUiModel(orderId, "", viewModel.getFoodItems()),
-                    actionButtons,
-                    childFragmentManager
-                )
-                show()
-            }
-        }
-    }
-
     private fun setSwipeRefreshEnabled() {
         binding?.orderTrackingSwipeRefresh?.run {
             isEnabled = true
@@ -369,20 +466,23 @@ class BaseTokoFoodOrderTrackingFragment :
         }
     }
 
-    private fun showErrorToaster(errorMessage: String) {
-        if (errorMessage.isNotBlank()) {
-            view?.let {
-                Toaster.build(
-                    it,
-                    text = errorMessage,
-                    duration = Toaster.LENGTH_SHORT,
-                    type = Toaster.TYPE_ERROR
-                ).show()
-            }
-        }
+    private fun logExceptionToServerLogger(
+        throwable: Throwable,
+        errorType: String,
+        errorDesc: String
+    ) {
+        TokofoodErrorLogger.logExceptionToServerLogger(
+            TokofoodErrorLogger.PAGE.POST_PURCHASE,
+            throwable,
+            errorType,
+            viewModel.userSession.deviceId.orEmpty(),
+            errorDesc
+        )
     }
 
     companion object {
+
+        const val TWO_SECONDS = 2000L
 
         fun newInstance(bundle: Bundle?): BaseTokoFoodOrderTrackingFragment {
             return if (bundle == null) {

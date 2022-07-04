@@ -10,4 +10,5 @@
     android:text="@string/order_detail_payment_header_label"
     android:textColor="@color/Unify_NN950"
     app:layout_constraintTop_toTopOf="parent"
-    app:typographyType="heading_5" />
+    app:typographyType="display_2"
+    app:typographyWeight="bold" />

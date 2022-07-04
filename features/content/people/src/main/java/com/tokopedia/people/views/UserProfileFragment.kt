@@ -69,10 +69,13 @@ class UserProfileFragment : BaseDaggerFragment(),
     ShareBottomsheetListener,
     ScreenShotListener,
     PermissionListener,
-    ReminderCallback{
+    UserPostBaseAdapter.PlayWidgetCallback {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+    private val gridLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
+        GridLayoutManager(activity, 2)
+    }
 
     var landedUserName: String? = null
     var displayName: String = ""
@@ -101,13 +104,13 @@ class UserProfileFragment : BaseDaggerFragment(),
     private var userProfileTracker: UserProfileTracker? = null
     private var screenShotDetector: ScreenshotDetector? = null
 
-    private val mPresenter: UserProfileViewModel by lazy {
+    private val viewModel: UserProfileViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(UserProfileViewModel::class.java)
     }
 
     private val mAdapter: UserPostBaseAdapter by lazy {
         UserPostBaseAdapter(
-            mPresenter,
+            viewModel,
             this,
             userName,
             userProfileTracker,
@@ -131,7 +134,7 @@ class UserProfileFragment : BaseDaggerFragment(),
         super.onViewCreated(view, savedInstanceState)
         userSession = UserSession(context)
         userId = userSession?.userId?:""
-        container = view.findViewById(R.id.container)
+        container = view.findViewById(R.id.container_header)
         userPostContainer = view.findViewById(R.id.vp_rv_post)
         globalError = view.findViewById(R.id.global_error)
         globalErrorPost = view.findViewById(R.id.global_error_post)
@@ -184,7 +187,7 @@ class UserProfileFragment : BaseDaggerFragment(),
 
     private fun refreshLandingPageData(isRefreshPost: Boolean = false) {
         landedUserName?.let {
-            mPresenter.getUserDetails(it, isRefreshPost)
+            viewModel.getUserDetails(it, isRefreshPost)
         }
     }
 
@@ -202,7 +205,10 @@ class UserProfileFragment : BaseDaggerFragment(),
 
     private fun initUserPost(userId: String) {
         recyclerviewPost = view?.findViewById(R.id.recycler_view)
-        recyclerviewPost?.layoutManager = GridLayoutManager(activity, 2)
+        gridLayoutManager.spanSizeLookup = getSpanSizeLookUp()
+
+
+        recyclerviewPost?.layoutManager = gridLayoutManager
         if (recyclerviewPost?.itemDecorationCount == 0) {
             context?.resources?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1)
                 ?.let {
@@ -213,6 +219,17 @@ class UserProfileFragment : BaseDaggerFragment(),
         mAdapter.resetAdapter()
         mAdapter.cursor = ""
         mAdapter.startDataLoading(userId)
+    }
+
+    private fun getSpanSizeLookUp(): GridLayoutManager.SpanSizeLookup {
+        return object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                return when (mAdapter.getItemViewType(position)) {
+                    LOADING -> 2
+                    else -> 1
+                }
+            }
+        }
     }
 
     private fun initObserver() {
@@ -232,7 +249,7 @@ class UserProfileFragment : BaseDaggerFragment(),
     }
 
     private fun addPostReminderErrorObserver() {
-        mPresenter.postReminderErrorMessageLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.postReminderErrorMessageLiveData.observe(viewLifecycleOwner, Observer {
             it?.let {
                 when (it) {
                     is UnknownHostException, is SocketTimeoutException -> {
@@ -251,7 +268,7 @@ class UserProfileFragment : BaseDaggerFragment(),
     }
 
     private fun addUserProfileObserver() =
-        mPresenter.userDetailsLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.userDetailsLiveData.observe(viewLifecycleOwner, Observer {
             it?.let {
                 when (it) {
                     is Loading -> {
@@ -273,14 +290,14 @@ class UserProfileFragment : BaseDaggerFragment(),
 
                         container?.displayedChild = PAGE_CONTENT
                         setMainUi(it.data)
-                        mPresenter.getFollowingStatus(mutableListOf(profileUserId))
+                        viewModel.getFollowingStatus(mutableListOf(profileUserId))
                     }
                 }
             }
         })
 
     private fun addUserPostObserver() =
-        mPresenter.userPostLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.userPostLiveData.observe(viewLifecycleOwner, Observer {
             it?.let {
                 if (it) {
                     initUserPost(profileUserId)
@@ -289,7 +306,7 @@ class UserProfileFragment : BaseDaggerFragment(),
         })
 
     private fun addListObserver() =
-        mPresenter.playPostContentLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.playPostContentLiveData.observe(viewLifecycleOwner, Observer {
             it?.let {
                 when (it) {
                     is Loading -> {
@@ -308,7 +325,7 @@ class UserProfileFragment : BaseDaggerFragment(),
 
 
     private fun addDoFollowedObserver() =
-        mPresenter.profileDoFollowLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.profileDoFollowLiveData.observe(viewLifecycleOwner, Observer {
             it?.let {
                 when (it) {
                     is Loading -> {
@@ -328,7 +345,7 @@ class UserProfileFragment : BaseDaggerFragment(),
         })
 
     private fun addDoUnFollowedObserver() =
-        mPresenter.profileDoUnFollowLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.profileDoUnFollowLiveData.observe(viewLifecycleOwner, Observer {
             it?.let {
                 when (it) {
                     is Loading -> {
@@ -349,7 +366,7 @@ class UserProfileFragment : BaseDaggerFragment(),
         })
 
     private fun addTheyFollowedObserver() =
-        mPresenter.profileTheyFollowLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.profileTheyFollowLiveData.observe(viewLifecycleOwner, Observer {
             it?.let {
                 when (it) {
                     is Loading -> {
@@ -366,7 +383,7 @@ class UserProfileFragment : BaseDaggerFragment(),
         })
 
     private fun addProfileHeaderErrorObserver() =
-        mPresenter.profileHeaderErrorMessageLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.profileHeaderErrorMessageLiveData.observe(viewLifecycleOwner, Observer {
             it?.let {
                 when (it) {
                     is UnknownHostException, is SocketTimeoutException -> {
@@ -388,6 +405,18 @@ class UserProfileFragment : BaseDaggerFragment(),
                             container?.displayedChild = PAGE_LOADING
                             refreshLandingPageData()
                         }
+                    }
+                    is NullPointerException ->{
+                        container?.displayedChild = PAGE_ERROR
+                        globalError?.setType(PAGE_NOT_FOUND)
+                        globalError?.errorAction?.text = getString(com.tokopedia.people.R.string.up_error_page_sec_btn_txt)
+                        globalError?.errorSecondaryAction?.gone()
+                        globalError?.show()
+
+                        globalError?.setActionClickListener {
+                            goToHomePage()
+                        }
+
                     }
                     is RuntimeException -> {
                         when (it.localizedMessage?.toIntOrNull()) {
@@ -428,7 +457,7 @@ class UserProfileFragment : BaseDaggerFragment(),
         })
 
     private fun adduserPostErrorObserver() =
-        mPresenter.userPostErrorLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.userPostErrorLiveData.observe(viewLifecycleOwner, Observer {
             it?.let {
                 when (it) {
                     is UnknownHostException, is SocketTimeoutException -> {
@@ -480,7 +509,7 @@ class UserProfileFragment : BaseDaggerFragment(),
         })
 
     private fun addSocialFollowErrorObserver() =
-        mPresenter.followErrorMessageLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.followErrorMessageLiveData.observe(viewLifecycleOwner, Observer {
             it?.let {
                 val snackBar = Toaster.build(
                     btnAction as View,
@@ -496,7 +525,7 @@ class UserProfileFragment : BaseDaggerFragment(),
         })
 
     private fun addSocialUnFollowErrorObserver() =
-        mPresenter.unFollowErrorMessageLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.unFollowErrorMessageLiveData.observe(viewLifecycleOwner, Observer {
             it?.let {
                 val snackBar = Toaster.build(
                     btnAction as View,
@@ -512,14 +541,14 @@ class UserProfileFragment : BaseDaggerFragment(),
         })
 
     private fun addVideoPostReminderUpdateObserver() =
-        mPresenter.postReminderLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.postReminderLiveData.observe(viewLifecycleOwner, Observer {
             it?.let {
                 when (it) {
                     is Loading -> {
 
                     }
                     is Success -> {
-                        if (it?.data?.playToggleChannelReminder?.header?.status == 200) {
+                        if (it?.data?.playToggleChannelReminder?.header?.status == SUCCESS_STATUS) {
                             Toaster.build(
                                 btnAction as View,
                                 it.data.playToggleChannelReminder.header.message,
@@ -557,12 +586,12 @@ class UserProfileFragment : BaseDaggerFragment(),
                 activity?.intent?.putExtra(EXTRA_FOLLOW_UNFOLLOW_STATUS, EXTRA_VALUE_IS_NOT_FOLLOWED)
 
                 userProfileTracker?.clickUnfollow(userId, profileUserId == userId)
-                mPresenter.doUnFollow(userIdEnc)
+                viewModel.doUnFollow(userIdEnc)
                 updateToUnFollowUi()
             } else {
                 activity?.intent?.putExtra(EXTRA_FOLLOW_UNFOLLOW_STATUS, EXTRA_VALUE_IS_FOLLOWED)
                 userProfileTracker?.clickFollow(userId, profileUserId == userId)
-                mPresenter.doFollow(userIdEnc)
+                viewModel.doFollow(userIdEnc)
                 updateToFollowUi()
             }
         }
@@ -800,6 +829,12 @@ class UserProfileFragment : BaseDaggerFragment(),
     override fun getScreenName(): String {
         return ""
     }
+    private fun goToHomePage() {
+        val intent = RouteManager.getIntent(context, ApplinkConst.HOME)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
+        activity?.finish()
+    }
 
     override fun onResume() {
         super.onResume()
@@ -902,6 +937,13 @@ class UserProfileFragment : BaseDaggerFragment(),
         if (requestCode == REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
             refreshLandingPageData()
         }
+        else if(requestCode == REQUEST_CODE_PLAY_ROOM && resultCode == Activity.RESULT_OK) {
+            val channelId = data?.extras?.getString(EXTRA_CHANNEL_ID) ?: return
+            val totalView = data.extras?.getString(EXTRA_TOTAL_VIEW)
+            val isReminderSet = data.extras?.getBoolean(EXTRA_IS_REMINDER, false)
+
+            mAdapter.updatePlayWidgetLatestData(channelId, totalView, isReminderSet)
+        }
     }
 
     private fun showUniversalShareBottomSheet() {
@@ -945,6 +987,7 @@ class UserProfileFragment : BaseDaggerFragment(),
         const val EXTRA_FOLLOW_UNFOLLOW_STATUS = "follow_unfollow_status"
         const val EXTRA_VALUE_IS_FOLLOWED = "is_followed"
         const val EXTRA_VALUE_IS_NOT_FOLLOWED = "is_not_followed"
+        private const val LOADING = -94567
 
         const val PAGE_CONTENT = 0
         const val PAGE_ERROR = 2
@@ -952,6 +995,12 @@ class UserProfileFragment : BaseDaggerFragment(),
         const val PAGE_EMPTY = 3
         const val SEE_ALL_LINE = 3
         const val MAX_LINE = 20
+        const val SUCCESS_STATUS = 200
+        
+        private const val REQUEST_CODE_PLAY_ROOM = 123
+        private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
+        private const val EXTRA_IS_REMINDER = "EXTRA_IS_REMINDER"
+        private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
 
         fun newInstance(extras: Bundle): Fragment {
             val fragment = UserProfileFragment()
@@ -1066,8 +1115,13 @@ class UserProfileFragment : BaseDaggerFragment(),
         }
         else{
 
-            mPresenter.updatePostReminderStatus(channelId, isActive)
+            viewModel.updatePostReminderStatus(channelId, isActive)
             mAdapter.notifyItemChanged(pos)
         }
+    }
+
+    override fun onPlayWidgetLargeClick(appLink: String) {
+        val intent = RouteManager.getIntent(context, appLink)
+        startActivityForResult(intent, REQUEST_CODE_PLAY_ROOM)
     }
 }

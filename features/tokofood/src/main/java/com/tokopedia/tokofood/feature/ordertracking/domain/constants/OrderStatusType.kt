@@ -16,6 +16,6 @@ annotation class OrderStatusType {
         const val OTW_DESTINATION = "OTW_DESTINATION"
         const val FRAUD_CHECK = "FRAUD_CHECK"
         const val COMPLETED = "COMPLETED"
-        const val CANCELLED = "CANCELED"
+        const val CANCELLED = "CANCELLED"
     }
 }

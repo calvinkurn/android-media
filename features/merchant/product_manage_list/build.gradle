@@ -60,6 +60,8 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.sortFilter
     implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.dialog
+    implementation rootProject.ext.unifyDependencies.list
+    implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.playServicesDependencies.core
 
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
@@ -72,7 +74,6 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.supportLibDependencies.design
     implementation rootProject.ext.supportLibDependencies.supportV4
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.networkDependencies.loggingInterceptor
     implementation rootProject.ext.networkDependencies.retrofit
     implementation rootProject.ext.miscDependencies.rxJava

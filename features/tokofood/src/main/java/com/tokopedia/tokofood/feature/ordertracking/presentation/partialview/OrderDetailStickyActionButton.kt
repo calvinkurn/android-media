@@ -9,7 +9,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.TokofoodPartialOrderDetailStickyActionButtonsBinding
 import com.tokopedia.tokofood.feature.ordertracking.presentation.bottomsheet.SecondaryActionBottomSheet
 import com.tokopedia.tokofood.feature.ordertracking.presentation.navigator.OrderTrackingNavigator
@@ -45,7 +44,7 @@ class OrderDetailStickyActionButton @JvmOverloads constructor(
     }
 
     private fun onSecondaryActionButtonClicked(
-        orderId: String,
+        trackingWrapperUiModel: TrackingWrapperUiModel,
         secondaryButton: List<ActionButtonsUiModel.ActionButton>,
         fragmentManager: FragmentManager
     ): OnClickListener {
@@ -55,7 +54,8 @@ class OrderDetailStickyActionButton @JvmOverloads constructor(
             }
             secondaryActionBottomSheet?.run {
                 dismissBottomSheet()
-                setOrderId(orderId)
+                setMerchantData(trackingWrapperUiModel.merchantData)
+                setOrderId(trackingWrapperUiModel.orderId)
                 setActionBtnList(secondaryButton)
                 navigator?.let { navigator -> setNavigator(navigator) }
                 show(fragmentManager)
@@ -80,7 +80,7 @@ class OrderDetailStickyActionButton @JvmOverloads constructor(
     }
 
     private fun setupSecondaryButton(
-        orderId: String,
+        trackingWrapperUiModel: TrackingWrapperUiModel,
         secondaryButton: List<ActionButtonsUiModel.ActionButton>,
         fragmentManager: FragmentManager
     ) {
@@ -96,19 +96,19 @@ class OrderDetailStickyActionButton @JvmOverloads constructor(
                     resources.getDimensionPixelSize(com.tokopedia.unifycomponents.R.dimen.button_stroke_width),
                     ContextCompat.getColor(
                         context,
-                        R.color.food_order_detail_dms_secondary_action_button_stroke_color
+                        com.tokopedia.tokofood.R.color.food_order_detail_dms_secondary_action_button_stroke_color
                     )
                 )
             }
             setColorFilter(
                 ContextCompat.getColor(
                     context,
-                    R.color.food_order_detail_dms_secondary_action_button_color_filter
+                    com.tokopedia.tokofood.R.color.food_order_detail_dms_secondary_action_button_color_filter
                 )
             )
             setOnClickListener(
                 onSecondaryActionButtonClicked(
-                    orderId,
+                    trackingWrapperUiModel,
                     secondaryButton,
                     fragmentManager
                 )
@@ -121,10 +121,9 @@ class OrderDetailStickyActionButton @JvmOverloads constructor(
         actionButtons: ActionButtonsUiModel,
         fragmentManager: FragmentManager
     ) {
-
         setupPrimaryButton(trackingWrapperUiModel, actionButtons.primaryActionButton)
         setupSecondaryButton(
-            trackingWrapperUiModel.orderId,
+            trackingWrapperUiModel,
             actionButtons.secondaryActionButton,
             fragmentManager
         )
@@ -132,5 +131,10 @@ class OrderDetailStickyActionButton @JvmOverloads constructor(
 
     fun setOrderTrackingNavigator(navigator: OrderTrackingNavigator) {
         this.navigator = navigator
+    }
+
+    override fun onDetachedFromWindow() {
+        binding = null
+        super.onDetachedFromWindow()
     }
 }

@@ -10,7 +10,8 @@ import com.tokopedia.topchat.common.websocket.DefaultTopChatWebSocket
 import com.tokopedia.topchat.common.websocket.DefaultTopChatWebSocket.Companion.CODE_NORMAL_CLOSURE
 import com.tokopedia.topchat.common.websocket.DefaultWebSocketParser
 import com.tokopedia.topchat.common.websocket.WebSocketStateHandler
-import com.tokopedia.topchat.chatlist.model.BaseIncomingItemWebSocketModel
+import com.tokopedia.topchat.chatlist.view.uimodel.base.BaseIncomingItemWebSocketModel
+import com.tokopedia.topchat.chatlist.view.viewmodel.WebSocketViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success

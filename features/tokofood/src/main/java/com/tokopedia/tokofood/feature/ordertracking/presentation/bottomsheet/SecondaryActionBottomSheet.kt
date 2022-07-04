@@ -13,6 +13,7 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.Seconda
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.itemdecoration.SecondaryActionButtonItemDecoration
 import com.tokopedia.tokofood.feature.ordertracking.presentation.navigator.OrderTrackingNavigator
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ActionButtonsUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.MerchantDataUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.unifycomponents.R as RUnifyComponent
@@ -28,6 +29,8 @@ class SecondaryActionBottomSheet: BottomSheetUnify(), SecondaryActionButtonAdapt
     private var navigator: OrderTrackingNavigator? = null
 
     private var orderId: String? = ""
+
+    private var merchantData: MerchantDataUiModel? = null
 
     private var actionButtonList: List<ActionButtonsUiModel.ActionButton>? = listOf()
 
@@ -48,7 +51,7 @@ class SecondaryActionBottomSheet: BottomSheetUnify(), SecondaryActionButtonAdapt
     }
 
     override fun onActionButtonClicked(button: ActionButtonsUiModel.ActionButton) {
-        navigator?.goToHelpPage(orderId, button.appUrl)
+        navigator?.goToHelpPage(orderId, button.appUrl, merchantData?.merchantId.orEmpty())
     }
 
     fun show(fragmentManager: FragmentManager?) {
@@ -63,6 +66,10 @@ class SecondaryActionBottomSheet: BottomSheetUnify(), SecondaryActionButtonAdapt
         if (isVisible) {
             dismiss()
         }
+    }
+
+    fun setMerchantData(merchantData: MerchantDataUiModel) {
+        this.merchantData = merchantData
     }
 
     fun setOrderId(orderId: String) {

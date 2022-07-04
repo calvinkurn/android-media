@@ -13,7 +13,7 @@ class SecondaryActionButtonItemDecoration(context: Context) : RecyclerView.ItemD
 
     private val divider = MethodChecker.getDrawable(
         context,
-        com.tokopedia.tokofood.R.drawable.secondary_action_button_divider
+        com.tokopedia.tokofood.R.drawable.tokofood_secondary_action_button_divider
     )
     private val margin =
         context.resources.getDimension(com.tokopedia.unifycomponents.R.dimen.layout_lvl2).toInt()

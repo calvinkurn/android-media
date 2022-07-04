@@ -3,6 +3,7 @@ package com.tokopedia.attachvoucher.mapper
 import android.annotation.SuppressLint
 import com.tokopedia.attachvoucher.data.VoucherUiModel
 import com.tokopedia.attachvoucher.data.voucherv2.GetMerchantPromotionGetMVListResponse
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.merchantvoucher.common.gql.data.*
 import com.tokopedia.utils.time.RfcDateTimeParser
 import javax.inject.Inject
@@ -27,7 +28,7 @@ class VoucherMapper @Inject constructor() {
             )
             val voucherStatus = MerchantVoucherStatus()
             val voucherUiModel = VoucherUiModel(
-                    voucherId = voucher.voucherId,
+                    voucherId = voucher.voucherId.toIntSafely(),
                     voucherName = voucher.voucherName,
                     voucherCode = voucher.voucherCode,
                     merchantVoucherType = voucherType,

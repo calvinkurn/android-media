@@ -23,18 +23,8 @@
         android:textColor="@color/Unify_R600"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dividerUnify"
-        app:typographyType="heading_6"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
         tools:text="Produk Dilarang" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/text_disabled_sub_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:textColor="@color/Unify_N700_96"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/unavailableSectionType"
-        app:typographyType="body_3"
-        tools:text="Tidak dapat dibeli di platform Android" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -12,10 +12,10 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="16dp"
-        android:text="Ringkasan Belanja"
+        android:text="@string/text_purchase_transaction_summary"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         app:typographyWeight="bold" />
 
     <LinearLayout
@@ -56,15 +56,5 @@
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
         app:constraint_referenced_ids="constraint_transaction_loading, container_transaction_item"/>
-
-    <com.tokopedia.unifycomponents.ticker.Ticker
-        android:id="@+id/ticker_cancellation_info"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        app:closeButtonVisibility="gone"
-        app:layout_constraintTop_toBottomOf="@+id/barrier_tokonow_summary"
-        app:tickerShapeType="full"
-        app:tickerType="announcement" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

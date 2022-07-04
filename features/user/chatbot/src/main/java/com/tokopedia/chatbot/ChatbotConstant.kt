@@ -59,4 +59,7 @@ object ChatbotConstant {
         const val ARTICLE_ENTRY = "article_entry"
         const val FALSE = "false"
     }
+
+    const val CONTACT_US_APPLINK = "tokopedia-android-internal://customercare-inbox-list"
+
 }

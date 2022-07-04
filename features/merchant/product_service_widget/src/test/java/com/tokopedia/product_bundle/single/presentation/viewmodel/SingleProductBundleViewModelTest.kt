@@ -1,9 +1,11 @@
 package com.tokopedia.product_bundle.single.presentation.viewmodel
 
+import com.tokopedia.atc_common.AtcConstant.ATC_ERROR_GLOBAL
 import com.tokopedia.atc_common.domain.model.response.AddToCartBundleDataModel
 import com.tokopedia.atc_common.domain.model.response.AddToCartBundleModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants
 import com.tokopedia.product_bundle.common.util.AtcVariantMapper
 import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleErrorEnum
 import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleSelectedItem
@@ -20,14 +22,14 @@ class SingleProductBundleViewModelTest: SingleProductBundleViewModelTestFixture(
 
     @Test
     fun `setBundleInfo using inactive bundle should invoke pageError`() = runBlocking {
-        viewModel.setBundleInfo(context, singleBundleEmpty.bundleInfo, "", 0, emptyList())
+        viewModel.setBundleInfo(context, singleBundleEmpty?.bundleInfo.orEmpty(), "", 0, emptyList())
         val pageErrorResult = viewModel.pageError.getOrAwaitValue()
         assertEquals(SingleProductBundleErrorEnum.ERROR_BUNDLE_IS_EMPTY, pageErrorResult)
     }
 
     @Test
     fun `setBundleInfo using active bundle should invoke UiModel`() = runBlocking {
-        viewModel.setBundleInfo(context, singleBundleVariant.bundleInfo, "", 0, emptyList())
+        viewModel.setBundleInfo(context, singleBundleVariant?.bundleInfo.orEmpty(), "", 0, emptyList())
         val singleProductBundleUiModelResult = viewModel.singleProductBundleUiModel.getOrAwaitValue()
         assertEquals(true, singleProductBundleUiModelResult.items.isNotEmpty())
     }
@@ -120,13 +122,43 @@ class SingleProductBundleViewModelTest: SingleProductBundleViewModelTestFixture(
         )
 
         // if variant child changed
-        viewModel.validateAndAddToCart("cart", "", "123", "456", singleProductBundleSelectedItem)
+        viewModel.validateAndAddToCart(ProductBundleConstants.PAGE_SOURCE_CART, "", "123", "456", singleProductBundleSelectedItem)
         coVerify { addToCartBundleUseCase.executeOnBackground() }
 
         // if variant child not changed
-        viewModel.validateAndAddToCart("cart", "", "123", "123", singleProductBundleSelectedItem)
+        viewModel.validateAndAddToCart(ProductBundleConstants.PAGE_SOURCE_MINI_CART, "", "123", "123", singleProductBundleSelectedItem)
         val addToCartResult = viewModel.addToCartResult.getOrAwaitValue()
         assertEquals("123", addToCartResult.requestParams.bundleId)
+    }
+
+    @Test
+    fun `validateAndAddToCart using different selectedBundleId should invoke success addToCartResult`() = runBlocking {
+        val singleProductBundleSelectedItem = listOf(
+            SingleProductBundleSelectedItem(
+                shopId = "123",
+                bundleId = "123",
+                productId = "123",
+                quantity = 12,
+                isSelected = true,
+                isVariantEmpty = false
+            )
+        )
+
+        coEvery {
+            addToCartBundleUseCase.executeOnBackground()
+        } returns AddToCartBundleModel(
+            status = "OK",
+            addToCartBundleDataModel = AddToCartBundleDataModel(
+                success = 1,
+                message = emptyList()
+            )
+        )
+
+        viewModel.validateAndAddToCart(ProductBundleConstants.PAGE_SOURCE_MINI_CART, "123", "1133", "123", singleProductBundleSelectedItem)
+
+        coVerify { addToCartBundleUseCase.executeOnBackground() }
+        val addToCartResult = viewModel.addToCartResult.getOrAwaitValue()
+        assertEquals("123", addToCartResult.requestParams.shopId)
     }
 
     @Test
@@ -197,8 +229,25 @@ class SingleProductBundleViewModelTest: SingleProductBundleViewModelTestFixture(
         assertEquals(1, addToCartResult.responseResult.success)
     }
 
+    @Test
+    fun `validateAndAddToCart should invoke throwable`() = runBlocking {
+        // Given
+        coEvery {
+            addToCartBundleUseCase.executeOnBackground()
+        } returns AddToCartBundleModel(status = "NOT_OK")
+
+        // When
+        viewModel.validateAndAddToCart("", "", "", "",
+            generateSingleProductBundleSelectedItem())
+
+        // Then
+        coVerify { addToCartBundleUseCase.executeOnBackground() }
+        val throwableError = viewModel.throwableError.getOrAwaitValue()
+        assertEquals(ATC_ERROR_GLOBAL, throwableError.message)
+    }
+
     private fun generateProductVariant(): ProductVariant {
-        val bundleInfoTest = singleBundleVariant.bundleInfo.firstOrNull()
+        val bundleInfoTest = singleBundleVariant?.bundleInfo?.firstOrNull()
         val bundleItemTest = bundleInfoTest?.bundleItems?.firstOrNull()
         return bundleItemTest?.let {
             AtcVariantMapper.mapToProductVariant(it)

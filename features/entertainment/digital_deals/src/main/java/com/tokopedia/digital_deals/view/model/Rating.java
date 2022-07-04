@@ -1,5 +1,7 @@
 package com.tokopedia.digital_deals.view.model;
 
+import android.annotation.SuppressLint;
+
 import com.google.gson.annotations.SerializedName;
 
 public class Rating {
@@ -7,9 +9,11 @@ public class Rating {
     @SerializedName("feedback")
     private String feedback;
 
+    @SuppressLint("Invalid Data Type")
     @SerializedName("user_id")
     private int userId;
 
+    @SuppressLint("Invalid Data Type")
     @SerializedName("product_id")
     private int productId;
 

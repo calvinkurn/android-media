@@ -3,30 +3,53 @@ package com.tokopedia.tokofood.common.minicartwidget.view
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleCoroutineScope
-import com.tokopedia.tokofood.R
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.common.util.Result
 import com.tokopedia.tokofood.databinding.LayoutWidgetPurchaseMiniCartBinding
-import com.tokopedia.tokofood.purchase.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BaseCustomView
-import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @ExperimentalCoroutinesApi
 @FlowPreview
 class TokoFoodMiniCartWidget @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : BaseCustomView(context, attrs, defStyleAttr) {
+) : BaseCustomView(context, attrs, defStyleAttr), LifecycleObserver {
 
     private var viewBinding: LayoutWidgetPurchaseMiniCartBinding? = null
     private var viewModel: MultipleFragmentsViewModel? = null
 
-    private var onButtonClickAction: () -> Unit = {}
-
     private var source: String = ""
+
+    private var job: Job? = null
+
+    private var totalQuantity: Int = Int.ZERO
+    set(value) {
+        val ctaText =
+            if (value <= Int.ZERO) {
+                context?.getString(com.tokopedia.tokofood.R.string.minicart_order_empty).orEmpty()
+            } else {
+                context?.getString(com.tokopedia.tokofood.R.string.minicart_order, value).orEmpty()
+            }
+        viewBinding?.totalAmountMiniCart?.setCtaText(ctaText)
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun onDestroy() {
+        viewModel = null
+        job?.cancel()
+        job = null
+    }
 
     // Function to initialize the widget
     fun initialize(sharedViewModel: MultipleFragmentsViewModel,
@@ -35,42 +58,56 @@ class TokoFoodMiniCartWidget @JvmOverloads constructor(
         viewModel = sharedViewModel
         lifecycleScope.launchWhenStarted {
             viewModel?.miniCartFlow?.collect { result ->
-                when(result) {
-                    is Result.Success -> {
-                        renderTotalAmount(result.data)
-                    }
-                    is Result.Loading -> {
-                        renderLoading()
-                    }
-                    else -> {
-                        renderError()
-                    }
-                }
+                renderMiniCart(result, lifecycleScope)
             }
         }
-        viewModel?.loadCartList(source)
+        viewModel?.loadInitial(source)
     }
 
-    fun setOnATCClickListener(action: () -> Unit) {
-        onButtonClickAction = action
+    private fun renderMiniCart(result: Result<MiniCartUiModel>,
+                               lifecycleScope: LifecycleCoroutineScope) {
+        when(result) {
+            is Result.Success -> {
+                renderTotalAmount(result.data)
+            }
+            is Result.Loading -> {
+                renderLoading(lifecycleScope)
+            }
+            else -> {
+                renderError()
+            }
+        }
     }
 
     private fun renderTotalAmount(miniCartUiModel: MiniCartUiModel){
-        viewBinding?.totalAmountMiniCart?.apply {
+        job?.cancel()
+        viewBinding?.totalAmountMiniCart?.run {
             isTotalAmountDisabled = false
             if (isTotalAmountLoading) {
                 isTotalAmountLoading = false
             }
             setLabelTitle(miniCartUiModel.shopName)
-            setAmount(miniCartUiModel.totalPriceFmt)
-            setCtaText(context?.getString(R.string.minicart_order, miniCartUiModel.totalProductQuantity).orEmpty())
+            val totalPrice =
+                miniCartUiModel.totalPriceFmt.takeIf { it.isNotBlank() }
+                    ?: context?.getString(com.tokopedia.tokofood.R.string.text_purchase_dash).orEmpty()
+            setAmount(totalPrice)
+            totalQuantity = miniCartUiModel.totalProductQuantity
+            amountCtaView.visible()
             amountCtaView.setOnClickListener {
-                onButtonClickAction()
+                viewModel?.clickMiniCart()
             }
         }
     }
 
-    private fun renderLoading() {
+    private fun renderLoading(lifecycleScope: LifecycleCoroutineScope) {
+        job?.cancel()
+        job = lifecycleScope.launch {
+            delay(MINI_CART_LOADING_MAX_DELAY)
+            viewModel?.miniCartFlow?.value?.let { result ->
+                renderMiniCart(result, lifecycleScope)
+            }
+        }
+        job?.start()
         viewBinding?.totalAmountMiniCart?.let { totalAmount ->
             if (!totalAmount.isTotalAmountLoading) {
                 totalAmount.isTotalAmountLoading = true
@@ -79,7 +116,12 @@ class TokoFoodMiniCartWidget @JvmOverloads constructor(
     }
 
     private fun renderError() {
-        viewBinding?.totalAmountMiniCart?.isTotalAmountDisabled = true
+        viewBinding?.totalAmountMiniCart?.run {
+            if (isTotalAmountLoading) {
+                isTotalAmountLoading = false
+            }
+            isTotalAmountDisabled = true
+        }
     }
 
     override fun onAttachedToWindow() {
@@ -90,6 +132,10 @@ class TokoFoodMiniCartWidget @JvmOverloads constructor(
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         viewBinding = null
+    }
+
+    companion object {
+        private const val MINI_CART_LOADING_MAX_DELAY = 5000L
     }
 
 }

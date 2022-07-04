@@ -2,6 +2,7 @@ package com.tokopedia.tokofood.feature.ordertracking.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -13,21 +14,23 @@ import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetTokoFoodOr
 import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetTokoFoodOrderStatusUseCase
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverPhoneNumberUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.FoodItemUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.MerchantDataUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDetailResultUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderStatusLiveTrackingUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -38,6 +41,8 @@ import javax.inject.Inject
 @ExperimentalCoroutinesApi
 @FlowPreview
 class TokoFoodOrderTrackingViewModel @Inject constructor(
+    val userSession: UserSessionInterface,
+    private val savedStateHandle: SavedStateHandle,
     private val coroutineDispatchers: CoroutineDispatchers,
     private val getTokoFoodOrderDetailUseCase: Lazy<GetTokoFoodOrderDetailUseCase>,
     private val getTokoFoodOrderStatusUseCase: Lazy<GetTokoFoodOrderStatusUseCase>,
@@ -54,7 +59,7 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
     val orderLiveTrackingStatus: SharedFlow<Result<OrderStatusLiveTrackingUiModel>> =
         _orderLiveTrackingStatus
 
-    private val _orderId = MutableStateFlow("")
+    private val _orderId = MutableSharedFlow<String>(Int.ONE)
 
     private val _orderCompletedLiveTracking = MutableLiveData<Result<OrderDetailResultUiModel>>()
     val orderCompletedLiveTracking: LiveData<Result<OrderDetailResultUiModel>>
@@ -65,6 +70,7 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
         get() = _driverPhoneNumber
 
     private var foodItems = listOf<FoodItemUiModel>()
+    private var merchantData: MerchantDataUiModel? = null
     private var orderId = ""
     private var orderStatusKey = ""
 
@@ -73,8 +79,12 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
             _orderId
                 .debounce(DELAY_ORDER_STATE)
                 .flatMapLatest { orderId ->
-                    fetchOrderStatusUseCase(orderId).catch {
-                        emit(Fail(it))
+                    if (orderId.isNotBlank()) {
+                        fetchOrderStatusUseCase(orderId).catch {
+                            emit(Fail(it))
+                        }
+                    } else {
+                        emptyFlow()
                     }
                 }
                 .flowOn(coroutineDispatchers.io)
@@ -93,10 +103,21 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
 
     fun getFoodItems() = foodItems
     fun getOrderId() = orderId
+    fun getMerchantData() = merchantData
 
     fun updateOrderId(orderId: String) {
         this.orderId = orderId
         _orderId.tryEmit(this.orderId)
+    }
+
+    fun onSavedInstanceState() {
+        savedStateHandle[ORDER_ID] = orderId
+    }
+
+    fun onRestoreSavedInstanceState() {
+        _orderId.tryEmit(
+            savedStateHandle.get<String>(ORDER_ID).orEmpty()
+        )
     }
 
     fun fetchOrderDetail(orderId: String) {
@@ -107,8 +128,8 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
             this@TokoFoodOrderTrackingViewModel.orderStatusKey = orderDetailResult.orderStatusKey
             this@TokoFoodOrderTrackingViewModel.foodItems =
                 orderDetailResult.foodItemList.filterIsInstance<FoodItemUiModel>()
+            this@TokoFoodOrderTrackingViewModel.merchantData = orderDetailResult.merchantData
             _orderDetailResult.value = Success(orderDetailResult)
-
         }, onError = {
             _orderDetailResult.value = Fail(it)
         })
@@ -133,6 +154,7 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
             this@TokoFoodOrderTrackingViewModel.orderStatusKey = orderDetailResult.orderStatusKey
             this@TokoFoodOrderTrackingViewModel.foodItems =
                 orderDetailResult.foodItemList.filterIsInstance(FoodItemUiModel::class.java)
+            this@TokoFoodOrderTrackingViewModel.merchantData = orderDetailResult.merchantData
             _orderCompletedLiveTracking.value = Success(orderDetailResult)
         }, onError = {
             _orderCompletedLiveTracking.value = Fail(it)
@@ -151,5 +173,6 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
 
     companion object {
         const val DELAY_ORDER_STATE = 5000L
+        const val ORDER_ID = "orderId"
     }
 }

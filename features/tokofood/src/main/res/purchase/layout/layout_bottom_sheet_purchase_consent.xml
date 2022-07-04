@@ -34,7 +34,7 @@
         android:textColor="@color/Unify_NN600"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_consent_title"
-        app:typographyType="body_2"
+        app:typographyType="display_2"
         tools:text="Gojek perlu beberapa datamu biar pesananmu sampai tujuan. " />
 
     <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
@@ -55,7 +55,7 @@
         app:layout_constraintStart_toEndOf="@+id/checkbox_consent_agreement"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/checkbox_consent_agreement"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         tools:text="Saya menyetujui Syarat dan Ketentuan yang sedang berlaku" />
 
     <com.tokopedia.unifycomponents.UnifyButton
@@ -63,7 +63,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:text="@string/texT_purchase_consent_next"
+        android:text="@string/text_purchase_consent_next"
         app:layout_constraintTop_toBottomOf="@+id/text_consent_agreement"
         tools:layout_editor_absoluteX="16dp" />
 

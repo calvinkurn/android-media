@@ -3,7 +3,6 @@ package com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -27,25 +26,24 @@ class FoodItemViewHolder(view: View,
 
     override fun bind(element: FoodItemUiModel) {
         with(binding) {
-            setFoodName(element.foodName)
-            setPriceQuantity(element.quantity, element.priceStr)
+            setFoodName(element.foodName, element.quantity)
+            setPriceQuantity(element.priceStr)
             setupAddonVariantAdapter(element.addOnVariantList)
             setupNote(element.notes)
         }
     }
 
-    private fun ItemTokofoodOrderTrackingFoodItemBinding.setFoodName(foodName: String) {
-        tvFoodItemName.text = foodName
+    private fun ItemTokofoodOrderTrackingFoodItemBinding.setFoodName(foodName: String, quantity: String) {
+        tvFoodItemName.text = root.context.getString(
+            com.tokopedia.tokofood.R.string.order_detail_qty_food_value,
+            quantity, foodName
+        )
     }
 
     private fun ItemTokofoodOrderTrackingFoodItemBinding.setPriceQuantity(
-        quantity: String,
         price: String
     ) {
-        tvFoodItemQtyPrice.text = itemView.context.getString(
-            R.string.order_detail_qty_price_value,
-            quantity, price
-        )
+        tvFoodItemQtyPrice.text = price
     }
 
     private fun ItemTokofoodOrderTrackingFoodItemBinding.setupNote(note: String) {
@@ -73,9 +71,5 @@ class FoodItemViewHolder(view: View,
         } else {
             rvVariantAddon.hide()
         }
-    }
-
-    interface Listener {
-        fun getRecyclerViewPoolFoodItem(): RecyclerView.RecycledViewPool
     }
 }

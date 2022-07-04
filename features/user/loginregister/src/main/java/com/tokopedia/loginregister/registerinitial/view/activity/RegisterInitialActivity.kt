@@ -9,19 +9,22 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.di.DaggerLoginRegisterComponent
+import com.tokopedia.loginregister.login.di.ActivityComponentFactory
 import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.view.fragment.RegisterInitialFragment
 import com.tokopedia.loginregister.registerinitial.view.fragment.RegisterInitialFragment.Companion.createInstance
+import com.tokopedia.telemetry.ITelemetryActivity
 
 /**
  * @author by nisie on 10/2/18.
  */
-open class RegisterInitialActivity : BaseSimpleActivity(), HasComponent<RegisterInitialComponent> {
+class RegisterInitialActivity : BaseSimpleActivity(), HasComponent<RegisterInitialComponent>,
+    ITelemetryActivity {
 
     private var registerInitialComponent: RegisterInitialComponent? = null
 
-    override fun getNewFragment(): Fragment? {
+    override fun getNewFragment(): Fragment {
         val bundle = Bundle()
         if (intent.extras != null) {
             bundle.putAll(intent.extras)
@@ -37,14 +40,10 @@ open class RegisterInitialActivity : BaseSimpleActivity(), HasComponent<Register
         return registerInitialComponent ?: initializeRegisterInitialComponent()
     }
 
-    protected open fun initializeRegisterInitialComponent(): RegisterInitialComponent {
-        val loginRegisterComponent =  DaggerLoginRegisterComponent.builder()
-            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .build()
-        return DaggerRegisterInitialComponent
-            .builder()
-            .loginRegisterComponent(loginRegisterComponent)
-            .build().also {
+    private fun initializeRegisterInitialComponent(): RegisterInitialComponent {
+        return ActivityComponentFactory.instance
+            .createRegisterComponent(application)
+            .also {
                 registerInitialComponent = it
             }
     }
@@ -69,4 +68,6 @@ open class RegisterInitialActivity : BaseSimpleActivity(), HasComponent<Register
             return Intent(context, RegisterInitialActivity::class.java)
         }
     }
+
+    override fun getTelemetrySectionName() = "register"
 }

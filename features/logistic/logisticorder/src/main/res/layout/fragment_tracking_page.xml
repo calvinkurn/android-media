@@ -243,8 +243,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/unify_space_16"
-                android:layout_marginStart="@dimen/unify_space_16"
-                android:layout_marginEnd="@dimen/unify_space_16"
                 app:layout_constraintTop_toBottomOf="@id/divider_tipping_gojek"
                 android:visibility="visible"
                 tools:visibility="gone"/>
@@ -321,7 +319,8 @@
                 app:layout_constraintStart_toEndOf="@id/left_padding"
                 app:layout_constraintTop_toBottomOf="@id/tracking_history"
                 app:srcCompat="@drawable/info"
-                tools:ignore="VectorDrawableCompat" />
+                tools:ignore="VectorDrawableCompat"
+                android:contentDescription="@string/info_icon_tracking_page" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/notification_text"
@@ -471,19 +470,6 @@
 
     </androidx.core.widget.NestedScrollView>
 
-    <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/main_progress_bar"
-        android:layout_width="@dimen/dp_50"
-        android:layout_height="@dimen/dp_50"
-        android:layout_centerInParent="true"
-        android:max="100"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:loader_type="circular" />
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/image_preview_large"
         android:layout_width="match_parent"
@@ -534,5 +520,12 @@
             app:layout_constraintStart_toStartOf="@id/img_proof" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <include
+        android:id="@+id/loading_view"
+        layout="@layout/tracking_page_shimmer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,18 +1,12 @@
 package com.tokopedia.tokofood.common.domain.additionalattributes
 
 import com.google.gson.Gson
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.tokofood.common.address.TokoFoodChosenAddress
 
 data class CartAdditionalAttributesTokoFood(
     @SerializedName("chosen_address")
-    @Expose
-    val chosenAddress: TokoFoodChosenAddress = TokoFoodChosenAddress(),
-    @SerializedName("source")
-    @Expose
-    val source: String = ""
+    val chosenAddress: TokoFoodChosenAddress = TokoFoodChosenAddress()
 ) {
     fun generateString(): String = Gson().toJson(this)
 }

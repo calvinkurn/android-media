@@ -68,6 +68,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
 
     implementation projectOrAar(rootProject.ext.features.atc_common)
+    implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
     implementation projectOrAar(rootProject.ext.features.navigationCommon)
     implementation projectOrAar(rootProject.ext.features.productCard)
@@ -75,12 +76,15 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.recommendationWidgetCommon)
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
     implementation projectOrAar(rootProject.ext.features.carouselProductCard)
+    implementation projectOrAar(rootProject.ext.features.wishlistCommonV2)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation projectOrAar(rootProject.ext.libraries.usersession)
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.dagger

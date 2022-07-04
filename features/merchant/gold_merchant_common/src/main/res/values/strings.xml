@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">GmCommon</string>
+    <string name="gmc_description_information_level_text">Level toko mewakili skala bisnismu. Kami menggunakan level untuk memberikan penilaian yang lebih adil untuk setiap skala bisnis yang berbeda.</string>
+    <string name="gmc_title_income_information_level">Pendapatan:</string>
+    <string name="gmc_title_product_sold_information_level">Produk Terjual:</string>
+    <string name="gmc_tooltip_information_next_update">Level toko akan dinilai dari 90 hari terakhir dan akan di-update setiap bulan di hari Senin pertama.</string>
+    <string name="gmc_title_update_date">Update selanjutnya: %s</string>
+    <string name="gmc_title_shop_information_level">Informasi Level Toko</string>
+    <string name="gmc_title_level_1">Level 1</string>
+    <string name="gmc_title_level_2">Level 2</string>
+    <string name="gmc_title_level_3">Level 3</string>
+    <string name="gmc_title_level_4">Level 4</string>
+    <string name="gmc_desc_level_1"><![CDATA[<b>&lt; Rp350.000</b> atau <b>0–2</b> produk terjual]]></string>
+    <string name="gmc_desc_level_2"><![CDATA[Mulai dari <b>Rp350.000</b> dan <b>3</b> produk terjual]]></string>
+    <string name="gmc_desc_level_3"><![CDATA[Mulai dari <b>Rp10juta</b> dan <b>50</b> produk terjual]]></string>
+    <string name="gmc_desc_level_4"><![CDATA[Mulai dari <b>Rp300juta</b> dan <b>1.500</b> produk terjual]]></string>
+    <string name="gmc_title_my_shop">Tokomu</string>
 </resources>

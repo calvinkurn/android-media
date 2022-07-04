@@ -7,6 +7,7 @@ import android.view.View.OnClickListener
 import com.tokopedia.tokofood.databinding.TokofoodPartialOrderDetailStickyHelpButtonBinding
 import com.tokopedia.tokofood.feature.ordertracking.presentation.navigator.OrderTrackingNavigator
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ActionButtonsUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.MerchantDataUiModel
 import com.tokopedia.unifycomponents.BaseCustomView
 
 class OrderTrackingStickyHelpButton @JvmOverloads constructor(
@@ -27,11 +28,11 @@ class OrderTrackingStickyHelpButton @JvmOverloads constructor(
 
     private var navigator: OrderTrackingNavigator? = null
 
-    fun setupHelpButton(orderId: String, primaryButton: ActionButtonsUiModel.ActionButton) {
+    fun setupHelpButton(orderId: String, primaryButton: ActionButtonsUiModel.ActionButton, merchantData: MerchantDataUiModel?) {
         binding?.btnOrderTrackingSecondaryHelp?.run {
             text = primaryButton.label
             if (primaryButton.appUrl.isNotBlank()) {
-                setOnClickListener(createPrimaryButtonClickListener(orderId, primaryButton.appUrl))
+                setOnClickListener(createPrimaryButtonClickListener(orderId, primaryButton.appUrl, merchantData))
             }
         }
     }
@@ -40,9 +41,14 @@ class OrderTrackingStickyHelpButton @JvmOverloads constructor(
         this.navigator = navigator
     }
 
-    private fun createPrimaryButtonClickListener(orderId: String, appUrl: String): OnClickListener {
+    private fun createPrimaryButtonClickListener(orderId: String, appUrl: String, merchantData: MerchantDataUiModel?): OnClickListener {
         return OnClickListener {
-            navigator?.goToHelpPage(orderId, appUrl)
+            navigator?.goToHelpPage(orderId, appUrl, merchantData?.merchantId.orEmpty())
         }
+    }
+
+    override fun onDetachedFromWindow() {
+        binding = null
+        super.onDetachedFromWindow()
     }
 }

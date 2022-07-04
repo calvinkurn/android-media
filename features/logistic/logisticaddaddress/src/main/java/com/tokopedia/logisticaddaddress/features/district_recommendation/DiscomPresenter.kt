@@ -103,16 +103,16 @@ class DiscomPresenter @Inject constructor(
                                     view?.setResultDistrict(it.data, lat, long)
                                 }
                                 it.errorCode == AddressConstants.CIRCUIT_BREAKER_ON_CODE -> {
-                                    view?.showToasterError()
+                                    view?.showToasterError("")
                                 }
                                 else -> {
                                     val msg = it.messageError[0]
                                     when {
                                         msg.contains(GetDistrictUseCase.FOREIGN_COUNTRY_MESSAGE) -> {
-                                            view?.showToasterError()
+                                            view?.showToasterError(GetDistrictUseCase.FOREIGN_COUNTRY_MESSAGE)
                                         }
                                         msg.contains(GetDistrictUseCase.LOCATION_NOT_FOUND_MESSAGE) -> {
-                                            view?.showToasterError()
+                                            view?.showToasterError(GetDistrictUseCase.LOCATION_NOT_FOUND_MESSAGE)
                                         }
                                     }
                                 }

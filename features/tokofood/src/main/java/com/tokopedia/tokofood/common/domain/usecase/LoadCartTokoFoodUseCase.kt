@@ -1,31 +1,114 @@
 package com.tokopedia.tokofood.common.domain.usecase
 
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.graphql.coroutines.data.extensions.request
+import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.domain.flow.FlowUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokofood.common.address.TokoFoodChosenAddressRequestHelper
 import com.tokopedia.tokofood.common.domain.additionalattributes.CartAdditionalAttributesTokoFood
 import com.tokopedia.tokofood.common.domain.param.CheckoutTokoFoodParam
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodAvailabilitySection
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProduct
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFood
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShop
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodSummaryDetail
 import com.tokopedia.tokofood.common.domain.response.MiniCartTokoFoodResponse
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class LoadCartTokoFoodUseCase @Inject constructor(
-    private val repository: GraphqlRepository,
-    private val chosenAddressRequestHelper: TokoFoodChosenAddressRequestHelper,
-    dispatchers: CoroutineDispatchers
-): FlowUseCase<String, CheckoutTokoFood>(dispatchers.io) {
+private const val QUERY = """
+        query MiniCartTokofood(${'$'}params: cartTokofoodParams!) {
+          mini_cart_tokofood(params: ${'$'}params) {
+            message
+            status
+            data {
+              shop {
+                shop_id
+                name
+              }
+              available_section {
+                products {
+                  cart_id
+                  product_id
+                  category_id
+                  price
+                  notes
+                  quantity
+                  variants {
+                    variant_id
+                    name
+                    rules {
+                      selection_rule {
+                        type
+                        max_quantity
+                        min_quantity
+                        required
+                      }
+                    }
+                    options {
+                      option_id
+                      is_selected
+                      name
+                      price
+                      price_fmt
+                    }
+                  }
+                }
+              }
+              unavailable_sections {
+                products {
+                  cart_id
+                  product_id
+                  category_id
+                  price
+                  notes
+                  quantity
+                  variants {
+                    variant_id
+                    name
+                    rules {
+                      selection_rule {
+                        type
+                        max_quantity
+                        min_quantity
+                        required
+                      }
+                    }
+                    options {
+                      option_id
+                      name
+                      price
+                      price_fmt
+                    }
+                  }
+                }
+              }
+              summary_detail{
+                total_items
+                total_price
+              }
+            }
+          }
+        }
+    """
 
-    private val isDebug = false
+@GqlQuery("MiniCartTokofood", QUERY)
+class LoadCartTokoFoodUseCase @Inject constructor(
+    repository: GraphqlRepository,
+    private val chosenAddressRequestHelper: TokoFoodChosenAddressRequestHelper
+): GraphqlUseCase<MiniCartTokoFoodResponse>(repository) {
+
+    init {
+        setTypeClass(MiniCartTokoFoodResponse::class.java)
+        setGraphqlQuery(MiniCartTokofood())
+    }
+
+    suspend fun execute(source: String): CheckoutTokoFood {
+        val additionalAttributes = CartAdditionalAttributesTokoFood(chosenAddressRequestHelper.getChosenAddress())
+        val param = generateParams(additionalAttributes.generateString(), source)
+        setRequestParams(param)
+        val response = executeOnBackground()
+        if (response.miniCartTokofood.isSuccess()) {
+            return response.miniCartTokofood
+        } else {
+            throw MessageErrorException(response.miniCartTokofood.getMessageIfError())
+        }
+    }
 
     companion object {
         private const val PARAMS_KEY = "params"
@@ -38,114 +121,6 @@ class LoadCartTokoFoodUseCase @Inject constructor(
             )
             return mapOf(PARAMS_KEY to params)
         }
-    }
-
-    override fun graphqlQuery(): String = """
-        query LoadCartTokofood($$PARAMS_KEY: cartTokofoodParams!) {
-          mini_cart_tokofood(params: $$PARAMS_KEY) {
-            message
-            status
-            data {
-              shop {
-                shop_id
-                name
-              }
-              available_section {
-                products {
-                  cart_id
-                  product_id
-                  price
-                  notes
-                  quantity
-                  variants {
-                    variant_id
-                    name
-                    rules {
-                      selection_rule {
-                        type
-                        max_quantity
-                        min_quantity
-                        required
-                      }
-                    }
-                    options {
-                      option_id
-                      name
-                      price
-                    }
-                  }
-                }
-              }
-              unavailable_section {
-                products {
-                  cart_id
-                  product_id
-                  price
-                  notes
-                  quantity
-                  variants {
-                    variant_id
-                    name
-                    rules {
-                      selection_rule {
-                        type
-                        max_quantity
-                        min_quantity
-                        required
-                      }
-                    }
-                    options {
-                      option_id
-                      name
-                      price
-                    }
-                  }
-                }
-              }
-              summary_detail{
-                total_items
-                total_price
-              }
-            }
-          }
-        }
-    """.trimIndent()
-
-    override suspend fun execute(params: String): Flow<CheckoutTokoFood> = flow {
-        if (isDebug) {
-            kotlinx.coroutines.delay(1000)
-            emit(getDummyResponse())
-        } else {
-            val additionalAttributes = CartAdditionalAttributesTokoFood(chosenAddressRequestHelper.getChosenAddress())
-            val param = generateParams(additionalAttributes.generateString(), params)
-            val response =
-                repository.request<Map<String, Any>, MiniCartTokoFoodResponse>(graphqlQuery(), param)
-            if (response.cartListTokofood.isSuccess()) {
-                emit(response.cartListTokofood)
-            } else {
-                throw MessageErrorException(response.cartListTokofood.getMessageIfError())
-            }
-        }
-    }
-
-    private fun getDummyResponse(): CheckoutTokoFood {
-        return CheckoutTokoFood(
-            data = CheckoutTokoFoodData(
-                shop = CheckoutTokoFoodShop(
-                    name = "Kedai Kopi, Mantapp"
-                ),
-                availableSection = CheckoutTokoFoodAvailabilitySection(
-                    products = listOf(
-                        CheckoutTokoFoodProduct(price = 10000.0),
-                        CheckoutTokoFoodProduct(price = 20000.0)
-                    )
-                ),
-                summaryDetail = CheckoutTokoFoodSummaryDetail(
-                    totalPrice = "Rp 10.000",
-                    totalItems = 2
-                )
-            )
-        )
     }
 
 }
