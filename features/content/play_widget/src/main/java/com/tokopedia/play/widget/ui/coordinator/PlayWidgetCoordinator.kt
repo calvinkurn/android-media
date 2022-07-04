@@ -1,5 +1,8 @@
 package com.tokopedia.play.widget.ui.coordinator
 
+import android.app.Activity
+import android.app.Service
+import android.content.Context
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
@@ -7,11 +10,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.analytic.impression.ImpressionHelper
+import com.tokopedia.play.widget.analytic.list.DefaultPlayWidgetInListAnalyticListener
+import com.tokopedia.play.widget.di.PlayWidgetComponent
+import com.tokopedia.play.widget.di.PlayWidgetComponentCreator
+import com.tokopedia.play.widget.analytic.global.model.PlayWidgetAnalyticModel
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -20,10 +28,11 @@ import kotlinx.coroutines.cancelChildren
 /**
  * Created by jegul on 13/10/20
  */
-class PlayWidgetCoordinator(
-        lifecycleOwner: LifecycleOwner? = null,
-        mainCoroutineDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate,
-        workCoroutineDispatcher: CoroutineDispatcher = Dispatchers.Default
+class PlayWidgetCoordinator constructor(
+    lifecycleOwner: LifecycleOwner,
+    mainCoroutineDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate,
+    workCoroutineDispatcher: CoroutineDispatcher = Dispatchers.Default,
+    private val autoHandleLifecycleMethod: Boolean = true,
 ) : LifecycleObserver, PlayWidgetAutoRefreshCoordinator.Listener {
 
     private val scope = CoroutineScope(mainCoroutineDispatcher)
@@ -65,8 +74,30 @@ class PlayWidgetCoordinator(
 
     private var impressionHelper = ImpressionHelper()
 
+    private var widgetComponent: PlayWidgetComponent? = null
+
+    private var trackingQueue: TrackingQueue? = null
+    private val trackingLifecycleObserver = LifecycleEventObserver { _, event ->
+        when (event) {
+            Lifecycle.Event.ON_PAUSE -> trackingQueue?.sendAll()
+            else -> {}
+        }
+    }
+
     init {
-        lifecycleOwner?.let { configureLifecycle(it) }
+        val context: Context? = when (lifecycleOwner) {
+            is Activity -> lifecycleOwner
+            is Fragment -> lifecycleOwner.context
+            is Service -> lifecycleOwner
+            else -> null
+        }
+
+        if (context != null) {
+            trackingQueue = TrackingQueue(context)
+            widgetComponent = PlayWidgetComponentCreator.getOrCreate(context.applicationContext)
+        }
+
+        configureLifecycle(lifecycleOwner)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
@@ -109,6 +140,22 @@ class PlayWidgetCoordinator(
         mWidget?.setWidgetListener(mListener)
     }
 
+    fun setAnalyticModel(model: PlayWidgetAnalyticModel?) {
+        val widgetComponent = this.widgetComponent
+        val trackingQueue = this.trackingQueue
+        if (model == null || widgetComponent == null || trackingQueue == null) {
+            mAnalyticListener = null
+            mWidget?.setAnalyticListener(null)
+            return
+        }
+
+        val analyticFactory = widgetComponent.getGlobalAnalyticFactory()
+        mAnalyticListener = DefaultPlayWidgetInListAnalyticListener(
+            analyticFactory.create(model, trackingQueue)
+        )
+        mWidget?.setAnalyticListener(mAnalyticListener)
+    }
+
     fun setAnalyticListener(listener: PlayWidgetAnalyticListener?) {
         mAnalyticListener = listener
         mWidget?.setAnalyticListener(listener)
@@ -131,6 +178,10 @@ class PlayWidgetCoordinator(
     }
 
     private fun configureLifecycle(lifecycleOwner: LifecycleOwner) {
+        lifecycleOwner.lifecycle.addObserver(trackingLifecycleObserver)
+
+        if (!autoHandleLifecycleMethod) return
+
         if (lifecycleOwner is Fragment) {
             lifecycleOwner.viewLifecycleOwnerLiveData.observe(lifecycleOwner, Observer {
                 it.lifecycle.addObserver(this)
