@@ -160,13 +160,12 @@ class CampaignDetailFragment : BaseDaggerFragment(),
 
     private fun observeShareComponent() {
         viewModel.shareCampaignActionEvent.observe(viewLifecycleOwner) { result ->
+            dismissLoaderDialog()
             when (result) {
                 is Success -> {
-                    dismissLoaderDialog()
                     displayShareBottomSheet(result.data)
                 }
                 is Fail -> {
-                    dismissLoaderDialog()
                     binding?.cardButtonWrapper showError result.throwable
                 }
             }
