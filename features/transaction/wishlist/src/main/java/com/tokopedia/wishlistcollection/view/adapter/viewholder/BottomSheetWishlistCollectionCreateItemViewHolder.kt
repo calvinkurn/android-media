@@ -18,7 +18,6 @@ class BottomSheetWishlistCollectionCreateItemViewHolder(
             binding.createCollectionImage.setImageUrl(IMAGE_URL_SMALL_CREATE_NEW)
             binding.createCollectionLabel.text = HtmlLinkHelper(itemView.context, item.dataObject.text).spannedString
             binding.root.setOnClickListener {
-                println("++ udah masuk sini sih")
                 actionListener?.onCreateNewCollectionClicked()
             }
         }

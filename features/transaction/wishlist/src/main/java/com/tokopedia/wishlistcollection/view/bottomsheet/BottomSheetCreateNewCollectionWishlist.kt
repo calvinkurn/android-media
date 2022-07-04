@@ -3,6 +3,8 @@ package com.tokopedia.wishlistcollection.view.bottomsheet
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -26,15 +28,23 @@ import com.tokopedia.wishlist.R
 import com.tokopedia.wishlist.databinding.BottomsheetCreateNewWishlistCollectionBinding
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionNamesResponse
 import com.tokopedia.wishlistcollection.di.CreateWishlistCollectionComponent
+import com.tokopedia.wishlistcollection.di.CreateWishlistCollectionModule
 import com.tokopedia.wishlistcollection.di.DaggerCreateWishlistCollectionComponent
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OK
 import com.tokopedia.wishlistcollection.view.viewmodel.BottomSheetCreateNewCollectionViewModel
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.PRODUCT_IDs
 import javax.inject.Inject
 
 class BottomSheetCreateNewCollectionWishlist: BottomSheetUnify(), HasComponent<CreateWishlistCollectionComponent> {
     private var binding by autoClearedNullable<BottomsheetCreateNewWishlistCollectionBinding>()
     private val userSession: UserSessionInterface by lazy { UserSession(activity) }
     private var listCollections: List<GetWishlistCollectionNamesResponse.Data.GetWishlistCollectionNames.DataItem> = emptyList()
+    private var newCollectionName = ""
+    private val handler = Handler(Looper.getMainLooper())
+    private val checkNameRunnable = Runnable {
+        checkIsCollectionNameExists(newCollectionName)
+    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -47,9 +57,16 @@ class BottomSheetCreateNewCollectionWishlist: BottomSheetUnify(), HasComponent<C
         private const val TAG: String = "AddToCollectionWishlistBottomSheet"
         const val REQUEST_CODE_LOGIN = 288
         const val OPEN_WISHLIST_COLLECTION = "OPEN_WISHLIST_COLLECTION"
+        private const val DELAY_CHECK_NAME = 500L
 
         @JvmStatic
-        fun newInstance() = BottomSheetCreateNewCollectionWishlist()
+        fun newInstance(productId: String): BottomSheetCreateNewCollectionWishlist {
+            return BottomSheetCreateNewCollectionWishlist().apply {
+                val bundle = Bundle()
+                bundle.putString(PRODUCT_IDs, productId)
+                arguments = bundle
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,33 +80,64 @@ class BottomSheetCreateNewCollectionWishlist: BottomSheetUnify(), HasComponent<C
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        initLayout()
+        setupBottomSheet()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    private fun initLayout() {
+    private fun setupBottomSheet() {
         binding = BottomsheetCreateNewWishlistCollectionBinding.inflate(LayoutInflater.from(context), null, false)
-        showCloseIcon = true
-        showHeader = true
-        setTitle(getString(R.string.collection_create_bottomsheet_title))
-        setChild(binding?.root)
-        initInputText()
-    }
-
-    private fun initInputText() {
         binding?.run {
             collectionCreateNameInputTextField.editText.addTextChangedListener(object: TextWatcher{
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
-                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                    println("++ onTextChanged - text = ${p0.toString()}")
-                }
+                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
                 override fun afterTextChanged(p0: Editable?) {
-                    println("++ afterTextChanged - text = ${p0.toString()}")
+                    handler.postDelayed(checkNameRunnable, DELAY_CHECK_NAME)
                 }
 
             })
+            collectionCreateButton.isEnabled = false
+        }
+        showCloseIcon = true
+        showHeader = true
+        isFullpage = false
+        isKeyboardOverlap = false
+        setChild(binding?.root)
+        setTitle(getString(R.string.collection_create_bottomsheet_title))
+    }
+
+    private fun enableSaveButton() {
+        val arrayProductIds = arrayListOf<String>()
+        arguments?.getString(PRODUCT_IDs)?.let { arrayProductIds.add(it) }
+        binding?.run {
+            collectionCreateButton.apply {
+                isEnabled = true
+                setOnClickListener { saveNewCollection(newCollectionName, arrayProductIds) }
+            }
+        }
+    }
+
+    private fun saveNewCollection(collectionName: String, productIds: List<String>) {
+        createNewCollectionViewModel.saveNewWishlistCollection(collectionName, productIds)
+    }
+
+    private fun checkIsCollectionNameExists(checkName: String) {
+        if (listCollections.isNotEmpty()) {
+            listCollections.forEach { item ->
+                if (checkName.equals(item)) {
+                    binding?.run {
+                        collectionCreateNameInputTextField.isInputError = true
+                        collectionCreateNameInputTextField.labelText.text =
+                            context?.getString(R.string.collection_create_bottomsheet_name_error) ?: ""
+                    }
+                } else {
+                    binding?.run {
+                        collectionCreateNameInputTextField.isInputError = false
+                        enableSaveButton()
+                    }
+                }
+            }
         }
     }
 
@@ -122,17 +170,37 @@ class BottomSheetCreateNewCollectionWishlist: BottomSheetUnify(), HasComponent<C
     }
 
     private fun initObserver() {
+        observeCollectionNames()
+        observeAddCollectionItem()
+    }
+
+    private fun observeCollectionNames() {
         createNewCollectionViewModel.collectionNames.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
                     if (result.data.status == OK) {
-                        val dataGetBottomSheetCollections = result.data.data
                         listCollections = result.data.data
-                        if (listCollections.isNotEmpty()) {
-                            listCollections.forEach {
-                                println("++ ${it.name}")
-                            }
-                        }
+                    } else {
+                        val errorMessage = result.data.errorMessage.first().ifEmpty { context?.getString(
+                            R.string.wishlist_common_error_msg) }
+                        errorMessage?.let { showToaster(it, "", Toaster.TYPE_ERROR) }
+                    }
+                }
+                is Fail -> {
+                    val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                    showToaster(errorMessage, "", Toaster.TYPE_ERROR)
+                }
+            }
+        }
+    }
+
+    private fun observeAddCollectionItem() {
+        createNewCollectionViewModel.addWishlistCollectionItem.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    if (result.data.status == OK) {
+                        showToaster(result.data.dataItem.message, "", Toaster.TYPE_NORMAL)
+                        dismiss()
                     } else {
                         val errorMessage = result.data.errorMessage.first().ifEmpty { context?.getString(
                             R.string.wishlist_common_error_msg) }
@@ -165,6 +233,12 @@ class BottomSheetCreateNewCollectionWishlist: BottomSheetUnify(), HasComponent<C
     override fun getComponent(): CreateWishlistCollectionComponent {
         return DaggerCreateWishlistCollectionComponent.builder()
             .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
+            .createWishlistCollectionModule(CreateWishlistCollectionModule())
             .build()
+    }
+
+    override fun onPause() {
+        handler.removeCallbacks(checkNameRunnable)
+        super.onPause()
     }
 }

@@ -290,3 +290,16 @@ package com.tokopedia.wishlistcommon.util
                     }
                   }
                 }"""
+
+    const val GQL_ADD_WISHLIST_COLLECTION_ITEMS = """
+             mutation AddWishlistCollectionItems(${'$'}collection_name: String, ${'$'}product_ids:[SuperInteger]) {
+                  add_wishlist_collection_items(collection_name: ${'$'}collection_name, product_ids: ${'$'}product_ids) {
+                    status
+                    error_message
+                    data {
+                      success
+                      collection_id
+                      message
+                    }
+                  }
+                }"""

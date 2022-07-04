@@ -7,7 +7,7 @@ import com.tokopedia.wishlist.databinding.AddWishlistCollectionAdditionalSection
 import com.tokopedia.wishlist.databinding.AddWishlistCollectionCreateNewItemBinding
 import com.tokopedia.wishlist.databinding.AddWishlistCollectionItemBinding
 import com.tokopedia.wishlist.databinding.AddWishlistCollectionMainSectionTextItemBinding
-import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionBottomSheetFragment
+import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionHostBottomSheetFragment
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TYPE_COLLECTION_ADDITIONAL_SECTION
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TYPE_COLLECTION_ITEM
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TYPE_COLLECTION_MAIN_SECTION
@@ -25,7 +25,7 @@ class BottomSheetCollectionWishlistAdapter : RecyclerView.Adapter<RecyclerView.V
     }
 
     interface ActionListener {
-        fun onCollectionItemClicked()
+        fun onCollectionItemClicked(name: String, id: String)
         fun onCreateNewCollectionClicked()
     }
 
@@ -71,7 +71,7 @@ class BottomSheetCollectionWishlistAdapter : RecyclerView.Adapter<RecyclerView.V
                 (holder as com.tokopedia.wishlistcollection.view.adapter.viewholder.BottomSheetWishlistCollectionAdditionalItemViewHolder).bind(element)
             }
             TYPE_COLLECTION_ITEM -> {
-                (holder as com.tokopedia.wishlistcollection.view.adapter.viewholder.BottomSheetWishlistCollectionItemViewHolder).bind(element)
+                (holder as com.tokopedia.wishlistcollection.view.adapter.viewholder.BottomSheetWishlistCollectionItemViewHolder).bind(element, actionListener)
             }
             TYPE_CREATE_NEW_COLLECTION -> {
                 (holder as com.tokopedia.wishlistcollection.view.adapter.viewholder.BottomSheetWishlistCollectionCreateItemViewHolder).bind(element, actionListener)
@@ -100,7 +100,7 @@ class BottomSheetCollectionWishlistAdapter : RecyclerView.Adapter<RecyclerView.V
         notifyDataSetChanged()
     }
 
-    fun setActionListener(fragment: WishlistCollectionBottomSheetFragment) {
+    fun setActionListener(fragment: WishlistCollectionHostBottomSheetFragment) {
         this.actionListener = fragment
     }
 }

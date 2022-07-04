@@ -26,7 +26,7 @@ import com.tokopedia.wishlist.databinding.BottomsheetAddWishlistCollectionBindin
 import com.tokopedia.wishlist.R
 import com.tokopedia.wishlistcollection.di.DaggerBottomSheetWishlistCollectionComponent
 import com.tokopedia.wishlistcollection.view.adapter.BottomSheetCollectionWishlistAdapter
-import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionBottomSheetFragment
+import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionHostBottomSheetFragment
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OK
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.PRODUCT_IDs
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.SOURCE
@@ -225,7 +225,7 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tok
             .build()
     }
 
-    fun setActionListener(wishlistCollectionBottomSheetFragment: WishlistCollectionBottomSheetFragment) {
+    fun setActionListener(wishlistCollectionBottomSheetFragment: WishlistCollectionHostBottomSheetFragment) {
         collectionAdapter.setActionListener(wishlistCollectionBottomSheetFragment)
     }
 }

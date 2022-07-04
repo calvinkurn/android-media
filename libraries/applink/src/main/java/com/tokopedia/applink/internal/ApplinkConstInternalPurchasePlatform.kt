@@ -17,4 +17,6 @@ object ApplinkConstInternalPurchasePlatform {
     const val WISHLIST_V2 = "$INTERNAL_TRANSACTION/wishlist"
     const val WISHLIST_COLLECTION = "$INTERNAL_TRANSACTION/wishlist-collection"
     const val WISHLIST_COLLECTION_BOTTOMSHEET = "$INTERNAL_TRANSACTION/wishlist-collection-bottomsheet"
+    const val PATH_PRODUCT_ID = "productId"
+    const val PATH_SRC = "src"
 }
