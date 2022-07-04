@@ -1456,7 +1456,11 @@ class NewShopPageFragment :
     }
 
     fun getSelectedTabName(): String {
-        return listShopPageTabModel.getOrNull(getSelectedTabPosition())?.tabTitle.orEmpty()
+        return listShopPageTabModel.getOrNull(if (ShopUtil.isEnableShopDynamicTab(context)) {
+            getSelectedDynamicTabPosition()
+        } else {
+            getSelectedTabPosition()
+        })?.tabTitle.orEmpty()
     }
 
     override fun onBackPressed() {
@@ -1478,7 +1482,11 @@ class NewShopPageFragment :
         }
         configureTab(listShopPageTabModel.size)
         viewPagerAdapter?.setTabData(listShopPageTabModel)
-        val selectedPosition = getSelectedTabPosition()
+        selectedPosition = if (ShopUtil.isEnableShopDynamicTab(context)) {
+            getSelectedDynamicTabPosition()
+        } else {
+            getSelectedTabPosition()
+        }
         tabLayout?.removeAllTabs()
         listShopPageTabModel.forEach {
             tabLayout?.newTab()?.apply {
@@ -1629,6 +1637,19 @@ class NewShopPageFragment :
             }
         }
         return selectedPosition
+    }
+
+    private fun getSelectedDynamicTabPosition(): Int {
+        val selectedTabData = listShopPageTabModel.firstOrNull {
+            it.isFocus
+        } ?: run {
+            listShopPageTabModel.firstOrNull {
+                it.isDefault
+            }
+        }
+        return listShopPageTabModel.indexOf(selectedTabData).takeIf {
+            it >= Int.ZERO
+        } ?: Int.ZERO
     }
 
     private fun createListShopPageTabModel(): List<ShopPageTabModel> {
@@ -1790,7 +1811,9 @@ class NewShopPageFragment :
                     tabTitle = it.name,
                     tabFragment = tabFragment,
                     iconUrl = it.icon,
-                    iconActiveUrl = it.iconFocus
+                    iconActiveUrl = it.iconFocus,
+                    isFocus = it.isFocus == Int.ONE,
+                    isDefault = it.isDefault
                 ))
             }
         }
