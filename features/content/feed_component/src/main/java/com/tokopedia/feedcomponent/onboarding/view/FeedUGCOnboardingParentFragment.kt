@@ -4,11 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.feedcomponent.databinding.FragmentFeedUgcOnboardingParentBinding
 import com.tokopedia.feedcomponent.onboarding.view.bottomsheet.FeedUserCompleteOnboardingBottomSheet
 import com.tokopedia.feedcomponent.onboarding.view.bottomsheet.FeedUserTnCOnboardingBottomSheet
+import com.tokopedia.feedcomponent.onboarding.view.bottomsheet.base.BaseFeedUserOnboardingBottomSheet
 import com.tokopedia.feedcomponent.onboarding.view.strategy.factory.FeedUGCOnboardingStrategyFactory
 import com.tokopedia.feedcomponent.onboarding.view.viewmodel.FeedUGCOnboardingViewModel
 import com.tokopedia.feedcomponent.onboarding.view.viewmodel.factory.FeedUGCOnboardingViewModelFactory
@@ -21,6 +23,8 @@ class FeedUGCOnboardingParentFragment @Inject constructor(
     private val viewModelFactoryCreator: FeedUGCOnboardingViewModelFactory.Creator,
     private val strategyFactory: FeedUGCOnboardingStrategyFactory,
 ): TkpdBaseV4Fragment() {
+
+    private var mListener: Listener? = null
 
     private var _binding: FragmentFeedUgcOnboardingParentBinding? = null
     private val binding: FragmentFeedUgcOnboardingParentBinding
@@ -65,6 +69,19 @@ class FeedUGCOnboardingParentFragment @Inject constructor(
         _binding = null
     }
 
+    override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
+        when(childFragment) {
+            is BaseFeedUserOnboardingBottomSheet -> {
+                childFragment.setListener(object : BaseFeedUserOnboardingBottomSheet.Listener {
+                    override fun onSuccess() {
+                        mListener?.onSuccess()
+                    }
+                })
+            }
+        }
+    }
+
     private fun showBottomSheet() {
         if(usernameArg.isEmpty()) {
             FeedUserCompleteOnboardingBottomSheet.getFragment(
@@ -78,6 +95,14 @@ class FeedUGCOnboardingParentFragment @Inject constructor(
                 requireContext().classLoader
             ).showNow(childFragmentManager)
         }
+    }
+
+    fun setListener(listener: Listener?) {
+        mListener = listener
+    }
+
+    interface Listener {
+        fun onSuccess()
     }
 
     companion object {

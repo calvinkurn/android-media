@@ -45,12 +45,8 @@ class FeedUGCTncOnboardingStrategy @Inject constructor(
 
     override fun submitAction(action: FeedUGCOnboardingAction) {
         when(action) {
-            FeedUGCOnboardingAction.CheckTnc -> {
-                handleCheckTnc()
-            }
-            FeedUGCOnboardingAction.ClickNext -> {
-                handleClickNext()
-            }
+            FeedUGCOnboardingAction.CheckTnc -> handleCheckTnc()
+            FeedUGCOnboardingAction.ClickNext -> handleClickNext()
             else -> {}
         }
     }
@@ -60,8 +56,7 @@ class FeedUGCTncOnboardingStrategy @Inject constructor(
     }
 
     private fun handleClickNext() {
-        job?.cancel()
-        job = scope.launchCatchError(block = {
+        scope.launchCatchError(block = {
             if(!_isSubmit.value) {
                 _isSubmit.update { true }
 

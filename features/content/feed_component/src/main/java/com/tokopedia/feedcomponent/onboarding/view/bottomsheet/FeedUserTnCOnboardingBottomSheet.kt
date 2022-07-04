@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.feedcomponent.databinding.BottomsheetFeedUserTncOnboardingBinding
+import com.tokopedia.feedcomponent.onboarding.view.bottomsheet.base.BaseFeedUserOnboardingBottomSheet
 import com.tokopedia.feedcomponent.onboarding.view.uimodel.action.FeedUGCOnboardingAction
 import com.tokopedia.feedcomponent.onboarding.view.uimodel.event.FeedUGCOnboardingUiEvent
 import com.tokopedia.feedcomponent.onboarding.view.uimodel.state.FeedUGCOnboardingUiState
@@ -23,7 +24,7 @@ import com.tokopedia.abstraction.R as abstractionR
 /**
  * Created By : Jonathan Darwin on June 28, 2022
  */
-class FeedUserTnCOnboardingBottomSheet : BottomSheetUnify() {
+class FeedUserTnCOnboardingBottomSheet : BaseFeedUserOnboardingBottomSheet() {
 
     private var _binding: BottomsheetFeedUserTncOnboardingBinding? = null
     private val binding: BottomsheetFeedUserTncOnboardingBinding
@@ -111,7 +112,7 @@ class FeedUserTnCOnboardingBottomSheet : BottomSheetUnify() {
         binding.btnContinue.isLoading = curr.isSubmit
 
         if(curr.hasAcceptTnc) {
-            /** TODO: call callback */
+            mListener?.onSuccess()
             dismiss()
         }
     }

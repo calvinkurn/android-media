@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.databinding.BottomsheetFeedUserCompleteOnboardingBinding
+import com.tokopedia.feedcomponent.onboarding.view.bottomsheet.base.BaseFeedUserOnboardingBottomSheet
 import com.tokopedia.feedcomponent.onboarding.view.uimodel.action.FeedUGCOnboardingAction
 import com.tokopedia.feedcomponent.onboarding.view.uimodel.event.FeedUGCOnboardingUiEvent
 import com.tokopedia.feedcomponent.onboarding.view.uimodel.state.FeedUGCOnboardingUiState
@@ -26,7 +27,7 @@ import com.tokopedia.abstraction.R as abstractionR
 /**
  * Created By : Jonathan Darwin on June 28, 2022
  */
-class FeedUserCompleteOnboardingBottomSheet : BottomSheetUnify() {
+class FeedUserCompleteOnboardingBottomSheet : BaseFeedUserOnboardingBottomSheet() {
 
     private var _binding: BottomsheetFeedUserCompleteOnboardingBinding? = null
     private val binding: BottomsheetFeedUserCompleteOnboardingBinding
@@ -49,9 +50,6 @@ class FeedUserCompleteOnboardingBottomSheet : BottomSheetUnify() {
         _binding = BottomsheetFeedUserCompleteOnboardingBinding.inflate(layoutInflater)
 
         setChild(_binding?.root)
-        showCloseIcon = false
-        showKnob = true
-        showHeader = false
 
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -160,7 +158,7 @@ class FeedUserCompleteOnboardingBottomSheet : BottomSheetUnify() {
         }
 
         if(curr.hasAcceptTnc) {
-            /** TODO: call callback */
+            mListener?.onSuccess()
             dismiss()
         }
     }

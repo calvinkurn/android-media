@@ -181,11 +181,13 @@ class UserProfileFragment @Inject constructor(
     override fun onAttachFragment(childFragment: Fragment) {
         super.onAttachFragment(childFragment)
         when(childFragment) {
-            is FeedUserCompleteOnboardingBottomSheet -> {
-                /** TODO: set listener */
-            }
-            is FeedUserTnCOnboardingBottomSheet -> {
-                /** TODO: set listener */
+            is FeedUGCOnboardingParentFragment -> {
+                childFragment.setListener(object : FeedUGCOnboardingParentFragment.Listener {
+                    override fun onSuccess() {
+                        /** TODO: navigate to create post */
+                        view?.showToast("test success")
+                    }
+                })
             }
         }
     }
@@ -221,7 +223,7 @@ class UserProfileFragment @Inject constructor(
             fabUserProfile.setOnClickListener {
                 if(viewModel.needOnboarding) {
                     val bundle = Bundle().apply {
-                        putString(FeedUGCOnboardingParentFragment.KEY_USERNAME, "")
+                        putString(FeedUGCOnboardingParentFragment.KEY_USERNAME, viewModel.profileUsername)
                     }
                     childFragmentManager.beginTransaction()
                         .add(FeedUGCOnboardingParentFragment::class.java, bundle, FeedUGCOnboardingParentFragment.TAG)
