@@ -17,6 +17,7 @@ import com.tokopedia.seller_shop_flash_sale.databinding.FragmentSsfsManageHighli
 import com.tokopedia.shop.flashsale.common.extension.*
 import com.tokopedia.shop.flashsale.common.extension.showLoading
 import com.tokopedia.shop.flashsale.common.preference.SharedPreferenceDataStore
+import com.tokopedia.shop.flashsale.common.tracker.ShopFlashSaleTracker
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.HighlightableProduct
 import com.tokopedia.shop.flashsale.domain.entity.ProductSubmissionResult
@@ -387,7 +388,7 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
         if (isSuccess) {
             CampaignRuleActivity.start(requireActivity(), campaignId)
         } else {
-            binding?.root showError result.errorMessage
+            displayError(result)
         }
     }
 
@@ -396,12 +397,18 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
         if (isSuccess) {
             routeToCampaignListPage()
         } else {
-            binding?.root showError result.errorMessage
+            displayError(result)
         }
     }
 
     private fun routeToCampaignListPage() {
         val context = context ?: return
         CampaignListActivity.start(context, isClearTop = true)
+    }
+
+    private fun displayError(result: ProductSubmissionResult) {
+        val productsErrorMessage = result.failedProducts.joinToString(",") { it.message }
+        val errorMessage = productsErrorMessage.ifEmpty { result.errorMessage }
+        binding?.cardView showError errorMessage
     }
 }

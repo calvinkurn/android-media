@@ -35,6 +35,7 @@ import javax.inject.Inject
 class CampaignDatePickerBottomSheet : BottomSheetUnify() {
 
     companion object {
+        private const val BUNDLE_KEY_SELECTION_MODE = "mode"
         private const val BUNDLE_KEY_SELECTED_DATE = "selected_date"
         private const val BUNDLE_KEY_MINIMUM_DATE = "minimum_date"
         private const val BUNDLE_KEY_MAXIMUM_DATE = "maximum_date"
@@ -42,12 +43,14 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
 
         @JvmStatic
         fun newInstance(
+            mode: TimePickerSelectionMode,
             selectedDate: Date,
             minimumDate: Date,
             maximumDate: Date
         ): CampaignDatePickerBottomSheet {
             return CampaignDatePickerBottomSheet().apply {
                 arguments = Bundle().apply {
+                    putSerializable(BUNDLE_KEY_SELECTION_MODE, mode)
                     putSerializable(BUNDLE_KEY_SELECTED_DATE, selectedDate)
                     putSerializable(BUNDLE_KEY_MINIMUM_DATE, minimumDate)
                     putSerializable(BUNDLE_KEY_MAXIMUM_DATE, maximumDate)
@@ -58,6 +61,9 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<SsfsBottomsheetCampaignDatePickerBinding>()
     private var onDateTimePicked: (Date) -> Unit = {}
+    private val mode by lazy {
+        arguments?.getSerializable(BUNDLE_KEY_SELECTION_MODE) as? TimePickerSelectionMode ?: TimePickerSelectionMode.START_TIME
+    }
     private val selectedDate by lazy {
         arguments?.getSerializable(BUNDLE_KEY_SELECTED_DATE) as? Date ?: Date()
     }
@@ -210,6 +216,7 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
         )
         val buttonWording = getString(R.string.sfs_apply)
         val param = TimePickerHandler.Param(
+            mode,
             selectedDateFromCalendar,
             defaultDate,
             minimumDate,

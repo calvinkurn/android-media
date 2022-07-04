@@ -12,6 +12,7 @@ import com.tokopedia.shop.flashsale.presentation.creation.information.bottomshee
 import com.tokopedia.shop.flashsale.presentation.creation.manage.ChooseProductFragment
 import com.tokopedia.shop.flashsale.presentation.creation.manage.ManageProductActivity
 import com.tokopedia.shop.flashsale.presentation.creation.manage.ManageProductFragment
+import com.tokopedia.shop.flashsale.presentation.creation.manage.bottomsheet.EditProductInfoBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.rule.CampaignRuleActivity
 import com.tokopedia.shop.flashsale.presentation.creation.rule.CampaignRuleFragment
 import com.tokopedia.shop.flashsale.presentation.creation.rule.bottomsheet.MerchantCampaignTNCBottomSheet
@@ -51,6 +52,8 @@ interface ShopFlashSaleComponent {
     fun inject(fragment: ManageProductFragment)
 
     fun inject(fragment: ManageHighlightedProductFragment)
+
+    fun inject(fragment: EditProductInfoBottomSheet)
 
     fun inject(activity: CampaignDetailActivity)
     fun inject(fragment: CampaignDetailFragment)

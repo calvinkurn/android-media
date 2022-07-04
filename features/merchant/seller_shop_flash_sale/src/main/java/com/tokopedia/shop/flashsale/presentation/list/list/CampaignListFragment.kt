@@ -17,11 +17,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.seller_shop_flash_sale.R
@@ -30,14 +26,7 @@ import com.tokopedia.shop.flashsale.common.constant.Constant.EMPTY_STRING
 import com.tokopedia.shop.flashsale.common.constant.Constant.FIRST_PAGE
 import com.tokopedia.shop.flashsale.common.constant.Constant.ZERO
 import com.tokopedia.shop.flashsale.common.customcomponent.BaseSimpleListFragment
-import com.tokopedia.shop.flashsale.common.extension.doOnDelayFinished
-import com.tokopedia.shop.flashsale.common.extension.setFragmentToUnifyBgColor
-import com.tokopedia.shop.flashsale.common.extension.showError
-import com.tokopedia.shop.flashsale.common.extension.showLoading
-import com.tokopedia.shop.flashsale.common.extension.showToaster
-import com.tokopedia.shop.flashsale.common.extension.slideDown
-import com.tokopedia.shop.flashsale.common.extension.slideUp
-import com.tokopedia.shop.flashsale.common.extension.stopLoading
+import com.tokopedia.shop.flashsale.common.extension.*
 import com.tokopedia.shop.flashsale.common.share_component.ShareComponentInstanceBuilder
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.CampaignMeta
@@ -777,7 +766,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
     private fun showFeatureIntroductionDialog() {
         val dialog = FeatureIntroductionDialog()
-        dialog.setOnPrimaryActionClick { CampaignInformationActivity.start(requireActivity()) }
+        dialog.setOnPrimaryActionClick { launchCampaignInformationPage() }
         dialog.setOnHyperlinkClick { routeToShopDecorationArticle() }
         dialog.show(requireActivity())
     }

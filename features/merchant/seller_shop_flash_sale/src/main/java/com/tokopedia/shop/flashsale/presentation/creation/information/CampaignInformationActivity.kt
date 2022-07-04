@@ -18,17 +18,6 @@ class CampaignInformationActivity : BaseSimpleActivity() {
         const val REQUEST_CODE_CREATE_CAMPAIGN_INFO = 100
 
         @JvmStatic
-        fun start(context: Context) {
-            val starter = Intent(context, CampaignInformationActivity::class.java)
-
-            val bundle = Bundle()
-            bundle.putParcelable(BUNDLE_KEY_PAGE_MODE, PageMode.CREATE)
-            starter.putExtras(bundle)
-
-            context.startActivity(starter)
-        }
-
-        @JvmStatic
         fun startUpdateMode(context: Context, campaignId: Long, isClearTop: Boolean = false) {
             val starter = Intent(context, CampaignInformationActivity::class.java)
             if (isClearTop) {

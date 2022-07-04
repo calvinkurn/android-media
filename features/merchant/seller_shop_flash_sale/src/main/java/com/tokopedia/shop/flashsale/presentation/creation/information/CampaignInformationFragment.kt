@@ -42,10 +42,12 @@ import com.tokopedia.shop.flashsale.domain.entity.Gradient
 import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignStatus
 import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
 import com.tokopedia.shop.flashsale.domain.entity.enums.PaymentType
+import com.tokopedia.shop.flashsale.domain.entity.enums.isDraft
 import com.tokopedia.shop.flashsale.presentation.creation.information.adapter.GradientColorAdapter
 import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.CampaignDatePickerBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.CampaignTeaserInformationBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.ForbiddenWordsInformationBottomSheet
+import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.TimePickerSelectionMode
 import com.tokopedia.shop.flashsale.presentation.creation.information.dialog.CancelCreateCampaignConfirmationDialog
 import com.tokopedia.shop.flashsale.presentation.creation.information.dialog.CancelEditCampaignConfirmationDialog
 import com.tokopedia.shop.flashsale.presentation.creation.manage.ManageProductActivity
@@ -522,7 +524,12 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         val minimumDate = dateManager.getCurrentDate().advanceHourBy(TWO_HOURS)
         val maximumEndDate = dateManager.getCurrentDate().advanceMonthBy(THREE_MONTH)
 
-        val bottomSheet = CampaignDatePickerBottomSheet.newInstance(selectedDate, minimumDate, maximumEndDate)
+        val bottomSheet = CampaignDatePickerBottomSheet.newInstance(
+            TimePickerSelectionMode.START_TIME,
+            selectedDate,
+            minimumDate,
+            maximumEndDate
+        )
         bottomSheet.setOnDateTimePicked { newStartDate ->
             viewModel.setSelectedStartDate(newStartDate)
             binding?.tauStartDate?.editText?.setText(newStartDate.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
@@ -539,7 +546,12 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         val minimumDate = viewModel.getSelectedStartDate().advanceMinuteBy(THIRTY_MINUTE)
         val maximumEndDate = viewModel.getSelectedStartDate().advanceDayBy(SIX_DAYS)
 
-        val bottomSheet = CampaignDatePickerBottomSheet.newInstance(endDate, minimumDate, maximumEndDate)
+        val bottomSheet = CampaignDatePickerBottomSheet.newInstance(
+            TimePickerSelectionMode.END_TIME,
+            endDate,
+            minimumDate,
+            maximumEndDate
+        )
         bottomSheet.setOnDateTimePicked { newEndDate ->
             viewModel.setSelectedEndDate(newEndDate)
             binding?.tauEndDate?.editText?.setText(newEndDate.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
@@ -677,7 +689,15 @@ class CampaignInformationFragment : BaseDaggerFragment() {
                 campaign.upcomingDate.removeTimeZone()
             )
             quantityEditor.editText.setText(upcomingTimeInHours.toString())
-            quantityEditor.maxValue = upcomingTimeInHours
+
+            val maxValue = if (campaign.status.isDraft()) {
+                viewModel.getTeaserQuantityEditorMaxValue(campaign.startDate.removeTimeZone(), Date())
+            } else {
+                upcomingTimeInHours
+            }
+
+            quantityEditor.maxValue = maxValue
+
             handleSwitchTeaser(campaign.useUpcomingWidget)
             renderSelectedColor(campaign)
         }

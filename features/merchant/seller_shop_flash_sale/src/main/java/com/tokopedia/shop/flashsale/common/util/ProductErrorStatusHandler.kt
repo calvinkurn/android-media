@@ -8,12 +8,14 @@ import com.tokopedia.shop.flashsale.common.extension.convertRupiah
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductErrorType
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductErrorType.*
+import com.tokopedia.shop.flashsale.domain.entity.enums.ProductInputValidationResult
 import javax.inject.Inject
 
 class ProductErrorStatusHandler @Inject constructor(@ApplicationContext private val context: Context) {
 
     companion object {
         private const val MIN_CAMPAIGN_STOCK = 1
+        private const val MIN_CAMPAIGN_ORDER = 1L
         private const val MAX_CAMPAIGN_DISCOUNT_PERCENTAGE = 0.99
         private const val MIN_CAMPAIGN_DISCOUNT_PERCENTAGE = 0.01
     }
@@ -69,6 +71,31 @@ class ProductErrorStatusHandler @Inject constructor(@ApplicationContext private 
 
             else -> NOT_ERROR
         }
+    }
+
+    fun getErrorInputType(productMapData: SellerCampaignProductList.ProductMapData): ProductInputValidationResult {
+        val maxDiscountedPrice = getProductMaxDiscountedPrice(productMapData.originalPrice)
+        val minDiscountedPrice = getProductMinDiscountedPrice(productMapData.originalPrice)
+        val result: MutableList<ManageProductErrorType> = mutableListOf()
+
+        if (productMapData.discountedPrice >= productMapData.originalPrice) result.add(MAX_DISCOUNT_PRICE)
+        if (productMapData.customStock > productMapData.originalStock) result.add(MAX_STOCK)
+        if (productMapData.discountedPrice < minDiscountedPrice) result.add(MIN_DISCOUNT_PRICE)
+        if (productMapData.customStock < MIN_CAMPAIGN_STOCK) result.add(MIN_STOCK)
+        if (productMapData.maxOrder > productMapData.customStock) result.add(MAX_ORDER)
+        if (productMapData.maxOrder < MIN_CAMPAIGN_ORDER) result.add(MIN_ORDER)
+
+        return ProductInputValidationResult(
+            errorList = result,
+            maxPrice = maxDiscountedPrice,
+            minPrice = minDiscountedPrice,
+            maxStock = productMapData.originalStock,
+            minStock = MIN_CAMPAIGN_STOCK,
+            minOrder = MIN_CAMPAIGN_ORDER,
+            maxOrder = productMapData.customStock,
+            minPricePercent = DiscountUtil.getPercentLong(MIN_CAMPAIGN_DISCOUNT_PERCENTAGE),
+            maxPricePercent = DiscountUtil.getPercentLong(MAX_CAMPAIGN_DISCOUNT_PERCENTAGE)
+        )
     }
 
     fun getProductListErrorMessage(
@@ -127,6 +154,7 @@ class ProductErrorStatusHandler @Inject constructor(@ApplicationContext private 
             MAX_ORDER -> {
                 errorMsg = context.getString(R.string.error_msg_max_campaign_order)
             }
+            else -> {}
         }
         return errorMsg
     }
