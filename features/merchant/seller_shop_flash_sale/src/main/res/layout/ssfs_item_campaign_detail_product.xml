@@ -262,7 +262,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            app:constraint_referenced_ids="ll_group_campaign_stock, ll_group_campaign_stock, ll_group_remaining, tpg_product_sold_label, tpg_product_sold" />
+            app:constraint_referenced_ids="ll_group_view_count, ll_group_campaign_stock, ll_group_remaining, tpg_product_sold_label, tpg_product_sold" />
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/group_campaign_stock"

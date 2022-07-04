@@ -160,7 +160,7 @@ class CampaignDetailFragment : BaseDaggerFragment(),
 
     private fun observeShareCampaignEvent() {
         viewModel.shareCampaignActionEvent.observe(viewLifecycleOwner) {
-            // TODO(*) : Render share action result
+            viewModel.getShareComponentThumbnailImageUrl(it.campaignId)
         }
     }
 
@@ -188,7 +188,7 @@ class CampaignDetailFragment : BaseDaggerFragment(),
                 }
                 is Fail -> {
                     dismissLoaderDialog()
-                    binding?.cardButtonWrapper showError(result.throwable)
+                    binding?.cardButtonWrapper showError (result.throwable)
                 }
             }
         }
@@ -204,7 +204,7 @@ class CampaignDetailFragment : BaseDaggerFragment(),
                 }
                 is Fail -> {
                     dismissLoaderDialog()
-                    binding?.cardButtonWrapper showError(result.throwable)
+                    binding?.cardButtonWrapper showError (result.throwable)
                 }
             }
         }
@@ -229,11 +229,13 @@ class CampaignDetailFragment : BaseDaggerFragment(),
         binding.btnShareCampaign.setOnClickListener {
             showLoaderDialog()
             viewModel.onShareButtonClicked()
-            campaignId?.let { it1 -> viewModel.getShareComponentThumbnailImageUrl(it1) }
         }
     }
 
-    private fun displayShareBottomSheet(thumbnailImageUrl : String, metadata: ShareComponentMetadata, ) {
+    private fun displayShareBottomSheet(
+        thumbnailImageUrl: String,
+        metadata: ShareComponentMetadata,
+    ) {
         val param = ShareComponentInstanceBuilder.Param(
             metadata.banner.shop.name,
             metadata.banner.shop.logo,
@@ -411,6 +413,7 @@ class CampaignDetailFragment : BaseDaggerFragment(),
         handleShareButtonVisibility(campaign)
 
     }
+
     private fun handleCampaignInformation(campaign: CampaignUiModel) {
         val binding = binding ?: return
 
@@ -418,7 +421,8 @@ class CampaignDetailFragment : BaseDaggerFragment(),
             R.string.campaign_detail_campaign_id,
             campaign.campaignId.toString()
         )
-        binding.tgCampaignStartDate.text = campaign.startDate.formatTo(DateConstant.DATE_TIME_WITH_DAY)
+        binding.tgCampaignStartDate.text =
+            campaign.startDate.formatTo(DateConstant.DATE_TIME_WITH_DAY)
         binding.tgCampaignEndDate.text = campaign.endDate.formatTo(DateConstant.DATE_TIME_WITH_DAY)
     }
 
