@@ -726,7 +726,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     fun addWishListV2(productId: String, listener: WishlistV2ActionListener) {
         launch(dispatcher.main) {
             addToWishlistV2UseCase.get().setParams(productId, userSessionInterface.userId)
-            val result = withContext(dispatcher.io) { addToWishlistV2UseCase.get().executeOnBackground() }
+            val result =
+                withContext(dispatcher.io) { addToWishlistV2UseCase.get().executeOnBackground() }
             if (result is Success) {
                 listener.onSuccessAddWishlist(result.data, productId)
             } else if (result is Fail) {

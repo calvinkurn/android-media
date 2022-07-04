@@ -60,7 +60,6 @@ class RegisterInitialViewModel @Inject constructor(
         private val dynamicBannerUseCase: DynamicBannerUseCase,
         private val checkHasOvoAccUseCase: CheckHasOvoAccUseCase,
         private val generatePublicKeyUseCase: GeneratePublicKeyUseCase,
-        @Named(SessionModule.SESSION_MODULE)
         private val userSession: UserSessionInterface,
         private val rawQueries: Map<String, String>,
         private val dispatcherProvider: CoroutineDispatchers) : BaseViewModel(dispatcherProvider.main) {
