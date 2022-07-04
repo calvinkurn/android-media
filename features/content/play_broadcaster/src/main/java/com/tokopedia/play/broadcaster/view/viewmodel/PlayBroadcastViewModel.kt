@@ -769,15 +769,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private fun connectWebSocket(
-        channelId: String,
-        socketCredential: GetSocketCredentialResponse.SocketCredential
-    ) {
-        playBroadcastWebSocket.connect(
-            channelId,
-            socketCredential.gcToken,
-            WEB_SOCKET_SOURCE_PLAY_BROADCASTER
-        )
+    private fun connectWebSocket(channelId: String, socketCredential: GetSocketCredentialResponse.SocketCredential) {
+        playBroadcastWebSocket.connect(channelId, "0", socketCredential.gcToken, WEB_SOCKET_SOURCE_PLAY_BROADCASTER)
     }
 
     private fun closeWebSocket() {

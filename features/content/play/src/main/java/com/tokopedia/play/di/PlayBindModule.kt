@@ -12,6 +12,8 @@ import com.tokopedia.play.analytic.socket.PlaySocketAnalytic
 import com.tokopedia.play.analytic.socket.PlaySocketAnalyticImpl
 import com.tokopedia.play.analytic.tagitem.PlayTagItemsAnalytic
 import com.tokopedia.play.analytic.tagitem.PlayTagItemsAnalyticImpl
+import com.tokopedia.play.analytic.tokonow.PlayTokonowAnalytic
+import com.tokopedia.play.analytic.tokonow.PlayTokonowAnalyticImpl
 import com.tokopedia.play.analytic.upcoming.PlayUpcomingAnalytic
 import com.tokopedia.play.analytic.upcoming.PlayUpcomingAnalyticImpl
 import com.tokopedia.play.util.timer.PlayTimerFactory
@@ -55,6 +57,10 @@ abstract class PlayBindModule {
     @Binds
     @PlayScope
     abstract fun bindTagItemsAnalyticFactory(factory: PlayTagItemsAnalyticImpl.Factory): PlayTagItemsAnalytic.Factory
+
+    @Binds
+    @PlayScope
+    abstract fun bindTokonowAnalytic(analytic: PlayTokonowAnalyticImpl): PlayTokonowAnalytic
 
     /**
      * Utils

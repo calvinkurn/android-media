@@ -1,5 +1,6 @@
 package com.tokopedia.play.analytic
 
+import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
@@ -32,12 +33,15 @@ class ProductAnalyticHelper(
     }
 
     fun sendImpressedProductSheets() {
-        sendImpressedBottomSheetProducts()
         sendImpressedPrivateVoucher()
     }
 
-    fun sendImpressedFeaturedProducts() {
+    /**
+     * Send double tracker due to DA request
+     */
+    fun sendImpressedFeaturedProducts(partner: PartnerType) {
         analytic.impressFeaturedProducts(getFinalProducts())
+        if(partner == PartnerType.Tokonow) analytic.impressFeaturedProducts(getFinalProducts(), isGeneral = false)
         clearProducts()
     }
 

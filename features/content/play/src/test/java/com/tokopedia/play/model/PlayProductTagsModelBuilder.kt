@@ -31,7 +31,8 @@ class PlayProductTagsModelBuilder {
             price: ProductPrice = buildOriginalProductPrice(),
             minQty: Int = 1,
             isFreeShipping: Boolean = false,
-            applink: String? = null
+            applink: String? = null,
+            isTokonow: Boolean = false,
     ) = PlayProductUiModel.Product(
             id = id,
             shopId = shopId,
@@ -42,7 +43,8 @@ class PlayProductTagsModelBuilder {
             price = price,
             minQty = minQty,
             isFreeShipping = isFreeShipping,
-            applink = applink
+            applink = applink,
+            isTokoNow = isTokonow,
     )
 
     fun buildMerchantVoucher(
