@@ -32,6 +32,9 @@ object RechargeBUWidgetTracking : BaseTracking() {
     private const val KEY_ITEM_LIST = "item_list"
     private const val IDR_CURRENCY = "IDR"
     private const val DEFAULT_TRACKING_LABEL_VALUES = "-"
+    private const val PATTERN_EVENT_LABEL_IMPRESSION_BU_WIDGET = "%s - %s - %s - %s - %s - %s - %s - %s - %s - %s - %s"
+    private const val PATTERN_EVENT_LABEL_CLICK_BU_WIDGET = "%s - %s - %s - %s - %s - %s - %s - %s - %d"
+    private const val PATTERN_EVENT_LABEL_IMPRESSION_HOME_BU_WIDGET = "%s - %s - %s - %s - %d - %s - %s - %s - %d"
 
     fun homeRechargeBUWidgetImpressionTracker(
         trackingQueue: TrackingQueue,
@@ -53,7 +56,7 @@ object RechargeBUWidgetTracking : BaseTracking() {
 
             val item = data.data.items[position]
 
-            val eventLabel = String.format("%s - %s - %s - %s - %s - %s - %s - %s - %s - %s - %s",
+            val eventLabel = String.format(PATTERN_EVENT_LABEL_IMPRESSION_BU_WIDGET,
                 item.trackingData.channelId.ifNullOrBlank { DEFAULT_TRACKING_LABEL_VALUES },
                 data.data.trackingData.userType.ifNullOrBlank { DEFAULT_TRACKING_LABEL_VALUES },
                 getHeaderName(data.channel).ifNullOrBlank { DEFAULT_TRACKING_LABEL_VALUES },
@@ -89,7 +92,7 @@ object RechargeBUWidgetTracking : BaseTracking() {
         if (position < data.data.items.size) {
             val item = data.data.items[position]
 
-            val eventLabel = String.format("%s - %s - %s - %s - %s - %s - %s - %s - %d",
+            val eventLabel = String.format(PATTERN_EVENT_LABEL_CLICK_BU_WIDGET,
                 item.trackingData.channelId.ifNullOrBlank { DEFAULT_TRACKING_LABEL_VALUES },
                 data.data.trackingData.userType.ifNullOrBlank { DEFAULT_TRACKING_LABEL_VALUES },
                 getHeaderName(data.channel).ifNullOrBlank { DEFAULT_TRACKING_LABEL_VALUES },
@@ -123,7 +126,7 @@ object RechargeBUWidgetTracking : BaseTracking() {
         if (position < data.data.items.size) {
             val item = data.data.items[position]
 
-            val eventLabel = String.format("%s - %s - %s - %s - %d - %s - %s - %s - %d",
+            val eventLabel = String.format(PATTERN_EVENT_LABEL_IMPRESSION_HOME_BU_WIDGET,
                 item.trackingData.channelId.ifNullOrBlank { DEFAULT_TRACKING_LABEL_VALUES },
                 data.data.trackingData.userType.ifNullOrBlank { DEFAULT_TRACKING_LABEL_VALUES },
                 getHeaderName(data.channel).ifNullOrBlank { DEFAULT_TRACKING_LABEL_VALUES },
