@@ -13,6 +13,7 @@ object AnimationUtils {
     fun addSpringAnim(
         view: View,
         property: DynamicAnimation.ViewProperty,
+        startPosition: Float =  0f,
         finalPosition: Float,
         @FloatRange(from = 0.1) stiffness: Float,
         @FloatRange(from = 0.0) dampingRatio: Float,
@@ -26,6 +27,7 @@ object AnimationUtils {
         val animation = SpringAnimation(view, property)
         animation.spring = spring
         animation.setStartVelocity(velocity)
+        animation.setStartValue(startPosition)
         return animation
     }
 }
