@@ -146,6 +146,7 @@ class CampaignDetailFragment : BaseDaggerFragment(),
         observeEditCampaignEvent()
         observeCancelCampaignEvent()
         observeMoreMenuEvent()
+        observeShareCampaignEvent()
         observeActiveDialog()
         observeShareComponentMetadata()
         observeShareComponentThumbnailImage()
@@ -154,6 +155,12 @@ class CampaignDetailFragment : BaseDaggerFragment(),
     private fun observeMoreMenuEvent() {
         viewModel.moreMenuEvent.observe(viewLifecycleOwner) {
             showMoreMenuBottomSheet(it)
+        }
+    }
+
+    private fun observeShareCampaignEvent() {
+        viewModel.shareCampaignActionEvent.observe(viewLifecycleOwner) {
+            // TODO(*) : Render share action result
         }
     }
 
@@ -221,6 +228,7 @@ class CampaignDetailFragment : BaseDaggerFragment(),
         }
         binding.btnShareCampaign.setOnClickListener {
             showLoaderDialog()
+            viewModel.onShareButtonClicked()
             campaignId?.let { it1 -> viewModel.getShareComponentThumbnailImageUrl(it1) }
         }
     }
