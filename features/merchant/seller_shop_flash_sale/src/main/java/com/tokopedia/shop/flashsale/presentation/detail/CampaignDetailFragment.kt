@@ -133,12 +133,19 @@ class CampaignDetailFragment : BaseDaggerFragment(),
         observeEditCampaignEvent()
         observeCancelCampaignEvent()
         observeMoreMenuEvent()
+        observeShareCampaignEvent()
         observeActiveDialog()
     }
 
     private fun observeMoreMenuEvent() {
         viewModel.moreMenuEvent.observe(viewLifecycleOwner) {
             showMoreMenuBottomSheet(it)
+        }
+    }
+
+    private fun observeShareCampaignEvent() {
+        viewModel.shareCampaignActionEvent.observe(viewLifecycleOwner) {
+            // TODO(*) : Render share action result
         }
     }
 

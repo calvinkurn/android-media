@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.flashsale.common.extension.removeTimeZone
+import com.tokopedia.shop.flashsale.common.tracker.ShopFlashSaleTracker
 import com.tokopedia.shop.flashsale.domain.entity.CampaignAction
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.MerchantCampaignTNC
@@ -32,6 +33,7 @@ class CampaignRuleViewModel @Inject constructor(
     private val getSellerCampaignDetailUseCase: GetSellerCampaignDetailUseCase,
     private val doSellerCampaignCreationUseCase: DoSellerCampaignCreationUseCase,
     private val validateCampaignCreationEligibilityUseCase: ValidateCampaignCreationEligibilityUseCase,
+    private val tracker: ShopFlashSaleTracker,
     private val dispatchers: CoroutineDispatchers,
 ) : BaseViewModel(dispatchers.main) {
 
@@ -439,6 +441,7 @@ class CampaignRuleViewModel @Inject constructor(
     }
 
     fun onCreateCampaignButtonClicked() {
+        tracker.sendClickButtonCreateCampaign()
         validateCampaignCreation { campaignData ->
             if (campaignData.status.isDraft()) {
                 _createCampaignActionState.postValue(CampaignRuleActionResult.ShowConfirmation)
