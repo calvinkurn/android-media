@@ -396,7 +396,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         grantResults: IntArray
     ) {
         when (requestCode) {
-            888 -> {
+            REQUEST_CODE_PERMISSION -> {
                 if (grantResults.isNotEmpty() &&
                     grantResults[0] == PackageManager.PERMISSION_GRANTED
                 ) {
@@ -1317,7 +1317,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION
             ),
-            888
+            REQUEST_CODE_PERMISSION
         )
     }
 
@@ -1376,7 +1376,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     private fun initCoachMark(position: Int, itemView: View, data: Any) {
         if (accountPref.isShowCoachmark()) {
             if (!isProfileSectionBinded) {
-                if (coachMarkItem.count() < 3) {
+                if (coachMarkItem.count() < MAX_COACH_MARK_SIZE) {
                     if (position == 0 && data is ProfileDataView) {
                         coachMarkItem.add(
                             CoachMark2Item(
@@ -1668,6 +1668,9 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     }
 
     companion object {
+        private const val MAX_COACH_MARK_SIZE = 3
+
+        private const val REQUEST_CODE_PERMISSION = 888
         private const val REQUEST_CODE_CHANGE_NAME = 300
         private const val REQUEST_CODE_PROFILE_SETTING = 301
         private const val REQUEST_FROM_PDP = 394
