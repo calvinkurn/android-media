@@ -10,6 +10,9 @@ import android.widget.MediaController
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.view.activity.ChatbotVideoActivity
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.videoplayer.utils.Video
 import com.tokopedia.videoplayer.view.widget.VideoPlayerView
@@ -18,6 +21,7 @@ class ChatbotVideoFragment : BaseDaggerFragment(), MediaPlayer.OnPreparedListene
 
     private var videoUrl = ""
     private lateinit var videoPlayerView : VideoPlayerView
+    private lateinit var loader : LoaderUnify
 
     override fun getScreenName(): String {
         return ""
@@ -41,6 +45,9 @@ class ChatbotVideoFragment : BaseDaggerFragment(), MediaPlayer.OnPreparedListene
 
     private fun initViews(view : View) {
         videoPlayerView = view.findViewById(R.id.video_player)
+        loader = view.findViewById(R.id.loader)
+        loader.visible()
+        loader.bringToFront()
         initVideoPlayer()
     }
 
@@ -118,6 +125,7 @@ class ChatbotVideoFragment : BaseDaggerFragment(), MediaPlayer.OnPreparedListene
                 videoPlayerView.setMediaController(mediaController)
                 mediaController.setAnchorView(videoPlayerView)
             }
+            loader.gone()
             player.start()
         }
     }

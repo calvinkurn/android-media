@@ -5,20 +5,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/Unify_Static_Black">
 
-<!--    <com.tokopedia.iconunify.IconUnify-->
-<!--        android:layout_width="@dimen/unify_space_32"-->
-<!--        android:layout_height="@dimen/unify_space_32"-->
-<!--        app:icon_name="ARROW_BACK"-->
-<!--        android:layout_marginTop="@dimen/unify_space_16"-->
-<!--        android:layout_marginLeft="@dimen/unify_space_16"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        app:layout_constraintLeft_toLeftOf="parent"-->
-<!--        app:icon_color_light_enable="@color/Unify_Static_White"-->
-<!--        app:icon_color_night_enable="@color/Unify_Static_White" />-->
-
     <com.tokopedia.unifycomponents.LoaderUnify
-        android:layout_width="@dimen/unify_space_32"
-        android:layout_height="@dimen/unify_space_32"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
         android:id="@+id/loader"
         android:visibility="visible"
         app:layout_constraintTop_toTopOf="parent"
