@@ -10,7 +10,7 @@ class ShopAdminTrackers @Inject constructor() {
 
     fun impressInvitationPageInputEmail() {
         val mapData = mapOf(
-            TrackAppUtils.EVENT_LABEL to ShopAdminConstants.VIEW_PG_IRIS,
+            TrackAppUtils.EVENT to ShopAdminConstants.VIEW_PG_IRIS,
             TrackAppUtils.EVENT_ACTION to ShopAdminConstants.IMPRESSION_INVITATION_PAGE_EMAIL,
             TrackAppUtils.EVENT_CATEGORY to ShopAdminConstants.ADMIN_INVITE_PAGE,
             TrackAppUtils.EVENT_LABEL to "",
@@ -23,7 +23,7 @@ class ShopAdminTrackers @Inject constructor() {
 
     fun impressInvitationPageNoInputEmail() {
         val mapData = mapOf(
-            TrackAppUtils.EVENT_LABEL to ShopAdminConstants.VIEW_PG_IRIS,
+            TrackAppUtils.EVENT to ShopAdminConstants.VIEW_PG_IRIS,
             TrackAppUtils.EVENT_ACTION to ShopAdminConstants.IMPRESSION_INVITATION_PAGE_NO_EMAIL,
             TrackAppUtils.EVENT_CATEGORY to ShopAdminConstants.ADMIN_INVITE_PAGE,
             TrackAppUtils.EVENT_LABEL to "",
@@ -36,7 +36,7 @@ class ShopAdminTrackers @Inject constructor() {
 
     fun impressExpiredStatus() {
         val mapData = mapOf(
-            TrackAppUtils.EVENT_LABEL to ShopAdminConstants.VIEW_PG_IRIS,
+            TrackAppUtils.EVENT to ShopAdminConstants.VIEW_PG_IRIS,
             TrackAppUtils.EVENT_ACTION to ShopAdminConstants.IMPRESSION_EXPIRED_STATUS,
             TrackAppUtils.EVENT_CATEGORY to ShopAdminConstants.ADMIN_INVITE_PAGE,
             TrackAppUtils.EVENT_LABEL to "",
@@ -49,7 +49,7 @@ class ShopAdminTrackers @Inject constructor() {
 
     fun impressRejectedStatus() {
         val mapData = mapOf(
-            TrackAppUtils.EVENT_LABEL to ShopAdminConstants.VIEW_PG_IRIS,
+            TrackAppUtils.EVENT to ShopAdminConstants.VIEW_PG_IRIS,
             TrackAppUtils.EVENT_ACTION to ShopAdminConstants.IMPRESSION_REJECTED_STATUS,
             TrackAppUtils.EVENT_CATEGORY to ShopAdminConstants.ADMIN_INVITE_PAGE,
             TrackAppUtils.EVENT_LABEL to "",
@@ -62,7 +62,7 @@ class ShopAdminTrackers @Inject constructor() {
 
     fun clickInvitationPageAccept() {
         val mapData = mapOf(
-            TrackAppUtils.EVENT_LABEL to ShopAdminConstants.CLICK_PG,
+            TrackAppUtils.EVENT to ShopAdminConstants.CLICK_PG,
             TrackAppUtils.EVENT_ACTION to ShopAdminConstants.CLICK_INVITATION_PAGE_ACCEPT,
             TrackAppUtils.EVENT_CATEGORY to ShopAdminConstants.ADMIN_INVITE_PAGE,
             TrackAppUtils.EVENT_LABEL to "",
@@ -75,7 +75,7 @@ class ShopAdminTrackers @Inject constructor() {
 
     fun clickInvitationPageReject() {
         val mapData = mapOf(
-            TrackAppUtils.EVENT_LABEL to ShopAdminConstants.CLICK_PG,
+            TrackAppUtils.EVENT to ShopAdminConstants.CLICK_PG,
             TrackAppUtils.EVENT_ACTION to ShopAdminConstants.CLICK_INVITATION_PAGE_REJECT,
             TrackAppUtils.EVENT_CATEGORY to ShopAdminConstants.ADMIN_INVITE_PAGE,
             TrackAppUtils.EVENT_LABEL to "",
@@ -88,7 +88,7 @@ class ShopAdminTrackers @Inject constructor() {
 
     fun impressionAcceptedPage() {
         val mapData = mapOf(
-            TrackAppUtils.EVENT_LABEL to ShopAdminConstants.VIEW_PG_IRIS,
+            TrackAppUtils.EVENT to ShopAdminConstants.VIEW_PG_IRIS,
             TrackAppUtils.EVENT_ACTION to ShopAdminConstants.IMPRESSION_ACCEPTED_PAGE,
             TrackAppUtils.EVENT_CATEGORY to ShopAdminConstants.ADMIN_INVITE_PAGE,
             TrackAppUtils.EVENT_LABEL to "",
@@ -101,7 +101,7 @@ class ShopAdminTrackers @Inject constructor() {
 
     fun impressionRejectedPage() {
         val mapData = mapOf(
-            TrackAppUtils.EVENT_LABEL to ShopAdminConstants.VIEW_PG_IRIS,
+            TrackAppUtils.EVENT to ShopAdminConstants.VIEW_PG_IRIS,
             TrackAppUtils.EVENT_ACTION to ShopAdminConstants.IMPRESSION_REJECTED_PAGE,
             TrackAppUtils.EVENT_CATEGORY to ShopAdminConstants.ADMIN_INVITE_PAGE,
             TrackAppUtils.EVENT_LABEL to "",
