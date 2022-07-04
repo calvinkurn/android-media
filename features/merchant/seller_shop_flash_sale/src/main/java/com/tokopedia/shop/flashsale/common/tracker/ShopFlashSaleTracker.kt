@@ -1,5 +1,6 @@
 package com.tokopedia.shop.flashsale.common.tracker
 
+import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignStatus
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -67,6 +68,57 @@ class ShopFlashSaleTracker @Inject constructor(private val userSession : UserSes
             .setEvent(EVENT)
             .setEventAction("click share")
             .setEventLabel(selectedChannelName)
+            .build()
+            .send()
+    }
+    //endregion
+
+    //region Aturan Campaign Page
+    fun sendClickButtonCreateCampaign() {
+        Tracker.Builder()
+            .setBusinessUnit(BUSINESS_UNIT)
+            .setEventCategory("fs toko - aturan campaign")
+            .setCurrentSite(CURRENT_SITE)
+            .setShopId(userSession.shopId.toString())
+            .setEvent(EVENT)
+            .setEventAction("click buat campaign")
+            .setEventLabel("")
+            .build()
+            .send()
+    }
+    //endregion
+
+    //region Campaign Details Page
+    fun sendClickTextEditCampaign(
+        campaignId: Long,
+        campaignName: String,
+        campaignStatus: CampaignStatus,
+    ) {
+        Tracker.Builder()
+            .setBusinessUnit(BUSINESS_UNIT)
+            .setEventCategory("fs toko - campaign detail")
+            .setCurrentSite(CURRENT_SITE)
+            .setShopId(userSession.shopId.toString())
+            .setEvent(EVENT)
+            .setEventAction("click edit campaign")
+            .setEventLabel("$campaignId - $campaignName - ${campaignStatus.id}")
+            .build()
+            .send()
+    }
+
+    fun sendClickButtonShareCampaign(
+        campaignId: Long,
+        campaignName: String,
+        campaignStatus: CampaignStatus,
+    ) {
+        Tracker.Builder()
+            .setBusinessUnit(BUSINESS_UNIT)
+            .setEventCategory("fs toko - campaign detail")
+            .setCurrentSite(CURRENT_SITE)
+            .setShopId(userSession.shopId.toString())
+            .setEvent(EVENT)
+            .setEventAction("click share campaign")
+            .setEventLabel("$campaignId - $campaignName - ${campaignStatus.id}")
             .build()
             .send()
     }
