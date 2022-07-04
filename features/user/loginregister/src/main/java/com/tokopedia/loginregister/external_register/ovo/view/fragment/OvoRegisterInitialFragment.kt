@@ -37,7 +37,6 @@ class OvoRegisterInitialFragment: ExternalRegisterInitialFragment() {
         ViewModelProviders.of(this, viewModelFactory)
     }
 
-    @field:Named(SessionModule.SESSION_MODULE)
     @Inject
     lateinit var userSession: UserSessionInterface
 

@@ -28,7 +28,7 @@ class RecommendationItemViewHolder (
         val recommendationItem = recommendationItemDataView.recommendationItem
         val productModel = recommendationItem.toProductCardModel(
             hasThreeDots = true,
-            cardInteraction = false
+            cardInteraction = true,
         )
         view.setProductModel(productModel)
 

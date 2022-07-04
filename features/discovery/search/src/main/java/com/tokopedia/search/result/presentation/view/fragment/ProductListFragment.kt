@@ -444,19 +444,10 @@ class ProductListFragment: BaseDaggerFragment(),
     ): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                if (isAllowLoadMore()) {
-                    val searchParameterMap = searchParameter?.getSearchParameterMap() ?: return
-                    presenter?.loadMoreData(searchParameterMap)
-                } else {
-                    productListAdapter?.removeLoading()
-                }
+                val searchParameterMap = searchParameter?.getSearchParameterMap() ?: return
+                presenter?.loadMoreData(searchParameterMap)
             }
         }
-    }
-
-    private fun isAllowLoadMore(): Boolean {
-        return userVisibleHint
-                && (presenter?.hasNextPage() == true)
     }
 
     private fun initSearchQuickSortFilter(rootView: View) {
@@ -1995,11 +1986,18 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun setProductCount(productCountText: String?) {
-        sortFilterBottomSheet?.setResultCountText(String.format(
+        sortFilterBottomSheet?.setResultCountText(getFilterCountText(productCountText))
+    }
+
+    private fun getFilterCountText(productCountText: String?): String =
+        if (productCountText.isNullOrBlank()) {
+            getString(com.tokopedia.filter.R.string.bottom_sheet_filter_finish_button_no_count)
+        } else {
+            String.format(
                 getString(com.tokopedia.filter.R.string.bottom_sheet_filter_finish_button_template_text),
                 productCountText
-        ))
-    }
+            )
+        }
     //endregion
 
     //region TopAdsImageView / TDN

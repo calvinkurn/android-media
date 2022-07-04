@@ -130,7 +130,6 @@ interface ProductListSectionContract {
         val dynamicFilterModel: DynamicFilterModel?
         fun onPriceFilterTickerDismissed()
         val isTickerHasDismissed: Boolean
-        fun hasNextPage(): Boolean
         fun clearData()
         val startFrom: Int
         fun onViewCreated()
