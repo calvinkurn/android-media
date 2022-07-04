@@ -17,7 +17,8 @@ class HomeBalanceWidgetUseCase @Inject constructor(
         private val homeTokopointsListRepository: HomeTokopointsListRepository,
         private val homeFlagRepository: HomeFlagRepository,
         private val userSession: UserSessionInterface,
-        private val injectCouponTimeBasedUseCase: InjectCouponTimeBasedUseCase
+        private val injectCouponTimeBasedUseCase: InjectCouponTimeBasedUseCase,
+        private val getHomeBalanceWidgetRepository: GetHomeBalanceWidgetRepository
         ) {
 
     companion object {
@@ -37,6 +38,8 @@ class HomeBalanceWidgetUseCase @Inject constructor(
         if (!userSession.isLoggedIn) return currentHeaderDataModel
 
         try {
+            val getHomeBalanceWidget = getHomeBalanceWidgetRepository.getRemoteData()
+
             var homeBalanceModel = getHomeBalanceModel(currentHeaderDataModel, HomeBalanceModel.BALANCE_POSITION_FIRST, HomeBalanceModel.BALANCE_POSITION_SECOND)
             homeBalanceModel = getDataUsingWalletApp(homeBalanceModel)
 
