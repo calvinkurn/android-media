@@ -76,15 +76,12 @@ class CampaignDetailProductListAdapter :
                 tpgRemaining.text = product.productMapData.customStock.toString()
 
                 //handle ongoing item view visibility
-                when {
-                    campaignStatus.isOngoing() -> {
-                        groupItemOngoing.visible()
-                        groupCampaignStock.gone()
-                    }
-                    else -> {
-                        groupItemOngoing.gone()
-                        groupCampaignStock.visible()
-                    }
+                if (campaignStatus.isOngoing()) {
+                    groupItemOngoing.visible()
+                    groupCampaignStock.gone()
+                } else {
+                    groupItemOngoing.gone()
+                    groupCampaignStock.visible()
                 }
             }
         }
