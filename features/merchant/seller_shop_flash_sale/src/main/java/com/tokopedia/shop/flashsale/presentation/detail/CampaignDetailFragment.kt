@@ -39,6 +39,7 @@ import com.tokopedia.shop.flashsale.domain.entity.CampaignDetailMeta
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.MerchantCampaignTNC
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
+import com.tokopedia.shop.flashsale.domain.entity.aggregate.ShareComponent
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.ShareComponentMetadata
 import com.tokopedia.shop.flashsale.domain.entity.enums.isActive
 import com.tokopedia.shop.flashsale.domain.entity.enums.isAvailable
@@ -147,7 +148,6 @@ class CampaignDetailFragment : BaseDaggerFragment(),
         observeEditCampaignEvent()
         observeCancelCampaignEvent()
         observeMoreMenuEvent()
-        observeShareCampaignEvent()
         observeActiveDialog()
         observeShareComponent()
     }
@@ -158,20 +158,17 @@ class CampaignDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun observeShareCampaignEvent() {
-        viewModel.shareCampaignActionEvent.observe(viewLifecycleOwner) {
-            viewModel.getShareComponent(it.campaignId)
-        }
-    }
-
     private fun observeShareComponent() {
-        viewModel.shareComponent.observe(viewLifecycleOwner) { result ->
-            dismissLoaderDialog()
-            result?.let { it ->
-                displayShareBottomSheet(
-                    it.shareComponentThumbnailImageUrl,
-                    it.shareComponentMetadata
-                )
+        viewModel.shareCampaignActionEvent.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    dismissLoaderDialog()
+                    displayShareBottomSheet(result.data)
+                }
+                is Fail -> {
+                    dismissLoaderDialog()
+                    binding?.cardButtonWrapper showError result.throwable
+                }
             }
         }
     }
@@ -212,27 +209,24 @@ class CampaignDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun displayShareBottomSheet(
-        thumbnailImageUrl: String,
-        metadata: ShareComponentMetadata,
-    ) {
+    private fun displayShareBottomSheet(shareComponent: ShareComponent) {
         val param = ShareComponentInstanceBuilder.Param(
-            metadata.banner.shop.name,
-            metadata.banner.shop.logo,
-            metadata.shop.isPowerMerchant,
-            metadata.shop.isOfficial,
-            metadata.banner.shop.domain,
-            metadata.banner.campaignStatusId,
-            metadata.banner.campaignId,
-            metadata.banner.startDate,
-            metadata.banner.endDate,
-            metadata.banner.products.size,
-            metadata.banner.products,
-            metadata.banner.maxDiscountPercentage
+            shareComponent.metaData.banner.shop.name,
+            shareComponent.metaData.banner.shop.logo,
+            shareComponent.metaData.shop.isPowerMerchant,
+            shareComponent.metaData.shop.isOfficial,
+            shareComponent.metaData.banner.shop.domain,
+            shareComponent.metaData.banner.campaignStatusId,
+            shareComponent.metaData.banner.campaignId,
+            shareComponent.metaData.banner.startDate,
+            shareComponent.metaData.banner.endDate,
+            shareComponent.metaData.banner.products.size,
+            shareComponent.metaData.banner.products,
+            shareComponent.metaData.banner.maxDiscountPercentage
         )
 
         shareComponentBottomSheet = shareComponentInstanceBuilder.build(
-            thumbnailImageUrl,
+            shareComponent.thumbnailImageUrl,
             param,
             onShareOptionClick = ::handleShareOptionClick,
             onCloseOptionClicked = {}

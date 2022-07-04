@@ -24,6 +24,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
+import kotlinx.coroutines.async
 import javax.inject.Inject
 
 class CampaignDetailViewModel @Inject constructor(
@@ -62,24 +63,8 @@ class CampaignDetailViewModel @Inject constructor(
     val moreMenuEvent: LiveData<CampaignUiModel>
         get() = _moreMenuEvent
 
-    private val _shareCampaignActionEvent = SingleLiveEvent<CampaignUiModel>()
+    private val _shareCampaignActionEvent = SingleLiveEvent<Result<ShareComponent>>()
     val shareCampaignActionEvent = _shareCampaignActionEvent
-
-    private val _shareComponentThumbnailImageUrl = MutableLiveData<Result<String>>()
-    val shareComponentThumbnailImageUrl: LiveData<Result<String>>
-        get() = _shareComponentThumbnailImageUrl
-
-    private val _shareComponentMetadata = MutableLiveData<Result<ShareComponentMetadata>>()
-    val shareComponentMetadata: LiveData<Result<ShareComponentMetadata>>
-        get() = _shareComponentMetadata
-
-    private val _shareComponent by lazy {
-        shareComponentThumbnailImageUrl.combineResultWith(shareComponentMetadata) { thumbnailImageUrl, metaData ->
-            metaData?.let { ShareComponent(thumbnailImageUrl.orEmpty(), it) }
-        }
-    }
-    val shareComponent: LiveData<ShareComponent?>
-        get() = _shareComponent
 
     fun getCampaignDetail(campaignId: Long) {
         this._campaignId = campaignId
@@ -165,36 +150,22 @@ class CampaignDetailViewModel @Inject constructor(
             campaignData.campaignName,
             campaignData.status
         )
-        _shareCampaignActionEvent.value = campaignData
+        getShareComponent(campaignData.campaignId)
     }
 
-    fun getShareComponent(campaignId: Long) {
-        getShareComponentThumbnailImageUrl(campaignId)
-        getShareComponentMetadata(campaignId)
-    }
-
-    private fun getShareComponentThumbnailImageUrl(campaignId: Long) {
+    private fun getShareComponent(campaignId: Long) {
         launchCatchError(
             dispatchers.io,
             block = {
-                val metadata = generateCampaignBannerUseCase.execute(campaignId)
-                _shareComponentThumbnailImageUrl.postValue(Success(metadata))
+                val imageUrlDeffered = async { generateCampaignBannerUseCase.execute(campaignId) }
+                val metaDataDeferred = async { getShareComponentMetadataUseCase.execute(campaignId) }
+                val imageUrl = imageUrlDeffered.await()
+                val metaData = metaDataDeferred.await()
+                val shareComponent = ShareComponent(imageUrl, metaData)
+                _shareCampaignActionEvent.postValue(Success(shareComponent))
             },
             onError = { error ->
-                _shareComponentThumbnailImageUrl.postValue(Fail(error))
-            }
-        )
-    }
-
-    private fun getShareComponentMetadata(campaignId: Long) {
-        launchCatchError(
-            dispatchers.io,
-            block = {
-                val metadata = getShareComponentMetadataUseCase.execute(campaignId)
-                _shareComponentMetadata.postValue(Success(metadata))
-            },
-            onError = { error ->
-                _shareComponentMetadata.postValue(Fail(error))
+                _shareCampaignActionEvent.postValue(Fail(error))
             }
         )
     }
