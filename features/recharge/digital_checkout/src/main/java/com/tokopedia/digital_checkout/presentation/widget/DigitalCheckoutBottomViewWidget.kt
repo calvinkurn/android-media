@@ -15,7 +15,6 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
-import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
@@ -54,7 +53,7 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(@NotNull context
 
     private fun setupMarginBottom(){
         digitalPromoBtnView.rootView
-            .findViewById<ConstraintLayout>(R.id.cl_promo_checkout).apply {
+            .findViewById<ConstraintLayout>(com.tokopedia.promocheckout.common.R.id.cl_promo_checkout).apply {
                 setMargin(getDimens(SPACE),0,getDimens(SPACE),0)
             }
     }
