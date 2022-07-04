@@ -1,5 +1,6 @@
 package com.tokopedia.shop.flashsale.common.util
 
+import com.tokopedia.kotlin.extensions.view.orZero
 import kotlin.math.ceil
 
 object DiscountUtil {
@@ -10,8 +11,8 @@ object DiscountUtil {
         return (DISCOUNT_MAX - (originalPrice / discountedPrice) * DISCOUNT_MAX)
     }
 
-    fun getDiscountPercent(originalPrice: Long, discountedPrice: Long): Long {
-        val amount = getDiscountPercent(originalPrice.toDouble(), discountedPrice.toDouble())
+    fun getDiscountPercent(originalPrice: Long, discountedPrice: Long?): Long {
+        val amount = getDiscountPercent(originalPrice.toDouble(), discountedPrice.orZero().toDouble())
         return ceil(amount).toLong()
     }
 
@@ -20,8 +21,8 @@ object DiscountUtil {
         return  originalPrice * discountAmountInversed
     }
 
-    fun getDiscountPrice(discountAmount: Long, originalPrice: Long): Long {
-        val discountedPrice = getDiscountPrice(discountAmount.toDouble(), originalPrice)
+    fun getDiscountPrice(discountAmount: Long, originalPrice: Long?): Long {
+        val discountedPrice = getDiscountPrice(discountAmount.toDouble(), originalPrice.orZero())
         return ceil(discountedPrice).toLong()
     }
 

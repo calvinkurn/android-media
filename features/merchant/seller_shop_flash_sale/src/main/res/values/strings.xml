@@ -303,7 +303,8 @@
     <string name="editproduct_max_percent_text">Maks. %d</string>
     <string name="editproduct_min_percent_text">Min. %d</string>
     <string name="editproduct_order_exceed_stock_error">Tidak boleh melebihi stok utama</string>
-    <string name="editproduct_bs_warehouse_title">Pilih lokasi</string><string name="sda">\"Stok: \"</string>
+    <string name="editproduct_bs_warehouse_title">Pilih lokasi</string>
+    <string name="editproduct_warehouse_title_default">Lokasi Seller</string>
 
     <!-- Campaign Detail -->
     <string name="campaign_detail">Detail Campaign</string>

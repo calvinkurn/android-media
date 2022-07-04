@@ -13,8 +13,6 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsBottomsheetEditProductInfoBinding
 import com.tokopedia.shop.flashsale.common.extension.*
-import com.tokopedia.shop.flashsale.common.util.DiscountUtil.getDiscountPercent
-import com.tokopedia.shop.flashsale.common.util.DiscountUtil.getDiscountPrice
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductErrorType
@@ -84,11 +82,25 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
         setupProductMapDataObserver()
         setupValidationResultObserver()
         setupWarehouseListObserver()
-        setupHasWarehouseObserver()
+        setupIsShopMultiloc()
         setupErrorThrowableObserver()
         setupIsLoadingObserver()
         setupEditProductResultObserver()
+        setupCampaignPriceObserver()
+        setupCampaignPricePercentObserver()
         loadNextData()
+    }
+
+    private fun setupCampaignPricePercentObserver() {
+        viewModel.campaignPricePercent.observe(viewLifecycleOwner) {
+            binding?.tfCampaignPricePercent?.text = it.toString()
+        }
+    }
+
+    private fun setupCampaignPriceObserver() {
+        viewModel.campaignPrice.observe(viewLifecycleOwner) {
+            binding?.tfCampaignPrice?.text = it.toString()
+        }
     }
 
     private fun setupIsLoadingObserver() {
@@ -169,8 +181,8 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
         }
     }
 
-    private fun setupHasWarehouseObserver() {
-        viewModel.hasWarehouse.observe(viewLifecycleOwner) {
+    private fun setupIsShopMultiloc() {
+        viewModel.isShopMultiloc.observe(viewLifecycleOwner) {
             binding?.spinnerShopLocation?.isVisible = it
         }
     }
@@ -208,17 +220,11 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
             tfCampaignPrice.textField?.editText?.afterTextChanged {
                 if (switchPrice.isChecked) return@afterTextChanged
                 if (it.isEmpty()) tfCampaignPricePercent.text = PERCENT_INITIAL_VALUE
-                else {
-                    // TODO: move to viewmodel
-                    tfCampaignPricePercent.text =
-                        getDiscountPercent(it.filterDigit().toLongOrZero(), productInput.originalPrice).toString()
-                }
+                else viewModel.setCampaignPrice(it.filterDigit().toLongOrZero())
             }
             tfCampaignPricePercent.textField?.editText?.afterTextChanged {
                 if (!switchPrice.isChecked) return@afterTextChanged
-                // TODO: move to viewmodel
-                tfCampaignPrice.text =
-                    getDiscountPrice(it.filterDigit().toLongOrZero(), productInput.originalPrice).toString()
+                viewModel.setCampaignPricePercent(it.filterDigit().toLongOrZero())
             }
         }
     }

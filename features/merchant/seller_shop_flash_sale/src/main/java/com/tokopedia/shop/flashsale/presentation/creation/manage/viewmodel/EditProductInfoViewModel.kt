@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.shop.flashsale.common.util.DiscountUtil
 import com.tokopedia.shop.flashsale.common.util.ProductErrorStatusHandler
 import com.tokopedia.shop.flashsale.domain.entity.ProductSubmissionResult
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
@@ -19,6 +20,7 @@ import javax.inject.Inject
 class EditProductInfoViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val productErrorStatusHandler: ProductErrorStatusHandler,
+    private val warehouseUiModelMapper: WarehouseUiModelMapper,
     private val doSellerCampaignProductSubmissionUseCase: DoSellerCampaignProductSubmissionUseCase
 ) : BaseViewModel(dispatchers.main) {
 
@@ -34,6 +36,15 @@ class EditProductInfoViewModel @Inject constructor(
     val productMapData: LiveData<SellerCampaignProductList.ProductMapData>
         get() = _productMapData
 
+    private var _campaignPrice = MutableLiveData<Long>()
+    private var _campaignPricePercent = MutableLiveData<Long>()
+    val campaignPrice = Transformations.map(_campaignPricePercent) {
+        DiscountUtil.getDiscountPrice(it, productMapData.value?.originalPrice)
+    }
+    val campaignPricePercent = Transformations.map(_campaignPrice) {
+        DiscountUtil.getDiscountPercent(it, productMapData.value?.originalPrice)
+    }
+
     private var _editProductResult = MutableLiveData<ProductSubmissionResult>()
     val editProductResult: LiveData<ProductSubmissionResult>
         get() = _editProductResult
@@ -46,9 +57,8 @@ class EditProductInfoViewModel @Inject constructor(
     val isLoading: LiveData<Boolean>
         get() = _isLoading
 
-    val hasWarehouse = Transformations.map(warehouseList) {
-        // TODO: move to constant or utils
-        it.size > 1
+    val isShopMultiloc = Transformations.map(warehouseList) {
+        warehouseUiModelMapper.isShopMultiloc(it)
     }
 
     val validationResult = Transformations.map(productMapData) {
@@ -56,7 +66,7 @@ class EditProductInfoViewModel @Inject constructor(
     }
 
     fun setProduct(product: SellerCampaignProductList.Product) {
-        val warehouseList = WarehouseUiModelMapper.map(product.warehouseList)
+        val warehouseList = warehouseUiModelMapper.map(product.warehouseList)
         val productMapData = product.productMapData
         _product.postValue(product)
         _warehouseList.postValue(warehouseList)
@@ -89,5 +99,13 @@ class EditProductInfoViewModel @Inject constructor(
 
     fun setWarehouseList(warehouseList: List<WarehouseUiModel>) {
         _warehouseList.postValue(warehouseList)
+    }
+
+    fun setCampaignPrice(price: Long) {
+        _campaignPrice.value = price
+    }
+
+    fun setCampaignPricePercent(percent: Long) {
+        _campaignPricePercent.value = percent
     }
 }
