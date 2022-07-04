@@ -1352,7 +1352,7 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
 
     private fun onGetCampaignStock_thenReturn(getStockAllocationData: GetStockAllocationData) {
         coEvery {
-            campaignStockAllocationUseCase.executeOnBackground()
+            campaignStockAllocationUseCase.execute(any(), any(), any(), any())
         } returns getStockAllocationData
     }
 

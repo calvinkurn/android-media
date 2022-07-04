@@ -100,20 +100,11 @@ class CampaignStockViewModel @Inject constructor(
                 block = {
                     mGetStockAllocationLiveData.value = Success(withContext(dispatchers.io) {
                         val warehouseId = getWarehouseId(shopId)
-                        campaignStockAllocationUseCase.run {
-                            params = CampaignStockAllocationUseCase.createRequestParam(
-                                productIds,
-                                shopId,
-                                warehouseId
-                            )
-                            isBundling = isProductBundling
-                        }
                         val stockAllocationData =
-                            campaignStockAllocationUseCase.executeOnBackground()
+                            campaignStockAllocationUseCase.execute(productIds, shopId, warehouseId, isProductBundling)
                         campaignProductName = stockAllocationData.summary.productName
                         stockAllocationData.summary.isVariant.let { isVariant ->
                             isStockVariant = isVariant
-
                             if (isVariant) {
                                 getVariantResult(productId, stockAllocationData, isProductBundling)
                             } else {
