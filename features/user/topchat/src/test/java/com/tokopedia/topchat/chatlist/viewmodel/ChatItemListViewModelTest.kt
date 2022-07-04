@@ -90,6 +90,8 @@ class ChatItemListViewModelTest {
         viewModel.chatBannedSellerStatus.observeForever(chatBannedSellerStatusObserver)
         viewModel.isWhitelistTopBot.observeForever(isWhitelistTopBotObserver)
         viewModel.isChatAdminEligible.observeForever(isChatAdminEligibleObserver)
+
+        mockkObject(ChatItemListViewModel.arrayFilterParam)
     }
 
     @Test fun `getChatListMessage should return chat list of messages`() {
@@ -865,21 +867,42 @@ class ChatItemListViewModelTest {
     }
 
     @Test
-    fun should_give_3_filter_titles_when_buyer() {
+    fun should_give_2_filter_titles_when_buyer() {
         //Given
         val testContext: Context = mockk(relaxed = true)
+        every {
+            ChatItemListViewModel.arrayFilterParam.size
+        } returns 3
 
         //When
         val result = viewModel.getFilterTitles(testContext, false)
+
+        //Then
+        assertEquals(2, result.size)
+    }
+
+    @Test
+    fun should_give_3_filter_titles_when_seller_default() {
+        //Given
+        val testContext: Context = mockk(relaxed = true)
+        every {
+            ChatItemListViewModel.arrayFilterParam.size
+        } returns 3
+
+        //When
+        val result = viewModel.getFilterTitles(testContext, true)
 
         //Then
         assertEquals(3, result.size)
     }
 
     @Test
-    fun should_give_4_filter_titles_when_seller() {
+    fun should_give_4_filter_titles_when_seller_whitelisted() {
         //Given
         val testContext: Context = mockk(relaxed = true)
+        every {
+            ChatItemListViewModel.arrayFilterParam.size
+        } returns 4
 
         //When
         val result = viewModel.getFilterTitles(testContext, true)

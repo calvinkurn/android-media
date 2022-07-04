@@ -23,6 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
+import com.tokopedia.play_common.R as playCommonR
 
 /**
  * Created by kenny.hadisaputra on 25/01/22
@@ -72,7 +73,7 @@ class PlayWidgetCardMediumTranscodeView : FrameLayout {
         promoBadge = view.findViewById(R.id.play_widget_badge_promo)
         tvTitle = view.findViewById(R.id.play_widget_channel_title)
         tvAuthor = view.findViewById(R.id.play_widget_channel_name)
-        tvTotalView = view.findViewById(R.id.viewer)
+        tvTotalView = view.findViewById(playCommonR.id.viewer)
         llWidgetContainer = view.findViewById(R.id.play_widget_info_container)
         llLoadingContainer = view.findViewById(R.id.ll_loading_container)
         loaderLoading = view.findViewById(R.id.loader_loading)

@@ -118,6 +118,8 @@ object TopChatWebSocketParam {
         productProfile.addProperty("drop_percentage", product.dropPercentage)
         productProfile.addProperty("image_url", product.productImage)
         productProfile.addProperty("url", product.productUrl)
+        productProfile.addProperty("android_url", product.androidUrl)
+        productProfile.addProperty("ios_url", product.iosUrl)
         productProfile.addProperty("text", message)
         productProfile.addProperty("status", product.status)
         productProfile.addProperty("remaining_stock", product.remainingStock)
