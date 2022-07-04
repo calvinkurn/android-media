@@ -229,6 +229,7 @@ class NewShopPageFragment :
         private const val SHOP_SEARCH_PAGE_NAV_SOURCE = "shop"
         private const val FEED_SHOP_FRAGMENT_SHOP_ID = "PARAM_SHOP_ID"
         private const val FEED_SHOP_FRAGMENT_CREATE_POST_URL = "PARAM_CREATE_POST_URL"
+        private const val ARGS_SHOP_ID_FOR_REVIEW_TAB = "ARGS_SHOP_ID"
 
         @JvmStatic
         fun createInstance() = NewShopPageFragment()
@@ -272,6 +273,8 @@ class NewShopPageFragment :
     private val iconTabShowcaseActive: Int get() = IconUnify.CABINET_FILLED
     private val iconTabFeedInactive: Int get() = IconUnify.FEED
     private val iconTabFeedActive: Int get() = IconUnify.FEED_FILLED
+    private val iconTabReviewInactive: Int get() = IconUnify.STAR
+    private val iconTabReviewActive: Int get() = IconUnify.STAR_FILLED
 
     private var scrollToTopButton: FloatingButtonUnify? = null
     private val intentData: Intent = Intent()
@@ -1656,6 +1659,20 @@ class NewShopPageFragment :
                     feedFragment
             ))
         }
+
+        val reviewTabFragment = RouteManager.instantiateFragmentDF(
+                activity as AppCompatActivity,
+                FragmentConst.SHOP_REVIEW_FRAGMENT,
+                Bundle().apply {
+                    putString(ARGS_SHOP_ID_FOR_REVIEW_TAB, shopId)
+                }
+        )
+        listShopPageTabModel.add(ShopPageTabModel(
+                getString(R.string.shop_info_title_tab_review),
+                iconTabReviewInactive,
+                iconTabReviewActive,
+                reviewTabFragment
+        ))
         return listShopPageTabModel
     }
 

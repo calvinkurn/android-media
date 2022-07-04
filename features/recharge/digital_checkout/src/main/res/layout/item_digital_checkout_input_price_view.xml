@@ -16,7 +16,7 @@
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:text="@string/digital_cart_user_price_info"
         android:textColor="@color/Unify_N700_96"
-        app:typographyType="body_2"
+        app:typographyType="display_2"
         app:typographyWeight="bold" />
 
     <com.tokopedia.unifycomponents.CardUnify

@@ -111,6 +111,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             }
         }
 
+    val remainingDurationInMillis: Long
+        get() = livePusherMediator.remainingDurationInMillis
+
     val observableConfigInfo: LiveData<NetworkResult<ConfigurationUiModel>>
         get() = _observableConfigInfo
     val observableTotalView: LiveData<TotalViewUiModel>

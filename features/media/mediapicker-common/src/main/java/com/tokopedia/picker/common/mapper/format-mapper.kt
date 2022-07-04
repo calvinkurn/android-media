@@ -4,6 +4,13 @@ import android.content.Context
 import com.tokopedia.picker.common.R as commonPickerR
 
 const val DEFAULT_DURATION_LABEL = "00:00"
+const val ADDITIONAL_DURATION_BUFFER = 500
+const val SECOND_TIME_DIVIDER = 1000
+const val MINUTE_TIME_DIVIDER = SECOND_TIME_DIVIDER * 60
+const val HOUR_TIME_DIVIDER = MINUTE_TIME_DIVIDER * 60
+const val HOURS_ON_DAY = 24
+const val MINUTES_ON_HOUR = 60
+const val SECONDS_ON_MINUTE = 60
 
 /**
  * Mapper of duration,
@@ -16,13 +23,17 @@ const val DEFAULT_DURATION_LABEL = "00:00"
  * -> 12:14:50
  */
 fun Int?.humanize(): String {
-    val duration = this?: 0
+    if (this == null) return DEFAULT_DURATION_LABEL
 
-    if (duration == 0) return DEFAULT_DURATION_LABEL
+    /**
+     * Following exoplayer duration converter, they added buffer time 500ms
+     * https://github.com/google/ExoPlayer/blob/release-v2/library/common/src/main/java/com/google/android/exoplayer2/util/Util.java#L1992
+     */
+    val duration = this + ADDITIONAL_DURATION_BUFFER
 
-    val second = duration / 1000 % 60
-    val minute = duration / (1000 * 60) % 60
-    val hour = duration / (1000 * 60 * 60) % 24
+    val second = duration / SECOND_TIME_DIVIDER % SECONDS_ON_MINUTE
+    val minute = duration / MINUTE_TIME_DIVIDER % MINUTES_ON_HOUR
+    val hour = duration / HOUR_TIME_DIVIDER % HOURS_ON_DAY
 
     return if (hour > 0) {
         String.format("%02d:%02d:%02d", hour, minute, second)

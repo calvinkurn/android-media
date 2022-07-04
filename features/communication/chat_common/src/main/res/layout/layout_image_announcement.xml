@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -35,7 +35,8 @@
             android:scaleType="fitCenter"
             android:visibility="visible"
             tools:src="@tools:sample/avatars"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            android:contentDescription="image" />
 
         <Button
             android:id="@+id/btn_check"
@@ -47,11 +48,12 @@
             android:text="@string/title_chatcommon_check"
             android:textAllCaps="false"
             android:textColor="@color/Unify_N0"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:ignore="UnifyComponentUsage" />
 
     </LinearLayout>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/hour"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -60,7 +62,7 @@
         android:layout_marginTop="@dimen/chatcommon_3dp"
         android:gravity="start"
         android:textColor="@color/Unify_N300"
-        android:textSize="@dimen/chatcommon_10sp"
+        app:typographyType="small"
         tools:text="testtest" />
 
 </RelativeLayout>

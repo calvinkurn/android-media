@@ -70,6 +70,7 @@ class KeywordTabFragment : BaseDaggerFragment() {
     private var deleteCancel = false
     private var singleAction = false
     private var currentPageNum = 1
+    private val groupId by lazy(LazyThreadSafetyMode.NONE) { arguments?.getInt(GROUP_ID, 0).toString() }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -168,7 +169,7 @@ class KeywordTabFragment : BaseDaggerFragment() {
             TopAdsDashboardConstant.ACTION_ACTIVATE
         else
             TopAdsDashboardConstant.ACTION_DEACTIVATE
-        viewModel.setKeywordAction(actionActivate,
+        viewModel.setKeywordActionForGroup(groupId, actionActivate,
             listOf((adapter.items[pos] as KeywordItemModel).result.keywordId.toString()),
             resources, ::onSuccessAction)
     }
@@ -333,8 +334,7 @@ class KeywordTabFragment : BaseDaggerFragment() {
                 delay(TOASTER_DURATION)
                 if (activity != null && isAdded) {
                     if (!deleteCancel) {
-                        viewModel.setKeywordAction(actionActivate,
-                            getAdIds(), resources, ::onSuccessAction)
+                        viewModel.setKeywordActionForGroup(groupId,actionActivate, getAdIds(), resources, ::onSuccessAction)
                         activity?.setResult(Activity.RESULT_OK)
                     }
                     deleteCancel = false
@@ -342,7 +342,7 @@ class KeywordTabFragment : BaseDaggerFragment() {
                 }
             }
         } else {
-            viewModel.setKeywordAction(actionActivate, getAdIds(), resources, ::onSuccessAction)
+            viewModel.setKeywordActionForGroup(groupId,actionActivate, getAdIds(), resources, ::onSuccessAction)
         }
     }
 
