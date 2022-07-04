@@ -77,7 +77,7 @@ class CampaignDetailProductListAdapter :
 
                 //handle ongoing item view visibility
                 when {
-                    campaignStatus.isActive() -> {
+                    campaignStatus.isOngoing() -> {
                         groupItemOngoing.visible()
                         groupCampaignStock.gone()
                     }
