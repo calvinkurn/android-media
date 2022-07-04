@@ -198,14 +198,26 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     )
                 }
 
-                listener?.onClickSekSekarang(
-                    mData.id,
-                    mData.shopId,
-                    TYPE_TOPADS_HEADLINE_NEW,
-                    mData.followers.isFollowed,
-                    positionInFeed,
-                    mData,
-                )
+                if (mData.isTypeProductHighlight && mData.useASGCNewDesign) {
+                    listener?.onClickSekSekarang(
+                        mData.id,
+                        mData.author.id,
+                        mData.typename,
+                        mData.followers.isFollowed,
+                        positionInFeed,
+                        mData,
+                    )
+                } else {
+                    listener?.onClickSekSekarang(
+                        mData.id,
+                        mData.shopId,
+                        TYPE_TOPADS_HEADLINE_NEW,
+                        mData.followers.isFollowed,
+                        positionInFeed,
+                        mData,
+                    )
+                }
+
             }
 
             override fun onTopAdsChangeColorToGreen(viewHolder: CarouselImageViewHolder) {
