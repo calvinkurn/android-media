@@ -21,7 +21,6 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_ACCEPT_ORDER
@@ -245,12 +244,12 @@ open class SomListOrderViewHolder(
             val deadlineText = element.deadlineText
             val deadlineColor = element.deadlineColor
             if (deadlineText.isNotBlank() && deadlineColor.isNotBlank()) {
-                val textBackgroundDrawable = if (element.isPlus) {
+                val textBackgroundDrawable = if (element.orderPlusData != null) {
                     MethodChecker.getDrawable(root.context, R.drawable.bg_due_response_text_order_plus)
                 } else {
                     MethodChecker.getDrawable(root.context, R.drawable.bg_due_response_text_order_regular)
                 }
-                val iconBackgroundDrawable = if (element.isPlus) {
+                val iconBackgroundDrawable = if (element.orderPlusData != null) {
                     MethodChecker.getDrawable(root.context, R.drawable.bg_due_response_icon_order_plus)
                 } else {
                     MethodChecker.getDrawable(root.context, R.drawable.bg_due_response_icon_order_regular)
@@ -377,8 +376,8 @@ open class SomListOrderViewHolder(
 
     private fun setupOrderPlusRibbon(element: SomListOrderUiModel) {
         binding?.icSomListOrderPlusRibbon?.run {
-            loadImage(R.drawable.ic_som_list_order_plus_ribbon)
-            showWithCondition(element.isPlus)
+            urlSrc = element.orderPlusData?.logoUrl.orEmpty()
+            showWithCondition(element.orderPlusData?.logoUrl.isNullOrBlank().not())
         }
     }
 
@@ -395,7 +394,7 @@ open class SomListOrderViewHolder(
         }
         binding?.cardSomOrder?.setMargin(
             Int.ZERO,
-            if (element.isPlus) {
+            if (element.orderPlusData != null) {
                 CARD_MARGIN_TOP_ORDER_PLUS.toPx()
             } else {
                 CARD_MARGIN_TOP_ORDER_REGULAR.toPx()

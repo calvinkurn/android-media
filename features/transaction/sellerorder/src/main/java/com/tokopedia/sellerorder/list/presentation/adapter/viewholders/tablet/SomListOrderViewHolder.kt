@@ -62,7 +62,7 @@ class SomListOrderViewHolder(
             }
             binding?.cardSomOrder?.setMargin(
                 Int.ZERO,
-                if (element.isPlus) CARD_MARGIN_TOP_ORDER_PLUS else CARD_MARGIN_TOP_ORDER_REGULAR,
+                if (element.orderPlusData != null) CARD_MARGIN_TOP_ORDER_PLUS else CARD_MARGIN_TOP_ORDER_REGULAR,
                 Int.ZERO,
                 Int.ZERO
             )

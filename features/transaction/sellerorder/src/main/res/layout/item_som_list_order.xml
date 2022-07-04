@@ -8,9 +8,10 @@
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/icSomListOrderPlusRibbon"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
         android:layout_marginStart="6dp"
         android:layout_marginTop="6dp"
+        android:adjustViewBounds="true"
         app:layout_constraintStart_toStartOf="@id/cardSomOrder"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@drawable/ic_som_list_order_plus_ribbon" />

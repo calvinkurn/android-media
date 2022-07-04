@@ -52,7 +52,7 @@ class OrderListMapper @Inject constructor() {
                 tickerInfo = it.tickerInfo,
                 buttons = mapButtons(it.buttons),
                 searchParam = keyword,
-                isPlus = it.plusData != null
+                orderPlusData = mapOrderPlusData(it.plusData)
             )
         }
     }
@@ -80,5 +80,9 @@ class OrderListMapper @Inject constructor() {
                 popUp = it.popUp
             )
         }
+    }
+
+    private fun mapOrderPlusData(plusData: SomListOrderListResponse.Data.OrderList.Order.PlusData?): SomListOrderUiModel.OrderPlusData? {
+        return plusData?.let { SomListOrderUiModel.OrderPlusData(logoUrl = it.logoUrl) }
     }
 }
