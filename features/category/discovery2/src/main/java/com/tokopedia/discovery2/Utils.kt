@@ -1,5 +1,6 @@
 package com.tokopedia.discovery2
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -18,9 +19,14 @@ import androidx.annotation.RequiresApi
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tkpd.atcvariant.BuildConfig
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.discovery2.Constant.QueryParamConstants.RPC_DYNAMIC_SUBTITLE
+import com.tokopedia.discovery2.Constant.QueryParamConstants.RPC_TARGET_TITLE_ID
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.datamapper.getComponent
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.DYNAMIC_SUBTITLE
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_TITLE_ID
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -224,6 +230,18 @@ class Utils {
             return addressQueryParameterMap
         }
 
+        fun addQueryParamMap(queryParameterMap: MutableMap<String, String?>): MutableMap<String, String> {
+            val queryParamValues: MutableMap<String,String> = mutableMapOf()
+            if(!queryParameterMap[DYNAMIC_SUBTITLE].isNullOrEmpty()){
+                queryParamValues[RPC_DYNAMIC_SUBTITLE] = queryParameterMap[DYNAMIC_SUBTITLE]!!
+            }
+            if(!queryParameterMap[TARGET_TITLE_ID].isNullOrEmpty()){
+                queryParamValues[RPC_TARGET_TITLE_ID] = queryParameterMap[TARGET_TITLE_ID]!!
+            }
+
+            return queryParamValues
+        }
+
         fun isFutureSale(saleStartDate: String, timerFormat: String = TIMER_SPRINT_SALE_DATE_FORMAT): Boolean {
             if (saleStartDate.isEmpty()) return false
             val currentSystemTime = Calendar.getInstance().time
@@ -287,6 +305,7 @@ class Utils {
             }
         }
 
+        @SuppressLint("ResourceType")
         fun getValidHexCode(context: Context, color: String?): String {
             if (color.isNullOrEmpty()) {
                 return context.resources.getString(com.tokopedia.unifyprinciples.R.color.Unify_Background)

@@ -3,10 +3,11 @@ package com.tokopedia.sessioncommon.data.fingerprint
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.device.info.DeviceInfo
 import javax.inject.Inject
 
-class FingerprintPreferenceManager @Inject constructor(val context: Context): FingerprintPreference {
+class FingerprintPreferenceManager @Inject constructor(@ApplicationContext val context: Context): FingerprintPreference {
 
     val name = "android_user_biometric"
     val preference: SharedPreferences = context.getSharedPreferences(name, MODE_PRIVATE)

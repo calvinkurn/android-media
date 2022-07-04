@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/chatcommon_3dp"
     android:paddingLeft="@dimen/chatcommon_15dp"
+    android:paddingTop="@dimen/chatcommon_3dp"
     android:paddingRight="@dimen/chatcommon_15dp"
-    android:paddingTop="@dimen/chatcommon_3dp">
+    android:paddingBottom="@dimen/chatcommon_3dp">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -18,11 +18,11 @@
         android:layout_marginBottom="@dimen/layout_lvl2"
         android:textAllCaps="true"
         android:textColor="@color/Unify_N200"
-        android:textSize="@dimen/fontSize_lvl2"
         android:visibility="gone"
-        tools:text="13:16 wib"/>
+        app:typographyType="display_3"
+        tools:text="13:16 wib" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -31,26 +31,26 @@
         android:background="@drawable/left_bubble"
         android:linksClickable="true"
         android:maxWidth="@dimen/chatcommon_270dp"
-        android:paddingBottom="@dimen/layout_lvl1"
-        android:paddingEnd="@dimen/chatcommon_18dp"
         android:paddingStart="@dimen/layout_lvl2"
         android:paddingTop="@dimen/layout_lvl1"
+        android:paddingEnd="@dimen/chatcommon_18dp"
+        android:paddingBottom="@dimen/layout_lvl1"
         android:textColor="@color/Unify_N700_68"
         android:textColorLink="@color/Unify_N700_68"
         android:textIsSelectable="true"
-        android:textSize="@dimen/fontSize_lvl3"
         android:visibility="visible"
-        tools:text="@tools:sample/lorem"/>
+        app:typographyType="display_2"
+        tools:text="@tools:sample/lorem" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/hour"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/message"
         android:layout_marginTop="@dimen/chatcommon_3dp"
         android:textColor="@color/Unify_N300"
-        android:textSize="@dimen/fontSize_lvl1"
         android:visibility="gone"
-        tools:text="11:50"/>
+        app:typographyType="small"
+        tools:text="11:50" />
 
 </RelativeLayout>
