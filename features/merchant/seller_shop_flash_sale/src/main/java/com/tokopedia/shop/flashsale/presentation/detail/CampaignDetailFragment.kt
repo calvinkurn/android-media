@@ -179,6 +179,9 @@ class CampaignDetailFragment : BaseDaggerFragment(),
         binding.btnSeeTnc.setOnClickListener {
             viewModel.onTNCButtonClicked()
         }
+        binding.btnShareCampaign.setOnClickListener {
+            viewModel.onShareButtonClicked()
+        }
     }
 
     private fun observeEditCampaignEvent() {

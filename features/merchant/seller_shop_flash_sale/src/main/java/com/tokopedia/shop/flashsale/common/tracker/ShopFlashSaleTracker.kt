@@ -101,7 +101,7 @@ class ShopFlashSaleTracker @Inject constructor(private val userSession : UserSes
             .setShopId(userSession.shopId.toString())
             .setEvent(EVENT)
             .setEventAction("click edit campaign")
-            .setEventLabel("$campaignId - $campaignName - $campaignStatus")
+            .setEventLabel("$campaignId - $campaignName - ${campaignStatus.id}")
             .build()
             .send()
     }
@@ -117,8 +117,8 @@ class ShopFlashSaleTracker @Inject constructor(private val userSession : UserSes
             .setCurrentSite(CURRENT_SITE)
             .setShopId(userSession.shopId.toString())
             .setEvent(EVENT)
-            .setEventAction("click edit campaign")
-            .setEventLabel("$campaignId - $campaignName - $campaignStatus")
+            .setEventAction("click share campaign")
+            .setEventLabel("$campaignId - $campaignName - ${campaignStatus.id}")
             .build()
             .send()
     }
