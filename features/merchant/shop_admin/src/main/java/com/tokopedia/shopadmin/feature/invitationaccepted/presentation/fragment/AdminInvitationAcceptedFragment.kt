@@ -18,6 +18,7 @@ import com.tokopedia.shopadmin.R
 import com.tokopedia.shopadmin.common.analytics.ShopAdminTrackers
 import com.tokopedia.shopadmin.common.constants.AdminImageUrl
 import com.tokopedia.shopadmin.common.presentation.navigator.goToPlayStoreOrSellerApp
+import com.tokopedia.shopadmin.common.utils.ShopAdminErrorLogger
 import com.tokopedia.shopadmin.common.utils.getGlobalErrorType
 import com.tokopedia.shopadmin.common.utils.setTextMakeHyperlink
 import com.tokopedia.shopadmin.databinding.FragmentAdminInvitationAcceptedBinding
@@ -108,6 +109,10 @@ class AdminInvitationAcceptedFragment : BaseDaggerFragment() {
                     val message = ErrorHandler.getErrorMessage(context, it.throwable)
                     showToaster(message)
                     showGlobalError(it.throwable)
+                    ShopAdminErrorLogger.logToCrashlytic(
+                        ShopAdminErrorLogger.PERMISSION_LIST_ERROR,
+                        it.throwable
+                    )
                 }
             }
         }

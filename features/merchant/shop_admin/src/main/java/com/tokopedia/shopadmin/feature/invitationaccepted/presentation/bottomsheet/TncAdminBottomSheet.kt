@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shopadmin.R
+import com.tokopedia.shopadmin.common.utils.ShopAdminErrorLogger
 import com.tokopedia.shopadmin.databinding.BottomsheetTncAdminBinding
 import com.tokopedia.shopadmin.feature.invitationaccepted.di.component.AdminInvitationAcceptedComponent
 import com.tokopedia.shopadmin.feature.invitationaccepted.presentation.model.ArticleDetailUiModel
@@ -91,7 +92,13 @@ class TncAdminBottomSheet : BottomSheetUnify() {
                     hideLoading()
                     setupViews(it.data)
                 }
-                is Fail -> showToaster()
+                is Fail -> {
+                    showToaster()
+                    ShopAdminErrorLogger.logToCrashlytic(
+                        ShopAdminErrorLogger.ARTICLE_DETAIL_ERROR,
+                        it.throwable
+                    )
+                }
             }
         }
     }

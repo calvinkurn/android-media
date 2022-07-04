@@ -23,6 +23,7 @@ import com.tokopedia.shopadmin.R
 import com.tokopedia.shopadmin.common.analytics.ShopAdminTrackers
 import com.tokopedia.shopadmin.common.constants.AdminImageUrl
 import com.tokopedia.shopadmin.common.constants.AdminStatus
+import com.tokopedia.shopadmin.common.utils.ShopAdminErrorLogger
 import com.tokopedia.shopadmin.common.utils.getGlobalErrorType
 import com.tokopedia.shopadmin.databinding.FragmentAdminInvitationConfirmationBinding
 import com.tokopedia.shopadmin.databinding.ItemAdminConfirmationInvitationBinding
@@ -131,6 +132,10 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
                     is Fail -> {
                         val message = ErrorHandler.getErrorMessage(context, it.throwable)
                         showToaster(message)
+                        ShopAdminErrorLogger.logToCrashlytic(
+                            ShopAdminErrorLogger.VALIDATE_ADMIN_EMAIL_ERROR,
+                            it.throwable
+                        )
                     }
                 }
             }
@@ -151,6 +156,10 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
                 is Fail -> {
                     val message = ErrorHandler.getErrorMessage(context, it.throwable)
                     showToaster(message)
+                    ShopAdminErrorLogger.logToCrashlytic(
+                        ShopAdminErrorLogger.UPDATE_USER_PROFILE_ERROR,
+                        it.throwable
+                    )
                 }
             }
         }
@@ -207,6 +216,10 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
                     val message = ErrorHandler.getErrorMessage(context, it.throwable)
                     showToaster(message)
                     showGlobalError(it.throwable)
+                    ShopAdminErrorLogger.logToCrashlytic(
+                        ShopAdminErrorLogger.SHOP_ADMIN_INFO_ERROR,
+                        it.throwable
+                    )
                 }
             }
         }
@@ -229,6 +242,10 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
                 is Fail -> {
                     val message = ErrorHandler.getErrorMessage(context, it.throwable)
                     showToaster(message)
+                    ShopAdminErrorLogger.logToCrashlytic(
+                        ShopAdminErrorLogger.ADMIN_CONFIRMATION_REG_ERROR,
+                        it.throwable
+                    )
                 }
             }
         }
@@ -244,6 +261,10 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
                     hideLoading()
                     showGlobalError(it.throwable)
                     setupToolbar(true)
+                    ShopAdminErrorLogger.logToCrashlytic(
+                        ShopAdminErrorLogger.ADMIN_TYPE_ERROR,
+                        it.throwable
+                    )
                 }
             }
         }

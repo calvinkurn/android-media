@@ -18,6 +18,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.shopadmin.common.constants.AdminStatus
 import com.tokopedia.shopadmin.common.presentation.uimodel.AdminTypeUiModel
+import com.tokopedia.shopadmin.common.utils.ShopAdminErrorLogger
 import com.tokopedia.shopadmin.databinding.FragmentShopAdminRedirectionBinding
 import com.tokopedia.shopadmin.feature.redirection.di.component.ShopAdminRedirectionComponent
 import com.tokopedia.shopadmin.feature.redirection.presentation.viewmodel.ShopAdminRedirectionViewModel
@@ -77,6 +78,10 @@ class ShopAdminRedirectionFragment : BaseDaggerFragment() {
                 }
                 is Fail -> {
                     redirectCreateShopIfFail()
+                    ShopAdminErrorLogger.logToCrashlytic(
+                        ShopAdminErrorLogger.ADMIN_TYPE_ERROR,
+                        it.throwable
+                    )
                 }
             }
         }
