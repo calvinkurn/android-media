@@ -1,5 +1,6 @@
 package com.tokopedia.shop.flashsale.presentation.creation.manage
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -144,7 +145,7 @@ class ManageProductFragment : BaseDaggerFragment() {
     }
 
     private fun handleCoachMark() {
-        val shouldShowCoachMark = !sharedPreference.isManageProcudtCoachMarkDismissed()
+        val shouldShowCoachMark = !sharedPreference.isManageProductCoachMarkDismissed()
         if (shouldShowCoachMark && manageProductListAdapter.itemCount.isMoreThanZero()) {
             showCoachMark()
         }
@@ -209,6 +210,13 @@ class ManageProductFragment : BaseDaggerFragment() {
 
     private fun loadProductsData() {
         viewModel.getProducts(campaignId, LIST_TYPE)
+    }
+
+    @SuppressLint("ResourcePackage")
+    private fun showSuccessEditProductToaster() {
+        binding?.cardBottomButtonGroup.showToaster(
+            getString(R.string.manage_product_success_edit_toaster_message)
+        )
     }
 
     private fun displayProducts(productList: SellerCampaignProductList) {
@@ -371,6 +379,7 @@ class ManageProductFragment : BaseDaggerFragment() {
         bottomSheet.setOnEditProductSuccessListener {
             doOnDelayFinished(DELAY) {
                 loadProductsData()
+                showSuccessEditProductToaster()
             }
         }
         bottomSheet.show(childFragmentManager)

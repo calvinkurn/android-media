@@ -276,6 +276,7 @@
     <string name="error_msg_other">&#160;dan terjadi kesalahan lainnya</string>
     <string name="manage_product_first_list_coachmark">Klik Ubah di setiap produk untuk mengubah atau memperbaiki informasi tiap produk.</string>
     <string name="manage_product_second_list_coachmark">Klik di sini untuk menambah produk, ya.</string>
+    <string name="manage_product_success_edit_toaster_message">Info produk berhasil diubah.</string>
 
     <!--Manage Product Highlight -->
     <string name="sfs_manage_highlight">Atur Highlight</string>
@@ -305,6 +306,9 @@
     <string name="editproduct_order_exceed_stock_error">Tidak boleh melebihi stok utama</string>
     <string name="editproduct_bs_warehouse_title">Pilih lokasi</string>
     <string name="editproduct_warehouse_title_default">Lokasi Seller</string>
+    <string name="editproduct_first_coachmark_content">Tentukan potongan harga berdasarkan rupiah atau persentase dengan besaran antara 1-99%.</string>
+    <string name="editproduct_second_coachmark_content">Stok campaign akan diambil dari stok utama produk. Produk dapat dibeli di luar jadwal campaign selama stok utama masih tersedia, ya.</string>
+    <string name="editproduct_third_coachmark_content">Klik di sini untuk menyimpan pengaturan produkmu dan lanjut untuk mengatur produk berikutnya.</string>
 
     <!-- Campaign Detail -->
     <string name="campaign_detail">Detail Campaign</string>
