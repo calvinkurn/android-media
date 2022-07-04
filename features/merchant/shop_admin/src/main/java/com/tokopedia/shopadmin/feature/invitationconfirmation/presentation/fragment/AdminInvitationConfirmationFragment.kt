@@ -467,11 +467,11 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
                 adminInvitationWithNoEmailSection.root.show()
                 setAccessAcceptedBtnDisabled()
                 emailTypingListener()
-                shopAdminTrackers.impressInvitationPageNoInputEmail()
+                shopAdminTrackers.impressInvitationPageInputEmail()
             } else {
                 adminInvitationWithEmailSection.root.show()
                 adminInvitationWithNoEmailSection.root.hide()
-                shopAdminTrackers.impressInvitationPageInputEmail()
+                shopAdminTrackers.impressInvitationPageNoInputEmail()
             }
         }
     }
