@@ -43,7 +43,7 @@ class UserProfileViewModel @AssistedInject constructor(
     private val playPostContent = MutableLiveData<Resources<UserPostModel>>()
     val playPostContentLiveData : LiveData<Resources<UserPostModel>> get() = playPostContent
 
-    private var userPostError = MutableLiveData<Throwable>()
+    private val userPostError = MutableLiveData<Throwable>()
     val userPostErrorLiveData : LiveData<Throwable> get() = userPostError
 
 

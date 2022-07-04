@@ -177,6 +177,7 @@ class FollowerFollowingListingFragment @Inject constructor() : TkpdBaseV4Fragmen
 
     companion object {
         private const val TAG = "FollowerFollowingListingFragment"
+        const val REQUEST_CODE_LOGIN_TO_FOLLOW = 100
 
         fun getFragment(
             fragmentManager: FragmentManager,
