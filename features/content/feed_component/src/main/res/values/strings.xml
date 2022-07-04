@@ -218,4 +218,5 @@
     <string name="feed_ugc_onboarding_accept_tnc">Saya telah membaca Kebijakan Privasi dan setuju dengan Syarat &amp; Ketentuan</string>
     <string name="feed_ugc_onboarding_continue">Lanjut</string>
     <string name="up_input_username_info">Username hanya bisa diubah 1 kali</string>
+    <string name="feed_post_sebagai">Post sebagai</string>
 </resources>

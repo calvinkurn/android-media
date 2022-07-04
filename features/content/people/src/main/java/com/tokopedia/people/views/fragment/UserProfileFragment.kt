@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
@@ -51,8 +52,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
-import com.tokopedia.feedcomponent.onboarding.view.bottomsheet.FeedUserCompleteOnboardingBottomSheet
-import com.tokopedia.feedcomponent.onboarding.view.bottomsheet.FeedUserTnCOnboardingBottomSheet
 import com.tokopedia.people.views.activity.FollowerFollowingListingActivity
 import com.tokopedia.people.views.adapter.UserPostBaseAdapter
 import com.tokopedia.people.analytic.UserProfileTracker
@@ -71,6 +70,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import com.tokopedia.abstraction.R as abstractionR
 import com.tokopedia.unifyprinciples.R as unifyR
+import com.tokopedia.feedcomponent.R as feedComponentR
 import com.tokopedia.feedcomponent.onboarding.view.FeedUGCOnboardingParentFragment
 
 class UserProfileFragment @Inject constructor(
@@ -184,8 +184,7 @@ class UserProfileFragment @Inject constructor(
             is FeedUGCOnboardingParentFragment -> {
                 childFragment.setListener(object : FeedUGCOnboardingParentFragment.Listener {
                     override fun onSuccess() {
-                        /** TODO: navigate to create post */
-                        view?.showToast("test success")
+                        goToCreatePostPage()
                     }
                 })
             }
@@ -603,6 +602,15 @@ class UserProfileFragment @Inject constructor(
         })
     }
 
+    private fun goToCreatePostPage() {
+        val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2)
+        intent.putExtra(KEY_APPLINK_AFTER_CAMERA_CAPTURE, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
+        intent.putExtra(KEY_MAX_MULTI_SELECT_ALLOWED, KEY_MAX_MULTI_SELECT_ALLOWED_VALUE)
+        intent.putExtra(KEY_TITLE, getString(feedComponentR.string.feed_post_sebagai))
+        intent.putExtra(KEY_APPLINK_FOR_GALLERY_PROCEED, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
+        startActivity(intent)
+    }
+
     private fun getFollowersBundle(isFollowers: Boolean): Bundle {
         val bundle = Bundle()
         bundle.putString(EXTRA_DISPLAY_NAME, viewModel.displayName)
@@ -719,6 +727,12 @@ class UserProfileFragment @Inject constructor(
         private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
         private const val EXTRA_IS_REMINDER = "EXTRA_IS_REMINDER"
         private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
+
+        private const val KEY_APPLINK_AFTER_CAMERA_CAPTURE = "link_cam"
+        private const val KEY_MAX_MULTI_SELECT_ALLOWED = "max_multi_select"
+        private const val KEY_MAX_MULTI_SELECT_ALLOWED_VALUE = 5
+        private const val KEY_TITLE = "title"
+        private const val KEY_APPLINK_FOR_GALLERY_PROCEED = "link_gall"
 
         private const val TAG = "UserProfileFragment"
 
