@@ -67,7 +67,15 @@ class BuyerOrderDetailStickyActionButtonHandler(
             }
             BuyerOrderDetailActionButtonKey.SEE_POD -> {
                 onSeePODButtonClicked(button.url)
-                trackClickActionButtonPG(isFromPrimaryButton, BuyerOrderDetailTrackerConstant.BUTTON_NAME_SEE_POD)
+                trackClickActionButtonPG(isFromPrimaryButton, BuyerOrderDetailTrackerConstant.BUTTON_NAME_SEE_POD, "")
+            }
+            BuyerOrderDetailActionButtonKey.RE_UPLOAD_PRESCRIPTION -> {
+                onReUploadPrescriptionClicked(button.url)
+                trackClickActionButtonPG(isFromPrimaryButton, BuyerOrderDetailTrackerConstant.BUTTON_NAME_RE_UPLOAD_PRESCRIPTION, BuyerOrderDetailTrackerConstant.TRACKER_ID_RE_UPLOAD_PRESCRIPTION)
+            }
+            BuyerOrderDetailActionButtonKey.CHECK_PRESCRIPTION -> {
+                onCheckPrescriptionClicked(button.url)
+                trackClickActionButtonPG(isFromPrimaryButton, BuyerOrderDetailTrackerConstant.BUTTON_NAME_CHECK_PRESCRIPTION, BuyerOrderDetailTrackerConstant.TRACKER_ID_CHECK_PRESCRIPTION)
             }
         }
     }
@@ -78,6 +86,14 @@ class BuyerOrderDetailStickyActionButtonHandler(
 
     private fun onRespondToSubmissionOrderExtensionClicked() {
         navigator.goToOrderExtension(viewModel.getOrderId())
+    }
+
+    private fun onReUploadPrescriptionClicked(url: String) {
+        navigator.openAppLink(url, true)
+    }
+
+    private fun onCheckPrescriptionClicked(url: String) {
+        navigator.openAppLink(url, false)
     }
 
     private fun onAskSellerActionButtonClicked() {
@@ -165,12 +181,13 @@ class BuyerOrderDetailStickyActionButtonHandler(
         }
     }
 
-    private fun trackClickActionButtonPG(fromPrimaryButton: Boolean, buttonName: String) {
+    private fun trackClickActionButtonPG(fromPrimaryButton: Boolean, buttonName: String, trackerId: String) {
         viewModel.buyerOrderDetailResult.value?.let {
             if (it is Success) {
                 BuyerOrderDetailTracker.eventClickActionButtonPG(
                     isPrimaryButton = fromPrimaryButton,
                     buttonName = buttonName,
+                    trackerId = trackerId,
                     orderId = it.data.orderStatusUiModel.orderStatusHeaderUiModel.orderId,
                     orderStatusCode = it.data.orderStatusUiModel.orderStatusHeaderUiModel.orderStatusId
                 )
