@@ -22,6 +22,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.LocalLoad
 
+private const val ITEM_COUNT_4 = 4
+
 class BannerCarouselViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
     private var titleTextView: TextView = itemView.findViewById(R.id.title_tv)
     private var lihatSemuaTextView: TextView = itemView.findViewById(R.id.lihat_semua_tv)
@@ -33,7 +35,7 @@ class BannerCarouselViewHolder(itemView: View, private val fragment: Fragment) :
     private val bannerRecyclerViewDecorator = BannerCarouselItemDecorator()
 
     init {
-        linearLayoutManager.initialPrefetchItemCount = 4
+        linearLayoutManager.initialPrefetchItemCount = ITEM_COUNT_4
         mBannerCarouselRecyclerView.layoutManager = linearLayoutManager
         mDiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment)
         mBannerCarouselRecyclerView.adapter = mDiscoveryRecycleAdapter
@@ -45,6 +47,7 @@ class BannerCarouselViewHolder(itemView: View, private val fragment: Fragment) :
         if (mBannerCarouselComponentViewModel.shouldShowShimmer()) {
             addShimmer()
         }
+        mBannerCarouselComponentViewModel.checkForDarkMode(itemView.context)
         addDefaultItemDecorator()
         lihatSemuaTextView.setOnClickListener {
             RouteManager.route(fragment.activity, mBannerCarouselComponentViewModel.getLihatUrl())
@@ -134,7 +137,7 @@ class BannerCarouselViewHolder(itemView: View, private val fragment: Fragment) :
 
     private fun addShimmer() {
         val list: ArrayList<ComponentsItem> = ArrayList()
-        for (i in 1..4) {
+        for (i in 1..ITEM_COUNT_4) {
             list.add(ComponentsItem(name = ComponentNames.BannerCarouselShimmer.componentName))
         }
         mDiscoveryRecycleAdapter.setDataList(list)
