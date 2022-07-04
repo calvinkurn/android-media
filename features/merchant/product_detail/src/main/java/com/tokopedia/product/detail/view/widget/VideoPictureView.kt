@@ -58,7 +58,6 @@ class VideoPictureView @JvmOverloads constructor(
     }
 
     private fun showThumbnail() {
-        // ADD ROLLENCE LOGIC
         if (binding.pdpMainThumbnailRv.visibility == View.GONE) {
             animator?.animateShow()
         }
@@ -159,7 +158,8 @@ class VideoPictureView @JvmOverloads constructor(
     }
 
     private fun hideThumbnail(media: List<MediaDataModel>): Boolean {
-        if (media.size < MIN_MEDIA_TO_SHOW_THUMBNAIL) {
+        if (media.size < MIN_MEDIA_TO_SHOW_THUMBNAIL
+                || mListener?.showThumbnailImage() == false) {
             thumbnailAdapter = null
             animator = null
             binding.pdpMainThumbnailRv.layoutParams.height = 0

@@ -221,6 +221,7 @@ import com.tokopedia.referral.ReferralAction
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
@@ -1773,6 +1774,18 @@ open class DynamicProductDetailFragment :
                     dismiss()
                 }
             }.show()
+        }
+    }
+
+    override fun showThumbnailImage(): Boolean {
+        return try {
+            val abTestPlatform = RemoteConfigInstance.getInstance().abTestPlatform
+            val abTestThumbnailKey = abTestPlatform.getString(
+                    RollenceKey.PDP_CAROUSEL_ANDROID, RollenceKey.PDP_HIDE_THUMBNAIL)
+
+            abTestThumbnailKey == RollenceKey.PDP_SHOW_THUMBNAIL
+        } catch (throwable: Throwable) {
+            false
         }
     }
 

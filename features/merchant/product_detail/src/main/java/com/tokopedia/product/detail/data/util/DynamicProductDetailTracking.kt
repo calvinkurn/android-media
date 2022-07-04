@@ -11,6 +11,8 @@ import com.tokopedia.product.detail.common.ProductCartHelper
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.ProductTrackingConstant
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Action.CLICK_ANNOTATION_RECOM_CHIP
+import com.tokopedia.product.detail.common.ProductTrackingConstant.TrackerId.TRACKER_ID_CLICK_THUMBNAIL
+import com.tokopedia.product.detail.common.ProductTrackingConstant.TrackerId.TRACKER_ID_IMPRESS_THUMBNAIL
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.product.detail.common.data.model.re.RestrictionAction
@@ -1487,6 +1489,7 @@ object DynamicProductDetailTracking {
                     )
             ))))
             mapEvent[ProductTrackingConstant.Tracking.KEY_PRODUCT_ID] = productId
+            mapEvent[ProductTrackingConstant.Tracking.KEY_TRACKER_ID] = TRACKER_ID_CLICK_THUMBNAIL
             mapEvent[ProductTrackingConstant.Tracking.KEY_SHOP_ID_SELLER] = shopId
             mapEvent[ProductTrackingConstant.Tracking.KEY_SHOP_TYPE] = shopType
             mapEvent[ProductTrackingConstant.Tracking.KEY_WAREHOUSE_ID] = lcaWarehouseId
@@ -1533,6 +1536,7 @@ object DynamicProductDetailTracking {
                     )
             ))))
             mapEvent[ProductTrackingConstant.Tracking.KEY_PRODUCT_ID] = productId
+            mapEvent[ProductTrackingConstant.Tracking.KEY_TRACKER_ID] = TRACKER_ID_IMPRESS_THUMBNAIL
             mapEvent[ProductTrackingConstant.Tracking.KEY_SHOP_ID_SELLER] = shopId
             mapEvent[ProductTrackingConstant.Tracking.KEY_SHOP_TYPE] = shopType
             mapEvent[ProductTrackingConstant.Tracking.KEY_WAREHOUSE_ID] = lcaWarehouseId

@@ -21,7 +21,7 @@
         android:paddingBottom="4dp"
         android:textColor="@color/Unify_Static_White"
         android:visibility="gone"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         tools:text="hehehe"
         tools:visibility="visible" />
 

@@ -49,6 +49,7 @@ interface DynamicProductDetailListener {
                               componentTrackDataModel: ComponentTrackDataModel?)
 
     fun onMerchantVoucherSummaryClicked(shopId: String, @MvcSource source: Int, productId: String)
+    fun showThumbnailImage(): Boolean
 
     /**
      * ProductSnapshotViewHolder
