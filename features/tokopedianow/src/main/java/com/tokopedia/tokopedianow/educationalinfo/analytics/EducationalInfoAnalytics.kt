@@ -10,8 +10,10 @@ import com.tokopedia.tokopedianow.educationalinfo.analytics.EducationalInfoAnaly
 import com.tokopedia.tokopedianow.educationalinfo.analytics.EducationalInfoAnalytics.ACTION.EVENT_ACTION_VIEW_NOW_USP_BOTTOMSHEET
 import com.tokopedia.tokopedianow.educationalinfo.analytics.EducationalInfoAnalytics.CATEGORY.EVENT_CATEGORY_GROUPCHAT_ROOM
 import com.tokopedia.track.builder.Tracker
+import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
-class EducationalInfoAnalytics {
+class EducationalInfoAnalytics @Inject constructor(private val userSession: UserSessionInterface) {
 
     /**
      * NOW! USP BottomSheet Tracker
@@ -28,6 +30,9 @@ class EducationalInfoAnalytics {
     object CATEGORY {
         const val EVENT_CATEGORY_GROUPCHAT_ROOM = "groupchat room"
     }
+
+    private val userId: String
+            get() = userSession.userId
 
     fun impressUspBottomSheet(channelId: String?, state: String?) {
         Tracker.Builder()
@@ -61,6 +66,7 @@ class EducationalInfoAnalytics {
             .setEvent(EVENT_CLICK_CONTENT)
             .setEventAction(EVENT_ACTION_CLICK_VISIT_NOW_USP_BOTTOMSHEET)
             .setEventLabel("$channelId - $state")
+            .setUserId(userId)
             .build()
             .send()
     }
