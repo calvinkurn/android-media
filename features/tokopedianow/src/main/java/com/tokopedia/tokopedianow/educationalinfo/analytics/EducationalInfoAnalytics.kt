@@ -31,6 +31,9 @@ class EducationalInfoAnalytics @Inject constructor(private val userSession: User
         const val EVENT_CATEGORY_GROUPCHAT_ROOM = "groupchat room"
     }
 
+    private val userId: String
+            get() = userSession.userId
+
     fun impressUspBottomSheet(channelId: String?, state: String?) {
         Tracker.Builder()
             .setBusinessUnit(BUSINESS_UNIT_PLAY)
@@ -63,7 +66,7 @@ class EducationalInfoAnalytics @Inject constructor(private val userSession: User
             .setEvent(EVENT_CLICK_CONTENT)
             .setEventAction(EVENT_ACTION_CLICK_VISIT_NOW_USP_BOTTOMSHEET)
             .setEventLabel("$channelId - $state")
-            .setUserId(userSession.userId)
+            .setUserId(userId)
             .build()
             .send()
     }
