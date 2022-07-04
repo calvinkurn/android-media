@@ -629,7 +629,7 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
     private fun onViewCreatedFirstSight(view: View?) {
         Timber.d("$sightTag onViewCreatedFirstSight")
         chatTabListContract?.notifyViewCreated()
-        loadInitialData()
+        chatItemListViewModel.getChatListMessage(1, filterChecked, sightTag)
     }
 
     private fun onUserFirstSight() {
