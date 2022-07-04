@@ -31,7 +31,10 @@ class AddonVariantAdapter(private val addOnVariantList: List<AddonVariantItemUiM
 
         fun bind(item: AddonVariantItemUiModel) {
             with(binding) {
-                tvVariantAddonName.text = item.displayName
+                tvVariantAddonName.text = root.context.getString(
+                    com.tokopedia.tokofood.R.string.order_detail_variant_option_value,
+                    item.displayName, item.optionName
+                )
             }
         }
     }
