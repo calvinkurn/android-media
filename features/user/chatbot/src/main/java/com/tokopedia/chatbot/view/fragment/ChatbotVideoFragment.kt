@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.MediaController
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.chatbot.R
@@ -21,7 +22,8 @@ class ChatbotVideoFragment : BaseDaggerFragment(), MediaPlayer.OnPreparedListene
 
     private var videoUrl = ""
     private lateinit var videoPlayerView : VideoPlayerView
-    private lateinit var loader : LoaderUnify
+    private lateinit var progressLoader : LoaderUnify
+    private lateinit var errorImage : ImageView
 
     override fun getScreenName(): String {
         return ""
@@ -45,15 +47,15 @@ class ChatbotVideoFragment : BaseDaggerFragment(), MediaPlayer.OnPreparedListene
 
     private fun initViews(view : View) {
         videoPlayerView = view.findViewById(R.id.video_player)
-        loader = view.findViewById(R.id.loader)
-        loader.visible()
-        loader.bringToFront()
+        progressLoader = view.findViewById(R.id.loader)
+        errorImage = view.findViewById(R.id.error_image)
+        progressLoader.visible()
+        progressLoader.bringToFront()
         initVideoPlayer()
     }
 
     private fun initVideoPlayer() {
         videoPlayerView.setVideoURI(Uri.parse(videoUrl))
-
         videoPlayerView.setOnErrorListener { _, problem, _ ->
             when(problem) {
                 MediaPlayer.MEDIA_ERROR_UNKNOWN -> {
@@ -63,7 +65,7 @@ class ChatbotVideoFragment : BaseDaggerFragment(), MediaPlayer.OnPreparedListene
                         Toaster.LENGTH_SHORT,
                         Toaster.TYPE_ERROR
                     ).show()
-                    activity?.finish()
+                    onErrorVideoLoad()
                     true
                 }
                 MediaPlayer.MEDIA_ERROR_SERVER_DIED -> {
@@ -73,7 +75,7 @@ class ChatbotVideoFragment : BaseDaggerFragment(), MediaPlayer.OnPreparedListene
                         Toaster.LENGTH_SHORT,
                         Toaster.TYPE_ERROR
                     ).show()
-                    activity?.finish()
+                    onErrorVideoLoad()
                     true
                 }
                 MediaPlayer.MEDIA_ERROR_IO -> {
@@ -83,7 +85,7 @@ class ChatbotVideoFragment : BaseDaggerFragment(), MediaPlayer.OnPreparedListene
                         Toaster.LENGTH_SHORT,
                         Toaster.TYPE_ERROR
                     ).show()
-                    activity?.finish()
+                    onErrorVideoLoad()
                     true
                 }
 
@@ -94,12 +96,18 @@ class ChatbotVideoFragment : BaseDaggerFragment(), MediaPlayer.OnPreparedListene
                         Toaster.LENGTH_SHORT,
                         Toaster.TYPE_ERROR
                     ).show()
-                    activity?.finish()
+                    onErrorVideoLoad()
                     true
                 }
             }
         }
         videoPlayerView.setOnPreparedListener(this)
+    }
+
+    private fun onErrorVideoLoad(){
+        progressLoader.gone()
+        errorImage.visible()
+        errorImage.setImageResource(R.drawable.chatbot_video_error)
     }
 
     companion object {
@@ -115,17 +123,17 @@ class ChatbotVideoFragment : BaseDaggerFragment(), MediaPlayer.OnPreparedListene
         mediaPlayer?.let { player ->
 
             activity?.let { it ->
-                //video player resize
+
                 val videoSize = Video.resize(it, player.videoWidth, player.videoHeight)
                 videoPlayerView.setSize(videoSize.videoWidth, videoSize.videoHeight)
                 videoPlayerView.holder.setFixedSize(videoSize.videoWidth, videoSize.videoHeight)
 
-                //showing media controller
+
                 val mediaController = MediaController(it)
                 videoPlayerView.setMediaController(mediaController)
                 mediaController.setAnchorView(videoPlayerView)
             }
-            loader.gone()
+            progressLoader.gone()
             player.start()
         }
     }
