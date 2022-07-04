@@ -17,7 +17,7 @@
         app:layout_constraintEnd_toStartOf="@+id/pdp_guideline_1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_2"
+        app:typographyType="display_2"
         tools:text="@string/label_product_info"
         tools:visibility="visible" />
 
@@ -44,7 +44,7 @@
         app:layout_constraintLeft_toRightOf="@+id/pdp_guideline_1"
         app:layout_constraintRight_toLeftOf="@id/info_detail_icon"
         app:layout_constraintTop_toTopOf="@+id/info_detail_title"
-        app:typographyType="body_2"
+        app:typographyType="display_2"
         tools:text="4 hari"
         tools:visibility="visible" />
 
