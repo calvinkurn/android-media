@@ -44,6 +44,7 @@
                 android:layout_width="85dp"
                 android:layout_height="85dp"
                 android:layout_alignParentLeft="true"
+                android:contentDescription="@string/content_desc_sticker"
                 app:srcCompat="@drawable/ic_sticker_toped" />
 
             <com.tokopedia.unifyprinciples.Typography
