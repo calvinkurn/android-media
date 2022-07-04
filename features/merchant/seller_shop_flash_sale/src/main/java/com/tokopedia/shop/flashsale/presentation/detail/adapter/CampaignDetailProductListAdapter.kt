@@ -4,6 +4,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsItemCampaignDetailProductBinding
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
@@ -59,6 +61,13 @@ class CampaignDetailProductListAdapter :
                 tpgProductSku.setProductSku(product.productSku)
                 tpgProductStock.text = product.productMapData.customStock.toString()
                 tpgProductCampaignPrice.setProductPrice(product.productMapData.discountedPrice)
+
+                if (product.highlightProductWording.isNullOrEmpty()) {
+                    tpgProductHighlightName.gone()
+                } else {
+                    tpgProductHighlightName.visible()
+                    tpgProductHighlightName.text = product.highlightProductWording
+                }
             }
         }
 
