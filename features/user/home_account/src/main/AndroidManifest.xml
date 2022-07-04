@@ -155,7 +155,7 @@
         <activity
             android:name=".linkaccount.view.PrivacyAccountActivity"
             android:label="@string/title_privacy_account"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
