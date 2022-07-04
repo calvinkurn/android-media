@@ -11,13 +11,11 @@ class VideoUploadUiModel(
 ) : SendableUiModel(builder), Visitable<ChatbotTypeFactory> {
 
     var videoUrl: String? = builder.videoUrl
-    var videoUrlThumbnail: String? = builder.videoUrlThumbnail
     var isRetry: Boolean = builder.isRetry
     var length: Long = builder.length
 
     init {
         this.videoUrl = builder.videoUrl
-        this.videoUrlThumbnail = builder.videoUrlThumbnail
         this.isRetry = builder.isRetry
         this.length = builder.length
     }
@@ -28,17 +26,11 @@ class VideoUploadUiModel(
 
     class Builder : SendableUiModel.Builder<Builder, VideoUploadUiModel>() {
         internal var videoUrl: String? = null
-        internal var videoUrlThumbnail: String? = null
         internal var isRetry: Boolean = false
         internal var length: Long = 0
 
         fun withVideoUrl(videoUrl: String): Builder {
             this.videoUrl = videoUrl
-            return self()
-        }
-
-        fun withVideoUrlThumbnail(videoUrlThumbnail: String): Builder {
-            this.videoUrlThumbnail = videoUrlThumbnail
             return self()
         }
 

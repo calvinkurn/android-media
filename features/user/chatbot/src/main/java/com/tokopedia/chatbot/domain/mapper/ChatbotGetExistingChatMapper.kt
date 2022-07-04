@@ -284,7 +284,6 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
         return VideoUploadUiModel.Builder()
             .withResponseFromGQL(chatItemPojoByDateByTime)
             .withVideoUrl(pojoAttribute.videoUrl)
-            .withVideoUrlThumbnail(pojoAttribute.videoUrl)
             .build()
     }
 

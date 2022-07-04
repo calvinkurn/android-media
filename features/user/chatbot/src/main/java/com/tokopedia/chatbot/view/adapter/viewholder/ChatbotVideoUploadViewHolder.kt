@@ -139,16 +139,26 @@ class ChatbotVideoUploadViewHolder(
             setVisibility(progressBarSendImage, View.GONE)
         }
 
-        if (element.videoUrlThumbnail?.isNullOrEmpty() == true) {
+//        if (element.videoUrl?.isNullOrEmpty() == true) {
+//            attachmentUnify?.let { attachementUnify ->
+//                loadPlaceHolderWhenUploadingImageWithPNG(
+//                    attachementUnify,
+//                    R.drawable.chatbot_video_placeholder
+//                )
+//            }
+//        } else {
+//            attachmentUnify?.let { attachementUnify ->
+//                loadThumbnail(attachementUnify, element.videoUrl)
+//            }
+//        }
+        element.videoUrl?.let { videoUrl ->
             attachmentUnify?.let { attachementUnify ->
-                loadPlaceHolderWhenUploadingImageWithPNG(
+                loadImage(
                     attachementUnify,
-                    R.drawable.chatbot_video_placeholder
+                    videoUrl,
+                    element.attachmentType,
+                    element.messageId
                 )
-            }
-        } else {
-            attachmentUnify?.let { attachementUnify ->
-                loadThumbnail(attachementUnify, element.videoUrlThumbnail)
             }
         }
     }

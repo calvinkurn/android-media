@@ -1006,7 +1006,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             .withStartTime(SendableUiModel.generateStartTime())
             .withVideoUrl(video)
             .withIsDummy(true)
-            .withVideoUrlThumbnail("")
             .withLength(totalLength)
             .build()
 

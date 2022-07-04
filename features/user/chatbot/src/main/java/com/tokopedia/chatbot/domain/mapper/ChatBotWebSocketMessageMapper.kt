@@ -89,8 +89,6 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
         return VideoUploadUiModel.Builder()
             .withResponseFromWs(pojo)
             .withVideoUrl(pojoAttribute.videoUrl)
-                //TODO change this
-            .withVideoUrlThumbnail(pojoAttribute.videoUrl)
             .build()
     }
 
