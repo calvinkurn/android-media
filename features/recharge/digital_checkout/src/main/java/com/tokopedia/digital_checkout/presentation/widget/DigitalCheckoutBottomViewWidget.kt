@@ -15,6 +15,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
@@ -52,9 +53,10 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(@NotNull context
     }
 
     private fun setupMarginBottom(){
-        val parent = digitalPromoBtnView.parent as ConstraintLayout
-        val container = parent.findViewById<ConstraintLayout>(R.id.cl_promo_checkout)
-        container.setMargin(getDimens(SPACE),0,getDimens(SPACE),0)
+        digitalPromoBtnView.rootView
+            .findViewById<ConstraintLayout>(R.id.cl_promo_checkout).apply {
+                setMargin(getDimens(SPACE),0,getDimens(SPACE),0)
+            }
     }
 
     var isGoToPlusCheckout: Boolean = false
