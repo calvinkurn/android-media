@@ -228,6 +228,9 @@ class UserProfileFragment @Inject constructor(
                         .add(FeedUGCOnboardingParentFragment::class.java, bundle, FeedUGCOnboardingParentFragment.TAG)
                         .commit()
                 }
+                else {
+                    goToCreatePostPage()
+                }
             }
 
             mainBinding.rvPost.addOnScrollListener(feedFloatingButtonManager.scrollListener)
@@ -608,6 +611,7 @@ class UserProfileFragment @Inject constructor(
         intent.putExtra(KEY_MAX_MULTI_SELECT_ALLOWED, KEY_MAX_MULTI_SELECT_ALLOWED_VALUE)
         intent.putExtra(KEY_TITLE, getString(feedComponentR.string.feed_post_sebagai))
         intent.putExtra(KEY_APPLINK_FOR_GALLERY_PROCEED, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
+        intent.putExtra(KEY_IS_CREATE_POST_AS_BUYER, true)
         startActivity(intent)
     }
 
@@ -733,6 +737,7 @@ class UserProfileFragment @Inject constructor(
         private const val KEY_MAX_MULTI_SELECT_ALLOWED_VALUE = 5
         private const val KEY_TITLE = "title"
         private const val KEY_APPLINK_FOR_GALLERY_PROCEED = "link_gall"
+        private const val KEY_IS_CREATE_POST_AS_BUYER = "is_create_post_as_buyer"
 
         private const val TAG = "UserProfileFragment"
 
