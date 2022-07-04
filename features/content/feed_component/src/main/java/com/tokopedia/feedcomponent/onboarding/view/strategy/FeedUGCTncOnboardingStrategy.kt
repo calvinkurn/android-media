@@ -49,7 +49,7 @@ class FeedUGCTncOnboardingStrategy @Inject constructor(
 
     override fun handleClickNext() {
         scope.launchCatchError(block = {
-            if(!_isSubmit.value) {
+            if(!_isSubmit.value && _isCheckTnc.value) {
                 _isSubmit.update { true }
 
                 /** TODO: just for testing purpose */
