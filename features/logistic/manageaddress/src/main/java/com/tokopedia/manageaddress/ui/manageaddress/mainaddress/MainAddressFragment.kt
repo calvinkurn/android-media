@@ -3,6 +3,7 @@ package com.tokopedia.manageaddress.ui.manageaddress.mainaddress
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.os.Message
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -68,7 +69,8 @@ import javax.inject.Inject
  * MainAddressFragment
  * fragment inside viewPager of ManageAddressFragment
  */
-class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainAddressItemAdapterListener {
+class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainAddressItemAdapterListener,
+    ShareAddressConfirmationBottomSheet.Listener{
 
     companion object {
 
@@ -812,12 +814,7 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
         addressId: String
     ) {
         bottomSheetConfirmationShareAddress = ShareAddressConfirmationBottomSheet.newInstance(
-            email = email, phone = phone, addressId = addressId,
-            listener = object : ShareAddressConfirmationBottomSheet.Listener {
-                override fun onSuccessShareAddress() {
-                    bottomSheetConfirmationShareAddress?.dismiss()
-                }
-            }
+            email = email, phone = phone, addressId = addressId, listener = this
         )
         bottomSheetConfirmationShareAddress?.show(
             parentFragmentManager,
@@ -825,4 +822,19 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
         )
     }
 
+    override fun onSuccessShareAddress() {
+        bottomSheetConfirmationShareAddress?.dismiss()
+        showToaster(getString(R.string.success_share_address))
+    }
+
+    override fun onFailedShareAddress(errorMessage: String) {
+        bottomSheetConfirmationShareAddress?.dismiss()
+        showToaster(errorMessage, Toaster.TYPE_ERROR)
+    }
+
+    private fun showToaster(message: String, toastType: Int = Toaster.TYPE_NORMAL) {
+        view?.let {
+            Toaster.build(it, message, Toaster.LENGTH_SHORT, toastType).show()
+        }
+    }
 }

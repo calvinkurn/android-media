@@ -1,5 +1,6 @@
 package com.tokopedia.manageaddress.ui.shareaddress.bottomsheets
 
+import android.graphics.Typeface
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.Spanned
@@ -12,11 +13,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.logisticCommon.domain.model.ShareAddressBottomSheetState
 import com.tokopedia.manageaddress.databinding.BottomsheetShareAddressConfirmationBinding
 import com.tokopedia.manageaddress.di.DaggerShareAddressComponent
 import com.tokopedia.manageaddress.di.ShareAddressComponent
@@ -25,9 +26,6 @@ import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.domain.model.shareaddress.ShareAddressParam
-import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 
 class ShareAddressConfirmationBottomSheet : BottomSheetUnify(),
     HasComponent<ShareAddressComponent> {
@@ -55,6 +53,9 @@ class ShareAddressConfirmationBottomSheet : BottomSheetUnify(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
+        showCloseIcon = false
+        showHeader = false
+        setOnDismissListener { dismiss() }
     }
 
     private fun initInjector() {
@@ -64,10 +65,15 @@ class ShareAddressConfirmationBottomSheet : BottomSheetUnify(),
     private fun initObserver() {
         viewModel.shareAddressResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Success -> mListener?.onSuccessShareAddress()
-                is Fail -> showToaster(it.throwable.message.orEmpty())
+                is ShareAddressBottomSheetState.Success -> mListener?.onSuccessShareAddress()
+                is ShareAddressBottomSheetState.Fail -> mListener?.onFailedShareAddress(it.errorMessage)
+                is ShareAddressBottomSheetState.Loading -> onLoadingRequestAddress(it.isShowLoading)
             }
         })
+    }
+
+    private fun onLoadingRequestAddress(isShowLoading: Boolean) {
+        binding.btnShare.isLoading = isShowLoading
     }
 
     override fun onCreateView(
@@ -92,6 +98,9 @@ class ShareAddressConfirmationBottomSheet : BottomSheetUnify(),
 
     private fun setLayout() {
         binding.apply {
+            showCloseIcon = false
+            showHeader = false
+            setOnDismissListener { dismiss() }
             txtTermsShareAddress.addLinkText(getString(R.string.share_address_confirmation_tnc_link)) {
                 // Need To Open Webview TNC Page
             }
@@ -104,7 +113,7 @@ class ShareAddressConfirmationBottomSheet : BottomSheetUnify(),
                     )
                 )
             }
-            setCloseClickListener {
+            btnCancel.setOnClickListener {
                 dismiss()
             }
         }
@@ -122,6 +131,7 @@ class ShareAddressConfirmationBottomSheet : BottomSheetUnify(),
 
                 override fun updateDrawState(ds: TextPaint) {
                     super.updateDrawState(ds)
+                    ds.typeface = Typeface.DEFAULT_BOLD
                     ds.isUnderlineText = false
                     ds.color = ContextCompat.getColor(
                         context,
@@ -135,15 +145,10 @@ class ShareAddressConfirmationBottomSheet : BottomSheetUnify(),
         this.text = TextUtils.concat(this.text, " ", spannableString)
     }
 
-    private fun showToaster(errorMessage: String) {
-        view?.let {
-            Toaster.build(it, errorMessage, Toaster.LENGTH_SHORT, type = Toaster.TYPE_NORMAL).show()
-        }
-    }
-
     interface Listener {
-
         fun onSuccessShareAddress()
+
+        fun onFailedShareAddress(errorMessage: String)
     }
 
     companion object {

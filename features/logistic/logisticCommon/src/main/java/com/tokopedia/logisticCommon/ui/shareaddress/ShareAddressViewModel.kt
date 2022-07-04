@@ -4,12 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.logisticCommon.domain.model.ShareAddressBottomSheetState
 import com.tokopedia.logisticCommon.domain.request.RequestShareAddress
 import com.tokopedia.logisticCommon.domain.response.ShareAddressResponse
 import com.tokopedia.logisticCommon.domain.usecase.RequestShareAddressUseCase
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import javax.inject.Inject
 
@@ -18,17 +16,28 @@ class ShareAddressViewModel @Inject constructor(
     dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
-    private val mutableRequestShareAddressResponse = MutableLiveData<Result<ShareAddressResponse>>()
-    val requestShareAddressResponse: LiveData<Result<ShareAddressResponse>>
-        get() = mutableRequestShareAddressResponse
+    private val mutableRequestAddressResponse = MutableLiveData<ShareAddressBottomSheetState<ShareAddressResponse>>()
+    val requestAddressResponse: LiveData<ShareAddressBottomSheetState<ShareAddressResponse>>
+        get() = mutableRequestAddressResponse
 
     fun requestShareAddress(param: RequestShareAddress) {
         launchCatchError(block = {
+            showLoadingState(true)
             val result = requestShareAddressUseCase(param)
-            mutableRequestShareAddressResponse.value = Success(result)
+            showLoadingState(false)
+            mutableRequestAddressResponse.value = if (result.shareAddressResponse.isSuccess) {
+                ShareAddressBottomSheetState.Success(result)
+            } else {
+                ShareAddressBottomSheetState.Fail(result.shareAddressResponse.error)
+            }
         }, onError = {
-            mutableRequestShareAddressResponse.value = Fail(it)
+            showLoadingState(false)
+            mutableRequestAddressResponse.value = ShareAddressBottomSheetState.Fail(it.message.orEmpty())
         })
+    }
+
+    private fun showLoadingState(isShowLoading: Boolean) {
+        mutableRequestAddressResponse.value = ShareAddressBottomSheetState.Loading(isShowLoading)
     }
 
     fun isEmailValid(email: String): Boolean {

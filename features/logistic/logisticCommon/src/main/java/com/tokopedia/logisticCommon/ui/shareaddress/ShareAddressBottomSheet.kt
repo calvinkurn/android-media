@@ -24,9 +24,8 @@ import com.tokopedia.logisticCommon.R
 import com.tokopedia.logisticCommon.databinding.BottomsheetShareAddressBinding
 import com.tokopedia.logisticCommon.di.DaggerRequestShareAddressComponent
 import com.tokopedia.logisticCommon.di.RequestShareAddressComponent
+import com.tokopedia.logisticCommon.domain.model.ShareAddressBottomSheetState
 import com.tokopedia.logisticCommon.domain.request.RequestShareAddress
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -70,20 +69,26 @@ class ShareAddressBottomSheet : BottomSheetUnify(),
     }
 
     private fun initObserver() {
-        viewModel.requestShareAddressResponse.observe(viewLifecycleOwner, Observer {
+        viewModel.requestAddressResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Success -> {
-                    val response = it.data.shareAddressResponse
-                    if (response.isSuccess) {
-                        mRequestAddressListener?.onSuccessRequestAddress()
-                    } else {
-                        binding.etInputEmailNoHp.setMessage(response.error)
-                        binding.etInputEmailNoHp.setError(true)
-                    }
-                }
-                is Fail -> showToaster(it.throwable.message.orEmpty())
+                is ShareAddressBottomSheetState.Success -> onSuccessRequestAddress()
+                is ShareAddressBottomSheetState.Fail -> onErrorRequestAddress(it.errorMessage)
+                is ShareAddressBottomSheetState.Loading -> onLoadingRequestAddress(it.isShowLoading)
             }
         })
+    }
+
+    private fun onSuccessRequestAddress() {
+        mRequestAddressListener?.onSuccessRequestAddress()
+    }
+
+    private fun onErrorRequestAddress(errorMessage: String) {
+        binding.etInputEmailNoHp.isInputError = true
+        binding.etInputEmailNoHp.setMessage(errorMessage)
+    }
+
+    private fun onLoadingRequestAddress(isShowLoading: Boolean) {
+        binding.btnShare.isLoading = isShowLoading
     }
 
     override fun onCreateView(
@@ -117,8 +122,9 @@ class ShareAddressBottomSheet : BottomSheetUnify(),
 
     private fun setInputField() {
         binding.apply {
-            etInputEmailNoHp.textFieldInput.addTextChangedListener(object : TextWatcher {
+            etInputEmailNoHp.editText.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
+                    binding.etInputEmailNoHp.isInputError = false
                     setShareButtonEnabled(s?.isNotBlank() == true)
                 }
 
@@ -126,7 +132,7 @@ class ShareAddressBottomSheet : BottomSheetUnify(),
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             })
 
-            etInputEmailNoHp.getSecondIcon().let { contactIcon ->
+            etInputEmailNoHp.icon2.let { contactIcon ->
                 contactIcon.setColorFilter(
                     ContextCompat.getColor(
                         etInputEmailNoHp.context,
@@ -157,7 +163,7 @@ class ShareAddressBottomSheet : BottomSheetUnify(),
     private fun onClickShareButton() {
         var email: String? = null
         var phone: String? = null
-        val inputText = binding.etInputEmailNoHp.textFieldInput.text.toString()
+        val inputText = binding.etInputEmailNoHp.editText.text.toString()
 
         if (viewModel.isEmailValid(inputText)) {
             email = inputText
@@ -251,7 +257,7 @@ class ShareAddressBottomSheet : BottomSheetUnify(),
                 }
                 val contactNumber = contact?.contactNumber
                 val phoneNumberOnly = removeSpecialChars(contactNumber.toString())
-                binding.etInputEmailNoHp.textFieldInput.setText(phoneNumberOnly)
+                binding.etInputEmailNoHp.editText.setText(phoneNumberOnly)
             }
         }
     }

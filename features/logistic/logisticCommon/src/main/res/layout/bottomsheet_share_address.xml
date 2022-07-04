@@ -17,7 +17,7 @@
         app:typographyType="heading_4"
         app:typographyWeight="bold" />
 
-    <com.tokopedia.unifycomponents.TextFieldUnify
+    <com.tokopedia.unifycomponents.TextFieldUnify2
         android:id="@+id/et_input_email_no_hp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -25,8 +25,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txt_title_share_address"
-        app:text_field_label="@string/share_address_bottom_sheet_email_or_phone_number"
-        app:text_field_append_drawable_icon_2="@drawable/iconunify_notebook"/>
+        app:unify_text_field_label="@string/share_address_bottom_sheet_email_or_phone_number"
+        app:unify_text_field_append_drawable_icon_2="@drawable/iconunify_notebook"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_content_share_address"

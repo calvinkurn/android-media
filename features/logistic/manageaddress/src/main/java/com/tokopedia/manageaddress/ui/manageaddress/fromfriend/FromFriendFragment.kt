@@ -159,7 +159,7 @@ class FromFriendFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessSaveAddress() {
-        showToaster(getString(R.string.succes_save_share_address), Toaster.TYPE_NORMAL)
+        showToaster(getString(R.string.succes_save_share_address))
         mListener?.onSuccessSaveShareAddress()
     }
 
@@ -181,9 +181,8 @@ class FromFriendFragment : BaseDaggerFragment(),
             btnDelete.setOnClickListener {
                 viewModel.deleteAddress()
                 showToaster(
-                    getString(R.string.success_delete_share_address),
-                    Toaster.TYPE_NORMAL,
-                    getString(R.string.action_cancel_delete_address)
+                    message = getString(R.string.success_delete_share_address),
+                    actionText = getString(R.string.action_cancel_delete_address)
                 ) {
                     viewModel.onCancelDeleteAddress()
                 }
@@ -246,13 +245,13 @@ class FromFriendFragment : BaseDaggerFragment(),
     }
 
     private fun showToaster(
-        errorMessage: String,
-        toastType: Int,
+        message: String,
+        toastType: Int = Toaster.TYPE_NORMAL,
         actionText: String = "",
         onClickListener: (() -> Unit)? = null
     ) {
         view?.let {
-            Toaster.build(it, errorMessage, Toaster.LENGTH_SHORT, type = toastType,
+            Toaster.build(it, message, Toaster.LENGTH_SHORT, type = toastType,
                 actionText = actionText, clickListener = {
                     onClickListener?.invoke()
                 }).show()
@@ -316,6 +315,7 @@ class FromFriendFragment : BaseDaggerFragment(),
         val requestAddressListener = object : ShareAddressBottomSheet.RequestAddressListener {
             override fun onSuccessRequestAddress() {
                 bottomSheetRequestAddress?.dismiss()
+                showToaster(getString(R.string.success_request_address))
             }
         }
 

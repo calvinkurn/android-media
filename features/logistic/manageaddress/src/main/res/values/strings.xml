@@ -134,6 +134,10 @@
     <string name="success_delete_share_address">Alamat berhasil dihapus!</string>
     <string name="succes_save_share_address">Alamat berhasil ditambahkan!</string>
     <string name="action_cancel_delete_address">Batalkan</string>
+    <string name="success_share_address">Alamat berhasil dibagikan</string>
+    <string name="success_request_address">Alamat berhasil direquest!</string>
+    <string name="btn_yes_share">Ya, Bagikan</string>
+    <string name="btn_no">Tidak</string>
 
     <!--    remove address-->
     <string name="toaster_remove_address_success">Anda telah berhasil menghapus alamat</string>
