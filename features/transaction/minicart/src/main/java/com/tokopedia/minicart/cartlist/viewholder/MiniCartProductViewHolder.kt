@@ -166,6 +166,15 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
                 textProductPrice.setPadding(paddingLeft, 0, 0, 0)
                 textSlashPrice.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
                 textSlashPrice.show()
+                val constraintSet = ConstraintSet()
+                constraintSet.clone(containerProduct)
+                constraintSet.connect(
+                    R.id.text_product_price,
+                    ConstraintSet.START,
+                    R.id.text_slash_price,
+                    ConstraintSet.END
+                )
+                constraintSet.applyTo(containerProduct)
             } else {
                 textSlashPrice.gone()
                 labelSlashPricePercentage.gone()
