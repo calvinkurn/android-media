@@ -1,6 +1,6 @@
-package com.tokopedia.feedcomponent.onboarding.domain
+package com.tokopedia.feedcomponent.onboarding.domain.usecase
 
-import com.tokopedia.feedcomponent.onboarding.model.FeedProfileAcceptTncResponse
+import com.tokopedia.feedcomponent.onboarding.model.FeedProfileValidateUsernameResponse
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -14,22 +14,31 @@ import javax.inject.Inject
 @GqlQuery(FeedProfileValidateUsernameUseCase.QUERY_NAME, FeedProfileValidateUsernameUseCase.QUERY)
 class FeedProfileValidateUsernameUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository,
-) : GraphqlUseCase<FeedProfileValidateUsernameUseCase>(graphqlRepository) {
+) : GraphqlUseCase<FeedProfileValidateUsernameResponse>(graphqlRepository) {
 
     init {
         setGraphqlQuery(FeedProfileValidateUsernameUseCaseQuery())
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
-        setTypeClass(FeedProfileValidateUsernameUseCase::class.java)
+        setTypeClass(FeedProfileValidateUsernameResponse::class.java)
     }
 
     companion object {
+        private const val KEY_USERNAME = "username"
+
         const val QUERY_NAME = "FeedProfileValidateUsernameUseCaseQuery"
         const val QUERY = """
-            mutation FeedXProfileAcceptTnC{
-              feedXProfileAcceptTnC(){
-                    hasAcceptTnC
-                }
+            mutation FeedXProfileValidateUsername(${"$$KEY_USERNAME"}: String!){
+              feedXProfileValidateUsername(
+                $KEY_USERNAME: ${"$$KEY_USERNAME"}
+              ){
+                isValid
+                notValidInformation
+              }
             }
         """
+
+        fun createParam(username: String) = mapOf<String, Any>(
+            KEY_USERNAME to username
+        )
     }
 }

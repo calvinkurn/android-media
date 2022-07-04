@@ -1,6 +1,6 @@
-package com.tokopedia.feedcomponent.onboarding.domain
+package com.tokopedia.feedcomponent.onboarding.domain.usecase
 
-import com.tokopedia.feedcomponent.onboarding.model.FeedProfileSubmitResponse
+import com.tokopedia.feedcomponent.onboarding.model.FeedProfileAcceptTncResponse
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -11,19 +11,19 @@ import javax.inject.Inject
 /**
  * Created By : Jonathan Darwin on July 04, 2022
  */
-@GqlQuery(FeedProfileSubmitUseCase.QUERY_NAME, FeedProfileSubmitUseCase.QUERY)
-class FeedProfileSubmitUseCase @Inject constructor(
+@GqlQuery(FeedProfileAcceptTncUseCase.QUERY_NAME, FeedProfileAcceptTncUseCase.QUERY)
+class FeedProfileAcceptTncUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository,
-) : GraphqlUseCase<FeedProfileSubmitResponse>(graphqlRepository) {
+) : GraphqlUseCase<FeedProfileAcceptTncResponse>(graphqlRepository) {
 
     init {
-        setGraphqlQuery(FeedProfileSubmitUseCaseQuery())
+        setGraphqlQuery(FeedProfileAcceptTncUseCaseQuery())
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
-        setTypeClass(FeedProfileSubmitResponse::class.java)
+        setTypeClass(FeedProfileAcceptTncResponse::class.java)
     }
 
     companion object {
-        const val QUERY_NAME = "FeedProfileSubmitUseCaseQuery"
+        const val QUERY_NAME = "FeedProfileAcceptTncUseCaseQuery"
         const val QUERY = """
             mutation FeedXProfileAcceptTnC{
               feedXProfileAcceptTnC(){

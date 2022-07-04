@@ -1,6 +1,6 @@
-package com.tokopedia.feedcomponent.onboarding.domain
+package com.tokopedia.feedcomponent.onboarding.domain.usecase
 
-import com.tokopedia.feedcomponent.onboarding.model.FeedProfileAcceptTncResponse
+import com.tokopedia.feedcomponent.onboarding.model.FeedProfileSubmitResponse
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -11,15 +11,15 @@ import javax.inject.Inject
 /**
  * Created By : Jonathan Darwin on July 04, 2022
  */
-@GqlQuery(FeedProfileAcceptTncUseCase.QUERY_NAME, FeedProfileAcceptTncUseCase.QUERY)
-class FeedProfileAcceptTncUseCase @Inject constructor(
+@GqlQuery(FeedProfileSubmitUseCase.QUERY_NAME, FeedProfileSubmitUseCase.QUERY)
+class FeedProfileSubmitUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository,
-) : GraphqlUseCase<FeedProfileAcceptTncResponse>(graphqlRepository) {
+) : GraphqlUseCase<FeedProfileSubmitResponse>(graphqlRepository) {
 
     init {
-        setGraphqlQuery(FeedProfileAcceptTncUseCaseQuery())
+        setGraphqlQuery(FeedProfileSubmitUseCaseQuery())
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
-        setTypeClass(FeedProfileAcceptTncResponse::class.java)
+        setTypeClass(FeedProfileSubmitResponse::class.java)
     }
 
     companion object {
@@ -28,19 +28,19 @@ class FeedProfileAcceptTncUseCase @Inject constructor(
         private const val KEY_IS_UPDATE_USERNAME = "isUpdateUsername"
         private const val KEY_IS_UPDATE_BIOGRAPHY = "isUpdateBiography"
 
-        const val QUERY_NAME = "FeedProfileAcceptTncUseCaseQuery"
+        const val QUERY_NAME = "FeedProfileSubmitUseCaseQuery"
         const val QUERY = """
             mutation FeedXProfileSubmit(
-                ${"$$KEY_USERNAME"}: String!,
-                ${"$$KEY_BIOGRAPHY"}: String!,
-                ${"$$KEY_IS_UPDATE_USERNAME"}: Boolean!,
-                ${"$$KEY_IS_UPDATE_BIOGRAPHY"}: Boolean!,
+                ${"$${KEY_USERNAME}"}: String!,
+                ${"$${KEY_BIOGRAPHY}"}: String!,
+                ${"$${KEY_IS_UPDATE_USERNAME}"}: Boolean!,
+                ${"$${KEY_IS_UPDATE_BIOGRAPHY}"}: Boolean!,
             ){
               feedXProfileSubmit(req:{
-                $KEY_USERNAME: ${"$$KEY_USERNAME"},
-                $KEY_BIOGRAPHY: ${"$$KEY_BIOGRAPHY"},
-                $KEY_IS_UPDATE_USERNAME: ${"$$KEY_IS_UPDATE_USERNAME"},
-                $KEY_IS_UPDATE_BIOGRAPHY: ${"$$KEY_IS_UPDATE_BIOGRAPHY"}
+                ${KEY_USERNAME}: ${"$${KEY_USERNAME}"},
+                ${KEY_BIOGRAPHY}: ${"$${KEY_BIOGRAPHY}"},
+                ${KEY_IS_UPDATE_USERNAME}: ${"$${KEY_IS_UPDATE_USERNAME}"},
+                ${KEY_IS_UPDATE_BIOGRAPHY}: ${"$${KEY_IS_UPDATE_BIOGRAPHY}"}
               }) {
                 status
               }
