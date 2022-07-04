@@ -55,6 +55,10 @@ data class FeedXCard(
     var share: FeedXShare = FeedXShare(),
     @SerializedName("followers", alternate = ["fol"])
     var followers: FeedXFollowers = FeedXFollowers(),
+    @SerializedName("maximumDiscountPercentage")
+    var maxDiscPercent:Int = 0,
+    @SerializedName("maximumDiscountPercentageFmt")
+    var maximumDisPercentFmt: String = "",
 
     //FeedXCardPost Data Type
     @SerializedName("appLink")
