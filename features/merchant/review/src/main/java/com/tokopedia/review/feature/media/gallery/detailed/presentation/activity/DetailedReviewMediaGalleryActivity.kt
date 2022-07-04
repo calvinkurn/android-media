@@ -8,6 +8,7 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.view.GestureDetector
 import android.view.MotionEvent
 import androidx.appcompat.app.AppCompatActivity
@@ -20,7 +21,9 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.review.R
 import com.tokopedia.review.common.extension.collectLatestWhenResumed
@@ -32,6 +35,7 @@ import com.tokopedia.review.feature.media.gallery.detailed.di.DetailedReviewMedi
 import com.tokopedia.review.feature.media.gallery.detailed.di.qualifier.DetailedReviewMediaGalleryViewModelFactory
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.bottomsheet.ActionMenuBottomSheet
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.uistate.ActionMenuBottomSheetUiState
+import com.tokopedia.review.feature.media.gallery.detailed.presentation.uistate.MediaCounterUiState
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.uistate.OrientationUiState
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.viewmodel.SharedReviewMediaGalleryViewModel
 import com.tokopedia.review.feature.media.player.controller.presentation.fragment.ReviewMediaPlayerControllerFragment
@@ -53,6 +57,8 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
     companion object {
         const val TOASTER_KEY_ERROR_GET_REVIEW_MEDIA = "ERROR_GET_REVIEW_MEDIA"
         const val KEY_CACHE_MANAGER_ID = "cacheManagerId"
+        const val AUTO_HIDE_OVERLAY_DURATION = 5000L
+        const val AUTO_HIDE_TOUCH_CLICKABLE_MARGIN = 16
     }
 
     @Inject
@@ -105,6 +111,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
     }
 
     private val gestureListener = DetailedReviewMediaGalleryGestureListener()
+    private val autoHideOverlayHandler = AutoHideOverlayHandler()
     private val bottomSheetHandler = BottomSheetHandler()
     private val connectivityStatusListener = ConnectivityStatusListener()
 
@@ -146,9 +153,10 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
     }
 
     override fun dispatchTouchEvent(e: MotionEvent?): Boolean {
+        autoHideOverlayHandler.restartTimerIfAlreadyStarted()
         return if (
             e != null && !e.isAboveCloseButton() && !e.isAboveKebabButton() &&
-            !e.isAboveController() && !e.isAboveReviewDetail() &&
+            !e.isAboveController() && !e.isAboveReviewDetail() && !e.isAboveCounter() &&
             gestureDetector?.onTouchEvent(e) == true
         ) {
             true
@@ -220,6 +228,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
     private fun setupMainLayout() {
         setupBackground()
         binding?.setupToolbar()
+        binding?.setupCounter()
     }
 
     private fun enableFullscreen() {
@@ -289,6 +298,10 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
         }
     }
 
+    private fun ActivityDetailedReviewMediaGalleryBinding.setupCounter() {
+        layoutReviewMediaGalleryItemCounter.setBackgroundResource(R.drawable.bg_review_media_gallery_item_counter)
+    }
+
     private fun collectToolbarUiStateUpdate() {
         collectLatestWhenResumed(
             combine(
@@ -314,7 +327,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
             requestedOrientation = when(it.orientation) {
                 OrientationUiState.Orientation.LANDSCAPE -> {
                     enableFullscreen()
-                    ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+                    ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
                 }
                 else -> {
                     disableFullscreen()
@@ -356,35 +369,88 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
         }
     }
 
+    private fun collectOverlayVisibilityUpdate() {
+        collectWhenResumed(
+            combine(
+                sharedReviewMediaGalleryViewModel.overlayVisibility,
+                sharedReviewMediaGalleryViewModel.orientationUiState,
+                sharedReviewMediaGalleryViewModel.isPlayingVideo
+            ) { overlayVisibility, orientationUiState, isPlayingVideo ->
+                overlayVisibility && orientationUiState.isLandscape() && isPlayingVideo
+            }
+        ) { startAutoHideTimer ->
+            if (startAutoHideTimer) {
+                autoHideOverlayHandler.restartTimer()
+            } else {
+                autoHideOverlayHandler.stopTimer()
+            }
+        }
+    }
+
+    private fun collectMediaCounterUpdate() {
+        collectLatestWhenResumed(sharedReviewMediaGalleryViewModel.mediaCounterUiState) {
+            when (it) {
+                is MediaCounterUiState.Hidden -> {
+                    binding?.layoutReviewMediaGalleryItemCounter?.gone()
+                }
+                is MediaCounterUiState.Loading -> {
+                    binding?.layoutReviewMediaGalleryItemCounter?.show()
+                    binding?.loaderReviewMediaGalleryItemCounter?.show()
+                    binding?.tvReviewMediaGalleryItemCounter?.gone()
+                }
+                is MediaCounterUiState.Showing -> {
+                    binding?.layoutReviewMediaGalleryItemCounter?.show()
+                    binding?.loaderReviewMediaGalleryItemCounter?.gone()
+                    binding?.tvReviewMediaGalleryItemCounter?.run {
+                        text = buildString {
+                            append(it.count)
+                            append("/")
+                            append(it.total)
+                        }
+                        show()
+                    }
+                }
+            }
+        }
+    }
+
     private fun initUiStateCollectors() {
         collectToolbarUiStateUpdate()
         collectOrientationUiStateUpdate()
         collectActionMenuBottomSheetUiStateUpdate()
         collectToasterQueue()
         collectToasterActionClickEvent()
+        collectOverlayVisibilityUpdate()
+        collectMediaCounterUpdate()
     }
 
     private fun MotionEvent.isAboveCloseButton(): Boolean {
         return binding?.icReviewMediaGalleryClose?.let { closeButton ->
-            intersectWith(closeButton)
+            intersectWith(closeButton, AUTO_HIDE_TOUCH_CLICKABLE_MARGIN.toPx().toLong())
         } ?: false
     }
 
     private fun MotionEvent.isAboveKebabButton(): Boolean {
         return binding?.icReviewMediaGalleryKebab?.let { kebabButton ->
-            intersectWith(kebabButton)
+            intersectWith(kebabButton, AUTO_HIDE_TOUCH_CLICKABLE_MARGIN.toPx().toLong())
         } ?: false
     }
 
     private fun MotionEvent.isAboveController(): Boolean {
         return binding?.fragmentReviewGalleryController?.let { controller ->
-            intersectWith(controller)
+            intersectWith(controller, AUTO_HIDE_TOUCH_CLICKABLE_MARGIN.toPx().toLong())
         } ?: false
     }
 
     private fun MotionEvent.isAboveReviewDetail(): Boolean {
         return binding?.fragmentReviewDetail?.let { reviewDetail ->
-            intersectWith(reviewDetail)
+            intersectWith(reviewDetail, AUTO_HIDE_TOUCH_CLICKABLE_MARGIN.toPx().toLong())
+        } ?: false
+    }
+
+    private fun MotionEvent.isAboveCounter(): Boolean {
+        return binding?.layoutReviewMediaGalleryItemCounter?.let { reviewDetail ->
+            intersectWith(reviewDetail, AUTO_HIDE_TOUCH_CLICKABLE_MARGIN.toPx().toLong())
         } ?: false
     }
 
@@ -452,6 +518,44 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
 
             override fun onLost(network: Network) {
                 sharedReviewMediaGalleryViewModel.updateWifiConnectivityStatus(connected = false)
+            }
+        }
+    }
+
+    private inner class AutoHideOverlayHandler {
+        private val timer by lazy(LazyThreadSafetyMode.NONE) {
+            object: CountDownTimer(AUTO_HIDE_OVERLAY_DURATION, AUTO_HIDE_OVERLAY_DURATION) {
+                override fun onTick(millisUntilFinished: Long) {
+                    // noop
+                }
+
+                override fun onFinish() {
+                    sharedReviewMediaGalleryViewModel.hideOverlay()
+                }
+            }
+        }
+
+        private var started: Boolean = false
+
+        fun startTimer() {
+            timer.start()
+            started = true
+        }
+
+        fun stopTimer() {
+            timer.cancel()
+            started = false
+        }
+
+        fun restartTimer() {
+            stopTimer()
+            startTimer()
+        }
+
+        fun restartTimerIfAlreadyStarted() {
+            if (started) {
+                stopTimer()
+                startTimer()
             }
         }
     }

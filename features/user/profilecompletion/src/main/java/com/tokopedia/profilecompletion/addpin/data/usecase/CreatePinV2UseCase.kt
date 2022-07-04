@@ -15,18 +15,21 @@ class CreatePinV2UseCase @Inject constructor(
 ) : CoroutineUseCase<CreatePinV2Param, CreatePinV2Response>(dispatcher.io) {
 
     override suspend fun execute(params: CreatePinV2Param): CreatePinV2Response {
-	return repository.request(graphqlQuery(), params)
+        return repository.request(graphqlQuery(), params)
     }
 
     override fun graphqlQuery(): String {
-	return """
-	    mutation createPinV2(${'$'}inputCreatePin: CreatePinV2Param) {
-	      create_pin_v2(input: ${'$'}inputCreatePin) {
-	        success
-	        errors {
-	          name
-	          message
-	        }
+        return """
+	    mutation createPinV2(${'$'}pin_token: String!, ${'$'}validate_token: String!) {
+            create_pin_v2(input: {
+                pin_token: ${'$'}pin_token,
+                validate_token: ${'$'}validate_token
+            }) {
+                success
+                errors {
+                  name
+                  message
+                }
 	      }
 	    }
 	""".trimIndent()
