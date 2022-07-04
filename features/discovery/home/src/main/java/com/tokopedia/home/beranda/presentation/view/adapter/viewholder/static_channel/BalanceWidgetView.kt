@@ -13,10 +13,12 @@ import com.tokopedia.home.R
 import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.helper.benchmark.TRACE_ON_BIND_BALANCE_WIDGET_CUSTOMVIEW
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDividerModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel.Companion.TYPE_STATE_2
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BalanceAdapter
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BalanceDividerAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.layoutmanager.NpaGridLayoutManager
 import com.tokopedia.home.util.ViewUtils
 import com.tokopedia.kotlin.extensions.view.gone
@@ -31,8 +33,10 @@ class BalanceWidgetView: FrameLayout {
     private val itemContext: Context
     private var listener: HomeCategoryListener? = null
     private var rvBalance: RecyclerView? = null
+    private var rvBalanceDivider: RecyclerView? = null
     private var layoutManager: NpaGridLayoutManager? = null
     private var balanceAdapter: BalanceAdapter? = null
+    private var balanceDividerAdapter: BalanceDividerAdapter? = null
     private var viewBalanceCoachmark: LinearLayout? = null
     private var viewBalanceCoachmarkNew: LinearLayout? = null
     private lateinit var containerWidget: FrameLayout
@@ -54,10 +58,10 @@ class BalanceWidgetView: FrameLayout {
     init {
         val view = LayoutInflater.from(context).inflate(R.layout.layout_item_widget_balance_widget, this)
         rvBalance = view.findViewById(R.id.rv_balance_widget)
+        rvBalanceDivider = view.findViewById(R.id.rv_balance_divider)
         containerWidget = view.findViewById(R.id.container_balance_widget)
         viewBalanceCoachmark = view.findViewById(R.id.view_balance_widget_coachmark)
         viewBalanceCoachmarkNew = view.findViewById(R.id.view_balance_widget_coachmark_new)
-        rvBalance?.itemAnimator?.changeDuration = 0
         this.itemView = view
         this.itemContext = view.context
     }
@@ -98,6 +102,22 @@ class BalanceWidgetView: FrameLayout {
             })
             rvBalance?.layoutManager = layoutManager
             rvBalance?.adapter = balanceAdapter
+
+            balanceDividerAdapter = BalanceDividerAdapter(object : DiffUtil.ItemCallback<BalanceDividerModel>() {
+                override fun areItemsTheSame(
+                    oldItem: BalanceDividerModel,
+                    newItem: BalanceDividerModel
+                ): Boolean {
+                    return oldItem == newItem
+                }
+
+                override fun areContentsTheSame(
+                    oldItem: BalanceDividerModel,
+                    newItem: BalanceDividerModel
+                ): Boolean {
+                    return oldItem == newItem
+                }
+            })
         }
         if (element.balanceDrawerItemModels.isEmpty()) {
             rvBalance?.gone()
