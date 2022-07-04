@@ -27,13 +27,13 @@
                 android:layout_marginHorizontal="24dp"
                 android:layout_marginTop="9dp"
                 android:paddingBottom="2dp"
-                tools:text="Karina memang juara! Rank-nya tinggi di Tantangan Ulasan kategori ini:"
                 android:textAlignment="center"
                 android:textColor="@color/Unify_NN600"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="body_3" />
+                app:typographyType="body_3"
+                tools:text="Karina memang juara! Rank-nya tinggi di Tantangan Ulasan kategori ini:" />
 
             <com.tokopedia.review.feature.credibility.presentation.widget.ReviewCredibilityAchievementWidget
                 android:id="@+id/widget_review_credibility_achievement_one"
@@ -82,9 +82,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                tools:text="+3 Pencapaian Lainnya"
                 app:layout_constraintTop_toBottomOf="@id/barrier_achievements_bottom"
-                app:unifyButtonVariant="text" />
+                app:unifyButtonVariant="text"
+                tools:text="+3 Pencapaian Lainnya" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.tokopedia.unifycomponents.CardUnify2>
 
@@ -96,13 +96,13 @@
         android:paddingHorizontal="16dp"
         android:paddingTop="4dp"
         android:paddingBottom="6dp"
-        tools:text="Juara Ulasan"
         android:textColor="@color/Unify_Static_White"
         app:layout_constraintBottom_toTopOf="@id/container_review_credibility_achievement_box_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/container_review_credibility_achievement_box_content"
         app:typographyType="body_2"
-        app:typographyWeight="bold" />
+        app:typographyWeight="bold"
+        tools:text="Juara Ulasan" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

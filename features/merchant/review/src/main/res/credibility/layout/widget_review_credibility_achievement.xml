@@ -7,9 +7,10 @@
 
     <com.tokopedia.unifycomponents.CardUnify2
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginTop="24dp"
         app:card_type="clear"
+        app:layout_constraintDimensionRatio="96:103"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/iv_review_credibility_achievement_avatar">
@@ -32,27 +33,27 @@
                 android:layout_marginBottom="10dp"
                 android:ellipsize="end"
                 android:maxLines="2"
-                tools:text="Makanan &amp; Minuman"
                 android:textAlignment="center"
                 android:textColor="@color/Unify_Static_White"
                 app:layout_constraintBottom_toTopOf="@id/tv_review_credibility_achievement_counter"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="body_3" />
+                app:typographyType="body_3"
+                tools:text="Makanan &amp; Minuman" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_review_credibility_achievement_counter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="12dp"
-                tools:text="2x"
                 android:textColor="@color/Unify_Static_White"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:typographyType="body_2"
-                app:typographyWeight="bold" />
+                app:typographyWeight="bold"
+                tools:text="2x" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
