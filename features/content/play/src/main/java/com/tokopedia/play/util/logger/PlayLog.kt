@@ -13,7 +13,7 @@ interface PlayLog {
     )
 
     fun logDownloadSpeed(
-        downloadSpeed: Int
+        downloadSpeed: Float
     )
 
     fun logBufferEvent(

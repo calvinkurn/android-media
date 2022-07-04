@@ -1,23 +1,18 @@
 package com.tokopedia.play_common.util
 
-import android.content.Context
-import android.net.ConnectivityManager
-import android.os.Build
-import java.lang.Exception
-
 /**
  * @author by astidhiyaa on 22/03/22
  */
 object PlayLiveRoomMetricsCommon {
     
-    private var inetSpeed: Int = 0
+    private var inetSpeed: Float = 0f
     /***
      * Get user's avg internet connection speed, in Kbps
      */
     @JvmStatic
-    fun getInetSpeed(): Int = this.inetSpeed
+    fun getInetSpeed(): Float = this.inetSpeed
     
-    fun setInetSpeed(inetSpeed: Int){
+    fun setInetSpeed(inetSpeed: Float){
         this.inetSpeed = inetSpeed
     }
 

@@ -293,7 +293,7 @@ class PlayVideoWrapper private constructor(
 
         override fun onTransferEnd(dataSource: DataSource?, dataSpec: DataSpec?, isNetwork: Boolean) {
             endTime = System.currentTimeMillis()
-            PlayLiveRoomMetricsCommon.setInetSpeed(getDownstreamBandwidth().toInt())
+            PlayLiveRoomMetricsCommon.setInetSpeed(getDownstreamBandwidth())
         }
     }
 

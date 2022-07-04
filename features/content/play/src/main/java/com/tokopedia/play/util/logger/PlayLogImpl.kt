@@ -21,7 +21,7 @@ class PlayLogImpl @Inject constructor(private val logCollector: PlayLogCollector
         )
     }
 
-    override fun logDownloadSpeed(downloadSpeed: Int) {
+    override fun logDownloadSpeed(downloadSpeed: Float) {
         logCollector.collect(
             Pair("downloadSpeed", downloadSpeed)
         )
