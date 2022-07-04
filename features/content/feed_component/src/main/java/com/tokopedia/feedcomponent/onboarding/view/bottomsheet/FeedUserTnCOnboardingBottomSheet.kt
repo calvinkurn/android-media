@@ -9,12 +9,16 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.feedcomponent.databinding.BottomsheetFeedUserTncOnboardingBinding
 import com.tokopedia.feedcomponent.onboarding.view.uimodel.action.FeedUGCOnboardingAction
+import com.tokopedia.feedcomponent.onboarding.view.uimodel.event.FeedUGCOnboardingUiEvent
 import com.tokopedia.feedcomponent.onboarding.view.uimodel.state.FeedUGCOnboardingUiState
 import com.tokopedia.feedcomponent.onboarding.view.viewmodel.FeedUGCOnboardingViewModel
 import com.tokopedia.feedcomponent.util.withCache
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import com.tokopedia.abstraction.R as abstractionR
 
 /**
  * Created By : Jonathan Darwin on June 28, 2022
@@ -78,8 +82,19 @@ class FeedUserTnCOnboardingBottomSheet : BottomSheetUnify() {
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.uiEvent.collect {
-
+            viewModel.uiEvent.collect { event ->
+                when(event) {
+                    is FeedUGCOnboardingUiEvent.ErrorAcceptTnc -> {
+                        /** TODO: toaster is still not showing */
+                        Toaster.build(
+                            view = binding.btnContinue,
+                            text = getString(abstractionR.string.default_request_error_unknown),
+                            duration = Toaster.LENGTH_SHORT,
+                            type = TYPE_ERROR,
+                        ).show()
+                    }
+                    else -> {}
+                }
             }
         }
     }
@@ -92,7 +107,7 @@ class FeedUserTnCOnboardingBottomSheet : BottomSheetUnify() {
         if(prev == curr) return
 
         binding.layoutTnc.cbxTnc.isChecked = curr.isCheckTnc
-        binding.btnContinue.isEnabled = curr.isCheckTnc
+        binding.btnContinue.isEnabled = curr.isCheckTnc && !curr.isSubmit
         binding.btnContinue.isLoading = curr.isSubmit
 
         if(curr.hasAcceptTnc) {
@@ -106,7 +121,7 @@ class FeedUserTnCOnboardingBottomSheet : BottomSheetUnify() {
     }
 
     companion object {
-        private const val TAG = "FeedUserCompleteOnboarding"
+        private const val TAG = "FeedUserTnCOnboardingBottomSheet"
 
         fun getFragment(
             fragmentManager: FragmentManager,

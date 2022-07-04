@@ -5,6 +5,7 @@ import com.tokopedia.feedcomponent.onboarding.view.strategy.base.FeedUGCOnboardi
 import com.tokopedia.feedcomponent.onboarding.view.uimodel.action.FeedUGCOnboardingAction
 import com.tokopedia.feedcomponent.onboarding.view.uimodel.event.FeedUGCOnboardingUiEvent
 import com.tokopedia.feedcomponent.onboarding.view.uimodel.state.FeedUGCOnboardingUiState
+import com.tokopedia.feedcomponent.onboarding.view.uimodel.state.UsernameState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
@@ -32,6 +33,7 @@ class FeedUGCTncOnboardingStrategy @Inject constructor(
     ) { username, isCheckTnc, isSubmit, hasAcceptTnc ->
         FeedUGCOnboardingUiState(
             username = username,
+            usernameState = UsernameState.Valid,
             isCheckTnc = isCheckTnc,
             isSubmit = isSubmit,
             hasAcceptTnc = hasAcceptTnc,
@@ -71,6 +73,7 @@ class FeedUGCTncOnboardingStrategy @Inject constructor(
                 _isSubmit.update { false }
             }
         }) {
+            _hasAcceptTnc.update { false }
             _isSubmit.update { false }
             _uiEvent.emit(
                 FeedUGCOnboardingUiEvent.ErrorAcceptTnc

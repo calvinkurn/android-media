@@ -5,7 +5,16 @@ package com.tokopedia.feedcomponent.onboarding.view.uimodel.state
  */
 data class FeedUGCOnboardingUiState(
     val username: String,
+    val usernameState: UsernameState,
     val isCheckTnc: Boolean,
     val isSubmit: Boolean,
     val hasAcceptTnc: Boolean,
 )
+
+sealed interface UsernameState {
+
+    object Unknown : UsernameState
+    object Loading : UsernameState
+    data class Invalid(val message: String) : UsernameState
+    object Valid : UsernameState
+}
