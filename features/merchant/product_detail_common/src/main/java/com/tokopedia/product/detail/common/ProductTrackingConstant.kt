@@ -236,6 +236,8 @@ object ProductTrackingConstant {
         const val CLICK_CATEGORY_IMAGE = "click - category card on category carousel"
         const val EVENT_ACTION_CLICK_SEE_ALL_RECOM = "%s - %s - %s" //recoom title, page name, widget type
 
+        const val CLICK_INFO_MULTILOC = "click - information icon on shop component"
+
         const val CLICK_PRODUCT_BUNDLING = "click - product bundling"
         const val CLICK_CHECK_PRODUCT_BUNDLING = "click - lihat paket on bundling component"
         const val IMPRESSION_PRODUCT_BUNDLING = "impression - bundling component"

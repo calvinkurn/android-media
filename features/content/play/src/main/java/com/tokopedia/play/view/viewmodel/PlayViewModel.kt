@@ -512,6 +512,9 @@ class PlayViewModel @AssistedInject constructor(
 
     private val gson by lazy { Gson() }
 
+    private var delayQuizJob: Job? = null
+    private var delayTapJob: Job? = null
+
     init {
         videoStateProcessor.addStateListener(videoStateListener)
         videoStateProcessor.addStateListener(videoPerformanceListener)
@@ -1394,7 +1397,12 @@ class PlayViewModel @AssistedInject constructor(
 
     private suspend fun setupInteractive(interactive: InteractiveUiModel) {
         if (!isInteractiveAllowed) return
+        /**
+         * cancel task delay waiting duration in winner socket if game is coming in flash
+         */
+        cancelAllDelayFromSocketWinner()
         repo.save(interactive)
+        repo.setActive(interactive.id)
         when (interactive) {
             is InteractiveUiModel.Giveaway -> setupGiveaway(interactive)
             is InteractiveUiModel.Quiz -> handleQuizFromNetwork(interactive)
@@ -1416,31 +1424,15 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private suspend fun handleQuizFromNetwork(quiz: InteractiveUiModel.Quiz) {
-        _interactive.update {
-            it.copy(interactive = quiz)
-        }
-
-        if (quiz.status is InteractiveUiModel.Quiz.Status.Ongoing) {
-          repo.setActive(_interactive.value.interactive.id.toString())
-        }
-
         if (quiz.status == InteractiveUiModel.Quiz.Status.Finished) {
-            val channelId = mChannelData?.id ?: return
-
-            try {
-                val interactiveLeaderboard = repo.getInteractiveLeaderboard(channelId)
-                _leaderboard.update {
-                    it.copy(
-                        data = interactiveLeaderboard,
-                        state = ResultState.Success,
-                    )
-                }
-                setLeaderboardBadgeState(interactiveLeaderboard)
-
-                _interactive.update {
-                    it.copy(interactive = InteractiveUiModel.Unknown)
-                }
-            } catch (e: Throwable) {}
+            _interactive.update {
+                it.copy(interactive = InteractiveUiModel.Unknown)
+            }
+            checkLeaderboard(channelId)
+        } else {
+            _interactive.update {
+                it.copy(interactive = quiz)
+            }
         }
     }
 
@@ -1636,6 +1628,7 @@ class PlayViewModel @AssistedInject constructor(
                 val winnerStatus = playSocketToModelMapper.mapUserWinnerStatus(result)
                 _winnerStatus.value = winnerStatus
 
+                cancelAllDelayFromSocketWinner()
                 if(isFinished) processWinnerStatus(winnerStatus, interactive)
             }
             is QuizResponse -> {
@@ -1747,8 +1740,11 @@ class PlayViewModel @AssistedInject constructor(
             }
 
             if (!checkWinnerStatus() && interactive.interactive is InteractiveUiModel.Giveaway) {
-                delay(interactive.interactive.waitingDuration)
-                checkWinnerStatus()
+                delayTapJob?.cancel()
+                delayTapJob = viewModelScope.launch(dispatchers.computation) {
+                    delay(interactive.interactive.waitingDuration)
+                    checkWinnerStatus()
+                }
             }
 
             _interactive.value = InteractiveStateUiModel.Empty
@@ -1768,7 +1764,7 @@ class PlayViewModel @AssistedInject constructor(
 
     private fun handleQuizEnded() {
         viewModelScope.launchCatchError(dispatchers.computation, block = {
-            val interactive = _interactive.getAndUpdate {
+            val interactive = _interactive.updateAndGet {
                 if (it.interactive !is InteractiveUiModel.Quiz) error("Error")
                 val newInteractive = it.interactive.copy(
                     status = InteractiveUiModel.Quiz.Status.Finished
@@ -1787,9 +1783,12 @@ class PlayViewModel @AssistedInject constructor(
             if (!isRewardAvailable) {
                 showLeaderBoard(interactiveId = interactiveType.id)
             } else {
-                delay(interactive.interactive.waitingDuration)
-                if(isFinished) {
-                    if(winnerStatus == null) showLeaderBoard(interactiveId = interactiveType.id) else processWinnerStatus(winnerStatus, interactiveType)
+                delayQuizJob?.cancel()
+                delayQuizJob = viewModelScope.launch(dispatchers.computation) {
+                    delay(interactive.interactive.waitingDuration)
+                    if(isFinished) {
+                        if(winnerStatus == null) showLeaderBoard(interactiveId = interactiveType.id) else processWinnerStatus(winnerStatus, interactiveType)
+                    }
                 }
             }
             /**
@@ -2484,6 +2483,11 @@ class PlayViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(dispatchers.io, block = {
             _warehouseInfo.value = WarehouseInfoUiModel(id, isOOC)
         }) {}
+    }
+
+    private fun cancelAllDelayFromSocketWinner() {
+        if(delayQuizJob?.isActive == true) delayQuizJob?.cancel()
+        if(delayTapJob?.isActive == true) delayTapJob?.cancel()
     }
 
     companion object {

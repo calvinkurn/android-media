@@ -1,7 +1,6 @@
 package com.tokopedia.play.ui.productsheet.viewholder
 
 import android.view.View
-import android.view.ViewTreeObserver
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.LayoutRes
@@ -46,25 +45,6 @@ class ProductSectionViewHolder(
 
     private lateinit var adapter: ProductLineAdapter
 
-    private fun setupOnScrollListener(sectionInfo: ProductSectionUiModel.Section){
-        itemView.viewTreeObserver.addOnScrollChangedListener (object : ViewTreeObserver.OnScrollChangedListener {
-            override fun onScrollChanged() {
-                itemView.isVisibleOnTheScreen(onViewVisible = {
-                    listener.onProductImpressed(getVisibleProducts(layoutManagerProductList(sectionInfo)), sectionInfo)} ,
-                    onViewNotVisible = {
-                        itemView.viewTreeObserver.removeOnScrollChangedListener(this)
-                    })
-            }
-        })
-    }
-
-    private fun layoutManagerProductList(sectionInfo: ProductSectionUiModel.Section) = object : LinearLayoutManager(rvProducts.context, RecyclerView.VERTICAL, false) {
-        override fun onLayoutCompleted(state: RecyclerView.State?) {
-            super.onLayoutCompleted(state)
-            listener.onProductImpressed(getVisibleProducts(this), sectionInfo)
-        }
-    }
-
     private fun setupListener(sectionInfo: ProductSectionUiModel.Section) = object : ProductLineViewHolder.Listener {
         override fun onBuyProduct(product: PlayProductUiModel.Product) {
             listener.onBuyProduct(product, sectionInfo)
@@ -77,14 +57,15 @@ class ProductSectionViewHolder(
         override fun onClickProductCard(product: PlayProductUiModel.Product, position: Int) {
             listener.onClickProductCard(product, sectionInfo, position)
         }
+    }
 
+    init {
+        rvProducts.layoutManager = LinearLayoutManager(rvProducts.context, RecyclerView.VERTICAL, false)
     }
 
     fun bind(item: ProductSectionUiModel.Section) {
         resetBackground()
-        setupOnScrollListener(sectionInfo = item)
         adapter = ProductLineAdapter(setupListener(item))
-        rvProducts.layoutManager = layoutManagerProductList(item)
         rvProducts.adapter = adapter
 
         tvSectionTitle.shouldShowWithAction(item.config.title.isNotEmpty()){
@@ -120,6 +101,9 @@ class ProductSectionViewHolder(
             }
             ProductSectionType.Tokonow -> {
                 btnInfo.showWithCondition(item.config.title.isNotEmpty())
+                btnInfo.addOnImpressionListener(item.impressHolder){
+                    listener.onInformationImpressed()
+                }
                 tvTimerInfo.hide()
                 timerSection.hide()
             }
@@ -141,7 +125,14 @@ class ProductSectionViewHolder(
         btnInfo.setOnClickListener {
             listener.onInformationClicked(item)
         }
+
+        itemView.addOnImpressionListener(item.impressHolder){
+            listener.onProductImpressed(sectionInfo = item, product = getFinalProduct(item.productList))
+        }
     }
+
+    private fun getFinalProduct(productList: List<PlayProductUiModel.Product>): List<Pair<PlayProductUiModel.Product, Int>> =
+        productList.mapIndexed { index, product -> Pair(product, index) }
 
     private fun setupBackground(background: ProductSectionUiModel.Section.BackgroundUiModel) {
         if (background.gradients.isNotEmpty()) {
@@ -179,20 +170,6 @@ class ProductSectionViewHolder(
         return currentTime.addTimeToSpesificDate(Calendar.MILLISECOND, diff.toInt())
     }
 
-    private fun getVisibleProducts(layoutManagerProductList: LinearLayoutManager): List<Pair<PlayProductUiModel.Product, Int>> {
-        val products = adapter.getItems()
-        if (products.isNotEmpty()) {
-            val startPosition = layoutManagerProductList.findFirstCompletelyVisibleItemPosition()
-            val endPosition = layoutManagerProductList.findLastCompletelyVisibleItemPosition()
-            if (startPosition > -1 && endPosition < products.size) return products.slice(startPosition..endPosition)
-                .filterIsInstance<PlayProductUiModel.Product>()
-                .mapIndexed { index, item ->
-                    Pair(item, startPosition + index)
-                }
-        }
-        return emptyList()
-    }
-
     private fun resetBackground(){
         ivBg.setImageDrawable(null)
         itemView.background = null
@@ -213,6 +190,7 @@ class ProductSectionViewHolder(
         fun onReminderClicked(section: ProductSectionUiModel.Section)
         fun onReminderImpressed(section: ProductSectionUiModel.Section)
         fun onInformationClicked(section: ProductSectionUiModel.Section)
+        fun onInformationImpressed()
     }
 }
 

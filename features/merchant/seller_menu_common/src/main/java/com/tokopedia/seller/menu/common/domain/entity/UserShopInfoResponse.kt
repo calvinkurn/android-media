@@ -104,7 +104,10 @@ data class UserShopInfoResponse(
                 val statusMessage: String = "",
                 @Expose
                 @SerializedName("tickerType")
-                val tickerType: String = ""
+                val tickerType: String = "",
+                @Expose
+                @SerializedName("shopStatus")
+                val shopStatus: Int = 0
             )
         }
     }

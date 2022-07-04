@@ -115,7 +115,7 @@ import javax.inject.Named
 /**
  * @author by nisie on 10/24/18.
  */
-open class RegisterInitialFragment : BaseDaggerFragment(),
+class RegisterInitialFragment : BaseDaggerFragment(),
     PartialRegisterInputView.PartialRegisterInputViewListener,
     RegisterInitialRouter{
 
@@ -150,7 +150,6 @@ open class RegisterInitialFragment : BaseDaggerFragment(),
     @Inject
     lateinit var externalRegisterPreference: ExternalRegisterPreference
 
-    @field:Named(SESSION_MODULE)
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -168,11 +167,8 @@ open class RegisterInitialFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val viewModelProvider by lazy {
-        ViewModelProviders.of(this, viewModelFactory)
-    }
-    val registerInitialViewModel by lazy {
-        viewModelProvider.get(RegisterInitialViewModel::class.java)
+    private val registerInitialViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(RegisterInitialViewModel::class.java)
     }
 
     @Inject

@@ -173,10 +173,10 @@ class ProductBundleViewModel @Inject constructor(
                         inventoryDetail = InventoryDetail(
                             required = true,
                             userLocation = UserLocation(
-                                addressId = chosenAddress?.addressId.orEmpty(),
-                                districtID = chosenAddress?.districtId.orEmpty(),
-                                postalCode = chosenAddress?.postalCode.orEmpty(),
-                                latlon = chosenAddress?.geolocation.orEmpty()
+                                addressId = chosenAddress.addressId,
+                                districtID = chosenAddress.districtId,
+                                postalCode = chosenAddress.postalCode,
+                                latlon = chosenAddress.geolocation
                             )
                         )
                     ),

@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
@@ -19,11 +18,10 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
+import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.analytic.ProductAnalyticHelper
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.extensions.isCouponSheetsShown
@@ -68,9 +66,10 @@ import javax.inject.Inject
  * Created by jegul on 06/03/20
  */
 class PlayBottomSheetFragment @Inject constructor(
-        private val viewModelFactory: ViewModelProvider.Factory,
-        private val analytic: PlayAnalytic,
-): TkpdBaseV4Fragment(),
+    private val viewModelFactory: ViewModelProvider.Factory,
+    private val analytic: PlayAnalytic,
+    private val newAnalytic: PlayNewAnalytic,
+    ): TkpdBaseV4Fragment(),
         PlayFragmentContract,
         ProductSheetViewComponent.Listener,
         VariantSheetViewComponent.Listener,
@@ -132,7 +131,6 @@ class PlayBottomSheetFragment @Inject constructor(
 
     override fun onPause() {
         super.onPause()
-        productAnalyticHelper.sendImpressedProductSheets()
         analytic.getTrackingQueue().sendAll()
     }
 
@@ -186,7 +184,7 @@ class PlayBottomSheetFragment @Inject constructor(
         products: List<Pair<PlayProductUiModel.Product, Int>>,
         sectionInfo: ProductSectionUiModel.Section
     ) {
-        trackImpressedProduct(products, sectionInfo)
+        if(playViewModel.bottomInsets.isProductSheetsShown) analytic.impressBottomSheetProducts(products, sectionInfo)
     }
 
     override fun onProductCountChanged(view: ProductSheetViewComponent) {
@@ -550,10 +548,22 @@ class PlayBottomSheetFragment @Inject constructor(
                             } else BottomInsetsType.ProductSheet //TEMPORARY
 
                             val partnerTokoNow = playViewModel.latestCompleteChannelData.partnerInfo.type == PartnerType.Tokonow
-                            val (wording, route, toaster) = if(event.product.isTokoNow && partnerTokoNow)
-                                Triple(getString(R.string.play_add_to_cart_message_success_mixed), getString(R.string.play_tokonow_minicart_applink), getString(R.string.play_toaster_tokonow_wording))
-                            else if (event.product.isTokoNow && !partnerTokoNow) Triple(getString(R.string.play_add_to_cart_message_success_tokonow), ApplinkConstInternalMarketplace.CART, getString(R.string.play_toaster_tokonow_wording))
-                            else Triple(getString(R.string.play_add_to_cart_message_success), ApplinkConstInternalMarketplace.CART, getString(R.string.play_toaster_global_wording))
+                            val (wording, route, toaster) = if(event.product.isTokoNow && partnerTokoNow) {
+                                newAnalytic.impressNowToaster(channelId = playViewModel.channelId, channelType = playViewModel.channelType)
+                                Triple(
+                                    getString(R.string.play_add_to_cart_message_success_mixed),
+                                    getString(R.string.play_tokonow_minicart_applink),
+                                    getString(R.string.play_toaster_tokonow_wording)
+                                )
+                            } else if (event.product.isTokoNow && !partnerTokoNow) Triple(getString(R.string.play_add_to_cart_message_success_tokonow), ApplinkConstInternalMarketplace.CART, getString(R.string.play_toaster_tokonow_wording))
+                            else {
+                                newAnalytic.impressGlobalToaster(channelId = playViewModel.channelId, channelType = playViewModel.channelType)
+                                Triple(
+                                    getString(R.string.play_add_to_cart_message_success),
+                                    ApplinkConstInternalMarketplace.CART,
+                                    getString(R.string.play_toaster_global_wording)
+                                )
+                            }
 
                             doShowToaster(
                                 bottomSheetType = bottomInsetsType,
@@ -562,7 +572,15 @@ class PlayBottomSheetFragment @Inject constructor(
                                 actionText = toaster,
                                 actionClickListener = {
                                     RouteManager.route(requireContext(), route)
-                                    analytic.clickSeeToasterAfterAtc()
+                                    if (event.product.isTokoNow && partnerTokoNow) {
+                                        newAnalytic.clickLihatNowToaster(
+                                            channelType = playViewModel.channelType,
+                                            channelId = playViewModel.channelId
+                                        )
+                                        analytic.clickSeeToasterAfterAtc()
+                                    }
+                                    else if(!event.product.isTokoNow) newAnalytic.clickGlobalToaster(channelType = playViewModel.channelType, channelId = playViewModel.channelId)
+                                    else analytic.clickSeeToasterAfterAtc()
                                 }
                             )
 
@@ -590,10 +608,6 @@ class PlayBottomSheetFragment @Inject constructor(
         }
     }
 
-    private fun trackImpressedProduct(products: List<Pair<PlayProductUiModel.Product, Int>>, sectionInfo: ProductSectionUiModel.Section) {
-        if (playViewModel.bottomInsets.isProductSheetsShown) productAnalyticHelper.trackImpressedProducts(products, sectionInfo)
-    }
-
     override fun onReminderClicked(
         view: ProductSheetViewComponent,
         productSectionUiModel: ProductSectionUiModel.Section
@@ -608,7 +622,13 @@ class PlayBottomSheetFragment @Inject constructor(
     override fun onInformationClicked(
         view: ProductSheetViewComponent
     ) {
-        openPageByApplink(ApplinkConstInternalTokopediaNow.EDUCATIONAL_INFO , pipMode = false)
+        newAnalytic.clickInfoNow(channelId = playViewModel.channelId, channelType = playViewModel.channelType)
+        val appLink = "${ApplinkConstInternalTokopediaNow.EDUCATIONAL_INFO}?source=play&channel_id=${playViewModel.channelId}&state=${playViewModel.channelType}"
+        openPageByApplink(appLink , pipMode = false)
+    }
+
+    override fun onInformationImpressed(view: ProductSheetViewComponent) {
+        newAnalytic.impressInfoNow(channelId = playViewModel.channelId, channelType = playViewModel.channelType)
     }
 
     /**
@@ -634,6 +654,7 @@ class PlayBottomSheetFragment @Inject constructor(
                 voucherList = tagItem.voucher.voucherList,
                 title = bottomSheetTitle,
             )
+            productAnalyticHelper.sendImpressedProductSheets()
         } else {
             productSheetView.showEmpty(emptyBottomSheetInfoUi)
         }

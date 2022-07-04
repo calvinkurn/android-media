@@ -50,6 +50,12 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
+import com.tokopedia.play.widget.analytic.impression.DefaultImpressionValidator
+import com.tokopedia.play.widget.analytic.impression.ImpressionHelper
+import com.tokopedia.play.widget.ui.PlayWidgetView
+import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
+import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
+import com.tokopedia.play.widget.ui.listener.PlayWidgetRouterListener
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -146,6 +152,7 @@ import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeLeftCarous
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeTickerViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
 import com.tokopedia.tokopedianow.common.util.TokoNowSharedPreference
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomePlayWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.view.listener.OnBoard20mBottomSheetCallback
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
@@ -177,7 +184,9 @@ class TokoNowHomeFragment: Fragment(),
         HomeSharingListener,
         HomeEducationalInformationListener,
         ServerErrorListener,
-        PermissionListener
+        PermissionListener,
+        PlayWidgetListener,
+        PlayWidgetRouterListener
 {
 
     companion object {
@@ -185,7 +194,12 @@ class TokoNowHomeFragment: Fragment(),
         private const val DEFAULT_INTERVAL_HINT: Long = 10000L
         private const val FIRST_INSTALL_CACHE_VALUE: Long = 1800000L
         private const val REQUEST_CODE_LOGIN_STICKY_LOGIN = 130
+        private const val REQUEST_CODE_PLAY_WIDGET = 100
         private const val ITEM_VIEW_CACHE_SIZE = 20
+
+        private const val EXTRA_PLAY_CHANNEL_ID = "EXTRA_CHANNEL_ID"
+        private const val EXTRA_PLAY_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
+
         const val CATEGORY_LEVEL_DEPTH = 1
         const val SOURCE = "tokonow"
         const val SOURCE_TRACKING = "tokonow page"
@@ -215,6 +229,9 @@ class TokoNowHomeFragment: Fragment(),
     @Inject
     lateinit var homeSharedPref: TokoNowSharedPreference
 
+    @Inject
+    lateinit var playWidgetImpressionValidator: DefaultImpressionValidator
+
     private var binding by autoClearedNullable<FragmentTokopedianowHomeBinding>()
 
     private val adapter by lazy {
@@ -235,7 +252,8 @@ class TokoNowHomeFragment: Fragment(),
                 dynamicLegoBannerCallback = createLegoBannerCallback(),
                 homeSwitcherListener = createHomeSwitcherListener(),
                 homeLeftCarouselAtcListener = createLeftCarouselAtcCallback(),
-                homeLeftCarouselListener = createLeftCarouselCallback()
+                homeLeftCarouselListener = createLeftCarouselCallback(),
+                playWidgetCoordinator = createPlayWidgetCoordinator()
             ),
             differ = HomeListDiffer()
         )
@@ -265,6 +283,7 @@ class TokoNowHomeFragment: Fragment(),
     private var hasEducationalInformationAppeared = false
     private var pageLoadTimeMonitoring: HomePageLoadTimeMonitoring? = null
     private var switcherCoachMark: SwitcherCoachMark? = null
+    private var playWidgetCoordinator: PlayWidgetCoordinator? = null
 
     private val homeMainToolbarHeight: Int
         get() {
@@ -359,6 +378,9 @@ class TokoNowHomeFragment: Fragment(),
             REQUEST_CODE_LOGIN -> {
                 onRefreshLayout()
             }
+            REQUEST_CODE_PLAY_WIDGET -> {
+                onUpdatePlayWidget(data)
+            }
         }
     }
 
@@ -404,9 +426,8 @@ class TokoNowHomeFragment: Fragment(),
     override fun onClickChooseAddressWidgetTracker() { }
 
     override fun onCategoryRetried() {
-        val item = adapter.getItem(TokoNowCategoryGridUiModel::class.java)
-        if (item is TokoNowCategoryGridUiModel) {
-            viewModelTokoNow.getCategoryGrid(item, localCacheModel?.warehouse_id.orEmpty())
+        adapter.getItem(TokoNowCategoryGridUiModel::class.java)?.let {
+            viewModelTokoNow.getCategoryGrid(it, localCacheModel?.warehouse_id.orEmpty())
         }
     }
 
@@ -627,6 +648,18 @@ class TokoNowHomeFragment: Fragment(),
         if (!SharedPreferencesUtil.isEducationalInformationStopped(activity) && hasEducationalInformationAppeared) {
             SharedPreferencesUtil.setEducationalInformationState(activity)
         }
+        playWidgetCoordinator?.onDestroy()
+    }
+
+    override fun onWidgetShouldRefresh(view: PlayWidgetView) {
+        adapter.data.filterIsInstance<HomePlayWidgetUiModel>().forEach {
+            viewModelTokoNow.autoRefreshPlayWidget(it)
+        }
+    }
+
+    override fun onWidgetOpenAppLink(view: View, appLink: String) {
+        val intent = RouteManager.getIntent(requireContext(), appLink)
+        startActivityForResult(intent, REQUEST_CODE_PLAY_WIDGET)
     }
 
     private fun initInjector() {
@@ -649,25 +682,11 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun switchServiceOrLoadLayout() {
-        /*
-           Note :
-            - There are 2 types of external service we'll receive, those are 20m and 2h.
-            - 20m will be changed to 15m temporarily.
-            - 15m still used in LCA and BE as 20m service type.
-         */
-
-        when(externalServiceType) {
-            NOW_20M -> {
-                localCacheModel?.apply {
-                    viewModelTokoNow.switchService(this, NOW_15M)
-                }
-            }
-            NOW_2H -> {
-                localCacheModel?.apply {
-                    viewModelTokoNow.switchService(this, NOW_2H)
-                }
-            }
-            else -> loadLayout()
+        localCacheModel?.apply {
+            viewModelTokoNow.switchServiceOrLoadLayout(
+                externalServiceType = externalServiceType,
+                localCacheModel = this
+            )
         }
     }
 
@@ -850,6 +869,12 @@ class TokoNowHomeFragment: Fragment(),
     private fun refreshMiniCart() {
         checkIfChooseAddressWidgetDataUpdated()
         getMiniCart()
+    }
+
+    private fun onUpdatePlayWidget(data: Intent?) {
+        val channelId = data?.getStringExtra(EXTRA_PLAY_CHANNEL_ID).orEmpty()
+        val totalView = data?.getStringExtra(EXTRA_PLAY_TOTAL_VIEW).orEmpty()
+        viewModelTokoNow.updatePlayWidget(channelId, totalView)
     }
 
     private fun setupUi() {
@@ -1142,6 +1167,12 @@ class TokoNowHomeFragment: Fragment(),
                     whIdDestination = it.whIdDestination,
                     isNow15 = it.isNow15
                 )
+            }
+        }
+
+        observe(viewModelTokoNow.invalidatePlayImpression) { invalidate ->
+            if(invalidate) {
+                playWidgetImpressionValidator.invalidate()
             }
         }
     }
@@ -1838,6 +1869,15 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun createLeftCarouselCallback(): MixLeftComponentListener {
         return HomeLeftCarouselCallback(this, analytics)
+    }
+
+    private fun createPlayWidgetCoordinator(): PlayWidgetCoordinator {
+        val playWidgetCoordinator = PlayWidgetCoordinator(this).apply {
+            setImpressionHelper(ImpressionHelper(validator = playWidgetImpressionValidator))
+            setListener(this@TokoNowHomeFragment)
+        }
+        this.playWidgetCoordinator = playWidgetCoordinator
+        return playWidgetCoordinator
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {

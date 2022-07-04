@@ -17,7 +17,8 @@
         <ProgressBar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"
+            tools:ignore="UnifyComponentUsage" />
     </LinearLayout>
 
     <ScrollView
@@ -40,27 +41,26 @@
                 android:paddingRight="@dimen/spacing_lvl4"
                 android:paddingBottom="@dimen/spacing_lvl5">
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/title_template"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif"
                     android:text="@string/title_template_chat"
                     android:textColor="@color/Unify_N700_96"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    app:typographyType="display_1"
+                    app:typographyWeight="bold" />
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/desc_template"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/title_template"
                     android:layout_marginTop="@dimen/spacing_lvl3"
-                    android:lineSpacingExtra="1sp"
                     android:maxWidth="@dimen/dp_topchat_270"
                     android:text="@string/caption_switch_template"
                     android:textColor="@color/Unify_N700_44"
-                    android:textSize="@dimen/fontSize_lvl3" />
+                    app:typographyType="display_2" />
 
                 <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
                     android:id="@+id/switch_chat_template"
@@ -87,18 +87,17 @@
                 android:visibility="gone"
                 tools:visibility="visible">
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/template_list"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_lvl3"
                     android:layout_marginBottom="@dimen/spacing_lvl3"
-                    android:fontFamily="sans-serif"
                     android:paddingLeft="@dimen/spacing_lvl4"
                     android:text="@string/title_topchat_list_template"
                     android:textColor="@color/Unify_N700_96"
-                    android:textSize="@dimen/fontSize_lvl4"
-                    android:textStyle="bold" />
+                    app:typographyType="display_1"
+                    app:typographyWeight="bold" />
 
                 <ImageView
                     android:id="@+id/template_list_info"
@@ -108,7 +107,8 @@
                     android:layout_alignBottom="@id/template_list"
                     android:layout_toRightOf="@id/template_list"
                     android:paddingLeft="@dimen/dp_topchat_6"
-                    app:srcCompat="@drawable/ic_information_topchat" />
+                    app:srcCompat="@drawable/ic_information_topchat"
+                    android:contentDescription="template_list_info" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_view"
