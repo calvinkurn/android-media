@@ -745,19 +745,17 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     private fun updateHeader(authors: List<Author>) {
         if (viewModel.isEditState) {
             activityListener?.updateHeader(HeaderViewModel(
-                    "",
-                    getString(R.string.cp_title_edit_post),
-                    "",
-                    ""
-
+                id = "",
+                title = getString(R.string.cp_title_edit_post),
+                avatar = "",
+                badge = ""
             ))
         } else if (authors.isNotEmpty()) {
             activityListener?.updateHeader(HeaderViewModel(
-                    authors.first().id,
-                    authors.first().name,
-                    authors.first().thumbnail,
-                    authors.first().badge
-
+                id = authors.first().id,
+                title = authors.first().name,
+                avatar = authors.first().thumbnail,
+                badge = authors.first().badge
             ))
         }
     }
