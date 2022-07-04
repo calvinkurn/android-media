@@ -122,6 +122,6 @@ class VideoAnalyticHelper(
     companion object {
         private const val DURATION_DIVIDER = 1000
         private const val MORE_THAN_ZERO = 0
-        private const val MORE_THAN_30 = 0
+        private const val MORE_THAN_30 = 30
     }
 }
