@@ -49,7 +49,7 @@ class FeedUserCompleteOnboardingBottomSheet : BaseFeedUserOnboardingBottomSheet(
     ): View? {
         _binding = BottomsheetFeedUserCompleteOnboardingBinding.inflate(layoutInflater)
 
-        setChild(_binding?.root)
+        setChild(binding.root)
 
         return super.onCreateView(inflater, container, savedInstanceState)
     }

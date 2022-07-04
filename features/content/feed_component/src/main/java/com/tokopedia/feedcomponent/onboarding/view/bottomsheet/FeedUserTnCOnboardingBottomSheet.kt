@@ -46,10 +46,7 @@ class FeedUserTnCOnboardingBottomSheet : BaseFeedUserOnboardingBottomSheet() {
     ): View? {
         _binding = BottomsheetFeedUserTncOnboardingBinding.inflate(layoutInflater)
 
-        setChild(_binding?.root)
-        showCloseIcon = false
-        showKnob = true
-        showHeader = false
+        setChild(binding.root)
 
         return super.onCreateView(inflater, container, savedInstanceState)
     }
