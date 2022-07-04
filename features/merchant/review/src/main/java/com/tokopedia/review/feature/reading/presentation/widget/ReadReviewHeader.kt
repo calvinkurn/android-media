@@ -5,10 +5,15 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.review.R
 import com.tokopedia.review.feature.gallery.presentation.listener.ReviewGalleryHeaderListener
 import com.tokopedia.review.feature.reading.data.AvailableFilters
@@ -23,9 +28,11 @@ import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
+import timber.log.Timber
 
 class ReadReviewHeader : BaseCustomView {
 
@@ -47,6 +54,10 @@ class ReadReviewHeader : BaseCustomView {
         init()
     }
 
+    var readReviewFilterDivider: DividerUnify? = null
+    val reviewRatingContainer: ConstraintLayout by lazy {
+        findViewById(R.id.containerReviewRating)
+    }
     private var rating: ReadReviewRating? = null
     private var satisfactionRate: Typography? = null
     private var ratingAndReviewCount: Typography? = null
@@ -55,6 +66,9 @@ class ReadReviewHeader : BaseCustomView {
     private var seeAll: Typography? = null
     private var topicLeft: ReadReviewHighlightedTopic? = null
     private var topicRight: ReadReviewHighlightedTopic? = null
+    private val readReviewShopChevron by lazy {
+        findViewById<IconUnify>(R.id.readReviewShopChevron)
+    }
 
     private var isProductReview: Boolean = true
     private var topicFilterChipIndex: Int = 0
@@ -66,6 +80,50 @@ class ReadReviewHeader : BaseCustomView {
 
     fun setIsProductReview(isProductReview: Boolean){
         this.isProductReview = isProductReview
+    }
+
+    fun showShopPageReviewHeader() {
+        rating?.gone()
+        chevron?.gone()
+        topicLeft?.gone()
+        topicRight?.gone()
+        readReviewFilterDivider?.gone()
+
+        val dimen8dp =
+            context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1)
+        val dimen12dp =
+            context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_12)
+        val dimen16dp =
+            context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2)
+        reviewRatingContainer.setMargin(dimen16dp, dimen12dp, dimen16dp, dimen12dp)
+        reviewRatingContainer.setPadding(dimen12dp, dimen8dp, dimen12dp, dimen8dp)
+        satisfactionRate?.let {
+            it.setMargin(Int.ZERO, Int.ZERO, it.right, it.bottom)
+        }
+        ratingAndReviewCount?.let {
+            it.setMargin(Int.ZERO, it.top, it.right, Int.ZERO)
+        }
+        readReviewShopChevron.visible()
+
+        showRatingContainerBorderLine()
+    }
+
+    fun hideRatingContainer() {
+        reviewRatingContainer.gone()
+        readReviewFilterDivider?.gone()
+    }
+
+    fun showRatingContainer() {
+        reviewRatingContainer.visible()
+        readReviewFilterDivider?.visible()
+    }
+
+    private fun showRatingContainerBorderLine() {
+        try {
+            reviewRatingContainer.setBackgroundResource(R.drawable.bg_review_header_bordered)
+        }catch (e: Exception) {
+            Timber.e(e)
+        }
     }
 
     private fun bindViews() {
@@ -85,6 +143,7 @@ class ReadReviewHeader : BaseCustomView {
         seeAll = findViewById(R.id.read_review_see_all)
         topicLeft = findViewById(R.id.read_review_highlighted_topic_left)
         topicRight = findViewById(R.id.read_review_highlighted_topic_right)
+        readReviewFilterDivider = findViewById(R.id.read_review_filter_divider)
     }
 
     private fun configPaddingForVisibleSortFilterPrefix() {
@@ -209,6 +268,12 @@ class ReadReviewHeader : BaseCustomView {
             readReviewHeaderListener.openStatisticsBottomSheet()
         }
         chevron?.setOnClickListener {
+            readReviewHeaderListener.openStatisticsBottomSheet()
+        }
+        reviewRatingContainer.setOnClickListener {
+            readReviewHeaderListener.openStatisticsBottomSheet()
+        }
+        readReviewShopChevron.setOnClickListener {
             readReviewHeaderListener.openStatisticsBottomSheet()
         }
     }

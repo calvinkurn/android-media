@@ -37,6 +37,7 @@ import com.tokopedia.play_common.R as commonR
 /**
  * Created by mzennis on 06/07/21.
  */
+@Deprecated("replaced by PlayBroInteractiveBottomSheet")
 class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
     private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
     private val analytic: PlayBroadcastAnalytic,
@@ -49,8 +50,7 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
         override fun onChatWinnerButtonClicked(winner: PlayWinnerUiModel, position: Int) {
             analytic.onClickChatWinnerIcon(
                 parentViewModel.channelId,
-                parentViewModel.interactiveId,
-                parentViewModel.activeInteractiveTitle
+                parentViewModel.channelTitle
             )
             RouteManager.route(
                 requireContext(),
