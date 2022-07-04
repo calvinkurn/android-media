@@ -25,6 +25,8 @@ import com.tokopedia.home_account.view.listener.HomeAccountUserListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusListener
+import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusParam
 import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.utils.view.binding.viewBinding
@@ -38,7 +40,9 @@ class ProfileViewHolder(
     itemView: View,
     val listener: HomeAccountUserListener,
     private val balanceAndPointAdapter: HomeAccountBalanceAndPointAdapter?,
-    private val memberAdapter: HomeAccountMemberAdapter?
+    private val memberAdapter: HomeAccountMemberAdapter?,
+    private val paramTokopediaPlus: TokopediaPlusParam,
+    private val tokopediaPlusListener: TokopediaPlusListener
 ) : BaseViewHolder(itemView) {
 
     private val binding: HomeAccountItemProfileBinding? by viewBinding()
@@ -111,6 +115,8 @@ class ProfileViewHolder(
             binding?.homeAccountProfileSection?.linkAccountProfileBtn?.hide()
             binding?.homeAccountProfileSection?.accountUserItemProfileLinkStatus?.hide()
         }
+
+        binding?.tokopediaPlusWidget?.load(paramTokopediaPlus, tokopediaPlusListener)
     }
 
     private fun setupMemberSection(tierData: TierData) {

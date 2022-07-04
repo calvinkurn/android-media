@@ -98,7 +98,6 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -115,6 +114,10 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusCons
+import com.tokopedia.usercomponents.tokopediaplus.domain.TokopediaPlusDataModel
+import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusListener
+import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusParam
 import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
@@ -263,7 +266,21 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         balanceAndPointAdapter = HomeAccountBalanceAndPointAdapter(this)
         memberAdapter = HomeAccountMemberAdapter(this)
 
-        adapter = HomeAccountUserAdapter(this, balanceAndPointAdapter, memberAdapter, userSession, shopAdsNewPositionCallback)
+        val paramTokopediaPlus = TokopediaPlusParam(
+            TokopediaPlusCons.SOURCE_ACCOUNT_PAGE,
+            this,
+            viewLifecycleOwner
+        )
+
+        adapter = HomeAccountUserAdapter(this,
+            balanceAndPointAdapter,
+            memberAdapter,
+            userSession,
+            shopAdsNewPositionCallback,
+            paramTokopediaPlus,
+            tokopediaPlusListenerDelegate()
+        )
+
         setupList()
         setLoadMore()
         showLoading()
@@ -1641,6 +1658,20 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                 Snackbar.LENGTH_LONG,
                 Toaster.TYPE_ERROR
             )
+        }
+    }
+
+    private fun tokopediaPlusListenerDelegate(): TokopediaPlusListener {
+        return object : TokopediaPlusListener {
+            override fun onClick(pageSource: String, tokopediaPlusDataModel: TokopediaPlusDataModel) {
+            }
+
+            override fun onSuccessLoad(pageSource: String, tokopediaPlusDataModel: TokopediaPlusDataModel) {
+            }
+
+            override fun onFailedLoad(throwable: Throwable) {
+            }
+
         }
     }
 
