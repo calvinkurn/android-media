@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.people.domains.*
 import com.tokopedia.people.domains.repository.UserProfileRepository
 import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistNewUseCase
-import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase.Companion.WHITELIST_ENTRY_POINT
+import com.tokopedia.feedcomponent.domain.usecase.WHITELIST_ENTRY_POINT
 import com.tokopedia.people.model.ProfileHeaderBase
 import com.tokopedia.people.model.UserPostModel
 import com.tokopedia.people.views.uimodel.MutationUiModel
