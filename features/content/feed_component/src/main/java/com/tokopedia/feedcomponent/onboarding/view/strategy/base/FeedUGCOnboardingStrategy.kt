@@ -21,7 +21,16 @@ abstract class FeedUGCOnboardingStrategy {
     abstract val uiState: Flow<FeedUGCOnboardingUiState>
     abstract val uiEvent: Flow<FeedUGCOnboardingUiEvent>
 
-    abstract fun submitAction(action: FeedUGCOnboardingAction)
+    open fun submitAction(action: FeedUGCOnboardingAction) {
+        when(action) {
+            FeedUGCOnboardingAction.CheckTnc -> handleCheckTnc()
+            FeedUGCOnboardingAction.ClickNext -> handleClickNext()
+            else -> {}
+        }
+    }
+
+    abstract fun handleCheckTnc()
+    abstract fun handleClickNext()
 
     fun onCleared() {
         job.cancel()

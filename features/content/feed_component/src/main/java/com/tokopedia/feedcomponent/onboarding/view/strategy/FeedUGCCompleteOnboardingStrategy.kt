@@ -51,11 +51,11 @@ class FeedUGCCompleteOnboardingStrategy @Inject constructor(
         get() = _uiEvent
 
     override fun submitAction(action: FeedUGCOnboardingAction) {
+        super.submitAction(action)
         when(action) {
             is FeedUGCOnboardingAction.InputUsername -> handleInputUsername(action.username)
             FeedUGCOnboardingAction.CheckUsername -> handleCheckUsername()
-            FeedUGCOnboardingAction.CheckTnc -> handleCheckTnc()
-            FeedUGCOnboardingAction.ClickNext -> handleClickNext()
+            else -> {}
         }
     }
 
@@ -88,11 +88,11 @@ class FeedUGCCompleteOnboardingStrategy @Inject constructor(
         }
     }
 
-    private fun handleCheckTnc() {
+    override fun handleCheckTnc() {
         _isCheckTnc.update { _isCheckTnc.value.not() }
     }
 
-    private fun handleClickNext() {
+    override fun handleClickNext() {
         scope.launchCatchError(block = {
             if(!_isSubmit.value && _isCheckTnc.value && _usernameState.value is UsernameState.Valid) {
                 _isSubmit.update { true }

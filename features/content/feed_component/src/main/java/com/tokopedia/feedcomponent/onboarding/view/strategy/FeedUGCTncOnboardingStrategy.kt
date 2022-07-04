@@ -43,19 +43,11 @@ class FeedUGCTncOnboardingStrategy @Inject constructor(
     override val uiEvent: Flow<FeedUGCOnboardingUiEvent>
         get() = _uiEvent
 
-    override fun submitAction(action: FeedUGCOnboardingAction) {
-        when(action) {
-            FeedUGCOnboardingAction.CheckTnc -> handleCheckTnc()
-            FeedUGCOnboardingAction.ClickNext -> handleClickNext()
-            else -> {}
-        }
-    }
-
-    private fun handleCheckTnc() {
+    override fun handleCheckTnc() {
         _isCheckTnc.update { _isCheckTnc.value.not() }
     }
 
-    private fun handleClickNext() {
+    override fun handleClickNext() {
         scope.launchCatchError(block = {
             if(!_isSubmit.value) {
                 _isSubmit.update { true }
