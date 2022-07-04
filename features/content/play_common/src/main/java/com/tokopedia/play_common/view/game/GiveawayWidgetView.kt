@@ -1,19 +1,19 @@
 package com.tokopedia.play_common.view.game
 
-import android.animation.Animator
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
 import android.content.Context
 import android.util.AttributeSet
 import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
-import android.view.View
-import com.tokopedia.play_common.R
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.dynamicanimation.animation.SpringAnimation
+import androidx.dynamicanimation.animation.SpringForce
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
 import com.airbnb.lottie.LottieDrawable
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.play_common.R
 import com.tokopedia.play_common.databinding.ViewGiveawayWidgetBinding
-import com.tokopedia.unifyprinciples.UnifyMotion
+import com.tokopedia.play_common.util.AnimationUtils.addSpringAnim
 import java.util.*
 
 
@@ -119,36 +119,26 @@ class GiveawayWidgetView : ConstraintLayout {
     }
 
     private fun animateTap() {
-        tapAnimator.addListener(animationListener)
-        tapAnimator.duration = UnifyMotion.T3
-        tapAnimator.interpolator = UnifyMotion.EASE_OVERSHOOT
-        tapAnimator.start()
-    }
-
-
-    private val clickScaleXAnimation = ObjectAnimator.ofFloat(
-        binding.flTap, View.SCALE_X, 1f, 0.6f
-    )
-    private val clickScaleYAnimation = ObjectAnimator.ofFloat(
-        binding.flTap, View.SCALE_Y, 1f, 0.6f
-    )
-
-    private val tapAnimator = AnimatorSet().apply {
-        playTogether(clickScaleXAnimation, clickScaleYAnimation)
-    }
-
-    private val animationListener = object : Animator.AnimatorListener {
-        override fun onAnimationStart(animation: Animator?) {}
-
-        override fun onAnimationEnd(animation: Animator?) {
-            binding.flTap.scaleX = 1f
-            binding.flTap.scaleY = 1f
+        binding.ivTap.apply {
+            scaleX = 0.5f
+            scaleY = 0.5f
         }
+        scaleX.start()
+        scaleY.start()
+    }
 
-        override fun onAnimationCancel(animation: Animator?) {}
+    private val scaleX = addSpringAnim(
+        binding.ivTap, SpringAnimation.SCALE_X,
+        1f, SpringForce.STIFFNESS_MEDIUM, SpringForce.DAMPING_RATIO_HIGH_BOUNCY)
 
-        override fun onAnimationRepeat(animation: Animator?) {}
+    private val scaleY = addSpringAnim(
+        binding.ivTap, SpringAnimation.SCALE_Y,
+        1f, SpringForce.STIFFNESS_MEDIUM, SpringForce.DAMPING_RATIO_HIGH_BOUNCY)
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun onDestroy() {
+        scaleY.cancel()
+        scaleX.cancel()
     }
 
     interface Listener {

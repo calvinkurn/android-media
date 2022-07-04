@@ -3,29 +3,29 @@ package com.tokopedia.play_common.view.game.quiz
 import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import android.view.animation.*
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.dynamicanimation.animation.SpringAnimation
+import androidx.dynamicanimation.animation.SpringForce
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.play_common.databinding.ViewQuizWidgetBinding
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
+import com.tokopedia.play_common.util.AnimationUtils
 import com.tokopedia.play_common.view.game.GameHeaderView
 import com.tokopedia.play_common.view.game.setupQuiz
 import com.tokopedia.play_common.view.quiz.QuizChoiceViewHolder
 import com.tokopedia.play_common.view.quiz.QuizListAdapter
 import com.tokopedia.play_common.view.quiz.QuizOptionItemDecoration
-import com.tokopedia.unifyprinciples.UnifyMotion
 import java.util.*
 
 /**
@@ -81,10 +81,6 @@ class QuizWidgetView : ConstraintLayout {
         playSequentially(clickRotateMinAnimation, clickRotateMaxAnimation)
     }
 
-    private val answerTrueAnimator = AnimatorSet().apply {
-        playTogether(clickScaleXAnimation, clickScaleYAnimation)
-    }
-
     private val animationListener = object : Animator.AnimatorListener {
         override fun onAnimationStart(animation: Animator?) {}
 
@@ -111,18 +107,6 @@ class QuizWidgetView : ConstraintLayout {
         }
 
         binding.quizHeader.isEditable = false
-
-        answerFalseAnimator.childAnimations.forEach {
-            if (it !is ValueAnimator) return@forEach
-            it.duration = UnifyMotion.T3
-            it.interpolator = UnifyMotion.EASE_OVERSHOOT
-        }
-
-        answerTrueAnimator.childAnimations.forEach {
-            if (it !is ValueAnimator) return@forEach
-            it.duration = UnifyMotion.T2
-            it.interpolator = UnifyMotion.EASE_OVERSHOOT
-        }
     }
 
     override fun onDetachedFromWindow() {
@@ -177,15 +161,42 @@ class QuizWidgetView : ConstraintLayout {
     }
 
     private fun animateCorrectAnswer(){
-        answerTrueAnimator.addListener(animationListener)
-        answerTrueAnimator.start()
+        scaleAnim()
     }
 
     private fun animateWrongAnswer(){
-        answerFalseAnimator.addListener(animationListener)
-        answerFalseAnimator.start()
+        rotateAnim()
+        scaleAnim()
     }
 
+    private fun scaleAnim(){
+        binding.root.apply {
+            scaleX = 0.5f
+            scaleY = 0.5f
+        }
+        scaleX.start()
+        scaleY.start()
+    }
+
+    private fun rotateAnim(){
+        binding.root.rotation= -9f
+        rotate.start()
+    }
+
+    private val scaleX = AnimationUtils.addSpringAnim(
+        binding.root, SpringAnimation.SCALE_X,
+        1f, SpringForce.STIFFNESS_MEDIUM, SpringForce.DAMPING_RATIO_HIGH_BOUNCY
+    )
+
+    private val scaleY = AnimationUtils.addSpringAnim(
+        binding.root, SpringAnimation.SCALE_Y,
+        1f, SpringForce.STIFFNESS_MEDIUM, SpringForce.DAMPING_RATIO_HIGH_BOUNCY
+    )
+
+    private val rotate = AnimationUtils.addSpringAnim(
+        binding.root, SpringAnimation.ROTATION,
+        0f, SpringForce.STIFFNESS_MEDIUM, SpringForce.DAMPING_RATIO_HIGH_BOUNCY
+    )
 
     interface Listener {
         fun onQuizOptionClicked(item: QuizChoicesUiModel)
@@ -195,10 +206,8 @@ class QuizWidgetView : ConstraintLayout {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
-        answerFalseAnimator.cancel()
-        answerFalseAnimator.removeAllListeners()
-
-        answerTrueAnimator.cancel()
-        answerTrueAnimator.removeAllListeners()
+        scaleX.cancel()
+        scaleY.cancel()
+        rotate.cancel()
     }
 }

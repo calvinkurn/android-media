@@ -945,6 +945,7 @@ class PlayViewModel @AssistedInject constructor(
         updateChannelStatus()
 
         updateChannelInfo(channelData)
+        handleClickRetryInteractive()
     }
 
     fun defocusPage(shouldPauseVideo: Boolean) {
