@@ -85,11 +85,12 @@ class UploadPrescriptionViewModel @Inject constructor(
                 arrayListPrescriptions.add(prescriptionImage)
             }
         }
+
         val prescriptionDataModel = EPharmacyPrescriptionDataModel(PRESCRIPTION_COMPONENT,
             PRESCRIPTION_COMPONENT, arrayListPrescriptions)
         listOfComponents.add(prescriptionDataModel)
         data.ePharmacyProducts?.forEachIndexed { index, eProduct ->
-            if(index == 0){
+            if(index == FIRST_INDEX){
                 eProduct?.shopId = data.shopId
                 eProduct?.shopName = data.shopName
                 eProduct?.shopLocation = data.shopLocation
@@ -138,20 +139,24 @@ class UploadPrescriptionViewModel @Inject constructor(
                 arrayListPrescriptions.add(prescriptionImage)
             }
         }
+
         val prescriptionDataModel = EPharmacyPrescriptionDataModel(PRESCRIPTION_COMPONENT,
             PRESCRIPTION_COMPONENT, arrayListPrescriptions)
         listOfComponents.add(prescriptionDataModel)
-        data.ePharmacyProducts?.forEachIndexed { index, eProduct ->
-//            eProduct?.ePharmacyProducts?.forEachIndexed { indexProduct , ePharmacyProduct ->
-//                if(indexProduct == 0){
-//                    ePharmacyProduct?.shopId = eProduct.shopId
-//                    ePharmacyProduct?.shopName = eProduct.shopName
-//                    ePharmacyProduct?.shopLocation = eProduct.shopLocation
-//                    ePharmacyProduct?.shopType = eProduct.shopType
-//                }
-//                listOfComponents.add(EPharmacyProductDataModel(PRODUCT_COMPONENT, ePharmacyProduct?.productId ?: eProduct.hashCode().toString(),
-//                    eProduct))
-//            }
+        data.ePharmacyProducts?.forEachIndexed { index ,eProduct ->
+            eProduct?.ePharmacyProducts?.forEachIndexed { indexProduct , ePharmacyProduct ->
+                if(indexProduct == FIRST_INDEX){
+                    ePharmacyProduct?.shopId = eProduct.shopId
+                    ePharmacyProduct?.shopName = eProduct.shopName
+                    ePharmacyProduct?.shopLocation = eProduct.shopLocation
+                    ePharmacyProduct?.shopType = eProduct.shopType
+                }
+                if(indexProduct == (eProduct.ePharmacyProducts.size - 1) && index != (data.ePharmacyProducts.size - 1)){
+                    ePharmacyProduct?.divider = true
+                }
+                listOfComponents.add(EPharmacyProductDataModel(PRODUCT_COMPONENT, ePharmacyProduct?.productId ?: eProduct.hashCode().toString(),
+                    ePharmacyProduct))
+            }
         }
         return EPharmacyDataModel(listOfComponents)
     }
@@ -213,9 +218,6 @@ class UploadPrescriptionViewModel @Inject constructor(
             val result = withContext(dispatcherBackground) {
                 convertToUploadImageResponse(uploadPrescriptionUseCase.executeOnBackground())
             }
-            val errorMessage = result.data?.firstOrNull()?.errorMsg?.let { errorMessage ->
-                if(errorMessage.isNotBlank()){ errorMessage } else { "" }
-            }
             _prescriptionImages.value?.get(uniquePositionId)?.apply {
                 result.data?.firstOrNull()?.let { uploadResult ->
                     if(uploadResult.prescriptionId != null && uploadResult.prescriptionId != DEFAULT_ZERO_VALUE){
@@ -223,18 +225,23 @@ class UploadPrescriptionViewModel @Inject constructor(
                         isUploading = false
                         prescriptionId = uploadResult.prescriptionId
                     }else {
-                        uploadFailed(uniquePositionId, EPharmacyUploadNoPrescriptionIdError(errorMessage ?: ""))
+                        uploadFailed(uniquePositionId, EPharmacyUploadNoPrescriptionIdError(true))
                     }
                 }?: kotlin.run {
                     isUploadSuccess = false
                     isUploading = false
                     isUploadFailed = true
+                    result.data?.firstOrNull()?.errorMsg?.let { errorMessage ->
+                        if(errorMessage.isNotBlank()){
+                            uploadFailed(uniquePositionId, EPharmacyUploadBackendError(errorMessage))
+                        }
+                    }
                 }
             }
             _prescriptionImages.postValue(_prescriptionImages.value)
 
         }else {
-            uploadFailed(uniquePositionId, EPharmacyUploadEmptyImageError("Image Not Found"))
+            uploadFailed(uniquePositionId, EPharmacyUploadEmptyImageError(false))
         }
         withContext(dispatcherMain){
             checkPrescriptionImages()

@@ -37,6 +37,7 @@ import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
@@ -174,7 +175,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
         MethodChecker.getDrawable(context,com.tokopedia.iconunify.R.drawable.iconunify_camera)?.let {
             DrawableCompat.setTint(
                 DrawableCompat.wrap(it),
-                MethodChecker.getColor(context,com.tokopedia.unifyprinciples.R.color.Green_G500)
+                MethodChecker.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
             )
             ePharmacyUploadPhotoButton?.setDrawable(it, UnifyButton.DrawablePosition.LEFT)
         }
@@ -204,7 +205,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
                 modeType(ModeType.IMAGE_ONLY)
                 multipleSelectionMode()
                 maxMediaItem(withMaxMediaItems - 2)
-                maxImageFileSize(4_000_000)
+                maxImageFileSize(MAX_MEDIA_SIZE_PICKER)
             }
             startActivityForResult(intent, MEDIA_PICKER_REQUEST_CODE)
         }
@@ -291,15 +292,15 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
         uploadPrescriptionViewModel.uploadError.observe(viewLifecycleOwner,{ error ->
             when(error){
                 is EPharmacyUploadBackendError -> showToast(error.errMsg)
-                is EPharmacyUploadEmptyImageError -> showToast(error.errMsg)
-                is EPharmacyUploadNoPrescriptionIdError -> showToast(error.errMsg)
+                is EPharmacyUploadEmptyImageError -> showToast(context?.resources?.getString(R.string.epharmacy_upload_error) ?: "")
+                is EPharmacyUploadNoPrescriptionIdError -> showToast(context?.resources?.getString(R.string.epharmacy_upload_error) ?: "")
             }
         })
     }
 
     private fun showToast(message : String) {
         view?.let { it ->
-            Toaster.build(it,message).show()
+            Toaster.build(it,message,TYPE_ERROR).show()
         }
     }
 

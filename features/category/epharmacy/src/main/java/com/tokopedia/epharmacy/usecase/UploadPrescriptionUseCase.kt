@@ -12,6 +12,8 @@ import com.tokopedia.epharmacy.network.request.UploadPrescriptionRequest
 import com.tokopedia.epharmacy.network.response.EPharmacyPrescriptionUploadResponse
 import com.tokopedia.epharmacy.utils.EPharmacyImageQuality
 import com.tokopedia.epharmacy.utils.EPharmacyImageQualityDecreaseFactor
+import com.tokopedia.epharmacy.utils.EPharmacyMinImageQuality
+import com.tokopedia.epharmacy.utils.MAX_BYTES
 import com.tokopedia.media.preview.managers.ImageCompressionManager
 import okio.utf8Size
 import java.io.ByteArrayOutputStream
@@ -62,7 +64,7 @@ class UploadPrescriptionUseCase @Inject constructor(
             prescriptionImageBitmap.recycle()
 
             val encodedString = Base64.encodeToString(byteArrayImage, Base64.DEFAULT)
-            return if(encodedString.utf8Size(0,encodedString.length) >= MAX_BYTES && quality > MIN_QUALITY){
+            return if(encodedString.utf8Size(0,encodedString.length) >= MAX_BYTES && quality > EPharmacyMinImageQuality){
                 getBase64OfPrescriptionImage(localFilePath , (quality * EPharmacyImageQualityDecreaseFactor).toInt())
             } else
                 "${IMAGE_DATA_PREFIX}${encodedString}"
@@ -77,8 +79,6 @@ class UploadPrescriptionUseCase @Inject constructor(
         private const val ENDPOINT_URL = "https://epharmacy-staging.tokopedia.com/prescription/upload"
         private const val KEY_FORMAT_VALUE="FILE"
         private const val KEY_SOURCE_VALUE="buyer"
-        private const val MAX_BYTES = 4_000_000
-        private const val MIN_QUALITY = 60
         private const val IMAGE_DATA_PREFIX = "data:image/jpeg;base64,"
     }
 }

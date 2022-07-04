@@ -54,7 +54,6 @@
             android:id="@+id/product_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-
             />
     </com.tokopedia.unifycomponents.CardUnify2>
 
@@ -69,7 +68,7 @@
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl3"
         app:typographyType="paragraph_3"
-        tools:text="Rhinos SR Pseudoephedrine HCL Loratadine 1 Strip 10 Kapsul"
+        tools:text="Rhinos SR Psadine 1 Strip 10 Kapsul"
         android:textColor="@color/Unify_NN950"
         />
 
@@ -82,12 +81,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginStart="@dimen/spacing_lvl3"
         android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         app:typographyType="small"
         tools:text="1 Barang (1kg)"
         android:textColor="@color/Unify_NN600"
         />
 
     <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/spacing_lvl2"
         app:layout_constraintStart_toStartOf="parent"
