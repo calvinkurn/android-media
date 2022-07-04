@@ -130,32 +130,14 @@ class FeedUserCompleteOnboardingBottomSheet : BaseFeedUserOnboardingBottomSheet(
                                         curr.username.length >= 3
         binding.btnContinue.isLoading = curr.isSubmit
 
-        when(curr.usernameState) {
-            is UsernameState.Loading -> {
-                binding.textFieldUsername.isLoading = true
-                binding.textFieldUsername.isInputError = false
-                binding.textFieldUsername.setMessage(getString(R.string.up_input_username_info))
-                /** TODO: remove centang icon */
-            }
-            is UsernameState.Invalid -> {
-                binding.textFieldUsername.isLoading = false
-                binding.textFieldUsername.isInputError = true
-                binding.textFieldUsername.setMessage(curr.usernameState.message)
-                /** TODO: remove centang icon */
-            }
-            is UsernameState.Valid -> {
-                binding.textFieldUsername.isLoading = false
-                binding.textFieldUsername.isInputError = false
-                binding.textFieldUsername.setMessage(getString(R.string.up_input_username_info))
-                /** TODO: show centang icon */
-            }
-            else -> {
-                binding.textFieldUsername.isLoading = false
-                binding.textFieldUsername.isInputError = false
-                binding.textFieldUsername.setMessage(getString(R.string.up_input_username_info))
-                /** TODO: remove centang icon */
-            }
-        }
+        binding.textFieldUsername.isLoading = curr.usernameState is UsernameState.Loading
+        binding.textFieldUsername.isInputError = curr.usernameState is UsernameState.Invalid
+        binding.textFieldUsername.setMessage(
+            if(curr.usernameState is UsernameState.Invalid) curr.usernameState.message
+            else getString(R.string.up_input_username_info)
+        )
+        /** TODO: show/remove centang icon */
+
 
         if(curr.hasAcceptTnc) {
             mListener?.onSuccess()
@@ -168,7 +150,7 @@ class FeedUserCompleteOnboardingBottomSheet : BaseFeedUserOnboardingBottomSheet(
     }
 
     companion object {
-        private const val TAG = "FeedUserCompleteOnboarding"
+        private const val TAG = "FeedUserCompleteOnboardingBottomSheet"
 
         fun getFragment(
             fragmentManager: FragmentManager,

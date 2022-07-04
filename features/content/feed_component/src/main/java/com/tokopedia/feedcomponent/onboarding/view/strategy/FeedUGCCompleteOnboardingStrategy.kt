@@ -2,7 +2,6 @@ package com.tokopedia.feedcomponent.onboarding.view.strategy
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.onboarding.domain.repository.FeedUGCOnboardingRepository
 import com.tokopedia.feedcomponent.onboarding.view.strategy.base.FeedUGCOnboardingStrategy
 import com.tokopedia.feedcomponent.onboarding.view.uimodel.action.FeedUGCOnboardingAction
@@ -132,9 +131,6 @@ class FeedUGCCompleteOnboardingStrategy @Inject constructor(
 
         if(_username.value.isEmpty())
             return UsernameState.Unknown
-
-        if(_username.value.length < 3)
-            return UsernameState.Invalid(context.getString(R.string.up_username_min_3_char))
 
         val result = repo.validateUsername(_username.value)
 
