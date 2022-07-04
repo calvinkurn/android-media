@@ -34,6 +34,13 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                 name
                 pdpSession
                 basicInfo {
+                  shopMultilocation {
+                    isReroute
+                    cityName
+                    eduLink {
+                        appLink
+                    }
+                  }
                   isGiftable
                   isTokoNow
                   shopName
@@ -113,6 +120,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
             		}
             		... on pdpDataProductContent {
                       name
+                      parentName
                       isCOD
                       price {
                         value
@@ -187,6 +195,8 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                         title
                         subtitle
                         applink
+                        infoLink
+                        icon
                         showAtFront
                         isAnnotation
                       }

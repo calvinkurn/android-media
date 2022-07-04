@@ -2,10 +2,8 @@ package com.tokopedia.topads.sdk.domain.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -24,6 +22,7 @@ public class Data implements Parcelable {
     private static final String KEY_SHOP_CLICK_URL = "shop_click_url";
     private static final String KEY_SHOP = "shop";
     private static final String KEY_PRODUCT = "product";
+    private static final String KEY_APPLINKS = "applinks";
     private static final String KEY_TAG = "tag";
 
     @SerializedName(KEY_ID)
@@ -69,6 +68,11 @@ public class Data implements Parcelable {
     @SerializedName(KEY_PRODUCT)
     @Expose
     private Product product = new Product();
+
+    @SerializedName(KEY_APPLINKS)
+    @Expose
+    private String applinks = "";
+
     private boolean favorit = false;
 
     public Data() {
@@ -108,6 +112,9 @@ public class Data implements Parcelable {
         if(!object.isNull(KEY_SHOP)) {
             setShop(new Shop(object.getJSONObject(KEY_SHOP)));
         }
+        if(!object.isNull(KEY_APPLINKS)){
+            setApplinks(object.getString(KEY_APPLINKS));
+        }
     }
 
     protected Data(Parcel in) {
@@ -123,6 +130,7 @@ public class Data implements Parcelable {
         shop = in.readParcelable(Shop.class.getClassLoader());
         product = in.readParcelable(Product.class.getClassLoader());
         favorit = in.readByte() != 0;
+        applinks = in.readString();
     }
 
     @Override
@@ -139,6 +147,7 @@ public class Data implements Parcelable {
         dest.writeParcelable(shop, flags);
         dest.writeParcelable(product, flags);
         dest.writeByte((byte) (favorit ? 1 : 0));
+        dest.writeString(applinks);
     }
 
     @Override
@@ -252,5 +261,13 @@ public class Data implements Parcelable {
 
     public void setTag(int tag) {
         this.tag = tag;
+    }
+
+    public String getApplinks() {
+        return applinks;
+    }
+
+    public void setApplinks(String applinks) {
+        this.applinks = applinks;
     }
 }

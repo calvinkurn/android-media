@@ -51,9 +51,9 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.play.widget.analytic.list.DefaultPlayWidgetInListAnalyticListener
 import com.tokopedia.play.widget.const.PlayWidgetConst
 import com.tokopedia.play.widget.extension.stepScrollToPositionWithDelay
+import com.tokopedia.play.widget.analytic.global.model.PlayWidgetShopAnalyticModel
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
@@ -138,6 +138,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -572,6 +573,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             playWidgetCoordinator.onDestroy()
         }
         viewJob.cancelChildren()
+        Toaster.onCTAClick = View.OnClickListener { }
     }
 
     override fun onDestroy() {
@@ -2527,7 +2529,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         shopHomeProductViewModel: ShopHomeProductUiModel?
     ) {
         shopHomeProductViewModel?.let {
-            showToastSuccess(getString(com.tokopedia.wishlist.common.R.string.msg_success_remove_wishlist))
+            showToastSuccess(
+                    message = getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg),
+                    ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist),
+                    ctaAction = {}
+            )
             shopHomeAdapter.updateWishlistProduct(it.id ?: "", false)
             trackClickWishlist(shopHomeCarousellProductUiModel, shopHomeProductViewModel, false)
         }
@@ -2584,8 +2590,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     ) {
         shopHomeProductViewModel?.let {
             showToastSuccess(
-                message = getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist),
-                ctaText = getString(com.tokopedia.wishlist.common.R.string.lihat_label),
+                message = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg),
+                ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
                 ctaAction = {
                     goToWishlist()
                 }
@@ -2731,10 +2737,13 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private fun handleWishlistActionForLoggedInUser(productCardOptionsModel: ProductCardOptionsModel) {
         viewModel?.clearGetShopProductUseCase()
+        val isUsingV2 = productCardOptionsModel.wishlistResult.isUsingWishlistV2
         if (productCardOptionsModel.wishlistResult.isAddWishlist) {
-            handleWishlistActionAddToWishlist(productCardOptionsModel)
+            if (isUsingV2) handleWishlistActionAddToWishlistV2(productCardOptionsModel)
+            else handleWishlistActionAddToWishlist(productCardOptionsModel)
         } else {
-            handleWishlistActionRemoveFromWishlist(productCardOptionsModel)
+            if (isUsingV2) handleWishlistActionRemoveFromWishlistV2(productCardOptionsModel.wishlistResult)
+            else handleWishlistActionRemoveFromWishlist(productCardOptionsModel)
         }
     }
 
@@ -2746,8 +2755,23 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             )
         } else {
             onErrorAddWishlist(
-                getString(com.tokopedia.wishlist.common.R.string.msg_error_add_wishlist)
+                getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
             )
+        }
+    }
+
+    private fun handleWishlistActionAddToWishlistV2(productCardOptionsModel: ProductCardOptionsModel) {
+        context?.let { context ->
+            view?.let { v ->
+                AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(productCardOptionsModel.wishlistResult, context, v)
+            }
+        }
+        if (productCardOptionsModel.wishlistResult.isSuccess) {
+            shopHomeAdapter.updateWishlistProduct(threeDotsClickShopProductViewModel?.id ?: "", true)
+            threeDotsClickShopProductViewModel?.let {
+                trackClickWishlist(threeDotsClickShopCarouselProductUiModel,
+                    it, true)
+            }
         }
     }
 
@@ -2759,8 +2783,23 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             )
         } else {
             onErrorRemoveWishList(
-                getString(com.tokopedia.wishlist.common.R.string.msg_error_remove_wishlist)
+                getString(com.tokopedia.wishlist_common.R.string.on_failed_remove_from_wishlist_msg)
             )
+        }
+    }
+
+    private fun handleWishlistActionRemoveFromWishlistV2(wishlistResult: ProductCardOptionsModel.WishlistResult) {
+        context?.let { context ->
+            view?.let { v ->
+                AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(wishlistResult, context, v)
+            }
+        }
+        if (wishlistResult.isSuccess) {
+            shopHomeAdapter.updateWishlistProduct(threeDotsClickShopProductViewModel?.id ?: "", false)
+            threeDotsClickShopProductViewModel?.let {
+                trackClickWishlist(threeDotsClickShopCarouselProductUiModel,
+                    it, false)
+            }
         }
     }
 
@@ -2768,7 +2807,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     fun clearCache() {
         viewModel?.clearCache()
     }
-
 
     private fun redirectToShopSortPickerPage() {
         context?.run {
@@ -3322,7 +3360,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun setupPlayWidget() {
-        playWidgetCoordinator = PlayWidgetCoordinator().apply {
+        playWidgetCoordinator = PlayWidgetCoordinator(this, autoHandleLifecycleMethod = false).apply {
             setListener(this@ShopPageHomeFragment)
         }
     }
@@ -3330,7 +3368,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private fun setupPlayWidgetAnalyticListener() {
         playWidgetCoordinator.apply {
             shopPlayWidgetAnalytic.shopId = shopId
-            setAnalyticListener(DefaultPlayWidgetInListAnalyticListener(shopPlayWidgetAnalytic))
+            setAnalyticModel(
+                PlayWidgetShopAnalyticModel(
+                    isOwnShop = shopId == viewModel?.userSessionShopId
+                )
+            )
         }
     }
 

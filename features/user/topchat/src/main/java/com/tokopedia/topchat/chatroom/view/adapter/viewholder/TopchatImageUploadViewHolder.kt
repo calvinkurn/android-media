@@ -82,14 +82,13 @@ class TopchatImageUploadViewHolder(
     private val attachmentUnify get() = attachment as? ImageUnify
 
     override fun bind(element: ImageUploadUiModel?, payloads: MutableList<Any>) {
-        if (payloads.isEmpty()) return
+        if (payloads.isEmpty() || element == null) return
         if (payloads.first() == Payload.REBIND) {
             bind(element)
         }
     }
 
-    override fun bind(element: ImageUploadUiModel?) {
-        if (element == null) return
+    override fun bind(element: ImageUploadUiModel) {
         super.bind(element)
         hideReadStatusIfRetry(element)
         bindBackground(element)
@@ -100,10 +99,10 @@ class TopchatImageUploadViewHolder(
         bindLongClick(element)
     }
 
-    override fun setBottomHour(element: BaseChatUiModel?) {
+    override fun setBottomHour(element: BaseChatUiModel) {
         if (element is ImageUploadUiModel && element.isDummy) {
-            hour.text = SENDING_TEXT
-            hour.show()
+            hour?.text = SENDING_TEXT
+            hour?.show()
         } else {
             super.setBottomHour(element)
         }
@@ -172,7 +171,7 @@ class TopchatImageUploadViewHolder(
 
     private fun hideReadStatusIfRetry(element: ImageUploadUiModel) {
         if (element.isRetry) {
-            chatReadStatus.hide()
+            chatReadStatus?.hide()
         }
     }
 

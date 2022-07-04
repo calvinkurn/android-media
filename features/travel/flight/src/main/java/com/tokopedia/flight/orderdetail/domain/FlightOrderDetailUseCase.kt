@@ -349,7 +349,7 @@ class FlightOrderDetailUseCase @Inject constructor(
     private fun transformOrderDetailToCancellationList(data: FlightOrderDetailEntity.OrderDetailData): List<FlightOrderCancellationListModel> =
             data.let {
                 val cancellationList = arrayListOf<FlightOrderCancellationListModel>()
-                val journeyIdMapToDepartureArrivalId = hashMapOf<Int, Pair<String, String>>()
+                val journeyIdMapToDepartureArrivalId = hashMapOf<String, Pair<String, String>>()
 
                 data.flight.journeys.map { journey ->
                     journeyIdMapToDepartureArrivalId.put(journey.id, Pair(journey.departureId, journey.arrivalId))
@@ -385,7 +385,7 @@ class FlightOrderDetailUseCase @Inject constructor(
                                                cancellationDetailList: List<OrderDetailCancellation.OrderDetailCancelDetail>)
             : List<FlightOrderDetailJourneyModel> {
 
-        val journeyIdList = arrayListOf<Int>()
+        val journeyIdList = arrayListOf<String>()
         val transformedJourneyList = arrayListOf<FlightOrderDetailJourneyModel>()
 
         journeyList.map { journey ->
@@ -400,7 +400,7 @@ class FlightOrderDetailUseCase @Inject constructor(
         return transformedJourneyList
     }
 
-    private fun transformPassengerToCancellation(journeyIdMapToDepartureArrivalId: Map<Int, Pair<String, String>>,
+    private fun transformPassengerToCancellation(journeyIdMapToDepartureArrivalId: Map<String, Pair<String, String>>,
                                                  passengerList: List<OrderDetailPassenger>,
                                                  cancellationDetailList: List<OrderDetailCancellation.OrderDetailCancelDetail>)
             : List<FlightOrderCancellationDetailPassengerModel> {

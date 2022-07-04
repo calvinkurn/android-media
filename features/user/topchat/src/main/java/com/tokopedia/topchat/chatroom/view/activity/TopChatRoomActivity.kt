@@ -38,8 +38,8 @@ import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatlist.fragment.ChatListInboxFragment
-import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
+import com.tokopedia.topchat.chatlist.view.fragment.ChatListInboxFragment
+import com.tokopedia.topchat.chatlist.domain.pojo.ItemChatListPojo
 import com.tokopedia.topchat.chatroom.di.ChatComponent
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent

@@ -32,7 +32,7 @@ class ImageAnnouncementUiModel
 constructor(
     messageId: String, fromUid: String, from: String, fromRole: String,
     attachmentId: String, attachmentType: String, replyTime: String, val imageUrl: String,
-    val redirectUrl: String, message: String, val broadcastBlastId: Long, source: String,
+    val redirectUrl: String, message: String, val broadcastBlastId: String, source: String,
     val isHideBanner: Boolean
 ) : BaseChatUiModel(
         messageId, fromUid, from, fromRole, attachmentId,

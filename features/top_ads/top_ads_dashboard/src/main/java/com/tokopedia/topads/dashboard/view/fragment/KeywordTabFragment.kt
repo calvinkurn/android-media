@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -19,7 +18,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
-import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EMPTY_SEARCH_VIEW
@@ -34,8 +32,8 @@ import com.tokopedia.topads.dashboard.view.adapter.keyword.KeywordAdapter
 import com.tokopedia.topads.dashboard.view.adapter.keyword.KeywordAdapterTypeFactoryImpl
 import com.tokopedia.topads.dashboard.view.adapter.keyword.viewmodel.KeywordEmptyModel
 import com.tokopedia.topads.dashboard.view.adapter.keyword.viewmodel.KeywordItemModel
-import com.tokopedia.topads.dashboard.viewmodel.GroupDetailViewModel
 import com.tokopedia.topads.dashboard.view.sheet.TopadsGroupFilterSheet
+import com.tokopedia.topads.dashboard.viewmodel.GroupDetailViewModel
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -72,6 +70,7 @@ class KeywordTabFragment : BaseDaggerFragment() {
     private var deleteCancel = false
     private var singleAction = false
     private var currentPageNum = 1
+    private val groupId by lazy(LazyThreadSafetyMode.NONE) { arguments?.getInt(GROUP_ID, 0).toString() }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -80,7 +79,7 @@ class KeywordTabFragment : BaseDaggerFragment() {
     private var totalCount = 0
     private var totalPage = 0
     private val viewModelProvider by lazy {
-        ViewModelProviders.of(this, viewModelFactory)
+        ViewModelProvider(this, viewModelFactory)
     }
     private val viewModel by lazy {
         viewModelProvider.get(GroupDetailViewModel::class.java)
@@ -118,7 +117,7 @@ class KeywordTabFragment : BaseDaggerFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
     ): View? {
-        val view = inflater.inflate(resources.getLayout(R.layout.topads_dash_fragment_keyword_list),
+        val view = inflater.inflate(context?.resources?.getLayout(R.layout.topads_dash_fragment_keyword_list),
             container, false)
         recyclerView = view.findViewById(R.id.key_list)
         actionbar = view.findViewById(R.id.actionbar)
@@ -156,6 +155,7 @@ class KeywordTabFragment : BaseDaggerFragment() {
     }
 
     private fun fetchNextPage(currentPage: Int) {
+        val resources = context?.resources ?: return
         viewModel.getGroupKeywordData(resources, 1, arguments?.getInt(GROUP_ID) ?: 0,
             searchBar?.searchBarTextField?.text.toString(),
             groupFilterSheet.getSelectedSortId(), groupFilterSheet.getSelectedStatusId(),
@@ -163,12 +163,13 @@ class KeywordTabFragment : BaseDaggerFragment() {
     }
 
     private fun onCheckedChange(pos: Int, isChecked: Boolean) {
+        val resources = context?.resources ?: return
         singleAction = true
         val actionActivate: String = if (isChecked)
             TopAdsDashboardConstant.ACTION_ACTIVATE
         else
             TopAdsDashboardConstant.ACTION_DEACTIVATE
-        viewModel.setKeywordAction(actionActivate,
+        viewModel.setKeywordActionForGroup(groupId, actionActivate,
             listOf((adapter.items[pos] as KeywordItemModel).result.keywordId.toString()),
             resources, ::onSuccessAction)
     }
@@ -195,7 +196,6 @@ class KeywordTabFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         btnFilter?.setOnClickListener {
             groupFilterSheet.show(childFragmentManager, "")
-            groupFilterSheet.showAdplacementFilter(false)
             groupFilterSheet.onSubmitClick = { fetchData() }
         }
         fetchData()
@@ -218,13 +218,10 @@ class KeywordTabFragment : BaseDaggerFragment() {
     }
 
     private fun startEditActivity() {
-        val intent =
-            RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)?.apply {
-                putExtra(TopAdsDashboardConstant.TAB_POSITION, 1)
-                putExtra(TopAdsDashboardConstant.GROUPID, arguments?.getInt(GROUP_ID).toString())
-                putExtra(ParamObject.ISWHITELISTEDUSER,
-                    arguments?.getBoolean(ParamObject.ISWHITELISTEDUSER) ?: false)
-            }
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)?.apply {
+            putExtra(TopAdsDashboardConstant.TAB_POSITION, 1)
+            putExtra(TopAdsDashboardConstant.GROUPID, arguments?.getInt(GROUP_ID).toString())
+        }
         startActivityForResult(intent, TopAdsDashboardConstant.EDIT_GROUP_REQUEST_CODE)
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_TAMBAH_KATA_KUNCI,
             "")
@@ -264,6 +261,7 @@ class KeywordTabFragment : BaseDaggerFragment() {
     }
 
     private fun fetchData() {
+        val resources = context?.resources ?: return
         viewModel.getCountProductKeyword(resources,
             listOf(arguments?.getInt(GROUP_ID).toString()), ::successCount)
         currentPageNum = 1
@@ -318,26 +316,25 @@ class KeywordTabFragment : BaseDaggerFragment() {
     }
 
     private fun performAction(actionActivate: String) {
-
+        val resources = context?.resources ?: return
         if (actionActivate == TopAdsDashboardConstant.ACTION_DELETE) {
             view.let {
                 Toaster.make(it!!,
                     String.format(getString(R.string.topads_keyword_del_toaster), getAdIds().size),
                     TOASTER_DURATION.toInt(),
                     Toaster.TYPE_NORMAL,
-                    getString(com.tokopedia.topads.common.R.string.topads_common_batal),
-                    View.OnClickListener {
-                        deleteCancel = true
+                    getString(com.tokopedia.topads.common.R.string.topads_common_batal)
+                ) {
+                    deleteCancel = true
 
-                    })
+                }
             }
             val coroutineScope = CoroutineScope(Dispatchers.Main)
             coroutineScope.launch {
                 delay(TOASTER_DURATION)
                 if (activity != null && isAdded) {
                     if (!deleteCancel) {
-                        viewModel.setKeywordAction(actionActivate,
-                            getAdIds(), resources, ::onSuccessAction)
+                        viewModel.setKeywordActionForGroup(groupId,actionActivate, getAdIds(), resources, ::onSuccessAction)
                         activity?.setResult(Activity.RESULT_OK)
                     }
                     deleteCancel = false
@@ -345,7 +342,7 @@ class KeywordTabFragment : BaseDaggerFragment() {
                 }
             }
         } else {
-            viewModel.setKeywordAction(actionActivate, getAdIds(), resources, ::onSuccessAction)
+            viewModel.setKeywordActionForGroup(groupId,actionActivate, getAdIds(), resources, ::onSuccessAction)
         }
     }
 

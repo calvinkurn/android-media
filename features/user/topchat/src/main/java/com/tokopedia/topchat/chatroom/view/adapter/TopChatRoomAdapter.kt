@@ -15,7 +15,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.chat_common.BaseChatAdapter
+import com.tokopedia.chat_common.view.adapter.BaseChatAdapter
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel.Companion.statusActive
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel.Companion.statusWarehouse

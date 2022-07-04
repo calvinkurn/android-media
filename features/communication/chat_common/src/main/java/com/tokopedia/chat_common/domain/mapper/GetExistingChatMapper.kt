@@ -62,7 +62,7 @@ open class GetExistingChatMapper @Inject constructor() {
         return ChatRoomHeaderUiModel(
                 interlocutor.name,
                 interlocutor.tag,
-                interlocutor.userId.toString(),
+                interlocutor.userId,
                 interlocutor.role,
                 ChatRoomHeaderUiModel.Companion.MODE_DEFAULT_GET_CHAT,
                 "",

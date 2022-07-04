@@ -8,9 +8,10 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.review.common.domain.usecase.ToggleLikeReviewUseCase
 import com.tokopedia.review.feature.reading.data.ProductReview
-import com.tokopedia.review.feature.reading.data.ProductReviewAttachments
+import com.tokopedia.review.feature.reading.data.ProductReviewImageAttachments
 import com.tokopedia.review.feature.reading.data.ProductReviewResponse
 import com.tokopedia.review.feature.reading.data.ProductReviewUser
+import com.tokopedia.review.feature.reading.data.ProductReviewVideoAttachments
 import com.tokopedia.review.feature.reading.data.ProductrevGetProductRatingAndTopic
 import com.tokopedia.review.feature.reading.data.ProductrevGetProductReviewList
 import com.tokopedia.review.feature.reading.data.ProductrevGetShopRatingAndTopic
@@ -27,6 +28,12 @@ import com.tokopedia.review.feature.reading.presentation.uimodel.SortFilterBotto
 import com.tokopedia.review.feature.reading.presentation.uimodel.SortTypeConstants
 import com.tokopedia.review.feature.reading.presentation.uimodel.ToggleLikeUiModel
 import com.tokopedia.review.feature.reading.utils.ReadReviewUtils
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaImageThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaVideoThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaImageThumbnailUiState
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaVideoThumbnailUiState
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -135,27 +142,76 @@ class ReadReviewViewModel @Inject constructor(
                 isShopViewHolder = false,
                 shopId = shopId,
                 shopName = shopName,
-                productId = productId.value ?: ""
+                productId = productId.value ?: "",
+                mediaThumbnails = ReviewMediaThumbnailUiModel(mapProductReviewAttachmentsToReviewMediaThumbnails(it))
             )
         }
     }
 
+    private fun mapProductReviewAttachmentsToReviewMediaThumbnails(productReview: ProductReview): List<ReviewMediaThumbnailVisitable> {
+        return mutableListOf<ReviewMediaThumbnailVisitable>().apply {
+            val imageThumbnails = productReview.imageAttachments.map {
+                ReviewMediaImageThumbnailUiModel(
+                    uiState = ReviewMediaImageThumbnailUiState.Showing(
+                        attachmentID = it.attachmentID,
+                        reviewID = productReview.feedbackID,
+                        thumbnailUrl = it.imageThumbnailUrl,
+                        fullSizeUrl = it.uri
+                    )
+                )
+            }
+            val videoThumbnails = productReview.videoAttachments.map {
+                ReviewMediaVideoThumbnailUiModel(
+                    uiState = ReviewMediaVideoThumbnailUiState.Showing(
+                        attachmentID = it.attachmentID,
+                        reviewID = productReview.feedbackID,
+                        url = it.url
+                    )
+                )
+            }
+            addAll(videoThumbnails)
+            addAll(imageThumbnails)
+        }
+    }
+
     fun mapShopReviewToReadReviewUiModel(
-            listShopReview: List<ShopReview>,
-            shopId: String,
-            shopName: String
+        listShopReview: List<ShopReview>,
+        shopId: String,
+        shopName: String
     ): List<ReadReviewUiModel> {
         return listShopReview.map {
             ReadReviewUiModel(
-                    reviewData = mapShopReviewDataToProductReviewData(it),
-                    isShopViewHolder = true,
-                    shopId = shopId,
-                    shopName = shopName,
-                    productImage = it.product.productImageURL,
-                    productName = it.product.productName,
-                    productId = it.product.productID
+                reviewData = mapShopReviewDataToProductReviewData(it),
+                isShopViewHolder = true,
+                shopId = shopId,
+                shopName = shopName,
+                productImage = it.product.productImageURL,
+                productName = it.product.productName,
+                productId = it.product.productID,
+                mediaThumbnails = ReviewMediaThumbnailUiModel(mapShopReviewAttachmentsToReviewMediaThumbnails(it))
             )
         }
+    }
+
+    private fun mapShopReviewAttachmentsToReviewMediaThumbnails(shopReview: ShopReview): List<ReviewMediaThumbnailVisitable> {
+        return shopReview.videoAttachments.map {
+            ReviewMediaVideoThumbnailUiModel(
+                uiState = ReviewMediaVideoThumbnailUiState.Showing(
+                    attachmentID = it.attachmentID,
+                    reviewID = shopReview.reviewID,
+                    url = it.videoUrl
+                )
+            )
+        }.plus(shopReview.imageAttachments.map {
+            ReviewMediaImageThumbnailUiModel(
+                uiState = ReviewMediaImageThumbnailUiState.Showing(
+                    attachmentID = it.attachmentID,
+                    reviewID = shopReview.reviewID,
+                    thumbnailUrl = it.thumbnailURL,
+                    fullSizeUrl = it.fullsizeURL
+                )
+            )
+        })
     }
 
     private fun mapShopReviewDataToProductReviewData(shopReview: ShopReview) = ProductReview().apply {
@@ -170,12 +226,16 @@ class ReadReviewViewModel @Inject constructor(
             userID = shopReview.reviewerID
             fullName = shopReview.reviewerName
         }
-        imageAttachments = shopReview.attachments.map {
-            ProductReviewAttachments(it.thumbnailURL, it.fullsizeURL)
+        imageAttachments = shopReview.imageAttachments.map {
+            ProductReviewImageAttachments(it.thumbnailURL, it.fullsizeURL)
+        }
+        videoAttachments = shopReview.videoAttachments.map {
+            ProductReviewVideoAttachments(it.videoUrl)
         }
         likeDislike = shopReview.likeDislike
         shopProductId = shopReview.product.productID
         badRatingReasonFmt = shopReview.badRatingReasonFmt
+        variantName = shopReview.product.productVariant.variantName
     }
 
     fun toggleLikeReview(reviewId: String, likeStatus: Int, index: Int) {
@@ -243,11 +303,11 @@ class ReadReviewViewModel @Inject constructor(
         resetPage(isProductReview)
     }
 
-    fun setFilterWithImage(isActive: Boolean, isProductReview: Boolean) {
+    fun setFilterWithMedia(isActive: Boolean, isProductReview: Boolean) {
         if (isActive) {
-            this.filter.withImage = null
+            this.filter.withMedia = null
         } else {
-            this.filter.withImage = getFilterWithImageParam()
+            this.filter.withMedia = getFilterWithMediaParam()
         }
         resetPage(isProductReview)
     }
@@ -348,8 +408,8 @@ class ReadReviewViewModel @Inject constructor(
         return SortTypeConstants.sortMap[sort] ?: SortTypeConstants.MOST_HELPFUL_PARAM
     }
 
-    private fun getFilterWithImageParam(): FilterType.FilterWithImage {
-        return FilterType.FilterWithImage()
+    private fun getFilterWithMediaParam(): FilterType.FilterWithMedia {
+        return FilterType.FilterWithMedia()
     }
 
     private fun mapRatingFilterToFilterType(ratingFilters: Set<ListItemUnify>): FilterType.FilterRating {

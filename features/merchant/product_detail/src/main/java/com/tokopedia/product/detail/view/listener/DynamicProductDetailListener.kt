@@ -6,7 +6,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelStore
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
@@ -21,6 +20,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationC
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
@@ -43,8 +43,6 @@ interface DynamicProductDetailListener {
 
     fun onMerchantVoucherSummaryClicked(shopId: String, @MvcSource source: Int, productId: String)
 
-
-
     /**
      * ProductSnapshotViewHolder
      */
@@ -63,6 +61,7 @@ interface DynamicProductDetailListener {
     fun onCategoryClicked(url: String, componentTrackDataModel: ComponentTrackDataModel)
     fun onEtalaseClicked(url: String, componentTrackDataModel: ComponentTrackDataModel)
     fun goToApplink(url: String)
+    fun goToEducational(url: String)
 
     fun onBbiInfoClick(url: String, title: String, componentTrackDataModel: ComponentTrackDataModel)
     fun showCustomInfoCoachMark(componentName: String, viewTarget: View)
@@ -71,6 +70,11 @@ interface DynamicProductDetailListener {
      * BestSellerViewHolder
      */
     fun onClickBestSeller(componentTrackDataModel: ComponentTrackDataModel, appLink: String)
+
+    /**
+     * OneLinerViewHolder
+     */
+    fun onImpressStockAssurance(componentTrackDataModel: ComponentTrackDataModel, label: String)
 
     /**
      * ProductDiscussionViewHolder
@@ -84,8 +88,8 @@ interface DynamicProductDetailListener {
     /**
      * ProductReviewViewHolder
      */
-    fun onSeeAllLastItemImageReview(componentTrackDataModel: ComponentTrackDataModel?)
-    fun onImageReviewClick(listOfImage: List<ImageReviewItem>, position: Int, componentTrackDataModel: ComponentTrackDataModel?, imageCount: String)
+    fun onSeeAllLastItemMediaReview(componentTrackDataModel: ComponentTrackDataModel?)
+    fun onMediaReviewClick(reviewID: String, position: Int, componentTrackDataModel: ComponentTrackDataModel?, detailedMediaResult: ProductrevGetReviewMedia)
     fun onReviewClick()
     fun onSeeAllTextView(componentTrackDataModel: ComponentTrackDataModel?)
 
@@ -106,9 +110,11 @@ interface DynamicProductDetailListener {
      * ProductShopCredibilityViewHolder
      */
     fun onShopInfoClicked(itemId: Int, componentTrackDataModel: ComponentTrackDataModel)
+    fun onShopMultilocClicked(componentTrackDataModel: ComponentTrackDataModel)
     fun gotoShopDetail(componentTrackDataModel: ComponentTrackDataModel)
     fun onShopTickerClicked(tickerDataResponse: ShopInfo.TickerDataResponse, componentTrackDataModel: ComponentTrackDataModel)
     fun onShopTickerImpressed(tickerDataResponse: ShopInfo.TickerDataResponse, componentTrackDataModel: ComponentTrackDataModel)
+    fun onShopCredibilityImpressed(countLocation: String, componentTrackDataModel: ComponentTrackDataModel)
 
     /**
      * ProductRecommendationAnnotationChipViewHolder
@@ -155,7 +161,6 @@ interface DynamicProductDetailListener {
      * ImpressionComponent
      */
     fun onImpressComponent(componentTrackDataModel: ComponentTrackDataModel)
-
     /**
      * ProductNotifyMeViewHolder
      */

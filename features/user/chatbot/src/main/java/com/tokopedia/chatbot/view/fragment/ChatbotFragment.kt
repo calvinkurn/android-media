@@ -65,7 +65,7 @@ import com.tokopedia.chatbot.ChatbotConstant.REQUEST_SUBMIT_CSAT
 import com.tokopedia.chatbot.ChatbotConstant.REQUEST_SUBMIT_FEEDBACK
 import com.tokopedia.chatbot.ChatbotConstant.TOKOPEDIA_ATTACH_INVOICE_REQ_CODE
 import com.tokopedia.chatbot.R
-import com.tokopedia.chatbot.analytics.ChatbotAnalytics.Companion.chatbotAnalytics
+import com.tokopedia.chatbot.analytics.ChatbotAnalytics
 import com.tokopedia.chatbot.attachinvoice.domain.mapper.AttachInvoiceMapper
 import com.tokopedia.chatbot.attachinvoice.view.TransactionInvoiceBottomSheet
 import com.tokopedia.chatbot.attachinvoice.view.TransactionInvoiceBottomSheetListener
@@ -161,6 +161,9 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     @Inject
     lateinit var session: UserSessionInterface
 
+    @Inject
+    lateinit var chatbotAnalytics: dagger.Lazy<ChatbotAnalytics>
+
     lateinit var replyEditText: EditText
     lateinit var replyEditTextContainer: LinearLayout
 
@@ -187,6 +190,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private var isSendButtonActivated : Boolean = true
     private var isFloatingSendButton: Boolean = false
     private var isFloatingInvoiceCancelled : Boolean = false
+    private var isArticleDataSent : Boolean = false
 
     override fun initInjector() {
         if (activity != null && (activity as Activity).application != null) {
@@ -238,7 +242,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     private fun showCsatRatingView() {
-        chatbotAnalytics.eventShowView(ACTION_IMPRESSION_CSAT_SMILEY_VIEW)
+        chatbotAnalytics.get().eventShowView(ACTION_IMPRESSION_CSAT_SMILEY_VIEW)
         chatbot_view_help_rate.txt_help_title.setText(mCsatResponse.attachment?.attributes?.title)
         val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(new_comment.getWindowToken(), 0)
@@ -256,7 +260,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             ChatBotProvideRatingActivity
                     .getInstance(it, number, mCsatResponse)
         }, REQUEST_SUBMIT_FEEDBACK)
-        chatbotAnalytics.eventClick(ACTION_CSAT_SMILEY_BUTTON_CLICKED, number.toString())
+        chatbotAnalytics.get().eventClick(ACTION_CSAT_SMILEY_BUTTON_CLICKED, number.toString())
     }
 
     override fun getUserSession(): UserSessionInterface {
@@ -317,7 +321,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun sendInvoiceForArticle() {
-        if (isArticleEntry) {
+        if (isArticleEntry && !isArticleDataSent) {
             if (!isAttached) {
 
                 if (hashMap.get(CODE)?.isNotEmpty() == true) {
@@ -410,8 +414,13 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 float_chat_item.show()
 
             }
+            isArticleDataSent(true)
         }
 
+    }
+
+    private fun isArticleDataSent(dataSentState: Boolean) {
+        isArticleDataSent = dataSentState
     }
 
     private fun onSendFloatingInvoiceClicked() {
@@ -757,7 +766,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     private fun sendEventForWelcomeMessage(visitable: Visitable<*>) {
         if (visitable is BaseChatUiModel && visitable.message.contains(WELCOME_MESSAGE_VALIDATION)) {
-            chatbotAnalytics.eventShowView(ACTION_IMPRESSION_WELCOME_MESSAGE)
+            chatbotAnalytics.get().eventShowView(ACTION_IMPRESSION_WELCOME_MESSAGE)
         }
     }
 
@@ -798,7 +807,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun onQuickReplyClicked(model: QuickReplyViewModel) {
-        chatbotAnalytics.eventClick(ACTION_QUICK_REPLY_BUTTON_CLICKED)
+        chatbotAnalytics.get().eventClick(ACTION_QUICK_REPLY_BUTTON_CLICKED)
         presenter.sendQuickReply(messageId, model, SendableUiModel.generateStartTime(), opponentId)
     }
 
@@ -988,7 +997,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun onSendButtonClicked() {
-        chatbotAnalytics.eventClick(ACTION_REPLY_BUTTON_CLICKED)
+        chatbotAnalytics.get().eventClick(ACTION_REPLY_BUTTON_CLICKED)
         val sendMessage = replyEditText.text.toString()
         val startTime = SendableUiModel.generateStartTime()
         presenter.sendMessage(messageId, sendMessage, startTime, opponentId,
@@ -1004,7 +1013,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun onChatActionBalloonSelected(selected: ChatActionBubbleViewModel, model: ChatActionSelectionBubbleViewModel) {
-        chatbotAnalytics.eventClick(ACTION_ACTION_BUBBLE_CLICKED)
+        chatbotAnalytics.get().eventClick(ACTION_ACTION_BUBBLE_CLICKED)
         if (selected.action.equals(SEE_ALL_INVOICE_TEXT, true)) {
             showSearchInvoiceScreen()
         } else {
@@ -1022,9 +1031,9 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     private fun sendEvent(rating: Int) {
         if (rating == ChatRatingViewModel.RATING_GOOD) {
-            chatbotAnalytics.eventClick(ACTION_THUMBS_UP_BUTTON_CLICKED)
+            chatbotAnalytics.get().eventClick(ACTION_THUMBS_UP_BUTTON_CLICKED)
         } else {
-            chatbotAnalytics.eventClick(ACTION_THUMBS_DOWN_BUTTON_CLICKED)
+            chatbotAnalytics.get().eventClick(ACTION_THUMBS_DOWN_BUTTON_CLICKED)
         }
     }
 

@@ -1,6 +1,5 @@
 package com.tokopedia.profilecompletion.settingprofile.data
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -10,6 +9,5 @@ import com.google.gson.annotations.SerializedName
 
 data class UserProfileRoleData(
     @SerializedName("userProfileRole")
-    @Expose
     var profileRoleData: ProfileRoleData = ProfileRoleData()
 )
