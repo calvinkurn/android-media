@@ -71,6 +71,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import com.tokopedia.abstraction.R as abstractionR
 import com.tokopedia.unifyprinciples.R as unifyR
+import com.tokopedia.feedcomponent.onboarding.view.FeedUGCOnboardingParentFragment
 
 class UserProfileFragment @Inject constructor(
     private val viewModelFactoryCreator: UserProfileViewModelFactory.Creator,
@@ -218,14 +219,14 @@ class UserProfileFragment @Inject constructor(
             }
 
             fabUserProfile.setOnClickListener {
-                FeedUserTnCOnboardingBottomSheet.getFragment(
-                    childFragmentManager,
-                    requireActivity().classLoader
-                ).showNow(childFragmentManager)
-//            FeedUserCompleteOnboardingBottomSheet.getFragment(
-//                childFragmentManager,
-//                requireActivity().classLoader
-//            ).showNow(childFragmentManager)
+                if(viewModel.needOnboarding) {
+                    val bundle = Bundle().apply {
+                        putString(FeedUGCOnboardingParentFragment.KEY_USERNAME, viewModel.profileUsername)
+                    }
+                    childFragmentManager.beginTransaction()
+                        .add(FeedUGCOnboardingParentFragment::class.java, bundle, FeedUGCOnboardingParentFragment.TAG)
+                        .commit()
+                }
             }
 
             mainBinding.rvPost.addOnScrollListener(feedFloatingButtonManager.scrollListener)
@@ -460,7 +461,9 @@ class UserProfileFragment @Inject constructor(
         ) return
 
         mainBinding.fabUserProfile.showWithCondition(
-            value.profileType == ProfileType.Self && value.profileWhitelist.isWhitelist
+            value.profileType == ProfileType.Self
+            /** TODO: just for the sake of testing */
+//                    && value.profileWhitelist.isWhitelist
         )
     }
 

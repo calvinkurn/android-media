@@ -1,15 +1,70 @@
 package com.tokopedia.feedcomponent.onboarding.view
 
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.feedcomponent.databinding.FragmentFeedUgcOnboardingParentBinding
+import com.tokopedia.feedcomponent.onboarding.view.bottomsheet.FeedUserCompleteOnboardingBottomSheet
+import com.tokopedia.feedcomponent.onboarding.view.bottomsheet.FeedUserTnCOnboardingBottomSheet
+import javax.inject.Inject
 
 /**
  * Created By : Jonathan Darwin on July 04, 2022
  */
-class FeedUGCOnboardingParentFragment : TkpdBaseV4Fragment() {
+class FeedUGCOnboardingParentFragment @Inject constructor(
+
+): TkpdBaseV4Fragment() {
+
+    private var _binding: FragmentFeedUgcOnboardingParentBinding? = null
+    private val binding: FragmentFeedUgcOnboardingParentBinding
+        get() = _binding!!
 
     override fun getScreenName() = TAG
 
+    val usernameArg: String
+        get() = arguments?.getString(KEY_USERNAME) ?: ""
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = FragmentFeedUgcOnboardingParentBinding.inflate(
+            inflater, container, false
+        )
+        return _binding?.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        showBottomSheet()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun showBottomSheet() {
+        if(usernameArg.isEmpty()) {
+            FeedUserCompleteOnboardingBottomSheet.getFragment(
+                childFragmentManager,
+                requireContext().classLoader
+            ).showNow(childFragmentManager)
+        }
+        else {
+            FeedUserTnCOnboardingBottomSheet.getFragment(
+                childFragmentManager,
+                requireContext().classLoader
+            ).showNow(childFragmentManager)
+        }
+    }
+
     companion object {
-        private const val TAG = "FeedUGCOnboardingParentFragment"
+        const val TAG = "FeedUGCOnboardingParentFragment"
+        const val KEY_USERNAME = "username"
     }
 }
