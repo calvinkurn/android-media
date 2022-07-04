@@ -2878,4 +2878,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     override fun deletePayLaterWidget() {
         getHomeViewModel().deletePayLaterWidget()
     }
+
+    override fun isSuperGraphicHeaderActive(): Boolean {
+        return isEligibleForSuperGraphicHeader()
+    }
 }
