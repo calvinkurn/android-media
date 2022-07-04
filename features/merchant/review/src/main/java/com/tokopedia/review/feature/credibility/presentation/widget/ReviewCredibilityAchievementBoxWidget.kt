@@ -52,7 +52,7 @@ class ReviewCredibilityAchievementBoxWidget @JvmOverloads constructor(
     }
 
     private fun setupVisibility(label: ReviewerCredibilityLabel) {
-        binding.root.showWithCondition(!label.achievements.isNullOrEmpty())
+        showWithCondition(!label.achievements.isNullOrEmpty())
     }
 
     fun setAchievements(label: ReviewerCredibilityLabel) {

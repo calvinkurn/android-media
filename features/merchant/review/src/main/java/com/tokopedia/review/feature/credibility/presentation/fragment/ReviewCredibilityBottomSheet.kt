@@ -91,7 +91,7 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCred
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
         setDismissBehavior()
-        observeReviewerCredibility()
+        setShowListener { observeReviewerCredibility() }
         getReviewerCredibility()
     }
 
