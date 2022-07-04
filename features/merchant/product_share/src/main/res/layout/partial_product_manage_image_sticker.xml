@@ -7,6 +7,7 @@
 
     <ImageView
         android:id="@+id/img_source"
+        android:contentDescription="@string/content_desc_image_source"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
