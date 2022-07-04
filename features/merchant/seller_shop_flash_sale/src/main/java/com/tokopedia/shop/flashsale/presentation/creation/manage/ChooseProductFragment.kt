@@ -34,7 +34,6 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
 
     companion object {
         const val SWIPEPROGRESS_MARGIN = 120
-        const val GUIDELINE_MARGIN_MAX = 64
         const val GUIDELINE_MARGIN_MIN = 0
         const val GUIDELINE_ANIMATION_DELAY = 500L
 
@@ -51,7 +50,8 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
     @Inject
     lateinit var viewModel: ChooseProductViewModel
     private var binding by autoClearedNullable<SsfsFragmentChooseProductBinding>()
-    private var guidelineMargin = GUIDELINE_MARGIN_MAX
+    private var guidelineMargin = GUIDELINE_MARGIN_MIN
+    private var guidelineMarginMax = GUIDELINE_MARGIN_MIN
     private val campaignId by lazy {
         arguments?.getString(ChooseProductActivity.BUNDLE_KEY_CAMPAIGN_ID).orEmpty()
     }
@@ -85,6 +85,8 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
 
         setupObservers()
         setupSearchBar()
+        guidelineMarginMax = binding?.guidelineFooter?.setGuidelineEnd().orZero()
+        guidelineMargin = guidelineMarginMax
         viewModel.getShopInfo()
     }
 
@@ -137,7 +139,7 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
         if (adapter?.itemCount.orZero() < getPerPage()) return
         guidelineMargin -= yScrollAmount
         if (guidelineMargin < GUIDELINE_MARGIN_MIN) guidelineMargin = GUIDELINE_MARGIN_MIN
-        if (guidelineMargin > GUIDELINE_MARGIN_MAX) guidelineMargin = GUIDELINE_MARGIN_MAX
+        if (guidelineMargin > guidelineMarginMax) guidelineMargin = guidelineMarginMax
         binding?.guidelineFooter?.setGuidelineEnd(guidelineMargin)
         binding?.guidelineHeader?.setGuidelineBegin(guidelineMargin)
         animateScrollDebounce.invoke(yScrollAmount)
@@ -196,9 +198,13 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
     private fun setupShopInfoObserver() {
         viewModel.shopStatus.observe(viewLifecycleOwner) {
             if (it == ShopStatus.CLOSED) {
-                ShopClosedDialog(primaryCTAAction = {
-                    RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_SETTINGS_OPERATIONAL_HOURS)
-                }).show(childFragmentManager)
+                val dialog = ShopClosedDialog(primaryCTAAction = ::goToShopSettings)
+                with(dialog) {
+                    setOnDismissListener {
+                        activity?.finish()
+                    }
+                    show(childFragmentManager)
+                }
             }
         }
     }
@@ -227,15 +233,19 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
         }
     }
 
+    private fun goToShopSettings() {
+        RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_SETTINGS_OPERATIONAL_HOURS)
+    }
+
     private fun animateScroll(scrollingAmount: Int) {
         if (scrollingAmount.isMoreThanZero()) {
             binding?.guidelineHeader?.animateSlide(guidelineMargin, GUIDELINE_MARGIN_MIN, true)
             binding?.guidelineFooter?.animateSlide(guidelineMargin, GUIDELINE_MARGIN_MIN, false)
             guidelineMargin = GUIDELINE_MARGIN_MIN
         } else if (scrollingAmount.isLessThanZero()){
-            binding?.guidelineHeader?.animateSlide(guidelineMargin, GUIDELINE_MARGIN_MAX, true)
-            binding?.guidelineFooter?.animateSlide(guidelineMargin, GUIDELINE_MARGIN_MAX, false)
-            guidelineMargin = GUIDELINE_MARGIN_MAX
+            binding?.guidelineHeader?.animateSlide(guidelineMargin, guidelineMarginMax, true)
+            binding?.guidelineFooter?.animateSlide(guidelineMargin, guidelineMarginMax, false)
+            guidelineMargin = guidelineMarginMax
         }
     }
 }
