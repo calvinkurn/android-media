@@ -70,8 +70,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.exoPlayer
     implementation rootProject.ext.miscDependencies.exoPlayerRtmp
     implementation rootProject.ext.miscDependencies.lottie
-
-    implementation("androidx.dynamicanimation:dynamicanimation:1.0.0")
+    implementation rootProject.ext.miscDependencies.dynamicAnimation
 }
 
 project.ext {
