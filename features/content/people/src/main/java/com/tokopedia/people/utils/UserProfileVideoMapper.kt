@@ -60,7 +60,6 @@ object UserProfileVideoMapper {
                         getPromoType(item.configurations.promoLabels).text
                     ),
                     reminderType = getReminderType(item.configurations.reminder.isSet),
-                    //TODO partner check later
                     partner = PlayWidgetPartnerUiModel(item.partner.id, item.partner.name),
                     video = PlayWidgetVideoUiModel(item.id, item.isLive, item.coverUrl, item.webLink),
                     channelType = channelType,

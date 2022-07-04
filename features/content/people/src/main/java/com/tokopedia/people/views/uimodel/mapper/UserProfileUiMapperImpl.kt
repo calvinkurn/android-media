@@ -27,11 +27,8 @@ class UserProfileUiMapperImpl @Inject constructor(
             biography = response.profileHeader.profile.biography.replace("\n", "<br />"),
             badges = response.profileHeader.profile.badges,
             stats = ProfileStatsUiModel(
-                totalPost = response.profileHeader.stats.totalPost,
                 totalPostFmt = response.profileHeader.stats.totalPostFmt,
-                totalFollower = response.profileHeader.stats.totalFollower,
                 totalFollowerFmt = response.profileHeader.stats.totalFollowerFmt,
-                totalFollowing = response.profileHeader.stats.totalFollowing,
                 totalFollowingFmt = response.profileHeader.stats.totalFollowingFmt,
             ),
             shareLink = LinkUiModel(

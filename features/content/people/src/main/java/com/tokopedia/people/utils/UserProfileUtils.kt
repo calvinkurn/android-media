@@ -10,16 +10,6 @@ import kotlinx.coroutines.flow.map
 import java.math.RoundingMode
 import kotlin.reflect.KProperty1
 
-object UserProfileUtils {
-    public fun getFormattedNumber(number: Long): String {
-        return if (number >= 10000) {
-            number.thousandFormatted(hasSpace = true, digit = 0, roundingMode = RoundingMode.DOWN)
-        } else {
-            number.thousandFormatted(hasSpace = true, digit = 1, roundingMode = RoundingMode.DOWN)
-        }
-    }
-}
-
 data class CachedState<T>(val prevValue: T? = null, val value: T) {
 
     fun <V> isValueChanged(prop: KProperty1<T, V>): Boolean {

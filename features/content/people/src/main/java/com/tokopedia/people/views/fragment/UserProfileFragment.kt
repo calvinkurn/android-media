@@ -58,7 +58,6 @@ import com.tokopedia.people.views.adapter.UserPostBaseAdapter
 import com.tokopedia.people.analytic.UserProfileTracker
 import com.tokopedia.people.databinding.UpFragmentUserProfileBinding
 import com.tokopedia.people.databinding.UpLayoutUserProfileHeaderBinding
-import com.tokopedia.people.utils.UserProfileUtils
 import com.tokopedia.people.utils.showErrorToast
 import com.tokopedia.people.utils.showToast
 import com.tokopedia.people.utils.withCache
@@ -396,9 +395,9 @@ class UserProfileFragment @Inject constructor(
                 textUserName.text = getString(R.string.up_username_template, curr.username)
             }
             textDisplayName.text = curr.name
-            textContentCount.text = UserProfileUtils.getFormattedNumber(curr.stats.totalPost)
-            textFollowerCount.text = UserProfileUtils.getFormattedNumber(curr.stats.totalFollower)
-            textFollowingCount.text = UserProfileUtils.getFormattedNumber(curr.stats.totalFollowing)
+            textContentCount.text = curr.stats.totalPostFmt
+            textFollowerCount.text = curr.stats.totalFollowerFmt
+            textFollowingCount.text = curr.stats.totalFollowingFmt
 
             /** Setup Bio */
             val displayBioText = HtmlLinkHelper(requireContext(), curr.biography).spannedString
