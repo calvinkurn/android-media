@@ -10,11 +10,14 @@ import androidx.dynamicanimation.animation.SpringForce
  * @author by astidhiyaa on 01/07/22
  */
 object AnimationUtils {
-    fun addSpringAnim(view: View,
-                              property: DynamicAnimation.ViewProperty,
-                              finalPosition: Float,
-                              @FloatRange(from = 0.1) stiffness: Float,
-                              @FloatRange(from = 0.0) dampingRatio: Float): SpringAnimation {
+    fun addSpringAnim(
+        view: View,
+        property: DynamicAnimation.ViewProperty,
+        finalPosition: Float,
+        @FloatRange(from = 0.1) stiffness: Float,
+        @FloatRange(from = 0.0) dampingRatio: Float,
+        @FloatRange(from = 0.0) velocity: Float = 24f,
+    ): SpringAnimation {
         val spring = SpringForce(finalPosition)
         spring.apply {
             this.stiffness = stiffness
@@ -22,6 +25,7 @@ object AnimationUtils {
         }
         val animation = SpringAnimation(view, property)
         animation.spring = spring
+        animation.setStartVelocity(velocity)
         return animation
     }
 }
