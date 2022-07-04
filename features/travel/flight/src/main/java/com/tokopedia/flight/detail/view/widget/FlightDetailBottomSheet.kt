@@ -2,6 +2,7 @@ package com.tokopedia.flight.detail.view.widget
 
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
 import com.google.android.material.tabs.TabLayout
@@ -13,6 +14,7 @@ import com.tokopedia.flight.detail.view.fragment.FlightDetailFragment
 import com.tokopedia.flight.detail.view.fragment.FlightDetailPriceFragment
 import com.tokopedia.flight.detail.view.model.FlightDetailModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.bottom_sheet_flight_detail.view.*
 
 /**
@@ -39,11 +41,14 @@ class FlightDetailBottomSheet : BottomSheetUnify() {
 
         savedInstanceState?.let {
             if (it.containsKey(SAVED_INSTANCE_MANAGER_ID)) {
-                val manager = SaveInstanceCacheManager(requireContext(), it.getString(SAVED_INSTANCE_MANAGER_ID))
+                val manager = SaveInstanceCacheManager(
+                    requireContext(),
+                    it.getString(SAVED_INSTANCE_MANAGER_ID)
+                )
                 flightDetailModel = manager.get(SAVED_DETAIL_MODEL, FlightDetailModel::class.java)
-                        ?: FlightDetailModel()
+                    ?: FlightDetailModel()
                 isShowSubmitButton = manager.get(SAVED_SHOW_BUTTON, Boolean::class.java)
-                        ?: false
+                    ?: false
             }
         }
 
@@ -57,14 +62,17 @@ class FlightDetailBottomSheet : BottomSheetUnify() {
 
         initView()
         bottomSheetHeader.setPadding(
-                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2),
-                bottomSheetHeader.top,
-                bottomSheetWrapper.right,
-                bottomSheetHeader.bottom)
-        bottomSheetWrapper.setPadding(0,
-                bottomSheetWrapper.paddingTop,
-                0,
-                bottomSheetWrapper.paddingBottom)
+            context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2) ?: 0,
+            bottomSheetHeader.top,
+            bottomSheetWrapper.right,
+            bottomSheetHeader.bottom
+        )
+        bottomSheetWrapper.setPadding(
+            0,
+            bottomSheetWrapper.paddingTop,
+            0,
+            bottomSheetWrapper.paddingBottom
+        )
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -120,7 +128,10 @@ class FlightDetailBottomSheet : BottomSheetUnify() {
                     flightDetailButtonContainer.visibility = View.GONE
                 }
                 flightDetailSelectButton.setOnClickListener {
-                    if (::listener.isInitialized) listener.onSelectedFromDetail(this@FlightDetailBottomSheet, flightDetailModel.id)
+                    if (::listener.isInitialized) listener.onSelectedFromDetail(
+                        this@FlightDetailBottomSheet,
+                        flightDetailModel.id
+                    )
                 }
 
             }
@@ -135,32 +146,42 @@ class FlightDetailBottomSheet : BottomSheetUnify() {
                 flightDetailTabs.addNewTab(getString(R.string.flight_detail_bottom_sheet_tab_price_title))
             }
 
-            flightDetailTabs.getUnifyTabLayout().addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-                override fun onTabReselected(tab: TabLayout.Tab) {}
+            for (i in 0 until flightDetailTabs.getUnifyTabLayout().tabCount) {
+                val currentTab = flightDetailTabs.getUnifyTabLayout().getTabAt(i)
+                val tabItemCustomView: View? = currentTab?.customView
+                val tabTextView: TextView? =
+                    tabItemCustomView?.findViewById(com.tokopedia.unifycomponents.R.id.tab_item_text_id)
+                tabTextView?.typeface = Typography.getFontType(context, false, Typography.DISPLAY_3)
+            }
 
-                override fun onTabUnselected(tab: TabLayout.Tab) {}
+            flightDetailTabs.getUnifyTabLayout()
+                .addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+                    override fun onTabReselected(tab: TabLayout.Tab) {}
 
-                override fun onTabSelected(tab: TabLayout.Tab) {
-                    when (tab.position) {
-                        TAB_JOURNEY_POSITION -> {
-                            flightAnalytics.eventDetailTabClick(flightDetailModel)
-                        }
-                        TAB_FACILITY_POSITION -> {
-                            flightAnalytics.eventDetailFacilitiesTabClick(flightDetailModel)
-                        }
-                        TAB_PRICE_POSITION -> {
-                            flightAnalytics.eventDetailPriceTabClick(flightDetailModel)
+                    override fun onTabUnselected(tab: TabLayout.Tab) {}
+
+                    override fun onTabSelected(tab: TabLayout.Tab) {
+                        when (tab.position) {
+                            TAB_JOURNEY_POSITION -> {
+                                flightAnalytics.eventDetailTabClick(flightDetailModel)
+                            }
+                            TAB_FACILITY_POSITION -> {
+                                flightAnalytics.eventDetailFacilitiesTabClick(flightDetailModel)
+                            }
+                            TAB_PRICE_POSITION -> {
+                                flightAnalytics.eventDetailPriceTabClick(flightDetailModel)
+                            }
                         }
                     }
-                }
-            })
+                })
 
             flightDetailTabs.getUnifyTabLayout().setupWithViewPager(flightDetailViewPager)
         }
     }
 
     private fun initViewPager() {
-        val pagerStateAdapter = object : FragmentPagerAdapter(childFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+        val pagerStateAdapter = object :
+            FragmentPagerAdapter(childFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
             override fun getItem(position: Int): Fragment {
                 return when (position) {
                     TAB_JOURNEY_POSITION -> {
@@ -202,7 +223,7 @@ class FlightDetailBottomSheet : BottomSheetUnify() {
         with(mChildView) {
             flightDetailViewPager.offscreenPageLimit = TAB_DETAIL_SIZE
             flightDetailViewPager.addOnPageChangeListener(object :
-                    TabLayout.TabLayoutOnPageChangeListener(flightDetailTabs.getUnifyTabLayout()) {})
+                TabLayout.TabLayoutOnPageChangeListener(flightDetailTabs.getUnifyTabLayout()) {})
             flightDetailViewPager.adapter = pagerStateAdapter
         }
     }
