@@ -1,15 +1,18 @@
 package com.tokopedia.loginregister.registerinitial.di
 
 import android.content.Context
+import android.content.res.Resources
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor.Companion.getInstance
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.loginregister.registerinitial.view.util.RegisterInitialRouterHelper
+import com.tokopedia.iris.util.IrisSession
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers.Main
 
 /**
  * @author by nisie on 10/25/18.
@@ -18,28 +21,32 @@ import kotlinx.coroutines.Dispatchers.Main
 class RegisterInitialModule {
 
     @Provides
-    fun providesContext(@ApplicationContext context: Context): Context = context
+    @ActivityScope
+    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
+        return UserSession(context)
+    }
+
+    @Provides
+    fun provideResources(@ApplicationContext context: Context): Resources = context.resources
 
     @Provides
     fun provideGraphQlRepository(): GraphqlRepository {
         return getInstance().graphqlRepository
     }
 
-    @RegisterInitialScope
+    @ActivityScope
     @Provides
     fun provideMultiRequestGraphql(): MultiRequestGraphqlUseCase {
         return getInstance().multiRequestGraphqlUseCase
     }
 
-    @RegisterInitialScope
     @Provides
-    fun provideMainDispatcher(): CoroutineDispatcher {
-        return Main
+    fun providePermissionCheckerHelper(): PermissionCheckerHelper {
+        return PermissionCheckerHelper()
     }
 
     @Provides
-    @RegisterInitialScope
-    fun provideRegisterInitialRouter(): RegisterInitialRouterHelper {
-        return RegisterInitialRouterHelper()
+    fun provideIrisSession(@ApplicationContext context: Context): IrisSession {
+        return IrisSession(context)
     }
 }

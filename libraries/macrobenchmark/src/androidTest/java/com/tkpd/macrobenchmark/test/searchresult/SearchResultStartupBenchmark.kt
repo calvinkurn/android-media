@@ -4,10 +4,8 @@ import androidx.benchmark.macro.StartupMode
 import androidx.test.filters.LargeTest
 import androidx.test.filters.SdkSuppress
 import com.tkpd.macrobenchmark.base.BaseStartupBenchmark
-import com.tkpd.macrobenchmark.util.MacroDevOps
 import com.tkpd.macrobenchmark.util.MacroIntent
 import com.tkpd.macrobenchmark.util.MacroInteration
-import org.junit.Before
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
@@ -30,4 +28,7 @@ class SearchResultStartupBenchmark(startupMode: StartupMode): BaseStartupBenchma
                 MacroIntent.SearchResult.RV_RESOURCE_ID,
         )
     }
+
+    override fun traceName() = "search_result_trace"
+
 }

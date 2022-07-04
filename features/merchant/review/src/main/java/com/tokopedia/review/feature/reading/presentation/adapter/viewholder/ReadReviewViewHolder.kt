@@ -224,6 +224,7 @@ class ReadReviewViewHolder(
             } else {
                 setOnClickListener {  }
             }
+            typeface = Typography.getFontType(context, false, Typography.DISPLAY_2)
             show()
         }
     }
@@ -235,6 +236,7 @@ class ReadReviewViewHolder(
             setOnClickListener {
                 setExpandableReview(message, feedbackId, productId)
             }
+            typeface = Typography.getFontType(context, false, Typography.DISPLAY_2)
         }
     }
 
