@@ -108,7 +108,7 @@ class ManageProductListAdapter(
 
 
                 tpgStockProduct.setOriginalStock(product.productMapData.originalStock)
-                tpgStockCampaign.setCampaignStock(product.productMapData.customStock)
+                tpgStockCampaign.setCampaignStock(product.productMapData.originalCustomStock)
                 tpgMaxOrder.setMaxOrder(product.productMapData.maxOrder)
 
                 btnUpdateProduct.setOnClickListener {
@@ -131,7 +131,7 @@ class ManageProductListAdapter(
             )
         }
 
-        private fun Typography.setCampaignStock(campaignStock: Long) {
+        private fun Typography.setCampaignStock(campaignStock: Int) {
             if (campaignStock > 0) {
                 this.visible()
                 binding.tpgSeparator.visible()

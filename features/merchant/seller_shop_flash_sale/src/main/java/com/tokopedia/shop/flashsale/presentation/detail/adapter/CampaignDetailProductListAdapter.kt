@@ -68,16 +68,16 @@ class CampaignDetailProductListAdapter :
                 tpgProductSku.setProductSku(product.productSku)
                 tpgProductHighlightName.text = product.highlightProductWording
                 tpgProductHighlightName.setProductHighlightVisibility(product.highlightProductWording)
-                tpgProductCampaignStock.text = product.productMapData.customStock.toString()
+                tpgProductCampaignStock.text = product.productMapData.originalCustomStock.toString()
                 tpgProductCampaignPrice.setProductPrice(product.productMapData.discountedPrice)
                 tpgProductSold.text = product.productMapData.campaignSoldCount.toString()
                 tpgViewCount.text = product.viewCount.toString()
-                tpgCampaignStock.text = product.productMapData.customStock.toString()
-                tpgRemaining.setRemainingProduct(product.productMapData)
+                tpgCampaignStock.text = product.productMapData.originalCustomStock.toString()
+                tpgRemaining.text = product.productMapData.customStock.toString()
 
                 //handle ongoing item view visibility
                 when {
-                    campaignStatus.isOngoing() -> {
+                    campaignStatus.isActive() -> {
                         groupItemOngoing.visible()
                         groupCampaignStock.gone()
                     }
@@ -95,11 +95,6 @@ class CampaignDetailProductListAdapter :
             } else {
                 View.VISIBLE
             }
-        }
-
-        private fun Typography.setRemainingProduct(productMapData: SellerCampaignProductList.ProductMapData) {
-            val remainingProduct = productMapData.customStock - productMapData.campaignSoldCount
-            this.text = remainingProduct.toString()
         }
 
         private fun Typography.setProductSku(sku: String) {

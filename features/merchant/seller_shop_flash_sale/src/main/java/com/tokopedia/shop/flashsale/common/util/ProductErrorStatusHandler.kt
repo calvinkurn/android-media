@@ -23,18 +23,18 @@ class ProductErrorStatusHandler @Inject constructor(@ApplicationContext private 
         return when {
             productMapData.discountedPrice > productMapData.originalPrice -> {
                 return when {
-                    productMapData.customStock > productMapData.originalStock -> MAX_DISCOUNT_PRICE_AND_OTHER
+                    productMapData.originalCustomStock > productMapData.originalStock -> MAX_DISCOUNT_PRICE_AND_OTHER
                     productMapData.discountedPrice < minDiscountedPrice -> MAX_DISCOUNT_PRICE_AND_OTHER
-                    productMapData.customStock < MIN_CAMPAIGN_STOCK -> MAX_DISCOUNT_PRICE_AND_OTHER
+                    productMapData.originalCustomStock < MIN_CAMPAIGN_STOCK -> MAX_DISCOUNT_PRICE_AND_OTHER
                     productMapData.maxOrder > productMapData.customStock -> MAX_DISCOUNT_PRICE_AND_OTHER
                     else -> MAX_DISCOUNT_PRICE
                 }
             }
 
-            productMapData.customStock > productMapData.originalStock -> {
+            productMapData.originalCustomStock > productMapData.originalStock -> {
                 return when {
                     productMapData.discountedPrice < minDiscountedPrice -> MAX_STOCK_AND_OTHER
-                    productMapData.customStock < MIN_CAMPAIGN_STOCK -> MAX_STOCK_AND_OTHER
+                    productMapData.originalCustomStock < MIN_CAMPAIGN_STOCK -> MAX_STOCK_AND_OTHER
                     productMapData.maxOrder > productMapData.customStock -> MAX_STOCK_AND_OTHER
                     else -> MAX_STOCK
                 }
@@ -44,7 +44,7 @@ class ProductErrorStatusHandler @Inject constructor(@ApplicationContext private 
                 return when {
                     productMapData.discountedPrice.isMoreThanZero() -> {
                         return when {
-                            productMapData.customStock < MIN_CAMPAIGN_STOCK -> MIN_DISCOUNT_PRICE_AND_OTHER
+                            productMapData.originalCustomStock < MIN_CAMPAIGN_STOCK -> MIN_DISCOUNT_PRICE_AND_OTHER
                             productMapData.maxOrder > productMapData.customStock -> MIN_DISCOUNT_PRICE_AND_OTHER
                             else -> MIN_DISCOUNT_PRICE
                         }
@@ -53,9 +53,9 @@ class ProductErrorStatusHandler @Inject constructor(@ApplicationContext private 
                 }
             }
 
-            productMapData.customStock < MIN_CAMPAIGN_STOCK -> {
+            productMapData.originalCustomStock < MIN_CAMPAIGN_STOCK -> {
                 return when {
-                    productMapData.customStock.isMoreThanZero() -> {
+                    productMapData.originalCustomStock.isMoreThanZero() -> {
                         return when {
                             productMapData.maxOrder > productMapData.customStock -> MIN_STOCK_AND_OTHER
                             else -> MIN_STOCK
@@ -65,7 +65,7 @@ class ProductErrorStatusHandler @Inject constructor(@ApplicationContext private 
                 }
             }
 
-            productMapData.maxOrder > productMapData.customStock -> return MAX_ORDER
+            productMapData.maxOrder > productMapData.originalStock -> return MAX_ORDER
 
             else -> NOT_ERROR
         }
