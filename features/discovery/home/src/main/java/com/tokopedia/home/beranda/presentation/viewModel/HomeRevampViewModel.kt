@@ -64,7 +64,6 @@ open class HomeRevampViewModel @Inject constructor(
     private val userSession: Lazy<UserSessionInterface>,
     private val homeBusinessUnitUseCase: Lazy<HomeBusinessUnitUseCase>,
     private val homeDispatcher: Lazy<CoroutineDispatchers>,
-    private val homeBeautyFestUseCase: Lazy<HomeBeautyFestUseCase>,
     private val getCMHomeWidgetDataUseCase: Lazy<GetCMHomeWidgetDataUseCase>,
     private val deleteCMHomeWidgetUseCase: Lazy<DeleteCMHomeWidgetUseCase>,
     private val deletePayLaterWidgetUseCase: Lazy<ClosePayLaterWidgetUseCase>,
@@ -559,10 +558,6 @@ open class HomeRevampViewModel @Inject constructor(
             homeDataModel.updateWidgetModel(homeHeaderModel, homeHeaderModel, index){}
             updateHomeData(homeDataModel)
         }
-    }
-
-    fun getBeautyFest(homeDynamicChannelModel: HomeDynamicChannelModel) {
-        _beautyFestLiveData.postValue(homeBeautyFestUseCase.get().getBeautyFest(homeDynamicChannelModel))
     }
 
     fun deleteQuestWidget() {
