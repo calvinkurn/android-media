@@ -52,6 +52,7 @@
             app:layout_constraintStart_toEndOf="@id/shop_badge"
             app:layout_constraintTop_toTopOf="@id/shop_badge"
             app:typographyType="heading_5"
+            android:ellipsize="end"
             tools:text="Fellow Official" />
 
         <com.tokopedia.unifyprinciples.Typography
