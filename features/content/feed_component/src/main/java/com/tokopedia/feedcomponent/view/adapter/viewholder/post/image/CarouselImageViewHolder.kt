@@ -61,7 +61,7 @@ internal class CarouselImageViewHolder(
         itemView.context,
         object : GestureDetector.SimpleOnGestureListener() {
             override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
-                changeTopAdsColorToGreen()
+                changeTopAdsColorToGreen(dataSource.getFeedXCard())
                 listener.onImageClicked(this@CarouselImageViewHolder)
 
                 animateLihatProduct(
@@ -90,7 +90,7 @@ internal class CarouselImageViewHolder(
             }
 
             override fun onLongPress(e: MotionEvent?) {
-                changeTopAdsColorToGreen()
+                changeTopAdsColorToGreen(dataSource.getFeedXCard())
             }
         }
     )
@@ -104,7 +104,7 @@ internal class CarouselImageViewHolder(
     }
 
     private val focusTopAds = Runnable {
-        changeTopAdsColorToGreen()
+        changeTopAdsColorToGreen(dataSource.getFeedXCard())
     }
 
     init {
@@ -135,7 +135,6 @@ internal class CarouselImageViewHolder(
 
         itemView.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
             override fun onViewAttachedToWindow(v: View?) {
-
             }
 
             override fun onViewDetachedFromWindow(v: View?) {
@@ -165,9 +164,15 @@ internal class CarouselImageViewHolder(
         onPostTagViews { it.resetView() }
     }
 
-    fun removeFocus() {
-        removeAllPendingCallbacks()
-        resetUi()
+    fun changeTopAds() {
+        val card = dataSource.getFeedXCard()
+        if (card.isAsgcColorChangedToGreen) changeTopAdsColorToGreen(card, shouldNotify = false)
+        else changeTopAdsColorToWhite(card)
+    }
+
+    fun removeFocus(resetTopAds: Boolean) {
+        removeAllPendingCallbacks(resetTopAds = resetTopAds)
+        resetUi(resetTopAds = resetTopAds)
     }
 
     fun bind(item: FeedXMedia) {
@@ -197,7 +202,7 @@ internal class CarouselImageViewHolder(
         }
 
         llLihatProduct.setOnClickListener {
-            changeTopAdsColorToGreen()
+            changeTopAdsColorToGreen(dataSource.getFeedXCard())
             listener.onLihatProductClicked(this, item)
         }
 
@@ -216,13 +221,17 @@ internal class CarouselImageViewHolder(
         )
 
         topAdsCard.setOnClickListener {
-            changeTopAdsColorToGreen()
+            changeTopAdsColorToGreen(card)
             listener.onTopAdsCardClicked(this, media)
         }
-        changeTopAdsColorToWhite()
+        if (!card.isAsgcColorChangedToGreen) changeTopAdsColorToWhite(card)
+        else changeTopAdsColorToGreen(card, shouldNotify = false)
     }
 
-    private fun changeTopAdsColorToGreen() {
+    private fun changeTopAdsColorToGreen(card: FeedXCard, shouldNotify: Boolean = true) {
+        card.isAsgcColorChangedToGreen = true
+        if (shouldNotify) listener.onTopAdsChangeColorToGreen(this)
+
         changeTopAdsColor(
             primaryColor = MethodChecker.getColor(
                 itemView.context,
@@ -235,7 +244,9 @@ internal class CarouselImageViewHolder(
         )
     }
 
-    private fun changeTopAdsColorToWhite() {
+    private fun changeTopAdsColorToWhite(card: FeedXCard) {
+        card.isAsgcColorChangedToGreen = false
+
         changeTopAdsColor(
             primaryColor = MethodChecker.getColor(
                 itemView.context,
@@ -298,16 +309,16 @@ internal class CarouselImageViewHolder(
         tvLihatProduct.showWithCondition(shouldShow)
     }
 
-    private fun removeAllPendingCallbacks() {
+    private fun removeAllPendingCallbacks(resetTopAds: Boolean = true) {
         itemView.removeCallbacks(showLihatProduct)
         itemView.removeCallbacks(hideLihatProduct)
-        itemView.removeCallbacks(focusTopAds)
+        if (resetTopAds) itemView.removeCallbacks(focusTopAds)
     }
 
-    private fun resetUi() {
+    private fun resetUi(resetTopAds: Boolean = true) {
         onPostTagViews { it.hideExpandedViewIfShown() }
         tvLihatProduct.gone()
-        changeTopAdsColorToWhite()
+        if (resetTopAds) changeTopAdsColorToWhite(dataSource.getFeedXCard())
     }
 
     companion object {
@@ -335,6 +346,7 @@ internal class CarouselImageViewHolder(
 
     interface Listener {
         fun onTopAdsCardClicked(viewHolder: CarouselImageViewHolder, media: FeedXMedia)
+        fun onTopAdsChangeColorToGreen(viewHolder: CarouselImageViewHolder)
         fun onImageClicked(viewHolder: CarouselImageViewHolder)
         fun onLiked(viewHolder: CarouselImageViewHolder)
         fun onImpressed(viewHolder: CarouselImageViewHolder)

@@ -14,7 +14,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
@@ -23,7 +22,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
@@ -60,8 +58,6 @@ import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.R as unifyPrinciplesR
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.item_post_image_new.view.*
-import kotlinx.android.synthetic.main.item_post_long_video_vod.view.*
 import kotlinx.android.synthetic.main.item_post_video_new.view.*
 import kotlinx.coroutines.*
 import java.net.URLEncoder
@@ -209,6 +205,12 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     mData.followers.isFollowed,
                     positionInFeed,
                     mData,
+                )
+            }
+
+            override fun onTopAdsChangeColorToGreen(viewHolder: CarouselImageViewHolder) {
+                (rvCarousel.adapter as FeedPostCarouselAdapter).updateNeighbourTopAdsColor(
+                    viewHolder.adapterPosition
                 )
             }
 
