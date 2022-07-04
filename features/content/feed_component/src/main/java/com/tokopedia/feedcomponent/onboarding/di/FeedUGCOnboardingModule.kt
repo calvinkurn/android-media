@@ -3,9 +3,9 @@ package com.tokopedia.feedcomponent.onboarding.di
 import androidx.fragment.app.Fragment
 import com.tokopedia.feedcomponent.di.FragmentKey
 import com.tokopedia.feedcomponent.onboarding.data.FeedUGCOnboardingRepositoryImpl
+import com.tokopedia.feedcomponent.onboarding.di.qualifier.CompleteStrategy
+import com.tokopedia.feedcomponent.onboarding.di.qualifier.TncStrategy
 import com.tokopedia.feedcomponent.onboarding.domain.repository.FeedUGCOnboardingRepository
-import com.tokopedia.feedcomponent.onboarding.util.COMPLETE_STRATEGY
-import com.tokopedia.feedcomponent.onboarding.util.TNC_STRATEGY
 import com.tokopedia.feedcomponent.onboarding.view.FeedUGCOnboardingParentFragment
 import com.tokopedia.feedcomponent.onboarding.view.strategy.FeedUGCCompleteOnboardingStrategy
 import com.tokopedia.feedcomponent.onboarding.view.strategy.FeedUGCTncOnboardingStrategy
@@ -13,7 +13,6 @@ import com.tokopedia.feedcomponent.onboarding.view.strategy.base.FeedUGCOnboardi
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
-import javax.inject.Named
 
 /**
  * Created By : Jonathan Darwin on July 04, 2022
@@ -33,11 +32,11 @@ abstract class FeedUGCOnboardingModule {
 
     /** Strategy */
     @Binds
-    @Named(COMPLETE_STRATEGY)
+    @CompleteStrategy
     abstract fun bindFeedUGCCompleteOnboardingStrategy(strategy: FeedUGCCompleteOnboardingStrategy): FeedUGCOnboardingStrategy
 
     @Binds
-    @Named(TNC_STRATEGY)
+    @TncStrategy
     abstract fun bindFeedUGCTncOnboardingStrategy(strategy: FeedUGCTncOnboardingStrategy): FeedUGCOnboardingStrategy
 
 
