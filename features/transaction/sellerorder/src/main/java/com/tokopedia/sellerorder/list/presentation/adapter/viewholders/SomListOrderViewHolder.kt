@@ -51,6 +51,8 @@ open class SomListOrderViewHolder(
         const val TOGGLE_SELECTION = "toggle_selection"
         const val CARD_MARGIN_TOP_ORDER_REGULAR = 0
         const val CARD_MARGIN_TOP_ORDER_PLUS = 13
+        const val CARD_ALPHA_SELECTABLE = 1f
+        const val CARD_ALPHA_NOT_SELECTABLE = 0.5f
 
         private val completedOrderStatusCodes = intArrayOf(690, 691, 695, 698, 699, 700, 701)
         private val cancelledOrderStatusCodes = intArrayOf(0, 4, 6, 10, 11, 15)
@@ -381,14 +383,23 @@ open class SomListOrderViewHolder(
     }
 
     protected open fun setupOrderCard(element: SomListOrderUiModel) {
-        binding?.cardSomOrder?.alpha = if (listener.isMultiSelectEnabled() && hasActiveRequestCancellation(element)) 0.5f else 1f
+        binding?.cardSomOrder?.alpha =
+            if (listener.isMultiSelectEnabled() && hasActiveRequestCancellation(element)) {
+                CARD_ALPHA_NOT_SELECTABLE
+            } else {
+                CARD_ALPHA_SELECTABLE
+            }
         binding?.root?.setOnClickListener {
             if (listener.isMultiSelectEnabled()) touchCheckBox(element)
             else listener.onOrderClicked(element)
         }
         binding?.cardSomOrder?.setMargin(
             Int.ZERO,
-            if (element.isPlus) CARD_MARGIN_TOP_ORDER_PLUS.toPx() else CARD_MARGIN_TOP_ORDER_REGULAR.toPx(),
+            if (element.isPlus) {
+                CARD_MARGIN_TOP_ORDER_PLUS.toPx()
+            } else {
+                CARD_MARGIN_TOP_ORDER_REGULAR.toPx()
+            },
             Int.ZERO,
             Int.ZERO
         )
