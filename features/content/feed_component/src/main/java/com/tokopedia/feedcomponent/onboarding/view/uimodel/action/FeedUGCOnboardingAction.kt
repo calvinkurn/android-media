@@ -9,7 +9,7 @@ sealed interface FeedUGCOnboardingAction {
         val username: String
     ) : FeedUGCOnboardingAction
 
-    data class CheckTnc(val isChecked: Boolean) : FeedUGCOnboardingAction
+    object CheckTnc : FeedUGCOnboardingAction
 
     object ClickNext : FeedUGCOnboardingAction
 }

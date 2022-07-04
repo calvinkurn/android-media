@@ -6,5 +6,6 @@ package com.tokopedia.feedcomponent.onboarding.view.uimodel.state
 data class FeedUGCOnboardingUiState(
     val username: String,
     val isCheckTnc: Boolean,
+    val isSubmit: Boolean,
     val hasAcceptTnc: Boolean,
 )

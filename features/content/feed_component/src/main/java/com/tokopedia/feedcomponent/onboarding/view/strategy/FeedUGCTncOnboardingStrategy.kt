@@ -6,6 +6,7 @@ import com.tokopedia.feedcomponent.onboarding.view.uimodel.action.FeedUGCOnboard
 import com.tokopedia.feedcomponent.onboarding.view.uimodel.event.FeedUGCOnboardingUiEvent
 import com.tokopedia.feedcomponent.onboarding.view.uimodel.state.FeedUGCOnboardingUiState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
@@ -18,6 +19,7 @@ class FeedUGCTncOnboardingStrategy @Inject constructor(
 
     private val _username = MutableStateFlow("")
     private val _isCheckTnc = MutableStateFlow(false)
+    private val _isSubmit = MutableStateFlow(false)
     private val _hasAcceptTnc = MutableStateFlow(false)
 
     private val _uiEvent = MutableSharedFlow<FeedUGCOnboardingUiEvent>()
@@ -25,11 +27,13 @@ class FeedUGCTncOnboardingStrategy @Inject constructor(
     override val uiState: Flow<FeedUGCOnboardingUiState> = combine(
         _username,
         _isCheckTnc,
+        _isSubmit,
         _hasAcceptTnc,
-    ) { username, isCheckTnc, hasAcceptTnc ->
+    ) { username, isCheckTnc, isSubmit, hasAcceptTnc ->
         FeedUGCOnboardingUiState(
             username = username,
             isCheckTnc = isCheckTnc,
+            isSubmit = isSubmit,
             hasAcceptTnc = hasAcceptTnc,
         )
     }
@@ -39,10 +43,10 @@ class FeedUGCTncOnboardingStrategy @Inject constructor(
 
     override fun submitAction(action: FeedUGCOnboardingAction) {
         when(action) {
-            is FeedUGCOnboardingAction.CheckTnc -> {
+            FeedUGCOnboardingAction.CheckTnc -> {
                 handleCheckTnc()
             }
-            is FeedUGCOnboardingAction.ClickNext -> {
+            FeedUGCOnboardingAction.ClickNext -> {
                 handleClickNext()
             }
             else -> {}
@@ -56,9 +60,18 @@ class FeedUGCTncOnboardingStrategy @Inject constructor(
     private fun handleClickNext() {
         job?.cancel()
         job = scope.launchCatchError(block = {
-            val result = repo.acceptTnc()
-            _hasAcceptTnc.update { result }
+            if(!_isSubmit.value) {
+                _isSubmit.update { true }
+
+                /** TODO: just for testing purpose */
+//                val result = repo.acceptTnc()
+                delay(2000)
+                val result = true
+                _hasAcceptTnc.update { result }
+                _isSubmit.update { false }
+            }
         }) {
+            _isSubmit.update { false }
             _uiEvent.emit(
                 FeedUGCOnboardingUiEvent.ErrorAcceptTnc
             )

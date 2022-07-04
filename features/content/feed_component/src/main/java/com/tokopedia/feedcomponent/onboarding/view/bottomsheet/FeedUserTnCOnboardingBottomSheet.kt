@@ -5,8 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.feedcomponent.databinding.BottomsheetFeedUserTncOnboardingBinding
+import com.tokopedia.feedcomponent.onboarding.view.uimodel.action.FeedUGCOnboardingAction
+import com.tokopedia.feedcomponent.onboarding.view.uimodel.state.FeedUGCOnboardingUiState
+import com.tokopedia.feedcomponent.onboarding.view.viewmodel.FeedUGCOnboardingViewModel
+import com.tokopedia.feedcomponent.util.withCache
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 
 /**
  * Created By : Jonathan Darwin on June 28, 2022
@@ -16,6 +24,15 @@ class FeedUserTnCOnboardingBottomSheet : BottomSheetUnify() {
     private var _binding: BottomsheetFeedUserTncOnboardingBinding? = null
     private val binding: BottomsheetFeedUserTncOnboardingBinding
         get() = _binding!!
+
+    private lateinit var viewModel: FeedUGCOnboardingViewModel
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(
+            requireParentFragment()
+        )[FeedUGCOnboardingViewModel::class.java]
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,11 +51,54 @@ class FeedUserTnCOnboardingBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupListener()
+        setupObserver()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun setupListener() {
+        binding.layoutTnc.cbxTnc.setOnCheckedChangeListener { _, _ ->
+            viewModel.submitAction(FeedUGCOnboardingAction.CheckTnc)
+        }
+
+        binding.btnContinue.setOnClickListener {
+            viewModel.submitAction(FeedUGCOnboardingAction.ClickNext)
+        }
+    }
+
+    private fun setupObserver() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.uiState.withCache().collectLatest {
+                renderLayout(it.prevValue, it.value)
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.uiEvent.collect {
+
+            }
+        }
+    }
+
+    /** Render Section */
+    private fun renderLayout(
+        prev: FeedUGCOnboardingUiState?,
+        curr: FeedUGCOnboardingUiState,
+    ) {
+        if(prev == curr) return
+
+        binding.layoutTnc.cbxTnc.isChecked = curr.isCheckTnc
+        binding.btnContinue.isEnabled = curr.isCheckTnc
+        binding.btnContinue.isLoading = curr.isSubmit
+
+        if(curr.hasAcceptTnc) {
+            /** TODO: call callback */
+            dismiss()
+        }
     }
 
     fun showNow(fragmentManager: FragmentManager) {
