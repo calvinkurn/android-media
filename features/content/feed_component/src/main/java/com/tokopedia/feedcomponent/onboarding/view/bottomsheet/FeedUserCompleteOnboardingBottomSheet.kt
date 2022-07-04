@@ -18,6 +18,8 @@ import com.tokopedia.feedcomponent.onboarding.view.uimodel.state.FeedUGCOnboardi
 import com.tokopedia.feedcomponent.onboarding.view.uimodel.state.UsernameState
 import com.tokopedia.feedcomponent.onboarding.view.viewmodel.FeedUGCOnboardingViewModel
 import com.tokopedia.feedcomponent.util.withCache
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collect
@@ -123,25 +125,26 @@ class FeedUserCompleteOnboardingBottomSheet : BaseFeedUserOnboardingBottomSheet(
     ) {
         if(prev == curr) return
 
-        binding.layoutTnc.cbxTnc.isChecked = curr.isCheckTnc
-        binding.btnContinue.isEnabled = curr.isCheckTnc &&
-                                        !curr.isSubmit &&
-                                        curr.usernameState is UsernameState.Valid &&
-                                        curr.username.length >= 3
-        binding.btnContinue.isLoading = curr.isSubmit
+        with(curr) {
+            binding.layoutTnc.cbxTnc.isChecked = isCheckTnc
 
-        binding.textFieldUsername.isLoading = curr.usernameState is UsernameState.Loading
-        binding.textFieldUsername.isInputError = curr.usernameState is UsernameState.Invalid
-        binding.textFieldUsername.setMessage(
-            if(curr.usernameState is UsernameState.Invalid) curr.usernameState.message
-            else getString(R.string.up_input_username_info)
-        )
-        /** TODO: show/remove centang icon */
+            binding.btnContinue.isEnabled = isCheckTnc && !isSubmit &&
+                                            usernameState is UsernameState.Valid && username.length >= 3
+            binding.btnContinue.isLoading = isSubmit
 
+            binding.textFieldUsername.isLoading = usernameState is UsernameState.Loading
+            binding.textFieldUsername.isInputError = usernameState is UsernameState.Invalid
+            binding.textFieldUsername.setMessage(
+                if(usernameState is UsernameState.Invalid) usernameState.message
+                else getString(R.string.up_input_username_info)
+            )
+            binding.textFieldUsername.setFirstIcon(R.drawable.ic_feed_check_green)
+            binding.textFieldUsername.icon1.visibility = if(usernameState is UsernameState.Valid) View.VISIBLE else View.GONE
 
-        if(curr.hasAcceptTnc) {
-            mListener?.onSuccess()
-            dismiss()
+            if(curr.hasAcceptTnc) {
+                mListener?.onSuccess()
+                dismiss()
+            }
         }
     }
 
