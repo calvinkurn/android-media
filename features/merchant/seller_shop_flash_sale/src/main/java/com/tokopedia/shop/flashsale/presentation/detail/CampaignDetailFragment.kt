@@ -37,9 +37,9 @@ import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.CampaignDetailMeta
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.MerchantCampaignTNC
-import com.tokopedia.shop.flashsale.domain.entity.enums.isActive
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.ShareComponentMetadata
+import com.tokopedia.shop.flashsale.domain.entity.enums.isActive
 import com.tokopedia.shop.flashsale.domain.entity.enums.isAvailable
 import com.tokopedia.shop.flashsale.domain.entity.enums.isCancelled
 import com.tokopedia.shop.flashsale.domain.entity.enums.isFinished
@@ -48,9 +48,9 @@ import com.tokopedia.shop.flashsale.domain.entity.enums.isUpcoming
 import com.tokopedia.shop.flashsale.presentation.cancelation.CancelCampaignBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationActivity
 import com.tokopedia.shop.flashsale.presentation.creation.rule.bottomsheet.MerchantCampaignTNCBottomSheet
+import com.tokopedia.shop.flashsale.presentation.detail.adapter.CampaignDetailProductListAdapter
 import com.tokopedia.shop.flashsale.presentation.detail.bottomsheet.CampaignDetailMoreMenuBottomSheet
 import com.tokopedia.shop.flashsale.presentation.detail.bottomsheet.CampaignDetailMoreMenuClickListener
-import com.tokopedia.shop.flashsale.presentation.detail.adapter.CampaignDetailProductListAdapter
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
@@ -392,22 +392,25 @@ class CampaignDetailFragment : BaseDaggerFragment(),
 
     @SuppressLint("ResourcePackage")
     private fun displayCampaignDetailInformation(data: CampaignDetailMeta) {
-        val binding = binding ?: return
         val campaign = data.campaign
         handleCampaignToolbar(campaign)
+        handleCampaignInformation(campaign)
         handleCampaignPerformanceData(data)
-        binding.tgCampaignDetailId.text = getString(
-            R.string.campaign_detail_campaign_id,
-            campaign.campaignId.toString()
-        )
         handleCampaignStatusIndicator(campaign)
         handleEventParticipation(campaign)
 
         handleEditCampaignButtonVisibility(campaign)
         handleShareButtonVisibility(campaign)
 
-        binding.tgCampaignStartDate.text =
-            campaign.startDate.formatTo(DateConstant.DATE_TIME_WITH_DAY)
+    }
+    private fun handleCampaignInformation(campaign: CampaignUiModel) {
+        val binding = binding ?: return
+
+        binding.tgCampaignDetailId.text = getString(
+            R.string.campaign_detail_campaign_id,
+            campaign.campaignId.toString()
+        )
+        binding.tgCampaignStartDate.text = campaign.startDate.formatTo(DateConstant.DATE_TIME_WITH_DAY)
         binding.tgCampaignEndDate.text = campaign.endDate.formatTo(DateConstant.DATE_TIME_WITH_DAY)
     }
 
