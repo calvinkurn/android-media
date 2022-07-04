@@ -10,6 +10,7 @@ import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignIn
 import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.CampaignDataPickerViewModel
 import com.tokopedia.shop.flashsale.presentation.creation.manage.ManageProductViewModel
 import com.tokopedia.shop.flashsale.presentation.creation.manage.viewmodel.ChooseProductViewModel
+import com.tokopedia.shop.flashsale.presentation.creation.manage.viewmodel.EditProductInfoViewModel
 import com.tokopedia.shop.flashsale.presentation.creation.rule.CampaignRuleViewModel
 import com.tokopedia.shop.flashsale.presentation.creation.rule.bottomsheet.MerchantCampaignTNCViewModel
 import com.tokopedia.shop.flashsale.presentation.creation.rule.bottomsheet.relatedcampaign.ChooseRelatedCampaignViewModel
@@ -84,6 +85,9 @@ abstract class ShopFlashSaleViewModelModule {
 
     @Binds
     @IntoMap
+    @ViewModelKey(EditProductInfoViewModel::class)
+    internal abstract fun provideEditProductInfoViewModel(viewModel: EditProductInfoViewModel) : ViewModel
+
     @ViewModelKey(CampaignDetailViewModel::class)
     internal abstract fun provideCampaignDetailViewModel(viewModel: CampaignDetailViewModel) : ViewModel
 }

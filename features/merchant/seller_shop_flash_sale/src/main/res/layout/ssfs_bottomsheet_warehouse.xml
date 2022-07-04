@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/typographyWarehouseDesc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Kamu hanya bisa memilih produk dari 1 lokasi gudang Seller atau TokoCabang."
+        android:textColor="@color/Unify_NN600"
+        app:typographyType="paragraph_3"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvWarehouses"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/typographyWarehouseDesc" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnSubmit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="8dp"
+        android:text="@string/sfs_save"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rvWarehouses" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

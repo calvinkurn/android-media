@@ -10,6 +10,8 @@ import com.tokopedia.shop.flashsale.presentation.creation.manage.model.SelectedP
 object ReserveProductMapper {
 
     private const val ADD_PRODUCT_DEFAULT_VALUE = 0L
+    private const val TEASER_POS_DEFAULT_VALUE = 0
+    private const val TEASER_ACTIVE_DEFAULT_VALUE = false
 
     fun mapFromProduct(product: GetSellerCampaignValidatedProductListResponse.Product) =
         ReserveProductModel (
@@ -28,7 +30,8 @@ object ReserveProductMapper {
         productId = product.productId.toLongOrNull().orZero(),
         customStock = ADD_PRODUCT_DEFAULT_VALUE,
         finalPrice = ADD_PRODUCT_DEFAULT_VALUE,
-        teaser = DoSellerCampaignProductSubmissionRequest.ProductData.Teaser(active = false, position = 0),
+        teaser = DoSellerCampaignProductSubmissionRequest.ProductData.Teaser(
+            active = TEASER_ACTIVE_DEFAULT_VALUE, position = TEASER_POS_DEFAULT_VALUE),
         warehouses = emptyList(),
         maxOrder = ADD_PRODUCT_DEFAULT_VALUE.toInt()
     )

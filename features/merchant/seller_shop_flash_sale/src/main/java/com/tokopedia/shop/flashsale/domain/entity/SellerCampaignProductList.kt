@@ -1,5 +1,8 @@
 package com.tokopedia.shop.flashsale.domain.entity
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
 data class SellerCampaignProductList(
     val success : Boolean = false,
     val errorMessage : List<String> = listOf(),
@@ -12,6 +15,7 @@ data class SellerCampaignProductList(
     val totalIncomeFormatted: String = "",
     val productFailedCount: Int = 0
 ) {
+    @Parcelize
     data class Product(
         val productId: String = "",
         val parentId: String = "",
@@ -27,30 +31,33 @@ data class SellerCampaignProductList(
         val highlightProductWording: String = "",
         var errorMessage: String = "",
         var isInfoComplete: Boolean = false
-    )
+    ): Parcelable
 
+    @Parcelize
     data class ImageUrl(
         val img100Square: String = "",
         val img200: String = "",
         val img300: String = "",
         val img700: String = "",
-    )
+    ): Parcelable
 
+    @Parcelize
     data class ProductMapData(
         val productMapId: String = "",
         val campaignId: String = "",
         val productMapStatus: Int = 0,
         val productMapAdminStatus: Int = 0,
         val originalPrice: Long = 0,
-        val discountedPrice: Long = 0,
+        var discountedPrice: Long = 0,
         val discountPercentage: Int = 0,
-        val customStock: Long = 0,
+        var customStock: Long = 0,
         val originalCustomStock: Int = 0,
         val originalStock: Int = 0,
         val campaignSoldCount: Int = 0,
-        val maxOrder: Int = 0
-    )
+        var maxOrder: Int = 0
+    ): Parcelable
 
+    @Parcelize
     data class WarehouseData(
         val warehouseId: String = "",
         val warehouseName: String = "",
@@ -58,5 +65,5 @@ data class SellerCampaignProductList(
         val chosenWarehouse: Boolean = false,
         val originalCustomStock: Int = 0,
         val customStock: Int = 0,
-    )
+    ): Parcelable
 }

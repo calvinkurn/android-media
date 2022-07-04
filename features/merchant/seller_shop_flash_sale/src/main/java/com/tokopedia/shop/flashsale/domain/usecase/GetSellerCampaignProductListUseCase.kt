@@ -60,6 +60,12 @@ class GetSellerCampaignProductListUseCase @Inject constructor(
                             original_stock
                             campaign_sold_count
                             max_order
+                        },
+                        warehouse_list {
+                            warehouse_id
+                            warehouse_name
+                            stock
+                            chosen_warehouse
                         }
                     },
                     total_product,

@@ -2,6 +2,7 @@ package com.tokopedia.shop.flashsale.common.extension
 
 import android.animation.ValueAnimator
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Animation
 import android.view.animation.TranslateAnimation
@@ -51,7 +52,7 @@ fun View?.showErrorWithCta(errorMessage: String, ctaText: String, cta: (() -> Un
     Toaster.build(
         this ?: return,
         errorMessage,
-        Snackbar.LENGTH_SHORT,
+        Toaster.LENGTH_SHORT,
         Toaster.TYPE_ERROR,
         ctaText
     ) { cta?.invoke() }
@@ -122,6 +123,18 @@ fun View?.slideDown(duration: Int = DEFAULT_SCROLL_ANIMATION_DURATION) {
 
         })
         this.startAnimation(animate)
+    }
+}
+
+fun ViewGroup?.setLayoutEnabled(enable: Boolean) {
+    if (this != null) {
+        for (i in Int.ZERO until childCount) {
+            val child = getChildAt(i)
+            child.isEnabled = enable
+            if (child is ViewGroup) {
+                child.setLayoutEnabled(enable)
+            }
+        }
     }
 }
 
