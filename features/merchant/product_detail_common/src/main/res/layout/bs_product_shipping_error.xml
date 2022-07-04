@@ -26,7 +26,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/shipping_error_img"
         app:layout_constraintTop_toTopOf="@+id/shipping_error_img"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         tools:text="Tidak ada kurir yang mendukung pengiriman barang ini ke Rumah Angga." />
 
     <com.tokopedia.unifycomponents.UnifyButton
@@ -48,7 +48,7 @@
         android:textAlignment="center"
         android:textColor="@color/Unify_N700"
         app:layout_constraintTop_toBottomOf="@id/shipping_error_btn"
-        app:typographyType="heading_5"
+        app:typographyType="display_2"
         app:typographyWeight="bold"
         tools:text="Ke Home" />
 

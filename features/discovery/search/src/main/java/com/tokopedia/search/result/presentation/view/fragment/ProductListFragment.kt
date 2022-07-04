@@ -444,19 +444,10 @@ class ProductListFragment: BaseDaggerFragment(),
     ): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                if (isAllowLoadMore()) {
-                    val searchParameterMap = searchParameter?.getSearchParameterMap() ?: return
-                    presenter?.loadMoreData(searchParameterMap)
-                } else {
-                    productListAdapter?.removeLoading()
-                }
+                val searchParameterMap = searchParameter?.getSearchParameterMap() ?: return
+                presenter?.loadMoreData(searchParameterMap)
             }
         }
-    }
-
-    private fun isAllowLoadMore(): Boolean {
-        return userVisibleHint
-                && (presenter?.hasNextPage() == true)
     }
 
     private fun initSearchQuickSortFilter(rootView: View) {
