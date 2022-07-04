@@ -443,7 +443,6 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
         }
     }
 
-    @SuppressLint("ResourcePackage")
     private fun populateCoachMarkItems(): java.util.ArrayList<CoachMark2Item> {
         val firstAnchorView = binding?.layoutCampaignPrice ?: return arrayListOf()
         val secondAnchorView = binding?.tfStock ?: return arrayListOf()

@@ -212,7 +212,6 @@ class ManageProductFragment : BaseDaggerFragment() {
         viewModel.getProducts(campaignId, LIST_TYPE)
     }
 
-    @SuppressLint("ResourcePackage")
     private fun showSuccessEditProductToaster() {
         binding?.cardBottomButtonGroup.showToaster(
             getString(R.string.manage_product_success_edit_toaster_message)

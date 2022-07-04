@@ -132,101 +132,90 @@
             tools:text="120" />
 
         <LinearLayout
-            android:id="@+id/ll_item_ongoing"
-            android:layout_width="match_parent"
+            android:id="@+id/ll_group_view_count"
+            android:layout_width="62dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="100"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="12dp"
+            android:orientation="vertical"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tpg_product_sku">
 
-            <LinearLayout
-                android:id="@+id/ll_group_view_count"
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tpg_view_count_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="12dp"
-                android:layout_weight="20"
-                android:orientation="vertical">
+                android:text="Dilihat"
+                android:textColor="@color/gr_700"
+                app:typographyType="paragraph_2"
+                app:typographyWeight="reguler" />
 
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/tpg_view_count_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Dilihat"
-                    android:textColor="@color/gr_700"
-                    app:typographyType="paragraph_2"
-                    app:typographyWeight="reguler" />
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/tpg_view_count"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    app:typographyType="paragraph_2"
-                    app:typographyWeight="bold"
-                    tools:text="232" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_group_campaign_stock"
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tpg_view_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="12dp"
-                android:layout_weight="10"
-                android:orientation="vertical">
+                android:textColor="@color/black"
+                app:typographyType="paragraph_2"
+                app:typographyWeight="bold"
+                tools:text="232" />
 
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/tpg_campaign_stock_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/campaign_detail_campaign_stock_label"
-                    android:textColor="@color/gr_700"
-                    app:typographyType="paragraph_2"
-                    app:typographyWeight="reguler" />
+        </LinearLayout>
 
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/tpg_campaign_stock"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    app:typographyType="paragraph_2"
-                    app:typographyWeight="bold"
-                    tools:text="23" />
+        <LinearLayout
+            android:id="@+id/ll_group_campaign_stock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:orientation="vertical"
+            app:layout_constraintStart_toEndOf="@+id/ll_group_view_count"
+            app:layout_constraintTop_toTopOf="@+id/ll_group_view_count">
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_group_remaining"
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tpg_campaign_stock_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="12dp"
-                android:layout_weight="60"
-                android:orientation="vertical">
+                android:text="@string/campaign_detail_campaign_stock_label"
+                android:textColor="@color/gr_700"
+                app:typographyType="paragraph_2"
+                app:typographyWeight="reguler" />
 
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/tpg_remaining_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/campaign_detail_remaining_label"
-                    android:textColor="@color/gr_700"
-                    app:typographyType="paragraph_2"
-                    app:typographyWeight="reguler" />
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tpg_campaign_stock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                app:typographyType="paragraph_2"
+                app:typographyWeight="bold"
+                tools:text="23" />
 
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/tpg_remaining"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    app:typographyType="paragraph_2"
-                    app:typographyWeight="bold"
-                    tools:text="10" />
+        </LinearLayout>
 
-            </LinearLayout>
+        <LinearLayout
+            android:id="@+id/ll_group_remaining"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="34dp"
+            android:orientation="vertical"
+            app:layout_constraintStart_toEndOf="@+id/ll_group_campaign_stock"
+            app:layout_constraintTop_toTopOf="@+id/ll_group_campaign_stock">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tpg_remaining_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/campaign_detail_remaining_label"
+                android:textColor="@color/gr_700"
+                app:typographyType="paragraph_2"
+                app:typographyWeight="reguler" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tpg_remaining"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                app:typographyType="paragraph_2"
+                app:typographyWeight="bold"
+                tools:text="10" />
 
         </LinearLayout>
 
@@ -239,7 +228,7 @@
             android:layout_marginEnd="18dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ll_item_ongoing" />
+            app:layout_constraintTop_toBottomOf="@+id/ll_group_view_count" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tpg_campaign_price_label"
@@ -273,7 +262,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            app:constraint_referenced_ids="ll_item_ongoing, tpg_product_sold_label, tpg_product_sold" />
+            app:constraint_referenced_ids="ll_group_campaign_stock, ll_group_campaign_stock, ll_group_remaining, tpg_product_sold_label, tpg_product_sold" />
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/group_campaign_stock"
