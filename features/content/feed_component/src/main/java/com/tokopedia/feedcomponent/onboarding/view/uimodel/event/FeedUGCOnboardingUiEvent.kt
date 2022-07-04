@@ -5,7 +5,5 @@ package com.tokopedia.feedcomponent.onboarding.view.uimodel.event
  */
 sealed interface FeedUGCOnboardingUiEvent {
 
-    object ErrorAcceptTnc : FeedUGCOnboardingUiEvent
-
-    object ErrorCheckUsername : FeedUGCOnboardingUiEvent
+    object ShowError : FeedUGCOnboardingUiEvent
 }

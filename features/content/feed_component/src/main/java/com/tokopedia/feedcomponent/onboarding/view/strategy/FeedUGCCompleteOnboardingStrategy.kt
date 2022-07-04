@@ -78,12 +78,8 @@ class FeedUGCCompleteOnboardingStrategy @Inject constructor(
                 _usernameState.update { checkUsername() }
             }
         }) {
-            _usernameState.update {
-                UsernameState.Invalid(context.getString(abstractionR.string.default_request_error_unknown))
-            }
-            _uiEvent.emit(
-                FeedUGCOnboardingUiEvent.ErrorCheckUsername
-            )
+            _usernameState.update { UsernameState.Invalid(context.getString(abstractionR.string.default_request_error_unknown)) }
+            _uiEvent.emit(FeedUGCOnboardingUiEvent.ShowError)
         }
     }
 
@@ -121,9 +117,7 @@ class FeedUGCCompleteOnboardingStrategy @Inject constructor(
         }) {
             _hasAcceptTnc.update { false }
             _isSubmit.update { false }
-            _uiEvent.emit(
-                FeedUGCOnboardingUiEvent.ErrorAcceptTnc
-            )
+            _uiEvent.emit(FeedUGCOnboardingUiEvent.ShowError)
         }
     }
 

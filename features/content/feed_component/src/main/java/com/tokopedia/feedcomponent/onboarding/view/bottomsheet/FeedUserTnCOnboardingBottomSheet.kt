@@ -82,7 +82,7 @@ class FeedUserTnCOnboardingBottomSheet : BaseFeedUserOnboardingBottomSheet() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect { event ->
                 when(event) {
-                    is FeedUGCOnboardingUiEvent.ErrorAcceptTnc -> {
+                    is FeedUGCOnboardingUiEvent.ShowError -> {
                         /** TODO: toaster is still not showing */
                         Toaster.build(
                             view = binding.btnContinue,
