@@ -46,9 +46,9 @@ class UserProfileRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getWhitelist(userId: String): ProfileWhitelistUiModel {
+    override suspend fun getWhitelist(): ProfileWhitelistUiModel {
         return withContext(dispatcher.io) {
-            val result = getWhitelistNewUseCase.execute(WHITELIST_ENTRY_POINT, userId)
+            val result = getWhitelistNewUseCase.execute(WHITELIST_ENTRY_POINT)
 
             mapper.mapUserWhitelist(result)
         }

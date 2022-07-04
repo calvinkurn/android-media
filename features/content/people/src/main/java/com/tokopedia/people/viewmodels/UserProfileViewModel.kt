@@ -246,7 +246,7 @@ class UserProfileViewModel @AssistedInject constructor(
         _profileType.update { profileType }
 
         if(profileType == ProfileType.Self) {
-            _profileWhitelist.update {  repo.getWhitelist(followInfo.userID) }
+            _profileWhitelist.update {  repo.getWhitelist() }
         }
 
         /**
