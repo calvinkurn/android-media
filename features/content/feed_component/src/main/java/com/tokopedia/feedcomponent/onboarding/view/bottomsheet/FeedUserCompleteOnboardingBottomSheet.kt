@@ -138,7 +138,6 @@ class FeedUserCompleteOnboardingBottomSheet : BaseFeedUserOnboardingBottomSheet(
                 if(usernameState is UsernameState.Invalid) usernameState.message
                 else getString(R.string.up_input_username_info)
             )
-            binding.textFieldUsername.setFirstIcon(R.drawable.ic_feed_check_green)
             binding.textFieldUsername.icon1.visibility = if(usernameState is UsernameState.Valid) View.VISIBLE else View.GONE
 
             if(curr.hasAcceptTnc) {
