@@ -28,7 +28,8 @@
 
     <com.tokopedia.unifycomponents.NotificationUnify
         android:id="@+id/notification_counter_inbox_home"
-        android:layout_width="16dp"
+        android:layout_width="wrap_content"
+        app:layout_constraintWidth_min="16dp"
         android:layout_height="16dp"
         app:layout_constraintRight_toRightOf="@id/tv_title_menu_inbox_home"
         app:layout_constraintTop_toTopOf="@id/icon_chevron_right_inbox_home"
