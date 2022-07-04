@@ -9,6 +9,6 @@ data class ShopPageTabModel(
         val tabFragment: Fragment = Fragment(),
         val iconUrl: String = "",
         val iconActiveUrl: String = "",
-        var isFocus: Boolean = false,
-        var isDefault: Boolean = false
+        val isFocus: Boolean = false,
+        val isDefault: Boolean = false
 )

@@ -1640,16 +1640,43 @@ class NewShopPageFragment :
     }
 
     private fun getSelectedDynamicTabPosition(): Int {
-        val selectedTabData = listShopPageTabModel.firstOrNull {
-            it.isFocus
-        } ?: run {
-            listShopPageTabModel.firstOrNull {
-                it.isDefault
+        var selectedPosition = viewPager?.currentItem.orZero()
+        if (tabLayout?.tabCount.isZero()) {
+            if (shouldOverrideTabToHome || shouldOverrideTabToProduct || shouldOverrideTabToFeed) {
+                when {
+                    shouldOverrideTabToHome -> {
+                        ShopPageHomeFragment::class.java
+                    }
+                    shouldOverrideTabToProduct -> {
+                        ShopPageProductListFragment::class.java
+                    }
+                    shouldOverrideTabToFeed -> {
+                        feedShopFragmentClassName
+                    }
+                    else -> {
+                        null
+                    }
+                }?.let {
+                    selectedPosition = if (viewPagerAdapter?.isFragmentObjectExists(it) == true) {
+                        viewPagerAdapter?.getFragmentPosition(it).orZero()
+                    } else {
+                        selectedPosition
+                    }
+                }
+            } else {
+                val selectedTabData = listShopPageTabModel.firstOrNull {
+                    it.isFocus
+                } ?: run {
+                    listShopPageTabModel.firstOrNull {
+                        it.isDefault
+                    }
+                }
+                selectedPosition = listShopPageTabModel.indexOf(selectedTabData).takeIf {
+                    it >= Int.ZERO
+                } ?: Int.ZERO
             }
         }
-        return listShopPageTabModel.indexOf(selectedTabData).takeIf {
-            it >= Int.ZERO
-        } ?: Int.ZERO
+        return selectedPosition
     }
 
     private fun createListShopPageTabModel(): List<ShopPageTabModel> {
