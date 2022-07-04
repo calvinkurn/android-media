@@ -52,8 +52,15 @@ class PlayWidgetLargeView : FrameLayout, IPlayWidgetView {
             mAnalyticListener?.onImpressChannelCard(
                 view = this@PlayWidgetLargeView,
                 item = item,
+                config = mModel.config,
                 channelPositionInList = position,
-                isAutoPlay = mIsAutoPlay
+            )
+
+            mAnalyticListener?.onImpressReminderIcon(
+                view = this@PlayWidgetLargeView,
+                item = item,
+                channelPositionInList = position,
+                isReminded = item.reminderType == PlayWidgetReminderType.Reminded,
             )
         }
 
@@ -65,8 +72,8 @@ class PlayWidgetLargeView : FrameLayout, IPlayWidgetView {
             mAnalyticListener?.onClickChannelCard(
                 view = this@PlayWidgetLargeView,
                 item = item,
+                config = mModel.config,
                 channelPositionInList = position,
-                isAutoPlay = mIsAutoPlay
             )
             mWidgetListener?.onWidgetOpenAppLink(view, item.appLink)
         }
@@ -89,15 +96,6 @@ class PlayWidgetLargeView : FrameLayout, IPlayWidgetView {
                 position
             )
         }
-
-        override fun onLabelPromoChannelClicked(item: PlayWidgetChannelUiModel, position: Int) {
-            mAnalyticListener?.onLabelPromoClicked(this@PlayWidgetLargeView, item, position = position, mIsAutoPlay)
-        }
-
-        override fun onLabelPromoChannelImpressed(item: PlayWidgetChannelUiModel, position: Int) {
-            mAnalyticListener?.onLabelPromoImpressed(this@PlayWidgetLargeView, item, position = position, mIsAutoPlay)
-        }
-
     }
 
     private val bannerCardListener = object : PlayWidgetLargeViewHolder.Banner.Listener {
@@ -127,7 +125,7 @@ class PlayWidgetLargeView : FrameLayout, IPlayWidgetView {
         cardBannerListener = bannerCardListener,
     )
 
-    private var mIsAutoPlay: Boolean = false
+    private var mModel: PlayWidgetUiModel = PlayWidgetUiModel.Empty
 
     init {
         val view = LayoutInflater.from(context).inflate(R.layout.view_play_widget_large, this)
@@ -152,9 +150,8 @@ class PlayWidgetLargeView : FrameLayout, IPlayWidgetView {
     }
 
     fun setData(data: PlayWidgetUiModel) {
+        mModel = data
         adapter.setItemsAndAnimateChanges(data.items)
-
-        mIsAutoPlay = data.config.autoPlay
     }
 
     override fun setWidgetInternalListener(listener: PlayWidgetInternalListener?) {

@@ -2,6 +2,7 @@ package com.tokopedia.loginregister.login.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.loginregister.R
 import dagger.Module
@@ -17,14 +18,14 @@ import dagger.multibindings.StringKey
 @Module
 class LoginQueryModule {
 
-    @LoginScope
+    @ActivityScope
     @Provides
     @IntoMap
     @StringKey(LoginQueryConstant.MUTATION_REGISTER_CHECK)
     fun provideRawMutationRegisterCheck(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.mutation_register_check)
 
-    @LoginScope
+    @ActivityScope
     @Provides
     @IntoMap
     @StringKey(LoginQueryConstant.QUERY_REGISTER_PUSH_NOTIF)

@@ -2783,7 +2783,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
      * Play Widget
      */
     private fun setupPlayWidgetCoordinator() {
-        playWidgetCoordinator = PlayWidgetCoordinator().apply {
+        playWidgetCoordinator = PlayWidgetCoordinator(this, autoHandleLifecycleMethod = false).apply {
             setListener(this@HomeRevampFragment)
         }
     }
