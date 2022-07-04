@@ -54,58 +54,6 @@ class AffiliatePromotionShopItemVH(
                     loadImage(it.titleEmblem)
                 }
             }
-            it.rating.let { rating ->
-                if (rating.isMoreThanZero()) {
-                    itemView.findViewById<Typography>(R.id.textViewRating).apply {
-                        visible()
-                        text = it.rating.toString()
-                    }
-                    itemView.findViewById<ImageView>(R.id.imageRating).visible()
-                }
-            }
-            getAdditionalDataFromType(it, COMMISSION_AMOUNT_TYPE)?.let { info ->
-                itemView.findViewById<Typography>(R.id.textViewAdditionalInfo1).apply {
-                    visible()
-                    text = info.htmlText
-                    if (info.color?.isNotEmpty() == true) setTextColor(Color.parseColor(info.color))
-                }
-            }
-            getAdditionalDataFromType(it, PER_GOOD_SOLD)?.let { info ->
-                itemView.findViewById<Typography>(R.id.textViewAdditionalInfo2).apply {
-                    visible()
-                    text = info.htmlText
-                    if (info.color?.isNotEmpty() == true) setTextColor(Color.parseColor(info.color))
-                }
-            }
-            getAdditionalDataFromType(
-                it,
-                DISCOUNT_PERCENTAGE_TYPE
-            )?.let { info ->
-                itemView.findViewById<Typography>(R.id.textViewAdditionalInfo2).apply {
-                    visible()
-                    text = String.format(
-                        Locale.getDefault(),
-                        "/%s",
-                        info
-                    )
-                }
-            }
-
-            getFooterDataFromType(it, LOCATION)?.let { footer ->
-                itemView.findViewById<Typography>(R.id.textViewFooterLocation).apply {
-                    itemView.findViewById<ImageView>(R.id.imageFooter).visible()
-                    visible()
-                    text = footer.footerText
-                }
-            }
-            getFooterDataFromType(it, ITEM_SOLD)?.let { footer ->
-                itemView.findViewById<Typography>(R.id.textViewItemSold).apply {
-                    visible()
-                    text = footer.footerText
-                    if (it.rating?.isMoreThanZero() == true && footer.footerText?.isNotEmpty() == true)
-                        itemView.findViewById<DividerUnify>(R.id.ratingDivider).visible()
-                }
-            }
             getMessageData(it)?.let { message ->
                 itemView.findViewById<Label>(R.id.labelProductStatus).apply {
                     if (message.isNotEmpty()) {
@@ -114,10 +62,69 @@ class AffiliatePromotionShopItemVH(
                     }
                 }
             }
+            setUpAdditionData(it)
+            setUpFooterData(it)
             setUpPromotionClickListener(it)
         }
 
 
+    }
+
+    private fun setUpAdditionData(item: AffiliateSearchData.SearchAffiliate.Data.Card.Item) {
+        getAdditionalDataFromType(item, COMMISSION_AMOUNT_TYPE)?.let { info ->
+            itemView.findViewById<Typography>(R.id.textViewAdditionalInfo1).apply {
+                visible()
+                text = info.htmlText
+                if (info.color?.isNotEmpty() == true) setTextColor(Color.parseColor(info.color))
+            }
+        }
+        getAdditionalDataFromType(item, PER_GOOD_SOLD)?.let { info ->
+            itemView.findViewById<Typography>(R.id.textViewAdditionalInfo2).apply {
+                visible()
+                text = info.htmlText
+                if (info.color?.isNotEmpty() == true) setTextColor(Color.parseColor(info.color))
+            }
+        }
+        getAdditionalDataFromType(
+            item,
+            DISCOUNT_PERCENTAGE_TYPE
+        )?.let { info ->
+            itemView.findViewById<Typography>(R.id.textViewAdditionalInfo2).apply {
+                visible()
+                text = String.format(
+                    Locale.getDefault(),
+                    "/%s",
+                    info
+                )
+            }
+        }
+    }
+
+    private fun setUpFooterData(item: AffiliateSearchData.SearchAffiliate.Data.Card.Item) {
+        item.rating.let { rating ->
+            if (rating.isMoreThanZero()) {
+                itemView.findViewById<Typography>(R.id.textViewRating).apply {
+                    visible()
+                    text = item.rating.toString()
+                }
+                itemView.findViewById<ImageView>(R.id.imageRating).visible()
+            }
+        }
+        getFooterDataFromType(item, LOCATION)?.let { footer ->
+            itemView.findViewById<Typography>(R.id.textViewFooterLocation).apply {
+                itemView.findViewById<ImageView>(R.id.imageFooter).visible()
+                visible()
+                text = footer.footerText
+            }
+        }
+        getFooterDataFromType(item, ITEM_SOLD)?.let { footer ->
+            itemView.findViewById<Typography>(R.id.textViewItemSold).apply {
+                visible()
+                text = footer.footerText
+                if (item.rating?.isMoreThanZero() == true && footer.footerText?.isNotEmpty() == true)
+                    itemView.findViewById<DividerUnify>(R.id.ratingDivider).visible()
+            }
+        }
     }
 
     private fun setUpPromotionClickListener(promotionItem: AffiliateSearchData.SearchAffiliate.Data.Card.Item) {
