@@ -192,7 +192,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 viewHolder: CarouselImageViewHolder,
                 media: FeedXMedia,
             ) {
-                if (!mData.isTypeProductHighlight && !mData.isTypeVOD) {
+                if (mData.isTopAds) {
                     RouteManager.route(
                         context,
                         media.appLink,
@@ -202,7 +202,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 listener?.onClickSekSekarang(
                     mData.id,
                     mData.shopId,
-                    TYPE_TOPADS_HEADLINE_NEW,
+                    mData.typename,
                     mData.followers.isFollowed,
                     positionInFeed,
                     mData,
