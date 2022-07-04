@@ -2,6 +2,8 @@ package com.tokopedia.feedcomponent.onboarding.di
 
 import androidx.fragment.app.Fragment
 import com.tokopedia.feedcomponent.di.FragmentKey
+import com.tokopedia.feedcomponent.onboarding.data.FeedUGCOnboardingRepositoryImpl
+import com.tokopedia.feedcomponent.onboarding.domain.repository.FeedUGCOnboardingRepository
 import com.tokopedia.feedcomponent.onboarding.util.COMPLETE_STRATEGY
 import com.tokopedia.feedcomponent.onboarding.util.TNC_STRATEGY
 import com.tokopedia.feedcomponent.onboarding.view.FeedUGCOnboardingParentFragment
@@ -19,10 +21,15 @@ import javax.inject.Named
 @Module
 abstract class FeedUGCOnboardingModule {
 
+    /** Fragment */
     @Binds
     @IntoMap
     @FragmentKey(FeedUGCOnboardingParentFragment::class)
     abstract fun bindFeedUGCOnboardingParentFragment(fragment: FeedUGCOnboardingParentFragment): Fragment
+
+    /** Repository */
+    @Binds
+    abstract fun bindFeedUGCOnboardingRepositoryImpl(repo: FeedUGCOnboardingRepositoryImpl): FeedUGCOnboardingRepository
 
     /** Strategy */
     @Binds
@@ -32,4 +39,6 @@ abstract class FeedUGCOnboardingModule {
     @Binds
     @Named(TNC_STRATEGY)
     abstract fun bindFeedUGCTncOnboardingStrategy(strategy: FeedUGCTncOnboardingStrategy): FeedUGCOnboardingStrategy
+
+
 }
