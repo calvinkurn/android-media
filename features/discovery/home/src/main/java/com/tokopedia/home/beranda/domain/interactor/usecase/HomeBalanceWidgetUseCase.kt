@@ -39,7 +39,7 @@ class HomeBalanceWidgetUseCase @Inject constructor(
         if (!userSession.isLoggedIn) return currentHeaderDataModel
 
         try {
-            val getHomeBalanceWidget = getHomeBalanceWidgetRepository.getRemoteData()
+//            val getHomeBalanceWidget = getHomeBalanceWidgetRepository.getRemoteData()
 
             var homeBalanceModel = getHomeBalanceModel(currentHeaderDataModel, HomeBalanceModel.BALANCE_POSITION_FIRST, HomeBalanceModel.BALANCE_POSITION_SECOND)
             homeBalanceModel = getDataUsingWalletApp(homeBalanceModel)
