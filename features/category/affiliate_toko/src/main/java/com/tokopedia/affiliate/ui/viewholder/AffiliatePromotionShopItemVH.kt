@@ -15,9 +15,11 @@ import com.tokopedia.affiliate.interfaces.PromotionClickInterface
 import com.tokopedia.affiliate.model.response.AffiliateSearchData
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePromotionShopModel
 import com.tokopedia.affiliate_toko.R
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageRounded
+import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -38,9 +40,6 @@ class AffiliatePromotionShopItemVH(
         const val COMMISSION_AMOUNT_TYPE = 1
         const val DISCOUNT_PERCENTAGE_TYPE = 2
         const val PER_GOOD_SOLD = 6
-
-        const val OVERLAY_IMAGE_TYPE = 1
-
         const val ITEM_SOLD = 3
         const val LOCATION = 4
     }
@@ -48,9 +47,22 @@ class AffiliatePromotionShopItemVH(
     override fun bind(element: AffiliatePromotionShopModel?) {
         element?.promotionItem?.let {
             itemView.findViewById<ImageView>(R.id.imageMain).loadImageRounded(it.image?.androidURL)
-            itemView.findViewById<ImageView>(R.id.imageTitleEmblem).loadImage(it.titleEmblem)
             itemView.findViewById<Typography>(R.id.textViewTitle).text = it.title
-            itemView.findViewById<Typography>(R.id.textViewRating).text = it.rating.toString()
+            if (!it.titleEmblem.isNullOrBlank()) {
+                itemView.findViewById<ImageView>(R.id.imageTitleEmblem).apply {
+                    visible()
+                    loadImage(it.titleEmblem)
+                }
+            }
+            it.rating.let { rating ->
+                if (rating.isMoreThanZero()) {
+                    itemView.findViewById<Typography>(R.id.textViewRating).apply {
+                        visible()
+                        text = it.rating.toString()
+                    }
+                    itemView.findViewById<ImageView>(R.id.imageRating).visible()
+                }
+            }
             getAdditionalDataFromType(it, COMMISSION_AMOUNT_TYPE)?.let { info ->
                 itemView.findViewById<Typography>(R.id.textViewAdditionalInfo1).apply {
                     visible()
@@ -81,6 +93,7 @@ class AffiliatePromotionShopItemVH(
 
             getFooterDataFromType(it, LOCATION)?.let { footer ->
                 itemView.findViewById<Typography>(R.id.textViewFooterLocation).apply {
+                    itemView.findViewById<ImageView>(R.id.imageFooter).visible()
                     visible()
                     text = footer.footerText
                 }
@@ -88,8 +101,9 @@ class AffiliatePromotionShopItemVH(
             getFooterDataFromType(it, ITEM_SOLD)?.let { footer ->
                 itemView.findViewById<Typography>(R.id.textViewItemSold).apply {
                     visible()
-                    itemView.findViewById<Typography>(R.id.ratingDivider).visible()
                     text = footer.footerText
+                    if (it.rating?.isMoreThanZero() == true && footer.footerText?.isNotEmpty() == true)
+                        itemView.findViewById<DividerUnify>(R.id.ratingDivider).visible()
                 }
             }
             getMessageData(it)?.let { message ->
@@ -100,30 +114,35 @@ class AffiliatePromotionShopItemVH(
                     }
                 }
             }
+            setUpPromotionClickListener(it)
         }
 
+
+    }
+
+    private fun setUpPromotionClickListener(promotionItem: AffiliateSearchData.SearchAffiliate.Data.Card.Item) {
         itemView.findViewById<UnifyButton>(R.id.buttonPromotion)?.run {
             visibility = View.VISIBLE
             buttonType = UnifyButton.Type.MAIN
             buttonVariant = UnifyButton.Variant.GHOST
             text = context.getString(R.string.affiliate_promo)
             var commission = ""
-            element?.promotionItem?.commission?.amount?.let {
+            promotionItem.commission?.amount?.let {
                 commission = it.toString()
             }
             setOnClickListener {
-                sendClickEvent(element?.promotionItem)
+                sendClickEvent(promotionItem)
                 promotionClickInterface?.onPromotionClick(
-                    element?.promotionItem?.itemId ?: "",
-                    element?.promotionItem?.title ?: "",
-                    element?.promotionItem?.image?.androidURL ?: "",
-                    element?.promotionItem?.cardUrl ?: "",
+                    promotionItem.itemId,
+                    promotionItem.title ?: "",
+                    promotionItem.image?.androidURL ?: "",
+                    promotionItem.cardUrl ?: "",
                     adapterPosition, commission,
-                    getStatus(element?.promotionItem),
-                    element?.promotionItem?.type
+                    getStatus(promotionItem),
+                    promotionItem.type
                 )
             }
-            if (element?.promotionItem?.status?.isLinkGenerationAllowed == false) {
+            if (promotionItem.status?.isLinkGenerationAllowed == false) {
                 buttonType = UnifyButton.Type.ALTERNATE
                 setOnClickListener(null)
             }
