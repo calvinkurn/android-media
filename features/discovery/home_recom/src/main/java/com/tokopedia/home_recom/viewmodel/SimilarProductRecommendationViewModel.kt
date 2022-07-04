@@ -249,51 +249,6 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
         }
     }
 
-    fun getRecommendationFromEmptyFilter(option: RecommendationFilterChipsEntity.Option, pageName: String, queryParam: String, productId: String){
-        launchCatchError(dispatcher.getIODispatcher(), block = {
-            _filterSortChip.postValue(Response.loading())
-            _recommendationItem.postValue(Response.loading())
-
-            // update select / deselect to full filter
-            _filterSortChip.value?.data?.filterAndSort?.filterChip?.getOption()?.find { opt -> opt.key == option.key }?.let {
-                it.isActivated = !it.isActivated
-            }
-
-            val oldFilterData = _filterSortChip.value?.data
-            val sortString = _filterSortChip.value?.data?.filterAndSort?.sortChip?.filter { it.isSelected }?.joinToString (separator = "&"){ it.key + "=" + it.value }
-            val filterString = _filterSortChip.value?.data?.filterAndSort?.filterChip?.getSelectedOption()?.joinToString(separator = "&") { opt ->
-                "${opt.key}=${opt.value}"
-            }
-            val dimension61 = "$sortString&$filterString"
-            val query = "$queryParam&$sortString&$filterString"
-
-            getRecommendationFilterChips.setParams(userId = userSessionInterface.userId.toIntOrZero(), productIDs = productId, queryParam = query, type = QUICK_FILTER, pageName = pageName)
-
-            val quickFilterAsync = async { getRecommendationFilterChips.executeOnBackground() }
-
-            getRecommendationFilterChips.setParams(userId = userSessionInterface.userId.toIntOrZero(), productIDs = productId, queryParam = query, type = FULL_FILTER, pageName = pageName)
-            val fullFilterAsync = async { getRecommendationFilterChips.executeOnBackground() }
-
-            _filterSortChip.postValue(Response.loading())
-            _recommendationItem.postValue(Response.loading())
-
-            val recommendationWidget = singleRecommendationUseCase.createObservable(singleRecommendationUseCase.getRecomParams(queryParam = query, productIds = listOf(productId), pageNumber = 1)).toBlocking().first()
-
-            if (recommendationWidget.recommendation.isNotEmpty()) {
-                val recommendationItems = recommendationWidget.toRecommendationWidget().recommendationItemList
-                val filterData = FilterSortChip(fullFilterAsync.await(), quickFilterAsync.await().filterChip)
-                _filterSortChip.postValue(Response.success(filterData))
-                _recommendationItem.postValue(Response.success(Pair(recommendationItems.map { it.copy(dimension61 = dimension61) }, recommendationWidget.pagination.hasNext)))
-            } else {
-                _filterSortChip.postValue(Response.empty(oldFilterData))
-                _recommendationItem.postValue(Response.empty())
-            }
-        }){
-            _filterSortChip.postValue(Response.error(it))
-            _recommendationItem.postValue(Response.error(Exception(it.message), _recommendationItem.value?.data))
-        }
-    }
-
     fun getSelectedSortFilter(): Map<String, String>{
         val map = mutableMapOf<String, String>()
         map[KEY_SORT] = DEFAULT_VALUE_SORT

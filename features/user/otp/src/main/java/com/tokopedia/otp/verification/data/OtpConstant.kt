@@ -1,4 +1,4 @@
-package com.tokopedia.otp.verification.domain.data
+package com.tokopedia.otp.verification.data
 
 import com.tokopedia.config.GlobalConfig
 

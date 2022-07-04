@@ -88,7 +88,10 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.reminded
 import com.tokopedia.product.detail.BuildConfig
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.*
+import com.tokopedia.product.detail.common.AtcVariantHelper
+import com.tokopedia.product.detail.common.AtcVariantMapper
+import com.tokopedia.product.detail.common.ProductCartHelper
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APPLINK_AVAILABLE_VARIANT
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APPLINK_IS_VARIANT_SELECTED
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APPLINK_SHOP_ID
@@ -108,6 +111,7 @@ import com.tokopedia.product.detail.common.data.model.constant.ProductStatusType
 import com.tokopedia.product.detail.common.data.model.constant.TopAdsShopCategoryTypeDef
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailGallery
+import com.tokopedia.product.detail.common.data.model.pdplayout.ProductMultilocation
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManage
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
@@ -115,6 +119,8 @@ import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
+import com.tokopedia.product.detail.common.showToasterError
+import com.tokopedia.product.detail.common.showToasterSuccess
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.product.detail.common.view.ProductDetailCoachMarkHelper
 import com.tokopedia.product.detail.common.view.ProductDetailCommonBottomSheetBuilder
@@ -146,10 +152,14 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkGoToReplyD
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkGoToWriteDiscussion
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTracking
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADD_WISHLIST
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.CLICK_TYPE_WISHLIST
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_DIRECTED_FROM_MANAGE_OR_PDP
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOTE_CONFIG_DEFAULT_ENABLE_PDP_CUSTOM_SHARING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOTE_CONFIG_KEY_ENABLE_PDP_CUSTOM_SHARING
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOVE_WISHLIST
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.WISHLIST_ERROR_TYPE
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.WISHLIST_STATUS_KEY
 import com.tokopedia.product.detail.data.util.VariantMapper
 import com.tokopedia.product.detail.data.util.VariantMapper.generateVariantString
 import com.tokopedia.product.detail.data.util.roundToIntOrZero
@@ -178,6 +188,7 @@ import com.tokopedia.product.detail.view.listener.PartialButtonActionListener
 import com.tokopedia.product.detail.view.util.PdpUiUpdater
 import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
 import com.tokopedia.product.detail.view.util.ProductDetailErrorHelper
+import com.tokopedia.product.detail.view.util.ProductDetailLogger
 import com.tokopedia.product.detail.view.util.ProductDetailVariantLogic
 import com.tokopedia.product.detail.view.util.createProductCardOptionsModel
 import com.tokopedia.product.detail.view.util.doSuccessOrFail
@@ -220,21 +231,19 @@ import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
-import com.tokopedia.usercomponents.stickylogin.common.StickyLoginConstant
-import com.tokopedia.usercomponents.stickylogin.view.StickyLoginAction
-import com.tokopedia.usercomponents.stickylogin.view.StickyLoginView
 import com.tokopedia.topads.detail_sheet.TopAdsDetailSheet
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
-import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.usercomponents.stickylogin.common.StickyLoginConstant
+import com.tokopedia.usercomponents.stickylogin.view.StickyLoginAction
+import com.tokopedia.usercomponents.stickylogin.view.StickyLoginView
 import com.tokopedia.variant_common.util.VariantCommonMapper
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
@@ -242,7 +251,9 @@ import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import rx.subscriptions.CompositeSubscription
-import java.util.*
+import timber.log.Timber
+import java.util.Locale
+import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -398,6 +409,7 @@ open class DynamicProductDetailFragment :
     private var uuid = ""
     private var urlQuery: String = ""
     private var affiliateChannel: String = ""
+    private var alreadyShowMultilocBottomSheet: Boolean = false
 
     //Prevent several method at onResume to being called when first open page.
     private var firstOpenPage: Boolean? = null
@@ -413,7 +425,7 @@ open class DynamicProductDetailFragment :
             this,
             this,
             viewModel.userId,
-            playWidgetCoordinator = PlayWidgetCoordinator().apply {
+            playWidgetCoordinator = PlayWidgetCoordinator(this).apply {
                 setListener(this@DynamicProductDetailFragment)
             })
     }
@@ -922,29 +934,41 @@ open class DynamicProductDetailFragment :
      * ImpressionComponent
      */
     override fun onImpressComponent(componentTrackDataModel: ComponentTrackDataModel) {
-        when (componentTrackDataModel.componentName) {
-            ProductDetailConstant.PRODUCT_PROTECTION -> DynamicProductDetailTracking.Impression
-                .eventEcommerceDynamicComponent(
-                    trackingQueue = trackingQueue,
-                    componentTrackDataModel = componentTrackDataModel,
-                    productInfo = viewModel.getDynamicProductInfoP1,
-                    componentName = getPPTitleName(),
-                    purchaseProtectionUrl = getPurchaseProtectionUrl(),
-                    userId = viewModel.userId,
-                    lcaWarehouseId = getLcaWarehouseId()
-                )
-            else -> DynamicProductDetailTracking.Impression
-                .eventEcommerceDynamicComponent(
-                    trackingQueue = trackingQueue,
-                    componentTrackDataModel = componentTrackDataModel,
-                    productInfo = viewModel.getDynamicProductInfoP1,
-                    componentName = "",
-                    purchaseProtectionUrl = "",
-                    userId = viewModel.userId,
-                    lcaWarehouseId = getLcaWarehouseId()
+        val purchaseProtectionUrl = if (componentTrackDataModel.componentName
+                == ProductDetailConstant.PRODUCT_PROTECTION) {
+            getPurchaseProtectionUrl()
+        } else {
+            ""
+        }
+
+        DynamicProductDetailTracking.Impression
+                .eventImpressionComponent(
+                        trackingQueue = trackingQueue,
+                        componentTrackDataModel = componentTrackDataModel,
+                        productInfo = viewModel.getDynamicProductInfoP1,
+                        componentName = "",
+                        purchaseProtectionUrl = purchaseProtectionUrl,
+                        userId = viewModel.userId,
+                        lcaWarehouseId = getLcaWarehouseId()
                 )
 
+    }
+
+    override fun onShopCredibilityImpressed(countLocation: String,
+                                            componentTrackDataModel: ComponentTrackDataModel) {
+        if (countLocation.isNotEmpty()) {
+            DynamicProductDetailTracking.Impression
+                    .eventImpressionShopMultilocation(
+                            trackingQueue = trackingQueue,
+                            componentTrackDataModel = componentTrackDataModel,
+                            productInfo = viewModel.getDynamicProductInfoP1,
+                            shopCountLocation = countLocation,
+                            userId = viewModel.userId,
+                            lcaWarehouseId = getLcaWarehouseId()
+                    )
         }
+
+        onImpressComponent(componentTrackDataModel)
     }
 
     /**
@@ -960,6 +984,14 @@ open class DynamicProductDetailFragment :
 
             }
         }
+    }
+
+    override fun onShopMultilocClicked(componentTrackDataModel: ComponentTrackDataModel) {
+        DynamicProductDetailTracking.Click.onInformationIconMultiLocClicked(
+                viewModel.getDynamicProductInfoP1,
+                componentTrackDataModel,
+                viewModel.userId
+        )
     }
 
     override fun onCategoryCarouselImageClicked(
@@ -2656,8 +2688,15 @@ open class DynamicProductDetailFragment :
         }
 
         setupProductVideoCoordinator()
-
         submitInitialList(pdpUiUpdater?.mapOfData?.values?.toList() ?: listOf())
+        showWarehouseChangeBs(productInfo.basic.productMultilocation)
+    }
+
+    private fun showWarehouseChangeBs(productMultiloc: ProductMultilocation) {
+        if (productMultiloc.isReroute && !alreadyShowMultilocBottomSheet) {
+            alreadyShowMultilocBottomSheet = true
+            goToApplink(productMultiloc.eduLink.applink)
+        }
     }
 
     private fun setupProductVideoCoordinator() {
@@ -2745,17 +2784,10 @@ open class DynamicProductDetailFragment :
             viewModel.getMultiOriginByProductId().isFulfillment
         )
         pdpUiUpdater?.updateDataP2(
-            context = context,
-            p2Data = it,
-            productId = viewModel.getDynamicProductInfoP1?.basic?.productID ?: "",
-            isProductWarehouse = viewModel.getDynamicProductInfoP1?.basic?.isWarehouse()
-                ?: false,
-            isProductInCampaign = viewModel.getDynamicProductInfoP1?.data?.campaign?.isActive
-                ?: false,
-            isOutOfStock = viewModel.getDynamicProductInfoP1?.getFinalStock()?.toIntOrNull() == 0,
-            boeImageUrl = boeData.imageURL,
-            isProductParent = viewModel.getDynamicProductInfoP1?.isProductParent ?: false
-        )
+                context = context,
+                p2Data = it,
+                productId = viewModel.getDynamicProductInfoP1?.basic?.productID ?: "",
+                boeImageUrl = boeData.imageURL)
 
         initNavigationTab(it)
         updateUi()
@@ -3392,12 +3424,21 @@ open class DynamicProductDetailFragment :
                 if (wishlistResult.isAddWishlist) errorMessage =
                     getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
 
-                view?.let { v ->
-                    if (wishlistResult.isUsingWishlistV2) AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(
-                        errorMessage,
-                        v
-                    )
-                    else v.showToasterError(errorMessage)
+                if (wishlistResult.isUsingWishlistV2) {
+                    view?.let { v ->
+                        if (wishlistResult.messageV2.isNotEmpty()) errorMessage = wishlistResult.messageV2
+                        if (wishlistResult.ctaTextV2.isNotEmpty() && wishlistResult.ctaActionV2.isNotEmpty()) {
+                            context?.let { c ->
+                                AddRemoveWishlistV2Handler.showWishlistV2ErrorToasterWithCta(errorMessage, wishlistResult.ctaTextV2, wishlistResult.ctaActionV2, v, c)
+                            }
+                        } else {
+                            AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMessage, v)
+                        }
+                    }
+                } else {
+                    view?.let { v ->
+                        v.showToasterError(errorMessage)
+                    }
                 }
             }
         } else {
@@ -4567,13 +4608,20 @@ open class DynamicProductDetailFragment :
     }
 
     private fun addWishlistV2(componentTrackDataModel: ComponentTrackDataModel) {
-        viewModel.addWishListV2(viewModel.getDynamicProductInfoP1?.basic?.productID
-            ?: "", object : WishlistV2ActionListener {
+        val productId = viewModel.getDynamicProductInfoP1?.basic?.productID ?: ""
+        viewModel.addWishListV2(productId, object : WishlistV2ActionListener {
             override fun onErrorAddWishList(throwable: Throwable, productId: String) {
-                val errorMsg =
-                    com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable)
-                view?.let { v ->
-                    AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, v)
+                try {
+                    val errorMsg =
+                        com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable)
+                    val extras = mapOf(WISHLIST_STATUS_KEY to ADD_WISHLIST).toString()
+                    ProductDetailLogger.logMessage(errorMsg,
+                        WISHLIST_ERROR_TYPE, productId, viewModel.deviceId, extras)
+                    view?.let { v ->
+                        AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, v)
+                    }
+                } catch (t: Throwable) {
+                    Timber.d(t)
                 }
             }
 
@@ -4645,10 +4693,16 @@ open class DynamicProductDetailFragment :
                 }
 
                 override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {
-                    val errorMsg =
-                        com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable)
-                    view?.let { v ->
-                        AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, v)
+                    try {
+                        val errorMsg =
+                            com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable)
+                        val extras = mapOf(ProductDetailConstant.WISHLIST_STATUS_KEY to REMOVE_WISHLIST).toString()
+                        ProductDetailLogger.logMessage(errorMsg, WISHLIST_ERROR_TYPE, productId, viewModel.deviceId, extras)
+                        view?.let { v ->
+                            AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, v)
+                        }
+                    } catch (t: Throwable) {
+                        Timber.d(t)
                     }
                 }
 
@@ -4929,17 +4983,18 @@ open class DynamicProductDetailFragment :
     }
 
     override fun onImpressStockAssurance(
-        componentTrackDataModel: ComponentTrackDataModel,
-        label: String
+            componentTrackDataModel: ComponentTrackDataModel,
+            label: String
     ) {
-        DynamicProductDetailTracking.Impression.eventOneLinerImpression(
-            trackingQueue = trackingQueue,
-            componentTrackDataModel = componentTrackDataModel,
-            productInfo = viewModel.getDynamicProductInfoP1,
-            userId = viewModel.userId,
-            lcaWarehouseId = getLcaWarehouseId(),
-            label = label
-        )
+        DynamicProductDetailTracking.Impression
+                .eventOneLinerImpression(
+                        trackingQueue = trackingQueue,
+                        componentTrackDataModel = componentTrackDataModel,
+                        productInfo = viewModel.getDynamicProductInfoP1,
+                        userId = viewModel.userId,
+                        lcaWarehouseId = getLcaWarehouseId(),
+                        label = label
+                )
     }
 
 }

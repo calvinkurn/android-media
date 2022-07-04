@@ -143,6 +143,8 @@ internal open class ProductListPresenterTestFixtures {
         productItem.minOrder shouldBe topAdsProduct.product.productMinimumOrder
         productItem.position shouldBe position
         productItem.productName shouldBe topAdsProduct.product.name
+        productItem.applink shouldBe topAdsProduct.applinks
+        productItem.customVideoURL shouldBe topAdsProduct.product.customVideoUrl
     }
 
     protected fun Visitable<*>.assertOrganicProduct(

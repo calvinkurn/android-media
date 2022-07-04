@@ -34,4 +34,7 @@ class HomeStartupBenchmark(startupMode: StartupMode): BaseStartupBenchmark(start
                 MacroIntent.Home.RV_RESOURCE_ID
         )
     }
+
+    override fun traceName() = "mp_home"
+
 }

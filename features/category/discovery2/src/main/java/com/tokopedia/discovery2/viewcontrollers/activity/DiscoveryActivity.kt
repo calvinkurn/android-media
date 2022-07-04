@@ -70,6 +70,8 @@ open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
         const val PIN_PRODUCT = "pinProduct"
         const val CATEGORY_ID = "category_id"
         const val EMBED_CATEGORY = "embedCategory"
+        const val DYNAMIC_SUBTITLE= "dynamicSubtitle"
+        const val TARGET_TITLE_ID= "targetTitleID"
 
         @JvmStatic
         fun createDiscoveryIntent(context: Context, endpoint: String): Intent {
