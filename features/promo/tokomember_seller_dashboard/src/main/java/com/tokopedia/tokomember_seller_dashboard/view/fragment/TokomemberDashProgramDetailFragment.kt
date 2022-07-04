@@ -120,7 +120,6 @@ class TokomemberDashProgramDetailFragment : BaseDaggerFragment() {
         }
         tvTransactionCount.text = membershipGetProgramForm?.programForm?.analytics?.trxCount
         tvIncome.text = membershipGetProgramForm?.programForm?.analytics?.totalIncome
-        tvName.text = membershipGetProgramForm?.programForm?.name
         tvTransactionPremium.text = "Rp" + CurrencyFormatHelper.convertToRupiah(membershipGetProgramForm?.programForm?.tierLevels?.firstOrNull()?.threshold.toString())
         tvMemberCountPremium.text = membershipGetProgramForm?.levelInfo?.levelList?.firstOrNull()?.totalMember
         tvTransactionVip.text = "Rp" + CurrencyFormatHelper.convertToRupiah(membershipGetProgramForm?.programForm?.tierLevels?.getOrNull(1)?.threshold.toString())

@@ -76,7 +76,8 @@ class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) :
                 tvMembership.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN100))
             }
         }
-        tvQuota.text = "${item.voucherQuota}/${item.remainingQuota}"
+        val spent = item.remainingQuota?.let { item.voucherQuota?.minus(it) }
+        tvQuota.text = "$spent/${item.voucherQuota}"
         itemView.setOnClickListener {
             item.voucherStatus
         }

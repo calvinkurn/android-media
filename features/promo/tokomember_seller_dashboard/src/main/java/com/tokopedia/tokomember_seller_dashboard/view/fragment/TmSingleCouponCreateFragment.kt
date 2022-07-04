@@ -781,7 +781,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun handleProgramPreValidateError(reason: String?, message: String?){
+    private fun handleProgramPreValidateError(reason: String?, message: String?, openProgramCreation: Boolean = false){
         setButtonState()
         val title = if(reason.isNullOrEmpty()) {
             PROGRAM_VALIDATION_ERROR_TITLE
@@ -808,12 +808,15 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
             override fun onButtonClick(errorCount: Int) {
                 val cardId = prefManager?.cardId
                 prefManager?.shopId?.let { shopId ->
-                    if (cardId != null) {
+                    if (cardId != null && openProgramCreation) {
                         TmDashCreateActivity.openActivity(shopId, activity, CreateScreenType.PROGRAM, ProgramActionType.CREATE_FROM_COUPON, null, null, cardId = cardId)
+                        bottomSheet.dismiss()
+                        activity?.finish()
                     }
                 }
-                bottomSheet.dismiss()
-                activity?.finish()
+                if(!openProgramCreation){
+                    bottomSheet.dismiss()
+                }
             }
         })
         bottomSheet.show(childFragmentManager,"")
