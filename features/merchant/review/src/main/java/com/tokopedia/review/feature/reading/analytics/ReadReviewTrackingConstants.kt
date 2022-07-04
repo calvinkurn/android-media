@@ -72,4 +72,6 @@ object ReadReviewTrackingConstants {
     const val VARIANT = "variant"
     const val PRICE = "price"
     const val NONE = "none"
+
+    const val FILTER_NAME_SORT = "sort"
 }

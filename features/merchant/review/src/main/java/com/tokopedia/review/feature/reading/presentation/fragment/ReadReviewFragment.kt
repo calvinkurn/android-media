@@ -525,6 +525,7 @@ open class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAd
     }
 
     override fun onSortClicked(chipTitle: String) {
+        trackOnSortClicked()
         val listSortOptions = if (isProductReview) {
             listOf(
                     getString(R.string.review_reading_sort_most_helpful),
@@ -1155,6 +1156,22 @@ open class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAd
                 ).build()
                 .toString()
         )
+    }
+
+    private fun trackOnSortClicked() {
+        if (isProductReview) {
+            ReadReviewTracking.trackOnFilterClicked(
+                ReadReviewTrackingConstants.FILTER_NAME_SORT,
+                !reviewHeader?.isSortFilterActive().orTrue(),
+                viewModel.getProductId()
+            )
+        } else {
+            ReadReviewTracking.trackOnFilterShopReviewClicked(
+                ReadReviewTrackingConstants.FILTER_NAME_SORT,
+                !reviewHeader?.isSortFilterActive().orTrue(),
+                viewModel.getShopId()
+            )
+        }
     }
 
     private inner class ReviewMediaThumbnailListener: ReviewMediaThumbnailTypeFactory.Listener {
