@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/bot_reason_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -17,13 +15,13 @@
         android:layout_marginRight="16dp"
         android:gravity="center"
         android:lineSpacingExtra="@dimen/sp_6"
+        android:text="@string/cb_bot_reason_text"
         android:textColor="@color/black"
-        android:textSize="14sp"
-        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:text="@string/cb_bot_reason_text" />
+        app:typographyType="display_2"
+        app:typographyWeight="bold" />
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/et_state"
@@ -34,14 +32,14 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
+        android:backgroundTint="@color/grey_350"
+        android:gravity="bottom"
         android:hint="@string/cb_bot_other_reason_text_hint"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:gravity="bottom"
-        android:backgroundTint="@color/grey_350"
         app:layout_constraintTop_toBottomOf="@+id/bot_reason_text" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/warning_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -49,10 +47,11 @@
         android:layout_marginLeft="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
+        android:text="@string/minimum_30_character"
         android:textSize="@dimen/sp_11"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_state"
-        android:text="@string/minimum_30_character" />
+        app:typographyType="display_3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
