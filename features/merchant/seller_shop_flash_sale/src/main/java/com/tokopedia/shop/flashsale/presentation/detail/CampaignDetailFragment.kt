@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -148,8 +149,7 @@ class CampaignDetailFragment : BaseDaggerFragment(),
         observeMoreMenuEvent()
         observeShareCampaignEvent()
         observeActiveDialog()
-        observeShareComponentMetadata()
-        observeShareComponentThumbnailImage()
+        observeShareComponent()
     }
 
     private fun observeMoreMenuEvent() {
@@ -160,7 +160,19 @@ class CampaignDetailFragment : BaseDaggerFragment(),
 
     private fun observeShareCampaignEvent() {
         viewModel.shareCampaignActionEvent.observe(viewLifecycleOwner) {
-            viewModel.getShareComponentThumbnailImageUrl(it.campaignId)
+            viewModel.getShareComponent(it.campaignId)
+        }
+    }
+
+    private fun observeShareComponent() {
+        viewModel.shareComponent.observe(viewLifecycleOwner) { result ->
+            dismissLoaderDialog()
+            result?.let { it ->
+                displayShareBottomSheet(
+                    it.shareComponentThumbnailImageUrl,
+                    it.shareComponentMetadata
+                )
+            }
         }
     }
 
@@ -176,38 +188,6 @@ class CampaignDetailFragment : BaseDaggerFragment(),
                 }
             }
         }, false)
-    }
-
-
-    private fun observeShareComponentThumbnailImage() {
-        viewModel.shareComponentThumbnailImageUrl.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Success -> {
-                    viewModel.setThumbnailImageUrl(result.data)
-                    campaignId?.let { viewModel.getShareComponentMetadata(it) }
-                }
-                is Fail -> {
-                    dismissLoaderDialog()
-                    binding?.cardButtonWrapper showError (result.throwable)
-                }
-            }
-        }
-    }
-
-    private fun observeShareComponentMetadata() {
-        viewModel.shareComponentMetadata.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Success -> {
-                    dismissLoaderDialog()
-                    val metadata = result.data
-                    displayShareBottomSheet(viewModel.getThumbnailImageUrl(), metadata)
-                }
-                is Fail -> {
-                    dismissLoaderDialog()
-                    binding?.cardButtonWrapper showError (result.throwable)
-                }
-            }
-        }
     }
 
     private fun setUpToolbar() {

@@ -1,13 +1,18 @@
 package com.tokopedia.shop.flashsale.presentation.detail
 
+import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.shop.flashsale.common.extension.combineResultWith
+import com.tokopedia.shop.flashsale.common.extension.combineWith
 import com.tokopedia.shop.flashsale.common.tracker.ShopFlashSaleTracker
 import com.tokopedia.shop.flashsale.domain.entity.CampaignDetailMeta
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.MerchantCampaignTNC
+import com.tokopedia.shop.flashsale.domain.entity.aggregate.ShareComponent
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.ShareComponentMetadata
 import com.tokopedia.shop.flashsale.domain.entity.enums.isActive
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignDetailUseCase
@@ -68,7 +73,13 @@ class CampaignDetailViewModel @Inject constructor(
     val shareComponentMetadata: LiveData<Result<ShareComponentMetadata>>
         get() = _shareComponentMetadata
 
-    private var thumbnailImageUrl = ""
+    private val _shareComponent by lazy {
+        shareComponentThumbnailImageUrl.combineResultWith(shareComponentMetadata) { thumbnailImageUrl, metaData ->
+            metaData?.let { ShareComponent(thumbnailImageUrl.orEmpty(), it) }
+        }
+    }
+    val shareComponent: LiveData<ShareComponent?>
+        get() = _shareComponent
 
     fun getCampaignDetail(campaignId: Long) {
         this._campaignId = campaignId
@@ -157,7 +168,12 @@ class CampaignDetailViewModel @Inject constructor(
         _shareCampaignActionEvent.value = campaignData
     }
 
-    fun getShareComponentThumbnailImageUrl(campaignId: Long) {
+    fun getShareComponent(campaignId: Long) {
+        getShareComponentThumbnailImageUrl(campaignId)
+        getShareComponentMetadata(campaignId)
+    }
+
+    private fun getShareComponentThumbnailImageUrl(campaignId: Long) {
         launchCatchError(
             dispatchers.io,
             block = {
@@ -170,7 +186,7 @@ class CampaignDetailViewModel @Inject constructor(
         )
     }
 
-    fun getShareComponentMetadata(campaignId: Long) {
+    private fun getShareComponentMetadata(campaignId: Long) {
         launchCatchError(
             dispatchers.io,
             block = {
@@ -181,13 +197,5 @@ class CampaignDetailViewModel @Inject constructor(
                 _shareComponentMetadata.postValue(Fail(error))
             }
         )
-    }
-
-    fun setThumbnailImageUrl(thumbnailImageUrl: String) {
-        this.thumbnailImageUrl = thumbnailImageUrl
-    }
-
-    fun getThumbnailImageUrl(): String {
-        return thumbnailImageUrl
     }
 }
