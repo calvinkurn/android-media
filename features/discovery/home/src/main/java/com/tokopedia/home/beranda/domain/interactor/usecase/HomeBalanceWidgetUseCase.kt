@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.domain.interactor.usecase
 
+import android.util.Log
 import com.tokopedia.home.beranda.domain.interactor.InjectCouponTimeBasedUseCase
 import com.tokopedia.home.beranda.domain.interactor.repository.*
 import com.tokopedia.home.beranda.domain.model.HomeFlag
@@ -51,6 +52,8 @@ class HomeBalanceWidgetUseCase @Inject constructor(
                     needToShowUserWallet = homeFlagRepository.getCachedData().homeFlag.getFlag(HomeFlag.TYPE.HAS_TOKOPOINTS)?: false
             )
         } catch (e: Exception) {
+            //TODO delete logger
+            Log.d("dhabalog", e.localizedMessage)
             return currentHeaderDataModel
         }
     }
