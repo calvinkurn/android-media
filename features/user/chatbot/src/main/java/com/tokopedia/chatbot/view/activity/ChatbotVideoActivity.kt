@@ -1,17 +1,39 @@
 package com.tokopedia.chatbot.view.activity
 
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.chat_common.BaseChatToolbarActivity
+import com.tokopedia.chat_common.R
 import com.tokopedia.chatbot.ChatbotConstant.VIDEO_URL
 import com.tokopedia.chatbot.view.fragment.ChatbotVideoFragment
+import com.tokopedia.kotlin.extensions.view.gone
 
-class ChatbotVideoActivity : BaseSimpleActivity() {
+class ChatbotVideoActivity : BaseChatToolbarActivity() {
 
     override fun getNewFragment(): Fragment {
         val extras = Bundle()
         extras.putString(PARAM_VIDEO_URL, intent.getStringExtra(VIDEO_URL))
         return ChatbotVideoFragment.getInstance(extras)
+    }
+
+    override fun setupToolbar() {
+        super.setupToolbar()
+        supportActionBar?.run {
+            setBackgroundDrawable(ColorDrawable(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_Static_Black)))
+            val upArrow = MethodChecker.getDrawable(applicationContext, R.drawable.ic_action_back)
+            this.setHomeAsUpIndicator(upArrow)
+        }
+        val textView = (findViewById<TextView>(com.tokopedia.chatbot.R.id.title))
+        textView.text =  getString(com.tokopedia.chatbot.R.string.chatbot_video_title)
+        textView.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
+
+        val avatarContainer =  findViewById<FrameLayout>(com.tokopedia.chatbot.R.id.flPhotoContainer)
+        avatarContainer.gone()
     }
 
     companion object {
