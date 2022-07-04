@@ -18,6 +18,7 @@ import com.tokopedia.people.model.ProfileFollowerV2
 import com.tokopedia.people.model.ProfileFollowingListBase
 import com.tokopedia.people.viewmodels.FollowerFollowingViewModel
 import com.tokopedia.people.analytic.UserProfileTracker
+import com.tokopedia.people.views.fragment.FollowerFollowingListingFragment
 import com.tokopedia.people.views.fragment.UserProfileFragment
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -132,7 +133,7 @@ open class ProfileFollowingAdapter(
                     if (!userSession.isLoggedIn) {
                         listener.callstartActivityFromFragment(
                             ApplinkConst.LOGIN,
-                            UserProfileFragment.REQUEST_CODE_LOGIN_TO_FOLLOW
+                            FollowerFollowingListingFragment.REQUEST_CODE_LOGIN_TO_FOLLOW
                         )
                     } else {
                         UserProfileTracker().clickUnfollowFromFollowing(userSession.userId, item.profile.userID == userSession.userId)
@@ -165,7 +166,7 @@ open class ProfileFollowingAdapter(
                     if (!userSession.isLoggedIn) {
                         listener.callstartActivityFromFragment(
                             ApplinkConst.LOGIN,
-                            UserProfileFragment.REQUEST_CODE_LOGIN_TO_FOLLOW
+                            FollowerFollowingListingFragment.REQUEST_CODE_LOGIN_TO_FOLLOW
                         )
                     } else {
                         UserProfileTracker().clickFollowFromFollowing(userSession.userId, item.profile.userID == userSession.userId)
