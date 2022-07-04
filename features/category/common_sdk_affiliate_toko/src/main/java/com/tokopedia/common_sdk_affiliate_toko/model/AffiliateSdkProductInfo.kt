@@ -6,7 +6,6 @@ package com.tokopedia.common_sdk_affiliate_toko.model
  * @param[categoryID] categoryId of Product
  * @param[isVariant] isVariant of Product
  * @param[stockQty] stockQty of Product
- * @param[productId] productId of Product
  */
 data class AffiliateSdkProductInfo(
     val categoryID: String,
