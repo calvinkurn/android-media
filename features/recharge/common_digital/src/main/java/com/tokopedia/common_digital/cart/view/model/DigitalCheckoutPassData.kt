@@ -30,7 +30,7 @@ class DigitalCheckoutPassData() : Parcelable {
     var needGetCart: Boolean = false
     var isFromPDP: Boolean = false
     var isSpecialProduct: Boolean = false
-    var deviceId: Int = DEFAULT_DEVICE_ID
+    var deviceId: Int = 0
     var atcSource: String? = null
 
     constructor(parcel: Parcel) : this() {
