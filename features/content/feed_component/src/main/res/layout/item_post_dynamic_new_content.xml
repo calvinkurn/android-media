@@ -40,19 +40,22 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/shop_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            app:layout_constrainedWidth="true"
             android:layout_marginStart="4dp"
-            android:textColor="@color/Unify_N700"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:lineSpacingExtra="0dp"
             android:paddingBottom="2dp"
+            android:textColor="@color/Unify_N700"
             app:layout_constraintBottom_toBottomOf="@id/shop_badge"
             app:layout_constraintEnd_toStartOf="@id/menu_button"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toEndOf="@id/shop_badge"
             app:layout_constraintTop_toTopOf="@id/shop_badge"
             app:typographyType="heading_5"
-            android:ellipsize="end"
             tools:text="Fellow Official" />
 
         <com.tokopedia.unifyprinciples.Typography
