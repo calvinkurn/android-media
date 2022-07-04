@@ -25,10 +25,10 @@ class FeedProfileAcceptTncUseCase @Inject constructor(
     companion object {
         const val QUERY_NAME = "FeedProfileAcceptTncUseCaseQuery"
         const val QUERY = """
-            mutation FeedXProfileAcceptTnC{
-              feedXProfileAcceptTnC(){
+            mutation FeedXProfileAcceptTnC {
+              feedXProfileAcceptTnC {
                     hasAcceptTnC
-                }
+              }
             }
         """
     }
