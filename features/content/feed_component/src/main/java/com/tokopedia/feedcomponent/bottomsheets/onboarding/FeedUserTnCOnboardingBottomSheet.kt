@@ -24,7 +24,7 @@ class FeedUserTnCOnboardingBottomSheet : BottomSheetUnify() {
     ): View? {
         _binding = BottomsheetFeedUserTncOnboardingBinding.inflate(layoutInflater)
 
-        setChild(_binding?.root)
+        setChild(binding.root)
         showCloseIcon = false
         showKnob = true
         showHeader = false

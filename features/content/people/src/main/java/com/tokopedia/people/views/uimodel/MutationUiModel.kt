@@ -5,6 +5,6 @@ package com.tokopedia.people.views.uimodel
  */
 sealed interface MutationUiModel {
 
-    data class Success(val message: String = ""): MutationUiModel
-    data class Error(val message: String): MutationUiModel
+    data class Success(val message: String = "") : MutationUiModel
+    data class Error(val message: String) : MutationUiModel
 }
