@@ -1,6 +1,7 @@
 package com.tokopedia.media.picker.common.ui.activity
 
 import android.content.Intent
+import com.google.android.gms.tagmanager.PreviewActivity
 import com.tokopedia.media.picker.common.ui.TestPickerFragmentFactory
 import com.tokopedia.media.picker.ui.PickerFragmentFactory
 import com.tokopedia.media.picker.ui.PickerTest
@@ -18,7 +19,7 @@ class TestPickerActivity : PickerActivity() {
     }
 
     override fun onContinueClicked() {
-        startActivityForResult(Intent(this, TestPreviewActivity::class.java).apply {
+        startActivityForResult(Intent(this, PreviewActivity::class.java).apply {
             putExtra(EXTRA_INTENT_PREVIEW, ArrayList(medias))
         }, REQUEST_PREVIEW_PAGE)
     }

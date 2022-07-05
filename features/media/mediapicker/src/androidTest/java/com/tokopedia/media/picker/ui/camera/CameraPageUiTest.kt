@@ -94,6 +94,7 @@ class CameraPageUiTest : CameraPageTest() {
     fun should_open_video_preview_activity_onLanjutClicked() {
         // When
         startCameraPage()
+        Robot.swipeLeftCameraMode()
         Robot.clickCaptureVideo(CAPTURED_VIDEO_DURATION)
         Robot.clickLanjutButton()
 

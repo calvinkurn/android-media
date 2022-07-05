@@ -9,6 +9,7 @@ import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import com.google.android.gms.tagmanager.PreviewActivity
 import com.otaliastudios.cameraview.CameraView
 import com.tokopedia.media.R
 import com.tokopedia.media.picker.common.ui.activity.TestPreviewActivity
@@ -122,7 +123,7 @@ abstract class CameraPageTest : PickerTest() {
         }
 
         fun verifyOpenPreviewActivity() {
-            intended(hasComponent(TestPreviewActivity::class.java.name))
+            intended(hasComponent(PreviewActivity::class.java.name))
         }
 
         fun assertActivityDestroy(pickerTest: PickerTest) {
