@@ -14,7 +14,7 @@ object VideoGenerator {
 
     fun getFiles(context: Context): List<File> {
         return mockVideoFileNameList.map {
-            File(context.externalCacheDir, it)
+            streamToFile(context, it, it)
         }
     }
 
