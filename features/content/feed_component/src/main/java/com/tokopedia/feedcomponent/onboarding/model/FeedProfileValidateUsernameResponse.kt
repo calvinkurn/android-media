@@ -12,7 +12,7 @@ data class FeedProfileValidateUsernameResponse(
 
     data class Wrapper(
         @SerializedName("isValid")
-        val isValid: Boolean = false,
+        val isValid: Long = 0,
 
         @SerializedName("notValidInformation")
         val notValidInformation: String = "",

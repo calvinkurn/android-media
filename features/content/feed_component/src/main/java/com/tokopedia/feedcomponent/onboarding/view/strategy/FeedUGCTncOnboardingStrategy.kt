@@ -2,12 +2,10 @@ package com.tokopedia.feedcomponent.onboarding.view.strategy
 
 import com.tokopedia.feedcomponent.onboarding.domain.repository.FeedUGCOnboardingRepository
 import com.tokopedia.feedcomponent.onboarding.view.strategy.base.FeedUGCOnboardingStrategy
-import com.tokopedia.feedcomponent.onboarding.view.uimodel.action.FeedUGCOnboardingAction
 import com.tokopedia.feedcomponent.onboarding.view.uimodel.event.FeedUGCOnboardingUiEvent
 import com.tokopedia.feedcomponent.onboarding.view.uimodel.state.FeedUGCOnboardingUiState
 import com.tokopedia.feedcomponent.onboarding.view.uimodel.state.UsernameState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
@@ -52,10 +50,8 @@ class FeedUGCTncOnboardingStrategy @Inject constructor(
             if(!_isSubmit.value && _isCheckTnc.value) {
                 _isSubmit.update { true }
 
-                /** TODO: just for testing purpose */
-//                val result = repo.acceptTnc()
-                delay(2000)
-                val result = true
+                val result = repo.acceptTnc()
+
                 _hasAcceptTnc.update { result }
                 _isSubmit.update { false }
             }

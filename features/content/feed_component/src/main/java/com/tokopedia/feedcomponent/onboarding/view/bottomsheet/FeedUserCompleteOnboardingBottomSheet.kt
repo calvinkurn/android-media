@@ -130,8 +130,7 @@ class FeedUserCompleteOnboardingBottomSheet : BaseFeedUserOnboardingBottomSheet(
         with(curr) {
             binding.layoutTnc.cbxTnc.isChecked = isCheckTnc
 
-            binding.btnContinue.isEnabled = isCheckTnc && !isSubmit &&
-                                            usernameState is UsernameState.Valid && username.length >= 3
+            binding.btnContinue.isEnabled = isCheckTnc && !isSubmit && usernameState is UsernameState.Valid
             binding.btnContinue.isLoading = isSubmit
 
             binding.textFieldUsername.isLoading = usernameState is UsernameState.Loading

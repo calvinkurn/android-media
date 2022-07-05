@@ -27,8 +27,6 @@ class FeedUGCOnboardingParentFragment @Inject constructor(
     private var mListener: Listener? = null
 
     private var _binding: FragmentFeedUgcOnboardingParentBinding? = null
-    private val binding: FragmentFeedUgcOnboardingParentBinding
-        get() = _binding!!
 
     override fun getScreenName() = TAG
 
