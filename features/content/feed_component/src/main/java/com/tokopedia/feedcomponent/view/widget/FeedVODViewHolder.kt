@@ -27,10 +27,7 @@ import com.tokopedia.feedcomponent.util.util.hideViewWithAnimationVod
 import com.tokopedia.feedcomponent.util.util.productThousandFormatted
 import com.tokopedia.feedcomponent.util.util.showViewWithAnimationVOD
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -133,12 +130,17 @@ class FeedVODViewHolder @JvmOverloads constructor(
         constraintSetForVideoLayout.setDimensionRatio(layoutPlayerView.id, mRatio)
         constraintSetForVideoLayout.applyTo(layoutFrameView)
     }
+    private fun setCoverImage(){
+        if (!vodPreviewImage.isVisible)
+            vodPreviewImage.visible()
+        mFeedXMedia?.let { vodPreviewImage.setImageUrl(it.coverUrl) }
+    }
 
     fun bindData(isMute: Boolean) {
         mIsMute = isMute
         setConstraintsForVODLayout()
         setConstraintsForFrameView()
-        mFeedXMedia?.let { vodPreviewImage.setImageUrl(it.coverUrl) }
+        setCoverImage()
 
         setListenersOnVODViewElements()
         updateVolumeButtonState()
@@ -197,6 +199,7 @@ class FeedVODViewHolder @JvmOverloads constructor(
         vodVolumeIcon.setOnClickListener {
             mIsMute = !mIsMute
             videoPlayer?.toggleVideoVolume(mIsMute)
+            changeMuteStateVideoVOD(mIsMute)
             setMuteUnmuteVOD(isVideoTap = false, isMute = mIsMute)
         }
         vodPlayIcon.setOnClickListener {
@@ -308,7 +311,7 @@ class FeedVODViewHolder @JvmOverloads constructor(
                     showVODLoading()
                     isPaused = false
                     isVODVideoViewFrozen = false
-                    vodLihatProdukBtn.visible()
+                    vodLihatProdukBtn.showWithCondition(mProducts.isNotEmpty())
 
                 }
                 override fun onVideoReadyToPlay() {
@@ -419,6 +422,7 @@ class FeedVODViewHolder @JvmOverloads constructor(
                         isPaused = true
 
                         vodLanjutMemontomBtn.visible()
+                        vodVolumeIcon.gone()
                         vodFrozenView.visible()
                         vodFullScreenIcon.gone()
                         vodLihatProdukBtn.gone()
@@ -445,14 +449,16 @@ class FeedVODViewHolder @JvmOverloads constructor(
             feedAddViewJob = null
         }
     }
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    internal fun onResume() {
+        videoPlayer?.resume()
+    }
+
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     internal fun onDestroy() {
         onViewDetached()
     }
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    internal fun onResume() {
-            videoPlayer?.resume()
-    }
+
 
 
     private fun showVODLoading() {
@@ -469,6 +475,10 @@ class FeedVODViewHolder @JvmOverloads constructor(
         vodFullScreenIcon.visible()
         vodLanjutMemontomBtn.gone()
         vodFrozenView.gone()
+    }
+    fun onViewAttached(){
+        vodPreviewImage.visible()
+        vodPlayIcon.visible()
     }
     fun onViewDetached(){
         isPaused = true
