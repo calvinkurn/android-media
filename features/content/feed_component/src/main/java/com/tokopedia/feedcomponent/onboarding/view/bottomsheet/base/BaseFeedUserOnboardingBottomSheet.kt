@@ -15,6 +15,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.util.util.setSpanOnText
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.R as unifyR
 
@@ -64,9 +65,13 @@ abstract class BaseFeedUserOnboardingBottomSheet : BottomSheetUnify() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         showCloseIcon = false
         showKnob = true
         showHeader = false
+        isDragable = true
+        isSkipCollapseState = true
+        isHideable = true
 
         return super.onCreateView(inflater, container, savedInstanceState)
     }
