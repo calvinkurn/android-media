@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Unify_Static_White"
+    android:paddingHorizontal="@dimen/spacing_lvl4"
+    android:paddingTop="@dimen/spacing_lvl4">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtTitleRiwayatKredit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/label_credit_history"
+        app:layout_constraintBottom_toBottomOf="@id/hari_ini"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/hari_ini" />
+
+    <com.tokopedia.unifycomponents.ChipsUnify
+        android:id="@+id/hari_ini"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:chipText="@string/topads_hari_ini"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <include
+        android:id="@+id/totalKredit"
+        layout="@layout/topads_credit_partial_total_value"
+        android:layout_width="0dp"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/hari_ini"
+        app:layout_constraintWidth_percent=".45" />
+
+    <include
+        android:id="@+id/totalTerpakai"
+        layout="@layout/topads_credit_partial_total_value"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/totalKredit"
+        app:layout_constraintWidth_percent=".45" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/unify_space_12"
+        tools:listitem="@layout/item_credit_history"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_constraintTop_toBottomOf="@id/totalKredit" />
+</androidx.constraintlayout.widget.ConstraintLayout>
