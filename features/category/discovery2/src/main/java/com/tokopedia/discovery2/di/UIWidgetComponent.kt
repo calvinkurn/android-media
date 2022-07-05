@@ -23,7 +23,6 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.myco
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mycoupon.MyCouponViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.playwidget.DiscoveryPlayWidgetViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.ProductCardCarouselViewModel
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.EmptyStateViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.ErrorLoadViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardrevamp.ProductCardRevampViewModel
@@ -53,7 +52,6 @@ interface UIWidgetComponent {
     fun inject(categoryNavigationViewModel: CategoryNavigationViewModel)
     fun inject(claimCouponViewModel: ClaimCouponViewModel)
     fun inject(claimCouponItemViewModel: ClaimCouponItemViewModel)
-    fun inject(productCardItemViewModel: ProductCardItemViewModel)
     fun inject(masterProductCardItemViewModel: MasterProductCardItemViewModel)
     fun inject(chipsFilterViewModel: ChipsFilterViewModel)
     fun inject(loadMoreViewModel: LoadMoreViewModel)

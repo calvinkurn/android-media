@@ -5,9 +5,10 @@ import kotlinx.coroutines.flow.*
 
 object EventFlowFactory {
 
-    val state = MutableSharedFlow<EventState>(1)
     private const val TIMEOUT_IN_MILLIS = 500L
-    private const val MAX_REPLAY = 1
+    private const val MAX_REPLAY = 50
+
+    val state = MutableSharedFlow<EventState>(MAX_REPLAY)
 
     fun emit(stateEvent: EventState) {
         state.tryEmit(stateEvent)

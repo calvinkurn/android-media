@@ -1,39 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="wrap_content">
 
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/textTimer"
         android:layout_alignEnd="@+id/textTimer"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
         android:layout_alignRight="@+id/textTimer"
+        android:layout_alignBottom="@+id/textTimer"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
         android:indeterminate="false"
         android:progress="80"
         android:progressDrawable="@drawable/background_counter_timer"
+        tools:ignore="UnifyComponentUsage"
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="273dp" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textTimer"
-        android:paddingRight="8dp"
-        android:paddingLeft="8dp"
-        android:paddingTop="@dimen/dp_3"
-        android:paddingBottom="@dimen/dp_3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_11"
-        android:fontFamily="sans-serif"
-        android:textStyle="bold"
-        android:textColor="@color/Unify_Y500"
         android:letterSpacing="0.07"
-        tools:text="16:48:40"
-        />
+        android:paddingLeft="8dp"
+        android:paddingTop="@dimen/unify_space_4"
+        android:paddingRight="8dp"
+        android:paddingBottom="@dimen/unify_space_4"
+        android:textColor="@color/Unify_Y500"
+        app:typographyType="small"
+        app:typographyWeight="bold"
+        tools:text="16:48:40" />
 </RelativeLayout>

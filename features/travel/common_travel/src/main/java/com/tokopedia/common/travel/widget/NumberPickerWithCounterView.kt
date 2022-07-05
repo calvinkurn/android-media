@@ -52,8 +52,8 @@ class NumberPickerWithCounterView @JvmOverloads constructor(context: Context, at
         numberInputView = view.findViewById<View>(R.id.decimal_input_view) as AppCompatTextView
         plusImageButton = view.findViewById<View>(R.id.image_button_plus) as AppCompatImageButton
         minusImageButton = view.findViewById<View>(R.id.image_button_minus) as AppCompatImageButton
-        plusImageButton?.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.bg_animated_action_counter_plus_24))
-        minusImageButton?.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.bg_animated_action_counter_minus_24))
+        plusImageButton?.setImageDrawable(MethodChecker.getDrawable(context,com.tokopedia.resources.common.R.drawable.bg_animated_action_counter_plus_24))
+        minusImageButton?.setImageDrawable(MethodChecker.getDrawable(context, com.tokopedia.resources.common.R.drawable.bg_animated_action_counter_minus_24))
         numberInputView?.isEnabled = false
     }
 

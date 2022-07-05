@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName
 data class VoucherOrdersItem(
 
         @field:SerializedName("cart_id")
-        val cartId: Int = 0,
+        val cartId: String = "0",
 
         @field:SerializedName("code")
         val code: String = "",
@@ -39,7 +39,7 @@ data class VoucherOrdersItem(
         val message: Message = Message()
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
-            parcel.readValue(Int::class.java.classLoader) as Int,
+            parcel.readString() ?: "",
             parcel.readString() ?: "",
             parcel.readString() ?: "",
             parcel.readValue(Int::class.java.classLoader) as Int,

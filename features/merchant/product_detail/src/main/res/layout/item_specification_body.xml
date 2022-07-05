@@ -12,7 +12,7 @@
         android:id="@+id/key_specification"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:typographyType="body_2"
+        app:typographyType="display_2"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="RAM" />
@@ -21,7 +21,7 @@
         android:id="@+id/value_specification"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:typographyType="body_2"
+        app:typographyType="display_2"
         android:lineSpacingExtra="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/guideline"

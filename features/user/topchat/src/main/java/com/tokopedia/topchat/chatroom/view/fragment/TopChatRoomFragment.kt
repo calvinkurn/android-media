@@ -119,7 +119,6 @@ import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.EXTRA_SHOP_STATUS_FAVORITE_FROM_SHOP
-import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.common.custom.TopChatKeyboardHandler
 import com.tokopedia.topchat.common.util.TopChatSellerReviewHelper
@@ -181,9 +180,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     @Inject
     lateinit var analytics: TopChatAnalytics
-
-    @Inject
-    lateinit var settingAnalytics: ChatSettingsAnalytics
 
     @Inject
     lateinit var session: UserSessionInterface
@@ -646,7 +642,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
         val intent = RouteManager.getIntent(
             context, ApplinkConstInternalMarketplace.RESERVED_STOCK,
-            id, product.shopId.toString()
+            id, product.shopId
         )
         intent.putExtra(EXTRA_SOURCE, EXTRA_SOURCE_STOCK)
         viewModel.addOngoingUpdateProductStock(id, product, adapterPosition, parentMetaData)
@@ -1719,9 +1715,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onDualAnnouncementClicked(
-        redirectUrl: String, attachmentId: String, blastId: Long
+        redirectUrl: String, attachmentId: String, blastId: String
     ) {
-        analytics.trackClickImageAnnouncement(blastId.toString(), attachmentId)
+        analytics.trackClickImageAnnouncement(blastId, attachmentId)
         if (redirectUrl.isNotEmpty()) {
             onGoToWebView(redirectUrl, attachmentId)
         }
@@ -2971,7 +2967,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         adapter.deleteMsg(replyTimeNano)
     }
 
-    override fun getCommonShopId(): Long {
+    override fun getCommonShopId(): String {
         return shopId
     }
 

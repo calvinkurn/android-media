@@ -125,7 +125,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
     }
 
     private fun mergeBroadcast(
-        index: Int, replies: List<Reply>, blastId: Long, attachmentIds: List<String>
+        index: Int, replies: List<Reply>, blastId: String, attachmentIds: List<String>
     ): Pair<Map<String, Visitable<*>>, Int> {
         val broadcast = ArrayMap<String, Visitable<*>>()
         var idx = index
@@ -174,8 +174,8 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                 fromUid = senderId.toString(),
                 from = senderName,
                 fromRole = role,
-                attachmentId = attachment?.id ?: "",
-                attachmentType = attachment?.type.toString(),
+                attachmentId = attachment.id,
+                attachmentType = attachment.type.toString(),
                 replyTime = replyTime,
                 message = msg,
                 source = chatDateTime.source
@@ -219,7 +219,10 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
             TYPE_STICKER.toString() -> convertToSticker(chatItemPojoByDateByTime)
             TYPE_REVIEW_REMINDER -> convertToReviewReminder(chatItemPojoByDateByTime)
             TYPE_CTA_HEADER_MSG -> convertToCtaHeaderMsg(chatItemPojoByDateByTime)
-            TYPE_PRODUCT_BUNDLING -> convertToProductBundling(chatItemPojoByDateByTime, attachmentIds)
+            TYPE_PRODUCT_BUNDLING -> convertToProductBundling(
+                chatItemPojoByDateByTime,
+                attachmentIds
+            )
             else -> super.mapAttachment(chatItemPojoByDateByTime, attachmentIds)
         }
     }
@@ -243,7 +246,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
 
     private fun convertToVoucher(item: Reply): Visitable<*> {
         val pojo = gson.fromJson<TopChatVoucherPojo>(
-            item.attachment?.attributes,
+            item.attachment.attributes,
             TopChatVoucherPojo::class.java
         )
         val voucher = pojo.voucher
@@ -272,23 +275,23 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
             .withResponseFromGQL(item)
             .withVoucherModel(voucherModel)
             .withIsPublic(voucher.isPublic)
-            .withIsLockToProduct(voucher.isLockToProduct?: 0)
-            .withApplink(voucher.applink?: "")
+            .withIsLockToProduct(voucher.isLockToProduct ?: 0)
+            .withApplink(voucher.applink ?: "")
             .build()
     }
 
     private fun convertToDualAnnouncement(item: Reply): Visitable<*> {
-        val pojoAttribute = gson.fromJson<ImageDualAnnouncementPojo>(
-            item.attachment?.attributes,
+        val pojoAttribute = gson.fromJson(
+            item.attachment.attributes,
             ImageDualAnnouncementPojo::class.java
         )
         return ImageDualAnnouncementUiModel(
-            messageId = item.msgId.toString(),
-            fromUid = item.senderId.toString(),
+            messageId = item.msgId,
+            fromUid = item.senderId,
             from = item.senderName,
             fromRole = item.role,
-            attachmentId = item.attachment?.id ?: "",
-            attachmentType = item.attachment?.type.toString(),
+            attachmentId = item.attachment.id,
+            attachmentType = item.attachment.type.toString(),
             replyTime = item.replyTime,
             message = item.msg,
             imageUrlTop = pojoAttribute.imageUrl,
@@ -301,8 +304,8 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
     }
 
     private fun convertToSticker(message: Reply): Visitable<*> {
-        val stickerAttributes = gson.fromJson<StickerAttributesResponse>(
-            message.attachment?.attributes,
+        val stickerAttributes = gson.fromJson(
+            message.attachment.attributes,
             StickerAttributesResponse::class.java
         )
         return StickerUiModel.Builder()
@@ -312,7 +315,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
     }
 
     private fun convertToReviewReminder(message: Reply): Visitable<*> {
-        val review = gson.fromJson<ReviewReminderAttribute>(
+        val review = gson.fromJson(
             message.attachment.attributes,
             ReviewReminderAttribute::class.java
         )
