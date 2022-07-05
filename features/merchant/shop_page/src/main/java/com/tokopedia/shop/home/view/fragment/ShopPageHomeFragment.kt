@@ -2162,7 +2162,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             productId = shopHomeProductViewModel.id.orEmpty(),
             pageSource = VariantPageSource.SHOP_PAGE_PAGESOURCE,
             shopId = shopId,
-            startActivitResult = this::startActivityForResult
+            startActivitResult = this::startActivityForResult,
+            showQuantityEditor = true
         )
     }
 

@@ -596,7 +596,8 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             productId = shopProductUiModel.id.orEmpty(),
             pageSource = VariantPageSource.SHOP_PAGE_PAGESOURCE,
             shopId = shopId,
-            startActivitResult = this::startActivityForResult
+            startActivitResult = this::startActivityForResult,
+            showQuantityEditor = true
         )
     }
 
