@@ -21,7 +21,7 @@ const val THEY_FOLLOW = """
 @GqlQuery("TheyFollow", THEY_FOLLOW)
 class ProfileTheyFollowedUseCase @Inject constructor(val useCase: MultiRequestGraphqlUseCase) {
 
-    suspend fun profileIsFollowing(profileIds: MutableList<String>) : UserProfileIsFollow {
+    suspend fun profileIsFollowing(profileIds: List<String>) : UserProfileIsFollow {
             val request = GraphqlRequest(TheyFollow.GQL_QUERY,
                 UserProfileIsFollow::class.java,
                 getRequestParams(profileIds))
@@ -32,7 +32,7 @@ class ProfileTheyFollowedUseCase @Inject constructor(val useCase: MultiRequestGr
             return response.getData(UserProfileIsFollow::class.java)
     }
 
-    private fun getRequestParams(profileIds: MutableList<String>): MutableMap<String, Any?> {
+    private fun getRequestParams(profileIds: List<String>): MutableMap<String, Any?> {
         val requestMap = mutableMapOf<String, Any?>()
         requestMap[KEY_USERIDS] = profileIds
         return requestMap

@@ -28,7 +28,7 @@
             app:unify_header_transparent_mode="false" />
 
         <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/app_bar_layout"
+            android:id="@+id/app_bar_user_profile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:elevation="@dimen/layout_lvl0">
@@ -298,7 +298,7 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <ViewFlipper
-            android:id="@+id/vp_rv_post"
+            android:id="@+id/user_post_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -307,7 +307,7 @@
             app:layout_constraintTop_toBottomOf="@+id/linear_button">
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recycler_view"
+                    android:id="@+id/rv_post"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/unify_space_12"
@@ -330,5 +330,16 @@
             <include layout="@layout/up_layout_error_empty_user_post" />
 
         </ViewFlipper>
+
+        <com.tokopedia.feedcomponent.view.custom.FeedFloatingButton
+            android:id="@+id/fab_user_profile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="@dimen/unify_space_16"
+            android:visibility="gone"
+            app:fab_text="@string/feed_fab_create_post" />
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
 </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>

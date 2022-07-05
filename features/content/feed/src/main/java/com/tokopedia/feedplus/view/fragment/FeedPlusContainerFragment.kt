@@ -79,7 +79,7 @@ import kotlinx.android.synthetic.main.partial_feed_error.*
 import timber.log.Timber
 import javax.inject.Inject
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
-import com.tokopedia.feedplus.view.customview.FeedFloatingButton
+import com.tokopedia.feedcomponent.view.custom.FeedFloatingButton
 
 
 /**
