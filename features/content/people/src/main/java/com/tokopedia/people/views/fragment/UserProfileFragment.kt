@@ -208,6 +208,20 @@ class UserProfileFragment @Inject constructor(
                 isViewMoreClickedBio = true
             }
 
+            btnAction.setOnClickListener {
+                if (viewModel.isSelfProfile) {
+                    navigateToEditProfile()
+                    return@setOnClickListener
+                }
+
+                if (!userSession.isLoggedIn) {
+                    startActivityForResult(
+                        RouteManager.getIntent(activity, ApplinkConst.LOGIN),
+                        REQUEST_CODE_LOGIN_TO_FOLLOW
+                    )
+                } else doFollowUnfollow()
+            }
+
             fabUserProfile.setOnClickListener {
                 FeedUserTnCOnboardingBottomSheet.getFragment(
                     childFragmentManager,
@@ -404,6 +418,7 @@ class UserProfileFragment @Inject constructor(
                     textSeeMore.show()
                 }
             } else {
+                textBio.hide()
                 textSeeMore.hide()
             }
 
@@ -423,12 +438,10 @@ class UserProfileFragment @Inject constructor(
             ProfileType.NotLoggedIn, ProfileType.OtherUser -> {
                 if (userSession.isLoggedIn && value.followInfo.status) buttonActionUIFollow()
                 else buttonActionUIUnFollow()
-                buttonActionOnClickListener()
                 mainBinding.btnAction.show()
             }
             ProfileType.Self -> {
                 buttonActionUIEditProfile()
-                buttonActionOnClickListener(isSelfProfile = true)
                 mainBinding.btnAction.show()
             }
             ProfileType.Unknown -> mainBinding.btnAction.hide()
@@ -457,11 +470,10 @@ class UserProfileFragment @Inject constructor(
             prev.profileType == value.profileType
         ) return
 
-        val isSelfProfile = value.profileType == ProfileType.Self
         val usernameEmpty = value.profileInfo.username.isBlank()
         val biographyEmpty = value.profileInfo.biography.isBlank()
 
-        val isShowProfileReminder = isSelfProfile && usernameEmpty && biographyEmpty
+        val isShowProfileReminder = viewModel.isSelfProfile && usernameEmpty && biographyEmpty
 
         if (isShowProfileReminder) {
             showProfileReminder()
@@ -486,22 +498,6 @@ class UserProfileFragment @Inject constructor(
         text = getString(R.string.up_btn_profile)
         buttonVariant = UnifyButton.Variant.GHOST
         buttonType = UnifyButton.Type.ALTERNATE
-    }
-
-    private fun buttonActionOnClickListener(isSelfProfile: Boolean = false) = with(mainBinding) {
-        btnAction.setOnClickListener {
-            if (isSelfProfile) {
-                navigateToEditProfile()
-                return@setOnClickListener
-            }
-
-            if (!userSession.isLoggedIn) {
-                startActivityForResult(
-                    RouteManager.getIntent(activity, ApplinkConst.LOGIN),
-                    REQUEST_CODE_LOGIN_TO_FOLLOW
-                )
-            } else doFollowUnfollow()
-        }
     }
 
     private fun setProfileImg(profile: ProfileUiModel) {
@@ -574,9 +570,6 @@ class UserProfileFragment @Inject constructor(
     }
 
     private fun showProfileReminder() = with(mainBinding) {
-        textUserName.hide()
-        textBio.hide()
-        textSeeMore.hide()
         btnAction.hide()
         includeReminder.clContainer.setBackgroundResource(
             R.drawable.bg_card_profile_reminder
