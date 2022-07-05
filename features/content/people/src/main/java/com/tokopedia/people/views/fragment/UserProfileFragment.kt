@@ -465,8 +465,7 @@ class UserProfileFragment @Inject constructor(
 
         if (isShowProfileReminder) {
             showProfileReminder()
-            mainBinding.includeUserProfileReminder
-                .buttonUserProfileReminderCta.setOnClickListener { navigateToEditProfile() }
+            mainBinding.includeReminder.btnCta.setOnClickListener { navigateToEditProfile() }
         }
         else hideProfileReminder()
     }
@@ -579,14 +578,14 @@ class UserProfileFragment @Inject constructor(
         textBio.hide()
         textSeeMore.hide()
         btnAction.hide()
-        includeUserProfileReminder.clProfileReminder.setBackgroundResource(
+        includeReminder.clContainer.setBackgroundResource(
             R.drawable.bg_card_profile_reminder
         )
-        includeUserProfileReminder.root.show()
+        includeReminder.root.show()
     }
 
     private fun hideProfileReminder() = with(mainBinding) {
-        includeUserProfileReminder.root.hide()
+        includeReminder.root.hide()
     }
 
     private fun navigateToEditProfile() {

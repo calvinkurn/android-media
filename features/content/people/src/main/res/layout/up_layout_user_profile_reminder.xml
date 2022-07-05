@@ -12,14 +12,14 @@
     app:layout_constraintCircleRadius="@dimen/unify_space_12">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cl_profile_reminder"
+        android:id="@+id/cl_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/unify_space_16"
         tools:background="@drawable/bg_card_profile_reminder">
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/text_user_profile_reminder_title"
+            android:id="@+id/txt_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/up_user_profile_reminder_title"
@@ -31,7 +31,7 @@
             app:typographyType="heading_5" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/text_user_profile_reminder_sub_title"
+            android:id="@+id/txt_sub_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_4"
@@ -40,11 +40,11 @@
             android:textSize="@dimen/unify_font_12"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_user_profile_reminder_title"
+            app:layout_constraintTop_toBottomOf="@id/txt_title"
             app:typographyType="body_3" />
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/button_user_profile_reminder_cta"
+            android:id="@+id/btn_cta"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_8"
@@ -52,7 +52,7 @@
             android:textSize="@dimen/unify_font_12"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_user_profile_reminder_sub_title"
+            app:layout_constraintTop_toBottomOf="@id/txt_sub_title"
             app:unifyButtonSize="small"
             app:unifyButtonVariant="ghost" />
 
