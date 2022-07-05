@@ -53,6 +53,7 @@ class FeedUserTnCOnboardingBottomSheet : BaseFeedUserOnboardingBottomSheet() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupView()
         setupListener()
         setupObserver()
     }
@@ -60,6 +61,10 @@ class FeedUserTnCOnboardingBottomSheet : BaseFeedUserOnboardingBottomSheet() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun setupView() {
+        binding.layoutTnc.tvAcceptTnc.text = getTncText()
     }
 
     private fun setupListener() {

@@ -70,6 +70,7 @@ class FeedUserCompleteOnboardingBottomSheet : BaseFeedUserOnboardingBottomSheet(
 
     private fun setupView() {
         binding.textFieldUsername.isClearable = false
+        binding.layoutTnc.tvAcceptTnc.text = getTncText()
     }
 
     private fun setupListener() {

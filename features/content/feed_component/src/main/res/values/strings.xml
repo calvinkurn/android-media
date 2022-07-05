@@ -219,4 +219,6 @@
     <string name="feed_ugc_onboarding_continue">Lanjut</string>
     <string name="up_input_username_info">Username hanya bisa diubah 1 kali</string>
     <string name="feed_post_sebagai">Post sebagai</string>
+    <string name="feed_ugc_onboarding_accept_tnc_privacy_policy">Kebijakan Privasi</string>
+    <string name="feed_ugc_onboarding_accept_tnc_terms">Syarat &amp; Ketentuan</string>
 </resources>
