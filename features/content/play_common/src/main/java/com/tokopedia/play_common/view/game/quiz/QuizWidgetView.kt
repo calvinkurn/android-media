@@ -142,17 +142,17 @@ class QuizWidgetView : ConstraintLayout {
 
     private val scaleX = AnimationUtils.addSpringAnim(
         view = binding.root, property = SpringAnimation.SCALE_X, startPosition = 0.5f,
-        finalPosition = 1f, stiffness = SpringForce.STIFFNESS_MEDIUM, dampingRatio = SpringForce.DAMPING_RATIO_HIGH_BOUNCY
+        finalPosition = 1f, stiffness = 800f, dampingRatio = SpringForce.DAMPING_RATIO_HIGH_BOUNCY
     )
 
     private val scaleY = AnimationUtils.addSpringAnim(
         view = binding.root, property = SpringAnimation.SCALE_Y, startPosition = 0.5f,
-        finalPosition = 1f, stiffness = SpringForce.STIFFNESS_MEDIUM, dampingRatio = SpringForce.DAMPING_RATIO_HIGH_BOUNCY
+        finalPosition = 1f, stiffness = 800f, dampingRatio = SpringForce.DAMPING_RATIO_HIGH_BOUNCY
     )
 
     private val rotate = AnimationUtils.addSpringAnim(
         view = binding.root, property = SpringAnimation.ROTATION, startPosition = -9f,
-        finalPosition = 0f, stiffness = SpringForce.STIFFNESS_VERY_LOW, dampingRatio = SpringForce.DAMPING_RATIO_LOW_BOUNCY
+        finalPosition = 0f, stiffness = SpringForce.STIFFNESS_VERY_LOW, dampingRatio = SpringForce.DAMPING_RATIO_HIGH_BOUNCY
     )
 
     interface Listener {
