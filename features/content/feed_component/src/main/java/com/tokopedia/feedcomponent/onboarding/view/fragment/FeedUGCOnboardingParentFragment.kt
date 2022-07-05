@@ -1,4 +1,4 @@
-package com.tokopedia.feedcomponent.onboarding.view
+package com.tokopedia.feedcomponent.onboarding.view.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -33,7 +33,7 @@ class FeedUGCOnboardingParentFragment @Inject constructor(
     override fun getScreenName() = TAG
 
     val usernameArg: String
-        get() = ""
+        get() = "atest"
 //        get() = arguments?.getString(KEY_USERNAME) ?: ""
 
     override fun onCreate(savedInstanceState: Bundle?) {

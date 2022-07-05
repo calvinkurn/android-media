@@ -6,7 +6,7 @@ import com.tokopedia.feedcomponent.onboarding.data.FeedUGCOnboardingRepositoryIm
 import com.tokopedia.feedcomponent.onboarding.di.qualifier.CompleteStrategy
 import com.tokopedia.feedcomponent.onboarding.di.qualifier.TncStrategy
 import com.tokopedia.feedcomponent.onboarding.domain.repository.FeedUGCOnboardingRepository
-import com.tokopedia.feedcomponent.onboarding.view.FeedUGCOnboardingParentFragment
+import com.tokopedia.feedcomponent.onboarding.view.fragment.FeedUGCOnboardingParentFragment
 import com.tokopedia.feedcomponent.onboarding.view.strategy.FeedUGCCompleteOnboardingStrategy
 import com.tokopedia.feedcomponent.onboarding.view.strategy.FeedUGCTncOnboardingStrategy
 import com.tokopedia.feedcomponent.onboarding.view.strategy.base.FeedUGCOnboardingStrategy

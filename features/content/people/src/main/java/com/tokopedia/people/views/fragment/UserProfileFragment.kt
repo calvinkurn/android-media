@@ -14,7 +14,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
@@ -71,7 +70,7 @@ import kotlinx.coroutines.flow.collectLatest
 import com.tokopedia.abstraction.R as abstractionR
 import com.tokopedia.unifyprinciples.R as unifyR
 import com.tokopedia.feedcomponent.R as feedComponentR
-import com.tokopedia.feedcomponent.onboarding.view.FeedUGCOnboardingParentFragment
+import com.tokopedia.feedcomponent.onboarding.view.fragment.FeedUGCOnboardingParentFragment
 
 class UserProfileFragment @Inject constructor(
     private val viewModelFactoryCreator: UserProfileViewModelFactory.Creator,
