@@ -160,6 +160,10 @@ class UserProfileFragment @Inject constructor(
             mainBinding.rvPost.canScrollVertically(-1) || !shouldRefreshRecyclerView
         }
 
+        mainBinding.includeReminder.clContainer.setBackgroundResource(
+            R.drawable.bg_card_profile_reminder
+        )
+
         context?.let {
             screenShotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
                 it,
@@ -571,9 +575,6 @@ class UserProfileFragment @Inject constructor(
 
     private fun showProfileReminder() = with(mainBinding) {
         btnAction.hide()
-        includeReminder.clContainer.setBackgroundResource(
-            R.drawable.bg_card_profile_reminder
-        )
         includeReminder.root.show()
     }
 
