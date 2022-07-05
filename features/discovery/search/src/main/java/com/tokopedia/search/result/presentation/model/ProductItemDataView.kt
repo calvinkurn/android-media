@@ -127,7 +127,6 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
         return when(productListType) {
             ProductListType.VAR_REPOSITION -> ProductCardModel.ProductListType.REPOSITION
             ProductListType.VAR_LONG_IMG -> ProductCardModel.ProductListType.LONG_IMAGE
-            ProductListType.VAR_NO_CAMPAIGN -> ProductCardModel.ProductListType.NO_CAMPAIGN
             else -> ProductCardModel.ProductListType.CONTROL
         }
     }

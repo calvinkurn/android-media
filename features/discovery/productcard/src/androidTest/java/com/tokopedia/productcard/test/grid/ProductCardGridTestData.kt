@@ -7,16 +7,13 @@ import com.tokopedia.productcard.ProductCardModel.LabelGroup
 import com.tokopedia.productcard.test.ProductCardModelMatcher
 import com.tokopedia.productcard.test.R
 import com.tokopedia.productcard.test.getProductCardModelMatcherData
-import com.tokopedia.productcard.test.utils.campaignLabelUrl
 import com.tokopedia.productcard.test.utils.freeOngkirImageUrl
 import com.tokopedia.productcard.test.utils.isDisplayedWithChildCount
 import com.tokopedia.productcard.test.utils.isDisplayedWithText
-import com.tokopedia.productcard.test.utils.isNotDisplayed
 import com.tokopedia.productcard.test.utils.officialStoreBadgeImageUrl
 import com.tokopedia.productcard.test.utils.productImageUrl
 import com.tokopedia.productcard.test.utils.withDrawable
 import com.tokopedia.productcard.utils.LABEL_BEST_SELLER
-import com.tokopedia.productcard.utils.LABEL_CAMPAIGN
 import com.tokopedia.productcard.utils.LABEL_GIMMICK
 import com.tokopedia.productcard.utils.LABEL_PRICE
 import com.tokopedia.productcard.utils.LIGHT_GREEN
@@ -37,7 +34,6 @@ internal val productCardGridTestData =
             testMixedVariantWithLabelPriceAndSlashPriceReposition(),
             testLabelGimmickReposition(),
             testLabelGimmickAndBestSellerReposition(),
-            testLabelCampaignNoCampaignVariant(),
             testShopLocationReposition(),
         )
 
@@ -53,7 +49,6 @@ internal val productCardGridViewStubTestData =
             testMixedVariantWithLabelPriceAndSlashPriceReposition(),
             testLabelGimmickReposition(),
             testLabelGimmickAndBestSellerReposition(),
-            testLabelCampaignNoCampaignVariant(),
             testShopLocationReposition(),
         )
 
@@ -99,8 +94,6 @@ private fun testMixedVariant(): ProductCardModelMatcher {
             badges.add(ProductCardModel.ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
         },
         shopLocation = "DKI Jakarta",
-        ratingCount = 4,
-        reviewCount = 60,
         freeOngkir = ProductCardModel.FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
         isTopAds = true,
         hasThreeDots = true,
@@ -126,13 +119,6 @@ private fun testMixedVariant(): ProductCardModelMatcher {
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
         R.id.imageShopBadge to isDisplayed(),
         R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
-        R.id.linearLayoutImageRating to isDisplayedWithChildCount(5),
-        R.id.imageViewRating1 to withDrawable(R.drawable.product_card_ic_rating_active),
-        R.id.imageViewRating2 to withDrawable(R.drawable.product_card_ic_rating_active),
-        R.id.imageViewRating3 to withDrawable(R.drawable.product_card_ic_rating_active),
-        R.id.imageViewRating4 to withDrawable(R.drawable.product_card_ic_rating_active),
-        R.id.imageViewRating5 to withDrawable(R.drawable.product_card_ic_rating_default),
-        R.id.textViewReviewCount to isDisplayedWithText("(${productCardModel.reviewCount})"),
         R.id.imageFreeOngkirPromo to isDisplayed(),
         R.id.imageThreeDots to isDisplayed(),
         R.id.labelVariantContainer to isDisplayed(),
@@ -183,7 +169,6 @@ private fun testMixedVariantWithLabelPrice(): ProductCardModelMatcher {
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
         R.id.labelVariantContainer to isDisplayed(),
         R.id.labelPrice to isDisplayed(),
-        R.id.labelPriceNextToVariant to isNotDisplayed(),
     )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
@@ -227,10 +212,8 @@ private fun testMixedVariantReposition(): ProductCardModelMatcher {
         R.id.imageProduct to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
-        R.id.labelVariantContainer to isNotDisplayed(),
-        R.id.labelVariantWithLabelContainer to isDisplayedWithChildCount(2),
-        R.id.labelPrice to isNotDisplayed(),
-        R.id.labelPriceNextToVariant to isNotDisplayed(),
+        R.id.labelColorVariantReposition to isDisplayed(),
+        R.id.labelSizeVariantReposition to isDisplayed(),
     )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
@@ -266,10 +249,8 @@ private fun testSizeVariantWithLabelPriceReposition(): ProductCardModelMatcher {
         R.id.imageProduct to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
-        R.id.labelVariantContainer to isNotDisplayed(),
-        R.id.labelVariantWithLabelContainer to isDisplayedWithChildCount(1),
-        R.id.labelPrice to isNotDisplayed(),
-        R.id.labelPriceNextToVariant to isDisplayed(),
+        R.id.labelSizeVariantReposition to isDisplayed(),
+        R.id.labelPriceReposition to isDisplayed(),
     )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
@@ -317,10 +298,8 @@ private fun testMixedVariantWithLabelPriceReposition(): ProductCardModelMatcher 
         R.id.imageProduct to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
-        R.id.labelVariantContainer to isNotDisplayed(),
-        R.id.labelVariantWithLabelContainer to isDisplayedWithChildCount(1),
-        R.id.labelPrice to isNotDisplayed(),
-        R.id.labelPriceNextToVariant to isDisplayed(),
+        R.id.labelColorVariantReposition to isDisplayed(),
+        R.id.labelPriceReposition to isDisplayed(),
     )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
@@ -369,10 +348,6 @@ private fun testMixedVariantWithLabelPriceAndSlashPriceReposition(): ProductCard
         R.id.imageProduct to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
-        R.id.labelVariantContainer to isNotDisplayed(),
-        R.id.labelVariantWithLabelContainer to isNotDisplayed(),
-        R.id.labelPrice to isNotDisplayed(),
-        R.id.labelPriceNextToVariant to isNotDisplayed(),
         R.id.labelDiscount to isDisplayedWithText(productCardModel.discountPercentage),
         R.id.textViewSlashedPrice to isDisplayedWithText(productCardModel.slashedPrice),
     )
@@ -393,8 +368,8 @@ private fun testLabelGimmickReposition(): ProductCardModelMatcher {
 
     val productCardMatcher = mapOf(
         R.id.imageProduct to isDisplayed(),
-        R.id.textViewGimmick to isNotDisplayed(),
         R.id.labelReposition to isDisplayedWithText(labelGimmick.title),
+        R.id.labelRepositionBackground to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
     )
@@ -416,31 +391,8 @@ private fun testLabelGimmickAndBestSellerReposition(): ProductCardModelMatcher {
 
     val productCardMatcher = mapOf(
         R.id.imageProduct to isDisplayed(),
-        R.id.textViewGimmick to isNotDisplayed(),
-        R.id.labelBestSeller to isNotDisplayed(),
         R.id.labelReposition to isDisplayedWithText(labelBestSeller.title),
-        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
-        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
-    )
-
-    return ProductCardModelMatcher(productCardModel, productCardMatcher)
-}
-
-private fun testLabelCampaignNoCampaignVariant(): ProductCardModelMatcher {
-    val labelCampaign = LabelGroup(position = LABEL_CAMPAIGN, title = "Waktu Indonesia Belanja", imageUrl = campaignLabelUrl)
-
-    val productCardModel = ProductCardModel(
-        productName = "Label Campaign - Reposition",
-        productImageUrl = productImageUrl,
-        formattedPrice = "Rp7.999.000",
-        labelGroupList = listOf(labelCampaign),
-        productListType = ProductCardModel.ProductListType.NO_CAMPAIGN,
-    )
-
-    val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
-        R.id.textViewLabelCampaign to isNotDisplayed(),
-        R.id.labelCampaignBackground to isNotDisplayed(),
+        R.id.labelRepositionBackground to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
     )
@@ -466,10 +418,8 @@ private fun testShopLocationReposition(): ProductCardModelMatcher {
         R.id.imageProduct to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
-        R.id.imageShopBadge to isNotDisplayed(),
-        R.id.imageShopBadgeBelowRating to isDisplayed(),
-        R.id.textViewShopLocation to isNotDisplayed(),
-        R.id.textViewShopLocationBelowRating to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.imageShopBadgeReposition to isDisplayed(),
+        R.id.textViewShopLocationReposition to isDisplayedWithText(productCardModel.shopLocation),
         R.id.imageSalesRatingFloat to isDisplayed(),
         R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
         R.id.imageFreeOngkirPromo to isDisplayed(),

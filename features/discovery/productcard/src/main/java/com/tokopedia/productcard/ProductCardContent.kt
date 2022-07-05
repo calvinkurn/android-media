@@ -21,7 +21,6 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
@@ -33,7 +32,6 @@ import com.tokopedia.productcard.utils.OPEN_BOLD_TAG
 import com.tokopedia.productcard.utils.ROBOTO_BOLD
 import com.tokopedia.productcard.utils.ROBOTO_REGULAR
 import com.tokopedia.productcard.utils.applyConstraintSet
-import com.tokopedia.productcard.utils.creteVariantContainer
 import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.productcard.utils.toUnifyLabelType
@@ -96,11 +94,14 @@ private fun View.renderLabelGroupVariant(productCardModel: ProductCardModel) {
     val textViewProductName = findViewById<Typography?>(R.id.textViewProductName)
     val willShowVariant = productCardModel.willShowVariant()
 
-    productCardModel.fashionStrategy.setupProductNameLineCount(
-        textViewProductName,
-        willShowVariant,
-        productCardModel,
-    )
+    if (productCardModel.fashionStrategy.isSingleLine(willShowVariant)) {
+        textViewProductName?.isSingleLine = true
+    }
+    else {
+        textViewProductName?.isSingleLine = false
+        textViewProductName?.maxLines = 2
+        textViewProductName?.ellipsize = TextUtils.TruncateAt.END
+    }
 
     productCardModel.fashionStrategy.renderVariant(
         willShowVariant,
@@ -512,12 +513,7 @@ fun LinearLayout.renderVariantColor(
     hiddenColorCount: Int,
     colorSampleSize: Int,
 ) {
-    if (listLabelVariant.isEmpty()) return
-
-    val marginRight = 4.toPx()
-    val layout = creteVariantContainer(context).apply {
-        setMargin(0, 0, marginRight, 0)
-    }
+    this.removeAllViews()
 
     listLabelVariant.forEachIndexed { index, labelGroupVariant ->
         val gradientDrawable = createColorSampleDrawable(context, labelGroupVariant.hexColor)
@@ -531,7 +527,7 @@ fun LinearLayout.renderVariantColor(
         colorSampleImageView.layoutParams = layoutParams
         colorSampleImageView.tag = LABEL_VARIANT_TAG
 
-        layout.addView(colorSampleImageView)
+        addView(colorSampleImageView)
     }
 
     if (hiddenColorCount > 0) {
@@ -540,34 +536,18 @@ fun LinearLayout.renderVariantColor(
         additionalTextView.text = " +$hiddenColorCount"
         additionalTextView.tag = LABEL_VARIANT_TAG
 
-        layout.addView(additionalTextView)
+        addView(additionalTextView)
     }
-
-    addView(layout)
 }
 
-fun LinearLayout.renderLabelVariantSize(
+fun Typography.renderLabelVariantSize(
     listLabelVariant: List<ProductCardModel.LabelGroupVariant>,
     hiddenSizeCount: Int,
 ) {
-    if (listLabelVariant.isEmpty()) return
-
-    val marginRight = 4.toPx()
-    val layout = creteVariantContainer(context).apply {
-        setMargin(0, 0, marginRight, 0)
-    }
-
-    val textContainer = Typography(context)
-    textContainer.setType(Typography.SMALL)
-    textContainer.tag = LABEL_VARIANT_TAG
-
     var sizeText = listLabelVariant.joinToString(", ") { it.title }
 
     if (hiddenSizeCount > 0)
         sizeText += ", +$hiddenSizeCount"
 
-    textContainer.text = sizeText
-
-    layout.addView(textContainer)
-    addView(layout)
+    text = sizeText
 }

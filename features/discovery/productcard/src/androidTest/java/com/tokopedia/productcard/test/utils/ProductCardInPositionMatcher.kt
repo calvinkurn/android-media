@@ -75,8 +75,6 @@ private class ProductCardInPositionMatcher(
                         || productCardComponent.id == R.id.productCardContentLayout
                         || productCardComponent.id == R.id.productCardFooterLayout
                         || productCardComponent.id == R.id.productCardFooterLayoutContainer
-                        // this label background no need to be hidden as it's adapting to the text
-                        || productCardComponent.id == R.id.labelRepositionBackground
                         // Ignore spaces, barriers, and not visible view helpers
                         || (productCardComponent is Space)
             }

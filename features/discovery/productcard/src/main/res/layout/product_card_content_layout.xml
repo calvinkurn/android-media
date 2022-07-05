@@ -93,26 +93,49 @@
         app:layout_constraintEnd_toEndOf="parent"
         tools:visibility="visible" />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/labelSizeVariantReposition"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/product_card_label_variant_height"
+        android:visibility="gone"
+        android:gravity="center_vertical"
+        android:layout_marginTop="@dimen/product_card_label_variant_margin_top"
+        android:layout_marginRight="@dimen/product_card_label_variant_reposition_margin_right"
+        android:paddingLeft="@dimen/product_card_label_variant_reposition_side_padding"
+        android:paddingRight="@dimen/product_card_label_variant_reposition_side_padding"
+        android:background="@drawable/product_card_label_group_variant_border"
+        app:layout_constraintTop_toBottomOf="@id/textViewProductName"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/labelColorVariantReposition"
+        app:typographyType="small"
+        tools:visibility="visible" />
+
     <LinearLayout
-        android:id="@+id/labelVariantWithLabelContainer"
+        android:id="@+id/labelColorVariantReposition"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/product_card_label_variant_height"
         android:orientation="horizontal"
         android:visibility="gone"
         android:gravity="center_vertical"
         android:layout_marginTop="@dimen/product_card_label_variant_margin_top"
+        android:paddingLeft="@dimen/product_card_label_variant_reposition_side_padding"
+        android:paddingRight="@dimen/product_card_label_variant_reposition_side_padding"
+        android:background="@drawable/product_card_label_group_variant_border"
         app:layout_constraintTop_toBottomOf="@id/textViewProductName"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/labelSizeVariantReposition"
+        app:layout_constraintEnd_toStartOf="@id/labelPriceReposition"
         tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.Label
-        android:id="@+id/labelPriceNextToVariant"
+        android:id="@+id/labelPriceReposition"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/product_card_label_price_height"
         android:visibility="gone"
         android:layout_marginTop="@dimen/product_card_label_variant_margin_top"
+        android:layout_marginLeft="@dimen/product_card_label_price_reposition_margin_left"
+        app:layout_goneMarginLeft="0dp"
         app:labelType="general_light_green"
-        app:layout_constraintStart_toEndOf="@id/labelVariantWithLabelContainer"
+        app:layout_constraintStart_toEndOf="@id/labelColorVariantReposition"
         app:layout_constraintTop_toBottomOf="@id/textViewProductName"
         tools:visibility="visible"
         tools:text="Cashback" />
@@ -122,7 +145,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="labelVariantContainer, labelVariantWithLabelContainer, labelPriceNextToVariant"/>
+        app:constraint_referenced_ids="
+            labelVariantContainer,
+            labelColorVariantReposition,
+            labelPriceReposition,
+            labelSizeVariantReposition" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textViewCategory"
@@ -495,7 +522,7 @@
         tools:visibility="visible" />
 
     <ImageView
-        android:id="@+id/imageShopBadgeBelowRating"
+        android:id="@+id/imageShopBadgeReposition"
         android:contentDescription="@string/content_desc_imageShopBadge"
         android:layout_width="@dimen/product_card_shop_badge_size"
         android:layout_height="@dimen/product_card_shop_badge_size"
@@ -506,7 +533,7 @@
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/textViewShopLocationBelowRating"
+        android:id="@+id/textViewShopLocationReposition"
         android:layout_width="0dp"
         android:layout_height="@dimen/product_card_text_shop_location_height"
         android:layout_marginStart="2dp"
@@ -517,7 +544,7 @@
         android:textColor="@color/Unify_N700_68"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/imageShopBadgeBelowRating"
+        app:layout_constraintStart_toEndOf="@id/imageShopBadgeReposition"
         app:layout_constraintTop_toBottomOf="@id/textViewShopRating"
         app:layout_goneMarginStart="0dp"
         app:layout_goneMarginLeft="0dp"
@@ -530,7 +557,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="imageShopBadgeBelowRating, textViewShopLocationBelowRating"/>
+        app:constraint_referenced_ids="imageShopBadgeReposition, textViewShopLocationReposition"/>
 
     <ImageView
         android:id="@+id/imageFreeOngkirPromo"

@@ -510,6 +510,7 @@ internal fun renderLabelReposition(
         )
     } else {
         labelReposition?.hide()
+        labelRepositionBackground?.hide()
     }
 }
 
@@ -519,26 +520,24 @@ private fun showRepositionLabel(
     labelGroup: ProductCardModel.LabelGroup?,
 ) {
     if (labelGroup != null) {
-        textViewLabel.shouldShowWithAction(labelGroup.title.isNotEmpty()) { textViewLabel ->
-            textViewLabel.text = labelGroup.title
+        textViewLabel.shouldShowWithAction(labelGroup.title.isNotEmpty()) {
+            it.text = labelGroup.title
 
-            val context = textViewLabel.context
-            textViewLabel.setTextColor(labelGroup.toRepositionLabelTextColor(context))
+            val context = it.context
+            it.setTextColor(labelGroup.toRepositionLabelTextColor(context))
         }
 
-        var labelBackgroundColor = 0
-        labelBackground?.context?.let { context ->
-            labelBackgroundColor = labelGroup.toRepositionLabelBackground(context)
+        labelBackground.shouldShowWithAction(labelGroup.title.isNotEmpty()) {
+            val labelBackgroundColor = labelGroup.toRepositionLabelBackground(it.context)
+            it.background?.colorFilter =
+                BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
+                    labelBackgroundColor,
+                    BlendModeCompat.SRC_ATOP
+                )
         }
-
-        labelBackground?.background?.colorFilter =
-            BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
-                labelBackgroundColor,
-                BlendModeCompat.SRC_ATOP
-            )
-
     } else {
         textViewLabel?.hide()
+        labelBackground?.hide()
     }
 }
 
@@ -576,24 +575,4 @@ private fun ProductCardModel.LabelGroup.toRepositionLabelBackground(context: Con
             unifyRColor.Unify_NN0
         )
     }
-}
-
-internal fun creteVariantContainer(context: Context): LinearLayout {
-    val containerHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_label_variant_height)
-    val sidePadding = 4.toPx()
-    val layout = LinearLayout(context)
-    val layoutParams = LinearLayout.LayoutParams(
-        LinearLayout.LayoutParams.WRAP_CONTENT,
-        containerHeight,
-    )
-    layout.layoutParams = layoutParams
-    layout.orientation = LinearLayout.HORIZONTAL
-    layout.gravity = Gravity.CENTER_VERTICAL
-    layout.setPadding(sidePadding, 0, sidePadding, 0)
-    layout.tag = LABEL_VARIANT_TAG
-
-    layout.background =
-        ContextCompat.getDrawable(context, R.drawable.product_card_label_group_variant_border)
-
-    return layout
 }

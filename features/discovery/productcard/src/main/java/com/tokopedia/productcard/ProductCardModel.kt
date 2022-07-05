@@ -4,9 +4,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.productcard.fashion.FashionStrategy
 import com.tokopedia.productcard.fashion.FashionStrategyControl
 import com.tokopedia.productcard.fashion.FashionStrategyLongImage
-import com.tokopedia.productcard.fashion.FashionStrategyNoCampaign
 import com.tokopedia.productcard.fashion.FashionStrategyReposition
-import com.tokopedia.productcard.utils.EXTRA_CHAR_SPACE
 import com.tokopedia.productcard.utils.LABEL_BEST_SELLER
 import com.tokopedia.productcard.utils.LABEL_CAMPAIGN
 import com.tokopedia.productcard.utils.LABEL_CATEGORY
@@ -20,8 +18,6 @@ import com.tokopedia.productcard.utils.LABEL_INTEGRITY
 import com.tokopedia.productcard.utils.LABEL_PRICE
 import com.tokopedia.productcard.utils.LABEL_PRODUCT_STATUS
 import com.tokopedia.productcard.utils.LABEL_SHIPPING
-import com.tokopedia.productcard.utils.LABEL_VARIANT_CHAR_LIMIT
-import com.tokopedia.productcard.utils.MAX_LABEL_VARIANT_COUNT
 import com.tokopedia.productcard.utils.MIN_LABEL_VARIANT_COUNT
 import com.tokopedia.productcard.utils.MIN_QUANTITY_NON_VARIANT
 import com.tokopedia.productcard.utils.TYPE_VARIANT_COLOR
@@ -98,7 +94,6 @@ data class ProductCardModel (
         ProductListType.CONTROL -> FashionStrategyControl()
         ProductListType.REPOSITION -> FashionStrategyReposition()
         ProductListType.LONG_IMAGE -> FashionStrategyLongImage()
-        ProductListType.NO_CAMPAIGN -> FashionStrategyNoCampaign()
     }
 
     val hasVideo : Boolean = customVideoURL.isNotBlank()
@@ -248,6 +243,8 @@ data class ProductCardModel (
 
     fun isShowShopBadge() = shopBadgeList.find { it.isShown && it.imageUrl.isNotEmpty() } != null && shopLocation.isNotEmpty()
 
+    fun isShowShopLocation() = shopLocation.isNotEmpty() && !willShowFulfillment()
+
     fun isShowShopRating() = shopRating.isNotEmpty()
 
     fun isShowLabelBestSeller() = getLabelBestSeller()?.title?.isNotEmpty() == true
@@ -329,7 +326,7 @@ data class ProductCardModel (
                     colorVariant.add(element)
                 }
                 element.isSize() -> {
-                    val additionalSize = element.title.length + EXTRA_CHAR_SPACE
+                    val additionalSize = element.title.length + fashionStrategy.extraCharSpace
                     val isWithinCharLimit =
                             (sizeVariantCount + additionalSize) <= fashionStrategy.sizeCharLimit
 
@@ -375,6 +372,6 @@ data class ProductCardModel (
     }
 
     enum class ProductListType {
-        CONTROL, REPOSITION, LONG_IMAGE, NO_CAMPAIGN
+        CONTROL, REPOSITION, LONG_IMAGE
     }
 }

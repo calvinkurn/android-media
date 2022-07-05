@@ -48,9 +48,10 @@ internal const val TYPE_VARIANT_CUSTOM = "custom"
 internal const val MIN_LABEL_VARIANT_COUNT = 2
 internal const val MAX_LABEL_VARIANT_COUNT = 5
 internal const val LABEL_VARIANT_CHAR_LIMIT = 18
-internal const val LABEL_VARIANT_WITH_LABEL_CHAR_LIMIT = 15
-internal const val COLOR_WITH_LABEL_LIMIT = 3
+internal const val LABEL_VARIANT_CHAR_LIMIT_REPOSITION = 5
+internal const val COLOR_LIMIT_REPOSITION = 3
 internal const val EXTRA_CHAR_SPACE = 2
+internal const val EXTRA_CHAR_SPACE_REPOSITION = 0
 
 internal const val LABEL_VARIANT_TAG = "label_variant_tag"
 

@@ -31,12 +31,17 @@ internal class ProductCardModelTest {
     private val labelVariantSize8 = LabelGroupVariant(typeVariant = TYPE_VARIANT_SIZE, title = "All Size longtxt", type = LIGHT_GREY)
 
     private val labelVariantCustom = LabelGroupVariant(typeVariant = TYPE_VARIANT_CUSTOM, title = "1")
+    private val labelVariantCustom2 = LabelGroupVariant(typeVariant = TYPE_VARIANT_CUSTOM, title = "2")
 
     private fun `Test rendered label group variant`(
-            givenLabelGroupVariant: List<LabelGroupVariant>,
-            expectedRenderedLabelGroupVariant: List<LabelGroupVariant>,
+        givenLabelGroupVariant: List<LabelGroupVariant>,
+        expectedRenderedLabelGroupVariant: List<LabelGroupVariant>,
+        productListType: ProductCardModel.ProductListType = ProductCardModel.ProductListType.CONTROL,
     ) {
-        val productCardModel = ProductCardModel(labelGroupVariantList = givenLabelGroupVariant)
+        val productCardModel = ProductCardModel(
+            labelGroupVariantList = givenLabelGroupVariant,
+            productListType = productListType,
+        )
         val actualRenderedLabelGroupVariant = productCardModel.getRenderedLabelGroupVariantList()
 
         assertThat(actualRenderedLabelGroupVariant, `is`(expectedRenderedLabelGroupVariant))
@@ -241,5 +246,49 @@ internal class ProductCardModelTest {
 
         assertThat(nonVariant.minQuantityFinal, `is`(MIN_QUANTITY_NON_VARIANT))
         assertThat(nonVariant.maxQuantityFinal, `is`(MIN_QUANTITY_NON_VARIANT))
+    }
+
+    @Test
+    fun `getRenderedLabelGroupVariant reposition should show size variant with maximum of 5 chars`() {
+        val labelGroupVariant = listOf(
+            labelVariantSize3,
+            labelVariantSize4,
+            labelVariantSize5,
+        )
+
+        val expectedRenderedLabelGroupVariant = listOf(
+            labelVariantSize3,
+            labelVariantSize4,
+            labelVariantCustom,
+        )
+
+        `Test rendered label group variant`(
+            labelGroupVariant,
+            expectedRenderedLabelGroupVariant,
+            ProductCardModel.ProductListType.REPOSITION
+        )
+    }
+
+    @Test
+    fun `getRenderedLabelGroupVariant reposition should show color variant with maximum of 3`() {
+        val labelGroupVariant = listOf(
+            labelVariantColor1,
+            labelVariantColor2,
+            labelVariantColor3,
+            labelVariantColor4,
+            labelVariantColor5,
+        )
+
+        val expectedRenderedLabelGroupVariant = listOf(
+            labelVariantColor1,
+            labelVariantColor2,
+            labelVariantColor3,
+        )
+
+        `Test rendered label group variant`(
+            labelGroupVariant,
+            expectedRenderedLabelGroupVariant,
+            ProductCardModel.ProductListType.REPOSITION
+        )
     }
 }

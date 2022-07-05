@@ -15,8 +15,9 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import com.tokopedia.productcard.renderLabelVariantSize
 import com.tokopedia.productcard.renderVariantColor
-import com.tokopedia.productcard.utils.COLOR_WITH_LABEL_LIMIT
-import com.tokopedia.productcard.utils.LABEL_VARIANT_WITH_LABEL_CHAR_LIMIT
+import com.tokopedia.productcard.utils.COLOR_LIMIT_REPOSITION
+import com.tokopedia.productcard.utils.EXTRA_CHAR_SPACE_REPOSITION
+import com.tokopedia.productcard.utils.LABEL_VARIANT_CHAR_LIMIT_REPOSITION
 import com.tokopedia.productcard.utils.MAX_LABEL_VARIANT_COUNT
 import com.tokopedia.productcard.utils.MIN_LABEL_VARIANT_COUNT
 import com.tokopedia.productcard.utils.SQUARE_IMAGE_RATIO
@@ -148,9 +149,9 @@ internal open class FashionStrategyReposition: FashionStrategy {
     }
 
     override fun moveDiscountConstraint(view: View, productCardModel: ProductCardModel) {
-        val view = view.findViewById<ConstraintLayout?>(R.id.productCardContentLayout)
+        val contentLayout = view.findViewById<ConstraintLayout?>(R.id.productCardContentLayout)
 
-        view?.applyConstraintSet {
+        contentLayout?.applyConstraintSet {
             it.clear(R.id.labelDiscount, ConstraintSet.START)
             it.clear(R.id.labelDiscount, ConstraintSet.TOP)
 
@@ -196,14 +197,14 @@ internal open class FashionStrategyReposition: FashionStrategy {
 
     override fun renderLabelPrice(view: View, productCardModel: ProductCardModel) {
         val labelPrice = view.findViewById<Label?>(R.id.labelPrice)
-        val labelPriceNextToVariant = view.findViewById<Label?>(R.id.labelPriceNextToVariant)
+        val labelPriceReposition = view.findViewById<Label?>(R.id.labelPriceReposition)
 
         labelPrice?.initLabelGroup(null)
 
         if (productCardModel.isShowDiscountOrSlashPrice())
-            labelPriceNextToVariant?.initLabelGroup(null)
+            labelPriceReposition?.initLabelGroup(null)
         else
-            labelPriceNextToVariant?.initLabelGroup(productCardModel.getLabelPrice())
+            labelPriceReposition?.initLabelGroup(productCardModel.getLabelPrice())
     }
 
     override fun renderVariant(
@@ -211,29 +212,36 @@ internal open class FashionStrategyReposition: FashionStrategy {
         view: View,
         productCardModel: ProductCardModel,
     ) {
-        val container = view.findViewById<LinearLayout?>(R.id.labelVariantWithLabelContainer)
+        val colorContainer = view.findViewById<LinearLayout?>(R.id.labelColorVariantReposition)
         val colorSampleSize = 12.toPx()
+        val sizeTextView = view.findViewById<Typography?>(R.id.labelSizeVariantReposition)
 
-        container?.shouldShowWithAction(
-            willShowVariant && !productCardModel.isShowDiscountOrSlashPrice()
-        ) { labelVariantWithLabelContainer ->
-            labelVariantWithLabelContainer.removeAllViews()
+        val renderedLabelGroupVariantList = productCardModel.getRenderedLabelGroupVariantList()
+        val renderedLabelVariantSizeList = renderedLabelGroupVariantList.filter { it.isSize() }
+        val renderedLabelVariantColorList = renderedLabelGroupVariantList.filter { it.isColor() }
+        val labelVariantSizeList = productCardModel.labelGroupVariantList.filter { it.isSize() }
+        val labelVariantColorList = productCardModel.labelGroupVariantList.filter { it.isColor() }
 
-            val renderedLabelGroupVariantList = productCardModel.getRenderedLabelGroupVariantList()
-            val renderedLabelVariantSizeList = renderedLabelGroupVariantList.filter { it.isSize() }
-            val renderedLabelVariantColorList = renderedLabelGroupVariantList.filter { it.isColor() }
-            val labelVariantSizeList = productCardModel.labelGroupVariantList.filter { it.isSize() }
-            val labelVariantColorList = productCardModel.labelGroupVariantList.filter { it.isColor() }
+        val hiddenSizeCount = labelVariantSizeList.size - renderedLabelVariantSizeList.size
+        val hiddenColorCount = labelVariantColorList.size - renderedLabelVariantColorList.size
 
-            val hiddenSizeCount = labelVariantSizeList.size - renderedLabelVariantSizeList.size
-            val hiddenColorCount = labelVariantColorList.size - renderedLabelVariantColorList.size
-
-            labelVariantWithLabelContainer.renderLabelVariantSize(
+        sizeTextView.shouldShowWithAction(
+            willShowVariant
+                && !productCardModel.isShowDiscountOrSlashPrice()
+                && renderedLabelVariantSizeList.isNotEmpty()
+        ) {
+            it.renderLabelVariantSize(
                 renderedLabelVariantSizeList,
                 hiddenSizeCount,
             )
+        }
 
-            labelVariantWithLabelContainer.renderVariantColor(
+        colorContainer.shouldShowWithAction(
+            willShowVariant
+            && !productCardModel.isShowDiscountOrSlashPrice()
+            && renderedLabelVariantColorList.isNotEmpty()
+        ) {
+            it.renderVariantColor(
                 renderedLabelVariantColorList,
                 hiddenColorCount,
                 colorSampleSize,
@@ -244,9 +252,9 @@ internal open class FashionStrategyReposition: FashionStrategy {
     }
 
     override fun renderShopBadge(view: View, productCardModel: ProductCardModel) {
-        val imageShopBadgeBelowRating = view.findViewById<ImageView?>(R.id.imageShopBadgeBelowRating)
+        val imageShopBadgeReposition = view.findViewById<ImageView?>(R.id.imageShopBadgeReposition)
         val shopBadge = productCardModel.shopBadgeList.find { it.isShown && it.imageUrl.isNotEmpty() }
-        imageShopBadgeBelowRating?.shouldShowWithAction(productCardModel.isShowShopBadge()) {
+        imageShopBadgeReposition?.shouldShowWithAction(productCardModel.isShowShopBadge()) {
             it.loadIcon(shopBadge?.imageUrl ?: "")
         }
 
@@ -255,11 +263,10 @@ internal open class FashionStrategyReposition: FashionStrategy {
     }
 
     override fun renderTextShopLocation(view: View, productCardModel: ProductCardModel) {
-        val textViewShopLocationBelowRating =
-            view.findViewById<Typography?>(R.id.textViewShopLocationBelowRating)
-        textViewShopLocationBelowRating?.shouldShowWithAction(
-            productCardModel.shopLocation.isNotEmpty()
-                && !productCardModel.willShowFulfillment()
+        val textViewShopLocationReposition =
+            view.findViewById<Typography?>(R.id.textViewShopLocationReposition)
+        textViewShopLocationReposition?.shouldShowWithAction(
+            productCardModel.isShowShopLocation()
         ) {
             TextAndContentDescriptionUtil.setTextAndContentDescription(
                 it,
@@ -275,10 +282,13 @@ internal open class FashionStrategyReposition: FashionStrategy {
     }
 
     override val sizeCharLimit: Int
-        get() = LABEL_VARIANT_WITH_LABEL_CHAR_LIMIT
+        get() = LABEL_VARIANT_CHAR_LIMIT_REPOSITION
+
+    override val extraCharSpace: Int
+        get() = EXTRA_CHAR_SPACE_REPOSITION
 
     override val colorLimit: Int
-        get() = COLOR_WITH_LABEL_LIMIT
+        get() = COLOR_LIMIT_REPOSITION
 
     override fun getLabelVariantSizeCount(
         productCardModel: ProductCardModel,
@@ -301,18 +311,5 @@ internal open class FashionStrategyReposition: FashionStrategy {
         else 0
     }
 
-    override fun setupProductNameLineCount(
-        textViewProductName: Typography?,
-        willShowVariant: Boolean,
-        productCardModel: ProductCardModel,
-    ) {
-        if (productCardModel.isShowDiscountOrSlashPrice()) {
-            textViewProductName?.isSingleLine = true
-        }
-        else {
-            textViewProductName?.isSingleLine = false
-            textViewProductName?.maxLines = 2
-            textViewProductName?.ellipsize = TextUtils.TruncateAt.END
-        }
-    }
+    override fun isSingleLine(willShowVariant: Boolean): Boolean = false
 }

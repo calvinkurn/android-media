@@ -17,7 +17,7 @@ import com.tokopedia.productcard.addLabelVariantColor
 import com.tokopedia.productcard.addLabelVariantCustom
 import com.tokopedia.productcard.addLabelVariantSize
 import com.tokopedia.productcard.moveLabelPriceConstraint
-import com.tokopedia.productcard.utils.COLOR_WITH_LABEL_LIMIT
+import com.tokopedia.productcard.utils.EXTRA_CHAR_SPACE
 import com.tokopedia.productcard.utils.LABEL_VARIANT_CHAR_LIMIT
 import com.tokopedia.productcard.utils.MAX_LABEL_VARIANT_COUNT
 import com.tokopedia.productcard.utils.MIN_LABEL_VARIANT_COUNT
@@ -224,7 +224,7 @@ internal open class FashionStrategyControl: FashionStrategy {
 
     override fun renderLabelPrice(view: View, productCardModel: ProductCardModel) {
         val labelPrice = view.findViewById<Label?>(R.id.labelPrice)
-        val labelPriceNextToVariant = view.findViewById<Label?>(R.id.labelPriceNextToVariant)
+        val labelPriceReposition = view.findViewById<Label?>(R.id.labelPriceReposition)
         view.moveLabelPriceConstraint(productCardModel)
 
         if (productCardModel.isShowDiscountOrSlashPrice())
@@ -232,7 +232,7 @@ internal open class FashionStrategyControl: FashionStrategy {
         else
             labelPrice?.initLabelGroup(productCardModel.getLabelPrice())
 
-        labelPriceNextToVariant?.initLabelGroup(null)
+        labelPriceReposition?.initLabelGroup(null)
     }
 
     override fun renderVariant(
@@ -275,7 +275,8 @@ internal open class FashionStrategyControl: FashionStrategy {
                 }
         }
 
-        view.findViewById<LinearLayout?>(R.id.labelVariantWithLabelContainer).hide()
+        view.findViewById<LinearLayout?>(R.id.labelColorVariantReposition).hide()
+        view.findViewById<Typography?>(R.id.labelSizeVariantReposition).hide()
     }
 
     override fun renderShopBadge(view: View, productCardModel: ProductCardModel) {
@@ -285,15 +286,14 @@ internal open class FashionStrategyControl: FashionStrategy {
             it.loadIcon(shopBadge?.imageUrl ?: "")
         }
 
-        val imageShopBadgeBelowRating = view.findViewById<ImageView?>(R.id.imageShopBadgeBelowRating)
-        imageShopBadgeBelowRating.hide()
+        val imageShopBadgeReposition = view.findViewById<ImageView?>(R.id.imageShopBadgeReposition)
+        imageShopBadgeReposition.hide()
     }
 
     override fun renderTextShopLocation(view: View, productCardModel: ProductCardModel) {
         val textViewShopLocation = view.findViewById<Typography?>(R.id.textViewShopLocation)
         textViewShopLocation?.shouldShowWithAction(
-            productCardModel.shopLocation.isNotEmpty()
-                && !productCardModel.willShowFulfillment()
+            productCardModel.isShowShopLocation()
         ) {
             TextAndContentDescriptionUtil.setTextAndContentDescription(
                 it,
@@ -302,14 +302,17 @@ internal open class FashionStrategyControl: FashionStrategy {
             )
         }
 
-        val textViewShopLocationBelowRating =
-            view.findViewById<Typography?>(R.id.textViewShopLocationBelowRating)
+        val textViewShopLocationReposition =
+            view.findViewById<Typography?>(R.id.textViewShopLocationReposition)
 
-        textViewShopLocationBelowRating.hide()
+        textViewShopLocationReposition.hide()
     }
 
     override val sizeCharLimit: Int
         get() = LABEL_VARIANT_CHAR_LIMIT
+
+    override val extraCharSpace: Int
+        get() = EXTRA_CHAR_SPACE
 
     override val colorLimit: Int
         get() = MAX_LABEL_VARIANT_COUNT
@@ -331,18 +334,5 @@ internal open class FashionStrategyControl: FashionStrategy {
         else 0
     }
 
-    override fun setupProductNameLineCount(
-        textViewProductName: Typography?,
-        willShowVariant: Boolean,
-        productCardModel: ProductCardModel,
-    ) {
-        if (willShowVariant) {
-            textViewProductName?.isSingleLine = true
-        }
-        else {
-            textViewProductName?.isSingleLine = false
-            textViewProductName?.maxLines = 2
-            textViewProductName?.ellipsize = TextUtils.TruncateAt.END
-        }
-    }
+    override fun isSingleLine(willShowVariant: Boolean): Boolean = willShowVariant
 }

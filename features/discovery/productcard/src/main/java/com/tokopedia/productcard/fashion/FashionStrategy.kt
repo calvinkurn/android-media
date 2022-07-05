@@ -76,15 +76,13 @@ internal interface FashionStrategy {
 
     val sizeCharLimit: Int
 
+    val extraCharSpace: Int
+
     val colorLimit: Int
 
     fun getLabelVariantSizeCount(productCardModel: ProductCardModel, colorVariantTaken: Int): Int
 
     fun getLabelVariantColorCount(colorVariant: List<ProductCardModel.LabelGroupVariant>): Int
 
-    fun setupProductNameLineCount(
-        textViewProductName: Typography?,
-        willShowVariant: Boolean,
-        productCardModel: ProductCardModel,
-    )
+    fun isSingleLine(willShowVariant: Boolean): Boolean
 }

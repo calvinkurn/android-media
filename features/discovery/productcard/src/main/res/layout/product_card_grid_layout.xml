@@ -79,6 +79,7 @@
             android:layout_height="0dp"
             android:contentDescription="@null"
             android:background="@drawable/product_card_rounded_label"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="@id/labelReposition"
             app:layout_constraintTop_toTopOf="@id/labelReposition"
             app:layout_constraintEnd_toEndOf="@id/labelReposition"
