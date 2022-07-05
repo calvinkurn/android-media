@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +22,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.seller_shop_flash_sale.R
@@ -29,11 +32,15 @@ import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignDeta
 import com.tokopedia.shop.flashsale.common.constant.DateConstant
 import com.tokopedia.shop.flashsale.common.extension.convertRupiah
 import com.tokopedia.shop.flashsale.common.extension.formatTo
+import com.tokopedia.shop.flashsale.common.extension.showError
+import com.tokopedia.shop.flashsale.common.share_component.ShareComponentInstanceBuilder
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.CampaignDetailMeta
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.MerchantCampaignTNC
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
+import com.tokopedia.shop.flashsale.domain.entity.aggregate.ShareComponent
+import com.tokopedia.shop.flashsale.domain.entity.aggregate.ShareComponentMetadata
 import com.tokopedia.shop.flashsale.domain.entity.enums.isActive
 import com.tokopedia.shop.flashsale.domain.entity.enums.isAvailable
 import com.tokopedia.shop.flashsale.domain.entity.enums.isCancelled
@@ -48,6 +55,9 @@ import com.tokopedia.shop.flashsale.presentation.detail.bottomsheet.CampaignDeta
 import com.tokopedia.shop.flashsale.presentation.detail.bottomsheet.CampaignDetailMoreMenuClickListener
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -74,6 +84,10 @@ class CampaignDetailFragment : BaseDaggerFragment(),
     }
 
     @Inject
+    lateinit var shareComponentInstanceBuilder: ShareComponentInstanceBuilder
+    private var shareComponentBottomSheet: UniversalShareBottomSheet? = null
+
+    @Inject
     lateinit var viewModelFactory: ViewModelFactory
     private val campaignId by lazy { arguments?.getLong(BUNDLE_KEY_CAMPAIGN_ID) }
     private val campaignName by lazy {
@@ -85,6 +99,7 @@ class CampaignDetailFragment : BaseDaggerFragment(),
     private var binding by autoClearedNullable<SsfsFragmentCampaignDetailBinding>()
     private var errorToaster: Snackbar? = null
 
+    private val loaderDialog by lazy { LoaderDialog(requireActivity()) }
     private val campaignDetailProductListAdapter by lazy {
         CampaignDetailProductListAdapter()
     }
@@ -134,11 +149,26 @@ class CampaignDetailFragment : BaseDaggerFragment(),
         observeCancelCampaignEvent()
         observeMoreMenuEvent()
         observeActiveDialog()
+        observeShareComponent()
     }
 
     private fun observeMoreMenuEvent() {
         viewModel.moreMenuEvent.observe(viewLifecycleOwner) {
             showMoreMenuBottomSheet(it)
+        }
+    }
+
+    private fun observeShareComponent() {
+        viewModel.shareCampaignActionEvent.observe(viewLifecycleOwner) { result ->
+            dismissLoaderDialog()
+            when (result) {
+                is Success -> {
+                    displayShareBottomSheet(result.data)
+                }
+                is Fail -> {
+                    binding?.cardButtonWrapper showError result.throwable
+                }
+            }
         }
     }
 
@@ -172,6 +202,50 @@ class CampaignDetailFragment : BaseDaggerFragment(),
         binding.btnSeeTnc.setOnClickListener {
             viewModel.onTNCButtonClicked()
         }
+        binding.btnShareCampaign.setOnClickListener {
+            showLoaderDialog()
+            viewModel.onShareButtonClicked()
+        }
+    }
+
+    private fun displayShareBottomSheet(shareComponent: ShareComponent) {
+        val param = ShareComponentInstanceBuilder.Param(
+            shareComponent.metaData.banner.shop.name,
+            shareComponent.metaData.banner.shop.logo,
+            shareComponent.metaData.shop.isPowerMerchant,
+            shareComponent.metaData.shop.isOfficial,
+            shareComponent.metaData.banner.shop.domain,
+            shareComponent.metaData.banner.campaignStatusId,
+            shareComponent.metaData.banner.campaignId,
+            shareComponent.metaData.banner.startDate,
+            shareComponent.metaData.banner.endDate,
+            shareComponent.metaData.banner.products.size,
+            shareComponent.metaData.banner.products,
+            shareComponent.metaData.banner.maxDiscountPercentage
+        )
+
+        shareComponentBottomSheet = shareComponentInstanceBuilder.build(
+            shareComponent.thumbnailImageUrl,
+            param,
+            onShareOptionClick = ::handleShareOptionClick,
+            onCloseOptionClicked = {}
+        )
+        shareComponentBottomSheet?.show(childFragmentManager, shareComponentBottomSheet?.tag)
+    }
+
+    private fun handleShareOptionClick(
+        shareModel: ShareModel,
+        linkerShareResult: LinkerShareResult,
+        outgoingText: String
+    ) {
+        SharingUtil.executeShareIntent(
+            shareModel,
+            linkerShareResult,
+            requireActivity(),
+            view ?: return,
+            outgoingText
+        )
+        shareComponentBottomSheet?.dismiss()
     }
 
     private fun observeEditCampaignEvent() {
@@ -307,11 +381,12 @@ class CampaignDetailFragment : BaseDaggerFragment(),
         handleCampaignPerformanceData(data)
         handleCampaignStatusIndicator(campaign)
         handleEventParticipation(campaign)
-
+        setProductListAdapterCampaignStatus(campaign)
         handleEditCampaignButtonVisibility(campaign)
         handleShareButtonVisibility(campaign)
 
     }
+
     private fun handleCampaignInformation(campaign: CampaignUiModel) {
         val binding = binding ?: return
 
@@ -319,7 +394,8 @@ class CampaignDetailFragment : BaseDaggerFragment(),
             R.string.campaign_detail_campaign_id,
             campaign.campaignId.toString()
         )
-        binding.tgCampaignStartDate.text = campaign.startDate.formatTo(DateConstant.DATE_TIME_WITH_DAY)
+        binding.tgCampaignStartDate.text =
+            campaign.startDate.formatTo(DateConstant.DATE_TIME_WITH_DAY)
         binding.tgCampaignEndDate.text = campaign.endDate.formatTo(DateConstant.DATE_TIME_WITH_DAY)
     }
 
@@ -443,6 +519,10 @@ class CampaignDetailFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun setProductListAdapterCampaignStatus(campaign: CampaignUiModel) {
+        campaignDetailProductListAdapter.campaignStatus = campaign.status
+    }
+
     private fun showError(throwable: Throwable) {
         val binding = binding ?: return
         binding.cardButtonWrapper.hide()
@@ -497,5 +577,14 @@ class CampaignDetailFragment : BaseDaggerFragment(),
 
     override fun onMenuCancelCampaignClicked() {
         viewModel.onCampaignCancelMenuClicked()
+    }
+
+    private fun showLoaderDialog() {
+        loaderDialog.setLoadingText(getString(R.string.sfs_please_wait))
+        loaderDialog.show()
+    }
+
+    private fun dismissLoaderDialog() {
+        loaderDialog.dialog.dismiss()
     }
 }

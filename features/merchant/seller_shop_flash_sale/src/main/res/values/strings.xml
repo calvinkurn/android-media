@@ -253,6 +253,7 @@
     <string name="chooseproduct_save_button_text_empty">Tambah Produk</string>
     <string name="chooseproduct_sku_text">SKU: %s</string>
     <string name="chooseproduct_stock_total_text">Total stok: %d</string>
+    <string name="chooseproduct_variant_text">%d Variant Produk</string>
 
     <!--Manage Product-->
     <string name="manage_product_complete_product_info_warning_label">Klik <b>Ubah</b> untuk melengkapi informasi produk ini, ya.</string>
@@ -278,6 +279,7 @@
     <string name="error_msg_other">&#160;dan terjadi kesalahan lainnya</string>
     <string name="manage_product_first_list_coachmark">Klik Ubah di setiap produk untuk mengubah atau memperbaiki informasi tiap produk.</string>
     <string name="manage_product_second_list_coachmark">Klik di sini untuk menambah produk, ya.</string>
+    <string name="manage_product_success_edit_toaster_message">Info produk berhasil diubah.</string>
 
     <!--Manage Product Highlight -->
     <string name="sfs_manage_highlight">Atur Highlight</string>
@@ -307,6 +309,9 @@
     <string name="editproduct_order_exceed_stock_error">Tidak boleh melebihi stok utama</string>
     <string name="editproduct_bs_warehouse_title">Pilih lokasi</string>
     <string name="editproduct_warehouse_title_default">Lokasi Seller</string>
+    <string name="editproduct_first_coachmark_content">Tentukan potongan harga berdasarkan rupiah atau persentase dengan besaran antara 1-99%.</string>
+    <string name="editproduct_second_coachmark_content">Stok campaign akan diambil dari stok utama produk. Produk dapat dibeli di luar jadwal campaign selama stok utama masih tersedia, ya.</string>
+    <string name="editproduct_third_coachmark_content">Klik di sini untuk menyimpan pengaturan produkmu dan lanjut untuk mengatur produk berikutnya.</string>
 
     <!-- Campaign Detail -->
     <string name="campaign_detail">Detail Campaign</string>
@@ -339,6 +344,7 @@
     <string name="campaign_detail_SKU_placeholder">SKU: %s</string>
     <string name="campaign_detail_campaign_stock_label">Stok Campaign</string>
     <string name="campaign_detail_campaign_price_label">Harga Campaign</string>
-    <string name="chooseproduct_variant_text">%d Variant Produk</string>
+    <string name="campaign_detail_remaining_label">Sisa</string>
+    <string name="campaign_detail_sold_label">Terjual</string>
 
 </resources>

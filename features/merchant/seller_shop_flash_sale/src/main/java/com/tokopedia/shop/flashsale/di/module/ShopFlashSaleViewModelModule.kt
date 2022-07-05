@@ -88,6 +88,8 @@ abstract class ShopFlashSaleViewModelModule {
     @ViewModelKey(EditProductInfoViewModel::class)
     internal abstract fun provideEditProductInfoViewModel(viewModel: EditProductInfoViewModel) : ViewModel
 
+    @Binds
+    @IntoMap
     @ViewModelKey(CampaignDetailViewModel::class)
     internal abstract fun provideCampaignDetailViewModel(viewModel: CampaignDetailViewModel) : ViewModel
 }
