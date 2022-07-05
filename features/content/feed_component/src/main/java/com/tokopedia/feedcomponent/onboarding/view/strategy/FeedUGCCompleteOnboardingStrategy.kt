@@ -96,14 +96,14 @@ class FeedUGCCompleteOnboardingStrategy @Inject constructor(
                 _usernameState.update { validateUsernameResult }
 
                 if(validateUsernameResult is UsernameState.Invalid) {
+                    submitFail()
                     return@launchCatchError
                 }
 
                 val insertUsernameResult = repo.insertUsername(_username.value)
                 if(!insertUsernameResult) {
                     _uiEvent.emit(FeedUGCOnboardingUiEvent.ShowError)
-                    _hasAcceptTnc.update { false }
-                    _isSubmit.update { false }
+                    submitFail()
                     return@launchCatchError
                 }
 
@@ -116,8 +116,7 @@ class FeedUGCCompleteOnboardingStrategy @Inject constructor(
                 _isSubmit.update { false }
             }
         }) {
-            _hasAcceptTnc.update { false }
-            _isSubmit.update { false }
+            submitFail()
             _uiEvent.emit(FeedUGCOnboardingUiEvent.ShowError)
         }
     }
@@ -136,6 +135,11 @@ class FeedUGCCompleteOnboardingStrategy @Inject constructor(
 
     private fun getDefaultErrorMessage(): String {
         return context.getString(abstractionR.string.default_request_error_unknown)
+    }
+
+    private fun submitFail() {
+        _hasAcceptTnc.update { false }
+        _isSubmit.update { false }
     }
 
     companion object {
