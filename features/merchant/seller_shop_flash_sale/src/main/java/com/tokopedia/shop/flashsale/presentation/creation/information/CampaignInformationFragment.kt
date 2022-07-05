@@ -857,10 +857,9 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             binding?.btnDraft?.stopLoading()
 
             if (result.isSuccess) {
-                val campaignDetail = viewModel.campaignDetail.value
                 activity?.apply {
                     // handle campaign save draft is not opened from campaign list case
-                    if (campaignDetail is Success && !campaignDetail.data.status.isDraft()) {
+                    if (pageMode == PageMode.UPDATE) {
                         CampaignListActivity.start(this, isSaveDraft = true)
                     } else {
                         setResult(Activity.RESULT_OK)
