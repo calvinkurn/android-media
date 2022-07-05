@@ -38,6 +38,14 @@ object Utils {
     val outputFormat: DateFormat = SimpleDateFormat("dd MMM yyyy", locale)
     val format = SimpleDateFormat("yyyy-MM-dd", locale)
 
+    fun Date?.orDefaultStart(): Date {
+        return this ?: getStartDate()
+    }
+
+    fun Date?.orDefaultEnd(): Date {
+        return this ?: getEndDate()
+    }
+
     internal suspend fun <T : Any> executeQuery(
         query: String, responseClass: Class<T>, params: Map<String, Any?>
     ): T? {

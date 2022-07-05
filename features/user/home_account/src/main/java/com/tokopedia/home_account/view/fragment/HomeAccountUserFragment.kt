@@ -988,8 +988,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     private fun setupSettingList() {
         val userSettingsMenu = menuGenerator.generateUserSettingMenu()
-        val isRollenceEnabledDarkMode = getAbTestPlatform().getString(
-            RollenceKey.USER_DARK_MODE_TOGGLE, "").isNotEmpty()
 
         userSettingsMenu.items.forEach {
             if(it.id == AccountConstants.SettingCode.SETTING_LINK_ACCOUNT && !isEnableLinkAccount()) {
@@ -1001,7 +999,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         addItem(userSettingsMenu, addSeparator = true)
         addItem(menuGenerator.generateApplicationSettingMenu(
                 accountPref, permissionChecker,
-                isShowDarkModeToggle || isRollenceEnabledDarkMode, isShowScreenRecorder),
+                isShowDarkModeToggle, isShowScreenRecorder),
                 addSeparator = true)
         addItem(menuGenerator.generateAboutTokopediaSettingMenu(), addSeparator = true)
         if (GlobalConfig.isAllowDebuggingTools()) {

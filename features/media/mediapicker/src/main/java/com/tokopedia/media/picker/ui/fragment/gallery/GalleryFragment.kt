@@ -16,14 +16,16 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
 import com.tokopedia.media.common.utils.ParamCacheManager
 import com.tokopedia.media.databinding.FragmentGalleryBinding
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.picker.analytics.gallery.GalleryAnalytics
+import com.tokopedia.media.picker.data.URL_EMPTY_STATE_DRAWABLE
 import com.tokopedia.media.picker.data.repository.AlbumRepository.Companion.RECENT_ALBUM_ID
 import com.tokopedia.media.picker.di.DaggerPickerComponent
 import com.tokopedia.media.picker.ui.activity.album.AlbumActivity
-import com.tokopedia.media.picker.ui.activity.main.PickerActivity
-import com.tokopedia.media.picker.ui.activity.main.PickerActivityListener
-import com.tokopedia.media.picker.ui.fragment.gallery.recyclers.adapter.GalleryAdapter
-import com.tokopedia.media.picker.ui.fragment.gallery.recyclers.utils.GridItemDecoration
+import com.tokopedia.media.picker.ui.activity.picker.PickerActivity
+import com.tokopedia.media.picker.ui.activity.picker.PickerActivityContract
+import com.tokopedia.media.picker.ui.adapter.GalleryAdapter
+import com.tokopedia.media.picker.ui.adapter.utils.GridItemDecoration
 import com.tokopedia.media.picker.ui.observer.observe
 import com.tokopedia.media.picker.ui.observer.stateOnAddPublished
 import com.tokopedia.media.picker.ui.observer.stateOnChangePublished
@@ -42,7 +44,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
     @Inject lateinit var galleryAnalytics: GalleryAnalytics
 
     private val binding: FragmentGalleryBinding? by viewBinding()
-    private var listener: PickerActivityListener? = null
+    private var contract: PickerActivityContract? = null
 
     private val adapter by lazy {
         GalleryAdapter(emptyList(), ::selectMedia)
@@ -76,13 +78,13 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
     override fun onDestroyView() {
         super.onDestroyView()
         exceptionHandler {
-            listener = null
+            contract = null
         }
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        listener = (context as PickerActivity)
+        contract = (context as PickerActivity)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -164,9 +166,10 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
 
     private fun setupEmptyState(isShown: Boolean) {
         binding?.emptyState?.root?.showWithCondition(isShown)
+        binding?.emptyState?.imgEmptyState?.loadImage(URL_EMPTY_STATE_DRAWABLE)
         binding?.emptyState?.emptyNavigation?.showWithCondition(param.get().isCommonPageType())
         binding?.emptyState?.emptyNavigation?.setOnClickListener {
-            listener?.navigateToCameraPage()
+            contract?.onEmptyStateActionClicked()
         }
     }
 
@@ -208,50 +211,50 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
 
     private fun selectMedia(media: MediaUiModel, isSelected: Boolean): Boolean {
         if (param.get().isMultipleSelectionType()) {
-            if (!isSelected && media.isVideo()) {
+            if (!isSelected && media.file?.isVideo() == true) {
                 // video validation
-                if (listener?.hasVideoLimitReached() == true) {
-                    listener?.onShowVideoLimitReachedGalleryToast()
+                if (contract?.hasVideoLimitReached() == true) {
+                    contract?.onShowVideoLimitReachedGalleryToast()
                     return false
                 }
 
-                if (listener?.isMinVideoDuration(media) == true) {
-                    listener?.onShowVideoMinDurationToast()
+                if (contract?.isMinVideoDuration(media) == true) {
+                    contract?.onShowVideoMinDurationToast()
                     return false
                 }
 
-                if(listener?.isMaxVideoDuration(media) == true){
-                    listener?.onShowVideoMaxDurationToast()
+                if(contract?.isMaxVideoDuration(media) == true){
+                    contract?.onShowVideoMaxDurationToast()
                     return false
                 }
 
-                if (listener?.isMaxVideoSize(media) == true) {
-                    listener?.onShowVideoMaxFileSizeToast()
+                if (contract?.isMaxVideoSize(media) == true) {
+                    contract?.onShowVideoMaxFileSizeToast()
                     return false
                 }
-            } else if (!isSelected && !media.isVideo()) {
+            } else if (!isSelected && media.file?.isImage() == true) {
                 // image validation
-                if (listener?.isMaxImageResolution(media) == true) {
-                    listener?.onShowImageMaxResToast()
+                if (contract?.isMaxImageResolution(media) == true) {
+                    contract?.onShowImageMaxResToast()
                     return false
                 }
 
-                if (listener?.isMinImageResolution(media) == true) {
-                    listener?.onShowImageMinResToast()
+                if (contract?.isMinImageResolution(media) == true) {
+                    contract?.onShowImageMinResToast()
                     return false
                 }
 
-                if (listener?.isMaxImageSize(media) == true) {
-                    listener?.onShowImageMaxFileSizeToast()
+                if (contract?.isMaxImageSize(media) == true) {
+                    contract?.onShowImageMaxFileSizeToast()
                     return false
                 }
             }
 
-            if (!isSelected && listener?.hasMediaLimitReached() == true) {
-                listener?.onShowMediaLimitReachedGalleryToast()
+            if (!isSelected && contract?.hasMediaLimitReached() == true) {
+                contract?.onShowMediaLimitReachedGalleryToast()
                 return false
             }
-        } else if (!param.get().isMultipleSelectionType() && (listener?.mediaSelected()?.isNotEmpty() == true || adapter.selectedMedias.isNotEmpty())) {
+        } else if (!param.get().isMultipleSelectionType() && (contract?.mediaSelected()?.isNotEmpty() == true || adapter.selectedMedias.isNotEmpty())) {
             adapter.removeAllSelectedSingleClick()
         }
 
