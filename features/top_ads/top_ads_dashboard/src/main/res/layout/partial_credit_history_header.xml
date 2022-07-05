@@ -75,8 +75,8 @@
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/iconRewardInfo"
-                android:layout_width="@dimen/layout_lvl3"
-                android:layout_height="@dimen/layout_lvl3"
+                android:layout_width="@dimen/top_ads_common_dp_20"
+                android:layout_height="@dimen/top_ads_common_dp_20"
                 android:layout_marginStart="@dimen/spacing_lvl1"
                 android:tint="@color/light_N700_68"
                 app:layout_constraintBottom_toBottomOf="@id/txtRewardPending"
