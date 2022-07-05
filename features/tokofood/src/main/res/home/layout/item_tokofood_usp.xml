@@ -29,6 +29,7 @@
                 android:background="@color/food_cardview_background_dms_color"
                 android:paddingStart="8dp"
                 android:paddingTop="16dp"
+                android:paddingBottom="8dp"
                 android:paddingEnd="8dp">
 
                 <com.tokopedia.unifycomponents.ImageUnify
@@ -112,9 +113,8 @@
                     android:layout_width="0dp"
                     android:layout_height="14dp"
                     android:layout_marginStart="4dp"
-                    android:layout_marginEnd="12dp"
+                    android:layout_marginEnd="8dp"
                     android:layout_marginTop="12dp"
-                    android:layout_marginBottom="8dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/img_third_usp" />
@@ -152,8 +152,8 @@
 
     <View
         android:id="@+id/view_usp"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="32dp"
+        android:layout_height="16dp"
         android:layout_marginBottom="2dp"
         android:background="@drawable/background_tokofood_usp_chevron"
         android:elevation="4dp"
