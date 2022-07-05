@@ -60,7 +60,7 @@ open class DigitalCartActivity : BaseSimpleActivity(), HasComponent<DigitalCheck
         passData.operatorId = uriData.getQueryParameter(PARAM_OPERATOR_ID)
         passData.productId = uriData.getQueryParameter(PARAM_PRODUCT_ID)
         passData.isPromo = uriData.getQueryParameter(PARAM_IS_PROMO)
-        passData.deviceId = uriData.getQueryParameter(PARAM_DEVICE_ID)?.toIntOrNull() ?: 5
+        passData.deviceId = uriData.getQueryParameter(PARAM_DEVICE_ID)?.toIntOrNull() ?: DigitalCheckoutPassData.DEFAULT_DEVICE_ID
         passData.atcSource = uriData.getQueryParameter(PARAM_ATC_SOURCE)
         val instantCheckoutParam = uriData.getQueryParameter(PARAM_INSTANT_CHECKOUT)
         passData.instantCheckout = instantCheckoutParam ?: "0"
