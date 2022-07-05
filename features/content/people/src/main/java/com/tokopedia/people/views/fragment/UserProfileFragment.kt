@@ -589,10 +589,7 @@ class UserProfileFragment @Inject constructor(
     }
 
     private fun navigateToEditProfile() {
-        startActivity(RouteManager.getIntent(
-            context,
-            ApplinkConstInternalUserPlatform.SETTING_PROFILE
-        ))
+        RouteManager.route(requireContext(), ApplinkConstInternalUserPlatform.SETTING_PROFILE)
     }
 
     private fun doFollowUnfollow(isFromLogin: Boolean = false) {
