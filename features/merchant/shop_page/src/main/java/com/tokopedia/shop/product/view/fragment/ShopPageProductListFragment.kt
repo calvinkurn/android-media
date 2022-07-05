@@ -106,7 +106,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
 import javax.inject.Inject
 
 class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopProductAdapterTypeFactory>(),
@@ -601,13 +600,13 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         )
     }
 
-    override fun onProductAtcDefaultClick(shopProductUiModel: ShopProductUiModel) {
+    override fun onProductAtcDefaultClick(shopProductUiModel: ShopProductUiModel, quantity: Int) {
         if (isLogin) {
             if (isOwner) {
                 val sellerViewAtcErrorMessage = getString(R.string.shop_page_seller_atc_error_message)
                 showToasterError(sellerViewAtcErrorMessage)
             } else {
-                handleAtcFlow(shopProductUiModel.id.orEmpty(), Int.ONE, shopId, shopProductUiModel)
+                handleAtcFlow(shopProductUiModel.id.orEmpty(), quantity, shopId, shopProductUiModel)
             }
         } else {
             redirectToLoginPage()

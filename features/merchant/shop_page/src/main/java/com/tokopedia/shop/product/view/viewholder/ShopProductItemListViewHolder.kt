@@ -75,7 +75,10 @@ class ShopProductItemListViewHolder(
         }
 
         productCardView?.setAddToCartOnClickListener {
-            shopProductClickedListener?.onProductAtcDefaultClick(shopProductUiModel)
+            shopProductClickedListener?.onProductAtcDefaultClick(
+                shopProductUiModel,
+                shopProductUiModel.minimumOrder
+            )
         }
     }
 

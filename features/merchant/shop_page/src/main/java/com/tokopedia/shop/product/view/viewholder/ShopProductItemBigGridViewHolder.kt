@@ -79,7 +79,10 @@ class ShopProductItemBigGridViewHolder(
         }
 
         productCard?.setAddToCartOnClickListener {
-            shopProductClickedListener?.onProductAtcDefaultClick(shopProductUiModel)
+            shopProductClickedListener?.onProductAtcDefaultClick(
+                shopProductUiModel,
+                shopProductUiModel.minimumOrder
+            )
         }
     }
 

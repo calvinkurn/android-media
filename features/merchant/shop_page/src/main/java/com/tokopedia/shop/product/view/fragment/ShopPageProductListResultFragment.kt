@@ -996,7 +996,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         )
     }
 
-    override fun onProductAtcDefaultClick(shopProductUiModel: ShopProductUiModel) {
+    override fun onProductAtcDefaultClick(shopProductUiModel: ShopProductUiModel, quantity: Int) {
         if (isLogin) {
             if (isMyShop) {
                 val sellerViewAtcErrorMessage = getString(R.string.shop_page_seller_atc_error_message)
@@ -1004,7 +1004,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             } else {
                 handleAtcFlow(
                     shopProductUiModel.id.orEmpty(),
-                    Int.ONE,
+                    quantity,
                     shopId.orEmpty(),
                     shopProductUiModel
                 )

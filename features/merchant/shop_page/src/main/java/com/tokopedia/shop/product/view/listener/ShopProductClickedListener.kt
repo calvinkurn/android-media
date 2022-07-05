@@ -16,5 +16,5 @@ interface ShopProductClickedListener {
 
     fun onProductAtcVariantClick(shopProductUiModel: ShopProductUiModel)
 
-    fun onProductAtcDefaultClick(shopProductUiModel: ShopProductUiModel)
+    fun onProductAtcDefaultClick(shopProductUiModel: ShopProductUiModel, quantity: Int)
 }
