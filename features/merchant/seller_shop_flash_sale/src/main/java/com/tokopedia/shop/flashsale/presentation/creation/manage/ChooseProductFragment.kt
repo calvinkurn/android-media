@@ -197,15 +197,7 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
 
     private fun setupShopInfoObserver() {
         viewModel.shopStatus.observe(viewLifecycleOwner) {
-            if (it == ShopStatus.CLOSED) {
-                val dialog = ShopClosedDialog(primaryCTAAction = ::goToShopSettings)
-                with(dialog) {
-                    setOnDismissListener {
-                        activity?.finish()
-                    }
-                    show(childFragmentManager)
-                }
-            }
+            if (it == ShopStatus.CLOSED) showShopClosedDialog()
         }
     }
 
@@ -231,6 +223,14 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
             viewModel.addProduct(campaignId)
             binding?.btnSave?.isLoading = true
         }
+    }
+
+    private fun showShopClosedDialog() {
+        val dialog = ShopClosedDialog(primaryCTAAction = ::goToShopSettings)
+        dialog.setOnDismissListener {
+            activity?.finish()
+        }
+        dialog.show(childFragmentManager)
     }
 
     private fun goToShopSettings() {
