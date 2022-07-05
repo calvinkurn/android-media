@@ -183,6 +183,7 @@ class UserProfileFragment @Inject constructor(
             is FeedUGCOnboardingParentFragment -> {
                 childFragment.setListener(object : FeedUGCOnboardingParentFragment.Listener {
                     override fun onSuccess() {
+                        submitAction(UserProfileAction.LoadProfile())
                         goToCreatePostPage()
                     }
                 })
