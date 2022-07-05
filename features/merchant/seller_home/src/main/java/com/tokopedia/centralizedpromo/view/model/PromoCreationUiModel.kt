@@ -14,7 +14,8 @@ data class PromoCreationUiModel(
         val title: String,
         val description: String,
         val extra: String,
-        val applink: String
+        val applink: String,
+        val tagLabel: String = ""
 ): BaseUiListItemModel<CentralizedPromoAdapterTypeFactory> {
     override val impressHolder: ImpressHolder = ImpressHolder()
 

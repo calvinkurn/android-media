@@ -64,7 +64,8 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
             ::trackFreeShippingClick,
             ::trackProductCouponImpression,
             ::trackProductCouponClick,
-            ::trackProductCouponOngoingPromoClick
+            ::trackProductCouponOngoingPromoClick,
+            ::trackFlashSaleTokoClick
         )
     }
 
@@ -270,6 +271,10 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
         Handler().postDelayed({
             isErrorToastShown = false
         }, TOAST_DURATION)
+    }
+
+    private fun trackFlashSaleTokoClick(cardTitle: String) {
+        CentralizedPromoTracking.sendClickFlashSaleToko(cardTitle, userSession.shopId)
     }
 
     private fun trackFreeShippingImpression() {

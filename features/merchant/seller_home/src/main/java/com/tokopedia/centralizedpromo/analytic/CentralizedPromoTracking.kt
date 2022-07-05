@@ -1,5 +1,6 @@
 package com.tokopedia.centralizedpromo.analytic
 
+import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.CLICK_CARD
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_CLICK_PROMOTION_CARD
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_FREE_SHIPPING_CLICK
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_FREE_SHIPPING_IMPRESSION
@@ -250,6 +251,17 @@ object CentralizedPromoTracking {
 
         data[KEY_USER_ID] = user.userId
         data[KEY_SHOP_TYPE] = shopType
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    fun sendClickFlashSaleToko(title: String, shopId: String) {
+        val data = createMap(
+            event = EVENT_NAME_CLICK_PG,
+            category = EVENT_CATEGORY_ADS_AND_PROMO,
+            action = CLICK_CARD,
+            label = title
+        ).completeEventInfo(shopId)
 
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }

@@ -48,4 +48,7 @@ object CentralizedPromoConstant {
     const val EVENT_ACTION_MVC_PRODUCT_CLICK_BOTTOMSHEET = "click buat kupon - bottom sheet"
     const val EVENT_ACTION_CLICK_PROMOTION_CARD = "click promotion card"
     const val EVENT_CATEGORY_MVC_PRODUCT = "seller dashboard - iklan dan promosi"
+
+    //Flash Sale Toko
+    const val CLICK_CARD = "click card"
 }
