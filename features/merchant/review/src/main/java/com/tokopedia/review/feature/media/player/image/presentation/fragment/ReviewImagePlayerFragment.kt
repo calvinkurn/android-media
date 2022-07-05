@@ -162,11 +162,15 @@ class ReviewImagePlayerFragment : BaseDaggerFragment() {
             override fun onZoom(scaleFactor: Float) {}
 
             override fun onZoomEnd(scaleFactor: Float) {
-                reviewMediaGalleryViewModel.requestToggleViewPagerSwipe(scaleFactor == UNZOOM_SCALE_FACTOR)
+                if (isAdded) {
+                    reviewMediaGalleryViewModel.requestToggleViewPagerSwipe(scaleFactor == UNZOOM_SCALE_FACTOR)
+                }
             }
 
             override fun onZoomStart(scaleFactor: Float) {
-                reviewMediaGalleryViewModel.requestToggleViewPagerSwipe(scaleFactor == UNZOOM_SCALE_FACTOR)
+                if (isAdded) {
+                    reviewMediaGalleryViewModel.requestToggleViewPagerSwipe(scaleFactor == UNZOOM_SCALE_FACTOR)
+                }
             }
         }
         binding?.imagePreviewReviewMediaImagePlayer?.onImageDoubleClickListener = {
