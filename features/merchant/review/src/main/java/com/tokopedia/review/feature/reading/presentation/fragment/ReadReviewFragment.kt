@@ -894,6 +894,7 @@ open class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAd
             )
             getRecyclerView(view)?.show()
             setHighlightedTopics(ratingAndTopics.topics, this@ReadReviewFragment)
+            setSeeAll(false)
             show()
         }
     }
@@ -924,6 +925,7 @@ open class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAd
                 this@ReadReviewFragment
             )
             getRecyclerView(view)?.show()
+            setSeeAll(false)
             show()
         }
     }
