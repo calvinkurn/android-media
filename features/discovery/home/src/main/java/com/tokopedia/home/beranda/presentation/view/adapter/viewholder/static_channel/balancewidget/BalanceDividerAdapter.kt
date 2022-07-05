@@ -17,7 +17,7 @@ class BalanceDividerAdapter (
 ): ListAdapter<BalanceDividerModel, BalanceDividerAdapter.BalanceWidgetDividerHolder>(diffUtil) {
 
     var attachedRecyclerView: RecyclerView? = null
-    private var listDivider: List<BalanceDividerModel> = mutableListOf()
+    private var listDivider: MutableList<BalanceDividerModel> = mutableListOf()
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
@@ -30,6 +30,14 @@ class BalanceDividerAdapter (
 
     override fun getItemCount(): Int {
         return listDivider.size
+    }
+
+    fun addDivider(totalDivider: Int) {
+        listDivider.clear()
+        for (i in 0 until totalDivider) {
+            listDivider.add(BalanceDividerModel())
+        }
+        super.submitList(listDivider)
     }
 
     override fun onBindViewHolder(holder: BalanceWidgetDividerHolder, position: Int) {}

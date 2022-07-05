@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
@@ -17,6 +18,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel.Companion.TYPE_STATE_2
+import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.BalanceWidgetItemDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BalanceAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BalanceDividerAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.layoutmanager.NpaGridLayoutManager
@@ -59,7 +61,6 @@ class BalanceWidgetView: FrameLayout {
         val view = LayoutInflater.from(context).inflate(R.layout.layout_item_widget_balance_widget, this)
         rvBalance = view.findViewById(R.id.rv_balance_widget)
         rvBalanceDivider = view.findViewById(R.id.rv_balance_divider)
-        containerWidget = view.findViewById(R.id.container_balance_widget)
         viewBalanceCoachmark = view.findViewById(R.id.view_balance_widget_coachmark)
         viewBalanceCoachmarkNew = view.findViewById(R.id.view_balance_widget_coachmark_new)
         this.itemView = view
@@ -81,7 +82,6 @@ class BalanceWidgetView: FrameLayout {
             viewBalanceCoachmark?.visibility = View.GONE
             viewBalanceCoachmarkNew?.visibility = View.GONE
         }
-        containerWidget.background = ViewUtils.generateBackgroundWithShadow(containerWidget, com.tokopedia.unifyprinciples.R.color.Unify_N0, com.tokopedia.home.R.dimen.ovo_corner_radius, com.tokopedia.unifyprinciples.R.color.Unify_N400_32, com.tokopedia.home.R.dimen.ovo_elevation, Gravity.CENTER)
         layoutManager = getLayoutManager(element)
         if (balanceAdapter == null || rvBalance?.adapter == null) {
             balanceAdapter = BalanceAdapter(listener, object: DiffUtil.ItemCallback<BalanceDrawerItemModel>() {
@@ -115,14 +115,21 @@ class BalanceWidgetView: FrameLayout {
                     oldItem: BalanceDividerModel,
                     newItem: BalanceDividerModel
                 ): Boolean {
-                    return oldItem == newItem
+                    return oldItem.equals(newItem)
                 }
             })
+            rvBalanceDivider?.adapter = balanceDividerAdapter
         }
         if (element.balanceDrawerItemModels.isEmpty()) {
             rvBalance?.gone()
         } else {
             balanceAdapter?.setItemMap(element)
+            val totalDivider = element.balanceDrawerItemModels.size
+            if (rvBalance?.itemDecorationCount == 0) {
+                rvBalance?.addItemDecoration(BalanceWidgetItemDecoration(totalDivider))
+            }
+            rvBalanceDivider?.layoutManager = NpaGridLayoutManager(context, totalDivider)
+            balanceDividerAdapter?.addDivider(totalDivider)
             rvBalance?.show()
         }
     }

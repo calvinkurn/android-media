@@ -55,7 +55,7 @@
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintTop_toBottomOf="@id/home_tv_balance"
         app:layout_constraintStart_toStartOf="@id/home_iv_logo_balance"
-        app:layout_constraintBottom_toBottomOf="@id/divider_balance"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:typographyType="small"
         tools:text="180.000 Coins"
         android:layout_marginTop="2dp"
