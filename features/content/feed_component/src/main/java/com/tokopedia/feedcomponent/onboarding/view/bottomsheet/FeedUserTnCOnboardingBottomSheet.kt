@@ -18,6 +18,8 @@ import com.tokopedia.feedcomponent.util.withCache
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
+import com.tokopedia.unifycomponents.Toaster.toasterCustomBottomHeight
+import com.tokopedia.unifycomponents.Toaster.toasterCustomCtaWidth
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import com.tokopedia.abstraction.R as abstractionR
@@ -90,15 +92,14 @@ class FeedUserTnCOnboardingBottomSheet : BaseFeedUserOnboardingBottomSheet() {
             viewModel.uiEvent.collect { event ->
                 when(event) {
                     is FeedUGCOnboardingUiEvent.ShowError -> {
-                        /** TODO: toaster is still not showing */
+                        Toaster.toasterCustomBottomHeight = binding.btnContinue.height + offset16
                         Toaster.build(
-                            view = binding.btnContinue,
+                            view = binding.root,
                             text = getString(abstractionR.string.default_request_error_unknown),
                             duration = Toaster.LENGTH_SHORT,
                             type = TYPE_ERROR,
                         ).show()
                     }
-                    else -> {}
                 }
             }
         }

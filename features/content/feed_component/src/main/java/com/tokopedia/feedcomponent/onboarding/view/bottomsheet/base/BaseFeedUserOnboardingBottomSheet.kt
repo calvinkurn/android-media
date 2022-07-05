@@ -15,7 +15,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.util.util.setSpanOnText
-import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.R as unifyR
 
@@ -59,6 +58,10 @@ abstract class BaseFeedUserOnboardingBottomSheet : BottomSheetUnify() {
 
     private val colorSpan: ForegroundColorSpan
         get() = ForegroundColorSpan(MethodChecker.getColor(requireContext(), unifyR.color.Unify_GN500))
+
+    protected val offset16 by lazy {
+        requireContext().resources.getDimensionPixelOffset(unifyR.dimen.spacing_lvl4)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

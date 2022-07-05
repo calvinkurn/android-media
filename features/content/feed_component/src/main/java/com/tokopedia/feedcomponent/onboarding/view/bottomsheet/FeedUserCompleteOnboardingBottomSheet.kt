@@ -107,9 +107,9 @@ class FeedUserCompleteOnboardingBottomSheet : BaseFeedUserOnboardingBottomSheet(
             viewModel.uiEvent.collect { event ->
                 when(event) {
                     is FeedUGCOnboardingUiEvent.ShowError -> {
-                        /** TODO: toaster is still not showing */
+                        Toaster.toasterCustomBottomHeight = binding.btnContinue.height + offset16
                         Toaster.build(
-                            view = binding.btnContinue,
+                            view = binding.root,
                             text = getString(abstractionR.string.default_request_error_unknown),
                             duration = Toaster.LENGTH_SHORT,
                             type = Toaster.TYPE_ERROR,
