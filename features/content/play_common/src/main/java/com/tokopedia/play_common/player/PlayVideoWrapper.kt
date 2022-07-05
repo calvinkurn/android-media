@@ -34,8 +34,9 @@ import kotlin.properties.Delegates
  */
 class PlayVideoWrapper private constructor(
         private val context: Context,
-        private val exoPlayerCreator: ExoPlayerCreator = DefaultExoPlayerCreator(context)
-) {
+        private val exoPlayerCreator: ExoPlayerCreator = DefaultExoPlayerCreator(context),
+        private val liveRoomMetricsCommon : PlayLiveRoomMetricsCommon = PlayLiveRoomMetricsCommon(),
+        ) {
 
     class Builder(
             context: Context
@@ -279,7 +280,6 @@ class PlayVideoWrapper private constructor(
     private var startTime: Long = 0L
     private var endTime: Long = 0L
     private var transferredData: Long = 0L
-    private var liveRoomMetricsCommon = PlayLiveRoomMetricsCommon()
 
     private val transferListener = object : TransferListener {
         override fun onTransferInitializing(dataSource: DataSource?, dataSpec: DataSpec?, isNetwork: Boolean) {}

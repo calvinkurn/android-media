@@ -1,9 +1,11 @@
 package com.tokopedia.play_common.util
 
+import javax.inject.Inject
+
 /**
  * @author by astidhiyaa on 22/03/22
  */
-class PlayLiveRoomMetricsCommon {
+class PlayLiveRoomMetricsCommon @Inject constructor(){
     
     private var inetSpeed: Float = 0f
     /***

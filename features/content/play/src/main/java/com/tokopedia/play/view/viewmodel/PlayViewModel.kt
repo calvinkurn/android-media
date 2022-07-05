@@ -66,6 +66,7 @@ import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.sse.*
+import com.tokopedia.play_common.util.PlayLiveRoomMetricsCommon
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
@@ -112,6 +113,7 @@ class PlayViewModel @AssistedInject constructor(
     private val playShareExperience: PlayShareExperience,
     private val playLog: PlayLog,
     chatStreamsFactory: ChatStreams.Factory,
+    private val liveRoomMetricsCommon : PlayLiveRoomMetricsCommon,
 ) : ViewModel() {
 
     @AssistedFactory
@@ -403,14 +405,6 @@ class PlayViewModel @AssistedInject constructor(
                     && remoteConfig.getBoolean(FIREBASE_REMOTE_CONFIG_KEY_CAST, true)) || castState.currentState == PlayCastState.CONNECTED
         }
 
-    private val isMonitoringLogEnabled: Boolean
-        get() {
-            val arrOfPostFix = remoteConfig.getLong(FIREBASE_REMOTE_CONFIG_KEY_VIEWER_MONITORING, 0)
-            return if(!userSession.isLoggedIn || arrOfPostFix == 0L) false
-            else arrOfPostFix.toString().toCharArray().any {
-                userId.last() == it
-            }
-        }
     val interactiveData: InteractiveUiModel
         get() = _interactive.value.interactive
 
@@ -956,7 +950,7 @@ class PlayViewModel @AssistedInject constructor(
         updateChannelStatus()
 
         updateChannelInfo(channelData)
-        playLog.setupRemoteConfig(isMonitoringLogEnabled)
+        sendInitialLog()
     }
 
     fun defocusPage(shouldPauseVideo: Boolean) {
@@ -2480,12 +2474,16 @@ class PlayViewModel @AssistedInject constructor(
         if(delayTapJob?.isActive == true) delayTapJob?.cancel()
     }
 
+    private fun sendInitialLog(){
+        playLog.logDownloadSpeed(liveRoomMetricsCommon.getInetSpeed())
+        playLog.sendAll(channelId, videoPlayer)
+    }
+
     companion object {
         private const val FIREBASE_REMOTE_CONFIG_KEY_PIP = "android_mainapp_enable_pip"
         private const val FIREBASE_REMOTE_CONFIG_KEY_INTERACTIVE = "android_main_app_enable_play_interactive"
         private const val FIREBASE_REMOTE_CONFIG_KEY_CAST = "android_main_app_enable_play_cast"
         private const val FIREBASE_REMOTE_CONFIG_KEY_LIKE_BUBBLE = "android_main_app_enable_play_bubbles"
-        private const val FIREBASE_REMOTE_CONFIG_KEY_VIEWER_MONITORING = "android_mainapp_play_viewer_monitoring"
         private const val ONBOARDING_DELAY = 5000L
         private const val INTERACTIVE_FINISH_MESSAGE_DELAY = 2000L
 

@@ -26,6 +26,4 @@ interface PlayLog {
     )
 
     fun sendAll(channelId: String, videoPlayer: PlayVideoPlayerUiModel)
-
-    fun setupRemoteConfig(isEnabled: Boolean)
 }

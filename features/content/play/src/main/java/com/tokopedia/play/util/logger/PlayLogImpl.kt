@@ -4,6 +4,8 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play_common.util.PlayLiveRoomMetricsCommon
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.user.session.UserSessionInterface
 import java.util.concurrent.ConcurrentLinkedQueue
 import javax.inject.Inject
 
@@ -11,9 +13,18 @@ import javax.inject.Inject
  * @author by astidhiyaa on 29/03/22
  *
  */
-class PlayLogImpl @Inject constructor(private val logCollector: PlayLogCollector): PlayLog{
+class PlayLogImpl @Inject constructor(private val logCollector: PlayLogCollector,
+                                      private val remoteConfig: RemoteConfig,
+                                      private val userSession: UserSessionInterface): PlayLog{
 
-    private var isRemoteConfigEnabled: Boolean = false
+    private val isMonitoringLogEnabled: Boolean
+        get() {
+            val arrOfPostFix = remoteConfig.getLong(FIREBASE_REMOTE_CONFIG_KEY_VIEWER_MONITORING, 0)
+            return if(!userSession.isLoggedIn || arrOfPostFix == 0L) false
+            else arrOfPostFix.toString().toCharArray().any {
+                userSession.userId.last() == it
+            }
+        }
 
     override fun logTimeToFirstByte(timeToFirstByte: Int) {
         logCollector.collect(
@@ -47,7 +58,7 @@ class PlayLogImpl @Inject constructor(private val logCollector: PlayLogCollector
     }
 
     override fun sendAll(channelId: String, videoPlayer: PlayVideoPlayerUiModel) {
-        if(!isRemoteConfigEnabled) return
+        if(!isMonitoringLogEnabled) return
         val url = when (videoPlayer) {
             is PlayVideoPlayerUiModel.General -> videoPlayer.params.videoUrl
             is PlayVideoPlayerUiModel.YouTube -> videoPlayer.youtubeId
@@ -67,13 +78,10 @@ class PlayLogImpl @Inject constructor(private val logCollector: PlayLogCollector
         ServerLogger.log(Priority.P2, PLAY_LOG_TAG, messages)
     }
 
-    override fun setupRemoteConfig(isEnabled: Boolean) {
-        isRemoteConfigEnabled = isEnabled
-    }
-
     companion object{
         private const val PLAY_LOG_TAG = "PLAY_VIEWER_MONITORING"
         private const val LIMIT_LOG = 10
+        private const val FIREBASE_REMOTE_CONFIG_KEY_VIEWER_MONITORING = "android_mainapp_play_viewer_monitoring"
     }
 }
 

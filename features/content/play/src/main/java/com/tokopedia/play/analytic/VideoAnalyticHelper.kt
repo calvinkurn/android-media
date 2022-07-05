@@ -15,7 +15,8 @@ class VideoAnalyticHelper(
         private val context: Context,
         private val analytic: PlayAnalytic,
         private val log: PlayLog,
-        private val channelData: PlayChannelData
+        private val channelData: PlayChannelData,
+        private val liveRoomMetricsCommon : PlayLiveRoomMetricsCommon = PlayLiveRoomMetricsCommon(),
 ) {
 
     @TrackingField
@@ -33,8 +34,6 @@ class VideoAnalyticHelper(
     )
 
     private var watchDurationInSeconds: Long = 0L
-
-    private val liveRoomMetricsCommon = PlayLiveRoomMetricsCommon()
 
     fun onPause() {
         bufferTrackingModel = bufferTrackingModel.copy(
@@ -75,7 +74,7 @@ class VideoAnalyticHelper(
             )
         }
 
-        if(bufferTrackingModel.bufferCount > MORE_THAN_ZERO && watchDurationModel.cumulationDuration > MORE_THAN_30){
+        if(bufferTrackingModel.bufferCount > ZERO && watchDurationModel.cumulationDuration > MAX_WATCH_DURATION_CUMULATION){
             log.logDownloadSpeed(liveRoomMetricsCommon.getInetSpeed())
             log.sendAll(channelData.id, channelData.videoMetaInfo.videoPlayer)
         }
@@ -122,7 +121,7 @@ class VideoAnalyticHelper(
 
     companion object {
         private const val DURATION_DIVIDER = 1000
-        private const val MORE_THAN_ZERO = 0
-        private const val MORE_THAN_30 = 30
+        private const val ZERO = 0
+        private const val MAX_WATCH_DURATION_CUMULATION = 30
     }
 }

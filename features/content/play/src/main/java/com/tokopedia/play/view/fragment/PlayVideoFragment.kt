@@ -56,7 +56,6 @@ import com.tokopedia.play.view.uimodel.PlayCastState
 import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayerType
 import com.tokopedia.play.view.uimodel.recom.isCasting
-import com.tokopedia.play_common.util.PlayLiveRoomMetricsCommon
 import com.tokopedia.play_common.view.RoundedConstraintLayout
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
@@ -87,8 +86,6 @@ class PlayVideoFragment @Inject constructor(
     private val videoLoadingView by viewComponent { VideoLoadingComponent(it, R.id.view_video_loading) }
     private val overlayVideoView by viewComponent { EmptyViewComponent(it, R.id.v_play_overlay_video) }
     private val onboardingView by viewComponentOrNull { OnboardingViewComponent(it, R.id.iv_onboarding) }
-
-    private val liveRoomMetricsCommon = PlayLiveRoomMetricsCommon()
 
     private val blurUtil: ImageBlurUtil by lifecycleBound (
             creator = { ImageBlurUtil(it.requireContext()) },
@@ -228,8 +225,6 @@ class PlayVideoFragment @Inject constructor(
                     PlayParentViewModel::class.java
                 )
         }
-        playLog.logDownloadSpeed(liveRoomMetricsCommon.getInetSpeed())
-        playLog.sendAll(playViewModel.channelId, playViewModel.latestCompleteChannelData.videoMetaInfo.videoPlayer)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
