@@ -73,8 +73,10 @@ class ReserveProductAdapter(
     }
 
     fun setInputEnabled(enabled: Boolean) {
+        val dataChanged = inputEnabled != enabled
         inputEnabled = enabled
-        notifyUnselectedItems()
+
+        if (dataChanged) notifyUnselectedItems()
     }
 
     fun addItems(newItems: List<ReserveProductModel>) {
