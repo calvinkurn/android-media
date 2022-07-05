@@ -8,13 +8,14 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDividerModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.BalanceDividerViewHolder
 
 /**
  * Created by dhaba
  */
 class BalanceDividerAdapter (
     diffUtil: DiffUtil.ItemCallback<BalanceDividerModel>
-): ListAdapter<BalanceDividerModel, BalanceDividerAdapter.BalanceWidgetDividerHolder>(diffUtil) {
+): ListAdapter<BalanceDividerModel, BalanceDividerViewHolder>(diffUtil) {
 
     var attachedRecyclerView: RecyclerView? = null
     private var listDivider: MutableList<BalanceDividerModel> = mutableListOf()
@@ -24,8 +25,8 @@ class BalanceDividerAdapter (
         this.attachedRecyclerView = recyclerView
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BalanceWidgetDividerHolder {
-        return BalanceWidgetDividerHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_balance_widget_divider, parent, false))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BalanceDividerViewHolder {
+        return BalanceDividerViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_balance_widget_divider, parent, false))
     }
 
     override fun getItemCount(): Int {
@@ -40,7 +41,7 @@ class BalanceDividerAdapter (
         super.submitList(listDivider)
     }
 
-    override fun onBindViewHolder(holder: BalanceWidgetDividerHolder, position: Int) {}
-
-    class BalanceWidgetDividerHolder(v: View): RecyclerView.ViewHolder(v)
+    override fun onBindViewHolder(holder: BalanceDividerViewHolder, position: Int) {
+        holder.bind(position)
+    }
 }

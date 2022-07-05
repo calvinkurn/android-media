@@ -78,7 +78,6 @@ class BalanceWidgetView: FrameLayout {
 
         }
         if (element.balanceDrawerItemModels.isEmpty()) {
-            rvBalance?.gone()
         } else {
             balanceWidgetAdapter?.setVisitables(listOf(element))
             rvBalance?.show()
