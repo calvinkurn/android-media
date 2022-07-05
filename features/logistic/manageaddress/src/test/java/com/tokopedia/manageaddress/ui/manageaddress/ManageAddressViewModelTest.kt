@@ -29,6 +29,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.setMain
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -246,5 +247,19 @@ class ManageAddressViewModelTest {
         } answers {
             secondArg<(Throwable) -> Unit>().invoke(Throwable())
         }
+    }
+
+    @Test
+    fun `verify when isNeedToShareAddress is true`() {
+        manageAddressViewModel.receiverUserId = "1"
+
+        assertTrue(manageAddressViewModel.isNeedToShareAddress)
+    }
+
+    @Test
+    fun `verify when isReceiveShareAddress is true`() {
+        manageAddressViewModel.senderUserId = "1"
+
+        assertTrue(manageAddressViewModel.isReceiveShareAddress)
     }
 }

@@ -54,6 +54,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener,
 
     companion object {
         private const val MAIN_ADDRESS_FRAGMENT_POSITION = 0
+        private const val FROM_FRIEND_FRAGMENT_POSITION = 1
 
         fun newInstance(bundle: Bundle): ManageAddressFragment {
             return ManageAddressFragment().apply {
@@ -102,6 +103,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener,
 
         isFromCheckoutChangeAddress = arguments?.getBoolean(CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS)
         isLocalization = arguments?.getBoolean(ManageAddressConstant.EXTRA_IS_LOCALIZATION)
+        viewModel.receiverUserId = arguments?.getString(ManageAddressConstant.QUERY_RECEIVER_USER_ID)
+        viewModel.senderUserId = arguments?.getString(ManageAddressConstant.QUERY_SENDER_USER_ID)
 
         initSearchView()
 
@@ -120,8 +123,17 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener,
             tabAdapter = this@ManageAddressFragment?.let { ManageAddressViewPagerAdapter(it, fragmentPage()) }
             vpManageAddress.adapter = tabAdapter
             vpManageAddress.isUserInputEnabled = false
-            TabsUnifyMediator(tlManageAddress, vpManageAddress) { tab, position ->
-                tab.setCustomText(fragmentPage().getOrNull(position)?.first ?: getString(R.string.tablayout_label_main))
+            if (viewModel.isNeedToShareAddress) {
+                tlManageAddress.gone()
+            } else {
+                tlManageAddress.visible()
+                TabsUnifyMediator(tlManageAddress, vpManageAddress) { tab, position ->
+                    tab.setCustomText(fragmentPage().getOrNull(position)?.first ?: getString(R.string.tablayout_label_main))
+                }
+
+                if (viewModel.isReceiveShareAddress) {
+                    vpManageAddress.currentItem = FROM_FRIEND_FRAGMENT_POSITION
+                }
             }
         }
     }
@@ -156,13 +168,14 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener,
     }
 
     private fun fragmentPage(): List<Pair<String, Fragment>> {
-        return listOf(
-            Pair(getString(R.string.tablayout_label_main), MainAddressFragment.newInstance(bundleData())),
-            Pair(
-                getString(R.string.tablayout_label_from_friend),
-                FromFriendFragment.newInstance(viewModel.savedQuery, this)
+        return if (viewModel.isNeedToShareAddress) {
+            listOf(Pair(getString(R.string.tablayout_label_main), MainAddressFragment.newInstance(bundleData())))
+        } else {
+            listOf(
+                Pair(getString(R.string.tablayout_label_main), MainAddressFragment.newInstance(bundleData())),
+                Pair(getString(R.string.tablayout_label_from_friend), FromFriendFragment.newInstance(bundleData(), this))
             )
-        )
+        }
     }
 
     private fun bundleData(): Bundle {

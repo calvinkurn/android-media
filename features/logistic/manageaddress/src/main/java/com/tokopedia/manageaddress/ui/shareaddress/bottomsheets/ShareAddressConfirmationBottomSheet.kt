@@ -25,16 +25,15 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
 import com.tokopedia.manageaddress.R
-import com.tokopedia.manageaddress.domain.model.shareaddress.ShareAddressParam
+import com.tokopedia.logisticCommon.domain.request.ShareAddressParam
 
 class ShareAddressConfirmationBottomSheet : BottomSheetUnify(),
     HasComponent<ShareAddressComponent> {
 
     private var binding by autoCleared<BottomsheetShareAddressConfirmationBinding>()
 
-    private var email: String? = null
-    private var phone: String? = null
-    private var addressId: String? = null
+    private var senderAddressId: String = ""
+    private var receiverPhoneNumberOrEmail: String = ""
     private var mListener: Listener? = null
 
     @Inject
@@ -67,12 +66,12 @@ class ShareAddressConfirmationBottomSheet : BottomSheetUnify(),
             when (it) {
                 is ShareAddressBottomSheetState.Success -> mListener?.onSuccessShareAddress()
                 is ShareAddressBottomSheetState.Fail -> mListener?.onFailedShareAddress(it.errorMessage)
-                is ShareAddressBottomSheetState.Loading -> onLoadingRequestAddress(it.isShowLoading)
+                is ShareAddressBottomSheetState.Loading -> onLoadingShareAddress(it.isShowLoading)
             }
         })
     }
 
-    private fun onLoadingRequestAddress(isShowLoading: Boolean) {
+    private fun onLoadingShareAddress(isShowLoading: Boolean) {
         binding.btnShare.isLoading = isShowLoading
     }
 
@@ -107,9 +106,10 @@ class ShareAddressConfirmationBottomSheet : BottomSheetUnify(),
             btnShare.setOnClickListener {
                 viewModel.shareAddress(
                     ShareAddressParam(
-                        email = email ?: "",
-                        phone = phone ?: "",
-                        addressId = addressId ?: ""
+                        senderUserId = "",
+                        senderAddressId = senderAddressId,
+                        receiverPhoneNumberOrEmail = receiverPhoneNumberOrEmail,
+                        initialCheck = false
                     )
                 )
             }
@@ -155,15 +155,13 @@ class ShareAddressConfirmationBottomSheet : BottomSheetUnify(),
         const val TAG_SHARE_ADDRESS_CONFIRMATION = "ShareAddressConfirmationBottomSheet"
 
         fun newInstance(
-            email: String? = null,
-            phone: String? = null,
-            addressId: String? = null,
+            senderAddressId: String?,
+            receiverPhoneNumberOrEmail: String?,
             listener: Listener
         ): ShareAddressConfirmationBottomSheet {
             return ShareAddressConfirmationBottomSheet().apply {
-                this.email = email
-                this.phone = phone
-                this.addressId = addressId
+                this.senderAddressId = senderAddressId ?: ""
+                this.receiverPhoneNumberOrEmail = receiverPhoneNumberOrEmail ?: ""
                 this.mListener = listener
             }
         }

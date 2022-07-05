@@ -49,6 +49,12 @@ class ManageAddressViewModel @Inject constructor(
     var page: Int = 1
     var canLoadMore: Boolean = true
     var isClearData: Boolean = true
+    var receiverUserId: String? = null
+    var senderUserId: String? = null
+    val isNeedToShareAddress: Boolean
+        get() = receiverUserId?.isNotBlank() == true
+    val isReceiveShareAddress: Boolean
+        get() = senderUserId?.isNotBlank() == true
 
     private val _addressList = MutableLiveData<ManageAddressState<AddressListModel>>()
     val addressList: LiveData<ManageAddressState<AddressListModel>>

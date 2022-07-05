@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.logisticCommon.domain.model.ShareAddressBottomSheetState
 import com.tokopedia.logisticCommon.domain.response.ShareAddressResponse
-import com.tokopedia.manageaddress.domain.usecase.ShareAddressUseCase
+import com.tokopedia.logisticCommon.domain.usecase.ShareAddressUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.coEvery
 import io.mockk.mockk

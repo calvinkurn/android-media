@@ -116,7 +116,7 @@ class ManageAddressItemAdapter : RecyclerView.Adapter<ManageAddressItemAdapter.M
                 binding.btnSecondary.setCompoundDrawablesWithIntrinsicBounds(d, null, null, null)
 
                 val cardSelected: Boolean
-                if (data.isStateChosenAddress && !isItemClicked && manageAddressListener != null) {
+                if (data.isStateChosenAddress && !isItemClicked && isMainAddressView()) {
                     cardSelected = true
                     selectedPos = layoutPosition
                 } else {
@@ -131,6 +131,10 @@ class ManageAddressItemAdapter : RecyclerView.Adapter<ManageAddressItemAdapter.M
                 setupCheckedSharedAddress(data)
                 setListener(data)
             }
+        }
+
+        private fun isMainAddressView() : Boolean {
+            return manageAddressListener != null && isShareAddress.not()
         }
 
         private fun setupCheckedSharedAddress(data: RecipientAddressModel) {

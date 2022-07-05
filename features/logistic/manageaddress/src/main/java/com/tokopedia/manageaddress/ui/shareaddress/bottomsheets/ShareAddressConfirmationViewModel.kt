@@ -7,8 +7,8 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.logisticCommon.domain.model.ShareAddressBottomSheetState
 import com.tokopedia.logisticCommon.domain.response.ShareAddressResponse
-import com.tokopedia.manageaddress.domain.usecase.ShareAddressUseCase
-import com.tokopedia.manageaddress.domain.model.shareaddress.ShareAddressParam
+import com.tokopedia.logisticCommon.domain.usecase.ShareAddressUseCase
+import com.tokopedia.logisticCommon.domain.request.ShareAddressParam
 import javax.inject.Inject
 
 class ShareAddressConfirmationViewModel @Inject constructor(

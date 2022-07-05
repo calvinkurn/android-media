@@ -3,7 +3,6 @@ package com.tokopedia.manageaddress.ui.manageaddress.mainaddress
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.os.Message
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -92,9 +91,7 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private val adapter = ManageAddressItemAdapter().apply {
-        setMainAddressListener(false, this@MainAddressFragment)
-    }
+    private val adapter = ManageAddressItemAdapter()
 
     private val viewModel: ManageAddressViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[ManageAddressViewModel::class.java]
@@ -135,9 +132,9 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initArguments()
         initView()
         initAdapter()
-        initArguments()
         initSearch()
 
         observerListAddress()
@@ -157,9 +154,15 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
         prevState = arguments?.getInt(CheckoutConstant.EXTRA_PREVIOUS_STATE_ADDRESS) ?: -1
         localChosenAddr = context?.let { ChooseAddressUtils.getLocalizingAddressData(it) }
         viewModel.savedQuery = arguments?.getString(ManageAddressConstant.EXTRA_QUERY) ?: ""
+        viewModel.receiverUserId = arguments?.getString(ManageAddressConstant.QUERY_RECEIVER_USER_ID)
+        viewModel.senderUserId = arguments?.getString(ManageAddressConstant.QUERY_SENDER_USER_ID)
     }
 
     private fun initAdapter() {
+        adapter.apply {
+            setMainAddressListener(viewModel.isNeedToShareAddress, this@MainAddressFragment)
+        }
+
         binding?.addressList?.let {
             it.adapter = adapter
             it.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -168,13 +171,13 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
 
     private fun initView() {
         setButtonEnabled(false)
+        updateButton(getString(R.string.btn_share_adddress))
 
         binding?.apply {
             emptyStateManageAddress?.ivEmptyState?.loadImage(EMPTY_STATE_PICT_URL)
             ivEmptyAddress?.loadImage(EMPTY_SEARCH_PICT_URL)
         }
         initScrollListener()
-
     }
 
     private fun observerSetChosenAddress() {
@@ -299,8 +302,10 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
                     if (viewModel.isClearData) clearData()
                     if (it.data.listAddress.isNotEmpty()) {
                         updateTicker(it.data.pageInfo?.ticker)
-                        updateButton(it.data.pageInfo?.buttonLabel)
                         updateStateForCheckoutSnippet(it.data.listAddress)
+                        if (viewModel.isNeedToShareAddress.not()) {
+                            updateButton(it.data.pageInfo?.buttonLabel)
+                        }
                     }
                     updateData(it.data.listAddress)
                     setEmptyState()
@@ -711,6 +716,10 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
                     it.setResult(Activity.RESULT_OK, resultIntent)
                     it.finish()
                 }
+            } else if (viewModel.isNeedToShareAddress) {
+                addressData?.apply {
+                    showShareAddressBottomSheet(id)
+                }
             } else {
                 addressData?.let { viewModel.setStateChosenAddress(it) }
             }
@@ -790,11 +799,11 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
         showShareAddressBottomSheet(peopleAddress.id)
     }
 
-    private fun showShareAddressBottomSheet(addressId: String) {
+    private fun showShareAddressBottomSheet(senderAddressId: String) {
         val shareAddressListener = object : ShareAddressBottomSheet.ShareAddressListener {
-            override fun onClickShareAddress(email: String?, phone: String?) {
+            override fun onClickShareAddress(receiverPhoneNumberOrEmail: String) {
                 bottomSheetShareAddress?.dismiss()
-                showShareAddressConfirmationBottomSheet(email, phone, addressId)
+                showShareAddressConfirmationBottomSheet(receiverPhoneNumberOrEmail, senderAddressId)
             }
         }
 
@@ -809,12 +818,13 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
     }
 
     private fun showShareAddressConfirmationBottomSheet(
-        email: String?,
-        phone: String?,
-        addressId: String
+        senderAddressId: String,
+        receiverPhoneNumberOrEmail: String
     ) {
         bottomSheetConfirmationShareAddress = ShareAddressConfirmationBottomSheet.newInstance(
-            email = email, phone = phone, addressId = addressId, listener = this
+            senderAddressId = senderAddressId,
+            receiverPhoneNumberOrEmail = receiverPhoneNumberOrEmail,
+            listener = this
         )
         bottomSheetConfirmationShareAddress?.show(
             parentFragmentManager,

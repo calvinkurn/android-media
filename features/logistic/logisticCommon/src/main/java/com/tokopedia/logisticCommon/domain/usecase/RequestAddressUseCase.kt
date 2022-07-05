@@ -5,30 +5,28 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.logisticCommon.domain.request.RequestShareAddress
+import com.tokopedia.logisticCommon.domain.request.RequestAddressParam
 import com.tokopedia.logisticCommon.domain.response.ShareAddressResponse
 import javax.inject.Inject
 
-open class RequestShareAddressUseCase @Inject constructor(
+open class RequestAddressUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
-) : CoroutineUseCase<RequestShareAddress, ShareAddressResponse>(dispatcher.io) {
+) : CoroutineUseCase<RequestAddressParam, ShareAddressResponse>(dispatcher.io) {
 
-    override suspend fun execute(params: RequestShareAddress): ShareAddressResponse {
+    override suspend fun execute(params: RequestAddressParam): ShareAddressResponse {
         return repository.request(graphqlQuery(), createParams(params))
     }
 
     override fun graphqlQuery(): String = ""
 
-    private fun createParams(params: RequestShareAddress): Map<String, Any> = mapOf(
-        PARAM_USER_ID to params.userId,
-        PARAM_EMAIL to params.email,
-        PARAM_PHONE to params.phone
+    private fun createParams(params: RequestAddressParam): Map<String, Any> = mapOf(
+        PARAM_RECEIVER_USER_ID to params.receiverUserId,
+        PARAM_SENDER_PHONE_NUMBER_OR_EMAIL to params.senderPhoneNumberOrEmail
     )
 
     companion object {
-        private const val PARAM_PHONE = "msisdn"
-        private const val PARAM_EMAIL = "email"
-        private const val PARAM_USER_ID = "user_id"
+        private const val PARAM_RECEIVER_USER_ID = "receiver_user_id"
+        private const val PARAM_SENDER_PHONE_NUMBER_OR_EMAIL = "sender_phone_number_or_email"
     }
 }

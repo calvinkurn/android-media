@@ -278,7 +278,7 @@ class FromFriendFragment : BaseDaggerFragment(),
 
     private fun doSearchAddressList() {
         if(arguments != null) {
-            val searchQuery = requireArguments().getString(ARG_EXTRA_SEARCH_QUERY, "")
+            val searchQuery = requireArguments().getString(ManageAddressConstant.EXTRA_QUERY, "")
             viewModel.onSearchAdrress(searchQuery)
         }
     }
@@ -331,12 +331,7 @@ class FromFriendFragment : BaseDaggerFragment(),
     }
 
     companion object {
-        private const val ARG_EXTRA_SEARCH_QUERY = "ARG_EXTRA_SEARCH_QUERY"
-
-        fun newInstance(searchQuery: String?, listener: Listener): FromFriendFragment {
-            val bundle = Bundle()
-            bundle.putString(ARG_EXTRA_SEARCH_QUERY, searchQuery ?: "")
-
+        fun newInstance(bundle: Bundle, listener: Listener): FromFriendFragment {
             return FromFriendFragment().apply {
                 arguments = bundle
                 mListener = listener

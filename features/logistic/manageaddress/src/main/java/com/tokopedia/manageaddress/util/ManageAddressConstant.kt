@@ -28,4 +28,6 @@ object ManageAddressConstant {
     const val EXTRA_IS_LOCALIZATION = "EXTRA_IS_LOCALIZATION"
 
     const val EXTRA_QUERY = "EXTRA_QUERY"
+    const val QUERY_RECEIVER_USER_ID = "receiver_user_id"
+    const val QUERY_SENDER_USER_ID = "sender_user_id"
 }

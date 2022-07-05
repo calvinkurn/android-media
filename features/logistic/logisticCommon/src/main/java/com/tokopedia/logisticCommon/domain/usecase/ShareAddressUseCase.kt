@@ -1,12 +1,12 @@
-package com.tokopedia.manageaddress.domain.usecase
+package com.tokopedia.logisticCommon.domain.usecase
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.logisticCommon.domain.request.ShareAddressParam
 import com.tokopedia.logisticCommon.domain.response.ShareAddressResponse
-import com.tokopedia.manageaddress.domain.model.shareaddress.ShareAddressParam
 import javax.inject.Inject
 
 open class ShareAddressUseCase @Inject constructor(
@@ -21,14 +21,16 @@ open class ShareAddressUseCase @Inject constructor(
     override fun graphqlQuery(): String = ""
 
     private fun createParams(params: ShareAddressParam): Map<String, Any> = mapOf(
-        PARAM_EMAIL to params.email,
-        PARAM_PHONE to params.phone,
-        PARAM_ADDRESS_ID to params.addressId
+        PARAM_SENDER_USER_ID to params.senderUserId,
+        PARAM_SENDER_ADDRESS_ID to params.senderAddressId,
+        PARAM_RECEIVER_PHONE_NUMBER_OR_EMAIL to params.receiverPhoneNumberOrEmail,
+        PARAM_INITIAL_CHECK to params.initialCheck
     )
 
     companion object {
-        private const val PARAM_PHONE = "msisdn"
-        private const val PARAM_EMAIL = "email"
-        private const val PARAM_ADDRESS_ID = "address_id"
+        private const val PARAM_SENDER_USER_ID = "sender_user_id"
+        private const val PARAM_SENDER_ADDRESS_ID = "sender_address_id"
+        private const val PARAM_RECEIVER_PHONE_NUMBER_OR_EMAIL = "receiver_phone_number_or_email"
+        private const val PARAM_INITIAL_CHECK = "initial_check"
     }
 }

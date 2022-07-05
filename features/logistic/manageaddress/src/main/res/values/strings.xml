@@ -138,6 +138,8 @@
     <string name="success_request_address">Alamat berhasil direquest!</string>
     <string name="btn_yes_share">Ya, Bagikan</string>
     <string name="btn_no">Tidak</string>
+    <string name="title_select_share_address">Pilih Alamat Untuk Dibagikan</string>
+    <string name="btn_share_adddress">Bagikan Alamat</string>
 
     <!--    remove address-->
     <string name="toaster_remove_address_success">Anda telah berhasil menghapus alamat</string>

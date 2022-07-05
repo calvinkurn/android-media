@@ -8,7 +8,7 @@
     <string name="share_address_bottom_sheet_title_share">Bagikan ke teman kamu</string>
     <string name="share_address_bottom_sheet_title_request">Minta alamat ke teman kamu</string>
     <string name="share_address_bottom_sheet_email_or_phone_number">Email / No Hp</string>
-    <string name="share_address_bottom_sheet_description">Dengan klik bagikan, kamu setuju membagikan informasi alamat kamu ke orang lain.</string>
+    <string name="share_address_bottom_sheet_description">Dengan klik Kirim, kamu setuju membagikan informasi alamat kamu ke orang lain.</string>
     <string name="share_address_bottom_sheet_btn_share">Bagikan</string>
     <string name="share_address_bottom_sheet_btn_send">Kirim</string>
     <string name="rationale_need_contact">Untuk pakai fitur ini, izinkan Tokpedia mengakses kontakmu.</string>

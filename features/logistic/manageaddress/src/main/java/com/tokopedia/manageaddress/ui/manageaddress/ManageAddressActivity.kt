@@ -1,16 +1,19 @@
 package com.tokopedia.manageaddress.ui.manageaddress
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.databinding.ActivityManageAddressBinding
 import com.tokopedia.manageaddress.di.DaggerManageAddressComponent
 import com.tokopedia.manageaddress.di.ManageAddressComponent
 import com.tokopedia.manageaddress.ui.manageaddress.mainaddress.MainAddressFragment
+import com.tokopedia.manageaddress.util.ManageAddressConstant.QUERY_RECEIVER_USER_ID
 
 class ManageAddressActivity : BaseActivity(), HasComponent<ManageAddressComponent>, ManageAddressFragment.ManageAddressListener {
 
@@ -39,11 +42,20 @@ class ManageAddressActivity : BaseActivity(), HasComponent<ManageAddressComponen
         val bundle = Bundle()
         if (intent != null && intent.extras != null) {
             bundle.putAll(intent.extras)
+
+            if (isNeedToShareAddress(intent)) {
+                binding?.tvTitle?.text = getString(R.string.title_select_share_address)
+                binding?.btnAdd?.gone()
+            }
         }
         supportFragmentManager.beginTransaction().replace(R.id.container, ManageAddressFragment.newInstance(bundle)).commit()
         binding?.btnBack?.setOnClickListener {
             onBackPressed()
         }
+    }
+
+    private fun isNeedToShareAddress(intent: Intent): Boolean {
+        return intent.hasExtra(QUERY_RECEIVER_USER_ID)
     }
 
     override fun setAddButtonOnClickListener(onClick: () -> Unit) {
