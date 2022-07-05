@@ -38,22 +38,11 @@ class HomeHeaderOvoViewHolder(itemView: View,
         renderHeaderImage()
         renderEmptySpace()
         element.headerDataModel?.let {
-            resetView()
-            when(it.homeBalanceModel.balanceType) {
-                HomeBalanceModel.TYPE_STATE_2 -> {
-                    renderBalanceLayout(
-                        it.homeBalanceModel,
-                        element.headerDataModel?.isUserLogin?: false,
-                        element.needToShowUserWallet)
-                }
-                HomeBalanceModel.TYPE_STATE_3 -> {
-                    renderBalanceLayout(
-                            it.homeBalanceModel,
-                            element.headerDataModel?.isUserLogin?: false,
-                            element.needToShowUserWallet)
-                }
-                else -> resetView()
-            }
+            renderBalanceLayout(
+                it.homeBalanceModel,
+                element.headerDataModel?.isUserLogin ?: false,
+                element.needToShowUserWallet
+            )
         }
 
         renderChooseAddress(element.needToShowChooseAddress)
@@ -72,10 +61,6 @@ class HomeHeaderOvoViewHolder(itemView: View,
 
     override fun bind(element: HomeHeaderDataModel, payloads: MutableList<Any>) {
         bind(element)
-    }
-
-    private fun resetView() {
-        itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget).gone()
     }
 
     private fun renderChooseAddress(needToShowChooseAddress: Boolean) {

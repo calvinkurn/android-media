@@ -103,5 +103,5 @@
     <include
         android:id="@+id/loader_balance_widget"
         layout="@layout/layout_shimmer_balance_widget"
-        android:visibility="visible"/>
+        android:visibility="gone"/>
 </com.tokopedia.unifycomponents.CardUnify2>
