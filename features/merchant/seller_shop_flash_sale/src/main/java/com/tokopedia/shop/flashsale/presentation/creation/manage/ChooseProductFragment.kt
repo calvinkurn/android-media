@@ -154,6 +154,7 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
         setupErrorsObserver()
         setupSelectionItemsObserver()
         setupIsSelectionValidObserver()
+        setupIsSelectionHasVariantObserver()
         setupIsAddProductSuccessObserver()
         setupShopInfoObserver()
     }
@@ -201,6 +202,12 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
                     setInputEnabled(true)
                 }
             }
+        }
+    }
+
+    private fun setupIsSelectionHasVariantObserver() {
+        viewModel.isSelectionHasVariant.observe(viewLifecycleOwner) {
+            binding?.tvSelectedProductVariant?.isVisible = it
         }
     }
 

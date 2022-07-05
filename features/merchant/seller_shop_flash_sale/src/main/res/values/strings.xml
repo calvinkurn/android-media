@@ -245,6 +245,7 @@
     <string name="chooseproduct_search_placeholdertext">Cari produk atau SKU</string>
     <string name="chooseproduct_selected_product_suffix">%d Produk Terpilih</string>
     <string name="chooseproduct_selected_product_initial">0 Produk Terpilih</string>
+    <string name="chooseproduct_has_variant_text">(Termasuk Varian)</string>
     <string name="chooseproduct_search_empty">Oops, produk tidak ditemukan</string>
     <string name="chooseproduct_search_empty_desc">Coba gunakan kata kunci lain atau filter yang berbeda, ya.</string>
     <string name="chooseproduct_product_empty">Oops, kamu belum memiliki produk terdaftar</string>
