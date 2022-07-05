@@ -39,6 +39,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.smartbills.R
 import com.tokopedia.smartbills.analytics.SmartBillsAnalytics
 import com.tokopedia.smartbills.data.*
+import com.tokopedia.smartbills.data.uimodel.HighlightCategoryUiModel
 import com.tokopedia.smartbills.di.SmartBillsComponent
 import com.tokopedia.smartbills.presentation.activity.SmartBillsActivity
 import com.tokopedia.smartbills.presentation.activity.SmartBillsOnboardingActivity
@@ -148,6 +149,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                                         SOURCE
                                 )
                         )
+                        viewModel.getHightlightCategory()
                     }
                     if (ongoingMonth == null) {
                         showGlobalError(getDataErrorException())
@@ -318,6 +320,18 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                         Toaster.build(view, ErrorHandler.getErrorMessage(context, it.throwable), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                                 getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
                     }
+                }
+            }
+        }
+
+        viewLifecycleOwner.observe(viewModel.highlightCategory) {
+            when(it){
+                is Success -> {
+                    showHighlightCategory(it.data)
+                }
+
+                is Fail -> {
+                    hideHighlightCategory()
                 }
             }
         }
@@ -819,6 +833,15 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
 
     private fun hideProgressBar(){
         sbm_progress_bar.hide()
+    }
+
+    private fun showHighlightCategory(uiModel: HighlightCategoryUiModel) {
+        highlight_category.showHighlightCategory()
+        highlight_category.renderHighlightCategory(uiModel)
+    }
+
+    private fun hideHighlightCategory() {
+        highlight_category.hideHighlightCategory()
     }
 
     companion object {

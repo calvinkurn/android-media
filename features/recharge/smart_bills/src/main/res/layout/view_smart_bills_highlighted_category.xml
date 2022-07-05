@@ -5,14 +5,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="24dp"
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp"
     >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.tokopedia.unifycomponents.CardUnify
-            android:id="@+id/card_highlighted_category"
+        <FrameLayout
+            android:id="@+id/image_container"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -21,6 +24,7 @@
             android:layout_height="64dp"
             android:padding="8dp"
             app:cardCornerRadius="16dp"
+            android:background="@drawable/bg_sbm_squircle_category_white"
             >
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -32,13 +36,13 @@
                 tools:src="@tools:sample/avatars"
                 />
 
-        </com.tokopedia.unifycomponents.CardUnify>
+        </FrameLayout>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tg_highlighted_category_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@+id/card_highlighted_category"
+            app:layout_constraintStart_toEndOf="@+id/image_container"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="16dp"
@@ -55,7 +59,7 @@
             android:id="@+id/tg_highlighted_category_date"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@+id/card_highlighted_category"
+            app:layout_constraintStart_toEndOf="@+id/image_container"
             app:layout_constraintTop_toBottomOf="@+id/tg_highlighted_category_title"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="2dp"
@@ -73,7 +77,7 @@
             android:id="@+id/tg_highlighted_category_desc"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@+id/card_highlighted_category"
+            app:layout_constraintStart_toEndOf="@+id/image_container"
             app:layout_constraintTop_toBottomOf="@+id/tg_highlighted_category_date"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

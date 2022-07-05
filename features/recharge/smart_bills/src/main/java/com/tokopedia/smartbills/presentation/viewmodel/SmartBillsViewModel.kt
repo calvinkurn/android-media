@@ -17,6 +17,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.smartbills.data.*
+import com.tokopedia.smartbills.data.uimodel.HighlightCategoryUiModel
 import com.tokopedia.smartbills.usecase.SmartBillsMultiCheckoutUseCase
 import com.tokopedia.smartbills.util.RechargeSmartBillsMapper.mapActiontoStatement
 import com.tokopedia.usecase.coroutines.Fail
@@ -52,6 +53,10 @@ class SmartBillsViewModel @Inject constructor(
     private val mutableDeleteSBM = MutableLiveData<Result<RechargeDeleteSBM>>()
     val deleteSBM: LiveData<Result<RechargeDeleteSBM>>
         get() = mutableDeleteSBM
+
+    private val mutableHighlightCategory = MutableLiveData<Result<HighlightCategoryUiModel>>()
+    val highlightCategory: LiveData<Result<HighlightCategoryUiModel>>
+        get() = mutableHighlightCategory
 
     fun getStatementMonths(mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
         launchCatchError(block = {
@@ -237,6 +242,23 @@ class SmartBillsViewModel @Inject constructor(
 
     fun convertSBMMultiResponse(typeRestResponseMap: Map<Type, RestResponse?>): DataRechargeMultiCheckoutResponse {
         return typeRestResponseMap[DataRechargeMultiCheckoutResponse::class.java]?.getData() as DataRechargeMultiCheckoutResponse
+    }
+
+    fun getHightlightCategory() {
+        launchCatchError(block = {
+            val data = HighlightCategoryUiModel(
+                "1",
+                "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2020/8/28/47197032/47197032_914c9752-19e1-42b0-8181-91ef0629fd8a.png",
+                "Bayar sekaligus Pajak PBB 2022",
+                "Tagihan PBB 2022",
+                "Masukkan nomor PBB disini",
+                "tokopedia://digital/form?category_id=1&menu_id=2&template=telcopre&is_add_sbm=true"
+            )
+            mutableHighlightCategory.postValue(Success(data))
+        }
+        ) {
+            mutableHighlightCategory.postValue(Fail(it))
+        }
     }
 
     companion object {
