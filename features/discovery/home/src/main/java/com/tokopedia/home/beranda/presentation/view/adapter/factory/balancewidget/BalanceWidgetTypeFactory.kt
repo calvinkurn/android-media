@@ -1,10 +1,10 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.factory.balancewidget
 
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 
 /**
  * Created by dhaba
  */
 interface BalanceWidgetTypeFactory {
-    fun type(dataModel: HomeHeaderDataModel): Int
+    fun type(dataModel: HomeBalanceModel): Int
 }

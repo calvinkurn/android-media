@@ -2,28 +2,21 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_c
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.helper.benchmark.TRACE_ON_BIND_BALANCE_WIDGET_CUSTOMVIEW
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDividerModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel.Companion.TYPE_STATE_2
-import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.BalanceWidgetItemDecoration
+import com.tokopedia.home.beranda.presentation.view.adapter.factory.balancewidget.BalanceWidgetTypeFactoryImpl
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BalanceAdapter
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BalanceDividerAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BalanceWidgetAdapter
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.layoutmanager.NpaGridLayoutManager
-import com.tokopedia.home.util.ViewUtils
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 
@@ -36,13 +29,10 @@ class BalanceWidgetView: FrameLayout {
     private val itemContext: Context
     private var listener: HomeCategoryListener? = null
     private var rvBalance: RecyclerView? = null
-    private var rvBalanceDivider: RecyclerView? = null
-    private var layoutManager: NpaGridLayoutManager? = null
-    private var balanceAdapter: BalanceAdapter? = null
-    private var balanceDividerAdapter: BalanceDividerAdapter? = null
+    private var layoutManager: LinearLayoutManager? = null
+    private var balanceWidgetAdapter: BalanceWidgetAdapter? = null
     private var viewBalanceCoachmark: LinearLayout? = null
     private var viewBalanceCoachmarkNew: LinearLayout? = null
-    private lateinit var containerWidget: FrameLayout
 
     private var tokopointsView: View? = null
     private var tokopointsViewNew: View? = null
@@ -53,15 +43,12 @@ class BalanceWidgetView: FrameLayout {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     companion object {
-        const val LAYOUT_SPAN_2 = 2
-        const val LAYOUT_SPAN_3 = 3
         var disableAnimation: Boolean = false
     }
 
     init {
         val view = LayoutInflater.from(context).inflate(R.layout.layout_item_widget_balance_widget, this)
         rvBalance = view.findViewById(R.id.rv_balance_widget)
-        rvBalanceDivider = view.findViewById(R.id.rv_balance_divider)
         viewBalanceCoachmark = view.findViewById(R.id.view_balance_widget_coachmark)
         viewBalanceCoachmarkNew = view.findViewById(R.id.view_balance_widget_coachmark_new)
         this.itemView = view
@@ -83,64 +70,19 @@ class BalanceWidgetView: FrameLayout {
             viewBalanceCoachmark?.visibility = View.GONE
             viewBalanceCoachmarkNew?.visibility = View.GONE
         }
-        layoutManager = getLayoutManager(element)
-        if (balanceAdapter == null || rvBalance?.adapter == null) {
-            balanceAdapter = BalanceAdapter(listener, object: DiffUtil.ItemCallback<BalanceDrawerItemModel>() {
-                override fun areItemsTheSame(
-                    oldItem: BalanceDrawerItemModel,
-                    newItem: BalanceDrawerItemModel
-                ): Boolean {
-                    return oldItem.state == newItem.state
-                }
-
-                override fun areContentsTheSame(
-                    oldItem: BalanceDrawerItemModel,
-                    newItem: BalanceDrawerItemModel
-                ): Boolean {
-                    return oldItem == newItem
-                }
-
-            })
+        layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
+        if (balanceWidgetAdapter == null || rvBalance?.adapter == null) {
+            balanceWidgetAdapter = BalanceWidgetAdapter(BalanceWidgetTypeFactoryImpl(listener))
             rvBalance?.layoutManager = layoutManager
-            rvBalance?.adapter = balanceAdapter
+            rvBalance?.adapter = balanceWidgetAdapter
 
-            balanceDividerAdapter = BalanceDividerAdapter(object : DiffUtil.ItemCallback<BalanceDividerModel>() {
-                override fun areItemsTheSame(
-                    oldItem: BalanceDividerModel,
-                    newItem: BalanceDividerModel
-                ): Boolean {
-                    return oldItem == newItem
-                }
-
-                override fun areContentsTheSame(
-                    oldItem: BalanceDividerModel,
-                    newItem: BalanceDividerModel
-                ): Boolean {
-                    return oldItem.equals(newItem)
-                }
-            })
-            rvBalanceDivider?.adapter = balanceDividerAdapter
         }
         if (element.balanceDrawerItemModels.isEmpty()) {
             rvBalance?.gone()
         } else {
-            balanceAdapter?.setItemMap(element)
-            val totalDivider = element.balanceDrawerItemModels.size
-            if (rvBalance?.itemDecorationCount == 0) {
-                rvBalance?.addItemDecoration(BalanceWidgetItemDecoration(totalDivider))
-            }
-            rvBalanceDivider?.layoutManager = NpaGridLayoutManager(context, totalDivider)
-            balanceDividerAdapter?.addDivider(totalDivider)
+            balanceWidgetAdapter?.setVisitables(listOf(element))
             rvBalance?.show()
         }
-    }
-
-    private fun getLayoutManager(element: HomeBalanceModel): NpaGridLayoutManager {
-        val spanCount = when(element.balanceType) {
-            HomeBalanceModel.TYPE_STATE_2 -> LAYOUT_SPAN_2
-            else -> LAYOUT_SPAN_3
-        }
-        return NpaGridLayoutManager(itemView.context, spanCount)
     }
 
     fun startRotationForPosition(position: Int) {
@@ -148,14 +90,9 @@ class BalanceWidgetView: FrameLayout {
             val viewholder = rvBalance?.findViewHolderForAdapterPosition(position)
             viewholder?.let {
                 (it as? BalanceAdapter.Holder)?.let {
-//                    it.setDrawerItemWithAnimation()
                 }
             }
         }
-    }
-
-    fun getBalanceWidgetRecyclerView(): RecyclerView? {
-        return rvBalance
     }
 
     fun getTokopointsView(): View? {
@@ -164,18 +101,18 @@ class BalanceWidgetView: FrameLayout {
     }
 
     fun getGopayView(): View? {
-        if (balanceAdapter?.getItemMap()?.containsGopay() == true) {
-            val gopayView: View = findViewById(R.id.home_coachmark_item_gopay)
-            return gopayView
-        }
+//        if (balanceAdapter?.getItemMap()?.containsGopay() == true) {
+//            val gopayView: View = findViewById(R.id.home_coachmark_item_gopay)
+//            return gopayView
+//        }
         return null
     }
 
     fun getGopayNewView(): View? {
-        if (balanceAdapter?.getItemMap()?.containsGopay() == true) {
-            val gopayViewNew: View = findViewById(R.id.home_coachmark_item_gopay_new)
-            return gopayViewNew
-        }
+//        if (balanceAdapter?.getItemMap()?.containsGopay() == true) {
+//            val gopayViewNew: View = findViewById(R.id.home_coachmark_item_gopay_new)
+//            return gopayViewNew
+//        }
         return null
     }
 

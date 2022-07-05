@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance
 
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.data.model.*
+import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.navigation_common.usecase.pojo.walletapp.WalletAppData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_ERROR
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_LOADING
@@ -16,6 +17,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_OTHER
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_PENDING_CASHBACK
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_WITH_TOPUP
+import com.tokopedia.home.beranda.presentation.view.adapter.factory.balancewidget.BalanceWidgetTypeFactory
+import com.tokopedia.home.beranda.presentation.view.adapter.factory.balancewidget.BalanceWidgetVisitable
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
 import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.network.exception.MessageErrorException
@@ -24,7 +27,7 @@ data class HomeBalanceModel(
     var balanceDrawerItemModels: MutableMap<Int, BalanceDrawerItemModel> = mutableMapOf(),
     var balanceType: Int? = TYPE_STATE_2,
     var isTokopointsOrOvoFailed: Boolean = false
-) {
+) : BalanceWidgetVisitable {
     companion object {
         // State 1: Ovo, Coupon, Bebas Ongkir
         const val TYPE_STATE_1 = 1
@@ -54,6 +57,10 @@ data class HomeBalanceModel(
         const val BALANCE_POSITION_SECOND = 1
         const val BALANCE_POSITION_THIRD = 2
         const val BALANCE_POSITION_FOURTH = 3
+    }
+
+    override fun type(typeFactory: BalanceWidgetTypeFactory): Int {
+        return typeFactory.type(this)
     }
 
     override fun equals(other: Any?): Boolean {

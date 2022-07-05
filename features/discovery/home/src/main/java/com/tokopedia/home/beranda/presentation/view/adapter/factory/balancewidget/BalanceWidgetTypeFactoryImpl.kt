@@ -4,17 +4,22 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
+import com.tokopedia.home.beranda.listener.HomeCategoryListener
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.BalanceWidgetViewHolder
 
 /**
  * Created by dhaba
  */
-class BalanceWidgetTypeFactoryImpl : BaseAdapterTypeFactory(), BalanceWidgetTypeFactory {
-    override fun type(dataModel: HomeHeaderDataModel): Int {
-        return 1
+class BalanceWidgetTypeFactoryImpl(val listener: HomeCategoryListener?) : BaseAdapterTypeFactory(), BalanceWidgetTypeFactory {
+    override fun type(dataModel: HomeBalanceModel): Int {
+        return BalanceWidgetViewHolder.LAYOUT
     }
 
-    override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
-        return super.createViewHolder(parent, type)
+    override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
+        return when (type) {
+            BalanceWidgetViewHolder.LAYOUT -> BalanceWidgetViewHolder(view, listener)
+            else -> super.createViewHolder(view, type)
+        } as AbstractViewHolder<BalanceWidgetVisitable>
     }
 }
