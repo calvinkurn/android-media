@@ -50,7 +50,7 @@ class FeedProfileSubmitUseCase @Inject constructor(
         fun createInsertNewUsernameParam(username: String) = mapOf<String, Any>(
             KEY_USERNAME to username,
             KEY_BIOGRAPHY to "",
-            KEY_IS_UPDATE_USERNAME to false,
+            KEY_IS_UPDATE_USERNAME to true,
             KEY_IS_UPDATE_BIOGRAPHY to false,
         )
     }
