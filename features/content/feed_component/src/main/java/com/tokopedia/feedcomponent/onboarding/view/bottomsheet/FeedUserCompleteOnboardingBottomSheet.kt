@@ -133,6 +133,7 @@ class FeedUserCompleteOnboardingBottomSheet : BaseFeedUserOnboardingBottomSheet(
             binding.btnContinue.isEnabled = isCheckTnc && !isSubmit && usernameState is UsernameState.Valid
             binding.btnContinue.isLoading = isSubmit
 
+            binding.textFieldUsername.isEnabled = !isSubmit
             binding.textFieldUsername.isLoading = usernameState is UsernameState.Loading
             binding.textFieldUsername.isInputError = usernameState is UsernameState.Invalid
             binding.textFieldUsername.setMessage(
