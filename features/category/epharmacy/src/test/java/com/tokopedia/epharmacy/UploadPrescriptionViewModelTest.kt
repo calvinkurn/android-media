@@ -3,10 +3,13 @@ package com.tokopedia.epharmacy
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.epharmacy.network.response.EPharmacyDataResponse
 import com.tokopedia.epharmacy.network.response.EPharmacyProduct
+import com.tokopedia.epharmacy.network.response.EPharmacyUploadPrescriptionIdsResponse
+import com.tokopedia.epharmacy.network.response.PrescriptionImage
 import com.tokopedia.epharmacy.usecase.GetEPharmacyCheckoutDetailUseCase
 import com.tokopedia.epharmacy.usecase.GetEPharmacyOrderDetailUseCase
 import com.tokopedia.epharmacy.usecase.PostPrescriptionIdUseCase
 import com.tokopedia.epharmacy.usecase.UploadPrescriptionUseCase
+import com.tokopedia.epharmacy.utils.UPLOAD_CHECKOUT_ID_KEY
 import com.tokopedia.epharmacy.viewmodel.UploadPrescriptionViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -131,6 +134,31 @@ class UploadPrescriptionViewModelTest {
             "Data invalid"
         )
     }
+    @Test
+    fun uploadIdsSuccessTest()
+    {
+        val response = EPharmacyUploadPrescriptionIdsResponse(EPharmacyUploadPrescriptionIdsResponse.Data(true),"")
+        coEvery {
+            postPrescriptionIdUseCase.postPrescriptionIds(any(), any(), any(),any(),any())
+        } coAnswers {
+            firstArg<(EPharmacyUploadPrescriptionIdsResponse) -> Unit>().invoke(response)
+        }
+        viewModel.uploadPrescriptionIds(UPLOAD_CHECKOUT_ID_KEY,"")
+        assert(viewModel.uploadPrescriptionIdsData.value is Success)
+    }
+
+    @Test
+    fun `upload prescription ids success but condition fail`()
+    {
+        val response = EPharmacyUploadPrescriptionIdsResponse(EPharmacyUploadPrescriptionIdsResponse.Data(false),"")
+        coEvery {
+            postPrescriptionIdUseCase.postPrescriptionIds(any(), any(), any(),any(),any())
+        } coAnswers {
+            firstArg<(EPharmacyUploadPrescriptionIdsResponse) -> Unit>().invoke(response)
+        }
+        viewModel.uploadPrescriptionIds(UPLOAD_CHECKOUT_ID_KEY,"")
+        assert(viewModel.uploadPrescriptionIdsData.value is Fail)
+    }
 
 //    @Test
 //    fun `productDetail fetch failed throws exception`()
@@ -246,21 +274,14 @@ class UploadPrescriptionViewModelTest {
 //            addToCartUseCase.execute(any(), any())
 //        }
 //    }
-//
-//    @Test
-//    fun failAddToCart() {
-//        val detail = mockk<Detail>(relaxed = true)
-//        coEvery {
-//            addToCartUseCase.execute(any(), captureLambda())
-//        } coAnswers {
-//            val onError = lambda<(Throwable) -> Unit>()
-//            onError.invoke(mockThrowable)
-//        }
-//        viewModel.shopId = ""
-//        viewModel.addProductToCart(detail,"")
-//        verify {
-//            addToCartUseCase.execute(any(), any())
-//        }
-//    }
+
+
+    @Test
+    fun removePrescriptionImageAtIndex() {
+        val prescriptionImage = mockk<PrescriptionImage>(relaxed = true)
+        viewModel.onSuccessGetPrescriptionImages(arrayListOf(prescriptionImage))
+        viewModel.removePrescriptionImageAt(0)
+        assert(viewModel.prescriptionImages.value?.size == 0)
+    }
 
 }

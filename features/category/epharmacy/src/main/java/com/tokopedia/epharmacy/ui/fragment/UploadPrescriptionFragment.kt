@@ -197,7 +197,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
         if(orderId.isNotBlank()){
             uploadPrescriptionViewModel.uploadPrescriptionIds(UPLOAD_ORDER_ID_KEY,orderId)
         }else if(checkoutId.isNotBlank()){
-            uploadPrescriptionViewModel.uploadPrescriptionIds(UPLOAD_CHECKOUT_ID_KEY,orderId)
+            uploadPrescriptionViewModel.uploadPrescriptionIds(UPLOAD_CHECKOUT_ID_KEY,checkoutId)
         }
     }
 
