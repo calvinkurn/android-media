@@ -5,8 +5,12 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Typeface
 import android.os.Bundle
-import android.text.*
+import android.text.InputFilter
 import android.text.InputFilter.LengthFilter
+import android.text.InputType
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.StyleSpan
@@ -23,7 +27,13 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignInformationBinding
 import com.tokopedia.shop.flashsale.common.constant.Constant
@@ -31,7 +41,28 @@ import com.tokopedia.shop.flashsale.common.constant.DateConstant
 import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant
 import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant.CAMPAIGN_TEASER_MULTIPLIED_STEP_SIZE
 import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant.CAMPAIGN_TEASER_NORMAL_STEP_SIZE
-import com.tokopedia.shop.flashsale.common.extension.*
+import com.tokopedia.shop.flashsale.common.extension.advanceDayBy
+import com.tokopedia.shop.flashsale.common.extension.advanceHourBy
+import com.tokopedia.shop.flashsale.common.extension.advanceMinuteBy
+import com.tokopedia.shop.flashsale.common.extension.advanceMonthBy
+import com.tokopedia.shop.flashsale.common.extension.decreaseHourBy
+import com.tokopedia.shop.flashsale.common.extension.disable
+import com.tokopedia.shop.flashsale.common.extension.doOnDelayFinished
+import com.tokopedia.shop.flashsale.common.extension.enable
+import com.tokopedia.shop.flashsale.common.extension.extractMonth
+import com.tokopedia.shop.flashsale.common.extension.extractYear
+import com.tokopedia.shop.flashsale.common.extension.formatTo
+import com.tokopedia.shop.flashsale.common.extension.isValidHexColor
+import com.tokopedia.shop.flashsale.common.extension.localFormatTo
+import com.tokopedia.shop.flashsale.common.extension.removeHexColorPrefix
+import com.tokopedia.shop.flashsale.common.extension.removeTimeZone
+import com.tokopedia.shop.flashsale.common.extension.setBackgroundFromGradient
+import com.tokopedia.shop.flashsale.common.extension.setFragmentToUnifyBgColor
+import com.tokopedia.shop.flashsale.common.extension.setMaxLength
+import com.tokopedia.shop.flashsale.common.extension.showError
+import com.tokopedia.shop.flashsale.common.extension.showLoading
+import com.tokopedia.shop.flashsale.common.extension.stopLoading
+import com.tokopedia.shop.flashsale.common.extension.toHexColor
 import com.tokopedia.shop.flashsale.common.preference.SharedPreferenceDataStore
 import com.tokopedia.shop.flashsale.common.util.DateManager
 import com.tokopedia.shop.flashsale.common.util.doOnTextChanged
@@ -51,11 +82,12 @@ import com.tokopedia.shop.flashsale.presentation.creation.information.bottomshee
 import com.tokopedia.shop.flashsale.presentation.creation.information.dialog.CancelCreateCampaignConfirmationDialog
 import com.tokopedia.shop.flashsale.presentation.creation.information.dialog.CancelEditCampaignConfirmationDialog
 import com.tokopedia.shop.flashsale.presentation.creation.manage.ManageProductActivity
+import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListActivity
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import java.util.*
+import java.util.Date
 import javax.inject.Inject
 
 
@@ -825,9 +857,15 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             binding?.btnDraft?.stopLoading()
 
             if (result.isSuccess) {
+                val campaignDetail = viewModel.campaignDetail.value
                 activity?.apply {
-                    setResult(Activity.RESULT_OK)
-                    finish()
+                    // handle campaign save draft is not opened from campaign list case
+                    if (campaignDetail is Success && !campaignDetail.data.status.isDraft()) {
+                        CampaignListActivity.start(this, isSaveDraft = true)
+                    } else {
+                        setResult(Activity.RESULT_OK)
+                        finish()
+                    }
                 }
             } else {
                 displaySaveDraftError(result)
