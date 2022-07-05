@@ -315,12 +315,7 @@ open class PickerActivity : BaseActivity()
         if (container.isFragmentActive(FragmentType.GALLERY)) {
             pickerAnalytics.clickNextButton()
         }
-
-        val intent = Intent(this, PickerPreviewActivity::class.java).apply {
-            putExtra(EXTRA_INTENT_PREVIEW, ArrayList(medias))
-        }
-
-        startActivityForResult(intent, REQUEST_PREVIEW_PAGE)
+        PickerPreviewActivity.start(this, ArrayList(medias), REQUEST_PREVIEW_PAGE)
     }
 
     override fun onCameraThumbnailClicked() {

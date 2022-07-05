@@ -14,7 +14,6 @@ import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.*
-import com.tokopedia.topchat.common.InboxChatConstant.UPLOADING
 import com.tokopedia.topchat.common.util.AddressUtil
 
 /**
@@ -24,6 +23,7 @@ import com.tokopedia.topchat.common.util.AddressUtil
 object TopChatWebSocketParam {
 
     private val gson = GsonBuilder().create()
+    private const val UPLOADING = "Uploaded Image"
 
     fun generateParamSendMessage(
         roomeMetaData: RoomMetaData,
@@ -118,17 +118,19 @@ object TopChatWebSocketParam {
         productProfile.addProperty("drop_percentage", product.dropPercentage)
         productProfile.addProperty("image_url", product.productImage)
         productProfile.addProperty("url", product.productUrl)
+        productProfile.addProperty("android_url", product.androidUrl)
+        productProfile.addProperty("ios_url", product.iosUrl)
         productProfile.addProperty("text", message)
         productProfile.addProperty("status", product.status)
         productProfile.addProperty("remaining_stock", product.remainingStock)
         productProfile.addProperty("is_variant", product.isSupportVariant)
         productProfile.add("variant", product.generateVariantRequest())
-        productProfile.addProperty("campaign_id", product.campaignId)
+        productProfile.addProperty("campaign_id", product.campaignId.toLongOrZero())
         productProfile.addProperty("is_preorder", product.isPreOrder)
-        productProfile.addProperty("price_int", product.priceInt)
-        productProfile.addProperty("category_id", product.categoryId)
+        productProfile.addProperty("price_int", product.priceNumber.toLong())
+        productProfile.addProperty("category_id", product.categoryId.toLongOrZero())
         productProfile.addProperty("is_upcoming_campaign_product", product.isUpcomingCampaign)
-        productProfile.addProperty("shop_id", product.shopId)
+        productProfile.addProperty("shop_id", product.shopId.toLongOrZero())
         productProfile.addProperty("min_order", product.minOrder)
         productProfile.addProperty("wishlist", product.wishList)
         productProfile.addProperty("is_fulfillment", product.isFulfillment)

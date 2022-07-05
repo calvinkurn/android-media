@@ -546,7 +546,8 @@
             "original_price": "Rp249.000",
             "discount_percentage": 48
           },
-          "label_group": []
+          "label_group": [],
+          "customvideo_url" : "https://vod.tokopedia.com/view/adaptive.m3u8?id=6a96e88795f140e4bbaa9d67831d9444"
         },
         "shop": {
           "id": "4274157",
@@ -640,7 +641,8 @@
               "type": "lightGreen",
               "title": "Grosir"
             }
-          ]
+          ],
+          "customvideo_url" : ""
         },
         "shop": {
           "id": "3097820",
@@ -718,7 +720,8 @@
             "original_price": "Rp239.000",
             "discount_percentage": 41
           },
-          "label_group": []
+          "label_group": [],
+          "customvideo_url" : ""
         },
         "shop": {
           "id": "4274157",
@@ -817,7 +820,8 @@
               "type": "lightGreen",
               "title": "Cashback"
             }
-          ]
+          ],
+          "customvideo_url" : ""
         },
         "shop": {
           "id": "7293220",
@@ -912,7 +916,8 @@
               "type": "lightGreen",
               "title": "Grosir"
             }
-          ]
+          ],
+          "customvideo_url" : ""
         },
         "shop": {
           "id": "3097820",
@@ -1011,7 +1016,8 @@
               "type": "lightGreen",
               "title": "Cashback"
             }
-          ]
+          ],
+          "customvideo_url" : ""
         },
         "shop": {
           "id": "7293220",
