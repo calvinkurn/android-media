@@ -323,7 +323,7 @@ class ReadReviewHeader @JvmOverloads constructor(
     }
 
     fun isSortFilterActive(): Boolean {
-        return sortFilter?.chipItems?.lastOrNull()?.title != getDefaultSortTitle()
+        return binding.readReviewSortFilter.chipItems?.lastOrNull()?.title != getDefaultSortTitle()
     }
 
     fun getReviewRatingContainer(): ConstraintLayout {
