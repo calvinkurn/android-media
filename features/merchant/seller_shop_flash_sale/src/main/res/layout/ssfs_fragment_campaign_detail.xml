@@ -359,6 +359,13 @@
                 app:constraint_referenced_ids="tg_campaign_performance_title, frame_campaign_performance, divider_campaign_performance"
                 tools:visibility="visible" />
 
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier_campaign_information"
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="ticker_campaign_event_participation, divider_campaign_ended_performance, divider_campaign_performance, divider_campaign_info, divider_campaign_status"/>
+
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tg_campaign_product_list_title"
                 android:layout_width="wrap_content"
@@ -367,14 +374,15 @@
                 android:layout_marginTop="@dimen/unify_space_16"
                 android:text="@string/campaign_detail_product_list_title"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/divider_campaign_performance"
-                app:typographyType="display_2"
+                app:layout_constraintTop_toBottomOf="@+id/barrier_campaign_information"
+                app:typographyType="display_1"
                 app:typographyWeight="bold" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_product_list"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:layout_marginTop="@dimen/unify_space_8"
                 android:layout_marginBottom="@dimen/unify_space_16"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintHeight_min="wrap"

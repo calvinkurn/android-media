@@ -16,6 +16,7 @@
     <string name="sfs_saved_as_draft">Campaign berhasil disimpan sebagai draft.</string>
     <string name="sfs_placeholder_percent">%d\%%</string>
     <string name="sfs_save_changes">Simpan Perubahan</string>
+    <string name="sfs_save">Simpan</string>
 
     <!--Campaign List Page-->
     <string name="sfs_your_shop_flash_sale">Flash Sale Toko-mu</string>
@@ -275,6 +276,7 @@
     <string name="error_msg_other">&#160;dan terjadi kesalahan lainnya</string>
     <string name="manage_product_first_list_coachmark">Klik Ubah di setiap produk untuk mengubah atau memperbaiki informasi tiap produk.</string>
     <string name="manage_product_second_list_coachmark">Klik di sini untuk menambah produk, ya.</string>
+    <string name="manage_product_success_edit_toaster_message">Info produk berhasil diubah.</string>
 
     <!--Manage Product Highlight -->
     <string name="sfs_manage_highlight">Atur Highlight</string>
@@ -289,6 +291,24 @@
     <!--Delete Product-->
     <string name="deleteproduct_dialog_title">Yakin ingin hapus produk dari campaign?</string>
     <string name="deleteproduct_dialog_desc">Produk yang dihapus tidak dapat didaftarkan ke campaign, ya.</string>
+
+    <!--Edit Product-->
+    <string name="editproduct_bs_title">Ubah informasi produk</string>
+    <string name="editproduct_counter_text">Produk dengan info belum lengkap: %d</string>
+    <string name="editproduct_stock_total_text">Total stok %d</string>
+    <string name="editproduct_stock_text">Stok %d</string>
+    <string name="edit_product_max_transaction_text">Batas maks. pembelian produk</string>
+    <string name="editproduct_required_text">Wajib diisi</string>
+    <string name="editproduct_max_prefix">Maks. </string>
+    <string name="editproduct_min_prefix">Min. </string>
+    <string name="editproduct_max_percent_text">Maks. %d</string>
+    <string name="editproduct_min_percent_text">Min. %d</string>
+    <string name="editproduct_order_exceed_stock_error">Tidak boleh melebihi stok utama</string>
+    <string name="editproduct_bs_warehouse_title">Pilih lokasi</string>
+    <string name="editproduct_warehouse_title_default">Lokasi Seller</string>
+    <string name="editproduct_first_coachmark_content">Tentukan potongan harga berdasarkan rupiah atau persentase dengan besaran antara 1-99%.</string>
+    <string name="editproduct_second_coachmark_content">Stok campaign akan diambil dari stok utama produk. Produk dapat dibeli di luar jadwal campaign selama stok utama masih tersedia, ya.</string>
+    <string name="editproduct_third_coachmark_content">Klik di sini untuk menyimpan pengaturan produkmu dan lanjut untuk mengatur produk berikutnya.</string>
 
     <!-- Campaign Detail -->
     <string name="campaign_detail">Detail Campaign</string>
@@ -321,5 +341,7 @@
     <string name="campaign_detail_SKU_placeholder">SKU: %s</string>
     <string name="campaign_detail_campaign_stock_label">Stok Campaign</string>
     <string name="campaign_detail_campaign_price_label">Harga Campaign</string>
+    <string name="campaign_detail_remaining_label">Sisa</string>
+    <string name="campaign_detail_sold_label">Terjual</string>
 
 </resources>

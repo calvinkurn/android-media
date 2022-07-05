@@ -29,7 +29,7 @@ import javax.inject.Inject
 class ShareComponentInstanceBuilder @Inject constructor(
     private val userSession: UserSessionInterface,
     private val resourceProvider: ResourceProvider,
-    private val tracker: ShopFlashSaleTracker
+    private val tracker: ShopFlashSaleTracker,
 ) {
 
     companion object {

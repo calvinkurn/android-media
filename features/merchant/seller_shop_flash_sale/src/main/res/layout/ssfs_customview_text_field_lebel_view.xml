@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/layoutLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tool:visibility="visible"
+        android:orientation="vertical">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tfPlaceholder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:typographyType="display_3"
+            app:typographyWeight="bold"
+            tool:text="Potongan"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tfText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            tool:text="-%"
+            app:typographyType="display_1"
+            app:typographyWeight="bold"/>
+
+    </LinearLayout>
+
+    <com.tokopedia.unifycomponents.TextFieldUnify2
+        android:id="@+id/textField"
+        app:unify_text_field_input_type="number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</androidx.appcompat.widget.LinearLayoutCompat>

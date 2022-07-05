@@ -7,6 +7,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
 import com.tokopedia.centralizedpromo.view.model.PromoCreationUiModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.R.layout.centralized_promo_item_promo_creation
@@ -18,6 +19,7 @@ class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiM
     var onFreeShippingClicked: (() -> Unit)? = null
     var onProductCouponImpression: (() -> Unit)? = null
     var onProductCouponClicked: (() -> Unit)? = null
+    var onFlashSaleTokoCLicked: ((String) -> Unit)? = null
 
     companion object {
         val RES_LAYOUT = centralized_promo_item_promo_creation
@@ -32,6 +34,15 @@ class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiM
             ImageHandler.loadImageWithId(ivRecommendedPromo, element.imageDrawable)
             tvRecommendedPromoTitle.text = element.title
             tvRecommendedPromoDescription.text = element.description
+
+            newTagLabel.run {
+                if (element.tagLabel.isNotBlank()) {
+                    show()
+                    setLabel(element.tagLabel)
+                } else {
+                    hide()
+                }
+            }
 
             if (element.extra.isNotBlank()) {
                 tvRecommendedPromoExtra.text = element.extra
@@ -88,6 +99,9 @@ class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiM
             isProductCouponPromo(title) -> {
                 onProductCouponClicked?.invoke()
             }
+            isFlashSaleToko(title) -> {
+                onFlashSaleTokoCLicked?.invoke(title)
+            }
             else -> {
                 CentralizedPromoTracking.sendClickPromoCreation(title)
             }
@@ -100,6 +114,10 @@ class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiM
 
     private fun isProductCouponPromo(title: String): Boolean {
         return title == getString(R.string.centralized_promo_promo_creation_voucher_product_title)
+    }
+
+    private fun isFlashSaleToko(title: String): Boolean {
+        return title == getString(R.string.centralized_promo_promo_creation_flash_sale_toko_title)
     }
 
 }

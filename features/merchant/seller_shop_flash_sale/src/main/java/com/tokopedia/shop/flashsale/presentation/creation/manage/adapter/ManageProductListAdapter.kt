@@ -12,7 +12,7 @@ import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList.Prod
 import com.tokopedia.unifyprinciples.Typography
 
 class ManageProductListAdapter(
-    private val onEditClicked: () -> Unit,
+    private val onEditClicked: (product: Product) -> Unit,
     private val onDeleteClicked: (product: Product) -> Unit
 ) : RecyclerView.Adapter<ManageProductListAdapter.ManageProductListViewHolder>() {
 
@@ -58,7 +58,7 @@ class ManageProductListAdapter(
 
         fun bind(
             product: Product,
-            onEditClicked: () -> Unit,
+            onEditClicked: (product: Product) -> Unit,
             onDeleteClicked: (product: Product) -> Unit
         ) {
             binding.apply {
@@ -108,11 +108,11 @@ class ManageProductListAdapter(
 
 
                 tpgStockProduct.setOriginalStock(product.productMapData.originalStock)
-                tpgStockCampaign.setCampaignStock(product.productMapData.customStock)
+                tpgStockCampaign.setCampaignStock(product.productMapData.originalCustomStock)
                 tpgMaxOrder.setMaxOrder(product.productMapData.maxOrder)
 
                 btnUpdateProduct.setOnClickListener {
-                    onEditClicked.invoke()
+                    onEditClicked.invoke(product)
                 }
 
                 iconDeleteProduct.setOnClickListener {
@@ -131,7 +131,7 @@ class ManageProductListAdapter(
             )
         }
 
-        private fun Typography.setCampaignStock(campaignStock: Long) {
+        private fun Typography.setCampaignStock(campaignStock: Int) {
             if (campaignStock > 0) {
                 this.visible()
                 binding.tpgSeparator.visible()

@@ -9,8 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -20,7 +18,6 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentManageProductBinding
-import com.tokopedia.shop.flashsale.common.customcomponent.BaseSimpleListFragment
 import com.tokopedia.shop.flashsale.common.extension.*
 import com.tokopedia.shop.flashsale.common.preference.SharedPreferenceDataStore
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
@@ -28,6 +25,7 @@ import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType.*
 import com.tokopedia.shop.flashsale.presentation.creation.highlight.ManageHighlightedProductActivity
 import com.tokopedia.shop.flashsale.presentation.creation.manage.adapter.ManageProductListAdapter
+import com.tokopedia.shop.flashsale.presentation.creation.manage.bottomsheet.EditProductInfoBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.manage.dialog.ProductDeleteDialog
 import com.tokopedia.shop.flashsale.presentation.creation.manage.dialog.showSuccessSaveCampaignDraft
 import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListActivity
@@ -78,9 +76,7 @@ class ManageProductFragment : BaseDaggerFragment() {
     private val campaignId by lazy { arguments?.getLong(BUNDLE_KEY_CAMPAIGN_ID).orZero() }
     private val manageProductListAdapter by lazy {
         ManageProductListAdapter(
-            onEditClicked = {
-                null
-            },
+            onEditClicked = ::editProduct,
             onDeleteClicked = ::deleteProduct
         )
     }
@@ -107,8 +103,9 @@ class ManageProductFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         setFragmentToUnifyBgColor()
         setupView()
-        viewModel.getProducts(campaignId, LIST_TYPE)
+        loadProductsData()
         observeProductList()
+        observeIncompleteProducts()
         observeRemoveProductsStatus()
         observeBannerType()
     }
@@ -148,7 +145,7 @@ class ManageProductFragment : BaseDaggerFragment() {
     }
 
     private fun handleCoachMark() {
-        val shouldShowCoachMark = !sharedPreference.isManageProcudtCoachMarkDismissed()
+        val shouldShowCoachMark = !sharedPreference.isManageProductCoachMarkDismissed()
         if (shouldShowCoachMark && manageProductListAdapter.itemCount.isMoreThanZero()) {
             showCoachMark()
         }
@@ -174,6 +171,12 @@ class ManageProductFragment : BaseDaggerFragment() {
                     result.throwable.localizedMessage?.let { view.showError(it) }
                 }
             }
+        }
+    }
+
+    private fun observeIncompleteProducts() {
+        viewModel.incompleteProducts.observe(viewLifecycleOwner) {
+            if (it.isNotEmpty()) showEditProductBottomSheet(it)
         }
     }
 
@@ -203,6 +206,16 @@ class ManageProductFragment : BaseDaggerFragment() {
                 }
             }
         }
+    }
+
+    private fun loadProductsData() {
+        viewModel.getProducts(campaignId, LIST_TYPE)
+    }
+
+    private fun showSuccessEditProductToaster() {
+        binding?.cardBottomButtonGroup.showToaster(
+            getString(R.string.manage_product_success_edit_toaster_message)
+        )
     }
 
     private fun displayProducts(productList: SellerCampaignProductList) {
@@ -243,7 +256,6 @@ class ManageProductFragment : BaseDaggerFragment() {
         }
     }
 
-    @SuppressLint("ResourcePackage")
     private fun showEmptyState() {
         binding?.apply {
             emptyState.visible()
@@ -361,12 +373,27 @@ class ManageProductFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun showEditProductBottomSheet(productList: List<SellerCampaignProductList.Product>) {
+        val bottomSheet = EditProductInfoBottomSheet.newInstance(productList)
+        bottomSheet.setOnEditProductSuccessListener {
+            doOnDelayFinished(DELAY) {
+                loadProductsData()
+                showSuccessEditProductToaster()
+            }
+        }
+        bottomSheet.show(childFragmentManager)
+    }
+
     private fun showChooseProductPage() {
         val context = context ?: return
         val intent = Intent(context, ChooseProductActivity::class.java).apply {
             putExtra(ChooseProductActivity.BUNDLE_KEY_CAMPAIGN_ID, campaignId.toString())
         }
         startActivityForResult(intent, REQUEST_CODE)
+    }
+
+    private fun editProduct(product: SellerCampaignProductList.Product) {
+        showEditProductBottomSheet(listOf(product))
     }
 
     private fun deleteProduct(product: SellerCampaignProductList.Product) {
