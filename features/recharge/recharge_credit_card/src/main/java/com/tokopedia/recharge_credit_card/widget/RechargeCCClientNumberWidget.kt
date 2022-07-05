@@ -371,12 +371,6 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(@NotNull context: C
         mCreditCardActionListener = creditCardActionListener
     }
 
-    fun startShakeAnimation() {
-        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetInputField
-            .startAnimation(
-                AnimationUtils.loadAnimation(context, R.anim.client_number_widget_shake_anim))
-    }
-
     fun enablePrimaryButton() {
         binding.clientNumberWidgetMainLayout.clientNumberWidgetButton.isEnabled = true
     }
