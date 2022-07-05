@@ -655,6 +655,10 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         binding?.tpgCampaignNameErrorMessage?.invisible()
     }
 
+    private fun showUpdateUpcomingDurationError(errorMessage: String) {
+        binding?.cardView showError errorMessage
+    }
+
     private fun showErrorTicker(title : String, description : String) {
         binding?.tickerErrorMessage?.visible()
         binding?.tickerErrorMessage?.tickerTitle = title
@@ -815,7 +819,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         if (result.isSuccess) {
             ManageProductActivity.start(requireActivity(), result.campaignId)
         } else {
-            showErrorTicker(result.errorTitle, result.errorDescription)
+            handleCreateCampaignError(result)
         }
     }
 
@@ -830,19 +834,18 @@ class CampaignInformationFragment : BaseDaggerFragment() {
                     finish()
                 }
             } else {
-                displaySaveDraftError(result)
+                handleCreateCampaignError(result)
             }
         }
 
     }
 
-    private fun displaySaveDraftError(result: CampaignCreationResult) {
-        if (result.errorTitle.isNotEmpty()) {
+    private fun handleCreateCampaignError(result: CampaignCreationResult) {
+        if (result.errorTitle.isNotEmpty() && result.errorDescription.isNotEmpty()) {
             showErrorTicker(result.errorTitle, result.errorDescription)
-            return
+        } else {
+            showUpdateUpcomingDurationError(result.errorMessage)
         }
-
-        binding?.root showError result.errorMessage
     }
 
     private fun handleRemainingQuota(remainingQuota: Int) {
