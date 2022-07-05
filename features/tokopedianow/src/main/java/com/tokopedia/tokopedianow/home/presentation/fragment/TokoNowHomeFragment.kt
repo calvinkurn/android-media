@@ -84,9 +84,6 @@ import com.tokopedia.tokopedianow.common.constant.ConstantKey.REMOTE_CONFIG_KEY_
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_SEARCH
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_TIME_SEARCH
 import com.tokopedia.tokopedianow.common.constant.RequestCode.REQUEST_CODE_LOGIN
-import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_15M
-import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_20M
-import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_2H
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MAIN_QUEST
@@ -152,6 +149,7 @@ import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeLeftCarous
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeTickerViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
 import com.tokopedia.tokopedianow.common.util.TokoNowSharedPreference
+import com.tokopedia.tokopedianow.home.analytic.HomePlayWidgetAnalyticModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomePlayWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.view.listener.OnBoard20mBottomSheetCallback
 import com.tokopedia.unifycomponents.Toaster
@@ -1874,6 +1872,7 @@ class TokoNowHomeFragment: Fragment(),
     private fun createPlayWidgetCoordinator(): PlayWidgetCoordinator {
         val playWidgetCoordinator = PlayWidgetCoordinator(this).apply {
             setImpressionHelper(ImpressionHelper(validator = playWidgetImpressionValidator))
+            setAnalyticModel(HomePlayWidgetAnalyticModel)
             setListener(this@TokoNowHomeFragment)
         }
         this.playWidgetCoordinator = playWidgetCoordinator
