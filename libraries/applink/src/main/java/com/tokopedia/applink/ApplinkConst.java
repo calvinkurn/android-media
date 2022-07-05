@@ -163,7 +163,6 @@ public interface ApplinkConst {
     String TOPCHAT_ASKBUYER = "tokopedia://topchat/askbuyer/{toUserId}?customMessage" +
             "={customMessage}&source={source}&opponent_name={opponent_name}&avatar={avatar}";
     String CHATBOT_HOST = "chatbot";
-    String AFFILIATE_HOST = "affiliate";
     String CHATBOT = "tokopedia://chatbot/{message_id}";
     String CHAT_BOT = "tokopedia://chatbot";
     String CHAT_TEMPLATE = "tokopedia://chat/settings/templatechat";
@@ -244,6 +243,8 @@ public interface ApplinkConst {
     String OVO_FINAL_PAGE = "tokopedia://ovo-final";
 
     String ORDER_TRACKING = "tokopedia://shipping/tracking/{order_id}";
+    String LOGISTIC_SELLER_RESCHEDULE = "tokopedia://seller/reschedulepickup";
+    String ORDER_POD = "tokopedia://shipping/pod/{order_id}";
 
     String LINK_ACCOUNT = "tokopedia://gojek-account-link";
     String EXPLICIT_PROFILE = "tokopedia://explicit-profile";
@@ -335,6 +336,8 @@ public interface ApplinkConst {
     String AFFILIATE_ONBOARDING = "tokopedia://affiliate/onboarding";
     String AFFILIATE_PRODUCT = "tokopedia://affiliate/product/{product_id}";
     String AFFILIATE = "tokopedia://affiliate";
+    String FEED_CREATION_PRODUCT_SEARCH = "tokopedia://feed/creation-product-search";
+    String FEED_CREATION_SHOP_SEARCH = "tokopedia://feed/creation-shop-search";
 
     String PLAY_DETAIL = "tokopedia://play/{channel_id}";
     String PLAY_BROADCASTER = "tokopedia://play-broadcaster";
@@ -378,7 +381,7 @@ public interface ApplinkConst {
     String SMC_REFERRAL = "tokopedia://smc-referral";
 
     String CATEGORY_BELANJA = "tokopedia://category_belanja/{CATEGORY_NAME}";
-    
+
     String POWER_MERCHANT_SUBSCRIBE = "tokopedia://power_merchant/subscribe";
     String PM_BENEFIT_PACKAGE = "tokopedia://power_merchant/benefit_package";
     String POWER_MERCHANT_PRO_INTERRUPT = "tokopedia://power_merchant/interrupt";
@@ -473,8 +476,6 @@ public interface ApplinkConst {
 
     String MONEYIN = "tokopedia://money_in/device_validation";
     String IMAGE_PICKER_V2 = "tokopedia://image-picker/v2";
-    String USER_PROFILE_LANDING = "tokopedia://people";
-    String USER_PROFILE_FOLLOWERS = "tokopedia://people/followers";
 
     interface WebViewUrl {
         String SALDO_DETAIL = "https://m.tokopedia.com/deposit";
@@ -539,6 +540,15 @@ public interface ApplinkConst {
         String SEARCH = "tokopedia://now/search";
         String CATEGORY = "tokopedia://now/category";
         String REPURCHASE = "tokopedia://now/repurchase-page";
+    }
+
+    interface TokoFood {
+        String MAIN_PATH = "tokopedia://food";
+        String HOME = "tokopedia://food/home";
+        String CATEGORY = "tokopedia://food/category";
+        String MERCHANT = "tokopedia://food/merchant/{merchantId}?product_id={product_id}";
+        String POST_PURCHASE = "tokopedia://food/postpurchase/{orderId}";
+        String TOKOFOOD_ORDER = "tokopedia://food/order";
     }
 
     interface TokoMart {

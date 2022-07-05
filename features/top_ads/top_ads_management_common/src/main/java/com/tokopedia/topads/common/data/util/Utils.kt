@@ -39,7 +39,7 @@ object Utils {
      */
     fun TextFieldUnify.addBidValidationListener(
         minBid: String, maxBid: String, suggestedBid: String,
-        block: ((Boolean) -> Unit)? = null,
+        block: ((error: Boolean) -> Unit)? = null,
     ) {
         val textField = this
         val resources = textField.context.resources

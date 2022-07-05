@@ -429,7 +429,8 @@ class DigitalPDPDataPlanFragment :
                         atcData.data.cartId,
                         viewModel.digitalCheckoutPassData.productId.toString(),
                         viewModel.selectedFullProduct.denomData.title,
-                        atcData.data.priceProduct
+                        atcData.data.priceProduct,
+                        atcData.data.channelId,
                     )
                     navigateToCart(atcData.data.categoryId)
                 }
@@ -1092,8 +1093,10 @@ class DigitalPDPDataPlanFragment :
                 override fun onGlobalLayout() {
                     binding?.rechargePdpPaketDataClientNumberWidget?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
                     binding?.run {
-                        val dynamicPadding = rechargePdpPaketDataClientNumberWidget.height.pxToDp(
-                            resources.displayMetrics) + extraPadding
+                        val defaultPadding: Int = context?.resources?.displayMetrics?.let {
+                            rechargePdpPaketDataClientNumberWidget.height.pxToDp(it)
+                        } ?: 0
+                        val dynamicPadding = defaultPadding + extraPadding
                         rechargePdpPaketDataSvContainer.setPadding(0, dynamicPadding, 0, 0)
                     }
                 }

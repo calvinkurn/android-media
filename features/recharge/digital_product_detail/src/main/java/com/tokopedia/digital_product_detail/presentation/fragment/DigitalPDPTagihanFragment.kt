@@ -212,7 +212,8 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
                         it.data.cartId,
                         viewModel.digitalCheckoutPassData.productId.toString(),
                         viewModel.operatorData.attributes.name,
-                        it.data.priceProduct
+                        it.data.priceProduct,
+                        it.data.channelId,
                     )
                     navigateToCart(it.data.categoryId)
                 }

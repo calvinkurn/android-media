@@ -87,5 +87,11 @@ object Constant {
         const val TRIPLE = "triple"
     }
 
+    object QueryParamConstants{
+        const val RPC_DYNAMIC_SUBTITLE = "rpc_DynamicSubtitle"
+        const val RPC_TARGET_TITLE_ID = "rpc_TargetTitleId"
+        const val QUERY_PARAMS_KEY = "query_params_key"
+    }
+
     const val LABEL_FULFILLMENT = "fulfillment"
 }

@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.product.detail.common.getCurrencyFormatted
@@ -60,6 +61,8 @@ class ShipmentViewHolder(
         val rates = element.rates
 
         componentTrackDataModel = getComponentTrackData(element)
+
+        binding.pdpShipmentSeparator.showWithCondition(!element.isTokoNow)
 
         when {
             rates.title.isEmpty() -> {

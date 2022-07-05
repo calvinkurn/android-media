@@ -131,6 +131,7 @@ class DiscoveryPageDataMapper(
                 listComponents.addAll(parseProductVerticalList(component))
             }
             ComponentNames.BannerInfinite.componentName -> listComponents.addAll(parseProductVerticalList(component,false))
+            ComponentNames.ShopCardInfinite.componentName -> listComponents.addAll(parseProductVerticalList(component,false))
             ComponentNames.ProductCardSprintSaleCarousel.componentName,
             ComponentNames.ProductCardCarousel.componentName -> {
                 addRecomQueryProdID(component)
@@ -199,21 +200,14 @@ class DiscoveryPageDataMapper(
                 listComponents.addAll(setupMerchantVoucherList(component))
             }
             ComponentNames.ProductCardSingle.componentName -> {
-                if (shouldAddRecomSingleProduct(component)) {
+                if (!shouldHideSingleProdCard) {
+                    addRecomQueryProdID(component)
                     listComponents.add(component)
                 }
             }
             else -> listComponents.add(component)
         }
         return listComponents
-    }
-
-    private fun shouldAddRecomSingleProduct(component: ComponentsItem): Boolean {
-        if (!shouldHideSingleProdCard && !queryParameterMap[RECOM_PRODUCT_ID].isNullOrEmpty()) {
-            component.recomQueryProdId = queryParameterMap[RECOM_PRODUCT_ID]
-            return true
-        }
-        return false
     }
 
     private fun addRecomQueryProdID(component: ComponentsItem) {

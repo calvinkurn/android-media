@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.media.picker.di.module.PickerModule
 import com.tokopedia.media.picker.di.module.PickerViewModelModule
 import com.tokopedia.media.picker.ui.activity.album.AlbumActivity
-import com.tokopedia.media.picker.ui.activity.main.PickerActivity
+import com.tokopedia.media.picker.ui.activity.picker.PickerActivity
 import com.tokopedia.media.picker.ui.fragment.camera.CameraFragment
 import com.tokopedia.media.picker.ui.fragment.gallery.GalleryFragment
 import com.tokopedia.media.picker.ui.fragment.permission.PermissionFragment
