@@ -129,6 +129,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         private const val CHAR_LENGTH_TO_SHOW = 1900
         private const val IMAGE_EXIST = "image_exist"
         private const val VIDEOS_RESULT = "video_result"
+        private const val DAYS_7 = 7L
     }
 
     abstract fun fetchContentForm()
@@ -486,7 +487,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         product_attachment.adapter = adapter
         product_attachment.setHasFixedSize(true)
         product_attachment.layoutManager = productAttachmentLayoutManager
-        product_attachment.addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+        product_attachment.addItemDecoration(SpaceItemDecoration(requireContext().resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
                 LinearLayoutManager.HORIZONTAL))
 
         image_picker.setOnClickListener {
@@ -566,7 +567,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         }
         list_captions.adapter = captionsAdapter
         list_captions.layoutManager = LinearLayoutManager(activity, RecyclerView.HORIZONTAL, false)
-        list_captions.addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8), LinearLayoutManager.HORIZONTAL))
+        list_captions.addItemDecoration(SpaceItemDecoration(requireContext().resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8), LinearLayoutManager.HORIZONTAL))
         icon_add_product.setOnClickListener { onAddProduct() }
         label_add_product.setOnClickListener { onAddProduct() }
 
@@ -684,7 +685,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                 Toaster.make(v, message.toString(), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
             } else {
                 Toaster.apply {
-                    toasterCustomCtaWidth = resources.getDimension(R.dimen.dp_100).toPx().toInt()
+                    toasterCustomCtaWidth = requireContext().resources.getDimension(R.dimen.dp_100).toPx().toInt()
                     make(v, message.toString(), Snackbar.LENGTH_LONG, TYPE_ERROR, action.toString(), View.OnClickListener {
                         actionClick?.invoke(it)
                     })
@@ -714,7 +715,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             showLoading()
 
             val cacheManager = SaveInstanceCacheManager(it, true)
-            cacheManager.put(CreatePostViewModel.TAG, viewModel, TimeUnit.DAYS.toMillis(7))
+            cacheManager.put(CreatePostViewModel.TAG, viewModel, TimeUnit.DAYS.toMillis(DAYS_7))
 
             SubmitPostService.startService(it, cacheManager.id!!)
 
@@ -745,17 +746,17 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     private fun updateHeader(authors: List<Author>) {
         if (viewModel.isEditState) {
             activityListener?.updateHeader(HeaderViewModel(
-                    getString(R.string.cp_title_edit_post),
-                    "",
-                    ""
-
+                id = "",
+                title = getString(R.string.cp_title_edit_post),
+                avatar = "",
+                badge = ""
             ))
         } else if (authors.isNotEmpty()) {
             activityListener?.updateHeader(HeaderViewModel(
-                    authors.first().name,
-                    authors.first().thumbnail,
-                    authors.first().badge
-
+                id = authors.first().id,
+                title = authors.first().name,
+                avatar = authors.first().thumbnail,
+                badge = authors.first().badge
             ))
         }
     }
