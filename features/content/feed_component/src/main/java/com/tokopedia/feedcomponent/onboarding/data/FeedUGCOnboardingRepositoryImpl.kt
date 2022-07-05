@@ -42,11 +42,7 @@ class FeedUGCOnboardingRepositoryImpl @Inject constructor(
                 setRequestParams(FeedProfileValidateUsernameUseCase.createParam(username))
             }.executeOnBackground()
 
-            Pair(result.wrapper.isValid == SUCCESS_CODE, result.wrapper.notValidInformation)
+            Pair(result.wrapper.isValid, result.wrapper.notValidInformation)
         }
-    }
-
-    companion object {
-        private const val SUCCESS_CODE = 1L
     }
 }

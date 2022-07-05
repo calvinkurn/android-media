@@ -1,5 +1,6 @@
 package com.tokopedia.feedcomponent.onboarding.model
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -11,8 +12,9 @@ data class FeedProfileValidateUsernameResponse(
 ) {
 
     data class Wrapper(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("isValid")
-        val isValid: Long = 0,
+        val isValid: Boolean = false,
 
         @SerializedName("notValidInformation")
         val notValidInformation: String = "",
