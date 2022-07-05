@@ -55,7 +55,12 @@ open class TopChatRoomFragmentStub : TopChatRoomFragment() {
         )
     }
 
+    override fun isOCCActive(): Boolean {
+        return isOCCActive
+    }
+
     companion object {
+        var isOCCActive = false
         var SUCCESS_CHANGE_ADDRESS = true
         fun createInstance(
                 bundle: Bundle
