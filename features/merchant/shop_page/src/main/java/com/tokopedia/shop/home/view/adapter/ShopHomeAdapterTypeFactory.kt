@@ -87,7 +87,7 @@ import com.tokopedia.shop_widget.thematicwidget.typefactory.ThematicWidgetTypeFa
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
 import com.tokopedia.shop_widget.thematicwidget.viewholder.ThematicWidgetLoadingStateViewHolder
 
-class ShopHomeAdapterTypeFactory(
+open class ShopHomeAdapterTypeFactory(
         private val listener: ShopHomeDisplayWidgetListener,
         private val onMerchantVoucherListWidgetListener: ShopHomeVoucherViewHolder.ShopHomeVoucherViewHolderListener,
         private val shopHomeEndlessProductListener: ShopHomeEndlessProductListener,

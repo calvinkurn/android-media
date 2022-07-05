@@ -16,5 +16,5 @@ data class HomeLayoutData(
     @SuppressLint("Invalid Data Type")
     @SerializedName("widgetIDList")
     @Expose
-    val widgetIdList: List<WidgetIdList> = listOf(),
+    val widgetIdList: List<WidgetIdList> = listOf()
 )
