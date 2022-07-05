@@ -38,8 +38,7 @@
                 android:ellipsize="end"
                 android:maxLines="2"
                 app:typographyType="display_1"
-                android:textColor="@color/Unify_N600"
-                android:textSize="@dimen/sp_17" />
+                android:textColor="@color/Unify_N600" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_reset"
@@ -47,7 +46,6 @@
                 android:layout_height="wrap_content"
                 android:gravity="end|right"
                 android:textColor="@color/Unify_G400"
-                android:textSize="14sp"
                 app:typographyType="display_2"
                 android:visibility="gone" />
 
