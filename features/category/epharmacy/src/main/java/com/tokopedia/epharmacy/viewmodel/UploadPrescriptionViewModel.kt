@@ -243,9 +243,7 @@ class UploadPrescriptionViewModel @Inject constructor(
         }else {
             uploadFailed(uniquePositionId, EPharmacyUploadEmptyImageError(false))
         }
-        withContext(dispatcherMain){
-            checkPrescriptionImages()
-        }
+        checkPrescriptionImages()
     }
 
     private fun checkPrescriptionImages() {
