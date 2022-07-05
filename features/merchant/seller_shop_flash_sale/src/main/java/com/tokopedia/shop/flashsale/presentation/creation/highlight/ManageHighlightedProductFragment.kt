@@ -11,13 +11,24 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.FragmentSsfsManageHighlightedProductBinding
-import com.tokopedia.shop.flashsale.common.extension.*
+import com.tokopedia.shop.flashsale.common.extension.doOnDelayFinished
+import com.tokopedia.shop.flashsale.common.extension.setFragmentToUnifyBgColor
+import com.tokopedia.shop.flashsale.common.extension.showError
 import com.tokopedia.shop.flashsale.common.extension.showLoading
+import com.tokopedia.shop.flashsale.common.extension.showToaster
+import com.tokopedia.shop.flashsale.common.extension.slideDown
+import com.tokopedia.shop.flashsale.common.extension.slideUp
+import com.tokopedia.shop.flashsale.common.extension.smoothSnapToPosition
+import com.tokopedia.shop.flashsale.common.extension.stopLoading
 import com.tokopedia.shop.flashsale.common.preference.SharedPreferenceDataStore
-import com.tokopedia.shop.flashsale.common.tracker.ShopFlashSaleTracker
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.HighlightableProduct
 import com.tokopedia.shop.flashsale.domain.entity.ProductSubmissionResult
@@ -403,7 +414,7 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
 
     private fun routeToCampaignListPage() {
         val context = context ?: return
-        CampaignListActivity.start(context, isClearTop = true)
+        CampaignListActivity.start(context, isSaveDraft = true)
     }
 
     private fun displayError(result: ProductSubmissionResult) {
