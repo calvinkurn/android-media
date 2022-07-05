@@ -159,6 +159,8 @@ class UserProfileFragment @Inject constructor(
             mainBinding.rvPost.canScrollVertically(-1) || !shouldRefreshRecyclerView
         }
 
+        mainBinding.appBarUserProfile.addOnOffsetChangedListener(feedFloatingButtonManager.offsetListener)
+
         context?.let {
             screenShotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
                 it,
@@ -171,7 +173,7 @@ class UserProfileFragment @Inject constructor(
 
     override fun onDestroyView() {
         super.onDestroyView()
-        mainBinding.rvPost.removeOnScrollListener(feedFloatingButtonManager.scrollListener)
+        mainBinding.appBarUserProfile.removeOnOffsetChangedListener(feedFloatingButtonManager.offsetListener)
         feedFloatingButtonManager.cancel()
 
         _binding = null
@@ -232,9 +234,6 @@ class UserProfileFragment @Inject constructor(
                     goToCreatePostPage()
                 }
             }
-
-            mainBinding.rvPost.addOnScrollListener(feedFloatingButtonManager.scrollListener)
-//        recyclerviewPost?.let { feedFloatingButtonManager.setDelayForExpandFab(it) }
         }
     }
 
@@ -465,9 +464,7 @@ class UserProfileFragment @Inject constructor(
         ) return
 
         mainBinding.fabUserProfile.showWithCondition(
-            value.profileType == ProfileType.Self
-            /** TODO: just for the sake of testing */
-//                    && value.profileWhitelist.isWhitelist
+            value.profileType == ProfileType.Self && value.profileWhitelist.isWhitelist
         )
     }
 
