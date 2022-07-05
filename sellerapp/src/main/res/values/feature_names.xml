@@ -5,64 +5,10 @@
     <!--Travel & Hotel-->
     <string name="activity_label_flight_nationality">Kewarganegaraan</string>
 
-    <!--    Dynamic feature for Liveness Detection-->
-    <string name="title_liveness_detection">Liveness Detection</string>
-
-    <!--    Dynamic feature for Login Fingerprint-->
-    <string name="title_feature_login_fingerprint_setting">Sidik Jari</string>
-    <string name="title_login_fingerprint">Masuk dengan Sidik Jari</string>
-
-    <!-- Dynamic feature for Groupchat-->
-    <string name="play_broadcaster_app_name">Play Broadcaster</string>
-
-    <!--    Change Phone Number-->
-    <string name="change_phone_number_app_module_name">changephonenumber</string>
-
-    <!-- Dynamic feature for Change Password -->
-    <string name="change_password_app_name">Ubah Kata Sandi</string>
-
-    <!-- Dynamic feature for Open Shop-->
-    <string name="title_open_shop">Buka Toko Gratis</string>
-    <string name="title_shop_postal_code">Kode Pos</string>
-    <string name="title_shop_is_active">Toko Sudah Aktif</string>
-    <string name="title_shop_setting">Pengaturan Toko</string>
-
     <!-- Dynamic feature for Setting Bank-->
-    <string name="setting_bank_app_name">Rekening Bank</string>
-    <string name="title_setting_bank">Rekening Bank</string>
     <string name="title_choose_bank">Pilih Bank</string>
 
-    <!-- Dynamic feature for Fintech-->
-    <string name="saldo_deposit_app_name">Saldo</string>
-    <string name="saldo_info_toolbar_title">Informasi Saldo Tertahan</string>
-    <string name="ovop2p_app_name">Saldo</string>
-    <string name="saldo_withdrawal_detail_title">Detail Penarikan Saldo</string>
-    <string name="saldo_sales_detail_title">Detail Hasil Penjualan</string>
-
-    <!-- Dynamic feature for Travel Subhomepage-->
-    <string name="travel_subhomepage_app_name">Travel &amp; Entertainment</string>
-    <string name="travel_title_subhomepage">Travel &amp; Entertainment</string>
-
-    <!-- Dynamic feature for Digital Recharge -->
-    <string name="title_digital_topup"><![CDATA[Top-up & Tagihan]]></string>
-    <string name="digital_cart_toolbar_title">Checkout</string>
-    <string name="digital_title_fav_number">Nomor Favorit</string>
-
     <!-- Dynamic feature for Discovery-->
-    <string name="title_image_search">Pencarian Gambar</string>
-    <string name="title_image_search_module_name">Pencarian Gambar</string>
-    <string name="image_search_app_name">imagesearch</string>
-    <string name="choose_image">Pilih Gambar</string>
-    <string name="title_similar_search">Pencarian Serupa</string>
-    <string name="title_similar_search_module_name">Pencarian Serupa</string>
-    <string name="similar_search_app_name">similarsearch</string>
-    <string name="title_autocomplete">Pencarian</string>
-    <string name="title_autocomplete_module_name">Pencarian</string>
-    <string name="title_home_wishlist_module_name">Wishlist</string>
-    <string name="autocomplete_app_name">autocomplete</string>
-    <string name="title_search_result">Pencarian</string>
-    <string name="title_search_result_module_name">Pencarian</string>
-    <string name="search_result_app_name">search</string>
     <string name="title_product_card_options">Product Card Options</string>
 
     <!--TopAds Dashboard-->
