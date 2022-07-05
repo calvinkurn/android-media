@@ -45,7 +45,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
     private var contract: PickerActivityContract? = null
 
     private val adapter by lazy {
-        GalleryAdapter(emptyList(), ::selectedMedia)
+        GalleryAdapter(emptyList(), ::selectMedia)
     }
 
     private val viewModel by lazy {
