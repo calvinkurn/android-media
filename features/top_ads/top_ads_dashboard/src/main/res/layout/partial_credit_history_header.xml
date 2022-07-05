@@ -1,57 +1,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:viewBindingIgnore="true"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    app:layout_scrollFlags="scroll">
-
-    <com.tokopedia.unifycomponents.CardUnify
-        android:id="@+id/card_auto_topup_status"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:visibility="visible">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="16dp">
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/label_topads_automatic_topup"
-                app:typographyType="body_3"
-                app:typographyWeight="bold" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/auto_topup_status"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/topads_active"
-                android:textColor="@color/topads_common_select_color_checked" />
-
-            <com.tokopedia.unifycomponents.ImageUnify
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/topads_ic_arrow" />
-
-        </LinearLayout>
-
-    </com.tokopedia.unifycomponents.CardUnify>
+    android:paddingHorizontal="@dimen/spacing_lvl4"
+    app:layout_scrollFlags="scroll"
+    tools:viewBindingIgnore="true">
 
     <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/tambahKreditLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/hari_ini">
@@ -59,9 +20,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp">
+            android:paddingHorizontal="@dimen/spacing_lvl4"
+            android:paddingVertical="@dimen/unify_space_12">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/credit_topads"
@@ -88,7 +48,6 @@
                 android:id="@+id/addCredit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
                 android:text="@string/label_add_credit"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/credit_topads"
@@ -99,54 +58,75 @@
             <com.tokopedia.unifycomponents.DividerUnify
                 android:id="@id/divider"
                 android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:layout_marginTop="12dp"
+                android:layout_height="@dimen/spacing_lvl1"
+                android:layout_marginTop="@dimen/unify_space_12"
                 app:layout_constraintTop_toBottomOf="@id/creditAmount" />
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/label_credit_addition"
+                android:id="@+id/txtRewardPending"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                android:text="@string/topads_dash_total_credit"
+                android:layout_marginTop="@dimen/unify_space_12"
+                android:text="@string/total_reward_pending"
+                android:textColor="@color/light_N700_68"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/divider"
-                app:typographyType="body_3"
-                app:typographyWeight="reguler" />
+                app:typographyType="body_1" />
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/iconRewardInfo"
+                android:layout_width="@dimen/layout_lvl3"
+                android:layout_height="@dimen/layout_lvl3"
+                android:layout_marginStart="@dimen/spacing_lvl1"
+                android:tint="@color/light_N700_68"
+                app:layout_constraintBottom_toBottomOf="@id/txtRewardPending"
+                app:layout_constraintStart_toEndOf="@id/txtRewardPending"
+                app:layout_constraintTop_toTopOf="@id/txtRewardPending"
+                app:srcCompat="@drawable/iconunify_information" />
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/topads_credit_addition"
+                android:id="@+id/txtRewardPendingValue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
+                app:layout_constraintBottom_toBottomOf="@id/txtRewardPending"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/label_credit_addition"
-                app:typographyType="body_3"
-                tools:text="Rp1.892.000.000" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/label_credit_used"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="@string/label_credit_used"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/label_credit_addition"
-                app:typographyType="body_3"
-                app:typographyWeight="reguler" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/topads_credit_used"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/label_credit_used"
-                app:typographyType="body_3"
-                tools:text="Rp1.892.000.000" />
+                app:layout_constraintTop_toTopOf="@id/txtRewardPending"
+                tools:text="Rp 1000" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.tokopedia.unifycomponents.CardUnify>
 
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/card_auto_topup_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/unify_space_12">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="@dimen/unify_space_0"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/label_topads_automatic_topup"
+                app:typographyType="body_3"
+                app:typographyWeight="bold" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/auto_topup_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/topads_active"
+                android:textColor="@color/topads_common_select_color_checked" />
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/topads_ic_arrow" />
+
+        </LinearLayout>
+    </com.tokopedia.unifycomponents.CardUnify>
 </LinearLayout>
