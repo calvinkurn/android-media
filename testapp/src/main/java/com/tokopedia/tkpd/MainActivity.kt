@@ -68,9 +68,6 @@ class MainActivity : AppCompatActivity() {
         etAppLink.setText(getDefaultAppLink())
 
         goToButton.setOnClickListener { goTo() }
-        
-//        startActivity(Intent(this,FoldableActivity::class.java))
-        startActivity(Intent(this,FoldableFragmentsActivity::class.java))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -119,8 +116,14 @@ class MainActivity : AppCompatActivity() {
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
         val appLink = etAppLink.text.toString()
-        if(appLink.isNotBlank())
-            RouteManager.route(this, appLink)
+        if (appLink.isNotBlank()) {
+            when (appLink) {
+                "1" -> startActivity(Intent(this, FoldableActivity::class.java))
+                "2" -> startActivity(Intent(this, FoldableFragmentsActivity::class.java))
+                "3" -> startActivity(Intent(this, ExoPlayerSampleActivity::class.java))
+                else -> RouteManager.route(this, appLink)
+            }
+        }
         else Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
     }
 
