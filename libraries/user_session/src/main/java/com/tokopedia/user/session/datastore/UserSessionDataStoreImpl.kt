@@ -544,7 +544,7 @@ class UserSessionDataStoreImpl(private val store: DataStore<UserSessionProto>) :
 
     companion object {
         const val HEX_FORMAT = "%02x"
-        const val USER_SESSION_AB_TEST_KEY = "android_data_store_v3"
+        const val USER_SESSION_AB_TEST_KEY = "and_data_store_v3"
         val SHARED_PREFERENCE_AB_TEST_PLATFORM = "tkpd-ab-test-platform"
     }
 }
