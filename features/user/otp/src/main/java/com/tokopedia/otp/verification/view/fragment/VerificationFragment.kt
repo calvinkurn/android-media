@@ -40,8 +40,8 @@ import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Screen.SCREEN_ACCO
 import com.tokopedia.otp.common.analytics.TrackingOtpUtil
 import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.verification.common.VerificationPref
+import com.tokopedia.otp.verification.data.OtpConstant
 import com.tokopedia.otp.verification.data.OtpData
-import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.domain.data.OtpRequestData
 import com.tokopedia.otp.verification.domain.data.OtpValidateData
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
@@ -249,7 +249,8 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                     mode = modeListData.modeText,
                     userIdEnc = otpData.userIdEnc,
                     validateToken = otpData.accessToken,
-                    userId = otpData.userId.toIntOrZero()
+                    userId = otpData.userId.toIntOrZero(),
+                    usePinV2 = isEnableValidateV2()
             )
         } else {
             viewModel.otpValidate(

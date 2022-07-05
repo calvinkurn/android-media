@@ -2,6 +2,7 @@ package com.tokopedia.digital_deals.view.fragment;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
@@ -197,8 +198,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         tvDealDetails = view.findViewById(com.tokopedia.digital_deals.R.id.tv_deal_details);
         viewPager = view.findViewById(com.tokopedia.digital_deals.R.id.deals_images);
         circlePageIndicator = view.findViewById(com.tokopedia.digital_deals.R.id.pager_indicator);
-        ((BaseSimpleActivity) getActivity()).setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), com.tokopedia.abstraction.R.drawable.ic_action_back));
+        setToolbar();
         buyDealNow = view.findViewById(com.tokopedia.digital_deals.R.id.ll_buynow);
         tvExpandableDesc = view.findViewById(com.tokopedia.digital_deals.R.id.tv_expandable_description);
         seeMoreButtonDesc = view.findViewById(com.tokopedia.digital_deals.R.id.seemorebutton_description);
@@ -208,9 +208,9 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         tvExpandableTC = view.findViewById(com.tokopedia.digital_deals.R.id.tv_expandable_tnc);
         seeMoreButtonTC = view.findViewById(com.tokopedia.digital_deals.R.id.seemorebutton_tnc);
         recyclerViewDeals = view.findViewById(com.tokopedia.digital_deals.R.id.recycler_view);
-        circlePageIndicator.setRadius(getResources().getDimension(R.dimen.dp_3));
+        circlePageIndicator.setRadius(view.getContext().getResources().getDimension(R.dimen.dp_3));
         collapsingToolbarLayout = view.findViewById(com.tokopedia.digital_deals.R.id.collapsing_toolbar);
-        collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
+        collapsingToolbarLayout.setExpandedTitleColor(view.getContext().getResources().getColor(android.R.color.transparent));
         appBarLayout = view.findViewById(com.tokopedia.digital_deals.R.id.app_bar_layout);
         mainContent = view.findViewById(com.tokopedia.digital_deals.R.id.main_content);
         baseMainContent = view.findViewById(com.tokopedia.digital_deals.R.id.base_main_content);
@@ -222,7 +222,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         clRedeemInstuctns = view.findViewById(com.tokopedia.digital_deals.R.id.cl_redeem_instructions);
         dividerDesc = view.findViewById(com.tokopedia.digital_deals.R.id.divider4);
         dividerTnC = view.findViewById(com.tokopedia.digital_deals.R.id.divider5);
-        Drawable img = getResources().getDrawable(com.tokopedia.digital_deals.R.drawable.ic_see_location);
+        Drawable img = view.getContext().getResources().getDrawable(com.tokopedia.digital_deals.R.drawable.ic_see_location);
         tvViewMap.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
         collapsingToolbarLayout.setTitle(" ");
         seeMoreButtonDesc.setOnClickListener(this);
@@ -240,13 +240,24 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     }
 
     private void setCardViewElevation() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            cardView.setCardElevation(getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_8));
-        } else {
-            cardView.setCardElevation(getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0));
+        Context context = getContext();
+        if (context != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                cardView.setCardElevation(context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_8));
+            } else {
+                cardView.setCardElevation(context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0));
+            }
         }
     }
 
+    private void setToolbar(){
+        BaseSimpleActivity activity = (BaseSimpleActivity) getActivity();
+        if (activity != null){
+            activity.setSupportActionBar(toolbar);
+            toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), com.tokopedia.abstraction.R.drawable.ic_action_back));
+            toolbar.setNavigationOnClickListener(view -> requireActivity().onBackPressed());
+        }
+    }
 
     @Override
     protected void initInjector() {
@@ -531,7 +542,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         requestParams.putString(DealDetailsPresenter.TAG, url);
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
         if (location != null) {
-            requestParams.putInt(Utils.QUERY_PARAM_CITY_ID, Utils.getSingletonInstance().getLocation(getActivity()).getId());
+            requestParams.putInt(Utils.QUERY_PARAM_CITY_ID, Utils.getSingletonInstance().getLocation(getActivity()).getIdInInt());
         }
         return requestParams;
     }
@@ -545,13 +556,16 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     @Override
     public void showLoginSnackbar(String message, int position) {
         View rootView = getActivity().getWindow().getDecorView().findViewById(android.R.id.content);
-        int dimen = (int) getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_96);
-        CustomWidthToaster.showCustomeToaster(dimen, rootView, message,
-                getResources().getString(com.tokopedia.digital_deals.R.string.title_activity_login),
-                v -> {
-                    Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.LOGIN);
-                    startActivityForResult(intent, LIKE_REQUEST_CODE);
-                });
+        Context context = getContext();
+        if (context != null) {
+            int dimen = (int) context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_96);
+            CustomWidthToaster.showCustomeToaster(dimen, rootView, message,
+                    context.getResources().getString(com.tokopedia.digital_deals.R.string.title_activity_login),
+                    v -> {
+                        Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.LOGIN);
+                        startActivityForResult(intent, LIKE_REQUEST_CODE);
+                    });
+        }
     }
 
     @Override
@@ -723,8 +737,11 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     }
 
     private Unit showErrorMessage(){
-        View rootView = getActivity().getWindow().getDecorView().findViewById(android.R.id.content);
-        Toaster.build(rootView, getResources().getString(R.string.how_to_redeem_error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show();
+        Context context = getContext();
+        if (context != null) {
+            View rootView = getActivity().getWindow().getDecorView().findViewById(android.R.id.content);
+            Toaster.build(rootView, getContext().getResources().getString(R.string.how_to_redeem_error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show();
+        }
         return Unit.INSTANCE;
     }
 

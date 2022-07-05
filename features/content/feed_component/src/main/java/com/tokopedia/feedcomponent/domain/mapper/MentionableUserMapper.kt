@@ -16,7 +16,7 @@ class MentionableUserMapper @Inject constructor() : Func1<GraphqlResponse, List<
         return mentionableUserData?.let {
             it.aceSearchProfile.profiles.map { profile ->
                 MentionableUserViewModel(
-                        id = profile.id.toString(),
+                        id = profile.id,
                         userName = if (profile.username.isEmpty()) null else "@${profile.username}",
                         fullName = profile.name,
                         avatarUrl = if (profile.avatar.isEmpty()) null else profile.avatar
