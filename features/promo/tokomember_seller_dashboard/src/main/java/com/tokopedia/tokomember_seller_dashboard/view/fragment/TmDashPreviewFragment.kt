@@ -86,6 +86,9 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        renderHeader()
+        observeViewModel()
+        renderButton()
         tmTracker = TmTracker()
         tmCouponPreviewData =
             arguments?.getParcelable(BUNDLE_COUPON_PREVIEW_DATA) ?: TmCouponPreviewData()
@@ -115,10 +118,6 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
             }
             tmDashCreateViewModel.getCardInfo(cardId)
         }
-
-        renderHeader()
-        observeViewModel()
-        renderButton()
     }
 
     override fun getScreenName() = ""

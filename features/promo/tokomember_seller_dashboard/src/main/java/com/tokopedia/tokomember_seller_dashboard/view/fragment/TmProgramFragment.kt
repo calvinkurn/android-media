@@ -544,7 +544,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         var dayInId = ""
         context?.let{
             val calMax = Calendar.getInstance()
-            calMax.add(Calendar.MONTH, 2)
+            calMax.add(Calendar.MONTH, 3)
             calMax.add(Calendar.DAY_OF_MONTH, 1)
             val yearMax = calMax.get(Calendar.YEAR)
             val monthMax = calMax.get(Calendar.MONTH)

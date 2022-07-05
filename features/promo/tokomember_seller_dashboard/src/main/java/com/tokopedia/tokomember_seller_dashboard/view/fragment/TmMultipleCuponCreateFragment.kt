@@ -41,58 +41,14 @@ import com.tokopedia.tokomember_seller_dashboard.model.TmSingleCouponData
 import com.tokopedia.tokomember_seller_dashboard.model.ValidationError
 import com.tokopedia.tokomember_seller_dashboard.model.mapper.TmCouponCreateMapper
 import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
-import com.tokopedia.tokomember_seller_dashboard.util.ANDROID
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID_IN_TOOLS
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_COUPON_CREATE_DATA
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_COUPON_PREVIEW_DATA
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CREATE_SCREEN_TYPE
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID_IN_TOOLS
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_TYPE
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_AVATAR
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_NAME
-import com.tokopedia.tokomember_seller_dashboard.util.CASHBACK_IDR
-import com.tokopedia.tokomember_seller_dashboard.util.CASHBACK_PERCENTAGE
-import com.tokopedia.tokomember_seller_dashboard.util.COUPON_HEADER_SUBTITLE
-import com.tokopedia.tokomember_seller_dashboard.util.COUPON_HEADER_TITLE
-import com.tokopedia.tokomember_seller_dashboard.util.COUPON_TERMS_CONDITION
-import com.tokopedia.tokomember_seller_dashboard.util.CREATE
+import com.tokopedia.tokomember_seller_dashboard.util.*
 import com.tokopedia.tokomember_seller_dashboard.util.DATE_DESC_END
-import com.tokopedia.tokomember_seller_dashboard.util.DATE_TITLE
-import com.tokopedia.tokomember_seller_dashboard.util.DATE_TITLE_END
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA_RETRY
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_DESC
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_RETRY
-import com.tokopedia.tokomember_seller_dashboard.util.ErrorState
-import com.tokopedia.tokomember_seller_dashboard.util.LOADING_TEXT
-import com.tokopedia.tokomember_seller_dashboard.util.PREMIUM
-import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_TYPE_AUTO
-import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_TYPE_MANUAL
-import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_VALIDATION_CTA_TEXT
-import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_VALIDATION_ERROR_DESC
-import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_VALIDATION_ERROR_TITLE
-import com.tokopedia.tokomember_seller_dashboard.util.RETRY
-import com.tokopedia.tokomember_seller_dashboard.util.SIMPLE_DATE_FORMAT
-import com.tokopedia.tokomember_seller_dashboard.util.SOURCE_MULTIPLE_COUPON_CREATE
-import com.tokopedia.tokomember_seller_dashboard.util.TERMS
-import com.tokopedia.tokomember_seller_dashboard.util.TERNS_AND_CONDITION
-import com.tokopedia.tokomember_seller_dashboard.util.TIME_TITLE
-import com.tokopedia.tokomember_seller_dashboard.util.TIME_TITLE_END
-import com.tokopedia.tokomember_seller_dashboard.util.TM_ERROR_PROGRAM
-import com.tokopedia.tokomember_seller_dashboard.util.TM_TNC
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.convertDateTime
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.convertDateTimeRemoveTimeDiff
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.getDayOfWeekID
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.getTimeInMillis
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDatePreview
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setTimeStart
-import com.tokopedia.tokomember_seller_dashboard.util.TmFileUtil
-import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
-import com.tokopedia.tokomember_seller_dashboard.util.VIP
-import com.tokopedia.tokomember_seller_dashboard.util.locale
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TmCouponListItemPreview
 import com.tokopedia.tokomember_seller_dashboard.view.animation.TmExpandView.collapse
@@ -639,7 +595,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         bundle.putParcelable(BUNDLE_COUPON_PREVIEW_DATA, tmCouponPreviewData)
         bundle.putParcelable(BUNDLE_COUPON_CREATE_DATA, tmMerchantCouponCreateData)
         tmOpenFragmentCallback.openFragment(CreateScreenType.PREVIEW, bundle)
-        closeLoadingDialog()
+       // closeLoadingDialog()
         setButtonState()
     }
 
@@ -914,11 +870,11 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         textFieldProgramEndTime.setFirstIcon(R.drawable.tm_dash_clock)
 
         textFieldProgramStartDate.iconContainer.setOnClickListener {
-            clickDatePicker(textFieldProgramStartDate, 0 , DATE_TITLE , DATE_DESC_END)
+            clickDatePicker(textFieldProgramStartDate, 0 , DATE_TITLE , DATE_DESC)
         }
 
         textFieldProgramStartTime.iconContainer.setOnClickListener {
-            clickTimePicker(textFieldProgramStartTime, 0 , TIME_TITLE, TIME_TITLE_END)
+            clickTimePicker(textFieldProgramStartTime, 0 , TIME_TITLE, TIME_DESC)
         }
 
         textFieldProgramEndDate.iconContainer.setOnClickListener {
@@ -926,7 +882,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         }
 
         textFieldProgramEndTime.iconContainer.setOnClickListener {
-            clickTimePicker(textFieldProgramEndTime, 1, TIME_TITLE, TIME_TITLE_END)
+            clickTimePicker(textFieldProgramEndTime, 1, TIME_TITLE_END, TIME_DESC_END)
         }
 
     }
@@ -999,14 +955,6 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         var day = 0
         var dayInId = ""
         context?.let {
-            val calMax = Calendar.getInstance()
-            calMax.add(Calendar.YEAR, 1)
-            calMax.add(Calendar.DAY_OF_MONTH, 1)
-            val yearMax = calMax.get(Calendar.YEAR)
-            val monthMax = calMax.get(Calendar.MONTH)
-            val dayMax = calMax.get(Calendar.DAY_OF_MONTH)
-
-            val maxDate = GregorianCalendar(yearMax, monthMax, dayMax)
             val currentDate = GregorianCalendar(LocaleUtils.getCurrentLocale(it))
             when(programActionType) {
                 ProgramActionType.CREATE -> {
@@ -1019,7 +967,19 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
             }
             currentDate.add(Calendar.DAY_OF_MONTH,1)
 
-            val datepickerObject = DateTimePickerUnify(it, currentDate, currentDate, maxDate).apply {
+            val calMax = currentDate
+
+            when (type) {
+                0 -> {
+                    calMax.add(Calendar.MONTH, 3)
+                }
+                1 -> {
+                    calMax.add(Calendar.YEAR, 1)
+                    calMax.add(Calendar.DAY_OF_MONTH, 1)
+                }
+            }
+
+            val datepickerObject = DateTimePickerUnify(it, currentDate, currentDate, calMax).apply {
                 setTitle(title)
                 setInfo(desc)
                 setInfoVisible(true)
