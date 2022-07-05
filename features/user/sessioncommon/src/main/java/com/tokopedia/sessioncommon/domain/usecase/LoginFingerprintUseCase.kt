@@ -21,7 +21,6 @@ import kotlin.coroutines.CoroutineContext
 class LoginFingerprintUseCase @Inject constructor(
     private val graphqlUseCase: GraphqlUseCase<LoginTokenPojo>,
     private var dispatchers: CoroutineDispatchers,
-    @Named(SessionModule.SESSION_MODULE)
     private val userSession: UserSessionInterface,
     val fingerprintPreferenceManager: FingerprintPreference
 ): CoroutineScope {

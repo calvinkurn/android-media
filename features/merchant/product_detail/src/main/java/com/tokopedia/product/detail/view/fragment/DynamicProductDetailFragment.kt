@@ -425,7 +425,7 @@ open class DynamicProductDetailFragment :
             this,
             this,
             viewModel.userId,
-            playWidgetCoordinator = PlayWidgetCoordinator().apply {
+            playWidgetCoordinator = PlayWidgetCoordinator(this).apply {
                 setListener(this@DynamicProductDetailFragment)
             })
     }
