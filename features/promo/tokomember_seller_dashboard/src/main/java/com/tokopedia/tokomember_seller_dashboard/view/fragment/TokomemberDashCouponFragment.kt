@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -232,11 +231,11 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
         filterData.add(filterType)
         filter.addItem(filterData)
         filter.parentListener = {
-            Toast.makeText(context, "Type", Toast.LENGTH_SHORT).show()
+            TmFilterBottomsheet.show(childFragmentManager)
         }
         filter_error.addItem(filterData)
         filter_error.parentListener = {
-            Toast.makeText(context, "Type", Toast.LENGTH_SHORT).show()
+            TmFilterBottomsheet.show(childFragmentManager)
         }
         rv_coupon.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)

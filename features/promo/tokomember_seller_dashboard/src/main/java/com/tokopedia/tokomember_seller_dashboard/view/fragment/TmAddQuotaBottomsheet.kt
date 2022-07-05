@@ -84,6 +84,9 @@ class TmAddQuotaBottomsheet: BottomSheetUnify() {
         )
         setChild(childView)
         observeViewModel()
+        if(voucherType.lowercase() == "gratis ongkir"){
+            voucherType = "shipping"
+        }
         tmCouponViewModel.getInitialCouponData("update", voucherType.lowercase())
     }
 
