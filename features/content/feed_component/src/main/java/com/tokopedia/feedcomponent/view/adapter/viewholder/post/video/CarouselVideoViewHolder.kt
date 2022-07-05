@@ -15,6 +15,7 @@ import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.view.adapter.post.FeedPostCarouselAdapter
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedcomponent.view.widget.VideoStateListener
 import com.tokopedia.kotlin.extensions.view.gone
@@ -51,7 +52,11 @@ internal class CarouselVideoViewHolder(
 
     private var mMedia = FeedXMedia()
 
-    private var isMuted = true
+    private var isMuted: Boolean
+        set(value) {
+            GridPostAdapter.isMute = value
+        }
+        get() = GridPostAdapter.isMute
 
     private val countDownTimer = object : CountDownTimer(TIME_THREE_SEC, TIME_SECOND) {
         override fun onTick(millisUntilFinished: Long) {

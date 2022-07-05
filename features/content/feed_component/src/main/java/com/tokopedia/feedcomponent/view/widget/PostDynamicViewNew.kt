@@ -57,8 +57,6 @@ import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.item_post_image_new.view.*
-import kotlinx.android.synthetic.main.item_post_long_video_vod.view.*
 import kotlinx.android.synthetic.main.item_post_video_new.view.*
 import kotlinx.coroutines.*
 import java.net.URLEncoder
@@ -199,13 +197,31 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     )
                 }
 
-                listener?.onClickSekSekarang(
-                    mData.id,
-                    mData.shopId,
-                    mData.typename,
-                    mData.followers.isFollowed,
-                    positionInFeed,
-                    mData,
+                if (mData.isTypeProductHighlight && mData.useASGCNewDesign) {
+                    listener?.onClickSekSekarang(
+                        mData.id,
+                        mData.author.id,
+                        mData.typename,
+                        mData.followers.isFollowed,
+                        positionInFeed,
+                        mData,
+                    )
+                } else {
+                    listener?.onClickSekSekarang(
+                        mData.id,
+                        mData.shopId,
+                        TYPE_TOPADS_HEADLINE_NEW,
+                        mData.followers.isFollowed,
+                        positionInFeed,
+                        mData,
+                    )
+                }
+
+            }
+
+            override fun onTopAdsChangeColorToGreen(viewHolder: CarouselImageViewHolder) {
+                (rvCarousel.adapter as FeedPostCarouselAdapter).updateNeighbourTopAdsColor(
+                    viewHolder.adapterPosition
                 )
             }
 
@@ -239,6 +255,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
                 val data = mData
                 val position = viewHolder.adapterPosition
+
+                if (position == RecyclerView.NO_POSITION) return
 
                 if (data.isTypeProductHighlight) {
 
