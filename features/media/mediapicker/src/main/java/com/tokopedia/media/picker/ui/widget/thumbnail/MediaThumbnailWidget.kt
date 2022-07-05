@@ -50,6 +50,9 @@ class MediaThumbnailWidget @JvmOverloads constructor(
             isAnimate(true)
             setPlaceHolder(-1)
             centerCrop()
+            listener(onSuccess = { _, _ ->
+                onLoaded()
+            })
         }
 
         onVideoShow(file)
