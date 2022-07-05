@@ -2,6 +2,7 @@ package com.tokopedia.people.viewmodels
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.people.Resources
@@ -119,7 +120,7 @@ class UserProfileViewModel @AssistedInject constructor(
 
     /** Handle Action */
     private fun handleLoadProfile(isRefresh: Boolean) {
-        launchCatchError(block = {
+        viewModelScope.launchCatchError(block = {
             loadProfileInfo(isRefresh)
         }) {
             _uiEvent.emit(UserProfileUiEvent.ErrorLoadProfile(it))
@@ -131,7 +132,7 @@ class UserProfileViewModel @AssistedInject constructor(
      * developing another tab user profile eventually. so gonna leave as is for now
      * */
     private fun handleLoadPlayVideo(cursor: String) {
-        launchCatchError(block = {
+        viewModelScope.launchCatchError(block = {
             val data = repo.getPlayVideo(profileUserID, cursor)
             if (data != null) {
                 playPostContent.value = Success(data)
@@ -142,7 +143,7 @@ class UserProfileViewModel @AssistedInject constructor(
     }
 
     private fun handleClickFollowButton(isFromLogin: Boolean) {
-        launchCatchError(block = {
+        viewModelScope.launchCatchError(block = {
             if(isFromLogin) {
                 loadProfileInfo(false)
             }
@@ -170,7 +171,7 @@ class UserProfileViewModel @AssistedInject constructor(
     }
 
     private fun handleClickUpdateReminder(isFromLogin: Boolean) {
-        launchCatchError(block = {
+        viewModelScope.launchCatchError(block = {
             if(isFromLogin) {
                 loadProfileInfo(false)
             }
@@ -215,14 +216,14 @@ class UserProfileViewModel @AssistedInject constructor(
 
     /** Helper */
     private suspend fun loadProfileInfo(isRefresh: Boolean) {
-        val deferredProfileInfo = asyncCatchError(block = {
+        val deferredProfileInfo = viewModelScope.asyncCatchError(block = {
             repo.getProfile(username)
         }) {
             _uiEvent.emit(UserProfileUiEvent.ErrorLoadProfile(it))
             ProfileUiModel.Empty
         }
 
-        val deferredFollowInfo = asyncCatchError(block = {
+        val deferredFollowInfo = viewModelScope.asyncCatchError(block = {
             repo.getFollowInfo(listOf(username))
         }) {
             FollowInfoUiModel.Empty
