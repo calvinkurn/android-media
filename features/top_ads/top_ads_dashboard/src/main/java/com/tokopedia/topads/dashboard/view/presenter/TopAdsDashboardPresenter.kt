@@ -1,6 +1,7 @@
 package com.tokopedia.topads.dashboard.view.presenter
 
 import android.content.res.Resources
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -24,7 +25,6 @@ import com.tokopedia.topads.common.domain.interactor.*
 import com.tokopedia.topads.common.domain.usecase.*
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
-import com.tokopedia.topads.dashboard.data.constant.TopAdsGqlConstants
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.*
 import com.tokopedia.topads.dashboard.data.model.insightkey.InsightKeyData
@@ -49,38 +49,38 @@ import kotlin.coroutines.CoroutineContext
  * Created by hadi.putra on 23/04/18.
  */
 
-class TopAdsDashboardPresenter @Inject
-constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
-            private val shopAdInfoUseCase: GraphqlUseCase<ShopAdInfo>,
-            private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
-            private val topAdsGetGroupDataUseCase: TopAdsGetGroupDataUseCase,
-            private val topAdsGetGroupStatisticsUseCase: TopAdsGetGroupStatisticsUseCase,
-            private val topAdsGetProductStatisticsUseCase: TopAdsGetProductStatisticsUseCase,
-            private val topAdsGetProductKeyCountUseCase: TopAdsGetProductKeyCountUseCase,
-            private val topAdsGetGroupListUseCase: TopAdsGetGroupListUseCase,
-            private val topAdsGroupActionUseCase: TopAdsGroupActionUseCase,
-            private val topAdsProductActionUseCase: TopAdsProductActionUseCase,
-            private val topAdsGetGroupProductDataUseCase: TopAdsGetGroupProductDataUseCase,
-            private val topAdsInsightUseCase: TopAdsInsightUseCase,
-            private val getStatisticUseCase: TopAdsGetStatisticsUseCase,
-            private val budgetRecomUseCase: GraphqlUseCase<DailyBudgetRecommendationModel>,
-            private val productRecomUseCase: GraphqlUseCase<ProductRecommendationModel>,
-            private val validGroupUseCase: TopAdsGroupValidateNameUseCase,
-            private val topAdsCreateUseCase: TopAdsCreateUseCase,
-            private val bidInfoUseCase: BidInfoUseCase,
-            private val groupInfoUseCase: GroupInfoUseCase,
-            private val autoTopUpUSeCase: TopAdsAutoTopUpUSeCase,
-            private val adsStatusUseCase: GraphqlUseCase<AdStatusResponse>,
-            private val autoAdsStatusUseCase: GraphqlUseCase<AutoAdsResponse>,
-            private val getExpiryDateUseCase: GraphqlUseCase<ExpiryDateResponse>,
-            private val getHiddenTrialUseCase: GraphqlUseCase<FreeTrialShopListResponse>,
-            private val whiteListedUserUseCase: GetWhiteListedUserUseCase,
-            private val topAdsGetDeletedAdsUseCase: TopAdsGetDeletedAdsUseCase,
-            private val userSession: UserSessionInterface) : BaseDaggerPresenter<TopAdsDashboardView>(), CoroutineScope {
+class TopAdsDashboardPresenter @Inject constructor(
+    private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
+    private val shopAdInfoUseCase: GraphqlUseCase<ShopAdInfo>,
+    private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
+    private val topAdsGetGroupDataUseCase: TopAdsGetGroupDataUseCase,
+    private val topAdsGetGroupStatisticsUseCase: TopAdsGetGroupStatisticsUseCase,
+    private val topAdsGetProductStatisticsUseCase: TopAdsGetProductStatisticsUseCase,
+    private val topAdsGetProductKeyCountUseCase: TopAdsGetProductKeyCountUseCase,
+    private val topAdsGetGroupListUseCase: TopAdsGetGroupListUseCase,
+    private val topAdsGroupActionUseCase: TopAdsGroupActionUseCase,
+    private val topAdsProductActionUseCase: TopAdsProductActionUseCase,
+    private val topAdsGetGroupProductDataUseCase: TopAdsGetGroupProductDataUseCase,
+    private val topAdsInsightUseCase: TopAdsInsightUseCase,
+    private val getStatisticUseCase: TopAdsGetStatisticsUseCase,
+    private val budgetRecomUseCase: GraphqlUseCase<DailyBudgetRecommendationModel>,
+    private val productRecomUseCase: GraphqlUseCase<ProductRecommendationModel>,
+    private val validGroupUseCase: TopAdsGroupValidateNameUseCase,
+    private val topAdsCreateUseCase: TopAdsCreateUseCase,
+    private val bidInfoUseCase: BidInfoUseCase,
+    private val groupInfoUseCase: GroupInfoUseCase,
+    private val adsStatusUseCase: GraphqlUseCase<AdStatusResponse>,
+    private val autoAdsStatusUseCase: GraphqlUseCase<AutoAdsResponse>,
+    private val getExpiryDateUseCase: TopadsGetFreeDepositUseCase,
+    private val getHiddenTrialUseCase: GraphqlUseCase<FreeTrialShopListResponse>,
+    private val whiteListedUserUseCase: GetWhiteListedUserUseCase,
+    private val topAdsGetDeletedAdsUseCase: TopAdsGetDeletedAdsUseCase,
+    private val userSession: UserSessionInterface,
+) : BaseDaggerPresenter<TopAdsDashboardView>(), CoroutineScope {
 
     private val job = SupervisorJob()
     var isShopWhiteListed: MutableLiveData<Boolean> = MutableLiveData()
-    var expiryDateHiddenTrial: MutableLiveData<String> = MutableLiveData()
+    val expiryDateHiddenTrial: LiveData<String> = getExpiryDateUseCase.expiryDateHiddenTrial
 
     companion object {
         const val HIDDEN_TRIAL_FEATURE = 21
@@ -271,18 +271,7 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
     }
 
     fun getExpiryDate(resources: Resources) {
-        getExpiryDateUseCase.setGraphqlQuery(TopAdsGqlConstants.TOPADS_GET_EXIPIRY_DATE)
-        getExpiryDateUseCase.setRequestParams(mapOf("shopID" to userSession.shopId.toIntOrZero()))
-        getExpiryDateUseCase.setTypeClass(ExpiryDateResponse::class.java)
-        getExpiryDateUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE)
-                .setExpiryTime(GraphqlConstant.ExpiryTimes.WEEK.`val`())
-                .setSessionIncluded(true)
-                .build())
-        getExpiryDateUseCase.execute({
-            expiryDateHiddenTrial.postValue(it.topAdsGetFreeDeposit.expiryDate)
-        }, {
-            it.printStackTrace()
-        })
+        getExpiryDateUseCase.execute()
     }
 
     fun getShopListHiddenTrial(resources: Resources) {

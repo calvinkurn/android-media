@@ -168,32 +168,44 @@ class TopAdsCreditHistoryFragment :
             findViewById<Typography>(R.id.txtTitle).text =
                 context?.resources?.getString(R.string.topads_dash_total_used)
         }
-        hariIni?.apply {
-            chip_right_icon.setImageDrawable(ContextCompat.getDrawable(context,
-                com.tokopedia.iconunify.R.drawable.iconunify_chevron_down))
-        }
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        initView()
         initialDateSetup()
-        cardAutoTopupStatus?.setOnClickListener { gotoAutoTopUp() }
+        loadData()
+    }
+
+    private fun loadData() {
+        viewModel.getShopDeposit()
+        viewModel.getAutoTopUpStatus()
+    }
+
+    private fun initView() {
         dateImage?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_calendar))
         nextImage?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_arrow))
-        hariIni?.setOnClickListener {
-            showBottomSheet()
+        hariIni?.apply {
+            chip_right_icon.setImageDrawable(ContextCompat.getDrawable(context,
+                com.tokopedia.iconunify.R.drawable.iconunify_chevron_down))
+            //called the listener just to show the right icon of chip
+            setChevronClickListener {}
         }
-        viewModel.getShopDeposit()
+    }
 
-        viewModel.getAutoTopUpStatus()
+    private fun initListeners() {
+        cardAutoTopupStatus?.setOnClickListener { gotoAutoTopUp() }
         addCredit?.setOnClickListener {
             startActivityForResult(
                 Intent(context, TopAdsAddCreditActivity::class.java),
                 REQUEST_CODE_ADD_CREDIT
             )
         }
-
+        hariIni?.setOnClickListener {
+            showBottomSheet()
+        }
     }
 
     private fun showBottomSheet() {
