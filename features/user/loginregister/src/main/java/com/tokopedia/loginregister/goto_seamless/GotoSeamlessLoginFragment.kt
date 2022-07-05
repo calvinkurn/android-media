@@ -12,6 +12,7 @@ import com.tokopedia.loginregister.databinding.FragmentGotoSeamlessBinding
 import com.tokopedia.loginregister.goto_seamless.di.GotoSeamlessComponent
 import com.tokopedia.loginregister.goto_seamless.trackers.GotoSeamlessTracker
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -70,14 +71,14 @@ class GotoSeamlessLoginFragment: BaseDaggerFragment() {
                     if(it.data.errors.isNotEmpty()) {
                         val errorMsg = it.data.errors[0].message
                         GotoSeamlessTracker.clickOnSeamlessButton("${GotoSeamlessTracker.Label.FAILED} - $errorMsg")
-                        cancelSeamlessLoginFlow()
+                        showGeneralErrorToaster()
                     } else {
                         successSeamlessLogin()
                     }
                 }
                 is Fail -> {
                     GotoSeamlessTracker.clickOnSeamlessButton("${GotoSeamlessTracker.Label.FAILED} - ${it.throwable.message}")
-                    cancelSeamlessLoginFlow()
+                    showGeneralErrorToaster()
                 }
             }
             binding?.gotoSeamlessPrimaryBtn?.isLoading = false
@@ -85,6 +86,10 @@ class GotoSeamlessLoginFragment: BaseDaggerFragment() {
 
         binding?.gotoSeamlessPrimaryBtn?.isLoading = true
         viewModel.getGojekData()
+    }
+
+    private fun showGeneralErrorToaster() {
+        Toaster.build(requireView(), getString(R.string.goto_seamless_general_error)).show()
     }
 
     private fun successSeamlessLogin() {

@@ -195,4 +195,7 @@
     <string name="goto_seamless_description_text">Akunmu udah kesambung ke Gojek. Kamu bisa masuk ke Tokopedia lebih cepat, deh!</string>
     <string name="goto_seamless_primary_title">Sekali klik, langsung masuk!</string>
     <string name="goto_seamless_secondary_btn_text">Masuk ke Akun Lain</string>
+
+    <string name="goto_seamless_general_error">Oops, lagi ada gangguan. Coba cek koneksi kamu atau masuk beberapa saat lagi, ya.</string>
+
 </resources>
