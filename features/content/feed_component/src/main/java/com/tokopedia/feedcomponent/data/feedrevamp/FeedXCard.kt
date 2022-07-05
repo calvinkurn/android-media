@@ -86,7 +86,7 @@ data class FeedXCard(
     val impressHolder: ImpressHolder = ImpressHolder(),
     //Active carousel index
     var lastCarouselIndex : Int = 0,
-    var isAsgcColorChangedToGreen: Boolean = false,
+    var isAsgcColorChangedAsPerWidgetColor: Boolean = false,
     //Topads
     val isTopAds: Boolean = false,
     val shopId: String = "",
@@ -106,7 +106,7 @@ data class FeedXCard(
 
 
 
-) : ImpressHolder() {
+    ) : ImpressHolder() {
 
     val isTypeProductHighlight: Boolean
         get() = typename == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT
@@ -116,6 +116,9 @@ data class FeedXCard(
 
     val useASGCNewDesign: Boolean
         get() = mods.contains(USE_ASGC_NEW_DESIGN)
+
+    val isASGCDiscountToko: Boolean
+         get() = type == ASGC_DISCOUNT_TOKO
 
     fun copyPostData(): FeedXCard {
         return FeedXCard(
@@ -147,6 +150,8 @@ data class FeedXCard(
             comments = comments,
             share = share,
             followers = followers,
+            maximumDisPercentFmt = maximumDisPercentFmt,
+            maxDiscPercent = maxDiscPercent,
             publishedAt = publishedAt,
             mods = mods,
             impressHolder = impressHolder,
@@ -163,5 +168,7 @@ data class FeedXCard(
         private const val TYPE_FEED_X_CARD_VOD = "FeedXCardPlay"
 
         private const val USE_ASGC_NEW_DESIGN: String = "use_new_design"
+        private const val ASGC_DISCOUNT_TOKO = "asgc_discount_toko"
+
     }
 }

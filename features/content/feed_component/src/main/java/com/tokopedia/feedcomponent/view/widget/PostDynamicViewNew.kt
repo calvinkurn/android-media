@@ -1625,7 +1625,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         }
     }
     private fun changeTopadsCekSekarangBtnColorToGreen(feedXCard: FeedXCard) {
-        feedXCard.isAsgcColorChangedToGreen = true
+        feedXCard.isAsgcColorChangedAsPerWidgetColor = true
         val backgroundWhiteColor = MethodChecker.getColor(
             context,
             unifyPrinciplesR.color.Unify_G500
@@ -1640,7 +1640,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
 
     fun changeTopadsCekSekarangBtnColorToDefaultWhite(feedXCard: FeedXCard) {
-        feedXCard.isAsgcColorChangedToGreen = false
+        feedXCard.isAsgcColorChangedAsPerWidgetColor = false
         val backgroundWhiteColor = MethodChecker.getColor(
             context,
             unifyPrinciplesR.color.Unify_NN50
@@ -1716,7 +1716,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             )
             val isTypeNewASGC = feedXCard.typename == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && feedXCard.mods.contains(TYPE_USE_ASGC_NEW_DESIGN)
 
-            if ((isTypeNewASGC || feedXCard.isTopAds) && !feedXCard.isAsgcColorChangedToGreen) {
+            if ((isTypeNewASGC || feedXCard.isTopAds) && !feedXCard.isAsgcColorChangedAsPerWidgetColor) {
                 topAdsCard?.let {
                     if (changeBgColorAnim == null)
                         changeBgColorAnim = handlerFeed
@@ -1733,10 +1733,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                 unifyPrinciplesR.color.Unify_N0
                             )
                         )
-                           if(!feedXCard.isAsgcColorChangedToGreen) {
-                               changeBackgroundColorAnimation(startColor, endColor, topAdsCard)
-                               feedXCard.isAsgcColorChangedToGreen = true
-                           }
+                        if (!feedXCard.isAsgcColorChangedAsPerWidgetColor) {
+                            changeBackgroundColorAnimation(startColor, endColor, topAdsCard)
+                            feedXCard.isAsgcColorChangedAsPerWidgetColor = true
+                        }
 
                     }, TIME_TWO_SEC)
                 }
