@@ -150,7 +150,7 @@ class ReadReviewHeader @JvmOverloads constructor(
             filter.add(topicFilter)
             topicFilterChipIndex = filter.indexOf(topicFilter)
         }
-        val sortOption = getSortFilterItem(context.getString(R.string.review_reading_sort_default))
+        val sortOption = getSortFilterItem(getDefaultSortTitle())
         setListenerAndChevronListener(sortOption) { listener.onSortClicked(mapSortTitleToBottomSheetInput(sortOption)) }
         filter.add(sortOption)
         return filter
@@ -217,14 +217,22 @@ class ReadReviewHeader @JvmOverloads constructor(
     }
 
     private fun mapSortTitleToBottomSheetInput(sortOption: SortFilterItem): String {
-        return if (sortOption.title == context.getString(R.string.review_reading_sort_default)) {
-            if(!isProductReview)
-                SortTypeConstants.LATEST_COPY
-            else
-                SortTypeConstants.MOST_HELPFUL_COPY
+        return if (sortOption.title == getDefaultSortTitle()) {
+            getDefaultSort()
         } else {
             sortOption.title.toString()
         }
+    }
+
+    private fun getDefaultSort(): String {
+        return if (isProductReview)
+            SortTypeConstants.MOST_HELPFUL_COPY
+        else
+            SortTypeConstants.LATEST_COPY
+    }
+
+    private fun getDefaultSortTitle(): String {
+        return context.getString(R.string.review_reading_sort_default)
     }
 
     fun setRatingData(productRating: ProductRating) {
@@ -275,13 +283,10 @@ class ReadReviewHeader @JvmOverloads constructor(
     }
 
     fun updateSelectedSort(selectedSort: String) {
-        val defaultSelectedSort = if (isProductReview)
-            SortTypeConstants.MOST_HELPFUL_COPY
-        else
-            SortTypeConstants.LATEST_COPY
+        val defaultSelectedSort = getDefaultSort()
         binding.readReviewSortFilter.chipItems?.lastOrNull()?.apply {
             if (selectedSort == defaultSelectedSort) {
-                title = context.getString(R.string.review_reading_sort_default)
+                title = getDefaultSortTitle()
                 type = ChipsUnify.TYPE_NORMAL
             } else {
                 title = selectedSort
@@ -315,6 +320,10 @@ class ReadReviewHeader @JvmOverloads constructor(
             this.title = title
             type = ChipsUnify.TYPE_SELECTED
         }
+    }
+
+    fun isSortFilterActive(): Boolean {
+        return binding.readReviewSortFilter.chipItems?.lastOrNull()?.title != getDefaultSortTitle()
     }
 
     fun getReviewRatingContainer(): ConstraintLayout {
