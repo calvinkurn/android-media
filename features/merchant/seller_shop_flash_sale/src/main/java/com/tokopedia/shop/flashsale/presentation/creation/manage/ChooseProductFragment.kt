@@ -193,7 +193,9 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
     private fun setupIsSelectionValidObserver() {
         viewModel.isSelectionValid.observe(viewLifecycleOwner) {
             binding?.btnSave?.isEnabled = it
-            adapter?.setInputEnabled(it)
+            adapter?.run {
+                if (getSelectedProduct().size.isMoreThanZero()) setInputEnabled(it)
+            }
         }
     }
 
