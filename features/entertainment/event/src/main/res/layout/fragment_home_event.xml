@@ -14,7 +14,7 @@
             android:layout_height="wrap_content"
             android:background="@color/Unify_N0">
 
-            <androidx.appcompat.widget.Toolbar
+            <com.tokopedia.header.HeaderUnify
                 android:id="@+id/toolbar_home"
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
@@ -24,7 +24,10 @@
                 app:contentInsetStartWithNavigation="@dimen/unify_space_0"
                 app:elevation="@dimen/unify_space_0"
                 app:subtitleTextAppearance="?subtitleTextAppearance"
-                app:titleTextAppearance="?titleTextAppearance" />
+                app:titleTextAppearance="?titleTextAppearance"
+                app:unify_header_is_show_back_button="true"
+                app:unify_header_is_show_shadow="false"
+            />
 
             <com.tokopedia.unifycomponents.SearchBarUnify
                 android:id="@+id/txt_search_home"

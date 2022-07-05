@@ -14,7 +14,8 @@
         android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_loading_image" />
+        app:srcCompat="@drawable/ic_loading_image"
+        android:contentDescription="iv_instruction_icon" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_instruction_heading"
@@ -40,7 +41,7 @@
         app:layout_constraintStart_toEndOf="@+id/iv_instruction_icon"
         app:layout_constraintTop_toBottomOf="@+id/tv_instruction_heading"
         app:layout_constraintEnd_toEndOf="parent"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         tools:text="Cicilan 6x" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
