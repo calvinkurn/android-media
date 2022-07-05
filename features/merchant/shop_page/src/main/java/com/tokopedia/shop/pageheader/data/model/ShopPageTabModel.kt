@@ -7,6 +7,8 @@ data class ShopPageTabModel(
         var tabIconInactive: Int = 0,
         val tabIconActive: Int = 0,
         val tabFragment: Fragment = Fragment(),
-        var iconUrl: String = "",
-        var iconActiveUrl: String = "",
+        val iconUrl: String = "",
+        val iconActiveUrl: String = "",
+        val isFocus: Boolean = false,
+        val isDefault: Boolean = false
 )
