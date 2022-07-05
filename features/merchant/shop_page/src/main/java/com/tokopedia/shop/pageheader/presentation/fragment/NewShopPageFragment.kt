@@ -102,8 +102,10 @@ import com.tokopedia.shop.pageheader.di.component.ShopPageComponent
 import com.tokopedia.seller_migration_common.presentation.util.setOnClickLinkSpannable
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SHARE_BOTTOM_SHEET_FEATURE_NAME
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SHARE_BOTTOM_SHEET_PAGE_NAME
+import com.tokopedia.shop.campaign.view.fragment.ShopPageCampaignFragment
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HEADER_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
+import com.tokopedia.shop.common.data.model.ShopPageGetDynamicTabResponse
 import com.tokopedia.shop.common.util.ShopAsyncErrorException
 import com.tokopedia.shop.common.util.ShopLogger
 import com.tokopedia.shop.common.util.ShopUtil.isUsingNewShareBottomSheet
@@ -1830,6 +1832,9 @@ class NewShopPageFragment :
                     )
                     reviewTabFragment
                 }
+                ShopPageTabName.CAMPAIGN -> {
+                    createCampaignTabFragment(it)
+                }
                 else -> {
                     null
                 }
@@ -1845,6 +1850,23 @@ class NewShopPageFragment :
             }
         }
         return listShopPageTabModel
+    }
+
+    private fun createCampaignTabFragment(
+        tabData: ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData
+    ): Fragment {
+        return ShopPageCampaignFragment.createInstance(
+            shopId,
+            shopPageHeaderDataModel?.isOfficial ?: false,
+            shopPageHeaderDataModel?.isGoldMerchant ?: false,
+            shopPageHeaderDataModel?.shopName.orEmpty(),
+            shopAttribution ?: "",
+            shopRef
+        ).apply {
+            setListWidgetLayoutData(tabData.data.widgetIdList)
+            setPageBackgroundColor(tabData.listBackgroundColor)
+            setPageTextColor(tabData.textColor)
+        }
     }
 
     private fun isShowHomeTab(): Boolean {

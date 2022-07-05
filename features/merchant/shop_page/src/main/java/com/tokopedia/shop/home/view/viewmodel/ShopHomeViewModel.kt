@@ -30,6 +30,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.switch
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.shop.common.constant.ShopPageConstant
+import com.tokopedia.shop.common.data.model.ShopPageWidgetLayoutUiModel
 import com.tokopedia.shop.common.domain.GetShopFilterBottomSheetDataUseCase
 import com.tokopedia.shop.common.domain.GetShopFilterProductCountUseCase
 import com.tokopedia.shop.common.domain.GqlGetShopSortUseCase
@@ -113,9 +114,9 @@ class ShopHomeViewModel @Inject constructor(
         get() = _shopHomeWidgetContentData
     private val _shopHomeWidgetContentData = MutableSharedFlow<Result<Map<Pair<String,String>, Visitable<*>?>>>()
 
-    val shopHomeWidgetContentDataError : Flow<List<ShopPageHomeWidgetLayoutUiModel.WidgetLayout>>
+    val shopHomeWidgetContentDataError : Flow<List<ShopPageWidgetLayoutUiModel>>
         get() = _shopHomeWidgetContentDataError
-    private val _shopHomeWidgetContentDataError = MutableSharedFlow<List<ShopPageHomeWidgetLayoutUiModel.WidgetLayout>>()
+    private val _shopHomeWidgetContentDataError = MutableSharedFlow<List<ShopPageWidgetLayoutUiModel>>()
 
     val shopHomeMerchantVoucherLayoutData: LiveData<Result<ShopHomeVoucherUiModel>>
             get() = _shopHomeMerchantVoucherLayoutData
@@ -700,7 +701,7 @@ class ShopHomeViewModel @Inject constructor(
     }
 
     fun getWidgetContentData(
-            listWidgetLayout: List<ShopPageHomeWidgetLayoutUiModel.WidgetLayout>,
+            listWidgetLayout: List<ShopPageWidgetLayoutUiModel>,
             shopId: String,
             widgetUserAddressLocalData: LocalCacheModel,
             isThematicWidgetShown: Boolean

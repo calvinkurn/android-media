@@ -7,10 +7,14 @@ import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.airbnb.lottie.LottieAnimationView
+import com.airbnb.lottie.LottieCompositionFactory
+import com.airbnb.lottie.LottieDrawable
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.shop.common.util.ShopUtil.isUrlJson
 import com.tokopedia.shop.common.util.ShopUtil.isUrlPng
 import com.tokopedia.shop.databinding.ShopPageDynamicTabViewBinding
 import com.tokopedia.shop.databinding.ShopPageTabViewBinding
@@ -84,6 +88,7 @@ internal class ShopPageFragmentPagerAdapter(
 
     private fun setDynamicTabIcon(binding: ShopPageDynamicTabViewBinding, position: Int, isActive: Boolean) {
         binding.shopPageDynamicTabViewIcon.hide()
+        binding.shopPageDynamicTabLottieView.hide()
         ctx?.let {
             val iconUrl: String = if (isActive) {
                 listShopPageTabModel.getOrNull(position)?.iconActiveUrl.orEmpty()
@@ -98,7 +103,26 @@ internal class ShopPageFragmentPagerAdapter(
                         isEnabled = true
                     }
                 }
+                iconUrl.isUrlJson() -> {
+                    binding.shopPageDynamicTabLottieView.apply {
+                        show()
+                        setupLottieAnimation(iconUrl, this)
+                        isEnabled = true
+                    }
+                }
                 else -> {}
+            }
+        }
+    }
+
+    private fun setupLottieAnimation(lottieIconUrl: String, lottieIcon: LottieAnimationView) {
+        ctx?.let {
+            val lottieCompositionLottieTask = LottieCompositionFactory.fromUrl(it, lottieIconUrl)
+            lottieCompositionLottieTask.addListener { result ->
+                lottieIcon.setComposition(result)
+                lottieIcon.visibility = View.VISIBLE
+                lottieIcon.playAnimation()
+                lottieIcon.repeatCount = LottieDrawable.INFINITE
             }
         }
     }

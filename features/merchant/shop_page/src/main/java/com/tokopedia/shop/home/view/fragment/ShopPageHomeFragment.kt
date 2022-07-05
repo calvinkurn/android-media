@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -120,6 +121,7 @@ import com.tokopedia.shop.home.view.listener.*
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.common.data.model.ShopPageGetHomeType
+import com.tokopedia.shop.common.data.model.ShopPageWidgetLayoutUiModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
 import com.tokopedia.shop.pageheader.presentation.fragment.NewShopPageFragment
@@ -152,7 +154,7 @@ import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.min
 
-class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeFactory>(),
+open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFactory>(),
         ShopHomeDisplayWidgetListener,
         ShopHomeVoucherViewHolder.ShopHomeVoucherViewHolderListener,
         ShopHomeEndlessProductListener,
@@ -235,14 +237,14 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     @Inject
     lateinit var dispatcher: CoroutineDispatchers
 
-    private var viewModel: ShopHomeViewModel? = null
-    private var extParam: String = ""
-    private var shopId: String = ""
-    private var isOfficialStore: Boolean = false
-    private var isGoldMerchant: Boolean = false
-    private var shopName: String = ""
-    private var shopAttribution: String = ""
-    private var shopRef: String = ""
+    var viewModel: ShopHomeViewModel? = null
+    var extParam: String = ""
+    var shopId: String = ""
+    var isOfficialStore: Boolean = false
+    var isGoldMerchant: Boolean = false
+    var shopName: String = ""
+    var shopAttribution: String = ""
+    var shopRef: String = ""
     private var productListName: String = ""
     private var decodeExtParam: String = ""
     private var isThematicWidgetShown: Boolean = false
@@ -312,7 +314,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private val widgetWatchDialogContainer by lazy { PlayWidgetWatchDialogContainer() }
 
-    private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
+    lateinit var playWidgetCoordinator: PlayWidgetCoordinator
     private lateinit var playWidgetActionBottomSheet: PlayWidgetSellerActionBottomSheet
 
     private val viewJob = SupervisorJob()
@@ -321,13 +323,13 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         override val coroutineContext: CoroutineContext
             get() = viewJob + dispatcher.main
     }
-    private var isLoadInitialData = false
+    var isLoadInitialData = false
     private var gridType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
     private var initialProductListData: ShopProduct.GetShopProduct? = null
     private var globalErrorShopPage: GlobalError? = null
-    var listWidgetLayout = mutableListOf<ShopPageHomeWidgetLayoutUiModel.WidgetLayout>()
+    var listWidgetLayout = mutableListOf<ShopPageWidgetLayoutUiModel>()
     var isNeedScrollToTopAfterGetData = true
-    private val viewBinding: FragmentShopPageHomeBinding? by viewBinding()
+    val viewBinding: FragmentShopPageHomeBinding? by viewBinding()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setDataFromAppLinkQueryParam()
@@ -618,7 +620,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
-    private fun getIntentData() {
+    open fun getIntentData() {
         arguments?.let {
             shopId = it.getString(KEY_SHOP_ID, "")
             isOfficialStore = it.getBoolean(KEY_IS_OFFICIAL_STORE, false)
@@ -629,7 +631,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
-    private fun observeLiveData() {
+    open fun observeLiveData() {
         viewModel?.shopHomeWidgetLayoutData?.observe(viewLifecycleOwner, {
             hideLoading()
             when (it) {
@@ -1128,7 +1130,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
-    private fun setShopHomeWidgetLayoutData(data: ShopPageHomeWidgetLayoutUiModel) {
+    open fun setShopHomeWidgetLayoutData(data: ShopPageHomeWidgetLayoutUiModel) {
         shopPageHomeTracking.sendUserViewHomeTabWidgetTracker(
             data.masterLayoutId,
             shopId
@@ -1197,11 +1199,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
-    override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, ShopHomeAdapterTypeFactory> {
+    override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, AdapterTypeFactory> {
         return ShopHomeAdapter(shopHomeAdapterTypeFactory)
     }
 
-    override fun getAdapterTypeFactory() = shopHomeAdapterTypeFactory
+    override fun getAdapterTypeFactory(): AdapterTypeFactory = shopHomeAdapterTypeFactory
 
     override fun onItemClicked(t: Visitable<*>?) {
     }
@@ -1332,7 +1334,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
-    private fun getWidgetContentData(listWidgetLayoutToLoad: MutableList<ShopPageHomeWidgetLayoutUiModel.WidgetLayout>) {
+    private fun getWidgetContentData(listWidgetLayoutToLoad: MutableList<ShopPageWidgetLayoutUiModel>) {
         if (listWidgetLayoutToLoad.isNotEmpty()) {
             val widgetUserAddressLocalData = ShopUtil.getShopPageWidgetUserAddressLocalData(context)
                 ?: LocalCacheModel()
@@ -1345,15 +1347,15 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
-    private fun isWidgetMvc(data: ShopPageHomeWidgetLayoutUiModel.WidgetLayout): Boolean {
+    private fun isWidgetMvc(data: ShopPageWidgetLayoutUiModel): Boolean {
         return data.widgetType == PROMO && data.widgetName == VOUCHER_STATIC
     }
 
-    private fun isWidgetPlay(data: ShopPageHomeWidgetLayoutUiModel.WidgetLayout): Boolean {
+    private fun isWidgetPlay(data: ShopPageWidgetLayoutUiModel): Boolean {
         return data.widgetType == DYNAMIC && data.widgetName == PLAY_CAROUSEL_WIDGET
     }
 
-    private fun getListWidgetLayoutToLoad(lastCompletelyVisibleItemPosition: Int): MutableList<ShopPageHomeWidgetLayoutUiModel.WidgetLayout> {
+    private fun getListWidgetLayoutToLoad(lastCompletelyVisibleItemPosition: Int): MutableList<ShopPageWidgetLayoutUiModel> {
         return if (listWidgetLayout.isNotEmpty()) {
             if (shopHomeAdapter.isLoadFirstWidgetContentData()) {
                 listWidgetLayout.subList(
@@ -1575,7 +1577,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 goToBundlingSelectionPage(selectedMultipleBundle.bundleId)
             } else {
                 // atc bundle directly from shop page home
-                val widgetLayoutParams = ShopPageHomeWidgetLayoutUiModel.WidgetLayout(
+                val widgetLayoutParams = ShopPageWidgetLayoutUiModel(
                         widgetId = widgetLayout.widgetId,
                         widgetMasterId = widgetLayout.widgetMasterId,
                         widgetType = widgetLayout.widgetType,
@@ -1618,7 +1620,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 goToBundlingSelectionPage(selectedBundle.bundleId)
             } else {
                 // atc bundle directly from shop page home
-                val widgetLayoutParams = ShopPageHomeWidgetLayoutUiModel.WidgetLayout(
+                val widgetLayoutParams = ShopPageWidgetLayoutUiModel(
                         widgetId = widgetLayout.widgetId,
                         widgetMasterId = widgetLayout.widgetMasterId,
                         widgetType = widgetLayout.widgetType,
@@ -1650,7 +1652,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private fun handleOnFinishAtcBundle(
             atcBundleModel: AddToCartBundleModel,
             bundleListSize: Int,
-            widgetLayout: ShopPageHomeWidgetLayoutUiModel.WidgetLayout
+            widgetLayout: ShopPageWidgetLayoutUiModel
     ) {
         atcBundleModel.validateResponse(
                 onSuccess = {
@@ -1707,7 +1709,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             errorTitle: String,
             errorDescription: String,
             ctaText: String,
-            widgetLayoutParams: ShopPageHomeWidgetLayoutUiModel.WidgetLayout
+            widgetLayoutParams: ShopPageWidgetLayoutUiModel
     ) {
         context?.let {
             DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
