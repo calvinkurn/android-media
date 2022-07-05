@@ -48,6 +48,7 @@ import com.tokopedia.product.manage.feature.quickedit.delete.domain.DeleteProduc
 import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPriceResult
 import com.tokopedia.product.manage.feature.quickedit.price.domain.EditPriceUseCase
 import com.tokopedia.shop.common.data.model.ProductStock
+import com.tokopedia.shop.common.data.source.cloud.model.MaxStockThresholdResponse
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.ExtraInfo
@@ -62,6 +63,7 @@ import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
@@ -88,6 +90,7 @@ class ProductManageViewModel @Inject constructor(
     private val getAdminInfoShopLocationUseCase: GetAdminInfoShopLocationUseCase,
     private val getUploadStatusUseCase: GetUploadStatusUseCase,
     private val clearUploadStatusUseCase: ClearUploadStatusUseCase,
+    private val getMaxStockThresholdUseCase: GetMaxStockThresholdUseCase,
     private val tickerStaticDataProvider: TickerStaticDataProvider,
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
@@ -303,20 +306,32 @@ class ProductManageViewModel @Inject constructor(
         getProductListJob?.cancel()
 
         launchCatchError(block = {
-            val productListResponse = withContext(dispatchers.io) {
+            val productResponse = withContext(dispatchers.io) {
                 if (withDelay) {
                     delay(REQUEST_DELAY)
                 }
-                val warehouseId = getWarehouseId(shopId)
-                val extraInfo = listOf(ExtraInfo.TOPADS, ExtraInfo.RBAC)
-                val requestParams = GQLGetProductListUseCase.createRequestParams(shopId, warehouseId, filterOptions, sortOption, extraInfo)
-                val getProductList = getProductListUseCase.execute(requestParams)
-                getProductList.productList
+                val getProductList = async {
+                    val warehouseId = getWarehouseId(shopId)
+                    val extraInfo = listOf(ExtraInfo.TOPADS, ExtraInfo.RBAC)
+                    val requestParams = GQLGetProductListUseCase.createRequestParams(shopId, warehouseId, filterOptions, sortOption, extraInfo)
+                    getProductListUseCase.execute(requestParams)
+                }
+                val maxStockDeffered = async {
+                    try {
+                        getMaxStockThresholdUseCase.execute(shopId)
+                    } catch (ex: Exception) {
+                        null
+                    }
+                }
+                getProductList.await().productList to maxStockDeffered.await()
             }
             _refreshList.value = isRefresh
 
+            val (productListResponse, maxStockResponse) = productResponse
+            val maxStock = maxStockResponse?.getIMSMeta?.getMaxStockFromResponse()
+
             totalProductCount = productListResponse?.meta?.totalHits.orZero()
-            showProductList(productListResponse?.data)
+            showProductList(productListResponse?.data, maxStock)
             showTicker()
             hideProgressDialog()
         }, onError = {
@@ -742,9 +757,9 @@ class ProductManageViewModel @Inject constructor(
         }
     }
 
-    private fun showProductList(products: List<Product>?) {
+    private fun showProductList(products: List<Product>?, maxStock: Int?) {
         val isMultiSelectActive = _toggleMultiSelect.value == true
-        val productList = mapToUiModels(products, getAccess(), isMultiSelectActive)
+        val productList = mapToUiModels(products, getAccess(), isMultiSelectActive, maxStock)
         _productListResult.value = Success(productList)
     }
 
@@ -760,6 +775,10 @@ class ProductManageViewModel @Inject constructor(
         } else {
             warehouseId
         }
+    }
+
+    private fun MaxStockThresholdResponse.GetIMSMeta?.getMaxStockFromResponse(): Int? {
+        return this?.data?.maxStockThreshold?.takeIf { it.isNotEmpty() }?.toInt()
     }
 
     private fun setProductListFeaturedOnly(productsSize: Int) {
