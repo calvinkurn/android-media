@@ -130,100 +130,14 @@ class ChatbotVideoUploadViewHolder(
             setVisibility(progressBarSendImage, View.GONE)
         }
 
-//        if (element.videoUrl?.isNullOrEmpty() == true) {
-//            attachmentUnify?.let { attachementUnify ->
-//                loadPlaceHolderWhenUploadingImageWithPNG(
-//                    attachementUnify,
-//                    R.drawable.chatbot_video_placeholder
-//                )
-//            }
-//        } else {
-//            attachmentUnify?.let { attachementUnify ->
-//                loadThumbnail(attachementUnify, element.videoUrl)
-//            }
-//        }
         element.videoUrl?.let { videoUrl ->
             attachmentUnify?.let { attachementUnify ->
                 loadImage(
                     attachementUnify,
                     videoUrl,
-                    element.attachmentType,
-                    element.messageId
                 )
             }
         }
-    }
-
-    fun loadPlaceHolderWhenUploadingImageWithPNG(imageview: ImageView, placeHolder: Int) {
-        try {
-            if (imageview != null) {
-                Glide.with(imageview.context)
-                    .load(placeHolder)
-                    .fitCenter()
-                    .dontAnimate()
-                    .placeholder(R.drawable.chatbot_video_placeholder)
-                    .error(com.tokopedia.abstraction.R.drawable.error_drawable)
-                    .into(imageview)
-            }
-        } catch (e: Exception) {
-            if (imageview.context != null) {
-                imageview.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        imageview.context,
-                        R.drawable.chatbot_video_placeholder
-                    )
-                )
-            }
-        }
-
-    }
-
-    fun loadThumbnail(imageview: ImageView, videoUrl: String?) {
-        try {
-            if (imageview != null) {
-                var thumbnail = layoutPosition * 1000
-                val options = RequestOptions().frame(thumbnail.toLong())
-                Glide.with(imageview.context).load(videoUrl).apply(options).into(imageview)
-
-//                val requestOptions = RequestOptions()
-//                requestOptions.placeholder(R.drawable.chatbot_video_placeholder)
-//                requestOptions.error(com.tokopedia.abstraction.R.drawable.error_drawable)
-//
-//
-//                Glide.with(imageview.context)
-//                    .load("https://www.youtube.com/watch?v=T9jERRXml_o&ab_channel=DeeplinaDeka")
-//                    .apply(requestOptions)
-//                    .thumbnail(Glide.with(imageview.context).load("https://www.youtube.com/watch?v=T9jERRXml_o&ab_channel=DeeplinaDeka"))
-//                    .into(imageview)
-
-//                val requestOptions = RequestOptions()
-//                requestOptions.placeholder(R.drawable.chatbot_video_placeholder)
-//                requestOptions.error(com.tokopedia.abstraction.R.drawable.error_drawable)
-//                Glide.with(imageview.context)
-//                    .load(videoUrl)
-//                    .apply(requestOptions)
-//                    .thumbnail(Glide.with(imageview.context).load(videoUrl))
-//                    .into(imageview)
-//                Glide.with(imageview.context)
-//                    .load(videoUrl)
-//                    .fitCenter()
-//                    .dontAnimate()
-//                    .placeholder(R.drawable.chatbot_video_placeholder)
-//                        //TODO change this
-//                    .error(com.tokopedia.abstraction.R.drawable.error_drawable)
-//                    .into(imageview)
-            }
-        } catch (e: Exception) {
-            if (imageview.context != null) {
-                imageview.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        imageview.context,
-                        R.drawable.chatbot_video_placeholder
-                    )
-                )
-            }
-        }
-
     }
 
     fun getStrokeWidthSenderDimenRes(): Int {
@@ -232,20 +146,10 @@ class ChatbotVideoUploadViewHolder(
 
     private fun loadImage(
         imageview: ImageView,
-        url: String?,
-        attachmentType: String,
-        messageId: String
+        url: String?
     ) {
         try {
             if (imageview.context != null) {
-//                Glide.with(imageview.context)
-//                    .load(getGlideUrl(messageId, attachmentType, url, userSession))
-//                    .fitCenter()
-//                    .dontAnimate()
-//                    .placeholder(R.drawable.chatbot_video_placeholder)
-//                    .error(com.tokopedia.abstraction.R.drawable.error_drawable)
-//                    .into(imageview)
-
                 Glide.with(imageview.context)
                     .load(url)
                     .fitCenter()
