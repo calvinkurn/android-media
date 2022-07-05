@@ -279,6 +279,7 @@ class PlayVideoWrapper private constructor(
     private var startTime: Long = 0L
     private var endTime: Long = 0L
     private var transferredData: Long = 0L
+    private var liveRoomMetricsCommon = PlayLiveRoomMetricsCommon()
 
     private val transferListener = object : TransferListener {
         override fun onTransferInitializing(dataSource: DataSource?, dataSpec: DataSpec?, isNetwork: Boolean) {}
@@ -293,7 +294,7 @@ class PlayVideoWrapper private constructor(
 
         override fun onTransferEnd(dataSource: DataSource?, dataSpec: DataSpec?, isNetwork: Boolean) {
             endTime = System.currentTimeMillis()
-            PlayLiveRoomMetricsCommon.setInetSpeed(getDownstreamBandwidth())
+            liveRoomMetricsCommon.setInetSpeed(getDownstreamBandwidth())
         }
     }
 

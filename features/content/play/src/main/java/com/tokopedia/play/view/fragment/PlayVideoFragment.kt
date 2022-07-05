@@ -88,6 +88,8 @@ class PlayVideoFragment @Inject constructor(
     private val overlayVideoView by viewComponent { EmptyViewComponent(it, R.id.v_play_overlay_video) }
     private val onboardingView by viewComponentOrNull { OnboardingViewComponent(it, R.id.iv_onboarding) }
 
+    private val liveRoomMetricsCommon = PlayLiveRoomMetricsCommon()
+
     private val blurUtil: ImageBlurUtil by lifecycleBound (
             creator = { ImageBlurUtil(it.requireContext()) },
             onLifecycle = whenLifecycle {
@@ -226,7 +228,7 @@ class PlayVideoFragment @Inject constructor(
                     PlayParentViewModel::class.java
                 )
         }
-        playLog.logDownloadSpeed(PlayLiveRoomMetricsCommon.getInetSpeed())
+        playLog.logDownloadSpeed(liveRoomMetricsCommon.getInetSpeed())
         playLog.sendAll(playViewModel.channelId, playViewModel.latestCompleteChannelData.videoMetaInfo.videoPlayer)
     }
 

@@ -5,7 +5,6 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.util.logger.PlayLog
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.view.storage.PlayChannelData
-import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play_common.util.PlayLiveRoomMetricsCommon
 import kotlin.math.abs
 
@@ -35,6 +34,8 @@ class VideoAnalyticHelper(
 
     private var watchDurationInSeconds: Long = 0L
 
+    private val liveRoomMetricsCommon = PlayLiveRoomMetricsCommon()
+
     fun onPause() {
         bufferTrackingModel = bufferTrackingModel.copy(
                 isBuffering = false,
@@ -62,7 +63,7 @@ class VideoAnalyticHelper(
                     shouldTrackNext = bufferTrackingModel.shouldTrackNext
             )
 
-            val bufferEvent = PlayLiveRoomMetricsCommon.getBufferingEventData(bufferCount = bufferTrackingModel.bufferCount, timestamp = bufferTrackingModel.lastBufferMs)
+            val bufferEvent = liveRoomMetricsCommon.getBufferingEventData(bufferCount = bufferTrackingModel.bufferCount, timestamp = bufferTrackingModel.lastBufferMs)
             log.logBufferEvent(bufferingCount = bufferEvent.second, bufferingEvent = bufferEvent.first)
 
         } else if ((state is PlayViewerVideoState.Play || state is PlayViewerVideoState.Pause) && bufferTrackingModel.isBuffering) {
@@ -75,7 +76,7 @@ class VideoAnalyticHelper(
         }
 
         if(bufferTrackingModel.bufferCount > MORE_THAN_ZERO && watchDurationModel.cumulationDuration > MORE_THAN_30){
-            log.logDownloadSpeed(PlayLiveRoomMetricsCommon.getInetSpeed())
+            log.logDownloadSpeed(liveRoomMetricsCommon.getInetSpeed())
             log.sendAll(channelData.id, channelData.videoMetaInfo.videoPlayer)
         }
     }
