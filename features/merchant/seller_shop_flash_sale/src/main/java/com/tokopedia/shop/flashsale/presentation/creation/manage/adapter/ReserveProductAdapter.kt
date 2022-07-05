@@ -66,19 +66,27 @@ class ReserveProductAdapter(
         onSelectedItemChanges(selectedProduct)
     }
 
+    private fun notifyUnselectedItems() {
+        items.forEachIndexed { index, item ->
+            if (!item.isSelected) notifyItemChanged(index)
+        }
+    }
+
     fun setInputEnabled(enabled: Boolean) {
         inputEnabled = enabled
-        notifyDataSetChanged()
+        notifyUnselectedItems()
     }
 
     fun addItems(newItems: List<ReserveProductModel>) {
+        val oldItemSize = items.size
+        val newItemSize = newItems.size
+
         items.addAll(newItems)
         addPreselectedProduct(newItems)
-        notifyDataSetChanged()
+        notifyItemRangeChanged(oldItemSize, newItemSize)
     }
 
     fun clearData() {
         items.clear()
-        notifyDataSetChanged()
     }
 }
