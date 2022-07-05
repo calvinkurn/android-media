@@ -20,7 +20,7 @@
         android:paddingRight="@dimen/unify_space_12"
         android:paddingBottom="@dimen/email_extension_6"
         android:textColor="@color/Unify_G400"
-        app:typographyType="body_1"
+        app:typographyType="display_1"
         app:typographyWeight="reguler" />
 
 </LinearLayout>

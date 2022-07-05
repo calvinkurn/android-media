@@ -123,10 +123,10 @@
     <LinearLayout
         android:id="@+id/ll_lihat_product"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl4"
         android:layout_marginStart="@dimen/unify_space_16"
         android:layout_marginBottom="@dimen/unify_space_16"
-        android:background="@drawable/feed_bg_lihat_produk"
+        android:background="@drawable/feed_bg_lihat_produk_large"
         android:elevation="@dimen/unify_space_16"
         android:gravity="center_vertical"
         android:orientation="horizontal"
@@ -135,8 +135,8 @@
         >
 
         <com.tokopedia.iconunify.IconUnify
-            android:layout_width="@dimen/layout_lvl2"
-            android:layout_height="@dimen/layout_lvl2"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
             android:layout_marginStart="@dimen/unify_space_4"
             android:layout_marginEnd="@dimen/unify_space_4"
             app:icon_color_light_enable="@color/Unify_Static_White"
@@ -148,11 +148,11 @@
             android:id="@+id/tv_lihat_product"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/feed_component_dp_6"
+            android:layout_marginEnd="@dimen/unify_space_8"
             android:text="@string/feed_post_tag_text"
             android:textColor="@color/Unify_Static_White"
             android:visibility="gone"
-            app:typographyType="body_3"
+            app:typographyType="body_2"
             app:typographyWeight="bold"
             tools:visibility="visible"
             />
@@ -161,8 +161,8 @@
 
     <ImageView
         android:id="@+id/volume_icon"
-        android:layout_width="@dimen/layout_lvl3"
-        android:layout_height="@dimen/layout_lvl3"
+        android:layout_width="@dimen/layout_lvl4"
+        android:layout_height="@dimen/layout_lvl4"
         android:layout_marginEnd="@dimen/unify_space_16"
         android:layout_marginBottom="@dimen/unify_space_16"
         app:layout_constraintBottom_toBottomOf="parent"

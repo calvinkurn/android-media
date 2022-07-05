@@ -132,8 +132,8 @@ internal class CarouselVideoViewHolder(
 
     private fun changeVolumeIcon() {
         volumeIcon.setImageResource(
-            if (isMuted) R.drawable.ic_feed_volume_mute
-            else R.drawable.ic_feed_volume_up
+            if (isMuted) R.drawable.ic_feed_volume_mute_large
+            else R.drawable.ic_feed_volume_up_large
         )
     }
 
