@@ -66,6 +66,7 @@ class ShopSecondaryInfoAdapterTypeFactory(private val listener: OtherMenuViewHol
                 parent,
                 listener::onTokoPlusClicked,
                 listener::onTokoPlusImpressed,
+                listener::onFreeShippingRefresh
             )
             else -> super.createViewHolder(parent, type)
         }
