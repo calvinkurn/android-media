@@ -14,6 +14,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.ovop2p.Constants
 import com.tokopedia.ovop2p.R
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
 import java.util.*
 import java.util.regex.Pattern
@@ -74,19 +75,17 @@ object OvoP2pUtil {
         }
     }
 
-    fun createErrorSnackBar(activity: Activity,
-                            onClickListener: View.OnClickListener,
-                            errorMsg: String): Snackbar {
-        val snackbar = Snackbar.make(activity.findViewById(
-                android.R.id.content), "", Snackbar.LENGTH_LONG)
-        val layout = snackbar.view as Snackbar.SnackbarLayout
-        snackbar.view.setBackgroundColor(Color.TRANSPARENT)
-        val inflater = activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val snackView = inflater.inflate(com.tokopedia.design.R.layout.error_snackbar_layout, null)
-        snackView.findViewById<View>(com.tokopedia.design.R.id.btn_ok).setOnClickListener(onClickListener)
-        if (!TextUtils.isEmpty(errorMsg)) (snackView.findViewById<View>(com.tokopedia.design.R.id.error_msg) as TextView).text = errorMsg
-        layout.addView(snackView, 0)
-        return snackbar
+    fun createErrorSnackBar(
+        activity: Activity,
+        errorMsg: String,
+        onClickListener: View.OnClickListener
+    ): Snackbar {
+        return if (!TextUtils.isEmpty(errorMsg))
+            Toaster.build( activity.findViewById(android.R.id.content), errorMsg, Snackbar.LENGTH_LONG, type =  Toaster.TYPE_ERROR,  activity.getString(
+                            R.string.ovop2p_oke),onClickListener)
+        else
+            Toaster.build( activity.findViewById(android.R.id.content), activity.getString(R.string.ovop2p_tryagain_later), Snackbar.LENGTH_LONG, type =  Toaster.TYPE_ERROR,  activity.getString(R.string.ovop2p_oke),onClickListener)
+
     }
 
     fun getUserId(context: Context): String{

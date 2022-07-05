@@ -20,7 +20,7 @@ import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.CassavaTestRuleMatcher.getAnalyticValidator
 import com.tokopedia.loginregister.common.CassavaTestRuleMatcher.validate
 import com.tokopedia.loginregister.login.behaviour.base.LoginBase
-import com.tokopedia.loginregister.login.helper.LoginSocmedTestHelper
+import com.tokopedia.loginregister.utils.LoginSocmedTestHelper
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity
 import com.tokopedia.test.application.annotations.CassavaTest
 import org.hamcrest.Matchers
@@ -96,10 +96,10 @@ class LoginActivityTest: LoginBase() {
         //Then
         val query = listOf(
             getAnalyticValidator(
-                "clickLogin",
-                "login page",
-                "click on lupa kata sandi",
-                ""
+                "clickAccount",
+                "widget login page",
+                "click on button lupa kata sandi",
+                "widget butuh bantuan"
             )
         )
         validate(cassavaTestRule, query)

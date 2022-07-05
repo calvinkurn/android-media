@@ -159,8 +159,7 @@ class ShopPageHomeModule {
 
     @ShopPageHomeScope
     @Provides
-    fun providePlayWidgetTracking(trackingQueue: TrackingQueue,
-                                  userSession: UserSessionInterface): ShopPlayWidgetAnalyticListener {
-        return ShopPlayWidgetAnalyticListener(trackingQueue, userSession)
+    fun providePlayWidgetTracking(userSession: UserSessionInterface): ShopPlayWidgetAnalyticListener {
+        return ShopPlayWidgetAnalyticListener(userSession)
     }
 }

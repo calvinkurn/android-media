@@ -3,13 +3,13 @@ package com.tokopedia.network.utils
 import android.content.Context
 import android.text.TextUtils
 import android.util.Log
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.R
 import com.tokopedia.network.constant.ResponseStatus
 import com.tokopedia.network.data.model.response.ResponseV4ErrorException
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ExceptionDictionary.Companion.getErrorCodeSimple
 import com.tokopedia.network.utils.ExceptionDictionary.Companion.getRandomString
 import java.io.IOException
@@ -21,6 +21,8 @@ open class ErrorHandler {
     companion object {
         const val ERROR_HANDLER = "ERROR_HANDLER"
         const val DEFAULT_ERROR_CODE = ""
+        const val ERROR_IDENTIFIER_LENGTH = 4
+        const val RESPONSE_STATUS_LENGTH = 3
 
         @JvmStatic
         fun getErrorMessage(context: Context?, e: Throwable?): String {
@@ -38,7 +40,7 @@ open class ErrorHandler {
         ): Pair<String?, String> {
             val errorMessageString = getErrorMessageString(context, e)
             val errorCode: String = getErrorCode(context, e)
-            val errorIdentifier = getRandomString(4)
+            val errorIdentifier = getRandomString(ERROR_IDENTIFIER_LENGTH)
 
             if (builder.sendToScalyr) {
                 sendToScalyr(errorIdentifier, builder.className, errorCode, Log.getStackTraceString(e))
@@ -60,7 +62,7 @@ open class ErrorHandler {
             val errorMessageString = getErrorMessageString(context, e)
 
             val errorCode: String = getErrorCode(context, e)
-            val errorIdentifier = getRandomString(4)
+            val errorIdentifier = getRandomString(ERROR_IDENTIFIER_LENGTH)
 
             if (builder.sendToScalyr) {
                 sendToScalyr(errorIdentifier, builder.className, errorCode, Log.getStackTraceString(e))
@@ -87,7 +89,7 @@ open class ErrorHandler {
             } else if (e is SocketTimeoutException) {
                 context.getString(R.string.default_request_error_timeout)
             } else if (e is RuntimeException && e.getLocalizedMessage() != null &&
-                e.getLocalizedMessage() != "" && e.getLocalizedMessage().length <= 3
+                e.getLocalizedMessage() != "" && e.getLocalizedMessage().length <= RESPONSE_STATUS_LENGTH
             ) {
                 try {
                     when (e.getLocalizedMessage().toInt()) {
