@@ -145,6 +145,7 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
             } else {
                 itemView.resources.getDimensionPixelOffset(R.dimen.dp_4)
             }
+            val margin16dp = itemView.resources.getDimensionPixelOffset(R.dimen.dp_16)
 
             if (hasPriceOriginal || hasWholesalePrice || hasPriceDrop) {
                 if (element.productSlashPriceLabel.isNotBlank()) {
@@ -168,6 +169,19 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
                 textSlashPrice.show()
                 val constraintSet = ConstraintSet()
                 constraintSet.clone(containerProduct)
+                constraintSet.connect(
+                    R.id.label_slash_price_percentage,
+                    ConstraintSet.START,
+                    R.id.image_product,
+                    ConstraintSet.END,
+                    margin16dp
+                )
+                constraintSet.connect(
+                    R.id.text_slash_price,
+                    ConstraintSet.START,
+                    R.id.label_slash_price_percentage,
+                    ConstraintSet.END
+                )
                 constraintSet.connect(
                     R.id.text_product_price,
                     ConstraintSet.START,
