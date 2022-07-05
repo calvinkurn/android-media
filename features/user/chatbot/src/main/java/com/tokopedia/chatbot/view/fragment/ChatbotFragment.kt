@@ -51,7 +51,7 @@ import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.FALSE
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.IMAGE_URL
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.IS_ATTACHED
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.STATUS
-import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.STATUS_ID
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.STATUS_COLOR
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.USED_BY
 import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_FIVE
 import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_FOUR
@@ -104,6 +104,7 @@ import com.tokopedia.chatbot.view.listener.ChatbotContract
 import com.tokopedia.chatbot.view.listener.ChatbotViewState
 import com.tokopedia.chatbot.view.listener.ChatbotViewStateImpl
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter
+import com.tokopedia.chatbot.view.util.AttachedInvoiceColor
 import com.tokopedia.imagepicker.common.*
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.*
@@ -359,7 +360,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 sendButton.setImageResource(R.drawable.ic_chatbot_send_deactivated)
 
                 invoiceLabel.text = hashMap.get(STATUS).toBlankOrString()
-                val labelType = getLabelType(hashMap.get(STATUS_ID).toIntOrZero())
+                val labelType = getLabelType(hashMap.get(STATUS_COLOR))
                 invoiceLabel?.setLabelType(labelType)
 
 
@@ -465,13 +466,15 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         replyEditText.setText("")
     }
 
-    private fun getLabelType(statusId: Int?): Int {
-        if (statusId == null) return Label.GENERAL_DARK_GREY
-        return when (OrderStatusCode.MAP[statusId]) {
-            OrderStatusCode.COLOR_RED -> Label.GENERAL_LIGHT_RED
-            OrderStatusCode.COLOR_GREEN -> Label.GENERAL_LIGHT_GREEN
-            else -> Label.GENERAL_DARK_GREY
+    private fun getLabelType(statusColor: String?): Int {
+        if(statusColor == null)
+            return Label.HIGHLIGHT_LIGHT_RED
+        return when(AttachedInvoiceColor.mapTextToInvoiceLabel(statusColor)) {
+            AttachedInvoiceColor.InvoiceLabelGreen -> Label.HIGHLIGHT_LIGHT_GREEN
+            AttachedInvoiceColor.InvoiceLabelRed -> Label.HIGHLIGHT_LIGHT_RED
+            AttachedInvoiceColor.InvoiceLabelYellow -> Label.HIGHLIGHT_LIGHT_ORANGE
         }
+
     }
 
 
