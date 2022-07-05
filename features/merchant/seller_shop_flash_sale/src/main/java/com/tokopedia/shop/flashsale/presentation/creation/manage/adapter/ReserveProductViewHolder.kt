@@ -4,10 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
-import com.tokopedia.kotlin.extensions.view.getNumberFormatted
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsItemReserveProductBinding
@@ -20,22 +17,18 @@ class ReserveProductViewHolder(
 ) : RecyclerView.ViewHolder(itemView) {
 
     companion object {
+        private const val ENABLED_ALPHA = 1F
+        private const val DISABLED_ALPHA = 0.5F
+        private const val DEFAULT_EMPTY_PLACEHOLDER_TEXT = "-"
+
         fun createRootView(parent: ViewGroup): View = LayoutInflater.from(parent.context)
             .inflate(R.layout.ssfs_item_reserve_product, parent, false)
     }
 
     private val binding: SsfsItemReserveProductBinding? by viewBinding()
 
-    fun bind(item: ReserveProductModel) {
+    init {
         binding?.apply {
-            tvProductName.text = item.productName
-            imgProduct.loadImage(item.imageUrl)
-            tvSku.text = "SKU: " + if (item.sku.isBlank()) "-" else item.sku
-            tvStock.text = "Total stok: ${item.stock}"
-            tvProductPrice.text = item.price.getCurrencyFormatted()
-            labelVariantCount.text = "${item.variant.size} Varian Produk"
-            labelVariantCount.isVisible = item.variant.size.isMoreThanZero()
-            checkboxItem.isChecked = item.isSelected
             root.setOnClickListener {
                 checkboxItem.isChecked = !checkboxItem.isChecked
                 itemOnClick(adapterPosition, checkboxItem.isChecked)
@@ -43,6 +36,48 @@ class ReserveProductViewHolder(
             checkboxItem.setOnClickListener {
                 itemOnClick(adapterPosition, checkboxItem.isChecked)
             }
+        }
+    }
+
+    fun bind(item: ReserveProductModel, inputEnabled: Boolean) {
+        val context = itemView.context
+        val skuValue = if (item.sku.isNotEmpty()) item.sku else DEFAULT_EMPTY_PLACEHOLDER_TEXT
+        val skuText = context.getString(R.string.chooseproduct_sku_text, skuValue)
+        val stockText = context.getString(R.string.chooseproduct_stock_total_text, item.stock)
+        val variantText = context.getString(R.string.chooseproduct_variant_text, item.variant.size)
+
+        binding?.apply {
+            tvProductName.text = item.productName
+            imgProduct.loadImage(item.imageUrl)
+            tvSku.text = skuText
+            tvStock.text = stockText
+            tvProductPrice.text = item.price.getCurrencyFormatted()
+            labelVariantCount.text = variantText
+            labelVariantCount.isVisible = item.variant.size.isMoreThanZero()
+            checkboxItem.isChecked = item.isSelected
+            tvDisabledReason.setTextAndCheckShow(item.disabledReason)
+        }
+
+        // set from item disability
+        setListEnable(!item.disabled)
+
+        // set from adapter input enabled
+        if (!item.isSelected) {
+            setListEnable(inputEnabled)
+        }
+    }
+
+    private fun setListEnable(enabled: Boolean) {
+        binding?.apply {
+            tvProductName.isEnabled = enabled
+            imgProduct.alpha = if (enabled) ENABLED_ALPHA else DISABLED_ALPHA
+            tvSku.isEnabled = enabled
+            tvStock.isEnabled = enabled
+            tvProductPrice.isEnabled = enabled
+            labelVariantCount.isEnabled = enabled
+            labelVariantCount.isEnabled = enabled
+            checkboxItem.isEnabled = enabled
+            root.isEnabled = enabled
         }
     }
 }

@@ -11,24 +11,24 @@ class ReserveProductAdapter(
 
     private var items: MutableList<ReserveProductModel> = mutableListOf()
     private var selectedProduct: MutableList<SelectedProductModel> = mutableListOf()
+    private var inputEnabled = true
 
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): ReserveProductViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReserveProductViewHolder {
         val rootView = ReserveProductViewHolder.createRootView(parent)
         return ReserveProductViewHolder(rootView, ::itemOnClick)
     }
 
     override fun onBindViewHolder(holder: ReserveProductViewHolder, position: Int) {
-        holder.bind(items[position])
+        holder.bind(items[position], inputEnabled)
     }
+
+    override fun getItemCount() = items.size
 
     private fun itemOnClick(position: Int, value: Boolean) {
         val selectedItem = items[position]
         selectedItem.isSelected = value
         if (value) {
-            addToSelectedProduct(selectedItem)
+            addToSelectedProduct(selectedItem, false)
         } else {
             removeFromSelectedProduct(selectedItem)
         }
@@ -41,25 +41,39 @@ class ReserveProductAdapter(
         }
     }
 
-    private fun addToSelectedProduct(selectedItem: ReserveProductModel) {
+    private fun addToSelectedProduct(selectedItem: ReserveProductModel, isPreselected: Boolean) {
         val isExist = selectedProduct.any { it.productId == selectedItem.productId }
 
         if (isExist) return // just add unique productId
         selectedItem.variant.forEach {
             selectedProduct.add(
-                SelectedProductModel(it, parentProductId = selectedItem.productId)
+                SelectedProductModel(
+                    productId = it,
+                    parentProductId = selectedItem.productId,
+                    isPreselected = isPreselected)
             )
         }
 
         selectedProduct.add(
-            SelectedProductModel(selectedItem.productId, parentProductId = null)
+            SelectedProductModel(selectedItem.productId, parentProductId = null, isPreselected)
         )
     }
 
-    override fun getItemCount() = items.size
+    private fun addPreselectedProduct(selectedItems: List<ReserveProductModel>) {
+        selectedItems.forEach {
+            if (it.isSelected) addToSelectedProduct(it, true)
+        }
+        onSelectedItemChanges(selectedProduct)
+    }
+
+    fun setInputEnabled(enabled: Boolean) {
+        inputEnabled = enabled
+        notifyDataSetChanged()
+    }
 
     fun addItems(newItems: List<ReserveProductModel>) {
         items.addAll(newItems)
+        addPreselectedProduct(newItems)
         notifyDataSetChanged()
     }
 

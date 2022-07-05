@@ -251,6 +251,8 @@
     <string name="chooseproduct_product_empty_desc">Yuk, mulai tambah produkmu untuk didaftarkan ke campaign. </string>
     <string name="chooseproduct_save_button_text">Tambah %d Produk</string>
     <string name="chooseproduct_save_button_text_empty">Tambah Produk</string>
+    <string name="chooseproduct_sku_text">SKU: %s</string>
+    <string name="chooseproduct_stock_total_text">Total stok: %d</string>
 
     <!--Manage Product-->
     <string name="manage_product_complete_product_info_warning_label">Klik <b>Ubah</b> untuk melengkapi informasi produk ini, ya.</string>
@@ -296,7 +298,7 @@
     <string name="editproduct_counter_text">Produk dengan info belum lengkap: %d</string>
     <string name="editproduct_stock_total_text">Total stok %d</string>
     <string name="editproduct_stock_text">Stok %d</string>
-    <string name="edit_product_max_transaction_text">Batas maks. pembelian produk</string>
+    <string name="editproduct_max_transaction_text">Batas maks. pembelian produk</string>
     <string name="editproduct_required_text">Wajib diisi</string>
     <string name="editproduct_max_prefix">Maks. </string>
     <string name="editproduct_min_prefix">Min. </string>
@@ -337,5 +339,6 @@
     <string name="campaign_detail_SKU_placeholder">SKU: %s</string>
     <string name="campaign_detail_campaign_stock_label">Stok Campaign</string>
     <string name="campaign_detail_campaign_price_label">Harga Campaign</string>
+    <string name="chooseproduct_variant_text">%d Variant Produk</string>
 
 </resources>

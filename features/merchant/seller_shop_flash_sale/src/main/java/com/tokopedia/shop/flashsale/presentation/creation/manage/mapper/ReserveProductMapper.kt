@@ -12,6 +12,7 @@ object ReserveProductMapper {
     private const val ADD_PRODUCT_DEFAULT_VALUE = 0L
     private const val TEASER_POS_DEFAULT_VALUE = 0
     private const val TEASER_ACTIVE_DEFAULT_VALUE = false
+    private const val SELECTED_DISABLED_REASON_REMOTE_WORDING = "Produk sudah dipilih sebelumnya."
 
     fun mapFromProduct(product: GetSellerCampaignValidatedProductListResponse.Product) =
         ReserveProductModel (
@@ -23,7 +24,10 @@ object ReserveProductMapper {
             sku = product.sku,
             price = product.price,
             variant = product.variantChildsIds,
-            stock = product.stock
+            stock = product.stock,
+            disabled = product.disabled,
+            disabledReason = product.disabledReason,
+            isSelected = product.disabledReason == SELECTED_DISABLED_REASON_REMOTE_WORDING
         )
 
     fun mapToProductData(product: SelectedProductModel) = DoSellerCampaignProductSubmissionRequest.ProductData(
@@ -41,7 +45,7 @@ object ReserveProductMapper {
     ) = productList.map { mapFromProduct(it) }
 
     fun mapToProductDataList(reserveProductList: List<SelectedProductModel>?) = reserveProductList
-        ?.filter { it.parentProductId == null } // filter only parent product
+        ?.filter { it.parentProductId == null && !it.isPreselected } // filter only parent product
         ?.map { mapToProductData(it) }
         .orEmpty()
 

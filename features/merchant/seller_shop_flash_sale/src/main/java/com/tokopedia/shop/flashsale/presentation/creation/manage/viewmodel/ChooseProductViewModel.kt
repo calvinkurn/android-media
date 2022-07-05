@@ -97,10 +97,11 @@ class ChooseProductViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
+                val chosenProducts = ReserveProductMapper.mapToProductDataList(selectedItems.value)
                 val result = doSellerCampaignProductSubmissionUseCase.execute(
                     campaignId,
                     ProductionSubmissionAction.RESERVE,
-                    ReserveProductMapper.mapToProductDataList(selectedItems.value)
+                    chosenProducts
                 )
                 _isAddProductSuccess.postValue(result.isSuccess)
             },

@@ -182,16 +182,18 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
     }
 
     private fun setupSelectionItemsObserver() {
-        viewModel.selectedItems.observe(viewLifecycleOwner) {
+        viewModel.selectedItems.observe(viewLifecycleOwner) { selectedItems ->
+            val selectedCount = selectedItems.filter { !it.isPreselected }.size
             binding?.tvSelectedProduct?.text =
-                getString(R.string.chooseproduct_selected_product_suffix, it.size)
-            setupButtonSave(it)
+                getString(R.string.chooseproduct_selected_product_suffix, selectedCount)
+            setupButtonSave(selectedItems)
         }
     }
 
     private fun setupIsSelectionValidObserver() {
         viewModel.isSelectionValid.observe(viewLifecycleOwner) {
             binding?.btnSave?.isEnabled = it
+            adapter?.setInputEnabled(it)
         }
     }
 
