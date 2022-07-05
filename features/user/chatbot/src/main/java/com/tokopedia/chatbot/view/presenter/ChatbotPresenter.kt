@@ -824,7 +824,6 @@ class ChatbotPresenter @Inject constructor(
                     filePath = originalFile,
                     sourceId = sourceId
                 )
-                //TODO check
                 if (videoUploadJob.isActive) {
                     when (val result = uploaderUseCase.invoke(param)) {
                         is UploadResult.Success -> {

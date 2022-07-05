@@ -334,8 +334,8 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         getAdapter().showRetryFor(image, retry)
     }
 
-    override fun showRetryUploadVideos(video: VideoUploadUiModel, retry: Boolean) {
-        getAdapter().showRetryForVideo(video,retry)
+    override fun showRetryUploadVideos(video: VideoUploadUiModel) {
+        getAdapter().showRetryForVideo(video)
     }
 
     override fun removeDummy(visitable: Visitable<*>) {

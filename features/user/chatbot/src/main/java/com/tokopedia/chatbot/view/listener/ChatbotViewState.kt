@@ -75,6 +75,6 @@ interface ChatbotViewState : BaseChatViewState {
 
     fun handleReplyBox(isEnable: Boolean)
 
-    fun showRetryUploadVideos(it: VideoUploadUiModel, b: Boolean)
+    fun showRetryUploadVideos(it: VideoUploadUiModel)
 
 }

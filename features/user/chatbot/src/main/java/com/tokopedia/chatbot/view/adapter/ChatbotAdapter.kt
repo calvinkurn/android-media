@@ -37,7 +37,7 @@ class ChatbotAdapter(private val adapterTypeFactory: ChatbotTypeFactoryImpl)
         }
     }
 
-    fun showRetryForVideo(model: VideoUploadUiModel, b: Boolean) {
+    fun showRetryForVideo(model: VideoUploadUiModel) {
         val position = visitables.indexOf(model)
         if (position < 0) return
         if (visitables[position] is VideoUploadUiModel) {

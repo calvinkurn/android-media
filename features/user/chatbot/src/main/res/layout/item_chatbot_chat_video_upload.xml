@@ -151,8 +151,8 @@
         android:layout_marginRight="@dimen/spacing_lvl3"
         android:layout_toStartOf="@+id/card_group_chat_message"
         android:layout_toLeftOf="@+id/card_group_chat_message"
+        android:contentDescription="@null"
         android:visibility="visible"
-        app:srcCompat="@drawable/ic_retry_image_send"
-        android:contentDescription="@null"/>
+        app:srcCompat="@drawable/ic_retry_image_send" />
 
 </RelativeLayout>

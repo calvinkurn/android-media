@@ -1302,7 +1302,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         createRetryMediaUploadBottomSheet(element)
     }
 
-    fun onBottomSheetItemClicked(element: SendableUiModel, bottomSheetPage: BottomSheetUnify): (Int) -> Unit {
+    private fun onBottomSheetItemClicked(element: SendableUiModel, bottomSheetPage: BottomSheetUnify): (Int) -> Unit {
         return {
             if (element is ImageUploadUiModel) {
                 when (it) {
@@ -1331,9 +1331,10 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                     when (it) {
                         RESEND -> {
                             removeDummy(element)
+                            bottomSheetPage.dismiss()
+                            element.isRetry = false
                             getViewState()?.onVideoUpload(element)
                             presenter.uploadVideo(element, SOURCE_ID_FOR_VIDEO_UPLOAD, SendableUiModel.generateStartTime(), messageId, onErrorVideoUpload())
-                            bottomSheetPage.dismiss()
                         }
                         DELETE -> {
                             removeDummy(element)
@@ -1357,10 +1358,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private fun onErrorVideoUpload(): (String,VideoUploadUiModel) -> Unit {
         return { errorMsg,video ->
             if (view != null) {
-             //   Toaster.make(view!!, ErrorHandler.getErrorMessage(view!!.context, errorMsg), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
-              //  getViewState()?.showRetryUploadImages(image, true)
-                    Toaster.showError(view!!,errorMsg,Snackbar.LENGTH_LONG)
-                getViewState()?.showRetryUploadVideos(video,true)
+                Toaster.showError(view!!,errorMsg,Snackbar.LENGTH_LONG)
+                getViewState()?.showRetryUploadVideos(video)
             }
         }
     }
@@ -1436,7 +1435,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     override fun onVideoUploadCancelClicked(video: VideoUploadUiModel) {
         presenter.cancelVideoUpload(video.videoUrl!!,SOURCE_ID_FOR_VIDEO_UPLOAD, onError())
         //UI changes - what to do when the user cancels the video upload with progress bar clicked
-        getViewState()?.showRetryUploadVideos(video,true)
+        getViewState()?.showRetryUploadVideos(video)
     }
 
     override fun onUploadedVideoClicked(videoUrl: String) {
