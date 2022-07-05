@@ -45,6 +45,7 @@ internal class FeedPostCarouselAdapter(
         }
         val removeFocusPayload = Bundle().apply {
             putBoolean(PAYLOAD_FOCUS, false)
+            putBoolean(PAYLOAD_RESET_TOP_ADS, false)
         }
         notifyItemChanged(position, focusPayload)
         notifyItemRangeChanged(
@@ -59,9 +60,21 @@ internal class FeedPostCarouselAdapter(
         )
     }
 
+    fun updateNeighbourTopAdsColor(basePosition: Int) {
+        val removeFocusPayload = Bundle().apply {
+            putBoolean(PAYLOAD_CHANGE_TOP_ADS, true)
+        }
+        notifyItemRangeChanged(
+            basePosition - FOCUS_POSITION_THRESHOLD,
+            2 * FOCUS_POSITION_THRESHOLD + 1,
+            removeFocusPayload
+        )
+    }
+
     fun removeAllFocus(position: Int) {
         val removeFocusPayload = Bundle().apply {
             putBoolean(PAYLOAD_FOCUS, false)
+            putBoolean(PAYLOAD_RESET_TOP_ADS, true)
         }
         notifyItemRangeChanged(
             position - FOCUS_POSITION_THRESHOLD,
@@ -72,7 +85,7 @@ internal class FeedPostCarouselAdapter(
 
     fun onPause() {
         val removeFocusPayload = Bundle().apply {
-            putBoolean(PAYLOAD_FOCUS, false)
+            putBoolean(PAYLOAD_PAUSE, true)
         }
         notifyItemRangeChanged(0, itemCount, removeFocusPayload)
     }
@@ -100,10 +113,19 @@ internal class FeedPostCarouselAdapter(
             holder: CarouselImageViewHolder,
             payloads: Bundle
         ) {
-            if (payloads.containsKey(PAYLOAD_FOCUS)) {
-                if (payloads.getBoolean(PAYLOAD_FOCUS)) holder.focusMedia()
-                else holder.removeFocus()
-            } else super.onBindViewHolderWithPayloads(item, holder, payloads)
+            if (payloads.isEmpty) super.onBindViewHolderWithPayloads(item, holder, payloads)
+            else {
+                if (payloads.containsKey(PAYLOAD_FOCUS)) {
+                    if (payloads.getBoolean(PAYLOAD_FOCUS)) holder.focusMedia()
+                    else holder.removeFocus(
+                        resetTopAds = payloads.getBoolean(PAYLOAD_RESET_TOP_ADS, true),
+                    )
+                }
+
+                if (payloads.containsKey(PAYLOAD_CHANGE_TOP_ADS)) {
+                    if (payloads.getBoolean(PAYLOAD_CHANGE_TOP_ADS)) holder.changeTopAds()
+                }
+            }
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, basicView: View): CarouselImageViewHolder {
@@ -134,10 +156,17 @@ internal class FeedPostCarouselAdapter(
             holder: CarouselVideoViewHolder,
             payloads: Bundle
         ) {
-            if (payloads.containsKey(PAYLOAD_FOCUS)) {
-                if (payloads.getBoolean(PAYLOAD_FOCUS)) holder.focusMedia()
-                else holder.removeFocus()
-            } else super.onBindViewHolderWithPayloads(item, holder, payloads)
+            if (payloads.isEmpty) super.onBindViewHolderWithPayloads(item, holder, payloads)
+            else {
+                if (payloads.containsKey(PAYLOAD_FOCUS)) {
+                    if (payloads.getBoolean(PAYLOAD_FOCUS)) holder.focusMedia()
+                    else holder.removeFocus()
+                }
+
+                if (payloads.containsKey(PAYLOAD_PAUSE)) {
+                    if (payloads.getBoolean(PAYLOAD_PAUSE)) holder.removeFocus()
+                }
+            }
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, basicView: View): CarouselVideoViewHolder {
@@ -147,6 +176,9 @@ internal class FeedPostCarouselAdapter(
 
     companion object {
         private const val PAYLOAD_FOCUS = "payload_focus"
+        private const val PAYLOAD_PAUSE = "payload_pause"
+        private const val PAYLOAD_RESET_TOP_ADS = "payload_reset_top_ads"
+        private const val PAYLOAD_CHANGE_TOP_ADS = "payload_change_top_ads"
 
         private const val FOCUS_POSITION_THRESHOLD = 2
     }
