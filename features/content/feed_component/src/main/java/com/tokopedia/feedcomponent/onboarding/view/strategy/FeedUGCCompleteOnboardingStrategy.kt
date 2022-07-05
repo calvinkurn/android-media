@@ -101,15 +101,16 @@ class FeedUGCCompleteOnboardingStrategy @Inject constructor(
 
                 val insertUsernameResult = repo.insertUsername(_username.value)
                 if(!insertUsernameResult) {
-                    _usernameState.update {
-                        UsernameState.Invalid(getDefaultErrorMessage())
-                    }
+                    _uiEvent.emit(FeedUGCOnboardingUiEvent.ShowError)
                     _hasAcceptTnc.update { false }
                     _isSubmit.update { false }
                     return@launchCatchError
                 }
 
                 val acceptTncResult = repo.acceptTnc()
+                if(acceptTncResult) {
+                    _uiEvent.emit(FeedUGCOnboardingUiEvent.ShowError)
+                }
 
                 _hasAcceptTnc.update { acceptTncResult }
                 _isSubmit.update { false }
