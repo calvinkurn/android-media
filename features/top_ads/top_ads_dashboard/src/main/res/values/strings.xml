@@ -466,5 +466,6 @@
     <string name="topads_dashboard_recommendation_info_sheet_desc">Ikuti rekomendasi jitu dari hasil analisa kami untuk tingkatkan performa iklanmu!</string>
     <string name="topads_dash_deleted_group_empty_result_title">Tidak ada iklan di periode ini</string>
     <string name="topads_deleted_empty_ads_desc">Coba ubah tanggal untuk melihat statistik iklan yg telah dihapus</string>
+    <string name="total_reward_pending">Total Reward Pending</string>
 </resources>
 
