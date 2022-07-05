@@ -194,7 +194,12 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
         viewModel.isSelectionValid.observe(viewLifecycleOwner) {
             binding?.btnSave?.isEnabled = it
             adapter?.run {
-                if (getSelectedProduct().size.isMoreThanZero()) setInputEnabled(it)
+                if (getSelectedProduct().size.isMoreThanZero()) {
+                    setInputEnabled(it)
+                } else {
+                    // always enabled when there is no selected products
+                    setInputEnabled(true)
+                }
             }
         }
     }
