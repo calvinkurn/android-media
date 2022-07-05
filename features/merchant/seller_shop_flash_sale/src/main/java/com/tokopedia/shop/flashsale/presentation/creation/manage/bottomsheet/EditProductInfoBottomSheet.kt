@@ -1,11 +1,14 @@
 package com.tokopedia.shop.flashsale.presentation.creation.manage.bottomsheet
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
@@ -13,6 +16,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsBottomsheetEditProductInfoBinding
 import com.tokopedia.shop.flashsale.common.extension.*
+import com.tokopedia.shop.flashsale.common.preference.SharedPreferenceDataStore
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductErrorType
@@ -46,6 +50,8 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
 
     @Inject
     lateinit var viewModel: EditProductInfoViewModel
+    @Inject
+    lateinit var sharedPreference: SharedPreferenceDataStore
     private var binding by autoClearedNullable<SsfsBottomsheetEditProductInfoBinding>()
     private var warehouseBottomSheet: WarehouseBottomSheet? = null
     private var productInput = SellerCampaignProductList.ProductMapData()
@@ -88,6 +94,7 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
         setupEditProductResultObserver()
         setupCampaignPriceObserver()
         setupCampaignPricePercentObserver()
+        handleCoachMark()
         loadNextData()
     }
 
@@ -416,6 +423,51 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
         } else {
             initialValue
         }
+    }
+
+    private fun handleCoachMark() {
+        val shouldShowCoachMark = !sharedPreference.isEditProductCoachMarkDismissed()
+        if (shouldShowCoachMark) {
+            showCoachMark()
+        }
+    }
+
+    private fun showCoachMark() {
+        val coachMark = CoachMark2(requireActivity())
+        coachMark.showCoachMark(populateCoachMarkItems(), null)
+        coachMark.onFinishListener = {
+            sharedPreference.markEditProductCoachMarkComplete()
+        }
+        coachMark.onDismissListener = {
+            sharedPreference.markEditProductCoachMarkComplete()
+        }
+    }
+
+    private fun populateCoachMarkItems(): java.util.ArrayList<CoachMark2Item> {
+        val firstAnchorView = binding?.layoutCampaignPrice ?: return arrayListOf()
+        val secondAnchorView = binding?.tfStock ?: return arrayListOf()
+        val thirdAnchorView = binding?.btnSaveNext ?: return arrayListOf()
+
+        return arrayListOf(
+            CoachMark2Item(
+                firstAnchorView,
+                getString(R.string.editproduct_first_coachmark_content),
+                "",
+                CoachMark2.POSITION_BOTTOM
+            ),
+            CoachMark2Item(
+                secondAnchorView,
+                getString(R.string.editproduct_second_coachmark_content),
+                "",
+                CoachMark2.POSITION_TOP
+            ),
+            CoachMark2Item(
+                thirdAnchorView,
+                getString(R.string.editproduct_third_coachmark_content),
+                "",
+                CoachMark2.POSITION_TOP
+            )
+        )
     }
 
     fun show(fragmentManager: FragmentManager) {

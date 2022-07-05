@@ -10,6 +10,7 @@ class SharedPreferenceDataStore@Inject constructor(@ApplicationContext context: 
         private const val PREFERENCE_FILE_NAME = "shop_flash_sale_prefs"
         private const val PREFERENCE_KEY_CAMPAIGN_INFO_TICKER_DISMISSED = "campaign_info_ticker_dismissed"
         private const val PREFERENCE_KEY_MANAGE_PRODUCT_COACHMARK_DISMISSED = "manage_product_coachmark_dismissed"
+        private const val PREFERENCE_KEY_EDIT_PRODUCT_COACHMARK_DISMISSED = "edit_product_coachmark_dismissed"
         private const val PREFERENCE_KEY_CAMPAIGN_INFO_COACH_MARK_DISMISSED = "campaign_info_dismissed"
         private const val PREFERENCE_KEY_CAMPAIGN_PRODUCT_HIGHLIGHT_COACH_MARK_DISMISSED = "campaign_product_highlight_dismissed"
     }
@@ -53,7 +54,19 @@ class SharedPreferenceDataStore@Inject constructor(@ApplicationContext context: 
         }
     }
 
-    fun isManageProcudtCoachMarkDismissed(): Boolean {
+    fun isManageProductCoachMarkDismissed(): Boolean {
         return preference.getBoolean(PREFERENCE_KEY_MANAGE_PRODUCT_COACHMARK_DISMISSED, false)
+    }
+
+    fun markEditProductCoachMarkComplete() {
+        val editor = preference.edit()
+        with(editor) {
+            putBoolean(PREFERENCE_KEY_EDIT_PRODUCT_COACHMARK_DISMISSED, true)
+            apply()
+        }
+    }
+
+    fun isEditProductCoachMarkDismissed(): Boolean {
+        return preference.getBoolean(PREFERENCE_KEY_EDIT_PRODUCT_COACHMARK_DISMISSED, false)
     }
 }
