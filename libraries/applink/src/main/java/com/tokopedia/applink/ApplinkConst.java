@@ -531,6 +531,7 @@ public interface ApplinkConst {
         String SHOP_SCORE_DETAIL = "sellerapp://shop-score-detail";
         String SELLER_SHOP_FLASH_SALE = "sellerapp://shop-flash-sale";
         String SHOP_DISCOUNT = "sellerapp://shop-discount";
+        String TOKOMEMBER = "sellerapp://tokomember";
     }
 
     interface TokopediaNow {
