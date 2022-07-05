@@ -26,13 +26,13 @@ class FeedUGCOnboardingRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun insertUsername(username: String): Pair<Boolean, String> {
+    override suspend fun insertUsername(username: String): Boolean {
         return withContext(dispatcher.io) {
             val result = feedProfileSubmitUseCase.apply {
                 setRequestParams(FeedProfileSubmitUseCase.createInsertNewUsernameParam(username))
             }.executeOnBackground()
 
-            Pair(result.wrapper.status, "")
+            result.wrapper.status
         }
     }
 

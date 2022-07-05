@@ -7,7 +7,7 @@ interface FeedUGCOnboardingRepository {
 
     suspend fun acceptTnc(): Boolean
 
-    suspend fun insertUsername(username: String): Pair<Boolean, String>
+    suspend fun insertUsername(username: String): Boolean
 
     suspend fun validateUsername(username: String): Pair<Boolean, String>
 }

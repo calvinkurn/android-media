@@ -78,7 +78,7 @@ class FeedUGCCompleteOnboardingStrategy @Inject constructor(
                 _usernameState.update { checkUsername() }
             }
         }) {
-            _usernameState.update { UsernameState.Invalid(context.getString(abstractionR.string.default_request_error_unknown)) }
+            _usernameState.update { UsernameState.Invalid(getDefaultErrorMessage()) }
             _uiEvent.emit(FeedUGCOnboardingUiEvent.ShowError)
         }
     }
@@ -100,9 +100,9 @@ class FeedUGCCompleteOnboardingStrategy @Inject constructor(
                 }
 
                 val insertUsernameResult = repo.insertUsername(_username.value)
-                if(!insertUsernameResult.first) {
+                if(!insertUsernameResult) {
                     _usernameState.update {
-                        UsernameState.Invalid(insertUsernameResult.second)
+                        UsernameState.Invalid(getDefaultErrorMessage())
                     }
                     _hasAcceptTnc.update { false }
                     _isSubmit.update { false }
@@ -131,6 +131,10 @@ class FeedUGCCompleteOnboardingStrategy @Inject constructor(
 
         return if(result.first) UsernameState.Valid
         else UsernameState.Invalid(result.second)
+    }
+
+    private fun getDefaultErrorMessage(): String {
+        return context.getString(abstractionR.string.default_request_error_unknown)
     }
 
     companion object {
