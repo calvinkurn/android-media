@@ -1,6 +1,7 @@
 package com.tokopedia.feedcomponent.onboarding.view.bottomsheet
 
 import android.os.Bundle
+import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -65,6 +66,7 @@ class FeedUserTnCOnboardingBottomSheet : BaseFeedUserOnboardingBottomSheet() {
 
     private fun setupView() {
         binding.layoutTnc.tvAcceptTnc.text = getTncText()
+        binding.layoutTnc.tvAcceptTnc.movementMethod = LinkMovementMethod.getInstance()
     }
 
     private fun setupListener() {

@@ -3,6 +3,7 @@ package com.tokopedia.feedcomponent.onboarding.view.bottomsheet
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -71,6 +72,7 @@ class FeedUserCompleteOnboardingBottomSheet : BaseFeedUserOnboardingBottomSheet(
     private fun setupView() {
         binding.textFieldUsername.isClearable = false
         binding.layoutTnc.tvAcceptTnc.text = getTncText()
+        binding.layoutTnc.tvAcceptTnc.movementMethod = LinkMovementMethod.getInstance()
     }
 
     private fun setupListener() {
