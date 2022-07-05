@@ -32,9 +32,8 @@ class FeedUGCOnboardingParentFragment @Inject constructor(
 
     override fun getScreenName() = TAG
 
-    val usernameArg: String
-        get() = "atest"
-//        get() = arguments?.getString(KEY_USERNAME) ?: ""
+    private val usernameArg: String
+        get() = arguments?.getString(KEY_USERNAME) ?: ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
