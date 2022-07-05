@@ -15,6 +15,7 @@ import com.tokopedia.media.picker.ui.widget.drawerselector.viewholder.ThumbnailV
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.picker.common.types.PageType
+import com.tokopedia.picker.common.utils.wrapper.PickerFile
 import com.tokopedia.test.application.matcher.hasTotalItemOf
 import org.hamcrest.Matcher
 
@@ -29,7 +30,7 @@ abstract class GalleryPageTest : PickerTest() {
         return ImageGenerator
             .getFiles(context)
             .mapIndexed { index, file ->
-                Media(index.toLong(), file.name, file.path)
+                Media(index.toLong(), file = PickerFile(filePath = file.path))
             }
     }
 
@@ -37,7 +38,7 @@ abstract class GalleryPageTest : PickerTest() {
         return VideoGenerator
             .getFiles(context)
             .map {
-                Media(Long.MAX_VALUE, it.name, it.path)
+                Media(Long.MAX_VALUE, file = PickerFile(filePath = it.path))
             }
     }
 

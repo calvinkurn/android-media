@@ -10,3 +10,10 @@ import kotlin.math.ceil
 fun Long?.convertExoPlayerDuration(): Long {
     return ceil((this?.toFloat() ?: 0F) / 1000F).toLong()
 }
+
+/**
+ * Convert int millis to sec
+ */
+fun Int.toSec(): Int {
+    return this / 1000
+}

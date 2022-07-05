@@ -12,10 +12,9 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.google.android.gms.tagmanager.PreviewActivity
 import com.otaliastudios.cameraview.CameraView
 import com.tokopedia.media.R
-import com.tokopedia.media.picker.common.ui.activity.TestPreviewActivity
 import com.tokopedia.media.picker.helper.utils.PickerCameraViewActions
 import com.tokopedia.media.picker.ui.PickerTest
-import com.tokopedia.media.picker.ui.activity.main.component.BottomNavComponent
+import com.tokopedia.media.picker.ui.component.BottomNavComponent
 import org.hamcrest.CoreMatchers.not
 
 abstract class CameraPageTest : PickerTest() {

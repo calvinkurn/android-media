@@ -6,9 +6,9 @@ import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.media.R
 import com.tokopedia.media.picker.common.di.TestPickerInterceptor
 import com.tokopedia.media.picker.common.ui.activity.TestPreviewActivity
+import com.tokopedia.media.picker.helper.utils.toSec
 import com.tokopedia.media.picker.ui.core.GalleryPageTest
-import com.tokopedia.media.picker.utils.toVideoMaxDurationTextFormat
-import com.tokopedia.picker.common.utils.toSec
+import com.tokopedia.picker.common.mapper.humanize
 import com.tokopedia.test.application.annotations.UiTest
 import org.junit.Rule
 import org.junit.Test
@@ -148,7 +148,7 @@ class GallerySingleSelectionUiTest : GalleryPageTest() {
     @Test
     fun should_be_show_toaster_when_selected_item_lower_max_video_duration() {
         // Given
-        val maxVideoDuration = 0L // simulate the video duration as higher threshold
+        val maxVideoDuration = 0 // simulate the video duration as higher threshold
         interceptor.mockMedia(mockVideoFiles())
 
         // When
@@ -163,7 +163,7 @@ class GallerySingleSelectionUiTest : GalleryPageTest() {
         Asserts.assertTextDisplayedWith(
             context.getString(
                 R.string.picker_video_duration_max_limit,
-                maxVideoDuration.toSec().toVideoMaxDurationTextFormat(context)
+                maxVideoDuration.toSec().humanize(context)
             )
         )
     }

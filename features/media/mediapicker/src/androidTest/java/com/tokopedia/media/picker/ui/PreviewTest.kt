@@ -20,6 +20,7 @@ import com.tokopedia.picker.common.EXTRA_INTENT_PREVIEW
 import com.tokopedia.picker.common.EXTRA_PICKER_PARAM
 import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.picker.common.uimodel.MediaUiModel
+import com.tokopedia.picker.common.utils.wrapper.PickerFile
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -43,11 +44,11 @@ open class PreviewTest {
             .applicationContext
 
     private val imageCollection = ImageGenerator.getFiles(context).map {
-        MediaUiModel(path = it.path)
+        MediaUiModel(file = PickerFile(it.path))
     }
 
     private val videoCollection = VideoGenerator.getMultipleFiles(context).map {
-        MediaUiModel(path = it.path)
+        MediaUiModel(file = PickerFile(it.path))
     }
 
     private val combinationMediaCollection = listOf(
