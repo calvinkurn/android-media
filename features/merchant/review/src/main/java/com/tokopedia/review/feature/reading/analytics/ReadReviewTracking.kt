@@ -103,7 +103,8 @@ object ReadReviewTracking {
                     filterName,
                     (!isActive).toString()
                 ),
-                productId
+                productId,
+                ReadReviewTrackingConstants.TRACKER_ID_CLICK_FILTER_CHIPS
             )
         )
     }
@@ -318,6 +319,25 @@ object ReadReviewTracking {
             ReadReviewTrackingConstants.KEY_BUSINESS_UNIT to ReadReviewTrackingConstants.BUSINESS_UNIT,
             ReadReviewTrackingConstants.KEY_CURRENT_SITE to ReadReviewTrackingConstants.CURRENT_SITE,
             ReadReviewTrackingConstants.KEY_PRODUCT_ID to productId
+        )
+    }
+
+    private fun getTrackEventMap(
+        event: String,
+        eventAction: String,
+        eventLabel: String,
+        productId: String,
+        trackerId: String
+    ): Map<String, String> {
+        return mapOf(
+            ReviewTrackingConstant.EVENT to event,
+            ReviewTrackingConstant.EVENT_ACTION to eventAction,
+            ReviewTrackingConstant.EVENT_CATEGORY to ReadReviewTrackingConstants.EVENT_CATEGORY,
+            ReviewTrackingConstant.EVENT_LABEL to eventLabel,
+            ReadReviewTrackingConstants.KEY_BUSINESS_UNIT to ReadReviewTrackingConstants.BUSINESS_UNIT,
+            ReadReviewTrackingConstants.KEY_CURRENT_SITE to ReadReviewTrackingConstants.CURRENT_SITE,
+            ReadReviewTrackingConstants.KEY_PRODUCT_ID to productId,
+            ReadReviewTrackingConstants.KEY_TRACKER_ID to trackerId
         )
     }
 

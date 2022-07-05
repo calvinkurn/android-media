@@ -444,19 +444,10 @@ class ProductListFragment: BaseDaggerFragment(),
     ): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                if (isAllowLoadMore()) {
-                    val searchParameterMap = searchParameter?.getSearchParameterMap() ?: return
-                    presenter?.loadMoreData(searchParameterMap)
-                } else {
-                    productListAdapter?.removeLoading()
-                }
+                val searchParameterMap = searchParameter?.getSearchParameterMap() ?: return
+                presenter?.loadMoreData(searchParameterMap)
             }
         }
-    }
-
-    private fun isAllowLoadMore(): Boolean {
-        return userVisibleHint
-                && (presenter?.hasNextPage() == true)
     }
 
     private fun initSearchQuickSortFilter(rootView: View) {
@@ -1819,6 +1810,10 @@ class ProductListFragment: BaseDaggerFragment(),
 
     override fun onBroadMatchThreeDotsClicked(broadMatchItemDataView: BroadMatchItemDataView) {
         showProductCardOptions(this, createProductCardOptionsModel(broadMatchItemDataView))
+    }
+
+    override fun onBroadMatchViewAllCardClicked(broadMatchDataView: BroadMatchDataView) {
+        presenter?.onBroadMatchViewAllCardClicked(broadMatchDataView)
     }
 
     private fun createProductCardOptionsModel(item: BroadMatchItemDataView): ProductCardOptionsModel {

@@ -29,7 +29,6 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -105,15 +104,14 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifications.CMPushNotificationManager
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.constants.SessionConstants
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.PopupError
 import com.tokopedia.sessioncommon.data.Token.Companion.getGoogleClientId
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
-import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.network.TokenErrorException
 import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.sessioncommon.util.TwoFactorMluHelper
@@ -138,7 +136,6 @@ import kotlinx.android.synthetic.main.fragment_login_with_phone.*
 import kotlinx.android.synthetic.main.layout_partial_register_input.*
 import java.util.*
 import javax.inject.Inject
-import javax.inject.Named
 
 
 /**
@@ -153,8 +150,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
-    val viewModel by lazy { viewModelProvider.get(LoginEmailPhoneViewModel::class.java) }
+    protected val viewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(LoginEmailPhoneViewModel::class.java)
+    }
 
     @Inject
     lateinit var analytics: LoginRegisterAnalytics
@@ -168,9 +166,14 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     @Inject
     lateinit var needHelpAnalytics: NeedHelpAnalytics
 
-    @field:Named(SessionModule.SESSION_MODULE)
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var firebaseRemoteConfig: RemoteConfig
+
+    @Inject
+    lateinit var abTestPlatform: AbTestPlatform
 
     private var source: String = ""
     protected var isAutoLogin: Boolean = false
@@ -314,7 +317,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     open fun refreshRolloutVariant() {
-        RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
+        abTestPlatform.fetchByType(null)
     }
 
     private fun setupBackgroundColor() {
@@ -565,15 +568,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun fetchRemoteConfig() {
-        context?.let {
-            val firebaseRemoteConfig = FirebaseRemoteConfigImpl(it)
-            isShowTicker = firebaseRemoteConfig.getBoolean(LoginConstants.RemoteConfigKey.KEY_TICKER_FROM_ATC, false)
-            isShowBanner = firebaseRemoteConfig.getBoolean(LoginConstants.RemoteConfigKey.KEY_BANNER, false)
-            isEnableFingerprint = firebaseRemoteConfig.getBoolean(LoginConstants.RemoteConfigKey.KEY_LOGIN_FP, true)
-            isHitRegisterPushNotif = firebaseRemoteConfig.getBoolean(LoginConstants.RemoteConfigKey.KEY_REGISTER_PUSH_NOTIF, false)
-            isEnableEncryptConfig = firebaseRemoteConfig.getBoolean(SessionConstants.FirebaseConfig.CONFIG_LOGIN_ENCRYPTION)
-            isEnableSilentVerif = firebaseRemoteConfig.getBoolean(SessionConstants.FirebaseConfig.CONFIG_SILENT_VERIFICATION)
-        }
+        isShowTicker = firebaseRemoteConfig.getBoolean(LoginConstants.RemoteConfigKey.KEY_TICKER_FROM_ATC, false)
+        isShowBanner = firebaseRemoteConfig.getBoolean(LoginConstants.RemoteConfigKey.KEY_BANNER, false)
+        isEnableFingerprint = firebaseRemoteConfig.getBoolean(LoginConstants.RemoteConfigKey.KEY_LOGIN_FP, true)
+        isHitRegisterPushNotif = firebaseRemoteConfig.getBoolean(LoginConstants.RemoteConfigKey.KEY_REGISTER_PUSH_NOTIF, false)
+        isEnableEncryptConfig = firebaseRemoteConfig.getBoolean(SessionConstants.FirebaseConfig.CONFIG_LOGIN_ENCRYPTION)
+        isEnableSilentVerif = firebaseRemoteConfig.getBoolean(SessionConstants.FirebaseConfig.CONFIG_SILENT_VERIFICATION)
     }
 
     private fun clearData() {
@@ -849,10 +849,10 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun isUsingRollenceNeedHelp(): Boolean {
-        val newInactivePhoneNumberAbTestKey = RemoteConfigInstance.getInstance().abTestPlatform?.getString(
+        val newInactivePhoneNumberAbTestKey = abTestPlatform.getString(
             ROLLENCE_KEY_INACTIVE_PHONE_NUMBER,
             ""
-        ).orEmpty()
+        )
         return newInactivePhoneNumberAbTestKey.isNotEmpty()
     }
 
@@ -1888,7 +1888,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     companion object {
 
-        private const val ROLLENCE_KEY_INACTIVE_PHONE_NUMBER = "inactivephone_login"
+        const val ROLLENCE_KEY_INACTIVE_PHONE_NUMBER = "inactivephone_login"
 
         private const val TAG_NEED_HELP_BOTTOM_SHEET = "NEED HELP BOTTOM SHEET"
 
