@@ -13,6 +13,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:contentDescription="@string/home_usp_content_desc"
         />
 
     <androidx.recyclerview.widget.RecyclerView
