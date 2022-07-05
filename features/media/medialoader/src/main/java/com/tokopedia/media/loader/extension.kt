@@ -33,7 +33,7 @@ fun ImageView.loadImage(resource: Int) {
     if (resource != 0) {
         this.setImageResource(resource)
     } else {
-        this.setImageResource(ERROR_RES_UNIFY)
+        this.setImageResource(resource)
     }
 }
 
