@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.wishlistcollection.data.params.AddWishlistCollectionsHostBottomSheetParams
 import com.tokopedia.wishlistcollection.data.response.AddWishlistCollectionItemsResponse
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionNamesResponse
 import com.tokopedia.wishlistcollection.domain.AddWishlistCollectionItemsUseCase
@@ -43,7 +44,8 @@ class BottomSheetCreateNewCollectionViewModel @Inject constructor(
     }
 
     fun saveNewWishlistCollection(collectionName: String, productIds: List<String>) {
-        addWishlistCollectionItemsUseCase.setParams(collectionName, productIds)
+        val addWishlistParam = AddWishlistCollectionsHostBottomSheetParams(collectionName = collectionName, productIds = productIds)
+        addWishlistCollectionItemsUseCase.setParams(addWishlistParam)
         launch(dispatcher.main) {
             val result =
                 withContext(dispatcher.io) { addWishlistCollectionItemsUseCase.executeOnBackground() }

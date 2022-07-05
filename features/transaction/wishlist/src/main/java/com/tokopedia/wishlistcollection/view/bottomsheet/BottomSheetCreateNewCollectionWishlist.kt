@@ -93,7 +93,10 @@ class BottomSheetCreateNewCollectionWishlist: BottomSheetUnify(), HasComponent<C
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
                 override fun afterTextChanged(p0: Editable?) {
-                    handler.postDelayed(checkNameRunnable, DELAY_CHECK_NAME)
+                    newCollectionName = p0.toString()
+                    if (newCollectionName.isNotEmpty()) {
+                        handler.postDelayed(checkNameRunnable, DELAY_CHECK_NAME)
+                    }
                 }
 
             })
@@ -118,23 +121,38 @@ class BottomSheetCreateNewCollectionWishlist: BottomSheetUnify(), HasComponent<C
         }
     }
 
+    private fun disableSaveButton() {
+        binding?.run {
+            collectionCreateButton.apply {
+                isEnabled = false
+                setOnClickListener {  }
+            }
+        }
+    }
+
     private fun saveNewCollection(collectionName: String, productIds: List<String>) {
         createNewCollectionViewModel.saveNewWishlistCollection(collectionName, productIds)
     }
 
     private fun checkIsCollectionNameExists(checkName: String) {
         if (listCollections.isNotEmpty()) {
-            listCollections.forEach { item ->
-                if (checkName.equals(item)) {
-                    binding?.run {
-                        collectionCreateNameInputTextField.isInputError = true
-                        collectionCreateNameInputTextField.labelText.text =
-                            context?.getString(R.string.collection_create_bottomsheet_name_error) ?: ""
-                    }
-                } else {
-                    binding?.run {
-                        collectionCreateNameInputTextField.isInputError = false
-                        enableSaveButton()
+            run check@ {
+                listCollections.forEach { item ->
+                    if (checkName == item.name) {
+                        binding?.run {
+                            collectionCreateNameInputTextField.isInputError = true
+
+                            val labelMessage = context?.getString(R.string.collection_create_bottomsheet_name_error) ?: ""
+                            collectionCreateNameInputTextField.setMessage(labelMessage)
+                            disableSaveButton()
+                            return@check
+                        }
+                    } else {
+                        binding?.run {
+                            collectionCreateNameInputTextField.isInputError = false
+                            collectionCreateNameInputTextField.setMessage("")
+                            enableSaveButton()
+                        }
                     }
                 }
             }

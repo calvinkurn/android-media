@@ -29,7 +29,6 @@ class CollectionWishlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
 
     interface ActionListener {
         fun onCloseTicker()
-        fun onCreateNewCollection()
     }
 
     fun setActionListener(collectionWishlistFragment: CollectionWishlistFragment) {

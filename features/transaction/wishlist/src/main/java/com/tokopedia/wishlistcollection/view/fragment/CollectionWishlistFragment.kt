@@ -68,7 +68,7 @@ class CollectionWishlistFragment : BaseDaggerFragment(), CollectionWishlistAdapt
         }
 
         const val DEFAULT_TITLE = "Wishlist"
-        private const val OK = "OK"
+        const val OK = "OK"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -234,9 +234,5 @@ class CollectionWishlistFragment : BaseDaggerFragment(), CollectionWishlistAdapt
 
     override fun onCloseTicker() {
         collectionAdapter.hideTicker()
-    }
-
-    override fun onCreateNewCollection() {
-        println("++ onCreateNewCollection")
     }
 }

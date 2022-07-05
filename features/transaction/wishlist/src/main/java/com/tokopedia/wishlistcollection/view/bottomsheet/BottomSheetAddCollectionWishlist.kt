@@ -24,6 +24,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wishlist.databinding.BottomsheetAddWishlistCollectionBinding
 import com.tokopedia.wishlist.R
+import com.tokopedia.wishlistcollection.data.model.BottomSheetWishlistCollectionTypeLayoutData
+import com.tokopedia.wishlistcollection.data.params.AddWishlistCollectionsHostBottomSheetParams
+import com.tokopedia.wishlistcollection.data.response.AddWishlistCollectionItemsResponse
 import com.tokopedia.wishlistcollection.di.DaggerBottomSheetWishlistCollectionComponent
 import com.tokopedia.wishlistcollection.view.adapter.BottomSheetCollectionWishlistAdapter
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionHostBottomSheetFragment
@@ -42,12 +45,18 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tok
     private var binding by autoClearedNullable<BottomsheetAddWishlistCollectionBinding>()
     private val userSession: UserSessionInterface by lazy { UserSession(activity) }
     private val collectionAdapter = BottomSheetCollectionWishlistAdapter()
+    private var actionListener: ActionListener? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val getCollectionsViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[BottomSheetAddCollectionViewModel::class.java]
+    }
+
+    interface ActionListener {
+        fun onSuccessSaveItemToCollection(data: AddWishlistCollectionItemsResponse.Data.AddWishlistCollectionItems)
+        fun onFailedSaveItemToCollection(errorMessage: String)
     }
 
     companion object {
@@ -121,6 +130,11 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tok
     }
 
     private fun initObserver() {
+        observingListCollection()
+        observeSavingItemToCollections()
+    }
+
+    private fun observingListCollection() {
         getCollectionsViewModel.collectionsBottomSheet.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
@@ -142,6 +156,22 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tok
         }
     }
 
+    private fun observeSavingItemToCollections() {
+        getCollectionsViewModel.saveItemToCollections.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    actionListener?.onSuccessSaveItemToCollection(result.data)
+                    dismiss()
+                }
+                is Fail -> {
+                    val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                    actionListener?.onFailedSaveItemToCollection(errorMessage)
+                    dismiss()
+                }
+            }
+        }
+    }
+
     private fun updateBottomSheet(dataGetBottomSheetCollections: com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionsBottomSheetResponse.Data.GetWishlistCollectionsBottomsheet.Data) {
         setTitle(dataGetBottomSheetCollections.title)
         setAction(dataGetBottomSheetCollections.titleButton.text) {
@@ -151,10 +181,10 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tok
         }
     }
 
-    private fun mapDataCollectionsBottomSheet(data: com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionsBottomSheetResponse.Data.GetWishlistCollectionsBottomsheet.Data): ArrayList<com.tokopedia.wishlistcollection.data.BottomSheetWishlistCollectionTypeLayoutData> {
-        val listData = arrayListOf<com.tokopedia.wishlistcollection.data.BottomSheetWishlistCollectionTypeLayoutData>()
+    private fun mapDataCollectionsBottomSheet(data: com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionsBottomSheetResponse.Data.GetWishlistCollectionsBottomsheet.Data): ArrayList<BottomSheetWishlistCollectionTypeLayoutData> {
+        val listData = arrayListOf<BottomSheetWishlistCollectionTypeLayoutData>()
         listData.add(
-            com.tokopedia.wishlistcollection.data.BottomSheetWishlistCollectionTypeLayoutData(
+            BottomSheetWishlistCollectionTypeLayoutData(
                 data.mainSection.text,
                 TYPE_COLLECTION_MAIN_SECTION
             )
@@ -162,16 +192,25 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tok
 
         data.mainSection.collections.forEach { mainSectionItem ->
             listData.add(
-                com.tokopedia.wishlistcollection.data.BottomSheetWishlistCollectionTypeLayoutData(
+                BottomSheetWishlistCollectionTypeLayoutData(
                     mainSectionItem,
                     TYPE_COLLECTION_ITEM
                 )
             )
         }
 
+        if (data.placeholder.text.isNotEmpty()) {
+            listData.add(
+                BottomSheetWishlistCollectionTypeLayoutData(
+                    data.placeholder,
+                    TYPE_CREATE_NEW_COLLECTION
+                )
+            )
+        }
+
         if (data.additionalSection.text.isNotEmpty()) {
             listData.add(
-                com.tokopedia.wishlistcollection.data.BottomSheetWishlistCollectionTypeLayoutData(
+                BottomSheetWishlistCollectionTypeLayoutData(
                     data.additionalSection.text,
                     TYPE_COLLECTION_ADDITIONAL_SECTION
                 )
@@ -181,21 +220,12 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tok
         if (data.additionalSection.collections.isNotEmpty()) {
             data.additionalSection.collections.forEach { additionalItem ->
                 listData.add(
-                    com.tokopedia.wishlistcollection.data.BottomSheetWishlistCollectionTypeLayoutData(
+                    BottomSheetWishlistCollectionTypeLayoutData(
                         additionalItem,
                         TYPE_COLLECTION_ITEM
                     )
                 )
             }
-        }
-
-        if (data.placeholder.text.isNotEmpty()) {
-            listData.add(
-                com.tokopedia.wishlistcollection.data.BottomSheetWishlistCollectionTypeLayoutData(
-                    data.placeholder,
-                    TYPE_CREATE_NEW_COLLECTION
-                )
-            )
         }
         return listData
     }
@@ -226,6 +256,11 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tok
     }
 
     fun setActionListener(wishlistCollectionBottomSheetFragment: WishlistCollectionHostBottomSheetFragment) {
+        this.actionListener = wishlistCollectionBottomSheetFragment
         collectionAdapter.setActionListener(wishlistCollectionBottomSheetFragment)
+    }
+
+    fun saveToCollection(addWishlistParam: AddWishlistCollectionsHostBottomSheetParams) {
+        getCollectionsViewModel.saveToWishlistCollection(addWishlistParam)
     }
 }

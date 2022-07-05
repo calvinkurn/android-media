@@ -8,15 +8,18 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.UseCase
+import com.tokopedia.wishlistcollection.data.params.AddWishlistCollectionsHostBottomSheetParams
 import com.tokopedia.wishlistcollection.data.response.AddWishlistCollectionItemsResponse
 import com.tokopedia.wishlistcommon.util.GQL_ADD_WISHLIST_COLLECTION_ITEMS
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
 import javax.inject.Inject
 
 @GqlQuery("AddWishlistCollectionItemsMutation", GQL_ADD_WISHLIST_COLLECTION_ITEMS)
 class AddWishlistCollectionItemsUseCase @Inject constructor(private val gqlRepository: GraphqlRepository) :
     UseCase<Result<AddWishlistCollectionItemsResponse.Data.AddWishlistCollectionItems>>() {
     private var params: Map<String, Any?>? = null
+    private val collectionId = "collection_id"
+    private val collectionName = "collection_name"
+    private val productIds = "product_ids"
 
     override suspend fun executeOnBackground(): Result<AddWishlistCollectionItemsResponse.Data.AddWishlistCollectionItems> {
         return try {
@@ -31,9 +34,9 @@ class AddWishlistCollectionItemsUseCase @Inject constructor(private val gqlRepos
         }
     }
 
-    fun setParams(collectionName: String, productIds: List<String>) {
-        params = mapOf(
-            WishlistV2CommonConsts.COLLECTION_NAME to collectionName,
-            WishlistV2CommonConsts.PRODUCT_IDs to productIds)
+    fun setParams(param: AddWishlistCollectionsHostBottomSheetParams) {
+        params = mapOf(collectionId to param.collectionId,
+            collectionName to param.collectionName,
+            productIds to param.productIds)
     }
 }

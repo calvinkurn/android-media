@@ -1,32 +1,28 @@
 package com.tokopedia.wishlistcollection.view.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.ViewModelProvider
-import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.BOOLEAN_EXTRA_SUCCESS
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.PATH_PRODUCT_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.PATH_SRC
-import com.tokopedia.wishlistcollection.di.DaggerWishlistCollectionHostBottomSheetComponent
-import com.tokopedia.wishlistcollection.di.WishlistCollectionHostBottomSheetModule
+import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.STRING_EXTRA_MESSAGE_TOASTER
+import com.tokopedia.wishlist.R
+import com.tokopedia.wishlistcollection.data.params.AddWishlistCollectionsHostBottomSheetParams
+import com.tokopedia.wishlistcollection.data.response.AddWishlistCollectionItemsResponse
 import com.tokopedia.wishlistcollection.view.adapter.BottomSheetCollectionWishlistAdapter
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetAddCollectionWishlist
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetCreateNewCollectionWishlist
-import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionHostBottomSheetViewModel
-import javax.inject.Inject
 
-class WishlistCollectionHostBottomSheetFragment: BaseDaggerFragment(),
-    BottomSheetCollectionWishlistAdapter.ActionListener {
+class WishlistCollectionHostBottomSheetFragment: Fragment(),
+    BottomSheetCollectionWishlistAdapter.ActionListener,
+    BottomSheetAddCollectionWishlist.ActionListener {
 
     private var productId = ""
     private var src = ""
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val collectionHostBottomSheetViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[WishlistCollectionHostBottomSheetViewModel::class.java]
-    }
+    private var bottomSheetCollection = BottomSheetAddCollectionWishlist()
 
     companion object {
         @JvmStatic
@@ -38,6 +34,8 @@ class WishlistCollectionHostBottomSheetFragment: BaseDaggerFragment(),
                 }
             }
         }
+
+        private const val OK = "OK"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,34 +45,18 @@ class WishlistCollectionHostBottomSheetFragment: BaseDaggerFragment(),
         showBottomSheetCollection(childFragmentManager, productId, src)
     }
 
-    override fun getScreenName(): String = ""
-
-    override fun initInjector() {
-        activity?.let { activity ->
-            DaggerWishlistCollectionHostBottomSheetComponent.builder()
-                .baseAppComponent(getBaseAppComponent())
-                .wishlistCollectionHostBottomSheetModule(WishlistCollectionHostBottomSheetModule(activity))
-                .build()
-                .inject(this)
-        }
-    }
-
-    private fun getBaseAppComponent(): BaseAppComponent {
-        return (activity?.application as BaseMainApplication).baseAppComponent
-    }
-
     private fun showBottomSheetCollection(fragmentManager: FragmentManager, productId: String, source: String) {
-        val bottomSheetCollection = BottomSheetAddCollectionWishlist.newInstance(productId, source)
+        bottomSheetCollection = BottomSheetAddCollectionWishlist.newInstance(productId, source)
         if (bottomSheetCollection.isAdded || fragmentManager.isStateSaved) return
         bottomSheetCollection.setActionListener(this@WishlistCollectionHostBottomSheetFragment)
         bottomSheetCollection.show(fragmentManager)
     }
 
     override fun onCollectionItemClicked(name: String, id: String) {
-        val listId = arrayListOf<String>()
-        listId.add(id)
-        collectionHostBottomSheetViewModel.saveToWishlistCollection(name, listId)
-        activity?.finish()
+        val listProductId = arrayListOf<String>()
+        listProductId.add(productId)
+        val addWishlistParam = AddWishlistCollectionsHostBottomSheetParams(collectionId = id, collectionName = name, productIds = listProductId)
+        bottomSheetCollection.saveToCollection(addWishlistParam)
     }
 
     override fun onCreateNewCollectionClicked() {
@@ -85,5 +67,28 @@ class WishlistCollectionHostBottomSheetFragment: BaseDaggerFragment(),
         val bottomSheetCreateCollection = BottomSheetCreateNewCollectionWishlist.newInstance(productId)
         if (bottomSheetCreateCollection.isAdded || fragmentManager.isStateSaved) return
         bottomSheetCreateCollection.show(fragmentManager)
+    }
+
+    override fun onSuccessSaveItemToCollection(data: AddWishlistCollectionItemsResponse.Data.AddWishlistCollectionItems) {
+        val intent = Intent()
+        if (data.status == OK && data.dataItem.success) {
+            intent.putExtra(BOOLEAN_EXTRA_SUCCESS, data.dataItem.success)
+            intent.putExtra(STRING_EXTRA_MESSAGE_TOASTER, data.dataItem.message)
+
+        } else {
+            intent.putExtra(BOOLEAN_EXTRA_SUCCESS, false)
+            val errorMessage = data.errorMessage.first().ifEmpty { context?.getString(
+                R.string.wishlist_v2_common_error_msg) }
+            intent.putExtra(STRING_EXTRA_MESSAGE_TOASTER, errorMessage)
+        }
+        activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.finish()
+    }
+
+    override fun onFailedSaveItemToCollection(errorMessage: String) {
+        val intent = Intent()
+        intent.putExtra(STRING_EXTRA_MESSAGE_TOASTER, errorMessage)
+        activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.finish()
     }
 }

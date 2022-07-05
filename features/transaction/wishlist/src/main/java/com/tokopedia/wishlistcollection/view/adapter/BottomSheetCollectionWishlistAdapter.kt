@@ -7,6 +7,7 @@ import com.tokopedia.wishlist.databinding.AddWishlistCollectionAdditionalSection
 import com.tokopedia.wishlist.databinding.AddWishlistCollectionCreateNewItemBinding
 import com.tokopedia.wishlist.databinding.AddWishlistCollectionItemBinding
 import com.tokopedia.wishlist.databinding.AddWishlistCollectionMainSectionTextItemBinding
+import com.tokopedia.wishlistcollection.data.model.BottomSheetWishlistCollectionTypeLayoutData
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionHostBottomSheetFragment
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TYPE_COLLECTION_ADDITIONAL_SECTION
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TYPE_COLLECTION_ITEM
@@ -15,7 +16,7 @@ import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TYPE_CREATE_NEW_
 
 class BottomSheetCollectionWishlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var actionListener: ActionListener? = null
-    private var listTypeData = mutableListOf<com.tokopedia.wishlistcollection.data.BottomSheetWishlistCollectionTypeLayoutData>()
+    private var listTypeData = mutableListOf<BottomSheetWishlistCollectionTypeLayoutData>()
 
     companion object {
         const val LAYOUT_MAIN_SECTION = 0
@@ -28,8 +29,6 @@ class BottomSheetCollectionWishlistAdapter : RecyclerView.Adapter<RecyclerView.V
         fun onCollectionItemClicked(name: String, id: String)
         fun onCreateNewCollectionClicked()
     }
-
-    /*init { setHasStableIds(true) }*/
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
@@ -94,7 +93,7 @@ class BottomSheetCollectionWishlistAdapter : RecyclerView.Adapter<RecyclerView.V
         }
     }
 
-    fun addList(list: List<com.tokopedia.wishlistcollection.data.BottomSheetWishlistCollectionTypeLayoutData>) {
+    fun addList(list: List<BottomSheetWishlistCollectionTypeLayoutData>) {
         listTypeData.clear()
         listTypeData.addAll(list)
         notifyDataSetChanged()

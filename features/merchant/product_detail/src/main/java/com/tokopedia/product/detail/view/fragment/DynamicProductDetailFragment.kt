@@ -31,8 +31,11 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.*
+import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.BOOLEAN_EXTRA_SUCCESS
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.PATH_PRODUCT_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.PATH_SRC
+import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.REQUEST_CODE_ADD_WISHLIST_COLLECTION
+import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.STRING_EXTRA_MESSAGE_TOASTER
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.atc_common.AtcFromExternalSource
@@ -89,7 +92,6 @@ import com.tokopedia.product.detail.common.*
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APPLINK_AVAILABLE_VARIANT
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APPLINK_IS_VARIANT_SELECTED
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APPLINK_SHOP_ID
-import com.tokopedia.product.detail.common.ProductDetailCommonConstant.REQUEST_CODE_ADD_WISHLIST_COLLECTION
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.RQUEST_CODE_ACTIVATE_GOPAY
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.RQUEST_CODE_UPDATE_FINTECH_WIDGET
 import com.tokopedia.product.detail.common.ProductEducationalHelper
@@ -809,7 +811,18 @@ open class DynamicProductDetailFragment :
                 }
             }
             REQUEST_CODE_ADD_WISHLIST_COLLECTION -> {
-                // showToaster
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    val isSuccess = data.getBooleanExtra(BOOLEAN_EXTRA_SUCCESS, false)
+                    val messageToaster =
+                        data.getStringExtra(STRING_EXTRA_MESSAGE_TOASTER)
+                    if (messageToaster != null) {
+                        if (isSuccess) {
+                            view?.showToasterSuccess(messageToaster)
+                        } else {
+                            view?.showToasterError(messageToaster)
+                        }
+                    }
+                }
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
         }

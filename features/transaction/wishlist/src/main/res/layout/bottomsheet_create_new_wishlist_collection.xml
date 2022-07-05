@@ -14,7 +14,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:unify_text_field_label="@string/collection_bottomsheet_label"
         app:unify_text_field_counter="20"
-        app:unify_text_field_message="test"
         android:layout_marginBottom="20dp"/>
 
     <com.tokopedia.unifycomponents.UnifyButton

@@ -7,18 +7,27 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.wishlistcollection.data.params.AddWishlistCollectionsHostBottomSheetParams
+import com.tokopedia.wishlistcollection.data.response.AddWishlistCollectionItemsResponse
+import com.tokopedia.wishlistcollection.domain.AddWishlistCollectionItemsUseCase
+import com.tokopedia.wishlistcollection.domain.GetWishlistCollectionsBottomSheetUseCase
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class BottomSheetAddCollectionViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatchers,
-    private val getWishlistCollectionsBottomSheetUseCase: com.tokopedia.wishlistcollection.domain.GetWishlistCollectionsBottomSheetUseCase
+    private val getWishlistCollectionsBottomSheetUseCase: GetWishlistCollectionsBottomSheetUseCase,
+    private val addWishlistCollectionItemsUseCase: AddWishlistCollectionItemsUseCase
 ) : BaseViewModel(dispatcher.main) {
 
     private val _collectionsBottomSheet = MutableLiveData<Result<com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionsBottomSheetResponse.Data.GetWishlistCollectionsBottomsheet>>()
     val collectionsBottomSheet: LiveData<Result<com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionsBottomSheetResponse.Data.GetWishlistCollectionsBottomsheet>>
         get() = _collectionsBottomSheet
+
+    private val _saveItemToCollections = MutableLiveData<Result<AddWishlistCollectionItemsResponse.Data.AddWishlistCollectionItems>>()
+    val saveItemToCollections: LiveData<Result<AddWishlistCollectionItemsResponse.Data.AddWishlistCollectionItems>>
+        get() = _saveItemToCollections
 
     fun getWishlistCollections(productId: String, source: String) {
         getWishlistCollectionsBottomSheetUseCase.setParams(productId, source)
@@ -30,6 +39,20 @@ class BottomSheetAddCollectionViewModel @Inject constructor(
             } else {
                 val error = (result as Fail).throwable
                 _collectionsBottomSheet.value = Fail(error)
+            }
+        }
+    }
+
+    fun saveToWishlistCollection(param: AddWishlistCollectionsHostBottomSheetParams) {
+        addWishlistCollectionItemsUseCase.setParams(param)
+        launch(dispatcher.main) {
+            val result =
+                withContext(dispatcher.io) { addWishlistCollectionItemsUseCase.executeOnBackground() }
+            if (result is Success) {
+                _saveItemToCollections.value = result
+            } else {
+                val error = (result as Fail).throwable
+                _saveItemToCollections.value = Fail(error)
             }
         }
     }

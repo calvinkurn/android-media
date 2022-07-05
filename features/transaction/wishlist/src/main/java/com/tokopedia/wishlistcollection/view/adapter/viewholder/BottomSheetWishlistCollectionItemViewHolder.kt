@@ -4,7 +4,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.wishlist.databinding.AddWishlistCollectionItemBinding
-import com.tokopedia.wishlistcollection.data.BottomSheetWishlistCollectionTypeLayoutData
+import com.tokopedia.wishlistcollection.data.model.BottomSheetWishlistCollectionTypeLayoutData
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionsBottomSheetResponse
 import com.tokopedia.wishlistcollection.view.adapter.BottomSheetCollectionWishlistAdapter
 

@@ -3,7 +3,7 @@ package com.tokopedia.wishlistcollection.view.adapter.viewholder
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.wishlist.databinding.AddWishlistCollectionCreateNewItemBinding
-import com.tokopedia.wishlistcollection.data.BottomSheetWishlistCollectionTypeLayoutData
+import com.tokopedia.wishlistcollection.data.model.BottomSheetWishlistCollectionTypeLayoutData
 import com.tokopedia.wishlistcollection.view.adapter.BottomSheetCollectionWishlistAdapter
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.IMAGE_URL_SMALL_CREATE_NEW
 
