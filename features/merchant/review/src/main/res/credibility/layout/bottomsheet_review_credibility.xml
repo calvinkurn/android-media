@@ -24,7 +24,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="heading_4" />
+            app:typographyType="display_1"
+            app:typographyWeight="bold" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/review_credibility_join_date"
@@ -35,7 +36,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/review_credibility_reviewer_name"
-            app:typographyType="body_3" />
+            app:typographyType="paragraph_3" />
 
         <com.tokopedia.review.feature.credibility.presentation.widget.ReviewCredibilityAchievementBoxWidget
             android:id="@+id/review_credibility_achievement_box"
@@ -56,21 +57,18 @@
             android:id="@+id/review_credibility_footer"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="29dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="29dp"
-            android:textAlignment="center"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN600"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/review_credibility_statistics_box"
-            app:typographyType="body_3" />
+            app:typographyType="paragraph_3" />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/review_credibility_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="16dp"
             android:minWidth="176dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -32,7 +32,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="body_3"
+                app:typographyType="paragraph_3"
                 tools:text="Karina memang juara! Rank-nya tinggi di Tantangan Ulasan kategori ini:" />
 
             <com.tokopedia.review.feature.credibility.presentation.widget.ReviewCredibilityAchievementWidget
@@ -45,7 +45,7 @@
                 app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_credibility_achievement_label"
-                app:layout_constraintWidth_percent="0.31" />
+                app:layout_constraintWidth_percent="0.3" />
 
             <com.tokopedia.review.feature.credibility.presentation.widget.ReviewCredibilityAchievementWidget
                 android:id="@+id/widget_review_credibility_achievement_two"
@@ -56,7 +56,7 @@
                 app:layout_constraintEnd_toStartOf="@id/widget_review_credibility_achievement_three"
                 app:layout_constraintStart_toEndOf="@id/widget_review_credibility_achievement_one"
                 app:layout_constraintTop_toBottomOf="@id/tv_credibility_achievement_label"
-                app:layout_constraintWidth_percent="0.31" />
+                app:layout_constraintWidth_percent="0.3" />
 
             <com.tokopedia.review.feature.credibility.presentation.widget.ReviewCredibilityAchievementWidget
                 android:id="@+id/widget_review_credibility_achievement_three"
@@ -67,7 +67,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/widget_review_credibility_achievement_two"
                 app:layout_constraintTop_toBottomOf="@id/tv_credibility_achievement_label"
-                app:layout_constraintWidth_percent="0.31" />
+                app:layout_constraintWidth_percent="0.3" />
 
             <androidx.constraintlayout.widget.Barrier
                 android:id="@+id/barrier_achievements_bottom"
@@ -101,7 +101,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/container_review_credibility_achievement_box_content"
-        app:typographyType="body_2"
+        app:typographyType="display_2"
         app:typographyWeight="bold"
         tools:text="Juara Ulasan" />
 

@@ -13,7 +13,7 @@ data class ReviewDetailBasicInfoUiModel(
     val profilePicture: String = "",
     val reviewerName: String = "",
     val reviewerStatsSummary: String = "",
-    val reviewerLabel: String = "Juara Ulasan Laptop & Gadget InTools ManTools BeTools",
+    val reviewerLabel: String = "",
     val variant: String = ""
 ) {
     fun getInvertedLikeStatus(): Int {

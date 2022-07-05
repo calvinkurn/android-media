@@ -177,10 +177,11 @@ class ReviewDetailViewModel @Inject constructor(
                     anonymous = it.isAnonymous,
                     profilePicture = it.user.image,
                     reviewerName = it.user.fullName,
+                    reviewerLabel = it.user.label,
                     reviewerStatsSummary = it.userStats.joinToString(separator = " • ") {
                         it.formatted
                     },
-                    variant = it.variantName
+                    variant = it.variantName,
                 ),
                 supplementaryInfoUiModel = ReviewDetailSupplementaryInfoUiModel(
                     review = it.review,
