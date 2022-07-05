@@ -5,8 +5,12 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Typeface
 import android.os.Bundle
-import android.text.*
+import android.text.InputFilter
 import android.text.InputFilter.LengthFilter
+import android.text.InputType
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.StyleSpan
@@ -23,7 +27,13 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignInformationBinding
 import com.tokopedia.shop.flashsale.common.constant.Constant
@@ -31,7 +41,28 @@ import com.tokopedia.shop.flashsale.common.constant.DateConstant
 import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant
 import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant.CAMPAIGN_TEASER_MULTIPLIED_STEP_SIZE
 import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant.CAMPAIGN_TEASER_NORMAL_STEP_SIZE
-import com.tokopedia.shop.flashsale.common.extension.*
+import com.tokopedia.shop.flashsale.common.extension.advanceDayBy
+import com.tokopedia.shop.flashsale.common.extension.advanceHourBy
+import com.tokopedia.shop.flashsale.common.extension.advanceMinuteBy
+import com.tokopedia.shop.flashsale.common.extension.advanceMonthBy
+import com.tokopedia.shop.flashsale.common.extension.decreaseHourBy
+import com.tokopedia.shop.flashsale.common.extension.disable
+import com.tokopedia.shop.flashsale.common.extension.doOnDelayFinished
+import com.tokopedia.shop.flashsale.common.extension.enable
+import com.tokopedia.shop.flashsale.common.extension.extractMonth
+import com.tokopedia.shop.flashsale.common.extension.extractYear
+import com.tokopedia.shop.flashsale.common.extension.formatTo
+import com.tokopedia.shop.flashsale.common.extension.isValidHexColor
+import com.tokopedia.shop.flashsale.common.extension.localFormatTo
+import com.tokopedia.shop.flashsale.common.extension.removeHexColorPrefix
+import com.tokopedia.shop.flashsale.common.extension.removeTimeZone
+import com.tokopedia.shop.flashsale.common.extension.setBackgroundFromGradient
+import com.tokopedia.shop.flashsale.common.extension.setFragmentToUnifyBgColor
+import com.tokopedia.shop.flashsale.common.extension.setMaxLength
+import com.tokopedia.shop.flashsale.common.extension.showError
+import com.tokopedia.shop.flashsale.common.extension.showLoading
+import com.tokopedia.shop.flashsale.common.extension.stopLoading
+import com.tokopedia.shop.flashsale.common.extension.toHexColor
 import com.tokopedia.shop.flashsale.common.preference.SharedPreferenceDataStore
 import com.tokopedia.shop.flashsale.common.util.DateManager
 import com.tokopedia.shop.flashsale.common.util.doOnTextChanged
@@ -42,7 +73,6 @@ import com.tokopedia.shop.flashsale.domain.entity.Gradient
 import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignStatus
 import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
 import com.tokopedia.shop.flashsale.domain.entity.enums.PaymentType
-import com.tokopedia.shop.flashsale.domain.entity.enums.isDraft
 import com.tokopedia.shop.flashsale.presentation.creation.information.adapter.GradientColorAdapter
 import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.CampaignDatePickerBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.CampaignTeaserInformationBottomSheet
@@ -55,7 +85,7 @@ import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import java.util.*
+import java.util.Date
 import javax.inject.Inject
 
 
@@ -69,7 +99,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         private const val SPAN_COUNT = 6
         private const val HEX_COLOR_TEXT_FIELD_MAX_LENGTH = 6
         private const val ONE_HOUR = 1
-        private const val THRESHOLD = 12
+        private const val TWELVE = 12
         private const val SIX_DAYS = 6
         private const val THREE_MONTH = 3
         private const val TWO_HOURS = 2
@@ -77,7 +107,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         private const val CAMPAIGN_NAME_MAX_LENGTH = 15
         private const val LEARN_MORE_CTA_TEXT_LENGTH = 8
         private const val REDIRECT_TO_PREVIOUS_PAGE_DELAY : Long = 1_500
-
+        private const val ONE = 1
 
         @JvmStatic
         fun newInstance(pageMode: PageMode, campaignId: Long): CampaignInformationFragment {
@@ -325,7 +355,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
             quantityEditor.editText.inputType = InputType.TYPE_NULL
             quantityEditor.setValueChangedListener { newValue, oldValue, _ ->
-                handleQuantityEditor(newValue, oldValue)
+                applyUpcomingDurationTimeRule(newValue, oldValue)
             }
 
             switchTeaser.setOnCheckedChangeListener { _, isChecked ->
@@ -348,7 +378,8 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     private fun setupDatePicker() {
         viewModel.setSelectedStartDate(defaultState.startDate)
         viewModel.setSelectedEndDate(defaultState.endDate)
-        adjustQuantityPicker(defaultState.startDate)
+        val quantityPickerCurrentValue = binding?.quantityEditor?.editText?.text.toString().trim().toIntOrZero()
+        adjustQuantityPicker(quantityPickerCurrentValue, defaultState.startDate)
 
         binding?.run {
             val defaultStartDate = defaultState.startDate.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL)
@@ -459,16 +490,25 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         binding?.groupTeaserSettings?.isVisible = showTeaserSettings
     }
 
-    private fun handleQuantityEditor(newValue: Int, oldValue: Int) {
+    private fun applyUpcomingDurationTimeRule(newValue: Int, oldValue: Int) {
         val isIncreasing = newValue > oldValue
         val isDecreasing = newValue < oldValue
 
-        if (isIncreasing && newValue % THRESHOLD == Constant.ZERO) {
-            binding?.quantityEditor?.stepValue = CAMPAIGN_TEASER_MULTIPLIED_STEP_SIZE
-        } else if (isDecreasing && oldValue == THRESHOLD) {
-            binding?.quantityEditor?.stepValue = CAMPAIGN_TEASER_NORMAL_STEP_SIZE
-        } else {
-            binding?.quantityEditor?.stepValue = CAMPAIGN_TEASER_NORMAL_STEP_SIZE
+        when {
+            isIncreasing && oldValue == TWELVE -> {
+                val newCounter = oldValue + CAMPAIGN_TEASER_MULTIPLIED_STEP_SIZE
+                binding?.quantityEditor?.setValue(newCounter)
+            }
+            isDecreasing && oldValue == TWELVE -> {
+                binding?.quantityEditor?.stepValue = CAMPAIGN_TEASER_NORMAL_STEP_SIZE
+            }
+            isDecreasing && oldValue == QuantityPickerConstant.CAMPAIGN_TEASER_MAXIMUM_UPCOMING_HOUR -> {
+                val newCounter = oldValue - CAMPAIGN_TEASER_MULTIPLIED_STEP_SIZE
+                binding?.quantityEditor?.setValue(newCounter)
+            }
+            else -> {
+                binding?.quantityEditor?.stepValue = CAMPAIGN_TEASER_NORMAL_STEP_SIZE
+            }
         }
     }
 
@@ -534,7 +574,8 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             viewModel.setSelectedStartDate(newStartDate)
             binding?.tauStartDate?.editText?.setText(newStartDate.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
             adjustEndDate()
-            adjustQuantityPicker(newStartDate)
+            val quantityPickerCurrentValue = binding?.quantityEditor?.editText?.text.toString().trim().toIntOrZero()
+            adjustQuantityPicker(quantityPickerCurrentValue, newStartDate)
             viewModel.getCampaignQuota(newStartDate.extractMonth(), newStartDate.extractYear())
         }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
@@ -567,8 +608,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         binding?.tauEndDate?.editText?.setText(endDate.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
     }
 
-    private fun adjustQuantityPicker(newStartDate : Date) {
-        val currentValue = binding?.quantityEditor?.editText?.text.toString().trim().toIntOrZero()
+    private fun adjustQuantityPicker(currentValue : Int, newStartDate : Date) {
         val maxValue = viewModel.getTeaserQuantityEditorMaxValue(newStartDate, Date())
         binding?.quantityEditor?.maxValue = maxValue
         binding?.quantityEditor?.addButton?.isEnabled = currentValue <= QuantityPickerConstant.CAMPAIGN_TEASER_MAXIMUM_UPCOMING_HOUR
@@ -687,21 +727,17 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             tauStartDate.isEnabled = isEditDateEnabled
             tauEndDate.isEnabled = isEditDateEnabled
 
-            switchTeaser.isChecked = campaign.useUpcomingWidget
             val upcomingTimeInHours = viewModel.findUpcomingTimeDifferenceInHour(
                 campaign.startDate.removeTimeZone(),
                 campaign.upcomingDate.removeTimeZone()
             )
-            quantityEditor.editText.setText(upcomingTimeInHours.toString())
+            val maxValue = viewModel.getTeaserQuantityEditorMaxValue( campaign.startDate.removeTimeZone(), Date())
+            binding?.quantityEditor?.maxValue = maxValue
+            binding?.quantityEditor?.setValue(upcomingTimeInHours)
+            binding?.quantityEditor?.addButton?.isEnabled = upcomingTimeInHours != QuantityPickerConstant.CAMPAIGN_TEASER_MAXIMUM_UPCOMING_HOUR
+            binding?.quantityEditor?.subtractButton?.isEnabled = upcomingTimeInHours != ONE
 
-            val maxValue = if (campaign.status.isDraft()) {
-                viewModel.getTeaserQuantityEditorMaxValue(campaign.startDate.removeTimeZone(), Date())
-            } else {
-                upcomingTimeInHours
-            }
-
-            quantityEditor.maxValue = maxValue
-
+            switchTeaser.isChecked = campaign.useUpcomingWidget
             handleSwitchTeaser(campaign.useUpcomingWidget)
             renderSelectedColor(campaign)
         }
