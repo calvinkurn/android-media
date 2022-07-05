@@ -3,6 +3,7 @@ package com.tokopedia.chatbot.view.adapter.viewholder
 import android.R.attr.path
 import android.graphics.drawable.Drawable
 import android.text.TextUtils
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
@@ -22,6 +23,7 @@ import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
 import com.tokopedia.chatbot.util.ChatBotTimeConverter
+import com.tokopedia.chatbot.util.VideoLengthFinder
 import com.tokopedia.chatbot.util.ViewUtil
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.VideoUploadListener
 import com.tokopedia.kotlin.extensions.view.gone
@@ -91,13 +93,14 @@ class ChatbotVideoUploadViewHolder(
     }
 
     private fun setTimeData(element: VideoUploadUiModel) {
-        var totalLength = element.length
-        var totalLengthInString = convertDate(totalLength)
+        var totalLength : Long = 0
+        if (element.videoUrl != null)
+            totalLength = VideoLengthFinder.findVideoLength(itemView.context, element.videoUrl ?: "")
+        var totalLengthInString = convertVideoLength(totalLength)
         videoTotalLength?.text = totalLengthInString
-
     }
 
-    private fun convertDate(totalLength: Long): String {
+    private fun convertVideoLength(totalLength: Long): String {
         var hours = TimeUnit.MILLISECONDS.toHours(totalLength) % 24
         var minutes = TimeUnit.MILLISECONDS.toMinutes(totalLength) % 60
         var seconds = TimeUnit.MILLISECONDS.toSeconds(totalLength) % 60
