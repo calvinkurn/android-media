@@ -61,7 +61,7 @@ internal class CarouselImageViewHolder(
         itemView.context,
         object : GestureDetector.SimpleOnGestureListener() {
             override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
-                changeTopAdsColorToGreen(dataSource.getFeedXCard())
+                changeCTABtnColorAsPerWidget(dataSource.getFeedXCard())
                 listener.onImageClicked(this@CarouselImageViewHolder)
 
                 animateLihatProduct(
@@ -73,6 +73,7 @@ internal class CarouselImageViewHolder(
             }
 
             override fun onDoubleTap(e: MotionEvent?): Boolean {
+                changeCTABtnColorAsPerWidget(dataSource.getFeedXCard())
                 onPostTagViews {
                     it.hideExpandedViewIfShown()
                 }
@@ -90,7 +91,7 @@ internal class CarouselImageViewHolder(
             }
 
             override fun onLongPress(e: MotionEvent?) {
-                changeTopAdsColorToGreen(dataSource.getFeedXCard())
+                changeCTABtnColorAsPerWidget(dataSource.getFeedXCard())
             }
         }
     )
@@ -104,7 +105,7 @@ internal class CarouselImageViewHolder(
     }
 
     private val focusTopAds = Runnable {
-        changeTopAdsColorToGreen(dataSource.getFeedXCard())
+        changeCTABtnColorAsPerWidget(dataSource.getFeedXCard())
     }
 
     init {
@@ -166,7 +167,7 @@ internal class CarouselImageViewHolder(
 
     fun changeTopAds() {
         val card = dataSource.getFeedXCard()
-        if (card.isAsgcColorChangedToGreen) changeTopAdsColorToGreen(card, shouldNotify = false)
+        if (card.isAsgcColorChangedAsPerWidgetColor) changeCTABtnColorAsPerWidget(card, shouldNotify = false)
         else changeTopAdsColorToWhite(card)
     }
 
@@ -202,7 +203,7 @@ internal class CarouselImageViewHolder(
         }
 
         llLihatProduct.setOnClickListener {
-            changeTopAdsColorToGreen(dataSource.getFeedXCard())
+            changeCTABtnColorAsPerWidget(dataSource.getFeedXCard())
             listener.onLihatProductClicked(this, item)
         }
 
@@ -212,26 +213,33 @@ internal class CarouselImageViewHolder(
     }
 
     private fun setupTopAds(card: FeedXCard, media: FeedXMedia) {
-        topAdsProductName.text = if (card.totalProducts > 1) {
-            itemView.context.getString(R.string.feeds_check_x_products, card.totalProducts)
-        } else itemView.context.getString(R.string.feeds_cek_sekarang)
-
+        topAdsProductName.text = getCTAButtonText(card)
         topAdsCard.showWithCondition(
-            shouldShow = card.isTypeProductHighlight || card.isTypeVOD || card.isTopAds
+            shouldShow = card.isTypeProductHighlight || card.isTopAds
         )
 
         topAdsCard.setOnClickListener {
-            changeTopAdsColorToGreen(card)
+            changeCTABtnColorAsPerWidget(card)
             listener.onTopAdsCardClicked(this, media)
         }
-        if (!card.isAsgcColorChangedToGreen) changeTopAdsColorToWhite(card)
-        else changeTopAdsColorToGreen(card, shouldNotify = false)
+        if (!card.isAsgcColorChangedAsPerWidgetColor) changeTopAdsColorToWhite(card)
+        else changeCTABtnColorAsPerWidget(card, shouldNotify = false)
+    }
+    private fun getCTAButtonText(card: FeedXCard): String {
+        return if (card.isTypeProductHighlight && !card.isASGCDiscountToko && card.totalProducts > 1)
+            itemView.context.getString(R.string.feeds_check_x_products, card.totalProducts)
+        else if (card.isASGCDiscountToko && card.totalProducts > 1)
+            itemView.context.getString(
+                R.string.feeds_asgc_disc_x_products,
+                card.totalProducts,
+                card.maximumDisPercentFmt
+            )
+        else itemView.context.getString(R.string.feeds_cek_sekarang)
+
     }
 
-    private fun changeTopAdsColorToGreen(card: FeedXCard, shouldNotify: Boolean = true) {
-        card.isAsgcColorChangedToGreen = true
-        if (shouldNotify) listener.onTopAdsChangeColorToGreen(this)
 
+    private fun changeTopAdsColorToGreen(card: FeedXCard, shouldNotify: Boolean = true) {
         changeTopAdsColor(
             primaryColor = MethodChecker.getColor(
                 itemView.context,
@@ -245,7 +253,7 @@ internal class CarouselImageViewHolder(
     }
 
     private fun changeTopAdsColorToWhite(card: FeedXCard) {
-        card.isAsgcColorChangedToGreen = false
+        card.isAsgcColorChangedAsPerWidgetColor = false
 
         changeTopAdsColor(
             primaryColor = MethodChecker.getColor(
@@ -257,6 +265,29 @@ internal class CarouselImageViewHolder(
                 com.tokopedia.unifyprinciples.R.color.Unify_NN600
             ),
         )
+    }
+
+    private fun changeTopAdsColorToRed(card: FeedXCard) {
+        changeTopAdsColor(
+            primaryColor = MethodChecker.getColor(
+                itemView.context,
+                com.tokopedia.feedcomponent.R.color.feed_dms_asgc_discount_toko_btn_bg_color
+            ),
+            secondaryColor = MethodChecker.getColor(
+                itemView.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_N0
+            ),
+        )
+    }
+    private fun changeCTABtnColorAsPerWidget(card: FeedXCard, shouldNotify: Boolean = true) {
+        card.isAsgcColorChangedAsPerWidgetColor = true
+
+        if (shouldNotify) listener.onTopAdsChangeColorToGreen(this)
+
+        if (card.isASGCDiscountToko)
+            changeTopAdsColorToRed(card)
+        else
+            changeTopAdsColorToGreen(card)
     }
 
     private fun changeTopAdsColor(
