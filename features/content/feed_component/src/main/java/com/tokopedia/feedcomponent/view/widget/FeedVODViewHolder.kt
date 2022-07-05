@@ -27,10 +27,7 @@ import com.tokopedia.feedcomponent.util.util.hideViewWithAnimationVod
 import com.tokopedia.feedcomponent.util.util.productThousandFormatted
 import com.tokopedia.feedcomponent.util.util.showViewWithAnimationVOD
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -314,7 +311,7 @@ class FeedVODViewHolder @JvmOverloads constructor(
                     showVODLoading()
                     isPaused = false
                     isVODVideoViewFrozen = false
-                    vodLihatProdukBtn.visible()
+                    vodLihatProdukBtn.showWithCondition(mProducts.isNotEmpty())
 
                 }
                 override fun onVideoReadyToPlay() {
