@@ -108,7 +108,7 @@
             android:padding="@dimen/unify_space_12">
 
             <com.tokopedia.unifyprinciples.Typography
-                android:layout_width="@dimen/unify_space_0"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/label_topads_automatic_topup"
@@ -126,7 +126,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/topads_ic_arrow" />
-
         </LinearLayout>
     </com.tokopedia.unifycomponents.CardUnify>
 </LinearLayout>
