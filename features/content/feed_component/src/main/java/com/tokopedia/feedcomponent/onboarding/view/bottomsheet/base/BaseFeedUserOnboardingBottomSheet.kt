@@ -75,6 +75,7 @@ abstract class BaseFeedUserOnboardingBottomSheet : BottomSheetUnify() {
         isDragable = true
         isSkipCollapseState = true
         isHideable = true
+        clearContentPadding = true
 
         return super.onCreateView(inflater, container, savedInstanceState)
     }
