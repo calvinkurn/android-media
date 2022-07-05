@@ -60,6 +60,7 @@ dependencies {
 
     implementation project(rootProject.ext.features.playWidget)
     implementation project(rootProject.ext.features.feedComponent)
+    implementation project(rootProject.ext.features.profileCompletion)
     
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
 

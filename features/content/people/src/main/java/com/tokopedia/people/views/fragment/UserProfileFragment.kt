@@ -16,6 +16,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
 import com.tokopedia.globalerror.GlobalError.Companion.NO_CONNECTION
@@ -274,6 +275,7 @@ class UserProfileFragment @Inject constructor(
                 renderProfileInfo(it.prevValue?.profileInfo, it.value.profileInfo)
                 renderFollowInfo(it.prevValue, it.value)
                 renderCreatePostButton(it.prevValue, it.value)
+                renderProfileReminder(it.prevValue, it.value)
             }
         }
     }
@@ -464,6 +466,28 @@ class UserProfileFragment @Inject constructor(
         )
     }
 
+    private fun renderProfileReminder(
+        prev: UserProfileUiState?,
+        value: UserProfileUiState
+    ) {
+        if (prev?.followInfo == value.followInfo &&
+            prev.profileType == value.profileType
+        ) return
+
+        val isSelfProfile = value.profileType == ProfileType.Self
+        val usernameEmpty = value.profileInfo.username.isBlank()
+        val biographyEmpty = value.profileInfo.biography.isBlank()
+
+        val isShowProfileReminder = isSelfProfile && usernameEmpty && biographyEmpty
+
+        if (isShowProfileReminder) {
+            showProfileReminder()
+            mainBinding.includeUserProfileReminder
+                .buttonUserProfileReminderCta.setOnClickListener { navigateToEditProfile() }
+        }
+        else hideProfileReminder()
+    }
+
     private fun updateToFollowUi() {
         mainBinding.btnActionFollow.text =  getString(R.string.up_btn_text_following)
         mainBinding.btnActionFollow.buttonVariant = UnifyButton.Variant.GHOST
@@ -543,6 +567,27 @@ class UserProfileFragment @Inject constructor(
                 RouteManager.route(activity, APPLINK_MENU)
             }
         }
+    }
+
+    private fun showProfileReminder() = with(mainBinding) {
+        textUserName.hide()
+        textBio.hide()
+        textSeeMore.hide()
+        includeUserProfileReminder.clProfileReminder.setBackgroundResource(
+            R.drawable.bg_card_profile_reminder
+        )
+        includeUserProfileReminder.root.show()
+    }
+
+    private fun hideProfileReminder() = with(mainBinding) {
+        includeUserProfileReminder.root.hide()
+    }
+
+    private fun navigateToEditProfile() {
+        startActivity(RouteManager.getIntent(
+            context,
+            ApplinkConstInternalUserPlatform.SETTING_PROFILE
+        ))
     }
 
     private fun doFollowUnfollow(isFromLogin: Boolean) {
