@@ -533,7 +533,7 @@ class UserSessionDataStoreImpl(private val store: DataStore<UserSessionProto>) :
             val messageDigest = digest.digest()
             val hexString = StringBuilder()
             for (b in messageDigest) {
-                hexString.append(String.format(HEX_FORMAT, b and (0xff).toByte()))
+                hexString.append(String.format(HEX_FORMAT, b and (HEX_BINARY).toByte()))
             }
             hexString.toString()
         } catch (e: Exception) {
@@ -542,6 +542,7 @@ class UserSessionDataStoreImpl(private val store: DataStore<UserSessionProto>) :
     }
 
     companion object {
+        const val HEX_BINARY = 0xff
         const val HEX_FORMAT = "%02x"
         const val MD5_ALGORITHM = "MD5"
         const val USER_SESSION_AB_TEST_KEY = "and_data_store_v3"
