@@ -27,6 +27,6 @@
     <string name="up_error_local_error">Koneshi internetmu targanggu. Coba lagi ya."</string>
     <string name="up_username_template">\@%s</string>
     <string name="up_user_profile_reminder_title">Yuk bikin profil yang unik ✨</string>
-    <string name="up_user_profile_reminder_sub_title"><![CDATA[Bikin username, foto profil & bio yang kamu banget!]]></string>
+    <string name="up_user_profile_reminder_sub_title">Bikin username, foto profil &amp; bio yang kamu banget!</string>
     <string name="up_user_profile_reminder_cta">Lengkapi Profil</string>
 </resources>
