@@ -42,18 +42,19 @@ class ChatbotVideoUploadViewHolder(
 
     override fun alwaysShowTime() = true
     override fun useWhiteReadStatus() = true
-    fun getImageId() = R.id.image
-    fun getProgressBarSendImageId() = R.id.progress_bar
-    fun getLeftActionId() = R.id.left_action
+    private fun getImageId() = R.id.image
+    private fun getProgressBarSendImageId() = R.id.progress_bar
+    private fun getLeftActionId() = R.id.left_action
 
     //TODO change this
-    fun getReadStatusId() = com.tokopedia.chat_common.R.id.chat_status
-    fun getChatBalloonId() = R.id.card_group_chat_message
-    fun getVideoTotalLengthId() = R.id.video_length
+    private fun getReadStatusId() = com.tokopedia.chat_common.R.id.chat_status
+    private fun getChatBalloonId() = R.id.card_group_chat_message
+    private fun getVideoTotalLengthId() = R.id.video_length
     private val datContainer: CardView? = itemView?.findViewById(R.id.dateContainer)
-    protected val chatBalloon: View? = itemView?.findViewById(getChatBalloonId())
+    private val chatBalloon: View? = itemView?.findViewById(getChatBalloonId())
     private val videoTotalLength: Typography? = itemView?.findViewById(getVideoTotalLengthId())
-    private val videoUploadProgressBar : LoaderUnify? = itemView?.findViewById(R.id.progress_bar_loding)
+    private val videoUploadProgressBar: LoaderUnify? =
+        itemView?.findViewById(R.id.progress_bar_loding)
     private val cancelUpload = itemView?.findViewById<ImageView>(R.id.progress_cross)
 
     private val bgSender = ViewUtil.generateBackgroundWithShadow(
@@ -72,10 +73,6 @@ class ChatbotVideoUploadViewHolder(
     )
 
     private val attachmentUnify get() = attachment as? ImageUnify
-
-    private val imageRadius =
-        itemView?.context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
-            ?: 0f
 
     override fun bind(element: VideoUploadUiModel) {
         if (element == null) return
@@ -106,17 +103,11 @@ class ChatbotVideoUploadViewHolder(
         var seconds = TimeUnit.MILLISECONDS.toSeconds(totalLength) % 60
 
         return when {
-//            hours == 0L && minutes == 0L -> String.format(
-//                "%02d", seconds
-//            )
-
             hours == 0L -> String.format(
                 "%02d:%02d", minutes, seconds
             )
-
             else ->
                 String.format("%02d:%02d:%02d", hours, minutes, seconds)
-
         }
 
     }
@@ -190,7 +181,7 @@ class ChatbotVideoUploadViewHolder(
     fun loadThumbnail(imageview: ImageView, videoUrl: String?) {
         try {
             if (imageview != null) {
-                var thumbnail = layoutPosition*1000
+                var thumbnail = layoutPosition * 1000
                 val options = RequestOptions().frame(thumbnail.toLong())
                 Glide.with(imageview.context).load(videoUrl).apply(options).into(imageview)
 
@@ -247,8 +238,16 @@ class ChatbotVideoUploadViewHolder(
     ) {
         try {
             if (imageview.context != null) {
+//                Glide.with(imageview.context)
+//                    .load(getGlideUrl(messageId, attachmentType, url, userSession))
+//                    .fitCenter()
+//                    .dontAnimate()
+//                    .placeholder(R.drawable.chatbot_video_placeholder)
+//                    .error(com.tokopedia.abstraction.R.drawable.error_drawable)
+//                    .into(imageview)
+
                 Glide.with(imageview.context)
-                    .load(getGlideUrl(messageId, attachmentType, url, userSession))
+                    .load(url)
                     .fitCenter()
                     .dontAnimate()
                     .placeholder(R.drawable.chatbot_video_placeholder)
@@ -266,16 +265,6 @@ class ChatbotVideoUploadViewHolder(
             }
         }
     }
-
-    private fun getGlideUrl(
-        messageId: String,
-        attachmentType: String,
-        url: String?,
-        userSession: UserSessionInterface
-    ): GlideUrl {
-        return GlideUrl(url)
-    }
-
 
     private fun bindChatReadStatus(element: VideoUploadUiModel, checkMark: ImageView) {
         if (element.isShowTime && element.isSender) {
@@ -301,8 +290,7 @@ class ChatbotVideoUploadViewHolder(
             )
         }
         date?.text = time
-        if (date != null && element?.isShowDate == true
-            && !TextUtils.isEmpty(time)
+        if (date != null && element?.isShowDate && !TextUtils.isEmpty(time)
         ) {
             datContainer?.show()
         } else if (date != null) {
@@ -313,14 +301,14 @@ class ChatbotVideoUploadViewHolder(
     override val dateId: Int
         get() = R.id.date
 
-    protected val chatStatus: ImageView? = itemView?.findViewById(getReadStatusId())
+    private val chatStatus: ImageView? = itemView?.findViewById(getReadStatusId())
 
     //    private val name: TextView? = itemView?.findViewById(getChatNameId())
 //    private val label: TextView? = itemView?.findViewById(getLabelId())
 //    private val dot: TextView? = itemView?.findViewById(getDotId())
     private val action: ImageView? = itemView?.findViewById(getLeftActionId())
-    protected val progressBarSendImage: View? = itemView?.findViewById(getProgressBarSendImageId())
-    protected val attachment: ImageView? = itemView?.findViewById(getImageId())
+    private val progressBarSendImage: View? = itemView?.findViewById(getProgressBarSendImageId())
+    private val attachment: ImageView? = itemView?.findViewById(getImageId())
     //ADD the video length and text
 
 
@@ -330,10 +318,10 @@ class ChatbotVideoUploadViewHolder(
         }
     }
 
-    protected open fun bindClickListener(element: VideoUploadUiModel) {
+    private fun bindClickListener(element: VideoUploadUiModel) {
         view?.setOnClickListener { view ->
             if (element.videoUrl != null && element.replyTime != null) {
-                  listener.onUploadedVideoClicked(element.videoUrl ?: "")
+                listener.onUploadedVideoClicked(element.videoUrl ?: "")
             }
         }
     }
@@ -347,23 +335,20 @@ class ChatbotVideoUploadViewHolder(
         }
     }
 
-    protected open fun setChatLeft(chatBalloon: View?) {
+    private fun setChatLeft(chatBalloon: View?) {
         setAlignParent(RelativeLayout.ALIGN_PARENT_LEFT, chatBalloon)
         alignHour(RelativeLayout.ALIGN_PARENT_LEFT, hour)
         setVisibility(chatStatus, View.GONE)
-//        setVisibility(name, View.GONE)
-//        setVisibility(label, View.GONE)
-//        setVisibility(dot, View.GONE)
     }
 
-    protected open fun setChatRight(chatBalloon: View?) {
+    private fun setChatRight(chatBalloon: View?) {
         setAlignParent(RelativeLayout.ALIGN_PARENT_RIGHT, chatBalloon)
         alignHour(RelativeLayout.ALIGN_PARENT_RIGHT, hour)
         setVisibility(chatStatus, View.VISIBLE)
     }
 
     //TODO check
-    protected open fun alignHour(alignment: Int, hour: TextView?) {
+    private fun alignHour(alignment: Int, hour: TextView?) {
         setAlignParent(alignment, hour)
     }
 
@@ -386,43 +371,19 @@ class ChatbotVideoUploadViewHolder(
         }
     }
 
-    protected fun prerequisiteUISetup(element: VideoUploadUiModel) {
+    private fun prerequisiteUISetup(element: VideoUploadUiModel) {
         action?.visibility = View.GONE
         progressBarSendImage?.visibility = View.GONE
-        if (!TextUtils.isEmpty(element.fromRole)
-            && element.fromRole.toLowerCase() != ROLE_USER.toLowerCase()
-            && element.isSender
-            && !element.isDummy
-            && element.isShowRole
-        ) {
-//            if (name != null) name.text = element.from
-//            if (label != null) label.text = element.fromRole
-//            setVisibility(name, View.VISIBLE)
-//            setVisibility(dot, View.VISIBLE)
-//            setVisibility(label, View.VISIBLE)
-        } else {
-//            setVisibility(name, View.GONE)
-//            setVisibility(dot, View.GONE)
-//            setVisibility(label, View.GONE)
-        }
     }
 
-    protected fun setVisibility(view: View?, visibility: Int) {
+    private fun setVisibility(view: View?, visibility: Int) {
         if (view != null) {
             view.visibility = visibility
-        }
-    }
-
-    override fun onViewRecycled() {
-        super.onViewRecycled()
-        if (attachment != null) {
-            ImageHandler.clearImage(attachment)
         }
     }
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_chatbot_chat_video_upload
-        private val ROLE_USER = "User"
     }
 }

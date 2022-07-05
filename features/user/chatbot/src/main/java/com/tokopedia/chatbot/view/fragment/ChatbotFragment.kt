@@ -3,7 +3,6 @@ package com.tokopedia.chatbot.view.fragment
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
@@ -96,6 +95,7 @@ import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.util.ChatBubbleItemDecorator
+import com.tokopedia.chatbot.util.VideoLengthFinder
 import com.tokopedia.chatbot.util.ViewUtil
 import com.tokopedia.chatbot.view.ChatbotInternalRouter
 import com.tokopedia.chatbot.view.activity.ChatBotCsatActivity
@@ -980,17 +980,10 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     private fun processVideoPathToUpload(path: String): VideoUploadUiModel? {
-        var uri = Uri.parse(path)
-        var totalLength: Long = 0
-        MediaPlayer.create(context, uri).also {
-            totalLength = it.duration.toLong()
-            it.reset()
-            it.release()
-        }
+        val totalLength = VideoLengthFinder.findVideoLength(context, path)
 
         if (!TextUtils.isEmpty(path)) {
-            var videoUploadUiModel = generateChatViewModelWithVideo(path, totalLength)
-            return videoUploadUiModel
+            return generateChatViewModelWithVideo(path, totalLength)
         }
 
         return null
