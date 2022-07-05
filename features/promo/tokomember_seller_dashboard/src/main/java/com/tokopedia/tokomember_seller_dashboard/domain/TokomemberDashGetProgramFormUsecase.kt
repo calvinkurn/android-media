@@ -76,6 +76,7 @@ query membershipGetProgramForm(${'$'}programID: Int! , ${'$'}shopID: Int! , ${'$
         multiplierRates
       }
       status
+      statusStr
       analytics {
         totalNewMember
         trxCount

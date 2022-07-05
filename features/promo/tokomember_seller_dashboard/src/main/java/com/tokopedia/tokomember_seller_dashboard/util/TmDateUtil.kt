@@ -204,4 +204,54 @@ object TmDateUtil {
             else -> ""
         }
     }
+
+    fun setTimeStartSingle(startTime: String?): String? {
+        val parseTime = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
+        parseTime.timeZone = TimeZone.getTimeZone(UTC)
+        val date = parseTime.parse(startTime + "00")
+        return try {
+            val calendar = Calendar.getInstance(locale)
+            date?.let {
+                calendar.time = it
+                calendar.add(Calendar.HOUR, 4)
+            }
+            parseTime.format(calendar.time)
+
+        } catch (e: Exception) {
+            "0"
+        }
+    }
+
+    fun setTimeStartSingleWaiting(startTime: String?): String? {
+        val parseTime = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
+        parseTime.timeZone = TimeZone.getTimeZone(UTC)
+        val date = parseTime.parse(startTime + "00")
+        return try {
+            val calendar = Calendar.getInstance(locale)
+            date?.let {
+                calendar.time = it
+                calendar.set(Calendar.HOUR, 0)
+                calendar.set(Calendar.MINUTE, 30)
+            }
+            parseTime.format(calendar.time)
+        } catch (e: Exception) {
+            "0"
+        }
+    }
+    fun setTimeEndSingleWaiting(startTime: String?): String? {
+        val parseTime = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
+        parseTime.timeZone = TimeZone.getTimeZone(UTC)
+        val date = parseTime.parse(startTime + "00")
+        return try {
+            val calendar = Calendar.getInstance(locale)
+            date?.let {
+                calendar.time = it
+                calendar.set(Calendar.HOUR, 23)
+                calendar.set(Calendar.MINUTE, 30)
+            }
+            parseTime.format(calendar.time)
+        } catch (e: Exception) {
+            "0"
+        }
+    }
 }

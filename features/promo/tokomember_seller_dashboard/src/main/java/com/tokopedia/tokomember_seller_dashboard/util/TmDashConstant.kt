@@ -10,6 +10,7 @@ const val BUNDLE_CARD_ID_IN_TOOLS = "bundleCardIdInTools"
 const val BUNDLE_VOUCHER_ID = "bundleVoucherId"
 const val BUNDLE_VOUCHER_QUOTA = "bundleVoucherQuota"
 const val BUNDLE_VOUCHER_TYPE = "bundleVoucherType"
+const val BUNDLE_VOUCHER_MAX_CASHBACK = "bundleVoucherMaxCashback"
 const val BUNDLE_OPTION_MENU = "bundleOptionMenu"
 const val BUNDLE_EDIT_PROGRAM = "bundleEditProgram"
 const val BUNDLE_PROGRAM_ID = "bundleProgramId"
@@ -36,6 +37,10 @@ const val ACTIVE = 3
 const val ACTIVE_OLDER = 4
 const val ENDED = 5
 const val CANCELED = 6
+const val ACTIVE_AND_WAITING = 7
+
+const val PROGRAM_DETAIL_ACTIVE = "Aktif"
+const val PROGRAM_DETAIL_WAITING = "Menunggu Periode Aktif"
 
 const val COUPON_DELETED = -1
 const val COUPON_PROCESSING = 0
@@ -89,7 +94,7 @@ const val TERNS_AND_CONDITION = "syarat & ketentuan"
 const val DATE_TITLE  = "Pilih tanggal mulai"
 const val DATE_TITLE_END  = "Pilih tanggal selesai"
 const val DATE_DESC = "Tentukan tanggal mulai untuk kupon TokoMember yang sudah kamu buat."
-const val DATE_DESC_END= "Tentukan tanggal sepesai untuk kupon TokoMember yang sudah kamu buat."
+const val DATE_DESC_END= "Tentukan tanggal selesai untuk kupon TokoMember yang sudah kamu buat."
 const val TIME_TITLE = "Pilih jam mulai"
 const val TIME_TITLE_END = "Pilih jam selesai"
 const val TIME_DESC = "Tentukan jam mulai untuk kupon TokoMember yang sudah kamu buat."

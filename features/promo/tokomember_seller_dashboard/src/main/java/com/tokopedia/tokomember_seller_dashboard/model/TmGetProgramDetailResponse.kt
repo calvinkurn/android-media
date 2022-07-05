@@ -141,6 +141,9 @@ data class ProgramForm(
 	@SerializedName("status")
 	val status: Int? = null,
 
+	@SerializedName("statusStr")
+	val statusStr: String? = null,
+
 	@SerializedName("analytics")
 	val analytics: Analytics? = null
 )

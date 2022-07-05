@@ -58,6 +58,8 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/tvCouponBenefit"
+                android:text="Rp0"
                 app:typographyType="display_3"
                 app:typographyWeight="bold"
                 android:textColor="@color/Unify_NN950"

@@ -173,7 +173,8 @@ class TokomemberOptionsMenuBottomsheet: BottomSheetUnify() {
             tmCouponActions: TmCouponActions,
             voucherId: String,
             voucherType: String,
-            voucherQuota: Int
+            voucherQuota: Int,
+            maxCashback: Int = 1
         ){
             val bundle = Bundle()
             bundle.putString(BUNDLE_OPTION_MENU, actions)

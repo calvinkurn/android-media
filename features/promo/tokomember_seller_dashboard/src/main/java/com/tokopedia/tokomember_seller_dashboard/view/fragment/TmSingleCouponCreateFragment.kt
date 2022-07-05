@@ -44,6 +44,8 @@ import com.tokopedia.tokomember_seller_dashboard.model.TmSingleCouponData
 import com.tokopedia.tokomember_seller_dashboard.model.ValidationError
 import com.tokopedia.tokomember_seller_dashboard.model.mapper.TmCouponCreateMapper
 import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EDIT
+import com.tokopedia.tokomember_seller_dashboard.util.ACTIVE
+import com.tokopedia.tokomember_seller_dashboard.util.ACTIVE_OLDER
 import com.tokopedia.tokomember_seller_dashboard.util.ANDROID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_DATA
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_AVATAR
@@ -63,7 +65,9 @@ import com.tokopedia.tokomember_seller_dashboard.util.COUPON_TYPE_SHIPPING
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_VIP
 import com.tokopedia.tokomember_seller_dashboard.util.CREATE
 import com.tokopedia.tokomember_seller_dashboard.util.DATE_DESC
+import com.tokopedia.tokomember_seller_dashboard.util.DATE_DESC_END
 import com.tokopedia.tokomember_seller_dashboard.util.DATE_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.DATE_TITLE_END
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA_RETRY
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_DESC
@@ -80,7 +84,9 @@ import com.tokopedia.tokomember_seller_dashboard.util.SIMPLE_DATE_FORMAT
 import com.tokopedia.tokomember_seller_dashboard.util.TERMS
 import com.tokopedia.tokomember_seller_dashboard.util.TERNS_AND_CONDITION
 import com.tokopedia.tokomember_seller_dashboard.util.TIME_DESC
+import com.tokopedia.tokomember_seller_dashboard.util.TIME_DESC_END
 import com.tokopedia.tokomember_seller_dashboard.util.TIME_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.TIME_TITLE_END
 import com.tokopedia.tokomember_seller_dashboard.util.TM_ERROR_GEN
 import com.tokopedia.tokomember_seller_dashboard.util.TM_ERROR_PROGRAM
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil
@@ -89,6 +95,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.TmFileUtil
 import com.tokopedia.tokomember_seller_dashboard.util.TmPrefManager
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.util.UPDATE
+import com.tokopedia.tokomember_seller_dashboard.util.WAITING
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TmDashCreateActivity
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.customview.BottomSheetClickListener
@@ -119,6 +126,7 @@ import javax.inject.Inject
 
 class TmSingleCouponCreateFragment : BaseDaggerFragment() {
 
+    private var programStatus: Int = ACTIVE
     private var token: String? = ""
     private var tmCouponDetail: TmCouponDetailData? = null
     private var selectedChipPositionDate: Int = 0
@@ -234,18 +242,34 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                         var endTime: String? = ""
                         run time@ {
                             it.data?.membershipGetProgramList?.programSellerList?.forEach { item ->
-                                if (item?.status == 4 || item?.status == 3) {
+                                if (item?.status == ACTIVE || item?.status == ACTIVE_OLDER) {
                                     //check if starttime < current time
-                                    if (TmDateUtil.getTimeInMillis(item.timeWindow?.startTime, "yyyy-MM-dd HH:mm:ss").toLong() > DateUtil.getCurrentDate().time.div(1000)) {
+                                    if (TmDateUtil.getTimeInMillis(item.timeWindow?.startTime, "yyyy-MM-dd HH:mm:ss").toLong() < DateUtil.getCurrentDate().time.div(1000)) {
                                         startTime = item.timeWindow?.startTime
                                         endTime = item.timeWindow?.endTime
                                         programData = ProgramUpdateDataInput()
                                         programData?.apply {
-                                            timeWindow = TimeWindow(startTime = startTime, endTime = endTime)
+                                            timeWindow = TimeWindow(startTime = TmDateUtil.setTimeStartSingle(startTime), endTime = endTime)
                                         }
+                                        programStatus = ACTIVE
                                         return@time
                                     }
                                 }
+                            }
+                        }
+                        val wait = it.data?.membershipGetProgramList?.programSellerList?.count {
+                            it?.status == WAITING
+                        }
+                        val active = it.data?.membershipGetProgramList?.programSellerList?.count {
+                            it?.status == ACTIVE
+                        }
+                        if(wait != 0 && active == 0){
+                            programStatus = WAITING
+                            startTime = it.data.membershipGetProgramList.programSellerList.firstOrNull()?.timeWindow?.startTime
+                            endTime = it.data.membershipGetProgramList.programSellerList.firstOrNull()?.timeWindow?.endTime
+                            programData = ProgramUpdateDataInput()
+                            programData?.apply {
+                                timeWindow = TimeWindow(startTime = TmDateUtil.setTimeStartSingleWaiting(TmDateUtil.getTimeInMillis(startTime, "yyyy-MM-dd HH:mm:ss")), endTime = TmDateUtil.setTimeEndSingleWaiting(TmDateUtil.getTimeInMillis(endTime, "yyyy-MM-dd HH:mm:ss")))
                             }
                         }
                         if(startTime.isNullOrEmpty()) {
@@ -349,7 +373,22 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                     } else {
                         closeLoadingDialog()
                         setButtonState()
-                        handleProgramPreValidateError(it.data?.membershipValidateBenefit?.resultStatus?.reason, it?.data?.membershipValidateBenefit?.resultStatus?.message?.firstOrNull())
+                        if (it.data?.membershipValidateBenefit?.resultStatus?.code == "42050") {
+                            //No Active program available
+                            handleProgramPreValidateError(
+                                it.data.membershipValidateBenefit.resultStatus.reason,
+                                it?.data.membershipValidateBenefit.resultStatus.message?.firstOrNull(),
+                                true
+                            )
+                        }
+                        if (it.data?.membershipValidateBenefit?.resultStatus?.code == "42049") {
+                            //Coupon active date outside program time window
+                            handleProgramPreValidateError(
+                                it.data.membershipValidateBenefit.resultStatus.reason,
+                                it?.data.membershipValidateBenefit.resultStatus.message?.firstOrNull(),
+                                false
+                            )
+                        }
                     }
                 }
                 TokoLiveDataResult.STATUS.ERROR-> {
@@ -424,13 +463,14 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                                             imageSquare = tmCouponDetail?.voucherImageSquare!!,
                                             maximumBenefit = couponPremiumData?.maxCashback.toIntSafely()
                                         )
-                                    tokomemberDashCreateViewModel.createCoupon(
+                                    tokomemberDashCreateViewModel.createSingleCoupon(
                                         tmMerchantCouponCreateData
                                     )
                                 }
                             }
                         }
                         is UploadResult.Error ->{
+                            closeLoadingDialog()
                             view?.let { it ->
                                 Toaster.build(
                                     it,
@@ -465,8 +505,10 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                     renderUIForEdit(it.data?.merchantPromotionGetMVDataByID?.data)
                     renderProgram()
                     renderSingleCoupon()
+                    closeLoadingDialog()
                 }
                 TokoLiveDataResult.STATUS.ERROR ->{
+                    closeLoadingDialog()
                     //open error bottom sheet
                     val tmModel = TmIntroBottomsheetModel("", "", "", "", "", errorCount)
                     val bundle = Bundle()
@@ -512,15 +554,23 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
             }
         })
 
-        tokomemberDashCreateViewModel.tmCouponCreateLiveData.observe(viewLifecycleOwner, {
+        tokomemberDashCreateViewModel.tmSingleCouponCreateLiveData.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
-                    //Open Dashboard
-                    activity?.finish()
-                    tmCouponListRefreshCallback?.refreshCouponList()
+                    if(it.data.merchantPromotionCreateMV?.status == 200) {
+                        //Open Dashboard
+                            closeLoadingDialog()
+                        activity?.finish()
+                        tmCouponListRefreshCallback?.refreshCouponList()
+                    }
+                    else{
+                        closeLoadingDialog()
+                        handleProgramPreValidateError("", it.data.merchantPromotionCreateMV?.message)
+                    }
                 }
                 is Fail -> {
                     //handleError
+                    closeLoadingDialog()
                     handleProgramValidateServerError()
                 }
             }
@@ -712,13 +762,19 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
     }
 
     private fun openLoadingDialog(){
-
-        loaderDialog = context?.let { LoaderDialog(it) }
-        loaderDialog?.loaderText?.apply {
-            setType(Typography.DISPLAY_2)
+        view?.let {
+            loaderDialog = context?.let { LoaderDialog(it) }
+            loaderDialog?.loaderText?.apply {
+                setType(Typography.DISPLAY_2)
+            }
+            loaderDialog?.setLoadingText(Html.fromHtml(LOADING_TEXT))
+            loaderDialog?.show()
         }
-        loaderDialog?.setLoadingText(Html.fromHtml(LOADING_TEXT))
-        loaderDialog?.show()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        loaderDialog?.dialog?.cancel()
     }
 
     private fun closeLoadingDialog(){
@@ -751,7 +807,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun handleProgramPreValidateError(reason: String?, message: String?){
+    private fun handleProgramPreValidateError(reason: String?, message: String?, openProgramCreation: Boolean = false){
         setButtonState()
         val title = if(reason.isNullOrEmpty()) {
             PROGRAM_VALIDATION_ERROR_TITLE
@@ -778,12 +834,15 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
             override fun onButtonClick(errorCount: Int) {
                 val cardId = prefManager?.cardId
                 prefManager?.shopId?.let { shopId ->
-                    if (cardId != null) {
+                    if (cardId != null && openProgramCreation) {
                         TmDashCreateActivity.openActivity(shopId, activity, CreateScreenType.PROGRAM, ProgramActionType.CREATE_FROM_COUPON, null, null, cardId = cardId)
+                        bottomSheet.dismiss()
+                        activity?.finish()
                     }
                 }
-                bottomSheet.dismiss()
-                activity?.finish()
+                if(!openProgramCreation){
+                    bottomSheet.dismiss()
+                }
             }
         })
         bottomSheet.show(childFragmentManager,"")
@@ -1030,30 +1089,40 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         var year = ""
         var day = 0
         context?.let{
-            val calMax = Calendar.getInstance()
-            calMax.add(Calendar.YEAR, 1)
-            val yearMax = calMax.get(Calendar.YEAR)
-            val monthMax = calMax.get(Calendar.MONTH)
-            val dayMax = calMax.get(Calendar.DAY_OF_MONTH)
-
-            val maxDate = GregorianCalendar(yearMax, monthMax, dayMax)
-            val currentDate = GregorianCalendar(LocaleUtils.getCurrentLocale(it))
             val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, com.tokopedia.tokomember_seller_dashboard.util.locale)
-            programData?.timeWindow?.startTime?.let {
-                currentDate.time = sdf.parse(programData?.timeWindow?.startTime + "00") ?: Date()
-                currentDate.add(Calendar.DAY_OF_MONTH, 1)
+            val currentDate = GregorianCalendar(LocaleUtils.getCurrentLocale(it))
+//            programData?.timeWindow?.startTime?.let {
+//                currentDate.time = sdf.parse(programData?.timeWindow?.startTime + "00") ?: Date()
+//            }
+
+            // if active program
+            // then default selection is today
+            // if upcoming program
+            // then start time of the program should be default
+
+            // for both cases
+            // user can select end date 1 year from start date
+
+            val calendarMax = currentDate
+            if(programStatus == ACTIVE) {
+                calendarMax.add(Calendar.YEAR, 1)
             }
-
-            val calMin = Calendar.getInstance()
-            calMin.add(Calendar.YEAR, TmProgramFragment.MIN_YEAR)
-            val yearMin = calMin.get(Calendar.YEAR)
-            val monthMin = calMin.get(Calendar.MONTH)
-            val dayMin = calMin.get(Calendar.DAY_OF_MONTH)
-
-            val minDate = GregorianCalendar(yearMin, monthMin, dayMin)
-            val datepickerObject = DateTimePickerUnify(it, currentDate, currentDate, maxDate).apply {
-                setTitle(DATE_TITLE)
-                setInfo(DATE_DESC)
+            else{
+                programData?.timeWindow?.endTime?.let {
+                    calendarMax.time = sdf.parse(programData?.timeWindow?.startTime + "00") ?: Date()
+                }
+            }
+            val datepickerObject = DateTimePickerUnify(it, Calendar.getInstance(), Calendar.getInstance(), calendarMax).apply {
+                when (type) {
+                    0 -> {
+                        setTitle(DATE_TITLE)
+                        setInfo(DATE_DESC)
+                    }
+                    1 -> {
+                        setTitle(DATE_TITLE_END)
+                        setInfo(DATE_DESC_END)
+                    }
+                }
                 setInfoVisible(true)
                 datePickerButton.let { button ->
                     button.setOnClickListener {
@@ -1083,10 +1152,18 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
     private fun clickTimePicker(textField: TextFieldUnify2, type: Int){
         var selectedHour = ""
         var selectedMinute = ""
+
+        // in case of active program, start time should set to 4 hours (round of to nearest multiple of 30 minutes) from now by default
+        // example
+        // if 4:23 -> 8:30
+        // if 4:37 -> 9:00
+
+        // end time same as program end time
+
         context?.let { ctx ->
             val minTime =
                 GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {
-                    set(Calendar.HOUR_OF_DAY, 8)
+                    set(Calendar.HOUR_OF_DAY, 0)
                     set(Calendar.MINUTE, 30)
                 }
             val defaultTime =
@@ -1104,8 +1181,16 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                 maxDate = maxTime,
                 type = DateTimePickerUnify.TYPE_TIMEPICKER
             ).apply {
-                setTitle(TIME_TITLE)
-                setInfo(TIME_DESC)
+                when(type){
+                    0 -> {
+                        setTitle(TIME_TITLE)
+                        setInfo(TIME_DESC)
+                    }
+                    1 ->{
+                        setTitle(TIME_TITLE_END)
+                        setInfo(TIME_DESC_END)
+                    }
+                }
                 setInfoVisible(true)
                 datePickerButton.setOnClickListener {
                     startTime = getDate()

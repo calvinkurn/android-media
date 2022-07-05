@@ -16,6 +16,7 @@ import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponListRefreshCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_VOUCHER_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_VOUCHER_MAX_CASHBACK
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_VOUCHER_QUOTA
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_VOUCHER_TYPE
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
@@ -23,11 +24,13 @@ import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmCouponViewMode
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toDp
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import kotlinx.android.synthetic.main.tm_layout_add_quota.*
 import javax.inject.Inject
 
 class TmAddQuotaBottomsheet: BottomSheetUnify() {
 
+    private var maxCashback = 1
     private var token = ""
 
     @Inject
@@ -47,6 +50,9 @@ class TmAddQuotaBottomsheet: BottomSheetUnify() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
+        arguments?.getInt(BUNDLE_VOUCHER_MAX_CASHBACK)?.let {
+            maxCashback = it
+        }
         arguments?.getString(BUNDLE_VOUCHER_ID)?.let {
             voucherId = it
         }
@@ -78,6 +84,9 @@ class TmAddQuotaBottomsheet: BottomSheetUnify() {
         )
         setChild(childView)
         observeViewModel()
+        if(voucherType.lowercase() == "gratis ongkir"){
+            voucherType = "shipping"
+        }
         tmCouponViewModel.getInitialCouponData("update", voucherType.lowercase())
     }
 
@@ -90,7 +99,7 @@ class TmAddQuotaBottomsheet: BottomSheetUnify() {
                     }
                 }
                 TokoLiveDataResult.STATUS.ERROR ->{
-
+                    view?.let { it1 -> Toaster.build(it1, it.error?.message.toString(), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show() }
                 }
             }
         })
@@ -98,7 +107,7 @@ class TmAddQuotaBottomsheet: BottomSheetUnify() {
         tmCouponViewModel.tmCouponQuotaUpdateLiveData.observe(viewLifecycleOwner, {
             when(it.status){
                 TokoLiveDataResult.STATUS.SUCCESS ->{
-                    if(it.data?.merchantPromotionUpdateMVQuota?.data?.status == "200") {
+                    if(it.data?.merchantPromotionUpdateMVQuota?.status == 200) {
                         tmCouponListRefreshCallback.refreshCouponList()
                         dismiss()
                     }
@@ -132,6 +141,7 @@ class TmAddQuotaBottomsheet: BottomSheetUnify() {
             }
 
             override fun afterTextChanged(p0: Editable?) {
+                tvCouponBenefit.text = "Rp" + CurrencyFormatHelper.convertToRupiah((maxCashback.times(textFieldQuota.editText.text.toString().toIntOrZero()).toString()))
                 if(textFieldQuota.editText.text.toString().toIntOrZero() <= voucherQuota){
                     textFieldQuota.isInputError = true
                     textFieldQuota.setMessage("Kuota harus lebih dari $voucherQuota")
@@ -185,12 +195,14 @@ class TmAddQuotaBottomsheet: BottomSheetUnify() {
             voucherId: String,
             currentQuota: Int,
             couponType: String,
-            tmCouponListRefreshCallback: TmCouponListRefreshCallback
+            tmCouponListRefreshCallback: TmCouponListRefreshCallback,
+            maxCashback: Int
         ){
             val bundle = Bundle()
             bundle.putString(BUNDLE_VOUCHER_ID, voucherId)
             bundle.putInt(BUNDLE_VOUCHER_QUOTA, currentQuota)
             bundle.putString(BUNDLE_VOUCHER_TYPE, couponType)
+            bundle.putInt(BUNDLE_VOUCHER_MAX_CASHBACK, maxCashback)
             this.tmCouponListRefreshCallback = tmCouponListRefreshCallback
             val tokomemberIntroBottomsheet = TmAddQuotaBottomsheet().apply {
                 arguments = bundle

@@ -65,7 +65,7 @@ class TokomemberDashHomeMainFragment : BaseDaggerFragment() {
         homeHeader.apply {
             title = "TokoMember"
             isShowBackButton = true
-
+            isShowShadow = false
             setNavigationOnClickListener {
                 activity?.finish()
             }
@@ -90,13 +90,17 @@ class TokomemberDashHomeMainFragment : BaseDaggerFragment() {
         homeTabs.setupWithViewPager(homeViewPager)
         homeTabs.getUnifyTabLayout().setupWithViewPager(homeViewPager)
 
-        var adapter = TokomemberDashHomeViewpagerAdapter(childFragmentManager)
+        val adapter = TokomemberDashHomeViewpagerAdapter(childFragmentManager)
         adapter.addFragment(TokomemberDashHomeFragment.newInstance(arguments), "Home")
         adapter.addFragment(TokomemberDashProgramListFragment.newInstance(arguments), "Program")
         adapter.addFragment(TokomemberDashCouponFragment.newInstance(arguments), "Kupon Tokomember")
 
         homeViewPager.adapter = adapter
 
+        homeTabs.getUnifyTabLayout().removeAllTabs()
+        homeTabs.addNewTab("Home")
+        homeTabs.addNewTab("Program")
+        homeTabs.addNewTab("KuponTokomember")
     }
 
     override fun getScreenName() = ""

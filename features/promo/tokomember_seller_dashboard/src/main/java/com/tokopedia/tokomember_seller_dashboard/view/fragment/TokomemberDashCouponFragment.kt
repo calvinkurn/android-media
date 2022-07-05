@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -161,13 +160,13 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
 //            filterStatus.selectedItem = arrayListOf("Semua Status", "Aktif", "Belum Aktif", "Sudah Berakhir")
         }
         filterData.add(filterStatus)
-        val filterType = SortFilterItem("Semua Type")
+        val filterType = SortFilterItem("Semua Tipe")
         filterType.chevronListener
         filterType.iconDrawable = context?.let { getIconUnifyDrawable(it, IconUnify.ARROW_DOWN) }
         filterType.listener = {
             val filterList = ArrayList<Filter>()
             val options = ArrayList<Option>()
-            options.add(Option(name = "Semua Type", key = "Semua Type", value = "0", inputType = Option.INPUT_TYPE_RADIO, inputState = "true"))
+            options.add(Option(name = "Semua Tipe", key = "Semua Tipe", value = "0", inputType = Option.INPUT_TYPE_RADIO, inputState = "true"))
             options.add(Option(name = "Cashback", key = "Cashback", value = "3", inputType = Option.INPUT_TYPE_RADIO))
             options.add(Option(name = "Gratis Ongkir", key = "Gratis Ongkir", value = "1", inputType = Option.INPUT_TYPE_RADIO))
 //            filterList.add(Filter(title = "Status Kupon", options = options))
@@ -232,11 +231,11 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
         filterData.add(filterType)
         filter.addItem(filterData)
         filter.parentListener = {
-            Toast.makeText(context, "Type", Toast.LENGTH_SHORT).show()
+            TmFilterBottomsheet.show(childFragmentManager)
         }
         filter_error.addItem(filterData)
         filter_error.parentListener = {
-            Toast.makeText(context, "Type", Toast.LENGTH_SHORT).show()
+            TmFilterBottomsheet.show(childFragmentManager)
         }
         rv_coupon.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -355,7 +354,7 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
 
     }
 
-    override fun option(type: String, voucherId: String, couponType: String, currentQuota: Int) {
+    override fun option(type: String, voucherId: String, couponType: String, currentQuota: Int, maxCashback: Int) {
         when(type){
             DELETE ->{
                 val dialog = context?.let { DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE) }
@@ -395,7 +394,7 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
                 dialog?.show()
             }
             ADD_QUOTA ->{
-                TmAddQuotaBottomsheet.show(childFragmentManager, voucherId, currentQuota, couponType, this)
+                TmAddQuotaBottomsheet.show(childFragmentManager, voucherId, currentQuota, couponType, this, maxCashback)
             }
         }
     }

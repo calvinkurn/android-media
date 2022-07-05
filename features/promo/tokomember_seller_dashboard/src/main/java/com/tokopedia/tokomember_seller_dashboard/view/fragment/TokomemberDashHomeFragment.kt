@@ -130,7 +130,10 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
 
                             }
                         })
-                    ivShopIcon.loadImage(it.data?.membershipGetSellerAnalyticsTopSection?.shopProfile?.shop?.avatar)
+                    Glide.with(ivShopIcon)
+                        .load(it.data?.membershipGetSellerAnalyticsTopSection?.shopProfile?.shop?.avatar)
+                        .circleCrop()
+                        .into(ivShopIcon)
                     tvShopName.text = it.data?.membershipGetSellerAnalyticsTopSection?.shopProfile?.shop?.name
                     renderTicker(it.data?.membershipGetSellerAnalyticsTopSection?.ticker)
                     val prefManager = context?.let { it1 -> TmPrefManager(it1) }

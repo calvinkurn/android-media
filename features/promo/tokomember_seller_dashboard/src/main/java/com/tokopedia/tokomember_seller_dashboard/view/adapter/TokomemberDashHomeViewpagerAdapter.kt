@@ -16,7 +16,7 @@ class TokomemberDashHomeViewpagerAdapter(fm: FragmentManager) : FragmentStatePag
 
     // returns which item is selected from arraylist of titles.
     override fun getPageTitle(position: Int): CharSequence {
-        return fragmentTitleList[position]
+        return fragmentTitleList[position].lowercase()
     }
 
     // returns the number of items present in arraylist.
@@ -27,6 +27,6 @@ class TokomemberDashHomeViewpagerAdapter(fm: FragmentManager) : FragmentStatePag
     // this function adds the fragment and title in 2 separate  arraylist.
     fun addFragment(fragment: Fragment, title: String) {
         fragmentList.add(fragment)
-        fragmentTitleList.add(title)
+        fragmentTitleList.add(title.lowercase())
     }
 }
