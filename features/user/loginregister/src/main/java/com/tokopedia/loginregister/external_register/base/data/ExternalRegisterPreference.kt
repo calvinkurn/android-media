@@ -2,6 +2,7 @@ package com.tokopedia.loginregister.external_register.base.data
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.loginregister.external_register.base.constant.ExternalRegisterConstants.PREF_KEY_AUTH_CODE
 import com.tokopedia.loginregister.external_register.base.constant.ExternalRegisterConstants.PREF_KEY_GOAL_ID
 import com.tokopedia.loginregister.external_register.base.constant.ExternalRegisterConstants.PREF_KEY_NAME
@@ -14,7 +15,7 @@ import javax.inject.Inject
  * Copyright (c) 2021 PT. Tokopedia All rights reserved.
  */
 
-class ExternalRegisterPreference @Inject constructor(private var context: Context) {
+class ExternalRegisterPreference @Inject constructor(@ApplicationContext context: Context) {
 
     private var sharedPreference: SharedPreferences? = null
 

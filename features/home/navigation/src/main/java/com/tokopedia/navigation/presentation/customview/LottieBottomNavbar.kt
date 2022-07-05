@@ -26,7 +26,6 @@ private const val DEFAULT_HEIGHT = 56f
 private const val DEFAULT_ICON_PADDING = 2
 private const val DEFAULT_TITLE_PADDING = 2
 private const val DEFAULT_TITLE_PADDING_BOTTOM = 4
-private const val DEFAULT_TEXT_SIZE = 10f
 
 class LottieBottomNavbar : LinearLayout {
     private val badgeTextViewList: MutableList<TextView>? = mutableListOf()
@@ -153,7 +152,7 @@ class LottieBottomNavbar : LinearLayout {
         buttonsHeight = a.getDimension(R.styleable.LottieBottomNavbar_buttonsHeight, defaultButtonHeight)
 
         buttonColor = a.getColor(R.styleable.LottieBottomNavbar_buttonColor, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N200))
-        activeButtonColor = a.getColor(R.styleable.LottieBottomNavbar_activeButtonColor, ContextCompat.getColor(context, R.color.transparent))
+        activeButtonColor = a.getColor(R.styleable.LottieBottomNavbar_activeButtonColor, ContextCompat.getColor(context, com.tokopedia.navigation.R.color.transparent))
         a.recycle()
 
         weightSum = 1f
@@ -321,12 +320,12 @@ class LottieBottomNavbar : LinearLayout {
             // add text view to show title
             val title = Typography(context)
             title.maxLines = 1
-            title.ellipsize = TextUtils.TruncateAt.END;
+            title.ellipsize = TextUtils.TruncateAt.END
             title.layoutParams = txtLayoutParam
             title.setPadding(DEFAULT_TITLE_PADDING, 0, DEFAULT_TITLE_PADDING, DEFAULT_TITLE_PADDING_BOTTOM)
             title.text = bottomMenu.title
             title.tag = context.getString(R.string.tag_title_textview)+bottomMenu.id
-            title.textSize = DEFAULT_TEXT_SIZE
+            title.setType(Typography.SMALL)
             if (selectedItem != null && selectedItem == index) {
                 title.setTextColor(menu[selectedItem!!].activeButtonColor)
             } else {

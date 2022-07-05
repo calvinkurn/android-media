@@ -20,7 +20,7 @@
         app:layout_constraintEnd_toStartOf="@+id/ic_pdp_additional_info"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_2"
+        app:typographyType="display_2"
         tools:text="@string/ktp_protection"/>
 
     <com.tokopedia.unifycomponents.ImageUnify
