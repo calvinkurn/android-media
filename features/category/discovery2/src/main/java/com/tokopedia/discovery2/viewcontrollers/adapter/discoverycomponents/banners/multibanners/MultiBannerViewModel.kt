@@ -84,7 +84,7 @@ class MultiBannerViewModel(val application: Application, var components: Compone
         if (components.properties?.dynamic == true) {
             launchCatchError(block = {
 
-                if (bannerUseCase.loadFirstPageComponents(components.id, components.pageEndPoint, application.applicationContext)) {
+                if (bannerUseCase.loadFirstPageComponents(components.id, components.pageEndPoint)) {
                     if (components.data.isNullOrEmpty()) {
                         _hideShimmer.value = true
                     }

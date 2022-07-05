@@ -30,8 +30,8 @@ import com.tokopedia.otp.silentverification.domain.model.RequestSilentVerificati
 import com.tokopedia.otp.silentverification.helper.NetworkClientHelper
 import com.tokopedia.otp.silentverification.view.NetworkRequestListener
 import com.tokopedia.otp.silentverification.view.viewmodel.SilentVerificationViewModel
+import com.tokopedia.otp.verification.data.OtpConstant
 import com.tokopedia.otp.verification.data.OtpData
-import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.domain.data.OtpValidateData
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.sessioncommon.util.AuthenticityUtils
@@ -287,7 +287,7 @@ class SilentVerificationFragment: BaseDaggerFragment() {
             showSuccessText()
             Handler().postDelayed({
                 onFinishSilentVerif(data)
-            }, 600)
+            }, DELAY_600)
         }
     }
 
@@ -295,7 +295,7 @@ class SilentVerificationFragment: BaseDaggerFragment() {
         context?.run {
             binding?.fragmentSilentVerifTitle?.show()
             binding?.fragmentSilentVerifTitle?.startAnimation(AlphaAnimation(0F, 1F).apply {
-                duration = 1000
+                duration = DURATION_1000
                 fillAfter = true
             })
             binding?.fragmentSilentVerifTitle?.text = getString(R.string.fragment_silent_verif_title_success)
@@ -499,6 +499,8 @@ class SilentVerificationFragment: BaseDaggerFragment() {
 
         const val RESULT_DELETE_METHOD = 100
         const val OTP_TYPE_SILENT_VERIF = 112
+        const val DELAY_600 = 600L
+        const val DURATION_1000 = 1000L
 
         const val OTP_REQ_FAILED = "OTP Request Failed"
         const val NO_INTERNET_CONNECTION = "Tidak ada koneksi internet"
