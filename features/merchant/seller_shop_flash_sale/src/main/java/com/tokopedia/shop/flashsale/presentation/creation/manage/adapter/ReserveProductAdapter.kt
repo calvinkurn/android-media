@@ -91,4 +91,8 @@ class ReserveProductAdapter(
     fun clearData() {
         items.clear()
     }
+
+    fun getSelectedProduct(): List<SelectedProductModel> {
+        return selectedProduct
+    }
 }
