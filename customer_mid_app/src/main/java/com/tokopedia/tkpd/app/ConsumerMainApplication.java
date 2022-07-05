@@ -27,6 +27,7 @@ import com.chuckerteam.chucker.api.Chucker;
 import com.chuckerteam.chucker.api.ChuckerCollector;
 import com.google.firebase.FirebaseApp;
 import com.google.gson.Gson;
+import com.newrelic.agent.android.NewRelic;
 import com.tokopedia.abstraction.newrelic.NewRelicInteractionActCall;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 import com.tokopedia.analytics.mapper.model.EmbraceConfig;
@@ -76,6 +77,7 @@ import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
 import com.tokopedia.tkpd.nfc.NFCSubscriber;
 import com.tokopedia.tkpd.utils.NewRelicConstants;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
@@ -151,10 +153,27 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         checkAppPackageNameAsync();
 
         Loader.init(this);
+        initializationNewRelic();
         if (getUserSession().isLoggedIn()) {
             Embrace.getInstance().setUserIdentifier(getUserSession().getUserId());
         }
         EmbraceMonitoring.INSTANCE.setCarrierProperties(this);
+
+        Typography.Companion.setFontTypeOpenSauceOne(true);
+    }
+
+    private void initializationNewRelic() {
+        if (!remoteConfig.getBoolean(RemoteConfigKey.ENABLE_INIT_NR_IN_ACTIVITY)) {
+            WeaveInterface initNrWeave = new WeaveInterface() {
+                @NotNull
+                @Override
+                public Object execute() {
+                    NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_MA).start(ConsumerMainApplication.this);
+                    return true;
+                }
+            };
+            Weaver.Companion.executeWeaveCoRoutineNow(initNrWeave);
+        }
     }
 
     private void checkAppPackageNameAsync() {

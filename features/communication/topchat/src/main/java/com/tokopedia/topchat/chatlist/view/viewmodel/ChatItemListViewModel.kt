@@ -343,11 +343,13 @@ class ChatItemListViewModel @Inject constructor(
     fun getFilterTitles(context: Context, isTabSeller: Boolean): List<String> {
         val filters = arrayListOf(
                 context.getString(R.string.filter_chat_all),
-                context.getString(R.string.filter_chat_unread),
-                context.getString(R.string.filter_chat_unreplied)
+                context.getString(R.string.filter_chat_unread)
         )
-        if (arrayFilterParam.size > SELLER_FILTER_THRESHOLD && isTabSeller) {
-            filters.add(context.getString(R.string.filter_chat_smart_reply))
+        if (isTabSeller) {
+            filters.add(context.getString(R.string.filter_chat_unreplied))
+            if (arrayFilterParam.size > SELLER_FILTER_THRESHOLD) {
+                filters.add(context.getString(R.string.filter_chat_smart_reply))
+            }
         }
         return filters
     }
