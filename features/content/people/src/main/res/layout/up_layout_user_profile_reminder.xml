@@ -7,7 +7,6 @@
     android:layout_marginHorizontal="@dimen/unify_space_16"
     android:layout_marginTop="@dimen/unify_space_8"
     android:layout_marginBottom="@dimen/unify_space_8"
-    android:orientation="vertical"
     app:cardCornerRadius="@dimen/unify_space_12"
     app:layout_constraintCircleRadius="@dimen/unify_space_12">
 
@@ -24,7 +23,6 @@
             android:layout_height="wrap_content"
             android:text="@string/up_user_profile_reminder_title"
             android:textColor="@color/Unify_NN950"
-            android:textSize="@dimen/unify_font_14"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -37,7 +35,6 @@
             android:layout_marginTop="@dimen/unify_space_4"
             android:text="@string/up_user_profile_reminder_sub_title"
             android:textColor="@color/Unify_NN600"
-            android:textSize="@dimen/unify_font_12"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/txt_title"
