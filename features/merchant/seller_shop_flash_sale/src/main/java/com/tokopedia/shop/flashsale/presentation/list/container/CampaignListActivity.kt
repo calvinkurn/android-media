@@ -14,7 +14,7 @@ class CampaignListActivity : BaseSimpleActivity() {
         private const val KEY_BUNDLE_IS_SAVE_DRAFT = "is_save_draft"
 
         @JvmStatic
-        fun start(context: Context, isSaveDraft: Boolean = false, ) {
+        fun start(context: Context, isSaveDraft: Boolean = false) {
             val starter = Intent(context, CampaignListActivity::class.java).apply {
                 if (isSaveDraft) {
                     addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
