@@ -23,7 +23,9 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.mapProductsWithProductId
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.PlayWidgetState
@@ -55,10 +57,13 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generat
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateUserLocationRequest
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkLastAction
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADD_WISHLIST
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADS_COUNT
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_PRICE_MINIMUM_SHIPPING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DIMEN_ID
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PAGE_SOURCE
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.WISHLIST_ERROR_TYPE
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.WISHLIST_STATUS_KEY
 import com.tokopedia.product.detail.data.util.roundToIntOrZero
 import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger
@@ -157,9 +162,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     companion object {
         private const val TEXT_ERROR = "ERROR"
         private const val ATC_ERROR_TYPE = "error_atc"
-        private const val WISHLIST_ERROR_TYPE = "error_wishlist"
-        private const val WISHLIST_STATUS_KEY = "wishlist_status"
-        private const val ADD_WISHLIST = "true"
         private const val REMOVE_WISHLIST = "false"
         private const val P2_LOGIN_ERROR_TYPE = "error_p2_login"
         private const val P2_DATA_ERROR_TYPE = "error_p2_data"
@@ -194,7 +196,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     val miniCartData: LiveData<Boolean>
         get() = _miniCartData
 
-    private val _quantityUpdated = MutableLiveData<Pair<Int, MiniCartItem>>()
+    private val _quantityUpdated = MutableLiveData<Pair<Int, MiniCartItem.MiniCartItemProduct>>()
 
     private val _updateCartLiveData = MutableLiveData<Result<String>>()
     val updateCartLiveData: LiveData<Result<String>>
@@ -308,7 +310,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         iniQuantityFlow()
     }
 
-    fun updateQuantity(quantity: Int, miniCartItem: MiniCartItem) {
+    fun updateQuantity(quantity: Int, miniCartItem: MiniCartItem.MiniCartItemProduct) {
         _quantityUpdated.value = quantity to miniCartItem
     }
 
@@ -349,7 +351,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
         val miniCartData = _p2Data.value?.miniCart?.get(productId)
         if (miniCartData == null) {
-            _p2Data.value?.miniCart?.set(productId, MiniCartItem(
+            _p2Data.value?.miniCart?.set(productId, MiniCartItem.MiniCartItemProduct(
                     cartId = cartId,
                     productId = productId,
                     quantity = quantity,
@@ -360,7 +362,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    private fun hitUpdateCart(quantity: Int, request: MiniCartItem): Flow<Result<String>> {
+    private fun hitUpdateCart(quantity: Int, request: MiniCartItem.MiniCartItemProduct): Flow<Result<String>> {
         return flow {
             val copyOfMiniCartItem = request.copy(quantity = quantity)
             val updateCartRequest = UpdateCartRequest(
@@ -407,7 +409,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         this.talkLastAction = talkLastAction
     }
 
-    fun getMiniCartItem(): MiniCartItem? {
+    fun getMiniCartItem(): MiniCartItem.MiniCartItemProduct? {
         return p2Data.value?.miniCart?.get(getDynamicProductInfoP1?.basic?.productID ?: "")
     }
 
@@ -689,8 +691,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             if (result is Success) {
                 listener.onSuccessRemoveWishlist(result.data, productId)
             } else if (result is Fail) {
-                val extras = mapOf(WISHLIST_STATUS_KEY to REMOVE_WISHLIST).toString()
-                ProductDetailLogger.logThrowable(result.throwable, WISHLIST_ERROR_TYPE, productId, deviceId, extras)
                 listener.onErrorRemoveWishlist(result.throwable, productId)
             }
         }
@@ -726,12 +726,11 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     fun addWishListV2(productId: String, listener: WishlistV2ActionListener) {
         launch(dispatcher.main) {
             addToWishlistV2UseCase.get().setParams(productId, userSessionInterface.userId)
-            val result = withContext(dispatcher.io) { addToWishlistV2UseCase.get().executeOnBackground() }
+            val result =
+                withContext(dispatcher.io) { addToWishlistV2UseCase.get().executeOnBackground() }
             if (result is Success) {
                 listener.onSuccessAddWishlist(result.data, productId)
             } else if (result is Fail) {
-                val extras = mapOf(WISHLIST_STATUS_KEY to ADD_WISHLIST).toString()
-                ProductDetailLogger.logThrowable(result.throwable, WISHLIST_ERROR_TYPE, productId, deviceId, extras)
                 listener.onErrorAddWishList(result.throwable, productId)
             }
         }
@@ -740,7 +739,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     fun loadRecommendation(pageName: String,
                            productId: String,
                            isTokoNow: Boolean,
-                           miniCart: MutableMap<String, MiniCartItem>?) {
+                           miniCart: MutableMap<String, MiniCartItem.MiniCartItemProduct>?) {
         if (GlobalConfig.isSellerApp()) {
             return
         }
@@ -874,9 +873,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     fun getMiniCart(shopId: String) {
         launchCatchError(dispatcher.io, block = {
-            miniCartListSimplifiedUseCase.get().setParams(listOf(shopId))
+            miniCartListSimplifiedUseCase.get().setParams(listOf(shopId), MiniCartSource.PDPRecommendationWidget)
             val result = miniCartListSimplifiedUseCase.get().executeOnBackground()
-            val data = result.miniCartItems.associateBy({ it.productId }) {
+            val data = result.miniCartItems.mapProductsWithProductId().values.associateBy({ it.productId }) {
                 it
             }
             _p2Data.value?.miniCart = data.toMutableMap()
@@ -970,7 +969,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    fun deleteRecomItemFromCart(recomItem: RecommendationItem, miniCartItem: MiniCartItem?) {
+    fun deleteRecomItemFromCart(recomItem: RecommendationItem, miniCartItem: MiniCartItem.MiniCartItemProduct?) {
         launchCatchError(block = {
             miniCartItem?.let {
                 deleteCartUseCase.get().setParams(listOf(miniCartItem.cartId))
@@ -1012,7 +1011,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    fun updateRecomCartNonVariant(recomItem: RecommendationItem, quantity: Int, miniCartItem: MiniCartItem?) {
+    fun updateRecomCartNonVariant(recomItem: RecommendationItem, quantity: Int, miniCartItem: MiniCartItem.MiniCartItemProduct?) {
         launchCatchError(block = {
             miniCartItem?.let {
                 val copyOfMiniCartItem = UpdateCartRequest(cartId = it.cartId, quantity = quantity, notes = it.notes)

@@ -5,8 +5,8 @@ import com.google.android.gms.tagmanager.PreviewActivity
 import com.tokopedia.media.picker.common.ui.TestPickerFragmentFactory
 import com.tokopedia.media.picker.ui.PickerFragmentFactory
 import com.tokopedia.media.picker.ui.PickerTest
-import com.tokopedia.media.picker.ui.activity.main.PickerActivity
 import com.tokopedia.picker.common.EXTRA_INTENT_PREVIEW
+import com.tokopedia.media.picker.ui.activity.picker.PickerActivity
 
 class TestPickerActivity : PickerActivity() {
 

@@ -8,18 +8,18 @@ import android.os.Parcelable
  */
 
 data class TrackingDetailUiModel(
-        var productId: Int = 0,
+        var productId: String = "0",
         var promoCodesTracking: String = "",
         var promoDetailsTracking: String = ""
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
-            parcel.readInt(),
+            parcel.readString() ?: "",
             parcel.readString() ?: "",
             parcel.readString() ?: "") {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(productId)
+        parcel.writeString(productId)
         parcel.writeString(promoCodesTracking)
         parcel.writeString(promoDetailsTracking)
     }

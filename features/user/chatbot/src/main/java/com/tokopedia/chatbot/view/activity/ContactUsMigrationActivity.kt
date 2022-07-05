@@ -17,7 +17,6 @@ import com.tokopedia.chatbot.ChatbotConstant.CONTACT_US_APPLINK
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.analytics.ChatbotAnalytics
 import com.tokopedia.chatbot.di.ChatbotModule
-
 import com.tokopedia.chatbot.di.DaggerChatbotComponent
 import com.tokopedia.chatbot.view.adapter.ContactUsMigrationAdapter
 import com.tokopedia.chatbot.view.viewmodel.ChatbotViewModel
@@ -42,6 +41,7 @@ class ContactUsMigrationActivity : BaseSimpleActivity() {
     private lateinit var textSubtitle : Typography
     private lateinit var buttonTokopediaCare : UnifyButton
     private lateinit var contentListRV : RecyclerView
+    private var isDismissedCalledDirectly : Boolean = false
 
     @Inject
     lateinit var chatbotAnalytics: dagger.Lazy<ChatbotAnalytics>
@@ -109,6 +109,11 @@ class ContactUsMigrationActivity : BaseSimpleActivity() {
             goToHelpPage()
         }
 
+        bottomSheetPage.setOnDismissListener {
+            if (!isDismissedCalledDirectly)
+                finish()
+        }
+
         bottomSheetPage.setCloseClickListener {
             chatbotAnalytics.get().eventOnClickCancelBottomSheet()
             goToContactUs()
@@ -138,11 +143,13 @@ class ContactUsMigrationActivity : BaseSimpleActivity() {
     }
 
     private fun goToContactUs() {
+        isDismissedCalledDirectly = true
         RouteManager.route(this, CONTACT_US_APPLINK)
         finish()
     }
 
     private fun goToHelpPage() {
+        isDismissedCalledDirectly = true
         RouteManager.route(this, ApplinkConstInternalGlobal.WEBVIEW, URL_HELP)
         finish()
     }

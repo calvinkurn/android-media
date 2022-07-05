@@ -14,6 +14,8 @@ import com.tokopedia.home_recom.model.datamodel.RecommendationItemDataModel
 import com.tokopedia.home_recom.util.RecommendationDispatcherTest
 import com.tokopedia.home_recom.viewmodel.InfiniteRecomViewModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
+import com.tokopedia.minicart.common.domain.data.MiniCartItemType
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
@@ -25,11 +27,11 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.spyk
 import io.mockk.verify
-import io.mockk.coVerify
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
@@ -130,6 +132,7 @@ class TestInfiniteRecomViewModel {
         }
 
         Assert.assertTrue(viewModel.atcRecomTokonow.value is Fail)
+        Assert.assertTrue(viewModel.atcRecomTokonowResetCard.value == recomItem)
     }
 
     @Test
@@ -146,12 +149,13 @@ class TestInfiniteRecomViewModel {
         }
 
         Assert.assertTrue(viewModel.atcRecomTokonow.value is Fail)
+        Assert.assertTrue(viewModel.atcRecomTokonowResetCard.value == recomItem)
     }
 
     @Test
     fun `test update cart non variant then return success cart data`() = runBlockingTest {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123)
-        val miniCart = MiniCartItem(productId = recomItem.productId.toString(), quantity = 10)
+        val miniCart = MiniCartItem.MiniCartItemProduct(productId = recomItem.productId.toString(), quantity = 10)
         val quantity = 11
         val response = UpdateCartV2Data(data = Data(message = "sukses update cart"))
         coEvery {
@@ -163,12 +167,13 @@ class TestInfiniteRecomViewModel {
             updateCartUseCase.executeOnBackground()
         }
         Assert.assertTrue(viewModel.atcRecomTokonow.value is Success)
+        Assert.assertTrue(viewModel.refreshMiniCartDataTrigger.value == true)
     }
 
     @Test
     fun `test update cart non variant then return failed with message`() = runBlockingTest {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123)
-        val miniCart = MiniCartItem(productId = recomItem.productId.toString(), quantity = 10)
+        val miniCart = MiniCartItem.MiniCartItemProduct(productId = recomItem.productId.toString(), quantity = 10)
         val quantity = 11
         val response = UpdateCartV2Data(error = listOf("error nih gan"))
         coEvery {
@@ -181,12 +186,13 @@ class TestInfiniteRecomViewModel {
         }
 
         Assert.assertTrue(viewModel.atcRecomTokonow.value is Fail)
+        Assert.assertTrue(viewModel.atcRecomTokonowResetCard.value == recomItem)
     }
 
     @Test
     fun `test update cart non variant then return error throwable`() = runBlockingTest {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123)
-        val miniCart = MiniCartItem(productId = recomItem.productId.toString(), quantity = 10)
+        val miniCart = MiniCartItem.MiniCartItemProduct(productId = recomItem.productId.toString(), quantity = 10)
         val quantity = 11
         coEvery {
             updateCartUseCase.executeOnBackground()
@@ -198,12 +204,13 @@ class TestInfiniteRecomViewModel {
         }
 
         Assert.assertTrue(viewModel.atcRecomTokonow.value is Fail)
+        Assert.assertTrue(viewModel.atcRecomTokonowResetCard.value == recomItem)
     }
 
     @Test
     fun `test delete cart non variant then return success cart data`() = runBlockingTest {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123)
-        val miniCart = MiniCartItem(productId = recomItem.productId.toString(), quantity = 10)
+        val miniCart = MiniCartItem.MiniCartItemProduct(productId = recomItem.productId.toString(), quantity = 10)
         val quantity = 0
         val response = RemoveFromCartData(status = "OK", data = com.tokopedia.cartcommon.data.response.deletecart.Data(message = listOf("sukses delete cart"), success = 1))
         coEvery {
@@ -215,12 +222,14 @@ class TestInfiniteRecomViewModel {
             deleteCartUseCase.executeOnBackground()
         }
         Assert.assertTrue(viewModel.atcRecomTokonow.value is Success)
+        Assert.assertTrue(viewModel.deleteCartRecomTokonowSendTracker.value is Success)
+        Assert.assertTrue(viewModel.refreshMiniCartDataTrigger.value == true)
     }
 
     @Test
     fun `test delete cart non variant then return failed with message`() = runBlockingTest {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123)
-        val miniCart = MiniCartItem(productId = recomItem.productId.toString(), quantity = 10)
+        val miniCart = MiniCartItem.MiniCartItemProduct(productId = recomItem.productId.toString(), quantity = 10)
         val quantity = 0
         val response = RemoveFromCartData(status = "ERROR", data = com.tokopedia.cartcommon.data.response.deletecart.Data(success = 0))
         coEvery {
@@ -233,12 +242,13 @@ class TestInfiniteRecomViewModel {
         }
 
         Assert.assertTrue(viewModel.atcRecomTokonow.value is Fail)
+        Assert.assertTrue(viewModel.atcRecomTokonowResetCard.value == recomItem)
     }
 
     @Test
     fun `test delete cart non variant then return error throwable`() = runBlockingTest {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123)
-        val miniCart = MiniCartItem(productId = recomItem.productId.toString(), quantity = 10)
+        val miniCart = MiniCartItem.MiniCartItemProduct(productId = recomItem.productId.toString(), quantity = 10)
         val quantity = 0
         coEvery {
             deleteCartUseCase.executeOnBackground()
@@ -250,6 +260,7 @@ class TestInfiniteRecomViewModel {
         }
 
         Assert.assertTrue(viewModel.atcRecomTokonow.value is Fail)
+        Assert.assertTrue(viewModel.atcRecomTokonowResetCard.value == recomItem)
     }
 
     @Test
@@ -330,7 +341,7 @@ class TestInfiniteRecomViewModel {
     @Test
     fun `given mini cart data when get mini cart data then miniCartData and minicartWidgetUpdater in viewmodel should be updated`() = runBlocking {
         val shopId = "123"
-        val miniCartItems = listOf<MiniCartItem>(MiniCartItem(productId = "1"), MiniCartItem(productId = "2"))
+        val miniCartItems = hashMapOf<MiniCartItemKey, MiniCartItem>(MiniCartItemKey("1") to MiniCartItem.MiniCartItemProduct(productId = "1"), MiniCartItemKey("2") to MiniCartItem.MiniCartItemProduct(productId = "2"))
         val miniCartData = MiniCartSimplifiedData(miniCartItems = miniCartItems)
         coEvery {
             miniCartListSimplifiedUseCase.executeOnBackground()
@@ -338,9 +349,9 @@ class TestInfiniteRecomViewModel {
 
         viewModel.getMiniCart(shopId)
 
-        verify { miniCartListSimplifiedUseCase.setParams(listOf(shopId)) }
+        verify { miniCartListSimplifiedUseCase.setParams(listOf(shopId), any()) }
         coVerify { miniCartListSimplifiedUseCase.executeOnBackground() }
-        assert(viewModel.miniCartData.value == miniCartData.miniCartItems.associateBy { it.productId })
+        assert(viewModel.miniCartData.value == miniCartData.miniCartItems)
         assert(viewModel.minicartWidgetUpdater.value == miniCartData)
     }
 
@@ -354,7 +365,7 @@ class TestInfiniteRecomViewModel {
 
         viewModel.getMiniCart(shopId)
 
-        verify { miniCartListSimplifiedUseCase.setParams(listOf(shopId)) }
+        verify { miniCartListSimplifiedUseCase.setParams(listOf(shopId), any()) }
         coVerify { miniCartListSimplifiedUseCase.executeOnBackground() }
         assert(viewModel.minicartError.value == error)
     }
@@ -427,5 +438,65 @@ class TestInfiniteRecomViewModel {
         assert(viewModel.errorGetRecomData.value is RecomErrorResponse)
         assert(viewModel.errorGetRecomData.value?.errorThrowable == error)
         assert(viewModel.errorGetRecomData.value?.pageNumber == pageNumber)
+    }
+
+    @Test
+    fun `given add to cart non variant then return success should update atcRecomTokonow and send tracker`() {
+        val recomItem = RecommendationItem(productId = 12345, shopId = 123)
+        val quantity = 1
+        val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1, cartId = "12345", message = arrayListOf("message")), status = "OK")
+
+        coEvery {
+            addToCartUseCase.createObservable(any()).toBlocking().single()
+        } returns atcResponseSuccess
+
+        viewModel.atcRecomNonVariant(recomItem, quantity)
+
+        Assert.assertTrue(viewModel.atcRecomTokonow.value is Success)
+        Assert.assertTrue(viewModel.atcRecomTokonowSendTracker.value is Success)
+        Assert.assertTrue(viewModel.refreshMiniCartDataTrigger.value == true)
+    }
+
+    @Test
+    fun `given tokonow recom widget when get recommendation first page should map mini cart qty to recommendation`() = runBlocking {
+        val parentId = 111L
+        val productId1 = 1234L
+        val productId2 = 2345L
+        val miniCartQty = 1
+        val recomQty = 2
+
+        //Recom widget mock data
+        val recomWidget = RecommendationWidget(recommendationItemList = listOf(
+            RecommendationItem(productId = productId1, quantity = recomQty, currentQuantity = recomQty),
+            RecommendationItem(productId = productId2, parentID = parentId, quantity = recomQty, currentQuantity = recomQty)
+        ), isTokonow = true)
+
+        //Mini cart mock data
+        val miniCartItemProduct1 = MiniCartItem.MiniCartItemProduct(productId = productId1.toString(), quantity = miniCartQty)
+        val miniCartItemProduct2 = MiniCartItem.MiniCartItemProduct(productId = productId2.toString(), productParentId = parentId.toString(), quantity = miniCartQty)
+        val miniCartItemParent = MiniCartItem.MiniCartItemParentProduct(
+            parentId = parentId.toString(),
+            products = mapOf(Pair(MiniCartItemKey(parentId.toString(), MiniCartItemType.PARENT), miniCartItemProduct2)),
+            totalQuantity = miniCartQty
+        )
+        val miniCart = mutableMapOf<MiniCartItemKey, MiniCartItem>().apply {
+            put(MiniCartItemKey(parentId.toString(), MiniCartItemType.PARENT), miniCartItemParent)
+            put(MiniCartItemKey(productId1.toString()), miniCartItemProduct1)
+        }
+
+        coEvery { getRecommendationUseCase.getData(any()) } returns listOf(
+            recomWidget
+        )
+        coEvery { viewModel.miniCartData.value } returns miniCart
+
+        viewModel.getRecommendationFirstPage("", "", "", false)
+
+        assert(viewModel.recommendationFirstLiveData.value != null)
+        assert(viewModel.recommendationFirstLiveData.value?.filterIsInstance<RecommendationItemDataModel>()?.isNotEmpty() == true)
+        assert(viewModel.recommendationWidgetData.value == recomWidget)
+        assert(viewModel.recommendationFirstLiveData.value?.single { it.productItem.productId == productId1 }?.productItem?.quantity == miniCartQty)
+        assert(viewModel.recommendationFirstLiveData.value?.single { it.productItem.productId == productId1 }?.productItem?.currentQuantity == miniCartQty)
+        assert(viewModel.recommendationFirstLiveData.value?.single { it.productItem.productId == productId2 }?.productItem?.quantity == miniCartQty)
+        assert(viewModel.recommendationFirstLiveData.value?.single { it.productItem.productId == productId2 }?.productItem?.currentQuantity == miniCartQty)
     }
 }

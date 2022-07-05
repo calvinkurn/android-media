@@ -114,6 +114,10 @@ interface ProductListSectionContract {
         fun trackEventClickInspirationCarouselGridItem(product: InspirationCarouselDataView.Option.Product)
         fun trackEventClickInspirationCarouselListItem(product: InspirationCarouselDataView.Option.Product)
         fun trackEventClickInspirationCarouselChipsItem(product: InspirationCarouselDataView.Option.Product)
+        fun openBottomsheetMultipleOptionsQuickFilter(filter: Filter)
+        fun applyDropdownQuickFilter(optionList: List<Option>?)
+        fun trackEventClickDropdownQuickFilter(filterTitle: String)
+        fun trackEventApplyDropdownQuickFilter(optionList: List<Option>?)
     }
 
     interface Presenter : CustomerPresenter<View>{
@@ -126,7 +130,6 @@ interface ProductListSectionContract {
         val dynamicFilterModel: DynamicFilterModel?
         fun onPriceFilterTickerDismissed()
         val isTickerHasDismissed: Boolean
-        fun hasNextPage(): Boolean
         fun clearData()
         val startFrom: Int
         fun onViewCreated()
@@ -134,7 +137,7 @@ interface ProductListSectionContract {
         fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel?)
         fun onProductImpressed(item: ProductItemDataView?, adapterPosition: Int)
         fun onProductClick(item: ProductItemDataView?, adapterPosition: Int)
-        val quickFilterOptionList: List<Option>
+        val quickFilterList: List<Filter>
         fun getProductCount(mapParameter: Map<String, String>?)
         fun openFilterPage(searchParameter: Map<String, Any>?)
         val isBottomSheetFilterEnabled: Boolean
@@ -144,6 +147,7 @@ interface ProductListSectionContract {
         fun onBroadMatchItemClick(broadMatchItemDataView: BroadMatchItemDataView)
         fun onBroadMatchImpressed(broadMatchDataView: BroadMatchDataView)
         fun onBroadMatchSeeMoreClick(broadMatchDataView: BroadMatchDataView)
+        fun onBroadMatchViewAllCardClicked(broadMatchDataView: BroadMatchDataView)
         fun onInspirationCarouselProductImpressed(product: InspirationCarouselDataView.Option.Product)
         fun onInspirationCarouselProductClick(product: InspirationCarouselDataView.Option.Product)
         fun onThreeDotsClick(item: ProductItemDataView, adapterPosition: Int)
@@ -162,5 +166,6 @@ interface ProductListSectionContract {
         )
         fun closeLastFilter(searchParameter: Map<String, Any>)
         fun shopAdsImpressionCount(impressionCount: Int)
+        fun onApplyDropdownQuickFilter(optionList: List<Option>?)
     }
 }

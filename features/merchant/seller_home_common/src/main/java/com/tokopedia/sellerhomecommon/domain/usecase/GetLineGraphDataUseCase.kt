@@ -1,12 +1,12 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.sellerhomecommon.domain.gqlquery.GqlGetLineGraphData
 import com.tokopedia.sellerhomecommon.domain.mapper.LineGraphMapper
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
@@ -18,12 +18,13 @@ import com.tokopedia.usecase.RequestParams
  * Created By @ilhamsuaib on 2020-01-27
  */
 
+@GqlQuery("GetLineGraphDataGqlQuery", GetLineGraphDataUseCase.QUERY)
 class GetLineGraphDataUseCase(
     gqlRepository: GraphqlRepository,
     lineGraphMapper: LineGraphMapper,
     dispatchers: CoroutineDispatchers
 ) : CloudAndCacheGraphqlUseCase<GetLineGraphDataResponse, List<LineGraphDataUiModel>>(
-    gqlRepository, lineGraphMapper, dispatchers, GqlGetLineGraphData.QUERY, false
+    gqlRepository, lineGraphMapper, dispatchers, GetLineGraphDataGqlQuery()
 ) {
 
     override val classType: Class<GetLineGraphDataResponse>
@@ -34,7 +35,7 @@ class GetLineGraphDataUseCase(
     }
 
     override suspend fun executeOnBackground(): List<LineGraphDataUiModel> {
-        val gqlRequest = GraphqlRequest(GqlGetLineGraphData, classType, params.parameters)
+        val gqlRequest = GraphqlRequest(graphqlQuery, classType, params.parameters)
         val gqlResponse = graphqlRepository.response(listOf(gqlRequest), cacheStrategy)
 
         val errors: List<GraphqlError>? = gqlResponse.getError(classType)
@@ -48,6 +49,28 @@ class GetLineGraphDataUseCase(
     }
 
     companion object {
+        internal const val QUERY = """
+            query getLineGraphData(${'$'}dataKeys: [dataKey!]!) {
+              fetchLineGraphWidgetData(dataKeys: ${'$'}dataKeys) {
+                data {
+                  dataKey
+                  description
+                  header
+                  yLabels {
+                    yValPrecise
+                    yLabel
+                  }
+                  list {
+                    yValPrecise
+                    yLabel
+                    xLabel
+                  }
+                  error
+                  showWidget
+                }
+              }
+            }
+        """
         private const val DATA_KEYS = "dataKeys"
 
         fun getRequestParams(

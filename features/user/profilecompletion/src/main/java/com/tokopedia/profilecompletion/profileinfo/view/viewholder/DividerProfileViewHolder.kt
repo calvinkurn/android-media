@@ -11,7 +11,7 @@ class DividerProfileViewHolder(val view: View) : AbstractViewHolder<DividerProfi
     override fun bind(element: DividerProfileUiModel?) {}
 
     companion object {
-	@LayoutRes
-	val LAYOUT_RES = R.layout.divider_profile_item
+        @LayoutRes
+        val LAYOUT_RES = R.layout.divider_profile_item
     }
 }
