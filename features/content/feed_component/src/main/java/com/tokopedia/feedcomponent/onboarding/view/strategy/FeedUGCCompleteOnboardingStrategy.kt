@@ -79,7 +79,6 @@ class FeedUGCCompleteOnboardingStrategy @Inject constructor(
             }
         }) {
             _usernameState.update { UsernameState.Invalid(getDefaultErrorMessage()) }
-            _uiEvent.emit(FeedUGCOnboardingUiEvent.ShowError)
         }
     }
 
