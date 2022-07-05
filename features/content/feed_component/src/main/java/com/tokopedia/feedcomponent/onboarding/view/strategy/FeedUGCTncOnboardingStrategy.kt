@@ -51,6 +51,9 @@ class FeedUGCTncOnboardingStrategy @Inject constructor(
                 _isSubmit.update { true }
 
                 val result = repo.acceptTnc()
+                if(result) {
+                    _uiEvent.emit(FeedUGCOnboardingUiEvent.ShowError)
+                }
 
                 _hasAcceptTnc.update { result }
                 _isSubmit.update { false }
