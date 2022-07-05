@@ -226,7 +226,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private var fbNewUnreadMessage: FloatingButtonUnify? = null
     private var tvTotalUnreadMessage: Typography? = null
     private var rv: TopchatMessageRecyclerView? = null
-//    private var rvSrw: SrwFrameLayout? = null
+    private var rvSrw: SrwFrameLayout? = null
     private var replyCompose: ReplyBubbleAreaMessage? = null
     private var rvContainer: CoordinatorLayout? = null
     private var chatBackground: ImageView? = null
@@ -283,7 +283,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     ): View? {
         return inflater.inflate(R.layout.fragment_topchat_chatroom, container, false).also {
             bindView(it)
-            initSrw()
             initUserLocation()
             initObserver()
             initComposeAreaMsg()
@@ -294,10 +293,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun initComposeAreaMsg() {
         composeMsgArea?.initLayout(this,this)
-    }
-
-    private fun initSrw() {
-//        rvSrw?.initialize(this, getSrwFrameLayoutListener())
     }
 
     private fun getSrwFrameLayoutListener() : SrwFrameLayout.Listener {
@@ -339,12 +334,18 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun updateSrwPreviewState() {
         if (shouldShowSrw()) {
-//            rvSrw?.renderSrwState()
-            topchatViewState?.shouldShowSrw = true
+            handleSrw(onNewDesign = {
+                topchatViewState?.shouldShowSrw = true
+            }, onOldDesign = {
+                rvSrw?.renderSrwState()
+            })
             topchatViewState?.hideTemplateChat()
         } else if (topchatViewState?.chatTextAreaLayout?.srwLayout?.isLoadingState() != true) {
-//            rvSrw?.hideSrw()
-            topchatViewState?.shouldShowSrw = false
+            handleSrw(onNewDesign = {
+                topchatViewState?.shouldShowSrw = false
+            }, onOldDesign = {
+                rvSrw?.hideSrw()
+            })
             showTemplateChatIfReady()
         }
     }
@@ -365,13 +366,16 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun hasNoSrw(): Boolean {
-//        return rvSrw?.isAllowToShow() == false && rvSrw?.isSuccessState() == true
-        return topchatViewState?.chatTextAreaLayout?.srwLayout?.isAllowToShow() == false
-                && topchatViewState?.chatTextAreaLayout?.srwLayout?.isSuccessState() == true
+        return if (isSrwNewDesign()) {
+            topchatViewState?.chatTextAreaLayout?.srwLayout?.isAllowToShow() == false
+                    && topchatViewState?.chatTextAreaLayout?.srwLayout?.isSuccessState() == true
+        } else {
+            rvSrw?.isAllowToShow() == false && rvSrw?.isSuccessState() == true
+        }
     }
 
     override fun collapseSrw() {
-//        rvSrw?.isExpanded = false
+        rvSrw?.isExpanded = false
     }
 
     override fun expandSrw() {
@@ -380,7 +384,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun expandSrwPreview() {
-//        rvSrw?.isExpanded = true
+        rvSrw?.isExpanded = true
     }
 
     override fun expandSrwBubble() {
@@ -425,12 +429,15 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun shouldShowSrw(): Boolean {
-//        return !isSeller() && hasProductPreviewShown() &&
-//                rvSrw?.isAllowToShow() == true && viewModel.isAttachmentPreviewReady() ||
-//                (rvSrw?.isLoadingState() == true && hasProductPreviewShown())
-        return !isSeller() && hasProductPreviewShown() &&
-                topchatViewState?.chatTextAreaLayout?.srwLayout?.isAllowToShow() == true &&
-                viewModel.isAttachmentPreviewReady()
+        return if (isSrwNewDesign()) {
+            !isSeller() && hasProductPreviewShown() &&
+                    topchatViewState?.chatTextAreaLayout?.srwLayout?.isAllowToShow() == true &&
+                    viewModel.isAttachmentPreviewReady()
+        } else {
+            !isSeller() && hasProductPreviewShown() &&
+                rvSrw?.isAllowToShow() == true && viewModel.isAttachmentPreviewReady() ||
+                (rvSrw?.isLoadingState() == true && hasProductPreviewShown())
+        }
     }
 
     private fun initFbNewUnreadMessage() {
@@ -447,7 +454,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         chatMenu = view?.findViewById(R.id.fl_chat_menu)
         rv = view?.findViewById(recyclerViewResourceId)
         replyCompose = view?.findViewById(R.id.trb_container)
-//        rvSrw = view?.findViewById(R.id.rv_srw)
+        rvSrw = view?.findViewById(R.id.rv_srw)
         rvContainer = view?.findViewById(R.id.rv_container)
         fbNewUnreadMessage = view?.findViewById(R.id.fb_new_unread_message)
         chatBackground = view?.findViewById(R.id.iv_bg_chat)
@@ -1147,10 +1154,15 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         intention: String? = null
     ) {
         val referredMsg = replyCompose?.referredMsg
-//        if (rvSrw?.isShowing() == true) {
-        if (topchatViewState?.chatTextAreaLayout?.srwLayout?.isShowing() == true) {
-            addSrwBubbleToChat()
-        }
+        handleSrw(onNewDesign = {
+            if (topchatViewState?.chatTextAreaLayout?.srwLayout?.isShowing() == true) {
+                addSrwBubbleToChat()
+            }
+        }, onOldDesign = {
+            if (rvSrw?.isShowing() == true) {
+                addSrwBubbleToChat()
+            }
+        })
         replyBubbleOnBoarding.dismiss()
         viewModel.sendMsg(message, intention, referredMsg)
     }
@@ -1194,10 +1206,15 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         if (sticker == null) return
         onSendAndReceiveMessage()
         val referredMsg = replyCompose?.referredMsg
-//        if (rvSrw?.isShowing() == true) {
-        if (topchatViewState?.chatTextAreaLayout?.srwLayout?.isShowing() == true) {
-            addSrwBubbleToChat()
-        }
+        handleSrw(onNewDesign = {
+            if (topchatViewState?.chatTextAreaLayout?.srwLayout?.isShowing() == true) {
+                addSrwBubbleToChat()
+            }
+        }, onOldDesign = {
+            if (rvSrw?.isShowing() == true) {
+                addSrwBubbleToChat()
+            }
+        })
         onSendingMessage().invoke()
         sendAttachmentPreviews(sticker.intention)
         viewModel.sendSticker(sticker, referredMsg)
@@ -1480,8 +1497,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun removeSrwPreview() {
-//        rvSrw?.hideSrw()
-        topchatViewState?.chatTextAreaLayout?.srwLayout?.hideSrw()
+        handleSrw(onNewDesign = {
+            topchatViewState?.chatTextAreaLayout?.srwLayout?.hideSrw()
+        }, onOldDesign = {
+            rvSrw?.hideSrw()
+        })
     }
 
     private fun processImagePathToUpload(data: Intent): ImageUploadUiModel? {
@@ -2421,8 +2441,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun addSrwBubble() {
         expandSrwPreview()
-//        val srwState = rvSrw?.getStateInfo()
-        val srwState = topchatViewState?.chatTextAreaLayout?.srwLayout?.getStateInfo()
+        val srwState = if (isSrwNewDesign()) {
+            topchatViewState?.chatTextAreaLayout?.srwLayout?.getStateInfo()
+        } else {
+            rvSrw?.getStateInfo()
+        }
         val previews2 = viewModel.getAttachmentsPreview().toList()
         adapter.addSrwBubbleUiModel(srwState, previews2)
     }
@@ -2681,8 +2704,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         })
 
         viewModel.srw.observe(viewLifecycleOwner, {
-//            rvSrw?.updateStatus(it)
-            topchatViewState?.chatTextAreaLayout?.srwLayout?.updateStatus(it)
+            handleSrw(onNewDesign = {
+                topchatViewState?.chatTextAreaLayout?.srwLayout?.updateStatus(it)
+            }, onOldDesign = {
+                rvSrw?.updateStatus(it)
+            })
             updateSrwPreviewState()
         })
 
@@ -3048,13 +3074,37 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun initChatTextAreaLayout() {
-        topchatViewState?.chatTextAreaLayout?.initReplyBox(
-            this, this, this, this)
-        topchatViewState?.chatTextAreaLayout?.initSrw(this, getSrwFrameLayoutListener())
+        handleSrw(onNewDesign = {
+            topchatViewState?.chatTextAreaLayout?.initReplyBox(
+                this,
+                this,
+                this,
+                this
+            )
+            topchatViewState?.chatTextAreaLayout?.initSrw(
+                this,
+                getSrwFrameLayoutListener()
+            )
+        }, onOldDesign = {
+            rvSrw?.initialize(this, getSrwFrameLayoutListener())
+        })
     }
 
     private fun isFromAnotherChat(savedInstanceState: Bundle?): Boolean {
         return getBooleanArgument(IS_FROM_ANOTHER_CALL, savedInstanceState)
+    }
+
+    private fun handleSrw(onNewDesign: () -> Unit, onOldDesign: () -> Unit) {
+        if (isSrwNewDesign()) {
+            onNewDesign.invoke()
+        } else {
+            onOldDesign.invoke()
+        }
+    }
+
+    private fun isSrwNewDesign(): Boolean {
+        val isSrwNewDesign = abTestPlatform.getString(AB_TEST_NEW_SRW, AB_TEST_OLD_SRW) == AB_TEST_NEW_SRW
+        return isSrwNewDesign
     }
 
     companion object {
@@ -3079,6 +3129,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
         const val AB_TEST_OCC = "chat_occ_exp"
         const val AB_TEST_NON_OCC = "chat_occ_control"
+
+        const val AB_TEST_NEW_SRW = "chat_srw_exp"
+        const val AB_TEST_OLD_SRW = "chat_srw_control"
 
         private const val PREFIX_SELLER_APPLINK = "sellerapp://"
 
