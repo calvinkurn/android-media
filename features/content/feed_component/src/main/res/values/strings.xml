@@ -206,6 +206,7 @@
     <string name="feed_fab_create_content">Buat Konten</string>
     <string name="feed_fab_create_post">Buat Post</string>
 
+    <string name="feed_webview_template">%s?url=%s</string>
     <!-- Feed UGC Onboarding -->
     <string name="feed_ugc_complete_onboarding_title">Bikin username dulu</string>
     <string name="feed_ugc_tnc_onboarding_title">Yang perlu kamu tahu</string>
@@ -221,4 +222,6 @@
     <string name="feed_post_sebagai">Post sebagai</string>
     <string name="feed_ugc_onboarding_accept_tnc_privacy_policy">Kebijakan Privasi</string>
     <string name="feed_ugc_onboarding_accept_tnc_terms">Syarat &amp; Ketentuan</string>
+    <string name="feed_ugc_onboarding_privacy_policy_link">https://www.tokopedia.com/privacy</string>
+    <string name="feed_ugc_onboarding_tnc_link">https://www.tokopedia.com/help/article/syarat-dan-ketentuan-feed-user-profil</string>
 </resources>
