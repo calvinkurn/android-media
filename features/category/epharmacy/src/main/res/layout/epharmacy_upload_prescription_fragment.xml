@@ -86,4 +86,11 @@ Syarat dan Ketentuan."
         tools:visibility="visible"
         />
 
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/tooltip_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="info_icon,tooltip"
+        />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

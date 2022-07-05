@@ -78,16 +78,11 @@ class UploadPrescriptionViewModel @Inject constructor(
 
     private fun mapOrderResponseInDataModel(data: EPharmacyDataResponse) : EPharmacyDataModel{
         val listOfComponents = arrayListOf<BaseEPharmacyDataModel>()
-        // Remove Rejected Images TODO ask backend to do this
-        val arrayListPrescriptions = arrayListOf<PrescriptionImage?>()
-        data.prescriptionImages?.forEach { prescriptionImage ->
-            if(prescriptionImage?.status != EPharmacyPrescriptionStatus.REJECTED.status){
-                arrayListPrescriptions.add(prescriptionImage)
-            }
+        if(data.isReUploadEnabled){
+            data.prescriptionImages?.removeAll(getRejectedPrescriptions(data))
         }
-
         val prescriptionDataModel = EPharmacyPrescriptionDataModel(PRESCRIPTION_COMPONENT,
-            PRESCRIPTION_COMPONENT, arrayListPrescriptions)
+            PRESCRIPTION_COMPONENT, data.prescriptionImages, data.isReUploadEnabled)
         listOfComponents.add(prescriptionDataModel)
         data.ePharmacyProducts?.forEachIndexed { index, eProduct ->
             if(index == FIRST_INDEX){
@@ -130,18 +125,23 @@ class UploadPrescriptionViewModel @Inject constructor(
         }
     }
 
-    private fun mapCheckoutResponseInDataModel(data: EPharmacyDataResponse) : EPharmacyDataModel{
-        val listOfComponents = arrayListOf<BaseEPharmacyDataModel>()
-        // Remove Rejected Images TODO ask backend to do this
-        val arrayListPrescriptions = arrayListOf<PrescriptionImage?>()
+    private fun getRejectedPrescriptions(data: EPharmacyDataResponse) : ArrayList<PrescriptionImage?>{
+        val rejectedPrescriptions = arrayListOf<PrescriptionImage?>()
         data.prescriptionImages?.forEach { prescriptionImage ->
-            if(prescriptionImage?.status != EPharmacyPrescriptionStatus.REJECTED.status){
-                arrayListPrescriptions.add(prescriptionImage)
+            if(prescriptionImage?.status == EPharmacyPrescriptionStatus.REJECTED.status){
+                rejectedPrescriptions.add(prescriptionImage)
             }
         }
+        return rejectedPrescriptions
+    }
 
+    private fun mapCheckoutResponseInDataModel(data: EPharmacyDataResponse) : EPharmacyDataModel{
+        val listOfComponents = arrayListOf<BaseEPharmacyDataModel>()
+        if(data.isReUploadEnabled){
+            data.prescriptionImages?.removeAll(getRejectedPrescriptions(data))
+        }
         val prescriptionDataModel = EPharmacyPrescriptionDataModel(PRESCRIPTION_COMPONENT,
-            PRESCRIPTION_COMPONENT, arrayListPrescriptions)
+            PRESCRIPTION_COMPONENT, data.prescriptionImages, data.isReUploadEnabled)
         listOfComponents.add(prescriptionDataModel)
         data.ePharmacyProducts?.forEachIndexed { index ,eProduct ->
             eProduct?.ePharmacyProducts?.forEachIndexed { indexProduct , ePharmacyProduct ->

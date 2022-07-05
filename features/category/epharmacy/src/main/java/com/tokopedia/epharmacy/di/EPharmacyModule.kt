@@ -59,14 +59,7 @@ class EPharmacyModule {
     }
 
     @Provides
-    fun provideEPharmacyUploadPrescriptionUseCase(restRepository: RestRepository,imageCompressionManagerImpl: ImageCompressionManager): UploadPrescriptionUseCase {
-        return UploadPrescriptionUseCase(restRepository,imageCompressionManagerImpl)
-    }
-
-    @Provides
-    fun provideImageCompressionManager(
-        @ApplicationContext context: Context
-    ): ImageCompressionManager {
-        return ImageCompressionManagerImpl(context)
+    fun provideEPharmacyUploadPrescriptionUseCase(restRepository: RestRepository): UploadPrescriptionUseCase {
+        return UploadPrescriptionUseCase(restRepository)
     }
 }

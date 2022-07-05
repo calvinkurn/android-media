@@ -21,8 +21,7 @@ import java.lang.reflect.Type
 import javax.inject.Inject
 
 class UploadPrescriptionUseCase @Inject constructor(
-        private val repository: RestRepository,
-        private val imageCompressionManager: ImageCompressionManager
+        private val repository: RestRepository
 ): RestRequestUseCase(repository) {
 
     private var localFilePath: String = ""
@@ -64,7 +63,7 @@ class UploadPrescriptionUseCase @Inject constructor(
             prescriptionImageBitmap.recycle()
 
             val encodedString = Base64.encodeToString(byteArrayImage, Base64.DEFAULT)
-            return if(encodedString.utf8Size(0,encodedString.length) >= MAX_BYTES && quality > EPharmacyMinImageQuality){
+            return if(encodedString.utf8Size(0,encodedString.length) >= MAX_BYTES && quality >= EPharmacyMinImageQuality){
                 getBase64OfPrescriptionImage(localFilePath , (quality * EPharmacyImageQualityDecreaseFactor).toInt())
             } else
                 "${IMAGE_DATA_PREFIX}${encodedString}"

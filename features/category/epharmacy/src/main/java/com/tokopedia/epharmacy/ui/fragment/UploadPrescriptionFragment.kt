@@ -12,6 +12,7 @@ import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.Group
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
@@ -50,6 +51,7 @@ import javax.inject.Inject
 class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
 
     private var ePharmacyToolTipText : Typography? = null
+    private var ePharmacyToolTipGroup : Group? = null
     private var ePharmacyRecyclerView : RecyclerView? = null
     private var ePharmacyUploadPhotoButton : UnifyButton? = null
     private var ePharmacyDoneButton : UnifyButton? = null
@@ -118,6 +120,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
             ePharmacyRecyclerView = findViewById(R.id.epharmacy_rv)
             ePharmacyUploadPhotoButton = findViewById(R.id.foto_resep_button)
             ePharmacyDoneButton = findViewById(R.id.done_button)
+            ePharmacyToolTipGroup = findViewById(R.id.tooltip_group)
         }
     }
 
@@ -369,19 +372,19 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
     }
 
     private fun showDoneButtonState(){
-        ePharmacyToolTipText?.hide()
+        ePharmacyToolTipGroup?.hide()
         ePharmacyUploadPhotoButton?.hide()
         ePharmacyDoneButton?.show()
     }
 
     private fun showUploadPhotoButtonState(){
-        ePharmacyToolTipText?.show()
+        ePharmacyToolTipGroup?.show()
         ePharmacyUploadPhotoButton?.show()
         ePharmacyDoneButton?.hide()
     }
 
     private fun hideAllButtons(){
-        ePharmacyToolTipText?.hide()
+        ePharmacyToolTipGroup?.hide()
         ePharmacyUploadPhotoButton?.hide()
         ePharmacyDoneButton?.hide()
     }
