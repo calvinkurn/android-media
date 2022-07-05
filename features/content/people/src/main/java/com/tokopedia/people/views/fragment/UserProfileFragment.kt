@@ -208,16 +208,6 @@ class UserProfileFragment @Inject constructor(
                 isViewMoreClickedBio = true
             }
 
-            btnActionFollow.setOnClickListener {
-                if(!userSession.isLoggedIn) {
-                    startActivityForResult(
-                        RouteManager.getIntent(activity, ApplinkConst.LOGIN),
-                        REQUEST_CODE_LOGIN_TO_FOLLOW
-                    )
-                }
-                else doFollowUnfollow(isFromLogin = false)
-            }
-
             fabUserProfile.setOnClickListener {
                 FeedUserTnCOnboardingBottomSheet.getFragment(
                     childFragmentManager,
@@ -273,7 +263,7 @@ class UserProfileFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest {
                 renderProfileInfo(it.prevValue?.profileInfo, it.value.profileInfo)
-                renderFollowInfo(it.prevValue, it.value)
+                renderButtonAction(it.prevValue, it.value)
                 renderCreatePostButton(it.prevValue, it.value)
                 renderProfileReminder(it.prevValue, it.value)
             }
@@ -417,38 +407,31 @@ class UserProfileFragment @Inject constructor(
                 textSeeMore.hide()
             }
 
-
-            if (!userSession.isLoggedIn)
-                updateToUnFollowUi()
-
             headerProfile.title = curr.name
         }
     }
 
-    private fun renderFollowInfo(
+    private fun renderButtonAction(
         prev: UserProfileUiState?,
         value: UserProfileUiState
     ) {
-
-        if(prev?.followInfo == value.followInfo &&
+        if (prev?.followInfo == value.followInfo &&
             prev.profileType == value.profileType
         ) return
 
-        with(mainBinding) {
-            when(value.profileType) {
-                ProfileType.NotLoggedIn -> btnActionFollow.show()
-                ProfileType.OtherUser -> {
-                    with(value) {
-                        btnActionFollow.show()
-                        if (followInfo.status)
-                            updateToFollowUi()
-                        else
-                            updateToUnFollowUi()
-                    }
-                }
-                ProfileType.Unknown,
-                ProfileType.Self -> btnActionFollow.hide()
+        when(value.profileType) {
+            ProfileType.NotLoggedIn, ProfileType.OtherUser -> {
+                if (userSession.isLoggedIn && value.followInfo.status) buttonActionUIFollow()
+                else buttonActionUIUnFollow()
+                buttonActionOnClickListener()
+                mainBinding.btnAction.show()
             }
+            ProfileType.Self -> {
+                buttonActionUIEditProfile()
+                buttonActionOnClickListener(isSelfProfile = true)
+                mainBinding.btnAction.show()
+            }
+            ProfileType.Unknown -> mainBinding.btnAction.hide()
         }
     }
 
@@ -488,16 +471,38 @@ class UserProfileFragment @Inject constructor(
         else hideProfileReminder()
     }
 
-    private fun updateToFollowUi() {
-        mainBinding.btnActionFollow.text =  getString(R.string.up_btn_text_following)
-        mainBinding.btnActionFollow.buttonVariant = UnifyButton.Variant.GHOST
-        mainBinding.btnActionFollow.buttonType = UnifyButton.Type.ALTERNATE
+    private fun buttonActionUIFollow() = with(mainBinding.btnAction) {
+        text = getString(R.string.up_btn_text_following)
+        buttonVariant = UnifyButton.Variant.GHOST
+        buttonType = UnifyButton.Type.ALTERNATE
     }
 
-    private fun updateToUnFollowUi() {
-        mainBinding.btnActionFollow.text = getString(R.string.up_btn_text_follow)
-        mainBinding.btnActionFollow.buttonVariant = UnifyButton.Variant.FILLED
-        mainBinding.btnActionFollow.buttonType = UnifyButton.Type.MAIN
+    private fun buttonActionUIUnFollow() = with(mainBinding.btnAction) {
+        text = getString(R.string.up_btn_text_follow)
+        buttonVariant = UnifyButton.Variant.FILLED
+        buttonType = UnifyButton.Type.MAIN
+    }
+
+    private fun buttonActionUIEditProfile() = with(mainBinding.btnAction) {
+        text = getString(R.string.up_btn_profile)
+        buttonVariant = UnifyButton.Variant.GHOST
+        buttonType = UnifyButton.Type.ALTERNATE
+    }
+
+    private fun buttonActionOnClickListener(isSelfProfile: Boolean = false) = with(mainBinding) {
+        btnAction.setOnClickListener {
+            if (isSelfProfile) {
+                navigateToEditProfile()
+                return@setOnClickListener
+            }
+
+            if (!userSession.isLoggedIn) {
+                startActivityForResult(
+                    RouteManager.getIntent(activity, ApplinkConst.LOGIN),
+                    REQUEST_CODE_LOGIN_TO_FOLLOW
+                )
+            } else doFollowUnfollow()
+        }
     }
 
     private fun setProfileImg(profile: ProfileUiModel) {
@@ -573,6 +578,7 @@ class UserProfileFragment @Inject constructor(
         textUserName.hide()
         textBio.hide()
         textSeeMore.hide()
+        btnAction.hide()
         includeUserProfileReminder.clProfileReminder.setBackgroundResource(
             R.drawable.bg_card_profile_reminder
         )
@@ -590,7 +596,7 @@ class UserProfileFragment @Inject constructor(
         ))
     }
 
-    private fun doFollowUnfollow(isFromLogin: Boolean) {
+    private fun doFollowUnfollow(isFromLogin: Boolean = false) {
         if(viewModel.isFollowed.not() || isFromLogin)
             userProfileTracker.clickFollow(userSession.userId, viewModel.isSelfProfile)
         else userProfileTracker.clickUnfollow(userSession.userId, viewModel.isSelfProfile)
