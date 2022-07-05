@@ -84,4 +84,4 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
-apply plugin: 'org.jetbrains.kotlin.android'
+apply from: '../../../jacoco_task.gradle'
