@@ -18,20 +18,7 @@ import com.tokopedia.digital.home.presentation.listener.RechargeHomepageReminder
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
 import com.tokopedia.home_component.viewholders.ReminderWidgetViewHolder
-import com.tokopedia.home_component.visitable.BannerDataModel
-import com.tokopedia.home_component.visitable.CategoryNavigationDataModel
-import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
-import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
-import com.tokopedia.home_component.visitable.DynamicLegoBannerSixAutoDataModel
-import com.tokopedia.home_component.visitable.FeaturedBrandDataModel
-import com.tokopedia.home_component.visitable.FeaturedShopDataModel
-import com.tokopedia.home_component.visitable.Lego4AutoDataModel
-import com.tokopedia.home_component.visitable.MixLeftDataModel
-import com.tokopedia.home_component.visitable.MixTopDataModel
-import com.tokopedia.home_component.visitable.ProductHighlightDataModel
-import com.tokopedia.home_component.visitable.QuestWidgetModel
-import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
-import com.tokopedia.home_component.visitable.ReminderWidgetModel
+import com.tokopedia.home_component.visitable.*
 
 class RechargeHomepageAdapterTypeFactory(
     val listener: RechargeHomepageItemListener,
@@ -276,6 +263,10 @@ class RechargeHomepageAdapterTypeFactory(
                 )
                 RechargeHomepageProductCardCustomLastItemViewHolder(binding, listener)
             }
+            RechargeHomepageOfferingWidgetViewHolder.LAYOUT -> RechargeHomepageOfferingWidgetViewHolder(
+                parent,
+                listener
+            )
             else -> super.createViewHolder(parent, type)
         }
     }
