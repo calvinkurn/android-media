@@ -30,15 +30,17 @@ class UserProfileViewModelRobot(
         userSession = userSession,
     )
 
-    fun setup(fn: suspend UserProfileViewModelRobot.() -> Unit) {
+    fun setup(fn: suspend UserProfileViewModelRobot.() -> Unit): UserProfileViewModelRobot {
         val scope = CoroutineScope(dispatcher.coroutineDispatcher)
 
         dispatcher.coroutineDispatcher.runBlockingTest { fn() }
         dispatcher.coroutineDispatcher.advanceUntilIdle()
         scope.cancel()
+
+        return this
     }
 
-    fun recordState(fn: suspend UserProfileViewModelRobot.() -> Unit): UserProfileUiState {
+    infix fun recordState(fn: suspend UserProfileViewModelRobot.() -> Unit): UserProfileUiState {
         val scope = CoroutineScope(dispatcher.coroutineDispatcher)
         lateinit var uiState: UserProfileUiState
         scope.launch {
@@ -52,7 +54,7 @@ class UserProfileViewModelRobot(
         return uiState
     }
 
-    fun recordStateAsList(fn: suspend UserProfileViewModelRobot.() -> Unit): List<UserProfileUiState> {
+    infix fun recordStateAsList(fn: suspend UserProfileViewModelRobot.() -> Unit): List<UserProfileUiState> {
         val scope = CoroutineScope(dispatcher.coroutineDispatcher)
         val uiStateList = mutableListOf<UserProfileUiState>()
         scope.launch {
@@ -66,7 +68,7 @@ class UserProfileViewModelRobot(
         return uiStateList
     }
 
-    fun recordEvent(fn: suspend UserProfileViewModelRobot.() -> Unit): List<UserProfileUiEvent> {
+    infix fun recordEvent(fn: suspend UserProfileViewModelRobot.() -> Unit): List<UserProfileUiEvent> {
         val scope = CoroutineScope(dispatcher.coroutineDispatcher)
         val uiEventList = mutableListOf<UserProfileUiEvent>()
         scope.launch {
@@ -80,7 +82,7 @@ class UserProfileViewModelRobot(
         return uiEventList
     }
 
-    fun recordStateAndEvent(fn: suspend UserProfileViewModelRobot.() -> Unit): Pair<UserProfileUiState, List<UserProfileUiEvent>> {
+    infix fun recordStateAndEvent(fn: suspend UserProfileViewModelRobot.() -> Unit): Pair<UserProfileUiState, List<UserProfileUiEvent>> {
         val scope = CoroutineScope(dispatcher.coroutineDispatcher)
         lateinit var uiState: UserProfileUiState
         val uiEvents = mutableListOf<UserProfileUiEvent>()
