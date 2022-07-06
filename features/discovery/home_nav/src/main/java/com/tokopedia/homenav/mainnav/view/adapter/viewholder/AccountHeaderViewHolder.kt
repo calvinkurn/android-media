@@ -315,13 +315,6 @@ class AccountHeaderViewHolder(itemView: View,
             }
         }
 
-//        /**
-//         * Handling TokopediaPlus loading state
-//         */
-//        if(element.tokopediaPlusParam == null){
-//            tokopediaPlusWidget.showLoading()
-//        }
-
         /**
          * Handling seller and affiliate info value
          */
@@ -352,7 +345,7 @@ class AccountHeaderViewHolder(itemView: View,
     private fun setTokopediaPlus(tokopediaPlusParam: TokopediaPlusParam?){
         tokopediaPlusParam?.let {
             tokopediaPlusWidget.load(tokopediaPlusParam, tokopediaPlusListener)
-        } ?: tokopediaPlusWidget.showLoading(true)
+        }
     }
 
     private fun setSellerAndAffiliate(element: AccountHeaderDataModel, recyclerSeller: RecyclerView) {
