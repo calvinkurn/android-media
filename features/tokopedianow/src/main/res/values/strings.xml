@@ -50,6 +50,7 @@
     <string name="tokopedianow_lihat">Lihat</string>
     <string name="tokopedianow_all_products">Semua Produk</string>
 
+    <!-- Educational Information / USP -->
     <string name="tokopedianow_home_sharing_education_title"><![CDATA[<b>Ajak teman & tetanggamu</b>, biar ikut nikmati layanan <b>%1$s tiba</b> dan <b>gratis ongkir!</b>]]></string>
     <string name="tokopedianow_home_sharing_education_button">Bagikan ke Temanmu</string>
     <string name="tokopedianow_home_educational_information_2h_duration">Maks. 2 jam tiba</string>
@@ -67,6 +68,7 @@
     <string name="tokopedianow_home_educational_information_20m_twenty_four_hours_bottomsheet" tools:ignore="TypographyDashes"><![CDATA[Cek detail jam operasional Tokopedia NOW! <font color=\'%1$s\'><a href="https://www.tokopedia.com/help/article/tokopedia-now-20-menit">di sini.</a></font>]]></string>
     <string name="tokopedianow_home_educational_information_20m_terms_and_conditions_bottomsheet"><![CDATA[Dengan belanja, kamu menyetujui <font color=\'%1$s\'><a href="https://www.tokopedia.com/help/article/syarat-dan-ketentuan-now-20-menit-tiba">syarat & ketentuan.</a></font>]]></string>
     <string name="tokopedianow_home_educational_information_title">Untung pakai Tokopedia NOW!</string>
+    <string name="tokopedianow_educational_information_visit_now_button_bottomsheet">Kunjungi Tokopedia NOW!</string>
 
     <string name="tokopedianow_repurchase_empty_state_no_history_title_filter">Tidak ada pembelian sesuai filtermu</string>
     <string name="tokopedianow_repurchase_empty_state_no_history_title_search">Belum ada pembelianmu yang sesuai kata kunci</string>
@@ -122,7 +124,7 @@
 
     <string name="tokopedianow_2h_copy">2 jam</string>
     <string name="tokopedianow_20m_copy">20 menit</string>
-    
+
     <string name="tokopedianow_20m_switcher_title">Butuh pesanan tiba lebih cepat?</string>
     <string name="tokopedianow_20m_switcher_subtitle"><![CDATA[Cari produk di <b>20 menit tiba</b>]]></string>
     <string name="tokopedianow_2h_switcher_title"><![CDATA[Kamu sedang di layanan <b>NOW! 20 menit tiba</b>]]></string>

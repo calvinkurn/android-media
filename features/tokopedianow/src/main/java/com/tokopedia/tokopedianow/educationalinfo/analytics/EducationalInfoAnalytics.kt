@@ -32,7 +32,7 @@ class EducationalInfoAnalytics @Inject constructor(private val userSession: User
     }
 
     private val userId: String
-            get() = userSession.userId
+        get() = userSession.userId
 
     fun impressUspBottomSheet(channelId: String?, state: String?) {
         Tracker.Builder()
