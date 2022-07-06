@@ -1,6 +1,5 @@
 package com.tokopedia.shop.flashsale.presentation.creation.manage
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -123,7 +122,7 @@ class ManageProductFragment : BaseDaggerFragment() {
                 if (manageProductListAdapter.itemCount < PAGE_SIZE) {
                     showChooseProductPage()
                 } else {
-                    view.showError(
+                    binding?.cardBottomButtonGroup.showError(
                         getString(R.string.manage_product_maximum_product_error)
                     )
                 }
@@ -182,12 +181,14 @@ class ManageProductFragment : BaseDaggerFragment() {
 
     private fun observeRemoveProductsStatus() {
         viewModel.removeProductsStatus.observe(viewLifecycleOwner) {
-            if (it is Success) {
-                doOnDelayFinished(DELAY) {
+            doOnDelayFinished(DELAY) {
+                loaderDialog?.dialog?.dismiss()
+                if (it is Success) {
                     viewModel.getProducts(campaignId, LIST_TYPE)
+                    showSuccessDeleteProductToaster()
+                } else if (it is Fail) {
+                    binding?.cardBottomButtonGroup?.showError(it.throwable)
                 }
-            } else if (it is Fail) {
-                view?.showError(it.throwable)
             }
         }
     }
@@ -215,6 +216,12 @@ class ManageProductFragment : BaseDaggerFragment() {
     private fun showSuccessEditProductToaster() {
         binding?.cardBottomButtonGroup.showToaster(
             getString(R.string.manage_product_success_edit_toaster_message)
+        )
+    }
+
+    private fun showSuccessDeleteProductToaster() {
+        binding?.cardBottomButtonGroup.showToaster(
+            getString(R.string.manage_product_success_delete_toaster_message)
         )
     }
 
@@ -270,7 +277,7 @@ class ManageProductFragment : BaseDaggerFragment() {
                 if (manageProductListAdapter.itemCount < PAGE_SIZE) {
                     showChooseProductPage()
                 } else {
-                    view.showError(
+                    binding?.cardBottomButtonGroup.showError(
                         getString(R.string.manage_product_maximum_product_error)
                     )
                 }
@@ -417,8 +424,12 @@ class ManageProductFragment : BaseDaggerFragment() {
                 EMPTY_BANNER -> {
                     cardIncompleteProductInfo.slideDown()
                 }
-                else -> {
+                ERROR_BANNER -> {
                     tickerErrorProductInfo.slideDown()
+                }
+                else -> {
+                    cardIncompleteProductInfo.gone()
+                    tickerErrorProductInfo.gone()
                 }
             }
             cardBottomButtonGroup.slideDown()
@@ -431,8 +442,12 @@ class ManageProductFragment : BaseDaggerFragment() {
                 EMPTY_BANNER -> {
                     cardIncompleteProductInfo.slideUp()
                 }
-                else -> {
+                ERROR_BANNER -> {
                     tickerErrorProductInfo.slideUp()
+                }
+                else -> {
+                    cardIncompleteProductInfo.gone()
+                    tickerErrorProductInfo.gone()
                 }
             }
             cardBottomButtonGroup.slideUp()

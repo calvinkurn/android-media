@@ -281,6 +281,7 @@
     <string name="manage_product_first_list_coachmark">Klik Ubah di setiap produk untuk mengubah atau memperbaiki informasi tiap produk.</string>
     <string name="manage_product_second_list_coachmark">Klik di sini untuk menambah produk, ya.</string>
     <string name="manage_product_success_edit_toaster_message">Info produk berhasil diubah.</string>
+    <string name="manage_product_success_delete_toaster_message">Info produk berhasil dihapus.</string>
 
     <!--Manage Product Highlight -->
     <string name="sfs_manage_highlight">Atur Highlight</string>
