@@ -490,12 +490,16 @@ class UserProfileFragment @Inject constructor(
         text = getString(R.string.up_btn_text_following)
         buttonVariant = UnifyButton.Variant.GHOST
         buttonType = UnifyButton.Type.ALTERNATE
+
+        activity?.intent?.putExtra(EXTRA_FOLLOW_UNFOLLOW_STATUS, EXTRA_VALUE_IS_FOLLOWED)
     }
 
     private fun buttonActionUIUnFollow() = with(mainBinding.btnAction) {
         text = getString(R.string.up_btn_text_follow)
         buttonVariant = UnifyButton.Variant.FILLED
         buttonType = UnifyButton.Type.MAIN
+
+        activity?.intent?.putExtra(EXTRA_FOLLOW_UNFOLLOW_STATUS, EXTRA_VALUE_IS_NOT_FOLLOWED)
     }
 
     private fun buttonActionUIEditProfile() = with(mainBinding.btnAction) {
