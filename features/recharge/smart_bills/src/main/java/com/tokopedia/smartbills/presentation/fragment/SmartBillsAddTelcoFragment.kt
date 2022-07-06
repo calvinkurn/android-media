@@ -1,5 +1,6 @@
 package com.tokopedia.smartbills.presentation.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
@@ -273,6 +274,7 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
         btn_sbm_add_telco.hide()
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun showMainLayouts(){
         if(isPrepaid()) {
             text_field_sbm_product_nominal.apply {
