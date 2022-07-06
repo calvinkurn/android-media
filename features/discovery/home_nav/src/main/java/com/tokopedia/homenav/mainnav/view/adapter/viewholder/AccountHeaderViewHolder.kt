@@ -315,12 +315,12 @@ class AccountHeaderViewHolder(itemView: View,
             }
         }
 
-        /**
-         * Handling TokopediaPlus loading state
-         */
-        if(element.tokopediaPlusParam == null){
-            tokopediaPlusWidget.showLoading()
-        }
+//        /**
+//         * Handling TokopediaPlus loading state
+//         */
+//        if(element.tokopediaPlusParam == null){
+//            tokopediaPlusWidget.showLoading()
+//        }
 
         /**
          * Handling seller and affiliate info value
