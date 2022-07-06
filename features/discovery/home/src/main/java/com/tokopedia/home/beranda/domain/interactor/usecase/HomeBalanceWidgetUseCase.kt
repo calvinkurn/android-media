@@ -158,7 +158,7 @@ class HomeBalanceWidgetUseCase @Inject constructor(
             }
         } catch (e: Exception) {
             homeBalanceModel.isTokopointsOrOvoFailed = true
-            homeBalanceModel.mapErrorWallet(isWalletApp = true)
+            homeBalanceModel.mapErrorWallet(headerTitle)
         }
         return homeBalanceModel
     }

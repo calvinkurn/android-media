@@ -103,21 +103,22 @@ data class HomeBalanceModel(
         }
     }
 
-    fun mapErrorWallet(isWalletApp: Boolean) {
+    fun mapErrorWallet(headerTitle: String) {
         when (balanceType) {
             TYPE_STATE_2 -> {
-                balanceDrawerItemModels[BALANCE_POSITION_FIRST] = getDefaultGopayErrorState()
+                balanceDrawerItemModels.add(getDefaultGopayErrorState(headerTitle))
             }
         }
     }
 
-    private fun getDefaultGopayErrorState(): BalanceDrawerItemModel {
+    private fun getDefaultGopayErrorState(headerTitle: String): BalanceDrawerItemModel {
         return BalanceDrawerItemModel(
             drawerItemType = TYPE_WALLET_APP_LINKED,
             defaultIconRes = R.drawable.ic_gopay_default,
             balanceTitleTextAttribute = getDefaultErrorTitleTextAttribute(),
             balanceSubTitleTextAttribute = getDefaultErrorSubTItleTextAttribute(),
-            state = STATE_ERROR
+            state = STATE_ERROR,
+            headerTitle = headerTitle
         )
     }
 
