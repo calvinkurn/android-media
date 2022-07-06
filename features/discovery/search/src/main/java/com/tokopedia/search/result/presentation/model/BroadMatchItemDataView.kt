@@ -28,6 +28,8 @@ data class BroadMatchItemDataView(
     val carouselProductType: CarouselProductType,
     val dimension90: String = "",
     val componentId: String = "",
+    val originalPrice: String = "",
+    val discountPercentage: Int = 0,
 ): ImpressHolder() {
 
     private fun asObjectDataLayer(): MutableMap<String, Any> {
