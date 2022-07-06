@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.loginregister.goto_seamless.model.GojekProfileData
 import com.tokopedia.loginregister.goto_seamless.model.LoginSeamlessParams
-import com.tokopedia.loginregister.goto_seamless.usecase.GetTemporaryKeyUseCase
 import com.tokopedia.loginregister.goto_seamless.usecase.LoginSeamlessUseCase
 import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.sessioncommon.data.LoginToken
@@ -19,11 +18,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class GotoSeamlessLoginViewModel @Inject constructor(
-    private val getTemporaryKeyUseCase: GetTemporaryKeyUseCase,
     private val loginSeamlessUseCase: LoginSeamlessUseCase,
     private val gotoSeamlessHelper: GotoSeamlessHelper,
     private val userSessionInterface: UserSessionInterface,
-    private val dispatchers: CoroutineDispatchers
+    dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
     private val mutableLoginResponse = MutableLiveData<Result<LoginToken>>()
@@ -71,7 +69,7 @@ class GotoSeamlessLoginViewModel @Inject constructor(
         }
     }
 
-    private fun saveAccessToken(loginToken: LoginToken) {
+    fun saveAccessToken(loginToken: LoginToken) {
         userSessionInterface.setToken(
             loginToken.accessToken,
             loginToken.tokenType,
