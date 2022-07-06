@@ -23,61 +23,19 @@
     <string name="payment_label_button_add_card">Tambah Kartu</string>
     <string name="payment_label_credit_card_verification">Verifikasi Kartu Kredit</string>
 
-    <!-- Dynamic feature for manage product list-->
-    <string name="title_product_manage">Daftar Produk</string>
-
     <!-- Dynamic feature for manage Seller Order Management-->
-    <string name="title_seller_order">Seller Order Management</string>
-    <string name="som_app_name">Seller Order Management</string>
-    <string name="title_som_list">Penjualan</string>
-    <string name="title_som_filter">Filter</string>
-    <string name="title_som_detail">Detail Pesanan</string>
-    <string name="title_som_confirm_req_pickup">Konfirmasi Request Pick-Up</string>
-    <string name="title_som_confirm_shipping">Konfirmasi Pengiriman</string>
-    <string name="title_som_change_courier">Ganti Kurir</string>
-    <string name="title_som_scan_barcode">Scan Resi</string>
-    <string name="title_som_booking_code">Detail Kode Booking</string>
-    <string name="title_logistic_info">Informasi Terkait Kurir</string>
     <string name="title_reschedule_pickup_activity">Ubah Jadwal Pick-up</string>
 
 
     <!-- Dynamic feature for Umrah-->
-    <string name="salam_title_df">Salam</string>
-    <string name="umrah_title_df">Umrah</string>
-    <string name="umrah_search_title">Cari Paket Umrah</string>
-    <string name="umrah_label_filter">Filter</string>
-    <string name="umrah_label_pdp">Pilih Detail</string>
-    <string name="umrah_checkout_pilgrims_title_activity">Isi Data Jamaah</string>
-    <string name="umrah_checkout_title_activity">Pemesanan Umrah</string>
-    <string name="umrah_checkout_contact_title_activity">Informasi Kontak</string>
-    <string name="umrah_checkout_installment_title_activity">Pilihan Cicilan</string>
     <string name="umrah_travel_agent_title">Penyelenggara Umroh</string>
 
     <!-- Dynamic feature for user identification commmon-->
     <string name="title_upload_user_identification_common">Upload Foto</string>
 
     <!-- Dynamic feature for user talk-->
-    <string name="write_new_talk">Kirim Pertanyaan</string>
-    <string name="title_product_discussion">Diskusi</string>
     <string name="title_report_talk">Laporkan</string>
-
-    <string name="sbank_title_add_bank_account">Tambah Rekening</string>
     <string name="sbank_confirm_bank_account">Konfirmasi rekening bank</string>
-
-    <!--Topchat-->
-    <string name="topchat_title">Chat</string>
-    <string name="title_inbox_chat">Chat</string>
-    <string name="chat_incoming_settings">Atur Penerimaan Chat</string>
-
-    <!-- Dynamic features Voucher Creation -->
-    <string name="title_voucher_creation">Voucher Creation</string>
-
-    <!-- Dynamic features Shop Score / Performa Toko -->
-    <string name="title_shop_score_seller">Skor Performa Toko</string>
-    <string name="title_shop_score_sellerapp">Performa Toko Penjual</string>
-    
-    <!-- Dynamic features Seller Search -->
-    <string name="title_global_search_seller">Seller Search</string>
 
     <!-- Content -->
     <string name="kol_title_comment">Comments</string>
@@ -89,32 +47,20 @@
     <string name="kol_title_report">Laporan Konten</string>
     <string name="cp_title_create_post">Create Post</string>
     <string name="cp_title_edit">Edit</string>
-    <string name="cp_title_image_picker">Tambah Foto</string>
-    <string name="cp_title_image_video">Tambah Video</string>
-    <string name="cp_title_image_editor">Edit</string>
 
     <!-- Shop Page -->
     <string name="shop_info_title">Shop Info</string>
-    <string name="shop_info_label_physical_shop">Toko Fisik</string>
-    <string name="note_title">Catatan</string>
     <string name="shop_sort_title">Urutkan</string>
     <string name="shop_product_title">Produk</string>
     <string name="favorited_shop_title">Followers Toko</string>
     <string name="shop_search_product">Search Shop Product</string>
     <string name="shop_page_setting_title">Toko Kamu</string>
 
-    <!-- Dynamic feature Statistic -->
-    <string name="title_statistic">Statistic</string>
-
     <!-- Logistic -->
     <string name="title_layanan">Layanan</string>
     <string name="label_manage_address">Daftar Alamat</string>
-    <string name="title_activity_shop_edit_address">Ubah Detail Lokasi</string>
-    <string name="title_activity_search_address">Kota atau kecamatan</string>
-    <string name="title_activity_cpl">Pengiriman Per Produk</string>
 
     <!-- Seller Menu -->
-    <string name="title_seller_menu">Toko Saya</string>
     <string name="title_seller_settings">Pengaturan Toko</string>
     <string name="admin_authorize_title">Admin Role Access Authorize</string>
 
