@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeOfferingWidgetBinding
+import com.tokopedia.digital.home.model.RechargeHomepageOfferingWidgetModel
 import com.tokopedia.digital.home.model.RechargeHomepageProductBannerModel
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
@@ -18,7 +19,7 @@ import com.tokopedia.kotlin.extensions.view.show
 class RechargeHomepageOfferingWidgetViewHolder(
     view: View,
     val listener: RechargeHomepageItemListener
-) : AbstractViewHolder<RechargeHomepageProductBannerModel>(view) {
+) : AbstractViewHolder<RechargeHomepageOfferingWidgetModel>(view) {
 
     companion object {
         @LayoutRes
@@ -27,7 +28,7 @@ class RechargeHomepageOfferingWidgetViewHolder(
         private const val BACKGROUND_CORNER_RADIUS = 8f
     }
 
-    override fun bind(element: RechargeHomepageProductBannerModel) {
+    override fun bind(element: RechargeHomepageOfferingWidgetModel) {
         val binding = ViewRechargeHomeOfferingWidgetBinding.bind(itemView)
 
         if (element.section.items.isNotEmpty()) {

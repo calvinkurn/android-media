@@ -627,7 +627,7 @@ class RechargeHomepageProductCardCustomLastItemModel(section: RechargeHomepageSe
     }
 }
 
-class RechargeHomepageOfferingWidgetModel(private val section: RechargeHomepageSections.Section) :
+class RechargeHomepageOfferingWidgetModel(val section: RechargeHomepageSections.Section) :
     RechargeHomepageSectionModel {
 
     override fun visitableId(): String=section.id
