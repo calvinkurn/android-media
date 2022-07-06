@@ -468,5 +468,9 @@
     <string name="topads_deleted_empty_ads_desc">Coba ubah tanggal untuk melihat statistik iklan yg telah dihapus</string>
     <string name="total_reward_pending">Total Reward Pending</string>
     <string name="topads_credit_reward_pending">Reward Pending</string>
+    <string name="topads_credit_ada_reward_pending_yang_bisa_kamu_cairkan_lihat_caranya_di_bawah_ini">Ada Reward Pending yang bisa kamu cairkan! Lihat caranya di bawah ini.</string>
+    <string name="topads_dashboard_apa_itu_reward_pending">Apa itu Reward Pending?</string>
+    <string name="topads_dashboard_bagaimana_cara_cairkan_reward">Bagaimana cara cairkan Reward?</string>
+    <string name="topads_dashboard_caikan_description">.</string>
 </resources>
 

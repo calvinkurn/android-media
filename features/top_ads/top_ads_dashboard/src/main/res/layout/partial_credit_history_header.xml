@@ -29,18 +29,21 @@
                 android:layout_height="wrap_content"
                 android:gravity="bottom"
                 android:text="@string/topads_dash_desc_credit_label"
+                android:textAllCaps="true"
+                android:textColor="@color/Unify_NN600"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="body_3" />
+                app:typographyType="small"
+                app:typographyWeight="bold" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/creditAmount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
+                android:textColor="@color/Unify_NN950"
                 app:layout_constraintStart_toStartOf="@id/credit_topads"
                 app:layout_constraintTop_toBottomOf="@id/credit_topads"
-                app:typographyType="body_1"
+                app:typographyType="display_1"
                 app:typographyWeight="bold"
                 tools:text="Rp 10.000.0000" />
 
@@ -68,15 +71,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/unify_space_12"
                 android:text="@string/total_reward_pending"
-                android:textColor="@color/light_N700_68"
+                android:textColor="@color/Unify_NN600"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/divider"
-                app:typographyType="body_2" />
+                app:typographyType="display_3" />
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/iconPendingRewardInfo"
-                android:layout_width="@dimen/top_ads_common_dp_20"
-                android:layout_height="@dimen/top_ads_common_dp_20"
+                android:layout_width="@dimen/spacing_lvl4"
+                android:layout_height="@dimen/spacing_lvl4"
                 android:layout_marginStart="@dimen/spacing_lvl1"
                 android:tint="@color/light_N700_68"
                 app:layout_constraintBottom_toBottomOf="@id/txtRewardPending"
@@ -90,8 +93,9 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="@id/txtRewardPending"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:typographyType="heading_6"
                 app:layout_constraintTop_toTopOf="@id/txtRewardPending"
+                app:typographyType="display_3"
+                app:typographyWeight="bold"
                 tools:text="Rp 1000" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.tokopedia.unifycomponents.CardUnify>
@@ -113,7 +117,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/label_topads_automatic_topup"
-                app:typographyType="body_3"
+                app:typographyType="display_3"
                 app:typographyWeight="bold" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -121,7 +125,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/topads_active"
-                android:textColor="@color/topads_common_select_color_checked" />
+                android:textColor="@color/topads_common_select_color_checked"
+                app:typographyType="display_3"
+                app:typographyWeight="bold" />
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:layout_width="wrap_content"

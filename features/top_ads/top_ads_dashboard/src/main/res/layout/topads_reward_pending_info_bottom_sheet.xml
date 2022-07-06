@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_lvl3"
-        android:tint="@color/Unify_Static_Black"
+        android:tint="@color/Unify_NN900"
         app:layout_constraintEnd_toStartOf="@id/leftGuide"
         app:layout_constraintTop_toTopOf="@id/txtCairkanTitle"
         app:srcCompat="@drawable/iconunify_wallet" />
@@ -19,7 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_lvl3"
-        android:tint="@color/Unify_Static_Black"
+        android:tint="@color/Unify_NN900"
         app:layout_constraintEnd_toStartOf="@id/leftGuide"
         app:layout_constraintTop_toTopOf="@id/txtItuTitle"
         app:srcCompat="@drawable/iconunify_lightbulb" />
@@ -35,45 +35,52 @@
         android:id="@+id/txtDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="@dimen/spacing_lvl4"
+        android:text="@string/topads_credit_ada_reward_pending_yang_bisa_kamu_cairkan_lihat_caranya_di_bawah_ini"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_2"
-        tools:text="Description" />
+        app:typographyType="paragraph_3" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txtItuTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="@string/topads_dashboard_apa_itu_reward_pending"
+        android:textColor="@color/Unify_NN950"
         app:layout_constraintStart_toEndOf="@id/leftGuide"
         app:layout_constraintTop_toBottomOf="@id/txtDescription"
-        tools:text="Itu Reward Pending" />
+        app:typographyType="display_3"
+        app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txtItuDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Itu Reward Pending"
         app:layout_constraintStart_toEndOf="@id/leftGuide"
         app:layout_constraintTop_toBottomOf="@id/txtItuTitle"
-        app:typographyType="body_2"
-        tools:text="Itu Reward Pending" />
+        app:typographyType="paragraph_3" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txtCairkanTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl3"
+        android:text="@string/topads_dashboard_bagaimana_cara_cairkan_reward"
+        android:textColor="@color/Unify_NN950"
         app:layout_constraintStart_toEndOf="@id/leftGuide"
         app:layout_constraintTop_toBottomOf="@id/txtItuDescription"
-        tools:text="Itu Reward Pending" />
+        app:typographyType="display_3"
+        app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txtCairkanDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="@string/topads_dashboard_caikan_description"
         app:layout_constraintStart_toEndOf="@id/leftGuide"
         app:layout_constraintTop_toBottomOf="@id/txtCairkanTitle"
-        app:typographyType="body_2"
-        tools:text="Itu Reward Pending" />
+        app:typographyType="paragraph_3" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/btnOkay"
