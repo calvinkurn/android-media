@@ -1004,11 +1004,26 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
             ProgramDateType.AUTO -> {
 
                 if(programData!= null) {
-                    textFieldProgramStartDate.editText.setText(
-                        TmDateUtil.setDate(
-                            programData?.timeWindow?.startTime.toString()
+                    if(programStatus == ACTIVE){
+                        val todayCalendar =
+                            GregorianCalendar(context?.let {
+                                LocaleUtils.getCurrentLocale(
+                                    it
+                                )
+                            })
+                        val todayDate = TmDateUtil.setDatePreview(TmDateUtil.getDateFromUnix(todayCalendar))
+                        val day = getDayOfWeekID(todayCalendar.get(Calendar.DAY_OF_WEEK))
+                        textFieldProgramStartDate.editText.setText(
+                            "$day, $todayDate"
                         )
-                    )
+                    }
+                    else {
+                        textFieldProgramStartDate.editText.setText(
+                            TmDateUtil.setDate(
+                                programData?.timeWindow?.startTime.toString()
+                            )
+                        )
+                    }
                     textFieldProgramStartTime.editText.setText(
                         TmDateUtil.setTime(
                             programData?.timeWindow?.startTime.toString()
@@ -1098,7 +1113,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
             // user can select end date 1 year from start date
 
             calendarMax.add(Calendar.YEAR, 1)
-            if(programStatus != ACTIVE) {
+            if(programStatus == ACTIVE) {
                 //upcoming
                 programData?.timeWindow?.startTime?.let {
                     defaultCalendar.time = sdf.parse(programData?.timeWindow?.startTime + "00") ?: Date()
@@ -1151,25 +1166,32 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         // if 4:37 -> 9:00
 
         // end time same as program end time
+        val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, com.tokopedia.tokomember_seller_dashboard.util.locale)
 
         context?.let { ctx ->
-            val minTime =
-                GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {
-                    set(Calendar.HOUR_OF_DAY, 0)
-                    set(Calendar.MINUTE, 30)
+            var minTime = GregorianCalendar(LocaleUtils.getCurrentLocale(ctx))
+            if(type == 0){
+                val minTimeStart = GregorianCalendar(LocaleUtils.getCurrentLocale(ctx))
+                    minTimeStart.apply {
+                    add(Calendar.HOUR_OF_DAY, 4)
+                    add(Calendar.MINUTE, 30)
                 }
-            val defaultTime =
-                GregorianCalendar( LocaleUtils.getCurrentLocale(ctx))
-            val maxTime =
-                GregorianCalendar( LocaleUtils.getCurrentLocale(ctx)).apply {
+                minTime = minTimeStart
+            }
+            else{
+                val minTimeEnd = GregorianCalendar(LocaleUtils.getCurrentLocale(ctx))
+                minTimeEnd.time = sdf.parse(programData?.timeWindow?.endTime) ?: Date()
+                minTime = minTimeEnd
+            }
+            val maxTime = GregorianCalendar( LocaleUtils.getCurrentLocale(ctx)).apply {
                     set(Calendar.HOUR_OF_DAY, 23)
-                    set(Calendar.MINUTE, 30)
+                    set(Calendar.MINUTE, 59)
                 }
 
             val timerPickerUnify = DateTimePickerUnify(
                 context = ctx,
                 minDate = minTime,
-                defaultDate = defaultTime,
+                defaultDate =  minTime,
                 maxDate = maxTime,
                 type = DateTimePickerUnify.TYPE_TIMEPICKER
             ).apply {
