@@ -274,6 +274,10 @@ data class ProductCardModel (
         return labelGroupVariantList.isNotEmpty()
     }
 
+    fun hasLabelVariantColor(): Boolean {
+        return labelGroupVariantList.any { it.isColor() }
+    }
+
     fun willShowFulfillment(): Boolean{
         val labelFulfillment = getLabelFulfillment()
 

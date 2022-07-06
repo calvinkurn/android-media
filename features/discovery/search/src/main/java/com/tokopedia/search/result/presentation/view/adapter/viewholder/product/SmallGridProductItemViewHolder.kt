@@ -2,6 +2,7 @@ package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.productcard.IProductCardView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.search.R
@@ -37,17 +38,11 @@ class SmallGridProductItemViewHolder(
         if (productItemData == null) return
 
         val productCardView = binding?.productCardView ?: return
-        val productImage =
-            if (productItemData.getProductListType() == ProductCardModel.ProductListType.LONG_IMAGE)
-                productItemData.imageUrl700
-            else
-                productItemData.imageUrl300
-
         val productCardModel =
             productItemData.toProductCardModel(
-                productImage,
+                productItemData.getProductImage(),
                 false,
-                productItemData.getProductListType()
+                productItemData.getProductListTypeEnum()
             )
         this.productCardModel = productCardModel
 
@@ -72,5 +67,12 @@ class SmallGridProductItemViewHolder(
             productItemData,
             createImageProductViewHintListener(productItemData)
         )
+    }
+
+    private fun ProductItemDataView.getProductImage(): String {
+        return if (getProductListTypeEnum() == ProductCardModel.ProductListType.LONG_IMAGE)
+            imageUrl700
+        else
+            imageUrl300
     }
 }

@@ -436,7 +436,7 @@ class ProductListPresenter @Inject constructor(
         val list = createProductItemVisitableList(
             productDataView,
             searchParameter,
-            searchProductModel.searchProduct.header.meta.productListType
+            searchProductModel.getProductListType()
         ).toMutableList()
         productList.addAll(list)
 
@@ -990,7 +990,7 @@ class ProductListPresenter @Inject constructor(
         productList = createProductItemVisitableList(
             productDataView,
             searchParameter,
-            searchProduct.header.meta.productListType,
+            searchProductModel.getProductListType(),
         ).toMutableList()
         list.addAll(productList)
 

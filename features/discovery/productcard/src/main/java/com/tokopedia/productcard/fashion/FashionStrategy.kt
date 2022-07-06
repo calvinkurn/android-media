@@ -50,7 +50,7 @@ internal interface FashionStrategy {
 
     fun moveDiscountConstraint(view: View, productCardModel: ProductCardModel)
 
-    fun setDiscountMarginLeft(label: Label)
+    fun setDiscountMargin(label: Label)
 
     fun renderLabelPrice(view: View, productCardModel: ProductCardModel)
 

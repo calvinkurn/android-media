@@ -184,7 +184,7 @@ internal open class FashionStrategyControl: FashionStrategy {
         }
     }
 
-    override fun setDiscountMarginLeft(label: Label) {
+    override fun setDiscountMargin(label: Label) {
         val margin = 0
         label.setMargin(margin, margin, margin, margin)
     }

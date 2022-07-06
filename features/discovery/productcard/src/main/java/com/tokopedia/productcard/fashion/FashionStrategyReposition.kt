@@ -164,7 +164,7 @@ internal open class FashionStrategyReposition: FashionStrategy {
         }
     }
 
-    override fun setDiscountMarginLeft(label: Label) {
+    override fun setDiscountMargin(label: Label) {
         val margin = 0
         val marginLeft = label.context.resources.getDimensionPixelSize(
             R.dimen.product_card_label_discount_margin_left_fashion
@@ -272,7 +272,7 @@ internal open class FashionStrategyReposition: FashionStrategy {
         colorVariantTaken: Int,
     ): Int {
         return if (productCardModel.getLabelPrice() == null
-            || !productCardModel.labelGroupVariantList.any { it.isColor() }
+            || !productCardModel.hasLabelVariantColor()
         ) {
             MAX_LABEL_VARIANT_COUNT
         } else {

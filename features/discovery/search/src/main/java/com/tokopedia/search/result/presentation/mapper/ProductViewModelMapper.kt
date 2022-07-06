@@ -69,7 +69,7 @@ class ProductViewModelMapper {
             searchProductData.productList,
             pageTitle,
             dimension90,
-            searchProductHeader.meta.productListType
+            searchProductModel.getProductListType()
         )
         productDataView.tickerModel = convertToTickerDataView(
             searchProductData,

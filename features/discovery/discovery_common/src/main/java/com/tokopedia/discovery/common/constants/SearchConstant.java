@@ -219,6 +219,5 @@ public interface SearchConstant {
     interface ProductListType {
         String VAR_LONG_IMG = "var_long_img";
         String VAR_REPOSITION = "var_reposition";
-        String VAR_NO_CAMPAIGN = "var_no_campaign";
     }
 }

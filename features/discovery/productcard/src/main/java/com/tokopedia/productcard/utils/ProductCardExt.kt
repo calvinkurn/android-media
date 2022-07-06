@@ -542,7 +542,9 @@ private fun showRepositionLabel(
 }
 
 @ColorInt
-private fun ProductCardModel.LabelGroup.toRepositionLabelTextColor(context: Context): Int {
+private fun ProductCardModel.LabelGroup.toRepositionLabelTextColor(context: Context?): Int {
+    if (context == null) return 0
+
     return try {
         val staticWhiteColor = ContextCompat.getColor(
             context,
@@ -560,7 +562,9 @@ private fun ProductCardModel.LabelGroup.toRepositionLabelTextColor(context: Cont
 }
 
 @ColorInt
-private fun ProductCardModel.LabelGroup.toRepositionLabelBackground(context: Context): Int {
+private fun ProductCardModel.LabelGroup.toRepositionLabelBackground(context: Context?): Int {
+    if (context == null) return 0
+
     return try {
         val whiteColor = ContextCompat.getColor(
             context,

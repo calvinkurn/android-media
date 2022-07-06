@@ -161,7 +161,7 @@ private fun View.renderDiscount(productCardModel: ProductCardModel) {
     val textViewSlashedPrice = findViewById<Typography?>(R.id.textViewSlashedPrice)
 
     productCardModel.fashionStrategy.moveDiscountConstraint(this, productCardModel)
-    productCardModel.fashionStrategy.setDiscountMarginLeft(labelDiscount)
+    productCardModel.fashionStrategy.setDiscountMargin(labelDiscount)
 
     labelDiscount?.shouldShowWithAction(productCardModel.discountPercentage.isNotEmpty()) {
         TextAndContentDescriptionUtil.setTextAndContentDescription(it, productCardModel.discountPercentage, context.getString(R.string.content_desc_labelDiscount))

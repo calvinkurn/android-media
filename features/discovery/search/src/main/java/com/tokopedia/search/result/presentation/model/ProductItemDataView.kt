@@ -123,7 +123,7 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
     val dimension115: String
         get() = labelGroupList.getFormattedPositionName()
 
-    fun getProductListType(): ProductCardModel.ProductListType {
+    fun getProductListTypeEnum(): ProductCardModel.ProductListType {
         return when(productListType) {
             ProductListType.VAR_REPOSITION -> ProductCardModel.ProductListType.REPOSITION
             ProductListType.VAR_LONG_IMG -> ProductCardModel.ProductListType.LONG_IMAGE
