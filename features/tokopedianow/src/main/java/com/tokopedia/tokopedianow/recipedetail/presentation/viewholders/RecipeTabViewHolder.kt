@@ -34,7 +34,7 @@ class RecipeTabViewHolder(
             val instructionTabTitle = itemView.context.resources.getString(
                 R.string.tokopedianow_recipe_instruction_tab_title)
 
-            val ingredientFragment = TokoNowRecipeIngredientFragment.newInstance()
+            val ingredientFragment = TokoNowRecipeIngredientFragment.newInstance(tab.ingredient)
             val instructionFragment = TokoNowRecipeInstructionFragment.newInstance(tab.instruction)
 
             val recipeTabAdapter = RecipeTabAdapter(it).apply {
