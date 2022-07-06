@@ -401,7 +401,7 @@ class AddEditProductDetailViewModel @Inject constructor(
 
         val productStock = productStockInput.toBigIntegerOrNull().orZero()
         val maxStock = mMaxStockThreshold.value
-        val isMaxStockNotNull= maxStock != null
+        val isMaxStockNotNull = maxStock != null
         val isCurrentStockLessThanMinStock = productStock < minimumStockCount.toBigInteger()
         val isCurrentStockMoreThanMaxStock = productStock > maxStock?.toBigIntegerOrNull().orZero()
 
