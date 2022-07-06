@@ -411,7 +411,9 @@ class UserProfileFragment @Inject constructor(
 
             /** Setup Bio */
             val displayBioText = HtmlLinkHelper(requireContext(), curr.biography).spannedString
-            textBio.text = displayBioText
+            textBio.shouldShowWithAction(displayBioText?.isNotEmpty() == true) {
+                textBio.text = displayBioText
+            }
 
             if (displayBioText?.lines()?.count().orZero() > SEE_ALL_LINE) {
                 if (isViewMoreClickedBio) {
@@ -421,10 +423,7 @@ class UserProfileFragment @Inject constructor(
                     textBio.maxLines = SEE_ALL_LINE
                     textSeeMore.show()
                 }
-            } else {
-                textBio.hide()
-                textSeeMore.hide()
-            }
+            } else textSeeMore.hide()
 
             headerProfile.title = curr.name
         }
