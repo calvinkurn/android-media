@@ -53,7 +53,7 @@
                 app:layout_constraintTop_toTopOf="@id/credit_topads"
                 app:unifyButtonSize="small"
                 app:unifyButtonType="main"
-                app:unifyButtonVariant="ghost" />
+                app:unifyButtonVariant="filled" />
 
             <com.tokopedia.unifycomponents.DividerUnify
                 android:id="@id/divider"
