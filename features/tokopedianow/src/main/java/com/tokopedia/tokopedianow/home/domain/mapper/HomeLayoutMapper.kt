@@ -99,7 +99,7 @@ object HomeLayoutMapper {
         MIX_LEFT_CAROUSEL,
         MIX_LEFT_CAROUSEL_ATC,
         MEDIUM_PLAY_WIDGET,
-        SMALL_PLAY_WIDGET
+        SMALL_PLAY_WIDGET,
     )
 
     fun MutableList<HomeLayoutItemUiModel>.addLoadingIntoList() {
