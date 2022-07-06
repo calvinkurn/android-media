@@ -33,6 +33,7 @@ import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.sheet.CustomDatePicker
 import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
+import com.tokopedia.topads.dashboard.view.sheet.RewardPendingInfoBottomSheet
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsEditAutoTopUpActivity
@@ -181,6 +182,7 @@ class TopAdsCreditHistoryFragment :
         super.onViewCreated(view, savedInstanceState)
 
         initView()
+        initListeners()
         initialDateSetup()
         loadData()
     }
@@ -212,6 +214,9 @@ class TopAdsCreditHistoryFragment :
         }
         hariIni?.setOnClickListener {
             showBottomSheet()
+        }
+        view?.findViewById<ImageUnify>(R.id.iconPendingRewardInfo)?.setOnClickListener {
+            RewardPendingInfoBottomSheet().show(childFragmentManager,"")
         }
     }
 

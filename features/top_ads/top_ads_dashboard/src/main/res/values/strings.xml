@@ -467,5 +467,6 @@
     <string name="topads_dash_deleted_group_empty_result_title">Tidak ada iklan di periode ini</string>
     <string name="topads_deleted_empty_ads_desc">Coba ubah tanggal untuk melihat statistik iklan yg telah dihapus</string>
     <string name="total_reward_pending">Total Reward Pending</string>
+    <string name="topads_credit_reward_pending">Reward Pending</string>
 </resources>
 

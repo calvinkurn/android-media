@@ -74,7 +74,7 @@
                 app:typographyType="body_2" />
 
             <com.tokopedia.unifycomponents.ImageUnify
-                android:id="@+id/iconRewardInfo"
+                android:id="@+id/iconPendingRewardInfo"
                 android:layout_width="@dimen/top_ads_common_dp_20"
                 android:layout_height="@dimen/top_ads_common_dp_20"
                 android:layout_marginStart="@dimen/spacing_lvl1"
