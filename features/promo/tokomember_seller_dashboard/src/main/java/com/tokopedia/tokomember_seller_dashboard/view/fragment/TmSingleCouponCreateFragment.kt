@@ -269,7 +269,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                             endTime = it.data.membershipGetProgramList.programSellerList.firstOrNull()?.timeWindow?.endTime
                             programData = ProgramUpdateDataInput()
                             programData?.apply {
-                                timeWindow = TimeWindow(startTime = TmDateUtil.setTimeStartSingleWaiting(TmDateUtil.getTimeInMillis(startTime, "yyyy-MM-dd HH:mm:ss")), endTime = TmDateUtil.setTimeEndSingleWaiting(TmDateUtil.getTimeInMillis(endTime, "yyyy-MM-dd HH:mm:ss")))
+                                timeWindow = TimeWindow(startTime = TmDateUtil.setTimeStartSingle(startTime), endTime = endTime)
                             }
                         }
                         if(startTime.isNullOrEmpty()) {
@@ -559,7 +559,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                 is Success -> {
                     if(it.data.merchantPromotionCreateMV?.status == 200) {
                         //Open Dashboard
-                            closeLoadingDialog()
+                        closeLoadingDialog()
                         activity?.finish()
                         tmCouponListRefreshCallback?.refreshCouponList()
                     }
@@ -762,23 +762,16 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
     }
 
     private fun openLoadingDialog(){
-        view?.let {
             loaderDialog = context?.let { LoaderDialog(it) }
             loaderDialog?.loaderText?.apply {
                 setType(Typography.DISPLAY_2)
             }
             loaderDialog?.setLoadingText(Html.fromHtml(LOADING_TEXT))
             loaderDialog?.show()
-        }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        loaderDialog?.dialog?.cancel()
     }
 
     private fun closeLoadingDialog(){
-        loaderDialog?.dialog?.dismiss()
+            loaderDialog?.dialog?.dismiss()
     }
 
     private fun handleProgramValidateNetworkError(){

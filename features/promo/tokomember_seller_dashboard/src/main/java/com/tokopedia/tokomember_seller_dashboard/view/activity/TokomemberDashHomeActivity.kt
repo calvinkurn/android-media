@@ -76,6 +76,7 @@ class TokomemberDashHomeActivity : AppCompatActivity(), TmProgramDetailCallback 
         fun openActivity(shopId: Int, cardID:Int, context: Context? , isShowBs:Boolean = false){
             context?.let {
                 val intent = Intent(it, TokomemberDashHomeActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
                 intent.putExtra(BUNDLE_SHOP_ID, shopId)
                 intent.putExtra(BUNDLE_CARD_ID, cardID)
                 intent.putExtra(BUNDLE_IS_SHOW_BS, isShowBs)

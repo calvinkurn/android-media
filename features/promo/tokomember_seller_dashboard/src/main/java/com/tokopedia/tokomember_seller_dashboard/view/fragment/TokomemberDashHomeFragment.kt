@@ -44,6 +44,12 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
         val viewModelProvider = ViewModelProvider(this, viewModelFactory.get())
         viewModelProvider.get(TokomemberDashHomeViewmodel::class.java)
     }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        isShowBs = arguments?.getBoolean(BUNDLE_IS_SHOW_BS, false)?:false
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -86,7 +92,6 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
         tmTracker = TmTracker()
         tmTracker?.viewHomeTabsSection(shopId.toString())
 
-        isShowBs = arguments?.getBoolean(BUNDLE_IS_SHOW_BS, false)?:false
 
         if(isShowBs){
             val bundle = Bundle()

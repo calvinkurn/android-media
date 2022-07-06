@@ -165,6 +165,8 @@ class TmSingleCouponView @JvmOverloads constructor(
                             }else {
                                 textFieldMaxCashback.isInputError = false
                                 textFieldMaxCashback.setMessage("")
+                                textFieldMinTransk.isInputError = false
+                                textFieldMinTransk.setMessage("")
                             }
                         }
                     }
@@ -196,7 +198,9 @@ class TmSingleCouponView @JvmOverloads constructor(
                                 textFieldMaxCashback.setMessage(MIN_TRANSACTION_OVERFLOW)
                             } else {
                                 textFieldMinTransk.isInputError = false
+                                textFieldMaxCashback.isInputError  = false
                                 textFieldMinTransk.setMessage("")
+                                textFieldMaxCashback.setMessage("")
                             }
                         }
                     }
