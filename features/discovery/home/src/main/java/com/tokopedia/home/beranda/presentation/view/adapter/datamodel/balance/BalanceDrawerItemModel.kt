@@ -20,7 +20,8 @@ data class BalanceDrawerItemModel(
         val trackingAttribute: String = "",
         var alternateBalanceDrawerItem: List<BalanceDrawerItemModel>? = null,
         var balanceCoachmark: BalanceCoachmark? = null,
-        val reserveBalance: String = ""
+        val reserveBalance: String = "",
+        val titleHeader: String = ""
 ) {
     companion object {
         const val TYPE_UNKNOWN = 0

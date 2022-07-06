@@ -24,6 +24,9 @@ class HomeBalanceWidgetUseCase @Inject constructor(
 
     companion object {
         const val error_unable_to_parse_wallet = "Unable to parse wallet, wallet app list is empty"
+        private const val BALANCE_TYPE_GOPAY = "gopay"
+        private const val BALANCE_TYPE_REWARDS = "rewards"
+
     }
 
     suspend fun onGetInjectCouponTimeBased(): Result<InjectCouponTimeBased> {
@@ -39,12 +42,21 @@ class HomeBalanceWidgetUseCase @Inject constructor(
         if (!userSession.isLoggedIn) return currentHeaderDataModel
 
         try {
-//            val getHomeBalanceWidget = getHomeBalanceWidgetRepository.getRemoteData()
+            val getHomeBalanceWidget = getHomeBalanceWidgetRepository.getRemoteData()
 
             var homeBalanceModel = getHomeBalanceModel(currentHeaderDataModel, HomeBalanceModel.BALANCE_POSITION_FIRST, HomeBalanceModel.BALANCE_POSITION_SECOND)
 
-            homeBalanceModel = getTokopointData(homeBalanceModel)
-            homeBalanceModel = getDataUsingWalletApp(homeBalanceModel)
+            getHomeBalanceWidget.getHomeBalanceList.balancesList.forEach {
+                when (it.type) {
+                    BALANCE_TYPE_GOPAY -> {
+                        homeBalanceModel = getDataUsingWalletApp(homeBalanceModel)
+                    }
+                    BALANCE_TYPE_REWARDS -> {
+                        homeBalanceModel = getTokopointData(homeBalanceModel)
+                    }
+                }
+            }
+
             return currentHeaderDataModel.copy(
                 headerDataModel = currentHeaderDataModel.headerDataModel?.copy(
                     homeBalanceModel = homeBalanceModel,
