@@ -130,7 +130,7 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
     }
 
     private fun onInputNumberChanged(inputNumber: String){
-        viewModel.getSelectedOperator(inputNumber, resources.getString(R.string.smart_bills_add_bills_number_not_found))
+        viewModel.getSelectedOperator(inputNumber, context?.resources?.getString(R.string.smart_bills_add_bills_number_not_found).orEmpty())
     }
 
     private fun getInquiryData(){
@@ -352,8 +352,8 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
         btn_sbm_add_telco.apply {
             show()
             isDisableButton()
-            text = if (isPostPaid()) resources.getString(com.tokopedia.smartbills.R.string.smart_bills_add_bills_add_telco_post)
-            else resources.getString(com.tokopedia.smartbills.R.string.smart_bills_add_bills_product_button_inquiry)
+            text = if (isPostPaid()) context?.resources?.getString(com.tokopedia.smartbills.R.string.smart_bills_add_bills_add_telco_post).orEmpty()
+            else context?.resources?.getString(com.tokopedia.smartbills.R.string.smart_bills_add_bills_product_button_inquiry).orEmpty()
             setOnClickListener {
                 hideKeyBoard()
                 commonTopUpBillsAnalytic.clickTambahTagihanTelcoAddBills(CategoryTelcoType.getCategoryString(categoryId))
@@ -446,9 +446,9 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
                 selectedProduct = null
                 show()
                 textFieldWrapper.hint = if (CategoryTelcoType.isCategoryPacketData(categoryId)){
-                    resources.getString(R.string.smart_bills_add_bills_packet_data)
+                    context?.resources?.getString(R.string.smart_bills_add_bills_packet_data).orEmpty()
                 } else {
-                    resources.getString(R.string.smart_bills_add_bills_product_nominal_label)
+                    context?.resources?.getString(R.string.smart_bills_add_bills_product_nominal_label).orEmpty()
                 }
                 textFieldInput.ellipsize = TextUtils.TruncateAt.END
             }
