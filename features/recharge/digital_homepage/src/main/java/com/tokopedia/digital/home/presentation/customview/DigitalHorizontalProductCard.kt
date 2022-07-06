@@ -16,7 +16,9 @@ class DigitalHorizontalProductCard @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : BaseCustomView(context, attrs, defStyleAttr) {
 
-    val binding: LayoutDigitalHorizontalProductCardBinding
+    val binding: LayoutDigitalHorizontalProductCardBinding =
+        LayoutDigitalHorizontalProductCardBinding
+            .inflate(LayoutInflater.from(context), this, true)
 
     var imageUrl: String = ""
     var productCategory: String = ""
@@ -25,9 +27,6 @@ class DigitalHorizontalProductCard @JvmOverloads constructor(
     var productSlashPrice: String = ""
 
     init {
-        binding = LayoutDigitalHorizontalProductCardBinding
-            .inflate(LayoutInflater.from(context), this, true)
-
         with(binding.tgHorizontalCardProductSlashPrice) {
             paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         }

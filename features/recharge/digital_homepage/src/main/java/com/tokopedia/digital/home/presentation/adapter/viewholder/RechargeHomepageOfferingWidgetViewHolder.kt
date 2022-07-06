@@ -5,6 +5,7 @@ import android.graphics.drawable.GradientDrawable
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeOfferingWidgetBinding
@@ -64,7 +65,12 @@ class RechargeHomepageOfferingWidgetViewHolder(
 
             binding.containerRechargeHomeOffering.background = gradient
         } catch (e: Throwable) {
-
+            binding.containerRechargeHomeOffering.setBackgroundColor(
+                MethodChecker.getColor(
+                    binding.containerRechargeHomeOffering.context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_Background
+                )
+            )
         }
     }
 

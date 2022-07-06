@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginLeft="8dp"
     android:layout_marginRight="8dp"
-    android:background="@color/Unify_Background"
+    app:card_background_color="@color/Unify_Background"
     android:elevation="0dp"
     app:cardCornerRadius="8dp">
 
@@ -28,8 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
-                android:id="@+id/tg_horizontal_card_product_image"
-                android:src="@drawable/bannerview_image_broken" />
+                android:id="@+id/tg_horizontal_card_product_image" />
 
         </LinearLayout>
 
@@ -88,4 +87,4 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
-</androidx.cardview.widget.CardView>
+</com.tokopedia.unifycomponents.CardUnify2>

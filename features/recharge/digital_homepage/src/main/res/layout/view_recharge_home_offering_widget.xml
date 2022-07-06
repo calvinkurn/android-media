@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:elevation="0dp"
-    app:cardCornerRadius="8dp">
+    app:cardCornerRadius="@dimen/unify_space_8">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container_recharge_home_offering"
