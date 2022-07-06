@@ -298,7 +298,7 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
 
     private fun onViewAccountClicked() {
         homeAccountAnalytics.trackClickViewStatusLinkAccountPage()
-        LinkAccountWebViewActivity.gotoSuccessPage(activity, LinkAccountWebviewFragment.BACK_BTN_APPLINK)
+        LinkAccountWebViewActivity.gotoSuccessPage(activity, ApplinkConst.HOME)
     }
 
     private fun switchListener() {
