@@ -19,10 +19,6 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
  */
 class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailComponent> {
 
-    override fun getParentViewResourceID(): Int = com.tokopedia.abstraction.R.id.parent_view
-
-    override fun getLayoutRes() = com.tokopedia.abstraction.R.layout.activity_base_simple
-
     private var checkInDate: String = ""
     private var checkOutDate: String = ""
     private var propertyId: Long = 0
