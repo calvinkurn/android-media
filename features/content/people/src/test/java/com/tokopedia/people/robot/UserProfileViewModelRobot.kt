@@ -24,7 +24,7 @@ class UserProfileViewModelRobot(
     private val dispatcher: CoroutineTestDispatchers = CoroutineTestDispatchers,
 ) : Closeable {
 
-    private val viewModel = UserProfileViewModel(
+    val viewModel = UserProfileViewModel(
         username = username,
         repo = repo,
         userSession = userSession,
@@ -102,11 +102,15 @@ class UserProfileViewModelRobot(
         return uiState to uiEvents
     }
 
+    fun start(fn: suspend UserProfileViewModelRobot.() -> Unit) {
+        use {
+            runBlockingTest { fn() }
+        }
+    }
+
     suspend fun submitAction(action: UserProfileAction) = act {
         viewModel.submitAction(action)
     }
-
-    fun getViewModel() = viewModel
 
     private suspend fun act(fn: () -> Unit) {
         fn()
