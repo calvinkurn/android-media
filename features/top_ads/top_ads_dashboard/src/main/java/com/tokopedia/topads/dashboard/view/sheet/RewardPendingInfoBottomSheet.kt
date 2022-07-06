@@ -18,9 +18,8 @@ class RewardPendingInfoBottomSheet : BottomSheetUnify() {
 
     private fun setUpChildView() {
         setChild(View.inflate(context, R.layout.topads_reward_pending_info_bottom_sheet,null))
-
-        showCloseIcon = true
         context?.resources?.getString(R.string.topads_credit_reward_pending)?.let { setTitle(it) }
-
+        isFullpage = false
+        showCloseIcon = true
     }
 }
