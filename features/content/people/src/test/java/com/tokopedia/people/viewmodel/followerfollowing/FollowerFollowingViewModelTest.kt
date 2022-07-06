@@ -6,8 +6,10 @@ import com.tokopedia.people.domains.FollowerFollowingListingUseCase
 import com.tokopedia.people.domains.ProfileFollowUseCase
 import com.tokopedia.people.domains.ProfileUnfollowedUseCase
 import com.tokopedia.people.model.CommonModelBuilder
+import com.tokopedia.people.model.followerfollowing.FollowModelBuilder
 import com.tokopedia.people.model.followerfollowing.FollowerListModelBuilder
 import com.tokopedia.people.model.followerfollowing.FollowingListModelBuilder
+import com.tokopedia.people.model.followerfollowing.UnFollowModelBuilder
 import com.tokopedia.people.robot.FollowerFollowingViewModelRobot
 import com.tokopedia.people.util.equalTo
 import com.tokopedia.people.util.getOrAwaitValue
@@ -16,6 +18,7 @@ import io.mockk.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.lang.Exception
 
 /**
  * Created By : Jonathan Darwin on July 06, 2022
@@ -31,10 +34,17 @@ class FollowerFollowingViewModelTest {
     private val commonBuilder = CommonModelBuilder()
     private val followerListBuilder = FollowerListModelBuilder()
     private val followingListBuilder = FollowingListModelBuilder()
+    private val followBuilder = FollowModelBuilder()
+    private val unFollowBuilder = UnFollowModelBuilder()
+
+    private val mockUserIdSource = "1"
+    private val mockUserIdTarget = "2"
 
     private val mockException = commonBuilder.buildException()
     private val mockFollowerList = followerListBuilder.buildModel()
     private val mockFollowingList = followingListBuilder.buildModel()
+    private val mockFollow = followBuilder.buildModel(mockUserIdSource, mockUserIdTarget)
+    private val mockUnfollow = unFollowBuilder.buildModel(mockUserIdSource, mockUserIdTarget)
 
     private val mockFollowerFollowingUseCase: FollowerFollowingListingUseCase = mockk(relaxed = true)
     private val mockDoFollowUseCase: ProfileFollowUseCase = mockk(relaxed = true)
@@ -50,6 +60,8 @@ class FollowerFollowingViewModelTest {
     fun setUp() {
         coEvery { mockFollowerFollowingUseCase.getProfileFollowerList(any(), any(), any()) } returns mockFollowerList
         coEvery { mockFollowerFollowingUseCase.getProfileFollowingList(any(), any(), any()) } returns mockFollowingList
+        coEvery { mockDoFollowUseCase.doFollow(any()) } returns mockFollow
+        coEvery { mockDoUnFollowUseCase.doUnfollow(any()) } returns mockUnfollow
     }
 
     @Test
@@ -97,11 +109,20 @@ class FollowerFollowingViewModelTest {
     @Test
     fun `when user successfully follow the account, it should emit the success data`() {
         robot.start {
-            coEvery { mockFollowerFollowingUseCase.getProfileFollowingList(any(), any(), any()) } throws mockException
-            getFollowings()
+            viewModel.doFollow(mockUserIdTarget)
 
-            val throwable = robot.viewModel.followersErrorLiveData.getOrAwaitValue()
-            throwable equalTo mockException
+            val data = robot.viewModel.profileDoFollowLiveData.getOrAwaitValue()
+            data equalTo Success(mockFollow)
+        }
+    }
+
+    @Test
+    fun `when user successfully unfollow the account, it should emit the success data`() {
+        robot.start {
+            viewModel.doUnFollow(mockUserIdTarget)
+
+            val data = robot.viewModel.profileDoUnFollowLiveData.getOrAwaitValue()
+            data equalTo Success(mockUnfollow)
         }
     }
 }
