@@ -114,7 +114,7 @@ class BalanceAdapter(
         private var homeImageLogoBalance: ImageUnify? = itemView.findViewById(R.id.home_iv_logo_balance)
         private var homeTvBalance: TextView = itemView.findViewById(R.id.home_tv_balance)
         private var homeTvReserveBalance: Typography? = itemView.findViewById(R.id.home_tv_reserve_balance)
-        private var divider: View? = itemView.findViewById(R.id.divider_balance)
+        private var homeTitleBalance: Typography = itemView.findViewById(R.id.home_header_title_balance)
 
         fun bind(drawerItem: BalanceDrawerItemModel?,
                  listener: HomeCategoryListener?,
@@ -132,13 +132,6 @@ class BalanceAdapter(
             /**
              * Initial state
              */
-            if (adapterPosition == FIRST_POSITION) {
-                divider?.invisible()
-            } else {
-                divider?.show()
-            }
-
-            animationJob?.cancel()
 
             when (element?.state) {
                 BalanceDrawerItemModel.STATE_LOADING -> {

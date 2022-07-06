@@ -17,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/home_title_balance"
+        android:id="@+id/home_header_title_balance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
@@ -27,8 +27,7 @@
         app:layout_constraintBottom_toBottomOf="@id/home_iv_logo_balance"
         app:layout_constraintStart_toEndOf="@id/home_iv_logo_balance"
         app:layout_constraintTop_toTopOf="@id/home_iv_logo_balance"
-        app:typographyType="small"
-        android:text="GoPay" />
+        app:typographyType="small" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/home_tv_balance"
