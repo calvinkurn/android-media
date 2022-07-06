@@ -1,8 +1,8 @@
 package com.tokopedia.product.addedit.variant.presentation.viewmodel
 
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.network.data.model.response.Header
 import com.tokopedia.product.addedit.common.constant.ProductStatus
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.util.callPrivateFunc
 import com.tokopedia.product.addedit.util.getOrAwaitValue
@@ -10,15 +10,16 @@ import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MAX_SELECTED_VARIANT_TYPE
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MIN_PRODUCT_PRICE_LIMIT
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
-import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantDetailInputLayoutModel
+import com.tokopedia.shop.common.data.source.cloud.model.MaxStockThresholdResponse
 import io.mockk.coEvery
 import io.mockk.every
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert
 import org.junit.Assert.*
 import org.junit.Test
+import org.mockito.ArgumentMatchers
 
 @ExperimentalCoroutinesApi
 class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewModelTestFixture() {
@@ -159,7 +160,6 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
         coEvery { imsResourceProvider.getMinLimitProductPriceErrorMessage(MIN_PRODUCT_PRICE_LIMIT) } returns dummyError
         coEvery { imsResourceProvider.getEmptyProductStockErrorMessage() } returns dummyError
         coEvery { imsResourceProvider.getMinLimitProductStockErrorMessage(MIN_PRODUCT_STOCK_LIMIT) } returns dummyError
-        coEvery { imsResourceProvider.getMaxLimitProductStockErrorMessage(AddEditProductDetailConstants.MAX_PRODUCT_STOCK_LIMIT) } returns dummyError
         coEvery { imsResourceProvider.getEmptyProductWeightErrorMessage() } returns dummyError
         coEvery { imsResourceProvider.getMinLimitProductWeightErrorMessage(AddEditProductVariantConstants.MIN_PRODUCT_WEIGHT_LIMIT) } returns dummyError
         coEvery { imsResourceProvider.getMaxLimitProductWeightErrorMessage(AddEditProductVariantConstants.MAX_PRODUCT_WEIGHT_LIMIT) } returns dummyError
@@ -179,9 +179,6 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
         assert(inputModel.isStockError)
 
         inputModel = viewModel.validateProductVariantStockInput(null, 1)
-        assert(inputModel.isStockError)
-
-        inputModel = viewModel.validateProductVariantStockInput(AddEditProductDetailConstants.MAX_PRODUCT_STOCK_LIMIT.inc(), 1)
         assert(inputModel.isStockError)
 
         inputModel = viewModel.validateProductVariantStockInput(10, 1)
@@ -367,6 +364,138 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
         assertFalse(test1False)
         assertFalse(test2False)
         assertTrue(test3False)
+    }
+
+    @Test
+    fun `getMaxStockThreshold and validateProductStockInput should be successful in getting the threshold value and getting an error`() {
+        /*
+         * Init Data:
+         * 1. expectedErrorMessage is an error message will be shown provided that current stock more than the maximum stock
+         * 2. expectedMaxStockThreshold is max stock threshold which we need to use to compare the expected and actual threshold
+         * 3. stockInput is current stock, we need current more than expectedMaxStockThreshold for this test case
+         */
+        val expectedErrorMessage = "Stok melebihi batas maks. 100.000"
+        val expectedMaxStockThreshold = "100000"
+        val stockInput = "200000"
+
+        // create stub
+        coEvery {
+            getMaxStockThresholdUseCase.execute(ArgumentMatchers.anyString())
+        } returns MaxStockThresholdResponse(getIMSMeta = MaxStockThresholdResponse.GetIMSMeta(
+                data = MaxStockThresholdResponse.GetIMSMeta.Data(
+                    maxStockThreshold = expectedMaxStockThreshold
+                ),
+                header = Header()
+            )
+        )
+
+        // create stub
+        every {
+            imsResourceProvider.getMaxLimitProductStockErrorMessage(expectedMaxStockThreshold)
+        } returns expectedErrorMessage
+
+        // fetch the threshold
+        viewModel.getMaxStockThreshold(ArgumentMatchers.anyString())
+
+        // need to wait the response of threshold because the validation using maxStockThreshold value inside of the function validation
+        val actualMaxStockThreshold = viewModel.maxStockThreshold.getOrAwaitValue()
+
+        // validate product stock input
+        val actualErrorMessage = viewModel.validateProductVariantStockInput(stockInput.toBigInteger())
+
+        /*
+         * Expected Result:
+         * 1. Max stock threshold equals to the actual one
+         * 2. Expected error message equals to the actual one
+         */
+        assertEquals(expectedMaxStockThreshold, actualMaxStockThreshold)
+        assertEquals(expectedErrorMessage, actualErrorMessage)
+    }
+
+    @Test
+    fun `getMaxStockThreshold and validateProductStockInput should be successful in getting the threshold value and not getting an error`() {
+        /*
+         * Init Data:
+         * 1. expectedErrorMessage is an error message will be shown provided that current stock more than the maximum stock
+         * 2. expectedMaxStockThreshold is max stock threshold which we need to use to compare the expected and actual threshold
+         * 3. stockInput is current stock, we need current stock less than expectedMaxStockThreshold for this test case
+         */
+        val expectedErrorMessage = "Stok melebihi batas maks. 100.000"
+        val expectedMaxStockThreshold = "100000"
+        val stockInput = "212"
+
+        // create stub
+        coEvery {
+            getMaxStockThresholdUseCase.execute(ArgumentMatchers.anyString())
+        } returns MaxStockThresholdResponse(getIMSMeta = MaxStockThresholdResponse.GetIMSMeta(
+                data = MaxStockThresholdResponse.GetIMSMeta.Data(
+                    maxStockThreshold = expectedMaxStockThreshold
+                ),
+                header = Header()
+            )
+        )
+
+        // create stub
+        every {
+            imsResourceProvider.getMaxLimitProductStockErrorMessage(expectedMaxStockThreshold)
+        } returns expectedErrorMessage
+
+        // fetch the threshold
+        viewModel.getMaxStockThreshold(ArgumentMatchers.anyString())
+
+        // need to wait the response of threshold because the validation using maxStockThreshold value inside of the function validation
+        val actualMaxStockThreshold = viewModel.maxStockThreshold.getOrAwaitValue()
+
+        // validate product stock input
+        val actualErrorMessage = viewModel.validateProductVariantStockInput(stockInput.toBigInteger())
+
+        /*
+         * Expected Result:
+         * 1. Max stock threshold equals to the actual one
+         * 2. Expected error message does not equal to the actual one
+         */
+        assertEquals(expectedMaxStockThreshold, actualMaxStockThreshold)
+        assertNotEquals(expectedErrorMessage, actualErrorMessage)
+    }
+
+    @Test
+    fun `getMaxStockThreshold and validateProductStockInput should fail in getting the threshold value and not getting an error`() {
+        /*
+         * Init Data:
+         * 1. expectedErrorMessage is an error message will be shown provided that current stock more than the maximum stock
+         * 2. expectedMaxStockThreshold is max stock threshold which we need to use to compare the expected and actual threshold
+         * 3. stockInput is current stock, we need current stock more than expectedMaxStockThreshold for this test case
+         */
+        val expectedErrorMessage = "Stok melebihi batas maks. 100.000"
+        val expectedMaxStockThreshold: String? = null
+        val stockInput = "200000"
+
+        // throw a throwable
+        coEvery {
+            getMaxStockThresholdUseCase.execute(ArgumentMatchers.anyString())
+        } throws Throwable()
+
+        // create stub
+        every {
+            imsResourceProvider.getMaxLimitProductStockErrorMessage(expectedMaxStockThreshold)
+        } returns expectedErrorMessage
+
+        // fetch the threshold
+        viewModel.getMaxStockThreshold(ArgumentMatchers.anyString())
+
+        // need to wait the response of threshold because the validation using maxStockThreshold value inside of the function validation
+        val actualMaxStockThreshold = viewModel.maxStockThreshold.getOrAwaitValue()
+
+        // validate product stock input
+        val actualErrorMessage = viewModel.validateProductVariantStockInput(stockInput.toBigInteger())
+
+        /*
+         * Expected Result:
+         * 1. Max stock threshold equals to the actual one
+         * 2. Expected error message does not equal to the actual one
+         */
+        assertEquals(expectedMaxStockThreshold, actualMaxStockThreshold)
+        assertNotEquals(expectedErrorMessage, actualErrorMessage)
     }
 
 }

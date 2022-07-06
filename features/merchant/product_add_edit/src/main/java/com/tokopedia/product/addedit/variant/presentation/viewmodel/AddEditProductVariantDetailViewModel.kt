@@ -324,15 +324,15 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
 
     fun validateProductVariantStockInput(stockInput: BigInteger): String {
         val maxStock = _maxStockThreshold.value
-        val isMaxStockNotNullOrBlank = !maxStock.isNullOrBlank()
+        val isMaxStockNotNull = maxStock != null
         val isCurrentStockLessThanMinStock = stockInput < MIN_PRODUCT_STOCK_LIMIT.toBigInteger()
         val isCurrentStockMoreThanMaxStock = stockInput > maxStock?.toBigIntegerOrNull().orZero()
         return when {
             isCurrentStockLessThanMinStock -> {
                 imsResourceProvider.getMinLimitProductStockErrorMessage(MIN_PRODUCT_STOCK_LIMIT)
             }
-            isMaxStockNotNullOrBlank && isCurrentStockMoreThanMaxStock -> {
-                imsResourceProvider.getMaxLimitProductStockErrorMessage(maxStock.orEmpty())
+            isMaxStockNotNull && isCurrentStockMoreThanMaxStock -> {
+                imsResourceProvider.getMaxLimitProductStockErrorMessage(maxStock)
             }
             else -> ""
         }
