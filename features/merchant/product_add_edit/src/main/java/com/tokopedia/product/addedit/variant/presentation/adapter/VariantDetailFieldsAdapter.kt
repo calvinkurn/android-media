@@ -3,6 +3,7 @@ package com.tokopedia.product.addedit.variant.presentation.adapter
 import android.annotation.SuppressLint
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.variant.presentation.adapter.uimodel.VariantDetailFieldsUiModel
 import com.tokopedia.product.addedit.variant.presentation.adapter.uimodel.VariantDetailHeaderUiModel
@@ -56,6 +57,18 @@ class VariantDetailFieldsAdapter(variantDetailTypeFactoryImpl: VariantDetailInpu
                 val variantDetailFieldsViewModel = VariantDetailFieldsUiModel(
                     visitable.variantDetailInputLayoutModel, visitable.displayWeightCoachmark)
                 notifyElement(index, variantDetailFieldsViewModel)
+            }
+        }
+    }
+
+    fun updateMaxStockThreshold(maxStockThreshold: String) {
+        list.forEachIndexed { index, visitable ->
+            (visitable as? VariantDetailFieldsUiModel)?.variantDetailInputLayoutModel?.let { detailModel ->
+                val currentStock = detailModel.stock.orZero()
+                val maxStock = maxStockThreshold.toInt().orZero()
+                if (currentStock > maxStock) {
+                    notifyItemChanged(index)
+                }
             }
         }
     }

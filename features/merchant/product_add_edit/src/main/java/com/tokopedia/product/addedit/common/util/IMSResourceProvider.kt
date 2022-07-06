@@ -43,8 +43,8 @@ class IMSResourceProvider @Inject constructor(@ApplicationContext val context: C
         return getString(R.string.error_minimum_stock, minStock).orEmpty()
     }
 
-    fun getMaxLimitProductStockErrorMessage(maxStock: Int): String {
-        return getString(R.string.error_max_stock, maxStock.getNumberFormatted()).orEmpty()
+    fun getMaxLimitProductStockErrorMessage(maxStock: String?): String {
+        return getString(R.string.error_max_stock, maxStock.orEmpty()).orEmpty()
     }
 
     // product variant weight string properties

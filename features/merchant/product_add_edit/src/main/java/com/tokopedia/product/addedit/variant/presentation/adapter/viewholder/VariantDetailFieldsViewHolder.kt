@@ -98,7 +98,7 @@ class VariantDetailFieldsViewHolder(
     }
 
     private fun setupStockFieldListener(variantDetailFieldsViewHolderListener: VariantDetailFieldsViewHolderListener) {
-        stockField?.setModeToNumberInput()
+        stockField?.setModeToNumberInput(MAX_LENGTH_STOCK_INPUT)
         stockField?.textFieldInput?.doOnTextChanged { text, _, count, _ ->
             if (count.isMoreThanZero()) {
                 val stockInput = text.toString().replace(".", "")
@@ -209,6 +209,8 @@ class VariantDetailFieldsViewHolder(
     }
 
     companion object {
+        private const val MAX_LENGTH_STOCK_INPUT = 7
+
         @LayoutRes
         val LAYOUT = R.layout.product_variant_detail_fields_layout
     }

@@ -1,9 +1,11 @@
 package com.tokopedia.product.addedit.variant.presentation.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -12,7 +14,6 @@ import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_ACTIVE
 import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_INACTIVE_STRING
 import com.tokopedia.product.addedit.common.util.IMSResourceProvider
 import com.tokopedia.product.addedit.common.util.InputPriceUtil
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_STOCK_LIMIT
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.DEFAULT_IS_PRIMARY_INDEX
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MAX_PRODUCT_WEIGHT_LIMIT
@@ -28,6 +29,7 @@ import com.tokopedia.product.addedit.variant.presentation.extension.getValueOrDe
 import com.tokopedia.product.addedit.variant.presentation.extension.lastCurrentHeaderPosition
 import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantDetailInputLayoutModel
+import com.tokopedia.shop.common.domain.interactor.GetMaxStockThresholdUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import java.math.BigInteger
@@ -35,11 +37,17 @@ import javax.inject.Inject
 
 class AddEditProductVariantDetailViewModel @Inject constructor(
     private val imsResourceProvider: IMSResourceProvider,
+    private val getMaxStockThresholdUseCase: GetMaxStockThresholdUseCase,
     private val userSession: UserSessionInterface,
     coroutineDispatcher: CoroutineDispatcher
 ) : BaseViewModel(coroutineDispatcher) {
 
     var productInputModel = MutableLiveData<ProductInputModel>()
+
+    private val _maxStockThreshold = MutableLiveData<String>()
+    val maxStockThreshold: LiveData<String>
+        get() = _maxStockThreshold
+
     var isMultiLocationShop: Boolean = false
         private set
 
@@ -238,6 +246,14 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         refreshCollapsedVariantDetailField()
     }
 
+    fun getMaxStockThreshold(shopId: String) {
+        launchCatchError(block = {
+            _maxStockThreshold.value = getMaxStockThresholdUseCase.execute(shopId).getIMSMeta.data.maxStockThreshold
+        }, onError = {
+            _maxStockThreshold.value = null
+        })
+    }
+
     fun getCurrentHeaderPosition(headerPosition: Int): Int {
         return currentHeaderPositionMap[headerPosition].orZero()
     }
@@ -307,12 +323,16 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     }
 
     fun validateProductVariantStockInput(stockInput: BigInteger): String {
+        val maxStock = _maxStockThreshold.value
+        val isMaxStockNotNull = maxStock != null
+        val isCurrentStockLessThanMinStock = stockInput < MIN_PRODUCT_STOCK_LIMIT.toBigInteger()
+        val isCurrentStockMoreThanMaxStock = stockInput > maxStock?.toBigIntegerOrNull().orZero()
         return when {
-            stockInput < MIN_PRODUCT_STOCK_LIMIT.toBigInteger() -> {
+            isCurrentStockLessThanMinStock -> {
                 imsResourceProvider.getMinLimitProductStockErrorMessage(MIN_PRODUCT_STOCK_LIMIT)
             }
-            stockInput > MAX_PRODUCT_STOCK_LIMIT.toBigInteger() -> {
-                imsResourceProvider.getMaxLimitProductStockErrorMessage(MAX_PRODUCT_STOCK_LIMIT)
+            isMaxStockNotNull && isCurrentStockMoreThanMaxStock -> {
+                imsResourceProvider.getMaxLimitProductStockErrorMessage(maxStock)
             }
             else -> ""
         }

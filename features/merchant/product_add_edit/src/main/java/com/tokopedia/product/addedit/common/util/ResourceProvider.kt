@@ -98,8 +98,8 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
         }.orEmpty()
     }
 
-    fun getMaxLimitProductStockErrorMessage(): String? {
-        return getString(R.string.error_available_stock_quantity_exceeding_max_limit)
+    fun getMaxLimitProductStockErrorMessage(maxStock: String?): String {
+        return context?.getString(R.string.error_available_stock_quantity_exceeding_max_limit, maxStock.orEmpty()).orEmpty()
     }
 
     // product order quantity string properties
