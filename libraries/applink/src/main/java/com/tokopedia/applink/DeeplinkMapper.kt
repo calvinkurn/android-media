@@ -96,6 +96,7 @@ import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.shouldRedirectTo
 import com.tokopedia.applink.shopscore.ShopScoreDeepLinkMapper
 import com.tokopedia.applink.statistic.DeepLinkMapperStatistic
 import com.tokopedia.applink.teleporter.Teleporter
+import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood
 import com.tokopedia.applink.tokonow.DeeplinkMapperTokopediaNow.getRegisteredNavigationTokopediaNowCategory
 import com.tokopedia.applink.tokonow.DeeplinkMapperTokopediaNow.getRegisteredNavigationTokopediaNowSearch
 import com.tokopedia.applink.travel.DeeplinkMapperTravel
@@ -334,6 +335,7 @@ object DeeplinkMapper {
             DLP.startWith(ApplinkConst.POWER_MERCHANT_PRO_INTERRUPT) { _, _, deeplink, _ -> PowerMerchantDeepLinkMapper.getInternalAppLinkPmProInterrupt(deeplink) },
             DLP.startWith(ApplinkConst.Gamification.CRACK) { _, _, deeplink, _ -> DeeplinkMapperGamification.getGamificationDeeplink(deeplink) },
             DLP.startWith(ApplinkConst.SELLER_ORDER_DETAIL) { context, uri, deeplink, _ -> getRegisteredNavigationOrder(context, uri, deeplink) },
+            DLP.startWith(ApplinkConst.LOGISTIC_SELLER_RESCHEDULE) { context, uri, deeplink, _ -> DeeplinkMapperLogistic.getReschedulePickupDeeplink(context, uri, deeplink) },
             DLP.matchPattern(ApplinkConst.SHOP_REVIEW,
                     targetDeeplink = { _, _, _, idList -> getRegisteredNavigationShopReview(idList?.getOrNull(0)) }),
             DLP(Host(ApplinkConst.TOPCHAT_HOST) or Host(ApplinkConst.TOPCHAT_OLD_HOST)) { _, uri, deeplink, _ -> getRegisteredNavigationTopChat(uri, deeplink) },
@@ -509,6 +511,7 @@ object DeeplinkMapper {
                         ApplinkConstInternalMarketplace.PRODUCT_DETAIL_EDUCATIONAL,
                         idList?.lastOrNull() ?: "")
             }),
+            DLP.startWith(ApplinkConst.TokoFood.MAIN_PATH) { _, uri, _, _ -> DeeplinkMapperTokoFood.mapperInternalApplinkTokoFood(uri) },
         )
 
     fun getTokopediaSchemeList():List<DLP>{
