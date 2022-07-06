@@ -17,12 +17,21 @@ class SmartBillsHighlightCategoryWidget @JvmOverloads constructor(@NotNull conte
 
     private var binding = ViewSmartBillsHighlightedCategoryBinding.inflate(LayoutInflater.from(context), this, true)
 
-    fun renderHighlightCategory(uiModel: HighlightCategoryUiModel) {
+    fun renderHighlightCategory(listener: SmartBillsHighlightCategoryListener, uiModel: HighlightCategoryUiModel) {
         with(binding) {
             imgHighligtedCategory.loadImage(uiModel.imageUrl)
             tgHighlightedCategoryTitle.text = uiModel.title
             tgHighlightedCategoryDate.text = uiModel.date
             tgHighlightedCategoryDesc.text = uiModel.desc
+
+            iconHighlightedCategoryClose.setOnClickListener {
+                hideHighlightCategory()
+                listener.onClickCloseHighlightCategoryWidget(uiModel)
+            }
+
+            root.setOnClickListener {
+                listener.onClickHighlightCategoryWidget(uiModel)
+            }
         }
     }
 
@@ -32,5 +41,10 @@ class SmartBillsHighlightCategoryWidget @JvmOverloads constructor(@NotNull conte
 
     fun hideHighlightCategory() {
         binding.root.hide()
+    }
+
+    interface SmartBillsHighlightCategoryListener {
+        fun onClickHighlightCategoryWidget(uiModel: HighlightCategoryUiModel)
+        fun onClickCloseHighlightCategoryWidget(uiModel: HighlightCategoryUiModel)
     }
 }

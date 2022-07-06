@@ -51,6 +51,7 @@ import com.tokopedia.smartbills.presentation.adapter.viewholder.SmartBillsViewHo
 import com.tokopedia.smartbills.presentation.viewmodel.SmartBillsViewModel
 import com.tokopedia.smartbills.presentation.widget.SmartBillsCatalogBottomSheet
 import com.tokopedia.smartbills.presentation.widget.SmartBillsDeleteBottomSheet
+import com.tokopedia.smartbills.presentation.widget.SmartBillsHighlightCategoryWidget
 import com.tokopedia.smartbills.presentation.widget.SmartBillsItemDetailBottomSheet
 import com.tokopedia.smartbills.presentation.widget.SmartBillsToolTipBottomSheet
 import com.tokopedia.smartbills.util.DividerSBMItemDecoration
@@ -79,8 +80,9 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     SmartBillsActivity.SbmActivityListener,
     SmartBillsToolTipBottomSheet.Listener,
     SmartBillsAccordionViewHolder.SBMAccordionListener,
-        SmartBillsEmptyStateViewHolder.EmptyStateSBMListener,
-        SmartBillsCatalogBottomSheet.CatalogCallback
+    SmartBillsEmptyStateViewHolder.EmptyStateSBMListener,
+    SmartBillsCatalogBottomSheet.CatalogCallback,
+    SmartBillsHighlightCategoryWidget.SmartBillsHighlightCategoryListener
 {
 
     @Inject
@@ -838,11 +840,19 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
 
     private fun showHighlightCategory(uiModel: HighlightCategoryUiModel) {
         highlight_category.showHighlightCategory()
-        highlight_category.renderHighlightCategory(uiModel)
+        highlight_category.renderHighlightCategory(this, uiModel)
     }
 
     private fun hideHighlightCategory() {
         highlight_category.hideHighlightCategory()
+    }
+
+    override fun onClickCloseHighlightCategoryWidget(uiModel: HighlightCategoryUiModel) {
+
+    }
+
+    override fun onClickHighlightCategoryWidget(uiModel: HighlightCategoryUiModel) {
+
     }
 
     companion object {
