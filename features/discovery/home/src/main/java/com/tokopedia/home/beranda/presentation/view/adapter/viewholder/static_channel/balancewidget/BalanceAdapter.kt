@@ -139,7 +139,7 @@ class BalanceAdapter(
                     val balanceText = element.balanceTitleTextAttribute?.text ?: ""
 
                     homeTvBalance.text = balanceText
-                    homeTitleBalance.text = element.titleHeader
+                    homeTitleBalance.text = element.headerTitle
 
                     val reserveBalance = element.balanceSubTitleTextAttribute?.text ?: ""
                     if (reserveBalance.isNotEmpty()) {

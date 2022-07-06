@@ -21,7 +21,7 @@ data class BalanceDrawerItemModel(
         var alternateBalanceDrawerItem: List<BalanceDrawerItemModel>? = null,
         var balanceCoachmark: BalanceCoachmark? = null,
         val reserveBalance: String = "",
-        val titleHeader: String = ""
+        val headerTitle: String = ""
 ) {
     companion object {
         const val TYPE_UNKNOWN = 0

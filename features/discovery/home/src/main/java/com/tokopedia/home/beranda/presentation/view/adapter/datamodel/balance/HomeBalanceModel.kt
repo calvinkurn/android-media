@@ -88,10 +88,11 @@ data class HomeBalanceModel(
 
     fun mapBalanceData(
         tokopointDrawerListHomeData: TokopointsDrawerListHomeData? = null,
-        walletAppData: WalletAppData? = null
+        walletAppData: WalletAppData? = null,
+        headerTitle: String
     ) {
-        tokopointDrawerListHomeData?.let { mapTokopoint(tokopointDrawerListHomeData) }
-        walletAppData?.let { mapWalletApp(walletAppData) }
+        tokopointDrawerListHomeData?.let { mapTokopoint(tokopointDrawerListHomeData, headerTitle) }
+        walletAppData?.let { mapWalletApp(walletAppData, headerTitle) }
     }
 
     fun mapErrorTokopoints() {
@@ -196,13 +197,14 @@ data class HomeBalanceModel(
         return null
     }
 
-    private fun mapTokopoint(tokopointDrawerListHomeData: TokopointsDrawerListHomeData?) {
+    private fun mapTokopoint(tokopointDrawerListHomeData: TokopointsDrawerListHomeData?, headerTitle: String) {
         val tokopointMapData = tokopointDrawerListHomeData?.tokopointsDrawerList?.drawerList?.map {
             val type = getDrawerType(it.type)
             it.mapToHomeBalanceItemModel(
                     drawerItemType = type,
                     state = STATE_SUCCESS,
-                    defaultIconRes = mapTokopointDefaultIconRes(type)
+                    defaultIconRes = mapTokopointDefaultIconRes(type),
+                    headerTitle = headerTitle
             )
         }
         val tokopointAnimDrawerContent = tokopointMapData?.getOrNull(0)
@@ -241,10 +243,10 @@ data class HomeBalanceModel(
         else -> null
     }
 
-    private fun mapWalletApp(walletAppData: WalletAppData?) {
+    private fun mapWalletApp(walletAppData: WalletAppData?, headerTitle: String) {
         walletAppData?.let { walletApp ->
             val selectedBalance =
-                walletApp.mapToHomeBalanceItemModel(state = STATE_SUCCESS)
+                walletApp.mapToHomeBalanceItemModel(state = STATE_SUCCESS, headerTitle = headerTitle)
             if (selectedBalance != null) {
                 selectedBalance.let { balance ->
                     flagStateCondition(

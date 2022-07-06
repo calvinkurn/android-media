@@ -18,7 +18,7 @@ private const val ERROR_GOPAY_EMPTY = "Wallet app is linked but gopay balance re
 private const val ERROR_GOPAY_POINTS_EMPTY = "Wallet app is linked but gopay points return empty"
 private const val WALLET_PEMUDA_POINTS_THRESHOLD = 10000
 
-fun TokopointsDrawer.mapToHomeBalanceItemModel(drawerItemType: Int, defaultIconRes: Int? = null, state: Int): BalanceDrawerItemModel {
+fun TokopointsDrawer.mapToHomeBalanceItemModel(drawerItemType: Int, defaultIconRes: Int? = null, state: Int, headerTitle: String): BalanceDrawerItemModel {
     val balanceTitleTextAttribute = sectionContent.getOrNull(0)?.textAttributes?.mapToBalanceTextAttributes()
     val balanceSubTitleTextAttribute = sectionContent.getOrNull(1)?.textAttributes?.mapToBalanceTextAttributes()
 
@@ -37,11 +37,12 @@ fun TokopointsDrawer.mapToHomeBalanceItemModel(drawerItemType: Int, defaultIconR
             balanceSubTitleTagAttribute = balanceSubTitleTagAttribute,
             drawerItemType = drawerItemType,
             state = state,
-            mainPageTitle = mainPageTitle
+            mainPageTitle = mainPageTitle,
+            headerTitle = headerTitle
     )
 }
 
-fun WalletAppData.mapToHomeBalanceItemModel(state: Int): BalanceDrawerItemModel? {
+fun WalletAppData.mapToHomeBalanceItemModel(state: Int, headerTitle: String): BalanceDrawerItemModel? {
     val selectedBalance = walletappGetBalance.balances.getOrNull(0)
     var pemudaPointsReserveBalance = ""
 
@@ -102,7 +103,8 @@ fun WalletAppData.mapToHomeBalanceItemModel(state: Int): BalanceDrawerItemModel?
             balanceTitleTextAttribute = balanceTitle,
             balanceSubTitleTextAttribute = balanceSubtitle,
             state = state,
-            pemudaPointsReserveBalance = pemudaPointsReserveBalance
+            pemudaPointsReserveBalance = pemudaPointsReserveBalance,
+            headerTitle = headerTitle
         )
     }
     return null
@@ -114,7 +116,8 @@ private fun WalletAppData.buildWalletAppBalanceDrawerModel(
     balanceSubTitleTextAttribute: BalanceTextAttribute,
     state: Int,
     walletCode: String = "",
-    pemudaPointsReserveBalance: String = ""
+    pemudaPointsReserveBalance: String = "",
+    headerTitle: String
 ) = BalanceDrawerItemModel(
     applinkContainer = selectedBalance.redirectUrl,
     applinkActionText = selectedBalance.redirectUrl,
@@ -125,7 +128,8 @@ private fun WalletAppData.buildWalletAppBalanceDrawerModel(
     drawerItemType = if (selectedBalance.isLinked) BalanceDrawerItemModel.TYPE_WALLET_APP_LINKED else BalanceDrawerItemModel.TYPE_WALLET_APP_NOT_LINKED,
     state = state,
     trackingAttribute = walletCode,
-    reserveBalance = pemudaPointsReserveBalance
+    reserveBalance = pemudaPointsReserveBalance,
+    headerTitle = headerTitle
 )
 
 fun TextAttributes.mapToBalanceTextAttributes(): BalanceTextAttribute {
