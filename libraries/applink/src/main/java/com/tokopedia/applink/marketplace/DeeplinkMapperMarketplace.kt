@@ -58,7 +58,7 @@ object DeeplinkMapperMarketplace {
             ApplinkConstInternalTokopediaNow.HOME
         } else {
             if (isShopReviewAppLink(deeplink)) {
-                getShopReviewDestinationPage(uri, shopId, internalAppLink)
+                getShopReviewDestinationPage(uri, shopId)
             } else {
                 internalAppLink
             }
@@ -83,14 +83,14 @@ object DeeplinkMapperMarketplace {
         }
     }
 
-    private fun getShopReviewDestinationPage(uri: Uri, shopId: String, shopPageInternalApplink: String): String {
+    private fun getShopReviewDestinationPage(uri: Uri, shopId: String): String {
         val source = uri.getQueryParameter(PARAM_SOURCE).orEmpty()
         return if (source.isNotEmpty() && source == REVIEW_FULL_PAGE_SOURCE) {
             // review page full page
             UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_REVIEW_FULL_PAGE, shopId)
         } else {
             // go to shop page and redirect to review tab
-            shopPageInternalApplink
+            UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_REVIEW, shopId)
         }
     }
 
