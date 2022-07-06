@@ -26,12 +26,17 @@ class FakeInactivePhoneDependency {
     @Inject
     lateinit var verifyNewPhoneUseCaseStub: VerifyNewPhoneUseCaseStub
 
+    @Inject
+    lateinit var inputOldPhoneNumberUseCaseStub: InputOldPhoneNumberUseCaseStub
+
     var accountListDataModel = AccountListDataModel()
     var statusInactivePhoneNumberDataModel = StatusInactivePhoneNumberDataModel()
     var phoneValidationDataModel = PhoneValidationDataModel()
     var inactivePhoneSubmitDataModel = InactivePhoneSubmitDataModel()
     var submitExpeditedInactivePhoneDataModel = SubmitExpeditedDataModel()
     var verifyNewPhoneDataModel = VerifyNewPhoneDataModel()
+    var registerCheckRegisteredModel = RegisterCheckModel()
+    var registerCheckNotRegisteredModel = RegisterCheckModel()
 
     /*
      * Default response = success response
@@ -65,6 +70,16 @@ class FakeInactivePhoneDependency {
         verifyNewPhoneDataModel = AndroidFileUtil.parseRaw(
             R.raw.verify_new_phone_inactive_phone_user,
             VerifyNewPhoneDataModel::class.java
+        )
+
+        registerCheckRegisteredModel = AndroidFileUtil.parseRaw(
+            R.raw.register_check_registered,
+            RegisterCheckModel::class.java
+        )
+
+        registerCheckNotRegisteredModel = AndroidFileUtil.parseRaw(
+            R.raw.register_check_not_registered,
+            RegisterCheckModel::class.java
         )
     }
 }
