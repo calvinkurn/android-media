@@ -52,6 +52,121 @@ class TmFilterBottomsheet: BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        radioSemuaStatus.setOnClickListener{
+            if(selectedStatus != "1,2,3,4")
+            {
+                radioSemuaStatus.isChecked = true
+                radioStatusAktif.isChecked = false
+                radioBelumAktif.isChecked = false
+                radioSudahBeharkhir.isChecked = false
+                selectedStatus = "1,2,3,4"
+            }
+            else{
+                radioSemuaStatus.isChecked = true
+                radioStatusAktif.isChecked = false
+                radioBelumAktif.isChecked = false
+                radioSudahBeharkhir.isChecked = false
+                selectedStatus = "1,2,3,4"
+            }
+        }
+        radioStatusAktif.setOnClickListener{
+            if(selectedStatus != "2")
+            {
+                radioStatusAktif.isChecked = true
+                radioSemuaStatus.isChecked = false
+                radioBelumAktif.isChecked = false
+                radioSudahBeharkhir.isChecked = false
+                selectedStatus = "2"
+            }
+            else{
+                radioSemuaStatus.isChecked = true
+                radioStatusAktif.isChecked = false
+                radioBelumAktif.isChecked = false
+                radioSudahBeharkhir.isChecked = false
+                selectedStatus = "1,2,3,4"
+            }
+        }
+        radioBelumAktif.setOnClickListener{
+            if(selectedStatus != "1")
+            {
+                radioBelumAktif.isChecked = true
+                radioStatusAktif.isChecked = false
+                radioSemuaStatus.isChecked = false
+                radioSudahBeharkhir.isChecked = false
+                selectedStatus = "1"
+            }
+            else{
+                radioSemuaStatus.isChecked = true
+                radioStatusAktif.isChecked = false
+                radioBelumAktif.isChecked = false
+                radioSudahBeharkhir.isChecked = false
+                selectedStatus = "1,2,3,4"
+            }
+        }
+        radioSudahBeharkhir.setOnClickListener{
+            if(selectedStatus != "4")
+            {
+                radioSudahBeharkhir.isChecked = true
+                radioStatusAktif.isChecked = false
+                radioSemuaStatus.isChecked = false
+                radioBelumAktif.isChecked = false
+                selectedStatus = "4"
+            }
+            else{
+                radioSemuaStatus.isChecked = true
+                radioStatusAktif.isChecked = false
+                radioBelumAktif.isChecked = false
+                radioSudahBeharkhir.isChecked = false
+                selectedStatus = "1,2,3,4"
+            }
+        }
+
+        radioTypeSemua.setOnClickListener{
+            if(selectedType != "0")
+            {
+                radioTypeSemua.isChecked = true
+                radioTypeCashback.isChecked = false
+                radioTypeGratisOngkir.isChecked = false
+                selectedType = "0"
+            }
+            else{
+                radioTypeSemua.isChecked = true
+                radioTypeCashback.isChecked = false
+                radioTypeGratisOngkir.isChecked = false
+                selectedType = "0"
+            }
+        }
+        radioTypeCashback.setOnClickListener{
+            if(selectedType != "3")
+            {
+                selectedType = "3"
+                radioTypeCashback.isChecked = true
+                radioTypeSemua.isChecked = false
+                radioTypeGratisOngkir.isChecked = false
+            }
+            else{
+                radioTypeSemua.isChecked = true
+                radioTypeCashback.isChecked = false
+                radioTypeGratisOngkir.isChecked = false
+                selectedType = "0"
+            }
+        }
+        radioTypeGratisOngkir.setOnClickListener{
+            if(selectedType != "1")
+            {
+                selectedType = "1"
+                radioTypeGratisOngkir.isChecked = true
+                radioTypeSemua.isChecked = false
+                radioTypeCashback.isChecked = false
+            }
+            else{
+                radioTypeSemua.isChecked = true
+                radioTypeCashback.isChecked = false
+                radioTypeGratisOngkir.isChecked = false
+                selectedType = "0"
+            }
+        }
+
         when(selectedStatus){
             "1,2,3,4" -> {
                 radioSemuaStatus.isChecked = true
@@ -123,8 +238,8 @@ class TmFilterBottomsheet: BottomSheetUnify() {
                 selectedStatus = "1"
             }
             else{
-                radioStatusAktif.isChecked = true
-                radioSemuaStatus.isChecked = false
+                radioSemuaStatus.isChecked = true
+                radioStatusAktif.isChecked = false
                 radioBelumAktif.isChecked = false
                 radioSudahBeharkhir.isChecked = false
                 selectedStatus = "1,2,3,4"
@@ -140,8 +255,8 @@ class TmFilterBottomsheet: BottomSheetUnify() {
                 selectedStatus = "4"
             }
             else{
-                radioStatusAktif.isChecked = true
-                radioSemuaStatus.isChecked = false
+                radioSemuaStatus.isChecked = true
+                radioStatusAktif.isChecked = false
                 radioBelumAktif.isChecked = false
                 radioSudahBeharkhir.isChecked = false
                 selectedStatus = "1,2,3,4"
