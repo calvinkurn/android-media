@@ -267,7 +267,7 @@ public class BranchWrapper implements WrapperInterface {
     public void setDataFromInstallReferrerParams(String installReferrerParams) {
         if (!TextUtils.isEmpty(installReferrerParams) && installReferrerParams.contains(IDENTIFIER_OPPO_INSTALL_REFERRER)) {
             Branch.getInstance().setPreinstallCampaign("oppopreinstallol-dp_int-tp-10001511-0000-alon-alon");
-            Branch.getInstance().setPreinstallPartner("a_oppopai");
+            Branch.getInstance().setPreinstallPartner("a_custom_884988300975328897");
         }
     }
 
@@ -465,6 +465,8 @@ public class BranchWrapper implements WrapperInterface {
             deeplinkPath = data.getDeepLink();
         } else if (LinkerData.NOW_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(LinkerConstants.NOW, data.getId());
+        } else if (LinkerData.FOOD_TYPE.equalsIgnoreCase(data.getType())) {
+            deeplinkPath = data.getDeepLink();
         } else if (LinkerData.WEBVIEW_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(LinkerConstants.WEBVIEW, data.getId());
         } else if (isAppShowReferralButtonActivated(context) && LinkerData.REFERRAL_TYPE.equalsIgnoreCase(data.getType())) {

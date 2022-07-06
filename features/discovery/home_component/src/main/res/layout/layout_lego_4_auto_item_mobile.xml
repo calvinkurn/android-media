@@ -17,7 +17,7 @@
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="display_2"
+        app:typographyType="display_3"
         app:typographyWeight="bold"
         tools:text="TITLE" />
 

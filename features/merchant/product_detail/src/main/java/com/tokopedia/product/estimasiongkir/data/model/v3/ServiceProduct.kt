@@ -1,5 +1,6 @@
 package com.tokopedia.product.estimasiongkir.data.model.v3
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -10,7 +11,7 @@ data class ServiceProduct(
 
         @SerializedName("shipper_id")
         @Expose
-        val id: Int = 0,
+        val id: String = "",
 
         @SerializedName("shipper_product_name")
         @Expose
@@ -48,6 +49,7 @@ data class ServiceProduct(
         @Expose
         val ut: String = "",
 
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         @Expose
         val price: Price = Price(),
@@ -82,6 +84,7 @@ data class ServiceProduct(
 )
 
 data class Features(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("dynamic_price")
         @Expose
         val dynamicPrice: DynamicPrice = DynamicPrice()

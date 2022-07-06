@@ -10,7 +10,7 @@
     android:paddingRight="@dimen/dp_topchat_15"
     android:paddingBottom="@dimen/small_space">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -19,7 +19,7 @@
         android:layout_marginBottom="@dimen/spacing_lvl4"
         android:textAllCaps="true"
         android:textColor="@color/Unify_N200"
-        android:textSize="@dimen/fontSize_lvl2"
+        app:typographyType="display_3"
         tools:text="13:16 wib" />
 
     <androidx.cardview.widget.CardView
@@ -59,7 +59,7 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/hour"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -67,7 +67,7 @@
         android:layout_gravity="left"
         android:layout_marginTop="@dimen/dp_topchat_3"
         android:gravity="left"
+        app:typographyType="small"
         android:textColor="@color/Unify_N300"
-        android:textSize="@dimen/fontSize_lvl1"
         tools:text="testtest" />
 </RelativeLayout>

@@ -6,6 +6,7 @@ import com.tokopedia.home_component.visitable.*
  * Created by Devara on 2020-04-28
  */
 interface HomeComponentTypeFactory {
+    fun type(categoryWidgetV2DataModel: CategoryWidgetV2DataModel): Int = 0
     fun type(dynamicLegoBannerDataModel: DynamicLegoBannerDataModel): Int
     fun type(dynamicLegoBannerSixAutoDataModel: DynamicLegoBannerSixAutoDataModel): Int
     fun type(recommendationListCarouselDataModel: RecommendationListCarouselDataModel): Int
@@ -25,4 +26,5 @@ interface HomeComponentTypeFactory {
     fun type(specialReleaseDataModel: SpecialReleaseDataModel): Int = 0
     fun type(cueCategoryDataModel: CueCategoryDataModel): Int = 0
     fun type(vpsDataModel: VpsDataModel): Int = 0
+    fun type(missionWidgetListDataModel: MissionWidgetListDataModel): Int = 0
 }
