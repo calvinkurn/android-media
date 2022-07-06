@@ -253,4 +253,8 @@ object AccountConstants {
         const val EMAS = "emas"
         const val PAYLATER = "paylater"
     }
+
+    object RollenceKey {
+        const val BIOMETRIC_ENTRY_POINT = "and_biom_entry_point"
+    }
 }

@@ -27,6 +27,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform;
 import com.tokopedia.dialog.DialogUnify;
+import com.tokopedia.home_account.AccountConstants;
 import com.tokopedia.home_account.R;
 import com.tokopedia.home_account.account_settings.AccountHomeUrl;
 import com.tokopedia.home_account.account_settings.analytics.AccountAnalytics;
@@ -53,7 +54,6 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     private static final String TAG = AccountSettingFragment.class.getSimpleName();
 
     private static final String REMOTE_CONFIG_SETTING_OTP_PUSH_NOTIF = "android_user_setting_otp_push_notif";
-    private static final String ROLLENCE_BIOMETRIC_MENU = "and_login_page_biom";
 
     private UserSessionInterface userSession;
     private AccountAnalytics accountAnalytics;
@@ -325,7 +325,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     }
 
     private boolean showFingerprintMenu() {
-        return !abtestPlatform.getString(ROLLENCE_BIOMETRIC_MENU, "").isEmpty();
+        return !abtestPlatform.getString(AccountConstants.RollenceKey.BIOMETRIC_ENTRY_POINT, "").isEmpty();
     }
 
     private void onPinMenuClicked(){
