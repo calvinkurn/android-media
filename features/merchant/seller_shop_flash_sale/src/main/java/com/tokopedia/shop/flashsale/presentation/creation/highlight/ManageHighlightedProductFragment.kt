@@ -420,7 +420,7 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
 
     private fun routeToCampaignListPage() {
         val context = context ?: return
-        CampaignListActivity.start(context, isClearTop = true)
+        CampaignListActivity.start(context, isSaveDraft = true)
     }
 
     private fun displayError(result: ProductSubmissionResult) {

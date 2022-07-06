@@ -57,7 +57,7 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
     private val autoFocusTabPosition by lazy {
         arguments?.getInt(BUNDLE_KEY_AUTO_FOCUS_TAB_POSITION).orZero()
     }
-    private var listener : CancelCampaignListener? = null
+    private var listener : ActiveCampaignListListener? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -270,12 +270,17 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
         }
     }
 
-    fun setCancelCampaignListener(listener: CancelCampaignListener) {
+    fun setActiveCampaignListListener(listener: ActiveCampaignListListener) {
         this.listener = listener
     }
 
-    interface CancelCampaignListener {
+    fun showSaveDraftSuccessInActiveTab() {
+        listener?.onSaveDraftSuccess()
+    }
+
+    interface ActiveCampaignListListener {
         fun onCampaignCancelled()
+        fun onSaveDraftSuccess()
     }
 
 }

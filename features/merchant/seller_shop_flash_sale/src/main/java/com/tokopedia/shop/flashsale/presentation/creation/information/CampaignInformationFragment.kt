@@ -81,6 +81,7 @@ import com.tokopedia.shop.flashsale.presentation.creation.information.bottomshee
 import com.tokopedia.shop.flashsale.presentation.creation.information.dialog.CancelCreateCampaignConfirmationDialog
 import com.tokopedia.shop.flashsale.presentation.creation.information.dialog.CancelEditCampaignConfirmationDialog
 import com.tokopedia.shop.flashsale.presentation.creation.manage.ManageProductActivity
+import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListActivity
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -867,8 +868,13 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
             if (result.isSuccess) {
                 activity?.apply {
-                    setResult(Activity.RESULT_OK)
-                    finish()
+                    // handle campaign save draft is not opened from campaign list case
+                    if (pageMode == PageMode.UPDATE) {
+                        CampaignListActivity.start(this, isSaveDraft = true)
+                    } else {
+                        setResult(Activity.RESULT_OK)
+                        finish()
+                    }
                 }
             } else {
                 handleCreateCampaignError(result)
