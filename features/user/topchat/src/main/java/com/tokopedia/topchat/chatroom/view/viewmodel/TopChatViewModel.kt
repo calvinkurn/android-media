@@ -572,7 +572,7 @@ open class TopChatViewModel @Inject constructor(
         launchCatchError(
             block = {
                 val existingMessageIdParam = GetReminderTickerUseCase.Param(
-                    featureId = element.featureId
+                    featureId = element.featureId.toIntSafely()
                 )
                 closeReminderTicker(existingMessageIdParam)
             },
