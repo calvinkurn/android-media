@@ -25,7 +25,11 @@ import com.tokopedia.affiliate.THIRD_TAB
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.AffiliateActivityInterface
-import com.tokopedia.affiliate.ui.custom.*
+import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavBarInterface
+import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavbar
+import com.tokopedia.affiliate.ui.custom.AffiliateLinkTextField
+import com.tokopedia.affiliate.ui.custom.IBottomClickListener
+import com.tokopedia.affiliate.ui.custom.LottieBottomNavbar
 import com.tokopedia.affiliate.ui.fragment.AffiliateHelpFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateHomeFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateIncomeFragment
@@ -50,6 +54,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 
 class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomClickListener,
@@ -146,60 +151,63 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     private var currentCoachIndex: Int = 0
     private var viewFound: Boolean = false
     override fun showCoachMarker() {
-        disableTouch()
-        coachMark = CoachMark2(this)
-        getHomeFragmentView()?.let { firstView ->
-            coachMarkItemList.add(
-                CoachMark2Item(
-                    firstView,
-                    getString(R.string.affiliate_coacher_title1),
-                    getString(R.string.affiliate_coacher_desc1)
-                )
-            )
-        }
-        findViewById<LottieBottomNavbar>(R.id.bottom_navbar)?.getView(PROMO_MENU)
-            ?.let { secondView ->
+        if(CoachMark2.isCoachmmarkShowAllowed){
+            disableTouch()
+            coachMark = CoachMark2(this)
+            getHomeFragmentView()?.let { firstView ->
                 coachMarkItemList.add(
                     CoachMark2Item(
-                        secondView,
-                        getString(R.string.affiliate_coacher_title2),
-                        getString(R.string.affiliate_coacher_desc2)
-                    )
-                )
-                coachMarkItemList.add(
-                    CoachMark2Item(
-                        secondView,
-                        getString(R.string.affiliate_coacher_title3),
-                        getString(R.string.affiliate_coacher_desc3)
+                        firstView,
+                        getString(R.string.affiliate_coacher_title1),
+                        getString(R.string.affiliate_coacher_desc1)
                     )
                 )
             }
+            findViewById<LottieBottomNavbar>(R.id.bottom_navbar)?.getView(PROMO_MENU)
+                ?.let { secondView ->
+                    coachMarkItemList.add(
+                        CoachMark2Item(
+                            secondView,
+                            getString(R.string.affiliate_coacher_title2),
+                            getString(R.string.affiliate_coacher_desc2)
+                        )
+                    )
+                    coachMarkItemList.add(
+                        CoachMark2Item(
+                            secondView,
+                            getString(R.string.affiliate_coacher_title3),
+                            getString(R.string.affiliate_coacher_desc3)
+                        )
+                    )
+                }
 
-        coachMark?.showCoachMark(coachMarkItemList, null)
-        coachMark?.setStepListener(object : CoachMark2.OnStepListener {
-            override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
-                disableTouch()
-                when (currentIndex) {
-                    1 -> {
-                        if (currentCoachIndex == 2) handleBackButton(true)
-                    }
-                    2 -> {
-                        getPromoFragmentView()?.let {
-                            if (!viewFound) {
-                                coachMarkItemList[currentIndex].anchorView = it
-                                viewFound = true
+            coachMark?.showCoachMark(coachMarkItemList, null)
+            coachMark?.setStepListener(object : CoachMark2.OnStepListener {
+                override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                    disableTouch()
+                    when (currentIndex) {
+                        1 -> {
+                            if (currentCoachIndex == 2) handleBackButton(true)
+                        }
+                        2 -> {
+                            getPromoFragmentView()?.let {
+                                if (!viewFound) {
+                                    coachMarkItemList[currentIndex].anchorView = it
+                                    viewFound = true
+                                }
+                                setBottomState(AffiliatePromoFragment::class.java.name)
                             }
-                            setBottomState(AffiliatePromoFragment::class.java.name)
                         }
                     }
+                    currentCoachIndex = currentIndex
                 }
-                currentCoachIndex = currentIndex
+            })
+            coachMark?.setOnDismissListener{
+                CoachMarkPreference.setShown(this, COACHMARK_TAG,true)
+                enableTouch()
             }
-        })
-        coachMark?.setOnDismissListener{
-            CoachMarkPreference.setShown(this, COACHMARK_TAG,true)
-            enableTouch()
         }
+
 
     }
 
@@ -280,7 +288,8 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
 
     private fun setObservers() {
         affiliateVM.getValidateUserdata().observe(this, { validateUserdata ->
-            if (validateUserdata.validateAffiliateUserStatus.data?.isRegistered == true) {
+            if (validateUserdata.validateAffiliateUserStatus.data?.isRegistered == true &&
+                validateUserdata.validateAffiliateUserStatus.data?.isEligible == true) {
                 showAffiliatePortal()
             } else{
                 showLoginPortal()

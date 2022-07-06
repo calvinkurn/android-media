@@ -12,6 +12,7 @@ import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.productcard.ProductCardModel
@@ -47,10 +48,11 @@ import com.tokopedia.tokopedianow.data.createHomeLayoutListForQuestOnly
 import com.tokopedia.tokopedianow.data.createHomeProductCardUiModel
 import com.tokopedia.tokopedianow.data.createHomeTickerDataModel
 import com.tokopedia.tokopedianow.data.createKeywordSearch
+import com.tokopedia.tokopedianow.data.createLeftCarouselAtcDataModel
+import com.tokopedia.tokopedianow.data.createLeftCarouselDataModel
 import com.tokopedia.tokopedianow.data.createLoadingState
 import com.tokopedia.tokopedianow.data.createLocalCacheModel
 import com.tokopedia.tokopedianow.data.createMiniCartSimplifier
-import com.tokopedia.tokopedianow.data.createMixLeftDataModel
 import com.tokopedia.tokopedianow.data.createQuestWidgetList
 import com.tokopedia.tokopedianow.data.createQuestWidgetListEmpty
 import com.tokopedia.tokopedianow.data.createSliderBannerDataModel
@@ -65,11 +67,13 @@ import com.tokopedia.tokopedianow.home.domain.model.Grid
 import com.tokopedia.tokopedianow.home.domain.model.Header
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokopedianow.home.domain.model.HomeRemoveAbleWidget
+import com.tokopedia.tokopedianow.home.domain.model.Shop
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE
 import com.tokopedia.tokopedianow.home.presentation.model.HomeReferralDataModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeEducationalInformationWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProgressBarUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWidgetUiModel
@@ -406,6 +410,13 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             categoryListUiModel = TokoNowCategoryListUiModel(
                 categoryList = listOf(
                     TokoNowCategoryItemUiModel(
+                        id = "",
+                        title = "",
+                        imageUrl = null,
+                        appLink = "tokopedia-android-internal://now/category-list?warehouse_id={warehouse_id}",
+                        warehouseId = "1"
+                    ),
+                    TokoNowCategoryItemUiModel(
                         id = "1",
                         title = "Category 1",
                         imageUrl = "tokopedia://",
@@ -726,8 +737,12 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                     id = "2322",
                     recomWidget = recommendationWidget
                 ),
-                createMixLeftDataModel(
+                createLeftCarouselAtcDataModel(
                     id = "2122",
+                    headerName = "Mix Left Atc Carousel",
+                ),
+                createLeftCarouselDataModel(
+                    id = "2333",
                     groupId = "",
                     headerName = "Mix Left Carousel",
                     layout = "left_carousel"
@@ -966,7 +981,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             title = "Kamu pernah beli",
             products = listOf(RepurchaseProduct(id = productId, stock = 5, maxOrder = 4, minOrder = 3))
         )
-        val miniCartItems = listOf(MiniCartItem(productId = productId, quantity = 1))
+        val miniCartItems = mapOf(MiniCartItemKey(productId) to MiniCartItem.MiniCartItemProduct(productId = productId, quantity = 1))
         val miniCartResponse = MiniCartSimplifiedData(miniCartItems = miniCartItems)
 
         onGetHomeLayoutData_thenReturn(homeLayoutResponse)
@@ -1041,7 +1056,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             title = "Kamu pernah beli",
             products = listOf(RepurchaseProduct(id = productId, maxOrder = 5, minOrder = 3))
         )
-        val miniCartItems = listOf(MiniCartItem(productId = productId, quantity = 1))
+        val miniCartItems = mapOf(MiniCartItemKey(productId) to MiniCartItem.MiniCartItemProduct(productId = productId, quantity = 1))
         val miniCartResponse = MiniCartSimplifiedData(miniCartItems = miniCartItems)
 
         onGetHomeLayoutData_thenReturn(homeLayoutResponse)
@@ -1162,15 +1177,15 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     fun `when getMiniCartItem should return mini cart item by ID`() {
         val productId = "1"
 
-        val miniCartItem = MiniCartItem(productId = productId)
-        val miniCartResponse = MiniCartSimplifiedData(miniCartItems = listOf(miniCartItem))
+        val miniCartItem = MiniCartItem.MiniCartItemProduct(productId = productId)
+        val miniCartResponse = MiniCartSimplifiedData(miniCartItems = mapOf(MiniCartItemKey(productId) to miniCartItem))
 
         onGetMiniCart_thenReturn(miniCartResponse)
         onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
 
         viewModel.getMiniCart(listOf("1"), "2")
 
-        val expectedResult = MiniCartItem(productId = productId)
+        val expectedResult = MiniCartItem.MiniCartItemProduct(productId = productId)
         val actualResult = viewModel.getMiniCartItem(productId)
 
         verifyGetMiniCartUseCaseCalled()
@@ -1181,8 +1196,8 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     fun `given productId not match when getMiniCartItem should return NULL`() {
         val productId = "3"
 
-        val miniCartItem = MiniCartItem(productId = "1")
-        val miniCartResponse = MiniCartSimplifiedData(miniCartItems = listOf(miniCartItem))
+        val miniCartItem = MiniCartItem.MiniCartItemProduct(productId = "1")
+        val miniCartResponse = MiniCartSimplifiedData(miniCartItems = mapOf(MiniCartItemKey("1") to miniCartItem))
 
         onGetMiniCart_thenReturn(miniCartResponse)
         onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
@@ -1454,7 +1469,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         )
 
         val updateCartResponse = UpdateCartV2Data()
-        val miniCartItems = listOf(MiniCartItem(productId = productId, quantity = 1, cartId = cartId))
+        val miniCartItems = mapOf(MiniCartItemKey(productId) to MiniCartItem.MiniCartItemProduct(productId = productId, quantity = 1, cartId = cartId))
         val miniCartResponse = MiniCartSimplifiedData(miniCartItems = miniCartItems)
 
         onGetHomeLayoutData_thenReturn(homeLayoutResponse)
@@ -1521,7 +1536,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             homeRecomResponse
         )
 
-        val miniCartItems = listOf(MiniCartItem(productId = productId, quantity = 1, cartId = cartId))
+        val miniCartItems = mapOf(MiniCartItemKey(productId) to MiniCartItem.MiniCartItemProduct(productId = productId, quantity = 1, cartId = cartId))
         val miniCartResponse = MiniCartSimplifiedData(miniCartItems = miniCartItems)
 
         onGetHomeLayoutData_thenReturn(homeLayoutResponse)
@@ -1573,7 +1588,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             homeRecomResponse
         )
 
-        val miniCartItems = listOf(MiniCartItem(productId = productId, quantity = 1, cartId = cartId))
+        val miniCartItems = mapOf(MiniCartItemKey(productId) to MiniCartItem.MiniCartItemProduct(productId = productId, quantity = 1, cartId = cartId))
         val miniCartResponse = MiniCartSimplifiedData(miniCartItems = miniCartItems)
 
         onGetHomeLayoutData_thenReturn(homeLayoutResponse)
@@ -1640,7 +1655,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             homeRecomResponse
         )
 
-        val miniCartItems = listOf(MiniCartItem(productId = productId, quantity = 1, cartId = cartId))
+        val miniCartItems = mapOf(MiniCartItemKey(productId) to MiniCartItem.MiniCartItemProduct(productId = productId, quantity = 1, cartId = cartId))
         val miniCartResponse = MiniCartSimplifiedData(miniCartItems = miniCartItems)
 
         onGetHomeLayoutData_thenReturn(homeLayoutResponse)
@@ -1920,6 +1935,140 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
         viewModel.onScrollTokoMartHome(2, LocalCacheModel(), listOf())
         viewModel.addProductToCart("4", 2, "100", TokoNowLayoutType.REPURCHASE_PRODUCT)
+
+        verifyGetHomeLayoutDataUseCaseCalled()
+        verifyAddToCartUseCaseCalled()
+
+        viewModel.homeAddToCartTracker
+            .verifyValueEquals(expected = null)
+    }
+
+    @Test
+    fun `when add mix left atc product to cart should track add mix left atc product`() {
+        val homeLayoutResponse = listOf(
+            HomeLayoutResponse(
+                id = "2122",
+                layout = "left_carousel_atc",
+                header = Header(
+                    name = "Mix Left Carousel",
+                    serverTimeUnix = 0
+                ),
+                grids = listOf(
+                    Grid(
+                        id = "2",
+                        shop = Shop(shopId = "100")
+                    )
+                )
+            )
+        )
+
+        val addToCartResponse = AddToCartDataModel(data = DataModel(cartId = "1999"))
+
+        onGetHomeLayoutData_thenReturn(homeLayoutResponse)
+        onAddToCart_thenReturn(addToCartResponse)
+
+        viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
+        viewModel.addProductToCart("2", 2, "100", TokoNowLayoutType.MIX_LEFT_CAROUSEL_ATC)
+
+        val productCardUiModel = HomeLeftCarouselAtcProductCardUiModel(
+            id = "2",
+            channelHeaderName = "Mix Left Carousel",
+            shopId = "100",
+            channelId = "2122",
+            productCardModel = ProductCardModel(formattedPrice = "0", nonVariant = NonVariant(quantity=0, minQuantity=0, maxQuantity=0))
+        )
+
+        val expected = HomeAddToCartTracker(
+            position = 1,
+            quantity = 2,
+            cartId = "1999",
+            productCardUiModel
+        )
+
+        verifyAddToCartUseCaseCalled()
+
+        viewModel.homeAddToCartTracker
+            .verifyValueEquals(expected)
+    }
+
+    @Test
+    fun `given product not found when add mix left product to cart should NOT track add to cart`() {
+        val homeLayoutResponse = listOf(
+            HomeLayoutResponse(
+                id = "2122",
+                layout = "left_carousel",
+                header = Header(
+                    name = "Mix Left Carousel",
+                    serverTimeUnix = 0
+                ),
+                grids = listOf(
+                    Grid(
+                        id = "2",
+                        shop = Shop(shopId = "100")
+                    )
+                )
+            )
+        )
+
+        val addToCartResponse = AddToCartDataModel(data = DataModel(cartId = "1999"))
+
+        onGetHomeLayoutData_thenReturn(homeLayoutResponse)
+        onAddToCart_thenReturn(addToCartResponse)
+
+        viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
+        viewModel.onScrollTokoMartHome(2, LocalCacheModel(), listOf())
+        viewModel.addProductToCart("4", 2, "100", TokoNowLayoutType.MIX_LEFT_CAROUSEL_ATC)
+
+        verifyAddToCartUseCaseCalled()
+
+        viewModel.homeAddToCartTracker
+            .verifyValueEquals(expected = null)
+    }
+
+    @Test
+    fun `given no product in response grid when add mix left product to cart should NOT track add to cart`() {
+        val homeLayoutResponse = listOf(
+            HomeLayoutResponse(
+                id = "2122",
+                layout = "left_carousel_atc",
+                header = Header(
+                    name = "Mix Left Carousel",
+                    serverTimeUnix = 0
+                ),
+                grids = listOf()
+            )
+        )
+
+        val addToCartResponse = AddToCartDataModel(data = DataModel(cartId = "1999"))
+
+        onGetHomeLayoutData_thenReturn(homeLayoutResponse)
+        onAddToCart_thenReturn(addToCartResponse)
+
+        viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
+        viewModel.onScrollTokoMartHome(2, LocalCacheModel(), listOf())
+        viewModel.addProductToCart("4", 2, "100", TokoNowLayoutType.MIX_LEFT_CAROUSEL_ATC)
+
+        verifyAddToCartUseCaseCalled()
+
+        viewModel.homeAddToCartTracker
+            .verifyValueEquals(expected = null)
+    }
+
+    @Test
+    fun `given layout list does NOT contain mix left when add product to cart should NOT track add to cart`() {
+        val homeLayoutResponse = emptyList<HomeLayoutResponse>()
+        val addToCartResponse = AddToCartDataModel(data = DataModel(cartId = "1999"))
+
+        onGetHomeLayoutData_thenReturn(homeLayoutResponse)
+        onAddToCart_thenReturn(addToCartResponse)
+
+        viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
+        viewModel.onScrollTokoMartHome(2, LocalCacheModel(), listOf())
+        viewModel.addProductToCart("4", 2, "100", TokoNowLayoutType.MIX_LEFT_CAROUSEL_ATC)
 
         verifyGetHomeLayoutDataUseCaseCalled()
         verifyAddToCartUseCaseCalled()
@@ -2425,6 +2574,259 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     }
 
     @Test
+    fun `given current serviceType and intended serviceType when switchService success should switch the service`() {
+        val currentServiceType = "15m"
+        val intendedServiceType = "2h"
+
+        val localCacheModel = LocalCacheModel(
+            service_type = currentServiceType
+        )
+
+        val userPreferenceData = SetUserPreferenceData(
+            shopId = "1",
+            warehouseId = "2",
+            serviceType = "2h",
+            warehouses = listOf(
+                WarehouseData(
+                    warehouseId = "2",
+                    serviceType = "2h"
+                )
+            )
+        )
+
+        onSetUserPreference_thenReturn(userPreferenceData)
+
+        viewModel.switchService(localCacheModel, intendedServiceType)
+
+        val expectedResult = Success(SetUserPreferenceData(
+            shopId = "1",
+            warehouseId = "2",
+            serviceType = "2h",
+            warehouses = listOf(
+                WarehouseData(
+                    warehouseId = "2",
+                    serviceType = "2h"
+                )
+            )
+        ))
+
+        verifySetUserPreferenceUseCaseCalled(
+            localCacheModel = localCacheModel,
+            serviceType = "2h"
+        )
+
+        viewModel.setUserPreference
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `when switchService with intended service error should set live data value fail`() {
+        val localCacheModel = LocalCacheModel(
+            service_type = "2h"
+        )
+        val intendedServiceType = "15m"
+        val error = NullPointerException()
+
+        onSetUserPreference_thenReturn(error)
+
+        viewModel.switchService(localCacheModel, intendedServiceType)
+
+        val expectedResult = Fail(NullPointerException())
+
+        verifySetUserPreferenceUseCaseCalled(
+            localCacheModel = localCacheModel,
+            serviceType = "15m"
+        )
+
+        viewModel.setUserPreference
+            .verifyErrorEquals(expectedResult)
+    }
+
+    @Test
+    fun `check whether need to show on board toaster or not`() {
+        // 2 hour state and 20m coachmark has been shown
+        var result = viewModel.needToShowOnBoardToaster(
+            serviceType = ServiceType.NOW_2H,
+            has20mCoachMarkBeenShown = true,
+            has2hCoachMarkBeenShown = false,
+            isWarehouseIdZero = false
+        )
+        assertEquals(true, result)
+
+        // 20m state and 2 hour coachmark has been shown
+        result = viewModel.needToShowOnBoardToaster(
+            serviceType = ServiceType.NOW_15M,
+            has20mCoachMarkBeenShown = false,
+            has2hCoachMarkBeenShown = true,
+            isWarehouseIdZero = false
+        )
+        assertEquals(true, result)
+
+        // 2 hour state and 20m coachmark has not been shown
+        result = viewModel.needToShowOnBoardToaster(
+            serviceType = ServiceType.NOW_2H,
+            has20mCoachMarkBeenShown = false,
+            has2hCoachMarkBeenShown = false,
+            isWarehouseIdZero = false
+        )
+        assertEquals(false, result)
+
+        // 20m state and 2 hour coachmark has not been shown
+        result = viewModel.needToShowOnBoardToaster(
+            serviceType = ServiceType.NOW_15M,
+            has20mCoachMarkBeenShown = false,
+            has2hCoachMarkBeenShown = false,
+            isWarehouseIdZero = false
+        )
+        assertEquals(false, result)
+
+        // ooc state
+        result = viewModel.needToShowOnBoardToaster(
+            serviceType = ServiceType.NOW_OOC,
+            has20mCoachMarkBeenShown = false,
+            has2hCoachMarkBeenShown = false,
+            isWarehouseIdZero = true
+        )
+        assertEquals(false, result)
+    }
+
+    @Test
+    fun `given current serviceType 2h and external serviceType 20m when switchService success should switch service to 15m`() {
+        val currentServiceType = "2h"
+
+        val localCacheModel = LocalCacheModel(
+            service_type = currentServiceType
+        )
+
+        val userPreferenceData = SetUserPreferenceData(
+            shopId = "1",
+            warehouseId = "3",
+            serviceType = "2h",
+            warehouses = listOf(
+                WarehouseData(
+                    warehouseId = "2",
+                    serviceType = "15m"
+                ),
+                WarehouseData(
+                    warehouseId = "3",
+                    serviceType = "2h"
+                )
+            )
+        )
+
+        onSetUserPreference_thenReturn(userPreferenceData)
+
+        viewModel.switchServiceOrLoadLayout("20m", localCacheModel)
+
+        val expectedResult = Success(SetUserPreferenceData(
+            shopId = "1",
+            warehouseId = "3",
+            serviceType = "2h",
+            warehouses = listOf(
+                WarehouseData(
+                    warehouseId = "2",
+                    serviceType = "15m"
+                ),
+                WarehouseData(
+                    warehouseId = "3",
+                    serviceType = "2h"
+                )
+            )
+        ))
+
+        verifySetUserPreferenceUseCaseCalled(
+            localCacheModel = localCacheModel,
+            serviceType = "20m"
+        )
+
+        viewModel.setUserPreference
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `given current serviceType 15m and external serviceType 2h when switchService success should switch service to 2h`() {
+        val currentServiceType = "15m"
+
+        val localCacheModel = LocalCacheModel(
+            service_type = currentServiceType
+        )
+
+        val userPreferenceData = SetUserPreferenceData(
+            shopId = "1",
+            warehouseId = "2",
+            serviceType = "15m",
+            warehouses = listOf(
+                WarehouseData(
+                    warehouseId = "2",
+                    serviceType = "15m"
+                ),
+                WarehouseData(
+                    warehouseId = "3",
+                    serviceType = "2h"
+                )
+            )
+        )
+
+        onSetUserPreference_thenReturn(userPreferenceData)
+
+        viewModel.switchServiceOrLoadLayout("2h", localCacheModel)
+
+        val expectedResult = Success(SetUserPreferenceData(
+            shopId = "1",
+            warehouseId = "2",
+            serviceType = "15m",
+            warehouses = listOf(
+                WarehouseData(
+                    warehouseId = "2",
+                    serviceType = "15m"
+                ),
+                WarehouseData(
+                    warehouseId = "3",
+                    serviceType = "2h"
+                )
+            )
+        ))
+
+        verifySetUserPreferenceUseCaseCalled(
+            localCacheModel = localCacheModel,
+            serviceType = "2h"
+        )
+
+        viewModel.setUserPreference
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `when external serviceType empty should not switch service`() {
+        val currentServiceType = "15m"
+
+        val localCacheModel = LocalCacheModel(
+            service_type = currentServiceType
+        )
+
+        viewModel.switchServiceOrLoadLayout("", localCacheModel)
+
+        val expectedResponse = createLoadingState()
+
+        verifyGetHomeLayoutResponseSuccess(expectedResponse)
+    }
+
+    @Test
+    fun `when external serviceType equals to current serviceType should not switch service`() {
+        val currentServiceType = "2h"
+
+        val localCacheModel = LocalCacheModel(
+            service_type = currentServiceType
+        )
+
+        viewModel.switchServiceOrLoadLayout("2h", localCacheModel)
+
+        val expectedResponse = createLoadingState()
+
+        verifyGetHomeLayoutResponseSuccess(expectedResponse)
+    }
+
+    @Test
     fun `given current serviceType 15m when switchService success should switch service to 2h`() {
         val currentServiceType = "15m"
 
@@ -2909,7 +3311,8 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             sharingUrlParam = sharingUrlParam,
             userStatus = userStatus,
             maxReward = maxReward,
-            isSender = isSender
+            isSender = isSender,
+            isEligible = true
         )
 
         val homeSharingWidgetUiModel = HomeSharingReferralWidgetUiModel(
@@ -2950,6 +3353,49 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         viewModel.getReferralResult
             .verifySuccessEquals(Success(referral))
+    }
+
+    @Test
+    fun `when get referral not eligible should not add referral widget to home layout list`() {
+        val id = "155"
+        val slug = "slug"
+        val isEligible = false
+        val localCacheModel = LocalCacheModel()
+
+        val layoutResponse = listOf(
+            HomeLayoutResponse(
+                id = id,
+                layout = "tokonow_referral",
+                header = Header(
+                    name = "Tokonow Referral",
+                    serverTimeUnix = 0
+                ),
+                widgetParam = slug,
+                token = ""
+            )
+        )
+
+        val referral = HomeReferralDataModel(isEligible = isEligible)
+
+        onGetHomeLayoutData_thenReturn(layoutResponse, localCacheModel)
+        onGetReferralSenderHome_thenReturn(slug, referral)
+
+        viewModel.getHomeLayout(localCacheModel = localCacheModel, removeAbleWidgets = emptyList())
+        viewModel.getLayoutComponentData(localCacheModel = localCacheModel)
+
+        val layoutList = listOf(TokoNowChooseAddressWidgetUiModel("0"))
+        val expectedResult = Success(HomeLayoutListUiModel(
+            items = layoutList,
+            state = TokoNowLayoutState.UPDATE
+        ))
+
+        verifyGetReferralSenderHomeUseCaseCalled(slug)
+
+        viewModel.homeLayoutList
+            .verifySuccessEquals(expectedResult)
+
+        viewModel.getReferralResult
+            .verifyValueEquals(null)
     }
 
     @Test

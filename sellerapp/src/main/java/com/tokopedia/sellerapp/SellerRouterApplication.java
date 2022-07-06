@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -27,7 +28,7 @@ import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.TkpdCoreRouter;
-import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.app.common.MainApplication;
 import com.tokopedia.core.common.ui.MaintenancePage;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
@@ -70,7 +71,7 @@ import com.tokopedia.sellerorder.list.presentation.fragments.SomListFragment;
 import com.tokopedia.topads.TopAdsComponentInstance;
 import com.tokopedia.topads.TopAdsModuleRouter;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
-import com.tokopedia.topchat.chatlist.fragment.ChatTabListFragment;
+import com.tokopedia.topchat.chatlist.view.fragment.ChatTabListFragment;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -131,7 +132,7 @@ public abstract class SellerRouterApplication extends MainApplication implements
         performLibraryInitialisation();
     }
 
-    private void performLibraryInitialisation(){
+    private void performLibraryInitialisation() {
         WeaveInterface initWeave = new WeaveInterface() {
             @NotNull
             @Override
@@ -142,7 +143,7 @@ public abstract class SellerRouterApplication extends MainApplication implements
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(initWeave, ENABLE_ASYNC_CMPUSHNOTIF_INIT, SellerRouterApplication.this, true);
     }
 
-    private boolean initLibraries(){
+    private boolean initLibraries() {
         initCMPushNotification();
         initTetraDebugger();
         return true;
@@ -186,14 +187,14 @@ public abstract class SellerRouterApplication extends MainApplication implements
     }
 
     private void initTetraDebugger() {
-        if(GlobalConfig.isAllowDebuggingTools()) {
+        if (GlobalConfig.isAllowDebuggingTools()) {
             tetraDebugger = TetraDebugger.Companion.instance(this);
             tetraDebugger.init();
         }
     }
 
     private void setTetraUserId(String userId) {
-        if(tetraDebugger != null) {
+        if (tetraDebugger != null) {
             tetraDebugger.setUserId(userId);
         }
     }
@@ -208,7 +209,7 @@ public abstract class SellerRouterApplication extends MainApplication implements
 
     @Override
     public CacheManager getPersistentCacheManager() {
-        if(cacheManager == null)
+        if (cacheManager == null)
             cacheManager = new PersistentCacheManager(this);
         return cacheManager;
     }
@@ -292,7 +293,7 @@ public abstract class SellerRouterApplication extends MainApplication implements
         messageMap.put("type", type);
         messageMap.put("path", path);
         messageMap.put("error", error);
-        if(!accessToken.isEmpty()) {
+        if (!accessToken.isEmpty()) {
             messageMap.put("oldToken", accessToken);
         }
         ServerLogger.log(Priority.P2, "USER_AUTHENTICATOR", messageMap);
@@ -317,15 +318,16 @@ public abstract class SellerRouterApplication extends MainApplication implements
     public void doRelogin(String newAccessToken) {
         SessionRefresh sessionRefresh = new SessionRefresh(newAccessToken);
         try {
-            if(isOldGcmUpdate()) {
+            if (isOldGcmUpdate()) {
                 sessionRefresh.gcmUpdate();
             } else {
-                if(gcmUpdateComponent == null) {
+                if (gcmUpdateComponent == null) {
                     injectGcmUpdateComponent();
                 }
                 newGcmUpdate(sessionRefresh);
             }
-        } catch (IOException e) {}
+        } catch (IOException e) {
+        }
     }
 
     private void newGcmUpdate(SessionRefresh sessionRefresh) {
@@ -348,7 +350,8 @@ public abstract class SellerRouterApplication extends MainApplication implements
             public Boolean execute() {
                 try {
                     sessionRefresh.gcmUpdate();
-                } catch (Throwable ignored) {}
+                } catch (Throwable ignored) {
+                }
                 return true;
             }
         };
@@ -395,9 +398,9 @@ public abstract class SellerRouterApplication extends MainApplication implements
 
     @Override
     public void sendRefreshTokenAnalytics(String errorMessage) {
-        if(TextUtils.isEmpty(errorMessage)){
+        if (TextUtils.isEmpty(errorMessage)) {
             SessionAnalytics.trackRefreshTokenSuccess();
-        }else {
+        } else {
             SessionAnalytics.trackRefreshTokenFailed(errorMessage);
         }
     }
@@ -425,10 +428,12 @@ public abstract class SellerRouterApplication extends MainApplication implements
         }
     }
 
-    @NotNull
+    @NonNull
     @Override
-    public Fragment getProductManageFragment(@NotNull ArrayList<String> filterOptions, @NotNull String searchKeyword) {
-        return ProductManageSellerFragment.newInstance(filterOptions, searchKeyword);
+    public Fragment getProductManageFragment(@NonNull ArrayList<String> filterOptions, @NonNull String searchKeyword, View navigationMenu) {
+        ProductManageSellerFragment productManageSellerFragment = ProductManageSellerFragment.newInstance(filterOptions, searchKeyword);
+        productManageSellerFragment.setNavigationHomeMenuView(navigationMenu);
+        return productManageSellerFragment;
     }
 
     @NotNull
@@ -453,8 +458,8 @@ public abstract class SellerRouterApplication extends MainApplication implements
     }
 
     private void injectGcmUpdateComponent() {
-        if(!isOldGcmUpdate()) {
-            if(daggerGcmUpdateBuilder == null) {
+        if (!isOldGcmUpdate()) {
+            if (daggerGcmUpdateBuilder == null) {
                 FcmComponent fcmComponent = DaggerFcmComponent.builder()
                         .fcmModule(new FcmModule(this))
                         .build();
@@ -462,10 +467,11 @@ public abstract class SellerRouterApplication extends MainApplication implements
                 daggerGcmUpdateBuilder = DaggerGcmUpdateComponent.builder()
                         .fcmComponent(fcmComponent);
             }
-            if(gcmUpdateComponent == null) {
+            if (gcmUpdateComponent == null) {
                 gcmUpdateComponent = daggerGcmUpdateBuilder.build();
             }
             gcmUpdateComponent.inject(this);
         }
     }
+
 }

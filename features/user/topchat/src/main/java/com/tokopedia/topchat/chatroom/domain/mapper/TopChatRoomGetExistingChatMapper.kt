@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_CTA_HEADER_MSG
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_CAROUSEL
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_DUAL_ANNOUNCEMENT
+import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_PRODUCT_BUNDLING
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_REVIEW_REMINDER
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_STICKER
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER
@@ -25,9 +26,12 @@ import com.tokopedia.merchantvoucher.common.gql.data.*
 import com.tokopedia.topchat.chatroom.domain.pojo.ImageDualAnnouncementPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.TopChatVoucherPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaButtonAttachment
+import com.tokopedia.topchat.chatroom.domain.pojo.product_bundling.ProductBundlingPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.review.ReviewReminderAttribute
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerAttributesResponse
 import com.tokopedia.topchat.chatroom.view.uimodel.*
+import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.MultipleProductBundlingUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
 import javax.inject.Inject
@@ -41,6 +45,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
     override fun mappingListChat(pojo: GetExistingChatPojo): ArrayList<Visitable<*>> {
         val listChat: ArrayList<Visitable<*>> = ArrayList()
         val replies = pojo.chatReplies.list
+        val attachmentIds = getAttachmentIds(pojo.chatReplies.attachmentIds)
         for ((index, chatItemPojo) in replies.withIndex()) {
             listChat.add(createHeaderDate(chatItemPojo))
             if (index == replies.lastIndex) {
@@ -63,7 +68,8 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                             val broadcast = mergeBroadcast(
                                 replyIndex,
                                 chatItemPojoByDate.replies,
-                                chatDateTime.blastId
+                                chatDateTime.blastId,
+                                getAttachmentIds(pojo.chatReplies.attachmentIds)
                             )
                             val broadcastUiModel = createBroadCastUiModel(
                                 chatDateTime, broadcast.first
@@ -77,7 +83,8 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                             val products = mergeProduct(
                                 replyIndex,
                                 chatItemPojoByDate.replies,
-                                chatDateTime.isBroadCast()
+                                chatDateTime.isBroadCast(),
+                                attachmentIds
                             )
                             val carouselProducts = createCarouselProduct(chatDateTime, products)
                             listChat.add(carouselProducts)
@@ -85,7 +92,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                         }
                         // usual attachment
                         hasAttachment(chatDateTime) -> {
-                            listChat.add(mapAttachment(chatDateTime))
+                            listChat.add(mapAttachment(chatDateTime, attachmentIds))
                             replyIndex++
                         }
                         // text message
@@ -118,7 +125,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
     }
 
     private fun mergeBroadcast(
-        index: Int, replies: List<Reply>, blastId: Long
+        index: Int, replies: List<Reply>, blastId: String, attachmentIds: List<String>
     ): Pair<Map<String, Visitable<*>>, Int> {
         val broadcast = ArrayMap<String, Visitable<*>>()
         var idx = index
@@ -131,13 +138,13 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                 reply.isAlsoProductAttachment(nextReply) &&
                 reply.blastId == blastId
             ) {
-                val products = mergeProduct(idx, replies, reply.isBroadCast())
+                val products = mergeProduct(idx, replies, reply.isBroadCast(), attachmentIds)
                 val carouselProducts = createCarouselProduct(reply, products)
                 broadcast[TYPE_IMAGE_CAROUSEL] = carouselProducts
                 idx += products.size
             } else if (reply.isBroadCast() && reply.blastId == blastId) {
                 val messageItem = if (hasAttachment(reply)) {
-                    mapAttachment(reply)
+                    mapAttachment(reply, attachmentIds)
                 } else {
                     convertToMessageViewModel(reply)
                 }
@@ -167,8 +174,8 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                 fromUid = senderId.toString(),
                 from = senderName,
                 fromRole = role,
-                attachmentId = attachment?.id ?: "",
-                attachmentType = attachment?.type.toString(),
+                attachmentId = attachment.id,
+                attachmentType = attachment.type.toString(),
                 replyTime = replyTime,
                 message = msg,
                 source = chatDateTime.source
@@ -179,14 +186,15 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
     private fun mergeProduct(
         index: Int,
         replies: List<Reply>,
-        isBroadCast: Boolean
+        isBroadCast: Boolean,
+        attachmentIds: List<String>
     ): List<Visitable<*>> {
         val products = mutableListOf<Visitable<*>>()
         var idx = index
         while (idx < replies.size) {
             val chat = replies[idx]
             if (chat.isProductAttachment()) {
-                val product = convertToProductAttachment(chat)
+                val product = convertToProductAttachment(chat, attachmentIds)
                 products.add(product)
                 idx++
             } else {
@@ -201,14 +209,21 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
         return products
     }
 
-    override fun mapAttachment(chatItemPojoByDateByTime: Reply): Visitable<*> {
-        return when (chatItemPojoByDateByTime.attachment?.type.toString()) {
+    override fun mapAttachment(
+        chatItemPojoByDateByTime: Reply,
+        attachmentIds: List<String>
+    ): Visitable<*> {
+        return when (chatItemPojoByDateByTime.attachment.type.toString()) {
             TYPE_IMAGE_DUAL_ANNOUNCEMENT -> convertToDualAnnouncement(chatItemPojoByDateByTime)
             TYPE_VOUCHER -> convertToVoucher(chatItemPojoByDateByTime)
             TYPE_STICKER.toString() -> convertToSticker(chatItemPojoByDateByTime)
             TYPE_REVIEW_REMINDER -> convertToReviewReminder(chatItemPojoByDateByTime)
             TYPE_CTA_HEADER_MSG -> convertToCtaHeaderMsg(chatItemPojoByDateByTime)
-            else -> super.mapAttachment(chatItemPojoByDateByTime)
+            TYPE_PRODUCT_BUNDLING -> convertToProductBundling(
+                chatItemPojoByDateByTime,
+                attachmentIds
+            )
+            else -> super.mapAttachment(chatItemPojoByDateByTime, attachmentIds)
         }
     }
 
@@ -231,7 +246,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
 
     private fun convertToVoucher(item: Reply): Visitable<*> {
         val pojo = gson.fromJson<TopChatVoucherPojo>(
-            item.attachment?.attributes,
+            item.attachment.attributes,
             TopChatVoucherPojo::class.java
         )
         val voucher = pojo.voucher
@@ -260,23 +275,23 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
             .withResponseFromGQL(item)
             .withVoucherModel(voucherModel)
             .withIsPublic(voucher.isPublic)
-            .withIsLockToProduct(voucher.isLockToProduct?: 0)
-            .withApplink(voucher.applink?: "")
+            .withIsLockToProduct(voucher.isLockToProduct ?: 0)
+            .withApplink(voucher.applink ?: "")
             .build()
     }
 
     private fun convertToDualAnnouncement(item: Reply): Visitable<*> {
-        val pojoAttribute = gson.fromJson<ImageDualAnnouncementPojo>(
-            item.attachment?.attributes,
+        val pojoAttribute = gson.fromJson(
+            item.attachment.attributes,
             ImageDualAnnouncementPojo::class.java
         )
         return ImageDualAnnouncementUiModel(
-            messageId = item.msgId.toString(),
-            fromUid = item.senderId.toString(),
+            messageId = item.msgId,
+            fromUid = item.senderId,
             from = item.senderName,
             fromRole = item.role,
-            attachmentId = item.attachment?.id ?: "",
-            attachmentType = item.attachment?.type.toString(),
+            attachmentId = item.attachment.id,
+            attachmentType = item.attachment.type.toString(),
             replyTime = item.replyTime,
             message = item.msg,
             imageUrlTop = pojoAttribute.imageUrl,
@@ -289,8 +304,8 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
     }
 
     private fun convertToSticker(message: Reply): Visitable<*> {
-        val stickerAttributes = gson.fromJson<StickerAttributesResponse>(
-            message.attachment?.attributes,
+        val stickerAttributes = gson.fromJson(
+            message.attachment.attributes,
             StickerAttributesResponse::class.java
         )
         return StickerUiModel.Builder()
@@ -300,7 +315,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
     }
 
     private fun convertToReviewReminder(message: Reply): Visitable<*> {
-        val review = gson.fromJson<ReviewReminderAttribute>(
+        val review = gson.fromJson(
             message.attachment.attributes,
             ReviewReminderAttribute::class.java
         )
@@ -353,5 +368,28 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                 )
             }
         )
+    }
+
+    private fun convertToProductBundling(item: Reply, attachmentIds: List<String>): Visitable<*> {
+        val pojo = gson.fromJson(
+            item.attachment.attributes,
+            ProductBundlingPojo::class.java
+        )
+        val needSync = attachmentIds.contains(item.attachment.id)
+        return if (pojo.listProductBundling.size == 1) {
+            ProductBundlingUiModel.Builder()
+                .withResponseFromGQL(item)
+                .withIsSender(!item.isOpposite)
+                .withNeedSync(needSync)
+                .withProductBundling(pojo.listProductBundling.first())
+                .build()
+        } else {
+            MultipleProductBundlingUiModel.Builder()
+                .withResponseFromGQL(item)
+                .withIsSender(!item.isOpposite)
+                .withNeedSync(needSync)
+                .withProductBundlingResponse(pojo.listProductBundling)
+                .build()
+        }
     }
 }

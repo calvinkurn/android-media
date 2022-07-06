@@ -7,6 +7,7 @@
 
     <ImageView
         android:id="@+id/img_source"
+        android:contentDescription="@string/content_desc_image_source"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
@@ -25,29 +26,29 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_36">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
                 android:background="@drawable/rounded_green_sticker"
-                android:paddingBottom="@dimen/dp_7"
+                android:paddingBottom="4dp"
                 android:paddingLeft="72dp"
                 android:paddingRight="20dp"
                 android:paddingTop="4dp"
                 tools:text="Rp 520.000"
-                android:textColor="@color/Unify_N0"
-                android:textSize="24sp"
-                android:textStyle="bold" />
+                app:typographyType="heading_1"
+                android:textColor="@color/Unify_N0" />
 
             <ImageView
                 android:layout_width="85dp"
                 android:layout_height="85dp"
                 android:layout_alignParentLeft="true"
+                android:contentDescription="@string/content_desc_sticker"
                 app:srcCompat="@drawable/ic_sticker_toped" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_cashback"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -55,13 +56,12 @@
                 android:layout_marginLeft="16dp"
                 tools:text="Cashback 3%"
                 android:textColor="@color/Unify_N0"
-                android:textSize="20sp"
-                android:layout_toRightOf="@id/tv_price"
-                android:textStyle="bold"/>
+                app:typographyType="heading_2"
+                android:layout_toRightOf="@id/tv_price" />
 
         </RelativeLayout>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -74,7 +74,7 @@
             android:shadowDy="5"
             android:shadowDx="5"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_shop_link"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -3,6 +3,7 @@ package com.tokopedia.home.viewModel.homepageRevamp
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeSearchUseCase
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_COUPON
@@ -29,9 +30,11 @@ class HomeViewModelBalanceWidgetUnitTest{
     private val userSessionInterface = mockk<UserSessionInterface>(relaxed = true)
     private val getHomeUseCase = mockk<HomeDynamicChannelUseCase>(relaxed = true)
     private val getHomeBalanceWidgetUseCase = mockk<HomeBalanceWidgetUseCase>(relaxed = true)
+    private val getHomeSearchUseCase = mockk<HomeSearchUseCase>(relaxed = true)
 
     private lateinit var homeViewModel: HomeRevampViewModel
 
+    private val mockForceRefresh = false
     private val mockInitialHomeHeaderDataModel = HomeHeaderDataModel()
     private val mockSuccessHomeHeaderDataModel = HomeHeaderDataModel(
             headerDataModel = HeaderDataModel(
@@ -97,6 +100,33 @@ class HomeViewModelBalanceWidgetUnitTest{
         homeViewModel.refreshWithThreeMinsRules(false)
         val homeBalanceModel = getHomeBalanceModel()
         Assert.assertTrue(homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty() == true)
+        Assert.assertNotNull(homeViewModel.searchHint.value)
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun `given value placeholder when refresh with three minutes rules then placeholder is not empty`() {
+        every { userSessionInterface.isLoggedIn } returns true
+
+        getHomeUseCase.givenGetHomeDataReturn(
+                HomeDynamicChannelModel(list = listOf(mockInitialHomeHeaderDataModel))
+        )
+        getHomeBalanceWidgetUseCase.givenGetHomeBalanceWidgetReturn(
+                homeHeaderDataModel = mockSuccessHomeHeaderDataModel
+        )
+        getHomeSearchUseCase.givenSearchPlaceHolderReturn(mockForceRefresh)
+        homeViewModel = createHomeViewModel(
+                userSessionInterface = userSessionInterface,
+                getHomeUseCase = getHomeUseCase,
+                homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase,
+                homeSearchUseCase = getHomeSearchUseCase
+        )
+        //On refresh
+        homeViewModel.homeRateLimit.shouldFetch(HomeRevampViewModel.HOME_LIMITER_KEY)
+        homeViewModel.refreshWithThreeMinsRules(mockForceRefresh)
+        val homeBalanceModel = getHomeBalanceModel()
+        Assert.assertTrue(homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty() == true)
+        Assert.assertTrue(homeViewModel.searchHint.value?.data?.placeholders?.isNotEmpty() == false)
     }
 
     @ExperimentalCoroutinesApi

@@ -5,8 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.text.TextUtils
-import androidx.core.app.JobIntentService
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.tokopedia.abstraction.base.service.JobIntentServiceX
 import com.tokopedia.affiliatecommon.BROADCAST_SUBMIT_POST_NEW
 import com.tokopedia.affiliatecommon.SUBMIT_POST_SUCCESS_NEW
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.Content
@@ -14,6 +14,7 @@ import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.SubmitPostDat
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.createpost.common.DRAFT_ID
 import com.tokopedia.createpost.common.TYPE_AFFILIATE
+import com.tokopedia.createpost.common.TYPE_CONTENT_USER
 import com.tokopedia.createpost.common.di.CreatePostCommonModule
 import com.tokopedia.createpost.common.di.DaggerCreatePostCommonComponent
 import com.tokopedia.createpost.common.domain.usecase.SubmitPostUseCaseNew
@@ -26,7 +27,7 @@ import rx.Subscriber
 import timber.log.Timber
 import javax.inject.Inject
 
-class SubmitPostServiceNew : JobIntentService() {
+class SubmitPostServiceNew : JobIntentServiceX() {
 
     @Inject
     lateinit var submitPostUseCase: SubmitPostUseCaseNew
@@ -82,7 +83,7 @@ class SubmitPostServiceNew : JobIntentService() {
                 viewModel.postId,
                 viewModel.authorType,
                 viewModel.token,
-                if (isTypeAffiliate(viewModel.authorType)) userSession.userId
+                if (isTypeAffiliate(viewModel.authorType) || isTypeBuyer(viewModel.authorType)) userSession.userId
                 else userSession.shopId,
                 viewModel.caption,
                 viewModel.completeImageList.map {
@@ -110,6 +111,7 @@ class SubmitPostServiceNew : JobIntentService() {
     }
 
     private fun isTypeAffiliate(authorType: String) = authorType == TYPE_AFFILIATE
+    private fun isTypeBuyer(authorType: String) = authorType == TYPE_CONTENT_USER
 
     private fun getProgressManager(viewModel: CreatePostViewModel): com.tokopedia.createpost.common.view.util.PostUpdateProgressManager {
         val firstImage = ""

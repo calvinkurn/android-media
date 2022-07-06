@@ -15,6 +15,7 @@ import com.tokopedia.chat_common.view.adapter.viewholder.ProductAttachmentViewHo
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.ProductBundlingListener
 import com.tokopedia.topchat.chatroom.domain.pojo.getreminderticker.ReminderTickerUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingBannerUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingFraudAlertUiModel
@@ -26,6 +27,8 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewH
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.SearchListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.TopchatProductAttachmentListener
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.product_bundling.ProductBundlingCardViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.product_bundling.ProductBundlingCarouselViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwBubbleViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.BannedChatMessageViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.ChatMessageUnifyViewHolder
@@ -34,6 +37,8 @@ import com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
 import com.tokopedia.topchat.chatroom.view.listener.DualAnnouncementListener
 import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
 import com.tokopedia.topchat.chatroom.view.uimodel.*
+import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.MultipleProductBundlingUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.BroadcastSpamHandlerUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
@@ -55,7 +60,8 @@ open class TopChatTypeFactoryImpl constructor(
     private val srwBubbleListener: SrwBubbleViewHolder.Listener,
     private val chatMsgListener: FlexBoxChatLayout.Listener,
     private val replyBubbleListener: ReplyBubbleAreaMessage.Listener,
-    private val listener: ReminderTickerViewHolder.Listener
+    private val listener: ReminderTickerViewHolder.Listener,
+    private val productBundlingListener: ProductBundlingListener
 ) : BaseChatTypeFactoryImpl(
     imageAnnouncementListener,
     chatLinkHandlerListener,
@@ -164,11 +170,20 @@ open class TopChatTypeFactoryImpl constructor(
         return TopchatBannedProductAttachmentViewHolder.LAYOUT
     }
 
+    override fun type(multipleProductBundlingUiModel: MultipleProductBundlingUiModel): Int {
+        return ProductBundlingCarouselViewHolder.LAYOUT
+    }
+
+    override fun type(productBundlingUiModel: ProductBundlingUiModel): Int {
+        return ProductBundlingCardViewHolder.LAYOUT_SINGLE
+    }
+
     // Check if chat bubble first, if not return default ViewHolder
     override fun createViewHolder(
         parent: ViewGroup,
         type: Int,
         productCarouselListListener: ProductCarouselListAttachmentViewHolder.Listener,
+        productBundlingCarouselListener: ProductBundlingCarouselViewHolder.Listener,
         adapterListener: AdapterListener
     ): AbstractViewHolder<*> {
         val layoutRes = when (type) {
@@ -176,13 +191,20 @@ open class TopChatTypeFactoryImpl constructor(
             else -> type
         }
         val view = LayoutInflater.from(parent.context).inflate(layoutRes, parent, false)
-        return createViewHolder(view, layoutRes, productCarouselListListener, adapterListener)
+        return createViewHolder(
+            view,
+            layoutRes,
+            productCarouselListListener,
+            productBundlingCarouselListener,
+            adapterListener
+        )
     }
 
     private fun createViewHolder(
         parent: View,
         type: Int,
         productCarouselListListener: ProductCarouselListAttachmentViewHolder.Listener,
+        productBundlingCarouselListener: ProductBundlingCarouselViewHolder.Listener,
         adapterListener: AdapterListener
     ): AbstractViewHolder<*> {
         return when (type) {
@@ -216,6 +238,14 @@ open class TopChatTypeFactoryImpl constructor(
             )
             SrwBubbleViewHolder.LAYOUT -> SrwBubbleViewHolder(
                 parent, srwBubbleListener, adapterListener
+            )
+            ProductBundlingCarouselViewHolder.LAYOUT -> ProductBundlingCarouselViewHolder(
+                parent, productBundlingListener, adapterListener, productBundlingCarouselListener,
+                searchListener, commonListener, deferredAttachment
+            )
+            ProductBundlingCardViewHolder.LAYOUT_SINGLE -> ProductBundlingCardViewHolder(
+                parent, productBundlingListener, adapterListener,
+                searchListener, commonListener, deferredAttachment
             )
             else -> createViewHolder(parent, type)
         }

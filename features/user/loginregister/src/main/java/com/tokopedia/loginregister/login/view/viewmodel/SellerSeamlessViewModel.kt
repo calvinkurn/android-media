@@ -24,11 +24,11 @@ import javax.inject.Named
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 
-class SellerSeamlessViewModel @Inject constructor(@Named(SessionModule.SESSION_MODULE)
-                                                  private val userSession: UserSessionInterface,
-                                                  private val loginTokenUseCase: LoginTokenUseCase,
-                                                  private val dispatchers: CoroutineDispatchers
-): BaseViewModel(dispatchers.main) {
+class SellerSeamlessViewModel @Inject constructor(
+    private val userSession: UserSessionInterface,
+    private val loginTokenUseCase: LoginTokenUseCase,
+    private val dispatchers: CoroutineDispatchers
+) : BaseViewModel(dispatchers.main) {
 
     private val mutableLoginTokenResponse = MutableLiveData<Result<LoginToken>>()
     val loginTokenResponse: LiveData<Result<LoginToken>>
@@ -42,16 +42,17 @@ class SellerSeamlessViewModel @Inject constructor(@Named(SessionModule.SESSION_M
 
     fun loginSeamless(code: String) {
         val encryptedCode = AESUtils.encryptSeamless(code.toByteArray())
-        if(encryptedCode.isNotEmpty()) {
-            loginTokenUseCase.executeLoginTokenSeamless(LoginTokenUseCase.generateParamLoginSeamless(encryptedCode),
-                    LoginTokenSubscriber(
-                            userSession,
-                            onSuccessLoginToken(),
-                            onFailedLoginToken(),
-                            onSuccessLoginToken(),
-                            {},
-                            onGoToSecurityQuestion()
-                    )
+        if (encryptedCode.isNotEmpty()) {
+            loginTokenUseCase.executeLoginTokenSeamless(
+                LoginTokenUseCase.generateParamLoginSeamless(encryptedCode),
+                LoginTokenSubscriber(
+                    userSession,
+                    onSuccessLoginToken(),
+                    onFailedLoginToken(),
+                    onSuccessLoginToken(),
+                    {},
+                    onGoToSecurityQuestion()
+                )
             )
         } else {
             onFailedLoginToken().invoke(Throwable())
@@ -64,6 +65,7 @@ class SellerSeamlessViewModel @Inject constructor(@Named(SessionModule.SESSION_M
             mutableLoginTokenResponse.postValue(Fail(it))
         }
     }
+
     private fun onGoToSecurityQuestion(): () -> Unit {
         return {
             userSession.loginMethod = SeamlessLoginAnalytics.LOGIN_METHOD_SEAMLESS
@@ -74,11 +76,13 @@ class SellerSeamlessViewModel @Inject constructor(@Named(SessionModule.SESSION_M
     private fun onSuccessLoginToken(): (LoginTokenPojo) -> Unit {
         return {
             if (it.loginToken.accessToken.isNotEmpty() &&
-                    it.loginToken.refreshToken.isNotEmpty() &&
-                    it.loginToken.tokenType.isNotEmpty()) {
+                it.loginToken.refreshToken.isNotEmpty() &&
+                it.loginToken.tokenType.isNotEmpty()
+            ) {
                 mutableLoginTokenResponse.postValue(Success(it.loginToken))
             } else if (it.loginToken.errors.isNotEmpty() &&
-                    it.loginToken.errors[0].message.isNotEmpty()) {
+                it.loginToken.errors[0].message.isNotEmpty()
+            ) {
                 mutableLoginTokenResponse.postValue(Fail(MessageErrorException(it.loginToken.errors[0].message)))
             } else {
                 mutableLoginTokenResponse.postValue(Fail(RuntimeException()))

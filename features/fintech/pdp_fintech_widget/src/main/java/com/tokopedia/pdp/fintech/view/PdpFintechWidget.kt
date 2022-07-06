@@ -2,7 +2,7 @@ package com.tokopedia.pdp.fintech.view
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
+import android.view.LayoutInflater
 import androidx.annotation.AttrRes
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
@@ -23,9 +23,8 @@ import com.tokopedia.pdp.fintech.domain.datamodel.WidgetDetail
 import com.tokopedia.pdp.fintech.listner.ProductUpdateListner
 import com.tokopedia.pdp.fintech.listner.WidgetClickListner
 import com.tokopedia.pdp.fintech.viewmodel.FintechWidgetViewModel
-import com.tokopedia.pdp_fintech.R
+import com.tokopedia.pdp_fintech.databinding.PdpFintechWidgetLayoutBinding
 import com.tokopedia.unifycomponents.BaseCustomView
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -45,6 +44,9 @@ class PdpFintechWidget @JvmOverloads constructor(
     private val NOT_BRANDER_CHIPS = "NON BRANDED"
     private val BRANDER_CHIPS = "BRANDED"
     private var logInStatus = false
+    private lateinit var binding: PdpFintechWidgetLayoutBinding
+
+
 
 
     @Inject
@@ -52,8 +54,6 @@ class PdpFintechWidget @JvmOverloads constructor(
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
-    private var baseView: View? = null
-    private lateinit var titleTextView: Typography
     private var fintechWidgetAdapter: FintechWidgetAdapter? = null
     private var instanceProductUpdateListner: ProductUpdateListner? = null
     private lateinit var fintechWidgetViewModel: FintechWidgetViewModel
@@ -100,7 +100,7 @@ class PdpFintechWidget @JvmOverloads constructor(
     private fun updateTestForChip(widgetDetail: WidgetDetail) {
         widgetDetail.baseWidgetResponse?.baseData?.let { baseChipResponse ->
             if (baseChipResponse.list.size > 0)
-                titleTextView.text = baseChipResponse.list[0].title
+                binding.quickText.text = baseChipResponse.list[0].title
         }
     }
 
@@ -120,8 +120,8 @@ class PdpFintechWidget @JvmOverloads constructor(
     }
 
     private fun initRecycler() {
-        val recyclerView = baseView?.findViewById<RecyclerView>(R.id.recycler_items)
-        recyclerView?.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+
+        binding.recyclerItems.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
         fintechWidgetAdapter = FintechWidgetAdapter(context, object : WidgetClickListner {
             override fun clickedWidget(
                 fintechRedirectionWidgetDataClass: FintechRedirectionWidgetDataClass
@@ -130,7 +130,7 @@ class PdpFintechWidget @JvmOverloads constructor(
             }
 
         })
-        recyclerView?.adapter = fintechWidgetAdapter
+        binding.recyclerItems.adapter = fintechWidgetAdapter
     }
 
     private fun sendClickEvent(
@@ -184,10 +184,9 @@ class PdpFintechWidget @JvmOverloads constructor(
 
 
     private fun initView() {
-        baseView = inflate(context, R.layout.pdp_fintech_widget_layout, this)
-        baseView?.let {
-            titleTextView = it.findViewById(R.id.quickText)
-        }
+       binding =  PdpFintechWidgetLayoutBinding.inflate(
+            LayoutInflater.from(context),this,true
+        )
     }
 
 
@@ -197,7 +196,6 @@ class PdpFintechWidget @JvmOverloads constructor(
         loggedIn: Boolean
     ) {
         try {
-            fintechWidgetViewHolder.removeWidget()
             if (this.productID == productID && this.logInStatus == loggedIn && priceToChip.isNotEmpty()) {
                 if (idToPriceMap[productID] != null)
                     getChipDataAndUpdate(idToPriceMap[productID]?.price)

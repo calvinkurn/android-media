@@ -1,46 +1,68 @@
 package com.tokopedia.media.preview.ui.activity.pagers.views
 
 import android.content.Context
-import android.view.TextureView
 import android.view.View
-import android.widget.ImageView
-import com.google.android.exoplayer2.ui.PlayerControlView
 import com.google.android.exoplayer2.ui.PlayerView
-import com.google.android.exoplayer2.video.VideoListener
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
 import com.tokopedia.media.preview.ui.player.PickerVideoPlayer
+import com.tokopedia.media.preview.ui.player.VideoControlView
 import com.tokopedia.media.preview.ui.uimodel.PreviewUiModel
 
 class VideoPreview(
     private val context: Context,
-    val videoPlayer: PickerVideoPlayer
-) : BasePagerPreview {
+    private val videoPlayer: PickerVideoPlayer
+) : BasePagerPreview, VideoControlView.Listener, PickerVideoPlayer.Listener {
 
     override val layout: Int
         get() = R.layout.view_item_preview_video
 
+    private var videoControl: VideoControlView? = null
+    private var isSkipUpdateState = false
+
     override fun setupView(media: PreviewUiModel): View {
         return rootLayoutView(context).also {
             val viewPlayer = it.findViewById<PlayerView>(R.id.video_preview)
-            val videoControl = it.findViewById<PlayerControlView>(R.id.video_control)
+            videoControl = it.findViewById(R.id.video_control)
 
             viewPlayer.player = videoPlayer.player()
-            videoControl.player = videoPlayer.player()
+            videoControl?.player = videoPlayer.player()
 
-            videoPlayer.videoUrl = media.data.path
+            videoPlayer.videoUrl = media.data.file?.path.orEmpty()
 
-            it.setOnClickListener {
-                if(videoPlayer.player().isPlaying){
-                    if(!videoControl.isVisible) videoControl.show() else videoControl.hide()
-                }
-            }
-
-            videoPlayer.listener = object : PickerVideoPlayer.Listener {
-                override fun onPlayStateChanged(isPlaying: Boolean) {
-                    videoControl.showWithCondition(!videoPlayer.player().isPlaying)
-                }
-            }
+            videoPlayer.listener = this
+            videoControl?.listener = this
         }
+    }
+
+    override fun isPlayingOnChanged(isPlaying: Boolean) {
+        if (isSkipUpdateState) {
+            return
+        }
+        videoControl?.updateCenterButtonState(isPlaying)
+        videoControl?.showController(isPlaying)
+    }
+
+    override fun onCenterPauseButtonClicked() {
+        videoPlayer.pause()
+    }
+
+    override fun onCenterPlayButtonClicked() {
+        videoPlayer.resume()
+    }
+
+    override fun onScrubStart() {
+        videoPlayer.pause()
+        videoControl?.cleanHideJob()
+        isSkipUpdateState = true
+    }
+
+    override fun onScrubStop() {
+        videoPlayer.resume()
+        isSkipUpdateState = false
+    }
+
+    override fun onScrubMove(position: Long) {
+        isSkipUpdateState = false
+        videoPlayer.player().seekTo(position)
     }
 }

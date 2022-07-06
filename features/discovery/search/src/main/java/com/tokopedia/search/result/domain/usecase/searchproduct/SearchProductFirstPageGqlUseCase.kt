@@ -96,11 +96,11 @@ class SearchProductFirstPageGqlUseCase(
 
     @GqlQuery("QuickFilter", QUICK_FILTER_QUERY)
     private fun createQuickFilterRequest(query: String, params: String) =
-            GraphqlRequest(
-                    QuickFilter(),
-                    QuickFilterModel::class.java,
-                    mapOf(GQL.KEY_QUERY to query, GQL.KEY_PARAMS to params)
-            )
+        GraphqlRequest(
+            QuickFilter(),
+            QuickFilterModel::class.java,
+            mapOf(GQL.KEY_QUERY to query, GQL.KEY_PARAMS to params)
+        )
 
     private fun MutableList<GraphqlRequest>.addGlobalNavRequest(requestParams: RequestParams, query: String, params: String) {
         if (!requestParams.isSkipGlobalNav()) {
@@ -270,6 +270,9 @@ class SearchProductFirstPageGqlUseCase(
                         see_all_applink
                         see_all_url
                         show_topads
+                        tracking_option
+                        component_id
+                        info
                         list {
                             category_name
                             name
@@ -281,6 +284,7 @@ class SearchProductFirstPageGqlUseCase(
                             strikethrough
                             background_url
                             logo_url
+                            component_id
                         }
                     }
                 }
@@ -298,6 +302,7 @@ class SearchProductFirstPageGqlUseCase(
                         tracking_option
                         options {
                             title
+                            subtitle
                             url
                             applink
                             banner_image_url
@@ -347,6 +352,10 @@ class SearchProductFirstPageGqlUseCase(
                                     productViewUrl
                                 }
                                 customvideo_url
+                            }
+                            card_button {
+                                title
+                                applink
                             }
                         }
                     }

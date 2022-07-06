@@ -25,7 +25,7 @@ class FlightCancellationRequestEntity(
 class FlightCancellationRequestDetail(
         @SerializedName("id")
         @Expose
-        val id: Long = 0,
+        val id: String = "0",
         @SerializedName("journeyID")
         @Expose
         val journeyId: Long = 0,
