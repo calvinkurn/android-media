@@ -8,21 +8,21 @@ import com.tokopedia.telemetry.TelemetryActLifecycleCallback.Companion.SAMPLING_
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
-class Touch(val time: Int, val x: Int, val y: Int, val pressure: Float) {
+class Touch(val diff: Int, val x: Int, val y: Int, val pressure: Float) {
     override fun toString(): String {
-        return "[$time,$x,$y,$pressure]"
+        return "[$diff,$x,$y,$pressure]"
     }
 }
 
-class Typing(var ts: Int, var diffCount: Int) {
+class Typing(var diff: Int, var diffCount: Int) {
     override fun toString(): String {
-        return "[$ts,$diffCount]"
+        return "[$diff,$diffCount]"
     }
 }
 
-class Coord(var ts: Int, val x: Float, val y: Float, val z: Float, var visit: Int) {
+class Coord(var diff: Int, val x: Float, val y: Float, val z: Float, var visit: Int) {
     override fun toString(): String {
-        return "[$ts,$x,$y,$z,$visit]"
+        return "[$diff,$x,$y,$z,$visit]"
     }
 }
 
@@ -44,7 +44,7 @@ class TelemetrySection(
             FloatArray(4)
         }
         accelList.onEachIndexed { index, coord ->
-            mapAccList[index][0] = coord.ts.toFloat()
+            mapAccList[index][0] = coord.diff.toFloat()
             mapAccList[index][1] = df.format(coord.x).toFloat()
             mapAccList[index][2] = df.format(coord.y).toFloat()
             mapAccList[index][3] = df.format(coord.z).toFloat()
@@ -54,7 +54,7 @@ class TelemetrySection(
             FloatArray(4)
         }
         gyroList.onEachIndexed { index, coord ->
-            mapGyroList[index][0] = coord.ts.toFloat()
+            mapGyroList[index][0] = coord.diff.toFloat()
             mapGyroList[index][1] = df.format(coord.x).toFloat()
             mapGyroList[index][2] = df.format(coord.y).toFloat()
             mapGyroList[index][3] = df.format(coord.z).toFloat()
@@ -64,7 +64,7 @@ class TelemetrySection(
             IntArray(2)
         }
         typingList.onEachIndexed { index, typing ->
-            mapTypeList[index][0] = typing.ts
+            mapTypeList[index][0] = typing.diff
             mapTypeList[index][1] = typing.diffCount
         }
 
@@ -72,7 +72,7 @@ class TelemetrySection(
             FloatArray(4)
         }
         touchList.onEachIndexed { index, touch ->
-            mapTouchList[index][0] = touch.time.toFloat()
+            mapTouchList[index][0] = touch.diff.toFloat()
             mapTouchList[index][1] = df.format(touch.x).toFloat()
             mapTouchList[index][2] = df.format(touch.y).toFloat()
             mapTouchList[index][3] = touch.pressure
@@ -137,7 +137,12 @@ class Telemetry {
             if (telemetrySectionList.isEmpty()) return
             for (telemetrySection in telemetrySectionList) {
                 if (telemetrySection.endTime == 0L) {
-                    telemetrySection.endTime = timeStop
+                    if (timeStop - telemetrySection.startTime > SECTION_TELEMETRY_DURATION) {
+                        telemetrySection.endTime =
+                            telemetrySection.startTime + SECTION_TELEMETRY_DURATION;
+                    } else {
+                        telemetrySection.endTime = timeStop
+                    }
                 }
                 if (telemetrySection.eventNameEnd.isEmpty()) {
                     telemetrySection.eventNameEnd = eventNameStop
@@ -180,18 +185,23 @@ class Telemetry {
             addToListCheckLastCoord(gyroList, x, y, z)
         }
 
-        private fun addToListCheckLastCoord(list: MutableList<Coord>, x: Float, y: Float, z: Float) {
+        private fun addToListCheckLastCoord(
+            list: MutableList<Coord>,
+            x: Float,
+            y: Float,
+            z: Float
+        ) {
             val lastCoord = list.lastOrNull()
             if (lastCoord != null && lastCoord.x == x && lastCoord.y == y && lastCoord.z == z) {
                 list.last().visit++
             } else {
                 val elapsedDiff = getElapsedDiff()
                 val diffPrev = if (lastCoord != null) {
-                    elapsedDiff - lastCoord.ts
+                    elapsedDiff - lastCoord.diff
                 } else {
                     SAMPLING_RATE_MS
                 }
-                if (diffPrev >= SAMPLING_RATE_MS) {
+                if (diffPrev >= SAMPLING_RATE_MS && elapsedDiff < SECTION_TELEMETRY_DURATION) {
                     list.add(Coord(elapsedDiff, x, y, z, 0))
                 }
             }
@@ -201,7 +211,10 @@ class Telemetry {
         fun addTyping(diffChar: Int) {
             try {
                 val typingList = telemetrySectionList[0].typingList
-                typingList.add(Typing(getElapsedDiff(), diffChar))
+                val elapsedDiff = getElapsedDiff();
+                if (elapsedDiff < SECTION_TELEMETRY_DURATION) {
+                    typingList.add(Typing(elapsedDiff, diffChar))
+                }
             } catch (e: Exception) {
 
             }

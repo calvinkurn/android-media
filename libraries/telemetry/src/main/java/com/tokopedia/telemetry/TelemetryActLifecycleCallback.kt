@@ -91,7 +91,7 @@ class TelemetryActLifecycleCallback : Application.ActivityLifecycleCallbacks {
         if (activity is ITelemetryActivity) {
             val sectionName = activity.getTelemetrySectionName()
 
-            // continue track telemetry if the sectionName is different with the previous section Name.
+            // Only send telemetry if section Name is different
             if (sectionName == Telemetry.getCurrentSectionName()) {
                 return
             }
