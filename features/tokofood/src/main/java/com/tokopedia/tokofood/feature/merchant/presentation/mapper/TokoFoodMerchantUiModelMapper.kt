@@ -135,19 +135,19 @@ object TokoFoodMerchantUiModelMapper {
     private fun deepCopyMasterData(masterData: List<CustomListItem>): List<CustomListItem> {
         val copy = mutableListOf<CustomListItem>()
         masterData.forEach { customListItem ->
-            val itemCopy = CustomListItem(
+            val itemCopy = customListItem.copy(
                     listItemType = customListItem.listItemType,
                     addOnUiModel = customListItem.addOnUiModel?.run {
-                        AddOnUiModel(
+                        this.copy(
                                 id = this.id,
                                 name = this.name,
-                                isError = this.isError,
+                                isError = false,
                                 isRequired = this.isRequired,
-                                isSelected = this.isSelected,
+                                isSelected = false,
                                 selectedAddOns = listOf(),
                                 maxQty = this.maxQty,
                                 minQty = this.minQty,
-                                options = this.options,
+                                options = deepCopyOptions(this.options),
                                 outOfStockWording = this.outOfStockWording
                         )
                     }
@@ -155,6 +155,15 @@ object TokoFoodMerchantUiModelMapper {
             copy.add(itemCopy)
         }
         return copy
+    }
+
+    private fun deepCopyOptions(options: List<OptionUiModel>): List<OptionUiModel> {
+        val optionsCopy = mutableListOf<OptionUiModel>()
+        options.forEach {
+            optionsCopy.add(it.copy(isSelected = false))
+            it.isSelected = false
+        }
+        return optionsCopy
     }
 
     fun mapProductListItemToCategoryFilterUiModel(

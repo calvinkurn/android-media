@@ -187,6 +187,9 @@ class PlayViewModel @AssistedInject constructor(
     private val _loadingBuy = MutableStateFlow(false)
     private val _warehouseInfo = MutableStateFlow(WarehouseInfoUiModel.Empty)
 
+    /** Needed to decide whether we need to call setResult() or no when leaving play room */
+    private val _isChannelReportLoaded = MutableStateFlow(false)
+
     private val _winnerBadgeUiState = combine(
         _leaderboard, _bottomInsets, _status, _channelDetail, _leaderboardUserBadgeState
     ) { leaderboard, bottomInsets, status, channelDetail, leaderboardUserBadgeState ->
@@ -411,6 +414,9 @@ class PlayViewModel @AssistedInject constructor(
 
     val interactiveData: InteractiveUiModel
         get() = _interactive.value.interactive
+
+    val isTotalViewLoaded: Boolean
+        get() = _isChannelReportLoaded.value
 
     private var socketJob: Job? = null
 
@@ -965,6 +971,8 @@ class PlayViewModel @AssistedInject constructor(
 
         removeCastSessionListener()
         removeCastStateListener()
+        
+        resetChannelReportLoadedStatus()
     }
 
     private fun focusVideoPlayer(channelData: PlayChannelData) {
@@ -1321,9 +1329,8 @@ class PlayViewModel @AssistedInject constructor(
                             totalLikeFmt = report.totalLikeFmt
                         )
                     }
-                } catch (e: Throwable) {
-
-                }
+                    _isChannelReportLoaded.setValue { true }
+                } catch (e: Throwable) { }
 
                 val isLiked = try { deferredIsLiked.await() } catch (e: Throwable) { false }
 
@@ -1336,6 +1343,10 @@ class PlayViewModel @AssistedInject constructor(
                 copy(status = PlayLikeStatus.NotLiked, source = LikeSource.Network)
             }
         })
+    }
+
+    private fun resetChannelReportLoadedStatus() {
+        _isChannelReportLoaded.setValue { false }
     }
 
     /**

@@ -202,7 +202,7 @@ class PlayBroInteractiveStartLiveStreamViewModelTest {
             }
 
             state.interactiveConfig.assertEqualTo(mockInteractiveConfigResponse)
-            state.interactive.assertEqualTo(mockCurrentInteractive)
+            state.interactive.assertEqualTo(InteractiveUiModel.Unknown)
         }
     }
 

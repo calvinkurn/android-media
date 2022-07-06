@@ -362,7 +362,7 @@ open class ProductManageFragment :
                         productManageLayoutManager?.findViewByPosition(Int.ZERO)
                             ?.findViewById<View>(R.id.pointerCoachMarkMoreOptions)?.takeIf {
                                 it.isVisible
-                            }?.let { moreOptionButton ->
+                            }?.let {
                                 showCoachMoreOptionMenu()
                                 return@reshowMoreOptionCoachMark
                             }
@@ -380,16 +380,17 @@ open class ProductManageFragment :
                 (visibleRange.takeIf { !isReversed } ?: visibleRange.reversed()).forEach {
                     val product = adapter.data.getOrNull(it)
                     if (product is ProductUiModel && product.hasStockAlert == HAS_STOCK_ALERT_STATUS
-                        && product.stockAlertActive != STOCK_ALERT_ACTIVE && !CoachMarkPreference.hasShown(
-                            requireContext(),
-                            SHARED_PREF_STOCK_REMINDER_FLAG_COACH_MARK
-                        ) && !haveShowCoachFlagStockReminder
+                        && product.stockAlertActive != STOCK_ALERT_ACTIVE && !haveShowCoachFlagStockReminder
                     ) {
                         productManageLayoutManager?.findViewByPosition(it)
                             ?.findViewById<IconUnify>(R.id.imageStockReminder)?.takeIf {
                                 it.isVisible
                             }?.let { imageStockReminder ->
-                                if (getVisiblePercent(imageStockReminder) == Int.ZERO) {
+                                if (getVisiblePercent(imageStockReminder) == Int.ZERO && !CoachMarkPreference.hasShown(
+                                        imageStockReminder.context,
+                                        SHARED_PREF_STOCK_REMINDER_FLAG_COACH_MARK
+                                    )
+                                ) {
                                     imageStockReminder.post {
                                         getCoachMarkFlagStockReminder(imageStockReminder).run {
                                             if (activity?.isFinishing != false) return@post
@@ -870,9 +871,11 @@ open class ProductManageFragment :
                 is Success -> setVariantGoToBroadcastChat(it.data)
                 is Fail -> {
                     val message =
-                        activity?.resources?.getString(R.string.broadcast_chat_error_state_message_empty_variant).orEmpty()
+                        activity?.resources?.getString(R.string.broadcast_chat_error_state_message_empty_variant)
+                            .orEmpty()
                     val action =
-                        activity?.resources?.getString(R.string.broadcast_chat_error_state_action_retry).orEmpty()
+                        activity?.resources?.getString(R.string.broadcast_chat_error_state_action_retry)
+                            .orEmpty()
                     errorStateBroadcastChat(message, action, isRetry = true)
                 }
             }
@@ -966,8 +969,11 @@ open class ProductManageFragment :
     }
 
     private fun showErrorStateEmptyProductBroadcastChat() {
-        val message = activity?.resources?.getString(R.string.broadcast_chat_error_state_message_empty_stock).orEmpty()
-        val action = activity?.resources?.getString(R.string.broadcast_chat_error_state_action_oke).orEmpty()
+        val message =
+            activity?.resources?.getString(R.string.broadcast_chat_error_state_message_empty_stock)
+                .orEmpty()
+        val action =
+            activity?.resources?.getString(R.string.broadcast_chat_error_state_action_oke).orEmpty()
         errorStateBroadcastChat(message, action)
     }
 
@@ -2056,17 +2062,22 @@ open class ProductManageFragment :
                 )
             }
         } else {
-            val editVariantStockBottomSheet = QuickEditVariantStockBottomSheet.createInstance(
-                product.id,
-                product.isProductBundling,
-                ::onClickCampaignInfo
-            ) { result ->
-                viewModel.editVariantsStock(result)
+            try {
+                val editVariantStockBottomSheet = QuickEditVariantStockBottomSheet.createInstance(
+                    product.id,
+                    product.isProductBundling,
+                    ::onClickCampaignInfo
+                ) { result ->
+                    viewModel.editVariantsStock(result)
+                }
+                editVariantStockBottomSheet.show(
+                    childFragmentManager,
+                    QuickEditVariantStockBottomSheet.TAG
+                )
+            }catch (e: IllegalArgumentException){
+                e.printStackTrace()
             }
-            editVariantStockBottomSheet.show(
-                childFragmentManager,
-                QuickEditVariantStockBottomSheet.TAG
-            )
+
         }
         ProductManageTracking.eventClickEditStockVariant()
     }
@@ -3347,12 +3358,12 @@ open class ProductManageFragment :
         val item = productManageLayoutManager?.findViewByPosition(Int.ZERO)
             ?.findViewById<View>(R.id.pointerCoachMarkMoreOptions)
 
-        if (item != null && !CoachMarkPreference.hasShown(
-                requireContext(),
-                SHARED_PREF_PRODUCT_MANAGE_MENU_OPTIONS_COACH_MARK
-            )
-        ) {
-            if (getVisiblePercent(item) == 0) {
+        if (item != null) {
+            if (getVisiblePercent(item) == 0 && !CoachMarkPreference.hasShown(
+                    item.context,
+                    SHARED_PREF_PRODUCT_MANAGE_MENU_OPTIONS_COACH_MARK
+                )
+            ) {
                 CoachMarkPreference.setShown(
                     item.context,
                     SHARED_PREF_PRODUCT_MANAGE_MENU_OPTIONS_COACH_MARK,
@@ -3365,6 +3376,7 @@ open class ProductManageFragment :
                     step = getCoachMarkMoreMenu(item)
                 )
             }
+
         }
     }
 
@@ -3375,16 +3387,18 @@ open class ProductManageFragment :
         val item = productManageLayoutManager?.findViewByPosition(stockReminderPosition)
             ?.findViewById<IconUnify>(R.id.imageStockReminder)
 
-        if (item != null && !CoachMarkPreference.hasShown(
-                requireContext(),
-                SHARED_PREF_STOCK_REMINDER_FLAG_COACH_MARK
-            )
-        ) {
-            if (getVisiblePercent(item) == 0) {
+        if (item != null) {
+
+            if (getVisiblePercent(item) == 0 && !CoachMarkPreference.hasShown(
+                    item.context,
+                    SHARED_PREF_STOCK_REMINDER_FLAG_COACH_MARK
+                )
+            ) {
                 currentPositionStockReminderCoachMark = stockReminderPosition
                 recyclerView?.addOnScrollListener(recyclerViewScrollListener)
                 coachMarkStockReminder?.stepButtonTextLastChild =
-                    activity?.resources?.getString(com.tokopedia.abstraction.R.string.label_done).orEmpty()
+                    activity?.resources?.getString(com.tokopedia.abstraction.R.string.label_done)
+                        .orEmpty()
                 haveShowCoachFlagStockReminder = true
                 coachMarkStockReminder?.showCoachMark(
                     step = getCoachMarkFlagStockReminder(item),
@@ -3395,12 +3409,13 @@ open class ProductManageFragment :
     }
 
     private fun showCoachMenuReminder(view: View) {
-        if (!CoachMarkPreference.hasShown(
-                requireContext(),
-                SHARED_PREF_STOCK_REMINDER_MENU_COACH_MARK
-            ) && haveSetReminder == -1
+        if (haveSetReminder == -1
         ) {
-            if (getVisiblePercent(view) == 0) {
+            if (getVisiblePercent(view) == 0 && !CoachMarkPreference.hasShown(
+                    view.context,
+                    SHARED_PREF_STOCK_REMINDER_MENU_COACH_MARK
+                )
+            ) {
                 CoachMarkPreference.setShown(
                     view.context,
                     SHARED_PREF_STOCK_REMINDER_MENU_COACH_MARK,
