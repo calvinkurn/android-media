@@ -152,6 +152,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
         observeTNCClickEvent()
         observeTNCConfirmationClick()
         observeCampaignCreationAllowed()
+        observeAddRelatedCampaignButtonEvent()
         observeSaveDraftState()
         observeCreateCampaignState()
     }
@@ -209,7 +210,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
         }
 
         binding.btnChoosePreviousCampaign.setOnClickListener {
-            showChooseRelatedCampaignBottomSheet()
+            viewModel.onAddRelatedCampaignButtonClicked()
         }
 
         childFragmentManager.registerFragmentLifecycleCallbacks(object :
@@ -697,9 +698,14 @@ class CampaignRuleFragment : BaseDaggerFragment(),
         CampaignListActivity.start(context, isSaveDraft = isSaveDraft, isClearTop = true)
     }
 
-    private fun showChooseRelatedCampaignBottomSheet() {
-        val selectedRelatedCampaign = viewModel.relatedCampaigns.value ?: emptyList()
-        ChooseRelatedCampaignBottomSheet.createInstance(selectedRelatedCampaign)
+    private fun observeAddRelatedCampaignButtonEvent() {
+        viewModel.addRelatedCampaignButtonEvent.observe(viewLifecycleOwner) {
+            showChooseRelatedCampaignBottomSheet(it)
+        }
+    }
+
+    private fun showChooseRelatedCampaignBottomSheet(request: AddRelatedCampaignRequest) {
+        ChooseRelatedCampaignBottomSheet.createInstance(request.campaignId, request.selectedRelatedCampaign)
             .show(childFragmentManager)
     }
 
