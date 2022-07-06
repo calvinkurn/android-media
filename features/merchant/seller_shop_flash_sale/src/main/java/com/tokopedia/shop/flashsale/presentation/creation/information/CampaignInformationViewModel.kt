@@ -15,6 +15,7 @@ import com.tokopedia.shop.flashsale.domain.entity.CampaignAction
 import com.tokopedia.shop.flashsale.domain.entity.CampaignCreationResult
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.Gradient
+import com.tokopedia.shop.flashsale.domain.entity.RelatedCampaign
 import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
 import com.tokopedia.shop.flashsale.domain.entity.enums.PaymentType
 import com.tokopedia.shop.flashsale.domain.usecase.DoSellerCampaignCreationUseCase
@@ -25,7 +26,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
-import java.util.*
+import java.util.Date
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -80,6 +81,8 @@ class CampaignInformationViewModel @Inject constructor(
     private var remainingQuota = Int.ZERO
     private var selection : Selection? = null
     private var campaignId: Long = CAMPAIGN_NOT_CREATED_ID
+    private var relatedCampaigns: List<RelatedCampaign> = emptyList()
+    private var isCampaignRuleSubmit = false
 
     private val forbiddenWords = listOf(
         "kejar diskon",
@@ -236,7 +239,9 @@ class CampaignInformationViewModel @Inject constructor(
                         showTeaser = selection.showTeaser,
                         firstColor = selection.firstColor,
                         secondColor = selection.secondColor,
-                        paymentType = selection.paymentType
+                        paymentType = selection.paymentType,
+                        campaignRelation = relatedCampaigns.map { it.id },
+                        isCampaignRuleSubmit = isCampaignRuleSubmit,
                 )
                 val result = doSellerCampaignCreationUseCase.execute(param)
                 _campaignUpdate.postValue(Success(result))
@@ -267,7 +272,9 @@ class CampaignInformationViewModel @Inject constructor(
                     showTeaser = selection.showTeaser,
                     firstColor = selection.firstColor,
                     secondColor = selection.secondColor,
-                    paymentType = selection.paymentType
+                    paymentType = selection.paymentType,
+                    campaignRelation = relatedCampaigns.map { it.id },
+                    isCampaignRuleSubmit = isCampaignRuleSubmit,
                 )
                 val result = doSellerCampaignCreationUseCase.execute(param)
                 _saveDraft.postValue(Success(result))
@@ -285,6 +292,8 @@ class CampaignInformationViewModel @Inject constructor(
             dispatchers.io,
             block = {
                 val result = getSellerCampaignDetailUseCase.execute(campaignId)
+                relatedCampaigns = result.relatedCampaigns
+                isCampaignRuleSubmit = result.isCampaignRuleSubmit
                 _campaignDetail.postValue(Success(result))
             },
             onError = { error ->
