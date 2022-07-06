@@ -1,5 +1,6 @@
 package com.tokopedia.feedcomponent.onboarding.view.strategy
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.feedcomponent.onboarding.domain.repository.FeedUGCOnboardingRepository
 import com.tokopedia.feedcomponent.onboarding.view.strategy.base.FeedUGCOnboardingStrategy
 import com.tokopedia.feedcomponent.onboarding.view.uimodel.event.FeedUGCOnboardingUiEvent
@@ -13,8 +14,9 @@ import javax.inject.Inject
  * Created By : Jonathan Darwin on July 04, 2022
  */
 class FeedUGCTncOnboardingStrategy @Inject constructor(
+    dispatcher: CoroutineDispatchers,
     private val repo: FeedUGCOnboardingRepository,
-): FeedUGCOnboardingStrategy() {
+): FeedUGCOnboardingStrategy(dispatcher) {
 
     private val _username = MutableStateFlow("")
     private val _isCheckTnc = MutableStateFlow(false)

@@ -1,5 +1,6 @@
 package com.tokopedia.feedcomponent.onboarding.view.strategy.base
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.feedcomponent.onboarding.view.uimodel.action.FeedUGCOnboardingAction
 import com.tokopedia.feedcomponent.onboarding.view.uimodel.event.FeedUGCOnboardingUiEvent
@@ -12,11 +13,12 @@ import kotlinx.coroutines.flow.Flow
 /**
  * Created By : Jonathan Darwin on July 04, 2022
  */
-abstract class FeedUGCOnboardingStrategy {
+abstract class FeedUGCOnboardingStrategy(
+    dispatcher: CoroutineDispatchers,
+) {
 
-    protected val dispatchers = CoroutineDispatchersProvider
-    protected var job: Job = SupervisorJob()
-    protected val scope = CoroutineScope(dispatchers.computation + job)
+    private var job: Job = SupervisorJob()
+    protected val scope = CoroutineScope(dispatcher.computation + job)
 
     abstract val uiState: Flow<FeedUGCOnboardingUiState>
     abstract val uiEvent: Flow<FeedUGCOnboardingUiEvent>

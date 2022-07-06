@@ -2,6 +2,7 @@ package com.tokopedia.feedcomponent.onboarding.view.strategy
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.feedcomponent.onboarding.domain.repository.FeedUGCOnboardingRepository
 import com.tokopedia.feedcomponent.onboarding.view.strategy.base.FeedUGCOnboardingStrategy
 import com.tokopedia.feedcomponent.onboarding.view.uimodel.action.FeedUGCOnboardingAction
@@ -18,9 +19,10 @@ import com.tokopedia.abstraction.R as abstractionR
  * Created By : Jonathan Darwin on July 04, 2022
  */
 class FeedUGCCompleteOnboardingStrategy @Inject constructor(
+    dispatcher: CoroutineDispatchers,
     @ApplicationContext private val context: Context,
     private val repo: FeedUGCOnboardingRepository,
-): FeedUGCOnboardingStrategy() {
+): FeedUGCOnboardingStrategy(dispatcher) {
 
     private val _username = MutableStateFlow("")
     private val _usernameState = MutableStateFlow<UsernameState>(UsernameState.Unknown)
