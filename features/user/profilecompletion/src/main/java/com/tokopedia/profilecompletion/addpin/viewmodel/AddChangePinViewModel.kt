@@ -8,7 +8,7 @@ import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.otp.verification.domain.data.OtpConstant
+import com.tokopedia.otp.verification.data.OtpConstant
 import com.tokopedia.profilecompletion.addpin.data.*
 import com.tokopedia.profilecompletion.addpin.data.usecase.CreatePinV2UseCase
 import com.tokopedia.profilecompletion.changepin.data.model.MutatePinV2Data

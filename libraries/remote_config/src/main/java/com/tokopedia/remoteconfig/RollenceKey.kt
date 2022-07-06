@@ -80,6 +80,9 @@ object RollenceKey {
     // Review
     const val CREATE_REVIEW_MEDIA_PICKER_EXPERIMENT_NAME = "review_video"
 
+    // Food
+    const val KEY_ROLLENCE_FOOD = "m1_gofood"
+
     // PDP
     const val PDP_CAROUSEL_ANDROID = "pdp_carousel_android"
     const val PDP_SHOW_THUMBNAIL = "pdp_show_thumbnail"
