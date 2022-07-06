@@ -17,12 +17,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.fragment.IBaseMultiFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -618,6 +616,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     private fun showHomeLayout(data: TokoFoodListUiModel) {
+        onRenderHomepage()
         rvHome?.post {
             adapter.submitList(data.items)
         }
@@ -922,6 +921,15 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                     userSession.isLoggedIn
                 )
             }
+        }
+    }
+
+    private fun onRenderHomepage(){
+        if (viewModel.isShownEmptyState()) {
+            hideMiniCartHome()
+            hideJumpToTop()
+        } else {
+            showMiniCartHome()
         }
     }
 

@@ -14,11 +14,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.fragment.IBaseMultiFragment
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood.BRAND_UID_PARAM
@@ -370,11 +368,20 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
     }
 
     private fun showCategoryLayout(data: TokoFoodListUiModel) {
+        onRenderCategoryPage()
         adapter.submitList(data.items)
     }
 
     private fun loadLayout() {
         viewModel.showLoadingState()
+    }
+
+    private fun onRenderCategoryPage() {
+        if (viewModel.isShownEmptyState()) {
+            hideMiniCartCategory()
+        } else {
+            showMiniCartCategory()
+        }
     }
 
     private fun updateCurrentPageLocalCacheModelData() {
