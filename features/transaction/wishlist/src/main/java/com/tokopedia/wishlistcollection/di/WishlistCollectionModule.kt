@@ -12,18 +12,18 @@ import dagger.Provides
 
 
 @Module
-class CollectionWishlistModule(private val activity: Activity) {
-    @CollectionWishlistScope
+class WishlistCollectionModule(private val activity: Activity) {
+    @WishlistCollectionScope
     @Provides
     fun provideContext(): Context = activity
 
-    @CollectionWishlistScope
+    @WishlistCollectionScope
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
 
-    @CollectionWishlistScope
+    @WishlistCollectionScope
     @Provides
     fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
 }

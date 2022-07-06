@@ -61,6 +61,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.purchaseplatform.DeeplinkMapperPurchasePlatform;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.devicefingerprint.appauth.AppAuthWorker;
 import com.tokopedia.devicefingerprint.datavisor.workmanager.DataVisorWorker;
@@ -201,6 +202,7 @@ public class MainParentActivity extends BaseActivity implements
     public static final String PARAM_HOME = "home";
     public static final String PARAM_ACTIVITY_WISHLIST_V2 = "activity_wishlist_v2";
     private static final String ENABLE_REVAMP_WISHLIST_V2 = "android_revamp_wishlist_v2";
+    public static final String PARAM_ACTIVITY_WISHLIST_COLLECTION = "activity_wishlist_collection";
     private static final String SUFFIX_ALPHA = "-alpha";
 
     ArrayList<BottomMenu> menu = new ArrayList<>();
@@ -764,18 +766,35 @@ public class MainParentActivity extends BaseActivity implements
             fragmentList.add(OfficialHomeContainerFragment.newInstance(bundleOS));
         }
 
-        if (useWishlistV2Rollence() && useRemoteConfigWishlistV2Revamp()) {
-            Bundle bundleWishlist = getIntent().getExtras();
-            if (bundleWishlist == null) {
-                bundleWishlist = new Bundle();
+        boolean isUsingWishlistCollection = false;
+        if (getApplicationContext() != null) {
+            if (DeeplinkMapperPurchasePlatform.INSTANCE.isUsingWishlistCollection(getApplicationContext())) {
+                isUsingWishlistCollection = true;
             }
-            bundleWishlist.putString(PARAM_ACTIVITY_WISHLIST_V2, PARAM_HOME);
-            bundleWishlist.putString("WishlistV2Fragment", MainParentActivity.class.getSimpleName());
-            fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.WISHLIST_V2_FRAGMENT, bundleWishlist));
+        }
+
+        if (isUsingWishlistCollection) {
+            Bundle bundleWishlistCollection = getIntent().getExtras();
+            if (bundleWishlistCollection == null) {
+                bundleWishlistCollection = new Bundle();
+            }
+            bundleWishlistCollection.putString(PARAM_ACTIVITY_WISHLIST_COLLECTION, PARAM_HOME);
+            bundleWishlistCollection.putString("WishlistCollectionFragment", MainParentActivity.class.getSimpleName());
+            fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.WISHLIST_COLLECTION_FRAGMENT, bundleWishlistCollection));
         } else {
-            Bundle bundleWishlist = new Bundle();
-            bundleWishlist.putString(WishlistFragment.PARAM_LAUNCH_WISHLIST, WishlistFragment.PARAM_HOME);
-            fragmentList.add(WishlistFragment.Companion.newInstance(bundleWishlist));
+            if (useWishlistV2Rollence() && useRemoteConfigWishlistV2Revamp()) {
+                Bundle bundleWishlist = getIntent().getExtras();
+                if (bundleWishlist == null) {
+                    bundleWishlist = new Bundle();
+                }
+                bundleWishlist.putString(PARAM_ACTIVITY_WISHLIST_V2, PARAM_HOME);
+                bundleWishlist.putString("WishlistV2Fragment", MainParentActivity.class.getSimpleName());
+                fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.WISHLIST_V2_FRAGMENT, bundleWishlist));
+            } else {
+                Bundle bundleWishlist = new Bundle();
+                bundleWishlist.putString(WishlistFragment.PARAM_LAUNCH_WISHLIST, WishlistFragment.PARAM_HOME);
+                fragmentList.add(WishlistFragment.Companion.newInstance(bundleWishlist));
+            }
         }
 
         Bundle bundleUoh = getIntent().getExtras();

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -11,8 +12,12 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.searchbar.navigation_component.NavToolbar
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
+import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -23,25 +28,26 @@ import com.tokopedia.wishlist.R
 import com.tokopedia.wishlistcollection.data.model.CollectionWishlistTypeLayoutData
 import com.tokopedia.wishlistcollection.data.response.CollectionWishlistResponse
 import com.tokopedia.wishlist.databinding.FragmentCollectionWishlistBinding
-import com.tokopedia.wishlistcollection.di.CollectionWishlistModule
+import com.tokopedia.wishlistcollection.di.WishlistCollectionModule
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_COLLECTION_CREATE
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_COLLECTION_ITEM
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_COLLECTION_TICKER
 import com.tokopedia.wishlist.view.fragment.WishlistV2Fragment
-import com.tokopedia.wishlistcollection.di.DaggerCollectionWishlistComponent
-import com.tokopedia.wishlistcollection.view.adapter.CollectionWishlistAdapter
-import com.tokopedia.wishlistcollection.view.viewmodel.CollectionWishlistViewModel
+import com.tokopedia.wishlistcollection.di.DaggerWishlistCollectionComponent
+import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter
+import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionViewModel
 import javax.inject.Inject
 
 
-class CollectionWishlistFragment : BaseDaggerFragment(), CollectionWishlistAdapter.ActionListener {
+class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapter.ActionListener {
     private var binding by autoClearedNullable<FragmentCollectionWishlistBinding>()
-    private lateinit var collectionAdapter: CollectionWishlistAdapter
+    private lateinit var collectionAdapter: WishlistCollectionAdapter
+    private var activityWishlistCollection = ""
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val collectionViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[CollectionWishlistViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[WishlistCollectionViewModel::class.java]
     }
     private val userSession: UserSessionInterface by lazy { UserSession(activity) }
 
@@ -49,9 +55,9 @@ class CollectionWishlistFragment : BaseDaggerFragment(), CollectionWishlistAdapt
 
     override fun initInjector() {
         activity?.let { activity ->
-            DaggerCollectionWishlistComponent.builder()
+            DaggerWishlistCollectionComponent.builder()
                 .baseAppComponent(getBaseAppComponent())
-                .collectionWishlistModule(CollectionWishlistModule(activity))
+                .wishlistCollectionModule(WishlistCollectionModule(activity))
                 .build()
                 .inject(this)
         }
@@ -63,12 +69,14 @@ class CollectionWishlistFragment : BaseDaggerFragment(), CollectionWishlistAdapt
 
     companion object {
         @JvmStatic
-        fun newInstance(): CollectionWishlistFragment {
-            return CollectionWishlistFragment()
+        fun newInstance(): WishlistCollectionFragment {
+            return WishlistCollectionFragment()
         }
 
         const val DEFAULT_TITLE = "Wishlist"
         const val OK = "OK"
+        private const val PARAM_ACTIVITY_WISHLIST_COLLECTION = "activity_wishlist_collection"
+        const val PARAM_HOME = "home"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -107,18 +115,44 @@ class CollectionWishlistFragment : BaseDaggerFragment(), CollectionWishlistAdapt
     }
 
     private fun prepareLayout() {
+        context?.let {
+            activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        }
         setToolbarTitle(DEFAULT_TITLE)
         setSwipeRefreshLayout()
-        collectionAdapter = CollectionWishlistAdapter().apply {
-            setActionListener(this@CollectionWishlistFragment)
+        collectionAdapter = WishlistCollectionAdapter().apply {
+            setActionListener(this@WishlistCollectionFragment)
         }
         binding?.run {
+            activityWishlistCollection = arguments?.getString(PARAM_ACTIVITY_WISHLIST_COLLECTION, "") ?: ""
+
+            val pageSource: String
+            val icons: IconBuilder
+            viewLifecycleOwner.lifecycle.addObserver(wishlistCollectionNavtoolbar)
+            if(activityWishlistCollection != PARAM_HOME) {
+                wishlistCollectionNavtoolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
+                icons = IconBuilder(IconBuilderFlag()).apply {
+                    addIcon(IconList.ID_CART) {}
+                    addIcon(IconList.ID_NAV_GLOBAL) {}
+                }
+            } else {
+                pageSource = ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST_COLLECTION
+                wishlistCollectionNavtoolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_NONE)
+                icons = IconBuilder(IconBuilderFlag(pageSource = pageSource)).apply {
+                    addIcon(IconList.ID_MESSAGE) {}
+                    addIcon(IconList.ID_NOTIFICATION) {}
+                    addIcon(IconList.ID_CART) {}
+                    addIcon(IconList.ID_NAV_GLOBAL) {}
+                }
+            }
+            wishlistCollectionNavtoolbar.setIcon(icons)
+
             rvWishlistCollection.apply {
                 layoutManager = GridLayoutManager(context, 2).apply {
                     spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                         override fun getSpanSize(position: Int): Int {
                             return when (collectionAdapter.getItemViewType(position)) {
-                                CollectionWishlistAdapter.LAYOUT_COLLECTION_TICKER -> 2
+                                WishlistCollectionAdapter.LAYOUT_COLLECTION_TICKER -> 2
                                 else -> 1
                             }
                         }

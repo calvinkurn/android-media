@@ -3,4 +3,4 @@ package com.tokopedia.wishlistcollection.di
 import javax.inject.Scope
 
 @Scope
-annotation class CreateWishlistCollectionScope
+annotation class WishlistCollectionScope

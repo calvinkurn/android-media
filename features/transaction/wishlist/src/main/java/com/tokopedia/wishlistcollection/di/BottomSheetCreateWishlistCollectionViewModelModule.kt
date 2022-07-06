@@ -10,12 +10,12 @@ import dagger.Module
 import dagger.multibindings.IntoMap
 
 @Module
-abstract class CreateWishlistCollectionViewModelModule {
-    @CreateWishlistCollectionScope
+abstract class BottomSheetCreateWishlistCollectionViewModelModule {
+    @BottomSheetCreateWishlistCollectionScope
     @Binds
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
-    @CreateWishlistCollectionScope
+    @BottomSheetCreateWishlistCollectionScope
     @Binds
     @IntoMap
     @ViewModelKey(BottomSheetCreateNewCollectionViewModel::class)

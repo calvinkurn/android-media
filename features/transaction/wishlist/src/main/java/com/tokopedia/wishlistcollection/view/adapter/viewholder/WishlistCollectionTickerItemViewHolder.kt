@@ -8,11 +8,11 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.wishlistcollection.data.model.CollectionWishlistTypeLayoutData
 import com.tokopedia.wishlistcollection.data.response.CollectionWishlistResponse
 import com.tokopedia.wishlist.databinding.CollectionWishlistTickerItemBinding
-import com.tokopedia.wishlistcollection.view.adapter.CollectionWishlistAdapter
+import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter
 
-class CollectionWishlistTickerItemViewHolder(
+class WishlistCollectionTickerItemViewHolder(
     private val binding: CollectionWishlistTickerItemBinding,
-    private val actionListener: CollectionWishlistAdapter.ActionListener?
+    private val actionListener: WishlistCollectionAdapter.ActionListener?
 ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: CollectionWishlistTypeLayoutData, isTickerClosed: Boolean) {
             if (item.dataObject is CollectionWishlistResponse.Data.GetWishlistCollections.WishlistCollectionResponseData.Ticker) {

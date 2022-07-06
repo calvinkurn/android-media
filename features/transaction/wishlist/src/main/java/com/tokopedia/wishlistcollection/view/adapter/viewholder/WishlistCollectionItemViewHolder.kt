@@ -12,11 +12,11 @@ import com.tokopedia.wishlist.databinding.CollectionWishlistItemBinding
 import com.tokopedia.wishlist.util.WishlistV2Consts.SPEC_0
 import com.tokopedia.wishlist.util.WishlistV2Consts.SPEC_2
 import com.tokopedia.wishlist.util.WishlistV2Utils
-import com.tokopedia.wishlistcollection.view.adapter.CollectionWishlistAdapter
+import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter
 
-class CollectionWishlistItemViewHolder(
+class WishlistCollectionItemViewHolder(
     private val binding: CollectionWishlistItemBinding,
-    private val actionListener: CollectionWishlistAdapter.ActionListener?
+    private val actionListener: WishlistCollectionAdapter.ActionListener?
 ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: CollectionWishlistTypeLayoutData) {
             if (item.dataObject is CollectionWishlistResponse.Data.GetWishlistCollections.WishlistCollectionResponseData.CollectionsItem) {

@@ -7,11 +7,11 @@ import com.tokopedia.wishlistcollection.data.response.CollectionWishlistResponse
 import com.tokopedia.wishlist.databinding.CollectionWishlistCreateItemBinding
 import com.tokopedia.wishlist.util.WishlistV2Consts.CREATE_NEW_COLLECTION_BG_IMAGE
 import com.tokopedia.wishlist.util.WishlistV2Utils
-import com.tokopedia.wishlistcollection.view.adapter.CollectionWishlistAdapter
+import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter
 
-class CollectionWishlistCreateViewHolder(
+class WishlistCollectionCreateItemViewHolder(
     private val binding: CollectionWishlistCreateItemBinding,
-    private val actionListener: CollectionWishlistAdapter.ActionListener?
+    private val actionListener: WishlistCollectionAdapter.ActionListener?
 ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: CollectionWishlistTypeLayoutData) {
             if (item.dataObject is CollectionWishlistResponse.Data.GetWishlistCollections.WishlistCollectionResponseData.Placeholder) {

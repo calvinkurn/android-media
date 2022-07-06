@@ -11,12 +11,12 @@ import com.tokopedia.wishlist.databinding.CollectionWishlistTickerItemBinding
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_COLLECTION_CREATE
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_COLLECTION_ITEM
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_COLLECTION_TICKER
-import com.tokopedia.wishlistcollection.view.adapter.viewholder.CollectionWishlistCreateViewHolder
-import com.tokopedia.wishlistcollection.view.adapter.viewholder.CollectionWishlistItemViewHolder
-import com.tokopedia.wishlistcollection.view.adapter.viewholder.CollectionWishlistTickerItemViewHolder
-import com.tokopedia.wishlistcollection.view.fragment.CollectionWishlistFragment
+import com.tokopedia.wishlistcollection.view.adapter.viewholder.WishlistCollectionCreateItemViewHolder
+import com.tokopedia.wishlistcollection.view.adapter.viewholder.WishlistCollectionItemViewHolder
+import com.tokopedia.wishlistcollection.view.adapter.viewholder.WishlistCollectionTickerItemViewHolder
+import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionFragment
 
-class CollectionWishlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var actionListener: ActionListener? = null
     private var listTypeData = mutableListOf<CollectionWishlistTypeLayoutData>()
     private var isTickerCloseClicked = false
@@ -31,7 +31,7 @@ class CollectionWishlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
         fun onCloseTicker()
     }
 
-    fun setActionListener(collectionWishlistFragment: CollectionWishlistFragment) {
+    fun setActionListener(collectionWishlistFragment: WishlistCollectionFragment) {
         this.actionListener = collectionWishlistFragment
     }
 
@@ -45,7 +45,7 @@ class CollectionWishlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
                     parent,
                     false
                 )
-                CollectionWishlistTickerItemViewHolder(binding, actionListener)
+                WishlistCollectionTickerItemViewHolder(binding, actionListener)
             }
             LAYOUT_COLLECTION_ITEM -> {
                 val binding = CollectionWishlistItemBinding.inflate(
@@ -53,7 +53,7 @@ class CollectionWishlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
                     parent,
                     false
                 )
-                CollectionWishlistItemViewHolder(binding, actionListener)
+                WishlistCollectionItemViewHolder(binding, actionListener)
             }
             LAYOUT_CREATE_COLLECTION -> {
                 val binding = CollectionWishlistCreateItemBinding.inflate(
@@ -61,7 +61,7 @@ class CollectionWishlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
                     parent,
                     false
                 )
-                CollectionWishlistCreateViewHolder(binding, actionListener)
+                WishlistCollectionCreateItemViewHolder(binding, actionListener)
             }
             else -> throw IllegalArgumentException("Invalid view type")
         }
@@ -72,13 +72,13 @@ class CollectionWishlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
             val element = listTypeData[position]
             when (element.typeLayout) {
                 TYPE_COLLECTION_TICKER -> {
-                    (holder as CollectionWishlistTickerItemViewHolder).bind(element, isTickerCloseClicked)
+                    (holder as WishlistCollectionTickerItemViewHolder).bind(element, isTickerCloseClicked)
                 }
                 TYPE_COLLECTION_ITEM -> {
-                    (holder as CollectionWishlistItemViewHolder).bind(element)
+                    (holder as WishlistCollectionItemViewHolder).bind(element)
                 }
                 TYPE_COLLECTION_CREATE -> {
-                    (holder as CollectionWishlistCreateViewHolder).bind(element)
+                    (holder as WishlistCollectionCreateItemViewHolder).bind(element)
                 }
             }
         }

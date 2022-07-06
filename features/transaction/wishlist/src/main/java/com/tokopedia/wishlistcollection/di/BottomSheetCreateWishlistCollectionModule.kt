@@ -1,6 +1,5 @@
 package com.tokopedia.wishlistcollection.di
 
-import android.app.Activity
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
@@ -12,14 +11,14 @@ import dagger.Provides
 
 
 @Module
-class CreateWishlistCollectionModule() {
-    @CreateWishlistCollectionScope
+class BottomSheetCreateWishlistCollectionModule() {
+    @BottomSheetCreateWishlistCollectionScope
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
 
-    @CreateWishlistCollectionScope
+    @BottomSheetCreateWishlistCollectionScope
     @Provides
     fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
 }

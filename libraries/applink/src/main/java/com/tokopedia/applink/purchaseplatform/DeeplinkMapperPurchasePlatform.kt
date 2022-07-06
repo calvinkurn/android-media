@@ -32,4 +32,23 @@ object DeeplinkMapperPurchasePlatform {
             true
         }
     }
+
+    fun isUsingWishlistCollection(context: Context): Boolean {
+        return isEnableRemoteConfigWishlistCollection(context) && isEnableRollenceWishlistCollection()
+    }
+
+    private fun isEnableRemoteConfigWishlistCollection(context: Context) = FirebaseRemoteConfigInstance.get(context).getBoolean(RemoteConfigKey.ENABLE_WISHLIST_COLLECTION)
+
+    private fun isEnableRollenceWishlistCollection(): Boolean {
+        /*return try {
+            val abTestPlatform = RemoteConfigInstance.getInstance().abTestPlatform
+            val abTestWishlistCollection = abTestPlatform.getString(RollenceKey.WISHLIST_COLLECTION, "")
+
+            abTestWishlistCollection == RollenceKey.WISHLIST_COLLECTION
+        } catch (throwable: Throwable) {
+            false
+        }*/
+
+        return true
+    }
 }

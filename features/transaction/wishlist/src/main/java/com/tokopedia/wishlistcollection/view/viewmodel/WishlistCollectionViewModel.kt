@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class CollectionWishlistViewModel @Inject constructor(
+class WishlistCollectionViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatchers,
     private val getWishlistCollectionUseCase: GetWishlistCollectionUseCase
 ) : BaseViewModel(dispatcher.main) {
