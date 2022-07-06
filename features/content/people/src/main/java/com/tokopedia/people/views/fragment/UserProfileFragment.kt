@@ -589,7 +589,7 @@ class UserProfileFragment @Inject constructor(
             userProfileTracker.clickFollow(userSession.userId, viewModel.isSelfProfile)
         else userProfileTracker.clickUnfollow(userSession.userId, viewModel.isSelfProfile)
 
-        submitAction(UserProfileAction.ClickActionButton(isFromLogin))
+        submitAction(UserProfileAction.ClickFollowButton(isFromLogin))
     }
 
     private fun showGlobalError(type: Int) {
