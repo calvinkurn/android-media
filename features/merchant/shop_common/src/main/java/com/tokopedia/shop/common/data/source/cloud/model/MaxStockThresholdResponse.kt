@@ -7,6 +7,11 @@ data class MaxStockThresholdResponse(
     @SerializedName("GetIMSMeta")
     val getIMSMeta: GetIMSMeta
 ) {
+
+    fun getMaxStockFromResponse(): Int? {
+        return getIMSMeta.data.maxStockThreshold.takeIf { it.isNotEmpty() }?.toInt()
+    }
+
     data class GetIMSMeta(
         @SerializedName("data")
         val data: Data,

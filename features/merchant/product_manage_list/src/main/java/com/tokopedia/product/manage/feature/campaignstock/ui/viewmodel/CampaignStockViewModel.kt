@@ -24,6 +24,7 @@ import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.*
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.model.ProductStock
 import com.tokopedia.shop.common.domain.interactor.GetAdminInfoShopLocationUseCase
+import com.tokopedia.shop.common.domain.interactor.GetMaxStockThresholdUseCase
 import com.tokopedia.shop.common.domain.interactor.UpdateProductStockWarehouseUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -42,6 +43,7 @@ class CampaignStockViewModel @Inject constructor(
     private val editProductVariantUseCase: EditProductVariantUseCase,
     private val getProductManageAccessUseCase: GetProductManageAccessUseCase,
     private val getAdminInfoShopLocationUseCase: GetAdminInfoShopLocationUseCase,
+    private val maxStockThresholdUseCase: GetMaxStockThresholdUseCase,
     private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
@@ -450,9 +452,18 @@ class CampaignStockViewModel @Inject constructor(
             }
         }
 
+        val maxStockDeferred = async {
+            try {
+                maxStockThresholdUseCase.execute(shopId)
+            } catch (ex: Exception) {
+                null
+            }
+        }
+
         val getVariantResult = ProductManageVariantMapper.mapToVariantsResult(
             getProductVariantData.await().getProductV3,
-            productManageAccess.await()
+            productManageAccess.await(),
+            maxStockDeferred.await()?.getMaxStockFromResponse()
         ).also {
             val sellableProductList = stockAllocationData.detail.sellable
             val variants = it.variants.map { variant ->

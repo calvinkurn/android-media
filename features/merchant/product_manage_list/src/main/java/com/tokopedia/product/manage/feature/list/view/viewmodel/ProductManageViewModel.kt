@@ -48,7 +48,6 @@ import com.tokopedia.product.manage.feature.quickedit.delete.domain.DeleteProduc
 import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPriceResult
 import com.tokopedia.product.manage.feature.quickedit.price.domain.EditPriceUseCase
 import com.tokopedia.shop.common.data.model.ProductStock
-import com.tokopedia.shop.common.data.source.cloud.model.MaxStockThresholdResponse
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.ExtraInfo
@@ -328,7 +327,7 @@ class ProductManageViewModel @Inject constructor(
             _refreshList.value = isRefresh
 
             val (productListResponse, maxStockResponse) = productResponse
-            val maxStock = maxStockResponse?.getIMSMeta?.getMaxStockFromResponse()
+            val maxStock = maxStockResponse?.getMaxStockFromResponse()
 
             totalProductCount = productListResponse?.meta?.totalHits.orZero()
             showProductList(productListResponse?.data, maxStock)
@@ -347,12 +346,24 @@ class ProductManageViewModel @Inject constructor(
         showLoadingDialog()
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
-                val warehouseId = getWarehouseId(userSessionInterface.shopId)
+                val shopId = userSessionInterface.shopId
+                val warehouseId = getWarehouseId(shopId)
                 val requestParams = GetProductVariantUseCase.createRequestParams(productId, false, warehouseId)
-                val response = getProductVariantUseCase.execute(requestParams)
+                val responseDeferred = async {
+                    getProductVariantUseCase.execute(requestParams)
+                }
+                val maxStockDeferred = async {
+                    try {
+                        getMaxStockThresholdUseCase.execute(shopId)
+                    } catch (ex: Exception) {
+                        null
+                    }
+                }
 
-                val variant = response.getProductV3
-                ProductManageVariantMapper.mapToVariantsResult(variant, getAccess())
+                val (variant, maxStock) =
+                    responseDeferred.await().getProductV3 to maxStockDeferred.await()?.getMaxStockFromResponse()
+
+                ProductManageVariantMapper.mapToVariantsResult(variant, getAccess(), maxStock)
             }
 
             if (result.variants.isNotEmpty()) {
@@ -775,10 +786,6 @@ class ProductManageViewModel @Inject constructor(
         } else {
             warehouseId
         }
-    }
-
-    private fun MaxStockThresholdResponse.GetIMSMeta?.getMaxStockFromResponse(): Int? {
-        return this?.data?.maxStockThreshold?.takeIf { it.isNotEmpty() }?.toInt()
     }
 
     private fun setProductListFeaturedOnly(productsSize: Int) {

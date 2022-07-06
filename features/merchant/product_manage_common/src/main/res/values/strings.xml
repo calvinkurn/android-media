@@ -18,6 +18,7 @@
     <string name="product_manage_quick_edit_stock_title">Atur Stok</string>
     <string name="product_manage_quick_edit_stock_total_stock">Jumlah Stok</string>
     <string name="product_manage_quick_edit_stock_active_product">Produk Aktif</string>
+    <string name="product_manage_quick_edit_stock_max_stock">Maks. %s</string>
 
     <string name="product_manage_quick_edit_stock_success">Ketersediaan produk \"%1$s\" berhasil diubah.</string>
     <string name="product_manage_quick_edit_price_ticker_info">Kamu akan mengubah harga lokasi utama saja. Untuk mengubah harga lokasi lain, akses Tokopedia Seller melalui desktop.</string>
