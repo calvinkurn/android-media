@@ -380,7 +380,7 @@ class GetMiniCartListSimplifiedTest {
     }
 
     @Test
-    fun `WHEN mini cart total product count is more than zero and no unavailable items THEN isShowMiniCartWidget should be true`() {
+    fun `WHEN mini cart total product count is more than zero and unavailable item count is zero THEN isShowMiniCartWidget should be true`() {
         //given
         val shopId = listOf("123")
 
@@ -400,7 +400,7 @@ class GetMiniCartListSimplifiedTest {
     }
 
     @Test
-    fun `WHEN mini cart total product count is more than zero and some unavailable items THEN isShowMiniCartWidget should be true`() {
+    fun `WHEN mini cart total product count is more than zero and unavailable item count is more than zero THEN isShowMiniCartWidget should be true`() {
         //given
         val shopId = listOf("123")
 
@@ -420,7 +420,7 @@ class GetMiniCartListSimplifiedTest {
     }
 
     @Test
-    fun `WHEN mini cart total product count is zero and no unavailable items THEN isShowMiniCartWidget should be false`() {
+    fun `WHEN mini cart total product count is zero and unavailable item count is zero THEN isShowMiniCartWidget should be false`() {
         //given
         val shopId = listOf("123")
 
