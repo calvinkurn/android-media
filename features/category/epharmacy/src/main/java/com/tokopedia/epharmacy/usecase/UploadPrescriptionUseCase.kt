@@ -14,7 +14,6 @@ import com.tokopedia.epharmacy.utils.EPharmacyImageQuality
 import com.tokopedia.epharmacy.utils.EPharmacyImageQualityDecreaseFactor
 import com.tokopedia.epharmacy.utils.EPharmacyMinImageQuality
 import com.tokopedia.epharmacy.utils.MAX_BYTES
-import com.tokopedia.media.preview.managers.ImageCompressionManager
 import okio.utf8Size
 import java.io.ByteArrayOutputStream
 import java.lang.reflect.Type
