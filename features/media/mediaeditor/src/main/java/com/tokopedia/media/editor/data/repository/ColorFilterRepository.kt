@@ -6,7 +6,6 @@ import javax.inject.Inject
 
 interface ColorFilterRepository {
     fun brightness(value: Float): ColorMatrixColorFilter
-    fun contrast(value: Float): ColorMatrixColorFilter
 }
 
 class ColorFilterRepositoryImpl @Inject constructor() : ColorFilterRepository {
@@ -23,16 +22,4 @@ class ColorFilterRepositoryImpl @Inject constructor() : ColorFilterRepository {
         )
         return ColorMatrixColorFilter(cmB)
     }
-
-    override fun contrast(value: Float): ColorMatrixColorFilter {
-        val array = floatArrayOf(
-            value, 0f, 0f, 0f, 0f,
-            0f, value, 0f, 0f, 0f,
-            0f, 0f, value, 0f, 0f,
-            0f, 0f, 0f, 1f, 0f
-        )
-        val matrix = ColorMatrix(array)
-        return ColorMatrixColorFilter(matrix)
-    }
-
 }

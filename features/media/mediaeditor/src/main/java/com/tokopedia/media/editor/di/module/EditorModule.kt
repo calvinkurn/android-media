@@ -12,6 +12,8 @@ import com.tokopedia.media.editor.data.repository.RemoveBgRepository
 import com.tokopedia.media.editor.data.repository.RemoveBgRepositoryImpl
 import com.tokopedia.media.editor.data.repository.ColorFilterRepository
 import com.tokopedia.media.editor.data.repository.ColorFilterRepositoryImpl
+import com.tokopedia.media.editor.data.repository.ContrastFilterRepository
+import com.tokopedia.media.editor.data.repository.ContrastFilterRepositoryImpl
 import com.tokopedia.media.editor.di.EditorQualifier
 import com.tokopedia.media.editor.domain.SetRemoveBackgroundUseCase
 import com.tokopedia.user.session.UserSession
@@ -72,4 +74,9 @@ object EditorModule {
         removeBgRepository: RemoveBgRepository
     ) = SetRemoveBackgroundUseCase(dispatchers, removeBgRepository)
 
+    @Provides
+    @ActivityScope
+    fun provideContrastFilterRepository(): ContrastFilterRepository {
+        return ContrastFilterRepositoryImpl()
+    }
 }
