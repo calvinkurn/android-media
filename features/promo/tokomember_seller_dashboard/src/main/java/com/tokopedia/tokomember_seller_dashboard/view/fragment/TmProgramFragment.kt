@@ -379,6 +379,8 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
             cardEditInfo.show()
             textFieldDuration.isEnabled = false
             textFieldDuration.iconContainer.isEnabled = false
+            textFieldTranskPremium.editText.setText(membershipGetProgramForm?.programThreshold?.minThresholdLevel1.toString())
+            textFieldTranskVip.editText.setText(membershipGetProgramForm?.programThreshold?.minThresholdLevel2.toString())
         }
         else{
             textFieldTranskVip.isEnabled = true

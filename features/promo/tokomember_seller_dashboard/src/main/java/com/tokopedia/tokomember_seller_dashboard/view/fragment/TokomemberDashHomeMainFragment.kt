@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
+import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.header.HeaderUnify
@@ -98,9 +99,11 @@ class TokomemberDashHomeMainFragment : BaseDaggerFragment() {
         homeViewPager.adapter = adapter
 
         homeTabs.getUnifyTabLayout().removeAllTabs()
+        homeTabs.customTabMode = TabLayout.MODE_SCROLLABLE
+        homeTabs.customTabGravity = TabLayout.GRAVITY_CENTER
         homeTabs.addNewTab("Home")
         homeTabs.addNewTab("Program")
-        homeTabs.addNewTab("KuponTokomember")
+        homeTabs.addNewTab("Kupon Tokomember")
     }
 
     override fun getScreenName() = ""

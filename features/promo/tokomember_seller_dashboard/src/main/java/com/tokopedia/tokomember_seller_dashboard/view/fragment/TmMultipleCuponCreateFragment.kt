@@ -77,6 +77,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_VALIDATION_ERROR_T
 import com.tokopedia.tokomember_seller_dashboard.util.RETRY
 import com.tokopedia.tokomember_seller_dashboard.util.SIMPLE_DATE_FORMAT
 import com.tokopedia.tokomember_seller_dashboard.util.SOURCE_MULTIPLE_COUPON_CREATE
+import com.tokopedia.tokomember_seller_dashboard.util.SOURCE_MULTIPLE_COUPON_EXTEND
 import com.tokopedia.tokomember_seller_dashboard.util.TERMS
 import com.tokopedia.tokomember_seller_dashboard.util.TERNS_AND_CONDITION
 import com.tokopedia.tokomember_seller_dashboard.util.TIME_TITLE
@@ -304,13 +305,24 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                     TokoLiveDataResult.STATUS.SUCCESS -> {
                         errorState.isPreValidatePremiumError = false
                         if (it.data?.voucherValidationPartial?.header?.messages?.size == 0) {
+
+//                            if(couponStartDate.isNotEmpty()){
+//                                manualStartTimeProgram = couponStartDate.substring(0, couponStartDate.length-2)
+//                            }
+//                            if(couponEndDate.isNotEmpty()){
+//                                manualEndTimeProgram = couponEndDate.substring(0, couponEndDate.length-2)
+//                            }
+                            var source = SOURCE_MULTIPLE_COUPON_CREATE
+                            if(programActionType == ProgramActionType.EXTEND){
+                                source = SOURCE_MULTIPLE_COUPON_EXTEND
+                            }
                             tmDashCreateViewModel.validateProgram(
                                 arguments?.getInt(
                                     BUNDLE_SHOP_ID
                                 ).toString(),
                                 getTimeInMillis(manualStartTimeProgram),
                                 getTimeInMillis(manualEndTimeProgram),
-                                SOURCE_MULTIPLE_COUPON_CREATE
+                                source
                             )
                         } else {
                             closeLoadingDialog()
@@ -1038,13 +1050,17 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                         when (type) {
                             0 -> {
                                 couponStartDate = selectedCalendar?.time?.let { dateTime ->
-                                    convertDateTime(dateTime).substringBefore("")
+                                    convertDateTime(dateTime)
                                 }.toString()
+                                manualStartTimeProgram = couponStartDate.substring(0, couponStartDate.length-2)
+                                couponStartDate = couponStartDate.substringBefore(" ")
                             }
                             1 -> {
                                 couponEndDate = selectedCalendar?.time?.let { dateTime ->
-                                    convertDateTime(dateTime).substringBefore("")
+                                    convertDateTime(dateTime)
                                 }.toString()
+                                manualEndTimeProgram = couponEndDate.substring(0, couponEndDate.length-2)
+                                couponEndDate = couponEndDate.substringBefore(" ")
                             }
                         }
                         dayInId =  getDayOfWeekID(day)

@@ -23,6 +23,7 @@ import com.tokopedia.tokomember_common_widget.util.CreateScreenType
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponActions
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponListRefreshCallback
+import com.tokopedia.tokomember_seller_dashboard.callbacks.TmFilterCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.model.VouchersItem
 import com.tokopedia.tokomember_seller_dashboard.util.ADD_QUOTA
@@ -43,8 +44,10 @@ import javax.inject.Inject
 
 
 class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, SortFilterBottomSheet.Callback,
-    TmCouponListRefreshCallback {
+    TmCouponListRefreshCallback, TmFilterCallback {
 
+    private var filterStatus: SortFilterItem? = null
+    private var filterType: SortFilterItem? = null
     private var voucherStatus = "1,2,3,4"
     private var voucherType = 0
     private var voucherIdToUpdate = 0
@@ -77,9 +80,9 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
         super.onViewCreated(view, savedInstanceState)
 
         val filterData = ArrayList<SortFilterItem>()
-        val filterStatus = SortFilterItem("Semua Status")
+        filterStatus = SortFilterItem("Semua Status")
         selectedStatus = StringBuilder()
-        filterStatus.listener = {
+        filterStatus?.listener = {
 
             val options = ArrayList<Option>()
 
@@ -138,10 +141,10 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
                         voucherStatus = voucherStatus.replace("]", "")
                         voucherStatus = voucherStatus.replace(" ", "")
                         if(voucherStatus == "1,2,3,4"){
-                            filterStatus.type = ChipsUnify.TYPE_NORMAL
+                            filterStatus?.type = ChipsUnify.TYPE_NORMAL
                         }
                         else{
-                            filterStatus.type = ChipsUnify.TYPE_SELECTED
+                            filterStatus?.type = ChipsUnify.TYPE_SELECTED
                         }
                         if(selectedType.toInt() == 0){
                             tmCouponViewModel.getCouponList(voucherStatus, null)
@@ -159,11 +162,13 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
 //            }
 //            filterStatus.selectedItem = arrayListOf("Semua Status", "Aktif", "Belum Aktif", "Sudah Berakhir")
         }
-        filterData.add(filterStatus)
-        val filterType = SortFilterItem("Semua Tipe")
-        filterType.chevronListener
-        filterType.iconDrawable = context?.let { getIconUnifyDrawable(it, IconUnify.ARROW_DOWN) }
-        filterType.listener = {
+        filterStatus?.let {
+            filterData.add(it)
+        }
+        filterType = SortFilterItem("Semua Tipe")
+        filterType?.chevronListener
+        filterType?.iconDrawable = context?.let { getIconUnifyDrawable(it, IconUnify.ARROW_DOWN) }
+        filterType?.listener = {
             val filterList = ArrayList<Filter>()
             val options = ArrayList<Option>()
             options.add(Option(name = "Semua Tipe", key = "Semua Tipe", value = "0", inputType = Option.INPUT_TYPE_RADIO, inputState = "true"))
@@ -207,10 +212,10 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
                             }
                         }
                         if(selectedType == "0"){
-                            filterType.type = ChipsUnify.TYPE_NORMAL
+                            filterType?.type = ChipsUnify.TYPE_NORMAL
                         }
                         else{
-                            filterType.type = ChipsUnify.TYPE_SELECTED
+                            filterType?.type = ChipsUnify.TYPE_SELECTED
                         }
                         if(selectedType.toInt() == 0){
                             tmCouponViewModel.getCouponList(voucherStatus, null)
@@ -228,14 +233,14 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
 //            }
 //            filterType.selectedItem = arrayListOf("Semua Type", "Cashback", "Gratis Ongkir")
         }
-        filterData.add(filterType)
+        filterType?.let { filterData.add(it) }
         filter.addItem(filterData)
         filter.parentListener = {
-            TmFilterBottomsheet.show(childFragmentManager)
+            TmFilterBottomsheet.show(childFragmentManager, this, voucherStatus, selectedType)
         }
         filter_error.addItem(filterData)
         filter_error.parentListener = {
-            TmFilterBottomsheet.show(childFragmentManager)
+            TmFilterBottomsheet.show(childFragmentManager, this, voucherStatus, selectedType)
         }
         rv_coupon.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -317,11 +322,10 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
 
                 }
                 TokoLiveDataResult.STATUS.SUCCESS ->{
-                    if(it.data?.data?.merchantPromotionUpdateStatusMV?.status == "200") {
+                    if(it.data?.data?.status == 200) {
                         refreshCouponList()
                     }
                     else{
-
                         view?.let { it1 -> it.data?.data?.message?.let { it2 ->
                             Toaster.build(it1,
                                 it2, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
@@ -408,4 +412,22 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
         }
     }
 
+    override fun selectedFilter(status: String, type: String) {
+        voucherStatus = status
+        selectedType = type
+        if(voucherStatus == "1,2,3,4"){
+            filterStatus?.type = ChipsUnify.TYPE_NORMAL
+        }
+        else{
+            filterStatus?.type = ChipsUnify.TYPE_SELECTED
+        }
+        if(selectedType.toInt() == 0){
+            filterType?.type = ChipsUnify.TYPE_NORMAL
+            tmCouponViewModel.getCouponList(voucherStatus, null)
+        }
+        else {
+            filterType?.type = ChipsUnify.TYPE_SELECTED
+            tmCouponViewModel.getCouponList(voucherStatus, selectedType.toInt())
+        }
+    }
 }
