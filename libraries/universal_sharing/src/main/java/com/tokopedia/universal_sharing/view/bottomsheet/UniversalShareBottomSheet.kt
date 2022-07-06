@@ -107,7 +107,10 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         private const val KEY_GENERAL_USER = "general"
         private const val KEY_AFFILIATE_USER = "affiliate"
         private var isAffiliateUser: String = KEY_GENERAL_USER
-
+        //Image Type
+        private const val KEY_NO_IMAGE = "no image"
+        private const val KEY_IMAGE = "image"
+        private const val KEY_CONTEXTUAL_IMAGE = "contextual image"
 
         fun createInstance(): UniversalShareBottomSheet = UniversalShareBottomSheet()
 
@@ -801,12 +804,23 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         if(TextUtils.isEmpty(tempUsr)){
             tempUsr = "0"
         }
-        campaignStr = "$pageName-$tempUsr-$pageId-$sharingDate"
+        val imageType = getImageTypeForUTM()
+        campaignStr = "$pageName-$tempUsr-$pageId-$sharingDate-$imageType"
         if(isImageOnlySharing && !TextUtils.isEmpty(screenShotImagePath)){
             channelStr = "screenshot-share"
         }
         else {
             channelStr = feature
+        }
+    }
+
+    private fun getImageTypeForUTM() : String{
+        return if(getImageFromMedia){
+            KEY_CONTEXTUAL_IMAGE
+        }else if(!TextUtils.isEmpty(savedImagePath) && TextUtils.isEmpty(screenShotImagePath)){
+            KEY_IMAGE
+        }else{
+            KEY_NO_IMAGE
         }
     }
 
