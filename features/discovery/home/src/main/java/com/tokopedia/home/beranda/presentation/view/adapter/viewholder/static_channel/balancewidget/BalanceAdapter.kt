@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -107,7 +108,7 @@ class BalanceAdapter(
         private var homeContainerBalance: ConstraintLayout? = itemView.findViewById(R.id.home_container_balance)
         private var homeImageLogoBalance: ImageUnify? = itemView.findViewById(R.id.home_iv_logo_balance)
         private var homeTvBalance: TextView = itemView.findViewById(R.id.home_tv_balance)
-        private var homeTvReserveBalance: Typography? = itemView.findViewById(R.id.home_tv_reserve_balance)
+        private var homeTvReserveBalance: Typography = itemView.findViewById(R.id.home_tv_reserve_balance)
         private var homeTitleBalance: Typography = itemView.findViewById(R.id.home_header_title_balance)
 
         fun bind(drawerItem: BalanceDrawerItemModel?,
@@ -132,21 +133,43 @@ class BalanceAdapter(
 
                 }
                 BalanceDrawerItemModel.STATE_SUCCESS -> {
+                    //load image
                     homeImageLogoBalance?.show()
+                    element.defaultIconRes?.let {
+                        if (element.drawerItemType == TYPE_WALLET_PENDING_CASHBACK ||
+                            element.drawerItemType == TYPE_WALLET_WITH_TOPUP ||
+                            element.drawerItemType == TYPE_WALLET_OTHER
+                        ) {
+                            homeImageLogoBalance?.visible()
+                            homeImageLogoBalance?.setImageDrawable(itemView.context.getDrawable(it))
+                        } else {
+                            homeImageLogoBalance?.invisible()
+                        }
+                    }
+                    element.iconImageUrl?.let {
+                        homeImageLogoBalance?.visible()
 
-                    homeTvBalance.show()
+                        if (it.isNotEmpty()) homeImageLogoBalance?.setImageUrl(it)
+                    }
 
+                    //Load Text
                     val balanceText = element.balanceTitleTextAttribute?.text ?: ""
-
                     homeTvBalance.text = balanceText
                     homeTitleBalance.text = element.headerTitle
 
                     val reserveBalance = element.balanceSubTitleTextAttribute?.text ?: ""
                     if (reserveBalance.isNotEmpty()) {
-                        homeTvReserveBalance?.visible()
-                        homeTvReserveBalance?.text = reserveBalance
+                        homeTvReserveBalance.visible()
+                        homeTvReserveBalance.text = reserveBalance
+                        homeTvReserveBalance.weightType = Typography.BOLD
+                        homeTvReserveBalance.setTextColor(
+                            ContextCompat.getColor(
+                                itemView.context,
+                                com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                            )
+                        )
                     } else {
-                        homeTvReserveBalance?.gone()
+                        homeTvReserveBalance.gone()
                     }
 
                     homeContainerBalance?.handleItemCLickType(
@@ -239,7 +262,17 @@ class BalanceAdapter(
 
                 }
                 BalanceDrawerItemModel.STATE_ERROR -> {
-                    homeImageLogoBalance?.visible()
+                    homeImageLogoBalance?.setImageDrawable(ContextCompat.getDrawable(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N75))
+                    homeTitleBalance.text = element.headerTitle
+                    homeTvBalance.text = itemView.context.getString(com.tokopedia.home.R.string.balance_widget_failed_to_load)
+                    homeTvReserveBalance.setTextColor(
+                        ContextCompat.getColor(
+                            itemView.context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_GN400
+                        )
+                    )
+                    homeTvReserveBalance.weightType = Typography.BOLD
+                    homeTvReserveBalance.text = itemView.context.getString(com.tokopedia.home.R.string.text_reload)
                     homeContainerBalance?.handleItemCLickType(
                             element = element,
                             ovoWalletAction = {listener?.onRetryWalletApp()},
@@ -248,26 +281,6 @@ class BalanceAdapter(
                             tokopointsAction = {listener?.onRetryMembership()},
                             walletAppAction = { listener?.onRetryWalletApp() }
                     )
-                }
-            }
-
-            if (element?.state != STATE_LOADING) {
-                //error state using shimmering
-                element?.defaultIconRes?.let {
-                    if (element.drawerItemType == TYPE_WALLET_PENDING_CASHBACK ||
-                        element.drawerItemType == TYPE_WALLET_WITH_TOPUP ||
-                        element.drawerItemType == TYPE_WALLET_OTHER
-                    ) {
-                        homeImageLogoBalance?.visible()
-                        homeImageLogoBalance?.setImageDrawable(itemView.context.getDrawable(it))
-                    } else {
-                        homeImageLogoBalance?.invisible()
-                    }
-                }
-                element?.iconImageUrl?.let {
-                    homeImageLogoBalance?.visible()
-
-                    if (it.isNotEmpty()) homeImageLogoBalance?.setImageUrl(it)
                 }
             }
         }
