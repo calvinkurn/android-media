@@ -172,6 +172,11 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         requireActivity().onBackPressedDispatcher.addCallback(this, callback)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel.setCampaignId(campaignId)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -467,11 +472,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
                 binding?.btnCreateCampaign.showLoading()
                 val selection = getCurrentSelection()
 
-                if (pageMode == PageMode.CREATE) {
-                    viewModel.createCampaign(selection)
-                } else {
-                    viewModel.updateCampaign(selection, campaignId)
-                }
+                viewModel.submit(selection)
             }
 
         }

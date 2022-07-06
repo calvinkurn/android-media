@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.shop.flashsale.common.constant.Constant.CAMPAIGN_NOT_CREATED_ID
 import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant.CAMPAIGN_TEASER_MAXIMUM_UPCOMING_HOUR
 import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant.CAMPAIGN_TEASER_MINIMUM_UPCOMING_HOUR
 import com.tokopedia.shop.flashsale.common.extension.hourOnly
@@ -78,6 +79,7 @@ class CampaignInformationViewModel @Inject constructor(
     private var paymentType = PaymentType.INSTANT
     private var remainingQuota = Int.ZERO
     private var selection : Selection? = null
+    private var campaignId: Long = CAMPAIGN_NOT_CREATED_ID
 
     private val forbiddenWords = listOf(
         "kejar diskon",
@@ -183,7 +185,15 @@ class CampaignInformationViewModel @Inject constructor(
 
     }
 
-    fun createCampaign(selection: Selection) {
+    fun submit(selection: Selection) {
+        if (campaignId == CAMPAIGN_NOT_CREATED_ID) {
+            createCampaign(selection)
+        } else {
+            updateCampaign(selection, campaignId)
+        }
+    }
+
+    private fun createCampaign(selection: Selection) {
         launchCatchError(
             dispatchers.io,
             block = {
@@ -201,6 +211,10 @@ class CampaignInformationViewModel @Inject constructor(
                     )
                 val result = doSellerCampaignCreationUseCase.execute(param)
                 _campaignCreation.postValue(Success(result))
+
+                if (result.isSuccess) {
+                    campaignId = result.campaignId
+                }
             },
             onError = { error ->
                 _campaignCreation.postValue(Fail(error))
@@ -209,7 +223,7 @@ class CampaignInformationViewModel @Inject constructor(
 
     }
 
-    fun updateCampaign(selection: Selection, campaignId: Long) {
+    private fun updateCampaign(selection: Selection, campaignId: Long) {
         launchCatchError(
             dispatchers.io,
             block = {
@@ -296,6 +310,10 @@ class CampaignInformationViewModel @Inject constructor(
             }
         )
 
+    }
+
+    fun setCampaignId(campaignId: Long) {
+        this.campaignId = campaignId
     }
 
     fun setPaymentType(paymentType : PaymentType) {
