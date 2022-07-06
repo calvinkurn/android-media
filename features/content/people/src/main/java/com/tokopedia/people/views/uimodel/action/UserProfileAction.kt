@@ -9,7 +9,7 @@ sealed interface UserProfileAction {
 
     data class LoadPlayVideo(val cursor: String) : UserProfileAction
 
-    data class ClickFollowButton(val isFromLogin: Boolean) : UserProfileAction
+    data class ClickActionButton(val isFromLogin: Boolean) : UserProfileAction
 
     data class ClickUpdateReminder(val isFromLogin: Boolean) : UserProfileAction
 

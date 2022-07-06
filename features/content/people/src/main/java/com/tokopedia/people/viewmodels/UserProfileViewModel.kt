@@ -110,7 +110,7 @@ class UserProfileViewModel @AssistedInject constructor(
         when(action) {
             is UserProfileAction.LoadProfile -> handleLoadProfile(action.isRefresh)
             is UserProfileAction.LoadPlayVideo -> handleLoadPlayVideo(action.cursor)
-            is UserProfileAction.ClickFollowButton -> handleClickFollowButton(action.isFromLogin)
+            is UserProfileAction.ClickActionButton -> handleClickFollowButton(action.isFromLogin)
             is UserProfileAction.ClickUpdateReminder -> handleClickUpdateReminder(action.isFromLogin)
             is UserProfileAction.SaveReminderActivityResult -> handleSaveReminderActivityResult(action.channelId, action.position, action.isActive)
             is UserProfileAction.RemoveReminderActivityResult -> handleRemoveReminderActivityResult()
