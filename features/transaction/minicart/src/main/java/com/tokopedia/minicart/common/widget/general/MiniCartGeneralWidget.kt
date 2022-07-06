@@ -190,8 +190,12 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
 
     private fun renderWidget(miniCartSimplifiedData: MiniCartSimplifiedData) {
         setTotalAmountLoading(false)
-        if (miniCartSimplifiedData.miniCartWidgetData.isShopActive && !miniCartSimplifiedData.miniCartWidgetData.containsOnlyUnavailableItems) {
-            renderAvailableWidget(miniCartSimplifiedData)
+        if (miniCartSimplifiedData.miniCartWidgetData.isShopActive) {
+            if (miniCartSimplifiedData.miniCartWidgetData.containsOnlyUnavailableItems) {
+                renderUnavailableWidget(miniCartSimplifiedData)
+            } else {
+                renderAvailableWidget(miniCartSimplifiedData)
+            }
         } else {
             renderUnavailableWidget(miniCartSimplifiedData)
         }
