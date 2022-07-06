@@ -149,7 +149,7 @@ abstract class BaseNotification internal constructor(
             R.mipmap.ic_statusbar_notif_customer
 
     private val drawableLargeIcon: Int
-        get() = com.tokopedia.resources.common.R.drawable.ic_big_notif_customerapp
+        get() = GlobalConfig.LAUNCHER_ICON_RES_ID
 
     internal val bitmapLargeIcon: Bitmap
         get() = createBitmap()
