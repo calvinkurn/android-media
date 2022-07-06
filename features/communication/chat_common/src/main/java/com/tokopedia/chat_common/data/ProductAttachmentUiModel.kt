@@ -110,7 +110,7 @@ open class ProductAttachmentUiModel protected constructor(
             productImage = attribute.productProfile.imageUrl
             priceNumber = attribute.productProfile.priceInt
             category = attribute.productProfile.category
-            variants = attribute.productProfile.variant
+            variants = attribute.productProfile.variant ?: emptyList()
             dropPercentage = attribute.productProfile.dropPercentage
             priceBefore = attribute.productProfile.priceBefore
             shopId = attribute.productProfile.shopId
@@ -346,7 +346,7 @@ open class ProductAttachmentUiModel protected constructor(
             withProductImage(product.productProfile.imageUrl)
             withPriceInt(product.productProfile.priceInt)
             withCategory(product.productProfile.category)
-            withVariants(product.productProfile.variant)
+            withVariants(product.productProfile.variant ?: emptyList())
             withDropPercentage(product.productProfile.dropPercentage)
             withPriceBefore(product.productProfile.priceBefore)
             withShopId(product.productProfile.shopId)
