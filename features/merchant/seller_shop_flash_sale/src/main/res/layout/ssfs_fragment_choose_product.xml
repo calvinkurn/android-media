@@ -68,7 +68,8 @@
         android:id="@+id/searchBarProduct"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:paddingTop="6dp"
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp"
         android:paddingHorizontal="16dp"
         app:search_bar_show_icon="false"
         app:search_bar_placeholder="@string/chooseproduct_search_placeholdertext"
@@ -82,9 +83,22 @@
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="18dp"
         android:text="@string/chooseproduct_selected_product_initial"
-        app:typographyType="paragraph_3"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guidelineHeader" />
+        app:layout_constraintTop_toTopOf="@+id/guidelineHeader"
+        app:typographyType="paragraph_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvSelectedProductVariant"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="6dp"
+        android:text="@string/chooseproduct_has_variant_text"
+        android:textColor="@color/Unify_NN600"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/tvSelectedProduct"
+        app:layout_constraintStart_toEndOf="@+id/tvSelectedProduct"
+        app:layout_constraintTop_toTopOf="@+id/tvSelectedProduct"
+        app:typographyType="small" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/dividerSearch"

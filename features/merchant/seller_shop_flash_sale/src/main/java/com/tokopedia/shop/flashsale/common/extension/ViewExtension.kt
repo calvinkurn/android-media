@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Animation
 import android.view.animation.TranslateAnimation
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Guideline
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -140,6 +140,11 @@ fun <T> debounce(
             destinationFunction(param)
         }
     }
+}
+
+fun Guideline.setGuidelineEnd(): Int {
+    val params = this.layoutParams as ConstraintLayout.LayoutParams
+    return params.guideEnd
 }
 
 fun Guideline?.animateSlide(fromHeight: Int, targetHeight: Int, isGuidelineBegin: Boolean) =
