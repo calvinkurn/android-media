@@ -1,8 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance
 
 import com.tokopedia.home.R
-import com.tokopedia.home.beranda.data.model.*
-import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
+import com.tokopedia.home.beranda.data.model.TokopointsDrawerListHomeData
 import com.tokopedia.navigation_common.usecase.pojo.walletapp.WalletAppData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_ERROR
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_LOADING
@@ -29,17 +28,9 @@ data class HomeBalanceModel(
     var isTokopointsOrOvoFailed: Boolean = false
 ) : BalanceWidgetVisitable {
     companion object {
-        // State 1: Ovo, Coupon, Bebas Ongkir
-        const val TYPE_STATE_1 = 1
 
         // State 2: Tokopoints, Ovo, Bebas Ongkir
         const val TYPE_STATE_2 = 2
-
-        // State 3: Tokopoints, Coupon, Bebas Ongkir
-        const val TYPE_STATE_3 = 3
-
-        // State 4: Non login, will not rendered
-        const val TYPE_STATE_4 = 4
 
         const val OVO_TITLE = "OVO"
         const val OVO_TOP_UP = "Top-up OVO"
@@ -97,39 +88,23 @@ data class HomeBalanceModel(
     }
 
     fun mapBalanceData(
-        homeHeaderWalletAction: HomeHeaderWalletAction? = null,
         tokopointDrawerListHomeData: TokopointsDrawerListHomeData? = null,
-        pendingCashBackData: PendingCashbackModel? = null,
         walletAppData: WalletAppData? = null
     ) {
         tokopointDrawerListHomeData?.let { mapTokopoint(tokopointDrawerListHomeData) }
-        homeHeaderWalletAction?.let { mapWallet(homeHeaderWalletAction) }
-        pendingCashBackData?.let { mapPendingCashback(homeHeaderWalletAction, pendingCashBackData) }
         walletAppData?.let { mapWalletApp(walletAppData) }
     }
 
     fun mapErrorTokopoints() {
         when (balanceType) {
-            TYPE_STATE_1 -> {
-                balanceDrawerItemModels[BALANCE_POSITION_SECOND] = getDefaultTokopointsErrorState()
-                balanceDrawerItemModels[BALANCE_POSITION_THIRD] = getDefaultCouponsRewardsErrorState()
-            }
             TYPE_STATE_2 -> {
                 balanceDrawerItemModels[BALANCE_POSITION_SECOND] = getDefaultTokopointsErrorState()
-            }
-            TYPE_STATE_3 -> {
-                balanceDrawerItemModels[BALANCE_POSITION_FIRST] = getDefaultTokopointsErrorState()
-                balanceDrawerItemModels[BALANCE_POSITION_SECOND] = getDefaultCouponsRewardsErrorState()
-                balanceDrawerItemModels[BALANCE_POSITION_THIRD] = getDefaultBBOErrorState()
             }
         }
     }
 
     fun mapErrorWallet(isWalletApp: Boolean) {
         when (balanceType) {
-            TYPE_STATE_1 -> {
-                balanceDrawerItemModels[BALANCE_POSITION_FIRST] = getDefaultGopayErrorState()
-            }
             TYPE_STATE_2 -> {
                 balanceDrawerItemModels[BALANCE_POSITION_FIRST] = getDefaultGopayErrorState()
             }
@@ -347,15 +322,6 @@ data class HomeBalanceModel(
         action: (pos: Int) -> Unit
     ) {
         when (balanceType) {
-            TYPE_STATE_1 -> {
-                itemTypeCondition(
-                        itemType,
-                        typeWalletCondition = { action.invoke(BALANCE_POSITION_FIRST) },
-                        typeCouponCondition = { action.invoke(BALANCE_POSITION_SECOND) },
-                        typeRewardsCondition = { action.invoke(BALANCE_POSITION_SECOND) },
-                        typeFreeOngkirCondition = { action.invoke(BALANCE_POSITION_THIRD) }
-                )
-            }
             TYPE_STATE_2 -> {
                 itemTypeCondition(
                         itemType,
@@ -364,15 +330,6 @@ data class HomeBalanceModel(
                         typeFreeOngkirCondition = { action.invoke(BALANCE_POSITION_SECOND) },
                         typeCouponCondition = { action.invoke(BALANCE_POSITION_SECOND) },
                         typeRewardsCondition = { action.invoke(BALANCE_POSITION_SECOND) }
-                )
-            }
-            TYPE_STATE_3 -> {
-                itemTypeCondition(
-                        itemType,
-                        typeTokopointCondition = { action.invoke(BALANCE_POSITION_FIRST) },
-                        typeCouponCondition = { action.invoke(BALANCE_POSITION_SECOND) },
-                        typeRewardsCondition = { action.invoke(BALANCE_POSITION_SECOND) },
-                        typeFreeOngkirCondition = { action.invoke(BALANCE_POSITION_THIRD) }
                 )
             }
         }

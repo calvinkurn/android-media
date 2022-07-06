@@ -42,14 +42,15 @@ class HomeBalanceWidgetUseCase @Inject constructor(
 //            val getHomeBalanceWidget = getHomeBalanceWidgetRepository.getRemoteData()
 
             var homeBalanceModel = getHomeBalanceModel(currentHeaderDataModel, HomeBalanceModel.BALANCE_POSITION_FIRST, HomeBalanceModel.BALANCE_POSITION_SECOND)
-            homeBalanceModel = getDataUsingWalletApp(homeBalanceModel)
 
             homeBalanceModel = getTokopointData(homeBalanceModel)
-            return currentHeaderDataModel.copy(headerDataModel = currentHeaderDataModel.headerDataModel?.copy(
+            homeBalanceModel = getDataUsingWalletApp(homeBalanceModel)
+            return currentHeaderDataModel.copy(
+                headerDataModel = currentHeaderDataModel.headerDataModel?.copy(
                     homeBalanceModel = homeBalanceModel,
                     isUserLogin = userSession.isLoggedIn
-            ),
-                    needToShowUserWallet = homeFlagRepository.getCachedData().homeFlag.getFlag(HomeFlag.TYPE.HAS_TOKOPOINTS)?: false
+                ),
+                needToShowUserWallet = homeFlagRepository.getCachedData().homeFlag.getFlag(HomeFlag.TYPE.HAS_TOKOPOINTS)
             )
         } catch (e: Exception) {
             //TODO delete logger
@@ -115,9 +116,7 @@ class HomeBalanceWidgetUseCase @Inject constructor(
 
     private suspend fun getTokopointData(homeBalanceModel: HomeBalanceModel): HomeBalanceModel {
         try {
-            homeBalanceModel.mapBalanceData(tokopointDrawerListHomeData = homeTokopointsListRepository.getRemoteData(
-
-            ))
+            homeBalanceModel.mapBalanceData(tokopointDrawerListHomeData = homeTokopointsListRepository.getRemoteData())
         } catch (e: Exception) {
             homeBalanceModel.isTokopointsOrOvoFailed = true
             homeBalanceModel.mapErrorTokopoints()

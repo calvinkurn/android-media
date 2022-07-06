@@ -31,7 +31,7 @@ object OvoWidgetTracking: BaseTracking() {
         )
     }
 
-    fun sendClickOnCouponBalanceWidgetTracker(isOvoAvailable: Boolean, userId: String) {
+    fun sendClickOnCouponBalanceWidgetTracker(userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(DataLayer.mapOf(
                 Event.KEY, Event.CLICK_HOMEPAGE,
                 Category.KEY, Category.HOMEPAGE_TOKOPOINTS,
@@ -43,7 +43,7 @@ object OvoWidgetTracking: BaseTracking() {
         ))
     }
 
-    fun sendClickOnRewardsBalanceWidgetTracker(isOvoAvailable: Boolean, userId: String) {
+    fun sendClickOnRewardsBalanceWidgetTracker(userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(DataLayer.mapOf(
                 Event.KEY, Event.CLICK_HOMEPAGE,
                 Category.KEY, Category.HOMEPAGE_TOKOPOINTS,
@@ -55,7 +55,7 @@ object OvoWidgetTracking: BaseTracking() {
         ))
     }
 
-    fun sendClickOnOVOBalanceWidgetTracker(isOvoAvailable: Boolean, userId: String) {
+    fun sendClickOnOVOBalanceWidgetTracker(userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(DataLayer.mapOf(
                 Event.KEY, Event.CLICK_HOMEPAGE,
                 Category.KEY, Category.HOMEPAGE_TOKOPOINTS,
@@ -67,7 +67,7 @@ object OvoWidgetTracking: BaseTracking() {
         ))
     }
 
-    fun sendClickOnTokopointsBalanceWidgetTracker(isOvoAvailable: Boolean, userId: String) {
+    fun sendClickOnTokopointsBalanceWidgetTracker(userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(DataLayer.mapOf(
                 Event.KEY, Event.CLICK_HOMEPAGE,
                 Category.KEY, Category.HOMEPAGE_TOKOPOINTS,
@@ -79,7 +79,7 @@ object OvoWidgetTracking: BaseTracking() {
         ))
     }
 
-    fun sendClickOnBBOBalanceWidgetTracker(isOvoAvailable: Boolean, userId: String) {
+    fun sendClickOnBBOBalanceWidgetTracker(userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(DataLayer.mapOf(
                 Event.KEY, Event.CLICK_HOMEPAGE,
                 Category.KEY, Category.HOMEPAGE_TOKOPOINTS,

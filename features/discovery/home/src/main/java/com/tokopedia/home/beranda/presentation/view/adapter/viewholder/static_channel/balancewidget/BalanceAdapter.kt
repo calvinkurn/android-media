@@ -52,7 +52,6 @@ class BalanceAdapter(
 
     companion object {
         var disableAnimation: Boolean = false
-        private const val FIRST_POSITION = 0
     }
 
     @Suppress("TooGenericExceptionCaught")
@@ -62,7 +61,7 @@ class BalanceAdapter(
         val balanceModelList = mutableListOf<BalanceDrawerItemModel>()
         try {
             itemMap.balanceDrawerItemModels.mapValues {
-                balanceModelList.add(it.key, it.value)
+                balanceModelList.add(it.value)
             }
             submitList(balanceModelList.toMutableList())
         } catch (e: Exception) {
@@ -80,10 +79,6 @@ class BalanceAdapter(
         this.attachedRecyclerView = recyclerView
     }
 
-    fun getItemMap():  HomeBalanceModel {
-        return itemMap
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         return Holder(LayoutInflater.from(parent.context).inflate(R.layout.item_balance_widget_new, parent, false))
     }
@@ -94,9 +89,9 @@ class BalanceAdapter(
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
         holder.bind(
-                itemMap.balanceDrawerItemModels[position],
-                listener,
-                itemMap.balanceType != HomeBalanceModel.TYPE_STATE_3)
+            itemMap.balanceDrawerItemModels[position],
+            listener
+        )
     }
 
     class Holder(v: View): RecyclerView.ViewHolder(v), CoroutineScope {
@@ -109,7 +104,6 @@ class BalanceAdapter(
 
         private val walletAnalytics: CommonWalletAnalytics = CommonWalletAnalytics()
         private var listener: HomeCategoryListener? = null
-        private var isOvoAvailable: Boolean = false
         private var homeContainerBalance: ConstraintLayout? = itemView.findViewById(R.id.home_container_balance)
         private var homeImageLogoBalance: ImageUnify? = itemView.findViewById(R.id.home_iv_logo_balance)
         private var homeTvBalance: TextView = itemView.findViewById(R.id.home_tv_balance)
@@ -117,15 +111,13 @@ class BalanceAdapter(
         private var homeTitleBalance: Typography = itemView.findViewById(R.id.home_header_title_balance)
 
         fun bind(drawerItem: BalanceDrawerItemModel?,
-                 listener: HomeCategoryListener?,
-                 isOvoAvailable: Boolean
+                 listener: HomeCategoryListener?
         ) {
             this.listener = listener
             renderDrawerItem(drawerItem)
             this.itemView.tag = String.format(
                 itemView.context.getString(R.string.tag_balance_widget), drawerItem?.drawerItemType.toString()
             )
-            this.isOvoAvailable = isOvoAvailable
         }
 
         private fun renderDrawerItem(element: BalanceDrawerItemModel?) {
@@ -168,13 +160,13 @@ class BalanceAdapter(
                                         else
                                             element.mainPageTitle
                                 )
-                                OvoWidgetTracking.sendClickOnTokopointsBalanceWidgetTracker(isOvoAvailable, listener?.userId ?: "")
+                                OvoWidgetTracking.sendClickOnTokopointsBalanceWidgetTracker(listener?.userId ?: "")
 
                             },
                             ovoWalletAction = {
                                 //handle click for type ovo
                                 if (RouteManager.isSupportApplink(itemView.context, element.applinkContainer)) {
-                                    OvoWidgetTracking.sendClickOnOVOBalanceWidgetTracker(isOvoAvailable, listener?.userId ?: "")
+                                    OvoWidgetTracking.sendClickOnOVOBalanceWidgetTracker(listener?.userId ?: "")
                                     val intentBalanceWallet = RouteManager.getIntent(itemView.context, element.applinkContainer)
                                     itemView.context.startActivity(intentBalanceWallet)
                                 }
@@ -189,7 +181,7 @@ class BalanceAdapter(
                                         else
                                             element.mainPageTitle
                                 )
-                                OvoWidgetTracking.sendClickOnRewardsBalanceWidgetTracker(isOvoAvailable, listener?.userId?:"")
+                                OvoWidgetTracking.sendClickOnRewardsBalanceWidgetTracker(listener?.userId?:"")
                             },
                             couponsAction = {
                                 //handle click for type coupon
@@ -201,7 +193,7 @@ class BalanceAdapter(
                                         else
                                             element.mainPageTitle
                                 )
-                                OvoWidgetTracking.sendClickOnCouponBalanceWidgetTracker(isOvoAvailable, listener?.userId?:"")
+                                OvoWidgetTracking.sendClickOnCouponBalanceWidgetTracker(listener?.userId?:"")
                             },
                             bboAction = {
                                 //handle click for type bbo
@@ -213,14 +205,14 @@ class BalanceAdapter(
                                         else
                                             element.mainPageTitle
                                 )
-                                OvoWidgetTracking.sendClickOnBBOBalanceWidgetTracker(isOvoAvailable, listener?.userId ?: "0")
+                                OvoWidgetTracking.sendClickOnBBOBalanceWidgetTracker(listener?.userId ?: "0")
                                 //uncomment when we use new tracker
                                 //OvoWidgetTracking.sendClickOnBBONewTokopointsWidget(isOvoAvailable, listener?.userId ?: "")
                             },
                             walletTopupAction = {
                                 //handle click for type wallet topup
                                 if (RouteManager.isSupportApplink(itemView.context, element.applinkContainer)) {
-                                    OvoWidgetTracking.sendClickOnOVOBalanceWidgetTracker(isOvoAvailable, listener?.userId ?: "")
+                                    OvoWidgetTracking.sendClickOnOVOBalanceWidgetTracker(listener?.userId ?: "")
                                     OvoWidgetTracking.eventTopUpOvo(listener?.userId)
                                     val intentBalanceWallet = RouteManager.getIntent(itemView.context, element.applinkContainer)
                                     itemView.context.startActivity(intentBalanceWallet)
