@@ -237,6 +237,8 @@ class UserProfileFragment @Inject constructor(
 //            ).showNow(childFragmentManager)
             }
 
+            mainBinding.includeReminder.btnCta.setOnClickListener { navigateToEditProfile() }
+
             mainBinding.rvPost.addOnScrollListener(feedFloatingButtonManager.scrollListener)
 //        recyclerviewPost?.let { feedFloatingButtonManager.setDelayForExpandFab(it) }
         }
@@ -478,10 +480,7 @@ class UserProfileFragment @Inject constructor(
 
         val isShowProfileReminder = viewModel.isSelfProfile && usernameEmpty && biographyEmpty
 
-        if (isShowProfileReminder) {
-            showProfileReminder()
-            mainBinding.includeReminder.btnCta.setOnClickListener { navigateToEditProfile() }
-        }
+        if (isShowProfileReminder) showProfileReminder()
         else mainBinding.includeReminder.root.hide()
     }
 
