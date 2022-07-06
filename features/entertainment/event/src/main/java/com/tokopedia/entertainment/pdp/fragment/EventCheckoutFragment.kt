@@ -316,14 +316,17 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
         if (!forms.isNullOrEmpty()) {
             setPassengerData(forms)
         }
-        context?.let {
-            ticker_event_checkout.setTextDescription(it.resources.getString(R.string.ent_event_checkout_pessanger_ticker))
-        }
-        btn_event_checkout_passenger.setOnClickListener {
-            goToPageForm()
-        }
-        widget_event_checkout_pessangers.setOnClickListener {
-            goToPageForm()
+        ticker_event_checkout.setTextDescription(context?.resources?.getString(R.string.ent_event_checkout_pessanger_ticker).orEmpty())
+        if (!forms.isNullOrEmpty()) {
+            btn_event_checkout_passenger.setOnClickListener {
+                goToPageForm()
+            }
+            widget_event_checkout_pessangers.setOnClickListener {
+                goToPageForm()
+            }
+        } else {
+            btn_event_checkout_passenger.hide()
+            widget_event_checkout_pessangers.hide()
         }
     }
 
@@ -427,11 +430,6 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
                     when{
                         !userSessionInterface.isLoggedIn -> {
                             Toaster.build(view, it.getString(R.string.ent_event_checkout_submit_login), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error)).show()
-                        }
-                        forms.isEmpty() -> {
-                            Toaster.build(view, it.getString(R.string.ent_event_checkout_submit_name, it.getString(R.string.ent_event_checkout_passenger_title).toLowerCase()), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error)).show()
-                            scroll_view_event_checkout.focusOnView(partial_event_checkout_passenger)
-                            widget_event_checkout_pessangers.startAnimationWiggle()
                         }
                         !forms.isNullOrEmpty() && isEmptyForms(forms, getString(R.string.ent_checkout_data_nullable_form)) -> {
                             Toaster.build(view, it.getString(R.string.ent_event_checkout_submit_name, it.getString(R.string.ent_event_checkout_passenger_title).toLowerCase()), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error)).show()
