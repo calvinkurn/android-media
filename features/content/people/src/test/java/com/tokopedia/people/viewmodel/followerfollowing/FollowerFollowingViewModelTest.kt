@@ -13,12 +13,13 @@ import com.tokopedia.people.model.followerfollowing.UnFollowModelBuilder
 import com.tokopedia.people.robot.FollowerFollowingViewModelRobot
 import com.tokopedia.people.util.equalTo
 import com.tokopedia.people.util.getOrAwaitValue
+import com.tokopedia.people.util.getOrNullValue
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.*
+import junit.framework.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.lang.Exception
 
 /**
  * Created By : Jonathan Darwin on July 06, 2022
@@ -117,12 +118,34 @@ class FollowerFollowingViewModelTest {
     }
 
     @Test
+    fun `when user failed follow the account, it should not emit any data`() {
+        robot.start {
+            coEvery { mockDoFollowUseCase.doFollow(any()) } throws mockException
+            viewModel.doFollow(mockUserIdTarget)
+
+            val data = robot.viewModel.profileDoFollowLiveData.getOrNullValue()
+            assertEquals(data, null)
+        }
+    }
+
+    @Test
     fun `when user successfully unfollow the account, it should emit the success data`() {
         robot.start {
             viewModel.doUnFollow(mockUserIdTarget)
 
             val data = robot.viewModel.profileDoUnFollowLiveData.getOrAwaitValue()
             data equalTo Success(mockUnfollow)
+        }
+    }
+
+    @Test
+    fun `when user failed unfollow the account, it should not emit any data`() {
+        robot.start {
+            coEvery { mockDoUnFollowUseCase.doUnfollow(any()) } throws mockException
+            viewModel.doUnFollow(mockUserIdTarget)
+
+            val data = robot.viewModel.profileDoUnFollowLiveData.getOrNullValue()
+            assertEquals(data, null)
         }
     }
 }
