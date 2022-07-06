@@ -29,6 +29,7 @@
                 android:background="@color/food_cardview_background_dms_color"
                 android:paddingStart="8dp"
                 android:paddingTop="16dp"
+                android:paddingBottom="8dp"
                 android:paddingEnd="8dp">
 
                 <com.tokopedia.unifycomponents.ImageUnify
@@ -38,7 +39,9 @@
                     android:visibility="invisible"
                     app:layout_constraintHorizontal_chainStyle="packed"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:contentDescription="@string/home_usp_content_desc"
+                    />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tg_first_usp"
@@ -50,10 +53,10 @@
                     android:gravity="center_vertical"
                     android:visibility="invisible"
                     android:maxWidth="70dp"
-                    app:layout_constraintEnd_toStartOf="@+id/guideline1"
+                    app:layout_constraintEnd_toStartOf="@+id/guideline_first"
                     app:layout_constraintStart_toEndOf="@+id/img_first_usp"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:typographyType="display_3"
+                    app:typographyType="small"
                     app:typographyWeight="bold"
                     />
 
@@ -63,8 +66,10 @@
                     android:layout_height="24dp"
                     android:visibility="invisible"
                     app:layout_constraintEnd_toStartOf="@+id/tg_second_usp"
-                    app:layout_constraintStart_toStartOf="@+id/guideline1"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintStart_toStartOf="@+id/guideline_first"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:contentDescription="@string/home_usp_content_desc"
+                    />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tg_second_usp"
@@ -75,11 +80,11 @@
                     android:visibility="invisible"
                     android:gravity="center_vertical"
                     android:maxWidth="70dp"
-                    app:layout_constraintEnd_toStartOf="@+id/guideline2"
+                    app:layout_constraintEnd_toStartOf="@+id/guideline_second"
                     app:layout_constraintStart_toEndOf="@+id/img_second_usp"
                     app:layout_constraintTop_toTopOf="@+id/img_second_usp"
                     app:layout_constraintWidth_max="70dp"
-                    app:typographyType="display_3"
+                    app:typographyType="small"
                     app:typographyWeight="bold" />
 
                 <com.tokopedia.unifycomponents.ImageUnify
@@ -88,8 +93,10 @@
                     android:layout_height="24dp"
                     android:visibility="invisible"
                     app:layout_constraintEnd_toStartOf="@+id/tg_third_usp"
-                    app:layout_constraintStart_toStartOf="@id/guideline2"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintStart_toStartOf="@id/guideline_second"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:contentDescription="@string/home_usp_content_desc"
+                    />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tg_third_usp"
@@ -104,7 +111,7 @@
                     app:layout_constraintStart_toEndOf="@+id/img_third_usp"
                     app:layout_constraintTop_toTopOf="@+id/img_third_usp"
                     app:layout_constraintWidth_max="70dp"
-                    app:typographyType="display_3"
+                    app:typographyType="small"
                     app:typographyWeight="bold" />
 
                 <ImageView
@@ -112,22 +119,23 @@
                     android:layout_width="0dp"
                     android:layout_height="14dp"
                     android:layout_marginStart="4dp"
-                    android:layout_marginEnd="12dp"
+                    android:layout_marginEnd="8dp"
                     android:layout_marginTop="12dp"
-                    android:layout_marginBottom="8dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/img_third_usp" />
+                    app:layout_constraintTop_toBottomOf="@id/img_third_usp"
+                    android:contentDescription="@string/home_usp_content_desc"
+                    />
 
                 <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/guideline1"
+                    android:id="@+id/guideline_first"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     app:layout_constraintGuide_percent="0.33" />
 
                 <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/guideline2"
+                    android:id="@+id/guideline_second"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
@@ -152,8 +160,8 @@
 
     <View
         android:id="@+id/view_usp"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="32dp"
+        android:layout_height="16dp"
         android:layout_marginBottom="2dp"
         android:background="@drawable/background_tokofood_usp_chevron"
         android:elevation="4dp"
@@ -174,6 +182,8 @@
         app:layout_constraintBottom_toBottomOf="@id/main_layout"
         app:layout_constraintEnd_toEndOf="@id/main_layout"
         app:layout_constraintStart_toStartOf="@id/main_layout"
-        app:layout_constraintTop_toBottomOf="@id/main_layout" />
+        app:layout_constraintTop_toBottomOf="@id/main_layout"
+        android:contentDescription="@string/home_usp_content_desc"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
