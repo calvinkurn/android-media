@@ -27,8 +27,11 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
 
     val layoutList: LiveData<Result<List<Visitable<*>>>>
         get() = _layoutList
+    val recipeInfo: LiveData<RecipeInfoUiModel>
+        get() = _recipeInfo
 
     private val _layoutList = MutableLiveData<Result<List<Visitable<*>>>>()
+    private val _recipeInfo = MutableLiveData<RecipeInfoUiModel>()
 
     fun getRecipe(recipeId: String, warehouseId: String) {
         launchCatchError(block = {
@@ -104,6 +107,7 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
 
             val layoutList = listOf(mediaSlider, recipeInfo, recipeTab)
 
+            _recipeInfo.postValue(recipeInfo)
             _layoutList.postValue(Success(layoutList))
         }) {
 
