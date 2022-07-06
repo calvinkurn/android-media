@@ -39,10 +39,10 @@ open class GetReminderTickerUseCase @Inject constructor(
         """
 
     class Param(
-        val featureId: String = "-1"
+        val featureId: Int = -1
     ) {
         companion object {
-            const val SRW_TICKER = "1"
+            const val SRW_TICKER = 1
         }
     }
 
