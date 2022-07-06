@@ -354,9 +354,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
     )
     private val snapHelper = PagerSnapHelper()
     private val pageControlListener = object : RecyclerView.OnScrollListener() {
-        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            if (newState != RecyclerView.SCROLL_STATE_IDLE) return
-            val layoutManager = recyclerView.layoutManager ?: return
+
+        private val layoutManager = rvCarousel.layoutManager as LinearLayoutManager
+
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             val snappedView = snapHelper.findSnapView(layoutManager) ?: return
 
             val position = layoutManager.getPosition(snappedView)
@@ -364,6 +365,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             mData.lastCarouselIndex = position
         }
     }
+
     private val onMediaFocusedListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             if (newState != RecyclerView.SCROLL_STATE_IDLE) return
@@ -1486,6 +1488,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     internal fun onResume() {
         if (shouldResumeVideoPLayerOnBack)
         videoPlayer?.resume()
+        adapter.focusItemAt(pageControl.indicatorCurrentPosition)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
