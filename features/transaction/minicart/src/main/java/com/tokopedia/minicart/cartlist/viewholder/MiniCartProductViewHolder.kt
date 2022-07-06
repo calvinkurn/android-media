@@ -192,6 +192,7 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
             } else {
                 textSlashPrice.gone()
                 labelSlashPricePercentage.gone()
+                textProductPrice.setPadding(0, 0, 0, 0)
                 val constraintSet = ConstraintSet()
                 constraintSet.clone(containerProduct)
                 constraintSet.connect(
