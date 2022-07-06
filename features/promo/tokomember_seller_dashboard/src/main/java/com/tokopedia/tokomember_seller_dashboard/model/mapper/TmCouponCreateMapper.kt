@@ -67,7 +67,7 @@ object TmCouponCreateMapper {
             image = tmCouponVipUploadId,
             couponType = couponVip?.typeCoupon,
             minPurchase = CurrencyFormatHelper.convertRupiahToInt(couponPremiumData?.minTransaki?:""),
-            minimumTierLevel = 1,
+            minimumTierLevel = 2,
             benefitPercent = couponVip?.cashBackPercentage,
             quota = CurrencyFormatHelper.convertRupiahToInt(couponVip?.quota?:""),
             imagePortrait = imagePortrait,
@@ -122,7 +122,8 @@ object TmCouponCreateMapper {
         token:String,
         imageSquare:String,
         imagePortrait: String,
-        maximumBenefit: Int
+        maximumBenefit: Int,
+        tierLevel:Int
     ): TmCouponCreateRequest {
         //Mutation Mapper
 
@@ -136,7 +137,7 @@ object TmCouponCreateMapper {
                     it
                 )
             },
-            minimumTierLevel = 1,
+            minimumTierLevel = tierLevel,
             benefitPercent = couponPremiumData?.cashBackPercentage,
             quota = couponPremiumData?.quota?.let {
                 CurrencyFormatHelper.convertRupiahToInt(

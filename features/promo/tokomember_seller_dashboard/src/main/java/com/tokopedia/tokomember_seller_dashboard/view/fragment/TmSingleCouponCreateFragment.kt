@@ -461,7 +461,8 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                                             token = token!!,
                                             imagePortrait = tmCouponDetail?.voucherImagePortrait!!,
                                             imageSquare = tmCouponDetail?.voucherImageSquare!!,
-                                            maximumBenefit = couponPremiumData?.maxCashback.toIntSafely()
+                                            maximumBenefit = couponPremiumData?.maxCashback.toIntSafely(),
+                                            tierLevel = selectedChipPositionLevel+1
                                         )
                                     tokomemberDashCreateViewModel.createSingleCoupon(
                                         tmMerchantCouponCreateData

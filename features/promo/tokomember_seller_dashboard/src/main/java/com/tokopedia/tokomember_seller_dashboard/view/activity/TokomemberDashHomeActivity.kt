@@ -26,6 +26,7 @@ class TokomemberDashHomeActivity : AppCompatActivity(), TmProgramDetailCallback 
     private lateinit var homeHeader: HeaderUnify
     private lateinit var homeTabs: TabsUnify
     private lateinit var homeViewPager: ViewPager
+    private var bundleNewIntent: Bundle? = null
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -37,8 +38,11 @@ class TokomemberDashHomeActivity : AppCompatActivity(), TmProgramDetailCallback 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.tm_activity_tokomember_dash_home)
-        addFragment(TokomemberDashHomeMainFragment.newInstance(intent.extras), TAG_HOME)
-
+        if (bundleNewIntent == null) {
+            openHomeFragment(intent.extras)
+        } else {
+            openHomeFragment(bundleNewIntent)
+        }
         initDagger()
     }
 
@@ -65,6 +69,16 @@ class TokomemberDashHomeActivity : AppCompatActivity(), TmProgramDetailCallback 
             .addToBackStack(tag).commit()
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        bundleNewIntent = intent?.extras
+        openHomeFragment(bundleNewIntent)
+    }
+
+    private fun openHomeFragment(bundle: Bundle?) {
+        addFragment(TokomemberDashHomeMainFragment.newInstance(bundle), TAG_HOME)
+    }
+
     override fun openDetailFragment(shopId: Int, programId: Int) {
         val bundle = Bundle()
         bundle.putInt(BUNDLE_SHOP_ID, shopId)
@@ -76,7 +90,6 @@ class TokomemberDashHomeActivity : AppCompatActivity(), TmProgramDetailCallback 
         fun openActivity(shopId: Int, cardID:Int, context: Context? , isShowBs:Boolean = false){
             context?.let {
                 val intent = Intent(it, TokomemberDashHomeActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
                 intent.putExtra(BUNDLE_SHOP_ID, shopId)
                 intent.putExtra(BUNDLE_CARD_ID, cardID)
                 intent.putExtra(BUNDLE_IS_SHOW_BS, isShowBs)

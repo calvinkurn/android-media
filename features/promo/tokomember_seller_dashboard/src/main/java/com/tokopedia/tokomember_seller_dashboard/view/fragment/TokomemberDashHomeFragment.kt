@@ -61,37 +61,25 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        renderTicker(null)
-//        Glide.with(flShop)
-//            .asDrawable()
-//            .load("https://ecs7.tokopedia.net/cards/ray2-f.png")
-//            .into(object : CustomTarget<Drawable>(){
-//                override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-//                    flShop.background = resource
-//                }
-//                override fun onLoadCleared(placeholder: Drawable?) {
-//
-//                }
-//            })
-
         iv_home.errorTitle.hide()
         iv_home.errorDescription.hide()
         observeViewModel()
         arguments?.getInt(
-            BUNDLE_SHOP_ID)?.let { shopId ->
+            BUNDLE_SHOP_ID
+        )?.let { shopId ->
             arguments?.getInt(
-            BUNDLE_SHOP_ID)?.let { cardId ->
-            tokomemberDashHomeViewmodel.getHomePageData(
-                shopId,
-                cardId
-            )
+                BUNDLE_SHOP_ID
+            )?.let { cardId ->
+                tokomemberDashHomeViewmodel.getHomePageData(
+                    shopId,
+                    cardId
+                )
                 this@TokomemberDashHomeFragment.shopId = shopId
-        }
+            }
         }
 
         tmTracker = TmTracker()
         tmTracker?.viewHomeTabsSection(shopId.toString())
-
 
         if(isShowBs){
             val bundle = Bundle()
