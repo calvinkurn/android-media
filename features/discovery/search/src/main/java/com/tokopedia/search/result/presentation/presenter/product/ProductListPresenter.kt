@@ -70,6 +70,7 @@ import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterD
 import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetVisitable
+import com.tokopedia.search.result.product.pagination.Pagination
 import com.tokopedia.search.result.product.performancemonitoring.PerformanceMonitoringProvider
 import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC
 import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_BROADMATCH
@@ -90,6 +91,7 @@ import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.search.utils.createSearchProductDefaultFilter
 import com.tokopedia.search.utils.createSearchProductDefaultQuickFilter
 import com.tokopedia.search.utils.getValueString
+import com.tokopedia.search.result.product.pagination.PaginationImpl
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.CpmModel
@@ -138,8 +140,10 @@ class ProductListPresenter @Inject constructor(
     performanceMonitoringProvider: PerformanceMonitoringProvider,
     private val chooseAddressDelegate: ChooseAddressPresenterDelegate,
     private val requestParamsGenerator: RequestParamsGenerator,
+    private val paginationImpl: PaginationImpl,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
-    ProductListSectionContract.Presenter {
+    ProductListSectionContract.Presenter,
+    Pagination by paginationImpl {
 
     companion object {
         private val showBroadMatchResponseCodeList = listOf("0", "4", "5")
@@ -173,11 +177,8 @@ class ProductListPresenter @Inject constructor(
 
     private var enableGlobalNavWidget = true
     private var additionalParams = ""
-    override var startFrom = 0
-        private set
     override var isBottomSheetFilterEnabled = true
         private set
-    private var totalData = 0
     private var hasLoadData = false
     private var responseCode = ""
     private var navSource = ""
@@ -239,9 +240,6 @@ class ProductListPresenter @Inject constructor(
     override val isUserLoggedIn: Boolean
         get() = userSession.isLoggedIn
 
-    override val deviceId: String
-        get() = userSession.deviceId
-
     //region Ticker
     override var isTickerHasDismissed = false
         private set
@@ -252,15 +250,6 @@ class ProductListPresenter @Inject constructor(
     //endregion
 
     //region Load Data / Load More / Recommendations
-    private fun hasNextPage(): Boolean {
-        return startFrom < totalData
-    }
-
-    override fun clearData() {
-        startFrom = 0
-        totalData = 0
-    }
-
     override fun onViewCreated() {
         val isFirstActiveTab = view.isFirstActiveTab
 
@@ -297,7 +286,6 @@ class ProductListPresenter @Inject constructor(
 
         val requestParams = requestParamsGenerator.createInitializeSearchParam(
             searchParameter,
-            startFrom,
             chooseAddressDelegate.getChooseAddressParams(),
         )
         requestParamsGenerator.enrichWithRelatedSearchParam(requestParams)
@@ -346,7 +334,7 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun incrementStart() {
-        startFrom += SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS.toInt()
+        paginationImpl.incrementStart()
     }
 
     private fun loadMoreDataSubscriberOnNext(
@@ -369,7 +357,7 @@ class ProductListPresenter @Inject constructor(
             getViewToShowMoreData(searchParameter, searchProductModel, productDataView)
         }
 
-        totalData = productDataView.totalData
+        paginationImpl.totalData = productDataView.totalData
     }
 
     private fun createProductDataView(
@@ -493,12 +481,12 @@ class ProductListPresenter @Inject constructor(
 
         view.removeLoading()
         view.hideRefreshLayout()
-        view.showNetworkError(startFrom, error)
+        view.showNetworkError(error)
         view.logWarning(UrlParamUtils.generateUrlParamString(searchParameter as Map<String?, Any>), error)
     }
 
     private fun decrementStart() {
-        startFrom -= SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS.toInt()
+        paginationImpl.decrementStart()
     }
 
     override fun loadData(searchParameter: Map<String, Any>) {
@@ -513,7 +501,6 @@ class ProductListPresenter @Inject constructor(
 
         val requestParams = requestParamsGenerator.createInitializeSearchParam(
             searchParameter,
-            startFrom,
             chooseAddressDelegate.getChooseAddressParams(),
         )
         requestParamsGenerator.enrichWithRelatedSearchParam(requestParams)
@@ -576,7 +563,7 @@ class ProductListPresenter @Inject constructor(
 
         decrementStart()
         view.removeLoading()
-        view.showNetworkError(0, throwable)
+        view.showNetworkError(throwable)
         view.hideRefreshLayout()
         view.logWarning(UrlParamUtils.generateUrlParamString(searchParameter as Map<String?, Any>), throwable)
     }
@@ -631,7 +618,7 @@ class ProductListPresenter @Inject constructor(
         relatedDataView = productDataView.relatedDataView
         bannerDataView = productDataView.bannerDataView
         autoCompleteApplink = productDataView.autocompleteApplink ?: ""
-        totalData = productDataView.totalData
+        paginationImpl.totalData = productDataView.totalData
         categoryIdL2 = productDataView.categoryIdL2
         relatedKeyword = searchProductModel.searchProduct.data.related.relatedKeyword
         suggestionKeyword = searchProductModel.searchProduct.data.suggestion.suggestion
@@ -842,7 +829,6 @@ class ProductListPresenter @Inject constructor(
             navSource,
             pageTitle,
             pageId,
-            startFrom.toString()
         )
 
         getLocalSearchRecommendationUseCase.get().execute(
@@ -872,7 +858,7 @@ class ProductListPresenter @Inject constructor(
         val productDataView = createProductViewModelMapperLocalSearchRecommendation(searchProductModel)
 
         val visitableList = mutableListOf<Visitable<*>>()
-        if (startFrom == 0) {
+        if (isFirstPage()) {
             visitableList.add(SearchProductTitleDataView(pageTitle, isRecommendationTitle = true))
             productList.clear()
         }
@@ -881,7 +867,7 @@ class ProductListPresenter @Inject constructor(
         visitableList.addAll(productDataView.productList)
 
         incrementStart()
-        totalData = searchProductModel.searchProduct.header.totalData
+        paginationImpl.totalData = searchProductModel.searchProduct.header.totalData
 
         view.removeLoading()
         view.addLocalSearchRecommendation(visitableList)
@@ -890,7 +876,7 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun createProductViewModelMapperLocalSearchRecommendation(searchProductModel: SearchProductModel): ProductDataView {
-        if (startFrom == 0) view.clearLastProductItemPositionFromCache()
+        if (isFirstPage()) view.clearLastProductItemPositionFromCache()
 
         return createProductDataView(searchProductModel, pageTitle)
     }
@@ -1429,8 +1415,6 @@ class ProductListPresenter @Inject constructor(
             addBroadMatchToVisitableList(list)
         }
     }
-
-    private fun isLastPage(): Boolean = !hasNextPage()
 
     private fun processBroadMatchAtTop(list: MutableList<Visitable<*>>) {
         val broadMatchVisitableList = mutableListOf<Visitable<*>>()
@@ -2015,7 +1999,6 @@ class ProductListPresenter @Inject constructor(
 
         val getProductCountRequestParams = requestParamsGenerator.createGetProductCountRequestParams(
             mapParameter,
-            startFrom,
             chooseAddressDelegate.getChooseAddressParams(),
         )
         val getProductCountSubscriber = createGetProductCountSubscriber()
@@ -2349,7 +2332,6 @@ class ProductListPresenter @Inject constructor(
         val requestParams = requestParamsGenerator.createGetInspirationCarouselChipProductsRequestParams(
             clickedInspirationCarouselOption,
             searchParameter,
-            startFrom,
             chooseAddressDelegate.getChooseAddressParams(),
         )
 
@@ -2430,7 +2412,6 @@ class ProductListPresenter @Inject constructor(
     ) {
         val searchParams = requestParamsGenerator.createInitializeSearchParam(
             searchParameter,
-            startFrom,
             chooseAddressDelegate.getChooseAddressParams(),
         )
         val saveLastFilterInput = SaveLastFilterInput(
