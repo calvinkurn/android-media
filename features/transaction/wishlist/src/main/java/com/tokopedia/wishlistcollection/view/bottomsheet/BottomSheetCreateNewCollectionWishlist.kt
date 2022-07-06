@@ -30,9 +30,9 @@ import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionNames
 import com.tokopedia.wishlistcollection.di.CreateWishlistCollectionComponent
 import com.tokopedia.wishlistcollection.di.CreateWishlistCollectionModule
 import com.tokopedia.wishlistcollection.di.DaggerCreateWishlistCollectionComponent
+import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionHostBottomSheetFragment
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OK
 import com.tokopedia.wishlistcollection.view.viewmodel.BottomSheetCreateNewCollectionViewModel
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.PRODUCT_IDs
 import javax.inject.Inject
 
@@ -41,6 +41,7 @@ class BottomSheetCreateNewCollectionWishlist: BottomSheetUnify(), HasComponent<C
     private val userSession: UserSessionInterface by lazy { UserSession(activity) }
     private var listCollections: List<GetWishlistCollectionNamesResponse.Data.GetWishlistCollectionNames.DataItem> = emptyList()
     private var newCollectionName = ""
+    private var actionListener: ActionListener? = null
     private val handler = Handler(Looper.getMainLooper())
     private val checkNameRunnable = Runnable {
         checkIsCollectionNameExists(newCollectionName)
@@ -67,6 +68,15 @@ class BottomSheetCreateNewCollectionWishlist: BottomSheetUnify(), HasComponent<C
                 arguments = bundle
             }
         }
+    }
+
+    interface ActionListener {
+        fun onSuccessSaveToNewCollection(message: String)
+        fun onFailedSaveToNewCollection(errorMessage: String?)
+    }
+
+    fun setListener(fragment: WishlistCollectionHostBottomSheetFragment) {
+        this.actionListener = fragment
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -217,17 +227,19 @@ class BottomSheetCreateNewCollectionWishlist: BottomSheetUnify(), HasComponent<C
             when (result) {
                 is Success -> {
                     if (result.data.status == OK) {
-                        showToaster(result.data.dataItem.message, "", Toaster.TYPE_NORMAL)
+                        actionListener?.onSuccessSaveToNewCollection(result.data.dataItem.message)
                         dismiss()
                     } else {
                         val errorMessage = result.data.errorMessage.first().ifEmpty { context?.getString(
                             R.string.wishlist_common_error_msg) }
-                        errorMessage?.let { showToaster(it, "", Toaster.TYPE_ERROR) }
+                        actionListener?.onFailedSaveToNewCollection(errorMessage)
+                        dismiss()
                     }
                 }
                 is Fail -> {
                     val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
-                    showToaster(errorMessage, "", Toaster.TYPE_ERROR)
+                    actionListener?.onFailedSaveToNewCollection(errorMessage)
+                    dismiss()
                 }
             }
         }

@@ -18,7 +18,8 @@ import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetCreateNewCol
 
 class WishlistCollectionHostBottomSheetFragment: Fragment(),
     BottomSheetCollectionWishlistAdapter.ActionListener,
-    BottomSheetAddCollectionWishlist.ActionListener {
+    BottomSheetAddCollectionWishlist.ActionListener,
+    BottomSheetCreateNewCollectionWishlist.ActionListener{
 
     private var productId = ""
     private var src = ""
@@ -65,6 +66,7 @@ class WishlistCollectionHostBottomSheetFragment: Fragment(),
 
     private fun showBottomSheetCreateNewCollection(fragmentManager: FragmentManager) {
         val bottomSheetCreateCollection = BottomSheetCreateNewCollectionWishlist.newInstance(productId)
+        bottomSheetCreateCollection.setListener(this@WishlistCollectionHostBottomSheetFragment)
         if (bottomSheetCreateCollection.isAdded || fragmentManager.isStateSaved) return
         bottomSheetCreateCollection.show(fragmentManager)
     }
@@ -87,6 +89,25 @@ class WishlistCollectionHostBottomSheetFragment: Fragment(),
 
     override fun onFailedSaveItemToCollection(errorMessage: String) {
         val intent = Intent()
+        intent.putExtra(BOOLEAN_EXTRA_SUCCESS, false)
+        intent.putExtra(STRING_EXTRA_MESSAGE_TOASTER, errorMessage)
+        activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.finish()
+    }
+
+    override fun onSuccessSaveToNewCollection(message: String) {
+        bottomSheetCollection.dismiss()
+        val intent = Intent()
+        intent.putExtra(BOOLEAN_EXTRA_SUCCESS, true)
+        intent.putExtra(STRING_EXTRA_MESSAGE_TOASTER, message)
+        activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.finish()
+    }
+
+    override fun onFailedSaveToNewCollection(errorMessage: String?) {
+        bottomSheetCollection.dismiss()
+        val intent = Intent()
+        intent.putExtra(BOOLEAN_EXTRA_SUCCESS, false)
         intent.putExtra(STRING_EXTRA_MESSAGE_TOASTER, errorMessage)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
