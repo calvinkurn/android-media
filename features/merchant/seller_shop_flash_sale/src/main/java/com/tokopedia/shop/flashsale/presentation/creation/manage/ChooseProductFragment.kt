@@ -34,7 +34,6 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
 
     companion object {
         const val SWIPEPROGRESS_MARGIN = 120
-        const val GUIDELINE_MARGIN_MAX = 64
         const val GUIDELINE_MARGIN_MIN = 0
         const val GUIDELINE_ANIMATION_DELAY = 500L
 
@@ -51,7 +50,8 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
     @Inject
     lateinit var viewModel: ChooseProductViewModel
     private var binding by autoClearedNullable<SsfsFragmentChooseProductBinding>()
-    private var guidelineMargin = GUIDELINE_MARGIN_MAX
+    private var guidelineMargin = GUIDELINE_MARGIN_MIN
+    private var guidelineMarginMax = GUIDELINE_MARGIN_MIN
     private val campaignId by lazy {
         arguments?.getString(ChooseProductActivity.BUNDLE_KEY_CAMPAIGN_ID).orEmpty()
     }
@@ -85,6 +85,8 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
 
         setupObservers()
         setupSearchBar()
+        guidelineMarginMax = binding?.guidelineFooter?.setGuidelineEnd().orZero()
+        guidelineMargin = guidelineMarginMax
         viewModel.getShopInfo()
     }
 
@@ -137,7 +139,7 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
         if (adapter?.itemCount.orZero() < getPerPage()) return
         guidelineMargin -= yScrollAmount
         if (guidelineMargin < GUIDELINE_MARGIN_MIN) guidelineMargin = GUIDELINE_MARGIN_MIN
-        if (guidelineMargin > GUIDELINE_MARGIN_MAX) guidelineMargin = GUIDELINE_MARGIN_MAX
+        if (guidelineMargin > guidelineMarginMax) guidelineMargin = guidelineMarginMax
         binding?.guidelineFooter?.setGuidelineEnd(guidelineMargin)
         binding?.guidelineHeader?.setGuidelineBegin(guidelineMargin)
         animateScrollDebounce.invoke(yScrollAmount)
@@ -152,6 +154,7 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
         setupErrorsObserver()
         setupSelectionItemsObserver()
         setupIsSelectionValidObserver()
+        setupIsSelectionHasVariantObserver()
         setupIsAddProductSuccessObserver()
         setupShopInfoObserver()
     }
@@ -180,26 +183,37 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
     }
 
     private fun setupSelectionItemsObserver() {
-        viewModel.selectedItems.observe(viewLifecycleOwner) {
+        viewModel.selectedItems.observe(viewLifecycleOwner) { selectedItems ->
+            val selectedCount = selectedItems.filter { !it.isProductPreviouslySubmitted }.size
             binding?.tvSelectedProduct?.text =
-                getString(R.string.chooseproduct_selected_product_suffix, it.size)
-            setupButtonSave(it)
+                getString(R.string.chooseproduct_selected_product_suffix, selectedCount)
+            setupButtonSave(selectedItems)
         }
     }
 
     private fun setupIsSelectionValidObserver() {
         viewModel.isSelectionValid.observe(viewLifecycleOwner) {
             binding?.btnSave?.isEnabled = it
+            adapter?.run {
+                if (getSelectedProduct().size.isMoreThanZero()) {
+                    setInputEnabled(it)
+                } else {
+                    // always enabled when there is no selected products
+                    setInputEnabled(true)
+                }
+            }
+        }
+    }
+
+    private fun setupIsSelectionHasVariantObserver() {
+        viewModel.isSelectionHasVariant.observe(viewLifecycleOwner) {
+            binding?.tvSelectedProductVariant?.isVisible = it
         }
     }
 
     private fun setupShopInfoObserver() {
         viewModel.shopStatus.observe(viewLifecycleOwner) {
-            if (it == ShopStatus.CLOSED) {
-                ShopClosedDialog(primaryCTAAction = {
-                    RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_SETTINGS_OPERATIONAL_HOURS)
-                }).show(childFragmentManager)
-            }
+            if (it == ShopStatus.CLOSED) showShopClosedDialog()
         }
     }
 
@@ -227,15 +241,27 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
         }
     }
 
+    private fun showShopClosedDialog() {
+        val dialog = ShopClosedDialog(primaryCTAAction = ::goToShopSettings)
+        dialog.setOnDismissListener {
+            activity?.finish()
+        }
+        dialog.show(childFragmentManager)
+    }
+
+    private fun goToShopSettings() {
+        RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_SETTINGS_OPERATIONAL_HOURS)
+    }
+
     private fun animateScroll(scrollingAmount: Int) {
         if (scrollingAmount.isMoreThanZero()) {
             binding?.guidelineHeader?.animateSlide(guidelineMargin, GUIDELINE_MARGIN_MIN, true)
             binding?.guidelineFooter?.animateSlide(guidelineMargin, GUIDELINE_MARGIN_MIN, false)
             guidelineMargin = GUIDELINE_MARGIN_MIN
         } else if (scrollingAmount.isLessThanZero()){
-            binding?.guidelineHeader?.animateSlide(guidelineMargin, GUIDELINE_MARGIN_MAX, true)
-            binding?.guidelineFooter?.animateSlide(guidelineMargin, GUIDELINE_MARGIN_MAX, false)
-            guidelineMargin = GUIDELINE_MARGIN_MAX
+            binding?.guidelineHeader?.animateSlide(guidelineMargin, guidelineMarginMax, true)
+            binding?.guidelineFooter?.animateSlide(guidelineMargin, guidelineMarginMax, false)
+            guidelineMargin = guidelineMarginMax
         }
     }
 }

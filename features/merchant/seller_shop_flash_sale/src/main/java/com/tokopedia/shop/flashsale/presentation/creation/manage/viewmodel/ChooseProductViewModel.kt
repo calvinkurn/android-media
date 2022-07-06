@@ -53,10 +53,18 @@ class ChooseProductViewModel @Inject constructor(
         validateSelection(it)
     }
 
+    val isSelectionHasVariant = Transformations.map(selectedItems) {
+        hasVariant(it)
+    }
+
     private var searchKeyword: String = ""
 
     private fun validateSelection(selectedItem: List<SelectedProductModel>): Boolean {
         return selectedItem.size.isMoreThanZero() && selectedItem.size <= PRODUCT_SELECTION_MAX
+    }
+
+    private fun hasVariant(selectedItem: List<SelectedProductModel>): Boolean {
+        return selectedItem.any { it.parentProductId != null }
     }
 
     fun isSearching(): Boolean {
@@ -97,10 +105,11 @@ class ChooseProductViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
+                val chosenProducts = ReserveProductMapper.mapToProductDataList(selectedItems.value)
                 val result = doSellerCampaignProductSubmissionUseCase.execute(
                     campaignId,
                     ProductionSubmissionAction.RESERVE,
-                    ReserveProductMapper.mapToProductDataList(selectedItems.value)
+                    chosenProducts
                 )
                 _isAddProductSuccess.postValue(result.isSuccess)
             },

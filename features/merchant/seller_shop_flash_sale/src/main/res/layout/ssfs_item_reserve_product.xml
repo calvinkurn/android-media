@@ -70,6 +70,19 @@
         app:typographyWeight="bold"
         tool:text="Rp75.000.000 " />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvDisabledReason"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/Unify_RN500"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imgProduct"
+        app:layout_constraintTop_toBottomOf="@+id/tvProductPrice"
+        app:typographyType="small"
+        tool:text="Produk tidak bisa dipilih karena terdaftar di campaign lain" />
+
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/iconProduct"
         android:layout_width="14dp"
@@ -88,7 +101,7 @@
         android:layout_marginTop="4dp"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintStart_toEndOf="@+id/iconProduct"
-        app:layout_constraintTop_toBottomOf="@+id/tvProductPrice"
+        app:layout_constraintTop_toBottomOf="@+id/tvDisabledReason"
         app:typographyType="paragraph_3"
         tool:text="Total stok: 999" />
 

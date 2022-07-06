@@ -373,7 +373,7 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
             tfMaxSold.isInputError = false
             tfCampaignPrice.textField?.setMessage("")
             tfStock.setMessage(getString(R.string.editproduct_stock_total_text, productInput.originalStock))
-            tfMaxSold.setMessage(getString(R.string.edit_product_max_transaction_text))
+            tfMaxSold.setMessage(getString(R.string.editproduct_max_transaction_text))
         }
     }
 
