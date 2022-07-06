@@ -45,7 +45,7 @@ object ReserveProductMapper {
     ) = productList.map { mapFromProduct(it) }
 
     fun mapToProductDataList(reserveProductList: List<SelectedProductModel>?) = reserveProductList
-        ?.filter { it.parentProductId == null && !it.isPreselected } // filter only parent product
+        ?.filter { it.parentProductId == null && !it.isProductPreviouslySubmitted } // filter only parent product and not submitted before
         ?.map { mapToProductData(it) }
         .orEmpty()
 

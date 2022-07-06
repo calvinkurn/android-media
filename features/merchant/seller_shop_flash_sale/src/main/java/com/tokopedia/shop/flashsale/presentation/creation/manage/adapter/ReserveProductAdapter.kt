@@ -41,7 +41,10 @@ class ReserveProductAdapter(
         }
     }
 
-    private fun addToSelectedProduct(selectedItem: ReserveProductModel, isPreselected: Boolean) {
+    private fun addToSelectedProduct(
+        selectedItem: ReserveProductModel,
+        isProductPreviouslySubmitted: Boolean
+    ) {
         val isExist = selectedProduct.any { it.productId == selectedItem.productId }
 
         if (isExist) return // just add unique productId
@@ -50,12 +53,12 @@ class ReserveProductAdapter(
                 SelectedProductModel(
                     productId = it,
                     parentProductId = selectedItem.productId,
-                    isPreselected = isPreselected)
+                    isProductPreviouslySubmitted = isProductPreviouslySubmitted)
             )
         }
 
         selectedProduct.add(
-            SelectedProductModel(selectedItem.productId, parentProductId = null, isPreselected)
+            SelectedProductModel(selectedItem.productId, parentProductId = null, isProductPreviouslySubmitted)
         )
     }
 
