@@ -49,6 +49,8 @@ abstract class HotelBaseActivity : BaseSimpleActivity(), TravelMenuBottomSheet.T
 
     override fun getParentViewResourceID(): Int = R.id.hotel_base_fragment_view
 
+    override fun getLayoutRes(): Int = R.layout.activity_base_hotel
+
     private fun initInjector() {
         getHotelComponent().inject(this)
     }
