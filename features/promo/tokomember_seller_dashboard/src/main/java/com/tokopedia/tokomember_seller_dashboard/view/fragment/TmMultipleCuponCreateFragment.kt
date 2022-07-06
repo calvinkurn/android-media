@@ -1085,24 +1085,33 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         var selectedHour = ""
         var selectedMinute = ""
         context?.let { ctx ->
-            val minTime =
-                GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {
-                    set(Calendar.HOUR_OF_DAY, 8)
-                    set(Calendar.MINUTE, 30)
-                }
-            val defaultTime =
+            val currentDate =
                 GregorianCalendar(LocaleUtils.getCurrentLocale(ctx))
-            val maxTime =
-                GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {
-                    set(Calendar.HOUR_OF_DAY, 23)
-                    set(Calendar.MINUTE, 30)
+            val maxDate =
+                GregorianCalendar(LocaleUtils.getCurrentLocale(ctx))
+
+            when(programActionType) {
+                ProgramActionType.CREATE -> {
+                    val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
+                    currentDate.time = sdf.parse(manualStartTimeProgram + "00") ?: Date()
+                    maxDate.time = sdf.parse(manualEndTimeProgram + "00")?: Date()
                 }
+                ProgramActionType.CREATE_BUAT ->{
+                    val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
+                    currentDate.time = sdf.parse(manualStartTimeProgram + "00") ?: Date()
+                    maxDate.time = sdf.parse(manualEndTimeProgram + "00")?: Date()
+                }
+                ProgramActionType.EXTEND -> {
+                    val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
+                    currentDate.time = sdf.parse(manualStartTimeProgram + "00") ?: Date()
+                    maxDate.time = sdf.parse(manualEndTimeProgram + "00")?: Date()                }
+            }
 
             val timerPickerUnify = DateTimePickerUnify(
                 context = ctx,
-                minDate = minTime,
-                defaultDate = defaultTime,
-                maxDate = maxTime,
+                minDate = currentDate,
+                defaultDate = currentDate,
+                maxDate = maxDate,
                 type = DateTimePickerUnify.TYPE_TIMEPICKER
             ).apply {
                 setTitle(title)
