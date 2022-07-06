@@ -32,7 +32,6 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -111,13 +110,10 @@ class BalanceAdapter(
         private val walletAnalytics: CommonWalletAnalytics = CommonWalletAnalytics()
         private var listener: HomeCategoryListener? = null
         private var isOvoAvailable: Boolean = false
-        private var home_container_balance: ConstraintLayout? = itemView.findViewById(R.id.home_container_balance)
-        private var home_iv_logo_shimmering: LoaderUnify? = itemView.findViewById(R.id.home_iv_logo_shimmering)
-        private var home_progress_bar_balance_layout: ConstraintLayout? = itemView.findViewById(R.id.home_progress_bar_balance_layout)
-        private var home_iv_logo_balance: ImageUnify? = itemView.findViewById<ImageUnify>(R.id.home_iv_logo_balance)
-        private var home_tv_balance: TextView = itemView.findViewById(R.id.home_tv_balance)
-        private var home_container_action_balance: ConstraintLayout? = itemView.findViewById(R.id.home_container_action_balance)
-        private var home_tv_reserve_balance: Typography? = itemView.findViewById(R.id.home_tv_reserve_balance)
+        private var homeContainerBalance: ConstraintLayout? = itemView.findViewById(R.id.home_container_balance)
+        private var homeImageLogoBalance: ImageUnify? = itemView.findViewById(R.id.home_iv_logo_balance)
+        private var homeTvBalance: TextView = itemView.findViewById(R.id.home_tv_balance)
+        private var homeTvReserveBalance: Typography? = itemView.findViewById(R.id.home_tv_reserve_balance)
         private var divider: View? = itemView.findViewById(R.id.divider_balance)
 
         fun bind(drawerItem: BalanceDrawerItemModel?,
@@ -136,14 +132,6 @@ class BalanceAdapter(
             /**
              * Initial state
              */
-            if (!disableAnimation) {
-                home_iv_logo_shimmering?.show()
-                home_progress_bar_balance_layout?.show()
-            } else {
-                home_iv_logo_shimmering?.gone()
-                home_progress_bar_balance_layout?.gone()
-            }
-
             if (adapterPosition == FIRST_POSITION) {
                 divider?.invisible()
             } else {
@@ -154,36 +142,28 @@ class BalanceAdapter(
 
             when (element?.state) {
                 BalanceDrawerItemModel.STATE_LOADING -> {
-                    home_iv_logo_balance?.invisible()
+                    homeImageLogoBalance?.invisible()
+                    homeTvBalance.invisible()
 
-                    home_tv_balance?.invisible()
-
-                    if (!disableAnimation) {
-                        home_iv_logo_shimmering?.show()
-                        home_progress_bar_balance_layout?.show()
-                    }
                 }
                 BalanceDrawerItemModel.STATE_SUCCESS -> {
-                    home_progress_bar_balance_layout?.gone()
+                    homeImageLogoBalance?.show()
 
-                    home_iv_logo_balance?.show()
-                    home_container_action_balance?.show()
-
-                    home_tv_balance.show()
+                    homeTvBalance.show()
 
                     val balanceText = element.balanceTitleTextAttribute?.text ?: ""
 
-                    home_tv_balance.text = balanceText
+                    homeTvBalance.text = balanceText
 
                     val reserveBalance = element.balanceSubTitleTextAttribute?.text ?: ""
                     if (reserveBalance.isNotEmpty()) {
-                        home_tv_reserve_balance?.visible()
-                        home_tv_reserve_balance?.text = reserveBalance
+                        homeTvReserveBalance?.visible()
+                        homeTvReserveBalance?.text = reserveBalance
                     } else {
-                        home_tv_reserve_balance?.gone()
+                        homeTvReserveBalance?.gone()
                     }
 
-                    home_container_balance?.handleItemCLickType(
+                    homeContainerBalance?.handleItemCLickType(
                             element = element,
                             tokopointsAction = {
                                 //handle click for type tokopoints
@@ -273,9 +253,8 @@ class BalanceAdapter(
 
                 }
                 BalanceDrawerItemModel.STATE_ERROR -> {
-                    home_progress_bar_balance_layout?.gone()
-                    home_container_action_balance?.show()
-                    home_container_balance?.handleItemCLickType(
+                    homeImageLogoBalance?.visible()
+                    homeContainerBalance?.handleItemCLickType(
                             element = element,
                             ovoWalletAction = {listener?.onRetryWalletApp()},
                             rewardsAction = {listener?.onRetryMembership()},
@@ -293,23 +272,16 @@ class BalanceAdapter(
                         element.drawerItemType == TYPE_WALLET_WITH_TOPUP ||
                         element.drawerItemType == TYPE_WALLET_OTHER
                     ) {
-                        home_iv_logo_balance?.visible()
-                        home_iv_logo_shimmering?.invisible()
-                        home_iv_logo_balance?.setImageDrawable(itemView.context.getDrawable(it))
+                        homeImageLogoBalance?.visible()
+                        homeImageLogoBalance?.setImageDrawable(itemView.context.getDrawable(it))
                     } else {
-                        home_iv_logo_balance?.invisible()
-                        if (!disableAnimation) {
-                            home_iv_logo_shimmering?.visible()
-                        } else {
-                            home_iv_logo_shimmering?.gone()
-                        }
+                        homeImageLogoBalance?.invisible()
                     }
                 }
                 element?.iconImageUrl?.let {
-                    home_iv_logo_balance?.visible()
-                    home_iv_logo_shimmering?.invisible()
+                    homeImageLogoBalance?.visible()
 
-                    if (it.isNotEmpty()) home_iv_logo_balance?.setImageUrl(it)
+                    if (it.isNotEmpty()) homeImageLogoBalance?.setImageUrl(it)
                 }
             }
         }
