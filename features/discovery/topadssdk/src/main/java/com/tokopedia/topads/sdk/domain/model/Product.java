@@ -2,16 +2,13 @@ package com.tokopedia.topads.sdk.domain.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
+import java.util.ArrayList;
+import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by errysuprayogi on 3/27/17.
@@ -50,6 +47,7 @@ public class Product implements Parcelable {
     private static final String KEY_PRODUCT_ITEM_SOLD_PAYMENT_VERIFIED = "product_item_sold_payment_verified";
     private static final String KEY_PRODUCT_MINIMUM_ORDER = "product_minimum_order";
     private static final String KEY_HEADLINE_PRODUCT_RATING_AVERAGE = "rating_average";
+    private static final String KEY_CUSTOM_VIDEO_URL = "customvideo_url";
 
     @SerializedName(KEY_ID)
     @Expose
@@ -175,6 +173,10 @@ public class Product implements Parcelable {
     @Expose
     private String headlineProductRatingAverage = "";
 
+    @SerializedName(KEY_CUSTOM_VIDEO_URL)
+    @Expose
+    private String customVideoUrl = "";
+
     private boolean topAds = false;
 
     private String recommendationType = "";
@@ -294,6 +296,9 @@ public class Product implements Parcelable {
         }
         if(!object.isNull(KEY_HEADLINE_PRODUCT_RATING_AVERAGE)) {
             setHeadlineProductRatingAverage(object.getString(KEY_HEADLINE_PRODUCT_RATING_AVERAGE));
+        }
+        if(!object.isNull(KEY_CUSTOM_VIDEO_URL)){
+            setCustomVideoUrl(object.getString(KEY_CUSTOM_VIDEO_URL));
         }
     }
 
@@ -682,4 +687,13 @@ public class Product implements Parcelable {
     public void setHasAddToCartButton(boolean hasAddToCartButton) {
         this.hasAddToCartButton = hasAddToCartButton;
     }
+
+    public void setCustomVideoUrl(String customVideoUrl) {
+        this.customVideoUrl = customVideoUrl;
+    }
+
+    public String getCustomVideoUrl() {
+        return this.customVideoUrl;
+    }
+
 }

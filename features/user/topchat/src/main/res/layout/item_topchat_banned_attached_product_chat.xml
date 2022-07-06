@@ -30,7 +30,7 @@
             android:maxWidth="@dimen/chatcommon_270dp"
             android:padding="@dimen/dp_topchat_12">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/product_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -39,17 +39,16 @@
                 android:ellipsize="end"
                 android:fontFamily="sans-serif-medium"
                 android:includeFontPadding="false"
-                android:lineSpacingExtra="4sp"
                 android:maxWidth="@dimen/chatcommon_172dp"
                 android:maxLines="1"
                 android:textColor="@color/Unify_N700_96"
-                android:textSize="14sp"
-                android:textStyle="bold"
+                app:typographyType="display_2"
+                app:typographyWeight="bold"
                 app:layout_constraintStart_toEndOf="@+id/product_image"
                 app:layout_constraintTop_toTopOf="@+id/product_image"
                 tools:text="Nama Produk YANG PANJAAAANG ASLKDAJLSKDJALSKJD" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/product_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -59,8 +58,8 @@
                 android:fontFamily="sans-serif-medium"
                 android:includeFontPadding="false"
                 android:textColor="@color/Unify_Y500"
-                android:textSize="14sp"
-                android:textStyle="bold"
+                app:typographyType="display_2"
+                app:typographyWeight="bold"
                 app:layout_constraintStart_toEndOf="@+id/product_image"
                 app:layout_constraintTop_toBottomOf="@+id/product_name"
                 tools:text="Rp 2.099.000" />
@@ -89,7 +88,8 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_loading_toped"
-                tools:srcCompat="@tools:sample/backgrounds/scenic" />
+                tools:srcCompat="@tools:sample/backgrounds/scenic"
+                android:contentDescription="product_image" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </RelativeLayout>
 
