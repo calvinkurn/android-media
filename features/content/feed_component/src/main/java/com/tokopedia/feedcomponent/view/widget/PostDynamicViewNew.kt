@@ -1488,6 +1488,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     internal fun onResume() {
         if (shouldResumeVideoPLayerOnBack)
         videoPlayer?.resume()
+        adapter.focusItemAt(pageControl.indicatorCurrentPosition)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
