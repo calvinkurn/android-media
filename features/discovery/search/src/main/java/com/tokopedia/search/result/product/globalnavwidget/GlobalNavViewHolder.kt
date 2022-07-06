@@ -38,6 +38,8 @@ class GlobalNavViewHolder(
             clickSeeAllUrl = element.seeAllUrl,
             itemList = element.itemList.map(::convertGlobalNavWidgetItemModel),
             info = element.info,
+            componentId = element.componentId,
+            trackingOption = element.trackingOption,
         )
     }
 
@@ -53,7 +55,8 @@ class GlobalNavViewHolder(
             strikethrough = item.strikethrough,
             backgroundUrl = item.backgroundUrl,
             logoUrl = item.logoUrl,
-            position = item.position
+            position = item.position,
+            componentId = item.componentId,
         )
     }
 
@@ -86,7 +89,8 @@ class GlobalNavViewHolder(
             globalNavWidgetModelItem.strikethrough,
             globalNavWidgetModelItem.backgroundUrl,
             globalNavWidgetModelItem.logoUrl,
-            globalNavWidgetModelItem.position
+            globalNavWidgetModelItem.position,
+            globalNavWidgetModelItem.componentId,
         )
     }
 
