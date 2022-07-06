@@ -1,9 +1,7 @@
 package com.tokopedia.shop.home.util.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
@@ -827,7 +825,7 @@ object ShopPageHomeMapper {
                 minimumOrder = it.minimumOrder
                 this.stock = it.stock
                 this.isEnableDirectPurchase = isEnableDirectPurchase
-                this.isVariant = it.listChildId.isNotEmpty()
+                this.isVariant = !it.parentId.toLongOrZero().isZero()
                 this.listChildId = it.listChildId
                 this.parentId = it.parentId
             }
