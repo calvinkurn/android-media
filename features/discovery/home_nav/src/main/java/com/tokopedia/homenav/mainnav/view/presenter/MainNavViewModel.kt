@@ -76,6 +76,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusParam
 import dagger.Lazy
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -151,6 +152,8 @@ class MainNavViewModel @Inject constructor(
     private lateinit var allCategories : HomeNavExpandableDataModel
 
     private var isMePageUsingRollenceVariant : Boolean = false
+
+    private var tokopediaPlusParam : TokopediaPlusParam? = null
 
     // ============================================================================================
     // ================================ Live Data Controller ======================================
@@ -242,6 +245,25 @@ class MainNavViewModel @Inject constructor(
         isMePageUsingRollenceVariant = value
         _mainNavListVisitable = setInitialState()
         _mainNavLiveData.postValue(MainNavigationDataModel(_mainNavListVisitable))
+    }
+
+    fun setTokopediaPlusParam(tokopediaPlusParam: TokopediaPlusParam){
+        this.tokopediaPlusParam = tokopediaPlusParam
+        getAccountHeader()?.let {
+            val accountHeaderDataModel = it.first.apply {
+                setTokopediaPlus(tokopediaPlusParam)
+            }
+            val index = it.second
+            updateWidget(accountHeaderDataModel, index)
+        }
+    }
+
+    private fun getAccountHeader() : Pair<AccountHeaderDataModel, Int>? {
+        val accountHeader = _mainNavListVisitable.find { it is AccountHeaderDataModel } as AccountHeaderDataModel?
+        return accountHeader?.let {
+            val index = _mainNavListVisitable.indexOf(accountHeader)
+            Pair(it, index)
+        }
     }
 
     fun getMainNavData(useCacheData: Boolean) {
@@ -413,7 +435,8 @@ class MainNavViewModel @Inject constructor(
                     ),
                     profileAffiliateDataModel = ProfileAffiliateDataModel(
                         isGetAffiliateLoading = true
-                    )
+                    ),
+                    tokopediaPlusParam = tokopediaPlusParam
                 )
                 updateWidget(accountHeaderModel, INDEX_MODEL_ACCOUNT)
             }
@@ -429,6 +452,7 @@ class MainNavViewModel @Inject constructor(
                 val adminData = getAdminData()
 
                 accountHeaderModel.apply {
+                    setTokopediaPlus(this@MainNavViewModel.tokopediaPlusParam)
                     adminData.let { (_, canGoToSellerAccount, _) ->
                         val adminRole = null
                         setAdminData(adminRole, canGoToSellerAccount)
@@ -446,7 +470,10 @@ class MainNavViewModel @Inject constructor(
                 accountModel?.let { account ->
                     if (account.state == NAV_PROFILE_STATE_LOADING) {
                         updateWidget(
-                            account.copy(state = NAV_PROFILE_STATE_FAILED),
+                            account.copy(
+                                state = NAV_PROFILE_STATE_FAILED,
+                                tokopediaPlusParam = tokopediaPlusParam
+                            ),
                             INDEX_MODEL_ACCOUNT
                         )
                     }
