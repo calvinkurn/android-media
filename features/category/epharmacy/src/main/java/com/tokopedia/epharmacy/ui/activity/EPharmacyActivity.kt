@@ -11,8 +11,9 @@ import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.di.DaggerEPharmacyComponent
 import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.ui.fragment.UploadPrescriptionFragment
+import com.tokopedia.epharmacy.utils.DEFAULT_ZERO_VALUE
 import com.tokopedia.epharmacy.utils.EXTRA_CHECKOUT_ID
-import com.tokopedia.epharmacy.utils.EXTRA_ORDER_ID
+import com.tokopedia.epharmacy.utils.EXTRA_ORDER_ID_LONG
 import com.tokopedia.epharmacy.utils.MEDIA_PICKER_REQUEST_CODE
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -24,7 +25,7 @@ class EPharmacyActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent>
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private var orderId = ""
+    private var orderId = DEFAULT_ZERO_VALUE
     private var checkoutId = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,11 +39,11 @@ class EPharmacyActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent>
     override fun getParentViewResourceID(): Int = R.id.e_pharmacy_parent_view
 
     override fun getNewFragment(): Fragment {
-        orderId = if (intent.hasExtra(EXTRA_ORDER_ID))
-            intent.getStringExtra(EXTRA_ORDER_ID) ?: ""
+        orderId = if (intent.hasExtra(EXTRA_ORDER_ID_LONG))
+            intent.getLongExtra(EXTRA_ORDER_ID_LONG, DEFAULT_ZERO_VALUE)
         else {
             val pathSegments = Uri.parse(intent.data?.path ?: "").pathSegments
-            if (pathSegments.size > 0) pathSegments[0]?.split("-")?.lastOrNull()?.trim() ?: "" else ""
+            if (pathSegments.size > 0) pathSegments[0]?.split("-")?.lastOrNull()?.trim()?.toLong() ?: DEFAULT_ZERO_VALUE else DEFAULT_ZERO_VALUE
         }
 
         checkoutId = if(intent.hasExtra(EXTRA_CHECKOUT_ID)){
@@ -50,7 +51,7 @@ class EPharmacyActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent>
         }else ""
 
         return UploadPrescriptionFragment.newInstance(Bundle().apply {
-            putString(EXTRA_ORDER_ID,orderId)
+            putLong(EXTRA_ORDER_ID_LONG,orderId)
             putString(EXTRA_CHECKOUT_ID,checkoutId)
         })
     }

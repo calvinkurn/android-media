@@ -4,37 +4,48 @@ package com.tokopedia.epharmacy.network.response
 import com.google.gson.annotations.SerializedName
 
 data class EPharmacyDataResponse(
-    @SerializedName("epharmacy_button")
-    val epharmacyButton: EpharmacyButton?,
-    @SerializedName("epharmacy_ticker")
-    val epharmacyTicker: EpharmacyTicker?,
-    @SerializedName("invoice_ref_num")
-    val invoiceRefNum: String?,
-    @SerializedName("order_pdf")
-    val orderPdf: String?,
-    @SerializedName("prescription_status")
-    val prescriptionStatus: String?,
-    @SerializedName("payment_date")
-    val paymentDate: String?,
-    @SerializedName(value = "prescription_images", alternate = ["prescriptions"])
-    val prescriptionImages: ArrayList<PrescriptionImage?>?,
-    @SerializedName(value = "products", alternate = ["productsInfo"])
-    val ePharmacyProducts: List<EPharmacyProduct?>?,
-    @SerializedName("shop_id")
-    val shopId: Long?,
-    @SerializedName("shop_type")
-    val shopType: String?,
-    @SerializedName("shop_name")
-    val shopName: String?,
-    @SerializedName("shop_location")
-    val shopLocation: String?,
-    @SerializedName("is_reupload_enabled")
-    val isReUploadEnabled: Boolean = false,
-    @SerializedName("error_msg")
-    val errorMessage: String?,
-    @SerializedName("checkoutId")
-    val checkoutId: String?,
-)
+    @SerializedName("getEpharmacyOrderDetails")
+    val detailData : EPharmacyOrderDetailData?
+){
+    data class EPharmacyOrderDetailData(
+        @SerializedName("form")
+        val formData: EPharmacyDataForm?
+    ){
+        data class EPharmacyDataForm(
+            @SerializedName("epharmacy_button")
+            val epharmacyButton: EpharmacyButton?,
+            @SerializedName("epharmacy_ticker")
+            val epharmacyTicker: EpharmacyTicker?,
+            @SerializedName("invoice_ref_num")
+            val invoiceRefNum: String?,
+            @SerializedName("order_pdf")
+            val orderPdf: String?,
+            @SerializedName("prescription_status")
+            val prescriptionStatus: String?,
+            @SerializedName("payment_date")
+            val paymentDate: String?,
+            @SerializedName(value = "prescription_images", alternate = ["prescriptions"])
+            val prescriptionImages: ArrayList<PrescriptionImage?>?,
+            @SerializedName(value = "products", alternate = ["productsInfo"])
+            val ePharmacyProducts: List<EPharmacyProduct?>?,
+            @SerializedName("shop_id")
+            val shopId: Long?,
+            @SerializedName("shop_type")
+            val shopType: String?,
+            @SerializedName("shop_name")
+            val shopName: String?,
+            @SerializedName("shop_location")
+            val shopLocation: String?,
+            @SerializedName("is_reupload_enabled")
+            val isReUploadEnabled: Boolean = false,
+            @SerializedName("error_msg")
+            val errorMessage: String?,
+            @SerializedName("checkoutId")
+            val checkoutId: String?,
+        )
+    }
+}
+
 
 data class EpharmacyButton(
     @SerializedName("key")

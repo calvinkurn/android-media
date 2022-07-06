@@ -65,11 +65,11 @@ class UploadPrescriptionViewModelTest {
         )
 
         coEvery {
-            getEPharmacyOrderDetailUseCase.getEPharmacyOrderDetail(any(), any(), "")
+            getEPharmacyOrderDetailUseCase.getEPharmacyOrderDetail(any(), any(), 1)
         } coAnswers {
             firstArg<(EPharmacyDataResponse) -> Unit>().invoke(responseDetail)
         }
-        viewModel.getEPharmacyOrderDetail("")
+        viewModel.getEPharmacyOrderDetail(1)
         assert(viewModel.productDetailLiveDataResponse.value is Success)
     }
 
@@ -83,11 +83,11 @@ class UploadPrescriptionViewModelTest {
             false,"",""
         )
         coEvery {
-            getEPharmacyOrderDetailUseCase.getEPharmacyOrderDetail(any(), any(), "")
+            getEPharmacyOrderDetailUseCase.getEPharmacyOrderDetail(any(), any(), 1)
         } coAnswers {
             firstArg<(EPharmacyDataResponse) -> Unit>().invoke(responseDetail)
         }
-        viewModel.getEPharmacyOrderDetail("")
+        viewModel.getEPharmacyOrderDetail(1)
         Assert.assertEquals(
             (viewModel.productDetailLiveDataResponse.value as Fail).throwable.localizedMessage,
             "Data invalid"
@@ -98,11 +98,11 @@ class UploadPrescriptionViewModelTest {
     fun `orderDetail fetch failed throws exception`()
     {
         coEvery {
-            getEPharmacyOrderDetailUseCase.getEPharmacyOrderDetail(any(), any(), "")
+            getEPharmacyOrderDetailUseCase.getEPharmacyOrderDetail(any(), any(), 1)
         } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
-        viewModel.getEPharmacyOrderDetail("")
+        viewModel.getEPharmacyOrderDetail(1)
         Assert.assertEquals(
             (viewModel.productDetailLiveDataResponse.value as Fail).throwable,
             mockThrowable

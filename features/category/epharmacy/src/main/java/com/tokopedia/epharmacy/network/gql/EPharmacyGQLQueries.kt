@@ -1,45 +1,30 @@
 package com.tokopedia.epharmacy.network.gql
 
 const val GQL_FETCH_ORDER_DETAILS_QUERY = """
-    query GetEpharmacyOrderDetails(${'$'}order_id: Int!) {
+    query GetEpharmacyOrderDetails(${'$'}order_id: Int64!) {
     getEpharmacyOrderDetails(order_id: ${'$'}order_id) {
-      form {
-          shopId
-          shopName
-          shopType
-          shopLocation
-          paymentDate
-          invoiceRefNum
-          orderPdf
-          isReuploadEnabled
+        form {
+          shop_id
+          shop_name
+          shop_type
+          shop_location
           products {
-            productId
+            product_id
             name
             quantity
-            isEthicalDrug
-            productImage
+            product_image
+            item_weight
           }
-          prescriptionImages {
-            prescriptionId
-            rejectReason
-            expiredAt
+          is_reupload_enabled
+          prescription_images {
+            prescription_id
             status
-            prescription_data{
-                format
-                value
+            prescription_data {
+              format
+              value
             }
           }
-          epharmacyButton {
-            text
-            key
-            type
-            uri
-          }
-          epharmacyTicker {
-            text
-          }
-          
-      } 
+        }
     }
 }
 """

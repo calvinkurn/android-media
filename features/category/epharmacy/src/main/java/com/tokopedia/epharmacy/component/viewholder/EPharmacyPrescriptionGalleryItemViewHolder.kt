@@ -63,11 +63,17 @@ class EPharmacyPrescriptionGalleryItemViewHolder(private val viewItem: View) : R
 
     private fun renderImageUi(model: PrescriptionImage) {
         if(!model.prescriptionData?.value.isNullOrBlank()){
-            val imgByteArray: ByteArray = Base64.decode(model.prescriptionData?.value, Base64.DEFAULT)
-            Glide.with(viewItem.context)
-                .asBitmap()
-                .load(imgByteArray)
-                .into(image)
+            // TODO remove splitting
+            val splitBase64 = model.prescriptionData?.value?.split("base64,","Base64,")
+            if (splitBase64?.size ?: 0 > 1){
+                val base64StringImage = splitBase64?.get(1)
+                val imgByteArray: ByteArray = Base64.decode(base64StringImage, Base64.DEFAULT)
+                Glide.with(viewItem.context)
+                    .asBitmap()
+                    .load(imgByteArray)
+                    .into(image)
+            }
+
         }else {
             model.localPath?.let {
                 image.loadImage(it)

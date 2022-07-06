@@ -73,7 +73,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
 
     private val ePharmacyAdapterFactory by lazy(LazyThreadSafetyMode.NONE) { EPharmacyAdapterFactoryImpl(this) }
 
-    private var orderId = ""
+    private var orderId = 0L
     private var checkoutId = ""
 
     private val ePharmacyAdapter by lazy(LazyThreadSafetyMode.NONE) {
@@ -102,7 +102,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
     }
 
     private fun initArguments() {
-        orderId = arguments?.getString(EXTRA_ORDER_ID,"") ?: ""
+        orderId = arguments?.getLong(EXTRA_ORDER_ID_LONG)  ?: 0L
         checkoutId = arguments?.getString(EXTRA_CHECKOUT_ID,"") ?: ""
     }
 
@@ -133,7 +133,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
     private fun getData() {
         if(checkoutId.isNotBlank()) {
             uploadPrescriptionViewModel.getEPharmacyCheckoutDetail(checkoutId)
-        }else if(orderId.isNotBlank()){
+        }else if(orderId != DEFAULT_ZERO_VALUE){
             uploadPrescriptionViewModel.getEPharmacyOrderDetail(orderId)
         }
     }
@@ -194,8 +194,8 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
     }
 
     private fun onDoneButtonClick(){
-        if(orderId.isNotBlank()){
-            uploadPrescriptionViewModel.uploadPrescriptionIds(UPLOAD_ORDER_ID_KEY,orderId)
+        if(orderId != DEFAULT_ZERO_VALUE){
+            uploadPrescriptionViewModel.uploadPrescriptionIds(UPLOAD_ORDER_ID_KEY,orderId.toString())
         }else if(checkoutId.isNotBlank()){
             uploadPrescriptionViewModel.uploadPrescriptionIds(UPLOAD_CHECKOUT_ID_KEY,checkoutId)
         }
@@ -271,7 +271,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
         uploadPrescriptionViewModel.uploadPrescriptionIdsData.observe(viewLifecycleOwner,{
             when(it){
                 is Success -> {
-                    if(orderId.isNotBlank()){
+                    if(orderId != DEFAULT_ZERO_VALUE){
                         openOrderPage()
                     }else if (checkoutId.isNotBlank()) {
                         sendResultToCheckout()

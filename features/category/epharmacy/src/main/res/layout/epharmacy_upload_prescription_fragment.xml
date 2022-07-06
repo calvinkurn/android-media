@@ -91,6 +91,7 @@ Syarat dan Ketentuan."
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:constraint_referenced_ids="info_icon,tooltip"
+        android:visibility="gone"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

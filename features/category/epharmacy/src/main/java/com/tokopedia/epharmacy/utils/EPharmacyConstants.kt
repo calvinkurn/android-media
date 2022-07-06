@@ -1,7 +1,7 @@
 package com.tokopedia.epharmacy.utils
 
 
-const val EXTRA_ORDER_ID = "extra_order_id"
+const val EXTRA_ORDER_ID_LONG = "extra_order_id_long"
 const val EXTRA_CHECKOUT_ID = "extra_checkout_id"
 const val DEFAULT_ZERO_VALUE = 0L
 
