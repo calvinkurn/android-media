@@ -1289,13 +1289,16 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         lastVisibleItemPosition: Int,
         firstVisibleItemPosition: Int
     ) {
+        val lastVisibleShopWidgetPosition = shopHomeAdapter.getLastVisibleShopWidgetPosition(
+            lastVisibleItemPosition
+        )
         val shouldLoadLastVisibleItem =
-            shopHomeAdapter.isLoadNextHomeWidgetData(lastVisibleItemPosition)
+            shopHomeAdapter.isLoadNextHomeWidgetData(lastVisibleShopWidgetPosition)
         val shouldLoadFirstVisibleItem =
             shopHomeAdapter.isLoadNextHomeWidgetData(firstVisibleItemPosition)
         if (shouldLoadLastVisibleItem || shouldLoadFirstVisibleItem) {
             val position = if (shouldLoadLastVisibleItem)
-                lastVisibleItemPosition
+                lastVisibleShopWidgetPosition
             else
                 firstVisibleItemPosition
             val listWidgetLayoutToLoad = getListWidgetLayoutToLoad(position)
