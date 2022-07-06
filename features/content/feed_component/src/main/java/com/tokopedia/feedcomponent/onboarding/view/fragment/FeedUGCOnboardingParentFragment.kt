@@ -27,6 +27,7 @@ class FeedUGCOnboardingParentFragment @Inject constructor(
     private var mListener: Listener? = null
 
     private var _binding: FragmentFeedUgcOnboardingParentBinding? = null
+    private val binding get() = _binding!!
 
     override fun getScreenName() = TAG
 
@@ -49,11 +50,11 @@ class FeedUGCOnboardingParentFragment @Inject constructor(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentFeedUgcOnboardingParentBinding.inflate(
             inflater, container, false
         )
-        return _binding?.root
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
