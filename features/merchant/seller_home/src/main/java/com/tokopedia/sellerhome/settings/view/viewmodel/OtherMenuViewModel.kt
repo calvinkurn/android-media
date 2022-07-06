@@ -484,7 +484,7 @@ class OtherMenuViewModel @Inject constructor(
             block = {
                 val topAdsBalanceFormatted = withContext(dispatcher.io) {
                     topAdsDashboardDepositUseCase.params =
-                        TopAdsDashboardDepositUseCase.createRequestParams(userSession.shopId.toLongOrZero())
+                        TopAdsDashboardDepositUseCase.createRequestParams(userSession.shopId)
                     val topAdsBalance = topAdsDashboardDepositUseCase.executeOnBackground()
                     _kreditTopAdsLiveData.postValue(topAdsBalance)
                     topAdsBalance.getCurrencyFormatted()

@@ -58,6 +58,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.COUPON_HEADER_SUBTITLE
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_HEADER_TITLE
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_TERMS_CONDITION
 import com.tokopedia.tokomember_seller_dashboard.util.CREATE
+import com.tokopedia.tokomember_seller_dashboard.util.DATE_DESC
 import com.tokopedia.tokomember_seller_dashboard.util.DATE_DESC_END
 import com.tokopedia.tokomember_seller_dashboard.util.DATE_TITLE
 import com.tokopedia.tokomember_seller_dashboard.util.DATE_TITLE_END
@@ -80,6 +81,8 @@ import com.tokopedia.tokomember_seller_dashboard.util.SOURCE_MULTIPLE_COUPON_CRE
 import com.tokopedia.tokomember_seller_dashboard.util.SOURCE_MULTIPLE_COUPON_EXTEND
 import com.tokopedia.tokomember_seller_dashboard.util.TERMS
 import com.tokopedia.tokomember_seller_dashboard.util.TERNS_AND_CONDITION
+import com.tokopedia.tokomember_seller_dashboard.util.TIME_DESC
+import com.tokopedia.tokomember_seller_dashboard.util.TIME_DESC_END
 import com.tokopedia.tokomember_seller_dashboard.util.TIME_TITLE
 import com.tokopedia.tokomember_seller_dashboard.util.TIME_TITLE_END
 import com.tokopedia.tokomember_seller_dashboard.util.TM_ERROR_PROGRAM
@@ -651,7 +654,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         bundle.putParcelable(BUNDLE_COUPON_PREVIEW_DATA, tmCouponPreviewData)
         bundle.putParcelable(BUNDLE_COUPON_CREATE_DATA, tmMerchantCouponCreateData)
         tmOpenFragmentCallback.openFragment(CreateScreenType.PREVIEW, bundle)
-        closeLoadingDialog()
+       // closeLoadingDialog()
         setButtonState()
     }
 
@@ -926,11 +929,11 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         textFieldProgramEndTime.setFirstIcon(R.drawable.tm_dash_clock)
 
         textFieldProgramStartDate.iconContainer.setOnClickListener {
-            clickDatePicker(textFieldProgramStartDate, 0 , DATE_TITLE , DATE_DESC_END)
+            clickDatePicker(textFieldProgramStartDate, 0 , DATE_TITLE , DATE_DESC)
         }
 
         textFieldProgramStartTime.iconContainer.setOnClickListener {
-            clickTimePicker(textFieldProgramStartTime, 0 , TIME_TITLE, TIME_TITLE_END)
+            clickTimePicker(textFieldProgramStartTime, 0 , TIME_TITLE, TIME_DESC)
         }
 
         textFieldProgramEndDate.iconContainer.setOnClickListener {
@@ -938,7 +941,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         }
 
         textFieldProgramEndTime.iconContainer.setOnClickListener {
-            clickTimePicker(textFieldProgramEndTime, 1, TIME_TITLE, TIME_TITLE_END)
+            clickTimePicker(textFieldProgramEndTime, 1, TIME_TITLE_END, TIME_DESC_END)
         }
 
     }
@@ -1011,14 +1014,6 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         var day = 0
         var dayInId = ""
         context?.let {
-            val calMax = Calendar.getInstance()
-            calMax.add(Calendar.YEAR, 1)
-            calMax.add(Calendar.DAY_OF_MONTH, 1)
-            val yearMax = calMax.get(Calendar.YEAR)
-            val monthMax = calMax.get(Calendar.MONTH)
-            val dayMax = calMax.get(Calendar.DAY_OF_MONTH)
-
-            val maxDate = GregorianCalendar(yearMax, monthMax, dayMax)
             val currentDate = GregorianCalendar(LocaleUtils.getCurrentLocale(it))
             when(programActionType) {
                 ProgramActionType.CREATE -> {
@@ -1031,7 +1026,19 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
             }
             currentDate.add(Calendar.DAY_OF_MONTH,1)
 
-            val datepickerObject = DateTimePickerUnify(it, currentDate, currentDate, maxDate).apply {
+            val calMax = currentDate
+
+            when (type) {
+                0 -> {
+                    calMax.add(Calendar.MONTH, 3)
+                }
+                1 -> {
+                    calMax.add(Calendar.YEAR, 1)
+                    calMax.add(Calendar.DAY_OF_MONTH, 1)
+                }
+            }
+
+            val datepickerObject = DateTimePickerUnify(it, currentDate, currentDate, calMax).apply {
                 setTitle(title)
                 setInfo(desc)
                 setInfoVisible(true)

@@ -7,7 +7,7 @@
     android:background="@drawable/interactive_adapter_template_chat"
     android:orientation="horizontal">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/caption"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -25,7 +25,7 @@
         android:paddingBottom="@dimen/spacing_lvl5"
         android:scrollbars="horizontal"
         android:textColor="@color/Unify_N700_96"
-        android:textSize="@dimen/fontSize_lvl3"
+        app:typographyType="display_2"
         tools:text="Hai barang ini ready ga?Hai barang ini ready ga?Hai barang ini ready ga?Hai barang ini ready ga?Hai barang ini ready ga?" />
 
     <ImageView
@@ -39,7 +39,8 @@
         android:paddingTop="@dimen/spacing_lvl5"
         android:paddingRight="@dimen/spacing_lvl4"
         android:paddingBottom="@dimen/spacing_lvl5"
-        app:srcCompat="@drawable/ic_drag" />
+        app:srcCompat="@drawable/ic_drag"
+        android:contentDescription="setting" />
 
 
     <ImageView
@@ -53,7 +54,8 @@
         android:paddingTop="@dimen/spacing_lvl5"
         android:paddingRight="@dimen/spacing_lvl4"
         android:paddingBottom="@dimen/spacing_lvl5"
-        app:srcCompat="@drawable/ic_edit_topchat" />
+        app:srcCompat="@drawable/ic_edit_topchat"
+        android:contentDescription="edit" />
 
     <View
         android:id="@+id/divider"

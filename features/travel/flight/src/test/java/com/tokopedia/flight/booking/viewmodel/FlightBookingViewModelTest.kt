@@ -1,15 +1,36 @@
 package com.tokopedia.flight.booking.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.core.util.PatternsCompat
 import com.google.gson.Gson
 import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.flight.R
-import com.tokopedia.flight.booking.data.*
+import com.tokopedia.flight.booking.data.FlightAddToCartData
+import com.tokopedia.flight.booking.data.FlightCheckoutData
+import com.tokopedia.flight.booking.data.FlightVerify
+import com.tokopedia.flight.booking.data.FlightVerifyParam
+import com.tokopedia.flight.booking.data.FlightVoucher
 import com.tokopedia.flight.booking.data.mapper.FlightBookingMapper
 import com.tokopedia.flight.common.data.model.FlightError
 import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
-import com.tokopedia.flight.dummy.*
+import com.tokopedia.flight.dummy.DUMMY_AMENITY_PRICE
+import com.tokopedia.flight.dummy.DUMMY_ATC
+import com.tokopedia.flight.dummy.DUMMY_BOOKING_FLIGHT_DETAIL
+import com.tokopedia.flight.dummy.DUMMY_BOOKING_INTERNATIONAL_MODEL
+import com.tokopedia.flight.dummy.DUMMY_BOOKING_MODEL
+import com.tokopedia.flight.dummy.DUMMY_BOOKING_NEW_PRICE
+import com.tokopedia.flight.dummy.DUMMY_BOOKING_PASSENGER
+import com.tokopedia.flight.dummy.DUMMY_CANCEL_VOUCHER_FAILED
+import com.tokopedia.flight.dummy.DUMMY_CANCEL_VOUCHER_SUCCESS
+import com.tokopedia.flight.dummy.DUMMY_CART_PRICE
+import com.tokopedia.flight.dummy.DUMMY_CHECKOUT
+import com.tokopedia.flight.dummy.DUMMY_INSURANCE
+import com.tokopedia.flight.dummy.DUMMY_LUGGAGE_AMENITIES
+import com.tokopedia.flight.dummy.DUMMY_MEALS_AMENITIES
+import com.tokopedia.flight.dummy.DUMMY_OTHER_PRICE
+import com.tokopedia.flight.dummy.DUMMY_PROFILE
+import com.tokopedia.flight.dummy.TICKER_DATA
 import com.tokopedia.flight.passenger.constant.FlightBookingPassenger
 import com.tokopedia.flight.passenger.view.model.FlightBookingAmenityMetaModel
 import com.tokopedia.flight.passenger.view.model.FlightBookingAmenityModel
@@ -31,6 +52,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
+import io.mockk.mockkObject
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -791,10 +813,62 @@ class FlightBookingViewModelTest {
         val idempotencyKey = ""
         val getCartQuery = ""
 
+        mockkObject(PatternsCompat.EMAIL_ADDRESS)
+
         // when
         viewModel.validateDataAndVerifyCart(query, totalPrice, contactName, contactEmail,
                 contactPhone, contactCountry, checkVoucherQuery,
                 addToCartQuery, idempotencyKey, getCartQuery)
+
+        // then
+        viewModel.errorToastMessageData.value shouldBe R.string.flight_booking_contact_email_invalid_error
+    }
+
+    @Test
+    fun validateDataAndVerifyCart_contactEmailNotValidWithAtAndDotChar_validationFailed() {
+        // given
+        val query = ""
+        val totalPrice = 1000
+        val contactName = "Dummy name"
+        val contactEmail = "dummy@.gmail.com"
+        val contactPhone = ""
+        val contactCountry = ""
+        val checkVoucherQuery = ""
+        val addToCartQuery = ""
+        val idempotencyKey = ""
+        val getCartQuery = ""
+
+        mockkObject(PatternsCompat.EMAIL_ADDRESS)
+
+        // when
+        viewModel.validateDataAndVerifyCart(query, totalPrice, contactName, contactEmail,
+            contactPhone, contactCountry, checkVoucherQuery,
+            addToCartQuery, idempotencyKey, getCartQuery)
+
+        // then
+        viewModel.errorToastMessageData.value shouldBe R.string.flight_booking_contact_email_invalid_error
+    }
+
+    @Test
+    fun validateDataAndVerifyCart_contactEmailNotValidWithDotAndAtSymbol_validationFailed() {
+        // given
+        val query = ""
+        val totalPrice = 1000
+        val contactName = "Dummy name"
+        val contactEmail = "dummy.@gmail.com"
+        val contactPhone = ""
+        val contactCountry = ""
+        val checkVoucherQuery = ""
+        val addToCartQuery = ""
+        val idempotencyKey = ""
+        val getCartQuery = ""
+
+        mockkObject(PatternsCompat.EMAIL_ADDRESS)
+
+        // when
+        viewModel.validateDataAndVerifyCart(query, totalPrice, contactName, contactEmail,
+            contactPhone, contactCountry, checkVoucherQuery,
+            addToCartQuery, idempotencyKey, getCartQuery)
 
         // then
         viewModel.errorToastMessageData.value shouldBe R.string.flight_booking_contact_email_invalid_error

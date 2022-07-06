@@ -36,6 +36,7 @@ import com.tokopedia.entertainment.common.util.EventGlobalError
 import com.tokopedia.entertainment.common.util.EventQuery
 import com.tokopedia.entertainment.common.util.EventQuery.eventContentById
 import com.tokopedia.entertainment.common.util.EventQuery.eventPDPV3
+import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_GATEWAY_CODE
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_META_DATA
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_PACKAGE_ID
@@ -289,6 +290,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
     private fun renderLayout(eventProductDetailEntity: EventProductDetailEntity) {
         pg_event_checkout.gone()
         container_checkout.show()
+        (activity as EventCheckoutActivity).supportActionBar?.title = getString(R.string.ent_event_checkout_title_page)
         eventProductDetailEntity.eventProductDetail.productDetailData.apply {
             renderDesc(this)
             renderPassenger(this)
@@ -314,7 +316,9 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
         if (!forms.isNullOrEmpty()) {
             setPassengerData(forms)
         }
-        ticker_event_checkout.setTextDescription(resources.getString(R.string.ent_event_checkout_pessanger_ticker))
+        context?.let {
+            ticker_event_checkout.setTextDescription(it.resources.getString(R.string.ent_event_checkout_pessanger_ticker))
+        }
         btn_event_checkout_passenger.setOnClickListener {
             goToPageForm()
         }

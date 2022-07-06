@@ -75,7 +75,7 @@ const val TM_SUMMARY_DIALOG_TITLE = "<b>Tunggu Sebentar, ya</b>" + "<br>" +
 const val ERROR_CREATING_TITLE = "Ada gangguan di rumah Toped"
 const val ERROR_CREATING_TITLE_RETRY= "Yaah, pengaturan TokoMember  gagal disimpan"
 const val ERROR_CREATING_DESC = "Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti."
-const val ERROR_CREATING_CTA = "Coba Lagi"
+const val ERROR_CREATING_CTA = "Ubah Tanggal"
 const val ERROR_CREATING_CTA_RETRY = "Ke Dashboard TokoMember"
 
 const val COUPON_CASHBACK = "cashback"
