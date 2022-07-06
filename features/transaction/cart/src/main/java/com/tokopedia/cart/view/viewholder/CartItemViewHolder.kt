@@ -25,14 +25,10 @@ import com.tokopedia.cart.databinding.ItemAddonCartIdentifierBinding
 import com.tokopedia.cart.databinding.ItemCartProductBinding
 import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
-import com.tokopedia.kotlin.extensions.view.dpToPx
-import com.tokopedia.kotlin.extensions.view.getScreenWidth
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.media.loader.loadIcon
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.purchase_platform.common.utils.showSoftKeyboard
@@ -279,6 +275,7 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
         renderBundlingInfo(data)
         renderProductName(data)
         renderImage(data)
+        renderButuhResepField(data)
         renderPrice(data)
         renderVariant(data)
         renderQuantityLeft(data)
@@ -377,6 +374,14 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
             binding.iuImageProduct.loadImage(it)
         }
         binding.iuImageProduct.setOnClickListener(getOnClickProductItemListener(adapterPosition, data))
+    }
+
+    private fun renderButuhResepField(data: CartItemHolderData) {
+        if (data.needPrescription) {
+            binding.butuhResepLayout.visible()
+            binding.butuhResepText.text = Utils.getHtmlFormat(data.butuhResepText)
+            binding.butuhResepIcon.loadImage(data.butuhResepIconUrl)
+        }
     }
 
     private fun sendAnalyticsInformationLabel(data: CartItemHolderData) {

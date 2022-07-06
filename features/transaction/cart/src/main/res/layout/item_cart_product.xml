@@ -272,6 +272,38 @@
             tools:layout_width="20dp"
             tools:visibility="gone" />
 
+        <LinearLayout
+            android:id="@+id/butuh_resep_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:orientation="horizontal"
+            tools:visibility="visible"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@id/text_product_name"
+            app:layout_constraintStart_toEndOf="@+id/v_bundling_product_separator"
+            app:layout_constraintTop_toBottomOf="@+id/layout_product_price">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/butuh_resep_icon"
+                android:layout_width="@dimen/spacing_lvl3"
+                android:layout_height="@dimen/unify_space_12"
+                android:layout_alignParentLeft="true"
+                android:layout_marginRight="@dimen/spacing_lvl2"
+                android:layout_alignParentTop="true" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/butuh_resep_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/barang_1kg_"
+                android:gravity="top"
+                app:typographyType="small"
+                android:textColor="@color/Unify_NN600"
+                />
+
+        </LinearLayout>
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text_incident"
             android:layout_width="wrap_content"
