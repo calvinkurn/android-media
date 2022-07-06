@@ -9,8 +9,10 @@ import com.tokopedia.epharmacy.component.model.EPharmacyDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyPrescriptionDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyProductDataModel
 import com.tokopedia.epharmacy.di.qualifier.CoroutineBackgroundDispatcher
-import com.tokopedia.epharmacy.di.qualifier.CoroutineMainDispatcher
-import com.tokopedia.epharmacy.network.response.*
+import com.tokopedia.epharmacy.network.response.EPharmacyDataResponse
+import com.tokopedia.epharmacy.network.response.EPharmacyPrescriptionUploadResponse
+import com.tokopedia.epharmacy.network.response.EPharmacyUploadPrescriptionIdsResponse
+import com.tokopedia.epharmacy.network.response.PrescriptionImage
 import com.tokopedia.epharmacy.usecase.GetEPharmacyCheckoutDetailUseCase
 import com.tokopedia.epharmacy.usecase.GetEPharmacyOrderDetailUseCase
 import com.tokopedia.epharmacy.usecase.PostPrescriptionIdUseCase
@@ -20,7 +22,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import java.lang.reflect.Type
@@ -31,12 +32,8 @@ class UploadPrescriptionViewModel @Inject constructor(
     private val getEPharmacyCheckoutDetailUseCase: GetEPharmacyCheckoutDetailUseCase,
     private val uploadPrescriptionUseCase: UploadPrescriptionUseCase,
     private val postPrescriptionIdUseCase: PostPrescriptionIdUseCase,
-    @CoroutineBackgroundDispatcher private val dispatcherBackground: CoroutineDispatcher,
-    @CoroutineMainDispatcher private val dispatcherMain: CoroutineDispatcher
+    @CoroutineBackgroundDispatcher private val dispatcherBackground: CoroutineDispatcher
 )  : BaseViewModel(dispatcherBackground){
-
-    @Inject
-    lateinit var userSession: UserSessionInterface
 
     private val _productDetailLiveData = MutableLiveData<Result<EPharmacyDataModel>>()
     val productDetailLiveDataResponse: LiveData<Result<EPharmacyDataModel>> = _productDetailLiveData
@@ -47,10 +44,13 @@ class UploadPrescriptionViewModel @Inject constructor(
     private val _buttonLiveData = MutableLiveData<String?>()
     val buttonLiveData: LiveData<String?> = _buttonLiveData
 
+    private val _uploadError = MutableLiveData<EPharmacyUploadError>()
+    val uploadError: LiveData<EPharmacyUploadError> = _uploadError
+
     private val _prescriptionImages = MutableLiveData<ArrayList<PrescriptionImage?>>()
     val prescriptionImages: LiveData<ArrayList<PrescriptionImage?>> = _prescriptionImages
 
-    fun getEPharmacyOrderDetail(orderId: String) {
+    fun getEPharmacyOrderDetail(orderId: Long) {
         getEPharmacyOrderDetailUseCase.cancelJobs()
         getEPharmacyOrderDetailUseCase.getEPharmacyOrderDetail(
             ::onAvailableEPharmacyOrderDetail,
@@ -61,32 +61,35 @@ class UploadPrescriptionViewModel @Inject constructor(
 
     private fun onAvailableEPharmacyOrderDetail(ePharmacyDetailResponse: EPharmacyDataResponse) {
         ePharmacyDetailResponse.let { data ->
-            if(data.ePharmacyProducts?.isEmpty() == true)
+            if(data.detailData?.formData?.ePharmacyProducts?.isEmpty() == true)
                 onFailEPharmacyDetail(IllegalStateException("Data invalid"))
             else {
-                _productDetailLiveData.postValue(Success(mapResponseInDataModel(data)))
-                _buttonLiveData.postValue(data.epharmacyButton?.key)
+                _productDetailLiveData.postValue(Success(mapOrderResponseInDataModel(data)))
+                if(data.detailData?.formData?.isReUploadEnabled == true){
+                    _buttonLiveData.postValue(EPharmacyButtonKey.RE_UPLOAD.key)
+                }else {
+                    _buttonLiveData.postValue(EPharmacyButtonKey.CHECK.key)
+                }
             }
         }
     }
 
-    private fun mapResponseInDataModel(data: EPharmacyDataResponse) : EPharmacyDataModel{
+    private fun mapOrderResponseInDataModel(data: EPharmacyDataResponse) : EPharmacyDataModel{
         val listOfComponents = arrayListOf<BaseEPharmacyDataModel>()
-        data.prescriptionImages?.forEach { prescriptionImage ->
-            prescriptionImage?.isUploadSuccess = true
-            prescriptionImage?.isDeletable = true
+        if(data.detailData?.formData?.isReUploadEnabled == true){
+            data.detailData.formData.prescriptionImages?.removeAll(getRejectedPrescriptions(data))
         }
         val prescriptionDataModel = EPharmacyPrescriptionDataModel(PRESCRIPTION_COMPONENT,
-            PRESCRIPTION_COMPONENT, data.prescriptionImages)
+            PRESCRIPTION_COMPONENT, data.detailData?.formData?.prescriptionImages, data.detailData?.formData?.isReUploadEnabled ?: false)
         listOfComponents.add(prescriptionDataModel)
-        data.ePharmacyProducts?.forEachIndexed { index, eProduct ->
-            if(index == 0){
-                eProduct?.shopId = data.shopId
-                eProduct?.shopName = data.shopName
-                eProduct?.shopLocation = data.shopLocation
-                eProduct?.shopType = data.shopType
+        data.detailData?.formData?.ePharmacyProducts?.forEachIndexed { index, eProduct ->
+            if(index == FIRST_INDEX){
+                eProduct?.shopId = data.detailData.formData.shopId
+                eProduct?.shopName = data.detailData.formData.shopName
+                eProduct?.shopLocation = data.detailData.formData.shopLocation
+                eProduct?.shopType = data.detailData.formData.shopType
             }
-            listOfComponents.add(EPharmacyProductDataModel(PRODUCT_COMPONENT, eProduct?.productId.toString(),
+            listOfComponents.add(EPharmacyProductDataModel(PRODUCT_COMPONENT, eProduct?.productId ?: eProduct.hashCode().toString(),
                 eProduct))
         }
         return EPharmacyDataModel(listOfComponents)
@@ -96,10 +99,69 @@ class UploadPrescriptionViewModel @Inject constructor(
         _productDetailLiveData.postValue(Fail(throwable))
     }
 
+    fun getEPharmacyCheckoutDetail(checkoutId: String) {
+        getEPharmacyCheckoutDetailUseCase.cancelJobs()
+        getEPharmacyCheckoutDetailUseCase.getEPharmacyCheckoutDetail(
+            ::onAvailableEPharmacyCheckoutDetail,
+            ::onFailEPharmacyDetail,
+            checkoutId
+        )
+    }
+
+    private fun onAvailableEPharmacyCheckoutDetail(ePharmacyDetailResponse: EPharmacyDataResponse) {
+        ePharmacyDetailResponse.let { data ->
+            if(data.detailData?.formData?.ePharmacyProducts?.isEmpty() == true)
+                onFailEPharmacyDetail(IllegalStateException("Data invalid"))
+            else {
+                _productDetailLiveData.postValue(Success(mapCheckoutResponseInDataModel(data)))
+                if(ePharmacyDetailResponse.detailData?.formData?.prescriptionImages.isNullOrEmpty()){
+                    _buttonLiveData.postValue(EPharmacyButtonKey.CHECK.key)
+                }else {
+                    _buttonLiveData.postValue(EPharmacyButtonKey.RE_UPLOAD.key)
+                }
+            }
+        }
+    }
+
+    private fun getRejectedPrescriptions(data: EPharmacyDataResponse) : ArrayList<PrescriptionImage?>{
+        val rejectedPrescriptions = arrayListOf<PrescriptionImage?>()
+        data.detailData?.formData?.prescriptionImages?.forEach { prescriptionImage ->
+            if(prescriptionImage?.status == EPharmacyPrescriptionStatus.REJECTED.status){
+                rejectedPrescriptions.add(prescriptionImage)
+            }
+        }
+        return rejectedPrescriptions
+    }
+
+    private fun mapCheckoutResponseInDataModel(data: EPharmacyDataResponse) : EPharmacyDataModel{
+        val listOfComponents = arrayListOf<BaseEPharmacyDataModel>()
+        if(data.detailData?.formData?.isReUploadEnabled == true){
+            data.detailData.formData.prescriptionImages?.removeAll(getRejectedPrescriptions(data))
+        }
+        val prescriptionDataModel = EPharmacyPrescriptionDataModel(PRESCRIPTION_COMPONENT,
+            PRESCRIPTION_COMPONENT, data.detailData?.formData?.prescriptionImages, data.detailData?.formData?.isReUploadEnabled ?: false)
+        listOfComponents.add(prescriptionDataModel)
+        data.detailData?.formData?.ePharmacyProducts?.forEachIndexed { index ,eProduct ->
+            eProduct?.ePharmacyProducts?.forEachIndexed { indexProduct , ePharmacyProduct ->
+                if(indexProduct == FIRST_INDEX){
+                    ePharmacyProduct?.shopId = eProduct.shopId
+                    ePharmacyProduct?.shopName = eProduct.shopName
+                    ePharmacyProduct?.shopLocation = eProduct.shopLocation
+                    ePharmacyProduct?.shopType = eProduct.shopType
+                }
+                if(indexProduct == (eProduct.ePharmacyProducts.size - 1) && index != (data.detailData.formData.ePharmacyProducts.size - 1)){
+                    ePharmacyProduct?.divider = true
+                }
+                listOfComponents.add(EPharmacyProductDataModel(PRODUCT_COMPONENT, ePharmacyProduct?.productId ?: eProduct.hashCode().toString(),
+                    ePharmacyProduct))
+            }
+        }
+        return EPharmacyDataModel(listOfComponents)
+    }
+
     fun onSuccessGetPrescriptionImages(arrayList: ArrayList<PrescriptionImage?>) {
         _prescriptionImages.postValue(arrayList)
     }
-
 
     fun addSelectedPrescriptionImages(originalPaths: List<String>) {
         _prescriptionImages.value.let {
@@ -120,7 +182,7 @@ class UploadPrescriptionViewModel @Inject constructor(
     }
 
     private fun changeToLoadingState(arrayList: ArrayList<PrescriptionImage?>?, localPath :String) {
-        arrayList?.add(PrescriptionImage("","",DEFAULT_ZERO_VALUE,"",
+        arrayList?.add(PrescriptionImage("",DEFAULT_ZERO_VALUE,"",
             EPharmacyPrescriptionStatus.SELECTED.status,
             isUploading = true,
             isUploadSuccess = false,
@@ -143,14 +205,14 @@ class UploadPrescriptionViewModel @Inject constructor(
         launchCatchError(block = {
             uploadImageToServer(uniquePositionId, path)
         }, onError = {
-            uploadFailed(uniquePositionId , it)
+            uploadFailed(uniquePositionId , EPharmacyUploadBackendError(it.message ?: ""))
         })
 
     }
 
     private suspend fun uploadImageToServer(uniquePositionId: Int, localFilePath : String) {
         if (localFilePath.isNotBlank()){
-            uploadPrescriptionUseCase.setBase64Image(uniquePositionId.toLong(),localFilePath, userSession.accessToken)
+            uploadPrescriptionUseCase.setBase64Image(uniquePositionId.toLong(),localFilePath)
             val result = withContext(dispatcherBackground) {
                 convertToUploadImageResponse(uploadPrescriptionUseCase.executeOnBackground())
             }
@@ -161,46 +223,50 @@ class UploadPrescriptionViewModel @Inject constructor(
                         isUploading = false
                         prescriptionId = uploadResult.prescriptionId
                     }else {
-                        uploadFailed(uniquePositionId, Throwable("No Prescription Id"))
+                        uploadFailed(uniquePositionId, EPharmacyUploadNoPrescriptionIdError(true))
                     }
                 }?: kotlin.run {
                     isUploadSuccess = false
                     isUploading = false
                     isUploadFailed = true
+                    result.data?.firstOrNull()?.errorMsg?.let { errorMessage ->
+                        if(errorMessage.isNotBlank()){
+                            uploadFailed(uniquePositionId, EPharmacyUploadBackendError(errorMessage))
+                        }
+                    }
                 }
             }
             _prescriptionImages.postValue(_prescriptionImages.value)
+
         }else {
-            uploadFailed(uniquePositionId, Throwable("Empty Image"))
+            uploadFailed(uniquePositionId, EPharmacyUploadEmptyImageError(false))
         }
-        withContext(dispatcherMain){
-            checkPrescriptionImages()
-        }
+        checkPrescriptionImages()
     }
 
     private fun checkPrescriptionImages() {
         var successImagesCount = 0
         var failedImageCount = 0
-        var rejectedImages = 0
+        var approvedImageCount = 0
         val presImageSize  = _prescriptionImages.value?.size ?: 0
         _prescriptionImages.value?.forEach { presImage ->
             when {
-                presImage?.status == EPharmacyPrescriptionStatus.REJECTED.status -> {
-                    rejectedImages += 1
-                }
                 presImage?.isUploadSuccess == true -> {
                     successImagesCount += 1
                 }
                 presImage?.isUploadFailed == true -> {
                     failedImageCount += 1
                 }
+                (presImage?.status == EPharmacyPrescriptionStatus.APPROVED.status) -> {
+                    approvedImageCount += 1
+                }
             }
         }
         val key = if(failedImageCount > 0){
             EPharmacyButtonKey.DONE_DISABLED.key
         }else {
-            if(successImagesCount == presImageSize
-                && rejectedImages == 0 && presImageSize != 0){
+            if((successImagesCount == presImageSize &&  presImageSize != 0) ||
+                (successImagesCount + approvedImageCount) == presImageSize && presImageSize != 0){
                 EPharmacyButtonKey.DONE.key
             }else {
                 EPharmacyButtonKey.RE_UPLOAD.key
@@ -209,13 +275,14 @@ class UploadPrescriptionViewModel @Inject constructor(
         _buttonLiveData.postValue(key)
     }
 
-    private fun uploadFailed(uniquePositionId : Int, exception : Throwable){
+    private fun uploadFailed(uniquePositionId : Int, ePharmacyUploadError: EPharmacyUploadError){
         _prescriptionImages.value?.get(uniquePositionId)?.apply {
             isUploadSuccess = false
             isUploading = false
             isUploadFailed = true
         }
         _prescriptionImages.postValue(_prescriptionImages.value)
+        _uploadError.postValue(ePharmacyUploadError)
         checkPrescriptionImages()
     }
 

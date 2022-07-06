@@ -1,7 +1,6 @@
 package com.tokopedia.epharmacy.usecase
 
 import com.tokopedia.epharmacy.network.gql.GQL_FETCH_CHECKOUT_DETAILS_QUERY
-import com.tokopedia.epharmacy.network.gql.GQL_FETCH_ORDER_DETAILS_QUERY
 import com.tokopedia.epharmacy.network.response.EPharmacyDataResponse
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase

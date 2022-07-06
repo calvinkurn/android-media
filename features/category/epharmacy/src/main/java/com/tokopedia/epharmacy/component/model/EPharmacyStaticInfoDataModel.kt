@@ -3,7 +3,6 @@ package com.tokopedia.epharmacy.component.model
 import android.os.Bundle
 import com.tokopedia.epharmacy.adapters.factory.EPharmacyAdapterFactory
 import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
-import com.tokopedia.epharmacy.network.response.PrescriptionImage
 
 data class EPharmacyStaticInfoDataModel(val name : String = "", val type : String = "")
     : BaseEPharmacyDataModel {

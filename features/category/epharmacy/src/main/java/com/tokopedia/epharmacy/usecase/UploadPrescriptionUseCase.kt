@@ -11,7 +11,11 @@ import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.epharmacy.network.request.UploadPrescriptionRequest
 import com.tokopedia.epharmacy.network.response.EPharmacyPrescriptionUploadResponse
 import com.tokopedia.epharmacy.utils.EPharmacyImageQuality
-import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.epharmacy.utils.EPharmacyImageQualityDecreaseFactor
+import com.tokopedia.epharmacy.utils.EPharmacyMinImageQuality
+import com.tokopedia.epharmacy.utils.MAX_BYTES
+import com.tokopedia.media.preview.managers.ImageCompressionManager
+import okio.utf8Size
 import java.io.ByteArrayOutputStream
 import java.lang.reflect.Type
 import javax.inject.Inject
@@ -22,12 +26,11 @@ class UploadPrescriptionUseCase @Inject constructor(
 
     private var localFilePath: String = ""
     private var id : Long = 0L
-    private var userAccessToken = ""
 
     override suspend fun executeOnBackground(): Map<Type, RestResponse> {
         val base64ImageString = getBase64OfPrescriptionImage(localFilePath, EPharmacyImageQuality)
         val restRequest = RestRequest.Builder(ENDPOINT_URL, EPharmacyPrescriptionUploadResponse::class.java)
-            .setBody(getUploadPrescriptionBody(PREFIX_IMAGE + base64ImageString))
+            .setBody(getUploadPrescriptionBody(base64ImageString))
             .setRequestType(RequestType.POST)
             .build()
         restRequestList.clear()
@@ -42,19 +45,12 @@ class UploadPrescriptionUseCase @Inject constructor(
         )))
     }
 
-    fun setBase64Image(id : Long, localPath: String, accessToken : String) {
-        try {
-            this.id = id
-            this.localFilePath = localPath
-            this.userAccessToken = accessToken
-        } catch (e: Exception) {
-
-        }
+    fun setBase64Image(id : Long, localPath: String) {
+        this.id = (id + 1)
+        this.localFilePath = localPath
     }
 
     private fun getBase64OfPrescriptionImage(localFilePath: String, quality : Int): String {
-
-        // TODO File Size Calculations and Out Of Memory resolutions
         return try {
             val prescriptionImageBitmap: Bitmap = BitmapFactory.decodeFile(localFilePath)
             val prescriptionByteArrayOutputStream = ByteArrayOutputStream()
@@ -65,18 +61,23 @@ class UploadPrescriptionUseCase @Inject constructor(
             )
             val byteArrayImage = prescriptionByteArrayOutputStream.toByteArray()
             prescriptionImageBitmap.recycle()
-            Base64.encodeToString(byteArrayImage, Base64.DEFAULT)
-            // if size > 4mb & quality >= 60 then getBase64OfPrescriptionImage(localFilePath , quality * DECREASE_FACTOR)
+
+            val encodedString = Base64.encodeToString(byteArrayImage, Base64.DEFAULT)
+            return if(encodedString.utf8Size(0,encodedString.length) >= MAX_BYTES && quality >= EPharmacyMinImageQuality){
+                getBase64OfPrescriptionImage(localFilePath , (quality * EPharmacyImageQualityDecreaseFactor).toInt())
+            } else
+                "${IMAGE_DATA_PREFIX}${encodedString}"
         }catch (e : Exception){
+            // TODO Log in Crashlytics
+            e.printStackTrace()
             ""
         }
     }
 
     companion object {
-        private const val ENDPOINT_URL = "https://api-staging.tokopedia.com/epharmacy/prescription/upload"
+        private const val ENDPOINT_URL = "https://epharmacy-staging.tokopedia.com/prescription/upload"
         private const val KEY_FORMAT_VALUE="FILE"
         private const val KEY_SOURCE_VALUE="buyer"
-        private const val PREFIX_IMAGE = "data:image/jpeg;base64,"
-        private const val MAX_BYTES = 4_000_000
+        private const val IMAGE_DATA_PREFIX = "data:image/jpeg;base64,"
     }
 }

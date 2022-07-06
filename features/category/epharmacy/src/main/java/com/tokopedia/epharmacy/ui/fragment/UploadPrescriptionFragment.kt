@@ -12,6 +12,7 @@ import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.Group
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
@@ -28,7 +29,6 @@ import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyPrescriptionDataModel
 import com.tokopedia.epharmacy.di.EPharmacyComponent
-import com.tokopedia.epharmacy.network.response.EpharmacyButton
 import com.tokopedia.epharmacy.network.response.PrescriptionImage
 import com.tokopedia.epharmacy.utils.*
 import com.tokopedia.epharmacy.viewmodel.UploadPrescriptionViewModel
@@ -37,16 +37,21 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
 
     private var ePharmacyToolTipText : Typography? = null
+    private var ePharmacyToolTipGroup : Group? = null
     private var ePharmacyRecyclerView : RecyclerView? = null
     private var ePharmacyUploadPhotoButton : UnifyButton? = null
     private var ePharmacyDoneButton : UnifyButton? = null
@@ -68,7 +73,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
 
     private val ePharmacyAdapterFactory by lazy(LazyThreadSafetyMode.NONE) { EPharmacyAdapterFactoryImpl(this) }
 
-    private var orderId = ""
+    private var orderId = 0L
     private var checkoutId = ""
 
     private val ePharmacyAdapter by lazy(LazyThreadSafetyMode.NONE) {
@@ -97,7 +102,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
     }
 
     private fun initArguments() {
-        orderId = arguments?.getString(EXTRA_ORDER_ID,"") ?: ""
+        orderId = arguments?.getLong(EXTRA_ORDER_ID_LONG)  ?: 0L
         checkoutId = arguments?.getString(EXTRA_CHECKOUT_ID,"") ?: ""
     }
 
@@ -106,6 +111,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
         observeButtonData()
         observePrescriptionImages()
         observeUploadPrescriptionIdsData()
+        observerUploadPrescriptionError()
     }
 
     private fun initViews(view: View) {
@@ -114,6 +120,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
             ePharmacyRecyclerView = findViewById(R.id.epharmacy_rv)
             ePharmacyUploadPhotoButton = findViewById(R.id.foto_resep_button)
             ePharmacyDoneButton = findViewById(R.id.done_button)
+            ePharmacyToolTipGroup = findViewById(R.id.tooltip_group)
         }
     }
 
@@ -125,9 +132,8 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
 
     private fun getData() {
         if(checkoutId.isNotBlank()) {
-            //TODO Get Product Array from Checkout
-            //TODO Get Prescription ids from Checkout if API doesn't provide
-        }else if(orderId.isNotBlank()){
+            uploadPrescriptionViewModel.getEPharmacyCheckoutDetail(checkoutId)
+        }else if(orderId != DEFAULT_ZERO_VALUE){
             uploadPrescriptionViewModel.getEPharmacyOrderDetail(orderId)
         }
     }
@@ -172,7 +178,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
         MethodChecker.getDrawable(context,com.tokopedia.iconunify.R.drawable.iconunify_camera)?.let {
             DrawableCompat.setTint(
                 DrawableCompat.wrap(it),
-                MethodChecker.getColor(context,com.tokopedia.unifyprinciples.R.color.Green_G500)
+                MethodChecker.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
             )
             ePharmacyUploadPhotoButton?.setDrawable(it, UnifyButton.DrawablePosition.LEFT)
         }
@@ -188,10 +194,10 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
     }
 
     private fun onDoneButtonClick(){
-        if(orderId.isNotBlank()){
-            uploadPrescriptionViewModel.uploadPrescriptionIds(UPLOAD_ORDER_ID_KEY,orderId)
+        if(orderId != DEFAULT_ZERO_VALUE){
+            uploadPrescriptionViewModel.uploadPrescriptionIds(UPLOAD_ORDER_ID_KEY,orderId.toString())
         }else if(checkoutId.isNotBlank()){
-            uploadPrescriptionViewModel.uploadPrescriptionIds(UPLOAD_CHECKOUT_ID_KEY,orderId)
+            uploadPrescriptionViewModel.uploadPrescriptionIds(UPLOAD_CHECKOUT_ID_KEY,checkoutId)
         }
     }
 
@@ -202,7 +208,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
                 modeType(ModeType.IMAGE_ONLY)
                 multipleSelectionMode()
                 maxMediaItem(withMaxMediaItems - 2)
-                maxImageFileSize(4_000_000)
+                maxImageFileSize(MAX_MEDIA_SIZE_PICKER)
             }
             startActivityForResult(intent, MEDIA_PICKER_REQUEST_CODE)
         }
@@ -265,17 +271,40 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
         uploadPrescriptionViewModel.uploadPrescriptionIdsData.observe(viewLifecycleOwner,{
             when(it){
                 is Success -> {
-                    if(orderId.isNotBlank()){
+                    if(orderId != DEFAULT_ZERO_VALUE){
                         openOrderPage()
                     }else if (checkoutId.isNotBlank()) {
                         sendResultToCheckout()
                     }
                 }
                 is Fail -> {
-
+                    if (it.throwable is UnknownHostException
+                        || it.throwable is SocketTimeoutException) {
+                        //global_error.setType(GlobalError.NO_CONNECTION)
+                    } else {
+                        it.throwable.message?.let { errorMessage ->
+                            showToast(errorMessage)
+                        }
+                    }
                 }
             }
         })
+    }
+
+    private fun observerUploadPrescriptionError() {
+        uploadPrescriptionViewModel.uploadError.observe(viewLifecycleOwner,{ error ->
+            when(error){
+                is EPharmacyUploadBackendError -> showToast(error.errMsg)
+                is EPharmacyUploadEmptyImageError -> showToast(context?.resources?.getString(R.string.epharmacy_upload_error) ?: "")
+                is EPharmacyUploadNoPrescriptionIdError -> showToast(context?.resources?.getString(R.string.epharmacy_upload_error) ?: "")
+            }
+        })
+    }
+
+    private fun showToast(message : String) {
+        view?.let { it ->
+            Toaster.build(it,message,TYPE_ERROR).show()
+        }
     }
 
     private fun sendResultToCheckout() {
@@ -343,19 +372,19 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
     }
 
     private fun showDoneButtonState(){
-        ePharmacyToolTipText?.hide()
+        ePharmacyToolTipGroup?.hide()
         ePharmacyUploadPhotoButton?.hide()
         ePharmacyDoneButton?.show()
     }
 
     private fun showUploadPhotoButtonState(){
-        ePharmacyToolTipText?.show()
+        ePharmacyToolTipGroup?.show()
         ePharmacyUploadPhotoButton?.show()
         ePharmacyDoneButton?.hide()
     }
 
     private fun hideAllButtons(){
-        ePharmacyToolTipText?.hide()
+        ePharmacyToolTipGroup?.hide()
         ePharmacyUploadPhotoButton?.hide()
         ePharmacyDoneButton?.hide()
     }
@@ -373,14 +402,12 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
         fun newInstance(bundle: Bundle): UploadPrescriptionFragment {
             val fragment = UploadPrescriptionFragment()
             fragment.arguments = bundle
-
             return fragment
         }
     }
 
     override fun onCameraClick() {
-        openMediaPicker((MAX_MEDIA_ITEM)
-                - (uploadPrescriptionViewModel.prescriptionImages.value?.size ?: 0))
+        onClickUploadPhotoButton()
     }
 
     override fun onPrescriptionImageClick(adapterPosition: Int, image: PrescriptionImage) {

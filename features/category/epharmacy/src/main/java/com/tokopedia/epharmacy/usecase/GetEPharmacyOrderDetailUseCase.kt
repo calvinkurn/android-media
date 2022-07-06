@@ -13,7 +13,7 @@ class GetEPharmacyOrderDetailUseCase @Inject constructor(graphqlRepository: Grap
 
     fun getEPharmacyOrderDetail(onSuccess: (EPharmacyDataResponse) -> Unit,
                                 onError: (Throwable) -> Unit,
-                                orderId: String) {
+                                orderId: Long) {
         try {
             this.setTypeClass(EPharmacyDataResponse::class.java)
             this.setRequestParams(getRequestParams(orderId))
@@ -30,7 +30,7 @@ class GetEPharmacyOrderDetailUseCase @Inject constructor(graphqlRepository: Grap
         }
     }
 
-    private fun getRequestParams(orderId: String): MutableMap<String, Any?> {
+    private fun getRequestParams(orderId: Long): MutableMap<String, Any?> {
         val requestMap = mutableMapOf<String, Any?>()
         requestMap[PARAM_ORDER_ID] = orderId
         return requestMap

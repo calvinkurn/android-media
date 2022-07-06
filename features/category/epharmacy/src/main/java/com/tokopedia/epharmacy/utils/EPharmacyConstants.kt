@@ -1,7 +1,7 @@
 package com.tokopedia.epharmacy.utils
 
 
-const val EXTRA_ORDER_ID = "extra_order_id"
+const val EXTRA_ORDER_ID_LONG = "extra_order_id_long"
 const val EXTRA_CHECKOUT_ID = "extra_checkout_id"
 const val DEFAULT_ZERO_VALUE = 0L
 
@@ -44,4 +44,9 @@ enum class EPharmacyPrescriptionStatus(val status : String){
 }
 
 const val EPharmacyImageQuality = 100
-const val EPharmacyImageQualityDecreaseFactor = 0.6
+const val EPharmacyMinImageQuality = 80
+const val EPharmacyImageQualityDecreaseFactor = 0.8
+
+const val FIRST_INDEX = 0
+const val MAX_BYTES = 6_000_000L
+const val MAX_MEDIA_SIZE_PICKER = 4_000_000L

@@ -32,6 +32,18 @@
             tools:visibility="visible"
             />
 
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/overlay"
+            android:layout_width="@dimen/unify_space_64"
+            android:layout_height="@dimen/unify_space_64"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:src="@color/Unify_Static_Black"
+            android:alpha="0.4"
+            />
+
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/retry_upload_button"
             android:layout_width="@dimen/unify_space_32"
@@ -40,12 +52,11 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:icon_name="RELOAD"
-            app:icon_color_light_enable="@color/Unify_G500"
-            app:icon_color_light_disabled="@color/Unify_G500"
-            app:icon_color_night_enable="@color/Unify_G500"
-            app:icon_color_night_disabled="@color/Unify_G500"
-            tools:visibility="gone"
+            app:icon_name="IMAGE_BROKEN"
+            app:icon_color_light_enable="@color/Unify_Static_White"
+            app:icon_color_light_disabled="@color/Unify_Static_White"
+            app:icon_color_night_enable="@color/Unify_Static_White"
+            app:icon_color_night_disabled="@color/Unify_Static_White"
             />
 
 
@@ -59,7 +70,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:srcCompat="@drawable/ic_epharmacy_camera_filled"
             android:visibility="gone"
-            tools:visibility="visible"
+            tools:visibility="invisible"
             />
 
         <com.tokopedia.unifycomponents.LoaderUnify

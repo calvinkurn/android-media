@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.basemvvm.viewmodel.ViewModelKey
-import com.tokopedia.basemvvm.viewmodel.ViewModelProviderFactory
 import com.tokopedia.epharmacy.viewmodel.UploadPrescriptionViewModel
 import dagger.Binds
 import dagger.Module
