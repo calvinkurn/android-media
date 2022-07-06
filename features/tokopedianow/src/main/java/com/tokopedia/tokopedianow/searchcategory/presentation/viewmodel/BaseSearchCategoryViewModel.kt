@@ -33,7 +33,6 @@ import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.home_component.data.DynamicHomeChannelCommon.Channels
 import com.tokopedia.home_component.mapper.DynamicChannelComponentMapper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
@@ -65,6 +64,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
+import com.tokopedia.tokopedianow.common.util.StringUtil.getOrDefaultZeroString
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.RepurchaseData
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.GENERAL_SEARCH
@@ -76,6 +76,7 @@ import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackin
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.TOKOPEDIA_NOW
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartProductItem
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
+import com.tokopedia.tokopedianow.searchcategory.data.model.QuerySafeModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.Product
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.ProductLabelGroup
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProduct
@@ -238,6 +239,9 @@ abstract class BaseSearchCategoryViewModel(
 
     protected val setUserPreferenceMutableLiveData = SingleLiveEvent<Result<SetUserPreference.SetUserPreferenceData>>()
     val setUserPreferenceLiveData: LiveData<Result<SetUserPreference.SetUserPreferenceData>> = setUserPreferenceMutableLiveData
+
+    protected val querySafeMutableLiveData = SingleLiveEvent<QuerySafeModel>()
+    val querySafeLiveData: LiveData<QuerySafeModel> = querySafeMutableLiveData
 
     init {
         updateQueryParams()
@@ -421,6 +425,13 @@ abstract class BaseSearchCategoryViewModel(
             sendGeneralSearchTracking(searchProduct)
         }
         updateViewForFirstPage(isEmptyProductList)
+
+        chooseAddressData?.apply {
+            querySafeMutableLiveData.value = QuerySafeModel(
+                warehouseId = warehouse_id.getOrDefaultZeroString(),
+                isQuerySafe = searchProduct.data.isQuerySafe
+            )
+        }
     }
 
     private fun initFilterController(headerDataView: HeaderDataView) {
