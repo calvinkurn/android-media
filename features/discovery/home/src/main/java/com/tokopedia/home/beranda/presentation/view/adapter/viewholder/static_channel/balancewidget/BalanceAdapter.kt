@@ -60,8 +60,8 @@ class BalanceAdapter(
 
         val balanceModelList = mutableListOf<BalanceDrawerItemModel>()
         try {
-            itemMap.balanceDrawerItemModels.mapValues {
-                balanceModelList.add(it.value)
+            itemMap.balanceDrawerItemModels.forEach {
+                balanceModelList.add(it)
             }
             submitList(balanceModelList.toMutableList())
         } catch (e: Exception) {
@@ -299,10 +299,6 @@ class BalanceAdapter(
 
         companion object {
             private const val TITLE_HEADER_WEBSITE = "Tokopedia"
-            private const val KUPON_SAYA_URL_PATH = "kupon-saya"
-            private const val DIRECTION_UP = 0
-            private const val DIRECTION_DOWN = 1
-            private const val DRAWER_DELAY_ANIMATION = 1000L
         }
     }
 }

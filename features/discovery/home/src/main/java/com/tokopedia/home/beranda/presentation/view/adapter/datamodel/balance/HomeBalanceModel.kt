@@ -18,12 +18,11 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_WITH_TOPUP
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.balancewidget.BalanceWidgetTypeFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.balancewidget.BalanceWidgetVisitable
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
 import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.network.exception.MessageErrorException
 
 data class HomeBalanceModel(
-    var balanceDrawerItemModels: MutableMap<Int, BalanceDrawerItemModel> = mutableMapOf(),
+    var balanceDrawerItemModels: MutableList<BalanceDrawerItemModel> = mutableListOf(),
     var balanceType: Int? = TYPE_STATE_2,
     var isTokopointsOrOvoFailed: Boolean = false
 ) : BalanceWidgetVisitable {
@@ -72,11 +71,11 @@ data class HomeBalanceModel(
 
     //call to init balance widget data
     fun initBalanceModelByType() {
-        balanceDrawerItemModels.remove(BALANCE_POSITION_THIRD)
-        balanceDrawerItemModels.remove(BALANCE_POSITION_FOURTH)
+//        balanceDrawerItemModels.remove(BALANCE_POSITION_THIRD)
+//        balanceDrawerItemModels.remove(BALANCE_POSITION_FOURTH)
 
-        balanceDrawerItemModels[BALANCE_POSITION_FIRST] = resetDrawerItem(BALANCE_POSITION_FIRST)
-        balanceDrawerItemModels[BALANCE_POSITION_SECOND] = resetDrawerItem(BALANCE_POSITION_SECOND)
+//        balanceDrawerItemModels[BALANCE_POSITION_FIRST] = resetDrawerItem(BALANCE_POSITION_FIRST)
+//        balanceDrawerItemModels[BALANCE_POSITION_SECOND] = resetDrawerItem(BALANCE_POSITION_SECOND)
     }
 
     fun resetDrawerItem(position: Int): BalanceDrawerItemModel {
@@ -197,51 +196,6 @@ data class HomeBalanceModel(
         return null
     }
 
-    private fun setBalanceState(type: Int, state: Int): HomeBalanceModel {
-        flagStateCondition(
-            itemType = type,
-            action = {
-                balanceDrawerItemModels[it] = balanceDrawerItemModels[it]?.copy(
-                    state = state
-                )?: BalanceDrawerItemModel(state = state)
-            }
-        )
-        return this
-    }
-
-    private fun mapPendingCashback(
-        homeHeaderWalletAction: HomeHeaderWalletAction?,
-        pendingCashBackData: PendingCashbackModel?
-    ) {
-        pendingCashBackData?.let { pendingCashBackData ->
-            val type = TYPE_WALLET_PENDING_CASHBACK
-            flagStateCondition(
-                itemType = type,
-                action = {
-
-                }
-            )
-        }
-    }
-
-    private fun mapWallet(homeHeaderWalletAction: HomeHeaderWalletAction?) {
-        homeHeaderWalletAction?.let { homeHeaderWalletAction ->
-            val type = when (homeHeaderWalletAction.walletType) {
-                else -> TYPE_WALLET_OTHER
-            }
-
-            flagStateCondition(
-                itemType = type,
-                action = {
-                    balanceDrawerItemModels[it] = homeHeaderWalletAction.mapToHomeBalanceItemModel(
-                        itemType = type,
-                        state = STATE_SUCCESS
-                    )
-                }
-            )
-        }
-    }
-
     private fun mapTokopoint(tokopointDrawerListHomeData: TokopointsDrawerListHomeData?) {
         val tokopointMapData = tokopointDrawerListHomeData?.tokopointsDrawerList?.drawerList?.map {
             val type = getDrawerType(it.type)
@@ -266,15 +220,15 @@ data class HomeBalanceModel(
             flagStateCondition(
                     itemType = tokopointAnimDrawerContent.drawerItemType,
                     action = {
-                        balanceDrawerItemModels[it] = tokopointAnimDrawerContent
+                        balanceDrawerItemModels.add(tokopointAnimDrawerContent)
                     }
             )
         } else {
             flagStateCondition(itemType = TYPE_TOKOPOINT,
                     action = {
-                        balanceDrawerItemModels[it] = getDefaultTokopointsErrorState().apply {
+                        balanceDrawerItemModels.add( getDefaultTokopointsErrorState().apply {
                             state = STATE_ERROR
-                        }
+                        })
                     })
         }
     }
@@ -295,7 +249,7 @@ data class HomeBalanceModel(
                 selectedBalance.let { balance ->
                     flagStateCondition(
                         itemType = balance.drawerItemType,
-                        action = { balanceDrawerItemModels[it] = balance }
+                        action = { balanceDrawerItemModels.add(balance) }
                     )
                 }
             } else {
@@ -319,17 +273,17 @@ data class HomeBalanceModel(
 
     private fun flagStateCondition(
         itemType: Int,
-        action: (pos: Int) -> Unit
+        action: () -> Unit
     ) {
         when (balanceType) {
             TYPE_STATE_2 -> {
                 itemTypeCondition(
                         itemType,
-                        typeWalletCondition = { action.invoke(BALANCE_POSITION_FIRST) },
-                        typeTokopointCondition = { action.invoke(BALANCE_POSITION_SECOND) },
-                        typeFreeOngkirCondition = { action.invoke(BALANCE_POSITION_SECOND) },
-                        typeCouponCondition = { action.invoke(BALANCE_POSITION_SECOND) },
-                        typeRewardsCondition = { action.invoke(BALANCE_POSITION_SECOND) }
+                        typeWalletCondition = { action.invoke() },
+                        typeTokopointCondition = { action.invoke() },
+                        typeFreeOngkirCondition = { action.invoke() },
+                        typeCouponCondition = { action.invoke() },
+                        typeRewardsCondition = { action.invoke() }
                 )
             }
         }
