@@ -120,7 +120,6 @@ import kotlinx.android.synthetic.main.tm_dash_tnc_coupon_creation.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
-import kotlin.math.max
 
 class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
 
@@ -358,7 +357,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                     } else {
                         closeLoadingDialog()
                         setButtonState()
-                        handleProgramPreValidateError()
+                        handleProgramPreValidateError(it.data?.membershipValidateBenefit?.resultStatus?.message?.getOrNull(0), it.data?.membershipValidateBenefit?.resultStatus?.message?.getOrNull(1))
                     }
                 }
                 TokoLiveDataResult.STATUS.ERROR -> {
@@ -526,12 +525,24 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun handleProgramPreValidateError() {
+    private fun handleProgramPreValidateError(reason: String?, message: String?) {
         setButtonState()
         val bundle = Bundle()
+        val title = if(reason.isNullOrEmpty()) {
+            PROGRAM_VALIDATION_ERROR_TITLE
+        }
+        else{
+            reason
+        }
+        val desc = if(message.isNullOrEmpty()) {
+            PROGRAM_VALIDATION_ERROR_DESC
+        }
+        else{
+            message
+        }
         val tmIntroBottomSheetModel = TmIntroBottomsheetModel(
-            PROGRAM_VALIDATION_ERROR_TITLE,
-            PROGRAM_VALIDATION_ERROR_DESC,
+            title,
+            desc,
             TM_ERROR_PROGRAM,
             PROGRAM_VALIDATION_CTA_TEXT
         )

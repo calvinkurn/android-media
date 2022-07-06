@@ -376,16 +376,16 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                         if (it.data?.membershipValidateBenefit?.resultStatus?.code == "42050") {
                             //No Active program available
                             handleProgramPreValidateError(
-                                it.data.membershipValidateBenefit.resultStatus.reason,
-                                it?.data.membershipValidateBenefit.resultStatus.message?.firstOrNull(),
+                                it.data.membershipValidateBenefit.resultStatus.message?.getOrNull(0),
+                                it?.data.membershipValidateBenefit.resultStatus.message?.getOrNull(1),
                                 true
                             )
                         }
                         if (it.data?.membershipValidateBenefit?.resultStatus?.code == "42049") {
                             //Coupon active date outside program time window
                             handleProgramPreValidateError(
-                                it.data.membershipValidateBenefit.resultStatus.reason,
-                                it?.data.membershipValidateBenefit.resultStatus.message?.firstOrNull(),
+                                it.data.membershipValidateBenefit.resultStatus.message?.getOrNull(0),
+                                it?.data.membershipValidateBenefit.resultStatus.message?.getOrNull(1),
                                 false
                             )
                         }
@@ -1003,7 +1003,6 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
     private fun setProgramDateAuto(){
         when(selectedChipPositionDate){
             ProgramDateType.AUTO -> {
-
                 if(programData!= null) {
                     if(programStatus == ACTIVE){
                         val todayCalendar =
@@ -1025,11 +1024,19 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                             )
                         )
                     }
-                    textFieldProgramStartTime.editText.setText(
-                        TmDateUtil.setTime(
-                            programData?.timeWindow?.startTime.toString()
+                    val minTimeStart = GregorianCalendar(context?.let {
+                        LocaleUtils.getCurrentLocale(
+                            it
                         )
+                    })
+                    minTimeStart.apply {
+                        add(Calendar.HOUR_OF_DAY, 4)
+                        add(Calendar.MINUTE, 30)
+                    }
+                    textFieldProgramStartTime.editText.setText(
+                            "${minTimeStart.get(Calendar.HOUR_OF_DAY)}:${minTimeStart.get(Calendar.MINUTE)} WIB"
                     )
+                    tmCouponStartDateUnix = minTimeStart
                     textFieldProgramEndDate.editText.setText(TmDateUtil.setDate(programData?.timeWindow?.endTime.toString()))
                     textFieldProgramEndTime.editText.setText(TmDateUtil.setTime(programData?.timeWindow?.endTime.toString()))
                 }
