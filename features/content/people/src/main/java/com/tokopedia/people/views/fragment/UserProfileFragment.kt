@@ -413,9 +413,8 @@ class UserProfileFragment @Inject constructor(
 
             /** Setup Bio */
             val displayBioText = HtmlLinkHelper(requireContext(), curr.biography).spannedString
-            textBio.shouldShowWithAction(displayBioText?.isNotEmpty() == true) {
-                textBio.text = displayBioText
-            }
+            textBio.showWithCondition(displayBioText?.isNotEmpty() == true)
+            textBio.text = displayBioText
 
             if (displayBioText?.lines()?.count().orZero() > SEE_ALL_LINE) {
                 if (isViewMoreClickedBio) {
