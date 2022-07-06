@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:layout_marginTop="16dp"
+    android:orientation="vertical"
+    >
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/img_icon_tokofood_home"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:scaleType="centerCrop"
+        android:layout_marginBottom="8dp"
+        tools:src="@tools:sample/avatars" />
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_icon_tokofood_home"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="small"
+        app:typographyWeight="reguler"
+        tools:text="Home" />
+
+</LinearLayout>

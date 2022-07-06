@@ -10,7 +10,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class GetChatWhitelistFeature @Inject constructor(
+open class GetChatWhitelistFeature @Inject constructor(
     private val gqlUseCase: GraphqlUseCase<ChatWhitelistFeatureResponse>,
     private var dispatchers: CoroutineDispatchers
 ) : CoroutineScope {
@@ -19,7 +19,7 @@ class GetChatWhitelistFeature @Inject constructor(
 
     override val coroutineContext: CoroutineContext get() = dispatchers.main + SupervisorJob()
 
-    fun getWhiteList(
+    open fun getWhiteList(
         feature: String,
         onSuccess: (ChatWhitelistFeatureResponse) -> Unit,
         onError: (Throwable) -> Unit

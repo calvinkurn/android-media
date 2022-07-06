@@ -10,7 +10,7 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.otp.common.idling_resource.TkpdIdlingResource
-import com.tokopedia.otp.verification.domain.data.OtpConstant
+import com.tokopedia.otp.verification.data.OtpConstant
 import com.tokopedia.otp.verification.domain.data.OtpRequestData
 import com.tokopedia.otp.verification.domain.data.OtpValidateData
 import com.tokopedia.otp.verification.domain.pojo.OtpModeListData

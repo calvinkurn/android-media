@@ -18,7 +18,7 @@
         app:layout_constraintEnd_toStartOf="@+id/point_action"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_2"
+        app:typographyType="display_2"
         tools:text="Pengiriman dan Chat" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -29,7 +29,7 @@
         android:textColor="@color/Unify_G500"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         app:typographyWeight="bold" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
