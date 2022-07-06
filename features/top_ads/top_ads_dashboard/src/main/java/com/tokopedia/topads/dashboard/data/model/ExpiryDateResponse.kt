@@ -16,7 +16,7 @@ data class ExpiryDateResponse(
             val depositID: Int = 0,
 
             @field:SerializedName("nominal")
-            val nominal: Int = 0,
+            val nominal: Float = 0f,
 
             @field:SerializedName("status")
             val status: Int = 0

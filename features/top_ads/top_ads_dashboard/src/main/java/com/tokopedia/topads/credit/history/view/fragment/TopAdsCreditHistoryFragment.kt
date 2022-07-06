@@ -60,6 +60,7 @@ class TopAdsCreditHistoryFragment :
     private var topadsCreditUsed: Typography? = null
     private var dateImage: ImageUnify? = null
     private var nextImage: ImageUnify? = null
+    private var txtRewardPendingValue: Typography? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -121,6 +122,10 @@ class TopAdsCreditHistoryFragment :
         viewModel.creditAmount.observe(viewLifecycleOwner, {
             creditAmount?.text = it
         })
+
+        viewModel.expiryDateHiddenTrial.observe(viewLifecycleOwner) {
+            txtRewardPendingValue?.text = it
+        }
     }
 
     private fun onSuccessGetAutoTopUpStatus(data: AutoTopUpStatus) {
@@ -157,6 +162,7 @@ class TopAdsCreditHistoryFragment :
         addCredit = view.findViewById(R.id.addCredit)
         dateImage = view.findViewById(R.id.date_image)
         nextImage = view.findViewById(R.id.next_image)
+        txtRewardPendingValue = view.findViewById(R.id.txtRewardPendingValue)
         view.findViewById<ConstraintLayout>(R.id.totalKredit).apply {
             topadsCreditAddition = this.findViewById(R.id.txtSubTitle)
             findViewById<Typography>(R.id.txtTitle).text =
@@ -182,6 +188,7 @@ class TopAdsCreditHistoryFragment :
     private fun loadData() {
         viewModel.getShopDeposit()
         viewModel.getAutoTopUpStatus()
+        viewModel.loadPendingReward()
     }
 
     private fun initView() {
@@ -289,7 +296,7 @@ class TopAdsCreditHistoryFragment :
 
     override fun onSwipeRefresh() {
         super.onSwipeRefresh()
-        viewModel.getAutoTopUpStatus()
+        loadData()
     }
 
     override fun getEmptyDataViewModel() =

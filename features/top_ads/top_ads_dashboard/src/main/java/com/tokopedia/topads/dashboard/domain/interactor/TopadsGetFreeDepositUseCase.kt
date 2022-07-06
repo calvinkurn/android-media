@@ -21,7 +21,7 @@ class TopadsGetFreeDepositUseCase @Inject constructor(
 
     fun execute() {
         setGraphqlQuery(GQL_QUERY)
-        setRequestParams(mapOf(TopAdsDashboardConstant.PARAM_SHOP_ID to userSession.shopId.toIntOrZero()))
+        setRequestParams(mapOf(TopAdsDashboardConstant.PARAM_SHOP_ID to userSession.shopId))
         setTypeClass(ExpiryDateResponse::class.java)
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE)
             .setExpiryTime(GraphqlConstant.ExpiryTimes.WEEK.`val`())
