@@ -15,7 +15,7 @@ import com.tokopedia.product.addedit.preview.data.model.params.add.*
 import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.PRICE_CURRENCY
 import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.UNIT_GRAM
 import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.UNIT_GRAM_STRING
-import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.UNIT_KILOGRAM_SRING
+import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.UNIT_KILOGRAM_STRING
 import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.getActiveStatus
 import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.getTimeUnitString
 import com.tokopedia.product.addedit.shipment.presentation.model.CPLModel
@@ -162,7 +162,7 @@ class AddProductInputMapper @Inject constructor() {
     }
 
     private fun mapShipmentUnit(weightUnit: Int): String {
-        return if (weightUnit == UNIT_GRAM) UNIT_GRAM_STRING else UNIT_KILOGRAM_SRING
+        return if (weightUnit == UNIT_GRAM) UNIT_GRAM_STRING else UNIT_KILOGRAM_STRING
     }
 
     private fun mapVideoParam(videoLinkList: List<VideoLinkModel>): Videos {
@@ -212,10 +212,8 @@ class AddProductInputMapper @Inject constructor() {
         )
     }
 
-    private fun mapCPLData(cpl: CPLModel): CPLData {
-        return CPLData(
-            cpl.shipmentServicesIds
-        )
+    private fun mapCPLData(cpl: CPLModel): CPLData? {
+        return cpl.shipmentServicesIds?.let { CPLData(it) }
     }
 
     private fun mapSpecificationParam(specifications: List<SpecificationInputModel>?) =

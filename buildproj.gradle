@@ -94,6 +94,8 @@ subprojects {
                 substitute module('org.jetbrains.kotlin:kotlin-stdlib-jdk7') with module("org.jetbrains.kotlin:kotlin-stdlib-jdk7:${kotlinVersion}")
                 substitute module('org.jetbrains.kotlin:kotlin-stdlib-jdk8') with module("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
                 substitute module('com.google.code.gson:gson') with module("com.google.code.gson:gson:$gsonDebugVersion")
+                substitute module("androidx.room:room-runtime") with module("androidx.room:room-runtime:$roomVersion")
+                substitute module("androidx.room:room-compiler") with module("androidx.room:room-compiler:$roomVersion")
 
                 if (!rootProject.ext.debugToolsEnabled) {
                     substitute module(rootProject.ext.debugToolsDependencies.chuck) with module(rootProject.ext.debugToolsDependencies.chuckNoop)
