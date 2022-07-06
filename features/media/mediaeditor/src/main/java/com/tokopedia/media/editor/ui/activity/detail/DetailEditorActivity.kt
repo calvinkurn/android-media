@@ -1,7 +1,5 @@
 package com.tokopedia.media.editor.ui.activity.detail
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory

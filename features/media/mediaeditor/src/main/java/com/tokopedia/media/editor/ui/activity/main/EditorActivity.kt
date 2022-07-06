@@ -74,8 +74,11 @@ class EditorActivity : BaseEditorActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if(resultCode == DetailEditorActivity.EDITOR_RESULT_CODE){
-            val msg = data?.getStringExtra(DetailEditorActivity.EDITOR_RESULT_PARAM)
-            Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
+            val asd = data?.getParcelableExtra<EditorDetailUiModel>(DetailEditorActivity.EDITOR_RESULT_PARAM)
+            asd?.let {
+                viewModel.addEditState(asd)
+                Toast.makeText(this, "${viewModel.getEditState().size}", Toast.LENGTH_LONG).show()
+            }
         }
     }
 

@@ -55,7 +55,7 @@ class EditorFragment @Inject constructor() : BaseEditorFragment()
                 putExtra(DetailEditorActivity.PARAM_EDITOR_DETAIL, detailUiModel)
             }
 
-            startActivityForResult(intent, 0)
+            startActivityForResult(intent, DetailEditorActivity.EDITOR_RESULT_CODE)
         }
     }
 

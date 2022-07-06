@@ -69,6 +69,7 @@ class MainActivity : AppCompatActivity() {
         etAppLink.setText(getDefaultAppLink())
 
         goToButton.setOnClickListener { goTo() }
+        goTo()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -126,6 +127,6 @@ class MainActivity : AppCompatActivity() {
         /*
          * Put your default applink here
          */
-        return ""
+        return "tokopedia-android-internal://global/media-editor"
     }
 }

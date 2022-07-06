@@ -2,9 +2,7 @@ package com.tokopedia.media.editor.ui.fragment
 
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -68,10 +66,12 @@ class DetailEditorFragment @Inject constructor(
 
     override fun onBrightnessValueChanged(value: Float) {
         viewModel.setBrightness(value)
+        data.brightnessValue = value
     }
 
     override fun onContrastValueChanged(value: Float) {
         viewModel.setContrast(value)
+        data.contrastValue = value
     }
 
     override fun onRemoveBackgroundClicked() {
@@ -161,8 +161,7 @@ class DetailEditorFragment @Inject constructor(
 
     private fun editingSave() {
         val intent = Intent()
-        val msg = if(data.editorToolType == EditorToolType.BRIGHTNESS) "Brightness" else "Contrast"
-        intent.putExtra(DetailEditorActivity.EDITOR_RESULT_PARAM,msg)
+        intent.putExtra(DetailEditorActivity.EDITOR_RESULT_PARAM, data)
         activity?.setResult(DetailEditorActivity.EDITOR_RESULT_CODE, intent)
         activity?.finish()
     }
