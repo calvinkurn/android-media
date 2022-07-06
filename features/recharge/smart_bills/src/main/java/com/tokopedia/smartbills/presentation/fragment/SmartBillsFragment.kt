@@ -488,6 +488,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     override fun onSwipeRefresh() {
         toggleAllItems(false)
         updateCheckAll()
+        hideHighlightCategory()
         super.onSwipeRefresh()
     }
 
