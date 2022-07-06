@@ -64,7 +64,6 @@ import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
-import com.tokopedia.tokopedianow.common.util.StringUtil.getOrDefaultZeroString
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.RepurchaseData
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.GENERAL_SEARCH
@@ -77,6 +76,7 @@ import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackin
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartProductItem
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
 import com.tokopedia.tokopedianow.searchcategory.data.model.QuerySafeModel
+import com.tokopedia.tokopedianow.searchcategory.domain.mapper.mapChooseAddressToQuerySafeModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.Product
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.ProductLabelGroup
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProduct
@@ -426,12 +426,9 @@ abstract class BaseSearchCategoryViewModel(
         }
         updateViewForFirstPage(isEmptyProductList)
 
-        chooseAddressData?.apply {
-            querySafeMutableLiveData.value = QuerySafeModel(
-                warehouseId = warehouse_id.getOrDefaultZeroString(),
-                isQuerySafe = searchProduct.data.isQuerySafe
-            )
-        }
+        querySafeMutableLiveData.value = chooseAddressData.mapChooseAddressToQuerySafeModel(
+            isQuerySafe = searchProduct.data.isQuerySafe
+        )
     }
 
     private fun initFilterController(headerDataView: HeaderDataView) {
