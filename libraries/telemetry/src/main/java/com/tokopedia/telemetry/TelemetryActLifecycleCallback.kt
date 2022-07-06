@@ -6,6 +6,7 @@ import android.content.Context
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.hardware.SensorManager.SENSOR_DELAY_NORMAL
+import android.hardware.SensorManager.SENSOR_DELAY_UI
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -28,8 +29,8 @@ class TelemetryActLifecycleCallback : Application.ActivityLifecycleCallbacks {
 
     companion object {
         var prevActivityRef: WeakReference<AppCompatActivity>? = null
-        const val SAMPLING_RATE_MICRO = 200_000 // 200ms or 0.2s
-        const val SAMPLING_RATE_MS = 200 // 200ms or 0.2s
+        const val SAMPLING_RATE_MICRO = 85_000 // 85ms or 0.085s
+        const val SAMPLING_RATE_MS = 85 // 85ms or 0.085s
     }
 
     private fun registerTelemetryListener(activity: AppCompatActivity) {
@@ -68,7 +69,7 @@ class TelemetryActLifecycleCallback : Application.ActivityLifecycleCallbacks {
         return if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
             SAMPLING_RATE_MICRO
         } else {
-            SENSOR_DELAY_NORMAL
+            SENSOR_DELAY_UI
         }
     }
 
