@@ -14,10 +14,14 @@ class CampaignListActivity : BaseSimpleActivity() {
         private const val KEY_BUNDLE_IS_SAVE_DRAFT = "is_save_draft"
 
         @JvmStatic
-        fun start(context: Context, isSaveDraft: Boolean = false) {
+        fun start(
+            context: Context,
+            isSaveDraft: Boolean = false,
+            isClearTop : Boolean = isSaveDraft,
+        ) {
             val starter = Intent(context, CampaignListActivity::class.java).apply {
+                if (isClearTop) addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 if (isSaveDraft) {
-                    addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                     addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                     putExtra(KEY_BUNDLE_IS_SAVE_DRAFT, isSaveDraft)
                 }

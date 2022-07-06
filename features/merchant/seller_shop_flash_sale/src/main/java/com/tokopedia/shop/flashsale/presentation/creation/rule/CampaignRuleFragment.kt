@@ -554,7 +554,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
                     hideSaveDraftButtonLoading()
                     showValidationErrorMessage(it.result)
                 }
-                is CampaignRuleActionResult.Success -> routeToCampaignListPage()
+                is CampaignRuleActionResult.Success -> routeToCampaignListPage(isSaveDraft = true)
                 is CampaignRuleActionResult.Fail -> {
                     showActionErrorMessage(it.error)
                     hideSaveDraftButtonLoading()
@@ -692,9 +692,9 @@ class CampaignRuleFragment : BaseDaggerFragment(),
         binding?.btnCreateCampaign.stopLoading()
     }
 
-    private fun routeToCampaignListPage() {
+    private fun routeToCampaignListPage(isSaveDraft: Boolean = false) {
         val context = context ?: return
-        CampaignListActivity.start(context, isSaveDraft = true)
+        CampaignListActivity.start(context, isSaveDraft = isSaveDraft, isClearTop = true)
     }
 
     private fun showChooseRelatedCampaignBottomSheet() {
