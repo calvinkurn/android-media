@@ -17,7 +17,7 @@ object AnimationUtils {
         finalPosition: Float,
         @FloatRange(from = 0.1) stiffness: Float,
         @FloatRange(from = 0.0) dampingRatio: Float,
-        @FloatRange(from = 0.0) velocity: Float = 24f,
+        @FloatRange(from = 0.0) velocity: Float = 14f,
     ): SpringAnimation {
         val spring = SpringForce(finalPosition)
         spring.apply {
