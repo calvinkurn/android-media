@@ -67,6 +67,10 @@ class GetSellerCampaignListUseCase @Inject constructor(
                   is_unique_buyer
                   is_campaign_relation
                   is_campaign_rule_submit
+                  campaign_relation_data {
+                    id
+                    name
+                  }
                   gradient_color {
                      first_color
                      second_color
