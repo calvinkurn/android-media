@@ -1,7 +1,5 @@
 package com.tokopedia.feedcomponent.onboarding.view.strategy
 
-import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.feedcomponent.onboarding.domain.repository.FeedUGCOnboardingRepository
 import com.tokopedia.feedcomponent.onboarding.view.strategy.base.FeedUGCOnboardingStrategy
@@ -13,14 +11,12 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import com.tokopedia.abstraction.R as abstractionR
 
 /**
  * Created By : Jonathan Darwin on July 04, 2022
  */
 class FeedUGCCompleteOnboardingStrategy @Inject constructor(
     dispatcher: CoroutineDispatchers,
-    @ApplicationContext private val context: Context,
     private val repo: FeedUGCOnboardingRepository,
 ): FeedUGCOnboardingStrategy(dispatcher) {
 
@@ -80,7 +76,7 @@ class FeedUGCCompleteOnboardingStrategy @Inject constructor(
                 _usernameState.update { checkUsername() }
             }
         }) {
-            _usernameState.update { UsernameState.Invalid(getDefaultErrorMessage()) }
+            _usernameState.update { UsernameState.Invalid("") }
         }
     }
 
@@ -132,10 +128,6 @@ class FeedUGCCompleteOnboardingStrategy @Inject constructor(
 
         return if(result.first) UsernameState.Valid
         else UsernameState.Invalid(result.second)
-    }
-
-    private fun getDefaultErrorMessage(): String {
-        return context.getString(abstractionR.string.default_request_error_unknown)
     }
 
     private fun submitFail() {

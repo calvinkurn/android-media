@@ -19,9 +19,6 @@ import com.tokopedia.feedcomponent.onboarding.view.uimodel.state.FeedUGCOnboardi
 import com.tokopedia.feedcomponent.onboarding.view.uimodel.state.UsernameState
 import com.tokopedia.feedcomponent.onboarding.view.viewmodel.FeedUGCOnboardingViewModel
 import com.tokopedia.feedcomponent.util.withCache
-import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -110,7 +107,7 @@ class FeedUserCompleteOnboardingBottomSheet : BaseFeedUserOnboardingBottomSheet(
                         Toaster.toasterCustomBottomHeight = binding.btnContinue.height + offset16
                         Toaster.build(
                             view = binding.root,
-                            text = getString(abstractionR.string.default_request_error_unknown),
+                            text = getDefaultErrorMessage(),
                             duration = Toaster.LENGTH_SHORT,
                             type = Toaster.TYPE_ERROR,
                         ).show()
@@ -137,7 +134,10 @@ class FeedUserCompleteOnboardingBottomSheet : BaseFeedUserOnboardingBottomSheet(
             binding.textFieldUsername.isLoading = usernameState is UsernameState.Loading
             binding.textFieldUsername.isInputError = usernameState is UsernameState.Invalid
             binding.textFieldUsername.setMessage(
-                if(usernameState is UsernameState.Invalid) usernameState.message
+                if(usernameState is UsernameState.Invalid) {
+                    if(usernameState.message.isNotEmpty()) usernameState.message
+                    else getDefaultErrorMessage()
+                }
                 else getString(R.string.up_input_username_info)
             )
             binding.textFieldUsername.icon1.visibility = if(usernameState is UsernameState.Valid) View.VISIBLE else View.GONE
@@ -147,6 +147,10 @@ class FeedUserCompleteOnboardingBottomSheet : BaseFeedUserOnboardingBottomSheet(
                 dismiss()
             }
         }
+    }
+
+    private fun getDefaultErrorMessage(): String {
+        return getString(abstractionR.string.default_request_error_unknown)
     }
 
     fun showNow(fragmentManager: FragmentManager) {
