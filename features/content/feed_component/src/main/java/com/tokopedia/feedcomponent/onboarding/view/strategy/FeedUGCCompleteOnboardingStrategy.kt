@@ -109,7 +109,7 @@ class FeedUGCCompleteOnboardingStrategy @Inject constructor(
                 }
 
                 val acceptTncResult = repo.acceptTnc()
-                if(acceptTncResult) {
+                if(!acceptTncResult) {
                     _uiEvent.emit(FeedUGCOnboardingUiEvent.ShowError)
                 }
 
