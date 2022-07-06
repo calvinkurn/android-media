@@ -67,13 +67,13 @@ class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) :
         when(item.minimumTierLevel) {
             COUPON_VIP -> {
                 tvMembership.text = VIP
-                tvMembership.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_YN500)))
-                tvMembership.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_YN100))
+                tvMembership.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_YN500)))
+                tvMembership.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_YN100))
             }
             COUPON_MEMBER -> {
                 tvMembership.text = PREMIUM
-                tvMembership.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN600)))
-                tvMembership.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN100))
+                tvMembership.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN600)))
+                tvMembership.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN100))
             }
         }
         val spent = item.remainingQuota?.let { item.voucherQuota?.minus(it) }
@@ -87,15 +87,15 @@ class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) :
                 optionMenu.hide()
                 btnAddQuota.hide()
                 tvCouponState.text = "Dihapus"
-                tvCouponState.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN400)))
-                viewStatus.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN400))
+                tvCouponState.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN400)))
+                viewStatus.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
             }
             COUPON_PROCESSING ->{
                 optionMenu.hide()
                 btnAddQuota.hide()
                 tvCouponState.text = "Pengolahan"
-                tvCouponState.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN400)))
-                viewStatus.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN400))
+                tvCouponState.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN400)))
+                viewStatus.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
             }
             COUPON_NOT_STARTED ->{
                 optionMenu.show()
@@ -117,8 +117,8 @@ class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) :
                     }
                 }
                 tvCouponState.text = "Belum Aktif"
-                tvCouponState.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN400)))
-                viewStatus.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN400))
+                tvCouponState.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN400)))
+                viewStatus.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
             }
             COUPON_ON_GOING ->{
                 optionMenu.setOnClickListener {
@@ -145,31 +145,31 @@ class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) :
                 optionMenu.show()
                 ivCoupon.loadImage(R.drawable.tm_ic_member_golden)
                 tvCouponState.text = "Kupon Aktif"
-                tvCouponState.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_GN500)))
-                viewStatus.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_GN500))
+                tvCouponState.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)))
+                viewStatus.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
             }
             COUPON_ENDED ->{
                 ivCoupon.loadImage(R.drawable.tm_ic_member_grey)
                 optionMenu.hide()
                 btnAddQuota.hide()
                 tvCouponState.text = "Berakhir"
-                tvCouponState.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN400)))
-                viewStatus.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN400))
+                tvCouponState.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN400)))
+                viewStatus.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
             }
             COUPON_STOPPED ->{
                 ivCoupon.loadImage(R.drawable.tm_ic_member_grey)
                 optionMenu.hide()
                 btnAddQuota.hide()
                 tvCouponState.text = "Berakhir"
-                tvCouponState.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN400)))
-                viewStatus.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN400))
+                tvCouponState.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN400)))
+                viewStatus.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
             }
         }
 
         if(item.remainingQuota == 0){
             tvCouponState.text = "Kuota Habis"
-            viewStatus.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_YN500))
-            tvCouponState.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_YN500)))
+            viewStatus.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_YN500))
+            tvCouponState.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_YN500)))
             btnAddQuota.show()
             btnAddQuota.setOnClickListener {
                 item.voucherId?.let { it1 -> item.voucherTypeFormatted?.let { it2 ->

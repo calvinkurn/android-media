@@ -302,10 +302,8 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                     if (it.data?.membershipValidateBenefit?.resultStatus?.code == "200") {
                         errorState.isValidateCouponError = false
                         uploadImageVip()
-                        closeLoadingDialog()
                     } else {
                         closeLoadingDialog()
-                        setButtonState()
                         setButtonState()
                         handleProgramPreValidateError()
                     }
@@ -595,7 +593,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         bundle.putParcelable(BUNDLE_COUPON_PREVIEW_DATA, tmCouponPreviewData)
         bundle.putParcelable(BUNDLE_COUPON_CREATE_DATA, tmMerchantCouponCreateData)
         tmOpenFragmentCallback.openFragment(CreateScreenType.PREVIEW, bundle)
-       // closeLoadingDialog()
+        closeLoadingDialog()
         setButtonState()
     }
 

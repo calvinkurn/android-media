@@ -309,7 +309,13 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
             subtitle = HEADER_DESC
             isShowBackButton = true
             setNavigationOnClickListener {
-                activity?.onBackPressed()
+                TokomemberDashIntroActivity.openActivity(
+                    shopID, arguments?.getString(BUNDLE_SHOP_AVATAR)?:"",
+                    arguments?.getString(BUNDLE_SHOP_NAME)?:"",
+                    false,
+                    this.context
+                )
+                activity?.finish()
             }
         }
         progressCard?.apply {
