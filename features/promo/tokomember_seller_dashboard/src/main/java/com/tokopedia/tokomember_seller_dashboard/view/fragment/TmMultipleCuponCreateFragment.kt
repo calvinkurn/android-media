@@ -120,6 +120,7 @@ import kotlinx.android.synthetic.main.tm_dash_tnc_coupon_creation.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
+import kotlin.math.max
 
 class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
 
@@ -308,13 +309,6 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                     TokoLiveDataResult.STATUS.SUCCESS -> {
                         errorState.isPreValidatePremiumError = false
                         if (it.data?.voucherValidationPartial?.header?.messages?.size == 0) {
-
-//                            if(couponStartDate.isNotEmpty()){
-//                                manualStartTimeProgram = couponStartDate.substring(0, couponStartDate.length-2)
-//                            }
-//                            if(couponEndDate.isNotEmpty()){
-//                                manualEndTimeProgram = couponEndDate.substring(0, couponEndDate.length-2)
-//                            }
                             var source = SOURCE_MULTIPLE_COUPON_CREATE
                             if(programActionType == ProgramActionType.EXTEND){
                                 source = SOURCE_MULTIPLE_COUPON_EXTEND
@@ -622,8 +616,8 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         tmCouponPreviewData.apply {
             startDate = textFieldProgramStartDate.editText.text.toString()
             endDate = textFieldProgramEndDate.editText.text.toString()
-            startTime = textFieldProgramStartTime.editText.text.toString()
-            endTime = textFieldProgramEndTime.editText.text.toString()
+            startTime = textFieldProgramStartTime.editText.text.toString().replace(" ","").substringBefore("W")
+            endTime = textFieldProgramEndTime.editText.text.toString().replace(" ","").substringBefore("W")
             maxValue = maxBenefit.toString()
             voucherList.add(0, tmCouponListPremiumItemPreview)
             voucherList.add(1, tmCouponListVipItemPreview)
@@ -650,6 +644,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         bundle.putInt(BUNDLE_SHOP_ID, arguments?.getInt(BUNDLE_SHOP_ID) ?: 0)
         bundle.putInt(BUNDLE_PROGRAM_ID_IN_TOOLS, arguments?.getInt(BUNDLE_PROGRAM_ID_IN_TOOLS) ?: 0)
         bundle.putParcelable(BUNDLE_COUPON_PREVIEW_DATA, tmCouponPreviewData)
+        bundle.putInt(BUNDLE_PROGRAM_TYPE, programActionType)
         bundle.putParcelable(BUNDLE_COUPON_CREATE_DATA, tmMerchantCouponCreateData)
         tmOpenFragmentCallback.openFragment(CreateScreenType.PREVIEW, bundle)
         closeLoadingDialog()
@@ -1013,30 +1008,26 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         var dayInId = ""
         context?.let {
             val currentDate = GregorianCalendar(LocaleUtils.getCurrentLocale(it))
+            val maxDate = GregorianCalendar(LocaleUtils.getCurrentLocale(it))
             when(programActionType) {
                 ProgramActionType.CREATE -> {
                     val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
                     currentDate.time = sdf.parse(manualStartTimeProgram + "00") ?: Date()
+                    maxDate.time = sdf.parse(manualEndTimeProgram + "00")?: Date()
+                }
+                ProgramActionType.CREATE_BUAT ->{
+                    val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
+                    currentDate.time = sdf.parse(manualStartTimeProgram + "00") ?: Date()
+                    maxDate.time = sdf.parse(manualEndTimeProgram + "00")?: Date()
                 }
                 ProgramActionType.EXTEND -> {
-                    currentDate.add(Calendar.HOUR,4)
-                }
+                    val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
+                    currentDate.time = sdf.parse(manualStartTimeProgram + "00") ?: Date()
+                    maxDate.time = sdf.parse(manualEndTimeProgram + "00")?: Date()                }
             }
             currentDate.add(Calendar.DAY_OF_MONTH,1)
 
-            val calMax = currentDate
-
-            when (type) {
-                0 -> {
-                    calMax.add(Calendar.MONTH, 3)
-                }
-                1 -> {
-                    calMax.add(Calendar.YEAR, 1)
-                    calMax.add(Calendar.DAY_OF_MONTH, 1)
-                }
-            }
-
-            val datepickerObject = DateTimePickerUnify(it, currentDate, currentDate, calMax).apply {
+            val datepickerObject = DateTimePickerUnify(it, currentDate, currentDate, maxDate).apply {
                 setTitle(title)
                 setInfo(desc)
                 setInfoVisible(true)

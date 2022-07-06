@@ -62,6 +62,7 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
     private var tmCouponPreviewData = TmCouponPreviewData()
     private var tmCouponCreateUnifyRequest = TmMerchantCouponUnifyRequest()
     private var programActionType = ProgramActionType.CREATE
+    private var isShowBottomSheet = true
     private val tmCouponPreviewAdapter: TmCouponPreviewAdapter by lazy {
         TmCouponPreviewAdapter(arrayListOf())
     }
@@ -99,6 +100,7 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
         }
         cardId = arguments?.getInt(BUNDLE_CARD_ID_IN_TOOLS) ?: 0
         if (programActionType == ProgramActionType.EXTEND) {
+            isShowBottomSheet = false
             viewBgPreview.hide()
             carouselPreview.hide()
             tmDashCreateViewModel.getProgramInfo(
@@ -108,6 +110,7 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
             )
         }
         else {
+            isShowBottomSheet = true
             viewBgPreview.show()
             carouselPreview.show()
             if(cardId == 0) {
@@ -174,9 +177,9 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
             when (it) {
                 is Success -> {
                     closeLoadingDialog()
-                    if (it.data.merchantPromotionCreateMultipleMV?.data?.status != "Success") {
+                    if (it.data.merchantPromotionCreateMultipleMV?.status == 200) {
                         activity?.finish()
-                        TokomemberDashHomeActivity.openActivity(arguments?.getInt(BUNDLE_SHOP_ID)?:0,cardId, context, true)
+                        TokomemberDashHomeActivity.openActivity(arguments?.getInt(BUNDLE_SHOP_ID)?:0,cardId, context, isShowBottomSheet)
                     } else {
                         view?.let { v ->
                             Toaster.build(
