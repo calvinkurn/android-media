@@ -1,5 +1,6 @@
 package com.tokopedia.people.viewmodel
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.people.domains.repository.UserProfileRepository
 import com.tokopedia.people.model.*
 import com.tokopedia.people.robot.UserProfileViewModelRobot
@@ -20,6 +21,9 @@ import org.junit.Test
 class UserProfileFollowViewModelTest {
 
     @get:Rule
+    val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
     val rule: CoroutineTestRule = CoroutineTestRule()
 
     private val testDispatcher = rule.dispatchers
@@ -30,7 +34,6 @@ class UserProfileFollowViewModelTest {
     private val commonBuilder = CommonModelBuilder()
     private val profileBuilder = ProfileUiModelBuilder()
     private val followInfoBuilder = FollowInfoUiModelBuilder()
-    private val profileWhitelistBuilder = ProfileWhitelistUiModelBuilder()
     private val mutationBuilder = MutationUiModelBuilder()
 
     private val mockException = commonBuilder.buildException()
@@ -45,11 +48,6 @@ class UserProfileFollowViewModelTest {
     private val mockOwnFollow = followInfoBuilder.buildFollowInfo(userID = mockUserId, encryptedUserID = mockUserId, status = false)
     private val mockOtherFollowed = followInfoBuilder.buildFollowInfo(userID = mockOtherUserId, encryptedUserID = mockOtherUserId, status = true)
     private val mockOtherNotFollow = followInfoBuilder.buildFollowInfo(userID = mockOtherUserId, encryptedUserID = mockOtherUserId, status = false)
-
-    private val mockNoWhitelist = profileWhitelistBuilder.buildNoWhitelist()
-    private val mockWhitelist = profileWhitelistBuilder.buildOnlyWhitelist()
-    private val mockHasUsername = profileWhitelistBuilder.buildHasUsername()
-    private val mockHasAcceptTnc = profileWhitelistBuilder.buildHasAcceptTnc()
 
     private val mockMutationSuccess = mutationBuilder.buildSuccess()
     private val mockMutationError = mutationBuilder.buildError()

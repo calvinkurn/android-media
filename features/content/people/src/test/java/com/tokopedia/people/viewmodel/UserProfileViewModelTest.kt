@@ -1,5 +1,6 @@
 package com.tokopedia.people.viewmodel
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.people.domains.repository.UserProfileRepository
 import com.tokopedia.people.model.CommonModelBuilder
 import com.tokopedia.people.model.FollowInfoUiModelBuilder
@@ -27,6 +28,9 @@ import org.junit.Test
 class UserProfileViewModelTest {
 
     @get:Rule
+    val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
     val rule: CoroutineTestRule = CoroutineTestRule()
 
     private val testDispatcher = rule.dispatchers
@@ -52,9 +56,6 @@ class UserProfileViewModelTest {
     private val mockOtherFollowed = followInfoBuilder.buildFollowInfo(userID = mockOtherUserId, encryptedUserID = mockOtherUserId, status = true)
     private val mockOtherNotFollow = followInfoBuilder.buildFollowInfo(userID = mockOtherUserId, encryptedUserID = mockOtherUserId, status = false)
 
-    private val mockNoWhitelist = profileWhitelistBuilder.buildNoWhitelist()
-    private val mockWhitelist = profileWhitelistBuilder.buildOnlyWhitelist()
-    private val mockHasUsername = profileWhitelistBuilder.buildHasUsername()
     private val mockHasAcceptTnc = profileWhitelistBuilder.buildHasAcceptTnc()
 
     @Before
