@@ -1,16 +1,11 @@
 package com.tokopedia.loginregister.external_register.ovo.analytics
 
-import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
-import javax.inject.Named
 
-class OvoCreationAnalytics @Inject constructor(
-        @Named(SessionModule.SESSION_MODULE)
-        val userSession: UserSessionInterface)
-{
+class OvoCreationAnalytics @Inject constructor(val userSession: UserSessionInterface) {
 
     fun Map<String, Any>.appendAdditionalData(): Map<String, String> {
         val newData = mutableMapOf(

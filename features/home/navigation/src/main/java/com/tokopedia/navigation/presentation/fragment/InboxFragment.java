@@ -23,6 +23,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.discovery.common.manager.ProductCardOptionsManager;
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel;
 import com.tokopedia.discovery.common.utils.ViewUtilsKt;
+import com.tokopedia.iconunify.IconUnify;
 import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.analytics.InboxGtmTracker;
@@ -490,10 +491,26 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
 
     private List<Visitable> getData() {
         List<Visitable> inboxList = new ArrayList<>();
-        inboxList.add(new Inbox(R.drawable.ic_topchat, R.string.chat, R.string.chat_desc));
-        inboxList.add(new Inbox(R.drawable.ic_tanyajawab, R.string.diskusi, R.string.diskusi_desc));
-        inboxList.add(new Inbox(R.drawable.ic_ulasan, R.string.ulasan, R.string.ulasan_desc));
-        inboxList.add(new Inbox(R.drawable.ic_pesan_bantuan, R.string.pesan_bantuan, R.string.pesan_bantuan_desc));
+        inboxList.add(new Inbox(
+                IconUnify.CHAT,
+                R.string.chat,
+                R.string.chat_desc
+        ));
+        inboxList.add(new Inbox(
+                IconUnify.DISCUSSION,
+                R.string.diskusi,
+                R.string.diskusi_desc
+        ));
+        inboxList.add(new Inbox(
+                IconUnify.STAR,
+                R.string.ulasan,
+                R.string.ulasan_desc
+        ));
+        inboxList.add(new Inbox(
+                IconUnify.CALL_CENTER,
+                R.string.pesan_bantuan,
+                R.string.pesan_bantuan_desc
+        ));
         inboxList.add(new InboxTopAdsBannerUiModel());
         return inboxList;
     }

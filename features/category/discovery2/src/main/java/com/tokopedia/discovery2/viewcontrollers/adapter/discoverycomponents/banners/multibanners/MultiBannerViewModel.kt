@@ -84,7 +84,7 @@ class MultiBannerViewModel(val application: Application, var components: Compone
         if (components.properties?.dynamic == true) {
             launchCatchError(block = {
 
-                if (bannerUseCase.loadFirstPageComponents(components.id, components.pageEndPoint, application.applicationContext)) {
+                if (bannerUseCase.loadFirstPageComponents(components.id, components.pageEndPoint)) {
                     if (components.data.isNullOrEmpty()) {
                         _hideShimmer.value = true
                     }
@@ -129,11 +129,16 @@ class MultiBannerViewModel(val application: Application, var components: Compone
     }
 
     private fun copyCodeToClipboard(position: Int) {
-        bannerData.value?.data.checkForNullAndSize(position)?.let { listItem ->
-            val item = listItem[position]
-            (application.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?)
+        try {
+            bannerData.value?.data.checkForNullAndSize(position)?.let { listItem ->
+                val item = listItem[position]
+                (application.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?)
                     ?.setPrimaryClip(ClipData.newPlainText(PROMO_CODE, item.code))
-            if (!item.applinks.isNullOrEmpty()) applinkCheck.value = item.applinks else applinkCheck.value = ""
+                if (!item.applinks.isNullOrEmpty()) applinkCheck.value =
+                    item.applinks else applinkCheck.value = ""
+            }
+        } catch (e: Exception) {
+            Utils.logException(e)
         }
     }
 

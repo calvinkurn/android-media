@@ -16,6 +16,18 @@ import com.tokopedia.oms.scrooge.ScroogePGUtil
 
 class EventCheckoutActivity : BaseSimpleActivity(), HasComponent<EventPDPComponent>{
 
+    override fun getToolbarResourceID(): Int {
+        return R.id.toolbar_event_checkout
+    }
+
+    override fun getParentViewResourceID(): Int {
+        return R.id.parent_view_event_checkout
+    }
+
+    override fun getLayoutRes(): Int {
+        return R.layout.activity_checkout_event
+    }
+
     override fun getComponent(): EventPDPComponent =
             DaggerEventPDPComponent.builder()
                     .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()
