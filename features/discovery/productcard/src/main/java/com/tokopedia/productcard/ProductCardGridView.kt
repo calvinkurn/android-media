@@ -20,6 +20,7 @@ import com.tokopedia.productcard.utils.getDimensionPixelSize
 import com.tokopedia.productcard.utils.glideClear
 import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.loadImage
+import com.tokopedia.productcard.utils.renderLabelCampaign
 import com.tokopedia.productcard.utils.renderStockBar
 import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -187,7 +188,9 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
             videoProduct,
         )
 
-        productCardModel.fashionStrategy.renderLabelCampaign(
+        val isShowCampaign = productCardModel.isShowLabelCampaign()
+        renderLabelCampaign(
+            isShowCampaign,
             labelCampaignBackground,
             textViewLabelCampaign,
             productCardModel,

@@ -1,28 +1,27 @@
 package com.tokopedia.productcard.fashion
 
 import android.content.Context
-import android.text.TextUtils
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Space
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
-import com.tokopedia.productcard.addLabelVariantColor
-import com.tokopedia.productcard.addLabelVariantCustom
-import com.tokopedia.productcard.addLabelVariantSize
-import com.tokopedia.productcard.moveLabelPriceConstraint
 import com.tokopedia.productcard.utils.EXTRA_CHAR_SPACE
 import com.tokopedia.productcard.utils.LABEL_VARIANT_CHAR_LIMIT
+import com.tokopedia.productcard.utils.LABEL_VARIANT_TAG
 import com.tokopedia.productcard.utils.MAX_LABEL_VARIANT_COUNT
 import com.tokopedia.productcard.utils.MIN_LABEL_VARIANT_COUNT
 import com.tokopedia.productcard.utils.SQUARE_IMAGE_RATIO
 import com.tokopedia.productcard.utils.applyConstraintSet
+import com.tokopedia.productcard.utils.createColorSampleDrawable
 import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.setupImageRatio
 import com.tokopedia.unifyprinciples.Typography
@@ -31,8 +30,8 @@ import com.tokopedia.productcard.utils.renderLabelReposition
 import com.tokopedia.productcard.utils.renderLabelBestSeller
 import com.tokopedia.productcard.utils.renderLabelBestSellerCategorySide
 import com.tokopedia.productcard.utils.renderLabelBestSellerCategoryBottom
-import com.tokopedia.productcard.utils.renderLabelCampaign
 import com.tokopedia.productcard.utils.shouldShowWithAction
+import com.tokopedia.productcard.utils.toUnifyLabelType
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil
@@ -159,38 +158,6 @@ internal open class FashionStrategyControl: FashionStrategy {
 
         return if (hasLabelCategoryBottom)
             context.resources.getDimensionPixelSize(R.dimen.product_card_label_best_seller_category_bottom_height)
-        else 0
-    }
-
-    override fun getLabelETAHeight(context: Context, productCardModel: ProductCardModel): Int {
-        val labelETA = productCardModel.getLabelETA()
-
-        return if (labelETA != null && labelETA.title.isNotEmpty()) {
-            val labelETAMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_text_view_eta_margin_top)
-            val labelETAHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_text_view_eta_height)
-
-            labelETAMarginTop + labelETAHeight
-        }
-        else 0
-    }
-
-    override fun renderLabelCampaign(
-        labelCampaignBackground: ImageView?,
-        textViewLabelCampaign: Typography?,
-        productCardModel: ProductCardModel,
-    ) {
-        val isShowCampaign = productCardModel.isShowLabelCampaign()
-        renderLabelCampaign(
-            isShowCampaign,
-            labelCampaignBackground,
-            textViewLabelCampaign,
-            productCardModel,
-        )
-    }
-
-    override fun getLabelCampaignHeight(context: Context, productCardModel: ProductCardModel): Int {
-        return if (productCardModel.isShowLabelCampaign())
-            context.resources.getDimensionPixelSize(R.dimen.product_card_label_campaign_height)
         else 0
     }
 
@@ -335,4 +302,65 @@ internal open class FashionStrategyControl: FashionStrategy {
     }
 
     override fun isSingleLine(willShowVariant: Boolean): Boolean = willShowVariant
+
+    private fun LinearLayout.addLabelVariantColor(
+        labelVariant: ProductCardModel.LabelGroupVariant,
+        hasMarginStart: Boolean,
+        colorSampleSize: Int,
+        marginStart: Int
+    ) {
+        val gradientDrawable = createColorSampleDrawable(context, labelVariant.hexColor)
+
+        val layoutParams = LinearLayout.LayoutParams(colorSampleSize, colorSampleSize)
+        layoutParams.marginStart = if (hasMarginStart) marginStart else 0
+
+        val colorSampleImageView = ImageView(context)
+        colorSampleImageView.setImageDrawable(gradientDrawable)
+        colorSampleImageView.layoutParams = layoutParams
+        colorSampleImageView.tag = LABEL_VARIANT_TAG
+
+        addView(colorSampleImageView)
+    }
+
+    private fun LinearLayout.addLabelVariantSize(
+        labelVariant: ProductCardModel.LabelGroupVariant,
+        hasMarginStart: Boolean,
+        marginStart: Int
+    ) {
+        val layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        layoutParams.marginStart = if (hasMarginStart) marginStart else 0
+
+        val unifyLabel = Label(context)
+        unifyLabel.setLabelType(labelVariant.type.toUnifyLabelType())
+        unifyLabel.text = labelVariant.title
+        unifyLabel.layoutParams = layoutParams
+        unifyLabel.tag = LABEL_VARIANT_TAG
+
+        addView(unifyLabel)
+    }
+
+    private fun LinearLayout.addLabelVariantCustom(labelVariant: ProductCardModel.LabelGroupVariant, marginStart: Int) {
+        val layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        layoutParams.topMargin = 1.toPx() // Small hack to make custom label center
+        layoutParams.marginStart = marginStart
+
+        val typography = Typography(context)
+        typography.weightType = Typography.BOLD
+        typography.setType(Typography.SMALL)
+        typography.text = "+${labelVariant.title}"
+        typography.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+        typography.layoutParams = layoutParams
+        typography.tag = LABEL_VARIANT_TAG
+
+        addView(typography)
+    }
+
+    private fun View.moveLabelPriceConstraint(productCardModel: ProductCardModel) {
+        val targetConstraint = if (productCardModel.discountPercentage.isNotEmpty()) R.id.labelDiscount else R.id.textViewSlashedPrice
+        val view = findViewById<ConstraintLayout?>(R.id.productCardContentLayout)
+
+        view?.applyConstraintSet {
+            it.connect(R.id.labelPrice, ConstraintSet.TOP, targetConstraint, ConstraintSet.BOTTOM, 2.toPx())
+        }
+    }
 }

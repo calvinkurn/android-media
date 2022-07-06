@@ -48,16 +48,6 @@ internal interface FashionStrategy {
 
     fun getTextCategoryBottomHeight(context: Context, productCardModel: ProductCardModel): Int
 
-    fun getLabelETAHeight(context: Context, productCardModel: ProductCardModel): Int
-
-    fun renderLabelCampaign(
-        labelCampaignBackground: ImageView?,
-        textViewLabelCampaign: Typography?,
-        productCardModel: ProductCardModel,
-    )
-
-    fun getLabelCampaignHeight(context: Context, productCardModel: ProductCardModel): Int
-
     fun moveDiscountConstraint(view: View, productCardModel: ProductCardModel)
 
     fun setDiscountMarginLeft(label: Label)

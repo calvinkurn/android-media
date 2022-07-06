@@ -110,40 +110,6 @@ private fun View.renderLabelGroupVariant(productCardModel: ProductCardModel) {
     )
 }
 
-fun LinearLayout.addLabelVariantColor(
-        labelVariant: ProductCardModel.LabelGroupVariant,
-        hasMarginStart: Boolean,
-        colorSampleSize: Int,
-        marginStart: Int
-) {
-    val gradientDrawable = createColorSampleDrawable(context, labelVariant.hexColor)
-
-    val layoutParams = LinearLayout.LayoutParams(colorSampleSize, colorSampleSize)
-    layoutParams.marginStart = if (hasMarginStart) marginStart else 0
-
-    val colorSampleImageView = ImageView(context)
-    colorSampleImageView.setImageDrawable(gradientDrawable)
-    colorSampleImageView.layoutParams = layoutParams
-    colorSampleImageView.tag = LABEL_VARIANT_TAG
-
-    addView(colorSampleImageView)
-}
-
-internal fun createColorSampleDrawable(context: Context, colorString: String): GradientDrawable {
-    val gradientDrawable = GradientDrawable()
-    val strokeWidth = 1.toPx()
-
-    gradientDrawable.shape = GradientDrawable.OVAL
-    gradientDrawable.cornerRadii = floatArrayOf(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f)
-    gradientDrawable.setStroke(
-        strokeWidth,
-        ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN200),
-    )
-    gradientDrawable.setColor(safeParseColor(colorString))
-
-    return gradientDrawable
-}
-
 internal fun safeParseColor(color: String): Int {
     return try {
         Color.parseColor(color)
@@ -152,39 +118,6 @@ internal fun safeParseColor(color: String): Int {
         throwable.printStackTrace()
         0
     }
-}
-
-fun LinearLayout.addLabelVariantSize(
-        labelVariant: ProductCardModel.LabelGroupVariant,
-        hasMarginStart: Boolean,
-        marginStart: Int
-) {
-    val layoutParams = LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
-    layoutParams.marginStart = if (hasMarginStart) marginStart else 0
-
-    val unifyLabel = Label(context)
-    unifyLabel.setLabelType(labelVariant.type.toUnifyLabelType())
-    unifyLabel.text = labelVariant.title
-    unifyLabel.layoutParams = layoutParams
-    unifyLabel.tag = LABEL_VARIANT_TAG
-
-    addView(unifyLabel)
-}
-
-fun LinearLayout.addLabelVariantCustom(labelVariant: ProductCardModel.LabelGroupVariant, marginStart: Int) {
-    val layoutParams = LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
-    layoutParams.topMargin = 1.toPx() // Small hack to make custom label center
-    layoutParams.marginStart = marginStart
-
-    val typography = Typography(context)
-    typography.weightType = Typography.BOLD
-    typography.setType(Typography.SMALL)
-    typography.text = "+${labelVariant.title}"
-    typography.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
-    typography.layoutParams = layoutParams
-    typography.tag = LABEL_VARIANT_TAG
-
-    addView(typography)
 }
 
 fun View.renderTextCategoryAndCostPerUnit(productCardModel: ProductCardModel) {
@@ -242,15 +175,6 @@ private fun View.renderDiscount(productCardModel: ProductCardModel) {
 
 private fun View.renderLabelPrice(productCardModel: ProductCardModel) {
     productCardModel.fashionStrategy.renderLabelPrice(this, productCardModel)
-}
-
-fun View.moveLabelPriceConstraint(productCardModel: ProductCardModel) {
-    val targetConstraint = if (productCardModel.discountPercentage.isNotEmpty()) R.id.labelDiscount else R.id.textViewSlashedPrice
-    val view = findViewById<ConstraintLayout?>(R.id.productCardContentLayout)
-
-    view?.applyConstraintSet {
-        it.connect(R.id.labelPrice, ConstraintSet.TOP, targetConstraint, ConstraintSet.BOTTOM, 2.toPx())
-    }
 }
 
 private fun ProductCardModel.getPriceToRender(): String {
@@ -506,48 +430,4 @@ private fun mergeShippingSection(it: ConstraintSet, productCardModel: ProductCar
     val labelETAMarginStart = if (isShowFreeOngkirBadge) 4.toPx() else 0.toPx()
     it.connect(R.id.textViewETA, ConstraintSet.TOP, R.id.imageShopRating, ConstraintSet.BOTTOM, 7.toPx())
     it.connect(R.id.textViewETA, ConstraintSet.START, R.id.textViewShipping, ConstraintSet.END, labelETAMarginStart)
-}
-
-fun LinearLayout.renderVariantColor(
-    listLabelVariant: List<ProductCardModel.LabelGroupVariant>,
-    hiddenColorCount: Int,
-    colorSampleSize: Int,
-) {
-    this.removeAllViews()
-
-    listLabelVariant.forEachIndexed { index, labelGroupVariant ->
-        val gradientDrawable = createColorSampleDrawable(context, labelGroupVariant.hexColor)
-        val colorOffset = (-2).toPx()
-
-        val layoutParams = LinearLayout.LayoutParams(colorSampleSize, colorSampleSize)
-        layoutParams.marginStart = if (index > 0) colorOffset else 0
-
-        val colorSampleImageView = ImageView(context)
-        colorSampleImageView.setImageDrawable(gradientDrawable)
-        colorSampleImageView.layoutParams = layoutParams
-        colorSampleImageView.tag = LABEL_VARIANT_TAG
-
-        addView(colorSampleImageView)
-    }
-
-    if (hiddenColorCount > 0) {
-        val additionalTextView = Typography(context)
-        additionalTextView.setType(Typography.SMALL)
-        additionalTextView.text = " +$hiddenColorCount"
-        additionalTextView.tag = LABEL_VARIANT_TAG
-
-        addView(additionalTextView)
-    }
-}
-
-fun Typography.renderLabelVariantSize(
-    listLabelVariant: List<ProductCardModel.LabelGroupVariant>,
-    hiddenSizeCount: Int,
-) {
-    var sizeText = listLabelVariant.joinToString(", ") { it.title }
-
-    if (hiddenSizeCount > 0)
-        sizeText += ", +$hiddenSizeCount"
-
-    text = sizeText
 }

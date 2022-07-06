@@ -576,3 +576,18 @@ private fun ProductCardModel.LabelGroup.toRepositionLabelBackground(context: Con
         )
     }
 }
+
+internal fun createColorSampleDrawable(context: Context, colorString: String): GradientDrawable {
+    val gradientDrawable = GradientDrawable()
+    val strokeWidth = 1.toPx()
+
+    gradientDrawable.shape = GradientDrawable.OVAL
+    gradientDrawable.cornerRadii = floatArrayOf(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f)
+    gradientDrawable.setStroke(
+        strokeWidth,
+        ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN200),
+    )
+    gradientDrawable.setColor(com.tokopedia.productcard.safeParseColor(colorString))
+
+    return gradientDrawable
+}

@@ -4,7 +4,6 @@ import android.widget.ImageView
 import android.widget.Space
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.productcard.utils.LONG_IMAGE_RATIO
-import com.tokopedia.productcard.utils.SQUARE_IMAGE_RATIO
 import com.tokopedia.video_widget.VideoPlayerView
 
 internal class FashionStrategyLongImage: FashionStrategyReposition() {

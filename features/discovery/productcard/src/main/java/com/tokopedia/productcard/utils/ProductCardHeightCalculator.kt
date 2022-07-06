@@ -28,8 +28,8 @@ suspend fun List<ProductCardModel>?.getMaxHeightForGridView(context: Context?, c
                     productCardModel,
                 )
 
-            val campaignLabelHeight =
-                productCardModel.fashionStrategy.getLabelCampaignHeight(context, productCardModel)
+            val hasLabelCampaign = productCardModel.isShowLabelCampaign()
+            val campaignLabelHeight = getLabelCampaignHeight(context, hasLabelCampaign)
 
             val contentMarginTop =
                 productCardModel.fashionStrategy.getGridViewContentMarginTop(context, productCardModel)
@@ -146,7 +146,7 @@ private fun ProductCardModel.getContentHeightGrid(context: Context): Int {
     val credibilitySectionHeight = getCredibilitySectionHeight(context)
     val shopRatingSectionHeight = getShopRatingSectionHeight(context)
     val shippingInfoSectionHeight = getShippingInfoSectionHeight(context)
-    val etaHeight = fashionStrategy.getLabelETAHeight(context, this)
+    val etaHeight = getLabelETA(context)
     val stockBarHeight = getStockBarAndLabelSectionHeight(context)
 
     return gimmickSectionHeight +

@@ -1,7 +1,6 @@
 package com.tokopedia.productcard.fashion
 
 import android.content.Context
-import android.text.TextUtils
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -13,15 +12,15 @@ import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
-import com.tokopedia.productcard.renderLabelVariantSize
-import com.tokopedia.productcard.renderVariantColor
 import com.tokopedia.productcard.utils.COLOR_LIMIT_REPOSITION
 import com.tokopedia.productcard.utils.EXTRA_CHAR_SPACE_REPOSITION
 import com.tokopedia.productcard.utils.LABEL_VARIANT_CHAR_LIMIT_REPOSITION
+import com.tokopedia.productcard.utils.LABEL_VARIANT_TAG
 import com.tokopedia.productcard.utils.MAX_LABEL_VARIANT_COUNT
 import com.tokopedia.productcard.utils.MIN_LABEL_VARIANT_COUNT
 import com.tokopedia.productcard.utils.SQUARE_IMAGE_RATIO
 import com.tokopedia.productcard.utils.applyConstraintSet
+import com.tokopedia.productcard.utils.createColorSampleDrawable
 import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.video_widget.VideoPlayerView
@@ -33,7 +32,6 @@ import com.tokopedia.unifycomponents.Label
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil
 import com.tokopedia.productcard.utils.renderLabelReposition
 import com.tokopedia.unifycomponents.toPx
-import com.tokopedia.productcard.utils.renderLabelCampaign
 
 internal open class FashionStrategyReposition: FashionStrategy {
     override fun setupImageRatio(
@@ -126,27 +124,6 @@ internal open class FashionStrategyReposition: FashionStrategy {
         context: Context,
         productCardModel: ProductCardModel,
     ): Int = 0
-
-    override fun getLabelETAHeight(context: Context, productCardModel: ProductCardModel): Int = 0
-
-    override fun getLabelCampaignHeight(
-        context: Context,
-        productCardModel: ProductCardModel,
-    ): Int = 0
-
-    override fun renderLabelCampaign(
-        labelCampaignBackground: ImageView?,
-        textViewLabelCampaign: Typography?,
-        productCardModel: ProductCardModel,
-    ) {
-        val isShowCampaign = productCardModel.isShowLabelCampaign()
-        renderLabelCampaign(
-            isShowCampaign,
-            labelCampaignBackground,
-            textViewLabelCampaign,
-            productCardModel,
-        )
-    }
 
     override fun moveDiscountConstraint(view: View, productCardModel: ProductCardModel) {
         val contentLayout = view.findViewById<ConstraintLayout?>(R.id.productCardContentLayout)
@@ -312,4 +289,48 @@ internal open class FashionStrategyReposition: FashionStrategy {
     }
 
     override fun isSingleLine(willShowVariant: Boolean): Boolean = false
+
+    private fun Typography.renderLabelVariantSize(
+        listLabelVariant: List<ProductCardModel.LabelGroupVariant>,
+        hiddenSizeCount: Int,
+    ) {
+        var sizeText = listLabelVariant.joinToString(", ") { it.title }
+
+        if (hiddenSizeCount > 0)
+            sizeText += ", +$hiddenSizeCount"
+
+        text = sizeText
+    }
+
+    private fun LinearLayout.renderVariantColor(
+        listLabelVariant: List<ProductCardModel.LabelGroupVariant>,
+        hiddenColorCount: Int,
+        colorSampleSize: Int,
+    ) {
+        this.removeAllViews()
+
+        listLabelVariant.forEachIndexed { index, labelGroupVariant ->
+            val gradientDrawable = createColorSampleDrawable(context, labelGroupVariant.hexColor)
+            val colorOffset = (-2).toPx()
+
+            val layoutParams = LinearLayout.LayoutParams(colorSampleSize, colorSampleSize)
+            layoutParams.marginStart = if (index > 0) colorOffset else 0
+
+            val colorSampleImageView = ImageView(context)
+            colorSampleImageView.setImageDrawable(gradientDrawable)
+            colorSampleImageView.layoutParams = layoutParams
+            colorSampleImageView.tag = LABEL_VARIANT_TAG
+
+            addView(colorSampleImageView)
+        }
+
+        if (hiddenColorCount > 0) {
+            val additionalTextView = Typography(context)
+            additionalTextView.setType(Typography.SMALL)
+            additionalTextView.text = " +$hiddenColorCount"
+            additionalTextView.tag = LABEL_VARIANT_TAG
+
+            addView(additionalTextView)
+        }
+    }
 }
