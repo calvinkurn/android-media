@@ -12,11 +12,13 @@ import com.tokopedia.productcard.test.utils.isDisplayedWithChildCount
 import com.tokopedia.productcard.test.utils.isDisplayedWithText
 import com.tokopedia.productcard.test.utils.officialStoreBadgeImageUrl
 import com.tokopedia.productcard.test.utils.productImageUrl
+import com.tokopedia.productcard.test.utils.withDimensionRatio
 import com.tokopedia.productcard.test.utils.withDrawable
 import com.tokopedia.productcard.utils.LABEL_BEST_SELLER
 import com.tokopedia.productcard.utils.LABEL_GIMMICK
 import com.tokopedia.productcard.utils.LABEL_PRICE
 import com.tokopedia.productcard.utils.LIGHT_GREEN
+import com.tokopedia.productcard.utils.LONG_IMAGE_RATIO
 import com.tokopedia.productcard.utils.TYPE_VARIANT_COLOR
 import com.tokopedia.productcard.utils.TYPE_VARIANT_CUSTOM
 import com.tokopedia.productcard.utils.TYPE_VARIANT_SIZE
@@ -35,6 +37,7 @@ internal val productCardGridTestData =
             testLabelGimmickReposition(),
             testLabelGimmickAndBestSellerReposition(),
             testShopLocationReposition(),
+            testLongImage(),
         )
 
 internal val productCardGridViewStubTestData =
@@ -50,6 +53,7 @@ internal val productCardGridViewStubTestData =
             testLabelGimmickReposition(),
             testLabelGimmickAndBestSellerReposition(),
             testShopLocationReposition(),
+            testLongImage(),
         )
 
 private fun testSimilarProductButton(): ProductCardModelMatcher {
@@ -423,6 +427,24 @@ private fun testShopLocationReposition(): ProductCardModelMatcher {
         R.id.imageSalesRatingFloat to isDisplayed(),
         R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
         R.id.imageFreeOngkirPromo to isDisplayed(),
+    )
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testLongImage(): ProductCardModelMatcher {
+    val productCardModel = ProductCardModel(
+        productName = "Label Gimmick - Reposition",
+        productImageUrl = productImageUrl,
+        formattedPrice = "Rp7.999.000",
+        productListType = ProductCardModel.ProductListType.LONG_IMAGE,
+    )
+
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.imageProduct to withDimensionRatio(LONG_IMAGE_RATIO),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
     )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
