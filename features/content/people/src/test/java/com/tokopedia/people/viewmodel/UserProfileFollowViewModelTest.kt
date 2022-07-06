@@ -69,8 +69,6 @@ class UserProfileFollowViewModelTest {
     @Test
     fun `when user wants to follow its own profile, it wont do anything`() {
 
-        coEvery { mockRepo.getFollowInfo(any()) } returns mockOtherNotFollow
-
         val robot = UserProfileViewModelRobot(
             username = mockOwnUsername,
             repo = mockRepo,
@@ -84,7 +82,7 @@ class UserProfileFollowViewModelTest {
             } recordState {
                 submitAction(UserProfileAction.ClickFollowButton(isFromLogin = false))
             } andThen {
-                followInfo equalTo mockOtherNotFollow
+                followInfo equalTo mockOwnFollow
             }
         }
     }
