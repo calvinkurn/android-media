@@ -42,4 +42,7 @@ class HotelReviewActivity: HotelBaseActivity(), HasComponent<HotelDetailComponen
                 .putExtra(HotelReviewFragment.ARG_PROPERTY_ID, propertyId)
     }
 
+    override fun getParentViewResourceID() = com.tokopedia.abstraction.R.id.parent_view
+
+    override fun getLayoutRes() = com.tokopedia.abstraction.R.layout.activity_base_simple
 }
