@@ -607,7 +607,7 @@ class TokoNowCategoryFragment:
     }
 
     override fun showDialogAgeRestriction(querySafeModel: QuerySafeModel) {
-        if (querySafeModel.isQuerySafe) {
+        if (!querySafeModel.isQuerySafe) {
             AdultManager.showAdultPopUp(this, AR_ORIGIN_TOKONOW_CATEGORY, "${querySafeModel.warehouseId} - ${tokoNowCategoryViewModel.categoryL1.getOrDefaultZeroString()} - ${categoryIdLvl2.getOrDefaultZeroString()} - ${categoryIdLvl3.getOrDefaultZeroString()}")
         }
     }

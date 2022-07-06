@@ -436,7 +436,7 @@ class TokoNowSearchFragment :
     }
 
     override fun showDialogAgeRestriction(querySafeModel: QuerySafeModel) {
-        if (querySafeModel.isQuerySafe) {
+        if (!querySafeModel.isQuerySafe) {
             AdultManager.showAdultPopUp(this, AR_ORIGIN_TOKONOW_SEARCH_RESULT, "${querySafeModel.warehouseId} - ${tokoNowSearchViewModel.query}")
         }
     }
