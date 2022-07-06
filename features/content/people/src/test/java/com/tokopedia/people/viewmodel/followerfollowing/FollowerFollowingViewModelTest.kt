@@ -1,0 +1,107 @@
+package com.tokopedia.people.viewmodel.followerfollowing
+
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.people.Success
+import com.tokopedia.people.domains.FollowerFollowingListingUseCase
+import com.tokopedia.people.domains.ProfileFollowUseCase
+import com.tokopedia.people.domains.ProfileUnfollowedUseCase
+import com.tokopedia.people.model.CommonModelBuilder
+import com.tokopedia.people.model.followerfollowing.FollowerListModelBuilder
+import com.tokopedia.people.model.followerfollowing.FollowingListModelBuilder
+import com.tokopedia.people.robot.FollowerFollowingViewModelRobot
+import com.tokopedia.people.util.equalTo
+import com.tokopedia.people.util.getOrAwaitValue
+import com.tokopedia.unit.test.rule.CoroutineTestRule
+import io.mockk.*
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+
+/**
+ * Created By : Jonathan Darwin on July 06, 2022
+ */
+class FollowerFollowingViewModelTest {
+
+    @get:Rule
+    val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val rule: CoroutineTestRule = CoroutineTestRule()
+
+    private val commonBuilder = CommonModelBuilder()
+    private val followerListBuilder = FollowerListModelBuilder()
+    private val followingListBuilder = FollowingListModelBuilder()
+
+    private val mockException = commonBuilder.buildException()
+    private val mockFollowerList = followerListBuilder.buildModel()
+    private val mockFollowingList = followingListBuilder.buildModel()
+
+    private val mockFollowerFollowingUseCase: FollowerFollowingListingUseCase = mockk(relaxed = true)
+    private val mockDoFollowUseCase: ProfileFollowUseCase = mockk(relaxed = true)
+    private val mockDoUnFollowUseCase: ProfileUnfollowedUseCase = mockk(relaxed = true)
+
+    private val robot = FollowerFollowingViewModelRobot(
+        useCaseFollowersFollowingsList = mockFollowerFollowingUseCase,
+        useCaseDoFollow = mockDoFollowUseCase,
+        useCaseDoUnFollow = mockDoUnFollowUseCase,
+    )
+
+    @Before
+    fun setUp() {
+        coEvery { mockFollowerFollowingUseCase.getProfileFollowerList(any(), any(), any()) } returns mockFollowerList
+        coEvery { mockFollowerFollowingUseCase.getProfileFollowingList(any(), any(), any()) } returns mockFollowingList
+    }
+
+    @Test
+    fun `when user load follower list successfully, it should emit the data`() {
+        robot.start {
+            getFollowers()
+
+            val result = robot.viewModel.profileFollowersListLiveData.getOrAwaitValue()
+            result equalTo Success(mockFollowerList)
+        }
+    }
+
+    @Test
+    fun `when user failed load follower list, it should emit the error data`() {
+        robot.start {
+            coEvery { mockFollowerFollowingUseCase.getProfileFollowerList(any(), any(), any()) } throws mockException
+            getFollowers()
+
+            val throwable = robot.viewModel.followersErrorLiveData.getOrAwaitValue()
+            throwable equalTo mockException
+        }
+    }
+
+    @Test
+    fun `when user load following list successfully, it should emit the data`() {
+        robot.start {
+            getFollowings()
+
+            val result = robot.viewModel.profileFollowingsListLiveData.getOrAwaitValue()
+            result equalTo Success(mockFollowingList)
+        }
+    }
+
+    @Test
+    fun `when user failed load following list, it should emit the error data`() {
+        robot.start {
+            coEvery { mockFollowerFollowingUseCase.getProfileFollowingList(any(), any(), any()) } throws mockException
+            getFollowings()
+
+            val throwable = robot.viewModel.followersErrorLiveData.getOrAwaitValue()
+            throwable equalTo mockException
+        }
+    }
+
+    @Test
+    fun `when user successfully follow the account, it should emit the success data`() {
+        robot.start {
+            coEvery { mockFollowerFollowingUseCase.getProfileFollowingList(any(), any(), any()) } throws mockException
+            getFollowings()
+
+            val throwable = robot.viewModel.followersErrorLiveData.getOrAwaitValue()
+            throwable equalTo mockException
+        }
+    }
+}

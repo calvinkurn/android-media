@@ -1,4 +1,4 @@
-package com.tokopedia.people.model
+package com.tokopedia.people.model.userprofile
 
 import com.tokopedia.people.views.uimodel.MutationUiModel
 
