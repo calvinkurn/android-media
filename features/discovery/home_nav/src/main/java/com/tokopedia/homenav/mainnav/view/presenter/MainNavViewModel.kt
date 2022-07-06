@@ -249,21 +249,6 @@ class MainNavViewModel @Inject constructor(
 
     fun setTokopediaPlusParam(tokopediaPlusParam: TokopediaPlusParam){
         this.tokopediaPlusParam = tokopediaPlusParam
-        getAccountHeader()?.let {
-            val accountHeaderDataModel = it.first.apply {
-                setTokopediaPlus(tokopediaPlusParam)
-            }
-            val index = it.second
-            updateWidget(accountHeaderDataModel, index)
-        }
-    }
-
-    private fun getAccountHeader() : Pair<AccountHeaderDataModel, Int>? {
-        val accountHeader = _mainNavListVisitable.find { it is AccountHeaderDataModel } as AccountHeaderDataModel?
-        return accountHeader?.let {
-            val index = _mainNavListVisitable.indexOf(accountHeader)
-            Pair(it, index)
-        }
     }
 
     fun getMainNavData(useCacheData: Boolean) {
