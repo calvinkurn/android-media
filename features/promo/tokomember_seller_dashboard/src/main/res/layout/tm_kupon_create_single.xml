@@ -131,8 +131,7 @@
                 app:unify_text_field_clearable="false"
                 app:unify_text_field_input_type="text|number"
                 app:unify_text_field_label="Mulai"
-                app:unify_text_field_label_static="false"
-                app:unify_text_field_prepend_text="Kam" />
+                app:unify_text_field_label_static="false" />
 
             <com.tokopedia.unifycomponents.TextFieldUnify2
                 android:id="@+id/textFieldProgramStartTime"
@@ -174,8 +173,7 @@
                 app:unify_text_field_clearable="false"
                 app:unify_text_field_input_type="text|number"
                 app:unify_text_field_label="Berakhir"
-                app:unify_text_field_label_static="false"
-                app:unify_text_field_prepend_text="Kam" />
+                app:unify_text_field_label_static="false"/>
 
             <com.tokopedia.unifycomponents.TextFieldUnify2
                 android:id="@+id/textFieldProgramEndTime"

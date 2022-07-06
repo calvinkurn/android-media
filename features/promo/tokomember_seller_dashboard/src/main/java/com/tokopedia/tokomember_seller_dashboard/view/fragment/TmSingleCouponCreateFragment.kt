@@ -1090,7 +1090,8 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         var day = 0
         context?.let{
             val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, com.tokopedia.tokomember_seller_dashboard.util.locale)
-            val currentDate = GregorianCalendar(LocaleUtils.getCurrentLocale(it))
+            val defaultCalendar = GregorianCalendar(LocaleUtils.getCurrentLocale(it))
+            val calendarMax = GregorianCalendar(LocaleUtils.getCurrentLocale(it))
 //            programData?.timeWindow?.startTime?.let {
 //                currentDate.time = sdf.parse(programData?.timeWindow?.startTime + "00") ?: Date()
 //            }
@@ -1103,16 +1104,14 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
             // for both cases
             // user can select end date 1 year from start date
 
-            val calendarMax = currentDate
-            if(programStatus == ACTIVE) {
-                calendarMax.add(Calendar.YEAR, 1)
-            }
-            else{
-                programData?.timeWindow?.endTime?.let {
-                    calendarMax.time = sdf.parse(programData?.timeWindow?.startTime + "00") ?: Date()
+            calendarMax.add(Calendar.YEAR, 1)
+            if(programStatus != ACTIVE) {
+                //upcoming
+                programData?.timeWindow?.startTime?.let {
+                    defaultCalendar.time = sdf.parse(programData?.timeWindow?.startTime + "00") ?: Date()
                 }
             }
-            val datepickerObject = DateTimePickerUnify(it, Calendar.getInstance(), Calendar.getInstance(), calendarMax).apply {
+            val datepickerObject = DateTimePickerUnify(it, defaultCalendar, defaultCalendar, calendarMax).apply {
                 when (type) {
                     0 -> {
                         setTitle(DATE_TITLE)

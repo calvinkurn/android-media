@@ -344,6 +344,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
             ProgramActionType.EXTEND ->{
                 headerProgram?.apply {
                     title = HEADER_TITLE_EXTEND
+                    subtitle = HEADER_TITLE_EXTEND_DESC
                     isShowBackButton = true
                 }
                 progressProgram?.apply {
@@ -598,6 +599,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         const val HEADER_TITLE_CREATE_BUAT = "Buat Program"
         const val HEADER_TITLE_DESC = "Langkah 2 dari 4"
         const val HEADER_TITLE_EXTEND = "Perpanjang TokoMember"
+        const val HEADER_TITLE_EXTEND_DESC = "Langkah 1 dari 3"
         const val HEADER_TITLE_EDIT =  "Ubah Program"
         const val CODE_SUCCESS = "200"
         const val CODE_ERROR = "50001"
