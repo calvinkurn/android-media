@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
 data class AffiliatedProduct(
 
         @SerializedName("id")
-        val id: Int = 0,
+        val id: String = "",
 
         @SerializedName("image")
         val image: String = "",
@@ -38,10 +38,10 @@ data class AffiliatedProduct(
         val createPostAppLink: String = "",
 
         @SerializedName("adID")
-        val adID: Int = 0,
+        val adID: String = "",
 
         @SerializedName("productID")
-        val productID: Int = 0,
+        val productID: String = "",
 
         @SerializedName("reviewCount")
         val reviewCount: Int = 0

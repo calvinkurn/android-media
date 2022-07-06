@@ -37,6 +37,7 @@ import com.tokopedia.search.result.product.globalnavwidget.GlobalNavListener
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardListener
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardOptionDataView
 import com.tokopedia.topads.sdk.domain.model.CpmData
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import org.hamcrest.Matcher
 import org.hamcrest.core.Is.`is`
 
@@ -115,6 +116,8 @@ internal fun createBroadMatchListener(): BroadMatchListener {
         override fun onBroadMatchItemImpressed(broadMatchItemDataView: BroadMatchItemDataView) {}
         override fun onBroadMatchItemClicked(broadMatchItemDataView: BroadMatchItemDataView) {}
         override fun onBroadMatchThreeDotsClicked(broadMatchItemDataView: BroadMatchItemDataView) {}
+        override fun onBroadMatchViewAllCardClicked(broadMatchDataView: BroadMatchDataView) {}
+
         override val carouselRecycledViewPool: RecyclerView.RecycledViewPool?
             get() = null
         override val productCardLifecycleObserver: ProductCardLifecycleObserver?
@@ -162,6 +165,7 @@ internal fun createRecommendationListener(): RecommendationListener {
         override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {}
         override fun onProductImpression(item: RecommendationItem) {}
         override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {}
+        override fun onWishlistV2Click(item: RecommendationItem, isAddWishlist: Boolean) {}
     }
 }
 

@@ -20,7 +20,13 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usercomponents.R
+import com.tokopedia.usercomponents.databinding.LayoutWidgetStickyLoginBinding
 import com.tokopedia.usercomponents.stickylogin.analytics.StickyLoginReminderTracker
 import com.tokopedia.usercomponents.stickylogin.analytics.StickyLoginTracking
 import com.tokopedia.usercomponents.stickylogin.common.StickyLoginConstant
@@ -40,16 +46,11 @@ import com.tokopedia.usercomponents.stickylogin.common.StickyLoginConstant.KEY_S
 import com.tokopedia.usercomponents.stickylogin.common.StickyLoginConstant.KEY_USER_NAME
 import com.tokopedia.usercomponents.stickylogin.common.helper.getPrefLoginReminder
 import com.tokopedia.usercomponents.stickylogin.common.helper.getPrefStickyLogin
-import com.tokopedia.usercomponents.databinding.LayoutWidgetStickyLoginBinding
+import com.tokopedia.usercomponents.stickylogin.di.DaggerStickyLoginComponent
 import com.tokopedia.usercomponents.stickylogin.di.module.StickyLoginModule
 import com.tokopedia.usercomponents.stickylogin.domain.data.StickyLoginTickerDataModel
 import com.tokopedia.usercomponents.stickylogin.view.viewModel.StickyLoginViewModel
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.usercomponents.stickylogin.di.DaggerStickyLoginComponent
+import com.tokopedia.user.session.util.EncoderDecoder
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.coroutines.*
 import java.util.concurrent.TimeUnit
@@ -393,18 +394,23 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
 
     @SuppressLint("SetTextI18n")
     private fun showLoginReminder(page: StickyLoginConstant.Page) {
-        val name = getPrefLoginReminder(context).getString(KEY_USER_NAME, "")
-        val profilePicture = getPrefLoginReminder(context).getString(KEY_PROFILE_PICTURE, "")
+        try {
+            val encryptedName = getPrefLoginReminder(context).getString(KEY_USER_NAME, "")
+            val encryptedProfilePicture = getPrefLoginReminder(context).getString(KEY_PROFILE_PICTURE, "")
 
-        viewBinding.layoutStickyContent.setContent("$TEXT_RE_LOGIN $name")
+            val name = EncoderDecoder.Decrypt(encryptedName ?: "", UserSession.KEY_IV)
+            val profilePicture = EncoderDecoder.Decrypt(encryptedProfilePicture ?: "", UserSession.KEY_IV)
 
-        profilePicture?.let {
+            viewBinding.layoutStickyContent.setContent("$TEXT_RE_LOGIN $name")
+
             viewBinding.layoutStickyImageLeft.type = ImageUnify.TYPE_CIRCLE
-            viewBinding.layoutStickyImageLeft.setImageUrl(it)
-        }
+            viewBinding.layoutStickyImageLeft.setImageUrl(profilePicture)
 
-        trackerLoginReminder.viewOnPage(page)
-        show()
+            trackerLoginReminder.viewOnPage(page)
+            show()
+        } catch (e: Exception) {
+            hide()
+        }
     }
 
     private fun updateDarkMode() {

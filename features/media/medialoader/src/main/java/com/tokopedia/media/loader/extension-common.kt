@@ -21,7 +21,13 @@ fun ImageView.loadImage(bitmap: Bitmap?) = call(bitmap, Properties())
 
 fun ImageView.loadImage(drawable: Drawable?) = this.setImageDrawable(drawable)
 
-fun ImageView.loadImage(resource: Int) = this.setImageResource(resource)
+fun ImageView.loadImage(resource: Int) {
+    if (resource != 0) {
+        this.setImageResource(resource)
+    } else {
+        this.setImageResource(ERROR_RES_UNIFY)
+    }
+}
 
 inline fun ImageView.loadImage(
     resource: Int,
@@ -29,7 +35,13 @@ inline fun ImageView.loadImage(
 ) = call(resource, Properties()
     .apply(properties))
 
-fun ImageView.loadImage(uri: Uri) = this.setImageURI(uri)
+fun ImageView.loadImage(uri: Uri) {
+    if (uri != Uri.EMPTY) {
+        this.setImageURI(uri)
+    } else {
+        this.loadImage(ERROR_RES_UNIFY)
+    }
+}
 
 inline fun ImageView.loadImage(
     url: String?,

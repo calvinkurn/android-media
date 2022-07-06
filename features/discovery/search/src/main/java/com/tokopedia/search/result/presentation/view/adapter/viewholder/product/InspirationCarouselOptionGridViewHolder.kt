@@ -37,15 +37,16 @@ class InspirationCarouselOptionGridViewHolder(
 
     private fun InspirationCarouselDataView.Option.Product.toProductCardModel(): ProductCardModel {
         return ProductCardModel(
-                productImageUrl = imgUrl,
-                productName = name,
-                formattedPrice = priceStr,
-                slashedPrice = if (discountPercentage > 0) originalPrice else "",
-                discountPercentage = if (discountPercentage > 0) "$discountPercentage%" else "",
-                countSoldRating = ratingAverage,
-                labelGroupList = labelGroupDataList.toProductCardModelLabelGroup(),
-                shopLocation = shopLocation,
-                shopBadgeList = badgeItemDataViewList.toProductCardModelShopBadges(),
+            productImageUrl = imgUrl,
+            productName = name,
+            formattedPrice = priceStr,
+            slashedPrice = if (discountPercentage > 0) originalPrice else "",
+            discountPercentage = if (discountPercentage > 0) "$discountPercentage%" else "",
+            countSoldRating = ratingAverage,
+            labelGroupList = labelGroupDataList.toProductCardModelLabelGroup(),
+            shopLocation = shopLocation,
+            shopBadgeList = badgeItemDataViewList.toProductCardModelShopBadges(),
+            cardInteraction = true,
         )
     }
 

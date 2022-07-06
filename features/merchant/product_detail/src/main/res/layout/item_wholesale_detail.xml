@@ -12,14 +12,15 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="24dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:ignore="UselessParent">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/courier_item_name"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:textColor="@color/Unify_N700_96"
-            app:typographyType="body_2"
+            app:typographyType="display_2"
             tools:text="Name" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -27,7 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="1dp"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             android:textColor="@color/Unify_N700_68"
             tools:text="info" />
 

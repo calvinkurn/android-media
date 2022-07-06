@@ -14,7 +14,7 @@ class SaveProfilePictureUseCase(
     CoroutineUseCase<Map<String, Any>, SaveProfilePictureResponse>(dispatcher.io) {
 
     override suspend fun execute(params: Map<String, Any>): SaveProfilePictureResponse {
-	return repository.request(graphqlQuery(), params)
+        return repository.request(graphqlQuery(), params)
     }
 
     override fun graphqlQuery(): String = """
@@ -31,6 +31,6 @@ class SaveProfilePictureUseCase(
     """.trimIndent()
 
     companion object {
-	const val PARAM_UPLOAD_ID = "uploadID"
+        const val PARAM_UPLOAD_ID = "uploadID"
     }
 }

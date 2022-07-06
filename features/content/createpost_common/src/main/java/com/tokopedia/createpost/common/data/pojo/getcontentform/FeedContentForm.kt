@@ -1,29 +1,44 @@
 package com.tokopedia.createpost.common.data.pojo.getcontentform
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class FeedContentForm(
     @SerializedName("authors")
-        val authors: List<Author> = listOf(),
+    val authors: List<Author> = emptyList(),
+
     @SerializedName("error")
-        val error: String = "",
+    val error: String = "",
+
     @SerializedName("maxTag")
-        val maxTag: Int = 1,
+    val maxTag: Int = 1,
+
     @SerializedName("media")
-        val media: Media = Media(),
+    val media: Media = Media(),
+
     @SerializedName("relatedItems")
-        val relatedItems: List<RelatedItem> = listOf(),
+    val relatedItems: List<RelatedItem> = emptyList(),
+
     @SerializedName("token")
-        val token: String = "",
+    val token: String = "",
+
     @SerializedName("type")
-        val type: String = "",
+    val type: String = "",
+
     @SerializedName("defaultPlaceholder")
-        val defaultPlaceholder: String = "",
+    val defaultPlaceholder: String = "",
+
     @SerializedName("caption")
-        @Expose
-        val caption: String = "",
+    val caption: String = "",
+
     @SerializedName("defaultCaptions")
-        @Expose
-        val defaultCaptions: List<String> = listOf()
+    val defaultCaptions: List<String> = emptyList(),
+
+    @SerializedName("productTagSources")
+    val productTagSources: List<String> = emptyList(),
+
+    @SerializedName("has_username")
+    val hasUsername: Boolean = false,
+
+    @SerializedName("has_accept_tnc")
+    val hasAcceptTnc: Boolean = false,
 )
