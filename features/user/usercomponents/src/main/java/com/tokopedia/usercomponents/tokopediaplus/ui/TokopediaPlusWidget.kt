@@ -42,7 +42,7 @@ class TokopediaPlusWidget: ConstraintLayout {
             addView(it.root)
         }
 
-    var iccon = ""
+    var icon = ""
         set(value) {
             viewBinding.tokopediaPlusComponent.iconTokopediaPlus.loadIcon(value)
         }
@@ -53,7 +53,7 @@ class TokopediaPlusWidget: ConstraintLayout {
             field = value
         }
 
-    var dscription = ""
+    var subtitle = ""
         set(value) {
             viewBinding.tokopediaPlusComponent.descriptionTokopediaPlus.text = MethodChecker.fromHtml(value)
             field = value
@@ -122,6 +122,10 @@ class TokopediaPlusWidget: ConstraintLayout {
         tokopediaPlusDataModel?.let { tokopediaPlusData ->
             listener?.onSuccessLoad(pageSource, tokopediaPlusData)
 
+            icon = tokopediaPlusData.iconImageURL
+            title = tokopediaPlusData.title
+            subtitle = tokopediaPlusData.subtitle
+
             viewBinding.apply {
                 if (!tokopediaPlusData.isShown) {
                     root.hide()
@@ -138,10 +142,6 @@ class TokopediaPlusWidget: ConstraintLayout {
 
                             descriptionTokopediaPlus.show()
                         }
-
-                        iconTokopediaPlus.loadIcon(tokopediaPlusData.iconImageURL)
-                        titleTokopediaPlus.text = tokopediaPlusData.title
-                        descriptionTokopediaPlus.text = tokopediaPlusData.subtitle
 
                         iconDirectionTokopediaPlusPage.setOnClickListener {
                             listener?.onClick(pageSource, tokopediaPlusData)
