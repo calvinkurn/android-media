@@ -21,6 +21,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
@@ -33,8 +34,11 @@ import com.tokopedia.play.animation.PlayDelayFadeOutAnimation
 import com.tokopedia.play.animation.PlayFadeInAnimation
 import com.tokopedia.play.animation.PlayFadeInFadeOutAnimation
 import com.tokopedia.play.animation.PlayFadeOutAnimation
+import com.tokopedia.play.channel.ui.component.ProductCarouselUiComponent
+import com.tokopedia.play.databinding.FragmentPlayInteractionBinding
 import com.tokopedia.play.extensions.*
 import com.tokopedia.play.gesture.PlayClickTouchListener
+import com.tokopedia.play.ui.component.UiComponent
 import com.tokopedia.play.util.changeConstraint
 import com.tokopedia.play.util.measureWithTimeout
 import com.tokopedia.play.util.observer.DistinctObserver
@@ -75,6 +79,7 @@ import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
+import com.tokopedia.play_common.eventbus.EventBus
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.PerformanceClassConfig
@@ -141,7 +146,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val quickReplyView by viewComponentOrNull { QuickReplyViewComponent(it, R.id.rv_quick_reply, this) }
     private val chatListView by viewComponentOrNull { ChatListViewComponent(it, R.id.view_chat_list) }
     private val pinnedView by viewComponentOrNull { PinnedViewComponent(it, R.id.view_pinned, this) }
-    private val productFeaturedView by viewComponentOrNull { ProductFeaturedViewComponent(it, this) }
+//    private val productFeaturedView by viewComponentOrNull { ProductFeaturedViewComponent(it, this) }
     private val videoSettingsView by viewComponent { VideoSettingsViewComponent(it, R.id.view_video_settings, this) }
     private val immersiveBoxView by viewComponent { ImmersiveBoxViewComponent(it, R.id.v_immersive_box, this) }
     private val playButtonView by viewComponent { PlayButtonViewComponent(it, R.id.view_play_button, this) }
@@ -245,6 +250,14 @@ class PlayUserInteractionFragment @Inject constructor(
 
     override fun getScreenName(): String = "Play User Interaction"
 
+    private val components = mutableListOf<UiComponent<PlayViewerNewUiState>>()
+
+    private val eventBus = EventBus<Any>()
+
+    private var _binding: FragmentPlayInteractionBinding? = null
+    private val binding: FragmentPlayInteractionBinding
+        get() = _binding!!
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         playViewModel = getPlayViewModelProvider().get(PlayViewModel::class.java)
@@ -252,7 +265,9 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_play_interaction, container, false)
+        val view = inflater.inflate(R.layout.fragment_play_interaction, container, false)
+        _binding = FragmentPlayInteractionBinding.bind(view)
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -333,6 +348,7 @@ class PlayUserInteractionFragment @Inject constructor(
         cancelAllAnimations()
 
         super.onDestroyView()
+        _binding = null
     }
 
     override fun onAttachFragment(childFragment: Fragment) {
@@ -563,6 +579,16 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun setupView(view: View) {
+
+        val productFeaturedBinding = binding.viewProductFeatured
+        if (productFeaturedBinding != null) {
+            components.add(
+                ProductCarouselUiComponent(
+                    binding = productFeaturedBinding,
+                    bus = eventBus,
+                )
+            )
+        }
 
         fun setupLandscapeView() {
             container.setOnTouchListener(PlayClickTouchListener(INTERACTION_TOUCH_CLICK_TOLERANCE))
@@ -795,6 +821,8 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             playViewModel.uiState.withCache().collectLatest { cachedState ->
+                components.forEach { it.render(cachedState) }
+
                 val state = cachedState.value
                 val prevState = cachedState.prevValue
 
@@ -946,11 +974,11 @@ class PlayUserInteractionFragment @Inject constructor(
     //endregion
 
     private fun setupFeaturedProductsFadingEdge(view: View) {
-        view.doOnLayout {
-            productFeaturedView?.setFadingEndBounds(
-                (FADING_EDGE_PRODUCT_FEATURED_WIDTH_MULTIPLIER * it.width).toInt()
-            )
-        }
+//        view.doOnLayout {
+//            productFeaturedView?.setFadingEndBounds(
+//                (FADING_EDGE_PRODUCT_FEATURED_WIDTH_MULTIPLIER * it.width).toInt()
+//            )
+//        }
     }
 
     private fun sendCastAnalytic(cast: PlayCastUiModel) {
@@ -1023,7 +1051,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun onScrubStarted() {
-        productFeaturedView?.setTransparent(true)
+//        productFeaturedView?.setTransparent(true)
         pinnedView?.setTransparent(true)
 
         if (!orientation.isLandscape) return
@@ -1033,7 +1061,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun onScrubEnded() {
-        productFeaturedView?.setTransparent(false)
+//        productFeaturedView?.setTransparent(false)
         pinnedView?.setTransparent(false)
 
         if (!orientation.isLandscape) return
@@ -1185,7 +1213,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
         val hasQuickReply = playViewModel.quickReply.quickReplyList.isNotEmpty()
 
-        val hasProductFeatured = productFeaturedView?.isShown() == true
+        val hasProductFeatured = binding.viewProductFeatured?.root?.isVisible == true
 
         if (bottomInsets.isKeyboardShown) getChatListHeightManager().invalidateHeightChatMode(videoOrientation, videoPlayer, maxTopPosition, hasQuickReply)
         else getChatListHeightManager().invalidateHeightNonChatMode(videoOrientation, videoPlayer, shouldForceInvalidate, hasProductFeatured)
@@ -1631,23 +1659,23 @@ class PlayUserInteractionFragment @Inject constructor(
         bottomInsets: Map<BottomInsetsType, BottomInsetsState>,
         status: PlayStatusUiModel,
     ) {
-        if (tagItem.resultState.isLoading && tagItem.product.productSectionList.isEmpty()) {
-            productFeaturedView?.setPlaceholder()
-        } else if (prevTagItem?.product?.productSectionList != tagItem.product.productSectionList) {
-            productFeaturedView?.setFeaturedProducts(
-                tagItem.product.productSectionList,
-                tagItem.maxFeatured,
-            )
-        }
-
-        if (!tagItem.resultState.isLoading && tagItem.product.productSectionList.isEmpty()) {
-            productFeaturedView?.hide()
-        } else if (tagItem.product.canShow &&
-            !bottomInsets.isAnyShown &&
-            !tagItem.resultState.isFail &&
-            status.channelStatus.statusType.isActive
-        ) productFeaturedView?.showIfNotEmpty()
-        else productFeaturedView?.hide()
+//        if (tagItem.resultState.isLoading && tagItem.product.productSectionList.isEmpty()) {
+//            productFeaturedView?.setPlaceholder()
+//        } else if (prevTagItem?.product?.productSectionList != tagItem.product.productSectionList) {
+//            productFeaturedView?.setFeaturedProducts(
+//                tagItem.product.productSectionList,
+//                tagItem.maxFeatured,
+//            )
+//        }
+//
+//        if (!tagItem.resultState.isLoading && tagItem.product.productSectionList.isEmpty()) {
+//            productFeaturedView?.hide()
+//        } else if (tagItem.product.canShow &&
+//            !bottomInsets.isAnyShown &&
+//            !tagItem.resultState.isFail &&
+//            status.channelStatus.statusType.isActive
+//        ) productFeaturedView?.showIfNotEmpty()
+//        else productFeaturedView?.hide()
     }
 
     private fun renderQuickReplyView(
