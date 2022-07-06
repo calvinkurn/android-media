@@ -32,12 +32,16 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusListener
+import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusParam
+import com.tokopedia.usercomponents.tokopediaplus.ui.TokopediaPlusWidget
 import kotlinx.coroutines.*
 import java.util.*
 
 class AccountHeaderViewHolder(itemView: View,
                               private val mainNavListener: MainNavListener,
-                              private val userSession: UserSessionInterface
+                              private val userSession: UserSessionInterface,
+                              private val tokopediaPlusListener: TokopediaPlusListener
 ): AbstractViewHolder<AccountHeaderDataModel>(itemView), CoroutineScope {
 
 
@@ -48,6 +52,9 @@ class AccountHeaderViewHolder(itemView: View,
     private lateinit var layoutLoginHeader: ConstraintLayout
     private lateinit var layoutLogin: ConstraintLayout
     private var adapter: SellerAdapter? = null
+
+    private val tokopediaPlusWidget by lazy { layoutLogin.findViewById<TokopediaPlusWidget>(R.id.tokopedia_plus_widget) }
+
 
     companion object {
         @LayoutRes
@@ -74,9 +81,16 @@ class AccountHeaderViewHolder(itemView: View,
 
     override fun bind(element: AccountHeaderDataModel, payloads: MutableList<Any>) {
         bind(element)
+        if(payloads.isNotEmpty() && payloads[0] == AccountHeaderDataModel.PAYLOAD_TOKOPEDIA_PLUS){
+            setTokopediaPlus(element.tokopediaPlusParam)
+        }
     }
 
     override fun bind(element: AccountHeaderDataModel) {
+        bindViews(element)
+    }
+
+    private fun bindViews(element: AccountHeaderDataModel){
         initViewHolder()
 
         val sectionShimmering: View = itemView.findViewById(R.id.section_shimmering_profile)
@@ -302,6 +316,13 @@ class AccountHeaderViewHolder(itemView: View,
         }
 
         /**
+         * Handling TokopediaPlus loading state
+         */
+        if(element.tokopediaPlusParam == null){
+            tokopediaPlusWidget.showLoading()
+        }
+
+        /**
          * Handling seller and affiliate info value
          */
         setSellerAndAffiliate(element, recyclerSeller)
@@ -326,6 +347,12 @@ class AccountHeaderViewHolder(itemView: View,
             listSellers.add(element.profileSellerDataModel)
             listSellers.add(element.profileAffiliateDataModel)
         }
+    }
+
+    private fun setTokopediaPlus(tokopediaPlusParam: TokopediaPlusParam?){
+        tokopediaPlusParam?.let {
+            tokopediaPlusWidget.load(tokopediaPlusParam, tokopediaPlusListener)
+        } ?: tokopediaPlusWidget.showLoading(true)
     }
 
     private fun setSellerAndAffiliate(element: AccountHeaderDataModel, recyclerSeller: RecyclerView) {
