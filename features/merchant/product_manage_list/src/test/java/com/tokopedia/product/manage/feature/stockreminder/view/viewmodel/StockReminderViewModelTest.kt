@@ -119,6 +119,7 @@ class StockReminderViewModelTest : StockReminderViewModelTestFixture() {
         runBlocking {
             val productId = "123"
             val wareHouseId = "321"
+            val shopId = "1234"
 
             val variant = Variant(listOf(), listOf(), listOf())
             val getProductV3 =
@@ -127,9 +128,9 @@ class StockReminderViewModelTest : StockReminderViewModelTestFixture() {
 
             onGetProduct_thenReturn(productId, wareHouseId, getProductVariantResponse)
 
-            viewModel.getProduct(productId, wareHouseId)
+            viewModel.getProduct(productId, wareHouseId, shopId)
 
-            val expectedResult = Success(ProductStockReminderMapper.mapToProductResult(getProductV3))
+            val expectedResult = Success(ProductStockReminderMapper.mapToProductResult(getProductV3, null))
 
             verifyGetProductUseCaseCalled(productId, wareHouseId)
             verifyGetProduct(expectedResult)
@@ -141,10 +142,11 @@ class StockReminderViewModelTest : StockReminderViewModelTestFixture() {
         runBlocking {
             val productId = "123"
             val wareHouseId = "321"
+            val shopId = "1234"
             val error = NullPointerException()
             onGetProduct_thenThrow(productId, wareHouseId, error)
 
-            viewModel.getProduct(productId, wareHouseId)
+            viewModel.getProduct(productId, wareHouseId, shopId)
 
             verifyGetProductUseCaseCalled(productId, wareHouseId)
             verifyGetProductFail()
