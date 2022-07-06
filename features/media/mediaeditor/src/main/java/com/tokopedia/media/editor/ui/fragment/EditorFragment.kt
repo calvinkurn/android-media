@@ -1,5 +1,6 @@
 package com.tokopedia.media.editor.ui.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.base.BaseEditorFragment
 import com.tokopedia.media.editor.databinding.FragmentMainEditorBinding
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorActivity
+import com.tokopedia.media.editor.ui.activity.main.EditorActivity
 import com.tokopedia.media.editor.ui.activity.main.EditorViewModel
 import com.tokopedia.media.editor.ui.component.DrawerUiComponent
 import com.tokopedia.media.editor.ui.component.ToolsUiComponent
@@ -47,10 +49,14 @@ class EditorFragment @Inject constructor() : BaseEditorFragment()
     }
 
     override fun onEditorToolClicked(type: Int) {
-        DetailEditorActivity.start(
-            requireContext(),
-            EditorDetailUiModel(activeImageUrl, type)
-        )
+        activity?.let {
+            val detailUiModel = EditorDetailUiModel(activeImageUrl, type)
+            val intent = Intent(it, DetailEditorActivity::class.java).apply {
+                putExtra(DetailEditorActivity.PARAM_EDITOR_DETAIL, detailUiModel)
+            }
+
+            startActivityForResult(intent, 0)
+        }
     }
 
     override fun onThumbnailDrawerClicked(url: String) {

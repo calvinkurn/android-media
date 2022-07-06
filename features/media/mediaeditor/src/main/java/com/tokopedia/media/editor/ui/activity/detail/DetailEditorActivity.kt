@@ -62,15 +62,10 @@ class DetailEditorActivity : BaseEditorActivity() {
     companion object {
         private const val CACHE_EDITOR_INTENT_DATA = "intent_data.editor_detail"
 
-        private const val PARAM_EDITOR_DETAIL = "param.editor_detail"
+        const val PARAM_EDITOR_DETAIL = "param.editor_detail"
 
-        fun start(context: Context, detailUiModel: EditorDetailUiModel) {
-            val intent = Intent(context, DetailEditorActivity::class.java).apply {
-                putExtra(PARAM_EDITOR_DETAIL, detailUiModel)
-            }
-
-            context.startActivity(intent)
-        }
+        const val EDITOR_RESULT_PARAM = "intent_data.editor_result"
+        const val EDITOR_RESULT_CODE = 798
     }
 
 }
