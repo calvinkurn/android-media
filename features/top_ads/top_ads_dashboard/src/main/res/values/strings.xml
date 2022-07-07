@@ -471,6 +471,9 @@
     <string name="topads_credit_ada_reward_pending_yang_bisa_kamu_cairkan_lihat_caranya_di_bawah_ini">Ada Reward Pending yang bisa kamu cairkan! Lihat caranya di bawah ini.</string>
     <string name="topads_dashboard_apa_itu_reward_pending">Apa itu Reward Pending?</string>
     <string name="topads_dashboard_bagaimana_cara_cairkan_reward">Bagaimana cara cairkan Reward?</string>
-    <string name="topads_dashboard_caikan_description">.</string>
+    <string name="topads_dashboard_caikan_description">
+        \u2022 Tambah Kredit TopAds min. Rp50 ribu untuk cairkan Reward, atau\n\u2022 Tunggu hingga total Reward Pending mencapai Rp50 ribu (sebelum kedaluwarsa), atau\n\u2022 Miliki akumulasi senilai Rp50 rb dari total Kredit TopAds dan Reward Pending kamu.
+    </string>
+    <string name="topads_credit_itu_reward_description">Reward Pending adalah Reward Kredit TopAds yang kamu dapatkan dari berjualan bulan ini dan bisa dicairkan ke akunmu. <![CDATA["<font color='#42b549'><b> Pelajari Lebih Lanjut </b></font>]]></string>
 </resources>
 

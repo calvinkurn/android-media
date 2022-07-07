@@ -90,7 +90,7 @@ class TopAdsEditAutoTopUpFragment : BaseDaggerFragment() {
     ): View? {
         val view =  inflater.inflate(R.layout.topads_dash_fragment_edit_auto_topup, container, false)
         loader = view.findViewById(R.id.loader)
-        activeText = view.findViewById(R.id.activeText)
+//        activeText = view.findViewById(R.id.activeText)
         switchAutoTopupStatus = view.findViewById(R.id.auto_topup_status)
         selectCreditCard = view.findViewById(R.id.selectCreditCard)
         creditDropMenu = view.findViewById(R.id.creditDropMenu)

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/topads_bg_rounded_stroke_gray"
+    android:background="@drawable/topads_bg_rounded_stroke_nn_200"
     android:padding="@dimen/spacing_lvl3">
 
     <com.tokopedia.unifyprinciples.Typography
