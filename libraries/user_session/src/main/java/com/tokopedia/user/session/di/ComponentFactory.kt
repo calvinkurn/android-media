@@ -1,13 +1,13 @@
 package com.tokopedia.user.session.di
 
-import android.app.Application
+import android.content.Context
 import androidx.annotation.VisibleForTesting
 
 open class ComponentFactory {
 
-    open fun createUserSessionComponent(application: Application): UserSessionComponent {
+    open fun createUserSessionComponent(context: Context): UserSessionComponent {
         return DaggerUserSessionComponent.builder()
-            .context(application)
+            .context(context)
             .build()
     }
 

@@ -7,13 +7,14 @@ import androidx.work.*
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.user.session.datastore.AbPlatformInteractor
 import com.tokopedia.user.session.datastore.DataStoreMigrationHelper
-import com.tokopedia.user.session.datastore.UserSessionAbTestPlatform
 import com.tokopedia.user.session.datastore.UserSessionDataStoreClient
-import kotlinx.coroutines.Dispatchers
+import com.tokopedia.user.session.di.ComponentFactory
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParameters) :
     CoroutineWorker(appContext, workerParams) {
@@ -23,13 +24,21 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
     }
 
     val dataStore = UserSessionDataStoreClient.getInstance(applicationContext)
-    val userSession = UserSession(applicationContext)
 
     private fun isMigrationSuccess(): Boolean =
         getDataStoreMigrationPreference(applicationContext).getBoolean(KEY_MIGRATION_STATUS, false)
 
-    private fun isEnableDataStore(): Boolean =
-        UserSessionAbTestPlatform.isDataStoreEnable(applicationContext)
+    private fun isEnableDataStore(): Boolean = abPlatform.isDataStoreEnabled()
+
+    @Inject
+    lateinit var abPlatform: AbPlatformInteractor
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
+    init {
+        ComponentFactory.instance.createUserSessionComponent(applicationContext).inject(this)
+    }
 
     override suspend fun doWork(): Result {
         if (isEnableDataStore()) {

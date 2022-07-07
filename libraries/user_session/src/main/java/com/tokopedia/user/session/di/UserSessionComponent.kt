@@ -4,8 +4,10 @@ import android.content.Context
 import com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker
 import dagger.BindsInstance
 import dagger.Component
+import javax.inject.Singleton
 
-@Component(modules = [SessionModule::class], )
+@Singleton
+@Component(modules = [SessionModule::class])
 interface UserSessionComponent {
 
     fun inject(worker: DataStoreMigrationWorker)
@@ -13,6 +15,7 @@ interface UserSessionComponent {
     @Component.Builder
     interface Builder {
         @BindsInstance fun context(context: Context): Builder
+        fun sessionModule(module: SessionModule): Builder
         fun build(): UserSessionComponent
     }
 
