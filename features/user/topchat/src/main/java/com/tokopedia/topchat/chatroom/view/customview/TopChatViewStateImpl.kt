@@ -31,7 +31,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.AttachmentPreviewFactoryImpl
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuStickerView
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
-import com.tokopedia.topchat.chatroom.view.custom.ChatTextAreaLayout
+import com.tokopedia.topchat.chatroom.view.custom.ChatTextAreaTabLayout
 import com.tokopedia.topchat.chatroom.view.listener.HeaderMenuListener
 import com.tokopedia.topchat.chatroom.view.listener.ImagePickerListener
 import com.tokopedia.topchat.chatroom.view.listener.SendButtonListener
@@ -96,7 +96,7 @@ open class TopChatViewStateImpl constructor(
     var blockStatus: BlockedStatus = BlockedStatus()
 
 
-    var chatTextAreaLayout: ChatTextAreaLayout? = null
+    var chatTextAreaTabLayout: ChatTextAreaTabLayout? = null
     private var chatTextAreaShimmer: LoaderUnify? = null
 
     var isAbleToReply: Boolean? = null
@@ -165,7 +165,7 @@ open class TopChatViewStateImpl constructor(
         initHeaderLayout()
         setupChatStickerMenu()
 
-        chatTextAreaLayout = view.findViewById(R.id.layout_chat_text_area)
+        chatTextAreaTabLayout = view.findViewById(R.id.layout_chat_text_area)
         chatTextAreaShimmer = view.findViewById(R.id.chat_area_shimmer)
     }
 
@@ -190,7 +190,7 @@ open class TopChatViewStateImpl constructor(
 
     override fun onStickerOpened() {
         if (isChatTabVisible()) {
-            chatTextAreaLayout?.onStickerOpened()
+            chatTextAreaTabLayout?.onStickerOpened()
         } else {
             chatStickerMenuButton?.setImage(IconUnify.KEYBOARD)
             chatStickerMenuButton?.setOnClickListener {
@@ -202,7 +202,7 @@ open class TopChatViewStateImpl constructor(
 
     override fun onStickerClosed() {
         if (isChatTabVisible()) {
-            chatTextAreaLayout?.onStickerClosed()
+            chatTextAreaTabLayout?.onStickerClosed()
         } else {
             chatStickerMenuButton?.setImage(IconUnify.STICKER)
             chatStickerMenuButton?.setOnClickListener {
@@ -212,7 +212,7 @@ open class TopChatViewStateImpl constructor(
     }
 
     fun isChatTabVisible(): Boolean {
-        return chatTextAreaLayout?.visibility == View.VISIBLE
+        return chatTextAreaTabLayout?.visibility == View.VISIBLE
     }
 
     override fun setChatBlockStatus(isBlocked: Boolean) {
@@ -840,29 +840,29 @@ open class TopChatViewStateImpl constructor(
                     chatTextAreaShimmer?.hide()
                     actionBox.show()
                     replyBox.hide()
-                    chatTextAreaLayout?.srwLayout?.renderSrwState()
-                    chatTextAreaLayout?.show()
+                    chatTextAreaTabLayout?.srwLayout?.renderSrwState()
+                    chatTextAreaTabLayout?.show()
                 }
                 (isAbleToReply == true) && (shouldShowSrw == false) -> {
                     //Hide Shimmer, show comment area, show reply box, hide tab
                     chatTextAreaShimmer?.hide()
                     actionBox.show()
                     replyBox.show()
-                    chatTextAreaLayout?.hide()
+                    chatTextAreaTabLayout?.hide()
                 }
                 (isAbleToReply == false) -> {
                     //Hide Shimmer, hide comment area, hide reply box, hide tab
                     chatTextAreaShimmer?.hide()
                     actionBox.hide()
                     replyBox.hide()
-                    chatTextAreaLayout?.hide()
+                    chatTextAreaTabLayout?.hide()
                 }
                 else -> {
                     //Show Shimmer, hide comment area, hide reply box, hide tab
                     chatTextAreaShimmer?.show()
                     actionBox.hide()
                     replyBox.hide()
-                    chatTextAreaLayout?.hide()
+                    chatTextAreaTabLayout?.hide()
                 }
             }
         }

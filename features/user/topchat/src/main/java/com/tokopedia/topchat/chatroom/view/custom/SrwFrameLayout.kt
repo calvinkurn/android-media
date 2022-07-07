@@ -46,6 +46,7 @@ class SrwFrameLayout : FrameLayout {
 
     private var bgExpanded: Drawable? = null
     private var onBoarding = SrwOnBoarding()
+    private var hasShownOnBoarding = false
 
     /**
      * To differentiate the SRW Tab and Bubble
@@ -142,9 +143,10 @@ class SrwFrameLayout : FrameLayout {
             bottomLeftRadius = R.dimen.dp_topchat_20,
             bottomRightRadius = R.dimen.dp_topchat_20,
             shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-            elevation = R.dimen.dp_topchat_2,
-            shadowRadius = R.dimen.dp_topchat_2,
-            strokeColor = com.tokopedia.unifyprinciples.R.color.Unify_Background,
+            elevation = getElevationShadow(),
+            shadowRadius = getElevationShadow(),
+            strokeColor = getStrokeColor(),
+            strokeWidth = getStrokeWidth(),
             shadowGravity = Gravity.CENTER
         )
         srwContentContainer?.background = bgExpanded
@@ -163,6 +165,30 @@ class SrwFrameLayout : FrameLayout {
             R.dimen.dp_topchat_0
         } else {
             R.dimen.dp_topchat_20
+        }
+    }
+
+    private fun getElevationShadow(): Int {
+        return if (isSrwBubble) {
+            R.dimen.dp_topchat_2
+        } else {
+            R.dimen.dp_topchat_0
+        }
+    }
+
+    private fun getStrokeColor(): Int {
+        return if (isSrwBubble) {
+            com.tokopedia.unifyprinciples.R.color.Unify_Background
+        } else {
+            com.tokopedia.unifyprinciples.R.color.Unify_NN50
+        }
+    }
+
+    private fun getStrokeWidth(): Int {
+        return if (isSrwBubble) {
+            R.dimen.dp_topchat_0
+        } else {
+            R.dimen.dp_topchat_1
         }
     }
 
@@ -270,8 +296,7 @@ class SrwFrameLayout : FrameLayout {
     }
 
     private fun showSrwContent() {
-        val isPreviouslyVisible = srwContentContainer?.isVisible == true
-        if (!isPreviouslyVisible) {
+        if (!hasShownOnBoarding) {
             listener?.trackViewSrw()
             showOnBoardingSrw()
         } else {
@@ -283,10 +308,21 @@ class SrwFrameLayout : FrameLayout {
 
     private fun showOnBoardingSrw() {
         if (listener?.shouldShowOnBoarding() == true) {
-            titleContainer?.let {
-                onBoarding.show(context, it)
+            if (isSrwBubble) {
+                titleContainer?.let {
+                    showOnBoarding(it)
+                }
+            } else {
+                srwContentContainer?.let {
+                    showOnBoarding(it)
+                }
             }
         }
+    }
+
+    private fun showOnBoarding(view: LinearLayout) {
+        onBoarding.show(context, view)
+        hasShownOnBoarding = true
     }
 
     private fun dismissOnBoarding() {

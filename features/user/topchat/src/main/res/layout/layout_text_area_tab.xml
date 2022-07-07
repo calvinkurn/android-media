@@ -30,7 +30,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_bias="0"
             tools:background="@color/Unify_NN100"/>
-<!--            android:background="@drawable/bg_text_area_tab_inactive" />-->
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_textarea_tab"
@@ -88,8 +87,7 @@
         android:layout_marginBottom="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        tools:layout_height="150dp"
-        tools:visibility="gone"/>
+        android:visibility="gone"/>
 
     <com.tokopedia.topchat.chatroom.view.custom.ComposeMessageAreaConstraintLayout
         android:id="@+id/reply_box_tab"

@@ -22,7 +22,7 @@ import com.tokopedia.topchat.chatroom.view.listener.ReplyBoxTextListener
 import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.unifyprinciples.Typography
 
-class ChatTextAreaLayout: ConstraintLayout {
+class ChatTextAreaTabLayout: ConstraintLayout {
 
     /**
      * Tab SRW
@@ -34,7 +34,7 @@ class ChatTextAreaLayout: ConstraintLayout {
     /**
      * Tab Tulis Pesan
      */
-    private var tabReplyBox: View? = null
+    var tabReplyBox: View? = null
     private var textTabReplyBox: Typography? = null
     private var replyBoxLayout : ComposeMessageAreaConstraintLayout? = null
     private var replyEditText: EditText? = null
@@ -101,52 +101,35 @@ class ChatTextAreaLayout: ConstraintLayout {
         tabBackgroundActive = ViewUtil.generateBackgroundWithShadow(
             this,
             backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_Background,
-            topLeftRadius = com.tokopedia.topchat.R.dimen.dp_topchat_8,
-            topRightRadius = com.tokopedia.topchat.R.dimen.dp_topchat_8,
-            bottomLeftRadius = com.tokopedia.topchat.R.dimen.dp_topchat_8,
-            bottomRightRadius = com.tokopedia.topchat.R.dimen.dp_topchat_8,
+            topLeftRadius = R.dimen.dp_topchat_8,
+            topRightRadius = R.dimen.dp_topchat_8,
+            bottomLeftRadius = R.dimen.dp_topchat_8,
+            bottomRightRadius = R.dimen.dp_topchat_8,
             shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-            elevation = R.dimen.dp_topchat_2,
-            shadowRadius = R.dimen.dp_topchat_2,
-            strokeColor = com.tokopedia.unifyprinciples.R.color.Unify_Background,
+            elevation = R.dimen.dp_topchat_0,
+            shadowRadius = R.dimen.dp_topchat_0,
+            strokeColor = com.tokopedia.unifyprinciples.R.color.Unify_NN50,
+            strokeWidth = R.dimen.dp_topchat_1,
             shadowGravity = Gravity.CENTER
         )
         tabBackgroundInactive = ViewUtil.generateBackgroundWithShadow(
             this,
             backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_NN100,
-            topLeftRadius = com.tokopedia.topchat.R.dimen.dp_topchat_8,
-            topRightRadius = com.tokopedia.topchat.R.dimen.dp_topchat_8,
-            bottomLeftRadius = com.tokopedia.topchat.R.dimen.dp_topchat_8,
-            bottomRightRadius = com.tokopedia.topchat.R.dimen.dp_topchat_8,
+            topLeftRadius = R.dimen.dp_topchat_8,
+            topRightRadius = R.dimen.dp_topchat_8,
+            bottomLeftRadius = R.dimen.dp_topchat_8,
+            bottomRightRadius = R.dimen.dp_topchat_8,
             shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-            elevation = R.dimen.dp_topchat_2,
-            shadowRadius = R.dimen.dp_topchat_2,
-            strokeColor = com.tokopedia.unifyprinciples.R.color.Unify_Background,
+            elevation = R.dimen.dp_topchat_0,
+            shadowRadius = R.dimen.dp_topchat_0,
+            strokeColor = com.tokopedia.unifyprinciples.R.color.Unify_NN50,
+            strokeWidth = R.dimen.dp_topchat_1,
             shadowGravity = Gravity.CENTER
         )
 
         tabSRW?.background = tabBackgroundActive
         tabReplyBox?.background = tabBackgroundInactive
-        setupTabTranslationX()
-    }
 
-    private fun setupTabTranslationX() {
-        viewTreeObserver.addOnGlobalLayoutListener {
-            this.post {
-                tabReplyBox?.width?.let {
-                    //Translation X with 10% of the width
-                    tabReplyBox?.translationX = (it * -0.1).toFloat()
-
-                    //If active, then same translation x for the text,
-                    //else half of the background translation x
-                    if (tabState == TabLayoutActiveStatus.ReplyBox) {
-                        textTabReplyBox?.translationX = (it * -0.1).toFloat()
-                    } else {
-                        textTabReplyBox?.translationX = ((it * -0.1) / 2).toFloat()
-                    }
-                }
-            }
-        }
     }
 
     private fun initListener() {

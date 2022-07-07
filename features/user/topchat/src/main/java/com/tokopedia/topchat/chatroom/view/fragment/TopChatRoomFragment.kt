@@ -147,15 +147,11 @@ import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity.Companio
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder.MENU_ID_DELETE_BUBBLE
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
 import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
-import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
-import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OPEN_WISHLIST
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 
 /**
@@ -340,7 +336,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 rvSrw?.renderSrwState()
             })
             topchatViewState?.hideTemplateChat()
-        } else if (topchatViewState?.chatTextAreaLayout?.srwLayout?.isLoadingState() != true) {
+        } else if (topchatViewState?.chatTextAreaTabLayout?.srwLayout?.isLoadingState() != true) {
             handleSrw(onNewDesign = {
                 topchatViewState?.shouldShowSrw = false
             }, onOldDesign = {
@@ -367,8 +363,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun hasNoSrw(): Boolean {
         return if (isSrwNewDesign()) {
-            topchatViewState?.chatTextAreaLayout?.srwLayout?.isAllowToShow() == false
-                    && topchatViewState?.chatTextAreaLayout?.srwLayout?.isSuccessState() == true
+            topchatViewState?.chatTextAreaTabLayout?.srwLayout?.isAllowToShow() == false
+                    && topchatViewState?.chatTextAreaTabLayout?.srwLayout?.isSuccessState() == true
         } else {
             rvSrw?.isAllowToShow() == false && rvSrw?.isSuccessState() == true
         }
@@ -431,7 +427,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun shouldShowSrw(): Boolean {
         return if (isSrwNewDesign()) {
             !isSeller() && hasProductPreviewShown() &&
-                    topchatViewState?.chatTextAreaLayout?.srwLayout?.isAllowToShow() == true &&
+                    topchatViewState?.chatTextAreaTabLayout?.srwLayout?.isAllowToShow() == true &&
                     viewModel.isAttachmentPreviewReady()
         } else {
             !isSeller() && hasProductPreviewShown() &&
@@ -788,9 +784,17 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun checkReplyBubbleOnBoardingFirstRender() {
         val hasShowOnBoarding = replyBubbleOnBoarding.hasBeenShown()
         if (!hasShowOnBoarding && !viewModel.isInTheMiddleOfThePage()) {
-            replyBubbleOnBoarding.showReplyBubbleOnBoarding(
-                rv, adapter, composeMsgArea, context
-            )
+            if (isSrwNewDesign() &&
+                topchatViewState?.chatTextAreaTabLayout?.visibility == View.VISIBLE
+            ) {
+                replyBubbleOnBoarding.showReplyBubbleOnBoarding(
+                    rv, adapter, topchatViewState?.chatTextAreaTabLayout?.tabReplyBox, context
+                )
+            } else {
+                replyBubbleOnBoarding.showReplyBubbleOnBoarding(
+                    rv, adapter, composeMsgArea, context
+                )
+            }
         }
     }
 
@@ -1155,7 +1159,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     ) {
         val referredMsg = replyCompose?.referredMsg
         handleSrw(onNewDesign = {
-            if (topchatViewState?.chatTextAreaLayout?.srwLayout?.isShowing() == true) {
+            if (topchatViewState?.chatTextAreaTabLayout?.srwLayout?.isShowing() == true) {
                 addSrwBubbleToChat()
             }
         }, onOldDesign = {
@@ -1207,7 +1211,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         onSendAndReceiveMessage()
         val referredMsg = replyCompose?.referredMsg
         handleSrw(onNewDesign = {
-            if (topchatViewState?.chatTextAreaLayout?.srwLayout?.isShowing() == true) {
+            if (topchatViewState?.chatTextAreaTabLayout?.srwLayout?.isShowing() == true) {
                 addSrwBubbleToChat()
             }
         }, onOldDesign = {
@@ -1498,7 +1502,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun removeSrwPreview() {
         handleSrw(onNewDesign = {
-            topchatViewState?.chatTextAreaLayout?.srwLayout?.hideSrw()
+            topchatViewState?.chatTextAreaTabLayout?.srwLayout?.hideSrw()
         }, onOldDesign = {
             rvSrw?.hideSrw()
         })
@@ -2442,7 +2446,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun addSrwBubble() {
         expandSrwPreview()
         val srwState = if (isSrwNewDesign()) {
-            topchatViewState?.chatTextAreaLayout?.srwLayout?.getStateInfo()
+            topchatViewState?.chatTextAreaTabLayout?.srwLayout?.getStateInfo()
         } else {
             rvSrw?.getStateInfo()
         }
@@ -2492,7 +2496,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun getChatSendButton(): IconUnify? {
         return if (topchatViewState?.isChatTabVisible() == true) {
-            topchatViewState?.chatTextAreaLayout?.getSendButton()
+            topchatViewState?.chatTextAreaTabLayout?.getSendButton()
         } else {
             sendButton
         }
@@ -2500,7 +2504,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun getComposeMessageArea(): ComposeMessageAreaConstraintLayout? {
         return if (topchatViewState?.isChatTabVisible() == true) {
-            topchatViewState?.chatTextAreaLayout?.getComposeMessageArea()
+            topchatViewState?.chatTextAreaTabLayout?.getComposeMessageArea()
         } else {
             composeMsgArea
         }
@@ -2695,7 +2699,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                     val listGroupSticker = it.data.first.chatListGroupSticker.list
                     val listUpdate = it.data.second
                     getChatMenuView()?.stickerMenu?.updateStickers(listGroupSticker, listUpdate)
-                    topchatViewState?.chatTextAreaLayout?.updateStickers(listGroupSticker, listUpdate)
+                    topchatViewState?.chatTextAreaTabLayout?.updateStickers(listGroupSticker, listUpdate)
                 }
                 is Fail -> {
                     //Do nothing
@@ -2705,7 +2709,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
         viewModel.srw.observe(viewLifecycleOwner, {
             handleSrw(onNewDesign = {
-                topchatViewState?.chatTextAreaLayout?.srwLayout?.updateStatus(it)
+                topchatViewState?.chatTextAreaTabLayout?.srwLayout?.updateStatus(it)
             }, onOldDesign = {
                 rvSrw?.updateStatus(it)
             })
@@ -3075,13 +3079,13 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun initChatTextAreaLayout() {
         handleSrw(onNewDesign = {
-            topchatViewState?.chatTextAreaLayout?.initReplyBox(
+            topchatViewState?.chatTextAreaTabLayout?.initReplyBox(
                 this,
                 this,
                 this,
                 this
             )
-            topchatViewState?.chatTextAreaLayout?.initSrw(
+            topchatViewState?.chatTextAreaTabLayout?.initSrw(
                 this,
                 getSrwFrameLayoutListener()
             )
