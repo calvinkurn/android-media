@@ -1056,9 +1056,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                         isVariant = productInfo.isProductVariant(),
                         stockQty = productInfo.getFinalStock().toIntOrZero()
                     )
-                ),
-                siteId = "",
-                verticalId = ""
+                )
             )
             affiliateCookieHelper.initCookie(
                 affiliateUUID = affiliateUuid,
