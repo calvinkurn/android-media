@@ -129,11 +129,11 @@ class PlayBroadcaster(
 
     private fun updateAspectFrameSize() {
         val size = broadcaster.activeCameraVideoSize ?: return
-        callback.updateAspectRatio(size.height.toDouble() / size.width.toDouble())
+        callback.updateAspectRatio(size)
     }
 
     interface Callback {
-        fun updateAspectRatio(aspectRatio: Double)
+        fun updateAspectRatio(activeCameraVideoSize: Broadcaster.Size)
         fun onBroadcastInitStateChanged(state: BroadcastInitState)
         fun onBroadcastStateChanged(state: PlayBroadcasterState)
         fun onBroadcastStatisticUpdate(metric: BroadcasterMetric)

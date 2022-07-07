@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.view.activity
 import android.Manifest
 import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -121,6 +122,9 @@ class PlayBroadcastActivity : BaseActivity(),
     private var surfaceHolder: SurfaceHolder? = null
     private lateinit var broadcaster: PlayBroadcaster
 
+    private val isPortrait: Boolean
+        get() = resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
         setFragmentFactory()
@@ -158,7 +162,7 @@ class PlayBroadcastActivity : BaseActivity(),
 
     override fun onStart() {
         super.onStart()
-        aspectFrameLayout.setAspectRatio(AspectFrameLayout.DEFAULT_RATION_WINDOW_SIZE)
+        aspectFrameLayout.setAspectRatio(AspectFrameLayout.DEFAULT_RATIO_WINDOW_SIZE)
     }
 
     override fun onResume() {
@@ -635,7 +639,10 @@ class PlayBroadcastActivity : BaseActivity(),
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LOCKED
     }
 
-    override fun updateAspectRatio(aspectRatio: Double) {
+    override fun updateAspectRatio(activeCameraVideoSize: Broadcaster.Size) {
+        val width = activeCameraVideoSize.width.toDouble()
+        val height = activeCameraVideoSize.height.toDouble()
+        val aspectRatio = if (isPortrait) height / width else width / height
         aspectFrameLayout.setAspectRatio(aspectRatio)
     }
 

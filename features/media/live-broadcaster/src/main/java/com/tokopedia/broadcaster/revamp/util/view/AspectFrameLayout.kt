@@ -26,10 +26,10 @@ import kotlin.math.abs
 class AspectFrameLayout : FrameLayout {
 
     companion object {
-        const val DEFAULT_RATION_WINDOW_SIZE = -1.0
+        const val DEFAULT_RATIO_WINDOW_SIZE = -1.0
     }
 
-    private var mTargetAspect = DEFAULT_RATION_WINDOW_SIZE // initially use default window size
+    private var mTargetAspect = DEFAULT_RATIO_WINDOW_SIZE // initially use default window size
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -39,7 +39,7 @@ class AspectFrameLayout : FrameLayout {
      */
     fun setAspectRatio(aspectRatio: Double) {
         if (aspectRatio < 0) {
-            mTargetAspect = -1.0
+            mTargetAspect = DEFAULT_RATIO_WINDOW_SIZE
         }
         if (mTargetAspect != aspectRatio) {
             mTargetAspect = aspectRatio
