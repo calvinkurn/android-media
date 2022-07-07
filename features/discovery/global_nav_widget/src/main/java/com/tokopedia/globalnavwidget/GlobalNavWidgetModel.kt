@@ -12,6 +12,7 @@ data class GlobalNavWidgetModel(
         val info: String = "",
         val componentId: String = "",
         val trackingOption: String = "0",
+        val dimension90: String = "",
 ) {
 
     data class Item(

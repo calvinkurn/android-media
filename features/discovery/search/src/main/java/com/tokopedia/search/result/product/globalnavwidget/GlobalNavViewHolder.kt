@@ -40,6 +40,7 @@ class GlobalNavViewHolder(
             info = element.info,
             componentId = element.componentId,
             trackingOption = element.trackingOption,
+            dimension90 = element.dimension90,
         )
     }
 
