@@ -74,6 +74,9 @@ dependencies {
     implementation rootProject.ext.miscDependencies.viewModelKtx
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
     implementation project(rootProject.ext.libraries.videoplayer)
+
+    implementation rootProject.ext.miscDependencies.exoPlayerCore
+    implementation rootProject.ext.miscDependencies.exoPlayer
 }
 
 project.ext {
