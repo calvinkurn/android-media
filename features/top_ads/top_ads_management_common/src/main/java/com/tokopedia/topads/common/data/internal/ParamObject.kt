@@ -4,6 +4,7 @@ package com.tokopedia.topads.common.data.internal
  * Author errysuprayogi on 25,October,2019
  */
 object ParamObject {
+    const val CONTENT_TYPE_JSON = "application/json"
     const val SHOP_Id = "shopId"
     const val CREDIT_DATA = "creditData"
     const val SHOP_DATA = "shopData"
@@ -115,8 +116,6 @@ object ParamObject {
     const val NAME_EDIT = "isNameEdit"
     const val BUDGET_LIMITED = "isBudgetLimited"
     const val PUBLISHED = "published"
-    const val ISWHITELISTEDUSER = "isWhiteListedUser"
-    const val IS_AUTO_BID_TOGGLE_ENABLED = "autoBidToggle"
 
     const val PRODUCT_AUTO_SEARCH = "product_auto_search"
     const val PRODUCT_SEARCH = "product_search"

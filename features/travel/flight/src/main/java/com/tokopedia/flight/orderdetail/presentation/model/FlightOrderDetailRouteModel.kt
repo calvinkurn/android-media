@@ -40,7 +40,7 @@ data class FlightOrderDetailRouteModel(
 
     @Parcelize
     data class OrderDetailTicketNumberModel(
-            val passengerId: Int,
+            val passengerId: String,
             val ticketNumber: String
     ) : Parcelable
 

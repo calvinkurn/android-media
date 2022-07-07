@@ -36,7 +36,8 @@ class GlobalNavViewHolder(
             background = element.background,
             clickSeeAllApplink = element.seeAllApplink,
             clickSeeAllUrl = element.seeAllUrl,
-            itemList = element.itemList.map(::convertGlobalNavWidgetItemModel)
+            itemList = element.itemList.map(::convertGlobalNavWidgetItemModel),
+            info = element.info,
         )
     }
 

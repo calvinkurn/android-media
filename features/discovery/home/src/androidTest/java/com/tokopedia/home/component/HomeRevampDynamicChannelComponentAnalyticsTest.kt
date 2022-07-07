@@ -225,6 +225,45 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     }
 
     @Test
+    fun testCueWidgetCategory() {
+        HomeDCCassavaTest {
+            initTest()
+            doActivityTestByModelClass(dataModelClass = CueCategoryDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                actionOnCueWidgetCategory(viewHolder, i)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_CUE_WIDGET_CATEGORY)
+        }
+    }
+
+    @Test
+    fun testVpsWidget() {
+        HomeDCCassavaTest {
+            initTest()
+            doActivityTestByModelClass(dataModelClass = VpsDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                actionOnVpsWidget(viewHolder, i)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_VPS_WIDGET)
+        }
+    }
+
+    @Test
+    fun testMissionWidget() {
+        HomeDCCassavaTest {
+            initTest()
+            doActivityTestByModelClass(dataModelClass = MissionWidgetListDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                actionOnMissionWidget(viewHolder)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MISSION_WIDGET)
+        }
+    }
+
+    @Test
     fun testOpenScreenHomepage() {
         HomeDCCassavaTest {
             initTest()
@@ -381,7 +420,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         HomeDCCassavaTest {
             initTest()
             doActivityTestByModelClass(dataModelClass = MerchantVoucherDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-                actionOnMerchantVoucherWidget(viewHolder)
+                actionOnMerchantVoucherWidget(viewHolder, i)
             }
         } validateAnalytics {
             addDebugEnd()
@@ -399,6 +438,19 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         } validateAnalytics {
             addDebugEnd()
             hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_SPECIAL_RELEASE)
+        }
+    }
+
+    @Test
+    fun testSpecialCampaignWidget() {
+        HomeDCCassavaTest {
+            initTest()
+            doActivityTestByModelClass(dataModelClass = CampaignWidgetDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                actionOnCampaignWidget(viewHolder, i)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_CAMPAIGN_WIDGET)
         }
     }
 
@@ -485,7 +537,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     }
 
     private fun login() {
-        InstrumentationAuthHelper.loginInstrumentationTestUser1()
+        InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
         InstrumentationAuthHelper.loginToAnUser(activityRule.activity.application)
     }
 

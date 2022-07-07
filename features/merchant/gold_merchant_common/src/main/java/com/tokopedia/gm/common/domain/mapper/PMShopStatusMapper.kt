@@ -22,7 +22,7 @@ class PMShopStatusMapper @Inject constructor() {
                 expiredTime = getExpiredTimeFmt(shopStatus.powerMerchant?.expiredTime.orEmpty()),
                 autoExtendEnabled = shopStatus.powerMerchant?.autoExtend?.status != statusOff,
                 isOfficialStore = shopStatus.officialStore?.status == PMStatusConst.ACTIVE,
-                subscriptionType = shopStatus.powerMerchant?.autoExtend?.tkpdProductId.orZero()
+                subscriptionType = (shopStatus.powerMerchant?.autoExtend?.tkpdProductId?:"0").toInt()
         )
     }
 

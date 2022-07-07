@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/voucher_deals_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/voucher_deals_layout"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/Unify_Background"
     android:layout_marginLeft="@dimen/spacing_lvl3"
     android:layout_marginRight="@dimen/spacing_lvl3"
+    android:orientation="vertical"
     android:paddingTop="@dimen/spacing_lvl2"
-    android:paddingBottom="@dimen/spacing_lvl2"
-    android:orientation="vertical">
+    android:paddingBottom="@dimen/spacing_lvl2">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/iv_product"
@@ -28,77 +27,76 @@
             android:id="@+id/iv_brand"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:srcCompat="@drawable/bg_deals_shimmer_home_bg"
-            android:scaleType="centerCrop" />
+            android:contentDescription="@string/deals_image_brand_content_description"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/bg_deals_shimmer_home_bg" />
 
     </androidx.cardview.widget.CardView>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_brand_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
         android:lineSpacingExtra="2sp"
-        android:paddingEnd="@dimen/spacing_lvl4"
-        android:paddingRight="@dimen/spacing_lvl4"
         android:paddingStart="@dimen/spacing_lvl2"
-        android:paddingLeft="@dimen/spacing_lvl2"
+        android:paddingEnd="@dimen/spacing_lvl4"
         android:textColor="@color/Unify_N700_44"
-        android:textSize="@dimen/fontSize_lvl2"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/iv_product"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_3"
         tools:text="Hong Tang" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_simple_item"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/spacing_lvl4"
-        android:layout_marginLeft="@dimen/spacing_lvl2"
-        android:maxLines="1"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
         android:ellipsize="end"
-        android:singleLine="true"
         android:ems="15"
-        android:textSize="@dimen/fontSize_lvl3"
+        android:maxLines="1"
+        android:singleLine="true"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintLeft_toRightOf="@+id/iv_product"
         app:layout_constraintTop_toBottomOf="@+id/tv_brand_name"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
         tools:text="Durian Soupyfyufjvgvjkuvgfuyyyyyyyy" />
 
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_sales_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/fontSize_lvl3"
-        android:textColor="@color/Unify_N700_96"
-        tools:text="Rp25.000"
+        android:layout_marginStart="@dimen/spacing_lvl2"
         android:layout_marginTop="@dimen/spacing_lvl1"
-        android:layout_marginLeft="@dimen/spacing_lvl2"
-        android:gravity="center"
-        android:textStyle="bold"
         android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:gravity="center"
+        android:textColor="@color/Unify_N700_96"
+        android:textSize="@dimen/fontSize_lvl3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/iv_product"
         app:layout_constraintTop_toBottomOf="@+id/tv_simple_item"
-        />
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
+        tools:text="Rp25.000" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/mrp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/fontSize_lvl2"
-        android:textColor="@color/Unify_N700_68"
-        tools:text=" Rp50.000"
+        android:layout_marginStart="@dimen/spacing_lvl3"
         android:layout_marginTop="@dimen/spacing_lvl1"
-        android:layout_marginLeft="@dimen/spacing_lvl3"
-        android:gravity="center"
         android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:gravity="center"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/tv_sales_price"
         app:layout_constraintTop_toBottomOf="@+id/tv_simple_item"
-        />
+        app:typographyType="display_3"
+        tools:text=" Rp50.000" />
 
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/tv_off"
@@ -108,13 +106,13 @@
         android:layout_marginRight="@dimen/spacing_lvl3"
         android:background="@drawable/bg_deals_softpink_box"
         android:gravity="center"
-        android:paddingBottom="@dimen/spacing_lvl1"
         android:paddingLeft="@dimen/spacing_lvl3"
-        android:paddingRight="@dimen/spacing_lvl3"
         android:paddingTop="@dimen/spacing_lvl1"
+        android:paddingRight="@dimen/spacing_lvl3"
+        android:paddingBottom="@dimen/spacing_lvl1"
         app:labelType="general_light_red"
-        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_simple_item"
         tools:text="20% OFF" />
 

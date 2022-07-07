@@ -7,7 +7,6 @@ import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.BaseShopScoreTest
 import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.SectionShopFeatureRecommendationViewHolder
 import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMUiModel
-import com.tokopedia.shop.score.performance.presentation.model.ItemStatusRMUiModel
 import com.tokopedia.shop.score.performance.presentation.model.PeriodDetailPerformanceUiModel
 import com.tokopedia.shop.score.performance.presentation.model.SectionFaqUiModel
 import com.tokopedia.shop.score.performance.presentation.model.SectionShopRecommendationUiModel
@@ -34,8 +33,6 @@ open class ShopScoreCassavaTest : BaseShopScoreTest() {
             "tracker/merchant/shop_score/performance/sp_click_merchant_tools_recommandation.json"
         const val CLICK_POWER_MERCHANT_SECTION_PATH =
             "tracker/merchant/shop_score/performance/sp_click_power_merchant_section.json"
-        const val CLICK_REGULAR_MERCHANT_SECTION_PATH =
-            "tracker/merchant/shop_score/performance/sp_click_regular_merchant_section.json"
         const val CLICK_TICKER_PENALTY_PATH =
             "tracker/merchant/shop_score/performance/sp_click_ticker_penalty.json"
     }
@@ -71,12 +68,6 @@ open class ShopScoreCassavaTest : BaseShopScoreTest() {
         activityRule.activity.scrollTo<PeriodDetailPerformanceUiModel>()
         onIdView(com.tokopedia.unifycomponents.R.id.ticker_description).isViewDisplayed().onClick()
         validate(CLICK_TICKER_PENALTY_PATH)
-    }
-
-    protected fun clickRegularMerchantSection() {
-        activityRule.activity.scrollTo<ItemStatusRMUiModel>()
-        onIdView(R.id.tv_see_all_benefit_pm).isViewDisplayed().onClick()
-        validate(CLICK_REGULAR_MERCHANT_SECTION_PATH)
     }
 
     protected fun clickWatchVideoNewSeller() {

@@ -11,13 +11,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ellipsize="end"
-        android:maxLines="1"
+        android:maxLines="2"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/pdp_guideline_1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_2"
+        app:typographyType="display_2"
         tools:text="@string/label_product_info"
         tools:visibility="visible" />
 
@@ -31,18 +31,44 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/info_detail_value"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:singleLine="true"
+        android:ellipsize="end"
+        android:maxLines="2"
         android:textColor="@color/Unify_N700_68"
+        app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="@+id/info_detail_title"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintLeft_toRightOf="@+id/pdp_guideline_1"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/info_detail_icon"
         app:layout_constraintTop_toTopOf="@+id/info_detail_title"
-        app:typographyType="body_2"
+        app:typographyType="display_2"
         tools:text="4 hari"
         tools:visibility="visible" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/info_detail_icon"
+        android:layout_width="13dp"
+        android:layout_height="13dp"
+        android:layout_marginStart="6dp"
+        android:visibility="gone"
+        app:icon_name="INFORMATION"
+        app:layout_constraintBottom_toBottomOf="@id/info_detail_value"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/info_detail_value"
+        app:layout_constraintTop_toTopOf="@id/info_detail_value"
+        tools:visibility="visible" />
+
+    <View
+        android:id="@+id/info_detail_click_area"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/info_detail_value"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/info_detail_value"
+        app:layout_constraintTop_toTopOf="@id/info_detail_value" />
 
     <View
         android:id="@+id/divider"

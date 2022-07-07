@@ -210,6 +210,7 @@ object AccountConstants {
         const val SETTING_LINK_ACCOUNT = 51
         const val SETTING_VIEW_ALL_BALANCE = 52
         const val SETTING_PLAY_WIDGET_AUTOPLAY = 53
+        const val SETTING_EXPLICIT_PROFILE = 54
     }
 
     object KEY {

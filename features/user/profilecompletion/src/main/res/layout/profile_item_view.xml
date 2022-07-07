@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:weightSum="12"
+    android:paddingLeft="@dimen/unify_space_16"
+    android:paddingRight="@dimen/unify_space_16"
+    android:layout_marginBottom="@dimen/unify_space_24"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/fragmentProfileItemTitle"
+        android:layout_weight="4.5"
+        tools:text="Title"
+        android:layout_gravity="start"
+        android:layout_width="0dp"
+        android:textColor="@color/Unify_NN600"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
+        android:layout_height="wrap_content"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_click"
+        android:layout_width="0dp"
+        android:layout_weight="7.5"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifyprinciples.Typography
+            app:typographyType="body_2"
+            app:typographyWeight="reguler"
+            android:id="@+id/fragmentProfileItemValue"
+            app:layout_constraintHorizontal_weight="7"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/fragmentProfileItemIcon"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Subtitle"
+            android:maxLines="1"
+            android:layout_width="0dp"
+            android:ellipsize="end"
+            android:textColor="@color/Unify_NN950"
+            android:layout_height="wrap_content"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_verification"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            android:text="@string/no_verified"
+            android:padding="@dimen/unify_space_4"
+            android:layout_marginTop="@dimen/unify_space_2"
+            android:textColor="@color/Unify_NN600"
+            app:typographyWeight="bold"
+            app:typographyType="small"
+            android:background="@color/Unify_NN100"
+            app:layout_constraintEnd_toStartOf="@id/fragmentProfileItemIcon"
+            app:layout_constraintTop_toBottomOf="@id/fragmentProfileItemValue"/>
+
+        <com.tokopedia.iconunify.IconUnify
+            app:layout_constraintStart_toEndOf="@id/fragmentProfileItemValue"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintHorizontal_weight="0.5"
+            android:id="@+id/fragmentProfileItemIcon"
+            app:icon_name="CHEVRON_RIGHT"
+            android:layout_width="22dp"
+            android:layout_height="22dp"/>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

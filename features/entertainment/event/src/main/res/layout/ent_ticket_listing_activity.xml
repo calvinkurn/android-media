@@ -48,15 +48,17 @@
                 app:layout_constraintTop_toBottomOf="@id/txtPlaceHolderTglKunjungan"
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
-            <com.elyeproj.loaderviewlibrary.LoaderTextView
+            <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/loaderUbah"
                 android:layout_width="@dimen/spacing_lvl7"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:loader_corner_radius="0dp"
+                app:loader_type="rect"
                 android:layout_marginRight="@dimen/spacing_lvl4"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/txtUbah"

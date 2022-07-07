@@ -1,6 +1,7 @@
 package com.tokopedia.loginregister.login.domain
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -23,7 +24,7 @@ data class RegisterPushNotificationParamsModel(
 ): GqlParam
 
 class RegisterPushNotificationUseCase @Inject constructor(
-    val repository: GraphqlRepository,
+    @ApplicationContext val repository: GraphqlRepository,
     coroutineDispatchers: CoroutineDispatchers
 ) : CoroutineUseCase<RegisterPushNotificationParamsModel, RegisterPushNotifPojo>(coroutineDispatchers.io) {
 

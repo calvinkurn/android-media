@@ -1,45 +1,9 @@
 <resources>
     <string name="app_name">Tokopedia Seller</string>
 
-    <string name="extend_gold_merchant">Perpanjang %1$s</string>
-    <string name="upgrade_gold_merchant">Upgrade ke %1$s</string>
-    <string name="payment_and_topup">Pembayaran dan Top Up</string>
-    <string name="digital_product">Produk Digital</string>
-    <string name="digital_transaction_list">Daftar Transaksi Digital</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-
-    <string name="drawer_title_top_ads">TopAds</string>
-    <string name="showcase_title_1_power_merchant">Status Power Merchant Aktif</string>
-    <string name="showcase_desc_1_power_merchant">Pantau dan tingkatkan reputasi tokomu dengan pilihan fitur eksklusif Power Merchant.</string>
-
-    <string name="showcase_title_2_power_merchant">Ini adalah Skor Performa Tokomu</string>
-    <string name="showcase_desc_2_power_merchant">Rutin cek dan jaga skor performa di atas 75.</string>
-
-    <string name="showcase_btn_next">Lanjut</string>
-    <string name="showcase_btn_prev">Kembali</string>
-    <string name="showcase_btn_finish">Mengerti</string>
-
-    <string name="title_push_notif_general">Notifikasi baru dari Tokopedia</string>
-    <string name="header_review_reputation">penalti reputasi</string>
-
-    <string name="dashboard_label_regular_merchant">Regular Merchant</string>
-    <string name="dashboard_label_gold_merchant">Gold Merchant</string>
-    <string name="dashboard_label_official_store">Official Store</string>
-
-    <string name="dashboard_shop_success_rate">%1s%%</string>
-    <string name="open_shop">Buka Toko</string>
-    <string name="dashboard_your_shop_is_closed_until_xx">Toko Anda tutup sampai dengan %1$s</string>
-    <string name="dashboard_x_points">%1$s poin</string>
-    <string name="dashboard_your_shop_is_in_moderation">Toko Anda dalam status MODERASI</string>
-    <string name="dashboard_reason_x">Alasan : %1$s</string>
 
     <string name="title_activity_deep_link_topseller">Tokopedia Seller</string>
-    <string name="title_activity_contact_us_drawer">Pusat Bantuan</string>
 
-    <string name="transaction_success">Transaksi Sukses</string>
-    <string name="featured_product_desc_should_gold_merchant">Pilih 5 produk terbaik Anda untuk ditampilkan di halaman toko. Dapatkan akses Produk Unggulan dengan berlangganan %1$s.</string>
-    <string name="drawer_title_flash_sale">Flash Sale</string>
     <string name="title_dialog_tokopedia_app_not_valid">Aplikasi Tokopedia tidak valid</string>
     <string name="title_message_install_from_playstore">Install Tokopedia dari Google Play Store untuk melanjutkan</string>
 
@@ -55,82 +19,44 @@
     <string name="shop_settings_add_address">Tambah Lokasi</string>
     <string name="shop_settings_shop_status">Status Toko</string>
 
-    <!--Power Merchant-->
-    <string name="active_label">Aktif</string>
-    <string name="inactive_label">Nonaktif</string>
-    <string name="upgrade_power_merchant">Upgrade Tokomu</string>
-    <string name="score_of_total_score" translatable="false"><![CDATA[<b>%1$d</b>/%2$d]]></string>
-    <string name="bracket_format">(%1$s)</string>
-    <string name="regular_merchant_ticker"><![CDATA[Siap upgrade menjadi <b>Power Merchant</b> dengan poin minimum <b>75</b>.]]></string>
-    <string name="tip_increase_score">Tip Meningkatkan Poin</string>
-    <string name="power_merchant_ticker_with_tip"><![CDATA[Pertahankan poin minimum <b>75</b> untuk tetap menjadi <b>Power Merchant</b>.]]></string>
-
-    <string name="pm_popup_active_title">Selamat! Kamu sudah menjadi Power Merchant</string>
-    <string name="pm_popup_active_desc"><![CDATA[Tingkatkan penjualan tokomu dengan menggunakan fitur eksklusif <b>Power Merchant.</b>]]></string>
-    <string name="pm_popup_active_btn">Mulai</string>
-
-    <string name="pm_popup_idle_title">Power Merchant kamu dinonaktifkan</string>
-    <string name="pm_popup_idle_desc"><![CDATA[Tingkatkan kembali performa tokomu minimum <b>75</b> dan lengkapi syarat & ketentuan Power Merchant.]]></string>
-    <string name="pm_popup_idle_btn">Tingkatkan Skor Toko</string>
-
-    <string name="pm_popup_deactivated_title">Yaah, layanan Power Merchant kamu berakhir</string>
-    <string name="pm_popup_deactivated_desc">Segera kembali jadi Power Merchant agar semakin mudah mengoptimalkan penjualanmu.</string>
-    <string name="pm_popup_deactivated_btn">Upgrade Tokomu</string>
-
-    <string name="pm_popup_regular_title">Power Merchant kini bebas biaya bulanan!</string>
-    <string name="pm_popup_regular_desc">Tingkatkan penjualanmu dengan Power Merchant, hanya bayar biaya layanan 1% dari setiap produk terjual.</string>
-    <string name="pm_popup_regular_btn">Upgrade Tokomu</string>
-
-    <string name="title_header_saldo_intro">Info Detail Saldo</string>
-    <string name="saldo_detail_title_activity_people_deposit">Detail Saldo</string>
 
     <!-- Dynamic features Shop Showcase -->
     <string name="title_shop_showcase">Shop Showcase</string>
 
     <!-- Shop Score Title  -->
-    <string name="title_shopscore">Skor Performa Toko</string>
     <string name="title_shop_performance">Performa Toko</string>
     <string name="title_penalty_shop_score">Penalti</string>
     <string name="title_penalty_detail_shop_score">Detail Pelanggaran</string>
 
     <!-- Dynamic feature Product Add Edit -->
-    <string name="action_pick_photo">Pilih Foto</string>
-    <string name="action_edit_photo">Ubah Foto</string>
     <string name="label_title_add_product">Tambah Produk</string>
     <string name="label_title_draft_product">Draft Produk</string>
     <string name="label_title_category_picker">Pilih Kategori</string>
 
     <!-- Review   -->
-    <string name="review_text">Ulasan</string>
     <string name="title_review_reply">Balas Ulasan</string>
     <string name="title_activity_reputation_review">Ulasan</string>
     <string name="reputation_point_calculation">Perhitungan Poin Reputasi</string>
     <string name="title_filter">Filter</string>
     <string name="title_report">Laporkan</string>
 
-    <string name="drawer_title_home">Home</string>
-    <string name="welcome_text_1">Ini adalah aplikasi khusus untuk berjualan di Tokopedia.</string>
-    <string name="welcome_text_2">Yuk mulai kelola tokomu di Tokopedia, mudah &amp; gratis!</string>
     <string name="title_activity_shop_transaction_new">Penjualan</string>
-    <string name="set_date">Atur Tanggal</string>
 
     <!-- Product Detail -->
     <string name="title_activity_product_detail">Rincian Produk</string>
     <string name="title_activity_atc_variant">Varian Barang</string>
     <string name="product_detail_courier">Pengiriman</string>
-    <string name="label_rates_estimation_detail">Estimasi Ongkir</string>
-    <string name="label_product_installment">Cicilan</string>
     <string name="label_product_wholesale">Harga Grosir</string>
-    <string name="label_product_desc">Deskripsi Produk</string>
     <string name="label_image_preview_pdp">Gambar produk</string>
     <string name="gallery_top_bar_title">Foto dari Pembeli</string>
+    <string name="pdp_common_educational_title">Product Educational</string>
 
     <!-- Order Management History   -->
     <string name="transaction_title_activity_order_history">Detail Status</string>
 
     <string name="review_reminder_title">Pengingat Ulasan</string>
     <string name="review_reading_title">Ulasan Pembeli</string>
-    <string name="review_gallery_title">Foto Pembeli</string>
+    <string name="review_gallery_title">Foto &amp; Video Pembeli</string>
     <string name="reputation_history_set_date">Atur Tanggal</string>
 
 </resources>

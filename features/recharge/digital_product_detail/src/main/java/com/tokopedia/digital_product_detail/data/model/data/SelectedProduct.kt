@@ -6,5 +6,5 @@ import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 data class SelectedProduct (
     val denomData: DenomData = DenomData(),
     val denomWidgetEnum: DenomWidgetEnum = DenomWidgetEnum.GRID_TYPE,
-    val position: Int = -1
+    var position: Int = -1
 )

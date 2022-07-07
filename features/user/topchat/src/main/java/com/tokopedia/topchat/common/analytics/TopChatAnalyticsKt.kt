@@ -39,7 +39,7 @@ object TopChatAnalyticsKt {
         itemBundle.putString(ITEM_ID, element.productId)
         itemBundle.putString(ITEM_NAME, element.productName)
         itemBundle.putString(ITEM_VARIANT, getValueOrEmpty(element.variants))
-        itemBundle.putDouble(PRICE, element.priceInt.toDouble())
+        itemBundle.putDouble(PRICE, element.priceNumber.toDouble())
         itemBundle.putInt(QUANTITY, element.minOrder)
         itemBundle.putString(SHOP_ID, chatData.headerModel.shopId.toString())
         itemBundle.putString(SHOP_NAME, chatData.shopName)
@@ -168,6 +168,58 @@ object TopChatAnalyticsKt {
         )
     }
 
+    fun eventViewProductBundling(firstProductId: String, bundleId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.VIEW_COMMUNICATION_IRIS,
+                category = Category.CHAT_DETAIL,
+                action = Action.VIEW_BUNDLING_PRODUCT_CARD,
+                label = "$firstProductId - $bundleId",
+                businessUnit = COMMUNICATION_MEDIA,
+                currentSite = CURRENT_SITE_TOKOPEDIA
+            )
+        )
+    }
+
+    fun eventClickProductBundlingCta(firstProductId: String, bundleId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Category.CHAT_DETAIL,
+                action = Action.CLICK_BUNDLING_PRODUCT_CTA,
+                label = "$firstProductId - $bundleId",
+                businessUnit = COMMUNICATION_MEDIA,
+                currentSite = CURRENT_SITE_TOKOPEDIA
+            )
+        )
+    }
+
+    fun eventViewSrwOnBoarding() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.VIEW_COMMUNICATION_IRIS,
+                category = Category.CHAT_DETAIL,
+                action = Action.VIEW_SRW_ONBOARDING,
+                label = "",
+                businessUnit = COMMUNICATION_MEDIA,
+                currentSite = CURRENT_SITE_TOKOPEDIA
+            )
+        )
+    }
+
+    fun eventClickCloseSrwOnBoarding() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Category.CHAT_DETAIL,
+                action = Action.CLICK_CLOSE_SRW_ONBOARDING,
+                label = "",
+                businessUnit = COMMUNICATION_MEDIA,
+                currentSite = CURRENT_SITE_TOKOPEDIA
+            )
+        )
+    }
+
     private fun createGeneralEvent(
         event: String,
         category: String,
@@ -211,6 +263,10 @@ object TopChatAnalyticsKt {
         const val CLICK_REPLY_BUBBLE = "click view parent replied bubble chat"
         const val CLICK_SHOP_VOUCHER_THUMBNAIL = "click shop voucher thumbnail"
         const val VIEW_VOUCHER_THUMBNAIL = "view voucher thumbnail"
+        const val VIEW_SRW_ONBOARDING = "view on srw onboarding"
+        const val CLICK_CLOSE_SRW_ONBOARDING = "click close on srw onboarding"
+        const val VIEW_BUNDLING_PRODUCT_CARD = "view on bundling product card"
+        const val CLICK_BUNDLING_PRODUCT_CTA = "click on bundling product card"
     }
 
     //Event Name

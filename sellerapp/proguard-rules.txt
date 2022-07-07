@@ -1,3 +1,6 @@
+
+
+
 # Obfuscation parameters:
 -dontwarn java.nio.file.Files
 -dontwarn java.nio.file.Path
@@ -285,7 +288,12 @@
 
 # Keep fragment class name
 -keepnames class com.tokopedia.dynamicfeatures.DFInstallerFragment
+-keepnames class com.tokopedia.review.feature.reading.presentation.fragment.ShopReviewFragment
 -keepnames class com.tokopedia.shop_showcase.shop_showcase_tab.presentation.fragment.ShopPageShowcaseFragment
+
+# feed_shop
+-keepnames class com.tokopedia.feed_shop.shop.view.fragment.FeedShopFragment
+-keep class com.tokopedia.feed_shop.shop.view.fragment.FeedShopFragment
 
 -keep class com.tokopedia.stability.**{*;}
 -keepclassmembers class **{

@@ -14,6 +14,7 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.model.LinkerData.NOW_TYPE
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_CLP
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
@@ -44,6 +45,7 @@ import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil
 import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil.shareRequest
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder
 import com.tokopedia.tokopedianow.common.model.ShareTokonow
+import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.util.StringUtil.getOrDefaultZeroString
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_LIST_OOC
@@ -200,6 +202,9 @@ class TokoNowCategoryFragment:
     override val miniCartWidgetPageName: MiniCartAnalytics.Page
         get() = MiniCartAnalytics.Page.CATEGORY_PAGE
 
+    override val miniCartWidgetSource: MiniCartSource
+        get() = MiniCartSource.TokonowCategoryPage
+
     override fun onAisleClick(categoryAisleItemDataView: CategoryAisleItemDataView) {
         CategoryTracking.sendAisleClickEvent(getViewModel().categoryL1, categoryAisleItemDataView.id)
 
@@ -221,7 +226,7 @@ class TokoNowCategoryFragment:
     override fun screenShotTaken() {
         updateShareHomeData(
             isScreenShot = true,
-            thumbNailTitle = resources.getString(R.string.tokopedianow_home_share_thumbnail_title_ss)
+            thumbNailTitle = context?.resources?.getString(R.string.tokopedianow_home_share_thumbnail_title_ss).orEmpty()
         )
 
         showUniversalShareBottomSheet(shareCategoryTokonow)
@@ -268,11 +273,17 @@ class TokoNowCategoryFragment:
             id = model.deeplinkParam
             sharingUrl = model.url
             pageIdConstituents = model.utmCampaignList
-            sharingText = resources.getString(R.string.tokopedianow_category_share_main_text, model.title)
-            specificPageName = resources.getString(R.string.tokopedianow_category_share_title, model.title)
-            specificPageDescription = resources.getString(R.string.tokopedianow_category_share_desc, model.title)
+            sharingText = context?.resources?.getString(R.string.tokopedianow_category_share_main_text, model.title).orEmpty()
+            specificPageName = context?.resources?.getString(R.string.tokopedianow_category_share_title, model.title).orEmpty()
+            specificPageDescription = context?.resources?.getString(R.string.tokopedianow_category_share_desc, model.title).orEmpty()
         }
     }
+
+    override fun trackingEventLabel(): String = tokoNowCategoryViewModel.getCurrentCategoryId(
+        categoryIdLvl1 = tokoNowCategoryViewModel.categoryL1,
+        categoryIdLvl2 = categoryIdLvl2,
+        categoryIdLvl3 = categoryIdLvl3
+    )
 
     private fun createShareHomeTokonow(): ShareTokonow {
         return ShareTokonow(
@@ -303,14 +314,15 @@ class TokoNowCategoryFragment:
     override fun onNavToolbarShareClicked() {
         updateShareHomeData(
             isScreenShot = false,
-            thumbNailTitle = resources.getString(R.string.tokopedianow_home_share_thumbnail_title)
+            thumbNailTitle = context?.resources?.getString(R.string.tokopedianow_home_share_thumbnail_title).orEmpty()
         )
 
         CategoryTracking.trackClickShareButtonTopNav(
             userId = userSession.userId,
             categoryIdLvl1 = tokoNowCategoryViewModel.categoryL1,
             categoryIdLvl2 = categoryIdLvl2,
-            categoryIdLvl3 = categoryIdLvl3
+            categoryIdLvl3 = categoryIdLvl3,
+            currentCategoryId = tokoNowCategoryViewModel.getCurrentCategoryId(tokoNowCategoryViewModel.categoryL1, categoryIdLvl2, categoryIdLvl3)
         )
         shareClicked(shareCategoryTokonow)
     }
@@ -504,6 +516,8 @@ class TokoNowCategoryFragment:
     override fun onAllCategoryClicked() { }
 
     override fun onCategoryClicked(position: Int, categoryId: String) { }
+
+    override fun onCategoryImpression(data: TokoNowCategoryGridUiModel) { }
 
     override fun onProductCardImpressed(position: Int, data: TokoNowProductCardUiModel) {
         super.onProductCardImpressed(position, data)

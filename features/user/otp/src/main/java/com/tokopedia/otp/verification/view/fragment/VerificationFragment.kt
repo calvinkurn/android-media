@@ -40,8 +40,8 @@ import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Screen.SCREEN_ACCO
 import com.tokopedia.otp.common.analytics.TrackingOtpUtil
 import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.verification.common.VerificationPref
+import com.tokopedia.otp.verification.data.OtpConstant
 import com.tokopedia.otp.verification.data.OtpData
-import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.domain.data.OtpRequestData
 import com.tokopedia.otp.verification.domain.data.OtpValidateData
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
@@ -50,6 +50,7 @@ import com.tokopedia.otp.verification.view.viewbinding.VerificationViewBinding
 import com.tokopedia.otp.verification.viewmodel.VerificationViewModel
 import com.tokopedia.pin.PinUnify
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -247,7 +248,9 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                     otpType = otpData.otpType.toString(),
                     mode = modeListData.modeText,
                     userIdEnc = otpData.userIdEnc,
-                    validateToken = otpData.accessToken
+                    validateToken = otpData.accessToken,
+                    userId = otpData.userId.toIntOrZero(),
+                    usePinV2 = isEnableValidateV2()
             )
         } else {
             viewModel.otpValidate(
@@ -260,10 +263,14 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                     fpData = "",
                     getSL = "",
                     signature = "",
-                    timeUnix = ""
+                    timeUnix = "",
+                    usePinV2 = isEnableValidateV2()
             )
         }
     }
+
+    private fun isEnableValidateV2(): Boolean =
+        RemoteConfigInstance.getInstance().abTestPlatform.getString(VerificationViewModel.VALIDATE_PIN_V2_ROLLENCE, "").isNotEmpty()
 
     private fun initObserver() {
         viewModel.sendOtpResult.observe(viewLifecycleOwner, Observer {

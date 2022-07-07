@@ -61,8 +61,6 @@ object OldShopPageTrackingConstant {
     const val CLICK_OPEN_OPERATIONAL_SHOP = "click open operational shop"
     const val IMPRESSION_HOW_TO_ACTIVATE_SHOP = "impression of how to activate shop"
     const val CLICK_HOW_TO_ACTIVATE_SHOP = "click how to activate shop"
-    const val CLICK_FOLLOW_FROM_ZERO_FOLLOWER = "click follow from zero follower"
-    const val IMPRESSION_FOLLOW_FROM_ZERO_FOLLOWER = "impression of follow from zero follower"
     const val CLICK_MENU_FROM_MORE_MENU = "click menu from more menu"
     const val CLICK_WISHLIST = "click wishlist"
     const val ADD = "add"

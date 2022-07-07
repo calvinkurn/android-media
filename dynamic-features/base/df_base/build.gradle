@@ -77,7 +77,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.rechargeCreditCard)
     implementation projectOrAar(rootProject.ext.features.digitalEmoney)
     implementation projectOrAar(rootProject.ext.features.digitalBrizzi)
-    implementation projectOrAar(rootProject.ext.features.smartBills)
     implementation projectOrAar(rootProject.ext.features.digitalCheckout)
     implementation projectOrAar(rootProject.ext.features.rechargePdpEmoney)
     implementation projectOrAar(rootProject.ext.features.digitalProductDetail)
@@ -101,6 +100,7 @@ dependencies {
 
     //Logistic
     implementation projectOrAar(rootProject.ext.features.logisticorder)
+    implementation projectOrAar(rootProject.ext.features.logisticseller)
     implementation projectOrAar(rootProject.ext.features.logisticaddaddress)
     implementation projectOrAar(rootProject.ext.features.manageaddress)
 
@@ -110,9 +110,11 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.shopShowcase)
     implementation projectOrAar(rootProject.ext.features.brandlist)
     implementation projectOrAar(rootProject.ext.features.productDetail)
+    implementation projectOrAar(rootProject.ext.features.productDetailAdditionalInfo)
     implementation projectOrAar(rootProject.ext.features.atcVariant)
     implementation projectOrAar(rootProject.ext.features.shopPage)
     implementation projectOrAar(rootProject.ext.features.shopPageWidget)
+    implementation projectOrAar(rootProject.ext.features.feedShop)
 
     //Operational
 
@@ -152,6 +154,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.promoCheckoutMarketplace)
     implementation projectOrAar(rootProject.ext.features.unifyorderhistory)
     implementation projectOrAar(rootProject.ext.features.wishlist)
+    implementation projectOrAar(rootProject.ext.features.addOnGifting)
 
     //Order Management
     implementation projectOrAar(rootProject.ext.features.ordermanagementhistory)

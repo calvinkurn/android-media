@@ -16,7 +16,7 @@ import timber.log.Timber
 /**
  * Author errysuprayogi on 09,February,2020
  */
-class PatchRepository(private val dataDao: DataDao, versionCode: String) {
+class PatchRepository(private val dataDao: DataDao, val versionCode: String) {
 
     private var TAG: String = PatchRepository::class.java.simpleName
     private var service: PatchApiService = RetrofitClient.webservice
@@ -31,7 +31,9 @@ class PatchRepository(private val dataDao: DataDao, versionCode: String) {
         }
     }
 
-    val allData: List<DataResponse.Result> = dataDao.getAllResultList(versionCode)
+    fun allData(): List<DataResponse.Result> {
+        return dataDao.getAllResultList(versionCode)
+    }
 
     suspend fun flush() {
         dataDao.deleteAll()

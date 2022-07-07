@@ -18,7 +18,7 @@ object UpcomingTimerFinish: PlayUpcomingAction()
  * Upcoming Interaction
  */
 object ClickFollowUpcomingAction: PlayUpcomingAction()
-object ClickPartnerNameUpcomingAction: PlayUpcomingAction()
+data class ClickPartnerNameUpcomingAction(val appLink: String): PlayUpcomingAction()
 object ClickShareUpcomingAction: PlayUpcomingAction()
 
 /**

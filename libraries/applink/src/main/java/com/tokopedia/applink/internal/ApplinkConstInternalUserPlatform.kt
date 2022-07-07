@@ -1,7 +1,6 @@
 package com.tokopedia.applink.internal
 
 import com.tokopedia.applink.constant.DeeplinkConstant
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_IS_RETURN_HOME
 
 object ApplinkConstInternalUserPlatform {
 
@@ -16,6 +15,9 @@ object ApplinkConstInternalUserPlatform {
     const val METHOD_LOGIN_GOOGLE = "google"
     const val METHOD_LOGIN_FACEBOOK = "facebook"
     const val METHOD_LOGIN_FINGERPRINT = "fingerprint"
+    const val PAGE_EDIT_INFO_PROFILE_BIO = "bio"
+    const val PAGE_EDIT_INFO_PROFILE_USERNAME = "username"
+    const val PAGE_EDIT_INFO_PARAM = "page"
 
     const val PARAM_IS_RETURN_HOME = "return_to_home"
     const val PARAM_IS_CLEAR_DATA_ONLY = "is_clear_data_only"
@@ -48,8 +50,14 @@ object ApplinkConstInternalUserPlatform {
     // InactivePhoneActivity
     const val CHANGE_INACTIVE_PHONE = "${NEW_INTERNAL_USER}/change-inactive-phone"
 
+    //InputOldPhoneNumberActivity
+    const val INPUT_OLD_PHONE_NUMBER = "${NEW_INTERNAL_USER}/input-old-phone-number"
+
     // HomeAccountUserActivity
     const val NEW_HOME_ACCOUNT = "${NEW_INTERNAL_USER}/new-home-account"
+
+    // BiometricOfferingActivity
+    const val BIOMETRIC_OFFERING = "${NEW_INTERNAL_USER}/biometric-offering"
 
     /**
      * LogoutActivity
@@ -66,5 +74,17 @@ object ApplinkConstInternalUserPlatform {
     // LinkAccountReminderActivity
     // tokopedia-android-internal://user/link-acc-reminder
     const val LINK_ACC_REMINDER = "${NEW_INTERNAL_USER}/link-acc-reminder"
+
+    const val NEW_PROFILE_INFO = "${NEW_INTERNAL_USER}/profile-info"
+    const val EDIT_PROFILE_INFO = "${NEW_INTERNAL_USER}/edit-profile-info"
+
+    // SettingProfileActivity
+    const val SETTING_PROFILE = "${NEW_INTERNAL_USER}/setting-profile"
+
+    /**
+     * ExplicitProfileActivity
+     * @Applink : tokopedia-android-internal://user/explicit-profile
+     **/
+    const val EXPLICIT_PROFILE = "${NEW_INTERNAL_USER}/explicit-profile"
 
 }

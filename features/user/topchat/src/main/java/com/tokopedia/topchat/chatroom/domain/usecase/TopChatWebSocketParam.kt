@@ -4,12 +4,9 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
-import com.tokopedia.attachcommon.data.ResultProduct
-import com.tokopedia.chat_common.data.AttachmentType
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_UPLOAD
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.data.WebsocketEvent
-import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT
 import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.data.parentreply.ParentReplyWsRequest
@@ -17,7 +14,6 @@ import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.*
-import com.tokopedia.topchat.common.InboxChatConstant.UPLOADING
 import com.tokopedia.topchat.common.util.AddressUtil
 
 /**
@@ -27,6 +23,7 @@ import com.tokopedia.topchat.common.util.AddressUtil
 object TopChatWebSocketParam {
 
     private val gson = GsonBuilder().create()
+    private const val UPLOADING = "Uploaded Image"
 
     fun generateParamSendMessage(
         roomeMetaData: RoomMetaData,
@@ -121,17 +118,19 @@ object TopChatWebSocketParam {
         productProfile.addProperty("drop_percentage", product.dropPercentage)
         productProfile.addProperty("image_url", product.productImage)
         productProfile.addProperty("url", product.productUrl)
+        productProfile.addProperty("android_url", product.androidUrl)
+        productProfile.addProperty("ios_url", product.iosUrl)
         productProfile.addProperty("text", message)
         productProfile.addProperty("status", product.status)
         productProfile.addProperty("remaining_stock", product.remainingStock)
         productProfile.addProperty("is_variant", product.isSupportVariant)
         productProfile.add("variant", product.generateVariantRequest())
-        productProfile.addProperty("campaign_id", product.campaignId)
+        productProfile.addProperty("campaign_id", product.campaignId.toLongOrZero())
         productProfile.addProperty("is_preorder", product.isPreOrder)
-        productProfile.addProperty("price_int", product.priceInt)
-        productProfile.addProperty("category_id", product.categoryId)
+        productProfile.addProperty("price_int", product.priceNumber.toLong())
+        productProfile.addProperty("category_id", product.categoryId.toLongOrZero())
         productProfile.addProperty("is_upcoming_campaign_product", product.isUpcomingCampaign)
-        productProfile.addProperty("shop_id", product.shopId)
+        productProfile.addProperty("shop_id", product.shopId.toLongOrZero())
         productProfile.addProperty("min_order", product.minOrder)
         productProfile.addProperty("wishlist", product.wishList)
         productProfile.addProperty("is_fulfillment", product.isFulfillment)
@@ -148,61 +147,6 @@ object TopChatWebSocketParam {
         val freeShipping = gson.toJsonTree(product.freeShipping)
         productProfile.add("free_ongkir", freeShipping)
         return productProfile
-    }
-
-    fun generateParamSendProductAttachment(
-        messageId: String,
-        product: ResultProduct,
-        startTime: String,
-        toUid: String,
-        productPreview: ProductPreview,
-        message: String,
-        userLocationInfo: LocalCacheModel,
-        localId: String
-    ): JsonObject {
-        val json = JsonObject()
-        json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
-        val data = JsonObject()
-        data.addProperty("message_id", messageId.toLong())
-        data.addProperty("local_id", localId)
-        data.addProperty("message", product.productUrl)
-        data.addProperty("start_time", startTime)
-        data.addProperty("to_uid", toUid)
-        data.addProperty(
-            "attachment_type",
-            Integer.parseInt(AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT)
-        )
-        data.addProperty("product_id", product.productId.toLongOrZero())
-
-        val productProfile = JsonObject()
-        productProfile.addProperty("name", product.name)
-        productProfile.addProperty("price", product.price)
-        productProfile.addProperty("price_before", productPreview.priceBefore)
-        productProfile.addProperty("price_before_int", productPreview.priceBeforeInt.toLong())
-        productProfile.addProperty("drop_percentage", productPreview.dropPercentage)
-        productProfile.addProperty("image_url", product.productImageThumbnail)
-        productProfile.addProperty("url", product.productUrl)
-        productProfile.addProperty("text", message)
-        productProfile.addProperty("status", productPreview.status)
-        productProfile.addProperty("remaining_stock", productPreview.remainingStock)
-        productProfile.addProperty("is_variant", productPreview.isSupportVariant)
-        productProfile.add("variant", productPreview.generateVariantRequest())
-        productProfile.addProperty("campaign_id", productPreview.campaignId)
-        productProfile.addProperty("is_preorder", productPreview.isPreorder)
-        productProfile.addProperty("price_int", productPreview.priceInt)
-        productProfile.addProperty("category_id", productPreview.categoryId)
-
-        val freeShipping = JsonObject()
-        freeShipping.addProperty("is_active", productPreview.productFsIsActive)
-        freeShipping.addProperty("image_url", productPreview.productFsImageUrl)
-        productProfile.add("free_ongkir", freeShipping)
-
-        val extras = createProductExtrasAttachments(userLocationInfo)
-        data.add("extras", extras)
-
-        data.add("product_profile", productProfile)
-        json.add("data", data)
-        return json
     }
 
     private fun createProductExtrasAttachments(

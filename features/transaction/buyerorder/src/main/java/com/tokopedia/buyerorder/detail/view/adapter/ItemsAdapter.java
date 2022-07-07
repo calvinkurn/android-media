@@ -11,14 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
-import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.RouteManager;
@@ -39,6 +37,8 @@ import com.tokopedia.buyerorder.detail.view.customview.RedeemVoucherView;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailContract;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter;
 import com.tokopedia.buyerorder.detail.data.OrderCategory;
+import com.tokopedia.media.loader.ExtensionKt;
+import com.tokopedia.unifycomponents.LoaderUnify;
 import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.utils.view.DoubleTextView;
@@ -286,7 +286,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         private TextView validDate;
         private TextView productQuantity;
         private TextView productPrice;
-        private ProgressBar progressBar;
+        private LoaderUnify progressBar;
         private LinearLayout tapActionLayoutDeals, tapActionLayoutEvents;
         private LinearLayout statusDetail;
         private LinearLayout voucherCodeLayout;
@@ -367,9 +367,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             if (metaDataInfo != null) {
                 if (itemType == ITEM_DEALS || itemType == ITEM_DEALS_SHORT) {
                     if (TextUtils.isEmpty(metaDataInfo.getEntityImage())) {
-                        ImageHandler.loadImage(context, dealImage, item.getImageUrl(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
+                        ExtensionKt.loadImageCircle(dealImage, item.getImageUrl(), properties -> null);
                     } else {
-                        ImageHandler.loadImage(context, dealImage, metaDataInfo.getEntityImage(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
+                        ExtensionKt.loadImageCircle(dealImage, metaDataInfo.getEntityImage(), properties -> null);
                     }
                     if (TextUtils.isEmpty(metaDataInfo.getEntityProductName())) {
                         dealsDetails.setText(item.getTitle());
@@ -380,9 +380,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
                 if(itemType == ITEM_EVENTS){
                     if (TextUtils.isEmpty(metaDataInfo.getProductImage())) {
-                        ImageHandler.loadImage(context, dealImage, item.getImageUrl(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
+                        ExtensionKt.loadImageCircle(dealImage, item.getImageUrl(), properties -> null);
                     } else {
-                        ImageHandler.loadImage(context, dealImage, metaDataInfo.getProductImage(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
+                        ExtensionKt.loadImageCircle(dealImage, metaDataInfo.getProductImage(), properties -> null);
                     }
                     if (TextUtils.isEmpty(metaDataInfo.getProductName())) {
                         dealsDetails.setText(item.getTitle());
@@ -394,9 +394,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 if (itemType == ITEM_INSURANCE) {
 
                     if (TextUtils.isEmpty(metaDataInfo.getProuductImage())) {
-                        ImageHandler.loadImage(context, dealImage, item.getImageUrl(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
+                        ExtensionKt.loadImageCircle(dealImage, item.getImageUrl(), properties -> null);
                     } else {
-                        ImageHandler.loadImage(context, dealImage, metaDataInfo.getProuductImage(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
+                        ExtensionKt.loadImageCircle(dealImage, metaDataInfo.getProductImage(), properties -> null);
                     }
                     if (TextUtils.isEmpty(metaDataInfo.getProductName())) {
                         dealsDetails.setText(item.getTitle());
@@ -463,13 +463,13 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         eventAddress.setText(metaDataInfo.getLocationDesc());
                     }
 
-                    if (metaDataInfo.getIsHiburan() == 1) {
+                    if (metaDataInfo.isHiburan() == 1) {
                         if (!TextUtils.isEmpty(metaDataInfo.getEndTime())) {
                             tanggalEventsTitle.setVisibility(View.VISIBLE);
                             tanggalEventsTitle.setText(context.getResources().getString(R.string.text_valid_till));
                             tanggalEvents.setText(metaDataInfo.getEndTime());
                         }
-                    } else if (metaDataInfo.getIsHiburan() == 0) {
+                    } else if (metaDataInfo.isHiburan() == 0) {
                         if (!TextUtils.isEmpty(metaDataInfo.getEndTime()) && !TextUtils.isEmpty(metaDataInfo.getStartTime())) {
                             tanggalEventsTitle.setVisibility(View.VISIBLE);
                             tanggalEventsTitle.setText(context.getResources().getString(R.string.tanggal_events));
@@ -540,7 +540,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         ActionButton actionButton = item.getTapActions().get(i);
                         if (!actionButton.getControl().equalsIgnoreCase(KEY_TEXT)) {
                             RedeemVoucherView redeemVoucherView;
-                            redeemVoucherView = new RedeemVoucherView(context, i, actionButton, item, actionButton.getBody(), presenter, getIndex(), ItemsAdapter.this, setEventDetails, false);
+                            redeemVoucherView = new RedeemVoucherView(context, i, actionButton, item, actionButton.getBody(), presenter, getIndex(), ItemsAdapter.this, setEventDetails, false, size - 1 == i);
                             tapActionLayoutDeals.addView(redeemVoucherView);
                         } else {
                             String[] voucherCodes = actionButton.getHeaderObject().getVoucherCodes().split(",");
@@ -566,7 +566,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         ActionButton actionButton = item.getActionButtons().get(i);
                         Typography tapActionTextView = renderActionButtons(i, actionButton, item);
                         if (actionButton.getControl().equalsIgnoreCase(KEY_REFRESH)) {
-                            RedeemVoucherView redeemVoucherView = new RedeemVoucherView(context, i, actionButton, item, actionButton.getBody(), presenter, getIndex(), ItemsAdapter.this, setEventDetails, false);
+                            RedeemVoucherView redeemVoucherView = new RedeemVoucherView(context, i, actionButton, item, actionButton.getBody(), presenter, getIndex(), ItemsAdapter.this, setEventDetails, false, size - 1 == i);
                             tapActionLayoutEvents.addView(redeemVoucherView);
                         } else if(actionButton.getControl().equalsIgnoreCase(KEY_VOUCHER_CODE)){
                             if (!actionButton.getBody().getBody().isEmpty()) {
@@ -700,7 +700,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private class DefaultViewHolder extends RecyclerView.ViewHolder {
         private View itemView;
         private TextView validDate;
-        private ProgressBar progressBar;
+        private LoaderUnify progressBar;
         private CustomTicketView customTicketView1;
         private CustomTicketView customTicketView2;
         private View llValid;

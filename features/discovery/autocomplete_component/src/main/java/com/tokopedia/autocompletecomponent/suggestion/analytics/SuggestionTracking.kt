@@ -289,23 +289,9 @@ open class SuggestionTracking(
     }
 
     open fun eventClickChipSuggestion(
-        label: String,
-        pageSource: String,
         searchComponentTracking: SearchComponentTracking,
     ) {
-        SearchComponentTrackingRollence.click(searchComponentTracking, ROLLENCE_KEY) {
-            TrackApp.getInstance().gtm.sendGeneralEvent(
-                DataLayer.mapOf(
-                    EVENT, CLICK_TOP_NAV,
-                    EVENT_CATEGORY, TOP_NAV,
-                    EVENT_ACTION, CLICK_CHIP_SUGGESTION,
-                    EVENT_LABEL, label,
-                    CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
-                    BUSINESS_UNIT, SEARCH,
-                    PAGE_SOURCE, pageSource
-                )
-            )
-        }
+        searchComponentTracking.click(TrackApp.getInstance().gtm)
     }
 
     open fun eventImpressCurated(

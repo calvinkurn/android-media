@@ -8,7 +8,21 @@ import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PreorderInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.preview.data.source.api.response.*
+import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.UNIT_DAY
+import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.UNIT_DAY_STRING
+import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.UNIT_GRAM
+import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.UNIT_GRAM_STRING
+import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.UNIT_GRAM_TO_KILOGRAM_MULTIPLIER
+import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.UNIT_KILOGRAM_STRING
+import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.UNIT_MONTH
+import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.UNIT_MONTH_STRING
+import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.UNIT_WEEK
+import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.UNIT_WEEK_STRING
+import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.getActiveStatus
+import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.getYoutubeDelimiter
+import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.getYoutubeHost
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.addedit.shipment.presentation.model.CPLModel
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.*
 import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
@@ -28,6 +42,10 @@ class GetProductMapper @Inject constructor() {
             mapVariantInputModel(product.variant),
             itemSold = product.txStats.itemSold
     )
+
+    fun convertToGram(weight: Int, unit: String): Int {
+        return if (unit == UNIT_KILOGRAM_STRING) weight * UNIT_GRAM_TO_KILOGRAM_MULTIPLIER else weight
+    }
 
     private fun mapVariantInputModel(variant: Variant): VariantInputModel =
             VariantInputModel(
@@ -68,7 +86,9 @@ class GetProductMapper @Inject constructor() {
                     it.sku,
                     it.status,
                     it.stock,
-                    it.isPrimary
+                    it.isPrimary,
+                    convertToGram(it.weight, it.weightUnit),
+                    UNIT_GRAM_STRING
             )
         }
         return ArrayList(variantCombination)
@@ -199,52 +219,12 @@ class GetProductMapper @Inject constructor() {
             }
 
     private fun mapShipmentInputModel(product: Product): ShipmentInputModel {
-        val weightUnit: Int = when (product.weightUnit) {
-            UNIT_GRAM_SRING -> UNIT_GRAM
-            UNIT_KILOGRAM_SRING -> UNIT_KILOGRAM
-            else -> UNIT_GRAM
-        }
         return ShipmentInputModel(
-                product.weight,
-                weightUnit,
-                product.mustInsurance
+            convertToGram(product.weight, product.weightUnit),
+            UNIT_GRAM,
+            product.mustInsurance,
+            CPLModel(),
+            product.variant.products.isEmpty()
         )
-    }
-
-    companion object {
-        const val IS_ACTIVE = 1
-        const val IS_INACTIVE = 0
-        const val IS_ACTIVE_STRING = "ACTIVE"
-        const val IS_INACTIVE_STRING = "INACTIVE"
-        const val UNIT_DAY = 0
-        const val UNIT_WEEK = 1
-        const val UNIT_MONTH = 2
-        const val UNIT_GRAM = 0
-        const val UNIT_KILOGRAM = 1
-        const val UNIT_DAY_STRING = "DAY"
-        const val UNIT_WEEK_STRING = "WEEK"
-        const val UNIT_MONTH_STRING = "MONTH"
-        const val UNIT_GRAM_SRING = "GR"
-        const val UNIT_KILOGRAM_SRING = "KG"
-        const val YOUTUBE_URL_DELIMITER = "/watch?v="
-        const val YOUTUBE_URL_DELIMITER_SHORT = "/"
-        const val YOUTUBE_URL = "youtube.com"
-        const val YOUTUBE_URL_SHORTEN = "youtu.be"
-        const val YOUTUBE_SOURCE = "youtube"
-
-        fun getActiveStatus(type: String) =
-                when (type) {
-                    IS_INACTIVE_STRING -> IS_INACTIVE
-                    IS_ACTIVE_STRING -> IS_ACTIVE
-                    else -> IS_INACTIVE
-                }
-
-        fun getYoutubeDelimiter(source: String) =
-                if (source.contains(YOUTUBE_URL)) YOUTUBE_URL_DELIMITER
-                else YOUTUBE_URL_DELIMITER_SHORT
-
-        fun getYoutubeHost(source: String) =
-                if (source == YOUTUBE_SOURCE) YOUTUBE_URL_SHORTEN
-                else source
     }
 }

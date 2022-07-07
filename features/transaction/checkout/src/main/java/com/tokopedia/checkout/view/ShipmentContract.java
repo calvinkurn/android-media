@@ -178,6 +178,8 @@ public interface ShipmentContract {
         void sendEnhancedEcommerceAnalyticsCheckout(Map<String, Object> stringObjectMap,
                                                     Map<String, String> tradeInCustomDimension,
                                                     String transactionId,
+                                                    String userId,
+                                                    boolean promoFlag,
                                                     String eventCategory,
                                                     String eventAction,
                                                     String eventLabel);
@@ -248,7 +250,7 @@ public interface ShipmentContract {
 
         void checkPromoCheckoutFinalShipment(ValidateUsePromoRequest validateUsePromoRequest, int lastSelectedCourierOrderIndex, String cartString);
 
-        void doValidateUseLogisticPromo(int cartPosition, String cartString, ValidateUsePromoRequest validateUsePromoRequest);
+        void doValidateUseLogisticPromo(int cartPosition, String cartString, ValidateUsePromoRequest validateUsePromoRequest, String promoCode);
 
         void processCheckPromoCheckoutCodeFromSelectedCourier(String promoCode, int itemPosition, boolean noToast);
 

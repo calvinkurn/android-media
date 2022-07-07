@@ -19,6 +19,7 @@ public interface LinkerConstants {
     String DISCOVERY_CATALOG = "tokopedia://catalog/{EXTRA_CATALOG_ID}";
     String GROUPCHAT = "tokopedia://groupchat/{channel_id}";
     String PROMO_DETAIL = "tokopedia://promo/{slug}";
+    String USER_PROFILE_SOCIAL = "tokopedia://people/{USER_PAGE_ID}";
     String PLAY = "tokopedia://play/{channel_id}";
     String NOW = "tokopedia://now/{content}";
     String WEBVIEW = "tokopedia://webview?{content}";
@@ -160,5 +161,8 @@ public interface LinkerConstants {
     String IOS_BUNDLE_ID="com.tokopedia.Tokopedia";
 
     String DISCOVERY_PATH = "/discovery/";
+
+    String QUERY_INITIATOR = "?";
+    String QUERY_PARAM_SEGREGATOR = "&";
 
 }

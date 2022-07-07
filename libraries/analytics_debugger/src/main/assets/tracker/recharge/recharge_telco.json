@@ -327,7 +327,7 @@
       "event": "add_to_cart",
       "eventCategory": "digital - native",
       "eventAction": "click beli",
-      "eventLabel": ".* - .*",
+      "eventLabel": ".* - .* - .*",
       "currentSite": "tokopediadigital",
       "sessionIris": ".*",
       "items": [

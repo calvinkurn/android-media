@@ -287,6 +287,7 @@ private const val TOPADS_PRODUCT_QUERY = """
                         title
                         url
                     }
+                    customvideo_url
                 }
                 shop{
                     id
@@ -336,6 +337,8 @@ private const val HEADLINE_ADS_QUERY = """
                 headline {
                     template_id
                     name
+                    widget_title
+                    widget_image_url 
                     image {
                         full_url
                         full_ecs

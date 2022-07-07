@@ -53,6 +53,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
         private const val VALUE_BANNER_UNKNOWN = "banner unknown"
         private const val VALUE_BANNER_DEFAULT = "default"
         private const val VALUE_BANNER_UNKNOWN_LAYOUT_TYPE = "lego banner unknown"
+
+        private const val CUE_WIDGET_MIN_SIZE = 4
+        private const val VPS_WIDGET_SIZE = 4
     }
 
     override fun buildVisitableList(homeChannelData: HomeChannelData, isCache: Boolean, trackingQueue: TrackingQueue, context: Context): HomeDynamicChannelVisitableFactory {
@@ -151,8 +154,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_CAMPAIGN_FEATURING -> {
                     createCampaignFeaturingWidget(channel, position, isCache)
                 }
-                DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET,
-                DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET_V2 -> {
+                DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET -> {
                     createDynamicChannel(
                         channel,
                         trackingData = CategoryWidgetTracking.getCategoryWidgetBannerImpression(
@@ -162,6 +164,11 @@ class HomeDynamicChannelVisitableFactoryImpl(
                             channel
                         ),
                         isCombined = false
+                    )
+                }
+                DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET_V2 -> {
+                    createCategoryWidgetV2(
+                        channel, position, isCache
                     )
                 }
                 DynamicHomeChannel.Channels.LAYOUT_BANNER_ADS -> {
@@ -196,6 +203,15 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 }
                 DynamicHomeChannel.Channels.LAYOUT_PAYLATER_CICIL -> {
                     createPayLaterHomeToDoWidget(channel)
+                }
+                DynamicHomeChannel.Channels.LAYOUT_CUE_WIDGET -> {
+                    createCueCategory(channel, position)
+                }
+                DynamicHomeChannel.Channels.LAYOUT_VPS_WIDGET -> {
+                    createVpsWidget(channel, position)
+                }
+                DynamicHomeChannel.Channels.LAYOUT_MISSION_WIDGET -> {
+                    createMissionWidgetChannel(channel, position)
                 }
             }
         }
@@ -594,6 +610,49 @@ class HomeDynamicChannelVisitableFactoryImpl(
         )
     }
 
+    private fun mappingCueCategoryComponent(
+        channel: DynamicHomeChannel.Channels,
+        isCache: Boolean,
+        verticalPosition: Int
+    ): Visitable<*> {
+        return CueCategoryDataModel(
+            channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
+                channel,
+                verticalPosition
+            ),
+            isCache = isCache
+        )
+    }
+
+    private fun mappingVpsWidgetComponent(
+        channel: DynamicHomeChannel.Channels,
+        isCache: Boolean,
+        verticalPosition: Int
+    ): Visitable<*> {
+        return VpsDataModel(
+            channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
+                channel,
+                verticalPosition
+            ),
+            isCache = isCache
+        )
+    }
+
+    private fun createMissionWidgetChannel(
+        channel: DynamicHomeChannel.Channels,
+        verticalPosition: Int
+    ) {
+        if (!isCache) visitableList.add(
+            MissionWidgetListDataModel(
+                channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
+                    channel,
+                    verticalPosition
+                ),
+                status = MissionWidgetListDataModel.STATUS_LOADING
+            )
+        )
+    }
+
     private fun createPopularKeywordChannel(channel: DynamicHomeChannel.Channels) {
         if (!isCache) visitableList.add(
             PopularKeywordListDataModel(
@@ -636,6 +695,27 @@ class HomeDynamicChannelVisitableFactoryImpl(
         ))
     }
 
+    private fun createCategoryWidgetV2(channel: DynamicHomeChannel.Channels, verticalPosition: Int, isCache: Boolean) {
+        visitableList.add(
+            CategoryWidgetV2DataModel(
+                DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition),
+                isCache
+            )
+        )
+        if (!isCache) {
+            trackingQueue?.putEETracking(
+                CategoryWidgetTracking.getCategoryWidgetBannerImpression(
+                    channel.grids.toList(),
+                    userSessionInterface?.userId ?: "",
+                    false,
+                    channel
+                ) as HashMap<String, Any>
+            )
+        }
+        context?.let { HomeTrackingUtils.homeDiscoveryWidgetImpression(it,
+            visitableList.size, channel) }
+    }
+
     private fun createQuestChannel(
         channel: DynamicHomeChannel.Channels,
         position: Int,
@@ -656,6 +736,28 @@ class HomeDynamicChannelVisitableFactoryImpl(
         visitableList.add(mappingMerchantVoucherComponent(
                 channel, isCache, verticalPosition
         ))
+    }
+
+    private fun createCueCategory(channel: DynamicHomeChannel.Channels, verticalPosition: Int) {
+        val gridSize = channel.grids.size
+        if (gridSize >= CUE_WIDGET_MIN_SIZE) {
+            visitableList.add(
+                mappingCueCategoryComponent(
+                    channel, isCache, verticalPosition
+                )
+            )
+        }
+    }
+
+    private fun createVpsWidget(channel: DynamicHomeChannel.Channels, verticalPosition: Int) {
+        val gridSize = channel.grids.size
+        if (gridSize >= VPS_WIDGET_SIZE) {
+            visitableList.add(
+                mappingVpsWidgetComponent(
+                    channel, isCache, verticalPosition
+                )
+            )
+        }
     }
 
     override fun build(): List<Visitable<*>> = visitableList

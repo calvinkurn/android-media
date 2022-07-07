@@ -75,12 +75,13 @@ class CreditCardAnalytics(val iris: Iris) {
     fun addToCart(userId: String, categoryName: String, categoryId: String, prefixName: String, prefixId: String) {
         val products: MutableList<Any> = ArrayList()
         products.add(constructProductEnhanceEcommerce(prefixName, prefixId, categoryName, categoryId))
+        val defaultChannelId = 1
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(TrackAppUtils.EVENT, DigitalTrackingConst.Event.ADD_TO_CART,
                         TrackAppUtils.EVENT_CATEGORY, DigitalTrackingConst.Category.DIGITAL_NATIVE,
                         TrackAppUtils.EVENT_ACTION, DigitalTrackingConst.Action.CLICK_BELI,
-                        TrackAppUtils.EVENT_LABEL, "$categoryName - $prefixName",
+                        TrackAppUtils.EVENT_LABEL, "$categoryName - $prefixName - $defaultChannelId",
                         DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
                         DigitalTrackingConst.Label.USER_ID, userId,
                         BaseTrackerConst.Ecommerce.KEY, DataLayer.mapOf(

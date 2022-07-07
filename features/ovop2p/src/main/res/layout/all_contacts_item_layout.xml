@@ -8,10 +8,10 @@
 
     <ImageView
         android:id="@+id/user_image"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="16dp"
-        android:background="@color/clr_6b767e"
+        android:layout_width="@dimen/unify_space_40"
+        android:layout_height="@dimen/unify_space_40"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:background="@color/ovop2p_dms_clr_6b767e"
         android:foreground="@drawable/circle_crop"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -20,9 +20,9 @@
         android:id="@+id/user_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:textColor="@color/clr_2d263b"
-        android:textSize="@dimen/sp_16"
+        android:layout_marginLeft="@dimen/unify_space_16"
+        android:textColor="@color/ovop2p_dms_clr_2d263b"
+        android:textSize="@dimen/ovop2p_sp16"
         app:layout_constraintStart_toEndOf="@+id/user_image"
         app:layout_constraintTop_toTopOf="@+id/user_image"
         tools:text="Baxie Smith" />
@@ -31,8 +31,8 @@
         android:id="@+id/user_num"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#6b767e"
-        android:textSize="12sp"
+        android:textColor="@color/ovop2p_dms_clr_6b767e"
+        android:textSize="@dimen/ovop2p_sp12"
         app:layout_constraintStart_toStartOf="@+id/user_name"
         app:layout_constraintTop_toBottomOf="@+id/user_name"
         tools:text="081340002680" />

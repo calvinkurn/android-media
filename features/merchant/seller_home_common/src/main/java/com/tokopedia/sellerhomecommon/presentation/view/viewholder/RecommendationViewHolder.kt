@@ -97,7 +97,7 @@ class RecommendationViewHolder(
             val progressLevel = element.data?.progressLevel
             slvShcShopLevel.show(progressLevel?.text.orEmpty(), progressLevel?.bar?.value.orZero())
 
-            setupTicker(element.data?.ticker)
+            setupTicker(element)
             setupRecommendations(element)
 
             val progressBar = element.data?.progressBar
@@ -127,7 +127,6 @@ class RecommendationViewHolder(
             itemView.addOnImpressionListener(element.impressHolder) {
                 listener.sendRecommendationImpressionEvent(element)
             }
-            listener.showRecommendationWidgetCoachMark(binding.containerShcRecommendation)
         }
     }
 
@@ -162,8 +161,9 @@ class RecommendationViewHolder(
         }
     }
 
-    private fun setupTicker(ticker: RecommendationTickerUiModel?) {
+    private fun setupTicker(element: RecommendationWidgetUiModel) {
         with(successStateBinding) {
+            val ticker = element.data?.ticker
             if (ticker?.text.isNullOrBlank()) {
                 tickerShcRecommendation.gone()
 
@@ -182,13 +182,15 @@ class RecommendationViewHolder(
                 tickerShcRecommendation.setHtmlDescription(ticker.text)
                 tickerShcRecommendation.tickerType = when (ticker.type) {
                     RecommendationTickerUiModel.TYPE_ERROR -> Ticker.TYPE_ERROR
-                    RecommendationTickerUiModel.TYPE_INFO -> Ticker.TYPE_INFORMATION
+                    RecommendationTickerUiModel.TYPE_INFO -> Ticker.TYPE_ANNOUNCEMENT
                     RecommendationTickerUiModel.TYPE_WARNING -> Ticker.TYPE_WARNING
                     else -> Ticker.TYPE_ANNOUNCEMENT
                 }
                 tickerShcRecommendation.setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        RouteManager.route(root.context, linkUrl.toString())
+                        if (RouteManager.route(root.context, linkUrl.toString())) {
+                            listener.sendRecommendationTickerCtaClickEvent(element)
+                        }
                     }
 
                     override fun onDismiss() {
@@ -361,8 +363,6 @@ class RecommendationViewHolder(
     }
 
     interface Listener : BaseViewHolderListener {
-        fun showRecommendationWidgetCoachMark(view: View) {}
-
         fun sendRecommendationImpressionEvent(element: RecommendationWidgetUiModel) {}
 
         fun sendRecommendationCtaClickEvent(element: RecommendationWidgetUiModel) {}
@@ -372,5 +372,7 @@ class RecommendationViewHolder(
             item: RecommendationItemUiModel
         ) {
         }
+
+        fun sendRecommendationTickerCtaClickEvent(element: RecommendationWidgetUiModel) {}
     }
 }

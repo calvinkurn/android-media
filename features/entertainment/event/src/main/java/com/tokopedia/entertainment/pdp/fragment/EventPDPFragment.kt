@@ -63,17 +63,32 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.mapviewer.activity.MapViewerActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.bottom_sheet_event_pdp_about.view.*
-import kotlinx.android.synthetic.main.bottom_sheet_event_pdp_facilities.view.*
-import kotlinx.android.synthetic.main.bottom_sheet_event_pdp_how_to_go_there.view.*
-import kotlinx.android.synthetic.main.bottom_sheet_event_pdp_open_hour.view.*
-import kotlinx.android.synthetic.main.fragment_event_pdp.*
-import kotlinx.android.synthetic.main.partial_event_pdp_price.*
-import kotlinx.android.synthetic.main.widget_event_pdp_calendar.view.*
 import java.lang.ref.WeakReference
-import java.util.*
+import java.util.TimeZone
+import java.util.Date
 import javax.inject.Inject
+import kotlinx.android.synthetic.main.bottom_sheet_event_pdp_about.view.loader_unify_event_pdp
+import kotlinx.android.synthetic.main.bottom_sheet_event_pdp_about.view.web_event_pdp_about
+import kotlinx.android.synthetic.main.bottom_sheet_event_pdp_facilities.view.rv_event_pdp_facilities_bottom_sheet
+import kotlinx.android.synthetic.main.bottom_sheet_event_pdp_how_to_go_there.view.rv_event_pdp_how_to_got_there_bottom_sheet
+import kotlinx.android.synthetic.main.bottom_sheet_event_pdp_open_hour.view.rv_event_pdp_open_hour
+import kotlinx.android.synthetic.main.fragment_event_pdp.carousel_event_pdp
+import kotlinx.android.synthetic.main.fragment_event_pdp.container_error_event_pdp
+import kotlinx.android.synthetic.main.fragment_event_pdp.event_pdp_app_bar_layout
+import kotlinx.android.synthetic.main.fragment_event_pdp.event_pdp_collapsing_toolbar
+import kotlinx.android.synthetic.main.fragment_event_pdp.event_pdp_pb
+import kotlinx.android.synthetic.main.fragment_event_pdp.event_pdp_toolbar
+import kotlinx.android.synthetic.main.fragment_event_pdp.global_error_pdp_event
+import kotlinx.android.synthetic.main.fragment_event_pdp.rv_event_pdp
+import kotlinx.android.synthetic.main.fragment_event_pdp.widget_event_pdp_tab_section
+import kotlinx.android.synthetic.main.partial_event_pdp_price.btn_event_pdp_cek_tiket
+import kotlinx.android.synthetic.main.partial_event_pdp_price.container_price
+import kotlinx.android.synthetic.main.partial_event_pdp_price.qr_redeem_pdp
+import kotlinx.android.synthetic.main.partial_event_pdp_price.shimmering_price
+import kotlinx.android.synthetic.main.partial_event_pdp_price.tg_event_pdp_price
+import kotlinx.android.synthetic.main.widget_event_pdp_calendar.view.bottom_sheet_calendar
 
 class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(), OnBindItemListener
         ,AppBarLayout.OnOffsetChangedListener {
@@ -209,12 +224,14 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
 
     fun renderView(context: Context, combined: EventPDPContentCombined) {
         loadMedia(productDetailData)
-        loadTab(productDetailData,
-                eventPDPViewModel.getTabsTitleData(combined,
-                        resources.getString(R.string.ent_pdp_about_this),
-                        resources.getString(R.string.ent_pdp_facilities),
-                        resources.getString(R.string.ent_pdp_detail_lokasi))
-        )
+        context?.let {
+            loadTab(productDetailData,
+                    eventPDPViewModel.getTabsTitleData(combined,
+                            it.resources.getString(R.string.ent_pdp_about_this),
+                            it.resources.getString(R.string.ent_pdp_facilities),
+                            it.resources.getString(R.string.ent_pdp_detail_lokasi))
+            )
+        }
         loadCalendar(context, productDetailData)
         loadPrice(productDetailData)
     }
@@ -238,7 +255,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
             text = if(price != ZERO_PRICE) {
                  CurrencyFormatter.getRupiahFormat(productDetailData.salesPrice.toInt())
             } else {
-                 resources.getString(R.string.ent_free_price)
+                 context?.resources?.getString(R.string.ent_free_price) ?: ""
             }
         }
 
@@ -325,6 +342,9 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
         (activity as EventNavigationActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
 
         event_pdp_collapsing_toolbar.title = ""
+        context?.let {
+            event_pdp_collapsing_toolbar.setCollapsedTitleTypeface(Typography.getFontType(it, true, Typography.DISPLAY_1))
+        }
         event_pdp_app_bar_layout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
             override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
                 context?.let { context ->
@@ -473,7 +493,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
         bottomSheets.setShowListener {
             val loader = viewParent.loader_unify_event_pdp
 
-            webView.loadData(value, "text/html", "UTF-8")
+            webView.loadPartialWebView(value)
             webView.webViewClient = object : WebViewClient(){
                 override fun onPageFinished(view: WebView?, url: String?) {
                     super.onPageFinished(view, url)

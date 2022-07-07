@@ -19,7 +19,7 @@ data class PostUpcomingCampaign(
 
 data class UpcomingCampaignResponse(
     @SerializedName("campaign_id")
-    val id: Int = 0,
+    val id: String = "",
 
     @SerializedName("success")
     val success: Boolean = false,

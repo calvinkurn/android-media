@@ -1,13 +1,11 @@
 package com.tokopedia.mvcwidget
 
-import android.content.Context
 import com.google.gson.Gson
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.mvcwidget.usecases.CatalogMVCListUseCase
 import com.tokopedia.mvcwidget.usecases.FollowShopUseCase
-import com.tokopedia.mvcwidget.usecases.MembershipRegisterUseCase
+import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
+import com.tokopedia.tokomember.usecase.MembershipRegisterUseCase
 import io.mockk.*
-import junit.framework.Assert
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.json.JSONObject
@@ -26,9 +24,10 @@ class MvcDetailViewModelTest : Spek({
     val catalogMVCListUseCase: CatalogMVCListUseCase = mockk()
     val membershipRegisterUseCase: MembershipRegisterUseCase = mockk()
     val followUseCase: FollowShopUseCase = mockk()
+    val mvcSummaryusecase: MVCSummaryUseCase = mockk()
 
     fun getViewModel():MvcDetailViewModel {
-        val vm = MvcDetailViewModel(dispatcher,catalogMVCListUseCase,membershipRegisterUseCase,followUseCase)
+        val vm = MvcDetailViewModel(dispatcher,catalogMVCListUseCase,membershipRegisterUseCase,mvcSummaryusecase,followUseCase)
         return (vm)
     }
 
