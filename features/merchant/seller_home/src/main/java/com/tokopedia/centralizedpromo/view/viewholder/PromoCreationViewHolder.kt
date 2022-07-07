@@ -19,6 +19,8 @@ class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiM
     var onFreeShippingClicked: (() -> Unit)? = null
     var onProductCouponImpression: (() -> Unit)? = null
     var onProductCouponClicked: (() -> Unit)? = null
+    var onTokoMemberImpression: (() -> Unit)? = null
+    var onTokoMemberClicked: (() -> Unit)? = null
 
     companion object {
         val RES_LAYOUT = centralized_promo_item_promo_creation
@@ -70,6 +72,9 @@ class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiM
                     isProductCouponPromo(element.title) -> {
                         onProductCouponImpression?.invoke()
                     }
+                    isTokoMember(element.title) -> {
+                        onTokoMemberImpression?.invoke()
+                    }
                     else -> {
                         CentralizedPromoTracking.sendImpressionPromoCreation(element.title)
                     }
@@ -98,6 +103,9 @@ class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiM
             isProductCouponPromo(title) -> {
                 onProductCouponClicked?.invoke()
             }
+            isTokoMember(title) -> {
+                onTokoMemberClicked?.invoke()
+            }
             else -> {
                 CentralizedPromoTracking.sendClickPromoCreation(title)
             }
@@ -110,6 +118,10 @@ class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiM
 
     private fun isProductCouponPromo(title: String): Boolean {
         return title == getString(R.string.centralized_promo_promo_creation_voucher_product_title)
+    }
+
+    private fun isTokoMember(title: String): Boolean {
+        return title == getString(R.string.centralized_promo_promo_creation_tokomember_title)
     }
 
 }

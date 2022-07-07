@@ -15,6 +15,8 @@ class CentralizedPromoAdapterTypeFactory(
     private val onProductCouponImpression: () -> Unit,
     private val onProductCouponClicked: () -> Unit,
     private val onProductCouponOngoingClicked: (String) -> Unit,
+    private val onTokoMemberImpression: () -> Unit,
+    private val onTokoMemberClicked: () -> Unit
 ) : BaseAdapterTypeFactory() {
     fun type(onGoingPromoUiModel: OnGoingPromoUiModel): Int {
         return OnGoingPromoViewHolder.RES_LAYOUT
@@ -31,6 +33,8 @@ class CentralizedPromoAdapterTypeFactory(
                 onFreeShippingClicked = this@CentralizedPromoAdapterTypeFactory.onFreeShippingClicked
                 onProductCouponImpression = this@CentralizedPromoAdapterTypeFactory.onProductCouponImpression
                 onProductCouponClicked = this@CentralizedPromoAdapterTypeFactory.onProductCouponClicked
+                onTokoMemberImpression = this@CentralizedPromoAdapterTypeFactory.onTokoMemberImpression
+                onTokoMemberClicked = this@CentralizedPromoAdapterTypeFactory.onTokoMemberClicked
             }
             OnGoingPromoViewHolder.RES_LAYOUT -> OnGoingPromoViewHolder(onProductCouponOngoingClicked, parent)
             else -> super.createViewHolder(parent, type)
