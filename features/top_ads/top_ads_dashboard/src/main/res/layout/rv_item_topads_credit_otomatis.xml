@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/spacing_lvl4">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/image"
         android:layout_width="@dimen/top_ads_common_dp_20"
         android:layout_height="@dimen/top_ads_common_dp_20"
-        android:layout_marginStart="@dimen/spacing_lvl4"
         android:tint="@color/Unify_G500"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -24,7 +24,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="display_3"
         app:typographyWeight="bold"
-        tools:text="title" />
+        android:text="@string/topads_credit_otomatis_title_1" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txtDescription"
@@ -34,5 +34,5 @@
         app:layout_constraintStart_toEndOf="@id/image"
         app:layout_constraintTop_toBottomOf="@id/image"
         app:typographyType="paragraph_3"
-        tools:text="description" />
+        android:text="@string/topads_credit_otomatis_desc_1" />
 </androidx.constraintlayout.widget.ConstraintLayout>

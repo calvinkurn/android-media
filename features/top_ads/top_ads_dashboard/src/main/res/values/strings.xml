@@ -475,5 +475,11 @@
         \u2022 Tambah Kredit TopAds min. Rp50 ribu untuk cairkan Reward, atau\n\u2022 Tunggu hingga total Reward Pending mencapai Rp50 ribu (sebelum kedaluwarsa), atau\n\u2022 Miliki akumulasi senilai Rp50 rb dari total Kredit TopAds dan Reward Pending kamu.
     </string>
     <string name="topads_credit_itu_reward_description">Reward Pending adalah Reward Kredit TopAds yang kamu dapatkan dari berjualan bulan ini dan bisa dicairkan ke akunmu. <![CDATA["<font color='#42b549'><b> Pelajari Lebih Lanjut </b></font>]]></string>
+    <string name="topads_credit_otomatis_title_1">Lebih praktis supaya iklan terus tampil</string>
+    <string name="topads_credit_otomatis_desc_1">Tidak repot lagi harus terus memantau kapan perlu tambah kredit karena bisa ditambah otomatis.</string>
+    <string name="topads_credit_otomatis_title_2">Pengeluaran tetap terkontrol</string>
+    <string name="topads_credit_otomatis_desc_2">TopAds akan menggunakan saldo penghasilanmu untuk fitur ini, selama saldo penghasilanmu mencukupi.</string>
+    <string name="topads_credit_otomatis_title_3">Ada bonus Kredit TopAds!</string>
+    <string name="topads_credit_otomatis_desc_3">Dapatkan bonus 9,5% Kredit TopAds tiap kali kreditmu ditambah otomatis!</string>
 </resources>
 
