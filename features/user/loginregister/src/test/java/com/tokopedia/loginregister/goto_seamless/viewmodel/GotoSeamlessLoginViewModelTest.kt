@@ -1,7 +1,9 @@
-package com.tokopedia.loginregister.goto_seamless
+package com.tokopedia.loginregister.goto_seamless.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.loginregister.goto_seamless.GotoSeamlessHelper
+import com.tokopedia.loginregister.goto_seamless.GotoSeamlessLoginViewModel
 import com.tokopedia.loginregister.goto_seamless.model.GojekProfileData
 import com.tokopedia.loginregister.goto_seamless.usecase.LoginSeamlessUseCase
 import com.tokopedia.network.refreshtoken.EncoderDecoder
