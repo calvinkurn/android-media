@@ -1696,7 +1696,6 @@ class NewShopPageFragment :
                 shopName = shopPageHeaderDataModel?.shopName.orEmpty(),
                 isOfficial = shopPageHeaderDataModel?.isOfficial ?: false,
                 isGoldMerchant = shopPageHeaderDataModel?.isGoldMerchant ?: false,
-                shopHomeType = shopPageHeaderDataModel?.shopHomeType.orEmpty(),
                 shopAttribution = shopAttribution,
                 shopRef = shopRef
         )
@@ -1786,7 +1785,6 @@ class NewShopPageFragment :
                         shopName = shopPageHeaderDataModel?.shopName.orEmpty(),
                         isOfficial = shopPageHeaderDataModel?.isOfficial ?: false,
                         isGoldMerchant = shopPageHeaderDataModel?.isGoldMerchant ?: false,
-                        shopHomeType = shopPageHeaderDataModel?.shopHomeType.orEmpty(),
                         shopAttribution = shopAttribution,
                         shopRef = shopRef
                     )
@@ -2596,6 +2594,16 @@ class NewShopPageFragment :
         if (scrollToTopButton?.isShown == true) {
             scrollToTopButton?.hide()
             scrollToTopButton?.gone()
+        }
+    }
+
+    fun isShopWidgetAlreadyShown(): Boolean {
+        return if(ShopUtil.isEnableShopDynamicTab(context)){
+            shopPageHeaderDataModel?.listDynamicTabData?.any {
+                it.name == ShopPageTabName.HOME || it.name == ShopPageTabName.CAMPAIGN
+            } ?: false
+        } else {
+            shopPageHeaderDataModel?.shopHomeType == ShopHomeType.NATIVE
         }
     }
 
