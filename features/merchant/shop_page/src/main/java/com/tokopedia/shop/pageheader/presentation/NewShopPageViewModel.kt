@@ -234,7 +234,7 @@ class NewShopPageViewModel @Inject constructor(
         val useCase = getShopPageHeaderLayoutUseCase.get()
         val districtId: String
         val cityId: String
-        if (isMyShop(shopId)) {
+        if (!isMyShop(shopId)) {
             districtId = widgetUserAddressLocalData.district_id
             cityId = widgetUserAddressLocalData.city_id
         } else {
