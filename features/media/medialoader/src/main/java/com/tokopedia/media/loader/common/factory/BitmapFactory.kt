@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
+import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.media.common.data.PARAM_BLURHASH
@@ -93,13 +94,23 @@ class BitmapFactory : MediaLoaderFactory<Bitmap>() {
                                 height = properties.imageViewSize.second
                         )))
                     } else {
-                        placeholder(PLACEHOLDER_RES_UNIFY)
+                        placeholder(
+                            ContextCompat.getDrawable(
+                                context,
+                                PLACEHOLDER_RES_UNIFY
+                            )
+                        )
                     }
                 }
 
                 // render the custom placeholder that provided by Properties()
                 !placeHolder.isZero() && placeHolder.isMoreThanZero() -> {
-                    placeholder(placeHolder)
+                    placeholder(
+                        ContextCompat.getDrawable(
+                            context,
+                            placeHolder
+                        )
+                    )
                 }
             }
         }
