@@ -1,5 +1,6 @@
 package com.tokopedia.tokofood.home
 
+import android.accounts.NetworkErrorException
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.tokofood.data.createChooseAddress
 import com.tokopedia.tokofood.data.createDynamicIconsResponse
@@ -103,6 +104,15 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
     @Test
     fun `when check is page showing empty state location should return true`() {
         viewModel.showNoAddressState()
+
+        val actualResponse = viewModel.isShownEmptyState()
+
+        verifyHomeIsShowingEmptyState(actualResponse)
+    }
+
+    @Test
+    fun `when check is page showing error should return true`() {
+        viewModel.showErrorState(NetworkErrorException())
 
         val actualResponse = viewModel.isShownEmptyState()
 
