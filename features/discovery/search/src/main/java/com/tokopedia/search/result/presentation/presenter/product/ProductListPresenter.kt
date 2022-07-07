@@ -677,7 +677,7 @@ class ProductListPresenter @Inject constructor(
         ) {
             view.clearLastProductItemPositionFromCache()
 
-            createProductDataView(searchProductModel)
+            createProductDataView(searchProductModel, pageTitle)
         }
     }
 
