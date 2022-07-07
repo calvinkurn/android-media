@@ -52,7 +52,7 @@ class TemporaryTokenWorker(val appContext: Context, params: WorkerParameters) :
                             accessToken = result.data.key,
                             name = userSession.name,
                             customerId = userSession.userId,
-                            countryCode = "+62",
+                            countryCode = "",
                             phone = userSession.phoneNumber,
                             email = userSession.email,
                             profileImageUrl = userSession.profilePicture

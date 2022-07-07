@@ -284,7 +284,7 @@ class LoginEmailPhoneViewModel @Inject constructor(
                 accessToken = result.data.key,
                 name = tkpdProfile.profileInfo.fullName,
                 customerId = tkpdProfile.profileInfo.userId,
-                countryCode = "+62",
+                countryCode = "",
                 phone = tkpdProfile.profileInfo.phone,
                 email = tkpdProfile.profileInfo.email,
                 profileImageUrl = tkpdProfile.profileInfo.profilePicture

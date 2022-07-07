@@ -1,7 +1,6 @@
 package com.tokopedia.loginregister.goto_seamless.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.Observer
 import com.tokopedia.loginregister.goto_seamless.GotoSeamlessHelper
 import com.tokopedia.loginregister.goto_seamless.GotoSeamlessLoginViewModel
 import com.tokopedia.loginregister.goto_seamless.model.GojekProfileData
@@ -9,9 +8,10 @@ import com.tokopedia.loginregister.goto_seamless.usecase.LoginSeamlessUseCase
 import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.LoginTokenPojoV2
+import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
@@ -29,17 +29,16 @@ class GotoSeamlessLoginViewModelTest {
     private val gotoSeamlessHelper = mockk<GotoSeamlessHelper>(relaxed = true)
     private val userSession = mockk<UserSessionInterface>(relaxed = true)
 
-    private var loginTokenObserver = mockk<Observer<Result<LoginToken>>>(relaxed = true)
-    private var gojekProfileObserver = mockk<Observer<Result<GojekProfileData>>>(relaxed = true)
+    private val exception = Exception("error")
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
         mockkObject(EncoderDecoder())
+        mockkObject(TokenGenerator())
 
+        mockkStatic(EncoderDecoder::class)
         viewModel = GotoSeamlessLoginViewModel(loginSeamlessUseCase, gotoSeamlessHelper, userSession, CoroutineTestDispatchersProvider)
-        viewModel.loginResponse.observeForever(loginTokenObserver)
-        viewModel.gojekProfileData.observeForever(gojekProfileObserver)
     }
 
     @Test
@@ -49,21 +48,16 @@ class GotoSeamlessLoginViewModelTest {
 
         viewModel.getGojekData()
 
-        verify {
-            gojekProfileObserver.onChanged(Success(mockGojekProfile))
-        }
+        assert((viewModel.gojekProfileData.getOrAwaitValue() as Success).data == mockGojekProfile)
     }
 
     @Test
     fun `Get Gojek Data Failed`() {
-        val throwable = Throwable("error")
-        coEvery { gotoSeamlessHelper.getGojekProfile() } throws throwable
+        coEvery { gotoSeamlessHelper.getGojekProfile() } throws exception
 
         viewModel.getGojekData()
 
-        verify {
-            gojekProfileObserver.onChanged(Fail(throwable))
-        }
+        assert((viewModel.gojekProfileData.getOrAwaitValue() as Fail).throwable.message == "error")
     }
 
     @Test
@@ -72,36 +66,31 @@ class GotoSeamlessLoginViewModelTest {
         val response = LoginTokenPojoV2(data)
 
         coEvery { loginSeamlessUseCase(any()) } returns response
+        every { EncoderDecoder.Encrypt(any(), any()) } returns "ok"
 
         viewModel.doSeamlessLogin("abc")
 
-        verify {
-            viewModel.onSuccessSeamlessLogin(data)
-        }
+        assert((viewModel.loginResponse.getOrAwaitValue() as Success).data == data)
     }
 
     @Test
     fun `Login Token Failed`() {
-        val throwable = Throwable("error")
-        coEvery { loginSeamlessUseCase(any()) } throws throwable
+        coEvery { loginSeamlessUseCase(any()) } throws exception
 
         viewModel.doSeamlessLogin("abc")
 
-        verify {
-            loginTokenObserver.onChanged(Fail(throwable))
-        }
+        assert((viewModel.loginResponse.getOrAwaitValue() as Fail).throwable.message == "error")
     }
 
     @Test
     fun `On Success Seamless Login`() {
         val token = "abc123"
         val data = LoginToken(accessToken = token)
+        every { EncoderDecoder.Encrypt(any(), any()) } returns "ok"
 
         viewModel.onSuccessSeamlessLogin(data)
 
-        verify {
-            viewModel.saveAccessToken(data)
-        }
+        assert((viewModel.loginResponse.getOrAwaitValue() as Success).data == data)
     }
 
     @Test
@@ -111,9 +100,7 @@ class GotoSeamlessLoginViewModelTest {
 
         viewModel.onSuccessSeamlessLogin(data)
 
-        verify {
-            loginTokenObserver.onChanged(Fail(any()))
-        }
+        assert((viewModel.loginResponse.getOrAwaitValue() as Fail).throwable.message == "Access token is empty")
     }
 
     @Test
@@ -124,7 +111,6 @@ class GotoSeamlessLoginViewModelTest {
 
         val data = LoginToken(accessToken = token, tokenType = tokenType, refreshToken = refreshToken)
 
-        mockkStatic(EncoderDecoder::class)
         every { EncoderDecoder.Encrypt(any(), any()) } returns "ok"
 
         viewModel.saveAccessToken(data)
@@ -137,5 +123,4 @@ class GotoSeamlessLoginViewModelTest {
             )
         }
     }
-
 }

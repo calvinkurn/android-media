@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.loginregister.login.view.viewmodel.SellerSeamlessViewModel
 import com.tokopedia.seamless_login_common.utils.AESUtils
+import com.tokopedia.sessioncommon.data.Error
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
@@ -141,5 +142,47 @@ class SellerSeamlessViewModelTest {
         viewModel.loginSeamless(code)
 
         verify { observerSecurityQuestion.onChanged(any()) }
+    }
+
+    @Test
+    fun `login seamless - success - has errors`() {
+        val errors = arrayListOf(
+            Error("this is error", message = "errors")
+        )
+        val mockResponseAes = "encryptedString"
+        val mockLoginToken = LoginTokenPojo(LoginToken(
+            accessToken = "",
+            refreshToken = "",
+            tokenType = "",
+            errors = errors
+        ))
+
+        coEvery { AESUtils.encryptSeamless(code.toByteArray()) } returns mockResponseAes
+        coEvery { loginTokenUseCase.executeLoginTokenSeamless(any(), any()) } coAnswers {
+            secondArg<LoginTokenSubscriber>().onSuccessLoginToken.invoke(mockLoginToken)
+        }
+
+        viewModel.loginSeamless(code)
+
+        MatcherAssert.assertThat(viewModel.loginTokenResponse.value, CoreMatchers.instanceOf(Fail::class.java))
+    }
+
+    @Test
+    fun `login seamless - success - other errors`() {
+        val mockResponseAes = "encryptedString"
+        val mockLoginToken = LoginTokenPojo(LoginToken(
+            accessToken = "",
+            refreshToken = "",
+            tokenType = ""
+        ))
+
+        coEvery { AESUtils.encryptSeamless(code.toByteArray()) } returns mockResponseAes
+        coEvery { loginTokenUseCase.executeLoginTokenSeamless(any(), any()) } coAnswers {
+            secondArg<LoginTokenSubscriber>().onSuccessLoginToken.invoke(mockLoginToken)
+        }
+
+        viewModel.loginSeamless(code)
+
+        MatcherAssert.assertThat(viewModel.loginTokenResponse.value, CoreMatchers.instanceOf(Fail::class.java))
     }
 }

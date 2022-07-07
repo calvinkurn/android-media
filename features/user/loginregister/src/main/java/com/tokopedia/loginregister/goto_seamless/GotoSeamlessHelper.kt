@@ -26,7 +26,6 @@ class GotoSeamlessHelper @Inject constructor(@ApplicationContext val context: Co
 
     suspend fun getGojekProfile(): GojekProfileData {
         val ssoData = getSsoData()
-        println("ssoData: $ssoData")
         val gojekProfile = Gson().fromJson(ssoData[KEY_PROFILE], GojekProfileData::class.java)
         gojekProfile.authCode = ssoData[KEY_AUTH_CODE] ?: ""
         return gojekProfile
