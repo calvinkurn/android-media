@@ -10,7 +10,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeOfferingWidgetBinding
 import com.tokopedia.digital.home.model.RechargeHomepageOfferingWidgetModel
-import com.tokopedia.digital.home.model.RechargeHomepageProductBannerModel
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -37,7 +36,7 @@ class RechargeHomepageOfferingWidgetViewHolder(
             setupBackground(binding, element.section.label1, element.section.label2)
             setupTitle(binding, element.section.title)
             setupSubtitle(binding, element.section.subtitle)
-            setupOtherButton(binding, element.section.textLink, element.section.applink)
+            setupOtherButton(binding, element.section)
             setupProduct(binding, element.section)
 
             binding.root.addOnImpressionListener(element.section) {
@@ -99,16 +98,15 @@ class RechargeHomepageOfferingWidgetViewHolder(
 
     private fun setupOtherButton(
         binding: ViewRechargeHomeOfferingWidgetBinding,
-        label: String,
-        applink: String
+        section: RechargeHomepageSections.Section,
     ) {
         with(binding.btnRechargeHomeOfferingOther) {
-            if (applink.isNotEmpty()) {
-                if (label.isNotEmpty()) {
-                    text = label
+            if (section.applink.isNotEmpty()) {
+                if (section.textLink.isNotEmpty()) {
+                    text = section.textLink
                 }
                 setOnClickListener {
-                    RouteManager.route(context, applink)
+                    listener.onRechargeBannerAllItemClicked(section)
                 }
                 show()
             } else {
