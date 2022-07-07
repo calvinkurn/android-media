@@ -674,11 +674,8 @@ object DeeplinkDFMapper : CoroutineScope {
                     it.startsWith(ApplinkConstInternalMarketplace.ADMIN_REDIRECTION) ||
                     it.startsWith(ApplinkConst.ADMIN_INVITATION) ||
                     it.startsWith(ApplinkConst.ADMIN_ACCEPTED) ||
-                    it.startsWith(ApplinkConst.ADMIN_REDIRECTION) ||
-                    it.startsWith(SellerApp.ADMIN_INVITATION) ||
-                    it.startsWith(SellerApp.ADMIN_ACCEPTED) ||
-                    it.startsWith(SellerApp.ADMIN_REDIRECTION)
-                }, DF_BASE, R.string.title_shop_admin)
+                    it.startsWith(ApplinkConst.ADMIN_REDIRECTION)
+                }, DF_MERCHANT_SELLER, R.string.title_shop_admin)
             )
 
 
@@ -828,6 +825,15 @@ object DeeplinkDFMapper : CoroutineScope {
 
             // Review Media Gallery
             add(DFP({ it.startsWith(ApplinkConstInternalMarketplace.REVIEW_MEDIA_GALLERY)}, DF_BASE_SELLER_APP, R.string.title_review_media_gallery))
+
+            // Shop Admin
+            add(DFP({ it.startsWith(ApplinkConstInternalMarketplace.ADMIN_ACCEPTED) ||
+                    it.startsWith(ApplinkConstInternalMarketplace.ADMIN_INVITATION) ||
+                    it.startsWith(ApplinkConstInternalMarketplace.ADMIN_REDIRECTION) ||
+                    it.startsWith(SellerApp.ADMIN_INVITATION) ||
+                    it.startsWith(SellerApp.ADMIN_ACCEPTED) ||
+                    it.startsWith(SellerApp.ADMIN_REDIRECTION)
+            }, DF_BASE_SELLER_APP, R.string.title_shop_admin))
         }
     }
 

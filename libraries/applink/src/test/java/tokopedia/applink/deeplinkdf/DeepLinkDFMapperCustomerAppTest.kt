@@ -436,15 +436,15 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     }
 
     @Test
-    fun `check admin invitation internal appLink then should return DF_BASE in customerapp`() {
-        val appLink = "${ApplinkConstInternalMarketplace.INTERNAL_MARKETPLACE}/shop-admin/invitation-page"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
+    fun `check admin invitation internal appLink then should return DF_MERCHANT_SELLER in sellerapp`() {
+        val appLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://shop-admin/invitation-page"
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_MERCHANT_SELLER)
     }
 
     @Test
-    fun `check admin accepted internal appLink then should return DF_BASE in customerapp`() {
-        val appLink = "${ApplinkConstInternalMarketplace.INTERNAL_MARKETPLACE}/shop-admin/accepted-page"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
+    fun `check admin accepted internal appLink then should return DF_MERCHANT_SELLER in customerapp`() {
+        val appLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://shop-admin/accepted-page"
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_MERCHANT_SELLER)
     }
 
     @Test
