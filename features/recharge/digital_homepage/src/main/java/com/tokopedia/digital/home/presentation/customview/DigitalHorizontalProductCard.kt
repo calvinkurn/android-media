@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.digital.home.databinding.LayoutDigitalHorizontalProductCardBinding
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -62,7 +63,7 @@ class DigitalHorizontalProductCard @JvmOverloads constructor(
     private fun setupProductDetail() {
         with(binding.tgHorizontalCardProductDetail) {
             if (productDetail.isNotEmpty()) {
-                text = productDetail
+                text = MethodChecker.fromHtml(productDetail)
                 show()
             } else {
                 hide()
