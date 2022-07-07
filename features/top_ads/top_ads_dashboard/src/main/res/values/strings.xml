@@ -11,7 +11,7 @@
     <string name="topads_dash_auto_topup_off_dialog_ok_btn">Ya, Nonaktifkan</string>
     <string name="topads_dash_auto_topup_off_dialog_cancel_btn">Tetap gunakan</string>
     <string name="topads_dash_auto_topup_ticker_desc">Biaya diambil dari saldo penghasilan toko anda, setiap kali kredit di bawah batas</string>
-    <string name="topads_dash_select_topup_amount">Top-up kredit sebesar</string>
+    <string name="topads_dash_select_topup_amount">Otomatis top-up saldo sebesar</string>
     <string name="topads_dash_when_credit_is_down">Saat kredit saya di bawah</string>
     <string name="topads_dash_auto_topup_setting_is_saved_toast">Pengaturan berhasil diperbarui</string>
     <string name="topads_dash_auto_topup_disabled_toast">Tambah kredit otomatis telah dinonaktifkan</string>
