@@ -264,8 +264,10 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
                 contract?.onShowMediaLimitReachedGalleryToast()
                 return false
             }
-        } else if (!param.get().isMultipleSelectionType() && (contract?.mediaSelected()?.isNotEmpty() == true || adapter.selectedMedias.isNotEmpty())) {
-            adapter.removeAllSelectedSingleClick()
+        } else {
+            if (contract?.mediaSelected()?.isNotEmpty() == true || adapter.selectedMedias.isNotEmpty()) {
+                adapter.removeAllSelectedSingleClick()
+            }
         }
 
         if (!isSelected) {
