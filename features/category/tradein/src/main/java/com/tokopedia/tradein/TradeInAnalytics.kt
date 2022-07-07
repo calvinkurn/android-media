@@ -250,17 +250,16 @@ class TradeInAnalytics @Inject constructor(
     //15
     fun clickExchangeMethods(
         is3PL: Boolean,
-        price1PL: String,
-        price3Pl: String
+        price: String
     ) {
         val map = mutableMapOf<String, Any>(
             EVENT to CLICK_PG,
             EVENT_CATEGORY to TRADE_IN_START_PAGE,
             EVENT_ACTION to "click exchange methods",
             EVENT_LABEL to if (is3PL) {
-                "indomaret - $price3Pl"
+                "indomaret - $price"
             } else {
-                "alamatmu - $price1PL"
+                "alamatmu - $price"
             },
             KEY_BUSINESS_UNIT to BUSINESS_UNIT,
             KEY_CURRENT_SITE to CURRENT_SITE,
