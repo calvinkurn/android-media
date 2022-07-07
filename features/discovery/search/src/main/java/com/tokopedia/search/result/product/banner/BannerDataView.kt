@@ -17,11 +17,12 @@ data class BannerDataView(
     val trackingOption: Int = 0,
     val dimension90: String = "",
     val keyword: String = "",
+    val pageTitle: String = "",
 ) : Visitable<ProductListTypeFactory>, ImpressHolder(),
     SearchComponentTracking by searchComponentTracking(
         trackingOption = trackingOption,
         keyword = keyword,
-        valueName = keyword,
+        valueName = pageTitle,
         componentId = componentId,
         applink = applink,
         dimension90 = dimension90,
@@ -38,6 +39,7 @@ data class BannerDataView(
             bannerModel: SearchProductModel.Banner,
             keyword: String,
             dimension90: String,
+            pageTitle: String,
         ): BannerDataView {
             return BannerDataView(
                 bannerModel.position,
@@ -47,7 +49,8 @@ data class BannerDataView(
                 bannerModel.componentId,
                 bannerModel.trackingOption,
                 dimension90,
-                keyword
+                keyword,
+                pageTitle,
             )
         }
     }

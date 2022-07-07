@@ -103,6 +103,7 @@ class ProductViewModelMapper {
             searchProductData.banner,
             keyword,
             dimension90,
+            pageTitle,
         )
         productDataView.lastFilterDataView = convertToLastFilterDataView(searchProductModel)
         productDataView.categoryIdL2 = searchProductModel.lastFilter.data.categoryIdL2
