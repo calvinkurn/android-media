@@ -2627,6 +2627,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
         viewModel.chatAttachments.observe(viewLifecycleOwner, {
             updateAttachmentsView(it)
+        })
+
+        viewModel.chatAttachmentsPreview.observe(viewLifecycleOwner, {
             updateAttachmentsPreview(it)
         })
 

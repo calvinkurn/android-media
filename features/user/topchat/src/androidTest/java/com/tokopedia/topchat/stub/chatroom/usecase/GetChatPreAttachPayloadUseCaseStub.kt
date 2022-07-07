@@ -1,6 +1,8 @@
 package com.tokopedia.topchat.stub.chatroom.usecase
 
+import com.google.gson.JsonArray
 import com.google.gson.JsonObject
+import com.google.gson.JsonParser
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.topchat.chatroom.domain.pojo.preattach.PreAttachPayloadResponse
 import com.tokopedia.topchat.chatroom.domain.usecase.GetChatPreAttachPayloadUseCase
@@ -27,25 +29,31 @@ class GetChatPreAttachPayloadUseCaseStub(
         return alterResponseOf(defaultResponsePath) {
             val list = it.getAsJsonObject(chatPreAttachPayload)
                     .getAsJsonArray(list)
-            list[0].asJsonObject.addProperty(id, productId)
-            val attrs = list[0].asJsonObject.get(attributes).asString
-            val attrObj = fromJson<JsonObject>(attrs)
-            attrObj.addProperty(product_id, productId)
-            list[0].asJsonObject.addProperty(attributes, attrObj.toString())
+            alterPreAttachPayload(list, productId)
         }
     }
 
-    fun generate3PreAttachPayload(
-            productId: String
-    ): PreAttachPayloadResponse {
+    fun generate3PreAttachPayload(): PreAttachPayloadResponse {
         return alterResponseOf(defaultResponsePath) { response ->
             val list = response.getAsJsonObject(chatPreAttachPayload)
                     .getAsJsonArray(list)
-            list.add(list[0])
-            list.add(list[0])
-            list.forEach {
-                it.asJsonObject.addProperty(id, productId)
+            for (i in 0 until 2) {
+                val jsonString = list[0].toString()
+                val newJsonObject = JsonParser.parseString(jsonString).asJsonObject
+                list.add(newJsonObject)
             }
+            alterPreAttachPayload(list)
+        }
+    }
+
+    private fun alterPreAttachPayload(list: JsonArray, productId: String? = null) {
+        for (i in 0 until list.size()) {
+            val stringId: String = productId ?: i.toString()
+            list[i].asJsonObject.addProperty(id, stringId)
+            val attrs = list[i].asJsonObject.get(attributes).asString
+            val attrObj = fromJson<JsonObject>(attrs)
+            attrObj.addProperty(product_id, stringId)
+            list[i].asJsonObject.addProperty(attributes, attrObj.toString())
         }
     }
 
