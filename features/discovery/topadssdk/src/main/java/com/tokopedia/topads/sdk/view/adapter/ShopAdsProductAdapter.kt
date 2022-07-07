@@ -15,6 +15,7 @@ import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_5
 import com.tokopedia.topads.sdk.domain.model.ShopProductModel.ShopProductModelItem
 import com.tokopedia.topads.sdk.listener.FollowButtonClickListener
 import com.tokopedia.topads.sdk.listener.ShopAdsProductListener
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
 class ShopAdsProductAdapter(
@@ -42,7 +43,7 @@ class ShopAdsProductAdapter(
         private val shopProductRoot = itemView.findViewById<CardView>(R.id.shopProductRoot)
         private val locationIcon = itemView.findViewById<ImageView>(R.id.locationIcon)
         private val locationName = itemView.findViewById<Typography>(R.id.locationName)
-        private val buttonFollow = itemView.findViewById<Typography>(R.id.buttonFollow)
+        private val buttonFollow = itemView.findViewById<UnifyButton>(R.id.buttonFollow)
 
 
         fun bind(shopProductModelItem: ShopProductModelItem) {
