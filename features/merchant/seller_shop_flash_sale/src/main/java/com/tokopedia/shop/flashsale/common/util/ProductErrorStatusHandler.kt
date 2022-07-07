@@ -95,10 +95,7 @@ class ProductErrorStatusHandler @Inject constructor(@ApplicationContext private 
 
             maxOrder?.let {
                 if (it < MIN_CAMPAIGN_ORDER) result.add(MIN_ORDER)
-            }
-
-            if (stock != null && maxOrder != null) {
-                if (maxOrder!! > stock!!) result.add(MAX_ORDER)
+                if (it > stock ?: originalStock.toLong()) result.add(MAX_ORDER)
             }
         }
 
