@@ -57,6 +57,9 @@ class GlobalNavViewHolder(
             logoUrl = item.logoUrl,
             position = item.position,
             componentId = item.componentId,
+            trackingOption = item.trackingOption,
+            keyword = item.keyword,
+            dimension90 = item.dimension90,
         )
     }
 
@@ -91,11 +94,13 @@ class GlobalNavViewHolder(
             globalNavWidgetModelItem.logoUrl,
             globalNavWidgetModelItem.position,
             globalNavWidgetModelItem.componentId,
+            globalNavWidgetModelItem.trackingOption,
+            globalNavWidgetModelItem.keyword,
+            globalNavWidgetModelItem.dimension90,
         )
     }
 
     companion object {
-
         @LayoutRes
         @JvmField
         val LAYOUT = R.layout.search_global_nav_view_holder

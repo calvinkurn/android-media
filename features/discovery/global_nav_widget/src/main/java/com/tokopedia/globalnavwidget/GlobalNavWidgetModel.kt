@@ -27,5 +27,8 @@ data class GlobalNavWidgetModel(
             val logoUrl: String = "",
             val position: Int = 0,
             val componentId: String = "",
+            val trackingOption: String = "0",
+            val keyword: String = "",
+            val dimension90: String = "",
     )
 }
