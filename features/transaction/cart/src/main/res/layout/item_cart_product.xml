@@ -272,8 +272,6 @@
             tools:layout_width="20dp"
             tools:visibility="gone" />
 
-
-
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text_incident"
             android:layout_width="wrap_content"

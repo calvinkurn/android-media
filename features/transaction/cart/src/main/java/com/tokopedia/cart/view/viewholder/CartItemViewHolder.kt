@@ -25,10 +25,14 @@ import com.tokopedia.cart.databinding.ItemAddonCartIdentifierBinding
 import com.tokopedia.cart.databinding.ItemCartProductBinding
 import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.kotlin.extensions.view.getScreenWidth
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.media.loader.loadIcon
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.purchase_platform.common.utils.showSoftKeyboard
@@ -375,8 +379,6 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
         binding.iuImageProduct.setOnClickListener(getOnClickProductItemListener(adapterPosition, data))
     }
 
-
-
     private fun sendAnalyticsInformationLabel(data: CartItemHolderData) {
         if (informationLabel.isNotEmpty()) {
             sendAnalyticsShowInformation(informationLabel, data.productId)
@@ -422,9 +424,10 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
             layoutProductInfo.show()
             informationLabel.add(wholesaleLabel.toLowerCase(Locale.getDefault()))
         }
+
         if (data.needPrescription) {
-            val butuhResepView = createProductInfoTextWithIcon(ProductInformationWithIcon(data.butuhResepText, data.butuhResepIconUrl))
-            layoutProductInfo.addView(butuhResepView)
+            val needPrescriptionView = createProductInfoTextWithIcon(ProductInformationWithIcon(data.butuhResepText, data.butuhResepIconUrl))
+            layoutProductInfo.addView(needPrescriptionView)
             layoutProductInfo.show()
         }
     }
