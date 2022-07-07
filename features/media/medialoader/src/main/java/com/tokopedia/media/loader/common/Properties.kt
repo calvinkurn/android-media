@@ -52,9 +52,6 @@ open class Properties(
     // getting the load time on listener
     internal var loadTime: String = ""
 
-    // versioning of cache
-    internal val cacheVersionNumber = "+v2"
-
     // flag to check wether icon or not
     internal var isIcon = false
 

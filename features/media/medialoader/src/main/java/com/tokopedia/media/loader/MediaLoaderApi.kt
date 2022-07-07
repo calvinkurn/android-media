@@ -27,15 +27,10 @@ internal object MediaLoaderApi {
     private val bitmap by lazy { BitmapFactory() }
     private val gif by lazy { GifFactory() }
 
-    private fun LazyHeaders.Builder.requestHeaders(accessToken: String, userId: String) {
-        // Accounts-Authorization
-        addHeader(HEADER_KEY_AUTH, "$PREFIX_BEARER %s".format(accessToken))
-
-        // X-Device
-        addHeader(HEADER_X_DEVICE, "android-${GlobalConfig.VERSION_NAME}")
-
-        // Tkpd-UserId
-        addHeader(HEADER_USER_ID, userId)
+    private fun LazyHeaders.Builder.headers(accessToken: String, userId: String) {
+        addHeader(HEADER_KEY_AUTH /* Accounts-Authorization */, "$PREFIX_BEARER %s".format(accessToken))
+        addHeader(HEADER_X_DEVICE /* X-Device */, "android-${GlobalConfig.VERSION_NAME}")
+        addHeader(HEADER_USER_ID /* Tkpd-UserId */, userId)
     }
 
     fun loadImage(imageView: ImageView, properties: Properties, isSecure: Boolean) {
@@ -66,7 +61,7 @@ internal object MediaLoaderApi {
                     val url = GlideUrl(source, LazyHeaders.Builder()
                         .apply {
                             if (isSecure) {
-                                this.requestHeaders(
+                                headers(
                                     accessToken = properties.accessToken,
                                     userId = properties.userId
                                 )
