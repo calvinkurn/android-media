@@ -56,7 +56,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/tg_recharge_home_offering_title"
             app:unifyButtonInvers="true"
-            app:unifyButtonSize="medium"
+            app:unifyButtonSize="small"
             app:unifyButtonVariant="ghost" />
 
         <com.tokopedia.digital.home.presentation.customview.DigitalHorizontalProductCard
