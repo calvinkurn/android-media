@@ -255,7 +255,10 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
                         goToPurchasePage()
                     }
                     UiEvent.EVENT_SUCCESS_LOAD_CART -> {
-                        if (!viewModel.isShownEmptyState()){
+                        if (viewModel.isShownEmptyState()){
+                            hideMiniCartCategory()
+                            isShowMiniCart = false
+                        } else {
                             showMiniCartCategory()
                             isShowMiniCart = true
                         }
