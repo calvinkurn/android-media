@@ -374,7 +374,6 @@ class ProductListPresenter @Inject constructor(
 
     private fun createProductDataView(
         searchProductModel: SearchProductModel,
-        pageTitleEventLabel: String = "",
     ): ProductDataView {
         val lastProductItemPosition = view.lastProductItemPositionFromCache
         val keyword = view.queryKey
@@ -382,10 +381,11 @@ class ProductListPresenter @Inject constructor(
         val productDataView = ProductViewModelMapper().convertToProductViewModel(
             lastProductItemPosition,
             searchProductModel,
-            pageTitleEventLabel,
+            pageTitle,
             isLocalSearch(),
             dimension90,
             keyword,
+            isShowLocalSearchRecommendation(),
         )
 
         saveLastProductItemPositionToCache(lastProductItemPosition, productDataView.productList)
@@ -677,7 +677,7 @@ class ProductListPresenter @Inject constructor(
         ) {
             view.clearLastProductItemPositionFromCache()
 
-            createProductDataView(searchProductModel, pageTitle)
+            createProductDataView(searchProductModel)
         }
     }
 
@@ -892,7 +892,7 @@ class ProductListPresenter @Inject constructor(
     private fun createProductViewModelMapperLocalSearchRecommendation(searchProductModel: SearchProductModel): ProductDataView {
         if (startFrom == 0) view.clearLastProductItemPositionFromCache()
 
-        return createProductDataView(searchProductModel, pageTitle)
+        return createProductDataView(searchProductModel)
     }
 
     private fun getGlobalSearchRecommendation() {

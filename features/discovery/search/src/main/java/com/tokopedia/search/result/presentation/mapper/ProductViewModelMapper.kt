@@ -47,6 +47,7 @@ class ProductViewModelMapper {
         isLocalSearch: Boolean,
         dimension90: String,
         keyword: String,
+        isLocalSearchRecommendation: Boolean,
     ): ProductDataView {
         val (searchProductHeader, searchProductData) = searchProductModel.searchProduct
 
@@ -69,6 +70,7 @@ class ProductViewModelMapper {
             searchProductData.productList,
             pageTitle,
             dimension90,
+            isLocalSearchRecommendation,
         )
         productDataView.tickerModel = convertToTickerDataView(
             searchProductData,
@@ -210,10 +212,17 @@ class ProductViewModelMapper {
             productModels: List<Product>,
             pageTitle: String,
             dimension90: String,
+            isLocalSearchRecommendation: Boolean,
     ): List<ProductItemDataView> {
         return productModels.mapIndexed { index, productModel ->
             val position = lastProductItemPosition + index + 1
-            convertToProductItem(productModel, position, pageTitle, dimension90,)
+            convertToProductItem(
+                productModel,
+                position,
+                pageTitle,
+                dimension90,
+                isLocalSearchRecommendation,
+            )
         }
     }
 
@@ -222,6 +231,7 @@ class ProductViewModelMapper {
             position: Int,
             pageTitle: String,
             dimension90: String,
+            isLocalSearchRecommendation: Boolean,
     ): ProductItemDataView {
         val productItem = ProductItemDataView()
         productItem.productID = productModel.id
@@ -260,7 +270,7 @@ class ProductViewModelMapper {
         productItem.topadsTag = productModel.ads.tag
         productItem.minOrder = productModel.minOrder
         productItem.productUrl = productModel.url
-        productItem.pageTitle = pageTitle
+        productItem.pageTitle = if(isLocalSearchRecommendation) pageTitle else ""
         productItem.dimension90 = dimension90
         productItem.applink = productModel.applink
         productItem.customVideoURL = productModel.customVideoURL
