@@ -3043,7 +3043,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun isUsingMediaPicker(): Boolean {
-        return remoteConfig?.getBoolean(REMOTE_CONFIG_ENABLE_MEDIA_PICKER, true)?: false
+        return abTestPlatform.getString(ROLLENCE_ENABLE_MEDIA_PICKER) == ROLLENCE_ENABLE_MEDIA_PICKER
     }
 
     companion object {
@@ -3067,7 +3067,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
         private const val ELLIPSIZE_MAX_CHAR = 20
 
-        private const val REMOTE_CONFIG_ENABLE_MEDIA_PICKER = "android_topchat_enable_media_picker"
+        private const val ROLLENCE_ENABLE_MEDIA_PICKER = "android_chat_picker"
+
         const val AB_TEST_OCC = "chat_occ_exp"
         const val AB_TEST_NON_OCC = "chat_occ_control"
 
