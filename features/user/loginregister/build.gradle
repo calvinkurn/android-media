@@ -82,7 +82,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.gojekSSO
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.workManager
-    implementation (rootProject.ext.firebase.crashlytics) {
+    implementation(rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
 
@@ -113,7 +113,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.kotlinTest
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
-
+}
 
 project.ext {
     artifactId = 'login-register'
