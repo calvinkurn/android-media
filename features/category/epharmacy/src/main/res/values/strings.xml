@@ -1,5 +1,4 @@
 <resources>
-    <string name="epharmacy_host" translatable="false">epharmacy</string>
     <string name="epharmacy_ketentuan_foto_resep">Ketentuan foto resep</string>
     <string name="epharmacy_upload_foto_resep">Upload Foto Resep</string>
     <string name="epharmacy_foto_resep_dokter">Foto Resep Dokter</string>
