@@ -43,6 +43,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:layout_marginStart="@dimen/spacing_lvl2"
                 android:text="@string/label_topads_automatic_topup"
                 android:textColor="@color/Unify_NN950"
                 app:typographyType="display_2"
