@@ -986,15 +986,12 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         textFieldProgramStartDate.iconContainer.setOnClickListener {
             clickDatePicker(textFieldProgramStartDate, 0)
         }
-
         textFieldProgramStartTime.iconContainer.setOnClickListener {
             clickTimePicker(textFieldProgramStartTime, 0)
         }
-
         textFieldProgramEndDate.iconContainer.setOnClickListener {
             clickDatePicker(textFieldProgramEndDate, 1)
         }
-
         textFieldProgramEndTime.iconContainer.setOnClickListener {
             clickTimePicker(textFieldProgramEndTime, 1)
         }
@@ -1031,7 +1028,12 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                     })
                     minTimeStart.apply {
                         add(Calendar.HOUR_OF_DAY, 4)
-                        add(Calendar.MINUTE, 30)
+                        set(Calendar.MINUTE,30)
+                        set(Calendar.SECOND,0)
+                    }
+                    val minuteCurrent = minTimeStart.get(Calendar.MINUTE)
+                    if (minuteCurrent>30){
+                        minTimeStart.add(Calendar.MINUTE,30)
                     }
                     textFieldProgramStartTime.editText.setText(
                             "${minTimeStart.get(Calendar.HOUR_OF_DAY)}:${minTimeStart.get(Calendar.MINUTE)} WIB"
@@ -1062,6 +1064,23 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                 textFieldProgramEndDate.iconContainer.isEnabled = true
                 textFieldProgramEndTime.isEnabled  = true
                 textFieldProgramEndTime.iconContainer.isEnabled = true
+
+                textFieldProgramStartDate.editText.setOnFocusChangeListener { view, b ->
+                    if(b)
+                    clickDatePicker(textFieldProgramStartDate, 0)
+                }
+                textFieldProgramStartTime.editText.setOnFocusChangeListener { view, b ->
+                    if(b)
+                    clickTimePicker(textFieldProgramStartTime, 0)
+                }
+                textFieldProgramEndDate.editText.setOnFocusChangeListener { view, b ->
+                    if(b)
+                    clickDatePicker(textFieldProgramEndDate, 1)
+                }
+                textFieldProgramEndTime.editText.setOnFocusChangeListener { view, b ->
+                    if(b)
+                    clickTimePicker(textFieldProgramEndTime, 1)
+                }
             }
         }
         setTotalTransactionAmount()
@@ -1179,10 +1198,19 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         context?.let { ctx ->
             var minTime = GregorianCalendar(LocaleUtils.getCurrentLocale(ctx))
             if(type == 0){
-                val minTimeStart = GregorianCalendar(LocaleUtils.getCurrentLocale(ctx))
-                    minTimeStart.apply {
+                val minTimeStart = GregorianCalendar(context?.let {
+                    LocaleUtils.getCurrentLocale(
+                        it
+                    )
+                })
+                minTimeStart.apply {
                     add(Calendar.HOUR_OF_DAY, 4)
-                    add(Calendar.MINUTE, 30)
+                    set(Calendar.MINUTE,30)
+                    set(Calendar.SECOND,0)
+                }
+                val minuteCurrent = minTimeStart.get(Calendar.MINUTE)
+                if (minuteCurrent>30){
+                    minTimeStart.add(Calendar.MINUTE,30)
                 }
                 minTime = minTimeStart
             }

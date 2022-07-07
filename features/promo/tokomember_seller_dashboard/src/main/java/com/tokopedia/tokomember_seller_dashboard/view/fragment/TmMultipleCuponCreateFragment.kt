@@ -68,7 +68,6 @@ import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_DESC
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_RETRY
 import com.tokopedia.tokomember_seller_dashboard.util.ErrorState
-import com.tokopedia.tokomember_seller_dashboard.util.LOADING_TEXT
 import com.tokopedia.tokomember_seller_dashboard.util.PREMIUM
 import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_TYPE_AUTO
 import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_TYPE_MANUAL
@@ -86,6 +85,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.TIME_DESC_END
 import com.tokopedia.tokomember_seller_dashboard.util.TIME_TITLE
 import com.tokopedia.tokomember_seller_dashboard.util.TIME_TITLE_END
 import com.tokopedia.tokomember_seller_dashboard.util.TM_ERROR_PROGRAM
+import com.tokopedia.tokomember_seller_dashboard.util.TM_SUMMARY_DIALOG_TITLE
 import com.tokopedia.tokomember_seller_dashboard.util.TM_TNC
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.convertDateTime
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.convertDateTimeRemoveTimeDiff
@@ -459,7 +459,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         loaderDialog?.loaderText?.apply {
             setType(Typography.DISPLAY_2)
         }
-        loaderDialog?.setLoadingText(Html.fromHtml(LOADING_TEXT))
+        loaderDialog?.setLoadingText(Html.fromHtml(TM_SUMMARY_DIALOG_TITLE))
         loaderDialog?.show()
     }
 
@@ -976,6 +976,23 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 textFieldProgramStartTime.editText.inputType = InputType.TYPE_NULL
                 textFieldProgramEndDate.editText.inputType = InputType.TYPE_NULL
                 textFieldProgramEndTime.editText.inputType = InputType.TYPE_NULL
+
+                textFieldProgramStartDate.editText.setOnFocusChangeListener { view, b ->
+                    if(b)
+                        clickDatePicker(textFieldProgramStartDate, 0, DATE_TITLE , DATE_DESC)
+                }
+                textFieldProgramStartTime.editText.setOnFocusChangeListener { view, b ->
+                    if(b)
+                        clickTimePicker(textFieldProgramStartTime, 0, TIME_TITLE, TIME_DESC)
+                }
+                textFieldProgramEndDate.editText.setOnFocusChangeListener { view, b ->
+                    if(b)
+                        clickDatePicker(textFieldProgramEndDate, 1, DATE_TITLE_END, DATE_DESC_END)
+                }
+                textFieldProgramEndTime.editText.setOnFocusChangeListener { view, b ->
+                    if(b)
+                        clickTimePicker(textFieldProgramEndTime, 1, TIME_TITLE_END, TIME_DESC_END)
+                }
             }
         }
     }
