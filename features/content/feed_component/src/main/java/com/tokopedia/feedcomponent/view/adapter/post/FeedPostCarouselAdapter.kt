@@ -60,6 +60,13 @@ internal class FeedPostCarouselAdapter(
         )
     }
 
+    fun updateTopAdsToGreen(position: Int) {
+        val greenTopAdsPayload = Bundle().apply {
+            putBoolean(PAYLOAD_GREEN_TOP_ADS, true)
+        }
+        notifyItemChanged(position, greenTopAdsPayload)
+    }
+
     fun updateNeighbourTopAdsColor(basePosition: Int) {
         val removeFocusPayload = Bundle().apply {
             putBoolean(PAYLOAD_CHANGE_TOP_ADS, true)
@@ -123,7 +130,13 @@ internal class FeedPostCarouselAdapter(
                 }
 
                 if (payloads.containsKey(PAYLOAD_CHANGE_TOP_ADS)) {
-                    if (payloads.getBoolean(PAYLOAD_CHANGE_TOP_ADS)) holder.changeTopAds()
+                    if (payloads.getBoolean(PAYLOAD_CHANGE_TOP_ADS)) holder.changeTopAds(
+                        isGreen = dataSource.getFeedXCard().isAsgcColorChangedToGreen
+                    )
+                }
+
+                if (payloads.containsKey(PAYLOAD_GREEN_TOP_ADS)) {
+                    holder.changeTopAds(isGreen = true)
                 }
             }
         }
@@ -179,6 +192,7 @@ internal class FeedPostCarouselAdapter(
         private const val PAYLOAD_PAUSE = "payload_pause"
         private const val PAYLOAD_RESET_TOP_ADS = "payload_reset_top_ads"
         private const val PAYLOAD_CHANGE_TOP_ADS = "payload_change_top_ads"
+        private const val PAYLOAD_GREEN_TOP_ADS = "payload_green_top_ads"
 
         private const val FOCUS_POSITION_THRESHOLD = 2
     }

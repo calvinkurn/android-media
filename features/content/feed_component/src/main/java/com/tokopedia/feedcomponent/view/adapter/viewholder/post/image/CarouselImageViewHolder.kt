@@ -80,6 +80,10 @@ internal class CarouselImageViewHolder(
 
                 if (!dataSource.getFeedXCard().isTopAds) {
                     likeAnim.startAnimation(animationLike)
+                    changeTopAdsColorToGreen(
+                        dataSource.getFeedXCard(),
+                        shouldNotify = true,
+                    )
                 }
 
                 return true
@@ -165,9 +169,9 @@ internal class CarouselImageViewHolder(
         onPostTagViews { it.resetView() }
     }
 
-    fun changeTopAds() {
+    fun changeTopAds(isGreen: Boolean) {
         val card = dataSource.getFeedXCard()
-        if (card.isAsgcColorChangedToGreen) changeTopAdsColorToGreen(card, shouldNotify = false)
+        if (isGreen) changeTopAdsColorToGreen(card, shouldNotify = false)
         else changeTopAdsColorToWhite(card)
     }
 
