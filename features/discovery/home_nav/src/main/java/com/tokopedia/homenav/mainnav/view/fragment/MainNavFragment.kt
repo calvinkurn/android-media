@@ -48,6 +48,7 @@ import com.tokopedia.homenav.mainnav.domain.model.NavWishlistModel
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.MainNavTypeFactoryImpl
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.MainNavListAdapter
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingBuSection
+import com.tokopedia.homenav.mainnav.view.analytics.TrackingProfileSection
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingUserMenuSection
 import com.tokopedia.homenav.mainnav.view.datamodel.MainNavigationDataModel
@@ -393,6 +394,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     private fun tokopediaPlusListenerDelegate(): TokopediaPlusListener {
         return object : TokopediaPlusListener {
             override fun onClick(pageSource: String, tokopediaPlusDataModel: TokopediaPlusDataModel) {
+                TrackingProfileSection.onClickTokopediaPlus(tokopediaPlusDataModel.isSubscriber)
             }
 
             override fun onSuccessLoad(pageSource: String, tokopediaPlusDataModel: TokopediaPlusDataModel) {
