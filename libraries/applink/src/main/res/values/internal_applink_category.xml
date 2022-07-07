@@ -5,6 +5,7 @@
     <string name="host_tradein" translatable="false">tradein</string>
     <string name="host_category_explore" translatable="false">category-explore</string>
     <string name="host_affiliate_toko" translatable="false">affiliate</string>
+    <string name="host_epharmacy" translatable="false">epharmacy</string>
     <string name="path_final_price" translatable="false">/host_final_price</string>
     <string name="path_age_restriction" translatable="false">/age_restriction</string>
     <string name="path_tradein" translatable="false">/tradein</string>
