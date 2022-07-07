@@ -281,10 +281,8 @@ class OrderCustomizationFragment : BaseMultiFragment(),
                         val bottomSheetData = it.data as? CartTokoFoodBottomSheet
                         bottomSheetData?.run {
                             if (isShowBottomSheet) {
-                                val bottomSheet = PhoneNumberVerificationBottomSheet.createInstance(
-                                        bottomSheetData = this,
-                                        clickListener = this@OrderCustomizationFragment
-                                )
+                                val bottomSheet = PhoneNumberVerificationBottomSheet.createInstance(bottomSheetData = this)
+                                bottomSheet.setClickListener(this@OrderCustomizationFragment)
                                 bottomSheet.show(childFragmentManager)
                             }
                         }
