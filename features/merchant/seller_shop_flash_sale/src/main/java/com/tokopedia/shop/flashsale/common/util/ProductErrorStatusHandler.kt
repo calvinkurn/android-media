@@ -20,6 +20,7 @@ class ProductErrorStatusHandler @Inject constructor(@ApplicationContext private 
         private const val MIN_CAMPAIGN_ORDER = 1L
         private const val MAX_CAMPAIGN_DISCOUNT_PERCENTAGE = 0.99
         private const val MIN_CAMPAIGN_DISCOUNT_PERCENTAGE = 0.01
+        private const val MIN_PRODUCT_PRICE = 100
     }
 
     fun getErrorType(productMapData: SellerCampaignProductList.ProductMapData): ManageProductErrorType {
@@ -79,8 +80,11 @@ class ProductErrorStatusHandler @Inject constructor(@ApplicationContext private 
         val originalPrice = productInput.productMapData.originalPrice
         val originalStock = productInput.productMapData.originalStock
         val maxDiscountedPrice = getProductMaxDiscountedPrice(originalPrice)
-        val minDiscountedPrice = getProductMinDiscountedPrice(originalPrice)
+        var minDiscountedPrice = getProductMinDiscountedPrice(originalPrice)
         val result: MutableList<ManageProductErrorType> = mutableListOf()
+
+        // threshold discounted value not to less than Rp100
+        if (minDiscountedPrice < MIN_PRODUCT_PRICE) minDiscountedPrice = MIN_PRODUCT_PRICE
 
         with(productInput) {
             price?.let {
