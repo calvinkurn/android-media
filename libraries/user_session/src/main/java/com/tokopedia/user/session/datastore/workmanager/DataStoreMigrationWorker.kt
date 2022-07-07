@@ -33,26 +33,25 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
 
     override suspend fun doWork(): Result {
         if (isEnableDataStore()) {
-            return withContext(Dispatchers.IO) {
-                try {
-                    if (userSession.isLoggedIn) {
-                        val syncResult = DataStoreMigrationHelper.checkDataSync(applicationContext)
-                        if (!isMigrationSuccess() &&
-                            (dataStore.getUserId().first().isEmpty() || syncResult.isNotEmpty())
-                        ) {
-                            migrateData()
-                        } else {
-                            logSyncResult(syncResult)
-                        }
+            return try {
+                if (userSession.isLoggedIn) {
+                    val syncResult = DataStoreMigrationHelper.checkDataSync(applicationContext)
+                    if (!isMigrationSuccess() &&
+                        (dataStore.getUserId().first().isEmpty() || syncResult.isNotEmpty())
+                    ) {
+                        migrateData()
+                    } else {
+                        logSyncResult(syncResult)
                     }
-                    Result.success()
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    logWorkerError(e)
-                    Result.failure()
                 }
+                Result.success()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                logWorkerError(e)
+                Result.failure()
             }
         } else {
+            Log.d(this::class.simpleName, "Data Store not enabled")
             return Result.success()
         }
     }

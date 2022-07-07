@@ -29,6 +29,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dataStore
     implementation rootProject.ext.miscDependencies.protobufLite
     implementation projectOrAar(rootProject.ext.libraries.encryption)
+    androidTestImplementation(rootProject.ext.testDependencies.androidxTest)
+    androidTestImplementation(rootProject.ext.testDependencies.workManagerTest)
 }
 
 protobuf {
