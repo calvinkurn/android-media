@@ -2694,9 +2694,9 @@ open class DynamicProductDetailFragment :
 
     private fun showWarehouseChangeBs(productMultiloc: ProductMultilocation) {
         if (productMultiloc.isReroute && !alreadyShowMultilocBottomSheet) {
-            alreadyShowMultilocBottomSheet = true
             goToApplink(productMultiloc.eduLink.applink)
         }
+        alreadyShowMultilocBottomSheet = true
     }
 
     private fun setupProductVideoCoordinator() {

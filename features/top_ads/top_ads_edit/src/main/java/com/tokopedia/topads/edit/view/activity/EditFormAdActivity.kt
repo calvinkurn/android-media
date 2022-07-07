@@ -218,8 +218,9 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>,
                     }
                     viewPager?.setCurrentItem(p0.position, true)
                 }
-
             })
+
+        viewPager?.let { tabLayout?.setupWithViewPager(it) }
     }
 
     private fun getViewPagerAdapter(isBidAutomatic: Boolean): TopAdsEditPagerAdapter {
