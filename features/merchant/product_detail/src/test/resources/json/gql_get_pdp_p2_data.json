@@ -767,6 +767,9 @@
             "icon": "https://images.tokopedia.net/img/pdp/icon/usp/boextoped.png"
           }
         },
+        "shopFinishRate": {
+          "finishRate": "100%"
+        },
         "ticker": {
           "tickerInfo": [
             {
