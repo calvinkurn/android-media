@@ -15,8 +15,10 @@ import com.tokopedia.home_recom.model.entity.ProductDetailData
 import com.tokopedia.home_recom.model.entity.ProductRecommendationProductDetail
 import com.tokopedia.home_recom.util.RecomServerLogger
 import com.tokopedia.home_recom.util.RecommendationDispatcherTest
+import com.tokopedia.home_recom.util.RecommendationRollenceController
 import com.tokopedia.home_recom.util.Status
 import com.tokopedia.home_recom.viewmodel.RecommendationPageViewModel
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -71,6 +73,7 @@ class TestRecommendationPageViewModel {
     private val addToCartUseCase = mockk<AddToCartUseCase>(relaxed = true)
     private val userSession = mockk<UserSessionInterface>(relaxed = true)
     private val remoteConfig = mockk<FirebaseRemoteConfigImpl>(relaxed = true)
+    private val mockWishlistListener: WishlistV2ActionListener = mockk(relaxed = true)
 
     private val viewModel: RecommendationPageViewModel = spyk(RecommendationPageViewModel(
             userSessionInterface = userSession,
@@ -80,12 +83,12 @@ class TestRecommendationPageViewModel {
             removeWishListUseCase = removeWishListUseCase,
             addToWishlistV2UseCase = addToWishlistV2UseCase,
             deleteWishlistV2UseCase = deleteWishlistV2UseCase,
-        topAdsWishlishedUseCase = topAdsWishlishedUseCase,
-        addToCartUseCase = addToCartUseCase,
-        getTopadsIsAdsUseCase = getTopadsIsAdsUseCase,
-        getPrimaryProductUseCase = getPrimaryProductUseCase,
-        getTopAdsHeadlineUseCase = getTopAdsHeadlineUseCase,
-        remoteConfig = remoteConfig
+            topAdsWishlishedUseCase = topAdsWishlishedUseCase,
+            addToCartUseCase = addToCartUseCase,
+            getTopadsIsAdsUseCase = getTopadsIsAdsUseCase,
+            getPrimaryProductUseCase = getPrimaryProductUseCase,
+            getTopAdsHeadlineUseCase = getTopAdsHeadlineUseCase,
+            remoteConfig = remoteConfig
     ), recordPrivateCalls = true)
     private val recommendation = RecommendationItem(productId = 1234)
     private val recommendationTopads = RecommendationItem(productId = 1234, isTopAds = true, wishlistUrl = "1234")
@@ -152,49 +155,63 @@ class TestRecommendationPageViewModel {
     }
 
     @Test
-    fun `verify add to wishlistV2 success`(){
+    fun `given success when add to wishlistV2 then call onSuccessAddWishlist`(){
         val resultWishlistAddV2 = AddToWishlistV2Response.Data.WishlistAddV2(success = true)
 
         every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
         coEvery { addToWishlistV2UseCase.executeOnBackground() } returns Success(resultWishlistAddV2)
 
-        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
-        viewModel.addWishlistV2(recommendation.productId.toString(), mockListener)
+        viewModel.addWishlistV2(recommendation.productId.toString(), mockWishlistListener)
 
         verify { addToWishlistV2UseCase.setParams(recommendation.productId.toString(), userSession.userId) }
         coVerify { addToWishlistV2UseCase.executeOnBackground() }
+        verify { mockWishlistListener.onSuccessAddWishlist(any(), any()) }
     }
 
     @Test
-    fun `verify add to wishlistv2 returns fail`() {
+    fun `given error when add to wishlistv2 then call onErrorAddWishList`() {
         val mockThrowable = mockk<Throwable>("fail")
 
         every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
         coEvery { addToWishlistV2UseCase.executeOnBackground() } returns Fail(mockThrowable)
 
-        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
-        viewModel.addWishlistV2(recommendation.productId.toString(), mockListener)
+        viewModel.addWishlistV2(recommendation.productId.toString(), mockWishlistListener)
 
         verify { addToWishlistV2UseCase.setParams(recommendation.productId.toString(), userSession.userId) }
         coVerify { addToWishlistV2UseCase.executeOnBackground() }
+        verify { mockWishlistListener.onErrorAddWishList(any(), any()) }
     }
 
     @Test
-    fun `verify remove wishlistV2`(){
+    fun `given success delete wishlist when remove wishlistV2 then call onSuccessRemoveWishlist`(){
         val resultWishlistRemoveV2 = DeleteWishlistV2Response.Data.WishlistRemoveV2(success = true)
 
         every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
         coEvery { deleteWishlistV2UseCase.executeOnBackground() } returns Success(resultWishlistRemoveV2)
 
-        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
-        viewModel.removeWishlistV2(recommendation.productId.toString(), mockListener)
+        viewModel.removeWishlistV2(recommendation.productId.toString(), mockWishlistListener)
 
         verify { deleteWishlistV2UseCase.setParams(recommendation.productId.toString(), userSession.userId) }
         coVerify { deleteWishlistV2UseCase.executeOnBackground() }
+        verify { mockWishlistListener.onSuccessRemoveWishlist(any(), any()) }
     }
 
     @Test
-    fun `get error add wishlist from network`(){
+    fun `given failed delete wishlist when remove wishlistV2 then call onErrorRemoveWishlist`(){
+        val mockThrowable = mockk<Throwable>("fail")
+
+        every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { deleteWishlistV2UseCase.executeOnBackground() } returns Fail(mockThrowable)
+
+        viewModel.removeWishlistV2(recommendation.productId.toString(), mockWishlistListener)
+
+        verify { deleteWishlistV2UseCase.setParams(recommendation.productId.toString(), userSession.userId) }
+        coVerify { deleteWishlistV2UseCase.executeOnBackground() }
+        verify { mockWishlistListener.onErrorRemoveWishlist(any(), any()) }
+    }
+
+    @Test
+    fun `given error when add wishlist then invoke callback false`(){
         var status: Boolean? = null
         val slot = slot<WishListActionListener>()
         every { addWishListUseCase.createObservable(any(), any(), capture(slot)) } answers {
@@ -207,7 +224,7 @@ class TestRecommendationPageViewModel {
     }
 
     @Test
-    fun `get success add topads wishlist from network`(){
+    fun `given success when add topads wishlist then invoke callback true`(){
         var status: Boolean? = null
         val slot = slot<Subscriber<WishlistModel>>()
         val mockWishlistModel = mockk<WishlistModel>(relaxed = true)
@@ -225,7 +242,23 @@ class TestRecommendationPageViewModel {
     }
 
     @Test
-    fun `get error add topads wishlist from network`(){
+    fun `given success but null when add topads wishlist then invoke callback false`(){
+        var status: Boolean? = null
+        val slot = slot<Subscriber<WishlistModel>>()
+        val mockWishlistModel = mockk<WishlistModel>(relaxed = true)
+
+        every { mockWishlistModel.data } returns null
+        every { topAdsWishlishedUseCase.execute(any(), capture(slot)) } answers {
+            slot.captured.onNext(mockWishlistModel)
+        }
+        viewModel.addWishlist(recommendationTopads.productId.toString(), recommendationTopads.wishlistUrl, true) { success, _ ->
+            status = success
+        }
+        assert(status == false)
+    }
+
+    @Test
+    fun `given error when add topads wishlist then invoke callback false`(){
         var status: Boolean? = null
         val slot = slot<Subscriber<WishlistModel>>()
 
@@ -317,7 +350,8 @@ class TestRecommendationPageViewModel {
     }
 
     @Test
-    fun `success buy now`(){
+    fun `given success when buy now then pass product to buyNowLiveData`(){
+        val product = ProductInfoDataModel(productDetailData = ProductDetailData())
         every {
             addToCartUseCase.createObservable(any())
         } returns Observable.just(AddToCartDataModel(
@@ -326,8 +360,9 @@ class TestRecommendationPageViewModel {
                         success = 1
                 )
         ))
-        viewModel.onBuyNow(ProductInfoDataModel(productDetailData = ProductDetailData()))
+        viewModel.onBuyNow(product)
         Assert.assertTrue(viewModel.buyNowLiveData.value?.status == Status.SUCCESS)
+        Assert.assertTrue(viewModel.buyNowLiveData.value?.data == product)
     }
 
     @Test
@@ -345,17 +380,24 @@ class TestRecommendationPageViewModel {
     }
 
     @Test
-    fun `error buy now`(){
+    fun `given success from network with error status when buy now then pass error`(){
         every {
             addToCartUseCase.createObservable(any())
         } returns Observable.just(AddToCartDataModel(
-                status = AddToCartDataModel.STATUS_OK,
-                data = DataModel(
-                        success = 0
-                )
+                status = AddToCartDataModel.STATUS_ERROR
         ))
         viewModel.onBuyNow(ProductInfoDataModel(productDetailData = ProductDetailData()))
-        Assert.assertTrue(viewModel.buyNowLiveData.value?.status == Status.ERROR)
+        Assert.assertTrue(viewModel.buyNowLiveData.value?.isError() == true)
+    }
+
+    @Test
+    fun `given error from network when buy now then pass error`(){
+        val error = TimeoutException()
+        every {
+            addToCartUseCase.createObservable(any())
+        } returns Observable.error(error)
+        viewModel.onBuyNow(ProductInfoDataModel(productDetailData = ProductDetailData()))
+        Assert.assertTrue(viewModel.buyNowLiveData.value?.isError() == true && viewModel.buyNowLiveData.value?.exception == error)
     }
 
     @Test
@@ -371,7 +413,69 @@ class TestRecommendationPageViewModel {
     }
 
     @Test
-    fun `given eligible to show headline CPM and success getting data when get recommendation list then visitable list should contain RecommendationCPMDataModel`() {
+    fun `given success getting data when get recommendation list from google shopping and using rollence variant then visitable list should contain RecommendationCPMDataModel`() {
+        val queryParam = "?ref=googleshopping"
+        val productId = ""
+        val topAdsHeadlineResponse = TopAdsHeadlineResponse(displayAds = CpmModel().apply {
+            data = listOf(CpmData().apply { id = "1" }, CpmData().apply { id = "2" })
+        })
+
+        every { getPrimaryProductUseCase.setParameter(any(), any()) } just runs
+        coEvery { getPrimaryProductUseCase.executeOnBackground() } returns PrimaryProductEntity(
+            ProductRecommendationProductDetail(
+                listOf(Data())))
+        every { getRecommendationUseCase.getRecomParams(any(), any(), any(), any()) } returns RequestParams()
+        every { getRecommendationUseCase.createObservable(any()).toBlocking().first() } returns listOf(
+            RecommendationWidget(
+                recommendationItemList = listOf(RecommendationItem())
+            )
+        )
+
+        every { getTopAdsHeadlineUseCase.setParams(any()) } just runs
+        coEvery { getTopAdsHeadlineUseCase.executeOnBackground() } returns topAdsHeadlineResponse
+
+        mockkObject(RecommendationRollenceController)
+        every { RecommendationRollenceController.isRecommendationCPMRollenceVariant() } returns true
+
+        viewModel.getRecommendationList(productId, queryParam)
+
+        assert(viewModel.recommendationListLiveData.value!=null)
+        assert(viewModel.recommendationListLiveData.value?.filterIsInstance<RecommendationCPMDataModel>()?.isNotEmpty()==true)
+    }
+
+    @Test
+    fun `given success getting data when get recommendation list from google shopping and not using rollence variant then visitable list should not contain RecommendationCPMDataModel`() {
+        val queryParam = "?ref=googleshopping"
+        val productId = ""
+        val topAdsHeadlineResponse = TopAdsHeadlineResponse(displayAds = CpmModel().apply {
+            data = listOf(CpmData().apply { id = "1" }, CpmData().apply { id = "2" })
+        })
+
+        every { getPrimaryProductUseCase.setParameter(any(), any()) } just runs
+        coEvery { getPrimaryProductUseCase.executeOnBackground() } returns PrimaryProductEntity(
+            ProductRecommendationProductDetail(
+                listOf(Data())))
+        every { getRecommendationUseCase.getRecomParams(any(), any(), any(), any()) } returns RequestParams()
+        every { getRecommendationUseCase.createObservable(any()).toBlocking().first() } returns listOf(
+            RecommendationWidget(
+                recommendationItemList = listOf(RecommendationItem())
+            )
+        )
+
+        every { getTopAdsHeadlineUseCase.setParams(any()) } just runs
+        coEvery { getTopAdsHeadlineUseCase.executeOnBackground() } returns topAdsHeadlineResponse
+
+        mockkObject(RecommendationRollenceController)
+        every { RecommendationRollenceController.isRecommendationCPMRollenceVariant() } returns false
+
+        viewModel.getRecommendationList(productId, queryParam)
+
+        assert(viewModel.recommendationListLiveData.value!=null)
+        assert(viewModel.recommendationListLiveData.value?.filterIsInstance<RecommendationCPMDataModel>()?.isEmpty()==true)
+    }
+
+    @Test
+    fun `given success getting data when get recommendation list from source other than google shopping and using rollence variant then visitable list should not contain RecommendationCPMDataModel`() {
         val queryParam = ""
         val productId = ""
         val topAdsHeadlineResponse = TopAdsHeadlineResponse(displayAds = CpmModel().apply {
@@ -388,15 +492,17 @@ class TestRecommendationPageViewModel {
                 recommendationItemList = listOf(RecommendationItem())
             )
         )
-        every { viewModel invoke "eligibleToShowHeadlineCPM" withArguments listOf(queryParam) } returns true
 
         every { getTopAdsHeadlineUseCase.setParams(any()) } just runs
         coEvery { getTopAdsHeadlineUseCase.executeOnBackground() } returns topAdsHeadlineResponse
 
+        mockkObject(RecommendationRollenceController)
+        every { RecommendationRollenceController.isRecommendationCPMRollenceVariant() } returns true
+
         viewModel.getRecommendationList(productId, queryParam)
 
         assert(viewModel.recommendationListLiveData.value!=null)
-        assert(viewModel.recommendationListLiveData.value?.filterIsInstance<RecommendationCPMDataModel>()?.isNotEmpty()==true)
+        assert(viewModel.recommendationListLiveData.value?.filterIsInstance<RecommendationCPMDataModel>()?.isEmpty()==true)
     }
 
     @Test
@@ -597,5 +703,33 @@ class TestRecommendationPageViewModel {
                 queryParam = queryParam
             )
         }
+    }
+
+    @Test
+    fun `given success getting data when get recommendation list from google shopping then visitable list should contain RecommendationCPMDataModel`() {
+        val queryParam = "?ref=googleshopping"
+        val productId = ""
+        val topAdsHeadlineResponse = TopAdsHeadlineResponse(displayAds = CpmModel().apply {
+            data = listOf(CpmData().apply { id = "1" }, CpmData().apply { id = "2" })
+        })
+
+        every { getPrimaryProductUseCase.setParameter(any(), any()) } just runs
+        coEvery { getPrimaryProductUseCase.executeOnBackground() } returns PrimaryProductEntity(
+            ProductRecommendationProductDetail(
+                listOf(Data())))
+        every { getRecommendationUseCase.getRecomParams(any(), any(), any(), any()) } returns RequestParams()
+        every { getRecommendationUseCase.createObservable(any()).toBlocking().first() } returns listOf(
+            RecommendationWidget(
+                recommendationItemList = listOf(RecommendationItem())
+            )
+        )
+
+        every { getTopAdsHeadlineUseCase.setParams(any()) } just runs
+        coEvery { getTopAdsHeadlineUseCase.executeOnBackground() } returns topAdsHeadlineResponse
+
+        viewModel.getRecommendationList(productId, queryParam)
+
+        assert(viewModel.recommendationListLiveData.value!=null)
+        assert(viewModel.recommendationListLiveData.value?.filterIsInstance<RecommendationCPMDataModel>()?.isNotEmpty()==true)
     }
 }

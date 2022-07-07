@@ -1,6 +1,5 @@
 package com.tokopedia.graphql.coroutines.data.repository
 
-import android.text.TextUtils
 import android.util.Log
 import com.google.gson.JsonSyntaxException
 import com.tokopedia.graphql.CommonUtils
@@ -8,11 +7,8 @@ import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.source.GraphqlCacheDataStore
 import com.tokopedia.graphql.coroutines.data.source.GraphqlCloudDataStore
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.graphql.data.model.*
-import com.tokopedia.graphql.util.CacheHelper
 import com.tokopedia.graphql.util.LoggingUtils
-import timber.log.Timber
 import java.lang.reflect.Type
 import javax.inject.Inject
 
@@ -99,7 +95,7 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
                         CommonUtils.fromJson(error, Array<GraphqlError>::class.java).toList()
                 }
                 LoggingUtils.logGqlParseSuccess("kt", requests.toString())
-                LoggingUtils.logGqlSuccessRate(operationName, "1")
+                LoggingUtils.logGqlSuccessRateBasedOnStatusCode(operationName, httpStatusCode)
             } catch (jse: JsonSyntaxException) {
                 LoggingUtils.logGqlSuccessRate(operationName, "0")
                 LoggingUtils.logGqlParseError(
@@ -133,7 +129,8 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
             refreshRequests: MutableList<GraphqlRequest>,
             isCachedData: MutableMap<Type, Boolean>,
             requests: MutableList<GraphqlRequest>,
-            cacheStrategy: GraphqlCacheStrategy): GraphqlResponseInternal {
+            cacheStrategy: GraphqlCacheStrategy
+    ): GraphqlResponseInternal {
         var operationName = ""
         try {
             val copyRequests = mutableListOf<GraphqlRequest>()

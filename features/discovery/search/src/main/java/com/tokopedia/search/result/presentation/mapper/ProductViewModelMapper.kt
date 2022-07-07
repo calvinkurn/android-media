@@ -5,6 +5,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel.Banner
 import com.tokopedia.search.result.domain.model.SearchProductModel.InspirationCarouselData
+import com.tokopedia.search.result.domain.model.SearchProductModel.InspirationCarouselOption
 import com.tokopedia.search.result.domain.model.SearchProductModel.OtherRelated
 import com.tokopedia.search.result.domain.model.SearchProductModel.OtherRelatedProduct
 import com.tokopedia.search.result.domain.model.SearchProductModel.OtherRelatedProductBadge
@@ -54,7 +55,8 @@ class ProductViewModelMapper {
 
         productDataView.adsModel = searchProductModel.topAdsModel
         productDataView.globalNavDataView = GlobalNavDataView.create(
-            searchProductModel.globalSearchNavigation
+            searchProductModel.globalSearchNavigation,
+            dimension90,
         )
         productDataView.cpmModel = searchProductModel.cpmModel
         productDataView.relatedDataView = convertToRelatedViewModel(
@@ -357,6 +359,7 @@ class ProductViewModelMapper {
             val isChipsActive = index == 0
             InspirationCarouselDataView.Option(
                     opt.title,
+                    opt.subtitle,
                     opt.url,
                     opt.applink,
                     opt.bannerImageUrl,
@@ -384,8 +387,18 @@ class ProductViewModelMapper {
                     opt.componentId,
                     data.trackingOption.toIntOrZero(),
                     dimension90,
+                    createInspirationCarouselCardButtonViewModel(opt),
             )
         }
+    }
+
+    private fun createInspirationCarouselCardButtonViewModel(
+        option: InspirationCarouselOption,
+    ): InspirationCarouselDataView.CardButton {
+        return InspirationCarouselDataView.CardButton(
+            option.cardButton.title,
+            option.cardButton.applink,
+        )
     }
 
     private fun convertToBannerDataView(bannerModel: Banner): BannerDataView {

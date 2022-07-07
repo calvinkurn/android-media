@@ -431,7 +431,7 @@ class OtherMenuViewModel @Inject constructor(
                 userSession.setIsShopOfficialStore(true)
             }
             // This means that the power merchant status is IDLE
-            is PowerMerchantStatus.NotActive, is PowerMerchantProStatus.InActive -> {
+            is PowerMerchantStatus.NotActive -> {
                 userSession.setIsGoldMerchant(false)
                 userSession.setIsPowerMerchantIdle(true)
                 userSession.setIsShopOfficialStore(false)
@@ -484,7 +484,7 @@ class OtherMenuViewModel @Inject constructor(
             block = {
                 val topAdsBalanceFormatted = withContext(dispatcher.io) {
                     topAdsDashboardDepositUseCase.params =
-                        TopAdsDashboardDepositUseCase.createRequestParams(userSession.shopId.toLongOrZero())
+                        TopAdsDashboardDepositUseCase.createRequestParams(userSession.shopId)
                     val topAdsBalance = topAdsDashboardDepositUseCase.executeOnBackground()
                     _kreditTopAdsLiveData.postValue(topAdsBalance)
                     topAdsBalance.getCurrencyFormatted()

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_single_menu_inbox_home"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icon_menu_inbox_home"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginStart="20dp"/>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icon_chevron_right_inbox_home"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:layout_constraintLeft_toRightOf="@id/tv_title_menu_inbox_home"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_title_menu_inbox_home"
+        app:layout_constraintBottom_toBottomOf="@id/tv_desc_menu_inbox_home"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="25dp"/>
+
+    <com.tokopedia.unifycomponents.NotificationUnify
+        android:id="@+id/notification_counter_inbox_home"
+        android:layout_width="wrap_content"
+        app:layout_constraintWidth_min="16dp"
+        android:layout_height="16dp"
+        app:layout_constraintRight_toRightOf="@id/tv_title_menu_inbox_home"
+        app:layout_constraintTop_toTopOf="@id/icon_chevron_right_inbox_home"
+        app:layout_constraintBottom_toBottomOf="@id/icon_chevron_right_inbox_home"
+        app:notificationType="counter_type"
+        app:notificationColor="color_primary"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_title_menu_inbox_home"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/icon_menu_inbox_home"
+        app:layout_constraintRight_toLeftOf="@id/icon_chevron_right_inbox_home"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="12dp"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
+        tools:text="Chat"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_desc_menu_inbox_home"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tv_title_menu_inbox_home"
+        app:layout_constraintLeft_toLeftOf="@id/tv_title_menu_inbox_home"
+        app:layout_constraintRight_toRightOf="@id/tv_title_menu_inbox_home"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="12dp"
+        app:typographyType="paragraph_3"
+        android:textColor="@color/Unify_NN600"
+        tools:text="Percakapan pribadi Anda"/>
+
+    <View
+        android:id="@+id/separator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="16dp"
+        android:background="@color/Unify_N100"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
