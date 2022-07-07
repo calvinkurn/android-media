@@ -8,7 +8,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
 import com.tokopedia.media.common.Loader
-import com.tokopedia.media.loader.MediaLoaderApi.requestHeaders
+import com.tokopedia.media.loader.MediaLoaderApi.headers
 import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.common.factory.BitmapFactory
 import com.tokopedia.media.loader.module.GlideApp
@@ -55,7 +55,7 @@ object MediaLoaderTarget {
                     val url = GlideUrl(source, LazyHeaders.Builder()
                         .apply {
                             if (isSecure) {
-                                this.requestHeaders(
+                                headers(
                                     accessToken = properties.accessToken,
                                     userId = properties.userId
                                 )

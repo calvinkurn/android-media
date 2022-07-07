@@ -8,7 +8,6 @@ fun ImageView.loadImageTopRightCrop(source: String) {
         try {
             MediaLoaderApi.loadImage(this, source)
         } catch (e: Exception) {
-            e.printStackTrace()
 
             /*
             * don't let the imageView haven't image

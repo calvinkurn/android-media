@@ -49,8 +49,8 @@ class TopAdsDashboardDepositUseCase @Inject constructor(
     companion object {
 
         const val QUERY = """
-            query GetTopAdsDeposit(${'$'}shopId: Int!) {
-              topadsDashboardDeposits(shop_id: ${'$'}shopId) {
+            query GetTopAdsDeposit(${'$'}shopId: String!) {
+              topadsDashboardDepositsV2(shop_id: ${'$'}shopId) {
                 data {
                   amount
                 }
@@ -69,7 +69,7 @@ class TopAdsDashboardDepositUseCase @Inject constructor(
 
         private const val SHOP_ID_KEY = "shopId"
 
-        fun createRequestParams(shopId: Long) = HashMap<String, Any>().apply {
+        fun createRequestParams(shopId: String) = HashMap<String, Any>().apply {
             put(SHOP_ID_KEY, shopId)
         }
     }
