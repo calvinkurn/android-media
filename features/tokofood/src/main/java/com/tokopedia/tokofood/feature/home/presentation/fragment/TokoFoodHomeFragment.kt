@@ -191,6 +191,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     private var shareHomeTokoFood: TokoFoodHomeShare? = null
     private var localCacheModel: LocalCacheModel? = null
     private var pageLoadTimeMonitoring: TokoFoodHomePageLoadTimeMonitoring? = null
+    private var isShowMiniCart = false
     private var heightDivider = 4
     private var totalScrolled = 0
     private val spaceZero: Int
@@ -572,9 +573,11 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                         goToPurchasePage()
                     }
                     UiEvent.EVENT_SUCCESS_LOAD_CART -> {
+                        isShowMiniCart = true
                         showMiniCartHome()
                     }
                     UiEvent.EVENT_FAILED_LOAD_CART -> {
+                        isShowMiniCart = false
                         hideMiniCartHome()
                     }
                 }
@@ -925,11 +928,11 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     private fun onRenderHomepage(){
-        if (viewModel.isShownEmptyState()) {
+        if (!viewModel.isShownEmptyState() && isShowMiniCart) {
+            showMiniCartHome()
+        } else {
             hideMiniCartHome()
             hideJumpToTop()
-        } else {
-            showMiniCartHome()
         }
     }
 

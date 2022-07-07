@@ -126,6 +126,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
     private var navToolbar: NavToolbar? = null
     private var rvLayoutManager: CustomLinearLayoutManager? = null
     private var localCacheModel: LocalCacheModel? = null
+    private var isShowMiniCart = false
     private val spaceZero: Int
         get() = context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)?.toInt() ?: 0
 
@@ -254,9 +255,11 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
                         goToPurchasePage()
                     }
                     UiEvent.EVENT_SUCCESS_LOAD_CART -> {
+                        isShowMiniCart = true
                         showMiniCartCategory()
                     }
                     UiEvent.EVENT_FAILED_LOAD_CART -> {
+                        isShowMiniCart = false
                         hideMiniCartCategory()
                     }
                 }
@@ -377,10 +380,10 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
     }
 
     private fun onRenderCategoryPage() {
-        if (viewModel.isShownEmptyState()) {
-            hideMiniCartCategory()
-        } else {
+        if (!viewModel.isShownEmptyState() && isShowMiniCart) {
             showMiniCartCategory()
+        } else {
+            hideMiniCartCategory()
         }
     }
 
