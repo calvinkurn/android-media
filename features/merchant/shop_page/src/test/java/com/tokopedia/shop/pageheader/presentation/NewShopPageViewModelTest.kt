@@ -421,12 +421,12 @@ class NewShopPageViewModelTest {
         val mockTransition = mockk<Transition<in Bitmap>>()
 
         mockkStatic("com.tokopedia.media.loader.ExtensionKt")
-        every { loadImageWithEmptyTarget(any(), any(), any(), any()) } answers {
+        coEvery { loadImageWithEmptyTarget(any(), any(), any(), any()) } answers {
             (lastArg() as MediaBitmapEmptyTarget<Bitmap>).onResourceReady(mockBitmap, mockTransition)
         }
 
         mockkStatic(ImageProcessingUtil::class)
-        every {
+        coEvery {
             ImageProcessingUtil.writeImageToTkpdPath(
                     mockBitmap,
                     Bitmap.CompressFormat.PNG)
@@ -454,12 +454,12 @@ class NewShopPageViewModelTest {
         val mockTransition = mockk<Transition<in Bitmap>>()
 
         mockkStatic("com.tokopedia.media.loader.ExtensionKt")
-        every { loadImageWithEmptyTarget(any(), any(), any(), any()) } answers {
+        coEvery { loadImageWithEmptyTarget(any(), any(), any(), any()) } answers {
             (lastArg() as MediaBitmapEmptyTarget<Bitmap>).onResourceReady(mockBitmap, mockTransition)
         }
 
         mockkStatic(ImageProcessingUtil::class)
-        every {
+        coEvery {
             ImageProcessingUtil.writeImageToTkpdPath(
                     mockBitmap,
                     Bitmap.CompressFormat.PNG)
@@ -473,7 +473,7 @@ class NewShopPageViewModelTest {
         val mockDrawable = mockk<Drawable>()
 
         mockkStatic("com.tokopedia.media.loader.ExtensionKt")
-        every { loadImageWithEmptyTarget(any(), any(), any(), any()) } answers {
+        coEvery { loadImageWithEmptyTarget(any(), any(), any(), any()) } answers {
             (lastArg() as MediaBitmapEmptyTarget<Bitmap>).onLoadCleared(mockDrawable)
         }
 
@@ -485,7 +485,7 @@ class NewShopPageViewModelTest {
     @Test
     fun `check whether shopImagePath value is null when ImageHandler loadImageWithTarget throws exception`() {
         mockkStatic("com.tokopedia.media.loader.ExtensionKt")
-        every { loadImageWithEmptyTarget(any(), any(), any(), any()) } throws Exception()
+        coEvery { loadImageWithEmptyTarget(any(), any(), any(), any()) } throws Exception()
         shopPageViewModel.saveShopImageToPhoneStorage(context, "")
         assert(shopPageViewModel.shopImagePath.value == null)
     }
