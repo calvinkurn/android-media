@@ -143,6 +143,7 @@ dependencies {
     // UI Test
     androidTestImplementation projectOrAar(rootProject.ext.features.shopShowcase)
     androidTestImplementation projectOrAar(rootProject.ext.features.feedShop)
+    androidTestImplementation projectOrAar(rootProject.ext.features.review)
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
