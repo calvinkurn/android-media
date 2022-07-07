@@ -12,7 +12,7 @@ import com.tokopedia.epharmacy.di.DaggerEPharmacyComponent
 import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.ui.fragment.UploadPrescriptionFragment
 import com.tokopedia.epharmacy.utils.DEFAULT_ZERO_VALUE
-import com.tokopedia.epharmacy.utils.EXTRA_CHECKOUT_ID
+import com.tokopedia.epharmacy.utils.EXTRA_CHECKOUT_ID_STRING
 import com.tokopedia.epharmacy.utils.EXTRA_ORDER_ID_LONG
 import com.tokopedia.epharmacy.utils.MEDIA_PICKER_REQUEST_CODE
 import com.tokopedia.user.session.UserSessionInterface
@@ -46,13 +46,13 @@ class EPharmacyActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent>
             if (pathSegments.size > 0) pathSegments[0]?.split("-")?.lastOrNull()?.trim()?.toLong() ?: DEFAULT_ZERO_VALUE else DEFAULT_ZERO_VALUE
         }
 
-        checkoutId = if(intent.hasExtra(EXTRA_CHECKOUT_ID)){
-            intent.getStringExtra(EXTRA_CHECKOUT_ID) ?: ""
+        checkoutId = if(intent.hasExtra(EXTRA_CHECKOUT_ID_STRING)){
+            intent.getStringExtra(EXTRA_CHECKOUT_ID_STRING) ?: ""
         }else ""
 
         return UploadPrescriptionFragment.newInstance(Bundle().apply {
             putLong(EXTRA_ORDER_ID_LONG,orderId)
-            putString(EXTRA_CHECKOUT_ID,checkoutId)
+            putString(EXTRA_CHECKOUT_ID_STRING,checkoutId)
         })
     }
 

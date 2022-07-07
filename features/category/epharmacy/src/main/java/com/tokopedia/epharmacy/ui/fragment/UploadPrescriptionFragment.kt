@@ -32,11 +32,15 @@ import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.network.response.PrescriptionImage
 import com.tokopedia.epharmacy.utils.*
 import com.tokopedia.epharmacy.viewmodel.UploadPrescriptionViewModel
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.UnifyButton
@@ -55,6 +59,8 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
     private var ePharmacyRecyclerView : RecyclerView? = null
     private var ePharmacyUploadPhotoButton : UnifyButton? = null
     private var ePharmacyDoneButton : UnifyButton? = null
+    private var ePharmacyLoader : LoaderUnify? = null
+    private var ePharmacyGlobalError : GlobalError? = null
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -103,7 +109,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
 
     private fun initArguments() {
         orderId = arguments?.getLong(EXTRA_ORDER_ID_LONG)  ?: 0L
-        checkoutId = arguments?.getString(EXTRA_CHECKOUT_ID,"") ?: ""
+        checkoutId = arguments?.getString(EXTRA_CHECKOUT_ID_STRING,"") ?: ""
     }
 
     private fun setUpObservers() {
@@ -121,6 +127,8 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
             ePharmacyUploadPhotoButton = findViewById(R.id.foto_resep_button)
             ePharmacyDoneButton = findViewById(R.id.done_button)
             ePharmacyToolTipGroup = findViewById(R.id.tooltip_group)
+            ePharmacyLoader = findViewById(R.id.epharmacy_loader)
+            ePharmacyGlobalError = findViewById(R.id.epharmacy_global_error)
         }
     }
 
@@ -131,6 +139,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
     }
 
     private fun getData() {
+        ePharmacyLoader?.show()
         if(checkoutId.isNotBlank()) {
             uploadPrescriptionViewModel.getEPharmacyCheckoutDetail(checkoutId)
         }else if(orderId != DEFAULT_ZERO_VALUE){
@@ -250,8 +259,20 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
     }
 
     private fun onFailEPharmacyData(it: Fail) {
+        ePharmacyLoader?.hide()
         when (it.throwable) {
+            is UnknownHostException, is SocketTimeoutException -> setGlobalErrors(GlobalError.NO_CONNECTION)
+            is IllegalStateException -> setGlobalErrors(GlobalError.PAGE_FULL)
+            else -> setGlobalErrors(GlobalError.SERVER_ERROR)
+        }
+    }
 
+    private fun setGlobalErrors(errorType: Int) {
+        ePharmacyGlobalError?.setType(errorType)
+        ePharmacyGlobalError?.visible()
+        ePharmacyGlobalError?.setActionClickListener {
+            ePharmacyGlobalError?.gone()
+            getData()
         }
     }
 
@@ -329,6 +350,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
     }
 
     private fun onSuccessEPharmacyData(it: Success<EPharmacyDataModel>) {
+        ePharmacyLoader?.hide()
         it.data.listOfComponents.forEach { component ->
             if(component.name() == PRESCRIPTION_COMPONENT){
                 (component as? EPharmacyPrescriptionDataModel)?.let { presComponent ->
