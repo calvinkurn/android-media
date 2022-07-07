@@ -101,17 +101,10 @@ class TradeInExchangeMethodBS : BottomSheetUnify() {
                 }
                 if(available) {
                     findViewById<View>(R.id.tradein_p3_view).setOnClickListener { click->
-
-                        val option = it.filter {option ->
-                            option.is3PL
-                        }
-                        val price = option.firstOrNull()?.estimatedPriceFmt
-
-                        price?.let { price ->
-                            tradeInAnalytics?.clickExchangeMethods(
-                                true,
-                                price
-                            )
+                        if(it.firstOrNull()?.is3PL == false) {
+                            tradeInAnalytics?.clickExchangeMethods(true, it[0].estimatedPriceFmt, it[1].estimatedPriceFmt)
+                        } else {
+                            tradeInAnalytics?.clickExchangeMethods(false, it[1].estimatedPriceFmt,  it[0].estimatedPriceFmt)
                         }
                         onLogisticSelected?.onLogisticSelected(true)
                         dismiss()
@@ -160,16 +153,17 @@ class TradeInExchangeMethodBS : BottomSheetUnify() {
                 }
                 if (available) {
                     findViewById<View>(R.id.tradein_p1_view).setOnClickListener { click ->
-
-                        val option = logisticsOptions.filter {option ->
-                            !option.is3PL
-                        }
-                        val price = option.firstOrNull()?.estimatedPriceFmt
-
-                        price?.let { price ->
+                        if (logisticsOptions.firstOrNull()?.is3PL == false) {
+                            tradeInAnalytics?.clickExchangeMethods(
+                                false,
+                                logisticsOptions[0].estimatedPriceFmt,
+                                logisticsOptions[1].estimatedPriceFmt
+                            )
+                        } else {
                             tradeInAnalytics?.clickExchangeMethods(
                                 true,
-                                price
+                                logisticsOptions[1].estimatedPriceFmt,
+                                logisticsOptions[0].estimatedPriceFmt
                             )
                         }
                         onLogisticSelected?.onLogisticSelected(false)
