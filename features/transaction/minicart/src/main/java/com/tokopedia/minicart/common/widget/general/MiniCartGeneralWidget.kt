@@ -15,8 +15,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.subpage.globalerror.GlobalErrorBottomSheet
 import com.tokopedia.minicart.cartlist.subpage.globalerror.GlobalErrorBottomSheetActionListener
@@ -194,7 +192,7 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
         setTotalAmountLoading(false)
         if (miniCartSimplifiedData.miniCartWidgetData.isShopActive) {
             if (miniCartSimplifiedData.miniCartWidgetData.containsOnlyUnavailableItems) {
-                renderUnavailableWidgetAllItemsUnavailable(miniCartSimplifiedData)
+                renderUnavailableWidget(miniCartSimplifiedData)
             } else {
                 renderAvailableWidget(miniCartSimplifiedData)
             }
@@ -202,24 +200,6 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
             renderUnavailableWidget(miniCartSimplifiedData)
         }
         setAmountViewLayoutParams()
-    }
-
-    private fun renderUnavailableWidgetAllItemsUnavailable(miniCartSimplifiedData: MiniCartSimplifiedData) {
-        binding.miniCartTotalAmount.apply {
-            setLabelTitle("")
-            setAmount("")
-            val ctaText = context.getString(R.string.mini_cart_widget_label_see_cart)
-            setCtaText(ctaText)
-        }
-        binding.textCannotProcess.apply {
-            text = context.getString(R.string.mini_cart_label_cannot_process)
-            show()
-        }
-        binding.textCannotProcessQuantity.apply {
-            text = context.getString(R.string.mini_cart_cannot_process_quantity, miniCartSimplifiedData.miniCartWidgetData.unavailableItemsCount)
-            show()
-        }
-        binding.imageChevronUnavailable.show()
     }
 
     private fun renderUnavailableWidget(miniCartSimplifiedData: MiniCartSimplifiedData) {
@@ -237,15 +217,11 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
                 context.getString(R.string.mini_cart_widget_label_total_price_unavailable_default)
             }
             setAmount(labelAmountText)
-            amountView.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
             val ctaText = context.getString(R.string.mini_cart_widget_label_see_cart)
             setCtaText(ctaText)
             setAdditionalButton(null)
             enableAmountChevron(false)
         }
-        binding.textCannotProcess.gone()
-        binding.textCannotProcessQuantity.gone()
-        binding.imageChevronUnavailable.gone()
     }
 
     private fun renderAvailableWidget(miniCartSimplifiedData: MiniCartSimplifiedData) {
@@ -267,9 +243,6 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
             setCtaText(ctaText)
             enableAmountChevron(true)
         }
-        binding.textCannotProcess.gone()
-        binding.textCannotProcessQuantity.gone()
-        binding.imageChevronUnavailable.gone()
     }
 
     private fun setTotalAmountLoading(isLoading: Boolean) {

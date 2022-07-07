@@ -243,6 +243,23 @@ class GetMiniCartListSimplifiedTest {
     }
 
     @Test
+    fun `WHEN fetch last widget state with shop id success with some items unavailable THEN flag containsOnlyUnavailableItems should be false`() {
+        //given
+        val shopId = listOf("123")
+        val mockResponse = DataProvider.provideGetMiniCartSimplifiedSuccessSomeItemUnavailable()
+        coEvery { getMiniCartListSimplifiedUseCase.setParams(any(), any()) } just Runs
+        coEvery { getMiniCartListSimplifiedUseCase.execute(any(), any()) } answers {
+            firstArg<(MiniCartSimplifiedData) -> Unit>().invoke(mockResponse)
+        }
+
+        //when
+        viewModel.getLatestWidgetState(shopId)
+
+        //then
+        assert(viewModel.miniCartSimplifiedData.value?.miniCartWidgetData?.containsOnlyUnavailableItems == false)
+    }
+
+    @Test
     fun `WHEN fetch last widget state with shop id success with all item available THEN unavailableItemsCount should be zero`() {
         //given
         val shopId = listOf("123")
@@ -291,6 +308,24 @@ class GetMiniCartListSimplifiedTest {
 
         //then
         assert(viewModel.miniCartSimplifiedData.value?.miniCartWidgetData?.unavailableItemsCount == 0)
+    }
+
+    @Test
+    fun `WHEN fetch last widget state with shop id success with some items unavailable THEN total product count should not be zero`() {
+        //given
+        val shopId = listOf("123")
+        val mockResponse = DataProvider.provideGetMiniCartSimplifiedSuccessSomeItemUnavailable()
+        coEvery { getMiniCartListSimplifiedUseCase.setParams(any(), any()) } just Runs
+        coEvery { getMiniCartListSimplifiedUseCase.execute(any(), any()) } answers {
+            firstArg<(MiniCartSimplifiedData) -> Unit>().invoke(mockResponse)
+        }
+
+        //when
+        viewModel.getLatestWidgetState(shopId)
+
+        //then
+        assert(viewModel.miniCartSimplifiedData.value?.miniCartWidgetData?.totalProductCount ?: 0 > 0)
+        assert(viewModel.miniCartSimplifiedData.value?.miniCartWidgetData?.unavailableItemsCount ?: 0 > 0)
     }
 
     @Test
@@ -345,7 +380,7 @@ class GetMiniCartListSimplifiedTest {
     }
 
     @Test
-    fun `WHEN mini cart total product count is more than zero THEN isShowMiniCartWidget should be true`() {
+    fun `WHEN mini cart total product count is more than zero and unavailable item count is zero THEN isShowMiniCartWidget should be true`() {
         //given
         val shopId = listOf("123")
 
@@ -360,11 +395,32 @@ class GetMiniCartListSimplifiedTest {
 
         //then
         assert(viewModel.miniCartSimplifiedData.value?.miniCartWidgetData?.totalProductCount ?: 0 > 0)
+        assert(viewModel.miniCartSimplifiedData.value?.miniCartWidgetData?.unavailableItemsCount ?: 0 == 0)
         assert(viewModel.miniCartSimplifiedData.value?.isShowMiniCartWidget == true)
     }
 
     @Test
-    fun `WHEN mini cart total product count is zero THEN isShowMiniCartWidget should be false`() {
+    fun `WHEN mini cart total product count is more than zero and unavailable item count is more than zero THEN isShowMiniCartWidget should be true`() {
+        //given
+        val shopId = listOf("123")
+
+        val mockResponse = DataProvider.provideGetMiniCartSimplifiedSuccessSomeItemUnavailable()
+        coEvery { getMiniCartListSimplifiedUseCase.setParams(any(), any()) } just Runs
+        coEvery { getMiniCartListSimplifiedUseCase.execute(any(), any()) } answers {
+            firstArg<(MiniCartSimplifiedData) -> Unit>().invoke(mockResponse)
+        }
+
+        //when
+        viewModel.getLatestWidgetState(shopId)
+
+        //then
+        assert(viewModel.miniCartSimplifiedData.value?.miniCartWidgetData?.totalProductCount ?: 0 > 0)
+        assert(viewModel.miniCartSimplifiedData.value?.miniCartWidgetData?.unavailableItemsCount ?: 0 > 0)
+        assert(viewModel.miniCartSimplifiedData.value?.isShowMiniCartWidget == true)
+    }
+
+    @Test
+    fun `WHEN mini cart total product count is zero and unavailable item count is zero THEN isShowMiniCartWidget should be false`() {
         //given
         val shopId = listOf("123")
 
@@ -379,6 +435,7 @@ class GetMiniCartListSimplifiedTest {
 
         //then
         assert(viewModel.miniCartSimplifiedData.value?.miniCartWidgetData?.totalProductCount ?: 0 == 0)
+        assert(viewModel.miniCartSimplifiedData.value?.miniCartWidgetData?.unavailableItemsCount ?: 0 == 0)
         assert(viewModel.miniCartSimplifiedData.value?.isShowMiniCartWidget == false)
     }
 }
