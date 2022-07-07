@@ -7,6 +7,37 @@ import org.junit.Test
 class CampaignMainStockViewModelTest: CampaignMainStockViewModelTestFixture() {
 
     @Test
+    fun `setting non variant stock lower than max stock will set the save button to enabled`() {
+        viewModel.setNonVariantStock("1", 1, 2)
+
+        assert(viewModel.shouldEnableSaveButton.value == true)
+    }
+
+    @Test
+    fun `setting non variant stock higher than max stock will set the save button to disabled`() {
+        viewModel.setNonVariantStock("1", 5, 2)
+
+        assert(viewModel.shouldEnableSaveButton.value == false)
+    }
+
+    @Test
+    fun `setting non variant stock with max stock null should set the save button to enabled`() {
+        viewModel.setNonVariantStock("1", 1, null)
+
+        assert(viewModel.shouldEnableSaveButton.value == true)
+    }
+
+    @Test
+    fun `when save button has been disabled, setting non variant stock higher than max stock should not set the save button`() {
+        viewModel.setNonVariantStock("1", 5, 2)
+        val expectedValue = viewModel.shouldEnableSaveButton.value
+
+        viewModel.setNonVariantStock("1", 10, 2)
+
+        assert(viewModel.shouldEnableSaveButton.value == expectedValue)
+    }
+
+    @Test
     fun `setting variant stock should set the warning show conditions`() {
         viewModel.setVariantStock("1", 1)
 
@@ -18,6 +49,20 @@ class CampaignMainStockViewModelTest: CampaignMainStockViewModelTestFixture() {
         viewModel.setVariantStock("2", 0)
 
         assert(viewModel.shouldDisplayVariantStockWarningLiveData.value == true)
+    }
+
+    @Test
+    fun `setting variant product with stock lower than max stock will set the save button to enabled`() {
+        viewModel.setVariantStock("1", 5, 10)
+
+        assert(viewModel.shouldEnableSaveButton.value == true)
+    }
+
+    @Test
+    fun `setting variant product with stock higher than max stock will set the save button to disabled`() {
+        viewModel.setVariantStock("1", 5, 1)
+
+        assert(viewModel.shouldEnableSaveButton.value == false)
     }
 
     @Test
@@ -138,6 +183,68 @@ class CampaignMainStockViewModelTest: CampaignMainStockViewModelTestFixture() {
 
         verifyShowVariantStockWarning()
         verifyHideStockInfo()
+    }
+
+    @Test
+    fun `given some products stock is higher than max stock should set save button to disabled`() {
+        val sellableProductList = listOf(
+            SellableStockProductUIModel(
+                productId = "0",
+                productName = "Name 1",
+                stock = "0",
+                isActive = true,
+                isAllStockEmpty = false,
+                access = createShopOwnerAccess(),
+                isCampaign = false,
+                campaignTypeList = listOf()
+            ),
+            SellableStockProductUIModel(
+                productId = "1",
+                productName = "Name 2",
+                stock = "3",
+                maxStock = 2,
+                isActive = true,
+                isAllStockEmpty = false,
+                access = createShopOwnerAccess(),
+                isCampaign = false,
+                campaignTypeList = listOf()
+            )
+        )
+
+        viewModel.setStockAvailability(sellableProductList)
+
+        assert(viewModel.shouldEnableSaveButton.value == false)
+    }
+
+    @Test
+    fun `given all products stock is lower than max stock should set save button to enabled`() {
+        val sellableProductList = listOf(
+            SellableStockProductUIModel(
+                productId = "0",
+                productName = "Name 1",
+                stock = "0",
+                isActive = true,
+                isAllStockEmpty = false,
+                access = createShopOwnerAccess(),
+                isCampaign = false,
+                campaignTypeList = listOf()
+            ),
+            SellableStockProductUIModel(
+                productId = "1",
+                productName = "Name 2",
+                stock = "3",
+                maxStock = 5,
+                isActive = true,
+                isAllStockEmpty = false,
+                access = createShopOwnerAccess(),
+                isCampaign = false,
+                campaignTypeList = listOf()
+            )
+        )
+
+        viewModel.setStockAvailability(sellableProductList)
+
+        assert(viewModel.shouldEnableSaveButton.value == true)
     }
 
     @Test
