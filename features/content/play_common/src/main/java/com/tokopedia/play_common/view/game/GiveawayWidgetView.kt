@@ -125,11 +125,11 @@ class GiveawayWidgetView : ConstraintLayout {
 
     private val scaleX = addSpringAnim(
         view = binding.ivTap, property = SpringAnimation.SCALE_X, startPosition = 0.8f,
-        finalPosition = 1f, stiffness = 900f, dampingRatio = SpringForce.DAMPING_RATIO_MEDIUM_BOUNCY)
+        finalPosition = 1f, stiffness = 900f, dampingRatio = SpringForce.DAMPING_RATIO_MEDIUM_BOUNCY, velocity = 0f)
 
     private val scaleY = addSpringAnim(
         view = binding.ivTap, property = SpringAnimation.SCALE_Y, startPosition = 0.8f,
-         finalPosition = 1f, stiffness = 900f, dampingRatio = SpringForce.DAMPING_RATIO_MEDIUM_BOUNCY)
+         finalPosition = 1f, stiffness = 900f, dampingRatio = SpringForce.DAMPING_RATIO_MEDIUM_BOUNCY, velocity = 0f)
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
