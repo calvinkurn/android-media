@@ -90,7 +90,6 @@ class TopAdsEditAutoTopUpFragment : BaseDaggerFragment() {
     ): View? {
         val view =  inflater.inflate(R.layout.topads_dash_fragment_edit_auto_topup, container, false)
         loader = view.findViewById(R.id.loader)
-//        activeText = view.findViewById(R.id.activeText)
         switchAutoTopupStatus = view.findViewById(R.id.auto_topup_status)
         selectCreditCard = view.findViewById(R.id.selectCreditCard)
         creditDropMenu = view.findViewById(R.id.creditDropMenu)
@@ -137,15 +136,17 @@ class TopAdsEditAutoTopUpFragment : BaseDaggerFragment() {
             } else {
                 showConfirmationDialog()
             }
+            TopadsTopupTracker.clickToggleOnOff(switchAutoTopupStatus?.isChecked == true)
         }
 
         creditDropMenu?.setOnClickListener {
-            sheetNomianl?.setTitle(resources.getString(R.string.topads_dash_pick_nominal))
+            sheetNomianl?.setTitle(context?.resources?.getString(R.string.topads_dash_pick_nominal) ?: "")
             sheetNomianl?.show(childFragmentManager, null, false, selectedItem.id)
             sheetNomianl?.onSavedAutoTopUp = { pos ->
                 if (pos != -1)
                     saveSelection(pos, TYPE_NOMINAL)
             }
+            TopadsTopupTracker.clickSaldoDropdownList()
         }
         tooltip?.setOnClickListener {
             val view1 = View.inflate(context, R.layout.topads_dash_sheet_info, null)
@@ -224,17 +225,18 @@ class TopAdsEditAutoTopUpFragment : BaseDaggerFragment() {
         if (toShow) {
             switchAutoTopupStatus?.isChecked = true
             activeText?.setText(R.string.topads_active)
-            activeText?.setTextColor(resources.getColor(com.tokopedia.topads.common.R.color.topads_common_select_color_checked))
+            context?.let { activeText?.setTextColor(ContextCompat.getColor(it, com.tokopedia.topads.common.R.color.topads_common_select_color_checked)) }
             selectCreditCard?.visibility = View.VISIBLE
             offLayout?.visibility = View.GONE
         } else {
             switchAutoTopupStatus?.isChecked = false
             activeText?.setText(R.string.topads_inactive)
-            activeText?.setTextColor(resources.getColor(com.tokopedia.topads.common.R.color.topads_common_text_disabled))
             selectCreditCard?.visibility = View.GONE
-            desc2?.text =
-                Html.fromHtml(String.format(resources.getString(R.string.topads_adash_auto_topup_off_desc2),
-                    "$bonus%"))
+            context?.let {
+                activeText?.setTextColor(ContextCompat.getColor(it, com.tokopedia.topads.common.R.color.topads_common_text_disabled))
+                desc2?.text = Html.fromHtml(String.format(
+                    it.resources.getString(R.string.topads_adash_auto_topup_off_desc2), "$bonus%"))
+            }
             offLayout?.visibility = View.VISIBLE
         }
     }
@@ -249,10 +251,12 @@ class TopAdsEditAutoTopUpFragment : BaseDaggerFragment() {
             dialog.setPrimaryCTAText(it.getString(R.string.topads_dash_auto_topup_off_dialog_cancel_btn))
             dialog.setSecondaryCTAText(it.getString(R.string.topads_dash_auto_topup_off_dialog_ok_btn))
             dialog.setPrimaryCTAClickListener {
+                TopadsTopupTracker.clickTetapGunakan()
                 dialog.dismiss()
                 setLayoutOnToggle(true)
             }
             dialog.setSecondaryCTAClickListener {
+                TopadsTopupTracker.clickYaNonaktifkan()
                 autoTopupEnabled = false
                 dialog.dismiss()
                 viewModel.saveSelection(switchAutoTopupStatus?.isChecked == true, selectedItem)
