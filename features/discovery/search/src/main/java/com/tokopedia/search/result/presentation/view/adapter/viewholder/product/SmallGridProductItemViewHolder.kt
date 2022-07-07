@@ -75,4 +75,12 @@ class SmallGridProductItemViewHolder(
         else
             imageUrl300
     }
+
+    private fun ProductItemDataView.getProductListTypeEnum(): ProductCardModel.ProductListType {
+        return when(productListType) {
+            SearchConstant.ProductListType.VAR_REPOSITION -> ProductCardModel.ProductListType.REPOSITION
+            SearchConstant.ProductListType.VAR_LONG_IMG -> ProductCardModel.ProductListType.LONG_IMAGE
+            else -> ProductCardModel.ProductListType.CONTROL
+        }
+    }
 }
