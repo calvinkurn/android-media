@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -32,6 +33,7 @@ import com.tokopedia.topads.debit.autotopup.view.adapter.viewholder.TopAdsCredit
 import com.tokopedia.topads.debit.autotopup.view.sheet.TopAdsChooseNominalBottomSheet
 import com.tokopedia.topads.debit.autotopup.view.sheet.TopAdsChooseTopUpAmountSheet
 import com.tokopedia.topads.debit.autotopup.view.viewmodel.TopAdsAutoTopUpViewModel
+import com.tokopedia.topads.tracker.topup.TopadsTopupTracker
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -139,16 +141,17 @@ class TopAdsEditAutoTopUpFragment : BaseDaggerFragment() {
             } else {
                 showConfirmationDialog()
             }
+            TopadsTopupTracker.clickToggleOnOff(switchAutoTopupStatus?.isChecked == true)
         }
 
         creditDropMenu?.setOnClickListener {
-            sheetNomianl?.setTitle(context?.resources?.getString(R.string.topads_dash_pick_nominal)
-                ?: "")
+            sheetNomianl?.setTitle(context?.resources?.getString(R.string.topads_dash_pick_nominal) ?: "")
             sheetNomianl?.show(childFragmentManager, null, false, selectedItem.id)
             sheetNomianl?.onSavedAutoTopUp = { pos ->
                 if (pos != -1)
                     saveSelection(pos, TYPE_NOMINAL)
             }
+            TopadsTopupTracker.clickSaldoDropdownList()
         }
         tooltip?.setOnClickListener {
             val view1 = View.inflate(context, R.layout.topads_dash_sheet_info, null)
@@ -233,10 +236,7 @@ class TopAdsEditAutoTopUpFragment : BaseDaggerFragment() {
         if (toShow) {
             switchAutoTopupStatus?.isChecked = true
             activeText?.setText(R.string.topads_active)
-            context?.let {
-                activeText?.setTextColor(ContextCompat.getColor(it,
-                    com.tokopedia.topads.common.R.color.topads_common_select_color_checked))
-            }
+            context?.let { activeText?.setTextColor(ContextCompat.getColor(it, com.tokopedia.topads.common.R.color.topads_common_select_color_checked)) }
             selectCreditCard?.visibility = View.VISIBLE
             offLayout?.visibility = View.GONE
         } else {
@@ -263,10 +263,12 @@ class TopAdsEditAutoTopUpFragment : BaseDaggerFragment() {
             dialog.setPrimaryCTAText(it.getString(R.string.topads_dash_auto_topup_off_dialog_cancel_btn))
             dialog.setSecondaryCTAText(it.getString(R.string.topads_dash_auto_topup_off_dialog_ok_btn))
             dialog.setPrimaryCTAClickListener {
+                TopadsTopupTracker.clickTetapGunakan()
                 dialog.dismiss()
                 setLayoutOnToggle(true)
             }
             dialog.setSecondaryCTAClickListener {
+                TopadsTopupTracker.clickYaNonaktifkan()
                 autoTopupEnabled = false
                 dialog.dismiss()
                 viewModel.saveSelection(switchAutoTopupStatus?.isChecked == true, selectedItem)

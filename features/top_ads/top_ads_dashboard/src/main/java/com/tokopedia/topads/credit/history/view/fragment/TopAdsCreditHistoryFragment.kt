@@ -37,6 +37,7 @@ import com.tokopedia.topads.dashboard.view.sheet.RewardPendingInfoBottomSheet
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsEditAutoTopUpActivity
+import com.tokopedia.topads.tracker.topup.TopadsTopupTracker
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.ImageUnify
@@ -205,8 +206,12 @@ class TopAdsCreditHistoryFragment :
     }
 
     private fun initListeners() {
-        cardAutoTopupStatus?.setOnClickListener { gotoAutoTopUp() }
+        cardAutoTopupStatus?.setOnClickListener {
+            TopadsTopupTracker.clickTambahKreditOtomatis()
+            gotoAutoTopUp()
+        }
         addCredit?.setOnClickListener {
+            TopadsTopupTracker.clickTambahKreditHistoryPage()
             startActivityForResult(
                 Intent(context, TopAdsAddCreditActivity::class.java),
                 REQUEST_CODE_ADD_CREDIT
@@ -240,6 +245,7 @@ class TopAdsCreditHistoryFragment :
                 startCustomDatePicker()
             }
         }
+        TopadsTopupTracker.clickDateRange()
     }
 
     private fun startCustomDatePicker() {
@@ -325,7 +331,7 @@ class TopAdsCreditHistoryFragment :
 
     override fun loadData(page: Int) {
         adapter.clearAllElements()
-        val resources = context?.resources ?: return
+        val resources = context?.resources
         viewModel.getCreditHistory(
             GraphqlHelper.loadRawString(resources, R.raw.gql_query_credit_history),
             startDate, endDate

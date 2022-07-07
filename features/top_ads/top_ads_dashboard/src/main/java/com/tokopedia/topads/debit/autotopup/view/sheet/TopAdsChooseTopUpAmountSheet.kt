@@ -13,6 +13,7 @@ import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.utils.Utils.calculatePercentage
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 import com.tokopedia.topads.debit.autotopup.view.adapter.TopAdsAutoTopUpChipsAdapter
+import com.tokopedia.topads.tracker.topup.TopadsTopupTracker
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -96,10 +97,12 @@ class TopAdsChooseTopUpAmountSheet : BottomSheetUnify() {
             }
         }
         cancelBtn?.setOnClickListener {
+            TopadsTopupTracker.clickBatalkan()
             dismiss()
             onCancel?.invoke()
         }
         saveBtn?.setOnClickListener {
+            TopadsTopupTracker.clickAktifkan(dedAmount?.text.toString())
             dismissedSaved = true
             dismiss()
             onSaved?.invoke(adapter?.getSelected() ?: 0)
@@ -123,6 +126,7 @@ class TopAdsChooseTopUpAmountSheet : BottomSheetUnify() {
             bottomSheet.setTitle(getString(R.string.toapds_dash_tooltip_title))
             bottomSheet.setChild(view1)
             bottomSheet.show(childFragmentManager, "")
+            TopadsTopupTracker.clickThresholdCredit()
         }
     }
 

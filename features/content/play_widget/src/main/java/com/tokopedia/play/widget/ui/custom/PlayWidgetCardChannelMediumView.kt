@@ -123,7 +123,7 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         tvTitle.text = model.title
         tvStartTime.text = model.startTime
         tvTotalView.text = model.totalView.totalViewFmt
-        ivGiveaway.visibility = if(model.hasGiveaway) View.VISIBLE else View.GONE
+        ivGiveaway.visibility = if(model.hasGame) View.VISIBLE else View.GONE
 
         setIconToggleReminder(model.reminderType)
         reminderBadge.setOnClickListener {
