@@ -71,7 +71,7 @@ class PatchExecutors(
                 if (p.isAppliedSuccess) {
                     callBack.onPatchApplied(context, p.isAppliedSuccess, p)
                 } else {
-                    callBack.logNotify(context, p.debug, "apply ${p.name} failed", "")
+                    callBack.logNotify(context, p.debug, "apply ${p.name} failed", "", p.name)
                 }
             } catch (t: Throwable) {
                 callBack.exceptionNotify(
@@ -110,7 +110,7 @@ class PatchExecutors(
                     context,
                     patch.debug,
                     "patchesInfo is null, patch info:id = ${patch.name},md5 = ${patch.md5}",
-                    "class:PatchExecutor method:patch line:99"
+                    "class:PatchExecutor method:patch line:99", patch.name
                 )
                 return false
             }
@@ -123,7 +123,7 @@ class PatchExecutors(
                     context,
                     patch.debug,
                     "patchedClasses is null or empty, patch info:id = ${patch.name},md5 = ${patch.md5}",
-                    "class:PatchExecutor method:patch line:122"
+                    "class:PatchExecutor method:patch line:122", patch.name
                 )
                 return false
             }
@@ -136,7 +136,7 @@ class PatchExecutors(
                         context,
                         patch.debug,
                         "patchedClasses or patchClassName is empty, patch info:id = ${patch.name},md5 = ${patch.md5}",
-                        "class:PatchExecutor method:patch line:125"
+                        "class:PatchExecutor method:patch line:125", patch.name
                     )
                     continue
                 }
@@ -170,7 +170,7 @@ class PatchExecutors(
                             context,
                             patch.debug,
                             "current path:$patchedClassName something wrong !! can not find:ChangeQuickRedirect in $patchClassName",
-                            "class:PatchExecutor method:patch line:157"
+                            "class:PatchExecutor method:patch line:157", patch.name
                         )
                         continue
                     }
@@ -180,7 +180,7 @@ class PatchExecutors(
                         changeQuickRedirectField.isAccessible = true
                         changeQuickRedirectField[null] = patchObject
                     } catch (t: Throwable) {
-                        callBack.logNotify(context, patch.debug, "patch failed! ", patchClassName)
+                        callBack.logNotify(context, patch.debug, "patch failed! ", patchClassName, patch.name)
                         error = true
                         callBack.exceptionNotify(
                             context,
