@@ -9,6 +9,7 @@ import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductErrorType
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductErrorType.*
 import com.tokopedia.shop.flashsale.domain.entity.enums.ProductInputValidationResult
+import com.tokopedia.shop.flashsale.presentation.creation.manage.model.EditProductInputModel
 import javax.inject.Inject
 
 class ProductErrorStatusHandler @Inject constructor(@ApplicationContext private val context: Context) {
@@ -73,26 +74,41 @@ class ProductErrorStatusHandler @Inject constructor(@ApplicationContext private 
         }
     }
 
-    fun getErrorInputType(productMapData: SellerCampaignProductList.ProductMapData): ProductInputValidationResult {
-        val maxDiscountedPrice = getProductMaxDiscountedPrice(productMapData.originalPrice)
-        val minDiscountedPrice = getProductMinDiscountedPrice(productMapData.originalPrice)
+    fun getErrorInputType(productInput: EditProductInputModel): ProductInputValidationResult {
+        val originalPrice = productInput.productMapData.originalPrice
+        val originalStock = productInput.productMapData.originalStock
+        val maxDiscountedPrice = getProductMaxDiscountedPrice(originalPrice)
+        val minDiscountedPrice = getProductMinDiscountedPrice(originalPrice)
         val result: MutableList<ManageProductErrorType> = mutableListOf()
 
-        if (productMapData.discountedPrice >= productMapData.originalPrice) result.add(MAX_DISCOUNT_PRICE)
-        if (productMapData.customStock > productMapData.originalStock) result.add(MAX_STOCK)
-        if (productMapData.discountedPrice < minDiscountedPrice) result.add(MIN_DISCOUNT_PRICE)
-        if (productMapData.customStock < MIN_CAMPAIGN_STOCK) result.add(MIN_STOCK)
-        if (productMapData.maxOrder > productMapData.customStock) result.add(MAX_ORDER)
-        if (productMapData.maxOrder < MIN_CAMPAIGN_ORDER) result.add(MIN_ORDER)
+        with(productInput) {
+            price?.let {
+                if (it >= originalPrice) result.add(MAX_DISCOUNT_PRICE)
+                if (it < minDiscountedPrice) result.add(MIN_DISCOUNT_PRICE)
+            } ?: result.add(EMPTY_PRICE)
+
+            if (stock != null) {
+                if (stock!! > originalStock) result.add(MAX_STOCK)
+                if (stock!! < MIN_CAMPAIGN_STOCK) result.add(MIN_STOCK)
+            }
+
+            if (maxOrder != null) {
+                if (maxOrder!! < MIN_CAMPAIGN_ORDER) result.add(MIN_ORDER)
+            }
+
+            if (stock != null && maxOrder != null) {
+                if (maxOrder!! > stock!!) result.add(MAX_ORDER)
+            }
+        }
 
         return ProductInputValidationResult(
             errorList = result,
             maxPrice = maxDiscountedPrice,
             minPrice = minDiscountedPrice,
-            maxStock = productMapData.originalStock,
+            maxStock = productInput.productMapData.originalStock,
             minStock = MIN_CAMPAIGN_STOCK,
             minOrder = MIN_CAMPAIGN_ORDER,
-            maxOrder = productMapData.customStock,
+            maxOrder = productInput.productMapData.customStock,
             minPricePercent = DiscountUtil.getPercentLong(MIN_CAMPAIGN_DISCOUNT_PERCENTAGE),
             maxPricePercent = DiscountUtil.getPercentLong(MAX_CAMPAIGN_DISCOUNT_PERCENTAGE)
         )

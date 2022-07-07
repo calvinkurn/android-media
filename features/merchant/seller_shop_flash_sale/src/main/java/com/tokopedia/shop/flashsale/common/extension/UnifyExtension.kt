@@ -53,6 +53,6 @@ fun TextFieldUnify2?.setModeToNumberDelimitedInput(maxLength: Int) {
 
 fun TextFieldUnify2.getTextAsNumber() = editText.text.toString().filterDigit()
 
-fun TextFieldUnify2?.getTextLong() = this?.getTextAsNumber().toLongOrZero()
+fun TextFieldUnify2?.getTextLong() = this?.getTextAsNumber()?.toLongOrNull()
 
-fun TextFieldUnify2?.getTextInt() = this?.getTextAsNumber().toIntOrZero()
+fun TextFieldUnify2?.getTextInt() = this?.getTextAsNumber()?.toIntOrNull()

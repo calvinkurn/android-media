@@ -1,6 +1,5 @@
 package com.tokopedia.shop.flashsale.presentation.creation.manage.bottomsheet
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -21,6 +20,7 @@ import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductErrorType
 import com.tokopedia.shop.flashsale.domain.entity.enums.ProductInputValidationResult
+import com.tokopedia.shop.flashsale.presentation.creation.manage.model.EditProductInputModel
 import com.tokopedia.shop.flashsale.presentation.creation.manage.model.WarehouseUiModel
 import com.tokopedia.shop.flashsale.presentation.creation.manage.viewmodel.EditProductInfoViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -54,7 +54,7 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
     lateinit var sharedPreference: SharedPreferenceDataStore
     private var binding by autoClearedNullable<SsfsBottomsheetEditProductInfoBinding>()
     private var warehouseBottomSheet: WarehouseBottomSheet? = null
-    private var productInput = SellerCampaignProductList.ProductMapData()
+    private var productInput = EditProductInputModel()
     private var productIndex = Int.ZERO
     private var isDataFirstLoaded = true
     private var shouldLoadNextData = false
@@ -138,7 +138,7 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
     }
 
     private fun setupProductMapDataObserver() {
-        viewModel.productMapData.observe(viewLifecycleOwner) {
+        viewModel.productInputData.observe(viewLifecycleOwner) {
             productInput = it
             resetInputData()
         }
@@ -155,7 +155,7 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
                 displayValidationResult(validationResult)
                 if (isSuccess) {
                     productIndex++
-                    viewModel.editProduct(productInput.campaignId)
+                    viewModel.editProduct(productInput.productMapData.campaignId)
                 }
             }
         }
@@ -251,9 +251,9 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
     private fun submitInput(shouldLoadNextData: Boolean) {
         this.shouldLoadNextData = shouldLoadNextData
         binding?.run {
-            productInput.customStock = tfStock.getTextLong()
+            productInput.stock = tfStock.getTextLong()
             productInput.maxOrder = tfMaxSold.getTextInt()
-            productInput.discountedPrice = tfCampaignPrice.textField.getTextLong()
+            productInput.price = tfCampaignPrice.textField.getTextLong()
             viewModel.setProductInput(productInput)
         }
     }
@@ -266,6 +266,10 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
     private fun displayValidationResult(validationResult: ProductInputValidationResult) {
         validationResult.errorList.forEach { errorType ->
             when(errorType) {
+                ManageProductErrorType.EMPTY_PRICE -> {
+                    binding?.tfCampaignPrice?.textField?.isInputError = true
+                    binding?.tfCampaignPrice?.textField?.setMessage(getString(R.string.editproduct_required_text))
+                }
                 ManageProductErrorType.MAX_DISCOUNT_PRICE -> {
                     displayValidationPrice(validationResult, isMaxError = true)
                 }
@@ -298,9 +302,6 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
         orderField?.isInputError = true
 
         when {
-            orderField?.editText?.text?.toString().orEmpty().isEmpty() -> {
-                orderField?.setMessage(getString(R.string.editproduct_required_text))
-            }
             isMaxError -> {
                 orderField?.setMessage(getString(R.string.editproduct_order_exceed_stock_error))
             }
@@ -333,9 +334,6 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
         priceField?.isInputError = true
 
         when {
-            priceField?.editText?.text?.toString().orEmpty().isEmpty() -> {
-                priceField?.setMessage(getString(R.string.editproduct_required_text))
-            }
             isMaxError -> {
                 priceField?.setMessage(maxErrorValue)
             }
@@ -372,21 +370,21 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
             tfStock.isInputError = false
             tfMaxSold.isInputError = false
             tfCampaignPrice.textField?.setMessage("")
-            tfStock.setMessage(getString(R.string.editproduct_stock_total_text, productInput.originalStock))
+            tfStock.setMessage(getString(R.string.editproduct_stock_total_text, productInput.productMapData.originalStock))
             tfMaxSold.setMessage(getString(R.string.editproduct_max_transaction_text))
         }
     }
 
     private fun resetInputData() {
-        val discountedPrice = productInput.discountedPrice.toStringOrInitialValue(NUMBER_INITIAL_VALUE)
-        val customStock = productInput.customStock.toStringOrInitialValue(NUMBER_INITIAL_VALUE)
-        val maxOrder = productInput.maxOrder.toLong().toStringOrInitialValue(NUMBER_INITIAL_VALUE)
+        val discountedPrice = productInput.price.orZero().toStringOrInitialValue(NUMBER_INITIAL_VALUE)
+        val customStock = productInput.stock.orZero().toStringOrInitialValue(NUMBER_INITIAL_VALUE)
+        val maxOrder = productInput.maxOrder.orZero().toLong().toStringOrInitialValue(NUMBER_INITIAL_VALUE)
 
         binding?.apply {
             tfCampaignPrice.text = discountedPrice
             tfStock.editText.setText(customStock)
             tfMaxSold.editText.setText(maxOrder)
-            tfStock.setMessage(getString(R.string.editproduct_stock_total_text, productInput.originalStock))
+            tfStock.setMessage(getString(R.string.editproduct_stock_total_text, productInput.productMapData.originalStock))
         }
     }
 
