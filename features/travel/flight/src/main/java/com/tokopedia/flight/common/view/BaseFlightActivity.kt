@@ -79,10 +79,6 @@ abstract class BaseFlightActivity : BaseSimpleActivity(),
         navigateToAllPromoPage()
     }
 
-    override fun getToolbarResourceID(): Int = R.id.flight_base_header
-
-    override fun getParentViewResourceID(): Int = R.id.flight_base_fragment_view
-
     open override fun onHelpClicked() {
         navigateToHelpPage()
     }
