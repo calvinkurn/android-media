@@ -111,6 +111,7 @@ private const val FOLLOW_MARGIN = 6
 private const val MARGIN_ZERO = 0
 private const val ASGC_NEW_PRODUCTS = "asgc_new_products"
 private const val ASGC_RESTOCK_PRODUCTS = "asgc_restock_products"
+private const val ASGC_DISCOUNT_TOKO = "asgc_discount_toko"
 
 
 /**
@@ -534,6 +535,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 followCount.text = context.getString(R.string.feeds_asgc_new_product_text)
             else if (feedXCard.type == ASGC_RESTOCK_PRODUCTS)
                 followCount.text = context.getString(R.string.feeds_asgc_restock_text)
+            else if(feedXCard.type == ASGC_DISCOUNT_TOKO)
+                followCount.text = context.getString(R.string.feed_asgc_diskon_toko)
             followCount.show()
         }
 
