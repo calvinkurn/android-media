@@ -11,8 +11,10 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.common.util.MAX_LENGTH_STOCK_INPUT
 import com.tokopedia.product.addedit.common.util.getText
 import com.tokopedia.product.addedit.common.util.getTextBigIntegerOrZero
 import com.tokopedia.product.addedit.common.util.setModeToNumberInput
@@ -77,8 +79,8 @@ class MultipleVariantEditInputBottomSheet(
     }
 
     private fun addMarginCloseButton() {
-        val topMargin = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
-        val horizontalMargin = resources.getDimensionPixelSize(R.dimen.tooltip_close_margin)
+        val topMargin = context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3).orZero()
+        val horizontalMargin = context?.resources?.getDimensionPixelSize(R.dimen.tooltip_close_margin).orZero()
         (bottomSheetClose.layoutParams as RelativeLayout.LayoutParams).apply {
             setMargins(0, topMargin, horizontalMargin, 0)
             addRule(RelativeLayout.CENTER_VERTICAL)
@@ -105,7 +107,7 @@ class MultipleVariantEditInputBottomSheet(
             }
         }
 
-        tfuStock.setModeToNumberInput()
+        tfuStock.setModeToNumberInput(MAX_LENGTH_STOCK_INPUT)
         tfuStock?.textFieldInput?.afterTextChanged {
             validateStock()
         }

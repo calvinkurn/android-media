@@ -14,6 +14,7 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkContentPosition
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.common.util.MAX_LENGTH_STOCK_INPUT
 import com.tokopedia.product.addedit.common.util.setModeToNumberInput
 import com.tokopedia.product.addedit.common.util.setRecyclerViewEditorActionListener
 import com.tokopedia.product.addedit.variant.presentation.adapter.uimodel.VariantDetailFieldsUiModel
@@ -209,8 +210,6 @@ class VariantDetailFieldsViewHolder(
     }
 
     companion object {
-        private const val MAX_LENGTH_STOCK_INPUT = 7
-
         @LayoutRes
         val LAYOUT = R.layout.product_variant_detail_fields_layout
     }

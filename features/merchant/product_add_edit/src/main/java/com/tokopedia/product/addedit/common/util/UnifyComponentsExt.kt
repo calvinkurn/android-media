@@ -31,6 +31,8 @@ private const val DIALOG_MAX_WIDTH = 900
 private const val DIALOG_MARGIN_TOP = 8
 private const val MAX_LENGTH_NUMBER_INPUT = 11 // including delimiter
 
+const val MAX_LENGTH_STOCK_INPUT = 7 // including delimiter
+
 fun TextAreaUnify?.setText(text: String) = this?.textAreaInput?.setText(text)
 
 fun TextFieldUnify?.setText(text: String) = this?.textFieldInput?.setText(text)
