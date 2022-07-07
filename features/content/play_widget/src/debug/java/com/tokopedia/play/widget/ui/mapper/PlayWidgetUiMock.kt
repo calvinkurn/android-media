@@ -67,7 +67,7 @@ object PlayWidgetUiMock {
             isShow = true
         ),
         performanceSummaryLink = "tokopedia://webview?url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fshop%2Fituajakak%2Fstatistic%2F10734",
-        hasGiveaway = true,
+        hasGame = true,
         poolType = "",
         recommendationType = "",
         channelTypeTransition = PlayWidgetChannelTypeTransition(null, channelType),
