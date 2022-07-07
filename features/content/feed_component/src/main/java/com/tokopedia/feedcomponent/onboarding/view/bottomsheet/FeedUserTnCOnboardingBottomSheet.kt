@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.databinding.BottomsheetFeedUserTncOnboardingBinding
 import com.tokopedia.feedcomponent.onboarding.view.bottomsheet.base.BaseFeedUserOnboardingBottomSheet
 import com.tokopedia.feedcomponent.onboarding.view.uimodel.action.FeedUGCOnboardingAction
@@ -15,14 +16,10 @@ import com.tokopedia.feedcomponent.onboarding.view.uimodel.event.FeedUGCOnboardi
 import com.tokopedia.feedcomponent.onboarding.view.uimodel.state.FeedUGCOnboardingUiState
 import com.tokopedia.feedcomponent.onboarding.view.viewmodel.FeedUGCOnboardingViewModel
 import com.tokopedia.feedcomponent.util.withCache
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
-import com.tokopedia.unifycomponents.Toaster.toasterCustomBottomHeight
-import com.tokopedia.unifycomponents.Toaster.toasterCustomCtaWidth
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
-import com.tokopedia.abstraction.R as abstractionR
 
 /**
  * Created By : Jonathan Darwin on June 28, 2022
@@ -95,7 +92,7 @@ class FeedUserTnCOnboardingBottomSheet : BaseFeedUserOnboardingBottomSheet() {
                         Toaster.toasterCustomBottomHeight = binding.btnContinue.height + offset16
                         Toaster.build(
                             view = binding.root,
-                            text = getString(abstractionR.string.default_request_error_unknown),
+                            text = getString(R.string.feed_ugc_onboarding_unknown_error),
                             duration = Toaster.LENGTH_SHORT,
                             type = TYPE_ERROR,
                         ).show()

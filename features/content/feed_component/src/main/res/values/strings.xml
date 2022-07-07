@@ -224,4 +224,5 @@
     <string name="feed_ugc_onboarding_accept_tnc_terms">Syarat &amp; Ketentuan</string>
     <string name="feed_ugc_onboarding_privacy_policy_link">https://www.tokopedia.com/privacy</string>
     <string name="feed_ugc_onboarding_tnc_link">https://www.tokopedia.com/help/article/syarat-dan-ketentuan-feed-user-profil</string>
+    <string name="feed_ugc_onboarding_unknown_error">Terjadi kesalahan. Ulangi beberapa saat lagi</string>
 </resources>

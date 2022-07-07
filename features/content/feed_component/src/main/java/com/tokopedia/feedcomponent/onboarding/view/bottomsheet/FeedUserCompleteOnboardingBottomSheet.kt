@@ -22,7 +22,6 @@ import com.tokopedia.feedcomponent.util.withCache
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
-import com.tokopedia.abstraction.R as abstractionR
 
 /**
  * Created By : Jonathan Darwin on June 28, 2022
@@ -150,7 +149,7 @@ class FeedUserCompleteOnboardingBottomSheet : BaseFeedUserOnboardingBottomSheet(
     }
 
     private fun getDefaultErrorMessage(): String {
-        return getString(abstractionR.string.default_request_error_unknown)
+        return getString(R.string.feed_ugc_onboarding_unknown_error)
     }
 
     fun showNow(fragmentManager: FragmentManager) {

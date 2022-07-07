@@ -67,7 +67,6 @@ import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
 import com.tokopedia.people.views.uimodel.state.UserProfileUiState
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
-import com.tokopedia.abstraction.R as abstractionR
 import com.tokopedia.unifyprinciples.R as unifyR
 import com.tokopedia.feedcomponent.R as feedComponentR
 import com.tokopedia.feedcomponent.onboarding.view.fragment.FeedUGCOnboardingParentFragment
@@ -575,7 +574,7 @@ class UserProfileFragment @Inject constructor(
     }
 
     private fun getDefaultErrorMessage(): String {
-        return requireContext().getString(abstractionR.string.default_request_error_unknown)
+        return getString(R.string.up_error_unknown)
     }
 
     private fun getUsernameWithAdd(): String {
