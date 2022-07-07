@@ -260,7 +260,7 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
         verifyGetCampaignStockAllocationCalled()
 
         viewModel.getStockAllocationData
-            .verifyErrorEquals(Fail(NullPointerException()))
+            .verifyErrorEquals(Fail(error))
     }
 
     @Test
@@ -1364,7 +1364,7 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
 
     private fun onGetCampaignStock_thenReturn(error: Throwable) {
         coEvery {
-            campaignStockAllocationUseCase.executeOnBackground()
+            campaignStockAllocationUseCase.execute(any(), any(), any(), any())
         } throws error
     }
 
@@ -1424,7 +1424,7 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
 
     private fun verifyGetCampaignStockAllocationCalled() {
         coVerify {
-            campaignStockAllocationUseCase.executeOnBackground()
+            campaignStockAllocationUseCase.execute(any(), any(), any(), any())
         }
     }
 
