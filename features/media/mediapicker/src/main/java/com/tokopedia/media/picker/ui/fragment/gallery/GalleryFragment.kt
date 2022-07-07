@@ -16,7 +16,9 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
 import com.tokopedia.media.common.utils.ParamCacheManager
 import com.tokopedia.media.databinding.FragmentGalleryBinding
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.picker.analytics.gallery.GalleryAnalytics
+import com.tokopedia.media.picker.data.URL_EMPTY_STATE_DRAWABLE
 import com.tokopedia.media.picker.data.repository.AlbumRepository.Companion.RECENT_ALBUM_ID
 import com.tokopedia.media.picker.di.DaggerPickerComponent
 import com.tokopedia.media.picker.ui.activity.album.AlbumActivity
@@ -164,6 +166,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
 
     private fun setupEmptyState(isShown: Boolean) {
         binding?.emptyState?.root?.showWithCondition(isShown)
+        binding?.emptyState?.imgEmptyState?.loadImage(URL_EMPTY_STATE_DRAWABLE)
         binding?.emptyState?.emptyNavigation?.showWithCondition(param.get().isCommonPageType())
         binding?.emptyState?.emptyNavigation?.setOnClickListener {
             contract?.onEmptyStateActionClicked()
