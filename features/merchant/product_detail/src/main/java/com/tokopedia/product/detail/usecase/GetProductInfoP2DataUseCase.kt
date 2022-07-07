@@ -519,6 +519,9 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 componentName
               }
             }
+            shopFinishRate {
+              finishRate
+            }
           }
     }""".trimIndent()
     }
@@ -592,6 +595,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData.rating = rating
             p2UiData.ticker = ticker
             p2UiData.navBar = navBar
+            p2UiData.shopFinishRate = responseData.shopFinishRate.finishRate
         }
         return p2UiData
     }

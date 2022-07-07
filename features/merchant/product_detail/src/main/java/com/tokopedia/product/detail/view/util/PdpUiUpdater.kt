@@ -379,7 +379,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                                 it.shopChatSpeed.toLongOrZero(),
                                 it.shopInfo.activeProduct.toLongOrZero(),
                                 it.shopInfo.createdInfo.shopCreated,
-                                it.shopRating)
+                                it.shopRating,
+                                it.shopFinishRate)
                     tickerDataResponse = it.shopInfo.tickerData
                 }
             }
