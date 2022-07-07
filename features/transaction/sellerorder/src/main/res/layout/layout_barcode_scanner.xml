@@ -19,7 +19,7 @@
         app:zxing_viewfinder_laser="@color/Unify_G400"
         app:zxing_viewfinder_mask="@color/_dms_zxing_custom_viewfinder_mask" />
 
-    <com.tokopedia.unifyprinciples.Typography
+    <TextView
         android:id="@+id/zxing_status_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -30,7 +30,6 @@
         android:layout_marginLeft="@dimen/dp_50"
         android:layout_marginRight="@dimen/dp_50"
         android:layout_marginEnd="@dimen/dp_50"
-        app:typographyType="display_2"
         android:background="@color/zxing_transparent"
         android:gravity="center_horizontal"
         android:text="@string/scan_barcode_msg"
