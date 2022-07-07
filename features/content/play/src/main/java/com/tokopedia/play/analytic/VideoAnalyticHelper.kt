@@ -74,7 +74,7 @@ class VideoAnalyticHelper(
             )
         }
 
-        if(bufferTrackingModel.bufferCount > ZERO && watchDurationModel.cumulationDuration > MAX_WATCH_DURATION_CUMULATION){
+        if(bufferTrackingModel.bufferCount > 0 && watchDurationModel.cumulationDuration > MAX_WATCH_DURATION_CUMULATION){
             log.logDownloadSpeed(liveRoomMetricsCommon.getInetSpeed())
             log.sendAll(channelData.id, channelData.videoMetaInfo.videoPlayer)
         }
@@ -121,7 +121,6 @@ class VideoAnalyticHelper(
 
     companion object {
         private const val DURATION_DIVIDER = 1000
-        private const val ZERO = 0
         private const val MAX_WATCH_DURATION_CUMULATION = 30
     }
 }
