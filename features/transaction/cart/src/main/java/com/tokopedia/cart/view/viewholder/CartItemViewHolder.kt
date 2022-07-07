@@ -275,7 +275,6 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
         renderBundlingInfo(data)
         renderProductName(data)
         renderImage(data)
-        renderButuhResepField(data)
         renderPrice(data)
         renderVariant(data)
         renderQuantityLeft(data)
@@ -376,13 +375,7 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
         binding.iuImageProduct.setOnClickListener(getOnClickProductItemListener(adapterPosition, data))
     }
 
-    private fun renderButuhResepField(data: CartItemHolderData) {
-        if (data.needPrescription) {
-            binding.butuhResepLayout.visible()
-            binding.butuhResepText.text = Utils.getHtmlFormat(data.butuhResepText)
-            binding.butuhResepIcon.loadImage(data.butuhResepIconUrl)
-        }
-    }
+
 
     private fun sendAnalyticsInformationLabel(data: CartItemHolderData) {
         if (informationLabel.isNotEmpty()) {
@@ -428,6 +421,11 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
             layoutProductInfo.addView(productInfo)
             layoutProductInfo.show()
             informationLabel.add(wholesaleLabel.toLowerCase(Locale.getDefault()))
+        }
+        if (data.needPrescription) {
+            val butuhResepView = createProductInfoTextWithIcon(ProductInformationWithIcon(data.butuhResepText, data.butuhResepIconUrl))
+            layoutProductInfo.addView(butuhResepView)
+            layoutProductInfo.show()
         }
     }
 
