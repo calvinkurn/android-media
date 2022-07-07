@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -28,10 +29,10 @@ import com.tokopedia.shop.flashsale.presentation.creation.manage.bottomsheet.Edi
 import com.tokopedia.shop.flashsale.presentation.creation.manage.dialog.ProductDeleteDialog
 import com.tokopedia.shop.flashsale.presentation.creation.manage.dialog.showSuccessSaveCampaignDraft
 import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListActivity
-import com.tokopedia.shop.flashsale.presentation.list.list.listener.RecyclerViewScrollListener
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.GlobalScope
 import java.util.*
 import javax.inject.Inject
 import kotlin.concurrent.schedule
@@ -40,17 +41,19 @@ class ManageProductFragment : BaseDaggerFragment() {
 
     companion object {
         private const val BUNDLE_KEY_CAMPAIGN_ID = "campaignId"
-        private const val SECOND_STEP = 2
         private const val PAGE_SIZE = 50
         private const val LIST_TYPE = 0
         private const val RECYCLERVIEW_ITEM_FIRST_INDEX = 0
-        private const val DELAY = 1000L
+        private const val DELAY = 500L
         private const val REQUEST_CODE = 123
         private const val EMPTY_STATE_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/flash-sale-toko/ic_no_active_campaign.png"
         private const val INCOMPLETE_PRODUCT_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/flash-sale-toko/product_incomplete.png"
         private const val SCROLL_ANIMATION_DELAY = 500L
+
+        private const val GUIDELINE_MARGIN_FOOTER_MIN = 0
+        private const val GUIDELINE_MARGIN_HEADER_MIN = 0
 
         @JvmStatic
         fun newInstance(campaignId: Long): ManageProductFragment {
@@ -80,6 +83,17 @@ class ManageProductFragment : BaseDaggerFragment() {
         )
     }
 
+    private var guidelineMarginFooter = GUIDELINE_MARGIN_FOOTER_MIN
+    private var guidelineMarginFooterMax = GUIDELINE_MARGIN_FOOTER_MIN
+    private var guidelineMarginHeader = GUIDELINE_MARGIN_HEADER_MIN
+    private var guidelineMarginHeaderMax = GUIDELINE_MARGIN_HEADER_MIN
+
+    private val animateScrollDebounce: (Int) -> Unit by lazy {
+        debounce(SCROLL_ANIMATION_DELAY, GlobalScope) {
+            view?.post { animateScroll(it) }
+        }
+    }
+
     override fun getScreenName(): String = ManageProductFragment::class.java.canonicalName.orEmpty()
 
     override fun initInjector() {
@@ -107,17 +121,15 @@ class ManageProductFragment : BaseDaggerFragment() {
         observeIncompleteProducts()
         observeRemoveProductsStatus()
         observeBannerType()
+
+        guidelineMarginHeaderMax = binding?.guidelineHeader?.getGuidelineBegin().orZero()
+        guidelineMarginFooterMax = binding?.guidelineFooter?.getGuidelineEnd().orZero()
+        guidelineMarginHeader = guidelineMarginHeaderMax
+        guidelineMarginFooter = guidelineMarginFooterMax
     }
 
     private fun setupView() {
         binding?.apply {
-            header.headerSubTitle = String.format(
-                getString(R.string.sfs_placeholder_step_counter),
-                SECOND_STEP
-            )
-            header.setNavigationOnClickListener {
-                activity?.finish()
-            }
             tpgAddProduct.setOnClickListener {
                 if (manageProductListAdapter.itemCount < PAGE_SIZE) {
                     showChooseProductPage()
@@ -246,20 +258,33 @@ class ManageProductFragment : BaseDaggerFragment() {
 
     private fun setupScrollListener() {
         binding?.apply {
-            recyclerViewProduct.addOnScrollListener(
-                RecyclerViewScrollListener(
-                    onScrollDown = {
-                        doOnDelayFinished(SCROLL_ANIMATION_DELAY) {
-                            handleScrollDownEvent()
-                        }
-                    },
-                    onScrollUp = {
-                        doOnDelayFinished(SCROLL_ANIMATION_DELAY) {
-                            handleScrollUpEvent()
-                        }
+            recyclerViewProduct.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    guidelineMarginHeader -= dy
+                    guidelineMarginFooter -= dy
+                    if (guidelineMarginHeader < GUIDELINE_MARGIN_HEADER_MIN) {
+                        guidelineMarginHeader = GUIDELINE_MARGIN_HEADER_MIN
                     }
-                )
-            )
+                    if (guidelineMarginHeader > guidelineMarginHeaderMax) {
+                        guidelineMarginHeader = guidelineMarginHeaderMax
+                    }
+                    if (guidelineMarginFooter < GUIDELINE_MARGIN_FOOTER_MIN) {
+                        guidelineMarginFooter = GUIDELINE_MARGIN_FOOTER_MIN
+                    }
+                    if (guidelineMarginFooter > guidelineMarginFooterMax) {
+                        guidelineMarginFooter = guidelineMarginFooterMax
+                    }
+
+                    if (viewModel.bannerType.value == HIDE_BANNER) {
+                        binding?.guidelineHeader?.setGuidelineBegin(GUIDELINE_MARGIN_HEADER_MIN)
+                    } else {
+                        binding?.guidelineHeader?.setGuidelineBegin(guidelineMarginHeader)
+                    }
+                    binding?.guidelineFooter?.setGuidelineEnd(guidelineMarginFooter)
+                    animateScrollDebounce.invoke(dy)
+                }
+            })
         }
     }
 
@@ -418,42 +443,6 @@ class ManageProductFragment : BaseDaggerFragment() {
         CampaignListActivity.start(context, isClearTop = true)
     }
 
-    private fun handleScrollDownEvent() {
-        binding?.apply {
-            when (viewModel.bannerType.value) {
-                EMPTY_BANNER -> {
-                    cardIncompleteProductInfo.slideDown()
-                }
-                ERROR_BANNER -> {
-                    tickerErrorProductInfo.slideDown()
-                }
-                else -> {
-                    cardIncompleteProductInfo.gone()
-                    tickerErrorProductInfo.gone()
-                }
-            }
-            cardBottomButtonGroup.slideDown()
-        }
-    }
-
-    private fun handleScrollUpEvent() {
-        binding?.apply {
-            when (viewModel.bannerType.value) {
-                EMPTY_BANNER -> {
-                    cardIncompleteProductInfo.slideUp()
-                }
-                ERROR_BANNER -> {
-                    tickerErrorProductInfo.slideUp()
-                }
-                else -> {
-                    cardIncompleteProductInfo.gone()
-                    tickerErrorProductInfo.gone()
-                }
-            }
-            cardBottomButtonGroup.slideUp()
-        }
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (resultCode) {
@@ -461,6 +450,27 @@ class ManageProductFragment : BaseDaggerFragment() {
                 showLoader()
                 Timer("Retrieving", false).schedule(DELAY) {
                     viewModel.getProducts(campaignId, LIST_TYPE)
+                }
+            }
+        }
+    }
+
+    private fun animateScroll(scrollingAmount: Int) {
+        binding?.apply {
+            if (scrollingAmount.isMoreThanZero()) {
+                guidelineHeader.animateSlide(guidelineMarginHeader, GUIDELINE_MARGIN_HEADER_MIN, true)
+                guidelineFooter.animateSlide(guidelineMarginFooter, GUIDELINE_MARGIN_FOOTER_MIN, false)
+                guidelineMarginFooter = GUIDELINE_MARGIN_FOOTER_MIN
+                guidelineMarginHeader = GUIDELINE_MARGIN_HEADER_MIN
+            } else {
+                if (viewModel.bannerType.value == HIDE_BANNER) {
+                    guidelineHeader.setGuidelineBegin(GUIDELINE_MARGIN_HEADER_MIN)
+                    guidelineMarginHeader = GUIDELINE_MARGIN_HEADER_MIN
+                } else {
+                    guidelineHeader.animateSlide(guidelineMarginHeader, guidelineMarginHeaderMax, true)
+                    guidelineFooter.animateSlide(guidelineMarginFooter, guidelineMarginFooterMax, false)
+                    guidelineMarginFooter = guidelineMarginFooterMax
+                    guidelineMarginHeader = guidelineMarginHeaderMax
                 }
             }
         }

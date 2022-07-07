@@ -142,9 +142,14 @@ fun <T> debounce(
     }
 }
 
-fun Guideline.setGuidelineEnd(): Int {
+fun Guideline.getGuidelineEnd(): Int {
     val params = this.layoutParams as ConstraintLayout.LayoutParams
     return params.guideEnd
+}
+
+fun Guideline.getGuidelineBegin(): Int {
+    val params = this.layoutParams as ConstraintLayout.LayoutParams
+    return params.guideBegin
 }
 
 fun Guideline?.animateSlide(fromHeight: Int, targetHeight: Int, isGuidelineBegin: Boolean) =

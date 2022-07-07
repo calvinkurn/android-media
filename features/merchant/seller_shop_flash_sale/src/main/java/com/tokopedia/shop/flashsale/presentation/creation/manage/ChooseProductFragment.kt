@@ -85,7 +85,7 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
 
         setupObservers()
         setupSearchBar()
-        guidelineMarginMax = binding?.guidelineFooter?.setGuidelineEnd().orZero()
+        guidelineMarginMax = binding?.guidelineFooter?.getGuidelineEnd().orZero()
         guidelineMargin = guidelineMarginMax
         viewModel.getShopInfo()
     }
