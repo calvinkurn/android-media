@@ -223,6 +223,7 @@ object AccountConstants {
 
     object REQUEST {
         const val REQUEST_ADD_PASSWORD = 100
+        const val REQUEST_LOCATION_PERMISSION = 888
     }
 
     object TDNBanner {

@@ -395,7 +395,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         grantResults: IntArray
     ) {
         when (requestCode) {
-            888 -> {
+            AccountConstants.REQUEST.REQUEST_LOCATION_PERMISSION -> {
                 if (grantResults.isNotEmpty() &&
                     grantResults[0] == PackageManager.PERMISSION_GRANTED
                 ) {
@@ -1297,7 +1297,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION
             ),
-            888
+            AccountConstants.REQUEST.REQUEST_LOCATION_PERMISSION
         )
     }
 
@@ -1356,7 +1356,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     private fun initCoachMark(position: Int, itemView: View, data: Any) {
         if (accountPref.isShowCoachmark()) {
             if (!isProfileSectionBinded) {
-                if (coachMarkItem.count() < 3) {
+                if (coachMarkItem.count() < COACHMARK_SIZE) {
                     if (position == 0 && data is ProfileDataView) {
                         coachMarkItem.add(
                             CoachMark2Item(
@@ -1673,6 +1673,9 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         private const val REMOTE_CONFIG_KEY_ACCOUNT_LINKING = "android_user_link_account_entry_point"
         private const val EXPLICIT_PROFILE_MENU_ROLLOUT = "explicit_android"
         private const val CLICK_TYPE_WISHLIST = "&click_type=wishlist"
+
+        private const val COACHMARK_SIZE = 3
+        private const val FIRST_INDEX = 0
 
         fun newInstance(bundle: Bundle?): Fragment {
             return HomeAccountUserFragment().apply {
