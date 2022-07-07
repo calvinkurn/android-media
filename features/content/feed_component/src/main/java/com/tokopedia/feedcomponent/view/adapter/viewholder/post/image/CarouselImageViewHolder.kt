@@ -147,6 +147,7 @@ internal class CarouselImageViewHolder(
     override fun onViewRecycled() {
         super.onViewRecycled()
         removeExistingPostTags()
+        postImage.setImageDrawable(null)
     }
 
     fun focusMedia() {
