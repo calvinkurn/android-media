@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/unify_space_16"
+    android:layout_marginRight="@dimen/unify_space_16"
     android:elevation="0dp"
     app:cardCornerRadius="@dimen/unify_space_8">
 
