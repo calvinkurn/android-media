@@ -1231,6 +1231,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                 maxDate = maxTime,
                 type = DateTimePickerUnify.TYPE_TIMEPICKER
             ).apply {
+                minuteInterval = 30
                 when(type){
                     0 -> {
                         setTitle(TIME_TITLE)
