@@ -58,6 +58,7 @@ object DataFavoriteMapper {
                 shopItem.isPMPro = topAdsShopItem.isPMPro
                 shopItem.isPowerMerchant = topAdsShopItem.isPowerMerchant
                 shopItem.imageShop = topAdsShopItem.imageShop
+                shopItem.layout = topAdsShopItem.layout
                 viewModelTopAdsShopItemList.add(shopItem)
             }
         }

@@ -72,6 +72,7 @@ class TopAdsShopMapper(
             topAdsShopItem.isPMPro = dataResponse.headline?.shop?.isPMPro?: false
             topAdsShopItem.isPowerMerchant = dataResponse.headline?.shop?.isPowerMerchant?: false
             topAdsShopItem.imageShop = dataResponse.headline?.shop?.imageShop
+            topAdsShopItem.layout = dataResponse.headline?.layout
             topAdsShopItems.add(topAdsShopItem)
         }
         return topAdsShopItems

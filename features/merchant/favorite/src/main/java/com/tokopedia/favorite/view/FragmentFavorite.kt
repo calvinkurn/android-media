@@ -332,10 +332,14 @@ class FragmentFavorite() : BaseDaggerFragment(), FavoriteClickListener, OnRefres
     }
 
     override fun onFavoriteShopClicked(view: View?, shopItemSelected: TopAdsShopItem?) {
-        favoriteShopViewSelected = view
-        this.shopItemSelected = shopItemSelected
-        favoriteShopViewSelected?.isEnabled = false
-        viewModel!!.addFavoriteShop(favoriteShopViewSelected!!, this.shopItemSelected!!)
+        if (view == null) {
+            viewModel?.refreshAllDataFavoritePage()
+        } else {
+            favoriteShopViewSelected = view
+            this.shopItemSelected = shopItemSelected
+            favoriteShopViewSelected?.isEnabled = false
+            viewModel!!.addFavoriteShop(favoriteShopViewSelected!!, this.shopItemSelected!!)
+        }
     }
 
     private fun prepareView() {

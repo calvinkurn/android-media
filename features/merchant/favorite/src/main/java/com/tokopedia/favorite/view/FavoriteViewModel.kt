@@ -151,13 +151,13 @@ class FavoriteViewModel
         })
     }
 
-    fun addFavoriteShop(view: View, shopItem: TopAdsShopItem) {
+    fun addFavoriteShop(view: View?, shopItem: TopAdsShopItem) {
         val params = ToggleFavouriteShopUseCase.createRequestParam(shopItem.shopId);
         launchCatchError(block = {
             val isValid = withContext(dispatcherProvider.io) {
                 toggleFavouriteShopUseCase.createObservable(params).toBlocking().single()
             }
-            view.clearAnimation()
+            view?.clearAnimation()
             if (isValid != null && isValid) {
                 val favoriteShopUiModel = FavoriteShopUiModel()
                 favoriteShopUiModel.shopId = shopItem.shopId
@@ -171,7 +171,7 @@ class FavoriteViewModel
         }, onError = { e ->
             Timber.e("onError: %s", e.toString())
             _isErrorAddFavoriteShop.value = true
-            view.clearAnimation()
+            view?.clearAnimation()
         })
     }
 

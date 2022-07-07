@@ -11,11 +11,17 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.topads.sdk.R
+import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_5
 import com.tokopedia.topads.sdk.domain.model.ShopProductModel.ShopProductModelItem
+import com.tokopedia.topads.sdk.listener.FollowButtonClickListener
 import com.tokopedia.topads.sdk.listener.ShopAdsProductListener
 import com.tokopedia.unifyprinciples.Typography
 
-class ShopAdsProductAdapter(private val shopAdsProductListener: ShopAdsProductListener) : RecyclerView.Adapter<ShopAdsProductAdapter.ShopAdsProductViewHolder>() {
+class ShopAdsProductAdapter(
+    private val shopAdsProductListener: ShopAdsProductListener,
+    private val followButtonClickListener:FollowButtonClickListener?
+) : RecyclerView.Adapter<ShopAdsProductAdapter.ShopAdsProductViewHolder>() {
+
 
     private val shopAdsProductItemList = arrayListOf<ShopProductModelItem>()
 
@@ -36,6 +42,7 @@ class ShopAdsProductAdapter(private val shopAdsProductListener: ShopAdsProductLi
         private val shopProductRoot = itemView.findViewById<CardView>(R.id.shopProductRoot)
         private val locationIcon = itemView.findViewById<ImageView>(R.id.locationIcon)
         private val locationName = itemView.findViewById<Typography>(R.id.locationName)
+        private val buttonFollow = itemView.findViewById<Typography>(R.id.buttonFollow)
 
 
         fun bind(shopProductModelItem: ShopProductModelItem) {
@@ -52,6 +59,18 @@ class ShopAdsProductAdapter(private val shopAdsProductListener: ShopAdsProductLi
             }
 
             shopProductRoot.setOnClickListener { shopAdsProductListener.onItemClicked(shopProductModelItem.position) }
+            setFollowButton(shopProductModelItem.isFollowed, shopProductModelItem.layoutType)
+
+        }
+
+        private fun setFollowButton(followed: Boolean, layoutType: Int?) {
+            if (layoutType == LAYOUT_5) buttonFollow.hide()
+            else{
+                buttonFollow.show()
+                buttonFollow.setOnClickListener {
+                    followButtonClickListener?.onItemClicked()
+                }
+            }
 
         }
 

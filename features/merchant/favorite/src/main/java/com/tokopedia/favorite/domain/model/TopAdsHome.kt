@@ -54,6 +54,9 @@ class TopAdsHome {
         @SerializedName("uri")
         var uri: String? = null
 
+        @SerializedName("layout")
+        var layout: Int? = null
+
         @SerializedName("badges")
         var badges: List<*>? = null
 

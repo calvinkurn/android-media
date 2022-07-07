@@ -28,4 +28,5 @@ data class TopAdsShopItem (
         var isPMPro: Boolean = false,
         var isPowerMerchant: Boolean = false,
         var imageShop: ImageShop?  = null,
+        var layout: Int?  = null,
 )

@@ -7,4 +7,5 @@ object TopAdsConstants {
     const val LAYOUT_6 = 6
     const val LAYOUT_8 = 8
     const val LAYOUT_9 = 9
+    const val LAYOUT_13 = 13
 }

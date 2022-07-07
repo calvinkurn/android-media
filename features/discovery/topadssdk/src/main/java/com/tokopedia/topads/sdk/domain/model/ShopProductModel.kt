@@ -1,6 +1,7 @@
 package com.tokopedia.topads.sdk.domain.model
 
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_5
 
 private const val KEY_SHOP_ISGOLD = 1
 
@@ -20,6 +21,8 @@ data class ShopProductModel(
             val isPMPro: Boolean = false,
             val goldShop: Int = 0,
             val position: Int,
+            val isFollowed: Boolean = false,
+            val layoutType:Int? = LAYOUT_5,
             val impressHolder: ImpressHolder? = null,
 
             ) {
