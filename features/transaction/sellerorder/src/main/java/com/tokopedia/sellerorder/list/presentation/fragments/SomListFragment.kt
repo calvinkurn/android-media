@@ -898,7 +898,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         setupSearchBar()
         setupListeners()
         setupMasks()
-        coachMarkManager = SomListCoachMarkManager(somListBinding)
+        coachMarkManager = SomListCoachMarkManager(somListBinding, userSession.userId)
     }
 
     private fun setupMasks() {

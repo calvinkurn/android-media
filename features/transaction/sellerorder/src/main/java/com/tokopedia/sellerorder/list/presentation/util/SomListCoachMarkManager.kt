@@ -10,10 +10,12 @@ import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.databinding.FragmentSomListBinding
 
 class SomListCoachMarkManager(
-    private val somListBinding: FragmentSomListBinding?
+    private val somListBinding: FragmentSomListBinding?,
+    private val userId: String
 ) {
 
     companion object {
@@ -100,12 +102,20 @@ class SomListCoachMarkManager(
     private fun setupCoachMark() {
         coachMark?.onFinishListener = {
             somListBinding?.root?.context?.let { context ->
+                SomAnalytics.eventClickOnboardInfoOk(userId)
                 CoachMarkPreference.setShown(context, SHARED_PREF_SOM_LIST_COACH_MARK, true)
                 somListBinding.rvSomList.removeOnScrollListener(scrollListener)
             }
         }
         coachMark?.setStepListener(object : CoachMark2.OnStepListener {
             override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                val isMovingToNextStep = currentIndex > currentCoachMarkPosition
+                val isMovingToPreviousStep = currentIndex < currentCoachMarkPosition
+                if (isMovingToNextStep) {
+                    SomAnalytics.eventClickOnboardInfoContinue(userId)
+                } else if (isMovingToPreviousStep) {
+                    SomAnalytics.eventClickOnboardInfoBack(userId)
+                }
                 currentCoachMarkPosition = currentIndex
                 if (currentCoachMarkPosition == COACH_MARK_ITEM_ORDER_ITEM_POS) {
                     coachMark?.isDismissed = true
