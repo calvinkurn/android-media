@@ -1,12 +1,14 @@
 package com.tokopedia.review.feature.credibility.di
 
-import com.tokopedia.review.common.di.ReviewInboxComponent
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.review.feature.credibility.presentation.fragment.ReviewCredibilityBottomSheet
-import com.tokopedia.review.feature.inbox.pending.di.ReviewPendingScope
 import dagger.Component
 
-@Component(modules = [ReviewCredibilityViewModelModule::class], dependencies = [ReviewInboxComponent::class])
-@ReviewPendingScope
+@Component(
+    modules = [ReviewCredibilityModule::class, ReviewCredibilityViewModelModule::class],
+    dependencies = [BaseAppComponent::class]
+)
+@ReviewCredibilityScope
 interface ReviewCredibilityComponent {
     fun inject(reviewCredibilityBottomSheet: ReviewCredibilityBottomSheet)
 }

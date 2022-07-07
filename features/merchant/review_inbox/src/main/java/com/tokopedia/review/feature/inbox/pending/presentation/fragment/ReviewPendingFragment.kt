@@ -19,6 +19,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.removeObservers
@@ -573,7 +574,7 @@ class ReviewPendingFragment :
             context,
             ApplinkConstInternalMarketplace.REVIEW_CREDIBILITY,
             viewModel.getUserId(),
-            INBOX_SOURCE
+            ReviewApplinkConst.REVIEW_CREDIBILITY_SOURCE_REVIEW_INBOX
         )
     }
 

@@ -18,7 +18,7 @@ class CreateReviewAnonymous @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = Int.ZERO
-) : BaseCreateReviewCustomView<WidgetCreateReviewAnonymousBinding>(context, attrs, defStyleAttr) {
+) : BaseReviewCustomView<WidgetCreateReviewAnonymousBinding>(context, attrs, defStyleAttr) {
 
     companion object {
         private const val TRANSITION_DURATION = 300L

@@ -21,7 +21,7 @@ class CreateReviewVideoPreviewThumbnail @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = Int.ZERO
-) : BaseCreateReviewCustomView<WidgetCreateReviewMediaPreviewVideoThumbnailBinding>(
+) : BaseReviewCustomView<WidgetCreateReviewMediaPreviewVideoThumbnailBinding>(
     context,
     attrs,
     defStyleAttr

@@ -14,7 +14,7 @@ class CreateReviewTicker @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = Int.ZERO
-) : BaseCreateReviewCustomView<WidgetCreateReviewTickerBinding>(context, attrs, defStyleAttr) {
+) : BaseReviewCustomView<WidgetCreateReviewTickerBinding>(context, attrs, defStyleAttr) {
 
     private val trackingHandler = TrackingHandler()
     private var createReviewTickerListener: Listener? = null

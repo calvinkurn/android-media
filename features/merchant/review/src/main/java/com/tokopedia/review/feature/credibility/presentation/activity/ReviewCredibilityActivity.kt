@@ -7,7 +7,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
@@ -15,11 +14,12 @@ import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
 import com.tokopedia.review.common.util.ReviewConstants
+import com.tokopedia.review.feature.credibility.di.DaggerReviewCredibilityComponent
+import com.tokopedia.review.feature.credibility.di.ReviewCredibilityComponent
 import com.tokopedia.review.feature.credibility.presentation.fragment.ReviewCredibilityBottomSheet
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import timber.log.Timber
 
-class ReviewCredibilityActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>,
+class ReviewCredibilityActivity : BaseSimpleActivity(), HasComponent<ReviewCredibilityComponent>,
     ReviewPerformanceMonitoringListener {
 
     companion object {
@@ -30,7 +30,6 @@ class ReviewCredibilityActivity : BaseSimpleActivity(), HasComponent<BaseAppComp
     private var source = ""
     private var productId = ""
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
-    private var reviewCredibilityBottomSheet: BottomSheetUnify? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getDataFromApplinkOrIntent()
@@ -42,9 +41,10 @@ class ReviewCredibilityActivity : BaseSimpleActivity(), HasComponent<BaseAppComp
         showReviewCredibilityBottomSheet()
     }
 
-
-    override fun getComponent(): BaseAppComponent {
-        return (application as BaseMainApplication).baseAppComponent
+    override fun getComponent(): ReviewCredibilityComponent? {
+        return DaggerReviewCredibilityComponent.builder()
+            .baseAppComponent((application as? BaseMainApplication)?.baseAppComponent)
+            .build()
     }
 
     override fun getNewFragment(): Fragment? {
@@ -132,12 +132,14 @@ class ReviewCredibilityActivity : BaseSimpleActivity(), HasComponent<BaseAppComp
     }
 
     private fun showReviewCredibilityBottomSheet() {
-        reviewCredibilityBottomSheet = ReviewCredibilityBottomSheet.newInstance(userId, source, productId)
-        reviewCredibilityBottomSheet?.apply {
-            showKnob = true
-            showCloseIcon = false
-            showHeader = false
-            show(supportFragmentManager, REVIEW_CREDIBILITY_BOTTOM_SHEET_TAG)
+        supportFragmentManager.findFragmentByTag(
+            REVIEW_CREDIBILITY_BOTTOM_SHEET_TAG
+        ).let {
+            if (it == null) {
+                ReviewCredibilityBottomSheet.newInstance(userId, source, productId).run {
+                    show(supportFragmentManager, REVIEW_CREDIBILITY_BOTTOM_SHEET_TAG)
+                }
+            }
         }
     }
 

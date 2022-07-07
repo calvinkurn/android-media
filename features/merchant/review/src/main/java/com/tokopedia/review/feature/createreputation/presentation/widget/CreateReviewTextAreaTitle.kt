@@ -17,7 +17,7 @@ class CreateReviewTextAreaTitle @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = Int.ZERO
-) : BaseCreateReviewCustomView<WidgetCreateReviewTextAreaTitleBinding>(context, attrs, defStyleAttr) {
+) : BaseReviewCustomView<WidgetCreateReviewTextAreaTitleBinding>(context, attrs, defStyleAttr) {
 
     companion object {
         private const val TRANSITION_DURATION = 300L

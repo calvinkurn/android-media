@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.common.extension.collectLatestWhenResumed
@@ -38,8 +39,6 @@ class ReviewDetailFragment : BaseDaggerFragment(), CoroutineScope {
 
     companion object {
         private const val PARAM_PRODUCT_ID = "productId"
-        private const val GALLERY_SOURCE_CREDIBILITY_SOURCE = "gallery"
-        private const val READING_IMAGE_PREVIEW_CREDIBILITY_SOURCE = "reading image preview"
 
         const val TAG = "ReviewDetailFragment"
     }
@@ -200,9 +199,9 @@ class ReviewDetailFragment : BaseDaggerFragment(), CoroutineScope {
 
     private fun getCredibilitySource(): String {
         return if (sharedReviewMediaGalleryViewModel.isFromGallery()) {
-            GALLERY_SOURCE_CREDIBILITY_SOURCE
+            ReviewApplinkConst.REVIEW_CREDIBILITY_SOURCE_REVIEW_GALLERY
         } else {
-            READING_IMAGE_PREVIEW_CREDIBILITY_SOURCE
+            ReviewApplinkConst.REVIEW_CREDIBILITY_SOURCE_REVIEW_READING_IMAGE_PREVIEW
         }
     }
 

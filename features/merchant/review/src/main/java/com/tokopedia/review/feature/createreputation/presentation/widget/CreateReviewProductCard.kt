@@ -19,7 +19,7 @@ class CreateReviewProductCard @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = Int.ZERO
-) : BaseCreateReviewCustomView<WidgetCreateReviewProductCardBinding>(context, attrs, defStyleAttr) {
+) : BaseReviewCustomView<WidgetCreateReviewProductCardBinding>(context, attrs, defStyleAttr) {
 
     companion object {
         private const val TRANSITION_DURATION = 300L

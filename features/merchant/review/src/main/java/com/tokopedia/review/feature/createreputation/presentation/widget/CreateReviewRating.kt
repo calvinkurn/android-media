@@ -18,7 +18,7 @@ class CreateReviewRating @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = Int.ZERO
-) : BaseCreateReviewCustomView<WidgetCreateReviewRatingBinding>(context, attrs, defStyleAttr) {
+) : BaseReviewCustomView<WidgetCreateReviewRatingBinding>(context, attrs, defStyleAttr) {
 
     companion object {
         private const val TRANSITION_DURATION = 300L

@@ -22,8 +22,9 @@ object ReviewApplinkConst {
     const val PENALTY_AND_REWARD_TAB = "penalty-and-reward" // 4th tab
 
     // review credibility
-    const val REVIEW_CREDIBILITY_SOURCE_REVIEW_READING = "reading"
+    const val REVIEW_CREDIBILITY_SOURCE_REVIEW_INBOX = "inbox"
+    const val REVIEW_CREDIBILITY_SOURCE_REVIEW_READING = "review-list"
     const val REVIEW_CREDIBILITY_SOURCE_REVIEW_READING_IMAGE_PREVIEW = "reading image preview"
     const val REVIEW_CREDIBILITY_SOURCE_REVIEW_GALLERY = "gallery"
-    const val REVIEW_CREDIBILITY_SOURCE_REVIEW_MOST_HELPFUL = "most helpful review"
+    const val REVIEW_CREDIBILITY_SOURCE_REVIEW_MOST_HELPFUL = "mosthelpful-review"
 }

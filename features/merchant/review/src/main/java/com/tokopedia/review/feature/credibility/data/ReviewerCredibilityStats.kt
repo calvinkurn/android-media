@@ -2,12 +2,13 @@ package com.tokopedia.review.feature.credibility.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class ReviewerCredibilityStatsResponse(
     @SerializedName("productrevGetReviewerCredibilityStats")
     @Expose
     val response: ReviewerCredibilityStatsWrapper = ReviewerCredibilityStatsWrapper()
-)
+) : Serializable
 
 data class ReviewerCredibilityStatsWrapper(
     @SerializedName("label")
@@ -16,7 +17,7 @@ data class ReviewerCredibilityStatsWrapper(
     @SerializedName("stats")
     @Expose
     val stats: List<ReviewerCredibilityStat> = listOf()
-)
+) : Serializable
 
 data class ReviewerCredibilityLabel(
     @SerializedName("userName")
@@ -55,7 +56,7 @@ data class ReviewerCredibilityLabel(
     @SerializedName("achievementListLink")
     @Expose
     val achievementListLink: String? = null,
-)
+) : Serializable
 
 data class ReviewerCredibilityStat(
     @SerializedName("key")
@@ -76,7 +77,7 @@ data class ReviewerCredibilityStat(
     @SerializedName("show")
     @Expose
     val shouldShow: Boolean = false
-)
+) : Serializable
 
 data class Achievement(
     @SerializedName("image")
@@ -91,4 +92,7 @@ data class Achievement(
     @SerializedName("color")
     @Expose
     val color: String? = null,
-)
+    @SerializedName("mementoLink")
+    @Expose
+    val mementoLink: String? = null,
+) : Serializable

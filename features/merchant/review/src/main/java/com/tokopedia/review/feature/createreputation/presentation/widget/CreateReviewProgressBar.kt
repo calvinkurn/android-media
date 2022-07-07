@@ -19,7 +19,7 @@ class CreateReviewProgressBar @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = Int.ZERO
-) : BaseCreateReviewCustomView<WidgetCreateReviewProgressBarBinding>(context, attrs, defStyleAttr) {
+) : BaseReviewCustomView<WidgetCreateReviewProgressBarBinding>(context, attrs, defStyleAttr) {
 
     companion object {
         private const val COMPLETE_PROGRESS = 100
