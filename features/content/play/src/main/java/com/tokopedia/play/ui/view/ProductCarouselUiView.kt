@@ -73,6 +73,10 @@ class ProductCarouselUiView(
         adapter.setItemsAndAnimateChanges(getPlaceholder())
     }
 
+    fun setTransparent(isTransparent: Boolean) {
+        binding.root.alpha = if (isTransparent) 0f else 1f
+    }
+
     fun show() {
         binding.root.visible()
     }

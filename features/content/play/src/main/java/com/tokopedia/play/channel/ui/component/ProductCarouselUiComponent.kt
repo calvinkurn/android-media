@@ -7,16 +7,21 @@ import com.tokopedia.play.ui.view.ProductCarouselUiView
 import com.tokopedia.play.util.CachedState
 import com.tokopedia.play.util.isChanged
 import com.tokopedia.play.util.isNotChanged
+import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
 import com.tokopedia.play_common.eventbus.EventBus
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 /**
  * Created by kenny.hadisaputra on 06/07/22
  */
 class ProductCarouselUiComponent(
     binding: ViewProductFeaturedBinding,
-    bus: EventBus<in Event>,
+    bus: EventBus<Any>,
+    scope: CoroutineScope,
 ) : UiComponent<PlayViewerNewUiState> {
 
     private val uiView = ProductCarouselUiView(
@@ -36,6 +41,17 @@ class ProductCarouselUiComponent(
             }
         }
     )
+
+    init {
+        scope.launch {
+            bus.subscribe().collect {
+                when (it) {
+                    PlayUserInteractionFragment.Event.OnScrubStarted -> uiView.setTransparent(true)
+                    PlayUserInteractionFragment.Event.OnScrubEnded -> uiView.setTransparent(false)
+                }
+            }
+        }
+    }
 
     override fun render(state: CachedState<PlayViewerNewUiState>) {
         if (state.isNotChanged(

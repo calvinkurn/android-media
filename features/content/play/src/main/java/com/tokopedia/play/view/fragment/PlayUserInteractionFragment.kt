@@ -419,10 +419,12 @@ class PlayUserInteractionFragment @Inject constructor(
      */
     override fun onStartSeeking(view: VideoControlViewComponent) {
         onScrubStarted()
+        eventBus.emit(Event.OnScrubStarted)
     }
 
     override fun onEndSeeking(view: VideoControlViewComponent) {
         onScrubEnded()
+        eventBus.emit(Event.OnScrubEnded)
     }
 
     /**
@@ -586,6 +588,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 ProductCarouselUiComponent(
                     binding = productFeaturedBinding,
                     bus = eventBus,
+                    scope = viewLifecycleOwner.lifecycleScope,
                 )
             )
         }
@@ -1824,5 +1827,10 @@ class PlayUserInteractionFragment @Inject constructor(
         private const val FADING_EDGE_PRODUCT_FEATURED_WIDTH_MULTIPLIER = 0.125f
 
         private const val GAME_LOSER_COACHMARK_DELAY = 5000L
+    }
+
+    sealed interface Event {
+        object OnScrubStarted : Event
+        object OnScrubEnded : Event
     }
 }
