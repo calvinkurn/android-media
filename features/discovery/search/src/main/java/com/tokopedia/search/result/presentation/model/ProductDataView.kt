@@ -36,6 +36,13 @@ class ProductDataView {
 
     fun isAdvancedNegativeKeywordSearch(): Boolean {
         if (keywordProcess.isNullOrEmpty()) return false
-        return keywordProcess.toIntOrZero() in 16..31
+        return keywordProcess.toIntOrZero() in ADVANCED_NEGATIVE_KEYWORD_RANGE
+    }
+
+    companion object {
+        private const val ADVANCED_NEGATIVE_KEYWORD_PROCESS_START = 16
+        private const val ADVANCED_NEGATIVE_KEYWORD_PROCESS_END = 31
+        private val ADVANCED_NEGATIVE_KEYWORD_RANGE =
+            ADVANCED_NEGATIVE_KEYWORD_PROCESS_START..ADVANCED_NEGATIVE_KEYWORD_PROCESS_END
     }
 }
