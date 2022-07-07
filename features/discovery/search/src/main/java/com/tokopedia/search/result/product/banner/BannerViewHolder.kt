@@ -1,16 +1,18 @@
-package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
+package com.tokopedia.search.result.product.banner
 
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductBannerLayoutBinding
-import com.tokopedia.search.result.presentation.model.BannerDataView
-import com.tokopedia.search.result.presentation.view.listener.BannerListener
 import com.tokopedia.utils.view.binding.viewBinding
 
-class BannerViewHolder(itemView: View, private val bannerListener: BannerListener): AbstractViewHolder<BannerDataView>(itemView) {
+class BannerViewHolder(
+    itemView: View,
+    private val bannerListener: BannerListener
+) : AbstractViewHolder<BannerDataView>(itemView) {
 
     companion object {
         @LayoutRes
@@ -43,6 +45,9 @@ class BannerViewHolder(itemView: View, private val bannerListener: BannerListene
                 if (element.applink.isNotEmpty()) {
                     it.setOnClickListener {
                         bannerListener.onBannerClicked(element)
+                    }
+                    it.addOnImpressionListener(element) {
+                        bannerListener.onBannerImpressed(element)
                     }
                 } else {
                     it.setOnClickListener(null)

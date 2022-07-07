@@ -44,7 +44,6 @@ import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper
 import com.tokopedia.search.result.presentation.mapper.RecommendationViewModelMapper
 import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchDataView
 import com.tokopedia.search.result.presentation.model.BannedProductsTickerDataView
-import com.tokopedia.search.result.presentation.model.BannerDataView
 import com.tokopedia.search.result.presentation.model.BroadMatch
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
@@ -66,6 +65,7 @@ import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDa
 import com.tokopedia.search.result.presentation.model.SeparatorDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
+import com.tokopedia.search.result.product.banner.BannerPresenterDelegate
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
 import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
@@ -137,6 +137,7 @@ class ProductListPresenter @Inject constructor(
     private val topAdsHeadlineHelper : TopAdsHeadlineHelper,
     performanceMonitoringProvider: PerformanceMonitoringProvider,
     private val chooseAddressDelegate: ChooseAddressPresenterDelegate,
+    private val bannerDelegate: BannerPresenterDelegate,
     private val requestParamsGenerator: RequestParamsGenerator,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter {
@@ -200,7 +201,6 @@ class ProductListPresenter @Inject constructor(
         private set
     private var threeDotsProductItem: ProductItemDataView? = null
     private var firstProductPositionWithBOELabel = -1
-    private var bannerDataView: BannerDataView? = null
     private var categoryIdL2 = ""
     private var suggestionKeyword = ""
     private var relatedKeyword = ""
@@ -440,7 +440,7 @@ class ProductListPresenter @Inject constructor(
         processInspirationWidgetPosition(searchParameter, list)
         processInspirationCarouselPosition(searchParameter, list)
         processBannerAndBroadmatchInSamePosition(list)
-        processBanner(list)
+        bannerDelegate.processBanner(isLastPage(), list, productList)
         processBroadMatch(list)
         addSearchInTokopedia(list)
 
@@ -629,7 +629,7 @@ class ProductListPresenter @Inject constructor(
         responseCode = productDataView.responseCode ?: ""
         suggestionDataView = productDataView.suggestionModel
         relatedDataView = productDataView.relatedDataView
-        bannerDataView = productDataView.bannerDataView
+        bannerDelegate.bannerDataView = productDataView.bannerDataView
         autoCompleteApplink = productDataView.autocompleteApplink ?: ""
         totalData = productDataView.totalData
         categoryIdL2 = productDataView.categoryIdL2
@@ -998,7 +998,7 @@ class ProductListPresenter @Inject constructor(
         }
 
         processBannerAndBroadmatchInSamePosition(list)
-        processBanner(list)
+        bannerDelegate.processBanner(isLastPage(), list, productList)
 
         runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_BROADMATCH) {
             processBroadMatch(list)
@@ -1353,61 +1353,18 @@ class ProductListPresenter @Inject constructor(
     private fun processBannerAndBroadmatchInSamePosition(
         list: MutableList<Visitable<*>>,
     ) {
-        val bannerDataView = bannerDataView ?: return
+        val bannerDataView = bannerDelegate.bannerDataView ?: return
         val relatedDataView = relatedDataView ?: return
 
-        if (isShowBanner() && isShowBroadMatch()) {
+        if (bannerDelegate.isShowBanner() && isShowBroadMatch()) {
             if (bannerDataView.position == -1 && relatedDataView.position == 0) {
                 processBroadMatchAtBottom(list)
-                processBannerAtBottom(list)
+                bannerDelegate.processBannerAtBottom(isLastPage(),list)
             } else if (bannerDataView.position == 0 && relatedDataView.position == 1) {
                 processBroadMatchAtTop(list)
-                processBannerAtTop(list)
+                bannerDelegate.processBannerAtTop(list, productList)
             }
         }
-    }
-
-    private fun isShowBanner() = bannerDataView?.imageUrl?.isNotEmpty() == true
-
-    private fun processBannerAtBottom(list: MutableList<Visitable<*>>) {
-        if (!isLastPage()) return
-
-        bannerDataView?.let {
-            list.add(it)
-            bannerDataView = null
-        }
-    }
-
-    private fun processBannerAtTop(list: MutableList<Visitable<*>>) {
-        bannerDataView?.let {
-            list.add(list.indexOf(productList[0]), it)
-            bannerDataView = null
-        }
-    }
-
-    private fun processBanner(list: MutableList<Visitable<*>>) {
-        try {
-            if (!isShowBanner()) return
-            val bannerDataView = bannerDataView ?: return
-
-            if (bannerDataView.position == -1) processBannerAtBottom(list)
-            else if (bannerDataView.position == 0) processBannerAtTop(list)
-            else processBannerAtPosition(list)
-        } catch (throwable: Throwable) {
-            Timber.w(throwable)
-        }
-    }
-
-    private fun processBannerAtPosition(list: MutableList<Visitable<*>>) {
-        val bannerDataView = bannerDataView ?: return
-        if (productList.size < bannerDataView.position) return
-
-        val productItemVisitableIndex = bannerDataView.position - 1
-        val productItemVisitable = productList[productItemVisitableIndex]
-        val bannerVisitableIndex = list.indexOf(productItemVisitable) + 1
-
-        list.add(bannerVisitableIndex, bannerDataView)
-        this.bannerDataView = null
     }
 
     private fun processBroadMatch(list: MutableList<Visitable<*>>) {

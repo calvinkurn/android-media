@@ -3,7 +3,6 @@ package com.tokopedia.search.result.presentation.mapper
 import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.TYPE_ANNOTATION_PRODUCT_COLOR_CHIPS
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.domain.model.SearchProductModel.Banner
 import com.tokopedia.search.result.domain.model.SearchProductModel.InspirationCarouselData
 import com.tokopedia.search.result.domain.model.SearchProductModel.InspirationCarouselOption
 import com.tokopedia.search.result.domain.model.SearchProductModel.OtherRelated
@@ -19,7 +18,6 @@ import com.tokopedia.search.result.domain.model.SearchProductModel.Related
 import com.tokopedia.search.result.domain.model.SearchProductModel.SearchInspirationCarousel
 import com.tokopedia.search.result.domain.model.SearchProductModel.SearchProductData
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
-import com.tokopedia.search.result.presentation.model.BannerDataView
 import com.tokopedia.search.result.presentation.model.BroadMatch
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
@@ -34,6 +32,7 @@ import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.RelatedDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.presentation.model.TickerDataView
+import com.tokopedia.search.result.product.banner.BannerDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetVisitable
 import com.tokopedia.search.result.product.violation.ViolationDataView
@@ -100,7 +99,11 @@ class ProductViewModelMapper {
         productDataView.additionalParams = searchProductHeader.additionalParams
         productDataView.autocompleteApplink = searchProductData.autocompleteApplink
         productDataView.defaultView = searchProductHeader.defaultView
-        productDataView.bannerDataView = convertToBannerDataView(searchProductData.banner)
+        productDataView.bannerDataView = BannerDataView.create(
+            searchProductData.banner,
+            keyword,
+            dimension90,
+        )
         productDataView.lastFilterDataView = convertToLastFilterDataView(searchProductModel)
         productDataView.categoryIdL2 = searchProductModel.lastFilter.data.categoryIdL2
         productDataView.violation = convertToViolationView(searchProductData.violation)
@@ -398,15 +401,6 @@ class ProductViewModelMapper {
         return InspirationCarouselDataView.CardButton(
             option.cardButton.title,
             option.cardButton.applink,
-        )
-    }
-
-    private fun convertToBannerDataView(bannerModel: Banner): BannerDataView {
-        return BannerDataView(
-                bannerModel.position,
-                bannerModel.text,
-                bannerModel.applink,
-                bannerModel.imageUrl
         )
     }
 
