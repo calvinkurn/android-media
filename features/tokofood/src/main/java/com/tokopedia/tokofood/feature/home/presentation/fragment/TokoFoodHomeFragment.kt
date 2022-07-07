@@ -570,7 +570,9 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                         (uiEvent.data as? CheckoutTokoFoodData)?.let {
                             analytics.clickAtc(userSession.userId, localCacheModel?.district_id, it)
                         }
-                        goToPurchasePage()
+                        if (this@TokoFoodHomeFragment.isVisible){
+                            goToPurchasePage()
+                        }
                     }
                     UiEvent.EVENT_SUCCESS_LOAD_CART -> {
                         if (viewModel.isShownEmptyState()){

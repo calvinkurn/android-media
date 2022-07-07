@@ -50,7 +50,7 @@ object TokofoodRouteManager {
      * If the uriString can be handled in Activity, it will go to new fragment.
      * Otherwise, it will go to Activity
      */
-    fun routePrioritizeInternal(context: Context?, uriString: String) {
+    fun routePrioritizeInternal(context: Context?, uriString: String, isFinishCurrent: Boolean = false) {
         val activity: BaseMultiFragActivity? = if (context is Fragment) {
             (context.requireActivity() as? BaseMultiFragActivity)
         } else {
@@ -68,7 +68,7 @@ object TokofoodRouteManager {
             } else {
                 // If the fragment could take new params, we should replace the existed same class fragment with the new one
                 if (f is MerchantPageFragment || f is OrderCustomizationFragment || f is TokoFoodCategoryFragment) {
-                    (activity as? BaseTokofoodActivity)?.navigateToNewFragment(f, true)
+                    (activity as? BaseTokofoodActivity)?.navigateToNewFragment(f, true, isFinishCurrent)
                 } else {
                     activity.navigateToNewFragment(f)
                 }

@@ -739,7 +739,9 @@ class MerchantPageFragment : BaseMultiFragment(),
                                 merchantId
                             )
                         }
-                        navigateToNewFragment(TokoFoodPurchaseFragment.createInstance())
+                        if (this@MerchantPageFragment.isVisible){
+                            navigateToNewFragment(TokoFoodPurchaseFragment.createInstance())
+                        }
                     }
                 }
             }

@@ -370,9 +370,9 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                     parentFragmentManager.popBackStack()
                     val emptyProductShopId = (it.data as? String).orEmpty()
                     if (emptyProductShopId.isBlank()) {
-                        navigateToHomePage()
+                        navigateToHomePage(true)
                     } else {
-                        navigateToMerchantPage(emptyProductShopId)
+                        navigateToMerchantPage(emptyProductShopId, true)
                     }
                 }
                 PurchaseUiEvent.EVENT_SUCCESS_REMOVE_PRODUCT -> onSuccessRemoveProduct(it.data as Int)
@@ -696,16 +696,16 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         )
     }
 
-    private fun navigateToHomePage() {
-        TokofoodRouteManager.routePrioritizeInternal(context, ApplinkConstInternalTokoFood.HOME)
+    private fun navigateToHomePage(isFinishCurrent: Boolean = false) {
+        TokofoodRouteManager.routePrioritizeInternal(context, ApplinkConstInternalTokoFood.HOME, isFinishCurrent)
     }
 
-    private fun navigateToMerchantPage(merchantId: String) {
+    private fun navigateToMerchantPage(merchantId: String, isFinishCurrent: Boolean = false) {
         val merchantPageUri = Uri.parse(ApplinkConstInternalTokoFood.MERCHANT)
             .buildUpon()
             .appendQueryParameter(DeeplinkMapperTokoFood.PARAM_MERCHANT_ID, merchantId)
             .build()
-        TokofoodRouteManager.routePrioritizeInternal(context, merchantPageUri.toString())
+        TokofoodRouteManager.routePrioritizeInternal(context, merchantPageUri.toString(), isFinishCurrent)
     }
 
     private fun scrollToIndex(index: Int) {
@@ -975,7 +975,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     }
 
     override fun onTextAddItemClicked() {
-        navigateToMerchantPage(shopId)
+        navigateToMerchantPage(shopId, isFinishCurrent = true)
     }
 
     override fun onTextBulkDeleteUnavailableProductsClicked() {
