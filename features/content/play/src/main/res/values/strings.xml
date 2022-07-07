@@ -99,4 +99,8 @@
     <!-- Sharing Experience -->
     <string name="play_sharing_error_generate_link">Oops, ada gangguan yang perlu kami bereskan. Refresh atau balik lagi nanti.</string>
     <string name="play_sharing_refresh">Refresh</string>
+
+    <!--Pinned Product-->
+    <string name="play_product_pinned">Pin Dipasang</string>
+    <string name="play_product_pinned_atc">+</string>
 </resources>

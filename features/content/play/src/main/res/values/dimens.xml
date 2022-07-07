@@ -102,5 +102,11 @@
     <dimen name="play_voucher_info_translationY">-2dp</dimen>
     <dimen name="play_product_empty_illustration_size">275dp</dimen>
 
-    <!--Engagement tools-->
+    <!--Product Carousel-->
+    <dimen name="play_product_carousel_width">80dp</dimen>
+    <dimen name="play_product_carousel_height">118dp</dimen>
+
+    <!--Pinned Product-->
+    <dimen name="play_product_carousel_pinned_width">280dp</dimen>
+    <dimen name="play_product_carousel_pinned_icon_size">12dp</dimen>
 </resources>

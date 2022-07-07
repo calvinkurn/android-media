@@ -3,8 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="@dimen/play_product_featured_width"
-    android:layout_height="wrap_content"
+    android:layout_width="@dimen/play_product_carousel_width"
+    android:layout_height="@dimen/play_product_carousel_height"
     android:background="@drawable/bg_play_product_featured"
     app:rcl_cornerRadius="@dimen/play_featured_product_radius"
     >
