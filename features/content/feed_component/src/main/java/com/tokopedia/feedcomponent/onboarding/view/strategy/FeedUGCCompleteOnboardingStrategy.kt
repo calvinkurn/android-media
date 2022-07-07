@@ -18,7 +18,7 @@ import javax.inject.Inject
 class FeedUGCCompleteOnboardingStrategy @Inject constructor(
     dispatcher: CoroutineDispatchers,
     private val repo: FeedUGCOnboardingRepository,
-): FeedUGCOnboardingStrategy(dispatcher) {
+) : FeedUGCOnboardingStrategy(dispatcher) {
 
     private val _username = MutableStateFlow("")
     private val _usernameState = MutableStateFlow<UsernameState>(UsernameState.Unknown)
