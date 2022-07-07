@@ -5,7 +5,6 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.network.data.model.response.Header
 import com.tokopedia.shop.common.data.source.cloud.model.MaxStockThresholdResponse
 import com.tokopedia.shop.common.data.source.cloud.query.GetMaxStockThresholdQuery
 import com.tokopedia.shop.common.data.source.cloud.query.GetMaxStockThresholdQuery.PARAM_SHOP_ID
@@ -35,14 +34,6 @@ class GetMaxStockThresholdUseCase @Inject constructor(
         setRequestParams(RequestParams.create().apply {
             putString(PARAM_SHOP_ID, shopId)
         }.parameters)
-//        return executeOnBackground()
-        return MaxStockThresholdResponse(
-            getIMSMeta = MaxStockThresholdResponse.GetIMSMeta(
-                data = MaxStockThresholdResponse.GetIMSMeta.Data(
-                    "2000"
-                ),
-                header = Header()
-            )
-        )
+        return executeOnBackground()
     }
 }
