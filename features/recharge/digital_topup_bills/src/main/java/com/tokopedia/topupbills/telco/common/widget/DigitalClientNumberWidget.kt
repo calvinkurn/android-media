@@ -1,4 +1,4 @@
-package com.tokopedia.topupbills.telco.prepaid.widget
+package com.tokopedia.topupbills.telco.common.widget
 
 import android.content.Context
 import android.text.Editable
@@ -70,7 +70,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
 
         sortFilterChip.run {
             sortFilterHorizontalScrollView.setPadding(
-                SORT_FILTER_PADDING_16.toPx(), 0 ,SORT_FILTER_PADDING_8.toPx() ,0)
+                SORT_FILTER_PADDING_16.toPx(), 0 , SORT_FILTER_PADDING_8.toPx() ,0)
             sortFilterHorizontalScrollView.clipToPadding = false
         }
 
