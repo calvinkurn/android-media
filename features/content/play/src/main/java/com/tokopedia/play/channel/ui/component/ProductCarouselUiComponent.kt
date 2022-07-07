@@ -46,6 +46,9 @@ class ProductCarouselUiComponent(
         scope.launch {
             bus.subscribe().collect {
                 when (it) {
+                    is PlayUserInteractionFragment.Event.OnFadingEdgeMeasured -> {
+                        uiView.setFadingEndBounds(it.widthFromEnd)
+                    }
                     PlayUserInteractionFragment.Event.OnScrubStarted -> uiView.setTransparent(true)
                     PlayUserInteractionFragment.Event.OnScrubEnded -> uiView.setTransparent(false)
                 }

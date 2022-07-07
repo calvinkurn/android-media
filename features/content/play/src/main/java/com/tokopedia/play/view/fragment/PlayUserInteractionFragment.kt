@@ -977,11 +977,13 @@ class PlayUserInteractionFragment @Inject constructor(
     //endregion
 
     private fun setupFeaturedProductsFadingEdge(view: View) {
-//        view.doOnLayout {
-//            productFeaturedView?.setFadingEndBounds(
-//                (FADING_EDGE_PRODUCT_FEATURED_WIDTH_MULTIPLIER * it.width).toInt()
-//            )
-//        }
+        view.doOnLayout {
+            eventBus.emit(
+                Event.OnFadingEdgeMeasured(
+                    widthFromEnd = (FADING_EDGE_PRODUCT_FEATURED_WIDTH_MULTIPLIER * it.width).toInt()
+                )
+            )
+        }
     }
 
     private fun sendCastAnalytic(cast: PlayCastUiModel) {
@@ -1830,6 +1832,8 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     sealed interface Event {
+        data class OnFadingEdgeMeasured(val widthFromEnd: Int) : Event
+
         object OnScrubStarted : Event
         object OnScrubEnded : Event
     }

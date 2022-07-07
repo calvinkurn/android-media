@@ -73,6 +73,14 @@ class ProductCarouselUiView(
         adapter.setItemsAndAnimateChanges(getPlaceholder())
     }
 
+    fun setFadingEndBounds(width: Int) {
+        binding.rvProductFeatured.removeItemDecoration(defaultItemDecoration)
+        binding.rvProductFeatured.addItemDecoration(
+            ProductFeaturedItemDecoration(binding.rvProductFeatured.context, extraEndMargin = width)
+        )
+        binding.rvProductFeatured.setFadingEndBounds(width)
+    }
+
     fun setTransparent(isTransparent: Boolean) {
         binding.root.alpha = if (isTransparent) 0f else 1f
     }
