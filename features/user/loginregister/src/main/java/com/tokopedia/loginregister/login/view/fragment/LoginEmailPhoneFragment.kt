@@ -914,7 +914,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private fun getSeamlessLoginRollence(): Boolean {
         val rollence = abTestPlatform.getString(
-            ROLLENCE_KEY_INACTIVE_PHONE_NUMBER,
+            ROLLENCE_KEY_GOTO_SEAMLESS,
             ""
         )
         return rollence.isNotEmpty()

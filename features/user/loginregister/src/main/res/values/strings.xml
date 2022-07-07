@@ -129,7 +129,7 @@
     <string name="title_activity_term_and_privacy">Kebijakan Privasi</string>
 
     <!-- GOTO SEAMLESS -->
-    <string name="title_goto_seamless">Masuk ke Tokopedia</string>
+    <string name="goto_seamless_title">Masuk ke Tokopedia</string>
 
     <!--  CONTENT DESCRIPTION  -->
     <string name="content_desc_input_email_phone">input email phone</string>
