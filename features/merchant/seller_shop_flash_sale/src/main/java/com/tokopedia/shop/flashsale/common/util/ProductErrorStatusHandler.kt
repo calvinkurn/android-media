@@ -11,6 +11,7 @@ import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductErrorType.*
 import com.tokopedia.shop.flashsale.domain.entity.enums.ProductInputValidationResult
 import com.tokopedia.shop.flashsale.presentation.creation.manage.model.EditProductInputModel
 import javax.inject.Inject
+import kotlin.math.ceil
 
 class ProductErrorStatusHandler @Inject constructor(@ApplicationContext private val context: Context) {
 
@@ -83,17 +84,17 @@ class ProductErrorStatusHandler @Inject constructor(@ApplicationContext private 
 
         with(productInput) {
             price?.let {
-                if (it >= originalPrice) result.add(MAX_DISCOUNT_PRICE)
+                if (it > maxDiscountedPrice) result.add(MAX_DISCOUNT_PRICE)
                 if (it < minDiscountedPrice) result.add(MIN_DISCOUNT_PRICE)
             } ?: result.add(EMPTY_PRICE)
 
-            if (stock != null) {
-                if (stock!! > originalStock) result.add(MAX_STOCK)
-                if (stock!! < MIN_CAMPAIGN_STOCK) result.add(MIN_STOCK)
+            stock?.let {
+                if (it > originalStock) result.add(MAX_STOCK)
+                if (it < MIN_CAMPAIGN_STOCK) result.add(MIN_STOCK)
             }
 
-            if (maxOrder != null) {
-                if (maxOrder!! < MIN_CAMPAIGN_ORDER) result.add(MIN_ORDER)
+            maxOrder?.let {
+                if (it < MIN_CAMPAIGN_ORDER) result.add(MIN_ORDER)
             }
 
             if (stock != null && maxOrder != null) {
@@ -176,10 +177,10 @@ class ProductErrorStatusHandler @Inject constructor(@ApplicationContext private 
     }
 
     private fun getProductMaxDiscountedPrice(originalPrice: Long): Int {
-        return (originalPrice * MAX_CAMPAIGN_DISCOUNT_PERCENTAGE).toInt()
+        return ceil(originalPrice * MAX_CAMPAIGN_DISCOUNT_PERCENTAGE).toInt()
     }
 
     private fun getProductMinDiscountedPrice(originalPrice: Long): Int {
-        return (originalPrice * MIN_CAMPAIGN_DISCOUNT_PERCENTAGE).toInt()
+        return ceil(originalPrice * MIN_CAMPAIGN_DISCOUNT_PERCENTAGE).toInt()
     }
 }

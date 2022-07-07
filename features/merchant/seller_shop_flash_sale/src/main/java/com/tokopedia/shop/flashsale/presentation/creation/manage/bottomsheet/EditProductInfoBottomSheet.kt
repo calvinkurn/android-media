@@ -35,7 +35,7 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
         private const val TAG = "EditProductInfoBottomSheet"
         private const val PRODUCT_REMAINING_VISIBILITY_THRESHOLD = 1
         private const val MAX_LENGTH_NUMBER_INPUT = 11
-        private const val MAX_LENGTH_PERCENT_INPUT = 3
+        private const val MAX_LENGTH_PERCENT_INPUT = 2
         private const val NUMBER_INITIAL_VALUE = ""
         private const val PERCENT_INITIAL_VALUE = "-"
 
@@ -231,7 +231,8 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
             }
             tfCampaignPricePercent.textField?.editText?.afterTextChanged {
                 if (!switchPrice.isChecked) return@afterTextChanged
-                viewModel.setCampaignPricePercent(it.filterDigit().toLongOrZero())
+                if (it.isEmpty()) tfCampaignPrice.text = PERCENT_INITIAL_VALUE
+                else viewModel.setCampaignPricePercent(it.filterDigit().toLongOrZero())
             }
         }
     }
@@ -260,6 +261,7 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
 
     private fun loadNextData() {
         val product = productList?.getOrNull(productIndex)
+        binding?.switchPrice?.isSelected = false
         viewModel.setProduct(product ?: return)
     }
 
@@ -267,8 +269,7 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
         validationResult.errorList.forEach { errorType ->
             when(errorType) {
                 ManageProductErrorType.EMPTY_PRICE -> {
-                    binding?.tfCampaignPrice?.textField?.isInputError = true
-                    binding?.tfCampaignPrice?.textField?.setMessage(getString(R.string.editproduct_required_text))
+                    displayPriceEmpty()
                 }
                 ManageProductErrorType.MAX_DISCOUNT_PRICE -> {
                     displayValidationPrice(validationResult, isMaxError = true)
@@ -290,6 +291,19 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
                 }
                 else -> {}
             }
+        }
+    }
+
+    private fun displayPriceEmpty() {
+        binding?.apply {
+            val usingPercentInput = switchPrice.isChecked.orFalse()
+            val priceField = if (usingPercentInput) {
+                tfCampaignPricePercent.textField
+            } else {
+                tfCampaignPrice.textField
+            }
+            priceField?.isInputError = true
+            priceField?.setMessage(getString(R.string.editproduct_required_text))
         }
     }
 

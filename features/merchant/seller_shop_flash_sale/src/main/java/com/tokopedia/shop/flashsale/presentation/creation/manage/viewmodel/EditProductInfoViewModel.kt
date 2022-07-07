@@ -40,10 +40,10 @@ class EditProductInfoViewModel @Inject constructor(
     private var _campaignPrice = MutableLiveData<Long>()
     private var _campaignPricePercent = MutableLiveData<Long>()
     val campaignPrice = Transformations.map(_campaignPricePercent) {
-        DiscountUtil.getDiscountPrice(it, productInputData.value?.price)
+        DiscountUtil.getDiscountPrice(it, product.value?.price)
     }
     val campaignPricePercent = Transformations.map(_campaignPrice) {
-        DiscountUtil.getDiscountPercent(it, productInputData.value?.price)
+        DiscountUtil.getDiscountPercentThresholded(it, product.value?.price)
     }
 
     private var _editProductResult = MutableLiveData<ProductSubmissionResult>()
