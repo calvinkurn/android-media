@@ -940,7 +940,10 @@ class NewShopPageFragment :
     }
 
     private fun inflateViewStub() {
-        viewBinding?.viewStubContentLayout?.inflate()
+        try {
+            viewBinding?.viewStubContentLayout?.inflate()
+        } catch (e: Exception) {
+        }
     }
 
     private fun observeShopProductFilterParameterSharedViewModel() {
