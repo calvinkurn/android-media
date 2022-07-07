@@ -1,5 +1,6 @@
 package com.tokopedia.chatbot.view.fragment
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -9,8 +10,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.analytics.ChatbotAnalytics
+import com.tokopedia.chatbot.di.ChatbotModule
+import com.tokopedia.chatbot.di.DaggerChatbotComponent
 import com.tokopedia.csat_rating.data.BadCsatReasonListItem
 import com.tokopedia.csat_rating.fragment.BaseFragmentProvideRating
 import com.tokopedia.kotlin.extensions.view.hide
@@ -49,6 +53,7 @@ class ChatBotProvideRatingFragment: BaseFragmentProvideRating() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         findViews(view)
         super.onViewCreated(view, savedInstanceState)
+        initChatbotInjector()
         arguments?.let {
             if (!((it.getBoolean(IS_SHOW_OTHER_REASON))?:false)) {
                 top_bot_reason_layout.hide()
@@ -122,4 +127,14 @@ class ChatBotProvideRatingFragment: BaseFragmentProvideRating() {
         chatbotAnalytics.get().eventClick(ACTION_CSAT_SMILEY_REASON_BUTTON_CLICKED, message ?: "")
     }
 
+    private fun initChatbotInjector() {
+        if (activity != null && (activity as Activity).application != null) {
+            val chatbotComponent = DaggerChatbotComponent.builder().baseAppComponent(
+                ((activity as Activity).application as BaseMainApplication).baseAppComponent)
+                .chatbotModule(context?.let { ChatbotModule(it) })
+                .build()
+
+            chatbotComponent.inject(this)
+        }
+    }
 }
