@@ -7,7 +7,6 @@
         <activity
             android:name=".ui.activity.EPharmacyActivity"
             android:theme="@style/Theme.WhiteUnify"
-            android:label="@string/label_e_pharmacy"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:exported="false">
