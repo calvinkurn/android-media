@@ -427,7 +427,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
         )
         bindTracking(feedXCard)
         shareButton.setOnClickListener {
-                changeTopadsCekSekarangBtnColorToGreen(feedXCard)
+            changeTopadsCekSekarangBtnColorToGreen(feedXCard)
+            adapter.updateTopAdsToGreen(pageControl.indicatorCurrentPosition)
+
             val desc = context.getString(R.string.feed_share_default_text)
             val url = if (feedXCard.isTopAds && feedXCard.media.size > feedXCard.lastCarouselIndex) {
                 feedXCard.media[feedXCard.lastCarouselIndex].webLink
@@ -786,6 +788,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
         }
         likeButton.setOnClickListener {
             changeTopadsCekSekarangBtnColorToGreen(feedXCard)
+            adapter.updateTopAdsToGreen(pageControl.indicatorCurrentPosition)
+
             listener?.onLikeClick(
                 positionInFeed,
                 id,
