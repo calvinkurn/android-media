@@ -159,6 +159,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     private var collectJob: Job? = null
 
     companion object {
+        private const val HEIGHT_DIVIDER = 4
         private const val ITEM_VIEW_CACHE_SIZE = 20
         private const val REQUEST_CODE_SET_PINPOINT = 112
         private const val REQUEST_CODE_ADD_ADDRESS = 113
@@ -192,7 +193,6 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     private var localCacheModel: LocalCacheModel? = null
     private var pageLoadTimeMonitoring: TokoFoodHomePageLoadTimeMonitoring? = null
     private var isShowMiniCart = false
-    private var heightDivider = 4
     private var totalScrolled = 0
     private val spaceZero: Int
        get() = context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)?.toInt() ?: 0
@@ -994,7 +994,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     private fun setupJumpToTop(recyclerView: RecyclerView, dy: Int) {
         totalScrolled += dy
         binding?.root?.height?.let {
-            if (totalScrolled > (it / heightDivider)) {
+            if (totalScrolled > (it / HEIGHT_DIVIDER)) {
                 showJumpToTop(recyclerView)
             } else {
                 hideJumpToTop()
