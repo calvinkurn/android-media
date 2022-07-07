@@ -39,7 +39,13 @@ class PlayWidgetSmallView : ConstraintLayout, IPlayWidgetView {
     private var mAnalyticListener: PlayWidgetSmallAnalyticListener? = null
     private var mWidgetInternalListener: PlayWidgetInternalListener? = null
 
+    private var mModel: PlayWidgetUiModel = PlayWidgetUiModel.Empty
+
     private val cardBannerListener = object : PlayWidgetSmallViewHolder.Banner.Listener {
+
+        override fun onBannerImpressed(view: View) {
+            mAnalyticListener?.onImpressBannerCard(this@PlayWidgetSmallView)
+        }
 
         override fun onBannerClicked(view: View) {
             mAnalyticListener?.onClickBannerCard(this@PlayWidgetSmallView)
@@ -52,8 +58,8 @@ class PlayWidgetSmallView : ConstraintLayout, IPlayWidgetView {
             mAnalyticListener?.onImpressChannelCard(
                 view = this@PlayWidgetSmallView,
                 item = item,
+                config = mModel.config,
                 channelPositionInList = position,
-                isAutoPlay = mIsAutoPlay
             )
         }
 
@@ -62,26 +68,8 @@ class PlayWidgetSmallView : ConstraintLayout, IPlayWidgetView {
             mAnalyticListener?.onClickChannelCard(
                 view = this@PlayWidgetSmallView,
                 item = item,
+                config = mModel.config,
                 channelPositionInList = position,
-                isAutoPlay = mIsAutoPlay
-            )
-        }
-
-        override fun onLabelPromoChannelClicked(item: PlayWidgetChannelUiModel, position: Int) {
-            mAnalyticListener?.onLabelPromoClicked(
-                view = this@PlayWidgetSmallView,
-                item = item,
-                channelPositionInList = position,
-                isAutoPlay = mIsAutoPlay
-            )
-        }
-
-        override fun onLabelPromoChannelImpressed(item: PlayWidgetChannelUiModel, position: Int) {
-            mAnalyticListener?.onLabelPromoImpressed(
-                view = this@PlayWidgetSmallView,
-                item = item,
-                channelPositionInList = position,
-                isAutoPlay = mIsAutoPlay
             )
         }
     }
@@ -115,9 +103,18 @@ class PlayWidgetSmallView : ConstraintLayout, IPlayWidgetView {
     }
 
     fun setData(data: PlayWidgetUiModel) {
+        val prevModel = mModel
+        mModel = data
+
+        if (prevModel.hasAction != mModel.hasAction && mModel.hasAction) {
+            tvSeeAll.addOneTimeGlobalLayoutListener {
+                mAnalyticListener?.onImpressViewAll(this)
+            }
+        }
+
         tvTitle.text = data.title
 
-        tvSeeAll.visibility = if (data.isActionVisible) View.VISIBLE else View.GONE
+        tvSeeAll.visibility = if (data.hasAction) View.VISIBLE else View.GONE
         tvSeeAll.text = data.actionTitle
         tvSeeAll.setOnClickListener {
             mAnalyticListener?.onClickViewAll(this)
