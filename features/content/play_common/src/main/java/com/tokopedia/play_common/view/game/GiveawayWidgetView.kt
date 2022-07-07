@@ -119,6 +119,10 @@ class GiveawayWidgetView : ConstraintLayout {
     }
 
     private fun animateTap() {
+        binding.ivTap.apply {
+            scaleX = 0.5f
+            scaleY = 0.5f
+        }
         scaleX.start()
         scaleY.start()
     }
