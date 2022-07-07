@@ -19,8 +19,13 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCas
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkProductInfo
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.mapProductsWithProductId
@@ -157,7 +162,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val playWidgetTools: PlayWidgetTools,
                                                              private val remoteConfig: RemoteConfig,
                                                              private val createAffiliateCookieUseCase: Lazy<CreateAffiliateCookieUseCase>,
-                                                             val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher.main) {
+                                                             val userSessionInterface: UserSessionInterface,
+                                                             private val affiliateCookieHelper: AffiliateCookieHelper) : BaseViewModel(dispatcher.main) {
 
     companion object {
         private const val TEXT_ERROR = "ERROR"
@@ -1038,29 +1044,56 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                            affiliateUuid: String,
                            uuid: String,
                            affiliateChannel:String) {
-        if (affiliateUuid.isEmpty()) return
         launchCatchError(block = {
-            val affiliateParam = DynamicProductDetailMapper.generateAffiliateCookieRequest(
-                    productInfo = productInfo,
-                    affiliateUuid = affiliateUuid,
-                    deviceId = deviceId,
-                    uuid = uuid,
-                    affiliateChannel = affiliateChannel
-            )
-            val result = createAffiliateCookieUseCase
-                    .get()
-                    .executeOnBackground(CreateAffiliateCookieUseCase.createParams(affiliateParam))
+            val categoryId = productInfo.basic.category.detail.lastOrNull()?.id ?: ""
 
-            if (result.isSuccess()) {
-                _affiliateCookie.postValue(true.asSuccess())
-            } else {
-                _affiliateCookie.postValue(
-                        Throwable(result.response.data.error.errorMessage).asFail()
-                )
-            }
-        }) {
+            val affiliatePageDetail = AffiliatePageDetail(
+                pageId = productInfo.basic.productID,
+                source = AffiliateSdkPageSource.PDP(
+                    shopId = productInfo.basic.shopID,
+                    productInfo = AffiliateSdkProductInfo(
+                        categoryID = categoryId,
+                        isVariant = productInfo.isProductVariant(),
+                        stockQty = productInfo.getFinalStock().toIntOrZero()
+                    )
+                ),
+                siteId = "",
+                verticalId = ""
+            )
+            affiliateCookieHelper.initCookie(
+                affiliateUUID = affiliateUuid,
+                affiliateChannel = affiliateChannel,
+                affiliatePageDetail = affiliatePageDetail,
+                uuid = uuid
+            )
+        }, onError = {
             _affiliateCookie.postValue(it.asFail())
-        }
+        })
+
+//        if (affiliateUuid.isEmpty()) return
+
+//        launchCatchError(block = {
+//            val affiliateParam = DynamicProductDetailMapper.generateAffiliateCookieRequest(
+//                    productInfo = productInfo,
+//                    affiliateUuid = affiliateUuid,
+//                    deviceId = deviceId,
+//                    uuid = uuid,
+//                    affiliateChannel = affiliateChannel
+//            )
+//            val result = createAffiliateCookieUseCase
+//                    .get()
+//                    .executeOnBackground(CreateAffiliateCookieUseCase.createParams(affiliateParam))
+//
+//            if (result.isSuccess()) {
+//                _affiliateCookie.postValue(true.asSuccess())
+//            } else {
+//                _affiliateCookie.postValue(
+//                        Throwable(result.response.data.error.errorMessage).asFail()
+//                )
+//            }
+//        }) {
+//            _affiliateCookie.postValue(it.asFail())
+//        }
     }
 
     private fun updateMiniCartAfterATCRecomTokonow(message: String, isAtc: Boolean = false, recomItem: RecommendationItem = RecommendationItem()) {
