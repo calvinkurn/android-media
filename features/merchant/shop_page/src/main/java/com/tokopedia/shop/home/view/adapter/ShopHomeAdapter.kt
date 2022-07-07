@@ -653,7 +653,7 @@ class ShopHomeAdapter(
                 lastVisibleItemPosition
             }
             else -> {
-                val lastShopWidgetUiModel = visitables.last {
+                val lastShopWidgetUiModel = visitables.lastOrNull {
                     it is BaseShopHomeWidgetUiModel || it is ThematicWidgetUiModel
                 }
                 visitables.lastIndexOf(lastShopWidgetUiModel)
