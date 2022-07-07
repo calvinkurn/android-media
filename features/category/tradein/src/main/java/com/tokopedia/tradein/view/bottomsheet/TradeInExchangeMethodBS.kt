@@ -102,9 +102,9 @@ class TradeInExchangeMethodBS : BottomSheetUnify() {
                 if(available) {
                     findViewById<View>(R.id.tradein_p3_view).setOnClickListener { click->
                         if(it.firstOrNull()?.is3PL == false) {
-                            tradeInAnalytics?.clickExchangeMethods(true, it[0].estimatedPriceFmt, it[1].estimatedPriceFmt)
+                            tradeInAnalytics?.clickExchangeMethods(false, it[0].estimatedPriceFmt, it[1].estimatedPriceFmt)
                         } else {
-                            tradeInAnalytics?.clickExchangeMethods(false, it[1].estimatedPriceFmt,  it[0].estimatedPriceFmt)
+                            tradeInAnalytics?.clickExchangeMethods(true, it[1].estimatedPriceFmt,  it[0].estimatedPriceFmt)
                         }
                         onLogisticSelected?.onLogisticSelected(true)
                         dismiss()
@@ -155,13 +155,13 @@ class TradeInExchangeMethodBS : BottomSheetUnify() {
                     findViewById<View>(R.id.tradein_p1_view).setOnClickListener { click ->
                         if (logisticsOptions.firstOrNull()?.is3PL == false) {
                             tradeInAnalytics?.clickExchangeMethods(
-                                true,
+                                false,
                                 logisticsOptions[0].estimatedPriceFmt,
                                 logisticsOptions[1].estimatedPriceFmt
                             )
                         } else {
                             tradeInAnalytics?.clickExchangeMethods(
-                                false,
+                                true,
                                 logisticsOptions[1].estimatedPriceFmt,
                                 logisticsOptions[0].estimatedPriceFmt
                             )
