@@ -26,6 +26,7 @@ class Coord(var diff: Int, val x: Float, val y: Float, val z: Float, var visit: 
     }
 }
 
+@Suppress("MagicNumber")
 class TelemetrySection(
     var eventName: String,
     var startTime: Long,
