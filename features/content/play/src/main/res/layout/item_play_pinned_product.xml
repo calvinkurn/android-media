@@ -64,6 +64,7 @@
                 />
 
             <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/unify_space_2"

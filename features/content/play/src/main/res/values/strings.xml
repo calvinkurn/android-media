@@ -103,4 +103,5 @@
     <!--Pinned Product-->
     <string name="play_product_pinned">Pin Dipasang</string>
     <string name="play_product_pinned_atc">+</string>
+    <string name="play_product_pinned_info_separator">\u00b7</string>
 </resources>
