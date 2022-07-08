@@ -126,7 +126,7 @@ class ProductStockReminderAdapter(
             }
         }
 
-        fun validateMinMaxStock(stock: Int) {
+        private fun validateMinMaxStock(stock: Int) {
             when {
                 stock < MINIMUM_STOCK_REMINDER -> {
                     binding.qeStock.errorMessageText = itemView.resources.getString(

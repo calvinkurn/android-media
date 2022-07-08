@@ -38,6 +38,8 @@ import org.junit.Rule
 import org.junit.Test
 import java.io.File
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
+import com.tokopedia.shop.common.data.model.ShopPageGetHomeType
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.pageheader.data.model.NewShopPageHeaderP1
 import com.tokopedia.shop.pageheader.util.NewShopPageHeaderMapper
 
@@ -419,9 +421,8 @@ class NewShopPageViewModelTest {
     fun `check whether shopImagePath value is set when call saveShopImageToPhoneStorage`() {
         val mockBitmap = mockk<Bitmap>()
         val mockTransition = mockk<Transition<in Bitmap>>()
-
-        mockkStatic("com.tokopedia.media.loader.ExtensionKt")
-        every { loadImageWithEmptyTarget(any(), any(), any(), any()) } answers {
+        mockkObject(ShopUtil)
+        every { ShopUtil.loadImageWithEmptyTarget(any(), any(), any(), any()) } answers {
             (lastArg() as MediaBitmapEmptyTarget<Bitmap>).onResourceReady(mockBitmap, mockTransition)
         }
 
@@ -452,9 +453,8 @@ class NewShopPageViewModelTest {
     fun `check whether shopImagePath value is null when savedFile is null`() {
         val mockBitmap = mockk<Bitmap>()
         val mockTransition = mockk<Transition<in Bitmap>>()
-
-        mockkStatic("com.tokopedia.media.loader.ExtensionKt")
-        every { loadImageWithEmptyTarget(any(), any(), any(), any()) } answers {
+        mockkObject(ShopUtil)
+        every { ShopUtil.loadImageWithEmptyTarget(any(), any(), any(), any()) } answers {
             (lastArg() as MediaBitmapEmptyTarget<Bitmap>).onResourceReady(mockBitmap, mockTransition)
         }
 
@@ -471,9 +471,8 @@ class NewShopPageViewModelTest {
     @Test
     fun `check whether shopImagePath value is null when onLoadCleared is called on saveShopImageToPhoneStorage`() {
         val mockDrawable = mockk<Drawable>()
-
-        mockkStatic("com.tokopedia.media.loader.ExtensionKt")
-        every { loadImageWithEmptyTarget(any(), any(), any(), any()) } answers {
+        mockkObject(ShopUtil)
+        every { ShopUtil.loadImageWithEmptyTarget(any(), any(), any(), any()) } answers {
             (lastArg() as MediaBitmapEmptyTarget<Bitmap>).onLoadCleared(mockDrawable)
         }
 
@@ -484,8 +483,8 @@ class NewShopPageViewModelTest {
 
     @Test
     fun `check whether shopImagePath value is null when ImageHandler loadImageWithTarget throws exception`() {
-        mockkStatic("com.tokopedia.media.loader.ExtensionKt")
-        every { loadImageWithEmptyTarget(any(), any(), any(), any()) } throws Exception()
+        mockkObject(ShopUtil)
+        every { ShopUtil.loadImageWithEmptyTarget(any(), any(), any(), any()) } throws Exception()
         shopPageViewModel.saveShopImageToPhoneStorage(context, "")
         assert(shopPageViewModel.shopImagePath.value == null)
     }
