@@ -7,6 +7,8 @@ sealed interface UserProfileAction {
 
     data class LoadProfile(val isRefresh: Boolean = false) : UserProfileAction
 
+    data class LoadShopRecom(val cursor: String = ""): UserProfileAction
+
     data class LoadPlayVideo(val cursor: String) : UserProfileAction
 
     data class ClickFollowButton(val isFromLogin: Boolean) : UserProfileAction

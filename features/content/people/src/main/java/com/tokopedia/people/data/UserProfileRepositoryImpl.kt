@@ -1,12 +1,13 @@
 package com.tokopedia.people.data
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.people.domains.*
-import com.tokopedia.people.domains.repository.UserProfileRepository
 import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistNewUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase.Companion.WHITELIST_ENTRY_POINT
+import com.tokopedia.people.domains.*
+import com.tokopedia.people.domains.repository.UserProfileRepository
 import com.tokopedia.people.model.ProfileHeaderBase
 import com.tokopedia.people.model.UserPostModel
+import com.tokopedia.people.model.UserShopRecomModel
 import com.tokopedia.people.views.uimodel.MutationUiModel
 import com.tokopedia.people.views.uimodel.mapper.UserProfileUiMapper
 import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
@@ -28,6 +29,7 @@ class UserProfileRepositoryImpl @Inject constructor(
     private val profileIsFollowing: ProfileTheyFollowedUseCase,
     private val videoPostReminderUseCase: VideoPostReminderUseCase,
     private val getWhitelistNewUseCase: GetWhitelistNewUseCase,
+    private val shopRecomUseCase: ShopRecomUseCase
 ) : UserProfileRepository {
 
     override suspend fun getProfile(username: String): ProfileUiModel {
@@ -70,7 +72,7 @@ class UserProfileRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateReminder(channelId: String, isActive: Boolean) : MutationUiModel {
+    override suspend fun updateReminder(channelId: String, isActive: Boolean): MutationUiModel {
         return withContext(dispatcher.io) {
             val result = videoPostReminderUseCase.updateReminder(channelId, isActive)
 
@@ -84,6 +86,12 @@ class UserProfileRepositoryImpl @Inject constructor(
 
             data
         }
+    }
+
+    override suspend fun getShopRecom(): UserShopRecomModel = withContext(dispatcher.io) {
+        return@withContext shopRecomUseCase.apply {
+            setRequestParams(ShopRecomUseCase.createParam())
+        }.executeOnBackground()
     }
 
     companion object {

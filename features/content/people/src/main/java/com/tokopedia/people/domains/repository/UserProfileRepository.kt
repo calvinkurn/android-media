@@ -1,6 +1,7 @@
 package com.tokopedia.people.domains.repository
 
 import com.tokopedia.people.model.UserPostModel
+import com.tokopedia.people.model.UserShopRecomModel
 import com.tokopedia.people.views.uimodel.MutationUiModel
 import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
@@ -30,4 +31,7 @@ interface UserProfileRepository {
         username: String,
         cursor: String,
     ): UserPostModel
+
+    suspend fun getShopRecom(): UserShopRecomModel
+
 }
