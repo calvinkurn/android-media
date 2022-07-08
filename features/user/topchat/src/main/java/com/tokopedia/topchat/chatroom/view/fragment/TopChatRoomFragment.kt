@@ -331,7 +331,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun updateSrwPreviewState() {
         if (shouldShowSrw()) {
             handleSrw(onNewDesign = {
-                topchatViewState?.shouldShowSrw = true
+                //Show SRW if only there's no reply specific message
+                topchatViewState?.shouldShowSrw = (replyCompose?.isVisible != true)
             }, onOldDesign = {
                 rvSrw?.renderSrwState()
             })
@@ -1159,7 +1160,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     ) {
         val referredMsg = replyCompose?.referredMsg
         handleSrw(onNewDesign = {
-            if (topchatViewState?.chatTextAreaTabLayout?.srwLayout?.isShowing() == true) {
+            if (topchatViewState?.chatTextAreaTabLayout?.isVisible == true) {
                 addSrwBubbleToChat()
             }
         }, onOldDesign = {
@@ -1211,7 +1212,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         onSendAndReceiveMessage()
         val referredMsg = replyCompose?.referredMsg
         handleSrw(onNewDesign = {
-            if (topchatViewState?.chatTextAreaTabLayout?.srwLayout?.isShowing() == true) {
+            if (topchatViewState?.chatTextAreaTabLayout?.isVisible == true) {
                 addSrwBubbleToChat()
             }
         }, onOldDesign = {
@@ -3027,6 +3028,18 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
+    override fun onCloseReplyBubble() {
+        if (isSrwNewDesign() && shouldShowSrw()) {
+            topchatViewState?.shouldShowSrw = true
+        }
+    }
+
+    override fun onShowReplyBubble() {
+        if (isSrwNewDesign() && shouldShowSrw()) {
+            topchatViewState?.shouldShowSrw = false
+        }
+    }
+
     private fun filterSettingToBeShown(result: RoomSettingResponse): List<Visitable<TopChatTypeFactory>> {
         val widgets = arrayListOf<Visitable<TopChatTypeFactory>>()
 
@@ -3107,8 +3120,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun isSrwNewDesign(): Boolean {
-        val isSrwNewDesign = abTestPlatform.getString(AB_TEST_NEW_SRW, AB_TEST_OLD_SRW) == AB_TEST_NEW_SRW
-        return isSrwNewDesign
+        return abTestPlatform.getString(AB_TEST_NEW_SRW, AB_TEST_OLD_SRW) == AB_TEST_NEW_SRW
     }
 
     companion object {
