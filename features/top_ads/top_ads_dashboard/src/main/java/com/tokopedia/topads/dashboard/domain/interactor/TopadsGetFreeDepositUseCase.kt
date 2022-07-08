@@ -16,10 +16,7 @@ class TopadsGetFreeDepositUseCase @Inject constructor(
     private val userSession: UserSessionInterface,
 ) : GraphqlUseCase<ExpiryDateResponse>() {
 
-    private val _expiryDateHiddenTrial: MutableLiveData<String> = MutableLiveData()
-    val expiryDateHiddenTrial: LiveData<String> = _expiryDateHiddenTrial
-
-    fun execute() {
+    fun execute(response: (String) -> Unit) {
         setGraphqlQuery(GQL_QUERY)
         setRequestParams(mapOf(TopAdsDashboardConstant.PARAM_SHOP_ID to userSession.shopId))
         setTypeClass(ExpiryDateResponse::class.java)
@@ -28,7 +25,7 @@ class TopadsGetFreeDepositUseCase @Inject constructor(
             .setSessionIncluded(true)
             .build())
         execute({
-            _expiryDateHiddenTrial.postValue(it.topAdsGetFreeDeposit.expiryDate)
+            response.invoke(it.topAdsGetFreeDeposit.expiryDate)
         }, {
             it.printStackTrace()
         })

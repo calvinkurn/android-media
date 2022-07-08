@@ -80,7 +80,8 @@ class TopAdsDashboardPresenter @Inject constructor(
 
     private val job = SupervisorJob()
     var isShopWhiteListed: MutableLiveData<Boolean> = MutableLiveData()
-    val expiryDateHiddenTrial: LiveData<String> = getExpiryDateUseCase.expiryDateHiddenTrial
+    private val _expiryDateHiddenTrial: MutableLiveData<String> = MutableLiveData()
+    val expiryDateHiddenTrial: LiveData<String> = _expiryDateHiddenTrial
 
     companion object {
         const val HIDDEN_TRIAL_FEATURE = 21
@@ -271,7 +272,9 @@ class TopAdsDashboardPresenter @Inject constructor(
     }
 
     fun getExpiryDate(resources: Resources) {
-        getExpiryDateUseCase.execute()
+        getExpiryDateUseCase.execute {
+            _expiryDateHiddenTrial.postValue(it)
+        }
     }
 
     fun getShopListHiddenTrial(resources: Resources) {
