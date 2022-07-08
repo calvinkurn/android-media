@@ -1,0 +1,19 @@
+{
+  "data": {
+    "explicitprofileGetQuestion": {
+      "activeConfig": {
+        "value": false
+      },
+      "template": {
+        "id": 2,
+        "name": "halal_single",
+        "sections": [
+          {
+            "sectionID": 2,
+            "questions": []
+          }
+        ]
+      }
+    }
+  }
+}
