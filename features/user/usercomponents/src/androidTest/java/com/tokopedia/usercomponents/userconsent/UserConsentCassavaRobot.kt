@@ -3,7 +3,7 @@ package com.tokopedia.usercomponents.userconsent
 import com.tokopedia.cassavatest.CassavaTestRule
 
 infix fun UserConsentResult.validateTracker(action: CassavaTestRule.() -> Unit): CassavaTestRule {
-    Thread.sleep(100)
+    Thread.sleep(2000)
     return CassavaTestRule().apply(action)
 }
 

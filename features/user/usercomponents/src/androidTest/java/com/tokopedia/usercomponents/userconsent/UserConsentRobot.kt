@@ -52,7 +52,7 @@ class UserConsentRobot {
 
     fun clickPolicyHyperlink() {
         onView(allOf(withId(R.id.descriptionPurposes), isDisplayed()))
-            .perform(clickClickableSpanOnTypographyUnify("Kebijakan Privacy"))
+            .perform(clickClickableSpanOnTypographyUnify("Kebijakan Privasi"))
     }
 
     fun clickTncHyperlinkOnMultipleOptional() {
@@ -62,7 +62,7 @@ class UserConsentRobot {
 
     fun clickPolicyHyperlinkOnMultipleOptional() {
         onView(allOf(withId(R.id.textMainDescription), isDisplayed()))
-            .perform(clickClickableSpanOnTypographyUnify("Kebijakan Privacy"))
+            .perform(clickClickableSpanOnTypographyUnify("Kebijakan Privasi"))
     }
 
     fun clickActionButton() {
@@ -73,7 +73,7 @@ class UserConsentRobot {
 
 class UserConsentResult {
     private val textWithTnc = "Saya menyetujui Syarat & Ketentuan"
-    private val textWithTncPolicy = "Saya menyetujui Syarat & Ketentuan serta Kebijakan Privacy"
+    private val textWithTncPolicy = "Saya menyetujui Syarat & Ketentuan serta Kebijakan Privasi"
 
     private fun generatePurposeText(purposes: MutableList<UserConsentCollectionDataModel.CollectionPointDataModel.PurposeDataModel>): String {
         var purposeText = ""
