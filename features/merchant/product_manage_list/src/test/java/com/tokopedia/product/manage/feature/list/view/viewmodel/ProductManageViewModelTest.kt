@@ -76,6 +76,7 @@ import com.tokopedia.product.manage.feature.multiedit.data.response.MultiEditPro
 import com.tokopedia.product.manage.feature.multiedit.data.response.MultiEditProductResult.Result
 import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeleteProductResult
 import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPriceResult
+import com.tokopedia.shop.common.data.source.cloud.model.MaxStockThresholdResponse
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfoTopAdsResponse
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfoTopAdsResponse.Data
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfoTopAdsResponse.ShopInfoTopAds
@@ -666,6 +667,62 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
                     maxPrice = maxPrice,
                     topAds = topAdsInfo,
                     access = createDefaultAccess()
+                )
+            )
+            val expectedProductList = Success(productViewModelList)
+
+            verifyGetWarehouseIdCalled()
+
+            viewModel.productListResult
+                .verifySuccessEquals(expectedProductList)
+
+            viewModel.showTicker
+                .verifyValueEquals(null)
+
+            verifyHideProgressBar()
+        }
+    }
+
+    @Test
+    fun `given get max stock success, get product list should map product to view model`() {
+        runBlocking {
+            val shopId = "1500"
+
+            val minPrice = PriceUiModel("10000", "Rp10.000")
+            val maxPrice = PriceUiModel("100000", "Rp100.000")
+            val pictures = listOf(Picture("imageUrl"))
+
+            val maxStock = 5
+
+            val productList = listOf(
+                createProduct(
+                    name = "Tolak Angin Madu",
+                    price = Price(10000, 100000),
+                    pictures = pictures,
+                )
+            )
+            val productListData = ProductListData(ProductList(header = null, data = productList))
+
+            val locationList = listOf(
+                ShopLocationResponse("1", MAIN_LOCATION),
+                ShopLocationResponse("2", OTHER_LOCATION)
+            )
+            val paramsProductList = createFilterOptions(1)
+            onGetWarehouseId_thenReturn(locationList)
+            onGetProductList_thenReturn(productListData)
+            onGetMaxStockThreshold_thenReturn(maxStock)
+
+            viewModel.getProductList(shopId, filterOptions = paramsProductList)
+
+            val topAdsInfo = TopAdsInfo(isTopAds = false, isAutoAds = false)
+            val productViewModelList = listOf(
+                createProductUiModel(
+                    name = "Tolak Angin Madu",
+                    minPrice = minPrice,
+                    maxPrice = maxPrice,
+                    topAds = topAdsInfo,
+                    access = createDefaultAccess(),
+                    maxStock = maxStock
                 )
             )
             val expectedProductList = Success(productViewModelList)
@@ -1964,6 +2021,69 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
     }
 
     @Test
+    fun `given get max stock success, when get variants success should set live data value success`() {
+        runBlocking {
+            val productName = "Tokopedia"
+            val variantList = listOf(
+                createProductVariantResponse(combination = listOf(0, 1)),
+                createProductVariantResponse(combination = listOf(1, 0))
+            )
+            val firstOption = listOf(
+                createOptionResponse(value = "Biru"),
+                createOptionResponse(value = "Hijau")
+            )
+            val secondOption = listOf(
+                createOptionResponse(value = "S"),
+                createOptionResponse(value = "M")
+            )
+            val selections = listOf(
+                createSelectionResponse(options = firstOption),
+                createSelectionResponse(options = secondOption)
+            )
+            val response = createGetVariantResponse(
+                productName = productName,
+                products = variantList,
+                selections = selections
+            )
+
+            val productId = "1400068494"
+            val locationList = listOf(
+                ShopLocationResponse("1", MAIN_LOCATION),
+                ShopLocationResponse("2", OTHER_LOCATION)
+            )
+            val maxStock = 5
+
+            onGetWarehouseId_thenReturn(locationList)
+            onGetVariants_thenReturn(response)
+            onGetMaxStockThreshold_thenReturn(maxStock)
+
+            viewModel.getProductVariants(productId)
+
+            val productVariants = listOf(
+                createProductVariant(
+                    name = "Biru | M",
+                    combination = listOf(0, 1),
+                    access = createDefaultAccess(),
+                    maxStock = maxStock
+                ),
+                createProductVariant(
+                    name = "Hijau | S",
+                    combination = listOf(1, 0),
+                    access = createDefaultAccess(),
+                    maxStock = maxStock
+                )
+            )
+            val expectedResult =
+                GetVariantResult(productName, productVariants, selections, emptyList())
+            val expectedSuccessResult = Success(expectedResult)
+
+            verifyGetVariantsCalled()
+
+            viewModel.getProductVariantsResult.verifySuccessEquals(expectedSuccessResult)
+        }
+    }
+
+    @Test
     fun `when get variants success but empty should not set live data value`() {
         runBlocking {
             val productName = "Tokopedia"
@@ -2366,6 +2486,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             getAdminInfoShopLocationUseCase,
             getUploadStatusUseCase,
             clearUploadStatusUseCase,
+            getMaxStockThresholdUseCase,
             tickerStaticDataProvider,
             CoroutineTestDispatchersProvider
         )
@@ -2411,6 +2532,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             getAdminInfoShopLocationUseCase,
             getUploadStatusUseCase,
             clearUploadStatusUseCase,
+            getMaxStockThresholdUseCase,
             tickerStaticDataProvider,
             CoroutineTestDispatchersProvider
         )
@@ -2450,6 +2572,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             getAdminInfoShopLocationUseCase,
             getUploadStatusUseCase,
             clearUploadStatusUseCase,
+            getMaxStockThresholdUseCase,
             tickerStaticDataProvider,
             CoroutineTestDispatchersProvider
         )
@@ -2638,6 +2761,19 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
         coEvery {
             getProductManageAccessUseCase.execute(any())
         } throws error
+    }
+
+    private fun onGetMaxStockThreshold_thenReturn(maxStock: Int?) {
+        coEvery {
+            getMaxStockThresholdUseCase.execute(any())
+        } returns MaxStockThresholdResponse(
+            getIMSMeta = MaxStockThresholdResponse.GetIMSMeta(
+                data = MaxStockThresholdResponse.GetIMSMeta.Data(
+                    maxStockThreshold = maxStock?.toString().orEmpty()
+                ),
+                header = com.tokopedia.network.data.model.response.Header()
+            )
+        )
     }
 
     private fun onGetIsMultiLocationShop_thenReturn(isMultiLocationShop: Boolean) {

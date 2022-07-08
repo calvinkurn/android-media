@@ -29,7 +29,8 @@ data class ProductUiModel(
     val suspendLevel: Int,
     val hasStockAlert:Boolean,
     val stockAlertActive: Boolean,
-    val stockAlertCount:Int
+    val stockAlertCount:Int,
+    val maxStock: Int?
 ) : Visitable<ProductManageAdapterFactory> {
     override fun type(typeFactory: ProductManageAdapterFactory): Int {
         return typeFactory.type(this)

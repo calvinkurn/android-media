@@ -150,6 +150,10 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
         mViewModel.updateVariantIsActive(productId, status)
     }
 
+    override fun setSaveButtonEnabled(isEnabled: Boolean) {
+        binding?.btnCampaignStockSave?.isEnabled = isEnabled
+    }
+
     private fun observeLiveData() {
         mViewModel.getStockAllocationData.observe(viewLifecycleOwner, Observer { result ->
             when(result) {
@@ -251,7 +255,7 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
                     setupVariantFragmentViewPager(getVariantResult, getStockAllocationData, otherCampaignStockData, productManageAccess)
                 }
                 is NonVariantStockAllocationResult -> {
-                    setupNonVariantFragmentViewPager(getStockAllocationData, otherCampaignStockData, productManageAccess)
+                    setupNonVariantFragmentViewPager(maxStock, getStockAllocationData, otherCampaignStockData, productManageAccess)
                 }
             }
         }
@@ -309,7 +313,8 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
         }
     }
 
-    private fun setupNonVariantFragmentViewPager(getStockAllocation: GetStockAllocationData,
+    private fun setupNonVariantFragmentViewPager(maxStock: Int?,
+                                                 getStockAllocation: GetStockAllocationData,
                                                  otherCampaignStockData: OtherCampaignStockData,
                                                  access: ProductManageAccess) {
         with(getStockAllocation) {
@@ -331,6 +336,7 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
                             isActive = otherCampaignStockData.getIsActive(),
                             access = access,
                             isCampaign = isCampaign,
+                            maxStock = maxStock,
                             sellableList = getStockAllocation.detail.sellable
                     )
 

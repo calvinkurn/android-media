@@ -54,6 +54,7 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
         verifyGetOtherCampaignStockDataCalled()
 
         val expectedResult = Success(NonVariantStockAllocationResult(
+            null,
             getStockAllocationData,
             otherCampaignStockData,
             createShopOwnerAccess()
@@ -87,10 +88,74 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
         verifyGetOtherCampaignStockDataCalled()
 
         val expectedResult = Success(VariantStockAllocationResult(
-                ProductManageVariantMapper.mapToVariantsResult(getProductVariantResponse.getProductV3, createShopOwnerAccess()),
+                ProductManageVariantMapper.mapToVariantsResult(getProductVariantResponse.getProductV3, createShopOwnerAccess(), null),
                 getStockAllocationData,
                 otherCampaignStockData,
                 createShopOwnerAccess()))
+
+        verifyGetStockAllocationSuccessResult(expectedResult)
+    }
+
+    @Test
+    fun `given get max stock success, should set non variant result with max stock`() = runBlocking {
+        val productId = "1"
+        val shopId = "1"
+        val maxStock = 5
+        val getStockAllocationData = GetStockAllocationData()
+        val otherCampaignStockData = OtherCampaignStockData(status = ProductStatus.ACTIVE)
+
+        onGetCampaignStock_thenReturn(getStockAllocationData)
+        onGetOtherCampaignStock_thenReturn(otherCampaignStockData)
+        onGetMaxStockThreshold_thenReturn(maxStock)
+
+        viewModel.setShopId(shopId)
+        viewModel.getStockAllocation(listOf(productId), true)
+
+        verifyGetWarehouseIdCalled()
+        verifyGetCampaignStockAllocationCalled()
+        verifyGetOtherCampaignStockDataCalled()
+
+        val expectedResult = Success(NonVariantStockAllocationResult(
+            maxStock,
+            getStockAllocationData,
+            otherCampaignStockData,
+            createShopOwnerAccess()
+        ))
+
+        verifyGetStockAllocationSuccessResult(expectedResult)
+    }
+
+    @Test
+    fun `given get max stock success, should set variant result with max stock`() = runBlocking {
+        val productId = "1"
+        val shopId = "1"
+        val maxStock = 5
+        val getStockAllocationData =
+            GetStockAllocationData(
+                summary = GetStockAllocationSummary(
+                    isVariant = true
+                )
+            )
+        val getProductVariantResponse = createGetVariantResponse()
+        val otherCampaignStockData = OtherCampaignStockData()
+
+        onGetCampaignStock_thenReturn(getStockAllocationData)
+        onGetProductVariant_thenReturn(getProductVariantResponse)
+        onGetOtherCampaignStock_thenReturn(otherCampaignStockData)
+        onGetMaxStockThreshold_thenReturn(maxStock)
+
+        viewModel.setShopId(shopId)
+        viewModel.getStockAllocation(listOf(productId), false)
+
+        verifyGetCampaignStockAllocationCalled()
+        verifyGetProductVariantCalled()
+        verifyGetOtherCampaignStockDataCalled()
+
+        val expectedResult = Success(VariantStockAllocationResult(
+            ProductManageVariantMapper.mapToVariantsResult(getProductVariantResponse.getProductV3, createShopOwnerAccess(), maxStock),
+            getStockAllocationData,
+            otherCampaignStockData,
+            createShopOwnerAccess()))
 
         verifyGetStockAllocationSuccessResult(expectedResult)
     }

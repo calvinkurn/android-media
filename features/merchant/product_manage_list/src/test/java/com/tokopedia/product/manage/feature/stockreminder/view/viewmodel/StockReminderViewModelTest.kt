@@ -2,6 +2,7 @@ package com.tokopedia.product.manage.feature.stockreminder.view.viewmodel
 
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.network.data.model.response.Header
 import com.tokopedia.product.manage.common.feature.variant.data.model.GetProductV3
 import com.tokopedia.product.manage.common.feature.variant.data.model.Variant
 import com.tokopedia.product.manage.common.feature.variant.data.model.response.GetProductVariantResponse
@@ -14,6 +15,7 @@ import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.resp
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.getresponse.ProductWareHouse
 import com.tokopedia.product.manage.feature.stockreminder.view.data.ProductStockReminderUiModel
 import com.tokopedia.product.manage.feature.stockreminder.view.data.mapper.ProductStockReminderMapper
+import com.tokopedia.shop.common.data.source.cloud.model.MaxStockThresholdResponse
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -119,6 +121,7 @@ class StockReminderViewModelTest : StockReminderViewModelTestFixture() {
         runBlocking {
             val productId = "123"
             val wareHouseId = "321"
+            val shopId = "1234"
 
             val variant = Variant(listOf(), listOf(), listOf())
             val getProductV3 =
@@ -127,12 +130,35 @@ class StockReminderViewModelTest : StockReminderViewModelTestFixture() {
 
             onGetProduct_thenReturn(productId, wareHouseId, getProductVariantResponse)
 
-            viewModel.getProduct(productId, wareHouseId)
+            viewModel.getProduct(productId, wareHouseId, shopId)
 
-            val expectedResult = Success(ProductStockReminderMapper.mapToProductResult(getProductV3))
+            val expectedResult = Success(ProductStockReminderMapper.mapToProductResult(getProductV3, null))
 
             verifyGetProductUseCaseCalled(productId, wareHouseId)
             verifyGetProduct(expectedResult)
+        }
+    }
+
+    @Test
+    fun `when get product and max stock success should set max stock live data`() {
+        runBlocking {
+            val productId = "123"
+            val wareHouseId = "321"
+            val shopId = "1234"
+            val maxStock = 5
+
+            val variant = Variant(listOf(), listOf(), listOf())
+            val getProductV3 =
+                GetProductV3(productId, String.EMPTY, String.EMPTY, Int.ZERO, Int.ZERO, variant)
+            val getProductVariantResponse = GetProductVariantResponse(getProductV3)
+
+            onGetProduct_thenReturn(productId, wareHouseId, getProductVariantResponse)
+            onGetMaxStockThreshold_thenReturn(maxStock)
+
+            viewModel.getProduct(productId, wareHouseId, shopId)
+
+            verifyGetProductUseCaseCalled(productId, wareHouseId)
+            verifyMaxStockEquals(maxStock)
         }
     }
 
@@ -141,10 +167,11 @@ class StockReminderViewModelTest : StockReminderViewModelTestFixture() {
         runBlocking {
             val productId = "123"
             val wareHouseId = "321"
+            val shopId = "1234"
             val error = NullPointerException()
             onGetProduct_thenThrow(productId, wareHouseId, error)
 
-            viewModel.getProduct(productId, wareHouseId)
+            viewModel.getProduct(productId, wareHouseId, shopId)
 
             verifyGetProductUseCaseCalled(productId, wareHouseId)
             verifyGetProductFail()
@@ -165,6 +192,19 @@ class StockReminderViewModelTest : StockReminderViewModelTestFixture() {
 
     private suspend fun onCreateStockReminder_thenThrow(ex: Exception) {
         coEvery { stockReminderDataUseCase.executeCreateStockReminder() } throws ex
+    }
+
+    private suspend fun onGetMaxStockThreshold_thenReturn(maxStock: Int?) {
+        coEvery {
+            getMaxStockThresholdUseCase.execute(any())
+        } returns MaxStockThresholdResponse(
+            getIMSMeta = MaxStockThresholdResponse.GetIMSMeta(
+                data = MaxStockThresholdResponse.GetIMSMeta.Data(
+                    maxStockThreshold = maxStock?.toString().orEmpty()
+                ),
+                header = Header()
+            )
+        )
     }
 
     private suspend fun onGetProduct_thenThrow(
@@ -234,6 +274,11 @@ class StockReminderViewModelTest : StockReminderViewModelTestFixture() {
     private fun verifyGetProduct(expectedResult: Success<List<ProductStockReminderUiModel>>) {
         val actualResult =
             viewModel.getProductLiveData.value as Success<List<ProductStockReminderUiModel>>
+        assertEquals(expectedResult, actualResult)
+    }
+
+    private fun verifyMaxStockEquals(expectedResult: Int) {
+        val actualResult = viewModel.maxStockLiveData.value
         assertEquals(expectedResult, actualResult)
     }
 

@@ -8,5 +8,6 @@ data class ProductStockReminderUiModel(
     val stock: Int,
     val variantFirst: String = "",
     val variantSecond: String = "",
-    var haveChanges:Boolean = false
+    var haveChanges:Boolean = false,
+    val maxStock: Int? = null
 )

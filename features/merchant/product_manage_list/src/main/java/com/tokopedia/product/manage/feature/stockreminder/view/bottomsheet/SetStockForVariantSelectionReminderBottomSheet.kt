@@ -2,6 +2,7 @@ package com.tokopedia.product.manage.feature.stockreminder.view.bottomsheet
 
 import android.os.Bundle
 import android.text.Editable
+import android.text.InputFilter
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +14,7 @@ import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.databinding.BottomSheetSetAtOnceStockReminderBinding
+import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst
 import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.EMPTY_INPUT_STOCK
 import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.MINIMUM_STOCK_REMINDER
 import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.MAXIMUM_STOCK_REMINDER
@@ -26,9 +28,24 @@ class SetStockForVariantSelectionReminderBottomSheet(
 ) : BottomSheetUnify() {
 
     companion object {
+        @JvmStatic
+        fun createInstance(maxStock: Int?,
+                           fm: FragmentManager? = null): SetStockForVariantSelectionReminderBottomSheet {
+            return SetStockForVariantSelectionReminderBottomSheet(fm).apply {
+                arguments = Bundle().apply {
+                    maxStock?.let {
+                        putInt(MAX_STOCK_KEY, it)
+                    }
+                }
+            }
+        }
+
+        private const val MAX_STOCK_KEY = "max_stock"
+
         private val TAG: String = SetStockForVariantSelectionReminderBottomSheet::class.java.simpleName
     }
 
+    private var maxStock: Int? = null
     private var textChangeListener: TextWatcher? = null
 
     private var binding by autoClearedNullable<BottomSheetSetAtOnceStockReminderBinding>()
@@ -53,9 +70,19 @@ class SetStockForVariantSelectionReminderBottomSheet(
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
-        savedInstanceState?.run {
+        if (savedInstanceState == null) {
+            maxStock = arguments?.getInt(MAX_STOCK_KEY, MAXIMUM_STOCK_REMINDER)
+        } else {
+            maxStock = savedInstanceState.getInt(MAX_STOCK_KEY)
             parentFragment?.childFragmentManager?.beginTransaction()
                 ?.remove(this@SetStockForVariantSelectionReminderBottomSheet)?.commit()
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        maxStock?.let {
+            outState.putInt(MAX_STOCK_KEY, it)
         }
     }
 
@@ -103,6 +130,8 @@ class SetStockForVariantSelectionReminderBottomSheet(
 
     private fun setupStockEditorText() {
         binding?.qeStock?.editText?.run {
+            val maxLength = InputFilter.LengthFilter(StockReminderConst.MAXIMUM_LENGTH)
+            filters = arrayOf(maxLength)
             textChangeListener = createTextChangeListener()
             addTextChangedListener(textChangeListener)
         }
@@ -116,6 +145,7 @@ class SetStockForVariantSelectionReminderBottomSheet(
                 }
                 true
             }
+            maxValue = Int.MAX_VALUE
         }
     }
 
@@ -148,17 +178,17 @@ class SetStockForVariantSelectionReminderBottomSheet(
                     MINIMUM_STOCK_REMINDER
                 ).orEmpty()
             }
-            stock > MAXIMUM_STOCK_REMINDER -> {
+            stock > getMaxStock() -> {
                 binding?.qeStock?.errorMessageText = activity?.getString(
                     R.string.product_stock_reminder_max_stock_error,
-                    MAXIMUM_STOCK_REMINDER.getNumberFormatted()
+                    getMaxStock().getNumberFormatted()
                 ).orEmpty()
             }
             else -> {
                 binding?.qeStock?.errorMessageText = String.EMPTY
             }
         }
-        binding?.buttonApply?.isEnabled = !(stock < MINIMUM_STOCK_REMINDER && stock > MAXIMUM_STOCK_REMINDER)
+        binding?.buttonApply?.isEnabled = !(stock < MINIMUM_STOCK_REMINDER && stock > getMaxStock())
 
     }
 
@@ -219,6 +249,10 @@ class SetStockForVariantSelectionReminderBottomSheet(
             childFragmentManager
         )
         stockRemainingInfoBottomSheet.show()
+    }
+
+    private fun getMaxStock(): Int {
+        return maxStock ?: MAXIMUM_STOCK_REMINDER
     }
 
 }

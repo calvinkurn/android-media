@@ -3,6 +3,7 @@ package com.tokopedia.product.manage.feature.stockreminder.view.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.product.manage.feature.stockreminder.domain.usecase.StockReminderDataUseCase
+import com.tokopedia.shop.common.domain.interactor.GetMaxStockThresholdUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.Dispatchers
@@ -19,12 +20,19 @@ abstract class StockReminderViewModelTestFixture {
     @RelaxedMockK
     lateinit var stockReminderDataUseCase: StockReminderDataUseCase
 
+    @RelaxedMockK
+    lateinit var getMaxStockThresholdUseCase: GetMaxStockThresholdUseCase
+
     protected lateinit var viewModel: StockReminderViewModel
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
 
-        viewModel = StockReminderViewModel(stockReminderDataUseCase, CoroutineTestDispatchersProvider)
+        viewModel = StockReminderViewModel(
+            stockReminderDataUseCase,
+            getMaxStockThresholdUseCase,
+            CoroutineTestDispatchersProvider
+        )
     }
 }

@@ -18,7 +18,11 @@ import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductCamp
 
 object ProductManageVariantMapper {
 
-    fun mapToVariantsResult(response: GetProductV3, access: ProductManageAccess): GetVariantResult {
+    fun mapToVariantsResult(
+        response: GetProductV3,
+        access: ProductManageAccess,
+        maxStock: Int?
+    ): GetVariantResult {
         val variant = response.variant
         val variantSelections = variant.selections
         val variantSizeCharts = variant.sizeCharts
@@ -40,7 +44,8 @@ object ProductManageVariantMapper {
                 it.pictures,
                 isAllStockEmpty,
                 access,
-                it.campaignTypeList
+                it.campaignTypeList,
+                maxStock
             )
         }
 

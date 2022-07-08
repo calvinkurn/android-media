@@ -81,6 +81,7 @@ abstract class QuickEditVariantBottomSheet: BottomSheetUnify(), HasComponent<Qui
 
         observeGetVariant()
         observeClickSaveBtn()
+        observeEnableSaveButton()
         observeViewState()
 
         getData(productId, isBundling)
@@ -170,6 +171,12 @@ abstract class QuickEditVariantBottomSheet: BottomSheetUnify(), HasComponent<Qui
     private fun observeClickSaveBtn() {
         observe(viewModel.onClickSaveButton) {
             onSaveButtonClicked(it)
+        }
+    }
+
+    private fun observeEnableSaveButton() {
+        observe(viewModel.enableSaveButton) { enableSaveButton ->
+            binding?.btnProductManageVariantSave?.isEnabled = enableSaveButton
         }
     }
 

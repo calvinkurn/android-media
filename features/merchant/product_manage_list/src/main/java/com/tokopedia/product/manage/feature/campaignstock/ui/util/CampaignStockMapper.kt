@@ -36,6 +36,7 @@ object CampaignStockMapper {
                     productId = sellable.productId,
                     productName = sellable.productName,
                     stock = sellable.stock,
+                    maxStock = variant.maxStock,
                     isActive = variant.status == ProductStatus.ACTIVE,
                     isAllStockEmpty = isAllStockEmpty,
                     access = variant.access,
@@ -66,6 +67,7 @@ object CampaignStockMapper {
                            isActive: Boolean,
                            access: ProductManageAccess,
                            isCampaign: Boolean,
+                           maxStock: Int?,
                            sellableList: List<GetStockAllocationDetailSellable>): List<SellableStockProductUIModel> {
         return sellableList
                 .filter { it.productId == id.toString() }
@@ -78,6 +80,7 @@ object CampaignStockMapper {
                             isAllStockEmpty = sellable.stock.toIntOrZero() == 0,
                             access = access,
                             isCampaign = isCampaign,
+                            maxStock = maxStock,
                             campaignTypeList = mapVariantCampaignTypeToProduct(sellable.campaignTypeList)
                     )
                 }

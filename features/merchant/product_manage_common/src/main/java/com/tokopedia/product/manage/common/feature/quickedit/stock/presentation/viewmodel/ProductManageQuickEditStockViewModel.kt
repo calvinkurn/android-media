@@ -25,16 +25,17 @@ class ProductManageQuickEditStockViewModel @Inject constructor(
     private val _stock = MutableLiveData<Int>()
     private val _status = MutableLiveData<ProductStatus>()
     private val _stockTicker = MutableLiveData<ProductManageTicker>()
+    private val _maxStock = MutableLiveData<Int?>()
+
+    fun setMaxStock(maxStock: Int?) {
+        _maxStock.value = maxStock
+    }
 
     fun updateStock(stock: Int) {
-        when {
-            isStockTooLow(stock) -> {
-                _stock.value = MINIMUM_STOCK
-            }
-            isStockTooHigh(stock) -> {
-                _stock.value = MAXIMUM_STOCK
-            }
-            else -> _stock.value = stock
+        if (isStockTooLow(stock)) {
+            _stock.value = MINIMUM_STOCK
+        } else {
+            _stock.value = stock
         }
     }
 
@@ -60,10 +61,4 @@ class ProductManageQuickEditStockViewModel @Inject constructor(
         return false
     }
 
-    private fun isStockTooHigh(stock: Int): Boolean {
-        if(stock > MAXIMUM_STOCK) {
-            return true
-        }
-        return false
-    }
 }
