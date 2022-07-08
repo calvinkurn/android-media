@@ -89,7 +89,7 @@ class GotoSeamlessLoginFragment: BaseDaggerFragment() {
     }
 
     private fun showGeneralErrorToaster() {
-        Toaster.build(requireView(), getString(R.string.goto_seamless_general_error)).show()
+        Toaster.build(requireView(), getString(R.string.goto_seamless_general_error), Toaster.TYPE_ERROR).show()
     }
 
     private fun successSeamlessLogin() {
