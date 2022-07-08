@@ -1,38 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/Unify_Background">
+    android:layout_height="match_parent">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/txt_wording_follow"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/up_follow_account"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginHorizontal="@dimen/unify_space_16"
-        android:textColor="@color/Unify_NN950"
-        app:typographyType="heading_4" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_shop_recom"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_8"
-        android:paddingBottom="@dimen/user_profile_margin_8"
-        app:layout_constraintTop_toBottomOf="@id/txt_wording_follow"
-        tools:listitem="@layout/up_layout_shop_recommendation" />
+        android:background="@color/Unify_Background">
 
-    <include
-        android:id="@+id/include_error"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        layout="@layout/up_layout_error_empty_user_post"
-        app:layout_constraintTop_toBottomOf="@id/rv_shop_recom"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txt_wording_follow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/unify_space_16"
+            android:text="@string/up_follow_account"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_4" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_shop_recom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:paddingBottom="@dimen/user_profile_margin_8"
+            app:layout_constraintTop_toBottomOf="@id/txt_wording_follow"
+            tools:listitem="@layout/up_layout_shop_recommendation" />
+
+        <include
+            android:id="@+id/include_error"
+            layout="@layout/up_layout_error_empty_user_post"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rv_shop_recom" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.abstraction.base.view.widget.SwipeToRefresh xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/swipe_refresh_layout"
@@ -53,9 +52,9 @@
                         android:id="@+id/view_profile_outer_ring"
                         android:layout_width="@dimen/user_profile_live_circle_size"
                         android:layout_height="@dimen/user_profile_live_circle_size"
+                        android:layout_marginStart="@dimen/unify_space_16"
                         android:background="@drawable/up_live_ring_bg"
                         android:visibility="invisible"
-                        android:layout_marginStart="@dimen/unify_space_16"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -77,8 +76,8 @@
                         android:id="@+id/text_live"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/user_profile_margin_64"
                         android:layout_marginStart="@dimen/unify_space_16"
+                        android:layout_marginTop="@dimen/user_profile_margin_64"
                         android:background="@drawable/bg_up_live"
                         android:gravity="center"
                         android:paddingStart="@dimen/unify_space_4"
@@ -185,21 +184,23 @@
                         app:layout_constraintTop_toTopOf="@+id/text_content_label"
                         app:typographyType="body_2" />
 
-                    <View android:layout_height="@dimen/unify_space_32"
+                    <View
                         android:layout_width="1dp"
+                        android:layout_height="@dimen/unify_space_32"
                         android:background="#BFC9D9"
-                        app:layout_constraintStart_toEndOf="@id/text_content_label"
+                        app:layout_constraintBottom_toBottomOf="@id/text_content_label"
                         app:layout_constraintEnd_toStartOf="@id/text_follower_label"
-                        app:layout_constraintTop_toTopOf="@id/text_content_count"
-                        app:layout_constraintBottom_toBottomOf="@id/text_content_label"/>
+                        app:layout_constraintStart_toEndOf="@id/text_content_label"
+                        app:layout_constraintTop_toTopOf="@id/text_content_count" />
 
-                    <View android:layout_height="@dimen/unify_space_32"
+                    <View
                         android:layout_width="1dp"
+                        android:layout_height="@dimen/unify_space_32"
                         android:background="#BFC9D9"
-                        app:layout_constraintStart_toEndOf="@id/text_follower_label"
+                        app:layout_constraintBottom_toBottomOf="@id/text_content_label"
                         app:layout_constraintEnd_toStartOf="@id/text_following_label"
-                        app:layout_constraintTop_toTopOf="@id/text_content_count"
-                        app:layout_constraintBottom_toBottomOf="@id/text_content_label"/>
+                        app:layout_constraintStart_toEndOf="@id/text_follower_label"
+                        app:layout_constraintTop_toTopOf="@id/text_content_count" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/text_display_name"
@@ -230,8 +231,8 @@
                         android:id="@+id/text_bio"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/unify_space_4"
                         android:layout_marginStart="@dimen/unify_space_16"
+                        android:layout_marginTop="@dimen/unify_space_4"
                         android:layout_marginEnd="@dimen/unify_space_16"
                         android:ellipsize="end"
                         android:gravity="left"
@@ -247,8 +248,8 @@
                         android:id="@+id/text_see_more"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
                         android:layout_marginStart="@dimen/unify_space_16"
+                        android:layout_marginTop="4dp"
                         android:layout_marginEnd="@dimen/unify_space_16"
                         android:maxLines="3"
                         android:text="@string/up_link_see_more"
@@ -260,36 +261,37 @@
                         app:typographyWeight="bold" />
 
                     <LinearLayout
+                        android:id="@+id/linear_button"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/linear_button"
                         android:layout_marginStart="0dp"
-                        android:layout_marginEnd="0dp"
                         android:layout_marginTop="@dimen/unify_space_16"
+                        android:layout_marginEnd="0dp"
+                        android:orientation="vertical"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/text_see_more"
-                        android:orientation="vertical">
+                        app:layout_constraintTop_toBottomOf="@+id/text_see_more">
 
-                    <com.tokopedia.unifycomponents.UnifyButton
-                        android:id="@+id/btn_action_follow"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/Unify_NN300"
-                        android:layout_marginStart="@dimen/unify_space_16"
-                        android:layout_marginEnd="@dimen/unify_space_16"
-                        app:unifyButtonSize="small"
-                        app:unifyButtonVariant="text" />
+                        <com.tokopedia.unifycomponents.UnifyButton
+                            android:id="@+id/btn_action_follow"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/unify_space_16"
+                            android:layout_marginEnd="@dimen/unify_space_16"
+                            android:textColor="@color/Unify_NN300"
+                            app:unifyButtonSize="small"
+                            app:unifyButtonVariant="text" />
 
-                    <View android:layout_height="1dp"
-                        android:layout_width="match_parent"
-                        android:background="#BFC9D9"
-                        android:layout_marginTop="@dimen/unify_space_16"
-                        android:id="@+id/view_line"
-                        android:layout_marginStart="0dp"
-                        android:layout_marginEnd="0dp"/>
+                        <View
+                            android:id="@+id/view_line"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginStart="0dp"
+                            android:layout_marginTop="@dimen/unify_space_16"
+                            android:layout_marginEnd="0dp"
+                            android:background="#BFC9D9" />
                     </LinearLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -304,21 +306,12 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            tools:visibility="visible"
-            app:layout_constraintTop_toBottomOf="@+id/linear_button">
+            app:layout_constraintTop_toBottomOf="@+id/linear_button"
+            tools:visibility="visible">
 
             <include
                 android:id="@+id/include_shop_recommendation"
-                layout="@layout/up_layout_shop_recommendation"/>
-
-            <com.tokopedia.unifycomponents.LocalLoad
-                android:id="@+id/global_error_shop_recommendation"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/unify_space_16"
-                android:layout_marginRight="@dimen/unify_space_16"
-                app:unify_local_load_description="@string/up_common_failed_desc"
-                app:unify_local_load_title="@string/up_common_failed_title" />
+                layout="@layout/up_layout_shop_recommendation" />
 
         </ViewFlipper>
 
@@ -331,15 +324,15 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/linear_button">
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_post"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/unify_space_12"
-                    android:layout_marginEnd="@dimen/unify_space_12"
-                    android:clipToPadding="false"
-                    android:paddingBottom="@dimen/user_profile_margin_8"
-                    tools:listitem="@layout/up_item_user_post" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_post"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_12"
+                android:layout_marginEnd="@dimen/unify_space_12"
+                android:clipToPadding="false"
+                android:paddingBottom="@dimen/user_profile_margin_8"
+                tools:listitem="@layout/up_item_user_post" />
 
             <include layout="@layout/up_shimmer_user_post" />
 
