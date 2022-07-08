@@ -2,7 +2,6 @@ package com.tokopedia.play.ui.view.carousel.viewholder
 
 import android.content.Context
 import android.graphics.Paint
-import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
@@ -14,16 +13,12 @@ import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.play.R
 import com.tokopedia.play.databinding.ItemPlayPinnedProductBinding
-import com.tokopedia.play.databinding.ItemPlayProductFeaturedBinding
-import com.tokopedia.play.ui.product.ProductBasicViewHolder
-import com.tokopedia.play.ui.productfeatured.viewholder.ProductFeaturedViewHolder
 import com.tokopedia.play.view.type.DiscountedPrice
 import com.tokopedia.play.view.type.OriginalPrice
-import com.tokopedia.play.view.uimodel.PlayProductUiModel
-import com.tokopedia.play.R
-import com.tokopedia.play.ui.productsheet.viewholder.ProductLineViewHolder
 import com.tokopedia.play.view.type.StockAvailable
+import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.R as unifyR
 
@@ -102,11 +97,11 @@ class ProductCarouselViewHolder private constructor() {
                 if (item.stock !is StockAvailable ||
                     item.stock.stock > MIN_STOCK) return@buildSpannedString
 
-                append(" ")
+                append(' ')
                 val separator = getString(R.string.play_product_pinned_info_separator)
                 append(separator, separatorSpan, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
 
-                append(" ")
+                append(' ')
                 val stockText = getString(R.string.play_product_item_stock, item.stock.stock)
                 append(stockText, stockSpan, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
             }
