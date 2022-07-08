@@ -427,7 +427,7 @@ class NewShopPageViewModelTest {
         }
 
         mockkStatic(ImageProcessingUtil::class)
-        every {
+        coEvery {
             ImageProcessingUtil.writeImageToTkpdPath(
                     mockBitmap,
                     Bitmap.CompressFormat.PNG)
@@ -459,7 +459,7 @@ class NewShopPageViewModelTest {
         }
 
         mockkStatic(ImageProcessingUtil::class)
-        every {
+        coEvery {
             ImageProcessingUtil.writeImageToTkpdPath(
                     mockBitmap,
                     Bitmap.CompressFormat.PNG)
