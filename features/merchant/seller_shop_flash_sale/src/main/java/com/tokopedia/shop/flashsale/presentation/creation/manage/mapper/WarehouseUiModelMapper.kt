@@ -16,12 +16,12 @@ class WarehouseUiModelMapper @Inject constructor(@ApplicationContext private val
     }
 
     /**
-     * when selected warehouse's stock is empty,
+     * when selected warehouse's stock is out of stock,
      * then search for new warehouse with largest stock for new selection
      */
     private fun List<WarehouseUiModel>.fixWarehouseSelection(): List<WarehouseUiModel> {
-        val isSelectedWarehouseOos = any { it.isSelected && it.stock.isZero() }
-        if (isSelectedWarehouseOos) {
+        val isSelectedWarehouseOutOfStock = any { it.isSelected && it.stock.isZero() }
+        if (isSelectedWarehouseOutOfStock) {
             val whId = maxByOrNull { it.stock }?.id
             forEach {
                 it.isSelected = it.id == whId
