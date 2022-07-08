@@ -202,7 +202,7 @@ class PlayVideoFragment @Inject constructor(
     private lateinit var containerVideo: RoundedConstraintLayout
 
     private val orientation: ScreenOrientation
-        get() = ScreenOrientation.getByInt(resources.configuration.orientation)
+        get() = ScreenOrientation.getByInt(requireContext().resources.configuration.orientation)
 
     private val isYouTube: Boolean
         get() = playViewModel.videoPlayer.isYouTube
