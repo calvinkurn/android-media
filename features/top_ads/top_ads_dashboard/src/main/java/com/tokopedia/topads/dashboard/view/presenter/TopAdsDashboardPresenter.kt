@@ -273,7 +273,7 @@ class TopAdsDashboardPresenter @Inject constructor(
 
     fun getExpiryDate(resources: Resources) {
         getExpiryDateUseCase.execute {
-            _expiryDateHiddenTrial.postValue(it)
+            _expiryDateHiddenTrial.postValue(it.expiryDate)
         }
     }
 

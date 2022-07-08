@@ -16,7 +16,7 @@ class TopadsGetFreeDepositUseCase @Inject constructor(
     private val userSession: UserSessionInterface,
 ) : GraphqlUseCase<ExpiryDateResponse>() {
 
-    fun execute(response: (String) -> Unit) {
+    fun execute(response: (ExpiryDateResponse.TopAdsGetFreeDeposit) -> Unit) {
         setGraphqlQuery(GQL_QUERY)
         setRequestParams(mapOf(TopAdsDashboardConstant.PARAM_SHOP_ID to userSession.shopId))
         setTypeClass(ExpiryDateResponse::class.java)
@@ -25,7 +25,7 @@ class TopadsGetFreeDepositUseCase @Inject constructor(
             .setSessionIncluded(true)
             .build())
         execute({
-            response.invoke(it.topAdsGetFreeDeposit.expiryDate)
+            response.invoke(it.topAdsGetFreeDeposit)
         }, {
             it.printStackTrace()
         })
@@ -39,6 +39,7 @@ class TopadsGetFreeDepositUseCase @Inject constructor(
                 depositID
                 status
                 expiryDate
+                pendingRebateCredit
               }
             }
 

@@ -15,6 +15,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.visibleWithCondition
 import com.tokopedia.topads.credit.history.data.model.CreditHistory
 import com.tokopedia.topads.credit.history.data.model.TopAdsCreditHistory
 import com.tokopedia.topads.credit.history.view.activity.PARAM_DATE_PICKER_INDEX
@@ -126,7 +128,16 @@ class TopAdsCreditHistoryFragment :
         })
 
         viewModel.expiryDateHiddenTrial.observe(viewLifecycleOwner) {
-            txtRewardPendingValue?.text = it
+            val rewardValue = it.toIntOrZero()
+            view?.findViewById<ConstraintLayout>(R.id.layoutRewardPending)?.visibility =
+                if (rewardValue != 0) {
+                    txtRewardPendingValue?.text = rewardValue.toString()
+                    View.VISIBLE
+                } else {
+                    View.GONE
+                }
+
+
         }
     }
 
@@ -221,7 +232,7 @@ class TopAdsCreditHistoryFragment :
             showBottomSheet()
         }
         view?.findViewById<ImageUnify>(R.id.iconPendingRewardInfo)?.setOnClickListener {
-            RewardPendingInfoBottomSheet().show(childFragmentManager,"")
+            RewardPendingInfoBottomSheet().show(childFragmentManager, "")
         }
     }
 

@@ -39,12 +39,12 @@ class TopAdsCreditHistoryViewModel @Inject constructor(
     val getAutoTopUpStatus = MutableLiveData<Result<AutoTopUpStatus>>()
     val creditAmount = MutableLiveData<String>()
 
-    private val _expiryDateHiddenTrial: MutableLiveData<String> = MutableLiveData()
-    val expiryDateHiddenTrial: LiveData<String> = _expiryDateHiddenTrial
+    private val _expiryDateHiddenTrial: MutableLiveData<String?> = MutableLiveData()
+    val expiryDateHiddenTrial: LiveData<String?> = _expiryDateHiddenTrial
 
     fun loadPendingReward() {
         pendingRewardUseCase.execute {
-            _expiryDateHiddenTrial.postValue(it)
+            _expiryDateHiddenTrial.postValue(it.pendingRebateCredit)
         }
     }
 

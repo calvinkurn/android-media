@@ -58,45 +58,53 @@
                 app:unifyButtonType="main"
                 app:unifyButtonVariant="filled" />
 
-            <com.tokopedia.unifycomponents.DividerUnify
-                android:id="@id/divider"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layoutRewardPending"
+                android:visibility="gone"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/spacing_lvl1"
-                android:layout_marginTop="@dimen/unify_space_12"
-                app:layout_constraintTop_toBottomOf="@id/creditAmount" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/txtRewardPending"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/unify_space_12"
-                android:text="@string/total_reward_pending"
-                android:textColor="@color/Unify_NN600"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/divider"
-                app:typographyType="display_3" />
+                app:layout_constraintTop_toBottomOf="@id/creditAmount">
 
-            <com.tokopedia.unifycomponents.ImageUnify
-                android:id="@+id/iconPendingRewardInfo"
-                android:layout_width="@dimen/spacing_lvl4"
-                android:layout_height="@dimen/spacing_lvl4"
-                android:layout_marginStart="@dimen/spacing_lvl1"
-                android:tint="@color/light_N700_68"
-                app:layout_constraintBottom_toBottomOf="@id/txtRewardPending"
-                app:layout_constraintStart_toEndOf="@id/txtRewardPending"
-                app:layout_constraintTop_toTopOf="@id/txtRewardPending"
-                app:srcCompat="@drawable/iconunify_information" />
+                <com.tokopedia.unifycomponents.DividerUnify
+                    android:id="@id/divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/spacing_lvl1"
+                    android:layout_marginTop="@dimen/unify_space_12"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/txtRewardPendingValue"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="@id/txtRewardPending"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/txtRewardPending"
-                app:typographyType="display_3"
-                app:typographyWeight="bold"
-                tools:text="Rp 1000" />
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/txtRewardPending"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/unify_space_12"
+                    android:text="@string/total_reward_pending"
+                    android:textColor="@color/Unify_NN600"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/divider"
+                    app:typographyType="display_3" />
+
+                <com.tokopedia.unifycomponents.ImageUnify
+                    android:id="@+id/iconPendingRewardInfo"
+                    android:layout_width="@dimen/spacing_lvl4"
+                    android:layout_height="@dimen/spacing_lvl4"
+                    android:layout_marginStart="@dimen/spacing_lvl1"
+                    android:tint="@color/light_N700_68"
+                    app:layout_constraintBottom_toBottomOf="@id/txtRewardPending"
+                    app:layout_constraintStart_toEndOf="@id/txtRewardPending"
+                    app:layout_constraintTop_toTopOf="@id/txtRewardPending"
+                    app:srcCompat="@drawable/iconunify_information" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/txtRewardPendingValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="@id/txtRewardPending"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/txtRewardPending"
+                    app:typographyType="display_3"
+                    app:typographyWeight="bold"
+                    tools:text="Rp 1000" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.tokopedia.unifycomponents.CardUnify>
 
@@ -109,8 +117,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:gravity="center"
+            android:orientation="horizontal"
             android:padding="@dimen/unify_space_12">
 
             <com.tokopedia.unifyprinciples.Typography
