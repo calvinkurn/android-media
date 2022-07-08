@@ -217,4 +217,7 @@
     <string name="feed_ugc_onboarding_tnc_2">Tidak memposting foto/video yang ada unsur SARA &amp; dewasa (alkohol, rokok, kondom, dll)</string>
     <string name="feed_ugc_onboarding_accept_tnc">Saya telah membaca Kebijakan Privasi dan setuju dengan Syarat &amp; Ketentuan</string>
     <string name="feed_ugc_onboarding_continue">Lanjut</string>
+
+    <string name="up_follow_account">Follow akun</string>
+    <string name="up_btn_text_follow">Follow</string>
 </resources>
