@@ -1,0 +1,10 @@
+package com.tokopedia.feedcomponent.onboarding.di.qualifier
+
+import javax.inject.Qualifier
+
+/**
+ * Created By : Jonathan Darwin on July 04, 2022
+ */
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class TncStrategy
