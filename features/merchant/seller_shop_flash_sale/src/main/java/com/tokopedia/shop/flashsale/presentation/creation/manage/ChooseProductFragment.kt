@@ -9,8 +9,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentChooseProductBinding
@@ -19,8 +17,6 @@ import com.tokopedia.shop.flashsale.common.customcomponent.BaseSimpleListFragmen
 import com.tokopedia.shop.flashsale.common.extension.*
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.presentation.creation.manage.adapter.ReserveProductAdapter
-import com.tokopedia.shop.flashsale.presentation.creation.manage.dialog.ShopClosedDialog
-import com.tokopedia.shop.flashsale.presentation.creation.manage.enums.ShopStatus
 import com.tokopedia.shop.flashsale.presentation.creation.manage.model.ReserveProductModel
 import com.tokopedia.shop.flashsale.presentation.creation.manage.model.SelectedProductModel
 import com.tokopedia.shop.flashsale.presentation.creation.manage.viewmodel.ChooseProductViewModel
@@ -87,7 +83,6 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
         setupSearchBar()
         guidelineMarginMax = binding?.guidelineFooter?.setGuidelineEnd().orZero()
         guidelineMargin = guidelineMarginMax
-        viewModel.getShopInfo()
     }
 
     override fun createAdapter() = ReserveProductAdapter(::onSelectedItemChanges)
@@ -156,7 +151,6 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
         setupIsSelectionValidObserver()
         setupIsSelectionHasVariantObserver()
         setupIsAddProductSuccessObserver()
-        setupShopInfoObserver()
     }
 
     private fun setupIsAddProductSuccessObserver() {
@@ -211,12 +205,6 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
         }
     }
 
-    private fun setupShopInfoObserver() {
-        viewModel.shopStatus.observe(viewLifecycleOwner) {
-            if (it == ShopStatus.CLOSED) showShopClosedDialog()
-        }
-    }
-
     private fun setupSearchBar() {
         binding?.searchBarProduct?.searchBarTextField?.setOnEditorActionListener {
                 textView, actionId, _ ->
@@ -239,18 +227,6 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
             viewModel.addProduct(campaignId)
             binding?.btnSave?.isLoading = true
         }
-    }
-
-    private fun showShopClosedDialog() {
-        val dialog = ShopClosedDialog(primaryCTAAction = ::goToShopSettings)
-        dialog.setOnDismissListener {
-            activity?.finish()
-        }
-        dialog.show(childFragmentManager)
-    }
-
-    private fun goToShopSettings() {
-        RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_SETTINGS_OPERATIONAL_HOURS)
     }
 
     private fun animateScroll(scrollingAmount: Int) {

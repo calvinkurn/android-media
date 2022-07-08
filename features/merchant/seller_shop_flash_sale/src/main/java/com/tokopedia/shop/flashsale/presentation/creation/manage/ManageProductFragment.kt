@@ -1,6 +1,5 @@
 package com.tokopedia.shop.flashsale.presentation.creation.manage
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -12,6 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.*
@@ -27,7 +28,9 @@ import com.tokopedia.shop.flashsale.presentation.creation.highlight.ManageHighli
 import com.tokopedia.shop.flashsale.presentation.creation.manage.adapter.ManageProductListAdapter
 import com.tokopedia.shop.flashsale.presentation.creation.manage.bottomsheet.EditProductInfoBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.manage.dialog.ProductDeleteDialog
+import com.tokopedia.shop.flashsale.presentation.creation.manage.dialog.ShopClosedDialog
 import com.tokopedia.shop.flashsale.presentation.creation.manage.dialog.showSuccessSaveCampaignDraft
+import com.tokopedia.shop.flashsale.presentation.creation.manage.enums.ShopStatus
 import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListActivity
 import com.tokopedia.shop.flashsale.presentation.list.list.listener.RecyclerViewScrollListener
 import com.tokopedia.usecase.coroutines.Fail
@@ -103,11 +106,12 @@ class ManageProductFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         setFragmentToUnifyBgColor()
         setupView()
-        loadProductsData()
+        observeShopStatus()
         observeProductList()
         observeIncompleteProducts()
         observeRemoveProductsStatus()
         observeBannerType()
+        viewModel.getShopStatus()
     }
 
     private fun setupView() {
@@ -175,8 +179,22 @@ class ManageProductFragment : BaseDaggerFragment() {
     }
 
     private fun observeIncompleteProducts() {
-        viewModel.incompleteProducts.observe(viewLifecycleOwner) {
+        viewModel.incompleteProducts.observeOnce(viewLifecycleOwner) {
             if (it.isNotEmpty()) showEditProductBottomSheet(it)
+        }
+    }
+
+    private fun observeShopStatus() {
+        viewModel.shopStatus.observeOnce(viewLifecycleOwner) {
+            if (it is Success) {
+                if (it.data == ShopStatus.CLOSED) {
+                    showShopClosedDialog()
+                } else {
+                    loadProductsData()
+                }
+            } else if (it is Fail) {
+                view?.showError(it.throwable)
+            }
         }
     }
 
@@ -437,6 +455,18 @@ class ManageProductFragment : BaseDaggerFragment() {
             }
             cardBottomButtonGroup.slideUp()
         }
+    }
+
+    private fun showShopClosedDialog() {
+        val dialog = ShopClosedDialog(primaryCTAAction = ::goToShopSettings)
+        dialog.setOnDismissListener {
+            activity?.finish()
+        }
+        dialog.show(childFragmentManager)
+    }
+
+    private fun goToShopSettings() {
+        RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_SETTINGS_OPERATIONAL_HOURS)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
