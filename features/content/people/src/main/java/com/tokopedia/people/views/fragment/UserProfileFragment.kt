@@ -476,13 +476,14 @@ class UserProfileFragment @Inject constructor(
             prev.profileType == value.profileType
         ) return
 
-        val usernameEmpty = !value.profileInfo.username.isBlank()
+        val usernameEmpty = value.profileInfo.username.isBlank()
         val biographyEmpty = value.profileInfo.biography.isBlank()
 
         val isShowProfileReminder = viewModel.isSelfProfile && usernameEmpty && biographyEmpty
 
-        if (isShowProfileReminder) showProfileReminder()
-        else mainBinding.cardUserReminder.root.hide()
+        mainBinding.cardUserReminder.root.shouldShowWithAction(isShowProfileReminder) {
+            mainBinding.btnAction.hide()
+        }
     }
 
     private fun buttonActionUIFollow() = with(mainBinding.btnAction) {
@@ -574,10 +575,6 @@ class UserProfileFragment @Inject constructor(
                 RouteManager.route(activity, APPLINK_MENU)
             }
         }
-    }
-
-    private fun showProfileReminder() = with(mainBinding) {
-        cardUserReminder.root.show()
     }
 
     private fun navigateToEditProfile() {
