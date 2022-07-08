@@ -1,20 +1,18 @@
 package com.tokopedia.user.session.datastore.workmanager
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.util.Log
 import androidx.work.*
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.user.session.datastore.DataStorePreference
 import com.tokopedia.user.session.datastore.DataStoreMigrationHelper
-import com.tokopedia.user.session.datastore.UserSessionDataStoreClient
-import com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker.Companion.WorkOps.LOG_SYNC
-import com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker.Companion.WorkOps.MIGRATED
-import com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker.Companion.WorkOps.NO_OPS
+import com.tokopedia.user.session.datastore.DataStorePreference
+import com.tokopedia.user.session.datastore.UserSessionDataStore
+import com.tokopedia.user.session.datastore.workmanager.WorkOps.MIGRATED
+import com.tokopedia.user.session.datastore.workmanager.WorkOps.NO_OPS
+import com.tokopedia.user.session.datastore.workmanager.WorkOps.OPERATION_KEY
 import com.tokopedia.user.session.di.ComponentFactory
-
 import kotlinx.coroutines.flow.first
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -22,14 +20,8 @@ import javax.inject.Inject
 class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParameters) :
     CoroutineWorker(appContext, workerParams) {
 
-    private fun getDataStoreMigrationPreference(context: Context): SharedPreferences {
-        return context.getSharedPreferences(DATA_STORE_PREF, Context.MODE_PRIVATE)
-    }
-
-    val dataStore = UserSessionDataStoreClient.getInstance(applicationContext)
-
-    private fun isMigrationSuccess(): Boolean =
-        getDataStoreMigrationPreference(applicationContext).getBoolean(KEY_MIGRATION_STATUS, false)
+    @Inject
+    lateinit var dataStore: UserSessionDataStore
 
     @Inject
     lateinit var dataStorePreference: DataStorePreference
@@ -47,14 +39,13 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
                 var ops = NO_OPS
                 if (userSession.isLoggedIn) {
                     val syncResult = DataStoreMigrationHelper.checkDataSync(applicationContext)
-                    if (!isMigrationSuccess() &&
+                    if (!dataStorePreference.isMigrationSuccess() &&
                         (dataStore.getUserId().first().isEmpty() || syncResult.isNotEmpty())
                     ) {
                         migrateData()
                         ops = MIGRATED
                     } else {
                         logSyncResult(syncResult)
-                        ops = LOG_SYNC
                     }
                 }
                 Result.success(workDataOf(OPERATION_KEY to ops))
@@ -64,7 +55,7 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
                 Result.failure()
             }
         } else {
-            return Result.success(workDataOf(OPERATION_KEY to WorkOps.NO_OPS))
+            return Result.success(workDataOf(OPERATION_KEY to NO_OPS))
         }
     }
 
@@ -74,12 +65,10 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
             //Check if still difference between the data
             val migrationResult = DataStoreMigrationHelper.checkDataSync(applicationContext)
             if (migrationResult.isEmpty()) {
-                getDataStoreMigrationPreference(applicationContext).edit()
-                    .putBoolean(KEY_MIGRATION_STATUS, true).apply()
+                dataStorePreference.setMigrationStatus(true)
                 logMigrationResultSuccess()
             } else {
-                getDataStoreMigrationPreference(applicationContext).edit()
-                    .putBoolean(KEY_MIGRATION_STATUS, false).apply()
+                dataStorePreference.setMigrationStatus(false)
                 logMigrationResultFailed(migrationResult)
             }
         } catch (e: Exception) {
@@ -142,18 +131,7 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
     companion object {
         const val WORKER_ID = "DATASTORE_MIGRATION_WORKER"
 
-        const val DATA_STORE_PREF = "DATA_STORE_MIGRATION_PREF"
-        const val KEY_MIGRATION_STATUS = "data_store_migration_status"
-
         const val USER_SESSION_LOGGER_TAG = "USER_SESSION_DATA_STORE"
-
-        const val OPERATION_KEY = "operation"
-
-        object WorkOps {
-            const val NO_OPS = 0
-            const val MIGRATED = 1
-            const val LOG_SYNC = 2
-        }
 
         @JvmStatic
         fun scheduleWorker(context: Context) {

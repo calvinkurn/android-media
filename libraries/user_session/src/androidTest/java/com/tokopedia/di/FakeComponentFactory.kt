@@ -8,6 +8,7 @@ import com.tokopedia.user.session.di.SessionModule
 import com.tokopedia.user.session.di.UserSessionComponent
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.spyk
 
 class FakeComponentFactory: ComponentFactory() {
 
@@ -15,7 +16,7 @@ class FakeComponentFactory: ComponentFactory() {
         return DaggerUserSessionComponent.builder().sessionModule(
             object : SessionModule() {
                 override fun provideAbPlatform(context: Context): DataStorePreference {
-                    return mockk {
+                    return spyk(DataStorePreference(context)) {
                         every { isDataStoreEnabled() } returns true
                     }
                 }

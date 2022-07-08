@@ -548,6 +548,5 @@ class UserSessionDataStoreImpl(private val store: DataStore<UserSessionProto>) :
 
         const val HEX_FORMAT = "%02x"
 
-        val SHARED_PREFERENCE_AB_TEST_PLATFORM = "tkpd-ab-test-platform"
     }
 }
