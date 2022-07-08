@@ -292,13 +292,14 @@
                             app:unifyButtonSize="small"
                             app:unifyButtonVariant="text" />
 
-                        <View android:layout_height="1dp"
-                            android:layout_width="match_parent"
-                            android:background="@color/Unify_NN300"
-                            android:layout_marginTop="@dimen/unify_space_16"
+                        <View
                             android:id="@+id/view_line"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
                             android:layout_marginStart="0dp"
-                            android:layout_marginEnd="0dp"/>
+                            android:layout_marginTop="@dimen/unify_space_16"
+                            android:layout_marginEnd="0dp"
+                            android:background="@color/Unify_NN300" />
 
                     </LinearLayout>
 
