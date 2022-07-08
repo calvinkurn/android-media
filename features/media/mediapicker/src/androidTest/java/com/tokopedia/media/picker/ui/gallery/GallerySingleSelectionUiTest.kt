@@ -3,11 +3,13 @@ package com.tokopedia.media.picker.ui.gallery
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.rule.GrantPermissionRule
+import com.google.android.gms.tagmanager.PreviewActivity
 import com.tokopedia.media.R
 import com.tokopedia.media.picker.common.di.TestPickerInterceptor
 import com.tokopedia.media.picker.common.ui.activity.TestPreviewActivity
 import com.tokopedia.media.picker.helper.utils.toSec
 import com.tokopedia.media.picker.ui.core.GalleryPageTest
+import com.tokopedia.media.preview.ui.activity.PickerPreviewActivity
 import com.tokopedia.picker.common.mapper.humanize
 import com.tokopedia.test.application.annotations.UiTest
 import org.junit.Rule
@@ -46,7 +48,7 @@ class GallerySingleSelectionUiTest : GalleryPageTest() {
         // Then
         Thread.sleep(2000)
 
-        Intents.intended(IntentMatchers.hasComponent(TestPreviewActivity::class.java.name))
+        Intents.intended(IntentMatchers.hasComponent(PreviewActivity::class.java.name))
     }
 
     @Test
@@ -64,7 +66,7 @@ class GallerySingleSelectionUiTest : GalleryPageTest() {
         // Then
         Thread.sleep(2000)
 
-        Intents.intended(IntentMatchers.hasComponent(TestPreviewActivity::class.java.name))
+        Intents.intended(IntentMatchers.hasComponent(PreviewActivity::class.java.name))
     }
 
     @Test
