@@ -59,9 +59,6 @@ object RollenceKey {
     const val WISHLIST_V2_VARIANT = "experiment_variant"
     const val ADD_REMOVE_WISHLIST_V2 = "addremove_wishlistv2"
 
-    // Fulfillment Rebranding
-    const val FULFILLMENT_REBRANDING = "fulfill_rebranding"
-
     // Logistic
     const val LCA_REFRESH = "android_lca_refresh"
 
