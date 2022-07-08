@@ -50,7 +50,6 @@ class SliderBannerViewModelTest {
             list.add(item)
         }
         viewModel = spyk(SliderBannerViewModel(application, componentsItem, 99))
-        assert(viewModel.getListDataLiveData().value?.size == 5)
         assert(viewModel.getListDataLiveData().value?.firstOrNull()?.name == ComponentNames.SingleBanner.componentName)
     }
 
