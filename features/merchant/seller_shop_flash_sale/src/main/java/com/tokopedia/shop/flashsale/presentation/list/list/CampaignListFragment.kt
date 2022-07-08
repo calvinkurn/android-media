@@ -26,7 +26,6 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignListBinding
-import com.tokopedia.shop.flashsale.common.constant.Constant.EMPTY_STRING
 import com.tokopedia.shop.flashsale.common.constant.Constant.FIRST_PAGE
 import com.tokopedia.shop.flashsale.common.constant.Constant.ZERO
 import com.tokopedia.shop.flashsale.common.customcomponent.BaseSimpleListFragment
@@ -244,7 +243,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
             PAGE_SIZE,
             FIRST_PAGE,
             campaignStatusIds?.toList().orEmpty(),
-            EMPTY_STRING
+            ""
         )
     }
 

@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/container"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.tokopedia.shop.flashsale.presentation.list.container.CampaignListActivity">
@@ -18,6 +17,32 @@
         app:layout_constraintTop_toTopOf="parent"
         app:unify_header_is_show_shadow="false"
         app:unify_header_title="@string/sfs_your_shop_flash_sale" />
+
+    <com.tokopedia.empty_state.EmptyStateUnify
+        android:id="@+id/emptyState"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:elevation="@dimen/unify_space_4"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/btnLearnMore"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/header"
+        app:unifyEmptyStateOrientation="vertical"
+        app:unifyEmptyStateType="section"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnLearnMore"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:layout_marginBottom="@dimen/unify_space_16"
+        android:text="@string/sfs_forbidden_access_learn_more"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <com.tokopedia.unifycomponents.TabsUnify
         android:id="@+id/tabsUnify"
@@ -62,5 +87,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/header" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupIneligibleAccess"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:constraint_referenced_ids="emptyState,btnLearnMore" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

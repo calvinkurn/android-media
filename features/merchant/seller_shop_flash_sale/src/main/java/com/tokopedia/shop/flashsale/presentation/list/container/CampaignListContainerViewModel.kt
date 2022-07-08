@@ -5,24 +5,57 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.flashsale.domain.entity.TabMeta
+import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignEligibilityUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignListMetaUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import kotlinx.coroutines.async
 import javax.inject.Inject
 
 class CampaignListContainerViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private val getSellerCampaignListMetaUseCase: GetSellerCampaignListMetaUseCase
+    private val getSellerCampaignListMetaUseCase: GetSellerCampaignListMetaUseCase,
+    private val getSellerCampaignEligibilityUseCase: GetSellerCampaignEligibilityUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     private var autoFocusTabPosition = 0
     private var storedTabsMetadata : List<TabMeta> = emptyList()
 
+    private val _prerequisiteData = MutableLiveData<Result<PrerequisiteData>>()
+    val prerequisiteData: LiveData<Result<PrerequisiteData>>
+        get() = _prerequisiteData
+
     private val _tabsMeta = MutableLiveData<Result<List<TabMeta>>>()
     val tabsMeta: LiveData<Result<List<TabMeta>>>
         get() = _tabsMeta
+
+    data class PrerequisiteData(
+        val isEligible: Boolean,
+        val tabsMetadata: List<TabMeta>
+    )
+
+    fun getPrerequisiteData() {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val isEligibleDeferred = async { getSellerCampaignEligibilityUseCase.execute() }
+                val tabsDeferred = async { getSellerCampaignListMetaUseCase.execute() }
+
+                val prerequisiteData = PrerequisiteData(
+                    isEligibleDeferred.await(),
+                    tabsDeferred.await()
+                )
+
+                _prerequisiteData.postValue(Success(prerequisiteData))
+            },
+            onError = { error ->
+                _prerequisiteData.postValue(Fail(error))
+            }
+        )
+
+    }
 
     fun getTabsMeta() {
         launchCatchError(
