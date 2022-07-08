@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
@@ -53,6 +54,7 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 import com.tokopedia.feedcomponent.bottomsheets.onboarding.FeedUserCompleteOnboardingBottomSheet
 import com.tokopedia.feedcomponent.bottomsheets.onboarding.FeedUserTnCOnboardingBottomSheet
+import com.tokopedia.feedcomponent.view.decor.ShopRecomItemDecoration
 import com.tokopedia.people.views.activity.FollowerFollowingListingActivity
 import com.tokopedia.people.views.adapter.UserPostBaseAdapter
 import com.tokopedia.people.analytic.UserProfileTracker
@@ -62,6 +64,7 @@ import com.tokopedia.people.utils.showErrorToast
 import com.tokopedia.people.utils.showToast
 import com.tokopedia.people.utils.withCache
 import com.tokopedia.people.viewmodels.factory.UserProfileViewModelFactory
+import com.tokopedia.people.views.adapter.UserShopRecomBaseAdapter
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.people.views.uimodel.profile.ProfileType
@@ -69,6 +72,7 @@ import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
 import com.tokopedia.people.views.uimodel.state.UserProfileUiState
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import timber.log.Timber
 import com.tokopedia.abstraction.R as abstractionR
 import com.tokopedia.unifyprinciples.R as unifyR
 
@@ -83,7 +87,12 @@ class UserProfileFragment @Inject constructor(
     ScreenShotListener,
     PermissionListener,
     UserPostBaseAdapter.PlayWidgetCallback,
+    UserShopRecomBaseAdapter.ShopRecommendationCallback,
     FeedPlusContainerListener {
+
+    private val linearLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
+        LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+    }
 
     private val gridLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
         GridLayoutManager(activity, 2)
@@ -104,6 +113,8 @@ class UserProfileFragment @Inject constructor(
         get() = _binding!!.mainLayout
 
     private lateinit var viewModel: UserProfileViewModel
+
+    private lateinit var mAdapterShopRecom: UserShopRecomBaseAdapter
 
     private val mAdapter: UserPostBaseAdapter by lazy {
         UserPostBaseAdapter(this, this) { cursor ->
@@ -158,6 +169,8 @@ class UserProfileFragment @Inject constructor(
         mainBinding.swipeRefreshLayout.setOnChildScrollUpCallback { _, _ ->
             mainBinding.rvPost.canScrollVertically(-1) || !shouldRefreshRecyclerView
         }
+
+        mainBinding.userShopRecommendation.hide()
 
         context?.let {
             screenShotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
@@ -233,6 +246,16 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
+    private fun initShopRecommendation() = with(mainBinding.includeShopRecommendation.rvShopRecom) {
+        mAdapterShopRecom = UserShopRecomBaseAdapter(
+            this@UserProfileFragment,
+            this@UserProfileFragment
+        )
+        layoutManager = linearLayoutManager
+        adapter = mAdapterShopRecom
+        if (itemDecorationCount == 0) addItemDecoration(ShopRecomItemDecoration())
+    }
+
     private fun initUserPost(userId: String) {
         gridLayoutManager.spanSizeLookup = getSpanSizeLookUp()
 
@@ -264,6 +287,7 @@ class UserProfileFragment @Inject constructor(
         observeUiEvent()
 
         addListObserver()
+        addShopRecomObserver()
         addUserPostObserver()
         adduserPostErrorObserver()
     }
@@ -332,7 +356,24 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
+    private fun addShopRecomObserver() {
+        viewModel.shopRecomContentLiveData.observe(viewLifecycleOwner) {
+            when (it) {
+                is Loading -> {
+                    mAdapterShopRecom.resetAdapter()
+                    mAdapterShopRecom.notifyDataSetChanged()
+                }
+                is Success -> {
+                    mAdapterShopRecom.onSuccess(it.data)
+                    mainBinding.userShopRecommendation.show()
+                }
+                is ErrorMessage -> mAdapterShopRecom.onError()
+            }
+        }
+    }
+
     private fun addListObserver() {
+        viewModel.isFirstLoadEmpty.observe(viewLifecycleOwner) { initShopRecommendation() }
         viewModel.playPostContentLiveData.observe(viewLifecycleOwner) {
             it?.let {
                 when (it) {
@@ -610,15 +651,25 @@ class UserProfileFragment @Inject constructor(
         return bundle
     }
 
+    override fun onCloseClicked() {
+        Timber.d("close")
+    }
+
+    override fun onFollowClicked() {
+        Timber.d("follow")
+    }
+
     override fun onRetryPageLoad(pageNumber: Int) {
 
     }
 
     override fun onEmptyList(rawObject: Any?) {
+        if (viewModel.isSelfProfile) return
         mainBinding.userPostContainer.displayedChild = PAGE_EMPTY
     }
 
     override fun onStartFirstPageLoad() {
+        mainBinding.userShopRecommendation.hide()
         mainBinding.userPostContainer.displayedChild = PAGE_LOADING
     }
 
@@ -644,6 +695,7 @@ class UserProfileFragment @Inject constructor(
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_LOGIN_TO_FOLLOW && resultCode == Activity.RESULT_OK) {
+            refreshLandingPageData(isRefreshPost = true)
             doFollowUnfollow(isFromLogin = true)
         }
         else if(requestCode == REQUEST_CODE_LOGIN_TO_SET_REMINDER && resultCode == Activity.RESULT_OK) {
@@ -853,4 +905,5 @@ class UserProfileFragment @Inject constructor(
     override fun shrinkFab() {
         mainBinding.fabUserProfile.shrink()
     }
+
 }

@@ -9,7 +9,9 @@ import com.tokopedia.people.Success
 import com.tokopedia.people.model.UserPostModel
 import kotlinx.coroutines.Dispatchers
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
+import com.tokopedia.people.ErrorMessage
 import com.tokopedia.people.domains.repository.UserProfileRepository
+import com.tokopedia.people.model.UserShopRecomModel
 import com.tokopedia.people.views.uimodel.MutationUiModel
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
@@ -39,6 +41,9 @@ class UserProfileViewModel @AssistedInject constructor(
      * */
     private val userPost = MutableLiveData<Boolean>()
     val userPostLiveData : LiveData<Boolean> get() = userPost
+
+    private val shopRecomContent = MutableLiveData<Resources<UserShopRecomModel>>()
+    val shopRecomContentLiveData : LiveData<Resources<UserShopRecomModel>> get() = shopRecomContent
 
     private val playPostContent = MutableLiveData<Resources<UserPostModel>>()
     val playPostContentLiveData : LiveData<Resources<UserPostModel>> get() = playPostContent
@@ -106,9 +111,14 @@ class UserProfileViewModel @AssistedInject constructor(
         )
     }
 
+    var isFirstLoad: Boolean = true
+    private val _isFirstLoadEmpty = MutableLiveData<Boolean>()
+    val isFirstLoadEmpty: LiveData<Boolean> = _isFirstLoadEmpty
+
     fun submitAction(action: UserProfileAction) {
         when(action) {
             is UserProfileAction.LoadProfile -> handleLoadProfile(action.isRefresh)
+            is UserProfileAction.LoadShopRecom -> handleLoadShopRecom()
             is UserProfileAction.LoadPlayVideo -> handleLoadPlayVideo(action.cursor)
             is UserProfileAction.ClickFollowButton -> handleClickFollowButton(action.isFromLogin)
             is UserProfileAction.ClickUpdateReminder -> handleClickUpdateReminder(action.isFromLogin)
@@ -119,6 +129,7 @@ class UserProfileViewModel @AssistedInject constructor(
 
     /** Handle Action */
     private fun handleLoadProfile(isRefresh: Boolean) {
+        if (isRefresh) isFirstLoad = true
         launchCatchError(block = {
             loadProfileInfo(isRefresh)
         }) {
@@ -130,11 +141,26 @@ class UserProfileViewModel @AssistedInject constructor(
      * play video will be moved to dedicated fragment when
      * developing another tab user profile eventually. so gonna leave as is for now
      * */
+    private fun handleLoadShopRecom() {
+        launchCatchError(block = {
+            val data = repo.getShopRecom()
+            if (data != null) shopRecomContent.value = Success(data)
+            else throw NullPointerException("data is null")
+        }, onError = {
+            userPostError.value = it
+        })
+    }
+
     private fun handleLoadPlayVideo(cursor: String) {
         launchCatchError(block = {
             val data = repo.getPlayVideo(profileUserID, cursor)
             if (data != null) {
+                if (isSelfProfile && isFirstLoad && data.playGetContentSlot.data.isNullOrEmpty()) {
+                    _isFirstLoadEmpty.value = true
+                    submitAction(UserProfileAction.LoadShopRecom())
+                }
                 playPostContent.value = Success(data)
+                isFirstLoad = false
             } else throw NullPointerException("data is null")
         }, onError = {
             userPostError.value = it
@@ -252,4 +278,5 @@ class UserProfileViewModel @AssistedInject constructor(
          * */
         userPost.value = isRefresh
     }
+
 }
