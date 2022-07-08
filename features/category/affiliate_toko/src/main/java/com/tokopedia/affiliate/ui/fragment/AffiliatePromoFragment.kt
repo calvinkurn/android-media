@@ -248,7 +248,7 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
         resetAdapter()
         if (affiliateSearchData.searchAffiliate?.data?.status == 0) {
             showData(true)
-            if (affiliateSearchData.searchAffiliate?.data?.error?.errorStatus == 0) {
+            if (affiliateSearchData.searchAffiliate?.data?.error?.errorType == 1) {
                 view?.rootView?.let {
                     Toaster.build(
                         it, getString(R.string.affiliate_product_link_invalid),
