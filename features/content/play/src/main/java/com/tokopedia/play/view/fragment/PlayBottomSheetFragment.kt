@@ -558,7 +558,7 @@ class PlayBottomSheetFragment @Inject constructor(
                             else {
                                 newAnalytic.impressGlobalToaster(channelId = playViewModel.channelId, channelType = playViewModel.channelType)
                                 Triple(
-                                    getString(R.string.play_add_to_cart_message_success),
+                                    getString(R.string.play_add_to_cart_message_success_tokonow),
                                     ApplinkConstInternalMarketplace.CART,
                                     getString(R.string.play_toaster_tokonow_wording)
                                 )
