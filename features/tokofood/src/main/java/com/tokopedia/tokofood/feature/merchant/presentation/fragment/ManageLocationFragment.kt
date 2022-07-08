@@ -251,12 +251,11 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
     }
 
     private fun navigateToMerchantPage(merchantId: String) {
-        parentFragmentManager.popBackStack()
         val merchantPageUri = Uri.parse(ApplinkConstInternalTokoFood.MERCHANT)
                 .buildUpon()
                 .appendQueryParameter(DeeplinkMapperTokoFood.PARAM_MERCHANT_ID, merchantId)
                 .build()
-        TokofoodRouteManager.routePrioritizeInternal(context, merchantPageUri.toString())
+        TokofoodRouteManager.routePrioritizeInternal(context, merchantPageUri.toString(), isFinishCurrent = true)
     }
 
     private fun navigateToSetPinpoint() {

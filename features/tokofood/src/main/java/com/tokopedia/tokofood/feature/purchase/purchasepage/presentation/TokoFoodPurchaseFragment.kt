@@ -367,12 +367,11 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                 }
                 PurchaseUiEvent.EVENT_EMPTY_PRODUCTS -> {
                     activityViewModel?.loadCartList(null)
-                    parentFragmentManager.popBackStack()
                     val emptyProductShopId = (it.data as? String).orEmpty()
                     if (emptyProductShopId.isBlank()) {
-                        navigateToHomePage(true)
+                        navigateToHomePage(isFinishCurrent = true)
                     } else {
-                        navigateToMerchantPage(emptyProductShopId, true)
+                        navigateToMerchantPage(emptyProductShopId, isFinishCurrent = true)
                     }
                 }
                 PurchaseUiEvent.EVENT_SUCCESS_REMOVE_PRODUCT -> onSuccessRemoveProduct(it.data as Int)
