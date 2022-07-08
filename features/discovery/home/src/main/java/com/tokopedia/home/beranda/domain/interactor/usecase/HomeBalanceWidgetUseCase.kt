@@ -62,7 +62,7 @@ class HomeBalanceWidgetUseCase @Inject constructor(
 
             return currentHeaderDataModel.copy(
                 headerDataModel = currentHeaderDataModel.headerDataModel?.copy(
-                    homeBalanceModel = homeBalanceModel,
+                    homeBalanceModel = homeBalanceModel.copy(status = HomeBalanceModel.STATUS_SUCCESS),
                     isUserLogin = userSession.isLoggedIn
                 ),
                 needToShowUserWallet = homeFlagRepository.getCachedData().homeFlag.getFlag(HomeFlag.TYPE.HAS_TOKOPOINTS)
@@ -70,6 +70,7 @@ class HomeBalanceWidgetUseCase @Inject constructor(
         } catch (e: Exception) {
             //TODO delete logger
             Log.d("dhabalog", e.localizedMessage)
+            currentHeaderDataModel.headerDataModel?.homeBalanceModel?.status = HomeBalanceModel.STATUS_ERROR
             return currentHeaderDataModel
         }
     }

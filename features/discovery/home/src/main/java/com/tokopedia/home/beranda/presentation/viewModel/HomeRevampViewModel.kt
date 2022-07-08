@@ -169,10 +169,8 @@ open class HomeRevampViewModel @Inject constructor(
 
     private fun updateHomeData(homeNewDynamicChannelModel: HomeDynamicChannelModel) {
         this.homeDataModel = homeNewDynamicChannelModel
-        Log.d("dhabalog", this.homeDataModel.toString())
         _homeLiveDynamicChannel.postValue(homeDataModel)
         _resetNestedScrolling.postValue(Event(true))
-        Log.d("dhabalog", "updatehomedata")
     }
 
     private fun injectCouponTimeBased() {
@@ -211,6 +209,7 @@ open class HomeRevampViewModel @Inject constructor(
         findWidget<HomeHeaderDataModel> { headerModel, index ->
             launch {
                 val homeBalanceModel = headerModel.headerDataModel?.homeBalanceModel.apply {
+                    this?.status = HomeBalanceModel.STATUS_LOADING
                     this?.initBalanceModelByType()
                 } ?: HomeBalanceModel()
                 val headerDataModel = headerModel.headerDataModel?.copy(
@@ -222,9 +221,7 @@ open class HomeRevampViewModel @Inject constructor(
                 val currentHeaderDataModel = homeBalanceWidgetUseCase.get().onGetBalanceWidgetData(headerModel)
                 val visitable = updateHeaderData(currentHeaderDataModel, index)
                 visitable?.let {
-                    Log.d("dhabalog", "before ${homeDataModel.toString()}")
                     homeDataModel.updateWidgetModel(visitableToChange = visitable, visitable = currentHeaderDataModel, position = index) {
-                        Log.d("dhabalog", "updatewidgetmodel")
                         updateHomeData(homeDataModel)
                     }
                 }
@@ -252,7 +249,7 @@ open class HomeRevampViewModel @Inject constructor(
                     updateHomeData(homeNewDataModel)
                     Log.d("DevaraFikryTest", "[Non Cache] Captured list:"+homeNewDataModel.list.size)
                     _trackingLiveData.postValue(Event(homeNewDataModel.list.filterIsInstance<HomeVisitable>()))
-                } else if (homeNewDataModel?.list?.size?:0 > 0) {
+                } else if ((homeNewDataModel?.list?.size ?: 0) > 0) {
                     homeNewDataModel?.let { updateHomeData(it)
                         Log.d("DevaraFikryTest", "[Cache] Captured list:"+homeNewDataModel.list.size)
                     }
@@ -303,13 +300,10 @@ open class HomeRevampViewModel @Inject constructor(
     fun getUserName() = userSession.get().name ?: ""
 
     fun refreshWithThreeMinsRules(forceRefresh: Boolean = false, isFirstInstall: Boolean = false){
-        Log.d("dhabalog","forceRefresh $forceRefresh , isFirstInstall $isFirstInstall")
         if ((forceRefresh && getHomeDataJob?.isActive == false) || (!fetchFirstData && homeRateLimit.shouldFetch(HOME_LIMITER_KEY))) {
-            Log.d("dhabalog","true, !fetchFirstData ${!fetchFirstData} , homeRateLimit.shouldFetch(HOME_LIMITER_KEY) ${homeRateLimit.shouldFetch(HOME_LIMITER_KEY)}")
             refreshHomeData()
             _isNeedRefresh.value = Event(true)
         } else {
-            Log.d("dhabalog","false, !fetchFirstData ${!fetchFirstData} , homeRateLimit.shouldFetch(HOME_LIMITER_KEY) ${homeRateLimit.shouldFetch(HOME_LIMITER_KEY)}")
             getBalanceWidgetData()
         }
         getSearchHint(isFirstInstall)

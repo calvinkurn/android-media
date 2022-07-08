@@ -78,9 +78,10 @@ class BalanceWidgetView: FrameLayout {
             rvBalance?.adapter = balanceWidgetAdapter
 
         }
-        if (element.balanceDrawerItemModels.isEmpty()) {
-        } else {
+        if (element.status == HomeBalanceModel.STATUS_LOADING) {
             balanceWidgetAdapter?.setVisitables(listOf(BalanceShimmerModel()))
+        } else {
+            balanceWidgetAdapter?.setVisitables(listOf(element))
             rvBalance?.show()
         }
     }

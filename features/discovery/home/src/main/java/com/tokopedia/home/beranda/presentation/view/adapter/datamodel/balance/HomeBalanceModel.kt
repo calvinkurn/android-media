@@ -24,7 +24,8 @@ import com.tokopedia.network.exception.MessageErrorException
 data class HomeBalanceModel(
     var balanceDrawerItemModels: MutableList<BalanceDrawerItemModel> = mutableListOf(),
     var balanceType: Int? = TYPE_STATE_2,
-    var isTokopointsOrOvoFailed: Boolean = false
+    var isTokopointsOrOvoFailed: Boolean = false,
+    var status: Int = STATUS_LOADING
 ) : BalanceWidgetVisitable {
     companion object {
 
@@ -47,6 +48,10 @@ data class HomeBalanceModel(
         const val BALANCE_POSITION_SECOND = 1
         const val BALANCE_POSITION_THIRD = 2
         const val BALANCE_POSITION_FOURTH = 3
+
+        const val STATUS_LOADING = 0
+        const val STATUS_SUCCESS = 1
+        const val STATUS_ERROR = 2
     }
 
     override fun type(typeFactory: BalanceWidgetTypeFactory): Int {
