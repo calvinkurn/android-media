@@ -25,6 +25,10 @@ class UserConsentAnalytics @Inject constructor() {
 
     private fun generatePurposeId(purposes: MutableList<UserConsentCollectionDataModel.CollectionPointDataModel.PurposeDataModel>): String {
         var purposeIds = ""
+        if (purposes.size == 1) {
+            return purposes.first().id
+        }
+
         purposes.forEachIndexed { index, purposeDataModel ->
             purposeIds += if (index == purposes.size - 1) purposeDataModel.id else "${purposeDataModel.id} ,"
         }
