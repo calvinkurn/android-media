@@ -44,7 +44,6 @@ class RsaSignatureUtils {
     private fun initKeys() {
         if(!hasKey()) {
             try {
-                val startTime = System.currentTimeMillis()
                 val kpGenerator: KeyPairGenerator =
                     KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA, BiometricConstant.ANDROID_KEY_STORE)
 
@@ -57,8 +56,6 @@ class RsaSignatureUtils {
 
                 kpGenerator.initialize(spec)
                 kpGenerator.generateKeyPair()
-                val endTime = System.currentTimeMillis()
-                println("generationTime: ${startTime - endTime}")
             } catch (e: Exception) {
                 log("initKeys_Exception", e)
             }
@@ -135,7 +132,7 @@ class RsaSignatureUtils {
 
     private fun log(type: String, throwable: Exception) {
         val msg = mapOf(
-            "type" to type,
+            "method" to type,
             "exception" to Log.getStackTraceString(throwable).take(Const.GQL_ERROR_MAX_LENGTH)
         )
 
