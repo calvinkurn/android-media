@@ -20,6 +20,7 @@ import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBusinessUnitUseC
 import com.tokopedia.home.beranda.domain.interactor.usecase.*
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.HomeData
+import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.domain.model.SetInjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.DeclineRechargeRecommendation
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
@@ -30,6 +31,7 @@ import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
+import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.PlayWidgetState
@@ -75,7 +77,8 @@ fun createHomeViewModel(
         getCMHomeWidgetDataUseCase : GetCMHomeWidgetDataUseCase = mockk(relaxed = true),
         deleteCMHomeWidgetUseCase: DeleteCMHomeWidgetUseCase = mockk(relaxed = true),
         deletePayLaterWidgetUseCase: ClosePayLaterWidgetUseCase = mockk(relaxed = true),
-        getPayLaterWidgetUseCase: GetPayLaterWidgetUseCase = mockk(relaxed = true)
+        getPayLaterWidgetUseCase: GetPayLaterWidgetUseCase = mockk(relaxed = true),
+        homeMissionWidgetUseCase: HomeMissionWidgetUseCase = mockk(relaxed = true)
 ): HomeRevampViewModel{
     homeBalanceWidgetUseCase.givenGetLoadingStateReturn()
     return HomeRevampViewModel(
@@ -97,7 +100,8 @@ fun createHomeViewModel(
             getCMHomeWidgetDataUseCase = Lazy{ getCMHomeWidgetDataUseCase },
             deleteCMHomeWidgetUseCase = Lazy{ deleteCMHomeWidgetUseCase },
             deletePayLaterWidgetUseCase = Lazy {deletePayLaterWidgetUseCase  },
-            getPayLaterWidgetUseCase = Lazy { getPayLaterWidgetUseCase }
+            getPayLaterWidgetUseCase = Lazy { getPayLaterWidgetUseCase },
+            homeMissionWidgetUseCase = Lazy { homeMissionWidgetUseCase }
     )
 }
 
@@ -129,7 +133,8 @@ fun createHomeDynamicChannelUseCase(
         homeSalamWidgetRepository: HomeSalamWidgetRepository = mockk(relaxed = true),
         homeRecommendationFeedTabRepository: HomeRecommendationFeedTabRepository = mockk(relaxed = true),
         homeChooseAddressRepository: HomeChooseAddressRepository = mockk(relaxed = true),
-        homeUserSessionInterface: UserSessionInterface = mockk(relaxed = true)
+        homeUserSessionInterface: UserSessionInterface = mockk(relaxed = true),
+        homeMissionWidgetRepository: HomeMissionWidgetRepository = mockk(relaxed = true)
 ): HomeDynamicChannelUseCase {
     return HomeDynamicChannelUseCase(
             homeBalanceWidgetUseCase = homeBalanceWidgetUseCase,
@@ -158,7 +163,8 @@ fun createHomeDynamicChannelUseCase(
             homeSalamWidgetRepository = homeSalamWidgetRepository,
             homeRecommendationFeedTabRepository = homeRecommendationFeedTabRepository,
             homeChooseAddressRepository = homeChooseAddressRepository,
-            userSessionInterface = homeUserSessionInterface
+            userSessionInterface = homeUserSessionInterface,
+            homeMissionWidgetRepository = homeMissionWidgetRepository
     )
 }
 
@@ -289,6 +295,12 @@ fun HomeBalanceWidgetUseCase.givenGetHomeBalanceWidgetReturn(homeHeaderDataModel
     coEvery { onGetBalanceWidgetData(any()) } returns homeHeaderDataModel
 }
 
+fun HomeSearchUseCase.givenSearchPlaceHolderReturn(isFirstInstall: Boolean) {
+    val searchPlaceHolder = SearchPlaceholder()
+    searchPlaceHolder.Data().placeholders = arrayListOf<SearchPlaceholder.PlaceHolder>(SearchPlaceholder().PlaceHolder())
+    coEvery { onGetSearchHint(isFirstInstall, any(), any()) } returns searchPlaceHolder
+}
+
 fun HomeBalanceWidgetUseCase.givenGetTokopointDataReturn(homeHeaderDataModel: HomeHeaderDataModel) {
     coEvery { onGetTokopointData(any()) } returns homeHeaderDataModel
 }
@@ -417,6 +429,13 @@ fun HomePopularKeywordUseCase.givenOnPopularKeywordReturn(
     resultPopularKeyword: PopularKeywordListDataModel
 ) {
     coEvery { onPopularKeywordRefresh(refreshCount, currentPopularKeyword) } returns resultPopularKeyword
+}
+
+fun HomeMissionWidgetUseCase.givenOnMissionWidgetReturn(
+    currentMissionWidgetListDataModel: MissionWidgetListDataModel,
+    resultMissionWidgetListDataModel: MissionWidgetListDataModel
+) {
+    coEvery { onMissionWidgetRefresh(currentMissionWidgetListDataModel) } returns resultMissionWidgetListDataModel
 }
 
 fun areEqualKeyValues(first: Map<String, Any>, second: Map<String,Any>): Boolean{

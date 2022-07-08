@@ -11,6 +11,7 @@ import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.Sto
 import com.tokopedia.product.manage.feature.campaignstock.ui.viewmodel.CampaignStockViewModel
 import com.tokopedia.product.manage.common.feature.variant.domain.EditProductVariantUseCase
 import com.tokopedia.product.manage.common.feature.variant.domain.GetProductVariantUseCase
+import com.tokopedia.product.manage.feature.list.view.datasource.TickerStaticDataProvider
 import com.tokopedia.shop.common.domain.interactor.GetAdminInfoShopLocationUseCase
 import com.tokopedia.shop.common.domain.interactor.UpdateProductStockWarehouseUseCase
 import com.tokopedia.shop.common.domain.interactor.model.adminrevamp.ShopLocationResponse
@@ -54,6 +55,9 @@ open class CampaignStockViewModelTestFixture {
     lateinit var getAdminInfoShopLocationUseCase: GetAdminInfoShopLocationUseCase
 
     @RelaxedMockK
+    lateinit var tickerStaticDataProvider: TickerStaticDataProvider
+
+    @RelaxedMockK
     lateinit var userSession: UserSessionInterface
 
     @RelaxedMockK
@@ -74,7 +78,8 @@ open class CampaignStockViewModelTestFixture {
             getProductManageAccessUseCase,
             getAdminInfoShopLocationUseCase,
             userSession,
-            CoroutineTestDispatchersProvider
+            CoroutineTestDispatchersProvider,
+            tickerStaticDataProvider
         ).also {
             it.getStockAllocationData.observeForever(getStockAllocationLiveDataObserver)
         }

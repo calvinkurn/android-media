@@ -1,0 +1,109 @@
+package com.tokopedia.home.analytics.v2
+
+import android.os.Bundle
+import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMissionWidgetDataModel
+import com.tokopedia.track.TrackApp
+import com.tokopedia.track.builder.BaseTrackerBuilder
+import com.tokopedia.track.builder.util.BaseTrackerConst
+
+/**
+ * Created by dhaba
+ */
+object MissionWidgetTracking : BaseTrackerConst() {
+    private class CustomAction {
+        companion object {
+            const val EVENT_ACTION_CLICK = "click on banner dynamic channel mission widget"
+            const val EVENT_ACTION_IMPRESSION = "impression on banner dynamic channel mission widget"
+            const val EVENT_LABEL_FORMAT = "%s - %s"
+            const val TRACKER_ID = "trackerId"
+            const val TRACKER_ID_CLICKED = "32188"
+            const val TRACKER_ID_IMPRESSION = "32076"
+            const val DEFAULT_VALUE = ""
+            const val ITEM_ID_FORMAT = "%s_%s_%s_%s"
+            const val DYNAMIC_CHANNEL_MISSION_WIDGET = "dynamic channel mission widget"
+            const val BANNER = "banner"
+            const val ITEM_NAME_FORMAT = "/ - p%s - %s - %s - %s"
+        }
+    }
+
+    fun sendMissionWidgetClicked(element: CarouselMissionWidgetDataModel, horizontalPosition: Int, userId: String) {
+        val bundle = Bundle()
+        bundle.putString(Event.KEY, Event.SELECT_CONTENT)
+        bundle.putString(Action.KEY, CustomAction.EVENT_ACTION_CLICK)
+        bundle.putString(Category.KEY, Category.HOMEPAGE)
+        bundle.putString(
+            Label.KEY,
+            CustomAction.EVENT_LABEL_FORMAT.format(
+                element.channel.id,
+                element.channel.channelHeader.name
+            )
+        )
+        bundle.putString(CustomAction.TRACKER_ID, CustomAction.TRACKER_ID_CLICKED)
+        bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
+        bundle.putString(CampaignCode.KEY, element.channel.trackingAttributionModel.campaignCode)
+        bundle.putString(Label.CHANNEL_LABEL, element.channel.id)
+        bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
+        bundle.putString(UserId.KEY, userId)
+        val promotion = Bundle()
+        promotion.putString(Promotion.CREATIVE_NAME, CustomAction.DEFAULT_VALUE)
+        promotion.putString(Promotion.CREATIVE_SLOT, (horizontalPosition + 1).toString())
+        promotion.putString(
+            Promotion.ITEM_ID,
+            CustomAction.ITEM_ID_FORMAT.format(
+                element.channel.id,
+                element.id,
+                element.channel.trackingAttributionModel.persoType,
+                element.channel.trackingAttributionModel.categoryId
+            )
+        )
+        promotion.putString(
+            Promotion.ITEM_NAME,
+            CustomAction.ITEM_NAME_FORMAT.format(
+                element.verticalPosition,
+                CustomAction.DYNAMIC_CHANNEL_MISSION_WIDGET,
+                CustomAction.BANNER,
+                element.channel.channelHeader.name
+            )
+        )
+        bundle.putParcelableArrayList(Promotion.KEY, arrayListOf(promotion))
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Ecommerce.PROMO_CLICK, bundle)
+    }
+
+    fun getMissionWidgetView(element: CarouselMissionWidgetDataModel, horizontalPosition: Int, userId: String) : Map<String, Any> {
+        val trackingBuilder = BaseTrackerBuilder()
+        val creativeName = CustomAction.DEFAULT_VALUE
+        val creativeSlot = (horizontalPosition + 1).toString()
+        val itemId = CustomAction.ITEM_ID_FORMAT.format(
+            element.channel.id,
+            element.id,
+            element.channel.trackingAttributionModel.persoType,
+            element.channel.trackingAttributionModel.categoryId
+        )
+        val itemName = CustomAction.ITEM_NAME_FORMAT.format(
+            element.verticalPosition,
+            CustomAction.DYNAMIC_CHANNEL_MISSION_WIDGET,
+            CustomAction.BANNER,
+            element.channel.channelHeader.name
+        )
+        val listPromotions = arrayListOf(
+            Promotion(
+                creative = creativeName,
+                position = creativeSlot,
+                id = itemId,
+                name = itemName
+            )
+        )
+        return trackingBuilder.constructBasicPromotionView(
+            event = Event.PROMO_VIEW,
+            eventCategory = Category.HOMEPAGE,
+            eventAction = CustomAction.EVENT_ACTION_IMPRESSION,
+            eventLabel = Label.NONE,
+            promotions = listPromotions
+        )
+            .appendBusinessUnit(BusinessUnit.DEFAULT)
+            .appendCurrentSite(CurrentSite.DEFAULT)
+            .appendUserId(userId)
+            .appendCustomKeyValue(CustomAction.TRACKER_ID, CustomAction.TRACKER_ID_IMPRESSION)
+            .build()
+    }
+}

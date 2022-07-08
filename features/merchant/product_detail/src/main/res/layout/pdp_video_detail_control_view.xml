@@ -72,7 +72,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/Unify_Static_White"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             tools:text="05:20"
             tools:textColor="@color/Unify_Static_Black" />
 
@@ -82,7 +82,7 @@
             android:layout_height="wrap_content"
             android:text="@string/pdp_video_divider"
             android:textColor="@color/Unify_Static_White"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             tools:text=" / "
             tools:textColor="@color/Unify_Static_Black" />
 
@@ -91,7 +91,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/Unify_Static_White"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             tools:text="30:00"
             tools:textColor="@color/Unify_Static_Black" />
 

@@ -8,6 +8,7 @@ import com.tokopedia.chat_common.data.ReplyChatViewModel
 import com.tokopedia.chat_common.domain.pojo.ChatItemPojo
 import com.tokopedia.chat_common.domain.pojo.ReplyChatItemPojo
 import com.tokopedia.chat_common.domain.pojo.imageupload.ImageUploadAttributes
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.network.data.model.response.DataResponse
 import retrofit2.Response
 import rx.functions.Func1
@@ -54,8 +55,10 @@ class ReplyChatMapper @Inject constructor() : Func1<Response<DataResponse<ReplyC
             .withResponseFromAPI(temp)
             .withIsSender(!temp.isOpposite)
             .withIsRead(temp.messageIsRead)
+            .withAttachmentType(temp.attachment?.type.orZero().toString())
             .withImageUrl(pojoAttribute.imageUrl)
             .withImageUrlThumbnail(pojoAttribute.thumbnail)
+            .withImageSecureUrl(pojoAttribute.imageUrlSecure)
             .build()
     }
 }
