@@ -25,7 +25,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import java.lang.ref.WeakReference
 
-class TelemetryActLifecycleCallback : Application.ActivityLifecycleCallbacks {
+class TelemetryActLifecycleCallback(
+    val isEnabled: (() -> (Boolean))
+) : Application.ActivityLifecycleCallbacks {
 
     companion object {
         var prevActivityRef: WeakReference<AppCompatActivity>? = null
@@ -83,6 +85,10 @@ class TelemetryActLifecycleCallback : Application.ActivityLifecycleCallbacks {
                 stopTelemetryListener(prevAct)
                 prevActivityRef = null
             }
+        }
+
+        if (!isEnabled.invoke()) {
+            return;
         }
 
         // start new telemetry section

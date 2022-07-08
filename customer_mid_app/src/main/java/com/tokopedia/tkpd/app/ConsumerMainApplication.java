@@ -95,6 +95,7 @@ import javax.crypto.SecretKey;
 import io.embrace.android.embracesdk.Embrace;
 import kotlin.Pair;
 import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
 import kotlin.jvm.functions.Function1;
 import timber.log.Timber;
 
@@ -121,6 +122,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     private static final String REMOTE_CONFIG_SCALYR_KEY_LOG = "android_customerapp_log_config_scalyr";
     private static final String REMOTE_CONFIG_NEW_RELIC_KEY_LOG = "android_customerapp_log_config_new_relic";
     private static final String REMOTE_CONFIG_EMBRACE_KEY_LOG = "android_customerapp_log_config_embrace";
+    private static final String REMOTE_CONFIG_TELEMETRY_ENABLED = "android_telemetry_enabled";
     private static final String PARSER_SCALYR_MA = "android-main-app-p%s";
     private static final String ENABLE_ASYNC_AB_TEST = "android_enable_async_abtest";
     private final String LEAK_CANARY_TOGGLE_SP_NAME = "mainapp_leakcanary_toggle";
@@ -238,7 +240,12 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         registerActivityLifecycleCallbacks(new NewRelicInteractionActCall(getUserSession()));
         registerActivityLifecycleCallbacks(new GqlActivityCallback());
         registerActivityLifecycleCallbacks(new DataVisorLifecycleCallbacks());
-        registerActivityLifecycleCallbacks(new TelemetryActLifecycleCallback());
+        registerActivityLifecycleCallbacks(new TelemetryActLifecycleCallback(new Function0<Boolean>() {
+            @Override
+            public Boolean invoke() {
+                return remoteConfig.getBoolean(REMOTE_CONFIG_TELEMETRY_ENABLED, true);
+            }
+        }));
     }
 
     private void createAndCallPreSeq() {
