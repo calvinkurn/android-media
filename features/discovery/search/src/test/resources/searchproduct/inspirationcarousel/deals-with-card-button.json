@@ -1,0 +1,1478 @@
+{
+  "ace_search_product_v4": {
+    "header": {
+      "totalData": 9402101,
+      "totalDataText": "9.4jt+",
+      "defaultView": 1,
+      "responseCode": 0,
+      "errorMessage": "",
+      "additionalParams": "",
+      "keywordProcess": "6",
+      "componentId": "02.02.02.01"
+    },
+    "data": {
+      "isQuerySafe": true,
+      "autocompleteApplink": "tokopedia://search-autocomplete?navsource=home\u0026q=baju",
+      "backendFilters": "",
+      "redirection": {
+        "redirectApplink": ""
+      },
+      "ticker": {
+        "text": "",
+        "query": "",
+        "typeId": 0,
+        "componentId": "",
+        "trackingOption": 0
+      },
+      "banner": {
+        "position": 0,
+        "text": "",
+        "applink": "",
+        "imageUrl": ""
+      },
+      "related": {
+        "relatedKeyword": "",
+        "position": 0,
+        "trackingOption": 0,
+        "otherRelated": []
+      },
+      "suggestion": {
+        "suggestion": "",
+        "query": "",
+        "text": "",
+        "componentId": "",
+        "trackingOption": 0
+      },
+      "products": [
+        {
+          "id": 1973942851,
+          "name": "Baju Tangan Pendek Wanita Kaos T Shirt Find Beauty Murah Bisa Cod",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": "",
+            "tag": 0
+          },
+          "shop": {
+            "id": 10819504,
+            "name": "Lave Inc.",
+            "city": "Jakarta Barat",
+            "url": "https://www.tokopedia.com/laveinc",
+            "isOfficial": false,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": true,
+            "imgUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2021/7/4/10819504/10819504_23686bbb-64cb-483f-9639-fe36e19612a2.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/product-1/2021/7/4/10819504/10819504_23686bbb-64cb-483f-9639-fe36e19612a2.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/product-1/2021/7/4/10819504/10819504_23686bbb-64cb-483f-9639-fe36e19612a2.jpg",
+          "price": "Rp15.900",
+          "priceInt": 15900,
+          "priceRange": "",
+          "categoryId": 1758,
+          "categoryName": "Fashion Wanita",
+          "categoryBreadcrumb": "fashion-wanita/atasan-wanita/kaos-wanita",
+          "ratingAverage": "4.1",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/laveinc/baju-tangan-pendek-wanita-kaos-t-shirt-find-beauty-murah-bisa-cod-salem",
+          "labelGroups": [
+            {
+              "title": "Cashback",
+              "position": "promo",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Cashback",
+              "position": "price",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Terjual 254",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            },
+            {
+              "title": "Tiba 2 - 3 Jul",
+              "position": "eta",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [
+            {
+              "title": "Putih",
+              "type": "lightGrey",
+              "type_variant": "colour",
+              "hex_color": "#ffffff"
+            },
+            {
+              "title": "Hitam",
+              "type": "lightGrey",
+              "type_variant": "colour",
+              "hex_color": "#000000"
+            },
+            {
+              "title": "1",
+              "type": "lightGrey",
+              "type_variant": "custom",
+              "hex_color": ""
+            }
+          ],
+          "badges": [
+            {
+              "title": "Power Merchant Pro Badge",
+              "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/PM%20Pro%20Small.png",
+              "show": true
+            }
+          ],
+          "wishlist": false,
+          "applink": "tokopedia://product/1973942851?extParam=ivf%3Dfalse",
+          "customVideoURL": ""
+        },
+        {
+          "id": 1634683875,
+          "name": "Kaos Bordir Puggy Shirt Atasan Pria Wanita Unisex By Lapakbajutumblr",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": "",
+            "tag": 0
+          },
+          "shop": {
+            "id": 9197206,
+            "name": "lapakbajutumblr tokped",
+            "city": "Jakarta Barat",
+            "url": "https://www.tokopedia.com/lapakbajutumblrtokped",
+            "isOfficial": false,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": true,
+            "imgUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/2/28/f93e46cb-f297-4b00-b9f0-4f9a107b7bf9.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/2/28/f93e46cb-f297-4b00-b9f0-4f9a107b7bf9.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/2/28/f93e46cb-f297-4b00-b9f0-4f9a107b7bf9.jpg",
+          "price": "Rp47.500",
+          "priceInt": 47500,
+          "priceRange": "",
+          "categoryId": 1758,
+          "categoryName": "Fashion Wanita",
+          "categoryBreadcrumb": "fashion-wanita/atasan-wanita/kaos-wanita",
+          "ratingAverage": "4.7",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/lapakbajutumblrtokped/kaos-bordir-puggy-shirt-atasan-pria-wanita-unisex-by-lapakbajutumblr-m-hitam",
+          "labelGroups": [
+            {
+              "title": "Terjual 81",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            },
+            {
+              "title": "Tiba 2 - 3 Jul",
+              "position": "eta",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [
+            {
+              "title": "Hitam",
+              "type": "lightGrey",
+              "type_variant": "colour",
+              "hex_color": "#000000"
+            },
+            {
+              "title": "Putih",
+              "type": "lightGrey",
+              "type_variant": "colour",
+              "hex_color": "#ffffff"
+            },
+            {
+              "title": "2",
+              "type": "lightGrey",
+              "type_variant": "custom",
+              "hex_color": ""
+            }
+          ],
+          "badges": [
+            {
+              "title": "Power Merchant Pro Badge",
+              "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/PM%20Pro%20Small.png",
+              "show": true
+            }
+          ],
+          "wishlist": false,
+          "applink": "tokopedia://product/1634683875?extParam=ivf%3Dfalse",
+          "customVideoURL": ""
+        },
+        {
+          "id": 2434366788,
+          "name": "8teen T-Shirt Kaos Wanita Lengan Panjang Polos Bahan Cotton",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": "",
+            "tag": 0
+          },
+          "shop": {
+            "id": 759356,
+            "name": "8teen_cloth",
+            "city": "Jakarta Barat",
+            "url": "https://www.tokopedia.com/8teencloth",
+            "isOfficial": false,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": true,
+            "imgUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/6/14/3b53c68c-6480-43ea-b8a4-5c84e8a588a2.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/6/14/3b53c68c-6480-43ea-b8a4-5c84e8a588a2.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/14/3b53c68c-6480-43ea-b8a4-5c84e8a588a2.jpg",
+          "price": "Rp35.000",
+          "priceInt": 35000,
+          "priceRange": "",
+          "categoryId": 1758,
+          "categoryName": "Fashion Wanita",
+          "categoryBreadcrumb": "fashion-wanita/atasan-wanita/kaos-wanita",
+          "ratingAverage": "4.9",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/8teencloth/8teen-t-shirt-kaos-wanita-lengan-panjang-polos-bahan-cotton-merah-muda-m",
+          "labelGroups": [
+            {
+              "title": "Cashback",
+              "position": "promo",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Sisa 8",
+              "position": "gimmick",
+              "type": "textDarkRed",
+              "url": ""
+            },
+            {
+              "title": "Cashback",
+              "position": "price",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Terjual 155",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            },
+            {
+              "title": "Tiba 2 - 3 Jul",
+              "position": "eta",
+              "type": "textDarkGrey",
+              "url": ""
+            },
+            {
+              "title": "Women In Style",
+              "position": "campaign",
+              "type": "",
+              "url": "https://images.tokopedia.net/img/phOWBv/2022/6/27/5c46ede1-f6a2-4c16-96f5-170f60d87a3d.png"
+            }
+          ],
+          "labelGroupVariant": [
+            {
+              "title": "Merah Muda",
+              "type": "lightGrey",
+              "type_variant": "colour",
+              "hex_color": "#ffb0b0"
+            },
+            {
+              "title": "Hitam",
+              "type": "lightGrey",
+              "type_variant": "colour",
+              "hex_color": "#000000"
+            },
+            {
+              "title": "Putih",
+              "type": "lightGrey",
+              "type_variant": "colour",
+              "hex_color": "#ffffff"
+            },
+            {
+              "title": "7",
+              "type": "lightGrey",
+              "type_variant": "custom",
+              "hex_color": ""
+            }
+          ],
+          "badges": [
+            {
+              "title": "Power Merchant Pro Badge",
+              "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/PM%20Pro%20Small.png",
+              "show": true
+            }
+          ],
+          "wishlist": false,
+          "applink": "tokopedia://product/2434366788?extParam=ivf%3Dfalse",
+          "customVideoURL": ""
+        },
+        {
+          "id": 2236202808,
+          "name": "Hanafashion - Martina Basic - Kaos T Shirt Crop Top Murah - Ts177",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": "",
+            "tag": 0
+          },
+          "shop": {
+            "id": 6639443,
+            "name": "hanafashion_shop",
+            "city": "Jakarta Barat",
+            "url": "https://www.tokopedia.com/hanafashionshop",
+            "isOfficial": false,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": true,
+            "imgUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/4/20/fc4165ea-0968-4622-8d8b-ec7bb8d2f630.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/4/20/fc4165ea-0968-4622-8d8b-ec7bb8d2f630.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/4/20/fc4165ea-0968-4622-8d8b-ec7bb8d2f630.jpg",
+          "price": "Rp49.000",
+          "priceInt": 49000,
+          "priceRange": "",
+          "categoryId": 1758,
+          "categoryName": "Fashion Wanita",
+          "categoryBreadcrumb": "fashion-wanita/atasan-wanita/kaos-wanita",
+          "ratingAverage": "4.9",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/hanafashionshop/hanafashion-martina-basic-kaos-t-shirt-crop-top-murah-ts177-lilac-xxxl",
+          "labelGroups": [
+            {
+              "title": "Cashback",
+              "position": "promo",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Cashback",
+              "position": "price",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Terjual 1,7 rb",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            },
+            {
+              "title": "Tiba 2 - 3 Jul",
+              "position": "eta",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [
+            {
+              "title": "S",
+              "type": "lightGrey",
+              "type_variant": "size",
+              "hex_color": ""
+            },
+            {
+              "title": "M",
+              "type": "lightGrey",
+              "type_variant": "size",
+              "hex_color": ""
+            },
+            {
+              "title": "L",
+              "type": "lightGrey",
+              "type_variant": "size",
+              "hex_color": ""
+            },
+            {
+              "title": "XL",
+              "type": "lightGrey",
+              "type_variant": "size",
+              "hex_color": ""
+            },
+            {
+              "title": "XXXL",
+              "type": "lightGrey",
+              "type_variant": "size",
+              "hex_color": ""
+            },
+            {
+              "title": "1",
+              "type": "lightGrey",
+              "type_variant": "custom",
+              "hex_color": ""
+            }
+          ],
+          "badges": [
+            {
+              "title": "Power Merchant Pro Badge",
+              "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/PM%20Pro%20Small.png",
+              "show": true
+            }
+          ],
+          "wishlist": false,
+          "applink": "tokopedia://product/2236202808?extParam=ivf%3Dfalse",
+          "customVideoURL": ""
+        },
+        {
+          "id": 2033686542,
+          "name": "Do Exo Kaos T-Shirt Fashion Wanita Cewek Katun Premium Lengan Pendek",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": "",
+            "tag": 0
+          },
+          "shop": {
+            "id": 5304439,
+            "name": "Jevanoshop",
+            "city": "Jakarta Barat",
+            "url": "https://www.tokopedia.com/jevanoshop",
+            "isOfficial": false,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": true,
+            "imgUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/7/29/8b55af9f-e3f2-4440-a20b-7128444da804.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/7/29/8b55af9f-e3f2-4440-a20b-7128444da804.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/7/29/8b55af9f-e3f2-4440-a20b-7128444da804.jpg",
+          "price": "Rp35.900",
+          "priceInt": 35900,
+          "priceRange": "",
+          "categoryId": 1758,
+          "categoryName": "Fashion Wanita",
+          "categoryBreadcrumb": "fashion-wanita/atasan-wanita/kaos-wanita",
+          "ratingAverage": "4.7",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/jevanoshop/do-exo-kaos-t-shirt-fashion-wanita-cewek-katun-premium-lengan-pendek-banana-s",
+          "labelGroups": [
+            {
+              "title": "Cashback",
+              "position": "promo",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Sisa 5",
+              "position": "gimmick",
+              "type": "textDarkRed",
+              "url": ""
+            },
+            {
+              "title": "Cashback",
+              "position": "price",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Terjual 198",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            },
+            {
+              "title": "Tiba 2 - 3 Jul",
+              "position": "eta",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [
+            {
+              "title": "S",
+              "type": "lightGrey",
+              "type_variant": "size",
+              "hex_color": ""
+            },
+            {
+              "title": "M",
+              "type": "lightGrey",
+              "type_variant": "size",
+              "hex_color": ""
+            },
+            {
+              "title": "L",
+              "type": "lightGrey",
+              "type_variant": "size",
+              "hex_color": ""
+            },
+            {
+              "title": "XL",
+              "type": "lightGrey",
+              "type_variant": "size",
+              "hex_color": ""
+            },
+            {
+              "title": "XXL",
+              "type": "lightGrey",
+              "type_variant": "size",
+              "hex_color": ""
+            }
+          ],
+          "badges": [
+            {
+              "title": "Power Merchant Pro Badge",
+              "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/PM%20Pro%20Small.png",
+              "show": true
+            }
+          ],
+          "wishlist": false,
+          "applink": "tokopedia://product/2033686542?extParam=ivf%3Dfalse",
+          "customVideoURL": ""
+        },
+        {
+          "id": 306473357,
+          "name": "Okechuku Vioree Size Xxl Kaos Leher V Wanita Woman V Neck T Shirt",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": "",
+            "tag": 0
+          },
+          "shop": {
+            "id": 815661,
+            "name": "Okechuku",
+            "city": "Jakarta Barat",
+            "url": "https://www.tokopedia.com/okechuku",
+            "isOfficial": true,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": true,
+            "imgUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2018/7/16/1874792/1874792_49b957cf-d84b-4f9e-ac5b-f50f6253127b_700_700.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/product-1/2018/7/16/1874792/1874792_49b957cf-d84b-4f9e-ac5b-f50f6253127b_700_700.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/product-1/2018/7/16/1874792/1874792_49b957cf-d84b-4f9e-ac5b-f50f6253127b_700_700.jpg",
+          "price": "Rp19.900",
+          "priceInt": 19900,
+          "priceRange": "",
+          "categoryId": 1758,
+          "categoryName": "Fashion Wanita",
+          "categoryBreadcrumb": "fashion-wanita/atasan-wanita/kaos-wanita",
+          "ratingAverage": "4.8",
+          "originalPrice": "Rp39.900",
+          "discountPercentage": 50,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/okechuku/okechuku-vioree-size-xxl-kaos-leher-v-wanita-woman-v-neck-t-shirt-twotone-abu-tua",
+          "labelGroups": [
+            {
+              "title": "Cashback",
+              "position": "promo",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Terjual 331",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            },
+            {
+              "title": "Tiba 2 - 3 Jul",
+              "position": "eta",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false,
+          "applink": "tokopedia://product/306473357?extParam=ivf%3Dfalse",
+          "customVideoURL": ""
+        },
+        {
+          "id": 879513283,
+          "name": "Baju Barong Bali Bahan Rayon Premium Big Sz",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": "",
+            "tag": 0
+          },
+          "shop": {
+            "id": 6992716,
+            "name": "QiaoBeauty",
+            "city": "Jakarta Barat",
+            "url": "https://www.tokopedia.com/qiaobeauty",
+            "isOfficial": false,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": true,
+            "imgUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/6/3/79497488/79497488_1a90b88d-926d-49c3-aaba-d16a53efa5c8_898_898",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/product-1/2020/6/3/79497488/79497488_1a90b88d-926d-49c3-aaba-d16a53efa5c8_898_898",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/product-1/2020/6/3/79497488/79497488_1a90b88d-926d-49c3-aaba-d16a53efa5c8_898_898",
+          "price": "Rp27.500",
+          "priceInt": 27500,
+          "priceRange": "",
+          "categoryId": 1758,
+          "categoryName": "Fashion Wanita",
+          "categoryBreadcrumb": "fashion-wanita/atasan-wanita/kaos-wanita",
+          "ratingAverage": "4.8",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/qiaobeauty/baju-barong-bali-bahan-rayon-premium-big-sz-cokelat-xxl",
+          "labelGroups": [
+            {
+              "title": "Cashback",
+              "position": "promo",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Cashback",
+              "position": "price",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Terjual 671",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            },
+            {
+              "title": "Tiba 2 - 3 Jul",
+              "position": "eta",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [
+            {
+              "title": "Cokelat",
+              "type": "lightGrey",
+              "type_variant": "colour",
+              "hex_color": "#8b4513"
+            },
+            {
+              "title": "Biru Muda",
+              "type": "lightGrey",
+              "type_variant": "colour",
+              "hex_color": "#8ad1e8"
+            },
+            {
+              "title": "Biru",
+              "type": "lightGrey",
+              "type_variant": "colour",
+              "hex_color": "#1d6cbb"
+            },
+            {
+              "title": "Hijau",
+              "type": "lightGrey",
+              "type_variant": "colour",
+              "hex_color": "#006400"
+            },
+            {
+              "title": "Merah",
+              "type": "lightGrey",
+              "type_variant": "colour",
+              "hex_color": "#ff0016"
+            },
+            {
+              "title": "1",
+              "type": "lightGrey",
+              "type_variant": "custom",
+              "hex_color": ""
+            }
+          ],
+          "badges": [
+            {
+              "title": "Power Merchant Pro Badge",
+              "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/PM%20Pro%20Small.png",
+              "show": true
+            }
+          ],
+          "wishlist": false,
+          "applink": "tokopedia://product/879513283?extParam=ivf%3Dfalse",
+          "customVideoURL": ""
+        },
+        {
+          "id": 2818398432,
+          "name": "Baju Bali Gables Barong Xl",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": "",
+            "tag": 0
+          },
+          "shop": {
+            "id": 8743628,
+            "name": "Baliartfashion",
+            "city": "Jakarta Barat",
+            "url": "https://www.tokopedia.com/baliartfashion",
+            "isOfficial": false,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": true,
+            "imgUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/6/25/2505f916-8ff9-47e1-ae8a-6e5957d89d7b.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2020/6/25/2505f916-8ff9-47e1-ae8a-6e5957d89d7b.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2020/6/25/2505f916-8ff9-47e1-ae8a-6e5957d89d7b.jpg",
+          "price": "Rp20.000",
+          "priceInt": 20000,
+          "priceRange": "",
+          "categoryId": 1758,
+          "categoryName": "Fashion Wanita",
+          "categoryBreadcrumb": "fashion-wanita/atasan-wanita/kaos-wanita",
+          "ratingAverage": "5.0",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/baliartfashion/baju-bali-gables-barong-xl-biru-muda",
+          "labelGroups": [
+            {
+              "title": "Cashback",
+              "position": "promo",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Grosir",
+              "position": "offers",
+              "type": "lightGrey",
+              "url": ""
+            },
+            {
+              "title": "Cashback",
+              "position": "price",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Terjual 375",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            },
+            {
+              "title": "Tiba 2 - 3 Jul",
+              "position": "eta",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [
+            {
+              "title": "Biru Muda",
+              "type": "lightGrey",
+              "type_variant": "colour",
+              "hex_color": "#8ad1e8"
+            },
+            {
+              "title": "Hijau",
+              "type": "lightGrey",
+              "type_variant": "colour",
+              "hex_color": "#006400"
+            },
+            {
+              "title": "Merah",
+              "type": "lightGrey",
+              "type_variant": "colour",
+              "hex_color": "#ff0016"
+            },
+            {
+              "title": "Cokelat",
+              "type": "lightGrey",
+              "type_variant": "colour",
+              "hex_color": "#8b4513"
+            },
+            {
+              "title": "Ungu",
+              "type": "lightGrey",
+              "type_variant": "colour",
+              "hex_color": "#bf00ff"
+            },
+            {
+              "title": "4",
+              "type": "lightGrey",
+              "type_variant": "custom",
+              "hex_color": ""
+            }
+          ],
+          "badges": [
+            {
+              "title": "Power Merchant Pro Badge",
+              "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/PM%20Pro%20Small.png",
+              "show": true
+            }
+          ],
+          "wishlist": false,
+          "applink": "tokopedia://product/2818398432?extParam=ivf%3Dfalse",
+          "customVideoURL": ""
+        }
+      ],
+      "violation": {
+        "headerText": "",
+        "descriptionText": "",
+        "imageURL": "",
+        "ctaURL": "",
+        "buttonText": "",
+        "buttonType": ""
+      }
+    }
+  },
+  "searchInspirationCarouselV2": {
+    "data": [
+      {
+        "title": "",
+        "type": "deals",
+        "position": 6,
+        "layout": "product_list",
+        "tracking_option": "3",
+        "options": [
+          {
+            "title": "Pilihan produk promo untukmu",
+            "subtitle": "Dijamin promo untuk baju",
+            "url": "https://www.tokopedia.com/search?navsource=deals\u0026q=baju\u0026source=search\u0026srp_component_id=03.28.01.00\u0026srp_page_title=Deals",
+            "applink": "tokopedia://search?navsource=deals\u0026q=baju\u0026source=search\u0026srp_component_id=03.28.01.00\u0026srp_page_title=Deals",
+            "banner_image_url": "",
+            "banner_link_url": "",
+            "banner_applink_url": "",
+            "identifier": "",
+            "meta": "",
+            "component_id": "03.28.01.00",
+            "product": [
+              {
+                "id": 1923055192,
+                "name": "Jiniso T-Shirt Black Rebel Oversize Tee | Kaos",
+                "price": 89900,
+                "price_str": "Rp89.900",
+                "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/6/15/466657a6-2060-46c0-b0e4-929a1a7d4766.jpg",
+                "rating": 5,
+                "count_review": 177,
+                "url": "https://www.tokopedia.com/jiniso/jiniso-t-shirt-black-rebel-oversize-tee-kaos-hitam-l",
+                "applink": "tokopedia://product/1923055192",
+                "description": [],
+                "rating_average": "4.9",
+                "component_id": "03.28.01.01",
+                "label_groups": [
+                  {
+                    "title": "Cashback",
+                    "type": "lightGreen",
+                    "position": "promo",
+                    "url": ""
+                  },
+                  {
+                    "title": "Terjual 310",
+                    "type": "textDarkGrey",
+                    "position": "integrity",
+                    "url": ""
+                  },
+                  {
+                    "title": "Selalu OS",
+                    "type": "",
+                    "position": "campaign",
+                    "url": "https://images.tokopedia.net/img/phOWBv/2021/10/28/0086bd2b-7e74-435b-9412-46c5aa5ae809.png"
+                  }
+                ],
+                "original_price": "Rp256.858",
+                "discount_percentage": 65,
+                "badges": [
+                  {
+                    "title": "Official Store",
+                    "image_url": "https://images.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "shop": {
+                  "name": "JINISO.ID",
+                  "city": "Jakarta Utara"
+                },
+                "freeOngkir": {
+                  "isActive": true,
+                  "image_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+                },
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
+                },
+                "customvideo_url": ""
+              },
+              {
+                "id": 2063110778,
+                "name": "T-Shirt / Kaos Wanita \u0026 Pria Choose Kindness - Ellipses.Inc",
+                "price": 38000,
+                "price_str": "Rp38.000",
+                "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/1/6/76aa3a39-ba07-4677-b4c2-b46a78d39fbd.jpg",
+                "rating": 5,
+                "count_review": 130,
+                "url": "https://www.tokopedia.com/ellipses/t-shirt-kaos-wanita-pria-choose-kindness-ellipses-inc-putih-allsize",
+                "applink": "tokopedia://product/2063110778",
+                "description": [],
+                "rating_average": "4.8",
+                "component_id": "03.28.01.02",
+                "label_groups": [
+                  {
+                    "title": "Terjual 267",
+                    "type": "textDarkGrey",
+                    "position": "integrity",
+                    "url": ""
+                  }
+                ],
+                "original_price": "Rp80.000",
+                "discount_percentage": 53,
+                "badges": [
+                  {
+                    "title": "Official Store",
+                    "image_url": "https://images.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "shop": {
+                  "name": "Ellipses.inc",
+                  "city": "Jakarta Barat"
+                },
+                "freeOngkir": {
+                  "isActive": true,
+                  "image_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+                },
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
+                },
+                "customvideo_url": ""
+              },
+              {
+                "id": 306536753,
+                "name": "Vioree Large T-Shirt V-Neck Polos Tangan Pendek Kaos Wanita V Okechuku",
+                "price": 19900,
+                "price_str": "Rp19.900",
+                "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/11/12/ef1e11e3-69fc-4544-8f47-da78b1ca3371.png",
+                "rating": 5,
+                "count_review": 155,
+                "url": "https://www.tokopedia.com/okechuku/vioree-large-t-shirt-v-neck-polos-tangan-pendek-kaos-wanita-v-okechuku-navy",
+                "applink": "tokopedia://product/306536753",
+                "description": [],
+                "rating_average": "4.6",
+                "component_id": "03.28.01.03",
+                "label_groups": [
+                  {
+                    "title": "Cashback",
+                    "type": "lightGreen",
+                    "position": "promo",
+                    "url": ""
+                  },
+                  {
+                    "title": "Terjual 574",
+                    "type": "textDarkGrey",
+                    "position": "integrity",
+                    "url": ""
+                  }
+                ],
+                "original_price": "Rp39.900",
+                "discount_percentage": 50,
+                "badges": [
+                  {
+                    "title": "Official Store",
+                    "image_url": "https://images.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "shop": {
+                  "name": "Okechuku",
+                  "city": "Jakarta Barat"
+                },
+                "freeOngkir": {
+                  "isActive": true,
+                  "image_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+                },
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
+                },
+                "customvideo_url": ""
+              },
+              {
+                "id": 306473357,
+                "name": "Okechuku Vioree Size Xxl Kaos Leher V Wanita Woman V Neck T Shirt",
+                "price": 19900,
+                "price_str": "Rp19.900",
+                "image_url": "https://images.tokopedia.net/img/cache/200-square/product-1/2018/7/16/1874792/1874792_49b957cf-d84b-4f9e-ac5b-f50f6253127b_700_700.jpg",
+                "rating": 5,
+                "count_review": 112,
+                "url": "https://www.tokopedia.com/okechuku/okechuku-vioree-size-xxl-kaos-leher-v-wanita-woman-v-neck-t-shirt-twotone-abu-tua",
+                "applink": "tokopedia://product/306473357",
+                "description": [],
+                "rating_average": "4.8",
+                "component_id": "03.28.01.04",
+                "label_groups": [
+                  {
+                    "title": "Cashback",
+                    "type": "lightGreen",
+                    "position": "promo",
+                    "url": ""
+                  },
+                  {
+                    "title": "Terjual 331",
+                    "type": "textDarkGrey",
+                    "position": "integrity",
+                    "url": ""
+                  }
+                ],
+                "original_price": "Rp39.900",
+                "discount_percentage": 50,
+                "badges": [
+                  {
+                    "title": "Official Store",
+                    "image_url": "https://images.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "shop": {
+                  "name": "Okechuku",
+                  "city": "Jakarta Barat"
+                },
+                "freeOngkir": {
+                  "isActive": true,
+                  "image_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+                },
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
+                },
+                "customvideo_url": ""
+              },
+              {
+                "id": 511036047,
+                "name": "Monellina Fashion Baju Kaos V-Neck Xxl Jumbo Murah Wanita Kekinian",
+                "price": 38000,
+                "price_str": "Rp38.000",
+                "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/10/8/201468e3-47b8-4af2-9b52-258686548ddc.jpg",
+                "rating": 5,
+                "count_review": 125,
+                "url": "https://www.tokopedia.com/monellinafashion/monellina-fashion-baju-kaos-v-neck-xxl-jumbo-murah-wanita-kekinian-putih-l",
+                "applink": "tokopedia://product/511036047",
+                "description": [],
+                "rating_average": "4.8",
+                "component_id": "03.28.01.05",
+                "label_groups": [
+                  {
+                    "title": "Cashback",
+                    "type": "lightGreen",
+                    "position": "promo",
+                    "url": ""
+                  },
+                  {
+                    "title": "Terjual 545",
+                    "type": "textDarkGrey",
+                    "position": "integrity",
+                    "url": ""
+                  }
+                ],
+                "original_price": "Rp76.000",
+                "discount_percentage": 50,
+                "badges": [
+                  {
+                    "title": "Official Store",
+                    "image_url": "https://images.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "shop": {
+                  "name": "Monellina Fashion",
+                  "city": "Jakarta Barat"
+                },
+                "freeOngkir": {
+                  "isActive": true,
+                  "image_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+                },
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
+                },
+                "customvideo_url": ""
+              },
+              {
+                "id": 2041913303,
+                "name": "[Pastel Series] Basic Ladies T-Shirt Vneck (Kaos Cewek)",
+                "price": 48000,
+                "price_str": "Rp48.000",
+                "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/11/3/b767b2a6-c4e6-4231-85ba-bddba6d51518.jpg",
+                "rating": 5,
+                "count_review": 1281,
+                "url": "https://www.tokopedia.com/zalmore/pastel-series-basic-ladies-t-shirt-vneck-kaos-cewek-green-tea-s",
+                "applink": "tokopedia://product/2041913303",
+                "description": [],
+                "rating_average": "4.9",
+                "component_id": "03.28.01.06",
+                "label_groups": [
+                  {
+                    "title": "Cashback",
+                    "type": "lightGreen",
+                    "position": "promo",
+                    "url": ""
+                  },
+                  {
+                    "title": "Terjual 3,4 rb",
+                    "type": "textDarkGrey",
+                    "position": "integrity",
+                    "url": ""
+                  },
+                  {
+                    "title": "Women In Style",
+                    "type": "",
+                    "position": "campaign",
+                    "url": "https://images.tokopedia.net/img/phOWBv/2022/6/27/5c46ede1-f6a2-4c16-96f5-170f60d87a3d.png"
+                  }
+                ],
+                "original_price": "Rp80.000",
+                "discount_percentage": 40,
+                "badges": [
+                  {
+                    "title": "Official Store",
+                    "image_url": "https://images.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "shop": {
+                  "name": "Official Zalmore Shop",
+                  "city": "Kab. Bandung"
+                },
+                "freeOngkir": {
+                  "isActive": true,
+                  "image_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+                },
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
+                },
+                "customvideo_url": "https://vod.tokopedia.com/view/adaptive.m3u8?id=e6e1dc759fc04219b09b3411cfad03ea"
+              },
+              {
+                "id": 1419795267,
+                "name": "T-Shirt Where Minnie / Baju Kaos Distro Pria Wanita Cotton 30s",
+                "price": 20800,
+                "price_str": "Rp20.800",
+                "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/12/12/8a3b3219-b378-4a25-a0f0-9a3fe6c96d8b.png",
+                "rating": 5,
+                "count_review": 114,
+                "url": "https://www.tokopedia.com/revenge11/t-shirt-where-minnie-baju-kaos-distro-pria-wanita-cotton-30s",
+                "applink": "tokopedia://product/1419795267",
+                "description": [],
+                "rating_average": "4.7",
+                "component_id": "03.28.01.07",
+                "label_groups": [
+                  {
+                    "title": "Cashback",
+                    "type": "lightGreen",
+                    "position": "promo",
+                    "url": ""
+                  },
+                  {
+                    "title": "Terjual 195",
+                    "type": "textDarkGrey",
+                    "position": "integrity",
+                    "url": ""
+                  },
+                  {
+                    "title": "Women In Style",
+                    "type": "",
+                    "position": "campaign",
+                    "url": "https://images.tokopedia.net/img/phOWBv/2022/6/27/5c46ede1-f6a2-4c16-96f5-170f60d87a3d.png"
+                  }
+                ],
+                "original_price": "Rp32.590",
+                "discount_percentage": 36,
+                "badges": [
+                  {
+                    "title": "Power Merchant Pro Badge",
+                    "image_url": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/PM%20Pro%20Small.png",
+                    "show": true
+                  }
+                ],
+                "shop": {
+                  "name": "revenge eleven",
+                  "city": "Jakarta Barat"
+                },
+                "freeOngkir": {
+                  "isActive": true,
+                  "image_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+                },
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
+                },
+                "customvideo_url": ""
+              },
+              {
+                "id": 1207942959,
+                "name": "T Shirt Rustik Vintage Awan Pelangi Cloud Oversized Tee Wanita",
+                "price": 69000,
+                "price_str": "Rp69.000",
+                "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/11/18/0fefdadf-3612-40fb-84c6-1dea64a9874f.jpg",
+                "rating": 5,
+                "count_review": 61,
+                "url": "https://www.tokopedia.com/fashionkorea8/t-shirt-rustik-vintage-awan-pelangi-cloud-oversized-tee-wanita-abu-abu",
+                "applink": "tokopedia://product/1207942959",
+                "description": [],
+                "rating_average": "4.6",
+                "component_id": "03.28.01.08",
+                "label_groups": [
+                  {
+                    "title": "Cashback",
+                    "type": "lightGreen",
+                    "position": "promo",
+                    "url": ""
+                  },
+                  {
+                    "title": "Grosir",
+                    "type": "lightGrey",
+                    "position": "offers",
+                    "url": ""
+                  },
+                  {
+                    "title": "Terjual 127",
+                    "type": "textDarkGrey",
+                    "position": "integrity",
+                    "url": ""
+                  }
+                ],
+                "original_price": "Rp85.000",
+                "discount_percentage": 19,
+                "badges": [
+                  {
+                    "title": "Official Store",
+                    "image_url": "https://images.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "shop": {
+                  "name": "Grosir Korean style",
+                  "city": "Tangerang"
+                },
+                "freeOngkir": {
+                  "isActive": true,
+                  "image_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+                },
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
+                },
+                "customvideo_url": ""
+              },
+              {
+                "id": 879513283,
+                "name": "Baju Barong Bali Bahan Rayon Premium Big Sz",
+                "price": 27500,
+                "price_str": "Rp27.500",
+                "image_url": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/6/3/79497488/79497488_1a90b88d-926d-49c3-aaba-d16a53efa5c8_898_898",
+                "rating": 5,
+                "count_review": 170,
+                "url": "https://www.tokopedia.com/qiaobeauty/baju-barong-bali-bahan-rayon-premium-big-sz-cokelat-xxl",
+                "applink": "tokopedia://product/879513283",
+                "description": [],
+                "rating_average": "4.8",
+                "component_id": "03.28.01.09",
+                "label_groups": [
+                  {
+                    "title": "Cashback",
+                    "type": "lightGreen",
+                    "position": "promo",
+                    "url": ""
+                  },
+                  {
+                    "title": "Cashback",
+                    "type": "lightGreen",
+                    "position": "price",
+                    "url": ""
+                  },
+                  {
+                    "title": "Terjual 671",
+                    "type": "textDarkGrey",
+                    "position": "integrity",
+                    "url": ""
+                  }
+                ],
+                "original_price": "",
+                "discount_percentage": 0,
+                "badges": [
+                  {
+                    "title": "Power Merchant Pro Badge",
+                    "image_url": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/PM%20Pro%20Small.png",
+                    "show": true
+                  }
+                ],
+                "shop": {
+                  "name": "QiaoBeauty",
+                  "city": "Jakarta Barat"
+                },
+                "freeOngkir": {
+                  "isActive": true,
+                  "image_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+                },
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
+                },
+                "customvideo_url": ""
+              },
+              {
+                "id": 2434366788,
+                "name": "8teen T-Shirt Kaos Wanita Lengan Panjang Polos Bahan Cotton",
+                "price": 35000,
+                "price_str": "Rp35.000",
+                "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/6/14/3b53c68c-6480-43ea-b8a4-5c84e8a588a2.jpg",
+                "rating": 5,
+                "count_review": 40,
+                "url": "https://www.tokopedia.com/8teencloth/8teen-t-shirt-kaos-wanita-lengan-panjang-polos-bahan-cotton-merah-muda-m",
+                "applink": "tokopedia://product/2434366788",
+                "description": [],
+                "rating_average": "4.9",
+                "component_id": "03.28.01.10",
+                "label_groups": [
+                  {
+                    "title": "Cashback",
+                    "type": "lightGreen",
+                    "position": "promo",
+                    "url": ""
+                  },
+                  {
+                    "title": "Sisa 8",
+                    "type": "textDarkRed",
+                    "position": "gimmick",
+                    "url": ""
+                  },
+                  {
+                    "title": "Cashback",
+                    "type": "lightGreen",
+                    "position": "price",
+                    "url": ""
+                  },
+                  {
+                    "title": "Terjual 155",
+                    "type": "textDarkGrey",
+                    "position": "integrity",
+                    "url": ""
+                  },
+                  {
+                    "title": "Women In Style",
+                    "type": "",
+                    "position": "campaign",
+                    "url": "https://images.tokopedia.net/img/phOWBv/2022/6/27/5c46ede1-f6a2-4c16-96f5-170f60d87a3d.png"
+                  }
+                ],
+                "original_price": "",
+                "discount_percentage": 0,
+                "badges": [
+                  {
+                    "title": "Power Merchant Pro Badge",
+                    "image_url": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/PM%20Pro%20Small.png",
+                    "show": true
+                  }
+                ],
+                "shop": {
+                  "name": "8teen_cloth",
+                  "city": "Jakarta Barat"
+                },
+                "freeOngkir": {
+                  "isActive": true,
+                  "image_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+                },
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
+                },
+                "customvideo_url": ""
+              }
+            ],
+            "card_button": {
+              "title": "Cek kumpulan promo lainnya di Deals, yuk!",
+              "applink": "tokopedia://search?navsource=deals\u0026q=baju\u0026source=search\u0026srp_component_id=03.28.01.00\u0026srp_page_title=Deals"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
