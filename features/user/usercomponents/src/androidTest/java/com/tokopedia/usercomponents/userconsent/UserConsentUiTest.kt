@@ -2,18 +2,16 @@ package com.tokopedia.usercomponents.userconsent
 
 import android.app.Activity
 import android.app.Instrumentation
-import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intending
-import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.gson.Gson
 import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.test.application.annotations.CassavaTest
-import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.usercomponents.userconsent.common.UserConsentCollectionDataModel
 import com.tokopedia.usercomponents.userconsent.common.UserConsentInterceptor
 import com.tokopedia.usercomponents.userconsent.common.UserConsentUiTestCons.TNC_MULTIPLE_SOME_ARE_OPTIONAL
@@ -79,7 +77,7 @@ class UserConsentUiTest {
             shouldViewTnCMandatory(getFakeResponsePurposesData())
             shouldButtonActionEnable()
         } validateTracker {
-            cassavaRule.validate(UserConsentCassavaRobot.QUERY_TNC_SINGLE_MANDATORY_PURPOSE)
+            assertThat(cassavaRule.validate(UserConsentCassavaRobot.QUERY_TNC_SINGLE_MANDATORY_PURPOSE), hasAllSuccess())
         }
     }
 
@@ -105,7 +103,7 @@ class UserConsentUiTest {
             shouldViewTnCOptional(getFakeResponsePurposesData())
             shouldButtonActionEnable()
         } validateTracker {
-            cassavaRule.validate(UserConsentCassavaRobot.QUERY_TNC_SINGLE_OPTIONAL_PURPOSE)
+            assertThat(cassavaRule.validate(UserConsentCassavaRobot.QUERY_TNC_SINGLE_OPTIONAL_PURPOSE), hasAllSuccess())
         }
     }
 
@@ -133,7 +131,7 @@ class UserConsentUiTest {
             shouldViewTncPolicyMandatory(getFakeResponsePurposesData())
             shouldButtonActionEnable()
         } validateTracker {
-            cassavaRule.validate(UserConsentCassavaRobot.QUERY_TNC_POLICY_SINGLE_MANDATORY_PURPOSE)
+            assertThat(cassavaRule.validate(UserConsentCassavaRobot.QUERY_TNC_POLICY_SINGLE_MANDATORY_PURPOSE), hasAllSuccess())
         }
     }
 
@@ -160,7 +158,7 @@ class UserConsentUiTest {
             shouldViewTncPolicyOptional(getFakeResponsePurposesData())
             shouldButtonActionEnable()
         } validateTracker {
-            cassavaRule.validate(UserConsentCassavaRobot.QUERY_TNC_POLICY_SINGLE_OPTIONAL_PURPOSE)
+            assertThat(cassavaRule.validate(UserConsentCassavaRobot.QUERY_TNC_POLICY_SINGLE_OPTIONAL_PURPOSE), hasAllSuccess())
         }
     }
 
@@ -189,7 +187,7 @@ class UserConsentUiTest {
             shouldViewTnCMultipleOptional(getFakeResponsePurposesData())
             shouldButtonActionEnable()
         } validateTracker {
-            cassavaRule.validate(UserConsentCassavaRobot.QUERY_TNC_MULTIPLE_OPTIONAL_PURPOSE)
+            assertThat(cassavaRule.validate(UserConsentCassavaRobot.QUERY_TNC_MULTIPLE_OPTIONAL_PURPOSE), hasAllSuccess())
         }
     }
 
@@ -219,7 +217,7 @@ class UserConsentUiTest {
             shouldViewTnCPolicyMultipleOptional(getFakeResponsePurposesData())
             shouldButtonActionEnable()
         } validateTracker {
-            cassavaRule.validate(UserConsentCassavaRobot.QUERY_TNC_POLICY_MULTIPLE_OPTIONAL_PURPOSE)
+            assertThat(cassavaRule.validate(UserConsentCassavaRobot.QUERY_TNC_POLICY_MULTIPLE_OPTIONAL_PURPOSE), hasAllSuccess())
         }
     }
 

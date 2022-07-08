@@ -27,7 +27,7 @@ fun userConsentRobot(action: UserConsentRobot.() -> Unit): UserConsentRobot {
 }
 
 infix fun UserConsentRobot.validateComponent(action: UserConsentResult.() -> Unit): UserConsentResult {
-    Thread.sleep(2500)
+    Thread.sleep(1000)
     return UserConsentResult().apply(action)
 }
 
