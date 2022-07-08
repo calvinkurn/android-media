@@ -530,18 +530,16 @@ class RechargeCCFragment :
     }
 
     override fun onShowFilterChip(isLabeled: Boolean) {
-        // TODO: [Misael] mungkin tracker
+        // do nothing
     }
 
     override fun onClickFilterChip(isLabeled: Boolean, favorite: RechargeClientNumberChipModel) {
-        // TODO: [Misael] mungkin tracker
         token = favorite.token
     }
     //endregion
 
     //region AutoCompleteListener
     override fun onClickAutoComplete(favorite: TopupBillsAutoCompleteContactModel) {
-        // TODO: [Misael] mungkin tracker
         token = favorite.token
     }
     //endregion

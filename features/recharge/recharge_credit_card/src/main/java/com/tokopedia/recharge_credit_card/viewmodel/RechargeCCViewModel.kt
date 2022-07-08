@@ -1,7 +1,5 @@
 package com.tokopedia.recharge_credit_card.viewmodel
 
-import android.os.Message
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -24,12 +22,10 @@ import com.tokopedia.recharge_credit_card.datamodel.RechargeCCBankListReponse
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCCatalogPrefix
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCMenuDetailResponse
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCreditCard
-import com.tokopedia.recharge_credit_card.datamodel.RuleModel
 import com.tokopedia.recharge_credit_card.datamodel.TickerCreditCard
 import com.tokopedia.recharge_credit_card.datamodel.*
 import com.tokopedia.recharge_credit_card.isMasked
 import com.tokopedia.recharge_credit_card.util.RechargeCCConst
-import com.tokopedia.recharge_credit_card.util.RechargeCCUtil
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
