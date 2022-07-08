@@ -6,39 +6,45 @@
     android:layout_height="wrap_content"
     android:layout_marginLeft="8dp"
     android:layout_marginRight="8dp"
-    app:card_background_color="@color/Unify_Background"
     android:elevation="0dp"
-    app:cardCornerRadius="8dp">
+    app:cardCornerRadius="8dp"
+    app:card_background_color="@color/Unify_Background">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Unify_Background"
-        android:orientation="horizontal"
-        android:baselineAligned="false">
+        android:background="@color/Unify_Background">
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:id="@+id/container_horizontal_card_product_image"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="0.34"
-            android:background="@color/Unify_NN50"
+            android:background="@color/transparent"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="H,1:1"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/tg_horizontal_card_product_image"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
-                android:contentDescription="@string/horizontal_card_product_image_content_description"
-                android:id="@+id/tg_horizontal_card_product_image" />
+                android:contentDescription="@string/horizontal_card_product_image_content_description" />
 
         </LinearLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_weight="1"
-            android:padding="@dimen/unify_space_12">
+            android:padding="@dimen/unify_space_12"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/container_horizontal_card_product_image"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tg_horizontal_card_product_category"
@@ -88,5 +94,5 @@
                 tools:text="Rp11.500" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.unifycomponents.CardUnify2>

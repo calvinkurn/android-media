@@ -6,7 +6,6 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeOfferingWidgetBinding
 import com.tokopedia.digital.home.model.RechargeHomepageOfferingWidgetModel
@@ -128,7 +127,7 @@ class RechargeHomepageOfferingWidgetViewHolder(
                 productSlashPrice = item.label1
                 imageUrl = item.mediaUrl
 
-                setOnClickListener {
+                rootView.setOnClickListener {
                     listener.onRechargeSectionItemClicked(item)
                 }
 
