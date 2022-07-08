@@ -19,6 +19,6 @@ class ProductFeaturedAdapterDelegate(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, basicView: View): ProductFeaturedViewHolder {
-        return ProductFeaturedViewHolder(basicView, listener)
+        return ProductFeaturedViewHolder.create(parent, listener)
     }
 }

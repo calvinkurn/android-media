@@ -11,14 +11,12 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCat
 
 data class ProductUiModel(
     val productSectionList: List<ProductSectionUiModel>,
-    val pinnedProduct: PlayProductUiModel.Product?,
     val canShow: Boolean,
 ) {
     companion object {
         val Empty: ProductUiModel
             get() = ProductUiModel(
                 productSectionList = emptyList(),
-                pinnedProduct = null,
                 canShow = false,
             )
     }

@@ -1,4 +1,4 @@
-package com.tokopedia.play.ui.view
+package com.tokopedia.play.ui.view.carousel
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -8,6 +8,8 @@ import com.tokopedia.play.databinding.ViewProductFeaturedBinding
 import com.tokopedia.play.ui.product.ProductBasicViewHolder
 import com.tokopedia.play.ui.productfeatured.adapter.ProductFeaturedAdapter
 import com.tokopedia.play.ui.productfeatured.itemdecoration.ProductFeaturedItemDecoration
+import com.tokopedia.play.ui.view.carousel.adapter.ProductCarouselAdapter
+import com.tokopedia.play.ui.view.carousel.viewholder.ProductCarouselViewHolder
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 
@@ -21,13 +23,47 @@ class ProductCarouselUiView(
 
     private val context = binding.root.context
 
-    private val adapter = ProductFeaturedAdapter(
-        productFeaturedListener = object : ProductBasicViewHolder.Listener {
+    private val adapter = ProductCarouselAdapter(
+        listener = object : ProductBasicViewHolder.Listener {
             override fun onClickProductCard(product: PlayProductUiModel.Product, position: Int) {
                 listener.onProductClicked(this@ProductCarouselUiView, product, position)
             }
+        },
+        pinnedProductListener = object : ProductCarouselViewHolder.PinnedProduct.Listener {
+            override fun onClicked(
+                viewHolder: ProductCarouselViewHolder.PinnedProduct,
+                product: PlayProductUiModel.Product
+            ) {
+                listener.onProductClicked(
+                    this@ProductCarouselUiView,
+                    product,
+                    viewHolder.adapterPosition,
+                )
+            }
+
+            override fun onAtcClicked(
+                viewHolder: ProductCarouselViewHolder.PinnedProduct,
+                product: PlayProductUiModel.Product
+            ) {
+                listener.onAtcClicked(this@ProductCarouselUiView, product)
+            }
+
+            override fun onBuyClicked(
+                viewHolder: ProductCarouselViewHolder.PinnedProduct,
+                product: PlayProductUiModel.Product
+            ) {
+                listener.onBuyClicked(this@ProductCarouselUiView, product)
+            }
         }
     )
+
+//    private val adapter = ProductFeaturedAdapter(
+//        productFeaturedListener = object : ProductBasicViewHolder.Listener {
+//            override fun onClickProductCard(product: PlayProductUiModel.Product, position: Int) {
+//                listener.onProductClicked(this@ProductCarouselUiView, product, position)
+//            }
+//        }
+//    )
 
     private val scrollListener = object: RecyclerView.OnScrollListener(){
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -47,14 +83,12 @@ class ProductCarouselUiView(
     private var isProductsInitialized = false
 
     init {
-        binding.rvProductFeatured.apply {
-            itemAnimator = null
-            layoutManager = layoutManager
-            adapter = this@ProductCarouselUiView.adapter
-        }.run {
-            addItemDecoration(defaultItemDecoration)
-            addOnScrollListener(scrollListener)
-        }
+        binding.rvProductFeatured.itemAnimator = null
+        binding.rvProductFeatured.layoutManager = layoutManager
+        binding.rvProductFeatured.adapter = adapter
+
+        binding.rvProductFeatured.addItemDecoration(defaultItemDecoration)
+        binding.rvProductFeatured.addOnScrollListener(scrollListener)
     }
 
     fun setProducts(products: List<ProductSectionUiModel>, maxProducts: Int) {
@@ -137,5 +171,8 @@ class ProductCarouselUiView(
 
         fun onProductImpressed(view: ProductCarouselUiView, products: List<Pair<PlayProductUiModel.Product, Int>>)
         fun onProductClicked(view: ProductCarouselUiView, product: PlayProductUiModel.Product, position: Int)
+
+        fun onAtcClicked(view: ProductCarouselUiView, product: PlayProductUiModel.Product)
+        fun onBuyClicked(view: ProductCarouselUiView, product: PlayProductUiModel.Product)
     }
 }

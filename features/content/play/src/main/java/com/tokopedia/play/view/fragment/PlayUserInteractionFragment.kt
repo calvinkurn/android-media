@@ -689,6 +689,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
         observeUiState()
         observeUiEvent()
+        observeViewEvent()
 
         observeChats()
 
@@ -962,6 +963,16 @@ class PlayUserInteractionFragment @Inject constructor(
                     HideCoachMarkWinnerEvent -> {
                         interactiveResultView?.hideCoachMark()
                     }
+                }
+            }
+        }
+    }
+
+    private fun observeViewEvent() {
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            eventBus.subscribe().collect { event ->
+                when (event) {
+                    is ProductCarouselUiComponent.Event -> onProductCarouselEvent(event)
                 }
             }
         }
@@ -1808,6 +1819,29 @@ class PlayUserInteractionFragment @Inject constructor(
             interactiveId = playViewModel.interactiveData.id,
             interactiveType = playViewModel.interactiveData
         )
+    }
+
+    /**
+     * View Event
+     */
+    private fun onProductCarouselEvent(event: ProductCarouselUiComponent.Event) {
+        when (event) {
+            is ProductCarouselUiComponent.Event.OnBuyClicked -> {
+                playViewModel.submitAction(PlayViewerNewAction.BuyProduct(event.product))
+            }
+            is ProductCarouselUiComponent.Event.OnAtcClicked -> {
+                playViewModel.submitAction(PlayViewerNewAction.AtcProduct(event.product))
+            }
+            is ProductCarouselUiComponent.Event.OnClicked -> {
+                RouteManager.route(
+                    context,
+                    event.product.applink,
+                )
+            }
+            is ProductCarouselUiComponent.Event.OnImpressed -> {
+                //TODO()
+            }
+        }
     }
 
     companion object {

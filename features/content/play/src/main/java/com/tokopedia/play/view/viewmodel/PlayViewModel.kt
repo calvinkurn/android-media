@@ -853,6 +853,8 @@ class PlayViewModel @AssistedInject constructor(
             PlayViewerNewAction.StartPlayingInteractive -> handlePlayingInteractive(shouldPlay = true)
             PlayViewerNewAction.StopPlayingInteractive -> handlePlayingInteractive(shouldPlay = false)
             is PlayViewerNewAction.ClickQuizOptionAction -> handleClickQuizOption(action.item)
+            is PlayViewerNewAction.BuyProduct -> handleBuyProduct(action.product, ProductAction.Buy)
+            is PlayViewerNewAction.AtcProduct -> handleBuyProduct(action.product, ProductAction.AddToCart)
 
             is InteractiveWinnerBadgeClickedAction -> handleWinnerBadgeClicked(action.height)
             is InteractiveGameResultBadgeClickedAction -> showLeaderboardSheet(action.height)
@@ -876,6 +878,7 @@ class PlayViewModel @AssistedInject constructor(
             is OpenFooterUserReport -> handleFooterClick(action.appLink)
             OpenUserReport -> handleUserReport()
             is SendUpcomingReminder -> handleSendReminder(action.section, false)
+
             is BuyProductAction -> handleBuyProduct(action.sectionInfo, action.product, ProductAction.Buy)
             is BuyProductVariantAction -> handleBuyProductVariant(action.id, ProductAction.Buy)
             is AtcProductAction -> handleBuyProduct(action.sectionInfo, action.product, ProductAction.AddToCart)
@@ -2210,6 +2213,18 @@ class PlayViewModel @AssistedInject constructor(
             viewModelScope.launch {
                 _uiEvent.emit(OpenUserReportEvent)
             }
+        }
+    }
+
+    private fun handleBuyProduct(
+        product: PlayProductUiModel.Product,
+        action: ProductAction,
+    ) = needLogin {
+        addProductToCart(product) { cartId ->
+            _uiEvent.emit(
+                if (action == ProductAction.Buy) BuySuccessEvent(product, false, cartId, null)
+                else AtcSuccessEvent(product, false, cartId, null)
+            )
         }
     }
 

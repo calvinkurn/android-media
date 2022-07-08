@@ -49,7 +49,6 @@ class PlayViewerTagItemRepositoryImpl @Inject constructor(
         return@withContext TagItemUiModel(
             product = ProductUiModel(
                 productSectionList = productList,
-                pinnedProduct = null, //TODO("check from gql")
                 canShow = true
             ),
             voucher = VoucherUiModel(

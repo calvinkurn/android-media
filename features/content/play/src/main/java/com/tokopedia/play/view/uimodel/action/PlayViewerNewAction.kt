@@ -23,6 +23,9 @@ sealed class PlayViewerNewAction {
     object FollowInteractive : PlayViewerNewAction()
 
     object Follow : PlayViewerNewAction()
+
+    data class BuyProduct(val product: PlayProductUiModel.Product) : PlayViewerNewAction()
+    data class AtcProduct(val product: PlayProductUiModel.Product) : PlayViewerNewAction()
 }
 
 /**
