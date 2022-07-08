@@ -24,6 +24,14 @@ class Coord(var diff: Int, val x: Float, val y: Float, val z: Float, var visit: 
     override fun toString(): String {
         return "[$diff,$x,$y,$z,$visit]"
     }
+
+    fun equal(
+        x: Float,
+        y: Float,
+        z: Float
+    ): Boolean {
+        return this.x == x && this.y == y && this.z == z
+    }
 }
 
 @Suppress("MagicNumber")
@@ -188,7 +196,7 @@ object Telemetry {
         z: Float
     ) {
         val lastCoord = list.lastOrNull()
-        if (lastCoord != null && lastCoord.x == x && lastCoord.y == y && lastCoord.z == z) {
+        if (lastCoord != null && lastCoord.equal(x, y, z)) {
             list.last().visit++
         } else {
             val elapsedDiff = getElapsedDiff()
