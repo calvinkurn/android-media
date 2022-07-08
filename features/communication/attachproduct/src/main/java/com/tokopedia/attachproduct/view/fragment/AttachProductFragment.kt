@@ -51,7 +51,11 @@ class AttachProductFragment :
     BaseListFragment<AttachProductItemUiModel, AttachProductListAdapterTypeFactory>(),
     CheckableInteractionListenerWithPreCheckedAction, AttachProductContract.View {
 
-    private val binding: FragmentAttachProductBinding? by viewBinding()
+    private var binding: FragmentAttachProductBinding? by viewBinding(
+        onClear = {
+            clearViewBinding()
+        }
+    )
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -80,8 +84,8 @@ class AttachProductFragment :
     override fun initInjector() {
         DaggerAttachProductComponent.builder()
             .attachProductModule(AttachProductModule(requireContext())).baseAppComponent(
-            (requireActivity().application as BaseMainApplication).baseAppComponent
-        ).build().inject(this)
+                (requireActivity().application as BaseMainApplication).baseAppComponent
+            ).build().inject(this)
     }
 
     override fun getRecyclerViewResourceId(): Int {
@@ -152,7 +156,8 @@ class AttachProductFragment :
         binding?.searchInputView?.searchBarTextField?.setOnEditorActionListener { v: TextView?, actionId: Int, event: KeyEvent? ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 binding?.searchInputView?.clearFocus()
-                val `in` = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                val `in` =
+                    requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 `in`.hideSoftInputFromWindow(binding?.searchInputView?.windowToken, 0)
 
                 onSearchSubmitted()
@@ -407,6 +412,18 @@ class AttachProductFragment :
 
     override fun setShopName(shopName: String) {
         activityContract?.setShopName(shopName)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        binding = null
+    }
+
+    private fun clearViewBinding() {
+        binding?.searchInputView?.searchBarTextField?.addTextChangedListener(null)
+        binding?.searchInputView?.searchBarTextField?.setOnEditorActionListener(null)
+        binding?.sendButtonAttachProduct?.setOnClickListener(null)
+        binding?.swipeRefreshLayout?.setOnClickListener(null)
     }
 
     companion object {
