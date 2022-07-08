@@ -375,9 +375,19 @@ open class SomListOrderViewHolder(
     }
 
     private fun setupOrderPlusRibbon(element: SomListOrderUiModel) {
+        val showOrderPlusRibbon = element.orderPlusData?.logoUrl.isNullOrBlank().not()
+        binding?.containerSomListOrderPlusRibbon?.run {
+            setBackgroundResource(R.drawable.ic_som_list_order_plus_ribbon)
+            showWithCondition(showOrderPlusRibbon)
+        }
+        binding?.loaderIcSomListOrderPlusRibbon?.showWithCondition(showOrderPlusRibbon)
         binding?.icSomListOrderPlusRibbon?.run {
+            onUrlLoaded = {
+                binding?.loaderIcSomListOrderPlusRibbon?.gone()
+                Unit
+            }
+            showWithCondition(showOrderPlusRibbon)
             urlSrc = element.orderPlusData?.logoUrl.orEmpty()
-            showWithCondition(element.orderPlusData?.logoUrl.isNullOrBlank().not())
         }
     }
 
