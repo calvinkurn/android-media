@@ -192,6 +192,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return true;
     }
 
+    // To Refresh the seamless login token every week
     private void initSeamlessLoginWorker() {
         UserSessionInterface userSession = new UserSession(context);
         if(userSession.isLoggedIn()) {

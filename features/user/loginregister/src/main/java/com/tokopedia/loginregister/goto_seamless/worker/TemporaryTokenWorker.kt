@@ -5,6 +5,7 @@ import androidx.work.*
 import com.gojek.icp.identity.loginsso.data.models.Profile
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.loginregister.goto_seamless.GotoSeamlessHelper
+import com.tokopedia.loginregister.goto_seamless.GotoSeamlessLogger
 import com.tokopedia.loginregister.goto_seamless.GotoSeamlessPreference
 import com.tokopedia.loginregister.goto_seamless.di.DaggerGotoSeamlessComponent
 import com.tokopedia.loginregister.goto_seamless.model.GetTemporaryKeyParam
@@ -61,6 +62,7 @@ class TemporaryTokenWorker(val appContext: Context, params: WorkerParameters) :
                     }
                     Result.success()
                 } catch (e: Exception) {
+                    GotoSeamlessLogger.logError("refresh_goto_token_worker", e)
                     Result.failure()
                 }
             }
@@ -71,10 +73,12 @@ class TemporaryTokenWorker(val appContext: Context, params: WorkerParameters) :
 
     companion object {
         private const val WORKER_ID = "GOTO_SEAMLESS_WORKER"
+        private const val REFRESH_INTERVAL_DAYS = 7L
+
         fun scheduleWorker(appContext: Context) {
             try {
                 val periodicWorker = PeriodicWorkRequest
-                    .Builder(TemporaryTokenWorker::class.java, 15, TimeUnit.MINUTES)
+                    .Builder(TemporaryTokenWorker::class.java, REFRESH_INTERVAL_DAYS, TimeUnit.DAYS)
                     .setConstraints(Constraints.NONE)
                     .build()
 
