@@ -169,9 +169,9 @@ internal class CarouselImageViewHolder(
         onPostTagViews { it.resetView() }
     }
 
-    fun changeTopAds(isGreen: Boolean) {
+    fun changeTopAds(isColorChangedAsPerAsgcWidget: Boolean) {
         val card = dataSource.getFeedXCard()
-        if (isGreen) changeTopAdsColorToGreen(card, shouldNotify = false)
+        if (isColorChangedAsPerAsgcWidget) changeCTABtnColorAsPerWidget(card, shouldNotify = false)
         else changeTopAdsColorToWhite(card)
     }
 
@@ -229,8 +229,8 @@ internal class CarouselImageViewHolder(
         if (!card.isAsgcColorChangedAsPerWidgetColor) changeTopAdsColorToWhite(card)
         else changeCTABtnColorAsPerWidget(card, shouldNotify = false)
     }
-    private fun getCTAButtonText(card: FeedXCard): String {
-        return if (card.isTypeProductHighlight && !card.isASGCDiscountToko && card.totalProducts > 1)
+    private fun getCTAButtonText(card: FeedXCard) =
+         if (card.isTypeProductHighlight && !card.isASGCDiscountToko && card.totalProducts > 1)
             itemView.context.getString(R.string.feeds_check_x_products, card.totalProducts)
         else if (card.isASGCDiscountToko && card.totalProducts > 1)
             itemView.context.getString(
@@ -240,7 +240,7 @@ internal class CarouselImageViewHolder(
             )
         else itemView.context.getString(R.string.feeds_cek_sekarang)
 
-    }
+
 
 
     private fun changeTopAdsColorToGreen(card: FeedXCard, shouldNotify: Boolean = true) {
@@ -286,7 +286,7 @@ internal class CarouselImageViewHolder(
     private fun changeCTABtnColorAsPerWidget(card: FeedXCard, shouldNotify: Boolean = true) {
         card.isAsgcColorChangedAsPerWidgetColor = true
 
-        if (shouldNotify) listener.onTopAdsChangeColorToGreen(this)
+        if (shouldNotify) listener.onCTAColorChangedAsPerWidgetColor(this)
 
         if (card.isASGCDiscountToko)
             changeTopAdsColorToRed(card)
@@ -381,7 +381,7 @@ internal class CarouselImageViewHolder(
 
     interface Listener {
         fun onTopAdsCardClicked(viewHolder: CarouselImageViewHolder, media: FeedXMedia)
-        fun onTopAdsChangeColorToGreen(viewHolder: CarouselImageViewHolder)
+        fun onCTAColorChangedAsPerWidgetColor(viewHolder: CarouselImageViewHolder)
         fun onImageClicked(viewHolder: CarouselImageViewHolder)
         fun onLiked(viewHolder: CarouselImageViewHolder)
         fun onImpressed(viewHolder: CarouselImageViewHolder)

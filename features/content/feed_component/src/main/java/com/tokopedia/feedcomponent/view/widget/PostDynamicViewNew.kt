@@ -223,7 +223,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
             }
 
-            override fun onTopAdsChangeColorToGreen(viewHolder: CarouselImageViewHolder) {
+            override fun onCTAColorChangedAsPerWidgetColor(viewHolder: CarouselImageViewHolder) {
                 (rvCarousel.adapter as FeedPostCarouselAdapter).updateNeighbourTopAdsColor(
                     viewHolder.adapterPosition
                 )
@@ -428,7 +428,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         bindTracking(feedXCard)
         shareButton.setOnClickListener {
             changeTopadsCekSekarangBtnColorToGreen(feedXCard)
-            adapter.updateTopAdsToGreen(pageControl.indicatorCurrentPosition)
+            adapter.updateCTAasperWidgetColor(pageControl.indicatorCurrentPosition)
 
             val desc = context.getString(R.string.feed_share_default_text)
             val url = if (feedXCard.isTopAds && feedXCard.media.size > feedXCard.lastCarouselIndex) {
@@ -788,7 +788,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         }
         likeButton.setOnClickListener {
             changeTopadsCekSekarangBtnColorToGreen(feedXCard)
-            adapter.updateTopAdsToGreen(pageControl.indicatorCurrentPosition)
+            adapter.updateCTAasperWidgetColor(pageControl.indicatorCurrentPosition)
 
             listener?.onLikeClick(
                 positionInFeed,
