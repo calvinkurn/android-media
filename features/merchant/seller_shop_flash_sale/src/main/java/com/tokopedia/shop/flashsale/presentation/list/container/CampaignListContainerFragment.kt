@@ -44,8 +44,8 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
     companion object {
         private const val FIRST_TAB = 0
         private const val SECOND_TAB = 1
-        private const val ACTIVE_CAMPAIGN_INDEX = 0
-        private const val HISTORY_CAMPAIGN_INDEX = 1
+        private const val ACTIVE_CAMPAIGN_ID = 1
+        private const val HISTORY_CAMPAIGN_ID = 2
         private const val BUNDLE_KEY_AUTO_FOCUS_TAB_POSITION = "auto_focus_tab_position"
         private const val REDIRECTION_DELAY : Long = 500
         private const val EMPTY_STATE_IMAGE_URL = "https://images.tokopedia.net/img/android/campaign/flash-sale-toko/shop_outdoor.png"
@@ -306,16 +306,18 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
         fun onSaveDraftSuccess()
     }
 
-    private fun validateSellerEligibility(prerequisiteData: CampaignListContainerViewModel.PrerequisiteData) {
+    private fun validateSellerEligibility(
+        prerequisiteData: CampaignListContainerViewModel.PrerequisiteData
+    ) {
         val isEligible = prerequisiteData.isEligible
-        val activeCampaignCount = prerequisiteData.tabsMetadata.getOrNull(ACTIVE_CAMPAIGN_INDEX)?.totalCampaign.orZero()
-        val historyCampaignCount = prerequisiteData.tabsMetadata.getOrNull(HISTORY_CAMPAIGN_INDEX)?.totalCampaign.orZero()
+        val activeCampaignCount = prerequisiteData.tabsMetadata.find { tab -> tab.id == ACTIVE_CAMPAIGN_ID }?.totalCampaign
+        val historyCampaignCount = prerequisiteData.tabsMetadata.find { tab -> tab.id == HISTORY_CAMPAIGN_ID }?.totalCampaign
 
         val hasActiveCampaign = activeCampaignCount.isMoreThanZero()
         val hasHistoryCampaign = historyCampaignCount.isMoreThanZero()
-        val shouldShowInEligibleAccess = !isEligible && !hasActiveCampaign && !hasHistoryCampaign
+        val shouldShowIneligibleAccess = !isEligible && !hasActiveCampaign && !hasHistoryCampaign
 
-        if (shouldShowInEligibleAccess) {
+        if (shouldShowIneligibleAccess) {
             showIneligibleAccessNotice()
         } else {
             hideIneligibleAccessNotice()
