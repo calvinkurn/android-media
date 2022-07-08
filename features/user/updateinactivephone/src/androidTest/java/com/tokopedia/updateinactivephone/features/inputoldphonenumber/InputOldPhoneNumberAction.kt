@@ -35,7 +35,6 @@ object InputOldPhoneNumberAction {
     }
 
     fun checkErrorMessageIsNotDisplayed() {
-        scrollToView(R.id.text_input_old_phone_number)
         isTextNotDisplayed(ERROR_PHONE_EMPTY)
         isTextNotDisplayed(ERROR_PHONE_TOO_SHORT)
         isTextNotDisplayed(ERROR_PHONE_TOO_LONG)
