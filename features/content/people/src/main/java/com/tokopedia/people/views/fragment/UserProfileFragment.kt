@@ -666,8 +666,8 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
-    override fun onFollowClicked() {
-        Timber.d("follow")
+    override fun onFollowClicked(encryptedID: String) {
+        Timber.d(encryptedID)
     }
 
     override fun onRetryPageLoad(pageNumber: Int) {
