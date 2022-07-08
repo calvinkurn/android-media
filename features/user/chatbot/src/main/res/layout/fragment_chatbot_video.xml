@@ -18,10 +18,12 @@
 
     </com.tokopedia.unifycomponents.LoaderUnify>
 
-    <com.tokopedia.videoplayer.view.widget.VideoPlayerView
+    <com.google.android.exoplayer2.ui.SimpleExoPlayerView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:id="@+id/video_player"
+        app:use_controller="false"
+        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
