@@ -2,7 +2,7 @@ package com.tokopedia.telemetry.sensorlistener
 
 import android.text.Editable
 import android.text.TextWatcher
-import com.tokopedia.telemetry.model.Telemetry.Companion.addTyping
+import com.tokopedia.telemetry.model.Telemetry.addTyping
 
 
 object TelemetryTextWatcher : TextWatcher {

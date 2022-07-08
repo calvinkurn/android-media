@@ -29,13 +29,14 @@ class Coord(var diff: Int, val x: Float, val y: Float, val z: Float, var visit: 
 class TelemetrySection(
     var eventName: String,
     var startTime: Long,
-    var endTime: Long = 0L,
-    var eventNameEnd: String = "",
-    var typingList: MutableList<Typing> = mutableListOf(),
-    var touchList: MutableList<Touch> = mutableListOf(),
-    var accelList: MutableList<Coord> = mutableListOf(),
-    var gyroList: MutableList<Coord> = mutableListOf()
 ) {
+    var endTime: Long = 0L
+    var eventNameEnd: String = ""
+    val typingList: MutableList<Typing> = mutableListOf()
+    val touchList: MutableList<Touch> = mutableListOf()
+    val accelList: MutableList<Coord> = mutableListOf()
+    val gyroList: MutableList<Coord> = mutableListOf()
+
     fun toJson(): String {
         val df = DecimalFormat("#.###")
         df.roundingMode = RoundingMode.HALF_UP
@@ -104,120 +105,118 @@ class TelemetryRaw(
     var touchList: Array<FloatArray>
 )
 
-class Telemetry {
-    companion object {
+object Telemetry {
 
-        @JvmField
-        var telemetrySectionList: MutableList<TelemetrySection> = mutableListOf()
+    @JvmField
+    var telemetrySectionList: MutableList<TelemetrySection> = mutableListOf()
 
-        private var currStartTime = 0L
+    private var currStartTime = 0L
 
-        @JvmStatic
-        fun addSection(eventName: String) {
-            currStartTime = System.currentTimeMillis()
-            telemetrySectionList.add(
-                0,
-                TelemetrySection(
-                    eventName,
-                    currStartTime
-                )
+    @JvmStatic
+    fun addSection(eventName: String) {
+        currStartTime = System.currentTimeMillis()
+        telemetrySectionList.add(
+            0,
+            TelemetrySection(
+                eventName,
+                currStartTime
             )
-        }
+        )
+    }
 
-        fun getCurrentSectionName(): String {
-            return if (telemetrySectionList.isEmpty()) {
-                ""
-            } else {
-                telemetrySectionList[0].eventName
-            }
+    fun getCurrentSectionName(): String {
+        return if (telemetrySectionList.isEmpty()) {
+            ""
+        } else {
+            telemetrySectionList[0].eventName
         }
+    }
 
-        @JvmStatic
-        fun addStopTime(eventNameStop: String = "", timeStop: Long = System.currentTimeMillis()) {
-            if (telemetrySectionList.isEmpty()) return
-            for (telemetrySection in telemetrySectionList) {
-                if (telemetrySection.endTime == 0L) {
-                    if (timeStop - telemetrySection.startTime > SECTION_TELEMETRY_DURATION) {
-                        telemetrySection.endTime =
-                            telemetrySection.startTime + SECTION_TELEMETRY_DURATION;
-                    } else {
-                        telemetrySection.endTime = timeStop
-                    }
-                }
-                if (telemetrySection.eventNameEnd.isEmpty()) {
-                    telemetrySection.eventNameEnd = eventNameStop
-                }
-            }
-        }
-
-        /**
-         * return false if touch is out of duration
-         */
-        @JvmStatic
-        fun addTouch(type: Int, x: Int, y: Int, pressure: Float): Boolean {
-            if (telemetrySectionList.size <= 0) return true
-            if (type == MotionEvent.ACTION_DOWN) {
-                val timeDiff = getElapsedDiff()
-                if (timeDiff < SECTION_TELEMETRY_DURATION) {
-                    telemetrySectionList[0].touchList.add(
-                        Touch(timeDiff, x, y, pressure)
-                    )
+    @JvmStatic
+    fun addStopTime(eventNameStop: String = "", timeStop: Long = System.currentTimeMillis()) {
+        if (telemetrySectionList.isEmpty()) return
+        for (telemetrySection in telemetrySectionList) {
+            if (telemetrySection.endTime == 0L) {
+                if (timeStop - telemetrySection.startTime > SECTION_TELEMETRY_DURATION) {
+                    telemetrySection.endTime =
+                        telemetrySection.startTime + SECTION_TELEMETRY_DURATION;
                 } else {
-                    return false
+                    telemetrySection.endTime = timeStop
                 }
             }
-            return true
+            if (telemetrySection.eventNameEnd.isEmpty()) {
+                telemetrySection.eventNameEnd = eventNameStop
+            }
         }
+    }
 
-        fun hasOpenTime() = telemetrySectionList.size > 0 && telemetrySectionList[0].endTime == 0L
-
-        fun getElapsedDiff() = (System.currentTimeMillis() - currStartTime).toInt()
-
-        @JvmStatic
-        fun addAccel(x: Float, y: Float, z: Float) {
-            val accelList = telemetrySectionList[0].accelList
-            addToListCheckLastCoord(accelList, x, y, z)
-        }
-
-        @JvmStatic
-        fun addGyro(x: Float, y: Float, z: Float) {
-            val gyroList = telemetrySectionList[0].gyroList
-            addToListCheckLastCoord(gyroList, x, y, z)
-        }
-
-        private fun addToListCheckLastCoord(
-            list: MutableList<Coord>,
-            x: Float,
-            y: Float,
-            z: Float
-        ) {
-            val lastCoord = list.lastOrNull()
-            if (lastCoord != null && lastCoord.x == x && lastCoord.y == y && lastCoord.z == z) {
-                list.last().visit++
+    /**
+     * return false if touch is out of duration
+     */
+    @JvmStatic
+    fun addTouch(type: Int, x: Int, y: Int, pressure: Float): Boolean {
+        if (telemetrySectionList.size <= 0) return true
+        if (type == MotionEvent.ACTION_DOWN) {
+            val timeDiff = getElapsedDiff()
+            if (timeDiff < SECTION_TELEMETRY_DURATION) {
+                telemetrySectionList[0].touchList.add(
+                    Touch(timeDiff, x, y, pressure)
+                )
             } else {
-                val elapsedDiff = getElapsedDiff()
-                val diffPrev = if (lastCoord != null) {
-                    elapsedDiff - lastCoord.diff
-                } else {
-                    SAMPLING_RATE_MS
-                }
-                if (diffPrev >= SAMPLING_RATE_MS && elapsedDiff < SECTION_TELEMETRY_DURATION) {
-                    list.add(Coord(elapsedDiff, x, y, z, 0))
-                }
+                return false
             }
         }
+        return true
+    }
 
-        @JvmStatic
-        fun addTyping(diffChar: Int) {
-            try {
-                val typingList = telemetrySectionList[0].typingList
-                val elapsedDiff = getElapsedDiff();
-                if (elapsedDiff < SECTION_TELEMETRY_DURATION) {
-                    typingList.add(Typing(elapsedDiff, diffChar))
-                }
-            } catch (e: Exception) {
+    fun hasOpenTime() = telemetrySectionList.size > 0 && telemetrySectionList[0].endTime == 0L
 
+    fun getElapsedDiff() = (System.currentTimeMillis() - currStartTime).toInt()
+
+    @JvmStatic
+    fun addAccel(x: Float, y: Float, z: Float) {
+        val accelList = telemetrySectionList[0].accelList
+        addToListCheckLastCoord(accelList, x, y, z)
+    }
+
+    @JvmStatic
+    fun addGyro(x: Float, y: Float, z: Float) {
+        val gyroList = telemetrySectionList[0].gyroList
+        addToListCheckLastCoord(gyroList, x, y, z)
+    }
+
+    private fun addToListCheckLastCoord(
+        list: MutableList<Coord>,
+        x: Float,
+        y: Float,
+        z: Float
+    ) {
+        val lastCoord = list.lastOrNull()
+        if (lastCoord != null && lastCoord.x == x && lastCoord.y == y && lastCoord.z == z) {
+            list.last().visit++
+        } else {
+            val elapsedDiff = getElapsedDiff()
+            val diffPrev = if (lastCoord != null) {
+                elapsedDiff - lastCoord.diff
+            } else {
+                SAMPLING_RATE_MS
             }
+            if (diffPrev >= SAMPLING_RATE_MS && elapsedDiff < SECTION_TELEMETRY_DURATION) {
+                list.add(Coord(elapsedDiff, x, y, z, 0))
+            }
+        }
+    }
+
+    @JvmStatic
+    fun addTyping(diffChar: Int) {
+        try {
+            val typingList = telemetrySectionList[0].typingList
+            val elapsedDiff = getElapsedDiff();
+            if (elapsedDiff < SECTION_TELEMETRY_DURATION) {
+                typingList.add(Typing(elapsedDiff, diffChar))
+            }
+        } catch (e: Exception) {
+
         }
     }
 
