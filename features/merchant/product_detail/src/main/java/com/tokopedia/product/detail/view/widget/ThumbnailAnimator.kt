@@ -14,6 +14,7 @@ class ThumbnailAnimator(val view: View) {
         private const val CUBIC_BEZIER_X2 = 0.29f
         private const val CUBIC_BEZIER_Y1 = 0.01f
         private const val CUBIC_BEZIER_Y2 = 1f
+        private const val ANIMATE_SHOW_DURATION = 300L
     }
 
     private fun calculateWrapHeight(): Int {
@@ -46,7 +47,7 @@ class ThumbnailAnimator(val view: View) {
 
             override fun onAnimationRepeat(animation: Animator?) {}
         })
-        anim.duration = 300L
+        anim.duration = ANIMATE_SHOW_DURATION
         anim.start()
     }
 }
