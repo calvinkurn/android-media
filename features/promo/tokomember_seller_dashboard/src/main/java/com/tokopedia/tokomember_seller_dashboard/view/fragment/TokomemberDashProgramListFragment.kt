@@ -225,13 +225,13 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
                 val dialog = context?.let { DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE) }
                 dialog?.setTitle("Yakin batalkan program?")
                 dialog?.setDescription("Pengaturan yang dibuat akan hilang kalau kamu batalkan proses pengaturan TokoMember, lho.")
-                dialog?.setSecondaryCTAText("Lanjutkan")
-                dialog?.setPrimaryCTAText("Batalkan Ubah Program")
+                dialog?.setPrimaryCTAText("Lanjutkan")
+                dialog?.setSecondaryCTAText("Batalkan Program")
                 dialog?.setPrimaryCTAClickListener {
-                    tmDashCreateViewModel.getProgramInfo(programId,shopId, ACTION_CANCEL)
                     dialog.dismiss()
                 }
                 dialog?.setSecondaryCTAClickListener {
+                    tmDashCreateViewModel.getProgramInfo(programId,shopId, ACTION_CANCEL)
                     dialog.dismiss()
                 }
                 dialog?.show()

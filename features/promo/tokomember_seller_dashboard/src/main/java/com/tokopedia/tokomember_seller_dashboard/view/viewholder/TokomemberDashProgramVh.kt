@@ -124,12 +124,17 @@ class TokomemberDashProgramVh(itemView: View, val fragmentManager: FragmentManag
                 }
             }
             ENDED ->{
+                btn_edit.hide()
                 programStatus.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN400)))
                 view_status.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN400))
             }
             CANCELED ->{
+                btn_edit.hide()
                 programStatus.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN400)))
                 view_status.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN400))
+            }
+            else ->{
+                btn_edit.hide()
             }
         }
     }

@@ -46,6 +46,7 @@ import javax.inject.Inject
 class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, SortFilterBottomSheet.Callback,
     TmCouponListRefreshCallback, TmFilterCallback {
 
+    private var showButton: Boolean = true
     private var filterStatus: SortFilterItem? = null
     private var filterType: SortFilterItem? = null
     private var voucherStatus = "1,2,3,4"
@@ -247,8 +248,20 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
             adapter = tmCouponAdapter
         }
 
-        btn_create_coupon.setOnClickListener {
-            TmDashCreateActivity.openActivity(activity, CreateScreenType.COUPON_SINGLE, null, this, edit = false)
+        if(showButton) {
+            btn_create_coupon.show()
+            btn_create_coupon.setOnClickListener {
+                TmDashCreateActivity.openActivity(
+                    activity,
+                    CreateScreenType.COUPON_SINGLE,
+                    null,
+                    this,
+                    edit = false
+                )
+            }
+        }
+        else{
+            btn_create_coupon.visibility = View.INVISIBLE
         }
 
         observeViewModel()
@@ -323,6 +336,18 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
                 }
                 TokoLiveDataResult.STATUS.SUCCESS ->{
                     if(it.data?.data?.status == 200) {
+                        when(voucherStatusToUpdate){
+                            DELETE ->{
+                                view?.let { it1 ->
+                                    Toaster.build(it1, "Kupon sudah dihapus.", Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
+                                }
+                            }
+                            STOP ->{
+                                view?.let { it1 ->
+                                    Toaster.build(it1, "Kupon sudah dihentikan.", Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
+                                }
+                            }
+                        }
                         refreshCouponList()
                     }
                     else{
@@ -345,8 +370,9 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
     }
 
     companion object {
-        fun newInstance(bundle: Bundle?) = TokomemberDashCouponFragment().apply {
+        fun newInstance(bundle: Bundle?, showButton: Boolean = true) = TokomemberDashCouponFragment().apply {
             arguments = bundle
+            this.showButton = showButton
         }
     }
 
@@ -362,10 +388,10 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
         when(type){
             DELETE ->{
                 val dialog = context?.let { DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE) }
-                dialog?.setTitle("Yakin batalkan Kupon?")
-                dialog?.setDescription("Pengaturan yang dibuat akan hilang kalau kamu batalkan proses pengaturan TokoMember, lho.")
-                dialog?.setPrimaryCTAText("Lanjutkan")
-                dialog?.setSecondaryCTAText("Batalkan Kupon")
+                dialog?.setTitle("Yakin hapus kupon?")
+                dialog?.setDescription("Kupon yang sudah dihapus tidak bisa diaktifkan kembali, lho.")
+                dialog?.setPrimaryCTAText("Lanjut")
+                dialog?.setSecondaryCTAText("Hapus Kupon")
                 dialog?.setPrimaryCTAClickListener {
                         dialog.dismiss()
                 }
@@ -382,10 +408,10 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
             }
             STOP ->{
                 val dialog = context?.let { DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE) }
-                dialog?.setTitle("Yakin batalkan Kupon?")
-                dialog?.setDescription("Pengaturan yang dibuat akan hilang kalau kamu batalkan proses pengaturan TokoMember, lho.")
-                dialog?.setPrimaryCTAText("Lanjutkan")
-                dialog?.setSecondaryCTAText("Batalkan Kupon")
+                dialog?.setTitle("Yakin hentikan kupon?")
+                dialog?.setDescription("Kupon yang sudah dihentikan tidak bisa diaktifkan kembali, lho.")
+                dialog?.setPrimaryCTAText("Lanjut")
+                dialog?.setSecondaryCTAText("Hentikan Kupon")
                 dialog?.setPrimaryCTAClickListener {
                     dialog.dismiss()
                 }

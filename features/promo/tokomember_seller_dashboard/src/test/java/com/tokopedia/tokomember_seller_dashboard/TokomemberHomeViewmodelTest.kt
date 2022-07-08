@@ -6,7 +6,6 @@ import com.tokopedia.tokomember_seller_dashboard.model.ProgramList
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashHomeViewmodel
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -39,11 +38,11 @@ class TokomemberHomeViewmodelTest {
     fun successHomeData() {
         val data = mockk<ProgramList>(relaxed = true)
         coEvery {
-            tokomemberDashHomeUsecase.getHomeData(any(), any(), 0,0,-1,1,10)
+            tokomemberDashHomeUsecase.getHomeData(any(), any(), 0)
         } coAnswers {
             firstArg<(ProgramList) -> Unit>().invoke(data)
         }
-        viewModel.getHomePageData(0,0,-1,1,10)
+        viewModel.getHomePageData(0)
 
         Assert.assertEquals(
             (viewModel.tokomemberHomeResultLiveData.value as TokoLiveDataResult).data,
@@ -54,11 +53,11 @@ class TokomemberHomeViewmodelTest {
     @Test
     fun failHomeData() {
         coEvery {
-            tokomemberDashHomeUsecase.getHomeData(any(), any(), 0,0,-1,1,10)
+            tokomemberDashHomeUsecase.getHomeData(any(), any(), 0)
         } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
-        viewModel.getHomePageData(0,0,-1,1,10)
+        viewModel.getHomePageData(0)
         Assert.assertEquals(
             (viewModel.tokomemberHomeResultLiveData.value as Fail).throwable,
             mockThrowable

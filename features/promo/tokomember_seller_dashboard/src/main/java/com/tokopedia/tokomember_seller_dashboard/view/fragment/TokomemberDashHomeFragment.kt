@@ -16,13 +16,21 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.model.TickerItem
 import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
 import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
-import com.tokopedia.tokomember_seller_dashboard.util.*
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_IS_SHOW_BS
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
+import com.tokopedia.tokomember_seller_dashboard.util.TM_PREVIEW_BS_CTA_PRIMARY
+import com.tokopedia.tokomember_seller_dashboard.util.TM_PREVIEW_BS_DESC
+import com.tokopedia.tokomember_seller_dashboard.util.TM_PREVIEW_BS_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.TM_SUCCESS_HAPPY
+import com.tokopedia.tokomember_seller_dashboard.util.TmPrefManager
+import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.customview.BottomSheetClickListener
 import com.tokopedia.tokomember_seller_dashboard.view.customview.TokomemberBottomsheet
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashHomeViewmodel
@@ -64,18 +72,13 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
         iv_home.errorTitle.hide()
         iv_home.errorDescription.hide()
         observeViewModel()
-        arguments?.getInt(
-            BUNDLE_SHOP_ID
-        )?.let { shopId ->
-            arguments?.getInt(
-                BUNDLE_SHOP_ID
-            )?.let { cardId ->
-                tokomemberDashHomeViewmodel.getHomePageData(
-                    shopId,
-                    cardId
-                )
-                this@TokomemberDashHomeFragment.shopId = shopId
-            }
+        var shopId = arguments?.getInt(BUNDLE_SHOP_ID)
+        if(shopId == null || shopId.isZero()){
+            prefManager = context?.let { TmPrefManager(it) }
+            shopId = prefManager?.shopId
+        }
+        if (shopId != null) {
+            tokomemberDashHomeViewmodel.getHomePageData(shopId)
         }
 
         tmTracker = TmTracker()
