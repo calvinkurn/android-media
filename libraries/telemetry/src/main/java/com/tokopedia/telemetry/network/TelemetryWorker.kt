@@ -2,105 +2,107 @@ package com.tokopedia.telemetry.network
 
 import android.content.Context
 import androidx.work.*
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.telemetry.model.Telemetry
 import com.tokopedia.telemetry.network.di.DaggerTelemetryComponent
+import com.tokopedia.telemetry.network.di.TelemetryComponent
 import com.tokopedia.telemetry.network.di.TelemetryModule
 import com.tokopedia.telemetry.network.usecase.TelemetryUseCase
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import timber.log.Timber
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.Executors
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
-class TelemetryWorker(val appContext: Context, params: WorkerParameters) : CoroutineWorker(appContext, params) {
+object TelemetryWorker : CoroutineScope {
+
+    const val LOG_TAG = "GQL_ERROR_RISK"
+    const val LOG_ERROR_TYPE = "errorType"
+    const val LOG_ERROR = "error"
+    const val LOG_TYPE = "type"
+    const val TELEMETRY = "telemetry"
+
+    const val ERROR_TYPE_SEND_BACKEND = "error on send to backend"
+
+    var telemetryComponent: TelemetryComponent? = null
+    var isWorkerRunning = false
 
     @Inject
     lateinit var telemetryUseCase: TelemetryUseCase
 
-    init {
-        DaggerTelemetryComponent.builder()
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
+    private val handler: CoroutineExceptionHandler by lazy {
+        CoroutineExceptionHandler { _, _ -> }
+    }
+
+    // allowing only 1 thread at a time
+    override val coroutineContext: CoroutineContext by lazy {
+        Executors.newSingleThreadExecutor().asCoroutineDispatcher() + handler
+    }
+
+    suspend fun doWork() {
+        // loop all telemetry section that has event start-end, send to server
+        val telemetrySectionList = Telemetry.telemetrySectionList
+        val telemetrySectionSize = telemetrySectionList.size
+        if (telemetrySectionSize > 0) {
+            for (i in telemetrySectionSize - 1 downTo 0) {
+                val telemetrySection = telemetrySectionList[i]
+                if (telemetrySection.eventNameEnd.isNotEmpty()) {
+                    val result = telemetryUseCase.execute(telemetrySection)
+                    if (result.isError()) {
+                        sendLog(ERROR_TYPE_SEND_BACKEND, result.subDvcTl.data.errorMessage)
+                    }
+                    telemetrySectionList.removeAt(i)
+                }
+            }
+        }
+    }
+
+    private fun sendLog(errorType: String, error: String) {
+        ServerLogger.log(
+            Priority.P1,
+            LOG_TAG,
+            mapOf(
+                LOG_TYPE to TELEMETRY,
+                LOG_ERROR_TYPE to errorType,
+                LOG_ERROR to error,
+            )
+        )
+    }
+
+    fun scheduleWorker(context: Context) {
+        if (isWorkerRunning) {
+            return
+        }
+        TelemetryWorker.launch {
+            try {
+                isWorkerRunning = true
+                inject(context)
+                if (!userSession.isLoggedIn) {
+                    return@launch
+                }
+                doWork()
+            } catch (ex: Exception) {
+                Timber.w(ex.toString())
+            } finally {
+                isWorkerRunning = false
+            }
+        }
+    }
+
+    fun inject(appContext: Context) {
+        if (telemetryComponent == null) {
+            telemetryComponent = DaggerTelemetryComponent.builder()
                 .telemetryModule(TelemetryModule(appContext))
                 .build()
-                .inject(this)
-    }
-
-    override suspend fun doWork(): Result {
-        return withContext(Dispatchers.IO) {
-            isWorkerRunning = true
-            try {
-                val userSession = getUserSession(appContext)
-                if (!userSession.isLoggedIn) {
-                    Result.success()
-                }
-                // loop all telemetry section that has event start-end, send to server
-                val telemetrySectionList = Telemetry.telemetrySectionList
-                val telemetrySectionSize = telemetrySectionList.size
-                if (telemetrySectionSize > 0) {
-                    for (i in telemetrySectionSize - 1 downTo 0) {
-                        val telemetrySection = telemetrySectionList[i]
-                        if (telemetrySection.eventNameEnd.isNotEmpty()) {
-                            telemetryUseCase.execute(telemetrySection)
-                            telemetrySectionList.removeAt(i)
-                        }
-                    }
-                }
-            } catch (e: Exception) {
-
-            }
-            isWorkerRunning = false
-            Result.success()
         }
-    }
-
-    companion object {
-        const val WORKER_NAME = "TelemetryWorker"
-        var isWorkerRunning: Boolean = false
-
-        var userSession: UserSessionInterface? = null
-
-        private fun createNewWorker(): OneTimeWorkRequest {
-            // we do not use periodic because it can only run every 15 minutes
-            return OneTimeWorkRequest
-                .Builder(TelemetryWorker::class.java)
-                .setConstraints(Constraints.Builder()
-                    .setRequiredNetworkType(NetworkType.CONNECTED)
-                    .build())
-                .setInitialDelay(0, TimeUnit.SECONDS)
-                .build()
+        if (!::userSession.isInitialized) {
+            telemetryComponent?.inject(TelemetryWorker)
         }
-        fun scheduleWorker(context: Context) {
-            GlobalScope.launch {
-                try {
-                    val userSession = getUserSession(context)
-                    if (!userSession.isLoggedIn) {
-                        return@launch
-                    }
-                    WorkManager.getInstance(context).enqueueUniqueWork(
-                        WORKER_NAME,
-                        if (isWorkerRunning) {
-                            ExistingWorkPolicy.APPEND
-                        } else {
-                            ExistingWorkPolicy.REPLACE
-                        },
-                        createNewWorker()
-                    )
-                } catch (ex: Exception) {
-                    Timber.w(ex.toString())
-                }
-            }
-        }
-
-        fun getUserSession(context: Context): UserSessionInterface {
-            if (userSession == null) {
-                userSession = UserSession(context.applicationContext)
-            }
-            return userSession!!
-        }
-
     }
 
 }

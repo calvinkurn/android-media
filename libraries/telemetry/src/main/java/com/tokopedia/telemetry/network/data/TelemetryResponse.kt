@@ -5,7 +5,9 @@ import com.google.gson.annotations.SerializedName
 data class TelemetryResponse(
         @SerializedName("SubDvcTl")
         val subDvcTl: SubDvcTl
-)
+) {
+        fun isError() = subDvcTl.isError
+}
 
 data class SubDvcTl(
         @SerializedName("is_error")

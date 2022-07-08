@@ -62,7 +62,8 @@ class TelemetryActLifecycleCallback(
                 }
                 // store this activity so it can be stopped later
                 prevActivityRef = WeakReference(activity)
-            } catch (ignored: Throwable) { }
+            } catch (ignored: Throwable) {
+            }
         }
     }
 
@@ -99,7 +100,7 @@ class TelemetryActLifecycleCallback(
 
             // Only send telemetry if section Name is different
             if (sectionName != Telemetry.getCurrentSectionName()) {
-                collectTelemetry (activity, sectionName)
+                collectTelemetry(activity, sectionName)
             }
         } else { // this activity is not telemetry activity
             if (Telemetry.hasOpenTime()) {
@@ -132,7 +133,7 @@ class TelemetryActLifecycleCallback(
     override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
     override fun onActivityDestroyed(activity: Activity) {}
 
-    private fun collectTelemetry(activity: AppCompatActivity, sectionName:String) {
+    private fun collectTelemetry(activity: AppCompatActivity, sectionName: String) {
         //stop time for prev telemetry
         Telemetry.addStopTime(sectionName)
         TelemetryWorker.scheduleWorker(activity.applicationContext)
