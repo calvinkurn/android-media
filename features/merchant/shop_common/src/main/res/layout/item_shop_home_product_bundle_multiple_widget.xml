@@ -13,7 +13,7 @@
         app:srcCompat="@drawable/ic_bg_bundle_widget_ribbon_tail"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toLeftOf="@id/guideline_tail_ribbon"
-        android:layout_marginBottom="21dp"
+        android:layout_marginBottom="23dp"
         />
 
     <androidx.constraintlayout.widget.Guideline
@@ -124,7 +124,7 @@
                 android:paddingEnd="12dp"
                 android:paddingTop="4dp"
                 android:paddingBottom="4dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="12dp"
                 android:background="@drawable/bg_product_bundle_item_promotion_footer"
                 >
 
