@@ -226,7 +226,7 @@ class TokoNowCategoryFragment:
     override fun screenShotTaken() {
         updateShareHomeData(
             isScreenShot = true,
-            thumbNailTitle = resources.getString(R.string.tokopedianow_home_share_thumbnail_title_ss)
+            thumbNailTitle = context?.resources?.getString(R.string.tokopedianow_home_share_thumbnail_title_ss).orEmpty()
         )
 
         showUniversalShareBottomSheet(shareCategoryTokonow)
@@ -273,9 +273,9 @@ class TokoNowCategoryFragment:
             id = model.deeplinkParam
             sharingUrl = model.url
             pageIdConstituents = model.utmCampaignList
-            sharingText = resources.getString(R.string.tokopedianow_category_share_main_text, model.title)
-            specificPageName = resources.getString(R.string.tokopedianow_category_share_title, model.title)
-            specificPageDescription = resources.getString(R.string.tokopedianow_category_share_desc, model.title)
+            sharingText = context?.resources?.getString(R.string.tokopedianow_category_share_main_text, model.title).orEmpty()
+            specificPageName = context?.resources?.getString(R.string.tokopedianow_category_share_title, model.title).orEmpty()
+            specificPageDescription = context?.resources?.getString(R.string.tokopedianow_category_share_desc, model.title).orEmpty()
         }
     }
 
@@ -314,7 +314,7 @@ class TokoNowCategoryFragment:
     override fun onNavToolbarShareClicked() {
         updateShareHomeData(
             isScreenShot = false,
-            thumbNailTitle = resources.getString(R.string.tokopedianow_home_share_thumbnail_title)
+            thumbNailTitle = context?.resources?.getString(R.string.tokopedianow_home_share_thumbnail_title).orEmpty()
         )
 
         CategoryTracking.trackClickShareButtonTopNav(

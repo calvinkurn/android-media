@@ -33,6 +33,7 @@ object ApplinkConstInternalOrder {
     const val PARAM_MODALTOKO = "modaltoko"
     const val PARAM_HOTEL = "hotel"
     const val PARAM_TRAVEL_ENTERTAINMENT = "travelent"
+    const val PARAM_TOKOFOOD = "tokofood"
     const val PARAM_HISTORY = "history"
     const val PARAM_FILTER_ID = "filter_id"
     const val PARAM_ORDER_LIST = "order_list"
@@ -152,6 +153,8 @@ object ApplinkConstInternalOrder {
     const val UNIFY_ORDER_HOTEL = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_HOTEL"
 
     const val UNIFY_ORDER_TRAVEL_ENTERTAINMENT = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_TRAVEL_ENTERTAINMENT"
+
+    const val UNIFY_ORDER_TOKOFOOD = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_TOKOFOOD"
 
     const val DIGITAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_DIGITAL/$HOST_ORDER"
 

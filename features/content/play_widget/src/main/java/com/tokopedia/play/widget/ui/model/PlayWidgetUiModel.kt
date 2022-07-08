@@ -59,7 +59,7 @@ data class PlayWidgetChannelUiModel(
     val partner: PlayWidgetPartnerUiModel,
     val video: PlayWidgetVideoUiModel,
     val channelType: PlayWidgetChannelType,
-    val hasGiveaway: Boolean,
+    val hasGame: Boolean,
     val share: PlayWidgetShareUiModel,
     val performanceSummaryLink: String,
     val poolType: String,
