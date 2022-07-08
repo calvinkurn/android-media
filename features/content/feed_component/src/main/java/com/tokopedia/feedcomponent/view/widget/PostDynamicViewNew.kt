@@ -22,6 +22,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
@@ -36,6 +38,7 @@ import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_POST
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_IMAGE
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_TOPADS_HEADLINE_NEW
 import com.tokopedia.feedcomponent.util.ColorUtil
+import com.tokopedia.feedcomponent.util.NestedScrollableHost
 import com.tokopedia.feedcomponent.util.TagConverter
 import com.tokopedia.feedcomponent.util.TimeConverter
 import com.tokopedia.feedcomponent.util.util.*
@@ -108,7 +111,6 @@ private const val FOLLOW_MARGIN = 6
 private const val MARGIN_ZERO = 0
 private const val ASGC_NEW_PRODUCTS = "asgc_new_products"
 private const val ASGC_RESTOCK_PRODUCTS = "asgc_restock_products"
-private const val ASGC_DISCOUNT_TOKO = "asgc_discount_toko"
 
 
 /**
@@ -156,6 +158,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     private val addCommentHint: Typography = findViewById(R.id.comment_hint)
     private val followCount: Typography = findViewById(R.id.follow_count)
     private val gridList: RecyclerView = findViewById(R.id.gridList)
+    private val scrollHostCarousel: NestedScrollableHost = findViewById(R.id.scroll_host_carousel)
     private var listener: DynamicPostViewHolder.DynamicPostListener? = null
     private var videoListener: VideoViewHolder.VideoViewListener? = null
     private lateinit var gridPostListener: GridPostAdapter.GridItemListener
@@ -424,7 +427,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
         )
         bindTracking(feedXCard)
         shareButton.setOnClickListener {
-                changeTopadsCekSekarangBtnColorToGreen(feedXCard)
+            changeTopadsCekSekarangBtnColorToGreen(feedXCard)
+            adapter.updateTopAdsToGreen(pageControl.indicatorCurrentPosition)
+
             val desc = context.getString(R.string.feed_share_default_text)
             val url = if (feedXCard.isTopAds && feedXCard.media.size > feedXCard.lastCarouselIndex) {
                 feedXCard.media[feedXCard.lastCarouselIndex].webLink
@@ -529,8 +534,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 followCount.text = context.getString(R.string.feeds_asgc_new_product_text)
             else if (feedXCard.type == ASGC_RESTOCK_PRODUCTS)
                 followCount.text = context.getString(R.string.feeds_asgc_restock_text)
-            else if(feedXCard.type == ASGC_DISCOUNT_TOKO)
-                followCount.text = context.getString(R.string.feed_asgc_diskon_toko)
             followCount.show()
         }
 
@@ -785,6 +788,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
         }
         likeButton.setOnClickListener {
             changeTopadsCekSekarangBtnColorToGreen(feedXCard)
+            adapter.updateTopAdsToGreen(pageControl.indicatorCurrentPosition)
+
             listener?.onLikeClick(
                 positionInFeed,
                 id,
@@ -1498,6 +1503,15 @@ class PostDynamicViewNew @JvmOverloads constructor(
     internal fun onPause() {
         videoPlayer?.pause()
         adapter.onPause()
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        var parent = this.parent
+        while (parent !is ViewPager && parent !is ViewPager2 && parent != null) {
+            parent = parent.parent
+        }
+        scrollHostCarousel.setTargetParent(parent)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
