@@ -1,12 +1,8 @@
 package com.tokopedia.media.editor.ui.fragment
 
-import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -27,16 +23,14 @@ import com.tokopedia.media.editor.ui.component.BrightnessToolUiComponent
 import com.tokopedia.media.editor.ui.component.ContrastToolsUiComponent
 import com.tokopedia.media.editor.ui.component.RemoveBackgroundToolUiComponent
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
+import com.tokopedia.media.editor.utils.getDestinationUri
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.types.EditorToolType
 import com.tokopedia.utils.view.binding.viewBinding
 import java.io.ByteArrayOutputStream
-import java.io.File
 import java.io.FileOutputStream
 import java.lang.Exception
-import java.text.SimpleDateFormat
-import java.util.*
 import javax.inject.Inject
 
 class DetailEditorFragment @Inject constructor(
@@ -187,7 +181,7 @@ class DetailEditorFragment @Inject constructor(
             try {
                 val bitmap = (it.imgPreview.drawable as BitmapDrawable).bitmap
 
-                val file = getDestinationUri().toFile()
+                val file = getDestinationUri(requireContext()).toFile()
                 file.createNewFile()
 
                 val bos = ByteArrayOutputStream()
@@ -203,22 +197,6 @@ class DetailEditorFragment @Inject constructor(
                 data.resultUrl = uri.path
             } catch (e: Exception){}
         }
-    }
-
-    private fun getEditorSaveFolderDir(): String {
-        return "${requireContext().externalCacheDir?.path}/editor-cache/"
-    }
-
-    private fun getDestinationUri(): Uri {
-        val dir = File(getEditorSaveFolderDir())
-        if(!dir.exists()) dir.mkdir()
-
-        return Uri.fromFile(File("${getEditorSaveFolderDir()}/${generateFileName()}.png"))
-    }
-
-    @SuppressLint("SimpleDateFormat")
-    fun generateFileName(): String {
-        return SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
     }
 
     override fun getScreenName() = SCREEN_NAME
