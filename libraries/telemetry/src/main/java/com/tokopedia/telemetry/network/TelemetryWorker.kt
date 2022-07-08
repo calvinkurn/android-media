@@ -11,23 +11,11 @@ import com.tokopedia.telemetry.network.di.TelemetryModule
 import com.tokopedia.telemetry.network.usecase.TelemetryUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
-import timber.log.Timber
 import java.util.concurrent.Executors
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-object TelemetryWorker : CoroutineScope {
-
-    const val LOG_TAG = "GQL_ERROR_RISK"
-    const val LOG_ERROR_TYPE = "errorType"
-    const val LOG_ERROR = "error"
-    const val LOG_TYPE = "type"
-    const val TELEMETRY = "telemetry"
-
-    const val ERROR_TYPE_SEND_BACKEND = "error on send to backend"
-
-    var telemetryComponent: TelemetryComponent? = null
-    var isWorkerRunning = false
+class TelemetryWorker : CoroutineScope {
 
     @Inject
     lateinit var telemetryUseCase: TelemetryUseCase
@@ -44,64 +32,87 @@ object TelemetryWorker : CoroutineScope {
         Executors.newSingleThreadExecutor().asCoroutineDispatcher() + handler
     }
 
-    suspend fun doWork() {
-        // loop all telemetry section that has event start-end, send to server
-        val telemetrySectionList = Telemetry.telemetrySectionList
-        val telemetrySectionSize = telemetrySectionList.size
-        if (telemetrySectionSize > 0) {
-            for (i in telemetrySectionSize - 1 downTo 0) {
-                val telemetrySection = telemetrySectionList[i]
-                if (telemetrySection.eventNameEnd.isNotEmpty()) {
-                    val result = telemetryUseCase.execute(telemetrySection)
-                    if (result.isError()) {
-                        sendLog(ERROR_TYPE_SEND_BACKEND, result.subDvcTl.data.errorMessage)
-                    }
-                    telemetrySectionList.removeAt(i)
-                }
-            }
-        }
-    }
-
-    private fun sendLog(errorType: String, error: String) {
-        ServerLogger.log(
-            Priority.P1,
-            LOG_TAG,
-            mapOf(
-                LOG_TYPE to TELEMETRY,
-                LOG_ERROR_TYPE to errorType,
-                LOG_ERROR to error,
-            )
-        )
-    }
-
-    fun scheduleWorker(context: Context) {
-        if (isWorkerRunning) {
-            return
-        }
-        TelemetryWorker.launch {
+    fun doWork() {
+        launch {
             try {
                 isWorkerRunning = true
-                inject(context)
                 if (!userSession.isLoggedIn) {
                     return@launch
                 }
-                doWork()
+                // loop all telemetry section that has event start-end, send to server
+                val telemetrySectionList = Telemetry.telemetrySectionList
+                val telemetrySectionSize = telemetrySectionList.size
+                if (telemetrySectionSize > 0) {
+                    for (i in telemetrySectionSize - 1 downTo 0) {
+                        val telemetrySection = telemetrySectionList[i]
+                        if (telemetrySection.eventNameEnd.isNotEmpty()) {
+                            val result = telemetryUseCase.execute(telemetrySection)
+                            if (result.isError()) {
+                                sendLog(ERROR_TYPE_SEND_BACKEND, result.subDvcTl.data.errorMessage)
+                            }
+                            telemetrySectionList.removeAt(i)
+                        }
+                    }
+                }
             } catch (ex: Exception) {
-                Timber.w(ex.toString())
+                sendLog(ERROR_TYPE_EXCEPTION, ex.toString())
             } finally {
                 isWorkerRunning = false
             }
         }
     }
 
-    fun inject(appContext: Context) {
-        if (telemetryComponent == null) {
-            telemetryComponent = DaggerTelemetryComponent.builder()
-                .telemetryModule(TelemetryModule(appContext))
-                .build()
+    companion object {
+        const val LOG_TAG = "GQL_ERROR_RISK"
+        const val LOG_ERROR_TYPE = "errorType"
+        const val LOG_ERROR = "error"
+        const val LOG_TYPE = "type"
+        const val TELEMETRY = "telemetry"
+
+        const val ERROR_TYPE_SEND_BACKEND = "error on send to backend"
+        const val ERROR_TYPE_EXCEPTION = "error exception do work"
+
+        var telemetryComponent: TelemetryComponent? = null
+        var isWorkerRunning = false
+        var telemetryWorker: TelemetryWorker? = null
+
+        private fun sendLog(errorType: String, error: String) {
+            ServerLogger.log(
+                Priority.P1,
+                LOG_TAG,
+                mapOf(
+                    LOG_TYPE to TELEMETRY,
+                    LOG_ERROR_TYPE to errorType,
+                    LOG_ERROR to error,
+                )
+            )
         }
-        if (!::userSession.isInitialized) {
-            telemetryComponent?.inject(TelemetryWorker)
+
+        fun scheduleWorker(context: Context) {
+            if (isWorkerRunning) {
+                return
+            }
+            getWorker(context).doWork()
+        }
+
+        private fun getWorker(context: Context): TelemetryWorker{
+            val tmp = telemetryWorker
+            return if (tmp == null) {
+                val obj = TelemetryWorker()
+                inject(context.applicationContext, obj)
+                obj
+            } else {
+                tmp
+            }
+        }
+
+        fun inject(appContext: Context, telemetryWorker: TelemetryWorker) {
+            if (telemetryComponent == null) {
+                telemetryComponent = DaggerTelemetryComponent.builder()
+                    .telemetryModule(TelemetryModule(appContext))
+                    .build()
+            }
+            telemetryComponent?.inject(telemetryWorker)
         }
     }
 
