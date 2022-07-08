@@ -44,6 +44,19 @@
             tools:visibility="visible"
             />
 
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/label_oos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            android:layout_marginBottom="@dimen/spacing_lvl2"
+            android:visibility="gone"
+            app:labelType="general_dark_grey"
+            app:labelTitle="@string/play_out_of_stock"
+            app:layout_constraintBottom_toBottomOf="@+id/img_product"
+            app:layout_constraintStart_toStartOf="@id/img_product"
+            tools:visibility="visible" />
+
         <LinearLayout
             android:id="@+id/ll_info"
             android:layout_width="wrap_content"

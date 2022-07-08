@@ -12,11 +12,14 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.play.R
 import com.tokopedia.play.databinding.ItemPlayPinnedProductBinding
+import com.tokopedia.play.view.type.ComingSoon
 import com.tokopedia.play.view.type.DiscountedPrice
 import com.tokopedia.play.view.type.OriginalPrice
+import com.tokopedia.play.view.type.OutOfStock
 import com.tokopedia.play.view.type.StockAvailable
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.unifycomponents.UnifyButton
@@ -42,16 +45,21 @@ class ProductCarouselViewHolder private constructor() {
             MethodChecker.getColor(context, unifyR.color.Unify_RN500)
         )
 
-        init {
-            binding.btnAtc.setDrawable(
-                getIconUnifyDrawable(
-                    context,
-                    IconUnify.CART,
-                    MethodChecker.getColor(context, unifyR.color.Unify_GN500),
-                ),
-                UnifyButton.DrawablePosition.RIGHT,
-            )
+        private val iconCartEnabled = getIconUnifyDrawable(
+            context,
+            IconUnify.CART,
+            MethodChecker.getColor(context, unifyR.color.Unify_GN500),
+        )
 
+        private val iconCartDisabled by lazy {
+            getIconUnifyDrawable(
+                context,
+                IconUnify.CART,
+                MethodChecker.getColor(context, unifyR.color.Unify_NN300),
+            )
+        }
+
+        init {
             binding.tvOriginalPrice.paintFlags =
                 binding.tvOriginalPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         }
@@ -59,6 +67,18 @@ class ProductCarouselViewHolder private constructor() {
         fun bind(item: PlayProductUiModel.Product) {
             binding.imgProduct.loadImage(item.imageUrl)
             binding.tvName.text = item.title
+            binding.labelOos.showWithCondition(item.stock == OutOfStock)
+
+            binding.btnAtc.setDrawable(
+                if (item.stock is StockAvailable) iconCartEnabled else iconCartDisabled,
+                UnifyButton.DrawablePosition.RIGHT,
+            )
+
+            binding.btnAtc.isEnabled = item.stock is StockAvailable
+            binding.btnBuy.isEnabled = item.stock is StockAvailable
+
+            binding.btnAtc.showWithCondition(item.stock != ComingSoon)
+            binding.btnBuy.showWithCondition(item.stock != ComingSoon)
 
             when (item.price) {
                 is DiscountedPrice -> {
