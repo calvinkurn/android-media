@@ -8,13 +8,15 @@ import com.tokopedia.productcard.test.ProductCardModelMatcher
 import com.tokopedia.productcard.test.R
 import com.tokopedia.productcard.test.getProductCardModelMatcherData
 import com.tokopedia.productcard.test.utils.freeOngkirImageUrl
-import com.tokopedia.productcard.test.utils.isDisplayedWithChildCount
+import com.tokopedia.productcard.test.utils.fulfillmentBadgeImageUrl
 import com.tokopedia.productcard.test.utils.isDisplayedWithText
 import com.tokopedia.productcard.test.utils.officialStoreBadgeImageUrl
 import com.tokopedia.productcard.test.utils.productImageUrl
 import com.tokopedia.productcard.test.utils.withDimensionRatio
 import com.tokopedia.productcard.test.utils.withDrawable
+import com.tokopedia.productcard.utils.DARK_GREY
 import com.tokopedia.productcard.utils.LABEL_BEST_SELLER
+import com.tokopedia.productcard.utils.LABEL_FULFILLMENT
 import com.tokopedia.productcard.utils.LABEL_GIMMICK
 import com.tokopedia.productcard.utils.LABEL_PRICE
 import com.tokopedia.productcard.utils.LIGHT_GREEN
@@ -37,6 +39,7 @@ internal val productCardGridTestData =
             testLabelGimmickReposition(),
             testLabelGimmickAndBestSellerReposition(),
             testShopLocationReposition(),
+            testContentReposition(),
             testLongImage(),
         )
 
@@ -53,6 +56,7 @@ internal val productCardGridViewStubTestData =
             testLabelGimmickReposition(),
             testLabelGimmickAndBestSellerReposition(),
             testShopLocationReposition(),
+            testContentReposition(),
             testLongImage(),
         )
 
@@ -422,8 +426,8 @@ private fun testShopLocationReposition(): ProductCardModelMatcher {
         R.id.imageProduct to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
-        R.id.imageShopBadgeReposition to isDisplayed(),
-        R.id.textViewShopLocationReposition to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
         R.id.imageSalesRatingFloat to isDisplayed(),
         R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
         R.id.imageFreeOngkirPromo to isDisplayed(),
@@ -432,9 +436,53 @@ private fun testShopLocationReposition(): ProductCardModelMatcher {
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
 
+private fun testContentReposition(): ProductCardModelMatcher {
+    val labelPrice = LabelGroup(position = LABEL_PRICE, title = "Cashback", type = LIGHT_GREEN)
+    val labelFulfillment = LabelGroup(position = LABEL_FULFILLMENT, title = "TokoCabang", type = DARK_GREY, imageUrl = fulfillmentBadgeImageUrl)
+
+    val productCardModel = ProductCardModel(
+        productName = "Content - Reposition",
+        productImageUrl = productImageUrl,
+        formattedPrice = "Rp7.999.000",
+        freeOngkir = ProductCardModel.FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
+        shopBadgeList = mutableListOf<ProductCardModel.ShopBadge>().also { badges ->
+            badges.add(ProductCardModel.ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
+        },
+        shopLocation = "DKI Jakarta",
+        productListType = ProductCardModel.ProductListType.REPOSITION,
+        ratingCount = 4,
+        reviewCount = 60,
+        labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
+            labelGroups.add(labelPrice)
+            labelGroups.add(labelFulfillment)
+        }
+    )
+
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.linearLayoutImageRating to isDisplayed(),
+        R.id.imageViewRating1 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating2 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating3 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating4 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating5 to withDrawable(R.drawable.product_card_ic_rating_default),
+        R.id.textViewReviewCount to isDisplayedWithText("(${productCardModel.reviewCount})"),
+        R.id.textViewFulfillment to isDisplayedWithText(labelFulfillment.title),
+        R.id.imageFulfillment to isDisplayed(),
+        R.id.dividerFulfillment to isDisplayed(),
+        R.id.labelPriceReposition to isDisplayed(),
+    )
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
 private fun testLongImage(): ProductCardModelMatcher {
     val productCardModel = ProductCardModel(
-        productName = "Label Gimmick - Reposition",
+        productName = "Long Image",
         productImageUrl = productImageUrl,
         formattedPrice = "Rp7.999.000",
         productListType = ProductCardModel.ProductListType.LONG_IMAGE,

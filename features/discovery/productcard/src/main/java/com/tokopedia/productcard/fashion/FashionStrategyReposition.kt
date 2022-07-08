@@ -9,7 +9,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import com.tokopedia.productcard.utils.COLOR_LIMIT_REPOSITION
@@ -29,7 +28,6 @@ import com.tokopedia.productcard.utils.renderLabelBestSellerCategorySide
 import com.tokopedia.productcard.utils.renderLabelBestSellerCategoryBottom
 import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.unifycomponents.Label
-import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil
 import com.tokopedia.productcard.utils.renderLabelReposition
 import com.tokopedia.unifycomponents.toPx
 
@@ -228,36 +226,6 @@ internal open class FashionStrategyReposition: FashionStrategy {
         view.findViewById<LinearLayout?>(R.id.labelVariantContainer).hide()
     }
 
-    override fun renderShopBadge(view: View, productCardModel: ProductCardModel) {
-        val imageShopBadgeReposition = view.findViewById<ImageView?>(R.id.imageShopBadgeReposition)
-        val shopBadge = productCardModel.shopBadgeList.find { it.isShown && it.imageUrl.isNotEmpty() }
-        imageShopBadgeReposition?.shouldShowWithAction(productCardModel.isShowShopBadge()) {
-            it.loadIcon(shopBadge?.imageUrl ?: "")
-        }
-
-        val imageShopBadge = view.findViewById<ImageView?>(R.id.imageShopBadge)
-        imageShopBadge.hide()
-    }
-
-    override fun renderTextShopLocation(view: View, productCardModel: ProductCardModel) {
-        val textViewShopLocationReposition =
-            view.findViewById<Typography?>(R.id.textViewShopLocationReposition)
-        textViewShopLocationReposition?.shouldShowWithAction(
-            productCardModel.isShowShopLocation()
-        ) {
-            TextAndContentDescriptionUtil.setTextAndContentDescription(
-                it,
-                productCardModel.shopLocation,
-                view.context.getString(R.string.content_desc_textViewShopLocation),
-            )
-        }
-
-        val textViewShopLocation =
-            view.findViewById<Typography?>(R.id.textViewShopLocation)
-
-        textViewShopLocation.hide()
-    }
-
     override val sizeCharLimit: Int
         get() = LABEL_VARIANT_CHAR_LIMIT_REPOSITION
 
@@ -289,6 +257,68 @@ internal open class FashionStrategyReposition: FashionStrategy {
     }
 
     override fun isSingleLine(willShowVariant: Boolean): Boolean = false
+
+    override fun configContentPosition(view: View) {
+        val contentLayout = view.findViewById<ConstraintLayout?>(R.id.productCardContentLayout)
+        val shopBadgeMarginTop = view.context.resources.getDimensionPixelSize(R.dimen.product_card_shop_badge_margin_top)
+        val textViewShopLocationMarginTop = view.context.resources.getDimensionPixelSize(R.dimen.product_card_text_shop_location_margin_top)
+        val imageFulfillmentnMarginTop = view.context.resources.getDimensionPixelSize(R.dimen.product_card_fulfillment_badge_margin_top)
+        val linearLayoutImageRatingMarginTop = view.context.resources.getDimensionPixelSize(R.dimen.product_card_image_rating_star_margin_top)
+        val textViewReviewCountMarginTop = view.context.resources.getDimensionPixelSize(R.dimen.product_card_text_review_count_margin_top)
+        val imageFreeOngkirPromoMarginTop = view.context.resources.getDimensionPixelSize(R.dimen.product_card_free_ongkir_badge_margin_top)
+
+        contentLayout?.applyConstraintSet {
+            it.clear(R.id.imageShopBadge, ConstraintSet.TOP)
+            it.clear(R.id.textViewShopLocation, ConstraintSet.TOP)
+            it.clear(R.id.imageFulfillment, ConstraintSet.TOP)
+            it.clear(R.id.linearLayoutImageRating, ConstraintSet.TOP)
+            it.clear(R.id.textViewReviewCount, ConstraintSet.TOP)
+            it.clear(R.id.imageFreeOngkirPromo, ConstraintSet.TOP)
+
+            it.connect(
+                R.id.imageShopBadge,
+                ConstraintSet.TOP,
+                R.id.imageShopRating,
+                ConstraintSet.BOTTOM,
+                shopBadgeMarginTop,
+            )
+            it.connect(
+                R.id.textViewShopLocation,
+                ConstraintSet.TOP,
+                R.id.imageShopRating,
+                ConstraintSet.BOTTOM,
+                textViewShopLocationMarginTop,
+            )
+            it.connect(
+                R.id.imageFulfillment,
+                ConstraintSet.TOP,
+                R.id.imageShopRating,
+                ConstraintSet.BOTTOM,
+                imageFulfillmentnMarginTop,
+            )
+            it.connect(
+                R.id.linearLayoutImageRating,
+                ConstraintSet.TOP,
+                R.id.labelPriceBarrier,
+                ConstraintSet.BOTTOM,
+                linearLayoutImageRatingMarginTop,
+            )
+            it.connect(
+                R.id.textViewReviewCount,
+                ConstraintSet.TOP,
+                R.id.labelPriceBarrier,
+                ConstraintSet.BOTTOM,
+                textViewReviewCountMarginTop,
+            )
+            it.connect(
+                R.id.imageFreeOngkirPromo,
+                ConstraintSet.TOP,
+                R.id.textViewFulfillment,
+                ConstraintSet.BOTTOM,
+                imageFreeOngkirPromoMarginTop,
+            )
+        }
+    }
 
     private fun Typography.renderLabelVariantSize(
         listLabelVariant: List<ProductCardModel.LabelGroupVariant>,

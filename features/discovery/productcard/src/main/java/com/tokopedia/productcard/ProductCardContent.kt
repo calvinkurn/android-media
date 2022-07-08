@@ -64,6 +64,7 @@ internal fun View.renderProductCardContent(
     renderFreeOngkir(productCardModel)
     renderTextShipping(productCardModel)
     renderTextETA(productCardModel)
+    productCardModel.fashionStrategy.configContentPosition(this)
 
     if (isWideContent) configureWideContent(productCardModel)
 }
@@ -203,11 +204,24 @@ private fun View.renderTextFulfillment(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderShopBadge(productCardModel: ProductCardModel) {
-    productCardModel.fashionStrategy.renderShopBadge(this, productCardModel)
+    val imageShopBadge = findViewById<ImageView?>(R.id.imageShopBadge)
+    val shopBadge = productCardModel.shopBadgeList.find { it.isShown && it.imageUrl.isNotEmpty() }
+    imageShopBadge?.shouldShowWithAction(productCardModel.isShowShopBadge()) {
+        it.loadIcon(shopBadge?.imageUrl ?: "")
+    }
 }
 
 private fun View.renderTextShopLocation(productCardModel: ProductCardModel) {
-    productCardModel.fashionStrategy.renderTextShopLocation(this, productCardModel)
+    val textViewShopLocation = findViewById<Typography?>(R.id.textViewShopLocation)
+    textViewShopLocation?.shouldShowWithAction(
+        productCardModel.isShowShopLocation()
+    ) {
+        TextAndContentDescriptionUtil.setTextAndContentDescription(
+            it,
+            productCardModel.shopLocation,
+            context.getString(R.string.content_desc_textViewShopLocation),
+        )
+    }
 }
 
 private fun View.renderRating(productCardModel: ProductCardModel) {

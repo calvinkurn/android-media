@@ -60,10 +60,6 @@ internal interface FashionStrategy {
         productCardModel: ProductCardModel,
     )
 
-    fun renderShopBadge(view: View, productCardModel: ProductCardModel)
-
-    fun renderTextShopLocation(view: View, productCardModel: ProductCardModel)
-
     val sizeCharLimit: Int
 
     val extraCharSpace: Int
@@ -75,4 +71,6 @@ internal interface FashionStrategy {
     fun getLabelVariantColorCount(colorVariant: List<ProductCardModel.LabelGroupVariant>): Int
 
     fun isSingleLine(willShowVariant: Boolean): Boolean
+
+    fun configContentPosition(view: View)
 }
