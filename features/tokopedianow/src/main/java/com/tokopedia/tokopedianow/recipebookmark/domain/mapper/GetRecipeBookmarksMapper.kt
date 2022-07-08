@@ -3,17 +3,37 @@ package com.tokopedia.tokopedianow.recipebookmark.domain.mapper
 import com.tokopedia.tokopedianow.recipebookmark.domain.model.GetRecipeBookmarksResponse
 import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.RecipeUiModel
 
-fun GetRecipeBookmarksResponse.mapResponseToUiModelList(): List<RecipeUiModel> {
-    return this.data.tokonowGetRecipeBookmarks.data.recipes.map { response ->
-        RecipeUiModel(
-            id = response.id,
-            title = response.title,
-            portion = response.portion,
-            duration = response.duration,
-            tags = response.tags.map { tag ->
-                tag.name
-            },
-            picture = response.images.getOrNull(0)?.urlOriginal.orEmpty()
-        )
+object GetRecipeBookmarksMapper {
+    private const val MAX_TAGS_DISPLAYED = 4
+    private const val TAGS_DISPLAYED = 3
+
+    private fun mapTag(tags: List<GetRecipeBookmarksResponse.Data.TokonowGetRecipeBookmarks.DataX.Recipe.Tag>): List<String> {
+        val newTags: MutableList<String> = mutableListOf()
+        for ((index, tag) in tags.withIndex()) {
+            if (tags.size > MAX_TAGS_DISPLAYED) {
+                if (index < TAGS_DISPLAYED) {
+                    newTags.add(tag.name)
+                } else {
+                    newTags.add(String.format("+ ${tags.size - TAGS_DISPLAYED} lainnya"))
+                    break
+                }
+            } else {
+                newTags.add(tag.name)
+            }
+        }
+        return newTags
+    }
+
+    fun GetRecipeBookmarksResponse.mapResponseToRecipeBookmarkUiModelList(): List<RecipeUiModel> {
+        return data.tokonowGetRecipeBookmarks.data.recipes.map { response ->
+            RecipeUiModel(
+                id = response.id,
+                title = response.title,
+                portion = response.portion,
+                duration = response.duration,
+                tags = mapTag(response.tags),
+                picture = response.images.firstOrNull()?.urlOriginal.orEmpty()
+            )
+        }
     }
 }

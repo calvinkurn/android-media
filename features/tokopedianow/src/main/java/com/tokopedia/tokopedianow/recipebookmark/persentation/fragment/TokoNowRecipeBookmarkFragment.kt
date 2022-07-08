@@ -11,26 +11,29 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showLoading
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowRecipeBookmarkBinding
 import com.tokopedia.tokopedianow.recipebookmark.di.component.DaggerRecipeBookmarkComponent
 import com.tokopedia.tokopedianow.recipebookmark.persentation.adapter.RecipeBookmarkAdapter
 import com.tokopedia.tokopedianow.recipebookmark.persentation.adapter.RecipeBookmarkAdapterTypeFactory
 import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.RecipeUiModel
 import com.tokopedia.tokopedianow.recipebookmark.persentation.viewmodel.TokoNowRecipeBookmarkViewModel
+import com.tokopedia.tokopedianow.recipebookmark.util.RecyclerViewSpaceItemDecoration
 import com.tokopedia.tokopedianow.recipebookmark.util.UiState
-import com.tokopedia.tokopedianow.recipebookmark.util.VerticalSpaceItemDecoration
+import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.recipebookmark.persentation.viewholder.RecipeViewHolder
 import com.tokopedia.tokopedianow.recipebookmark.util.repeatOnLifecycle
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
+import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class TokoNowRecipeBookmarkFragment: Fragment() {
+class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener {
 
     companion object {
         const val DEFAULT_LIMIT_RECIPES = 10
@@ -48,8 +51,7 @@ class TokoNowRecipeBookmarkFragment: Fragment() {
     lateinit var userSession: UserSessionInterface
 
     private var binding by autoClearedNullable<FragmentTokopedianowRecipeBookmarkBinding>()
-
-    private var adapter: RecipeBookmarkAdapter? = null
+    private var adapter by autoClearedNullable<RecipeBookmarkAdapter>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -77,27 +79,49 @@ class TokoNowRecipeBookmarkFragment: Fragment() {
         super.onAttach(context)
     }
 
+    override fun onRemoveBookmark(recipeId: String) {
+        viewModel.removeRecipeBookmark(
+            userId = userSession.userId,
+            recipeId = recipeId
+        )
+    }
+
     private fun collectStateFlow() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.recipeBookmarks.collect { state ->
-                    when(state) {
-                        is UiState.Fail -> {}
-                        is UiState.Success -> showSuccessState(state.data)
-                        is UiState.Loading -> showLoadingState()
-                        else -> showEmptyState()
+                //Need different coroutines, since collect() is a suspending function that suspends until the Flow terminates.
+                launch {
+                    viewModel.recipeBookmarks.collect { state ->
+                        when(state) {
+                            is UiState.Fail -> {}
+                            is UiState.Success -> showSuccessState(state.data)
+                            is UiState.Loading -> showLoadingState()
+                            else -> showEmptyState()
+                        }
                     }
                 }
 
-                viewModel.toasterMessage.collect { uiModel ->
-                    uiModel?.apply {
-                        Toaster.build(
-                            binding?.root!!,
-                            uiModel.message
-                        ).show()
+                launch {
+                    viewModel.toasterMessage.collect { uiModel ->
+                        uiModel?.apply {
+                            showToaster(
+                                message = uiModel.message,
+                                isSuccess = uiModel.isSuccess
+                            )
+                        }
                     }
                 }
             }
+        }
+    }
+
+    private fun showToaster(message: String, isSuccess: Boolean) {
+        binding?.apply {
+            Toaster.build(
+                view = root,
+                text = message,
+                type = if (isSuccess) TYPE_NORMAL else TYPE_ERROR
+            ).show()
         }
     }
 
@@ -147,11 +171,11 @@ class TokoNowRecipeBookmarkFragment: Fragment() {
     }
 
     private fun setupRecyclerView() {
-        adapter = RecipeBookmarkAdapter(RecipeBookmarkAdapterTypeFactory())
+        adapter = RecipeBookmarkAdapter(RecipeBookmarkAdapterTypeFactory(this))
         binding?.rvRecipeBookmark?.apply {
             adapter = this@TokoNowRecipeBookmarkFragment.adapter
             layoutManager = LinearLayoutManager(context)
-            addItemDecoration(VerticalSpaceItemDecoration(context))
+            addItemDecoration(RecyclerViewSpaceItemDecoration(bottom = context.resources.getDimension(R.dimen.tokopedianow_space_item_recipe_bookmark).toIntSafely()))
         }
     }
 

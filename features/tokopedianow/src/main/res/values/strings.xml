@@ -182,4 +182,5 @@
     <string name="tokopedianow_recipe_bookmark_empty_state_title">Belum ada resep tersimpan</string>
     <string name="tokopedianow_recipe_bookmark_empty_state_description">Setiap nemu resep menarik, kamu bisa langsung simpan di Buku Resep ini.</string>
     <string name="tokopedianow_recipe_bookmark_empty_state_button">Lihat Semua Resep</string>
+    <string name="tokopedianow_recipe_bookmark_item_subtitle">%d Menit | %d Porsi</string>
 </resources>

@@ -9,8 +9,23 @@
     android:layout_width="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_bookmark"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_tags"
+            android:layout_width="0dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="12dp"
+            android:clipToPadding="false"
+            android:translationZ="1dp"
+            app:layout_constraintEnd_toEndOf="@+id/iu_recipe_picture"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:listitem="@layout/item_tokopedianow_tag" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iu_recipe_picture"
@@ -46,6 +61,7 @@
             tools:text="35 Menit | 2 Orang" />
 
         <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/icu_bookmark"
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:layout_marginTop="8dp"

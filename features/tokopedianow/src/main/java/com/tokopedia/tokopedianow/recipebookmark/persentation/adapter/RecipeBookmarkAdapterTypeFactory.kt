@@ -7,13 +7,15 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.RecipeUiModel
 import com.tokopedia.tokopedianow.recipebookmark.persentation.viewholder.RecipeViewHolder
 
-class RecipeBookmarkAdapterTypeFactory: BaseAdapterTypeFactory(), RecipeBookmarkTypeFactory {
+class RecipeBookmarkAdapterTypeFactory(
+    private val listener: RecipeViewHolder.RecipeListener
+): BaseAdapterTypeFactory(), RecipeBookmarkTypeFactory {
 
     override fun type(uiModel: RecipeUiModel): Int = RecipeViewHolder.LAYOUT
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
-            RecipeViewHolder.LAYOUT -> RecipeViewHolder(parent)
+            RecipeViewHolder.LAYOUT -> RecipeViewHolder(parent, listener)
             else -> super.createViewHolder(parent, type)
         }
     }
