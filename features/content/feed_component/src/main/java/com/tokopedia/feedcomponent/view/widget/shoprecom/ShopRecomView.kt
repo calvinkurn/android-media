@@ -24,7 +24,7 @@ class ShopRecomView : FrameLayout {
     )
 
     interface Listener {
-        fun onCloseClicked()
+        fun onCloseClicked(data: ShopRecomItemUI)
         fun onFollowClicked()
     }
 
@@ -57,7 +57,7 @@ class ShopRecomView : FrameLayout {
         imgItemShopImage.setImageUrl(data.logoImageURL)
         imgItemShopBadge.setImageUrl(data.badgeImageURL)
 
-        imgItemShopClose.setOnClickListener { mListener?.onCloseClicked() }
+        imgItemShopClose.setOnClickListener { mListener?.onCloseClicked(data) }
         btnItemShopCta.setOnClickListener { mListener?.onFollowClicked() }
     }
 

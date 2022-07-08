@@ -16,7 +16,7 @@ open class UserShopRecomBaseAdapter(
 ) : BaseAdapter<ShopRecomItem>(callback), ShopRecomView.Listener {
 
     interface ShopRecommendationCallback {
-        fun onCloseClicked()
+        fun onCloseClicked(data: ShopRecomItem)
         fun onFollowClicked()
     }
 
@@ -73,8 +73,18 @@ open class UserShopRecomBaseAdapter(
         holder.shopRecomView.setListener(this)
     }
 
-    override fun onCloseClicked() {
-        shopRecomCallback.onCloseClicked()
+    override fun onCloseClicked(data: ShopRecomItemUI) {
+        shopRecomCallback.onCloseClicked(
+            ShopRecomItem(
+                badgeImageURL = data.badgeImageURL,
+                encryptedID = data.encryptedID,
+                logoImageURL = data.logoImageURL,
+                id = data.id,
+                name = data.name,
+                nickname = data.nickname,
+                type = data.type
+            )
+        )
     }
 
     override fun onFollowClicked() {

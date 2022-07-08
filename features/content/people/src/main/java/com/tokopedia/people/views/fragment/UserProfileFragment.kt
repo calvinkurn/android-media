@@ -60,6 +60,7 @@ import com.tokopedia.people.views.adapter.UserPostBaseAdapter
 import com.tokopedia.people.analytic.UserProfileTracker
 import com.tokopedia.people.databinding.UpFragmentUserProfileBinding
 import com.tokopedia.people.databinding.UpLayoutUserProfileHeaderBinding
+import com.tokopedia.people.model.ShopRecomItem
 import com.tokopedia.people.utils.showErrorToast
 import com.tokopedia.people.utils.showToast
 import com.tokopedia.people.utils.withCache
@@ -366,6 +367,10 @@ class UserProfileFragment @Inject constructor(
                 is Success -> {
                     mAdapterShopRecom.onSuccess(it.data)
                     mainBinding.userShopRecommendation.show()
+                    with(mainBinding.includeShopRecommendation) {
+                        txtWordingFollow.show()
+                        rvShopRecom.show()
+                    }
                 }
                 is ErrorMessage -> mAdapterShopRecom.onError()
             }
@@ -651,8 +656,14 @@ class UserProfileFragment @Inject constructor(
         return bundle
     }
 
-    override fun onCloseClicked() {
-        Timber.d("close")
+    override fun onCloseClicked(data: ShopRecomItem) {
+        mAdapterShopRecom.remove(data)
+        if (mAdapterShopRecom.itemCount == 0) {
+            with(mainBinding.includeShopRecommendation) {
+                txtWordingFollow.hide()
+                rvShopRecom.hide()
+            }
+        }
     }
 
     override fun onFollowClicked() {
