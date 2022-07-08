@@ -38,6 +38,9 @@ public class GamiFloatingButtonEntity {
     @SerializedName("imgURL")
     @Expose
     private String imgURL;
+    @SerializedName("isPermanent")
+    @Expose
+    private Boolean isPermanent;
     @SerializedName("timerBGColor")
     @Expose
     private String timerBGColor;
@@ -131,6 +134,14 @@ public class GamiFloatingButtonEntity {
 
     public void setImgURL(String imgURL) {
         this.imgURL = imgURL;
+    }
+
+    public Boolean getPermanent() {
+        return isPermanent;
+    }
+
+    public void setPermanent(Boolean permanent) {
+        isPermanent = permanent;
     }
 
     public String getTimerBGColor() {

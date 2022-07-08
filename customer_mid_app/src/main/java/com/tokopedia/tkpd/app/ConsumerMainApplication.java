@@ -164,7 +164,15 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
     private void initializationNewRelic() {
         if (!remoteConfig.getBoolean(RemoteConfigKey.ENABLE_INIT_NR_IN_ACTIVITY)) {
-            NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_MA).start(this);
+            WeaveInterface initNrWeave = new WeaveInterface() {
+                @NotNull
+                @Override
+                public Object execute() {
+                    NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_MA).start(ConsumerMainApplication.this);
+                    return true;
+                }
+            };
+            Weaver.Companion.executeWeaveCoRoutineNow(initNrWeave);
         }
     }
 

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="12dp"
+    android:layout_marginTop="16dp"
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp"
+    android:background="@drawable/bg_campaign_stock_grey_border">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_campaign_info_icon"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_campaign_info_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:textColor="@color/Unify_NN950"
+        android:maxLines="1"
+        android:ellipsize="end"
+        app:layout_constraintTop_toTopOf="@id/iv_campaign_info_icon"
+        app:layout_constraintBottom_toBottomOf="@id/iv_campaign_info_icon"
+        app:layout_constraintStart_toEndOf="@id/iv_campaign_info_icon"
+        app:layout_constraintEnd_toStartOf="@id/label_campaign_info_status"
+        app:typographyType="small"
+        app:typographyWeight="bold"
+        tools:text="Flash Sale Tokopedia"/>
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/label_campaign_info_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/iv_campaign_info_icon"
+        app:layout_constraintBottom_toBottomOf="@id/iv_campaign_info_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1"
+        tools:labelType="highlight_light_green"
+        tools:text="Berlangsung"/>
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider_campaign_info"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@id/iv_campaign_info_icon"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_campaign_info_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        app:layout_constraintTop_toBottomOf="@id/divider_campaign_info"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tv_campaign_info_stock"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        tools:text="Diskon New Year"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_campaign_info_stock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/product_manage_campaign_stock_stock"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintEnd_toStartOf="@id/tv_campaign_info_stock_count"
+        app:layout_constraintTop_toTopOf="@id/tv_campaign_info_stock_count"
+        app:layout_constraintBottom_toBottomOf="@id/tv_campaign_info_stock_count"
+        app:typographyType="display_3"
+        app:typographyWeight="reguler"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_campaign_info_stock_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/tv_campaign_info_name"
+        app:layout_constraintBottom_toBottomOf="@id/tv_campaign_info_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="10"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_campaign_info_period"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="2dp"
+        android:textColor="@color/Unify_N600"
+        android:maxLines="1"
+        android:ellipsize="end"
+        app:layout_constraintTop_toBottomOf="@id/tv_campaign_info_name"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:typographyType="small"
+        app:typographyWeight="reguler"
+        tools:text="20 Apr 22, 23:59 - 21 Agu 22, 23:59"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

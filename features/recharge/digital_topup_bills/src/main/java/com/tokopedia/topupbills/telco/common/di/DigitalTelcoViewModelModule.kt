@@ -8,7 +8,6 @@ import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
 import com.tokopedia.topupbills.telco.common.viewmodel.SharedTelcoViewModel
 import com.tokopedia.topupbills.telco.common.viewmodel.TelcoTabViewModel
 import com.tokopedia.topupbills.telco.postpaid.viewmodel.DigitalTelcoEnquiryViewModel
-import com.tokopedia.topupbills.telco.prepaid.viewmodel.SharedTelcoPrepaidViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -27,11 +26,6 @@ abstract class DigitalTelcoViewModelModule {
     @IntoMap
     @ViewModelKey(SharedTelcoViewModel::class)
     internal abstract fun digitalCustomTelcoViewModel(viewModel: SharedTelcoViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(SharedTelcoPrepaidViewModel::class)
-    internal abstract fun digitalProductSharedTelcoViewModel(viewModel: SharedTelcoPrepaidViewModel): ViewModel
 
     @Binds
     @IntoMap

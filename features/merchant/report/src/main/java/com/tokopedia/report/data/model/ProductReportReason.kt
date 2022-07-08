@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 data class ProductReportReason(
         @SerializedName("category_id")
         @Expose
-        val categoryId: Int = -1,
+        val categoryId: String = "-1",
 
         @SerializedName("child")
         @Expose
