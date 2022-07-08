@@ -42,6 +42,7 @@ import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.Toaster.LENGTH_LONG
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -159,7 +160,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
         val spannableString = SpannableString(terms)
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(widget: View) {
-                showTnC(EPHARMACY_TNC_LINK)
+                showTnC()
             }
 
             override fun updateDrawState(ds: TextPaint) {
@@ -193,8 +194,8 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
         }
     }
 
-    private fun showTnC(linkUrl : String) {
-        EPharmacyWebViewBottomSheet.newInstance("", linkUrl).show(childFragmentManager,EPharmacyWebViewBottomSheet.TAG)
+    private fun showTnC() {
+        EPharmacyWebViewBottomSheet.newInstance("", EPHARMACY_TNC_LINK).show(childFragmentManager,EPharmacyWebViewBottomSheet.TAG)
     }
 
     private fun onClickUploadPhotoButton() {
@@ -204,9 +205,9 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
 
     private fun onDoneButtonClick(){
         if(orderId != DEFAULT_ZERO_VALUE){
-            uploadPrescriptionViewModel.uploadPrescriptionIds(UPLOAD_ORDER_ID_KEY,orderId.toString())
+            uploadPrescriptionViewModel.uploadPrescriptionIdsInOrder(orderId)
         }else if(checkoutId.isNotBlank()){
-            uploadPrescriptionViewModel.uploadPrescriptionIds(UPLOAD_CHECKOUT_ID_KEY,checkoutId)
+            uploadPrescriptionViewModel.uploadPrescriptionIdsInCheckout(checkoutId)
         }
     }
 
@@ -293,7 +294,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
             when(it){
                 is Success -> {
                     if(orderId != DEFAULT_ZERO_VALUE){
-                        openOrderPage()
+                        openOrderPage(orderId)
                     }else if (checkoutId.isNotBlank()) {
                         sendResultToCheckout()
                     }
@@ -301,7 +302,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
                 is Fail -> {
                     if (it.throwable is UnknownHostException
                         || it.throwable is SocketTimeoutException) {
-                        //global_error.setType(GlobalError.NO_CONNECTION)
+                        showToast(context?.resources?.getString(R.string.epharmacy_upload_error) ?: "")
                     } else {
                         it.throwable.message?.let { errorMessage ->
                             showToast(errorMessage)
@@ -324,7 +325,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
 
     private fun showToast(message : String) {
         view?.let { it ->
-            Toaster.build(it,message,TYPE_ERROR).show()
+            Toaster.build(it,message,LENGTH_LONG,TYPE_ERROR).show()
         }
     }
 
@@ -345,7 +346,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
         }
     }
 
-    private fun openOrderPage() {
+    private fun openOrderPage(orderId : Long) {
         activity?.finish()
     }
 
