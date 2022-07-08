@@ -1,5 +1,6 @@
 package com.tokopedia.productcard.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Outline
@@ -342,7 +343,7 @@ private fun Typography.initLabelBestSeller(labelBestSellerModel: ProductCardMode
 private fun Typography.showLabelBestSeller(labelBestSellerModel: ProductCardModel.LabelGroup) {
     show()
 
-    val defaultColor = "#E1AA1D"
+    val defaultColor = ContextCompat.getColor(context, unifyRColor.Unify_YN400)
     background.overrideColor(labelBestSellerModel.type, defaultColor)
     text = labelBestSellerModel.title
 }
@@ -397,11 +398,11 @@ private fun Typography.showLabelCategoryBottom(categoryBottomModel: ProductCardM
     setTextColor(categoryBottomModel.type.toUnifyTextColor(context))
 }
 
-internal fun Drawable.overrideColor(hexColor: String, defaultColor: String) {
+internal fun Drawable.overrideColor(hexColor: String, defaultColor: Int) {
     when (this) {
-        is GradientDrawable -> setColor(safeParseColor(hexColor, Color.parseColor(defaultColor)))
-        is ShapeDrawable -> paint.color = safeParseColor(hexColor, Color.parseColor(defaultColor))
-        is ColorDrawable -> color = safeParseColor(hexColor, Color.parseColor(defaultColor))
+        is GradientDrawable -> setColor(safeParseColor(hexColor, defaultColor))
+        is ShapeDrawable -> paint.color = safeParseColor(hexColor, defaultColor)
+        is ColorDrawable -> color = safeParseColor(hexColor, defaultColor)
     }
 }
 
