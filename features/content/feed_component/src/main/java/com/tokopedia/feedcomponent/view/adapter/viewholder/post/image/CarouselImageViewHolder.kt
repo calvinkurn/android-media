@@ -73,7 +73,6 @@ internal class CarouselImageViewHolder(
             }
 
             override fun onDoubleTap(e: MotionEvent?): Boolean {
-                changeCTABtnColorAsPerWidget(dataSource.getFeedXCard())
                 onPostTagViews {
                     it.hideExpandedViewIfShown()
                 }
@@ -81,6 +80,10 @@ internal class CarouselImageViewHolder(
 
                 if (!dataSource.getFeedXCard().isTopAds) {
                     likeAnim.startAnimation(animationLike)
+                    changeCTABtnColorAsPerWidget(
+                        dataSource.getFeedXCard(),
+                        shouldNotify = true,
+                    )
                 }
 
                 return true
@@ -166,9 +169,9 @@ internal class CarouselImageViewHolder(
         onPostTagViews { it.resetView() }
     }
 
-    fun changeTopAds() {
+    fun changeTopAds(isGreen: Boolean) {
         val card = dataSource.getFeedXCard()
-        if (card.isAsgcColorChangedAsPerWidgetColor) changeCTABtnColorAsPerWidget(card, shouldNotify = false)
+        if (isGreen) changeTopAdsColorToGreen(card, shouldNotify = false)
         else changeTopAdsColorToWhite(card)
     }
 
