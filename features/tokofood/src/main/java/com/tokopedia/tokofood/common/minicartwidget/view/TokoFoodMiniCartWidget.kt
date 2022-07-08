@@ -61,6 +61,7 @@ class TokoFoodMiniCartWidget @JvmOverloads constructor(
                 renderMiniCart(result, lifecycleScope)
             }
         }
+        this.source = source
         viewModel?.loadInitial(source)
     }
 
@@ -94,7 +95,7 @@ class TokoFoodMiniCartWidget @JvmOverloads constructor(
             totalQuantity = miniCartUiModel.totalProductQuantity
             amountCtaView.visible()
             amountCtaView.setOnClickListener {
-                viewModel?.clickMiniCart()
+                viewModel?.clickMiniCart(source)
             }
         }
     }

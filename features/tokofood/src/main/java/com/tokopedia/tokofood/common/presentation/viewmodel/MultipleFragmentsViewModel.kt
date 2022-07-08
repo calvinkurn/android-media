@@ -289,12 +289,12 @@ class MultipleFragmentsViewModel @Inject constructor(
         })
     }
 
-    fun clickMiniCart() {
+    fun clickMiniCart(source: String) {
         launch {
             cartDataValidationState.emit(
                 UiEvent(
                     state = UiEvent.EVENT_SUCCESS_VALIDATE_CHECKOUT,
-                    data = cartDataFlow.value
+                    data = Pair(cartDataFlow.value, source)
                 )
             )
         }

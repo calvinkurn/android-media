@@ -58,7 +58,6 @@ import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
-import com.tokopedia.tokofood.common.util.TokofoodRouteManager.isMostTopFragment
 import com.tokopedia.tokofood.databinding.FragmentTokofoodHomeBinding
 import com.tokopedia.tokofood.feature.home.analytics.TokoFoodHomeAnalytics
 import com.tokopedia.tokofood.feature.home.analytics.TokoFoodHomeCategoryCommonAnalytics
@@ -568,12 +567,13 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
             activityViewModel?.cartDataValidationFlow?.collect { uiEvent ->
                 when(uiEvent.state) {
                     UiEvent.EVENT_SUCCESS_VALIDATE_CHECKOUT -> {
-                        (uiEvent.data as? CheckoutTokoFoodData)?.let {
-                            analytics.clickAtc(userSession.userId, localCacheModel?.district_id, it)
+                        (uiEvent.data as? Pair<CheckoutTokoFoodData, String>)?.let {
+                            analytics.clickAtc(userSession.userId, localCacheModel?.district_id, it.first)
+                            if (it.second == MINI_CART_SOURCE){
+                                goToPurchasePage()
+                            }
                         }
-                        if (this@TokoFoodHomeFragment.isMostTopFragment()){
-                            goToPurchasePage()
-                        }
+
                     }
                     UiEvent.EVENT_SUCCESS_LOAD_CART -> {
                         if (viewModel.isShownEmptyState()){
