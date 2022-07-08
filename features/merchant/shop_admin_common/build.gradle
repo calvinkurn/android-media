@@ -1,0 +1,48 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-kapt'
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+dependencies {
+    implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
+
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
+
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
+    implementation projectOrAar(rootProject.ext.libraries.network)
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+
+    implementation rootProject.ext.miscDependencies.dagger
+    implementation rootProject.ext.debugToolsDependencies.chuck
+    compileOnly rootProject.ext.miscDependencies.javaxAnnotation
+    compileOnly rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+}
+
+project.ext {
+    artifactId = 'shop_admin_common'
+    groupId = 'com.tokopedia.shop_admin_common'
+    versionName = "0.0.1"
+    artifactName ="shop_admin_common-release"
+}
+
+apply from: '../../../publish_local.gradle'

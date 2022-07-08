@@ -16,12 +16,7 @@ import android.text.format.DateFormat
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.LinearLayout
@@ -179,7 +174,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     protected var isAutoLogin: Boolean = false
     private var isShowTicker: Boolean = false
     private var isShowBanner: Boolean = false
-    private var isEnableFingerprint = true
+    private var isEnableFingerprint = false
     private var isEnableSilentVerif = false
     private var isHitRegisterPushNotif: Boolean = false
     private var isEnableEncryptConfig: Boolean = false
@@ -313,6 +308,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         source = getParamString(ApplinkConstInternalGlobal.PARAM_SOURCE, arguments, savedInstanceState, "")
         isAutoLogin = getParamBoolean(LoginConstants.AutoLogin.IS_AUTO_LOGIN, arguments, savedInstanceState, false)
         isUsingRollenceNeedHelp = isUsingRollenceNeedHelp()
+        isEnableFingerprint = abTestPlatform.getString(LoginConstants.RollenceKey.LOGIN_PAGE_BIOMETRIC, "").isNotEmpty()
         refreshRolloutVariant()
     }
 
@@ -570,7 +566,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private fun fetchRemoteConfig() {
         isShowTicker = firebaseRemoteConfig.getBoolean(LoginConstants.RemoteConfigKey.KEY_TICKER_FROM_ATC, false)
         isShowBanner = firebaseRemoteConfig.getBoolean(LoginConstants.RemoteConfigKey.KEY_BANNER, false)
-        isEnableFingerprint = firebaseRemoteConfig.getBoolean(LoginConstants.RemoteConfigKey.KEY_LOGIN_FP, true)
         isHitRegisterPushNotif = firebaseRemoteConfig.getBoolean(LoginConstants.RemoteConfigKey.KEY_REGISTER_PUSH_NOTIF, false)
         isEnableEncryptConfig = firebaseRemoteConfig.getBoolean(SessionConstants.FirebaseConfig.CONFIG_LOGIN_ENCRYPTION)
         isEnableSilentVerif = firebaseRemoteConfig.getBoolean(SessionConstants.FirebaseConfig.CONFIG_SILENT_VERIFICATION)

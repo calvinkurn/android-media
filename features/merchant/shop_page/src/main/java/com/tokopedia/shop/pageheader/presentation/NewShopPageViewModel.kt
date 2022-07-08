@@ -44,6 +44,7 @@ import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOper
 import com.tokopedia.shop.common.util.ShopAsyncErrorException
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.common.data.model.ShopPageGetHomeType
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.pageheader.data.model.NewShopPageHeaderP1
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderLayoutResponse
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderP1
@@ -403,7 +404,7 @@ class NewShopPageViewModel @Inject constructor(
     fun saveShopImageToPhoneStorage(context: Context?, shopSnippetUrl: String) {
         launchCatchError(dispatcherProvider.io, {
             context?.let {
-                loadImageWithEmptyTarget(it, shopSnippetUrl, {
+                ShopUtil.loadImageWithEmptyTarget(it, shopSnippetUrl, {
                     fitCenter()
                 }, MediaBitmapEmptyTarget(
                     onReady = { bitmap ->

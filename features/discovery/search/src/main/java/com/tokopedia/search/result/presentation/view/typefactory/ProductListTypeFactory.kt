@@ -4,7 +4,6 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchDataView
 import com.tokopedia.search.result.presentation.model.BannedProductsTickerDataView
-import com.tokopedia.search.result.presentation.model.BannerDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.presentation.model.CpmDataView
@@ -18,6 +17,7 @@ import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDa
 import com.tokopedia.search.result.presentation.model.SeparatorDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.presentation.model.TickerDataView
+import com.tokopedia.search.result.product.banner.BannerDataView
 import com.tokopedia.search.result.product.emptystate.EmptyStateFilterDataView
 import com.tokopedia.search.result.product.emptystate.EmptyStateKeywordDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
