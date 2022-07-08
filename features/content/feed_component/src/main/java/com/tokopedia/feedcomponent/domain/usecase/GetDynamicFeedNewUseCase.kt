@@ -320,8 +320,6 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
         appLink
         appLinkProductList
         webLinkProductList
-        maximumDiscountPercentage
-        maximumDiscountPercentageFmt
         totalProducts
         products {
           id
