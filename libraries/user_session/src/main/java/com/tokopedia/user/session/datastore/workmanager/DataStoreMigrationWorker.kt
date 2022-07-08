@@ -6,9 +6,8 @@ import android.util.Log
 import androidx.work.*
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.user.session.datastore.AbPlatformInteractor
+import com.tokopedia.user.session.datastore.DataStorePreference
 import com.tokopedia.user.session.datastore.DataStoreMigrationHelper
 import com.tokopedia.user.session.datastore.UserSessionDataStoreClient
 import com.tokopedia.user.session.di.ComponentFactory
@@ -28,10 +27,8 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
     private fun isMigrationSuccess(): Boolean =
         getDataStoreMigrationPreference(applicationContext).getBoolean(KEY_MIGRATION_STATUS, false)
 
-    private fun isEnableDataStore(): Boolean = abPlatform.isDataStoreEnabled()
-
     @Inject
-    lateinit var abPlatform: AbPlatformInteractor
+    lateinit var dataStorePreference: DataStorePreference
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -41,7 +38,7 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
     }
 
     override suspend fun doWork(): Result {
-        if (isEnableDataStore()) {
+        if (dataStorePreference.isDataStoreEnabled()) {
             return try {
                 if (userSession.isLoggedIn) {
                     val syncResult = DataStoreMigrationHelper.checkDataSync(applicationContext)
@@ -60,7 +57,6 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
                 Result.failure()
             }
         } else {
-            Log.d(this::class.simpleName, "Data Store not enabled")
             return Result.success()
         }
     }

@@ -1,7 +1,7 @@
 package com.tokopedia.user.session.datastore
 
 import android.content.Context
-import com.tokopedia.user.session.datastore.AbPlatformInteractor.Companion.USER_SESSION_AB_TEST_KEY
+import com.tokopedia.user.session.datastore.DataStorePreference.Companion.USER_SESSION_AB_TEST_KEY
 import javax.inject.Inject
 
 object UserSessionAbTestPlatform {
@@ -15,7 +15,7 @@ object UserSessionAbTestPlatform {
     }
 }
 
-class AbPlatformInteractor @Inject constructor(private val context: Context) {
+class DataStorePreference @Inject constructor(private val context: Context) {
 
     fun isDataStoreEnabled(): Boolean {
         val sharedPreferences = context.getSharedPreferences(
