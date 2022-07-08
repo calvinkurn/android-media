@@ -8,24 +8,40 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.media.editor.R
+import com.tokopedia.media.editor.ui.activity.main.EditorViewModel
+import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.loader.loadImage
+import javax.inject.Inject
 
 class ThumbnailDrawerAdapter constructor(
-    private val thumbnails: List<String> = mutableListOf(),
+    private var dataCollection: List<EditorUiModel>,
     private val listener: Listener
 ) : RecyclerView.Adapter<ThumbnailDrawerViewHolder>() {
 
     private var itemSelectedIndex = 0
+
+    fun updateData(index: Int, newData: List<EditorUiModel>) {
+        dataCollection = newData
+        notifyItemChanged(index)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ThumbnailDrawerViewHolder {
         return ThumbnailDrawerViewHolder.create(parent)
     }
 
     override fun onBindViewHolder(holder: ThumbnailDrawerViewHolder, position: Int) {
-        holder.bind(thumbnails[position], position)
+        val item = dataCollection[position]
+        holder.bind(item.getImageUrl(), position)
 
-        holder.setThumbnailSelected(itemSelectedIndex == position)
-        listener.onItemClicked(thumbnails[itemSelectedIndex])
+        val isSelected = itemSelectedIndex == position
+        holder.setThumbnailSelected(isSelected)
+
+        val editedUrl = if(item.editList.isNotEmpty()) item.editList.last().resultUrl else null
+        if(isSelected) listener.onItemClicked(
+            item.getImageUrl(),
+            editedUrl,
+            position
+        )
 
         holder.itemView.setOnClickListener {
             notifyItemChanged(itemSelectedIndex)
@@ -34,10 +50,10 @@ class ThumbnailDrawerAdapter constructor(
         }
     }
 
-    override fun getItemCount() = thumbnails.size
+    override fun getItemCount() = dataCollection.size
 
     interface Listener {
-        fun onItemClicked(url: String)
+        fun onItemClicked(originalUrl: String, resultUrl: String?, clickedIndex: Int)
     }
 
 }

@@ -1,11 +1,18 @@
 package com.tokopedia.media.editor.ui.fragment
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.drawable.BitmapDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.net.toFile
+import androidx.core.net.toUri
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
@@ -24,6 +31,12 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.types.EditorToolType
 import com.tokopedia.utils.view.binding.viewBinding
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
+import java.lang.Exception
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 
 class DetailEditorFragment @Inject constructor(
@@ -75,7 +88,9 @@ class DetailEditorFragment @Inject constructor(
     }
 
     override fun onRemoveBackgroundClicked() {
-        viewModel.setRemoveBackground(data.imageUrl)
+        data.removeBackgroundUrl?.let {
+            viewModel.setRemoveBackground(it)
+        }
     }
 
     override fun initObserver() {
@@ -122,7 +137,7 @@ class DetailEditorFragment @Inject constructor(
             data = it
 
             renderUiComponent(it.editorToolType)
-            renderImagePreview(it.imageUrl)
+            renderImagePreview(it.originalUrl)
         }
     }
 
@@ -143,7 +158,7 @@ class DetailEditorFragment @Inject constructor(
     private fun renderImagePreview(imageUrl: String) {
         viewBinding?.imgPreview?.loadImage(imageUrl) {
             centerCrop()
-            this.listener(onSuccess = {bitmap, mediaDataSource ->
+            this.listener(onSuccess = {bitmap, _ ->
                 originalBitmap = bitmap
             })
         }
@@ -155,6 +170,7 @@ class DetailEditorFragment @Inject constructor(
         }
 
         viewBinding?.btnSave?.setOnClickListener {
+            saveImage()
             editingSave()
         }
     }
@@ -164,6 +180,45 @@ class DetailEditorFragment @Inject constructor(
         intent.putExtra(DetailEditorActivity.EDITOR_RESULT_PARAM, data)
         activity?.setResult(DetailEditorActivity.EDITOR_RESULT_CODE, intent)
         activity?.finish()
+    }
+
+    private fun saveImage(){
+        viewBinding?.let {
+            try {
+                val bitmap = (it.imgPreview.drawable as BitmapDrawable).bitmap
+
+                val file = getDestinationUri().toFile()
+                file.createNewFile()
+
+                val bos = ByteArrayOutputStream()
+                bitmap?.compress(Bitmap.CompressFormat.PNG, 0, bos)
+                val bitmapData = bos.toByteArray()
+
+                val fos = FileOutputStream(file)
+                fos.write(bitmapData)
+                fos.flush()
+                fos.close()
+
+                val uri = file.toUri()
+                data.resultUrl = uri.path
+            } catch (e: Exception){}
+        }
+    }
+
+    private fun getEditorSaveFolderDir(): String {
+        return "${requireContext().externalCacheDir?.path}/editor-cache/"
+    }
+
+    private fun getDestinationUri(): Uri {
+        val dir = File(getEditorSaveFolderDir())
+        if(!dir.exists()) dir.mkdir()
+
+        return Uri.fromFile(File("${getEditorSaveFolderDir()}/${generateFileName()}.png"))
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    fun generateFileName(): String {
+        return SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
     }
 
     override fun getScreenName() = SCREEN_NAME

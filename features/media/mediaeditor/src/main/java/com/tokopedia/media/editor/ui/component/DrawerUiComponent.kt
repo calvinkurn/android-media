@@ -1,11 +1,13 @@
 package com.tokopedia.media.editor.ui.component
 
+import android.annotation.SuppressLint
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.ui.adapter.ThumbnailDrawerAdapter
 import com.tokopedia.media.editor.ui.adapter.decoration.ThumbnailDrawerDecoration
+import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.picker.common.basecomponent.UiComponent
 
 class DrawerUiComponent constructor(
@@ -17,17 +19,20 @@ class DrawerUiComponent constructor(
 
     private lateinit var drawerAdapter: ThumbnailDrawerAdapter
 
-    fun setupView(images: List<String>) {
-        setupRecyclerView(images)
+    @SuppressLint("NotifyDataSetChanged")
+    fun refreshItem(updateIndex: Int, newData: List<EditorUiModel>){
+        if (::drawerAdapter.isInitialized) {
+            drawerAdapter.updateData(updateIndex, newData)
+        }
     }
 
-    override fun onItemClicked(url: String) {
-        listener.onThumbnailDrawerClicked(url)
+    override fun onItemClicked(originalUrl: String, resultUrl: String?, clickedIndex: Int) {
+        listener.onThumbnailDrawerClicked(originalUrl, resultUrl, clickedIndex)
     }
 
-    private fun setupRecyclerView(images: List<String>) {
+    fun setupRecyclerView(newData: List<EditorUiModel>) {
         if (!::drawerAdapter.isInitialized) {
-            drawerAdapter = ThumbnailDrawerAdapter(images, this)
+            drawerAdapter = ThumbnailDrawerAdapter(newData,this)
         }
 
         with(lstThumbnail) {
@@ -44,7 +49,7 @@ class DrawerUiComponent constructor(
     }
 
     interface Listener {
-        fun onThumbnailDrawerClicked(url: String)
+        fun onThumbnailDrawerClicked(originalUrl: String, resultUrl: String?, clickedIndex: Int)
     }
 
 }

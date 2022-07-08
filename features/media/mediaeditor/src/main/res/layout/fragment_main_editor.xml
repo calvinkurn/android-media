@@ -6,7 +6,17 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <Button
+        android:elevation="2dp"
+        android:id="@+id/btn_undo"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="-"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
     <ImageView
+        android:elevation="1dp"
         android:id="@+id/img_main_preview"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -15,7 +25,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintDimensionRatio="H,1:1" />
+        app:layout_constraintDimensionRatio="W,1:1" />
 
     <include
         layout="@layout/ui_component_tools_editor"

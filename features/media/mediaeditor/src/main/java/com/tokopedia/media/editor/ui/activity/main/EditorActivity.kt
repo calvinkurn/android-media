@@ -54,15 +54,15 @@ class EditorActivity : BaseEditorActivity() {
 //            viewModel.setEditorParam(it)
 //        }
 
-        val asd = EditorParam()
-        asd.imageUrls.addAll(
+        // sample data
+        viewModel.setEditorParam(EditorParam())
+        viewModel.initStateList(
             arrayListOf(
                 "https://images.unsplash.com/photo-1579353977828-2a4eab540b9a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8c2FtcGxlfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=800&q=60",
                 "https://images.unsplash.com/photo-1561336313-0bd5e0b27ec8?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8c2FtcGxlfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=800&q=60",
                 "https://images.unsplash.com/photo-1531361171768-37170e369163?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTF8fHNhbXBsZXxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60"
             )
         )
-        viewModel.setEditorParam(asd)
     }
 
     override fun initInjector() {
@@ -76,8 +76,7 @@ class EditorActivity : BaseEditorActivity() {
         if(resultCode == DetailEditorActivity.EDITOR_RESULT_CODE){
             val asd = data?.getParcelableExtra<EditorDetailUiModel>(DetailEditorActivity.EDITOR_RESULT_PARAM)
             asd?.let {
-                viewModel.addEditState(asd)
-                Toast.makeText(this, "${viewModel.getEditState().size}", Toast.LENGTH_LONG).show()
+                viewModel.addEditState(it.originalUrl, it)
             }
         }
     }

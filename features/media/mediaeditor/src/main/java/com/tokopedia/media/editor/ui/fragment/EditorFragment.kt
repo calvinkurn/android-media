@@ -10,11 +10,11 @@ import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.base.BaseEditorFragment
 import com.tokopedia.media.editor.databinding.FragmentMainEditorBinding
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorActivity
-import com.tokopedia.media.editor.ui.activity.main.EditorActivity
 import com.tokopedia.media.editor.ui.activity.main.EditorViewModel
 import com.tokopedia.media.editor.ui.component.DrawerUiComponent
 import com.tokopedia.media.editor.ui.component.ToolsUiComponent
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
+import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.utils.view.binding.viewBinding
@@ -44,35 +44,96 @@ class EditorFragment @Inject constructor() : BaseEditorFragment()
         )
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewBinding?.btnUndo?.setOnClickListener {
+            backState()
+        }
+    }
+
+    private fun backState(){
+        val targetEditorUiModel = viewModel.getEditState(activeImageUrl)
+        targetEditorUiModel?.let {
+            val imageEditStateCount = it.editList.size
+            if(it.backValue >= imageEditStateCount) return@let
+
+            it.backValue++
+            viewBinding?.imgMainPreview?.loadImage(it.getImageUrl())
+
+            viewBinding?.btnUndo?.text = renderUndoText(it)
+        }
+    }
+
     override fun initObserver() {
         observeEditorParam()
+        observeUpdateIndex()
     }
 
     override fun onEditorToolClicked(type: Int) {
         activity?.let {
-            val detailUiModel = EditorDetailUiModel(activeImageUrl, type)
-            val intent = Intent(it, DetailEditorActivity::class.java).apply {
-                putExtra(DetailEditorActivity.PARAM_EDITOR_DETAIL, detailUiModel)
-            }
+            val clickedItem = viewModel.getEditState(activeImageUrl)
+            clickedItem?.let { editorUiModel ->
+                val paramData = EditorDetailUiModel(
+                    originalUrl = editorUiModel.getOriginalUrl(),
+                    editorToolType = type
+                )
 
-            startActivityForResult(intent, DetailEditorActivity.EDITOR_RESULT_CODE)
+                editorUiModel.editList.forEach { item ->
+                    paramData.brightnessValue = item.brightnessValue
+                    paramData.contrastValue = item.contrastValue
+                    paramData.watermarkMode = item.watermarkMode
+                    paramData.rotateValue = item.rotateValue
+                    paramData.removeBackgroundUrl = item.removeBackgroundUrl
+                    paramData.cropBound = item.cropBound
+                }
+
+                val intent = Intent(it, DetailEditorActivity::class.java).apply {
+                    putExtra(DetailEditorActivity.PARAM_EDITOR_DETAIL, paramData)
+                }
+
+                startActivityForResult(intent, DetailEditorActivity.EDITOR_RESULT_CODE)
+            }
         }
     }
 
-    override fun onThumbnailDrawerClicked(url: String) {
-        activeImageUrl = url
+    override fun onThumbnailDrawerClicked(originalUrl: String, resultUrl: String?, clickedIndex: Int) {
+        activeImageUrl = originalUrl
 
-        viewBinding?.imgMainPreview?.loadImage(url) {
+        val editList = viewModel.getEditState(originalUrl)
+        viewBinding?.btnUndo?.text = renderUndoText(editList!!)
+
+        viewBinding?.imgMainPreview?.loadImage(editList.getImageUrl()) {
             centerCrop()
         }
+    }
+
+    private fun renderUndoText(editList: EditorUiModel): String{
+        return if(editList.editList.isNotEmpty()) "Undo (${editList.editList.size - editList.backValue})" else "-"
     }
 
     private fun observeEditorParam() {
         viewModel.editorParam.observe(viewLifecycleOwner) {
             editorToolComponent.setupView(it.editorTools)
-            thumbnailDrawerComponent.setupView(it.imageUrls)
+            thumbnailDrawerComponent.setupRecyclerView(viewModel.editStateList.values.toList())
         }
     }
+
+    private fun observeUpdateIndex(){
+        viewModel.updatedIndexItem.observe(viewLifecycleOwner){
+            thumbnailDrawerComponent.refreshItem(it, viewModel.editStateList.values.toList())
+        }
+    }
+
+//    private fun editStateMapToList(): List<String> {
+//        return viewModel.editStateList.values.map { editorUiModel ->
+//            if (editorUiModel.editList.isEmpty())
+//                editorUiModel.originalUrl
+//            else
+//                editorUiModel.editList.last().resultUrl ?: editorUiModel.originalUrl
+//        }
+//
+//    }
 
     override fun getScreenName() = SCREEN_NAME
 

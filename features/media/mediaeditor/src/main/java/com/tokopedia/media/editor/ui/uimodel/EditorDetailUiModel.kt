@@ -11,7 +11,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 @SuppressLint("ParamFieldAnnotation")
 data class EditorDetailUiModel(
-    val imageUrl: String = "",
+    val originalUrl: String = "",
 
     @EditorToolType
     val editorToolType: Int = EditorToolType.NONE,
@@ -21,7 +21,8 @@ data class EditorDetailUiModel(
     var brightnessValue: Float? = null,
     var contrastValue: Float? = null,
     var watermarkMode: Int? = null,
-    var rotateValue: Float? = null
+    var rotateValue: Float? = null,
+    var removeBackgroundUrl: String? = null
 ) : Parcelable {
     @IgnoredOnParcel
     var cropBound: EditorCropRectModel? = null
@@ -33,7 +34,8 @@ data class EditorDetailUiModel(
         shouldNull(parcel.readFloat()),
         shouldNull(parcel.readFloat()),
         shouldNull(parcel.readInt()),
-        shouldNull(parcel.readFloat())
+        shouldNull(parcel.readFloat()),
+        parcel.readString()
     ) {
         val rectHeight =  parcel.readInt()
         val rectWidth = parcel.readInt()
@@ -61,13 +63,14 @@ data class EditorDetailUiModel(
         }
 
         override fun EditorDetailUiModel.write(parcel: Parcel, flags: Int) {
-            parcel.writeString(imageUrl)
+            parcel.writeString(originalUrl)
             parcel.writeInt(editorToolType)
             parcel.writeString(resultUrl)
             parcel.writeFloat(brightnessValue ?: -1f)
             parcel.writeFloat(contrastValue ?: -1f)
             parcel.writeInt(watermarkMode ?: -1)
             parcel.writeFloat(rotateValue ?: -1f)
+            parcel.writeString(removeBackgroundUrl)
 
             // crop bound
             cropBound?.let {
@@ -88,6 +91,12 @@ internal fun shouldNull(value: Float): Float?{
 
 internal fun shouldNull(value: Int): Int? {
     return if(value != -1){
+        value
+    } else null
+}
+
+internal fun shouldNull(value: String): String? {
+    return if(value != ""){
         value
     } else null
 }
