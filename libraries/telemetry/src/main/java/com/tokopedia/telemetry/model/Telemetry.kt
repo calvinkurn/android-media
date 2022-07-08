@@ -151,23 +151,18 @@ object Telemetry {
         }
     }
 
-    /**
-     * return false if touch is out of duration
-     */
     @JvmStatic
-    fun addTouch(type: Int, x: Int, y: Int, pressure: Float): Boolean {
-        if (telemetrySectionList.size <= 0) return true
-        if (type == MotionEvent.ACTION_DOWN) {
+    fun addTouch(type: Int, x: Int, y: Int, pressure: Float) {
+        if (telemetrySectionList.size > 0 &&
+            type == MotionEvent.ACTION_DOWN
+        ) {
             val timeDiff = getElapsedDiff()
             if (timeDiff < SECTION_TELEMETRY_DURATION) {
                 telemetrySectionList[0].touchList.add(
                     Touch(timeDiff, x, y, pressure)
                 )
-            } else {
-                return false
             }
         }
-        return true
     }
 
     fun hasOpenTime() = telemetrySectionList.size > 0 && telemetrySectionList[0].endTime == 0L
@@ -216,7 +211,8 @@ object Telemetry {
             if (elapsedDiff < SECTION_TELEMETRY_DURATION) {
                 typingList.add(Typing(elapsedDiff, diffChar))
             }
-        } catch (ignored: Exception) {}
+        } catch (ignored: Exception) {
+        }
     }
 
 }
