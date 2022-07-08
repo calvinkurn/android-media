@@ -1,6 +1,5 @@
 package com.tokopedia.officialstore.official.presentation.adapter
 
-import android.view.ViewTreeObserver
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
