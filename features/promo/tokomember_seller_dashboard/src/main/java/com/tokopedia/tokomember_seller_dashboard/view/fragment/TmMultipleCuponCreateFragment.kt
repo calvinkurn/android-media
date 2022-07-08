@@ -388,8 +388,8 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                                 Toaster.build(
                                     v,
                                     it.data.message,
-                                    Toaster.TYPE_ERROR,
-                                    Toaster.LENGTH_LONG
+                                    Toaster.LENGTH_LONG,
+                                    Toaster.TYPE_ERROR
                                 ).show()
                             }
                         }
@@ -444,8 +444,8 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                         Toaster.build(
                             v,
                             RETRY,
-                            Toaster.TYPE_ERROR,
-                            Toaster.LENGTH_LONG
+                            Toaster.LENGTH_LONG,
+                            Toaster.TYPE_ERROR
                         ).show()
                     }
                 }
@@ -668,8 +668,16 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
             ProgramActionType.EXTEND -> {
                 val startDate = GregorianCalendar(locale)
                 startDate.add(Calendar.HOUR,4)
+                val minuteCurrent = startDate.get(Calendar.MINUTE)
+                if (minuteCurrent<30){
+                    startDate.set(Calendar.MINUTE,30)
+                    startDate.set(Calendar.SECOND,0)
+                } else{
+                    startDate.set(Calendar.MINUTE,30)
+                    startDate.set(Calendar.SECOND,0)
+                    startDate.add(Calendar.MINUTE,30)
+                }
                 manualStartTimeProgram = convertDateTimeRemoveTimeDiff(startDate.time)
-
                 manualEndTimeProgram = timeWindow?.endTime?:""
 
                 val maxProgramEndDate = GregorianCalendar(locale)
@@ -1014,18 +1022,19 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                     val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
                     currentDate.time = sdf.parse(manualStartTimeProgram + "00") ?: Date()
                     maxDate.time = sdf.parse(manualEndTimeProgram + "00")?: Date()
+                    currentDate.add(Calendar.DAY_OF_MONTH,1)
                 }
                 ProgramActionType.CREATE_BUAT ->{
                     val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
                     currentDate.time = sdf.parse(manualStartTimeProgram + "00") ?: Date()
                     maxDate.time = sdf.parse(manualEndTimeProgram + "00")?: Date()
+                    currentDate.add(Calendar.DAY_OF_MONTH,1)
                 }
                 ProgramActionType.EXTEND -> {
                     val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
                     currentDate.time = sdf.parse(manualStartTimeProgram + "00") ?: Date()
                     maxDate.time = sdf.parse(manualEndTimeProgram + "00")?: Date()                }
             }
-            currentDate.add(Calendar.DAY_OF_MONTH,1)
 
             val datepickerObject = DateTimePickerUnify(it, currentDate, currentDate, maxDate).apply {
                 setTitle(title)

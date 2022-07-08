@@ -89,6 +89,6 @@
         app:layout_constraintBottom_toBottomOf="@id/tvCouponValue"
         app:layout_constraintStart_toEndOf="@id/tvCouponValue"
         app:layout_constraintTop_toTopOf="@id/tvCouponValue"
-        app:srcCompat="@drawable/tm_oupon_rb" />
+        app:srcCompat="@drawable/tm_coupon_rb" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

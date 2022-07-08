@@ -96,6 +96,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
     private var tmTracker: TmTracker? = null
     private var programCreationId = 0
     private var loaderDialog: LoaderDialog?=null
+    private var errorCodeProgramCreation = "42039"
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -178,10 +179,8 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                             programCreationId = it?.data.membershipCreateEditProgram.programSeller?.id?:0
                             onProgramUpdateSuccess()
                         }
-                        CODE_ERROR -> {
-                            view?.let { v-> Toaster.build(v, RETRY , Toaster.LENGTH_LONG , Toaster.TYPE_ERROR ).show() }
-                        }
                         else -> {
+                            errorCodeProgramCreation = it.data?.membershipCreateEditProgram?.resultStatus?.code?:""
                             handleErrorOnUpdate(it.data?.membershipCreateEditProgram?.resultStatus?.reason, it.data?.membershipCreateEditProgram?.resultStatus?.message?.firstOrNull())
                         }
                     }
@@ -219,9 +218,12 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         if(!message.isNullOrEmpty()){
             desc = message
         }
-        val cta = when(errorCount){
-            0-> ERROR_CREATING_CTA
+        var cta = when(errorCount){
+            0-> RETRY
             else -> ERROR_CREATING_CTA_RETRY
+        }
+        if (errorCodeProgramCreation == "42039"){
+            cta = ERROR_CREATING_CTA
         }
         val bundle = Bundle()
         val tmIntroBottomSheetModel = TmIntroBottomsheetModel(title, desc , "", cta , errorCount = errorCount)
@@ -474,6 +476,8 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                         } else {
                             textFieldTranskPremium.isInputError = false
                             textFieldTranskPremium.setMessage("")
+                            textFieldTranskVip.isInputError = false
+                            textFieldTranskVip.setMessage("")
                         }
                     }
                     else{
@@ -501,6 +505,8 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                         else -> {
                             textFieldTranskVip.isInputError = false
                             textFieldTranskVip.setMessage("")
+                            textFieldTranskPremium.isInputError = false
+                            textFieldTranskPremium.setMessage("")
                         }
                     }
                 }
@@ -617,22 +623,25 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
     }
 
     override fun onButtonClick(errorCount: Int) {
-        if (errorCount == 0) {
-            tmDashCreateViewModel.updateProgram(programUpdateResponse)
+        if (errorCodeProgramCreation == "42039") {
         } else {
-            if (programActionType == ProgramActionType.CREATE) {
-                TokomemberDashIntroActivity.openActivity(
-                    arguments?.getInt(BUNDLE_SHOP_ID) ?: 0,
-                    arguments?.getString(BUNDLE_SHOP_AVATAR) ?: "",
-                    arguments?.getString(
-                        BUNDLE_SHOP_NAME
-                    ) ?: "",
-                    false,
-                    this.context
-                )
-                activity?.finish()
-            } else{
-                activity?.finish()
+            if (errorCount == 0) {
+                tmDashCreateViewModel.updateProgram(programUpdateResponse)
+            } else {
+                if (programActionType == ProgramActionType.CREATE) {
+                    TokomemberDashIntroActivity.openActivity(
+                        arguments?.getInt(BUNDLE_SHOP_ID) ?: 0,
+                        arguments?.getString(BUNDLE_SHOP_AVATAR) ?: "",
+                        arguments?.getString(
+                            BUNDLE_SHOP_NAME
+                        ) ?: "",
+                        false,
+                        this.context
+                    )
+                    activity?.finish()
+                } else {
+                    activity?.finish()
+                }
             }
         }
     }

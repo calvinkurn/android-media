@@ -99,6 +99,12 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
             programActionType = it
         }
         cardId = arguments?.getInt(BUNDLE_CARD_ID_IN_TOOLS) ?: 0
+        if(cardId == 0) {
+            val prefManager = context?.let { TmPrefManager(it) }
+            prefManager?.cardId?.let {
+                cardId = it
+            }
+        }
         if (programActionType == ProgramActionType.EXTEND) {
             isShowBottomSheet = false
             viewBgPreview.hide()
@@ -108,17 +114,10 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
                 arguments?.getInt(BUNDLE_SHOP_ID) ?: 0,
                 "create"
             )
-        }
-        else {
+        } else {
             isShowBottomSheet = true
             viewBgPreview.show()
             carouselPreview.show()
-            if(cardId == 0) {
-                val prefManager = context?.let { TmPrefManager(it) }
-                prefManager?.cardId?.let {
-                    cardId = it
-                }
-            }
             tmDashCreateViewModel.getCardInfo(cardId)
         }
     }

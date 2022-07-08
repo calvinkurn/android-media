@@ -4,10 +4,12 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Color
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.promoui.common.dpToPx
 import com.tokopedia.utils.image.ImageProcessingUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -60,32 +62,22 @@ object TmFileUtil {
     }
 
      @SuppressLint("Range")
-     private fun getBitmapFromView(view: View): Bitmap? {
-        //Define a bitmap with the same size as the view
-         val spec = View.MeasureSpec.makeMeasureSpec(
-             ViewGroup.LayoutParams.WRAP_CONTENT,
-             View.MeasureSpec.UNSPECIFIED
-         )
+     private fun getBitmapFromView(v: View): Bitmap? {
 
-         view.measure(spec, spec)
-         view.layout(0, 0, view.measuredWidth, view.measuredHeight)
-         val returnedBitmap = Bitmap.createBitmap(view.measuredWidth, view.measuredHeight, Bitmap.Config.ARGB_8888)
-        //Bind a canvas to it
-        val canvas = Canvas(returnedBitmap)
-        //Get the view's background
-        val bgDrawable = view.background
-        if (bgDrawable != null) {
-            //has background drawable, then draw it on the canvas
-            bgDrawable.draw(canvas)
-        } else {
-            //does not have background drawable, then draw white background on the canvas
-            canvas.drawColor(ContextCompat.getColor(view.context,com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
-        }
-        // draw the view on the canvas
-        view.draw(canvas)
-        //return the bitmap
-        return returnedBitmap
-    }
+         val specWidth = View.MeasureSpec.makeMeasureSpec(dpToPx(250).toInt(), View.MeasureSpec.EXACTLY)
+         val specHeight = View.MeasureSpec.makeMeasureSpec(dpToPx(108).toInt(), View.MeasureSpec.EXACTLY)
+
+         v.measure(specWidth, specHeight)
+         val questionWidth: Int = v.measuredWidth
+         val questionHeight = v.measuredHeight
+
+         val b = Bitmap.createBitmap(questionWidth, questionHeight, Bitmap.Config.ARGB_8888)
+         val c = Canvas(b)
+         c.drawColor(Color.WHITE)
+         v.layout(v.left, v.top, v.right, v.bottom)
+         v.draw(c)
+         return b
+     }
 
      fun saveBitMap(context: Context, drawView: View): File {
         val filename: String =
@@ -96,7 +88,7 @@ object TmFileUtil {
             val bitmap = getBitmapFromView(drawView)
             pictureFile.createNewFile()
             val oStream = FileOutputStream(pictureFile)
-            bitmap?.compress(Bitmap.CompressFormat.PNG, 100, oStream)
+            bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, oStream)
             oStream.flush()
             oStream.close()
         } catch (e: IOException) {
