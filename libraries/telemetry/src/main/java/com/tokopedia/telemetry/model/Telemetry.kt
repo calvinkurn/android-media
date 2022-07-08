@@ -216,9 +216,7 @@ object Telemetry {
             if (elapsedDiff < SECTION_TELEMETRY_DURATION) {
                 typingList.add(Typing(elapsedDiff, diffChar))
             }
-        } catch (e: Exception) {
-
-        }
+        } catch (ignored: Exception) {}
     }
 
 }
