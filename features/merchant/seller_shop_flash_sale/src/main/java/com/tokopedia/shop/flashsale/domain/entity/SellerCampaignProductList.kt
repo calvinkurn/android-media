@@ -48,13 +48,13 @@ data class SellerCampaignProductList(
         val productMapStatus: Int = 0,
         val productMapAdminStatus: Int = 0,
         val originalPrice: Long = 0,
-        var discountedPrice: Long = 0,
+        val discountedPrice: Long = 0,
         val discountPercentage: Int = 0,
-        var customStock: Long = 0,
+        val customStock: Long = 0,
         val originalCustomStock: Int = 0,
         val originalStock: Int = 0,
         val campaignSoldCount: Int = 0,
-        var maxOrder: Int = 0
+        val maxOrder: Int = 0
     ): Parcelable
 
     @Parcelize

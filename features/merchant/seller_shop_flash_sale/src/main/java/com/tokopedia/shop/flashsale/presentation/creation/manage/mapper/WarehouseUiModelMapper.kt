@@ -3,6 +3,7 @@ package com.tokopedia.shop.flashsale.presentation.creation.manage.mapper
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.seller_shop_flash_sale.R
+import com.tokopedia.shop.flashsale.common.extension.isZero
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
 import com.tokopedia.shop.flashsale.presentation.creation.manage.model.WarehouseUiModel
 import javax.inject.Inject
@@ -12,6 +13,21 @@ class WarehouseUiModelMapper @Inject constructor(@ApplicationContext private val
     companion object {
         private const val MULTILOC_MIN_SHOP_COUNT = 2
         private const val WAREHOUSE_NAME_DEFAULT_SERVER = "Shop Location"
+    }
+
+    /**
+     * when selected warehouse's stock is out of stock,
+     * then search for new warehouse with largest stock for new selection
+     */
+    private fun List<WarehouseUiModel>.fixWarehouseSelection(): List<WarehouseUiModel> {
+        val isSelectedWarehouseOutOfStock = any { it.isSelected && it.stock.isZero() }
+        if (isSelectedWarehouseOutOfStock) {
+            val whId = maxByOrNull { it.stock }?.id
+            forEach {
+                it.isSelected = it.id == whId
+            }
+        }
+        return this
     }
 
     fun getString(resId: Int): String? {
@@ -34,7 +50,7 @@ class WarehouseUiModelMapper @Inject constructor(@ApplicationContext private val
                 stock = it.stock.toLong(),
                 isSelected = it.chosenWarehouse
             )
-        }
+        }.fixWarehouseSelection()
 
     fun isShopMultiloc(it: List<WarehouseUiModel>): Boolean {
         return it.size >= MULTILOC_MIN_SHOP_COUNT
