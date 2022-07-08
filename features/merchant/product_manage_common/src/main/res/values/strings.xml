@@ -37,7 +37,7 @@
     <string name="product_manage_closable_stock_ticker_title">Hanya menampilkan harga dan stok lokasi utama</string>
     <string name="product_manage_single_location_stock_no_access_description">Kamu tidak punya akses untuk atur stok produk.</string>
 
-    <string name="product_manage_campaign_stock_open_campaign">Untuk mengubah stok campaign, pergi ke seller.tokopedia.com melalui laptop, ya.</string>
+    <string name="product_manage_campaign_stock_open_campaign">Lihat detail informasi dan ubah stok campaign lewat Tokopedia versi desktop, ya.</string>
     <string name="product_manage_campaign_label">Campaign</string>
     <string name="product_manage_campaign_count">%d Promosi</string>
     <string name="product_manage_suspend_stock_info_description">Stok dikosongkan karena sering terjadi pembatalan</string>

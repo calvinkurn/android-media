@@ -158,6 +158,7 @@
     <string name="product_manage_more_menu">Lainnya</string>
     <string name="product_manage_shop_showcase_more_menu_text">Etalase Toko</string>
 
+    <string name="product_manage_campaign_stock_stock">Stok: &#160;</string>
     <string name="product_manage_campaign_stock_total_stock">Total Stok: &#160;</string>
     <string name="product_manage_campaign_stock_allocation">Alokasi Stok</string>
     <string name="product_manage_campaign_stock_save">Simpan</string>
@@ -168,6 +169,12 @@
     <string name="product_manage_campaign_stock_event_action">Lihat varian produk</string>
     <string name="product_manage_campaign_stock_redirection_title">Pantau pergerakan stok campaign \ndi manapun, kapanpun</string>
     <string name="product_manage_campaign_stock_redirection_desc">Gunakan aplikasi Tokopedia Seller untuk lihat alokasi stok produk untuk campaign di tokomu.</string>
+    <string name="product_manage_campaign_stock_on_variant">Campaign pada varian</string>
+    <string name="product_manage_campaign_stock_variant">Varian: &#160;</string>
+    <string name="product_manage_campaign_stock_period">%s - %s</string>
+    <string name="product_manage_campaign_stock_promotion_count">%d Campaign</string>
+    <string name="product_manage_campaign_stock_ongoing">Berlangsung</string>
+    <string name="product_manage_campaign_stock_upcoming">Akan Datang</string>
 
     <string name="product_manage_violation_ticker_message">Diduga ada pelanggaran</string>
     <string name="product_manage_suspend_ticker_message">Terindikasi terlalu sering terjadi pembatalan.</string>
