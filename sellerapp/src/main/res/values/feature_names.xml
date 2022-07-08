@@ -68,4 +68,9 @@
     <string name="vidpick_app_name">Video Recorder</string>
     <string name="album">Album</string>
     <string name="edit_image">Edit Gambar</string>
+
+    <!-- Shop Admin -->
+    <string name="title_shop_admin">Shop Admin</string>
+    <string name="title_admin_invitation_confirmation">Admin Invitation Confirmation</string>
+    <string name="title_admin_invitation_accepted">Admin Invitation Accepted</string>
 </resources>
