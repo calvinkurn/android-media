@@ -160,7 +160,7 @@ class UserProfileFragment @Inject constructor(
             mainBinding.rvPost.canScrollVertically(-1) || !shouldRefreshRecyclerView
         }
 
-        mainBinding.includeReminder.clContainer.setBackgroundResource(
+        mainBinding.cardUserReminder.clContainer.setBackgroundResource(
             R.drawable.bg_card_profile_reminder
         )
 
@@ -237,7 +237,9 @@ class UserProfileFragment @Inject constructor(
 //            ).showNow(childFragmentManager)
             }
 
-            mainBinding.includeReminder.btnCta.setOnClickListener { navigateToEditProfile() }
+            mainBinding.cardUserReminder.btnCompleteProfile.setOnClickListener {
+                navigateToEditProfile()
+            }
 
             mainBinding.rvPost.addOnScrollListener(feedFloatingButtonManager.scrollListener)
 //        recyclerviewPost?.let { feedFloatingButtonManager.setDelayForExpandFab(it) }
@@ -474,13 +476,13 @@ class UserProfileFragment @Inject constructor(
             prev.profileType == value.profileType
         ) return
 
-        val usernameEmpty = value.profileInfo.username.isBlank()
+        val usernameEmpty = !value.profileInfo.username.isBlank()
         val biographyEmpty = value.profileInfo.biography.isBlank()
 
         val isShowProfileReminder = viewModel.isSelfProfile && usernameEmpty && biographyEmpty
 
         if (isShowProfileReminder) showProfileReminder()
-        else mainBinding.includeReminder.root.hide()
+        else mainBinding.cardUserReminder.root.hide()
     }
 
     private fun buttonActionUIFollow() = with(mainBinding.btnAction) {
@@ -575,8 +577,7 @@ class UserProfileFragment @Inject constructor(
     }
 
     private fun showProfileReminder() = with(mainBinding) {
-        btnAction.hide()
-        includeReminder.root.show()
+        cardUserReminder.root.show()
     }
 
     private fun navigateToEditProfile() {

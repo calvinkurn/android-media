@@ -41,7 +41,7 @@
             app:typographyType="body_3" />
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btn_cta"
+            android:id="@+id/btn_complete_profile"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_8"

@@ -273,7 +273,7 @@
                         android:orientation="vertical">
 
                         <include
-                            android:id="@+id/include_reminder"
+                            android:id="@+id/card_user_reminder"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:visibility="gone"
