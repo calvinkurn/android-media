@@ -18,6 +18,21 @@ class LocationDetectorHelper constructor(private val permissionCheckerHelper: Pe
     companion object {
         const val TYPE_DEFAULT_FROM_CLOUD: Int = 1
         const val TYPE_DEFAULT_FROM_LOCAL: Int = 2
+
+        /**
+         * @param requestLocationType to determine location type that you need
+         */
+        fun getPermissions(requestLocationType: RequestLocationType): Array<String> {
+            return when(requestLocationType){
+                RequestLocationType.APPROXIMATE -> arrayOf(
+                    PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION)
+                RequestLocationType.PRECISE -> arrayOf(
+                    PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION)
+                RequestLocationType.APPROXIMATE_OR_PRECISE -> arrayOf(
+                    PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
+                    PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION)
+            }
+        }
     }
 
     private val LOCATION_CACHE: String = "LOCATION_CACHE"
@@ -105,20 +120,5 @@ class LocationDetectorHelper constructor(private val permissionCheckerHelper: Pe
 
     private fun saveToCache(deviceLocation: DeviceLocation) {
         cacheManager.put(PARAM_CACHE_DEVICE_LOCATION, deviceLocation)
-    }
-
-    /**
-     * @param requestLocationType to determine location type that you need
-     */
-    private fun getPermissions(requestLocationType: RequestLocationType): Array<String> {
-        return when(requestLocationType){
-            RequestLocationType.APPROXIMATE -> arrayOf(
-                PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION)
-            RequestLocationType.PRECISE -> arrayOf(
-                PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION)
-            RequestLocationType.APPROXIMATE_OR_PRECISE -> arrayOf(
-                PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
-                PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION)
-        }
     }
 }
