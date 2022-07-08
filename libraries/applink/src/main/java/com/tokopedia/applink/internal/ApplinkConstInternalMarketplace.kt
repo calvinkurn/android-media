@@ -64,7 +64,7 @@ object ApplinkConstInternalMarketplace {
     const val PRODUCT_REVIEW = "$INTERNAL_MARKETPLACE/product/{id}/review"
 
     // ReadReviewActivity
-    const val SHOP_REVIEW = "$INTERNAL_MARKETPLACE/shop/{id}/review"
+    const val SHOP_REVIEW_FULL_PAGE = "$INTERNAL_MARKETPLACE/shop/{id}/review"
 
     // ReviewCredibilityActivity
     const val REVIEW_CREDIBILITY = "$INTERNAL_MARKETPLACE/review/credibility/{userId}/{source}/"

@@ -10,6 +10,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.applink.salam.DeeplinkMapperSalam
+import com.tokopedia.applink.startsWithPattern
 import com.tokopedia.applink.statistic.DeepLinkMapperStatistic
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.url.Env
@@ -20,6 +21,10 @@ import com.tokopedia.url.TokopediaUrl
  */
 
 object DeeplinkMapperMarketplace {
+
+    private const val PARAM_SOURCE = "review-source"
+    private const val REVIEW_FULL_PAGE_SOURCE = "header"
+    private const val ACTION_REVIEW = "review"
 
     fun getRegisteredNavigationMarketplace(context: Context, deeplink: String): String {
         val uri = Uri.parse(deeplink)
@@ -52,7 +57,11 @@ object DeeplinkMapperMarketplace {
         } else if(isTokopediaNowShopId(shopId) && !GlobalConfig.isSellerApp()){
             ApplinkConstInternalTokopediaNow.HOME
         } else {
-            internalAppLink
+            if (isShopReviewAppLink(deeplink)) {
+                getShopReviewDestinationPage(uri, shopId)
+            } else {
+                internalAppLink
+            }
         }
     }
 
@@ -66,6 +75,23 @@ object DeeplinkMapperMarketplace {
 
     private fun isSpecialShop(shopId: String): Boolean {
         return shopId == ApplinkConst.SALAM_UMRAH_SHOP_ID
+    }
+
+    private fun isShopReviewAppLink(deeplink: String): Boolean {
+        return Uri.parse(deeplink).let {
+            deeplink.startsWithPattern(ApplinkConst.SHOP_REVIEW) && it.lastPathSegment == ACTION_REVIEW
+        }
+    }
+
+    private fun getShopReviewDestinationPage(uri: Uri, shopId: String): String {
+        val source = uri.getQueryParameter(PARAM_SOURCE).orEmpty()
+        return if (source.isNotEmpty() && source == REVIEW_FULL_PAGE_SOURCE) {
+            // review page full page
+            UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_REVIEW_FULL_PAGE, shopId)
+        } else {
+            // go to shop page and redirect to review tab
+            UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_REVIEW, shopId)
+        }
     }
 
     private fun isTokopediaNowShopId(shopId: String): Boolean {

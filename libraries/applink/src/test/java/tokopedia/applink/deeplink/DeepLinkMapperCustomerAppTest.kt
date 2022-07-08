@@ -320,10 +320,18 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check shop review appLink then should return tokopedia internal shop review in customerapp`() {
+    fun `check shop review appLink with empty source then should return tokopedia internal shop review tab in customerapp`() {
         val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/shop/1479278/review"
-        val appLink = UriUtil.buildUri(ApplinkConst.SHOP_REVIEW, "1479278")
+            "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/shop-page/1479278/review?review-source="
+        val appLink = UriUtil.buildUri(ApplinkConst.SHOP_REVIEW, "1479278", "")
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check shop review appLink with source header then should return tokopedia internal shop review fullpage in customerapp`() {
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/shop/1479278/review?review-source=header"
+        val appLink = UriUtil.buildUri(ApplinkConst.SHOP_REVIEW, "1479278", "header")
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
 
