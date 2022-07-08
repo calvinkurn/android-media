@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatroom.viewmodel
 
+import com.tokopedia.chat_common.domain.pojo.productattachment.ProductAttachmentAttributes
 import com.tokopedia.topchat.FileUtil
 import com.tokopedia.topchat.chatroom.domain.mapper.ChatAttachmentMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.preattach.PreAttachPayloadResponse
@@ -34,7 +35,7 @@ class PreloadProductAttachmentViewModelTest: BaseTopChatViewModelTest() {
         viewModel.loadProductPreview(listOf(product.id))
 
         // Then
-        assertEquals(viewModel.attachments.size, 1)
+        assertEquals(viewModel.attachmentPreviewData.size, 1)
     }
 
     @Test
@@ -49,7 +50,7 @@ class PreloadProductAttachmentViewModelTest: BaseTopChatViewModelTest() {
         viewModel.reloadCurrentAttachment()
 
         // Then
-        assertEquals(viewModel.attachments.size, 1)
+        assertEquals(viewModel.attachmentPreviewData.size, 1)
     }
 
     @Test
@@ -63,5 +64,61 @@ class PreloadProductAttachmentViewModelTest: BaseTopChatViewModelTest() {
 
         // Then
         assertEquals(viewModel.isAttachmentPreviewReady(), false)
+    }
+
+    @Test
+    fun should_pre_load_the_same_product_attachment_once_even_when_product_id_changed() {
+        // Given
+        val product = defaultPreAttachResponse.chatPreAttachPayload.list[0]
+        coEvery {
+            chatPreAttachPayload(any())
+        } returns defaultPreAttachResponse
+        coEvery {
+            chatAttachmentMapper.map(any<PreAttachPayloadResponse>())
+        } returns realChatMapper.map(defaultPreAttachResponse)
+        viewModel.roomMetaData.updateMessageId(testMessageId)
+
+        // When
+        viewModel.loadProductPreview(listOf("parent product id"))
+        viewModel.loadProductPreview(listOf("parent product id"))
+
+        // Then
+        assertEquals(viewModel.attachmentPreviewData.size, 1)
+        assertEquals(
+            (viewModel.attachmentPreviewData[product.id]?.parsedAttributes as
+                    ProductAttachmentAttributes).productId,
+            product.id
+        )
+    }
+
+    @Test
+    fun should_reload_pre_load_product_attachment_even_when_product_id_changed() {
+        // Given
+        val expectedThrowable = Throwable("Oops!")
+        val product = defaultPreAttachResponse.chatPreAttachPayload.list[0]
+        coEvery {
+            chatAttachmentMapper.map(any<PreAttachPayloadResponse>())
+        } returns realChatMapper.map(defaultPreAttachResponse)
+        viewModel.roomMetaData.updateMessageId(testMessageId)
+
+        // When fail to pre load
+        coEvery {
+            chatPreAttachPayload(any())
+        } throws expectedThrowable
+        viewModel.loadProductPreview(listOf("parent product id"))
+
+        // When success to pre load
+        coEvery {
+            chatPreAttachPayload(any())
+        } returns defaultPreAttachResponse
+        viewModel.reloadCurrentAttachment()
+
+        // Then
+        assertEquals(viewModel.attachmentPreviewData.size, 1)
+        assertEquals(
+            (viewModel.attachmentPreviewData[product.id]?.parsedAttributes as
+                    ProductAttachmentAttributes).productId,
+            product.id
+        )
     }
 }

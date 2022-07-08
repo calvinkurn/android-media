@@ -11,8 +11,10 @@ import com.tokopedia.search.result.domain.model.InspirationCarouselChipsProductM
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.product.banner.BannerPresenterDelegate
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressView
+import com.tokopedia.search.result.product.pagination.PaginationImpl
 import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.utils.SchedulersProvider
@@ -58,6 +60,7 @@ internal open class ProductListPresenterTestFixtures {
     protected val performanceMonitoring = mockk<PageLoadTimePerformanceInterface>(relaxed = true)
     protected val chooseAddressView = mockk<ChooseAddressView>(relaxed = true)
     protected val remoteConfigAbTest = mockk<RemoteConfig>(relaxed = true)
+    protected val pagination = PaginationImpl()
     protected val testSchedulersProvider = object : SchedulersProvider {
         override fun io() = Schedulers.immediate()
 
@@ -85,7 +88,9 @@ internal open class ProductListPresenterTestFixtures {
             topAdsHeadlineHelper,
             { performanceMonitoring },
             ChooseAddressPresenterDelegate(chooseAddressView),
-            RequestParamsGenerator(userSession),
+            BannerPresenterDelegate(pagination),
+            RequestParamsGenerator(userSession, pagination),
+            pagination,
         )
         productListPresenter.attachView(productListView)
     }
@@ -143,6 +148,8 @@ internal open class ProductListPresenterTestFixtures {
         productItem.minOrder shouldBe topAdsProduct.product.productMinimumOrder
         productItem.position shouldBe position
         productItem.productName shouldBe topAdsProduct.product.name
+        productItem.applink shouldBe topAdsProduct.applinks
+        productItem.customVideoURL shouldBe topAdsProduct.product.customVideoUrl
     }
 
     protected fun Visitable<*>.assertOrganicProduct(

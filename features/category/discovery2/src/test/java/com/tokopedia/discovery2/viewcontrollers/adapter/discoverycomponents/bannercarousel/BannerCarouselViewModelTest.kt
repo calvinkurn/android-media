@@ -52,7 +52,7 @@ class BannerCarouselViewModelTest {
         viewModel.bannerUseCase = bannerUseCase
         every { componentsItem.properties?.dynamic } returns true
         coEvery {
-            bannerUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint, application.applicationContext)
+            bannerUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint)
         } throws Exception("Error")
 
         viewModel.onAttachToViewHolder()
@@ -66,7 +66,7 @@ class BannerCarouselViewModelTest {
         viewModel.bannerUseCase = bannerUseCase
         every { componentsItem.properties?.dynamic } returns true
         coEvery {
-            bannerUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint, application.applicationContext)
+            bannerUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint)
         } throws UnknownHostException("Error")
 
         viewModel.onAttachToViewHolder()
@@ -80,7 +80,7 @@ class BannerCarouselViewModelTest {
         viewModel.bannerUseCase = bannerUseCase
         every { componentsItem.properties?.dynamic } returns true
         coEvery {
-            bannerUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint, application.applicationContext)
+            bannerUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint)
         } throws SocketTimeoutException("Error")
 
         viewModel.onAttachToViewHolder()
@@ -94,7 +94,7 @@ class BannerCarouselViewModelTest {
         viewModel.bannerUseCase = bannerUseCase
         every { componentsItem.properties?.dynamic } returns true
         coEvery {
-            bannerUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint, application.applicationContext)
+            bannerUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint)
         } returns true
         list.clear()
         list.add(mockedDataItem)
@@ -112,7 +112,7 @@ class BannerCarouselViewModelTest {
         mockkObject(DiscoveryDataMapper)
         every { componentsItem.properties?.dynamic } returns true
         coEvery {
-            bannerUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint, application.applicationContext)
+            bannerUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint)
         } returns true
         list.clear()
         every { componentsItem.data } returns list

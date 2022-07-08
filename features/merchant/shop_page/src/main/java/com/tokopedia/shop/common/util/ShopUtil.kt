@@ -2,6 +2,7 @@ package com.tokopedia.shop.common.util
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.text.TextUtils
 import androidx.core.content.ContextCompat
 import com.tokopedia.device.info.DeviceScreenInfo
@@ -10,6 +11,8 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
+import com.tokopedia.media.loader.common.Properties
+import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -33,6 +36,7 @@ import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY.USER_ID_KEY
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderBasicInfoWidgetViewHolder
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.utils.image.ImageProcessingUtil
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
@@ -145,6 +149,15 @@ object ShopUtil {
 
     fun getActualPositionFromIndex(indexPosition: Int): Int{
         return indexPosition + VALUE_INT_ONE
+    }
+
+    fun loadImageWithEmptyTarget(
+        context: Context,
+        url: String,
+        properties: Properties.() -> Unit,
+        mediaTarget: MediaBitmapEmptyTarget<Bitmap>
+    ) {
+        com.tokopedia.media.loader.loadImageWithEmptyTarget(context, url, properties, mediaTarget)
     }
 
     fun isEnableShopDynamicTab(context: Context?): Boolean {

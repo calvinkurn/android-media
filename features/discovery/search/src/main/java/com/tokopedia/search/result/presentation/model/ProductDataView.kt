@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.presentation.model
 
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.search.result.product.banner.BannerDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetVisitable
 import com.tokopedia.search.result.product.violation.ViolationDataView
@@ -35,6 +36,13 @@ class ProductDataView {
 
     fun isAdvancedNegativeKeywordSearch(): Boolean {
         if (keywordProcess.isNullOrEmpty()) return false
-        return keywordProcess.toIntOrZero() in 16..31
+        return keywordProcess.toIntOrZero() in ADVANCED_NEGATIVE_KEYWORD_RANGE
+    }
+
+    companion object {
+        private const val ADVANCED_NEGATIVE_KEYWORD_PROCESS_START = 16
+        private const val ADVANCED_NEGATIVE_KEYWORD_PROCESS_END = 31
+        private val ADVANCED_NEGATIVE_KEYWORD_RANGE =
+            ADVANCED_NEGATIVE_KEYWORD_PROCESS_START..ADVANCED_NEGATIVE_KEYWORD_PROCESS_END
     }
 }

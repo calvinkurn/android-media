@@ -21,6 +21,7 @@ import com.tokopedia.linker.model.UserData;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.tokopatch.TokoPatch;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
@@ -83,10 +84,9 @@ public abstract class MainApplication extends CoreNetworkApplication {
 
         initBranch();
         NotificationUtils.setNotificationChannel(this);
-        if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
-            upgradeSecurityProvider();
-        }
+        upgradeSecurityProvider();
         createAndCallBgWork();
+        TokoPatch.init(this);
     }
 
     private void createAndCallBgWork(){
@@ -105,9 +105,7 @@ public abstract class MainApplication extends CoreNetworkApplication {
     private Boolean executeInBackground(){
         locationUtils = new LocationUtils(MainApplication.this);
         locationUtils.initLocationBackground();
-        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
-            upgradeSecurityProvider();
-        }
+        upgradeSecurityProvider();
         return true;
     }
 
