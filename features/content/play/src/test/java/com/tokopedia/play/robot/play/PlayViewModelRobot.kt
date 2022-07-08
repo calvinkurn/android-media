@@ -34,6 +34,7 @@ import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.sse.PlayChannelSSE
+import com.tokopedia.play_common.util.PlayLiveRoomMetricsCommon
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.util.extension.exhaustive
 import com.tokopedia.play_common.websocket.PlayWebSocket
@@ -74,6 +75,7 @@ class PlayViewModelRobot(
     playShareExperience: PlayShareExperience,
     chatStreamsFactory: ChatStreams.Factory,
     playLog: PlayLog,
+    liveRoomMetricsCommon: PlayLiveRoomMetricsCommon,
 ) : Robot {
 
     private val productTagBuilder = PlayProductTagsModelBuilder()
@@ -100,6 +102,7 @@ class PlayViewModelRobot(
         playShareExperience,
         playLog,
         chatStreamsFactory,
+        liveRoomMetricsCommon,
     )
 
     fun createPage(channelData: PlayChannelData) {
@@ -272,7 +275,8 @@ fun givenPlayViewModelRobot(
     playShareExperience: PlayShareExperience = mockk(relaxed = true),
     chatStreamsFactory: ChatStreams.Factory = mockk(relaxed = true),
     playLog: PlayLog = mockk(relaxed = true),
-    fn: PlayViewModelRobot.() -> Unit = {}
+    liveRoomMetricsCommon: PlayLiveRoomMetricsCommon = mockk(relaxed = true),
+    fn: PlayViewModelRobot.() -> Unit = {},
 ): PlayViewModelRobot {
     return PlayViewModelRobot(
         channelId = channelId,
@@ -298,6 +302,7 @@ fun givenPlayViewModelRobot(
         playShareExperience = playShareExperience,
         chatStreamsFactory = chatStreamsFactory,
         playLog = playLog,
+        liveRoomMetricsCommon = liveRoomMetricsCommon,
     ).apply(fn)
 }
 

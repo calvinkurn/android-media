@@ -24,6 +24,7 @@ import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.sse.PlayChannelSSE
+import com.tokopedia.play_common.util.PlayLiveRoomMetricsCommon
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -61,6 +62,7 @@ class PlayViewModelRobot2(
     playShareExperience: PlayShareExperience,
     chatStreamsFactory: ChatStreams.Factory,
     playLog: PlayLog,
+    liveRoomMetricsCommon: PlayLiveRoomMetricsCommon,
 ) : Closeable {
 
     val viewModel: PlayViewModel = PlayViewModel(
@@ -85,6 +87,7 @@ class PlayViewModelRobot2(
         playShareExperience,
         playLog,
         chatStreamsFactory,
+        liveRoomMetricsCommon,
         )
 
     fun createPage(channelData: PlayChannelData) {
@@ -195,6 +198,7 @@ fun createPlayViewModelRobot(
     playShareExperience: PlayShareExperience = mockk(relaxed = true),
     chatStreamsFactory: ChatStreams.Factory = mockk(relaxed = true),
     playLog: PlayLog = mockk(relaxed = true),
+    liveRoomMetricsCommon: PlayLiveRoomMetricsCommon = mockk(relaxed = true),
     fn: PlayViewModelRobot2.() -> Unit = {}
 ): PlayViewModelRobot2 {
     return PlayViewModelRobot2(
@@ -218,6 +222,7 @@ fun createPlayViewModelRobot(
         castPlayerHelper = castPlayerHelper,
         playShareExperience = playShareExperience,
         chatStreamsFactory = chatStreamsFactory,
-        playLog = playLog
+        playLog = playLog,
+        liveRoomMetricsCommon = liveRoomMetricsCommon,
     ).apply(fn)
 }
