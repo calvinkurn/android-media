@@ -246,9 +246,6 @@ class UserProfileFragment @Inject constructor(
             mainBinding.cardUserReminder.btnCompleteProfile.setOnClickListener {
                 navigateToEditProfile()
             }
-
-            mainBinding.rvPost.addOnScrollListener(feedFloatingButtonManager.scrollListener)
-//        recyclerviewPost?.let { feedFloatingButtonManager.setDelayForExpandFab(it) }
         }
     }
 
