@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
+import com.tokopedia.abstraction.base.view.fragment.IBaseMultiFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood
 import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
@@ -74,5 +75,18 @@ object TokofoodRouteManager {
                 }
             }
         }
+    }
+
+    fun Fragment.isMostTopFragment(): Boolean  {
+        var lastFragment : Fragment? = null
+        val currentFragmentTag = this.javaClass.name
+        this.parentFragmentManager.fragments.reversed().forEach {
+            if (it is IBaseMultiFragment){
+                lastFragment = it
+                return@forEach
+            }
+        }
+        val lastFragmentTag = lastFragment?.javaClass?.name.orEmpty()
+        return currentFragmentTag == lastFragmentTag
     }
 }

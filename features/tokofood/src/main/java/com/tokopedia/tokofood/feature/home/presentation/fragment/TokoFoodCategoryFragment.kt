@@ -45,6 +45,7 @@ import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsVie
 import com.tokopedia.tokofood.common.util.Constant
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
+import com.tokopedia.tokofood.common.util.TokofoodRouteManager.isMostTopFragment
 import com.tokopedia.tokofood.databinding.FragmentTokofoodCategoryBinding
 import com.tokopedia.tokofood.feature.home.analytics.TokoFoodCategoryAnalytics
 import com.tokopedia.tokofood.feature.home.analytics.TokoFoodHomeCategoryCommonAnalytics
@@ -252,7 +253,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
                         (uiEvent.data as? CheckoutTokoFoodData)?.let {
                             analytics.clickAtc(userSession.userId, localCacheModel?.district_id, it)
                         }
-                        if (this@TokoFoodCategoryFragment.isVisible){
+                        if (this@TokoFoodCategoryFragment.isMostTopFragment()){
                             goToPurchasePage()
                         }
                     }

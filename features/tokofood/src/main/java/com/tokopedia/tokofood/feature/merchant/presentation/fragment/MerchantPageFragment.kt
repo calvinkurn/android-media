@@ -56,6 +56,7 @@ import com.tokopedia.tokofood.common.util.Constant
 import com.tokopedia.tokofood.common.util.TokofoodExt.getSuccessUpdateResultPair
 import com.tokopedia.tokofood.common.util.TokofoodExt.showErrorToaster
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
+import com.tokopedia.tokofood.common.util.TokofoodRouteManager.isMostTopFragment
 import com.tokopedia.tokofood.databinding.FragmentMerchantPageLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.analytics.MerchantPageAnalytics
 import com.tokopedia.tokofood.feature.merchant.common.util.MerchantShareComponentUtil
@@ -739,7 +740,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                                 merchantId
                             )
                         }
-                        if (this@MerchantPageFragment.isVisible){
+                        if (this@MerchantPageFragment.isMostTopFragment()){
                             navigateToNewFragment(TokoFoodPurchaseFragment.createInstance())
                         }
                     }
