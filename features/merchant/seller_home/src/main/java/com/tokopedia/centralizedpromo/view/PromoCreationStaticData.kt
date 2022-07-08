@@ -34,6 +34,14 @@ object PromoCreationStaticData {
     ): PromoCreationListUiModel {
         val promoItems = mutableListOf(
             PromoCreationUiModel(
+                R.drawable.ic_sah_tokomember,
+                resourceProvider.getPromoCreationTitleTokoMember(),
+                resourceProvider.getPromoCreationDescriptionTokoMember(),
+                String.EMPTY,
+                ApplinkConst.SellerApp.TOKOMEMBER,
+                resourceProvider.getPromoCreationLabelTokoMember()
+            ),
+            PromoCreationUiModel(
                 R.drawable.ic_tokopedia_play,
                 resourceProvider.getPromoCreationTitleTokopediaPlay(),
                 resourceProvider.getPromoCreationDescriptionTokopediaPlay(),
@@ -43,15 +51,7 @@ object PromoCreationStaticData {
                 } else {
                     ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER
                 }
-            ),
-            PromoCreationUiModel(
-                R.drawable.ic_sah_tokomember,
-                resourceProvider.getPromoCreationTitleTokoMember(),
-                resourceProvider.getPromoCreationDescriptionTokoMember(),
-                String.EMPTY,
-                ApplinkConst.SellerApp.TOKOMEMBER,
-                resourceProvider.getPromoCreationLabelTokoMember()
-            ),
+            )
         )
 
         if (isSlashPriceEnabled) {

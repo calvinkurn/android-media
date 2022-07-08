@@ -68,7 +68,6 @@ import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_DESC
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_RETRY
 import com.tokopedia.tokomember_seller_dashboard.util.ErrorState
-import com.tokopedia.tokomember_seller_dashboard.util.LOADING_TEXT
 import com.tokopedia.tokomember_seller_dashboard.util.PREMIUM
 import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_TYPE_AUTO
 import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_TYPE_MANUAL
@@ -86,6 +85,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.TIME_DESC_END
 import com.tokopedia.tokomember_seller_dashboard.util.TIME_TITLE
 import com.tokopedia.tokomember_seller_dashboard.util.TIME_TITLE_END
 import com.tokopedia.tokomember_seller_dashboard.util.TM_ERROR_PROGRAM
+import com.tokopedia.tokomember_seller_dashboard.util.TM_SUMMARY_DIALOG_TITLE
 import com.tokopedia.tokomember_seller_dashboard.util.TM_TNC
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.convertDateTime
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.convertDateTimeRemoveTimeDiff
@@ -120,7 +120,6 @@ import kotlinx.android.synthetic.main.tm_dash_tnc_coupon_creation.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
-import kotlin.math.max
 
 class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
 
@@ -358,7 +357,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                     } else {
                         closeLoadingDialog()
                         setButtonState()
-                        handleProgramPreValidateError()
+                        handleProgramPreValidateError(it.data?.membershipValidateBenefit?.resultStatus?.message?.getOrNull(0), it.data?.membershipValidateBenefit?.resultStatus?.message?.getOrNull(1))
                     }
                 }
                 TokoLiveDataResult.STATUS.ERROR -> {
@@ -460,7 +459,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         loaderDialog?.loaderText?.apply {
             setType(Typography.DISPLAY_2)
         }
-        loaderDialog?.setLoadingText(Html.fromHtml(LOADING_TEXT))
+        loaderDialog?.setLoadingText(Html.fromHtml(TM_SUMMARY_DIALOG_TITLE))
         loaderDialog?.show()
     }
 
@@ -526,12 +525,24 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun handleProgramPreValidateError() {
+    private fun handleProgramPreValidateError(reason: String?, message: String?) {
         setButtonState()
         val bundle = Bundle()
+        val title = if(reason.isNullOrEmpty()) {
+            PROGRAM_VALIDATION_ERROR_TITLE
+        }
+        else{
+            reason
+        }
+        val desc = if(message.isNullOrEmpty()) {
+            PROGRAM_VALIDATION_ERROR_DESC
+        }
+        else{
+            message
+        }
         val tmIntroBottomSheetModel = TmIntroBottomsheetModel(
-            PROGRAM_VALIDATION_ERROR_TITLE,
-            PROGRAM_VALIDATION_ERROR_DESC,
+            title,
+            desc,
             TM_ERROR_PROGRAM,
             PROGRAM_VALIDATION_CTA_TEXT
         )
@@ -973,6 +984,23 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 textFieldProgramStartTime.editText.inputType = InputType.TYPE_NULL
                 textFieldProgramEndDate.editText.inputType = InputType.TYPE_NULL
                 textFieldProgramEndTime.editText.inputType = InputType.TYPE_NULL
+
+                textFieldProgramStartDate.editText.setOnFocusChangeListener { view, b ->
+                    if(b)
+                        clickDatePicker(textFieldProgramStartDate, 0, DATE_TITLE , DATE_DESC)
+                }
+                textFieldProgramStartTime.editText.setOnFocusChangeListener { view, b ->
+                    if(b)
+                        clickTimePicker(textFieldProgramStartTime, 0, TIME_TITLE, TIME_DESC)
+                }
+                textFieldProgramEndDate.editText.setOnFocusChangeListener { view, b ->
+                    if(b)
+                        clickDatePicker(textFieldProgramEndDate, 1, DATE_TITLE_END, DATE_DESC_END)
+                }
+                textFieldProgramEndTime.editText.setOnFocusChangeListener { view, b ->
+                    if(b)
+                        clickTimePicker(textFieldProgramEndTime, 1, TIME_TITLE_END, TIME_DESC_END)
+                }
             }
         }
     }

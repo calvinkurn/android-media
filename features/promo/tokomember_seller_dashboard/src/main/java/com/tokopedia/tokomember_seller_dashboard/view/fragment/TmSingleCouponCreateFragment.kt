@@ -376,16 +376,16 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                         if (it.data?.membershipValidateBenefit?.resultStatus?.code == "42050") {
                             //No Active program available
                             handleProgramPreValidateError(
-                                it.data.membershipValidateBenefit.resultStatus.reason,
-                                it?.data.membershipValidateBenefit.resultStatus.message?.firstOrNull(),
+                                it.data.membershipValidateBenefit.resultStatus.message?.getOrNull(0),
+                                it?.data.membershipValidateBenefit.resultStatus.message?.getOrNull(1),
                                 true
                             )
                         }
                         if (it.data?.membershipValidateBenefit?.resultStatus?.code == "42049") {
                             //Coupon active date outside program time window
                             handleProgramPreValidateError(
-                                it.data.membershipValidateBenefit.resultStatus.reason,
-                                it?.data.membershipValidateBenefit.resultStatus.message?.firstOrNull(),
+                                it.data.membershipValidateBenefit.resultStatus.message?.getOrNull(0),
+                                it?.data.membershipValidateBenefit.resultStatus.message?.getOrNull(1),
                                 false
                             )
                         }
@@ -986,15 +986,12 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         textFieldProgramStartDate.iconContainer.setOnClickListener {
             clickDatePicker(textFieldProgramStartDate, 0)
         }
-
         textFieldProgramStartTime.iconContainer.setOnClickListener {
             clickTimePicker(textFieldProgramStartTime, 0)
         }
-
         textFieldProgramEndDate.iconContainer.setOnClickListener {
             clickDatePicker(textFieldProgramEndDate, 1)
         }
-
         textFieldProgramEndTime.iconContainer.setOnClickListener {
             clickTimePicker(textFieldProgramEndTime, 1)
         }
@@ -1003,18 +1000,45 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
     private fun setProgramDateAuto(){
         when(selectedChipPositionDate){
             ProgramDateType.AUTO -> {
-
                 if(programData!= null) {
-                    textFieldProgramStartDate.editText.setText(
-                        TmDateUtil.setDate(
-                            programData?.timeWindow?.startTime.toString()
+                    if(programStatus == ACTIVE){
+                        val todayCalendar =
+                            GregorianCalendar(context?.let {
+                                LocaleUtils.getCurrentLocale(
+                                    it
+                                )
+                            })
+                        val todayDate = TmDateUtil.setDatePreview(TmDateUtil.getDateFromUnix(todayCalendar))
+                        val day = getDayOfWeekID(todayCalendar.get(Calendar.DAY_OF_WEEK))
+                        textFieldProgramStartDate.editText.setText(
+                            "$day, $todayDate"
                         )
-                    )
+                    }
+                    else {
+                        textFieldProgramStartDate.editText.setText(
+                            TmDateUtil.setDate(
+                                programData?.timeWindow?.startTime.toString()
+                            )
+                        )
+                    }
+                    val minTimeStart = GregorianCalendar(context?.let {
+                        LocaleUtils.getCurrentLocale(
+                            it
+                        )
+                    })
+                    minTimeStart.apply {
+                        add(Calendar.HOUR_OF_DAY, 4)
+                        set(Calendar.MINUTE,30)
+                        set(Calendar.SECOND,0)
+                    }
+                    val minuteCurrent = minTimeStart.get(Calendar.MINUTE)
+                    if (minuteCurrent>30){
+                        minTimeStart.add(Calendar.MINUTE,30)
+                    }
                     textFieldProgramStartTime.editText.setText(
-                        TmDateUtil.setTime(
-                            programData?.timeWindow?.startTime.toString()
-                        )
+                            "${minTimeStart.get(Calendar.HOUR_OF_DAY)}:${minTimeStart.get(Calendar.MINUTE)} WIB"
                     )
+                    tmCouponStartDateUnix = minTimeStart
                     textFieldProgramEndDate.editText.setText(TmDateUtil.setDate(programData?.timeWindow?.endTime.toString()))
                     textFieldProgramEndTime.editText.setText(TmDateUtil.setTime(programData?.timeWindow?.endTime.toString()))
                 }
@@ -1040,6 +1064,23 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                 textFieldProgramEndDate.iconContainer.isEnabled = true
                 textFieldProgramEndTime.isEnabled  = true
                 textFieldProgramEndTime.iconContainer.isEnabled = true
+
+                textFieldProgramStartDate.editText.setOnFocusChangeListener { view, b ->
+                    if(b)
+                    clickDatePicker(textFieldProgramStartDate, 0)
+                }
+                textFieldProgramStartTime.editText.setOnFocusChangeListener { view, b ->
+                    if(b)
+                    clickTimePicker(textFieldProgramStartTime, 0)
+                }
+                textFieldProgramEndDate.editText.setOnFocusChangeListener { view, b ->
+                    if(b)
+                    clickDatePicker(textFieldProgramEndDate, 1)
+                }
+                textFieldProgramEndTime.editText.setOnFocusChangeListener { view, b ->
+                    if(b)
+                    clickTimePicker(textFieldProgramEndTime, 1)
+                }
             }
         }
         setTotalTransactionAmount()
@@ -1099,7 +1140,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
             // user can select end date 1 year from start date
 
             calendarMax.add(Calendar.YEAR, 1)
-            if(programStatus != ACTIVE) {
+            if(programStatus == ACTIVE) {
                 //upcoming
                 programData?.timeWindow?.startTime?.let {
                     defaultCalendar.time = sdf.parse(programData?.timeWindow?.startTime + "00") ?: Date()
@@ -1152,28 +1193,45 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         // if 4:37 -> 9:00
 
         // end time same as program end time
+        val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, com.tokopedia.tokomember_seller_dashboard.util.locale)
 
         context?.let { ctx ->
-            val minTime =
-                GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {
-                    set(Calendar.HOUR_OF_DAY, 0)
-                    set(Calendar.MINUTE, 30)
+            var minTime = GregorianCalendar(LocaleUtils.getCurrentLocale(ctx))
+            if(type == 0){
+                val minTimeStart = GregorianCalendar(context?.let {
+                    LocaleUtils.getCurrentLocale(
+                        it
+                    )
+                })
+                minTimeStart.apply {
+                    add(Calendar.HOUR_OF_DAY, 4)
+                    set(Calendar.MINUTE,30)
+                    set(Calendar.SECOND,0)
                 }
-            val defaultTime =
-                GregorianCalendar( LocaleUtils.getCurrentLocale(ctx))
-            val maxTime =
-                GregorianCalendar( LocaleUtils.getCurrentLocale(ctx)).apply {
+                val minuteCurrent = minTimeStart.get(Calendar.MINUTE)
+                if (minuteCurrent>30){
+                    minTimeStart.add(Calendar.MINUTE,30)
+                }
+                minTime = minTimeStart
+            }
+            else{
+                val minTimeEnd = GregorianCalendar(LocaleUtils.getCurrentLocale(ctx))
+                minTimeEnd.time = sdf.parse(programData?.timeWindow?.endTime) ?: Date()
+                minTime = minTimeEnd
+            }
+            val maxTime = GregorianCalendar( LocaleUtils.getCurrentLocale(ctx)).apply {
                     set(Calendar.HOUR_OF_DAY, 23)
-                    set(Calendar.MINUTE, 30)
+                    set(Calendar.MINUTE, 59)
                 }
 
             val timerPickerUnify = DateTimePickerUnify(
                 context = ctx,
                 minDate = minTime,
-                defaultDate = defaultTime,
+                defaultDate =  minTime,
                 maxDate = maxTime,
                 type = DateTimePickerUnify.TYPE_TIMEPICKER
             ).apply {
+                minuteInterval = 30
                 when(type){
                     0 -> {
                         setTitle(TIME_TITLE)
