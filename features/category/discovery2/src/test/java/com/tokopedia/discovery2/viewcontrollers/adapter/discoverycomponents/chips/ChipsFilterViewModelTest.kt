@@ -3,10 +3,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.chi
 import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery2.data.ComponentsItem
-import io.mockk.MockKAnnotations
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.spyk
+import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -65,18 +62,16 @@ class ChipsFilterViewModelTest {
 
     @Test
     fun onChipSelected() {
-        runBlocking {
-            val id = "5"
-            val list = mockk<ArrayList<ComponentsItem>>(relaxed = true)
-            every { componentsItem.getComponentsItem() } returns list
-            every { componentsItem.id } returns "s"
-            every { componentsItem.pageEndPoint } returns "s"
-            every { viewModel.chipSelectionUseCase.onChipSelection(any(),any(),any()) } returns true
+        val id = "5"
+        val list = mockk<ArrayList<ComponentsItem>>(relaxed = true)
+        every { componentsItem.getComponentsItem() } returns list
+        every { componentsItem.id } returns "s"
+        every { componentsItem.pageEndPoint } returns "s"
+        coEvery { viewModel.chipSelectionUseCase.onChipSelection(any(), any(), any()) } returns true
 
-            viewModel.onChipSelected(id)
+        viewModel.onChipSelected(id)
 
-            assertEquals(viewModel.syncData.value, true)
-        }
+        assertEquals(viewModel.syncData.value, true)
     }
 
     /**************************** onChipSelected() *******************************************/
@@ -85,18 +80,16 @@ class ChipsFilterViewModelTest {
 
     @Test
     fun onChipUnSelected() {
-        runBlocking {
-            val id = "5"
-            val list = mockk<ArrayList<ComponentsItem>>(relaxed = true)
-            every { componentsItem.getComponentsItem() } returns list
-            every { componentsItem.id } returns "s"
-            every { componentsItem.pageEndPoint } returns "s"
-            every { viewModel.chipSelectionUseCase.onChipUnSelection(any(),any()) } returns true
+        val id = "5"
+        val list = mockk<ArrayList<ComponentsItem>>(relaxed = true)
+        every { componentsItem.getComponentsItem() } returns list
+        every { componentsItem.id } returns "s"
+        every { componentsItem.pageEndPoint } returns "s"
+        coEvery { viewModel.chipSelectionUseCase.onChipUnSelection(any(), any()) } returns true
 
-            viewModel.onChipUnSelected(id)
+        viewModel.onChipUnSelected(id)
 
-            assertEquals(viewModel.syncData.value, true)
-        }
+        assertEquals(viewModel.syncData.value, true)
     }
 
     /**************************** onChipUnSelected() *******************************************/

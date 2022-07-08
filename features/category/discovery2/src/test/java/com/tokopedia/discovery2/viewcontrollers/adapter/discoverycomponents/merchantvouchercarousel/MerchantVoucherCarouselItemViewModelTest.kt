@@ -31,7 +31,7 @@ class MerchantVoucherCarouselItemViewModelTest {
 
     @Test
     fun `test for components`(){
-        assert(viewModel.components === componentsItem)
+        assert(viewModel.components == componentsItem)
     }
 
     @Test
