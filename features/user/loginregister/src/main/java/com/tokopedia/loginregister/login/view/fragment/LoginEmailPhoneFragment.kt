@@ -16,12 +16,7 @@ import android.text.format.DateFormat
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.LinearLayout
@@ -110,7 +105,6 @@ import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.constants.SessionConstants
@@ -330,7 +324,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         source = getParamString(ApplinkConstInternalGlobal.PARAM_SOURCE, arguments, savedInstanceState, "")
         isAutoLogin = getParamBoolean(LoginConstants.AutoLogin.IS_AUTO_LOGIN, arguments, savedInstanceState, false)
         isUsingRollenceNeedHelp = isUsingRollenceNeedHelp()
-        isEnableSeamlessLogin = getSeamlessLoginRollence()
+        isEnableSeamlessLogin = isEnableSeamlessGoto()
         refreshRolloutVariant()
     }
 
@@ -912,7 +906,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         return newInactivePhoneNumberAbTestKey.isNotEmpty()
     }
 
-    private fun getSeamlessLoginRollence(): Boolean {
+    private fun isEnableSeamlessGoto(): Boolean {
         val rollence = abTestPlatform.getString(
             ROLLENCE_KEY_GOTO_SEAMLESS,
             ""
@@ -1969,7 +1963,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     companion object {
 
         const val ROLLENCE_KEY_INACTIVE_PHONE_NUMBER = "inactivephone_login"
-        private const val ROLLENCE_KEY_GOTO_SEAMLESS = "goto_seamless_login"
+        const val ROLLENCE_KEY_GOTO_SEAMLESS = "goto_seamless_login"
 
         private const val TAG_NEED_HELP_BOTTOM_SHEET = "NEED HELP BOTTOM SHEET"
 
