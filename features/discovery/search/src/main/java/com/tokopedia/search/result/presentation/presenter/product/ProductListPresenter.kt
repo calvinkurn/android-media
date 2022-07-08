@@ -71,6 +71,7 @@ import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetVisitable
 import com.tokopedia.search.result.product.pagination.Pagination
+import com.tokopedia.search.result.product.pagination.PaginationImpl
 import com.tokopedia.search.result.product.performancemonitoring.PerformanceMonitoringProvider
 import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC
 import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_BROADMATCH
@@ -91,7 +92,6 @@ import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.search.utils.createSearchProductDefaultFilter
 import com.tokopedia.search.utils.createSearchProductDefaultQuickFilter
 import com.tokopedia.search.utils.getValueString
-import com.tokopedia.search.result.product.pagination.PaginationImpl
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.CpmModel
@@ -428,7 +428,9 @@ class ProductListPresenter @Inject constructor(
         processInspirationWidgetPosition(searchParameter, list)
         processInspirationCarouselPosition(searchParameter, list)
         processBannerAndBroadmatchInSamePosition(list)
-        bannerDelegate.processBanner(isLastPage(), list, productList)
+        bannerDelegate.processBanner(list, productList) { index, banner ->
+            list.add(index, banner)
+        }
         processBroadMatch(list)
         addSearchInTokopedia(list)
 
@@ -616,7 +618,7 @@ class ProductListPresenter @Inject constructor(
         responseCode = productDataView.responseCode ?: ""
         suggestionDataView = productDataView.suggestionModel
         relatedDataView = productDataView.relatedDataView
-        bannerDelegate.bannerDataView = productDataView.bannerDataView
+        bannerDelegate.setBannerData(productDataView.bannerDataView)
         autoCompleteApplink = productDataView.autocompleteApplink ?: ""
         paginationImpl.totalData = productDataView.totalData
         categoryIdL2 = productDataView.categoryIdL2
@@ -984,7 +986,9 @@ class ProductListPresenter @Inject constructor(
         }
 
         processBannerAndBroadmatchInSamePosition(list)
-        bannerDelegate.processBanner(isLastPage(), list, productList)
+        bannerDelegate.processBanner(list, productList) { index, banner ->
+            list.add(index, banner)
+        }
 
         runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_BROADMATCH) {
             processBroadMatch(list)
@@ -1339,16 +1343,19 @@ class ProductListPresenter @Inject constructor(
     private fun processBannerAndBroadmatchInSamePosition(
         list: MutableList<Visitable<*>>,
     ) {
-        val bannerDataView = bannerDelegate.bannerDataView ?: return
         val relatedDataView = relatedDataView ?: return
 
         if (bannerDelegate.isShowBanner() && isShowBroadMatch()) {
-            if (bannerDataView.position == -1 && relatedDataView.position == 0) {
+            if (bannerDelegate.isLastPositionBanner && relatedDataView.position == 0) {
                 processBroadMatchAtBottom(list)
-                bannerDelegate.processBannerAtBottom(isLastPage(),list)
-            } else if (bannerDataView.position == 0 && relatedDataView.position == 1) {
+                bannerDelegate.processBannerAtBottom(list) { _, banner ->
+                    list.add(banner)
+                }
+            } else if (bannerDelegate.isFirstPositionBanner && relatedDataView.position == 1) {
                 processBroadMatchAtTop(list)
-                bannerDelegate.processBannerAtTop(list, productList)
+                bannerDelegate.processBannerAtTop(list, productList) { index, banner ->
+                    list.add(index, banner)
+                }
             }
         }
     }

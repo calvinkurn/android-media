@@ -88,7 +88,7 @@ internal open class ProductListPresenterTestFixtures {
             topAdsHeadlineHelper,
             { performanceMonitoring },
             ChooseAddressPresenterDelegate(chooseAddressView),
-            BannerPresenterDelegate(),
+            BannerPresenterDelegate(pagination),
             RequestParamsGenerator(userSession, pagination),
             pagination,
         )
