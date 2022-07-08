@@ -10,6 +10,7 @@ import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeOfferingWidgetBinding
 import com.tokopedia.digital.home.model.RechargeHomepageOfferingWidgetModel
 import com.tokopedia.digital.home.model.RechargeHomepageSections
+import com.tokopedia.digital.home.presentation.customview.DigitalHorizontalProductCard
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
@@ -126,9 +127,10 @@ class RechargeHomepageOfferingWidgetViewHolder(
                 productPrice = item.label2
                 productSlashPrice = item.label1
                 imageUrl = item.mediaUrl
-
-                rootView.setOnClickListener {
-                    listener.onRechargeSectionItemClicked(item)
+                actionListener = object: DigitalHorizontalProductCard.ActionListener {
+                    override fun onClick() {
+                        listener.onRechargeSectionItemClicked(item)
+                    }
                 }
 
                 buildView()

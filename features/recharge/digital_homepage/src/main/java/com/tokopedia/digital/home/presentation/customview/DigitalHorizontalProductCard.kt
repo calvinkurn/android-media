@@ -26,6 +26,7 @@ class DigitalHorizontalProductCard @JvmOverloads constructor(
     var productDetail: String = ""
     var productPrice: String = ""
     var productSlashPrice: String = ""
+    var actionListener: ActionListener? = null
 
     init {
         with(binding.tgHorizontalCardProductSlashPrice) {
@@ -39,6 +40,10 @@ class DigitalHorizontalProductCard @JvmOverloads constructor(
         setupProductDetail()
         setupProductPrice()
         setupProductSlashPrice()
+
+        binding.root.setOnClickListener {
+            actionListener?.onClick()
+        }
     }
 
     private fun setupProductImage() {
@@ -92,6 +97,10 @@ class DigitalHorizontalProductCard @JvmOverloads constructor(
                 hide()
             }
         }
+    }
+
+    interface ActionListener {
+        fun onClick()
     }
 
 }
