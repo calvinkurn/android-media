@@ -10,7 +10,11 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.user.session.datastore.DataStorePreference
 import com.tokopedia.user.session.datastore.DataStoreMigrationHelper
 import com.tokopedia.user.session.datastore.UserSessionDataStoreClient
+import com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker.Companion.WorkOps.LOG_SYNC
+import com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker.Companion.WorkOps.MIGRATED
+import com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker.Companion.WorkOps.NO_OPS
 import com.tokopedia.user.session.di.ComponentFactory
+
 import kotlinx.coroutines.flow.first
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -40,24 +44,27 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
     override suspend fun doWork(): Result {
         if (dataStorePreference.isDataStoreEnabled()) {
             return try {
+                var ops = NO_OPS
                 if (userSession.isLoggedIn) {
                     val syncResult = DataStoreMigrationHelper.checkDataSync(applicationContext)
                     if (!isMigrationSuccess() &&
                         (dataStore.getUserId().first().isEmpty() || syncResult.isNotEmpty())
                     ) {
                         migrateData()
+                        ops = MIGRATED
                     } else {
                         logSyncResult(syncResult)
+                        ops = LOG_SYNC
                     }
                 }
-                Result.success()
+                Result.success(workDataOf(OPERATION_KEY to ops))
             } catch (e: Exception) {
                 e.printStackTrace()
                 logWorkerError(e)
                 Result.failure()
             }
         } else {
-            return Result.success()
+            return Result.success(workDataOf(OPERATION_KEY to WorkOps.NO_OPS))
         }
     }
 
@@ -139,6 +146,14 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
         const val KEY_MIGRATION_STATUS = "data_store_migration_status"
 
         const val USER_SESSION_LOGGER_TAG = "USER_SESSION_DATA_STORE"
+
+        const val OPERATION_KEY = "operation"
+
+        object WorkOps {
+            const val NO_OPS = 0
+            const val MIGRATED = 1
+            const val LOG_SYNC = 2
+        }
 
         @JvmStatic
         fun scheduleWorker(context: Context) {

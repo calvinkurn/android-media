@@ -16,8 +16,15 @@ buildscript {
 }
 
 android {
+    defaultConfig {
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunnerArguments clearPackageData: 'true'
+    }
     buildFeatures {
         buildConfig true
+    }
+    testOptions {
+        execution 'ANDROIDX_TEST_ORCHESTRATOR'
     }
 }
 
@@ -32,6 +39,8 @@ dependencies {
     androidTestImplementation(rootProject.ext.testDependencies.androidxTest)
     androidTestImplementation(rootProject.ext.testDependencies.workManagerTest)
     androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
+    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
+    androidTestUtil rootProject.ext.testDependencies.orchestrator
 }
 
 protobuf {
