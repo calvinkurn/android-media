@@ -2,6 +2,8 @@ package com.tokopedia.shop.campaign.view.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -111,6 +113,9 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
     private var latestCompletelyVisibleItemIndex = -1
     private var listBackgroundColor: List<String> = listOf()
     private var textColor: String = ""
+    private var topView: View? = null
+    private var centerView: View? = null
+    private var bottomView: View? = null
     private val customDimensionShopPage: CustomDimensionShopPage by lazy {
         CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
     }
@@ -176,95 +181,50 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
         }
     }
 
-    override fun observeLiveData() {
-        viewModel?.shopHomeWidgetLayoutData?.observe(viewLifecycleOwner, {
-            hideLoading()
-            when (it) {
-                is Success -> {
-                    setShopHomeWidgetLayoutData(it.data)
-                }
-                is Fail -> {
-                    val throwable = it.throwable
-                    if (!ShopUtil.isExceptionIgnored(throwable)) {
-                        ShopUtil.logShopPageP2BuyerFlowAlerting(
-                            tag = SHOP_PAGE_BUYER_FLOW_TAG,
-                            functionName = this::observeLiveData.name,
-                            liveDataName = ShopHomeViewModel::shopHomeWidgetLayoutData.name,
-                            userId = userId,
-                            shopId = shopId,
-                            shopName = shopName,
-                            errorMessage = ErrorHandler.getErrorMessage(context, throwable),
-                            stackTrace = Log.getStackTraceString(throwable),
-                            errType = SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
-                        )
-                    }
-                    onErrorGetShopHomeLayoutData(throwable)
-                }
-            }
-        })
+    override fun initView() {
+        super.initView()
+        topView = viewBinding?.topView
+        centerView = viewBinding?.centerView
+        bottomView = viewBinding?.bottomView
 
-        viewModel?.campaignNplRemindMeStatusData?.observe(viewLifecycleOwner, {
-            when (it) {
-                is Success -> {
-                    onSuccessGetCampaignNplRemindMeStatusData(it.data)
-                }
-            }
-        })
+    }
 
-        viewModel?.campaignFlashSaleStatusData?.observe(viewLifecycleOwner, {
-            when (it) {
-                is Success -> {
-                    onSuccessGetCampaignFlashSaleRemindMeStatusData(it.data)
-                }
-            }
-        })
+    override fun onSuccessGetShopHomeWidgetContentData(mapWidgetContentData: Map<Pair<String, String>, Visitable<*>?>) {
+        super.onSuccessGetShopHomeWidgetContentData(mapWidgetContentData)
+        setCampaignTabBackgroundGradient()
+    }
 
-        viewModel?.checkCampaignNplRemindMeStatusData?.observe(viewLifecycleOwner, {
-            when (it) {
-                is Success -> {
-                    if (it.data.success) {
-                        onSuccessCheckCampaignNplNotifyMe(it.data)
-                    } else {
-                        onFailCheckCampaignNplNotifyMe(it.data.campaignId, it.data.errorMessage)
-                    }
-                }
-                is Fail -> {
-                    (it.throwable as? CheckCampaignNplException)?.let { checkCampaignException ->
-                        val errorMessage =
-                            ErrorHandler.getErrorMessage(context, checkCampaignException)
-                        onFailCheckCampaignNplNotifyMe(
-                            checkCampaignException.campaignId,
-                            errorMessage
-                        )
-                    }
-                }
-            }
-        })
+    override fun observeShopProductFilterParameterSharedViewModel() {}
 
-        viewModel?.checkCampaignFlashSaleRemindMeStatusData?.observe(viewLifecycleOwner, {
-            when (it) {
-                is Success -> {
-                    if (it.data.success) {
-                        onSuccessCheckCampaignFlashSaleNotifyMe(it.data)
-                    } else {
-                        onFailCheckCampaignFlashSaleNotifyMe(
-                            it.data.campaignId,
-                            it.data.errorMessage
-                        )
-                    }
-                }
-                is Fail -> {
-                    (it.throwable as? CheckCampaignNplException)?.let { checkCampaignException ->
-                        val errorMessage =
-                            ErrorHandler.getErrorMessage(context, checkCampaignException)
-                        onFailCheckCampaignFlashSaleNotifyMe(
-                            checkCampaignException.campaignId,
-                            errorMessage
-                        )
-                    }
-                }
+    override fun observeShopChangeProductGridSharedViewModel() {}
+
+    private fun setCampaignTabBackgroundGradient() {
+        if (listBackgroundColor.isNotEmpty()) {
+            topView?.show()
+            centerView?.show()
+            bottomView?.show()
+            val colors = IntArray(listBackgroundColor.size)
+            for (i in listBackgroundColor.indices) {
+                colors[i] = parseColor(listBackgroundColor.getOrNull(i).orEmpty())
             }
-        })
+            val gradient = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colors)
+            gradient.cornerRadius = 0f
+            topView?.setBackgroundColor(Color.parseColor(listBackgroundColor.firstOrNull()))
+            centerView?.background = gradient
+            bottomView?.setBackgroundColor(Color.parseColor(listBackgroundColor.lastOrNull()))
+        } else {
+            topView?.hide()
+            centerView?.hide()
+            bottomView?.hide()
+        }
+    }
+
+    private fun parseColor(colorHex: String): Int {
+        return try {
+            Color.parseColor(colorHex)
+        } catch (e: Throwable) {
+            0
+        }
     }
 
     private fun onFailCheckCampaignNplNotifyMe(campaignId: String, errorMessage: String) {
@@ -466,10 +426,7 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
                 }
             }
 
-            override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                shopCampaignTabAdapter.showLoading()
-                getProductList(page)
-            }
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {}
         }
     }
 

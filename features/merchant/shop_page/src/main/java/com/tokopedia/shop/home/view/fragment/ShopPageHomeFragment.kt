@@ -430,7 +430,7 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
         isLoadInitialData = true
     }
 
-    private fun initView() {
+    open fun initView() {
         globalErrorShopPage = viewBinding?.globalErrorShopPage
     }
 
@@ -497,14 +497,14 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
         }
     }
 
-    private fun onSuccessGetShopHomeWidgetContentData(mapWidgetContentData: Map<Pair<String, String>, Visitable<*>?>) {
+    open fun onSuccessGetShopHomeWidgetContentData(mapWidgetContentData: Map<Pair<String, String>, Visitable<*>?>) {
         shopHomeAdapter.updateShopHomeWidgetContentData(mapWidgetContentData)
         checkProductWidgetWishListStatus(mapWidgetContentData.values.toList())
         checkCampaignNplWidgetRemindMeStatus(mapWidgetContentData.values.toList())
         checkFlashSaleWidgetRemindMeStatus(mapWidgetContentData.values.toList())
     }
 
-    private fun observeShopChangeProductGridSharedViewModel() {
+    open fun observeShopChangeProductGridSharedViewModel() {
         shopChangeProductGridSharedViewModel?.sharedProductGridType?.observe(viewLifecycleOwner, Observer {
             if (!shopHomeAdapter.isLoading) {
                 gridType = it
@@ -521,7 +521,7 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
         return false
     }
 
-    private fun observeShopProductFilterParameterSharedViewModel() {
+    open fun observeShopProductFilterParameterSharedViewModel() {
         shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.observe(viewLifecycleOwner, Observer {
             if (!shopHomeAdapter.isLoading && getSelectedFragment() != this) {
                 shopProductFilterParameter = it
@@ -631,7 +631,7 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
         }
     }
 
-    open fun observeLiveData() {
+    private fun observeLiveData() {
         viewModel?.shopHomeWidgetLayoutData?.observe(viewLifecycleOwner, {
             hideLoading()
             when (it) {
