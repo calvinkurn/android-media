@@ -457,19 +457,6 @@ class DashboardPresenterTest {
     }
 
     @Test
-    fun `get expiry date error`() {
-        every {
-            getExpiryDateUseCase.execute(any(), captureLambda())
-        } answers {
-            secondArg<(Throwable) -> Unit>().invoke(throwable)
-        }
-
-        presenter.getExpiryDate(res)
-
-        verify { throwable.printStackTrace() }
-    }
-
-    @Test
     fun `getShopListHiddenTrial should invoke true if hiddenTrial feature id present`() {
 
         every {
