@@ -148,9 +148,7 @@ class FeedUserCompleteOnboardingBottomSheet : BaseFeedUserOnboardingBottomSheet(
         }
     }
 
-    private fun getDefaultErrorMessage(): String {
-        return getString(R.string.feed_ugc_onboarding_unknown_error)
-    }
+    private fun getDefaultErrorMessage() = getString(R.string.feed_ugc_onboarding_unknown_error)
 
     fun showNow(fragmentManager: FragmentManager) {
         if(!isAdded) showNow(fragmentManager, TAG)

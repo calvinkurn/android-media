@@ -573,13 +573,9 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
-    private fun getDefaultErrorMessage(): String {
-        return getString(R.string.up_error_unknown)
-    }
+    private fun getDefaultErrorMessage() = getString(R.string.up_error_unknown)
 
-    private fun getUsernameWithAdd(): String {
-        return requireContext().getString(R.string.up_username_template, viewModel.profileUsername)
-    }
+    private fun getUsernameWithAdd() = getString(R.string.up_username_template, viewModel.profileUsername)
 
     override fun getScreenName(): String {
         return ""
