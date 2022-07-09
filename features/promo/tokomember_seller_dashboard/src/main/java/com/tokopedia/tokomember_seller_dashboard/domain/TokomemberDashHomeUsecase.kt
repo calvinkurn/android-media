@@ -13,7 +13,7 @@ class TokomemberDashHomeUsecase @Inject constructor(graphqlRepository: GraphqlRe
     fun getHomeData(
         success: (TmDashHomeResponse) -> Unit,
         onFail: (Throwable) -> Unit,
-        shopId: Int, cardID: Int, status: Int, page: Int, pageSize: Int
+        shopId: Int
     ){
         this.setTypeClass(TmDashHomeResponse::class.java)
         this.setRequestParams(getRequestParams(shopId))

@@ -18,14 +18,14 @@ class TokomemberDashHomeViewmodel @Inject constructor(
     private val _tokomemberHomeResultLiveData = MutableLiveData<TokoLiveDataResult<TmDashHomeResponse>>()
     val tokomemberHomeResultLiveData: LiveData<TokoLiveDataResult<TmDashHomeResponse>> = _tokomemberHomeResultLiveData
 
-    fun getHomePageData(shopId: Int, cardID: Int, status: Int = -1, page: Int = 1, pageSize: Int = 10) {
+    fun getHomePageData(shopId: Int) {
         tokomemberDashHomeUsecase.cancelJobs()
         _tokomemberHomeResultLiveData.postValue(TokoLiveDataResult.loading())
         tokomemberDashHomeUsecase.getHomeData({
             _tokomemberHomeResultLiveData.postValue(TokoLiveDataResult.success(it))
         }, {
             _tokomemberHomeResultLiveData.postValue(TokoLiveDataResult.error(it))
-        }, shopId, cardID, status, page, pageSize)
+        }, shopId)
     }
 
     override fun onCleared() {

@@ -55,6 +55,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_NAME
 import com.tokopedia.tokomember_seller_dashboard.util.CASHBACK_IDR
 import com.tokopedia.tokomember_seller_dashboard.util.CASHBACK_PERCENTAGE
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_HEADER_SUBTITLE
+import com.tokopedia.tokomember_seller_dashboard.util.COUPON_HEADER_SUBTITLE_2
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_HEADER_TITLE
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_TERMS_CONDITION
 import com.tokopedia.tokomember_seller_dashboard.util.CREATE
@@ -726,10 +727,18 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
     }
 
     private fun renderHeader() {
-
         headerKupon?.apply {
+
+            when(programActionType){
+                ProgramActionType.CREATE_BUAT ->{
+                    subtitle = COUPON_HEADER_SUBTITLE_2
+                }
+                ProgramActionType.CREATE ->{
+                    subtitle = COUPON_HEADER_SUBTITLE
+                }
+            }
+
             title = COUPON_HEADER_TITLE
-            subtitle = COUPON_HEADER_SUBTITLE
             isShowBackButton = true
             setNavigationOnClickListener {
                 if(arguments?.getInt(BUNDLE_CREATE_SCREEN_TYPE) == CreateScreenType.COUPON_MULTIPLE_BUAT){
@@ -1134,6 +1143,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 maxDate = maxDate,
                 type = DateTimePickerUnify.TYPE_TIMEPICKER
             ).apply {
+                minuteInterval = 30
                 setTitle(title)
                 setInfo(desc)
                 setInfoVisible(true)

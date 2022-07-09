@@ -100,18 +100,21 @@ class TokomemberDashProgramDetailFragment : BaseDaggerFragment() {
         tvProgramStatus.text = membershipGetProgramForm?.programForm?.statusStr
         when(membershipGetProgramForm?.programForm?.statusStr){
             PROGRAM_DETAIL_ACTIVE ->{
+                childFragmentManager.beginTransaction().add(R.id.frameCouponList, TokomemberDashCouponFragment.newInstance(arguments, true), tag).addToBackStack(tag).commit()
                 tvProgramStatus.backgroundTintList = context?.let {
                     ContextCompat.getColor(
                         it, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
                 }?.let { ColorStateList.valueOf(it) }
             }
             PROGRAM_DETAIL_WAITING -> {
+                childFragmentManager.beginTransaction().add(R.id.frameCouponList, TokomemberDashCouponFragment.newInstance(arguments, false), tag).addToBackStack(tag).commit()
                 tvProgramStatus.backgroundTintList = context?.let {
                     ContextCompat.getColor(
                         it, com.tokopedia.unifyprinciples.R.color.Unify_YN400)
                 }?.let { ColorStateList.valueOf(it) }
             }
             else -> {
+                childFragmentManager.beginTransaction().add(R.id.frameCouponList, TokomemberDashCouponFragment.newInstance(arguments, false), tag).addToBackStack(tag).commit()
                 tvProgramStatus.backgroundTintList = context?.let {
                     ContextCompat.getColor(
                         it, com.tokopedia.unifyprinciples.R.color.Unify_NN400)
@@ -124,8 +127,6 @@ class TokomemberDashProgramDetailFragment : BaseDaggerFragment() {
         tvMemberCountPremium.text = membershipGetProgramForm?.levelInfo?.levelList?.firstOrNull()?.totalMember
         tvTransactionVip.text = "Rp" + CurrencyFormatHelper.convertToRupiah(membershipGetProgramForm?.programForm?.tierLevels?.getOrNull(1)?.threshold.toString())
         tvMemberCountVip.text = membershipGetProgramForm?.levelInfo?.levelList?.getOrNull(1)?.totalMember
-
-        childFragmentManager.beginTransaction().add(R.id.frameCouponList, TokomemberDashCouponFragment.newInstance(arguments), tag).addToBackStack(tag).commit()
 
     }
 

@@ -100,7 +100,6 @@ class TokomemberDashHomeMainFragment : BaseDaggerFragment() {
 
         homeTabs.getUnifyTabLayout().removeAllTabs()
         homeTabs.customTabMode = TabLayout.MODE_SCROLLABLE
-        homeTabs.customTabGravity = TabLayout.GRAVITY_CENTER
         homeTabs.addNewTab("Home")
         homeTabs.addNewTab("Program")
         homeTabs.addNewTab("Kupon Tokomember")

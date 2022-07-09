@@ -68,7 +68,6 @@ import com.tokopedia.tokomember_seller_dashboard.view.customview.BottomSheetClic
 import com.tokopedia.tokomember_seller_dashboard.view.customview.TokomemberBottomsheet
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmDashCreateViewModel
 import com.tokopedia.unifycomponents.ProgressBarUnify
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.text.currency.NumberTextWatcher
@@ -321,7 +320,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                 btnCreateProgram.text = PROGRAM_CTA
                 headerProgram?.apply {
                     title = HEADER_TITLE_CREATE_BUAT
-                    subtitle = HEADER_TITLE_DESC
+                    subtitle = HEADER_TITLE_EXTEND_DESC
                     isShowBackButton = true
                 }
                 progressProgram?.apply {
