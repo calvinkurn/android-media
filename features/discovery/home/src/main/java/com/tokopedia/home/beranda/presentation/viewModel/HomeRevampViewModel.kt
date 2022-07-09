@@ -267,8 +267,14 @@ open class HomeRevampViewModel @Inject constructor(
 
     @FlowPreview
     fun refreshHomeData() {
-        if (getHomeDataJob?.isActive == true) return
-        if (homeDataModel.flowCompleted == false) return
+        if (getHomeDataJob?.isActive == true) {
+            _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
+            return
+        }
+        else if (!homeDataModel.flowCompleted) {
+            _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
+            return
+        }
         homeRateLimit.shouldFetch(HOME_LIMITER_KEY)
         onRefreshState = true
         getBalanceWidgetLoadingState()
