@@ -21,7 +21,7 @@ class TmCouponViewPreview @JvmOverloads constructor(
 
     init {
         View.inflate(context, R.layout.tm_coupon_preview, this)
-        imagePreview.loadImage(TM_COUPON_PREVIEW)
+        //imagePreview.loadImage(TM_COUPON_PREVIEW)
     }
 
     fun setInitialData(shopName: String,shopAvatar:String) {
