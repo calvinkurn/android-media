@@ -3,13 +3,11 @@ package com.tokopedia.tokopedianow.recipebookmark.persentation.viewholder
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowRecipeBookmarkBinding
 import com.tokopedia.tokopedianow.recipebookmark.persentation.adapter.TagAdapter
 import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.RecipeUiModel
-import com.tokopedia.tokopedianow.recipebookmark.util.RecyclerViewSpaceItemDecoration
 import com.tokopedia.utils.view.binding.viewBinding
 
 class RecipeViewHolder(
@@ -36,7 +34,6 @@ class RecipeViewHolder(
             rvTags.run {
                 adapter = TagAdapter(element.tags)
                 layoutManager = LinearLayoutManager(root.context, LinearLayoutManager.HORIZONTAL, true)
-                addItemDecoration(RecyclerViewSpaceItemDecoration(left = root.context.resources.getDimension(R.dimen.tokopedianow_space_item_recipe_bookmark_tag).toIntSafely()))
             }
         }
     }

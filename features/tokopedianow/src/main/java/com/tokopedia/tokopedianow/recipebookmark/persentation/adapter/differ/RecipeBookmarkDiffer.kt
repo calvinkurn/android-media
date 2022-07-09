@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.recipebookmark.persentation.adapter.differ
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.common.base.adapter.BaseTokopediaNowDiffer
+import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.RecipeUiModel
 
 class RecipeBookmarkDiffer : BaseTokopediaNowDiffer() {
     private var oldList: List<Visitable<*>> = emptyList()
@@ -11,7 +12,11 @@ class RecipeBookmarkDiffer : BaseTokopediaNowDiffer() {
         val oldItem = oldList[oldItemPosition]
         val newItem = newList[newItemPosition]
 
-        return oldItem == newItem
+        return if (oldItem is RecipeUiModel && newItem is RecipeUiModel) {
+            oldItem.id == newItem.id
+        } else {
+            oldItem == newItem
+        }
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {

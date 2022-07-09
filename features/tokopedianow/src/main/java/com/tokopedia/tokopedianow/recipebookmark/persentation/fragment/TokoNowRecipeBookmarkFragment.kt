@@ -9,7 +9,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntSafely
@@ -17,7 +20,6 @@ import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowRecipeBookmark
 import com.tokopedia.tokopedianow.recipebookmark.di.component.DaggerRecipeBookmarkComponent
 import com.tokopedia.tokopedianow.recipebookmark.persentation.adapter.RecipeBookmarkAdapter
 import com.tokopedia.tokopedianow.recipebookmark.persentation.adapter.RecipeBookmarkAdapterTypeFactory
-import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.RecipeUiModel
 import com.tokopedia.tokopedianow.recipebookmark.persentation.viewmodel.TokoNowRecipeBookmarkViewModel
 import com.tokopedia.tokopedianow.recipebookmark.util.RecyclerViewSpaceItemDecoration
 import com.tokopedia.tokopedianow.recipebookmark.util.UiState
@@ -27,7 +29,6 @@ import com.tokopedia.tokopedianow.recipebookmark.util.repeatOnLifecycle
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -36,8 +37,10 @@ import javax.inject.Inject
 class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener {
 
     companion object {
-        const val DEFAULT_LIMIT_RECIPES = 10
-        const val DEFAULT_PAGE_RECIPES = 1
+        const val DEFAULT_PAGE = 1
+        const val DEFAULT_LIMIT = 10
+        const val DEFAULT_WIDGET_COUNTER = 0
+        const val SCROLL_DOWN_DIRECTION = 1
 
         fun newInstance(): TokoNowRecipeBookmarkFragment {
             return TokoNowRecipeBookmarkFragment()
@@ -47,11 +50,11 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
     @Inject
     lateinit var viewModel: TokoNowRecipeBookmarkViewModel
 
-    @Inject
-    lateinit var userSession: UserSessionInterface
-
     private var binding by autoClearedNullable<FragmentTokopedianowRecipeBookmarkBinding>()
     private var adapter by autoClearedNullable<RecipeBookmarkAdapter>()
+
+    private val isLoadMoreLoading: Boolean
+        get() = adapter?.isLoadingLoadMore.orFalse()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -59,12 +62,7 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
         setupHeader()
         setupRecyclerView()
 
-        viewModel.getRecipeBookmarks(
-            userId = userSession.userId,
-            warehouseId = "1231",
-            page = DEFAULT_PAGE_RECIPES,
-            limit = DEFAULT_LIMIT_RECIPES
-        )
+        viewModel.loadFirstPage()
 
         collectStateFlow()
     }
@@ -81,9 +79,15 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
 
     override fun onRemoveBookmark(recipeId: String) {
         viewModel.removeRecipeBookmark(
-            userId = userSession.userId,
             recipeId = recipeId
         )
+    }
+
+    private fun injectDependencies() {
+        DaggerRecipeBookmarkComponent.builder()
+            .baseAppComponent((context?.applicationContext as? BaseMainApplication)?.baseAppComponent)
+            .build()
+            .inject(this)
     }
 
     private fun collectStateFlow() {
@@ -91,12 +95,26 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 //Need different coroutines, since collect() is a suspending function that suspends until the Flow terminates.
                 launch {
-                    viewModel.recipeBookmarks.collect { state ->
+                    viewModel.firstRecipeBookmarks.collect { state ->
                         when(state) {
                             is UiState.Fail -> {}
                             is UiState.Success -> showSuccessState(state.data)
-                            is UiState.Loading -> showLoadingState()
-                            else -> showEmptyState()
+                            is UiState.Loading -> showLoadPageLoading()
+                            is UiState.Empty -> {}
+                        }
+                    }
+                }
+
+                launch {
+                    viewModel.moreRecipeBookmarks.collect { state ->
+                        when(state) {
+                            is UiState.Fail -> {}
+                            is UiState.Success -> {
+                                adapter?.hideLoading()
+                                showSuccessState(state.data)
+                            }
+                            is UiState.Loading -> adapter?.showLoading()
+                            is UiState.Empty -> {}
                         }
                     }
                 }
@@ -111,8 +129,30 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
                         }
                     }
                 }
+
+                launch {
+                    viewModel.isOnScrollNotNeeded.collect { isNotNeeded ->
+                        if (isNotNeeded) {
+                            binding?.rvRecipeBookmark?.clearOnScrollListeners()
+                        }
+                    }
+                }
             }
         }
+    }
+
+    private fun createLoadMoreListener(): RecyclerView.OnScrollListener {
+        return object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val isAtTheBottomOfThePage = !recyclerView.canScrollVertically(SCROLL_DOWN_DIRECTION)
+                loadMore(isAtTheBottomOfThePage)
+            }
+        }
+    }
+
+    private fun loadMore(isAtTheBottomOfThePage: Boolean) {
+        viewModel.loadMore(isAtTheBottomOfThePage, isLoadMoreLoading)
     }
 
     private fun showToaster(message: String, isSuccess: Boolean) {
@@ -125,7 +165,7 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
         }
     }
 
-    private fun showSuccessState(data: List<RecipeUiModel>?) {
+    private fun showSuccessState(data: List<Visitable<*>>?) {
         if (!data.isNullOrEmpty()) {
             showRecipesList()
             adapter?.submitList(data)
@@ -153,7 +193,7 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
         }
     }
 
-    private fun showLoadingState() {
+    private fun showLoadPageLoading() {
         binding?.apply {
             loader.show()
             rvRecipeBookmark.hide()
@@ -176,13 +216,7 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
             adapter = this@TokoNowRecipeBookmarkFragment.adapter
             layoutManager = LinearLayoutManager(context)
             addItemDecoration(RecyclerViewSpaceItemDecoration(bottom = context.resources.getDimension(R.dimen.tokopedianow_space_item_recipe_bookmark).toIntSafely()))
+            addOnScrollListener(createLoadMoreListener())
         }
-    }
-
-    private fun injectDependencies() {
-        DaggerRecipeBookmarkComponent.builder()
-            .baseAppComponent((context?.applicationContext as? BaseMainApplication)?.baseAppComponent)
-            .build()
-            .inject(this)
     }
 }

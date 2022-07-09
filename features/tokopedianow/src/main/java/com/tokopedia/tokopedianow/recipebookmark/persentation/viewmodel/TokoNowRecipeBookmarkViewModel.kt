@@ -1,55 +1,83 @@
 package com.tokopedia.tokopedianow.recipebookmark.persentation.viewmodel
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.removeFirst
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.tokopedianow.recipebookmark.domain.mapper.GetRecipeBookmarksMapper.mapResponseToRecipeBookmarkUiModelList
 import com.tokopedia.tokopedianow.recipebookmark.domain.usecase.GetRecipeBookmarksUseCase
 import com.tokopedia.tokopedianow.recipebookmark.domain.usecase.RemoveRecipeBookmarkUseCase
+import com.tokopedia.tokopedianow.recipebookmark.persentation.fragment.TokoNowRecipeBookmarkFragment.Companion.DEFAULT_LIMIT
+import com.tokopedia.tokopedianow.recipebookmark.persentation.fragment.TokoNowRecipeBookmarkFragment.Companion.DEFAULT_PAGE
+import com.tokopedia.tokopedianow.recipebookmark.persentation.fragment.TokoNowRecipeBookmarkFragment.Companion.DEFAULT_WIDGET_COUNTER
 import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.RecipeUiModel
 import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.ToasterRecipeRemovedUiModel
 import com.tokopedia.tokopedianow.recipebookmark.util.UiState
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 class TokoNowRecipeBookmarkViewModel @Inject constructor(
+    private val chooseAddressData: LocalCacheModel,
+    private val userSessionInterface: UserSessionInterface,
     private val getRecipeBookmarksUseCase: GetRecipeBookmarksUseCase,
     private val removeRecipeBookmarkUseCase: RemoveRecipeBookmarkUseCase,
     dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.io) {
 
-    private val listItems = mutableListOf<RecipeUiModel>()
+    private val layout: MutableList<Visitable<*>> = mutableListOf()
+    private var pageCounter: Int = DEFAULT_PAGE
+    private var newWidgetCounter: Int = DEFAULT_WIDGET_COUNTER
 
-    private val _recipeBookmarks: MutableStateFlow<UiState<List<RecipeUiModel>>> = MutableStateFlow(UiState.Empty())
-    val recipeBookmarks: StateFlow<UiState<List<RecipeUiModel>>>
-        get() = _recipeBookmarks
-
+    private val _firstRecipeBookmarks: MutableStateFlow<UiState<List<Visitable<*>>>> = MutableStateFlow(UiState.Empty())
+    private val _moreRecipeBookmarks: MutableStateFlow<UiState<List<Visitable<*>>>> = MutableStateFlow(UiState.Empty())
     private val _toasterMessage: MutableStateFlow<ToasterRecipeRemovedUiModel?> = MutableStateFlow(null)
+    private val _isOnScrollNotNeeded: MutableStateFlow<Boolean> = MutableStateFlow(false)
+
+    private val userId: String
+        get() = userSessionInterface.userId
+    private val warehouseId: String
+        get() = chooseAddressData.warehouse_id
+
+    val firstRecipeBookmarks: StateFlow<UiState<List<Visitable<*>>>>
+        get() = _firstRecipeBookmarks
+    val moreRecipeBookmarks: StateFlow<UiState<List<Visitable<*>>>>
+        get() = _moreRecipeBookmarks
     val toasterMessage: StateFlow<ToasterRecipeRemovedUiModel?>
         get() = _toasterMessage
+    val isOnScrollNotNeeded: StateFlow<Boolean>
+        get() = _isOnScrollNotNeeded
 
-    fun getRecipeBookmarks(userId: String, warehouseId: String, page: Int, limit: Int) {
+    private suspend fun getRecipeBookmarks(page: Int): List<RecipeUiModel> {
+        return getRecipeBookmarksUseCase.execute(
+            userId = userId,
+            warehouseId = warehouseId,
+            page = page,
+            limit = DEFAULT_LIMIT
+        ).mapResponseToRecipeBookmarkUiModelList()
+    }
+
+    fun loadFirstPage() {
         launchCatchError(block =  {
-            _recipeBookmarks.value = UiState.Loading()
-            delay(300)
-            listItems.addAll(
-                getRecipeBookmarksUseCase.execute(
-                    userId = userId,
-                    warehouseId = warehouseId,
-                    page = page,
-                    limit = limit
-                ).mapResponseToRecipeBookmarkUiModelList()
-            )
-            _recipeBookmarks.value = UiState.Success(listItems)
-        }, onError = {
+            _firstRecipeBookmarks.value = UiState.Loading()
 
+            delay(3000)
+
+            val recipeBookmarks = getRecipeBookmarks(pageCounter)
+            newWidgetCounter = recipeBookmarks.size
+            layout.addAll(recipeBookmarks)
+
+            _firstRecipeBookmarks.value = UiState.Success(layout)
+        }, onError = {
+            _firstRecipeBookmarks.value = UiState.Fail(it)
         })
     }
 
-    fun removeRecipeBookmark(userId: String, recipeId: String) {
+    fun removeRecipeBookmark(recipeId: String) {
         launchCatchError(block = {
 //            val bookmarkRemoved = removeRecipeBookmarkUseCase.execute(
 //                userId = userId,
@@ -66,11 +94,36 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
                 recipeId = recipeId,
                 isSuccess = true
             )
-            listItems.removeFirst { it.id == recipeId }
-            _recipeBookmarks.value = UiState.Success(listItems)
+            layout.removeFirst { it is RecipeUiModel && it.id == recipeId }
+            _firstRecipeBookmarks.value = UiState.Success(layout)
         }, onError = {
-
+            _firstRecipeBookmarks.value = UiState.Fail(it)
         })
+    }
+
+    fun loadMore(
+        isAtTheBottomOfThePage: Boolean,
+        isLoadingLoadMore: Boolean,
+    ) {
+        launchCatchError(block = {
+            if (newWidgetCounter < DEFAULT_LIMIT) {
+                _isOnScrollNotNeeded.value = true
+            } else if (isAtTheBottomOfThePage && !isLoadingLoadMore) {
+                _moreRecipeBookmarks.value = UiState.Loading()
+
+                delay(3000)
+
+                val recipeBookmarks = getRecipeBookmarks(pageCounter++).toMutableList()
+                recipeBookmarks.removeLast()
+                recipeBookmarks.removeLast()
+                newWidgetCounter = recipeBookmarks.size
+                layout.addAll(recipeBookmarks)
+
+                _moreRecipeBookmarks.value = UiState.Success(layout)
+            }
+        }) {
+            _moreRecipeBookmarks.value = UiState.Fail(it)
+        }
     }
 
 }
