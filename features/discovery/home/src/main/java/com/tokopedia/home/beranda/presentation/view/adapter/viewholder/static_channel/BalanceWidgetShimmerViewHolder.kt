@@ -13,7 +13,7 @@ class BalanceWidgetShimmerViewHolder (itemView: View, val listener: HomeCategory
     AbstractViewHolder<BalanceShimmerModel>(itemView) {
 
     companion object {
-        var LAYOUT = R.layout.layout_shimmer_balance_widget
+        var LAYOUT = R.layout.layout_balance_widget_shimmer
     }
 
     override fun bind(element: BalanceShimmerModel) {}

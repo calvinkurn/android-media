@@ -71,6 +71,7 @@ class HomeBalanceWidgetUseCase @Inject constructor(
             //TODO delete logger
             Log.d("dhabalog", e.localizedMessage)
             currentHeaderDataModel.headerDataModel?.homeBalanceModel?.status = HomeBalanceModel.STATUS_ERROR
+            currentHeaderDataModel.headerDataModel?.isUserLogin = userSession.isLoggedIn
             return currentHeaderDataModel
         }
     }

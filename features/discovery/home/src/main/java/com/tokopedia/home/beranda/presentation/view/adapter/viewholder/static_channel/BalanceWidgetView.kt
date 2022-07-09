@@ -13,6 +13,7 @@ import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.helper.benchmark.TRACE_ON_BIND_BALANCE_WIDGET_CUSTOMVIEW
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceShimmerModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceWidgetFailedModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel.Companion.TYPE_STATE_2
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.balancewidget.BalanceWidgetTypeFactoryImpl
@@ -78,11 +79,16 @@ class BalanceWidgetView: FrameLayout {
             rvBalance?.adapter = balanceWidgetAdapter
 
         }
-        if (element.status == HomeBalanceModel.STATUS_LOADING) {
-            balanceWidgetAdapter?.setVisitables(listOf(BalanceShimmerModel()))
-        } else {
-            balanceWidgetAdapter?.setVisitables(listOf(element))
-            rvBalance?.show()
+        when (element.status) {
+            HomeBalanceModel.STATUS_LOADING -> {
+                balanceWidgetAdapter?.setVisitables(listOf(BalanceShimmerModel()))
+            }
+            HomeBalanceModel.STATUS_ERROR -> {
+                balanceWidgetAdapter?.setVisitables(listOf(BalanceWidgetFailedModel()))
+            }
+            else -> {
+                balanceWidgetAdapter?.setVisitables(listOf(element))
+            }
         }
     }
 
