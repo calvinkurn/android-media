@@ -41,25 +41,6 @@ class HomeDataMapper(
             if (homeData.dynamicHomeChannel.channels.isEmpty() && haveCachedData) {
                 throw IllegalStateException(DC_ERROR_MESSAGE)
             }
-            var isDynamicChannelContainsBeautyFest = false
-            var isAtfChannelContainsBeautyFest = false
-
-            val beautyFestChannelId = arrayOf("129362",
-                "129363",
-                "129364",
-                "129365",
-                "129366",
-                "129367",
-                "129368",
-                "129369",
-                "129370",
-                "129371")
-
-            for (channel in homeData.dynamicHomeChannel.channels) {
-                isDynamicChannelContainsBeautyFest = channel.id in beautyFestChannelId
-                if(isDynamicChannelContainsBeautyFest)
-                    break
-            }
         }
         val firstPage = homeData.token.isNotEmpty()
         val factory: HomeVisitableFactory = homeVisitableFactory.buildVisitableList(
