@@ -57,7 +57,7 @@ class EditorViewModel : ViewModel() {
         var index = -1
 
         editStateList.values.forEachIndexed { indexItem, item ->
-            val isMatch = item.getImageUrl() == urlKey
+            val isMatch = item.getOriginalUrl() == urlKey
             if(isMatch) {
                 index = indexItem
                 return@forEachIndexed

@@ -13,10 +13,10 @@ class BrightnessToolUiComponent constructor(
 
     private val brightnessSlider: MediaEditorSlider = findViewById(R.id.slider_brightness)
 
-    fun setupView() {
+    fun setupView(sliderInitValue: Float) {
         container().show()
 
-        brightnessSlider.setRangeSliderValue(0,200,1)
+        brightnessSlider.setRangeSliderValue(0,200, sliderInitValue.toInt())
         brightnessSlider.listener = this
     }
 

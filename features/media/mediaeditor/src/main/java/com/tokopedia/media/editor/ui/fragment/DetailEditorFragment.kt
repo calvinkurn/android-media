@@ -24,7 +24,10 @@ import com.tokopedia.media.editor.ui.component.ContrastToolsUiComponent
 import com.tokopedia.media.editor.ui.component.RemoveBackgroundToolUiComponent
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.utils.getDestinationUri
+import com.tokopedia.media.loader.MediaLoaderTarget
+import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.types.EditorToolType
 import com.tokopedia.utils.view.binding.viewBinding
@@ -130,8 +133,8 @@ class DetailEditorFragment @Inject constructor(
             // make this ui model as global variable
             data = it
 
-            renderUiComponent(it.editorToolType)
             renderImagePreview(it.originalUrl)
+            renderUiComponent(it.editorToolType)
         }
     }
 
@@ -143,19 +146,39 @@ class DetailEditorFragment @Inject constructor(
 
     private fun renderUiComponent(@EditorToolType type: Int) {
         when (type) {
-            EditorToolType.BRIGHTNESS -> brightnessComponent.setupView()
+            EditorToolType.BRIGHTNESS -> {
+                brightnessComponent.setupView(data.brightnessValue ?: 0f)
+            }
             EditorToolType.REMOVE_BACKGROUND -> removeBgComponent.setupView()
-            EditorToolType.CONTRAST -> contrastComponent.setupView()
+            EditorToolType.CONTRAST -> {
+                contrastComponent.setupView(data.contrastValue ?: DEFAULT_VALUE_CONTRAST)
+
+            }
         }
     }
 
     private fun renderImagePreview(imageUrl: String) {
-        viewBinding?.imgPreview?.loadImage(imageUrl) {
-            centerCrop()
-            this.listener(onSuccess = {bitmap, _ ->
-                originalBitmap = bitmap
-            })
-        }
+        MediaLoaderTarget.loadImage(requireContext(), Properties(imageUrl), MediaBitmapEmptyTarget(
+            onCleared = { },
+            onReady = {
+                originalBitmap = it
+                originalBitmap?.let { itBitmap ->
+                    val cloneOriginal = itBitmap.copy(itBitmap.config, true)
+
+//                    viewBinding?.imgPreview
+//                        ?.setImageBitmap(contrastFilterRepositoryImpl
+//                            .contrast(data.contrastValue ?: DEFAULT_VALUE_CONTRAST, cloneOriginal))
+
+                    viewBinding?.imgPreview?.setImageBitmap(originalBitmap)
+                }
+            }
+        ) )
+//        viewBinding?.imgPreview?.loadImage(imageUrl) {
+//            centerCrop()
+//            this.listener(onSuccess = {bitmap, _ ->
+//                originalBitmap = bitmap
+//            })
+//        }
     }
 
     private fun initButtonListener() {
@@ -203,6 +226,8 @@ class DetailEditorFragment @Inject constructor(
 
     companion object {
         private const val SCREEN_NAME = "Detail Editor"
+
+        private const val DEFAULT_VALUE_CONTRAST = 1f
     }
 
 }

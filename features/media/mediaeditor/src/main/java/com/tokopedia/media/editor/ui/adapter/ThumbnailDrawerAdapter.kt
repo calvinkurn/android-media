@@ -38,7 +38,7 @@ class ThumbnailDrawerAdapter constructor(
 
         val editedUrl = if(item.editList.isNotEmpty()) item.editList.last().resultUrl else null
         if(isSelected) listener.onItemClicked(
-            item.getImageUrl(),
+            item.getOriginalUrl(),
             editedUrl,
             position
         )
