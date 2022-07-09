@@ -8,13 +8,11 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
+import android.view.*
 import android.view.animation.AnimationUtils
 import android.widget.RelativeLayout
 import android.widget.ViewFlipper
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
@@ -27,6 +25,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.promoui.common.dpToPx
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipData
@@ -44,12 +43,22 @@ import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmDashIntroViewM
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.tm_dash_intro.*
+import kotlinx.android.synthetic.main.tm_dash_intro.btnContinue
+import kotlinx.android.synthetic.main.tm_dash_intro.buttonContainer
+import kotlinx.android.synthetic.main.tm_dash_intro.cardTokmemberParent
+import kotlinx.android.synthetic.main.tm_dash_intro.frame_video
+import kotlinx.android.synthetic.main.tm_dash_intro.ivBg
+import kotlinx.android.synthetic.main.tm_dash_intro.recyclerView
+import kotlinx.android.synthetic.main.tm_dash_intro.scrollContainer
+import kotlinx.android.synthetic.main.tm_dash_intro.tvSubtitle
+import kotlinx.android.synthetic.main.tm_dash_intro.tvTitle
+import kotlinx.android.synthetic.main.tm_dash_intro_new.*
 import javax.inject.Inject
 
 class TmIntroFragment : BaseDaggerFragment(),
     TmIntroButtonVh.TokomemberIntroButtonListener {
 
-    private var rootView: RelativeLayout? = null
+    private var rootView: CoordinatorLayout? = null
     private var viewFlipperIntro : ViewFlipper?=null
     private var openBS: Boolean = false
     private var videoUrl:String? =null
@@ -79,7 +88,7 @@ class TmIntroFragment : BaseDaggerFragment(),
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.tm_dash_intro_container, container, false)
+        return inflater.inflate(R.layout.tm_dash_intro_new, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -88,8 +97,8 @@ class TmIntroFragment : BaseDaggerFragment(),
         rootView = view.findViewById(R.id.rootView)
         ivBg.loadImage(TM_INTRO_BG)
         hideStatusBar()
+       // setStatusBarViewHeight()
         observeViewModel()
-        renderHeader()
         arguments?.getInt(BUNDLE_SHOP_ID, 0)?.let {
             tmTracker?.viewIntroPage(it.toString())
             tmIntroViewModel.getIntroInfo(it)
@@ -100,6 +109,23 @@ class TmIntroFragment : BaseDaggerFragment(),
                     openCreationActivity()
                 }
                 tmTracker?.clickIntroLanjut(it.toString())
+            }
+        }
+
+        scrollContainer?.viewTreeObserver?.addOnScrollChangedListener {
+            var y = scrollContainer.scrollY
+            var diff = dpToPx(30)
+
+            if (y > diff) {
+                status_bar_bg?.alpha = 1F
+                toolbar_tokomember.switchToDarkMode()
+                toolbar_tokomember.applyAlphaToToolbarBackground(1F)
+                activity?.window?.statusBarColor = Color.WHITE
+            } else {
+                status_bar_bg?.alpha = 0F
+                toolbar_tokomember.switchToTransparentMode()
+                toolbar_tokomember.applyAlphaToToolbarBackground(0F)
+                activity?.window?.statusBarColor = Color.TRANSPARENT
             }
         }
     }
@@ -232,19 +258,6 @@ class TmIntroFragment : BaseDaggerFragment(),
         startActivity(intent)
     }
 
-    private fun renderHeader(){
-        header?.apply {
-            isShowBackButton = true
-            headerSubTitle =""
-            headerTitle =""
-            transparentMode = true
-
-            setNavigationOnClickListener {
-                activity?.onBackPressed()
-            }
-        }
-    }
-
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     override fun onResume() {
         super.onResume()
@@ -316,6 +329,23 @@ class TmIntroFragment : BaseDaggerFragment(),
         }
         win?.attributes = winParams
     }
+
+    private fun setStatusBarViewHeight() {
+        if (activity != null) status_bar_bg?.layoutParams?.height = getStatusBarHeight(activity)
+    }
+
+
+    fun getStatusBarHeight(context: Context?): Int {
+        var height = 0
+        val resId = context?.resources?.getIdentifier("status_bar_height", "dimen", "android")
+        if (resId != null) {
+            if (resId > 0) {
+                height = context.resources?.getDimensionPixelSize(resId)?:0
+            }
+        }
+        return height
+    }
+
 
     companion object {
         fun newInstance(bundle: Bundle?) = TmIntroFragment().apply {

@@ -11,6 +11,8 @@ import com.tokopedia.media.loader.loadImage
 import kotlinx.android.synthetic.main.tm_coupon_preview.view.*
 import kotlin.math.floor
 
+const val TM_COUPON_PREVIEW = "https://images.tokopedia.net/img/android/res/singleDpi/tm_coupon_skeleton.png"
+
 class TmCouponViewPreview @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -19,6 +21,7 @@ class TmCouponViewPreview @JvmOverloads constructor(
 
     init {
         View.inflate(context, R.layout.tm_coupon_preview, this)
+        imagePreview.loadImage(TM_COUPON_PREVIEW)
     }
 
     fun setInitialData(shopName: String,shopAvatar:String) {

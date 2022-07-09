@@ -68,7 +68,7 @@
             app:expandedTitleMarginStart="0dp"
             app:layout_scrollFlags="noScroll">
 
-            <com.tokopedia.mvcwidget.customview.MerchantRewardToolbar
+            <com.tokopedia.tokomember_seller_dashboard.view.customview.MerchantRewardToolbar
                 android:id="@+id/toolbar_merchant"
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"

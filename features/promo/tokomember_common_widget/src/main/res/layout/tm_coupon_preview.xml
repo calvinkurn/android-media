@@ -3,8 +3,14 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/tm_cmn_dp_108"
-    android:background="@drawable/tm_coupon_skeleton">
+    android:layout_height="@dimen/tm_cmn_dp_108">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imagePreview"
+        app:unify_image_corner_radius="0"
+        app:unify_image_type="rect"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ivShopAvatar"
