@@ -100,7 +100,7 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
                     viewModel.loadRecipeBookmarks.collect { state ->
                         when(state) {
                             is UiState.Fail -> {}
-                            is UiState.Success -> showEmptyState()
+                            is UiState.Success -> showPage(state.data)
                             is UiState.Loading -> showLoadPageLoading()
                             is UiState.Empty -> showEmptyState()
                         }
