@@ -120,10 +120,14 @@ object Telemetry {
     var telemetrySectionList: MutableList<TelemetrySection> = mutableListOf()
 
     private var currStartTime = 0L
+    private const val MAX_SECTION = 10
 
     @JvmStatic
     fun addSection(eventName: String) {
         currStartTime = System.currentTimeMillis()
+        if (telemetrySectionList.size >= MAX_SECTION) {
+            telemetrySectionList.removeLast()
+        }
         telemetrySectionList.add(
             0,
             TelemetrySection(

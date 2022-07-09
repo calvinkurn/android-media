@@ -5,12 +5,17 @@ import androidx.work.*
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.telemetry.model.Telemetry
+import com.tokopedia.telemetry.network.data.TelemetryResponse
 import com.tokopedia.telemetry.network.di.DaggerTelemetryComponent
 import com.tokopedia.telemetry.network.di.TelemetryComponent
 import com.tokopedia.telemetry.network.di.TelemetryModule
 import com.tokopedia.telemetry.network.usecase.TelemetryUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
+import okhttp3.internal.http2.ConnectionShutdownException
+import java.io.InterruptedIOException
+import java.net.SocketException
+import java.net.UnknownHostException
 import java.util.concurrent.Executors
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -46,11 +51,25 @@ class TelemetryWorker : CoroutineScope {
                     for (i in telemetrySectionSize - 1 downTo 0) {
                         val telemetrySection = telemetrySectionList[i]
                         if (telemetrySection.eventNameEnd.isNotEmpty()) {
-                            val result = telemetryUseCase.execute(telemetrySection)
-                            if (result.isError()) {
-                                sendLog(ERROR_TYPE_SEND_BACKEND, result.subDvcTl.data.errorMessage)
+                            var telemetryResponse:TelemetryResponse? = null
+                            try {
+                                telemetryResponse = telemetryUseCase.execute(telemetrySection)
+                            } catch (e:Exception) {
+                                // no internet connection
+                                if (e is UnknownHostException ||
+                                    e is SocketException ||
+                                    e is InterruptedIOException ||
+                                    e is ConnectionShutdownException ||
+                                    e is CancellationException) {
+                                    // do send data later, break the loop.
+                                    break
+                                }
                             }
-                            telemetrySectionList.removeAt(i)
+                            if (telemetryResponse?.isError() == true) {
+                                sendLog(ERROR_TYPE_SEND_BACKEND, telemetryResponse.subDvcTl.data.errorMessage)
+                            } else {
+                                telemetrySectionList.removeAt(i)
+                            }
                         }
                     }
                 }
