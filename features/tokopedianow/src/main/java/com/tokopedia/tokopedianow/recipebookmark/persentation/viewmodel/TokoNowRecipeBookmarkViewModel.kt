@@ -33,7 +33,7 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
     private var pageCounter: Int = DEFAULT_PAGE
     private var newWidgetCounter: Int = DEFAULT_WIDGET_COUNTER
 
-    private val _firstRecipeBookmarks: MutableStateFlow<UiState<List<Visitable<*>>>> = MutableStateFlow(UiState.Empty())
+    private val _loadRecipeBookmarks: MutableStateFlow<UiState<List<Visitable<*>>>> = MutableStateFlow(UiState.Empty())
     private val _moreRecipeBookmarks: MutableStateFlow<UiState<List<Visitable<*>>>> = MutableStateFlow(UiState.Empty())
     private val _toasterMessage: MutableStateFlow<ToasterRecipeRemovedUiModel?> = MutableStateFlow(null)
     private val _isOnScrollNotNeeded: MutableStateFlow<Boolean> = MutableStateFlow(false)
@@ -43,8 +43,8 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
     private val warehouseId: String
         get() = chooseAddressData.warehouse_id
 
-    val firstRecipeBookmarks: StateFlow<UiState<List<Visitable<*>>>>
-        get() = _firstRecipeBookmarks
+    val loadRecipeBookmarks: StateFlow<UiState<List<Visitable<*>>>>
+        get() = _loadRecipeBookmarks
     val moreRecipeBookmarks: StateFlow<UiState<List<Visitable<*>>>>
         get() = _moreRecipeBookmarks
     val toasterMessage: StateFlow<ToasterRecipeRemovedUiModel?>
@@ -63,7 +63,7 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
 
     fun loadFirstPage() {
         launchCatchError(block =  {
-            _firstRecipeBookmarks.value = UiState.Loading()
+            _loadRecipeBookmarks.value = UiState.Loading()
 
             delay(3000)
 
@@ -71,9 +71,9 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
             newWidgetCounter = recipeBookmarks.size
             layout.addAll(recipeBookmarks)
 
-            _firstRecipeBookmarks.value = UiState.Success(layout)
+            _loadRecipeBookmarks.value = UiState.Success(layout)
         }, onError = {
-            _firstRecipeBookmarks.value = UiState.Fail(it)
+            _loadRecipeBookmarks.value = UiState.Fail(it)
         })
     }
 
@@ -95,20 +95,20 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
                 isSuccess = true
             )
             layout.removeFirst { it is RecipeUiModel && it.id == recipeId }
-            _firstRecipeBookmarks.value = UiState.Success(layout)
+            _loadRecipeBookmarks.value = UiState.Success(layout)
         }, onError = {
-            _firstRecipeBookmarks.value = UiState.Fail(it)
+            _loadRecipeBookmarks.value = UiState.Fail(it)
         })
     }
 
     fun loadMore(
         isAtTheBottomOfThePage: Boolean,
-        isLoadingLoadMore: Boolean,
+        isLoadMoreLoading: Boolean,
     ) {
         launchCatchError(block = {
             if (newWidgetCounter < DEFAULT_LIMIT) {
                 _isOnScrollNotNeeded.value = true
-            } else if (isAtTheBottomOfThePage && !isLoadingLoadMore) {
+            } else if (isAtTheBottomOfThePage && !isLoadMoreLoading) {
                 _moreRecipeBookmarks.value = UiState.Loading()
 
                 delay(3000)

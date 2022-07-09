@@ -37,6 +37,8 @@ import javax.inject.Inject
 class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener {
 
     companion object {
+        private const val NO_DATA_IMAGE = "https://images.tokopedia.net/img/android/tokonow/no_data_recipe_bookmarks.png"
+
         const val DEFAULT_PAGE = 1
         const val DEFAULT_LIMIT = 10
         const val DEFAULT_WIDGET_COUNTER = 0
@@ -95,12 +97,12 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 //Need different coroutines, since collect() is a suspending function that suspends until the Flow terminates.
                 launch {
-                    viewModel.firstRecipeBookmarks.collect { state ->
+                    viewModel.loadRecipeBookmarks.collect { state ->
                         when(state) {
                             is UiState.Fail -> {}
-                            is UiState.Success -> showSuccessState(state.data)
+                            is UiState.Success -> showEmptyState()
                             is UiState.Loading -> showLoadPageLoading()
-                            is UiState.Empty -> {}
+                            is UiState.Empty -> showEmptyState()
                         }
                     }
                 }
@@ -109,11 +111,8 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
                     viewModel.moreRecipeBookmarks.collect { state ->
                         when(state) {
                             is UiState.Fail -> {}
-                            is UiState.Success -> {
-                                adapter?.hideLoading()
-                                showSuccessState(state.data)
-                            }
-                            is UiState.Loading -> adapter?.showLoading()
+                            is UiState.Success -> showMoreWidgets(state.data)
+                            is UiState.Loading -> showLoadMoreLoading()
                             is UiState.Empty -> {}
                         }
                     }
@@ -165,7 +164,7 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
         }
     }
 
-    private fun showSuccessState(data: List<Visitable<*>>?) {
+    private fun showPage(data: List<Visitable<*>>?) {
         if (!data.isNullOrEmpty()) {
             showRecipesList()
             adapter?.submitList(data)
@@ -187,6 +186,7 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
             loader.hide()
             rvRecipeBookmark.hide()
             emptyState.root.show()
+            emptyState.iuRecipePicture.setImageUrl(NO_DATA_IMAGE)
             emptyState.ubSeeRecipes.setOnClickListener {
 
             }
@@ -199,6 +199,15 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
             rvRecipeBookmark.hide()
             emptyState.root.hide()
         }
+    }
+
+    private fun showMoreWidgets(data: List<Visitable<*>>?) {
+        adapter?.hideLoading()
+        showPage(data)
+    }
+
+    private fun showLoadMoreLoading() {
+        adapter?.showLoading()
     }
 
     private fun setupHeader() {
