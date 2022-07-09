@@ -7,5 +7,4 @@ sealed class UiState<out T>(
     class Success<T> (data: T?): UiState<T>(data)
     class Fail<T>(error: Throwable?): UiState<T>(throwable = error)
     class Loading<T>: UiState<T>()
-    class Empty<T>: UiState<T>()
 }

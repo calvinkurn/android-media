@@ -10,6 +10,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.orFalse
@@ -24,6 +25,7 @@ import com.tokopedia.tokopedianow.recipebookmark.persentation.viewmodel.TokoNowR
 import com.tokopedia.tokopedianow.recipebookmark.util.RecyclerViewSpaceItemDecoration
 import com.tokopedia.tokopedianow.recipebookmark.util.UiState
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.ToasterUiModel
 import com.tokopedia.tokopedianow.recipebookmark.persentation.viewholder.RecipeViewHolder
 import com.tokopedia.tokopedianow.recipebookmark.util.repeatOnLifecycle
 import com.tokopedia.unifycomponents.Toaster
@@ -79,8 +81,10 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
         super.onAttach(context)
     }
 
-    override fun onRemoveBookmark(recipeId: String) {
+    override fun onRemoveBookmark(title: String, position: Int, recipeId: String) {
         viewModel.removeRecipeBookmark(
+            title = title,
+            position = position,
             recipeId = recipeId
         )
     }
@@ -102,7 +106,6 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
                             is UiState.Fail -> {}
                             is UiState.Success -> showPage(state.data)
                             is UiState.Loading -> showLoadPageLoading()
-                            is UiState.Empty -> showEmptyState()
                         }
                     }
                 }
@@ -113,18 +116,16 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
                             is UiState.Fail -> {}
                             is UiState.Success -> showMoreWidgets(state.data)
                             is UiState.Loading -> showLoadMoreLoading()
-                            is UiState.Empty -> {}
                         }
                     }
                 }
 
                 launch {
-                    viewModel.toasterMessage.collect { uiModel ->
-                        uiModel?.apply {
-                            showToaster(
-                                message = uiModel.message,
-                                isSuccess = uiModel.isSuccess
-                            )
+                    viewModel.toaster.collect { state ->
+                        when(state) {
+                            is UiState.Fail -> {}
+                            is UiState.Success -> showToaster(state.data)
+                            is UiState.Loading -> {}
                         }
                     }
                 }
@@ -154,13 +155,36 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
         viewModel.loadMore(isAtTheBottomOfThePage, isLoadMoreLoading)
     }
 
-    private fun showToaster(message: String, isSuccess: Boolean) {
+    private fun showToaster(data: ToasterUiModel?) {
+        data?.apply {
+            setupToaster(
+                message = message,
+                isSuccess = isSuccess,
+                cta = cta.orEmpty(),
+                clickListener = {
+                    viewModel.addRecipeBookmark(recipeId)
+                }
+            )
+        }
+    }
+
+    private fun setupToaster(message: String, isSuccess: Boolean, cta: String, clickListener: () -> Unit) {
         binding?.apply {
-            Toaster.build(
+            val toaster = Toaster.build(
                 view = root,
                 text = message,
-                type = if (isSuccess) TYPE_NORMAL else TYPE_ERROR
-            ).show()
+                type = if (isSuccess) TYPE_NORMAL else TYPE_ERROR,
+                actionText = cta,
+                clickListener = {
+                    clickListener.invoke()
+                }
+            )
+            toaster.addCallback(object : Snackbar.Callback() {
+                override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                    viewModel.removeToaster()
+                }
+            })
+            toaster.show()
         }
     }
 

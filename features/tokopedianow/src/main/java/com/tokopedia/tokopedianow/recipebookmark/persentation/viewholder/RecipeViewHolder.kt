@@ -28,7 +28,11 @@ class RecipeViewHolder(
             iuRecipePicture.loadImage(element.picture)
 
             icuBookmark.setOnClickListener {
-                listener.onRemoveBookmark(element.id)
+                listener.onRemoveBookmark(
+                    title = element.title,
+                    position = layoutPosition,
+                    recipeId = element.id
+                )
             }
 
             rvTags.run {
@@ -39,6 +43,6 @@ class RecipeViewHolder(
     }
 
     interface RecipeListener {
-        fun onRemoveBookmark(recipeId: String)
+        fun onRemoveBookmark(title: String, position: Int, recipeId: String)
     }
 }
