@@ -86,9 +86,7 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        renderHeader()
         observeViewModel()
-        renderButton()
         tmTracker = TmTracker()
         tmCouponPreviewData =
             arguments?.getParcelable(BUNDLE_COUPON_PREVIEW_DATA) ?: TmCouponPreviewData()
@@ -119,6 +117,8 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
             carouselPreview.show()
             tmDashCreateViewModel.getCardInfo(cardId)
         }
+        renderHeader()
+        renderButton()
     }
 
     override fun getScreenName() = ""
@@ -177,7 +177,7 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
                     closeLoadingDialog()
                     if (it.data.merchantPromotionCreateMultipleMV?.status == 200) {
                         activity?.finish()
-                        TokomemberDashHomeActivity.openActivity(arguments?.getInt(BUNDLE_SHOP_ID)?:0,cardId, context, isShowBottomSheet)
+                        TokomemberDashHomeActivity.openActivity(arguments?.getInt(BUNDLE_SHOP_ID)?:0,cardId, context, isShowBottomSheet, true)
                     } else {
                         view?.let { v ->
                             Toaster.build(

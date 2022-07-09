@@ -299,7 +299,6 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
                         filter_error.show()
                     }
                     else {
-
                         filter_error.hide()
                         viewFlipperCoupon.displayedChild = 1
                         tmCouponAdapter.vouchersItemList.clear()

@@ -59,6 +59,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.COUPON_CASHBACK_PREVIEW
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_DISCOUNT_TYPE_IDR
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_DISCOUNT_TYPE_PERCENT
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_HEADER_TITLE_SINGLE
+import com.tokopedia.tokomember_seller_dashboard.util.COUPON_HEADER_TITLE_SINGLE_EDIT
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_MEMBER
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_SHIPPING_PREVIEW
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_TERMS_CONDITION
@@ -91,6 +92,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.TIME_TITLE
 import com.tokopedia.tokomember_seller_dashboard.util.TIME_TITLE_END
 import com.tokopedia.tokomember_seller_dashboard.util.TM_ERROR_GEN
 import com.tokopedia.tokomember_seller_dashboard.util.TM_ERROR_PROGRAM
+import com.tokopedia.tokomember_seller_dashboard.util.TM_SUMMARY_DIALOG_TITLE
 import com.tokopedia.tokomember_seller_dashboard.util.TM_TNC
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.getDayOfWeekID
@@ -772,6 +774,9 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                 setType(Typography.DISPLAY_2)
             }
             loaderDialog?.setLoadingText(Html.fromHtml(LOADING_TEXT))
+        if(fromEdit) {
+            loaderDialog?.setLoadingText(Html.fromHtml(TM_SUMMARY_DIALOG_TITLE))
+        }
             loaderDialog?.show()
     }
 
@@ -885,6 +890,9 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
 
         headerKupon?.apply {
             title = COUPON_HEADER_TITLE_SINGLE
+            if(fromEdit){
+                title = COUPON_HEADER_TITLE_SINGLE_EDIT
+            }
             isShowBackButton = true
             setNavigationOnClickListener {
                 activity?.onBackPressed()
@@ -919,6 +927,9 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         tvTermsAndCondition.text = ss
         tvTermsAndCondition.movementMethod = LinkMovementMethod.getInstance()
         tvTermsAndCondition.highlightColor = Color.TRANSPARENT
+        if(fromEdit){
+            btnContinue.text = "Ubah Kupon"
+        }
         btnContinue.setOnClickListener {
             it.isEnabled = false
             it.isClickable = false
@@ -1156,11 +1167,14 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
             }
             val calendarMax = GregorianCalendar(LocaleUtils.getCurrentLocale(it))
             calendarMax.time = defaultCalendar.time
+            if(tmCouponStartDateUnix != null){
+                calendarMax.time = tmCouponStartDateUnix?.time
+            }
             calendarMax.add(Calendar.YEAR, 1)
 
-            if(calendarMax.time > sdf.parse(programData?.timeWindow?.endTime + "00") ?: Date()){
-                calendarMax.time = sdf.parse(programData?.timeWindow?.endTime + "00") ?: Date()
-            }
+//            if(calendarMax.time > sdf.parse(programData?.timeWindow?.endTime + "00") ?: Date()){
+//                calendarMax.time = sdf.parse(programData?.timeWindow?.endTime + "00") ?: Date()
+//            }
 
             val datepickerObject = DateTimePickerUnify(it, defaultCalendar, defaultCalendar, calendarMax).apply {
                 when (type) {

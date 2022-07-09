@@ -191,14 +191,16 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         tmTracker = TmTracker()
+
+        shopName = arguments?.getString(BUNDLE_SHOP_NAME) ?: ""
+        shopAvatar = arguments?.getString(BUNDLE_SHOP_AVATAR) ?: ""
+        programActionType = arguments?.getInt(BUNDLE_PROGRAM_TYPE, 0)?:0
+
         renderHeader()
         renderButton()
         observeViewModel()
 
         tmEligibilityViewModel.getSellerInfo()
-        shopName = arguments?.getString(BUNDLE_SHOP_NAME) ?: ""
-        shopAvatar = arguments?.getString(BUNDLE_SHOP_AVATAR) ?: ""
-        programActionType = arguments?.getInt(BUNDLE_PROGRAM_TYPE, 0)?:0
         tmDashCreateViewModel.getInitialCouponData(CREATE, "")
     }
 
@@ -742,6 +744,9 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 }
                 ProgramActionType.CREATE ->{
                     subtitle = COUPON_HEADER_SUBTITLE
+                }
+                ProgramActionType.EXTEND ->{
+                    subtitle = COUPON_HEADER_SUBTITLE_2
                 }
             }
 

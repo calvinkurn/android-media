@@ -28,6 +28,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_EDIT_PROGRAM
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOW_TOAST
 import com.tokopedia.tokomember_seller_dashboard.util.CANCEL
 import com.tokopedia.tokomember_seller_dashboard.util.EDIT
 import com.tokopedia.tokomember_seller_dashboard.util.EXTEND
@@ -110,6 +111,10 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
         observeViewModel()
         tmProgramListViewModel?.getProgramList(shopId, cardId)
         tmTracker?.viewProgramListTabSection(arguments?.getInt(BUNDLE_SHOP_ID).toString())
+
+        if(arguments?.getBoolean(BUNDLE_SHOW_TOAST, false) == true){
+            Toaster.build(view, " Yay, pengaturan TokoMember sudah dibuat. Kamu bisa cek progresnya di menu Home.", Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
+        }
 
         btnCreateProgram.setOnClickListener {
             TmDashCreateActivity.openActivity(shopId, activity, CreateScreenType.PROGRAM, ProgramActionType.CREATE_BUAT, REQUEST_CODE_REFRESH, null, cardId)

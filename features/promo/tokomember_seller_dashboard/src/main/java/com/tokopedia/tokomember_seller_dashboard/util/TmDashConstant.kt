@@ -26,6 +26,7 @@ const val BUNDLE_CREATE_SCREEN_TYPE = "bundle_create_screen_type"
 const val BUNDLE_REFRESH = "bundle_refresh"
 const val REQUEST_CODE_REFRESH = 1
 const val BUNDLE_IS_SHOW_BS = "bundle_is_show_bs"
+const val BUNDLE_SHOW_TOAST = "bundle_show_toast"
 
 const val ACTION_CREATE = "create"
 const val ACTION_DETAIL = "detail"
@@ -122,7 +123,8 @@ const val SOURCE = "source"
 const val SOURCE_VOUCHER = "TokoMember-Voucher"
 
 const val COUPON_HEADER_TITLE = "Daftar Tokomember"
-const val COUPON_HEADER_TITLE_SINGLE = "Buat Kupon Membership"
+const val COUPON_HEADER_TITLE_SINGLE = "Buat Kupon TokoMember"
+const val COUPON_HEADER_TITLE_SINGLE_EDIT = "Ubah Kupon TokoMember"
 const val COUPON_HEADER_SUBTITLE = "Langkah 3 dari 4"
 const val COUPON_HEADER_SUBTITLE_2 = "Langkah 2 dari 3"
 
@@ -137,17 +139,22 @@ const val TM_NOT_ELIGIBLE_DESC= "Pastikan toko berstatus Official Store. Yuk, ba
 const val TM_NOT_ELIGIBLE_CTA = "Pelajari Official Store"
 
 const val TM_DIALOG_CANCEL_TITLE_PROGRAM = "Yakin batalkan program?"
+const val TM_DIALOG_CANCEL_TITLE_EXTEND_PROGRAM = "Yakin batalkan perpanjangan program?"
 const val TM_DIALOG_CANCEL_TITLE_EDIT_PROGRAM = "Batal mengubah program?"
 const val TM_DIALOG_CANCEL_DESC_PROGRAM = "Pengaturan yang dibuat akan hilang kalau kamu batalkan proses pembuatan TokoMember, lho."
+const val TM_DIALOG_CANCEL_DESC_EXTEND_PROGRAM = "Pengaturan yang dibuat akan hilang kalau kamu batalkan proses pengaturan TokoMember, lho."
 const val TM_DIALOG_CANCEL_DESC_EDIT_PROGRAM = "Program yang sudah diubah ini tidak akan tersimpan."
 const val TM_DIALOG_CANCEL_CTA_PRIMARY_PROGRAM = "Lanjut"
 const val TM_DIALOG_CANCEL_CTA_SECONDARY_PROGRAM = "Batalkan Program"
+const val TM_DIALOG_CANCEL_CTA_SECONDARY_EXTEND_PROGRAM = "Batalkan Perpanjangan"
 const val TM_DIALOG_CANCEL_CTA_PRIMARY_EDIT_PROGRAM = "Lanjut Ubah"
 const val TM_DIALOG_CANCEL_CTA_SECONDARY_EDIT_PROGRAM = "Batal"
 
 const val TM_DIALOG_CANCEL_TITLE_COUPON = "Batal membuat kupon?"
 const val TM_DIALOG_CANCEL_DESC_COUPON = "Member tokomu bisa makin aktif belanja dengan kupon yang kamu buat, lho."
+const val TM_DIALOG_CANCEL_DESC_COUPON_EDIT = "Kupon yang sudah diubah ini tidak akan tersimpan."
 const val TM_DIALOG_CANCEL_CTA_PRIMARY_COUPON = "Lanjut Buat"
+const val TM_DIALOG_CANCEL_CTA_PRIMARY_COUPON_EDIT = "Lanjut Ubah"
 const val TM_DIALOG_CANCEL_CTA_SECONDARY_COUPON = "Batal"
 
 const val PROGRAM_CTA = "Buat Program"

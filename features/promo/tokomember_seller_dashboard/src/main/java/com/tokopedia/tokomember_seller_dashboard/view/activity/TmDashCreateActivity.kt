@@ -34,16 +34,21 @@ import com.tokopedia.tokomember_seller_dashboard.util.TM_CARD_DIALOG_CTA_SECONDA
 import com.tokopedia.tokomember_seller_dashboard.util.TM_CARD_DIALOG_DESC
 import com.tokopedia.tokomember_seller_dashboard.util.TM_CARD_DIALOG_TITLE
 import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_CTA_PRIMARY_COUPON
+import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_CTA_PRIMARY_COUPON_EDIT
 import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_CTA_PRIMARY_EDIT_PROGRAM
 import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_CTA_PRIMARY_PROGRAM
 import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_CTA_SECONDARY_COUPON
 import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_CTA_SECONDARY_EDIT_PROGRAM
+import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_CTA_SECONDARY_EXTEND_PROGRAM
 import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_CTA_SECONDARY_PROGRAM
 import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_DESC_COUPON
+import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_DESC_COUPON_EDIT
 import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_DESC_EDIT_PROGRAM
+import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_DESC_EXTEND_PROGRAM
 import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_DESC_PROGRAM
 import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_TITLE_COUPON
 import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_TITLE_EDIT_PROGRAM
+import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_TITLE_EXTEND_PROGRAM
 import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_TITLE_PROGRAM
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TmCreateCardFragment
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TmDashPreviewFragment
@@ -98,43 +103,36 @@ class TmDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback {
                 dialogCancel.apply {
                     when (screenType) {
                         PROGRAM -> {
+                            val shopId =
+                                supportFragmentManager.fragments.firstOrNull()?.arguments?.getInt(
+                                    BUNDLE_SHOP_ID
+                                ).toString()
                             if (supportFragmentManager.fragments.firstOrNull() is TmProgramFragment) {
-                                val shopId =
-                                    supportFragmentManager.fragments.firstOrNull()?.arguments?.getInt(
-                                        BUNDLE_SHOP_ID
-                                    ).toString()
                                 setTitle(TM_DIALOG_CANCEL_TITLE_PROGRAM)
                                 setDescription(TM_DIALOG_CANCEL_DESC_PROGRAM)
                                 setPrimaryCTAText(TM_DIALOG_CANCEL_CTA_PRIMARY_PROGRAM)
                                 setSecondaryCTAText(TM_DIALOG_CANCEL_CTA_SECONDARY_PROGRAM)
-                                setPrimaryCTAClickListener {
-                                    tmTracker?.clickProgramCreationCancelPopupPrimary(shopId)
-                                    dismiss()
-                                }
-                                setSecondaryCTAClickListener {
-                                    tmTracker?.clickProgramCreationCancelPopupSecondary(shopId)
-                                    dismiss()
-                                    finish()
-                                }
                             }
                             if(intent.extras?.getInt(BUNDLE_PROGRAM_TYPE) == ProgramActionType.EDIT){
-                                val shopId =
-                                    supportFragmentManager.fragments.firstOrNull()?.arguments?.getInt(
-                                        BUNDLE_SHOP_ID
-                                    ).toString()
                                 setTitle(TM_DIALOG_CANCEL_TITLE_EDIT_PROGRAM)
                                 setDescription(TM_DIALOG_CANCEL_DESC_EDIT_PROGRAM)
                                 setPrimaryCTAText(TM_DIALOG_CANCEL_CTA_PRIMARY_EDIT_PROGRAM)
                                 setSecondaryCTAText(TM_DIALOG_CANCEL_CTA_SECONDARY_EDIT_PROGRAM)
-                                setPrimaryCTAClickListener {
-                                    tmTracker?.clickProgramCreationCancelPopupPrimary(shopId)
-                                    dismiss()
-                                }
-                                setSecondaryCTAClickListener {
-                                    tmTracker?.clickProgramCreationCancelPopupSecondary(shopId)
-                                    dismiss()
-                                    finish()
-                                }
+                            }
+                            if(intent.extras?.getInt(BUNDLE_PROGRAM_TYPE) == ProgramActionType.EXTEND){
+                                setTitle(TM_DIALOG_CANCEL_TITLE_EXTEND_PROGRAM)
+                                setDescription(TM_DIALOG_CANCEL_DESC_EXTEND_PROGRAM)
+                                setPrimaryCTAText(TM_DIALOG_CANCEL_CTA_PRIMARY_PROGRAM)
+                                setSecondaryCTAText(TM_DIALOG_CANCEL_CTA_SECONDARY_EXTEND_PROGRAM)
+                            }
+                            setPrimaryCTAClickListener {
+                                tmTracker?.clickProgramCreationCancelPopupPrimary(shopId)
+                                dismiss()
+                            }
+                            setSecondaryCTAClickListener {
+                                tmTracker?.clickProgramCreationCancelPopupSecondary(shopId)
+                                dismiss()
+                                finish()
                             }
                         }
                         COUPON_SINGLE -> {
@@ -142,6 +140,12 @@ class TmDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback {
                             setDescription(TM_DIALOG_CANCEL_DESC_COUPON)
                             setPrimaryCTAText(TM_DIALOG_CANCEL_CTA_PRIMARY_COUPON)
                             setSecondaryCTAText(TM_DIALOG_CANCEL_CTA_SECONDARY_COUPON)
+                            if(intent.extras?.getBoolean(ACTION_EDIT) == true){
+                                setTitle(TM_DIALOG_CANCEL_TITLE_COUPON)
+                                setDescription(TM_DIALOG_CANCEL_DESC_COUPON_EDIT)
+                                setPrimaryCTAText(TM_DIALOG_CANCEL_CTA_PRIMARY_COUPON_EDIT)
+                                setSecondaryCTAText(TM_DIALOG_CANCEL_CTA_SECONDARY_COUPON)
+                            }
                             setPrimaryCTAClickListener {
                                 dismiss()
                             }
