@@ -1,13 +1,7 @@
 package com.tokopedia.chatbot.view.adapter.viewholder
 
-import android.R.attr.path
-import android.content.Context
-import android.graphics.drawable.Drawable
-import android.media.browse.MediaBrowser
 import android.net.Uri
-import android.support.v4.media.MediaBrowserCompat
 import android.text.TextUtils
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
@@ -17,68 +11,46 @@ import androidx.annotation.LayoutRes
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.model.GlideUrl
-import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.Target
-import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.source.ClippingMediaSource
-import com.google.android.exoplayer2.source.ExtractorMediaSource
-import com.google.android.exoplayer2.source.MediaSource
-import com.google.android.exoplayer2.source.ProgressiveMediaSource
-import com.google.android.exoplayer2.source.dash.DashMediaSource
-import com.google.android.exoplayer2.source.hls.HlsMediaSource
-import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
-import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
-import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory
-import com.google.android.exoplayer2.util.Util
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
 import com.tokopedia.chatbot.util.ChatBotTimeConverter
-import com.tokopedia.chatbot.util.VideoLengthFinder
 import com.tokopedia.chatbot.util.ViewUtil
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.VideoUploadListener
+import com.tokopedia.chatbot.view.widget.ChatbotExoPlayer
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.user.session.UserSessionInterface
 import java.util.concurrent.TimeUnit
 
 
 class ChatbotVideoUploadViewHolder(
     itemView: View?,
     private val listener: VideoUploadListener,
-    private val userSession: UserSessionInterface
 ) : BaseChatViewHolder<VideoUploadUiModel>(itemView) {
 
     override fun alwaysShowTime() = true
     override fun useWhiteReadStatus() = true
-    private fun getImageId() = R.id.image
+    private fun getVideoPlayerId() = R.id.video_player
     private fun getProgressBarSendImageId() = R.id.progress_bar
     private fun getLeftActionId() = R.id.left_action
     private var maxDuration = 1_000_000L
 
-    //TODO change this
     private fun getReadStatusId() = com.tokopedia.chat_common.R.id.chat_status
     private fun getChatBalloonId() = R.id.card_group_chat_message
     private fun getVideoTotalLengthId() = R.id.video_length
     private val datContainer: CardView? = itemView?.findViewById(R.id.dateContainer)
     private val chatBalloon: View? = itemView?.findViewById(getChatBalloonId())
     private val videoTotalLength: Typography? = itemView?.findViewById(getVideoTotalLengthId())
-    private val videoUploadProgressBar: LoaderUnify? =
-        itemView?.findViewById(R.id.progress_bar_loding)
     private val cancelUpload = itemView?.findViewById<ImageView>(R.id.progress_cross)
 
-    private var simpleExoPlayer: SimpleExoPlayer? = null
+    private lateinit var chatbotExoPlayer: ChatbotExoPlayer
 
     private val bgSender = ViewUtil.generateBackgroundWithShadow(
         chatBalloon,
@@ -95,8 +67,6 @@ class ChatbotVideoUploadViewHolder(
         getStrokeWidthSenderDimenRes()
     )
 
-    private val attachmentUnify get() = attachment as? ImageUnify
-
     override fun bind(element: VideoUploadUiModel) {
         if (element == null) return
         super.bind(element)
@@ -105,58 +75,37 @@ class ChatbotVideoUploadViewHolder(
         bindClickListener(element)
         bindVideoAttachment(element)
         bindRetry(element)
-        setVisibility(attachment, View.VISIBLE)
+        setVisibility(videoPlayerView, View.VISIBLE)
+        setDefaultVideoDuration()
         chatStatus?.let { bindChatReadStatus(element, it) }
         bindBackground()
         cancelUpload?.setOnClickListener { listener.onVideoUploadCancelClicked(element) }
         setHeaderDate(element)
-        setTimeData(element)
 
-        simpleExoPlayer = SimpleExoPlayer.Builder(itemView.context).build()
-        val mediaSource = getMediaSourceBySource(itemView.context, Uri.parse(element.videoUrl))
+        chatbotExoPlayer = ChatbotExoPlayer(itemView.context)
+        videoPlayerView?.player = chatbotExoPlayer.getExoPlayer()
+        val mediaSource = chatbotExoPlayer.getMediaSourceBySource(itemView.context, Uri.parse(element.videoUrl))
+        chatbotExoPlayer?.getExoPlayer().prepare(mediaSource)
 
-        simpleExoPlayer?.prepare(mediaSource, true, false)
-        simpleExoPlayer?.playWhenReady = true
-
-        simpleExoPlayer?.addListener(object : Player.EventListener {
+        chatbotExoPlayer.getExoPlayer().addListener(object : Player.EventListener {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                 super.onPlayerStateChanged(playWhenReady, playbackState)
                 if(playbackState == Player.STATE_READY) {
-                    var duration =  simpleExoPlayer?.duration
-                    Log.d("FATAL", "onPlayerStateChanged: $duration")
-                    var totalLengthInString = convertVideoLength(duration?:0)
-                    videoTotalLength?.text = duration.toString()
-                    videoTotalLength?.setTextColor(R.color.unify_G500)
+                    var duration = chatbotExoPlayer.getExoPlayer().duration
+                    setTimeData(duration)
                 }
             }
         })
-
     }
 
-
-    private fun getMediaSourceBySource(
-        context: Context,
-        uri: Uri,
-    ): MediaSource {
-        val defaultDataSourceFactory =
-            DefaultDataSourceFactory(context, Util.getUserAgent(context, "Tokopedia Android"))
-        val dataSourceFactory  = defaultDataSourceFactory
-        val mediaSourceFactory = when (val type = Util.inferContentType(uri)) {
-            C.TYPE_SS -> SsMediaSource.Factory(dataSourceFactory)
-            C.TYPE_DASH -> DashMediaSource.Factory(dataSourceFactory)
-            C.TYPE_HLS -> HlsMediaSource.Factory(dataSourceFactory)
-            C.TYPE_OTHER -> ProgressiveMediaSource.Factory(dataSourceFactory)
-            else -> throw IllegalStateException("Unsupported type: $type")
-        }
-        val mediaSource = mediaSourceFactory.createMediaSource(uri)
-         return    mediaSource
+    private fun setDefaultVideoDuration() {
+        videoTotalLength?.text = itemView.context.getString(R.string.chatbot_default_video_duration)
     }
 
-
-    private fun setTimeData(element: VideoUploadUiModel) {
-        var totalLength : Long = 0
-        var totalLengthInString = convertVideoLength(totalLength)
+    private fun setTimeData(duration : Long) {
+        var totalLengthInString = convertVideoLength(duration)
         videoTotalLength?.text = totalLengthInString
+        videoTotalLength?.setTextColor(R.color.unify_G500)
     }
 
     private fun convertVideoLength(totalLength: Long): String {
@@ -185,20 +134,10 @@ class ChatbotVideoUploadViewHolder(
                 com.tokopedia.unifyprinciples.R.color.Unify_N0
             )
         )
-        attachment?.scaleType = ImageView.ScaleType.CENTER_CROP
         if (element.isDummy) {
             setVisibility(progressBarSendImage, View.VISIBLE)
         } else {
             setVisibility(progressBarSendImage, View.GONE)
-        }
-
-        element.videoUrl?.let { videoUrl ->
-            attachmentUnify?.let { attachementUnify ->
-                loadImage(
-                    attachementUnify,
-                    videoUrl,
-                )
-            }
         }
     }
 
@@ -269,14 +208,9 @@ class ChatbotVideoUploadViewHolder(
 
     private val chatStatus: ImageView? = itemView?.findViewById(getReadStatusId())
 
-    //    private val name: TextView? = itemView?.findViewById(getChatNameId())
-//    private val label: TextView? = itemView?.findViewById(getLabelId())
-//    private val dot: TextView? = itemView?.findViewById(getDotId())
     private val action: ImageView? = itemView?.findViewById(getLeftActionId())
     private val progressBarSendImage: View? = itemView?.findViewById(getProgressBarSendImageId())
-    private val attachment: ImageView? = itemView?.findViewById(getImageId())
-    //ADD the video length and text
-
+    private val videoPlayerView: PlayerView? = itemView?.findViewById(getVideoPlayerId())
 
     private fun bindRetry(element: VideoUploadUiModel) {
         if (element.isRetry) {
@@ -350,7 +284,7 @@ class ChatbotVideoUploadViewHolder(
 
     override fun onViewRecycled() {
         super.onViewRecycled()
-        simpleExoPlayer?.release()
+        chatbotExoPlayer.destroy()
     }
 
     companion object {

@@ -20,7 +20,7 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import com.tokopedia.media.preview.ui.player.VideoControlView
 
-class ChatbotExoPlayer(val context : Context, var videoControl: ChatbotVideoControlView) : ChatbotVideoControlView.Listener{
+class ChatbotExoPlayer(val context : Context, var videoControl: ChatbotVideoControlView? = null) : ChatbotVideoControlView.Listener{
 
    private var loadControl: LoadControl = DefaultLoadControl()
 
@@ -107,7 +107,7 @@ class ChatbotExoPlayer(val context : Context, var videoControl: ChatbotVideoCont
     fun getExoPlayer(): SimpleExoPlayer = exoPlayer
 
 
-    private fun getMediaSourceBySource(context: Context, uri: Uri): MediaSource {
+    fun getMediaSourceBySource(context: Context, uri: Uri): MediaSource {
         val mDataSourceFactory =
             DefaultDataSourceFactory(context, Util.getUserAgent(context, "Tokopedia Android"))
         val mediaSource = when (val type = Util.inferContentType(uri)) {
@@ -132,7 +132,6 @@ class ChatbotExoPlayer(val context : Context, var videoControl: ChatbotVideoCont
         fun onInitialStateLoading()
         fun onVideoReadyToPlay()
         fun onVideoStateChange(stopDuration : Long, videoDuration : Long)
-        fun getVideoDuration(duration: Long)
     }
 
     interface VideoPlayingListener {
@@ -163,10 +162,10 @@ class ChatbotExoPlayer(val context : Context, var videoControl: ChatbotVideoCont
         val currentVolume = exoPlayer.volume
         if (currentVolume == MUTE_VOLUME){
             exoPlayer.volume = UNMUTE_VOLUME
-            videoControl.toggleVolume(false)
+            videoControl?.toggleVolume(false)
         }else {
             exoPlayer.volume = MUTE_VOLUME
-            videoControl.toggleVolume(true)
+            videoControl?.toggleVolume(true)
         }
     }
 }

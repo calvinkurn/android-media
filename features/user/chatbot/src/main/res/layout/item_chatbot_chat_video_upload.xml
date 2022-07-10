@@ -55,13 +55,18 @@
         android:layout_below="@id/dateContainer"
         tools:ignore="RtlHardcoded">
 
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/image"
+
+        <com.google.android.exoplayer2.ui.PlayerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="0.8dp"
-            android:scaleType="centerCrop"
-            tools:srcCompat="@tools:sample/avatars" />
+            android:id="@+id/video_player"
+            app:use_controller="false"
+            app:resize_mode="fill"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
 
         <FrameLayout
             android:layout_width="match_parent"

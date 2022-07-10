@@ -78,11 +78,8 @@ class ChatbotVideoFragment : BaseDaggerFragment(){
             }
 
             override fun onVideoStateChange(stopDuration: Long, videoDuration: Long) {
-            }
 
-            override fun getVideoDuration(duration: Long) {
             }
-
         })
     }
 
