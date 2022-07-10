@@ -140,7 +140,7 @@ class HomeBalanceWidgetUseCase @Inject constructor(
             homeBalanceModel.mapBalanceData(tokopointDrawerListHomeData = homeTokopointsListRepository.getRemoteData(), headerTitle = headerTitle)
         } catch (e: Exception) {
             homeBalanceModel.isTokopointsOrOvoFailed = true
-            homeBalanceModel.mapErrorTokopoints()
+            homeBalanceModel.mapErrorTokopoints(headerTitle)
         }
         return homeBalanceModel
     }

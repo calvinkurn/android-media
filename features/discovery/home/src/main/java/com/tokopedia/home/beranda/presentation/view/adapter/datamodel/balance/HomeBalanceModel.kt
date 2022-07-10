@@ -100,10 +100,10 @@ data class HomeBalanceModel(
         walletAppData?.let { mapWalletApp(walletAppData, headerTitle) }
     }
 
-    fun mapErrorTokopoints() {
+    fun mapErrorTokopoints(headerTitle: String) {
         when (balanceType) {
             TYPE_STATE_2 -> {
-                balanceDrawerItemModels.add(getDefaultTokopointsErrorState())
+                balanceDrawerItemModels.add(getDefaultTokopointsErrorState(headerTitle))
             }
         }
     }
@@ -137,13 +137,14 @@ data class HomeBalanceModel(
         )
     }
 
-    private fun getDefaultTokopointsErrorState(): BalanceDrawerItemModel {
+    private fun getDefaultTokopointsErrorState(headerTitle: String): BalanceDrawerItemModel {
         return BalanceDrawerItemModel(
             drawerItemType = TYPE_TOKOPOINT,
             defaultIconRes = R.drawable.ic_new_tokopoints,
             balanceTitleTextAttribute = getDefaultErrorTitleTextAttribute(),
             balanceSubTitleTextAttribute = getDefaultErrorSubTItleTextAttribute(),
-            state = STATE_ERROR
+            state = STATE_ERROR,
+            headerTitle = headerTitle
         )
     }
 
@@ -234,7 +235,7 @@ data class HomeBalanceModel(
         } else {
             flagStateCondition(itemType = TYPE_TOKOPOINT,
                     action = {
-                        balanceDrawerItemModels.add( getDefaultTokopointsErrorState().apply {
+                        balanceDrawerItemModels.add( getDefaultTokopointsErrorState(headerTitle).apply {
                             state = STATE_ERROR
                         })
                     })
