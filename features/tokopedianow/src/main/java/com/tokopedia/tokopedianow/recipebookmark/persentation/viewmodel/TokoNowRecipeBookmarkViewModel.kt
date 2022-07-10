@@ -91,7 +91,7 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
                 tempRecipeRemoved = Pair(position, layout[position])
                 layout.removeFirst { it.id == recipeId }
                 _toaster.value = UiState.Success(ToasterUiModel(
-                    message = "$title sudah di hapus dari Buku Resep.",
+                    message = "\"$title\" sudah dihapus dari Buku Resep.",
                     recipeId = recipeId,
                     isSuccess = response.success,
                     cta = "Batalkan"
