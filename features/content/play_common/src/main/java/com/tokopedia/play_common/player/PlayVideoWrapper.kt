@@ -9,8 +9,7 @@ import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.dash.DashMediaSource
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
-import com.google.android.exoplayer2.upstream.LoadErrorHandlingPolicy
+import com.google.android.exoplayer2.upstream.*
 import com.google.android.exoplayer2.util.Util
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.PlayPlayerModel
@@ -23,9 +22,11 @@ import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.play_common.state.VideoPositionHandle
 import com.tokopedia.play_common.types.PlayVideoType
 import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
+import com.tokopedia.play_common.util.PlayLiveRoomMetricsCommon
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import java.util.concurrent.ConcurrentLinkedQueue
+import kotlin.math.floor
 import kotlin.properties.Delegates
 
 /**
@@ -33,8 +34,9 @@ import kotlin.properties.Delegates
  */
 class PlayVideoWrapper private constructor(
         private val context: Context,
-        private val exoPlayerCreator: ExoPlayerCreator = DefaultExoPlayerCreator(context)
-) {
+        private val exoPlayerCreator: ExoPlayerCreator = DefaultExoPlayerCreator(context),
+        private val liveRoomMetricsCommon : PlayLiveRoomMetricsCommon = PlayLiveRoomMetricsCommon(),
+        ) {
 
     class Builder(
             context: Context
@@ -275,8 +277,29 @@ class PlayVideoWrapper private constructor(
     fun isVideoLive(): Boolean = videoPlayer.isCurrentWindowLive
     //endregion
 
+    private var startTime: Long = 0L
+    private var endTime: Long = 0L
+    private var transferredData: Long = 0L
+
+    private val transferListener = object : TransferListener {
+        override fun onTransferInitializing(dataSource: DataSource?, dataSpec: DataSpec?, isNetwork: Boolean) {}
+
+        override fun onTransferStart(dataSource: DataSource?, dataSpec: DataSpec?, isNetwork: Boolean) {
+            startTime = System.currentTimeMillis()
+        }
+
+        override fun onBytesTransferred(dataSource: DataSource?, dataSpec: DataSpec?, isNetwork: Boolean, bytes: Int) {
+            transferredData = bytes * BYTES_MULTIPLIER
+        }
+
+        override fun onTransferEnd(dataSource: DataSource?, dataSpec: DataSpec?, isNetwork: Boolean) {
+            endTime = System.currentTimeMillis()
+            liveRoomMetricsCommon.setInetSpeed(getDownstreamBandwidth())
+        }
+    }
+
     private fun getMediaSourceBySource(context: Context, uri: Uri): MediaSource {
-        val mDataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, "Tokopedia Android"))
+        val mDataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, "Tokopedia Android"), transferListener)
         val errorHandlingPolicy = getErrorHandlingPolicy()
         val mediaSource = when (val type = Util.inferContentType(uri)) {
             C.TYPE_SS -> SsMediaSource.Factory(mDataSourceFactory).setLoadErrorHandlingPolicy(errorHandlingPolicy)
@@ -286,6 +309,12 @@ class PlayVideoWrapper private constructor(
             else -> throw IllegalStateException("Unsupported type: $type")
         }
         return mediaSource.createMediaSource(uri)
+    }
+
+    fun getDownstreamBandwidth(): Float {
+        val convertedTransferredData = transferredData.toFloat() / MBPS_DIVIDER.toFloat()
+        val timeOffset = endTime - startTime
+        return if(timeOffset > 0) floor(convertedTransferredData) else 0.0f
     }
 
     private fun getErrorHandlingPolicy(): LoadErrorHandlingPolicy {
@@ -341,6 +370,9 @@ class PlayVideoWrapper private constructor(
     companion object {
         private const val VIDEO_MAX_SOUND = 1f
         private const val VIDEO_MIN_SOUND = 0f
+
+        private const val MBPS_DIVIDER = 1000000L
+        private const val BYTES_MULTIPLIER = 8000L
     }
 
     interface Listener {

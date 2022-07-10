@@ -58,6 +58,7 @@ const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_SPECIAL_RELEASE = "tracker/home/spe
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_CUE_WIDGET_CATEGORY = "tracker/home/cue_widget_category.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_CAMPAIGN_WIDGET = "tracker/home/campaign_widget.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_VPS_WIDGET = "tracker/home/vps_widget.json"
+const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MISSION_WIDGET = "tracker/home/mission_widget.json"
 
 private const val CHOOSE_ADDRESS_PREFERENCE_NAME = "coahmark_choose_address"
 private const val CHOOSE_ADDRESS_EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK"
@@ -266,6 +267,10 @@ fun actionOnCueWidgetCategory(viewHolder: RecyclerView.ViewHolder, itemPosition:
 
 fun actionOnVpsWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
     clickOnEachItemRecyclerView(viewHolder.itemView, R.id.home_component_vps_rv, 0)
+}
+
+fun actionOnMissionWidget(viewHolder: RecyclerView.ViewHolder) {
+    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.home_component_mission_widget_rcv, 0)
 }
 
 fun clickOnEachItemRecyclerViewMerchantVoucher(view: View, recyclerViewId: Int, fixedItemPositionLimit: Int) {

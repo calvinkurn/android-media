@@ -1,9 +1,15 @@
 package com.tokopedia.product.manage.feature.list.view.adapter.viewholder
 
+import android.graphics.PorterDuff
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler.loadImageFitCenter
+import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
@@ -16,12 +22,13 @@ class ProductViewHolder(
     view: View,
     private val listener: ProductViewHolderView,
     private val campaignListener: ProductCampaignInfoListener
-): AbstractViewHolder<ProductUiModel>(view) {
+) : AbstractViewHolder<ProductUiModel>(view) {
 
     companion object {
         @LayoutRes
         var LAYOUT = R.layout.item_manage_product_list
         const val MAX_SHOWING_STOCK = 999_999
+        const val POSITION_TICKET_BTN_MORE_OPTION = 0
     }
 
     private val binding by viewBinding<ItemManageProductListBinding>()
@@ -39,25 +46,41 @@ class ProductViewHolder(
 
         showProductImage(product)
         showStockHintImage(product)
+        showStockAlertImage(product)
+        showStockAlertActiveImage(product)
+
         showProductCheckBox(product)
         showProductTopAdsIcon(product)
         showCampaignCountText(product)
 
         setOnClickListeners(product)
+
+        if (binding?.imageStockReminder?.isVisible.orTrue()) {
+            listener.onFinishBindProductStockReminder()
+        } else if (binding?.btnMoreOptions?.isVisible.orTrue() && adapterPosition.orZero() == POSITION_TICKET_BTN_MORE_OPTION
+            && GlobalConfig.isSellerApp()
+        ) {
+            listener.onFinishBindMoreOption()
+        }
     }
 
     private fun setTitleAndPrice(product: ProductUiModel) {
         binding?.textTitle?.text = product.title
-        val prices = mutableListOf(product.minPrice?.priceFormatted, product.maxPrice?.priceFormatted).distinct()
+        val prices = mutableListOf(
+            product.minPrice?.priceFormatted,
+            product.maxPrice?.priceFormatted
+        ).distinct()
         binding?.textPrice?.text = prices.joinToString(" - ")
     }
 
     private fun showProductTicker(product: ProductUiModel) {
-        binding?.tickerProductManageViolation?.showWithCondition(product.isPending()
-                || product.isSuspendLevelTwoUntilFour())
-        if (product.isPending()){
+        binding?.tickerProductManageViolation?.showWithCondition(
+            product.isPending()
+                    || product.isSuspendLevelTwoUntilFour()
+        )
+        if (product.isPending()) {
             binding?.tickerProductManageViolation?.setTextDescription(getString(R.string.product_manage_violation_ticker_message))
-        }else{
+        } else {
             binding?.tickerProductManageViolation?.setTextDescription(getString(R.string.product_manage_suspend_ticker_message))
 
         }
@@ -87,15 +110,17 @@ class ProductViewHolder(
     }
 
     private fun showProductButton(product: ProductUiModel) {
-        if(product.multiSelectActive) {
+        if (product.multiSelectActive) {
             binding?.btnContactCS?.hide()
             binding?.btnEditPrice?.hide()
             binding?.btnEditStock?.hide()
             binding?.btnMoreOptions?.hide()
         } else {
             binding?.btnContactCS?.run {
-                showWithCondition(product.isViolation() || product.isPending()
-                        || product.isSuspendLevelTwoUntilFour())
+                showWithCondition(
+                    product.isViolation() || product.isPending()
+                            || product.isSuspendLevelTwoUntilFour()
+                )
                 when {
                     product.isViolation() -> {
                         text = getString(R.string.product_manage_contact_cs)
@@ -108,6 +133,8 @@ class ProductViewHolder(
             binding?.btnEditPrice?.showWithCondition(product.isNotViolation() && product.isNotSuspendLevelTwoUntilFour())
             binding?.btnEditStock?.showWithCondition(product.isNotViolation() && product.isNotSuspendLevelTwoUntilFour())
             binding?.btnMoreOptions?.showWithCondition(product.isNotViolation() && product.isNotSuspendLevelTwoUntilFour())
+
+
         }
 
         binding?.btnEditPrice?.isEnabled = product.hasEditPriceAccess()
@@ -128,6 +155,48 @@ class ProductViewHolder(
     private fun showStockHintImage(product: ProductUiModel) {
         binding?.imageStockInformation
             ?.showWithCondition((product.isEmpty() && product.isNotViolation()) || product.isSuspend())
+        binding?.clImage
+            ?.showWithCondition(
+                binding?.imageStockInformation?.isVisible.orFalse()
+                        || binding?.imageStockReminder?.isVisible.orFalse()
+                        || binding?.imageStockAlertActive?.isVisible.orFalse()
+            )
+    }
+
+    private fun showStockAlertImage(product: ProductUiModel) {
+        binding?.imageStockReminder?.setColorFilter(
+            ContextCompat.getColor(
+                itemView.context,
+                com.tokopedia.unifycomponents.R.color.Unify_NN500
+            ), PorterDuff.Mode.SRC_ATOP
+        )
+        binding?.imageStockReminder
+            ?.showWithCondition(
+                product.hasStockAlert && !product.stockAlertActive
+                        && !binding?.imageStockInformation?.isVisible.orTrue()
+            )
+        binding?.clImage
+            ?.showWithCondition(
+                binding?.imageStockInformation?.isVisible.orFalse()
+                        || binding?.imageStockReminder?.isVisible.orFalse()
+                        || binding?.imageStockAlertActive?.isVisible.orFalse()
+            )
+
+    }
+
+    private fun showStockAlertActiveImage(product: ProductUiModel) {
+        binding?.imageStockAlertActive
+            ?.showWithCondition(
+                product.stockAlertActive
+                        && !binding?.imageStockInformation?.isVisible.orTrue()
+
+            )
+        binding?.clImage
+            ?.showWithCondition(
+                binding?.imageStockInformation?.isVisible.orFalse()
+                        || binding?.imageStockReminder?.isVisible.orFalse()
+                        || binding?.imageStockAlertActive?.isVisible.orFalse()
+            )
     }
 
     private fun showProductImage(product: ProductUiModel) {
@@ -143,13 +212,33 @@ class ProductViewHolder(
         binding?.checkBoxSelect?.setOnClickListener { onClickCheckBox() }
         binding?.btnMoreOptions?.setOnClickListener { listener.onClickMoreOptionsButton(product) }
         binding?.imageStockInformation?.setOnClickListener { listener.onClickStockInformation() }
-        binding?.btnContactCS?.setOnClickListener { listener.onClickContactCsButton(product)}
+        binding?.imageStockReminder?.setOnClickListener {
+            listener.onClickStockReminderInformation(
+                product.stockAlertCount,
+                product.stockAlertActive
+            )
+        }
+        binding?.imageStockAlertActive?.setOnClickListener {
+            listener.onClickStockReminderInformation(
+                product.stockAlertCount,
+                product.stockAlertActive
+            )
+        }
+        binding?.btnContactCS?.setOnClickListener { listener.onClickContactCsButton(product) }
     }
 
     private fun setQuickEditBtnListeners(product: ProductUiModel) {
-        if(product.isVariant()) {
-            binding?.btnEditPrice?.setOnClickListener { listener.onClickEditVariantPriceButton(product) }
-            binding?.btnEditStock?.setOnClickListener { listener.onClickEditVariantStockButton(product) }
+        if (product.isVariant()) {
+            binding?.btnEditPrice?.setOnClickListener {
+                listener.onClickEditVariantPriceButton(
+                    product
+                )
+            }
+            binding?.btnEditStock?.setOnClickListener {
+                listener.onClickEditVariantStockButton(
+                    product
+                )
+            }
         } else {
             binding?.btnEditPrice?.setOnClickListener { listener.onClickEditPriceButton(product) }
             binding?.btnEditStock?.setOnClickListener { listener.onClickEditStockButton(product) }
@@ -157,7 +246,7 @@ class ProductViewHolder(
     }
 
     private fun setOnItemClickListener(product: ProductUiModel) {
-        if(product.hasEditProductAccess()) {
+        if (product.hasEditProductAccess()) {
             itemView.setOnClickListener {
                 if (product.multiSelectActive) {
                     toggleCheckBox()
@@ -174,20 +263,20 @@ class ProductViewHolder(
     private fun setComponentsOnItemClickListener(product: ProductUiModel, isEnabled: Boolean) {
         binding?.run {
             val clickAction =
-                    if (isEnabled) {
-                        getComponentOnClickAction(product)
-                    } else {
-                        null
-                    }
+                if (isEnabled) {
+                    getComponentOnClickAction(product)
+                } else {
+                    null
+                }
             imageProduct.setOnClickListener(clickAction)
             textTitle.setOnClickListener(clickAction)
         }
     }
 
     private fun getComponentOnClickAction(product: ProductUiModel) =
-            View.OnClickListener {
-                onClickProductItem(product)
-            }
+        View.OnClickListener {
+            onClickProductItem(product)
+        }
 
     private fun showProductCheckBox(product: ProductUiModel) {
         binding?.checkBoxSelect?.isChecked = product.isChecked
@@ -199,11 +288,15 @@ class ProductViewHolder(
     }
 
     private fun showCampaignCountText(product: ProductUiModel) {
-        val shouldShowCampaignCount = !product.campaignTypeList.isNullOrEmpty() && product.isCampaign
+        val shouldShowCampaignCount =
+            !product.campaignTypeList.isNullOrEmpty() && product.isCampaign
         binding?.tvManageProductItemCampaignCount?.run {
             showWithCondition(shouldShowCampaignCount)
             if (shouldShowCampaignCount) {
-                text = String.format(getString(com.tokopedia.product.manage.common.R.string.product_manage_campaign_count), product.getCampaignTypeCount())
+                text = String.format(
+                    getString(com.tokopedia.product.manage.common.R.string.product_manage_campaign_count),
+                    product.getCampaignTypeCount()
+                )
                 setOnClickListener {
                     product.campaignTypeList?.let {
                         campaignListener.onClickCampaignInfo(it)
@@ -225,13 +318,14 @@ class ProductViewHolder(
     }
 
     private fun onClickProductItem(product: ProductUiModel) {
-        if(product.isNotViolation()) {
+        if (product.isNotViolation()) {
             listener.onClickProductItem(product)
         }
     }
 
     interface ProductViewHolderView {
         fun onClickStockInformation()
+        fun onClickStockReminderInformation(stockAlertCount: Int, stockAlertActive: Boolean)
         fun onClickMoreOptionsButton(product: ProductUiModel)
         fun onClickProductItem(product: ProductUiModel)
         fun onClickProductCheckBox(isChecked: Boolean, position: Int)
@@ -240,5 +334,8 @@ class ProductViewHolder(
         fun onClickEditVariantPriceButton(product: ProductUiModel)
         fun onClickEditVariantStockButton(product: ProductUiModel)
         fun onClickContactCsButton(product: ProductUiModel)
+        fun onFinishBindMoreOption()
+        fun onFinishBindProductStockReminder()
+
     }
 }
