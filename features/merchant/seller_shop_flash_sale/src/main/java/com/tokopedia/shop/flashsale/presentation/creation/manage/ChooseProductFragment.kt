@@ -178,22 +178,23 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
 
     private fun setupSelectionItemsObserver() {
         viewModel.selectedItems.observe(viewLifecycleOwner) { selectedItems ->
-            val selectedCount = selectedItems.filter { !it.isProductPreviouslySubmitted }.size
+            val selectedCount = selectedItems.filter { !it.hasChild }.size
             binding?.tvSelectedProduct?.text =
                 getString(R.string.chooseproduct_selected_product_suffix, selectedCount)
-            setupButtonSave(selectedItems)
+            setupButtonSave(selectedCount)
         }
     }
 
     private fun setupIsSelectionValidObserver() {
         viewModel.isSelectionValid.observe(viewLifecycleOwner) {
-            binding?.btnSave?.isEnabled = it
             adapter?.run {
                 if (getSelectedProduct().size.isMoreThanZero()) {
                     setInputEnabled(it)
+                    binding?.btnSave?.isEnabled = true
                 } else {
                     // always enabled when there is no selected products
                     setInputEnabled(true)
+                    binding?.btnSave?.isEnabled = false
                 }
             }
         }
@@ -216,11 +217,11 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
         }
     }
 
-    private fun setupButtonSave(selectedProduct: List<SelectedProductModel>) {
-        if (selectedProduct.isEmpty()) {
+    private fun setupButtonSave(selectedCount: Int) {
+        if (selectedCount.isZero()) {
             binding?.btnSave?.text = getString(R.string.chooseproduct_save_button_text_empty)
         } else {
-            binding?.btnSave?.text = getString(R.string.chooseproduct_save_button_text, selectedProduct.size)
+            binding?.btnSave?.text = getString(R.string.chooseproduct_save_button_text, selectedCount)
         }
 
         binding?.btnSave?.setOnClickListener {

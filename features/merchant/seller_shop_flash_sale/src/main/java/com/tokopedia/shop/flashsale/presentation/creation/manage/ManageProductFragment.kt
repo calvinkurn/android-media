@@ -177,10 +177,13 @@ class ManageProductFragment : BaseDaggerFragment() {
             }
         }
     }
-
+    private var autoShowEditProduct = true
     private fun observeIncompleteProducts() {
-        viewModel.incompleteProducts.observeOnce(viewLifecycleOwner) {
-            if (it.isNotEmpty()) showEditProductBottomSheet(it)
+        viewModel.incompleteProducts.observe(viewLifecycleOwner) {
+            if (autoShowEditProduct) {
+                showEditProductBottomSheet(it)
+                autoShowEditProduct = false
+            }
         }
     }
 
@@ -392,6 +395,7 @@ class ManageProductFragment : BaseDaggerFragment() {
     }
 
     private fun showEditProductBottomSheet(productList: List<SellerCampaignProductList.Product>) {
+        if (productList.isEmpty()) return
         val bottomSheet = EditProductInfoBottomSheet.newInstance(productList)
         bottomSheet.setOnEditProductSuccessListener {
             doOnDelayFinished(DELAY) {
@@ -473,8 +477,9 @@ class ManageProductFragment : BaseDaggerFragment() {
         super.onActivityResult(requestCode, resultCode, data)
         when (resultCode) {
             Activity.RESULT_OK -> {
+                autoShowEditProduct = true
                 showLoader()
-                Timer("Retrieving", false).schedule(DELAY) {
+                doOnDelayFinished(DELAY) {
                     viewModel.getProducts(campaignId, LIST_TYPE)
                 }
             }

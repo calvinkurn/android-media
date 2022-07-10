@@ -39,22 +39,14 @@ class ChooseProductViewModel @Inject constructor(
         get() = _isAddProductSuccess
 
     val isSelectionValid = Transformations.map(selectedItems) {
-        validateSelection(it)
+        ReserveProductMapper.validateSelection(it)
     }
 
     val isSelectionHasVariant = Transformations.map(selectedItems) {
-        hasVariant(it)
+        ReserveProductMapper.hasVariant(it)
     }
 
     private var searchKeyword: String = ""
-
-    private fun validateSelection(selectedItem: List<SelectedProductModel>): Boolean {
-        return selectedItem.size.isMoreThanZero() && selectedItem.size < PRODUCT_SELECTION_MAX
-    }
-
-    private fun hasVariant(selectedItem: List<SelectedProductModel>): Boolean {
-        return selectedItem.any { it.parentProductId != null }
-    }
 
     fun isSearching(): Boolean {
         return searchKeyword.isNotEmpty()

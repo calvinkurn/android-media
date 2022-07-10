@@ -44,7 +44,7 @@ class ReserveProductViewHolder(
         val skuValue = if (item.sku.isNotEmpty()) item.sku else DEFAULT_EMPTY_PLACEHOLDER_TEXT
         val skuText = context.getString(R.string.chooseproduct_sku_text, skuValue)
         val stockText = context.getString(R.string.chooseproduct_stock_total_text, item.stock)
-        val variantText = context.getString(R.string.chooseproduct_variant_text, item.variant.size)
+        val variantText = context.getString(R.string.chooseproduct_variant_text, item.variant.size.dec())
 
         binding?.apply {
             tvProductName.text = item.productName
@@ -58,11 +58,11 @@ class ReserveProductViewHolder(
             tvDisabledReason.setTextAndCheckShow(item.disabledReason)
         }
 
-        // set from item disability
-        setListEnable(!item.disabled)
-
-        // set from adapter input enabled
-        if (!item.isSelected) {
+        if (item.disabled) {
+            // set from item disability
+            setListEnable(false)
+        } else if (!item.isSelected) {
+            // set from adapter input enabled
             setListEnable(inputEnabled)
         }
     }
