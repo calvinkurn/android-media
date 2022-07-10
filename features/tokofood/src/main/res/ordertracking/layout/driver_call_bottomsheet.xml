@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvDriverCallTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tvDriverCallDesc"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:typographyType="display_1"
+        app:typographyWeight="bold"
+        tools:text="@string/driver_call_enabled_title_bottomsheet"
+        android:textColor="@color/Unify_N700_96" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvDriverCallDesc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tvDriverCallTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/btnDriverCall"
+        app:typographyType="display_3"
+        app:typographyWeight="reguler"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="16dp"
+        tools:text="@string/driver_call_enabled_desc_bottomsheet"
+        android:textColor="@color/Unify_NN600" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnDriverCall"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tvDriverCallDesc"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:unifyButtonType="main"
+        app:unifyButtonSize="medium"
+        tools:visibility="visible"
+        android:layout_marginBottom="18dp"
+        android:text="@string/driver_call_now_button"
+        android:textColor="@color/Unify_GN500" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

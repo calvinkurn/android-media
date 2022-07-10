@@ -1,6 +1,6 @@
 package com.tokopedia.chatbot.view.adapter.viewholder.listener
 
-import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
+import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
 
 /**
  * @author by nisie on 06/12/18.

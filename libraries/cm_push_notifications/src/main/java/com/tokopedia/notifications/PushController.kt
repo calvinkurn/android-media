@@ -1,6 +1,7 @@
 package com.tokopedia.notifications
 
 import android.app.KeyguardManager
+import android.app.Notification
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
@@ -15,6 +16,7 @@ import com.tokopedia.logger.utils.Priority
 import com.tokopedia.notifications.common.*
 import com.tokopedia.notifications.database.pushRuleEngine.PushRepository
 import com.tokopedia.notifications.factory.CMNotificationFactory
+import com.tokopedia.notifications.factory.custom_notifications.ReplyChatNotification
 import com.tokopedia.notifications.image.ImageDownloadManager
 import com.tokopedia.notifications.model.SerializedNotificationData
 import com.tokopedia.notifications.model.BaseNotificationModel
@@ -209,7 +211,11 @@ class PushController(val context: Context) : CoroutineScope {
             } else if (null != baseNotification) {
                 val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                 val notification = baseNotification.createNotification()
-                notificationManager.notify(baseNotification.baseNotificationModel.notificationId, notification)
+                if (baseNotification is ReplyChatNotification) {
+                    handleReplyChatPushNotification(notificationManager, baseNotification, notification)
+                } else {
+                    notificationManager.notify(baseNotification.baseNotificationModel.notificationId, notification)
+                }
             }
         } catch (e: Exception) {
             ServerLogger.log(Priority.P2, "CM_VALIDATION",
@@ -217,6 +223,20 @@ class PushController(val context: Context) : CoroutineScope {
                             "err" to Log.getStackTraceString(e).take(CMConstant.TimberTags.MAX_LIMIT),
                             "data" to baseNotificationModel.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
         }
+    }
+
+    private fun handleReplyChatPushNotification(
+        notificationManager: NotificationManager,
+        replyChatNotification: ReplyChatNotification,
+        notification: Notification?
+    ) {
+        val notificationId = getNotificationIdReplyChat(replyChatNotification)
+        notificationManager.notify(notificationId, notification)
+    }
+
+    private fun getNotificationIdReplyChat(replyChatNotification: ReplyChatNotification): Int {
+        val messageId = replyChatNotification.baseNotificationModel.payloadExtra?.topchat?.messageId
+        return replyChatNotification.getTruncatedMessageId(messageId)
     }
 
     private fun checkOtpPushNotif(applink: String?): Boolean {

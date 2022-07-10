@@ -1,6 +1,5 @@
 package com.tokopedia.play.widget.ui.mapper
 
-import android.content.Context
 import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.data.PlayWidgetItem
 import com.tokopedia.play.widget.data.PlayWidgetItemPartner
@@ -104,7 +103,7 @@ class PlayWidgetUiMapper @Inject constructor(
             partner = mapPartnerInfo(item.partner),
             video = mapVideo(item.video),
             channelType = widgetType,
-            hasGiveaway = mapHasGiveaway(item.config.promoLabels),
+            hasGame = mapHasGame(item.config.promoLabels),
             share = mapShare(item.share),
             performanceSummaryLink = item.performanceSummaryPageLink,
             poolType = item.widgetSortingMethod,
@@ -124,7 +123,7 @@ class PlayWidgetUiMapper @Inject constructor(
         return PlayWidgetPromoType.getByType(promoLabel.type, promoLabel.text)
     }
 
-    private fun mapHasGiveaway(promoLabels: List<PlayWidgetPromoLabel>): Boolean {
+    private fun mapHasGame(promoLabels: List<PlayWidgetPromoLabel>): Boolean {
         return promoLabels.firstOrNull { it.type == GIVEAWAY } != null
     }
 

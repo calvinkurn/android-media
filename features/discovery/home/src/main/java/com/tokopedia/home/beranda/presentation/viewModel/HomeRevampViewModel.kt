@@ -28,6 +28,7 @@ import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.ReminderEnum
+import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.home_component.visitable.QuestWidgetModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
@@ -68,7 +69,9 @@ open class HomeRevampViewModel @Inject constructor(
     private val getCMHomeWidgetDataUseCase: Lazy<GetCMHomeWidgetDataUseCase>,
     private val deleteCMHomeWidgetUseCase: Lazy<DeleteCMHomeWidgetUseCase>,
     private val deletePayLaterWidgetUseCase: Lazy<ClosePayLaterWidgetUseCase>,
-    private val getPayLaterWidgetUseCase: Lazy<GetPayLaterWidgetUseCase>) : BaseCoRoutineScope(homeDispatcher.get().io) {
+    private val getPayLaterWidgetUseCase: Lazy<GetPayLaterWidgetUseCase>,
+    private val homeMissionWidgetUseCase: Lazy<HomeMissionWidgetUseCase>
+) : BaseCoRoutineScope(homeDispatcher.get().io) {
 
     companion object {
         const val HOME_LIMITER_KEY = "HOME_LIMITER_KEY"
@@ -219,7 +222,6 @@ open class HomeRevampViewModel @Inject constructor(
                         headerDataModel = headerDataModel)
                 updateHeaderData(initialHeaderModel, index)
                 val currentHeaderDataModel = homeBalanceWidgetUseCase.get().onGetBalanceWidgetData(headerModel)
-                updateHeaderData(currentHeaderDataModel, index)
                 val visitable = updateHeaderData(currentHeaderDataModel, index)
                 visitable?.let {
                     homeDataModel.updateWidgetModel(visitableToChange = visitable, visitable = currentHeaderDataModel, position = index) {
@@ -480,6 +482,21 @@ open class HomeRevampViewModel @Inject constructor(
                 ), index)
             }
             popularKeywordRefreshCount++
+        }
+    }
+
+    fun getMissionWidgetRefresh() {
+        findWidget<MissionWidgetListDataModel> { missionWidgetListDataModel, position ->
+            launch {
+                updateWidget(
+                    missionWidgetListDataModel.copy(status = MissionWidgetListDataModel.STATUS_LOADING),
+                    position
+                )
+                updateWidget(
+                    homeMissionWidgetUseCase.get()
+                        .onMissionWidgetRefresh(missionWidgetListDataModel), position
+                )
+            }
         }
     }
 

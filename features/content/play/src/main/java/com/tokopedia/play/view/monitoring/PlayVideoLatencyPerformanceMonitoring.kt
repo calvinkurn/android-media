@@ -3,7 +3,6 @@ package com.tokopedia.play.view.monitoring
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import javax.inject.Inject
 
-
 /**
  * Created by mzennis on 08/03/21.
  */
