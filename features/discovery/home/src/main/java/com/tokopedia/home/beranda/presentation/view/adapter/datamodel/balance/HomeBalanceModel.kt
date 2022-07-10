@@ -103,7 +103,7 @@ data class HomeBalanceModel(
     fun mapErrorTokopoints() {
         when (balanceType) {
             TYPE_STATE_2 -> {
-                balanceDrawerItemModels[BALANCE_POSITION_SECOND] = getDefaultTokopointsErrorState()
+                balanceDrawerItemModels.add(getDefaultTokopointsErrorState())
             }
         }
     }
