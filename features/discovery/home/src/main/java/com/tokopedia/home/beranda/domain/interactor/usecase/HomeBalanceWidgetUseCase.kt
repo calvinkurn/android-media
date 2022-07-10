@@ -1,6 +1,8 @@
 package com.tokopedia.home.beranda.domain.interactor.usecase
 
 import android.util.Log
+import com.google.gson.Gson
+import com.tokopedia.home.beranda.data.model.SubscriptionsData
 import com.tokopedia.home.beranda.domain.interactor.InjectCouponTimeBasedUseCase
 import com.tokopedia.home.beranda.domain.interactor.repository.*
 import com.tokopedia.home.beranda.domain.model.HomeFlag
@@ -54,7 +56,7 @@ class HomeBalanceWidgetUseCase @Inject constructor(
                         homeBalanceModel = getTokopointData(homeBalanceModel, it.title)
                     }
                     BALANCE_TYPE_SUBSCRIPTIONS -> {
-
+                        homeBalanceModel = getSubscriptionsData(homeBalanceModel, it.title, it.data)
                     }
                 }
             }
@@ -140,6 +142,20 @@ class HomeBalanceWidgetUseCase @Inject constructor(
             homeBalanceModel.mapBalanceData(tokopointDrawerListHomeData = homeTokopointsListRepository.getRemoteData(), headerTitle = headerTitle)
         } catch (e: Exception) {
             homeBalanceModel.isTokopointsOrOvoFailed = true
+            homeBalanceModel.mapErrorTokopoints(headerTitle)
+        }
+        return homeBalanceModel
+    }
+
+    private fun getSubscriptionsData(
+        homeBalanceModel: HomeBalanceModel,
+        headerTitle: String,
+        subscriptions: String
+    ): HomeBalanceModel {
+        try {
+            val subscriptionsData = Gson().fromJson<SubscriptionsData>(subscriptions, SubscriptionsData::class.java)
+            val x = 1
+        } catch (e: Exception) {
             homeBalanceModel.mapErrorTokopoints(headerTitle)
         }
         return homeBalanceModel
