@@ -670,12 +670,8 @@ class UserProfileFragment @Inject constructor(
         Timber.d(encryptedID)
     }
 
-    override fun onItemClicked(shopID: Long) {
-        RouteManager.route(
-            requireContext(),
-            ApplinkConst.SHOP,
-            shopID.toString()
-        )
+    override fun onItemClicked(appLink: String) {
+        RouteManager.route(requireContext(), appLink)
     }
 
     override fun onRetryPageLoad(pageNumber: Int) {

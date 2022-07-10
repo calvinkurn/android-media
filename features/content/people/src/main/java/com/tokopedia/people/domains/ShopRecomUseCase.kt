@@ -49,6 +49,7 @@ class ShopRecomUseCase @Inject constructor(
                   nickname
                   badgeImageURL
                   logoImageURL
+                  applink
                 }
                 nextCursor
               }

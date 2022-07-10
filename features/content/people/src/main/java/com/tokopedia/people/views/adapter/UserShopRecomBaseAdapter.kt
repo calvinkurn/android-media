@@ -18,7 +18,7 @@ open class UserShopRecomBaseAdapter(
     interface ShopRecommendationCallback {
         fun onCloseClicked(data: ShopRecomItem)
         fun onFollowClicked(encryptedID: String)
-        fun onItemClicked(shopID: Long)
+        fun onItemClicked(appLink: String)
     }
 
     var cursor: String = ""
@@ -68,7 +68,8 @@ open class UserShopRecomBaseAdapter(
                 id = shopRecomItem.id,
                 name = shopRecomItem.name,
                 nickname = shopRecomItem.nickname,
-                type = shopRecomItem.type
+                type = shopRecomItem.type,
+                applink = shopRecomItem.applink
             )
         )
         holder.shopRecomView.setListener(this)
@@ -92,8 +93,8 @@ open class UserShopRecomBaseAdapter(
         shopRecomCallback.onFollowClicked(encryptedID)
     }
 
-    override fun onShopItemClicked(shopID: Long) {
-        shopRecomCallback.onItemClicked(shopID)
+    override fun onShopItemClicked(appLink: String) {
+        shopRecomCallback.onItemClicked(appLink)
     }
 
 }

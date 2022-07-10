@@ -33,5 +33,7 @@ data class ShopRecomItem(
     @SerializedName("nickname")
     val nickname: String = "",
     @SerializedName("type")
-    val type: Int = 0
+    val type: Int = 0,
+    @SerializedName("applink")
+    val applink: String = ""
 ): BaseItem()
