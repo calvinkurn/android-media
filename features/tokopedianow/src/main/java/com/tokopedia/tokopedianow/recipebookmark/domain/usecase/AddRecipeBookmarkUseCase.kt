@@ -9,7 +9,7 @@ import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 /**
- * Remove Bookmarks Query Docs:
+ * Add Bookmarks Query Docs:
  * https://tokopedia.atlassian.net/wiki/spaces/TokoNow/pages/1986497828/Mutation+TokonowAddRecipeBookmark+GQL
  */
 

@@ -96,47 +96,59 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
             .inject(this)
     }
 
+    /**
+     * Create a new coroutine in the [lifecycleScope]. [repeatOnLifecycle] launches the block in a new coroutine
+     * every time the lifecycle is in the STARTED state (or above) and cancels it when it's STOPPED.
+     */
     private fun collectStateFlow() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                //Need different coroutines, since collect() is a suspending function that suspends until the Flow terminates.
-                launch {
-                    viewModel.loadRecipeBookmarks.collect { state ->
-                        when(state) {
-                            is UiState.Fail -> {}
-                            is UiState.Success -> showPage(state.data)
-                            is UiState.Loading -> showLoadPageLoading()
-                        }
-                    }
-                }
+                /**
+                 * Because [collect] is a suspend function, need different coroutines to collect multiple flows in parallel.
+                 * The suspending function suspends until the Flow terminates.
+                 */
+                launch { collectRecipeBookmarks() }
+                launch { collectMoreRecipeBookmarks() }
+                launch { collectToaster() }
+                launch { collectIsScrollNotNeeded() }
+            }
+        }
+    }
 
-                launch {
-                    viewModel.moreRecipeBookmarks.collect { state ->
-                        when(state) {
-                            is UiState.Fail -> {}
-                            is UiState.Success -> showMoreWidgets(state.data)
-                            is UiState.Loading -> showLoadMoreLoading()
-                        }
-                    }
-                }
+    private suspend fun collectRecipeBookmarks() {
+        viewModel.loadRecipeBookmarks.collect { state ->
+            when(state) {
+                is UiState.Fail -> {}
+                is UiState.Success -> showPage(state.data)
+                is UiState.Loading -> showLoadPageLoading()
+            }
+        }
+    }
 
-                launch {
-                    viewModel.toaster.collect { state ->
-                        when(state) {
-                            is UiState.Fail -> {}
-                            is UiState.Success -> showToaster(state.data)
-                            is UiState.Loading -> {}
-                        }
-                    }
-                }
+    private suspend fun collectToaster() {
+        viewModel.toaster.collect { state ->
+            when(state) {
+                is UiState.Fail -> {}
+                is UiState.Success -> showToaster(state.data)
+                is UiState.Loading -> {}
+            }
+        }
+    }
 
-                launch {
-                    viewModel.isOnScrollNotNeeded.collect { isNotNeeded ->
-                        if (isNotNeeded) {
-                            binding?.rvRecipeBookmark?.clearOnScrollListeners()
-                        }
-                    }
-                }
+    private suspend fun collectMoreRecipeBookmarks() {
+        viewModel.moreRecipeBookmarks.collect { state ->
+            when(state) {
+                is UiState.Fail -> {}
+                is UiState.Success -> showMoreWidgets(state.data)
+                is UiState.Loading -> showLoadMoreLoading()
+            }
+        }
+    }
+
+    private suspend fun collectIsScrollNotNeeded() {
+        viewModel.isOnScrollNotNeeded.collect { isNotNeeded ->
+            if (isNotNeeded) {
+                binding?.rvRecipeBookmark?.clearOnScrollListeners()
             }
         }
     }
