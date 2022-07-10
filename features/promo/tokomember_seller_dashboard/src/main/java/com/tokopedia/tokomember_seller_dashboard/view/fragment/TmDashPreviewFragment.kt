@@ -86,15 +86,17 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        arguments?.getInt(BUNDLE_PROGRAM_TYPE, 0)?.let {
+            programActionType = it
+        }
+        observeViewModel()
         observeViewModel()
         tmTracker = TmTracker()
         tmCouponPreviewData =
             arguments?.getParcelable(BUNDLE_COUPON_PREVIEW_DATA) ?: TmCouponPreviewData()
         tmCouponCreateUnifyRequest =
             arguments?.getParcelable(BUNDLE_COUPON_CREATE_DATA) ?: TmMerchantCouponUnifyRequest()
-        arguments?.getInt(BUNDLE_PROGRAM_TYPE, 0)?.let {
-            programActionType = it
-        }
+
         cardId = arguments?.getInt(BUNDLE_CARD_ID_IN_TOOLS) ?: 0
         if(cardId == 0) {
             val prefManager = context?.let { TmPrefManager(it) }
