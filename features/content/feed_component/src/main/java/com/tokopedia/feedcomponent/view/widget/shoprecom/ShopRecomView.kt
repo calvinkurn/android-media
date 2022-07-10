@@ -6,9 +6,15 @@ import android.view.View
 import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedcomponent.R.string.up_btn_text_follow
+import com.tokopedia.feedcomponent.R.string.up_btn_text_following
 import com.tokopedia.feedcomponent.data.pojo.people.ShopRecomItemUI
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.UnifyButton.Type.ALTERNATE
+import com.tokopedia.unifycomponents.UnifyButton.Type.MAIN
+import com.tokopedia.unifycomponents.UnifyButton.Variant.FILLED
+import com.tokopedia.unifycomponents.UnifyButton.Variant.GHOST
 import com.tokopedia.unifyprinciples.Typography
 
 /**
@@ -25,8 +31,8 @@ class ShopRecomView : FrameLayout {
     )
 
     interface Listener {
-        fun onCloseClicked(data: ShopRecomItemUI)
-        fun onFollowClicked(encryptedID: String)
+        fun onCloseClicked(item: ShopRecomItemUI)
+        fun onFollowClicked(item: ShopRecomItemUI)
         fun onShopItemClicked(appLink: String)
     }
 
@@ -61,9 +67,22 @@ class ShopRecomView : FrameLayout {
         imgItemShopImage.setImageUrl(data.logoImageURL)
         imgItemShopBadge.setImageUrl(data.badgeImageURL)
 
+        buttonFollowState(data.isFollow)
+        onClickListener(data)
+    }
+
+    private fun buttonFollowState(isFollow: Boolean) {
+        btnItemShopCta.apply {
+            text = context.getString(if (isFollow) up_btn_text_following else up_btn_text_follow)
+            buttonVariant = if (isFollow) GHOST else FILLED
+            buttonType = if (isFollow) ALTERNATE else MAIN
+        }
+    }
+
+    private fun onClickListener(data: ShopRecomItemUI) {
         clItemShopContainer.setOnClickListener { mListener?.onShopItemClicked(data.applink) }
         imgItemShopClose.setOnClickListener { mListener?.onCloseClicked(data) }
-        btnItemShopCta.setOnClickListener { mListener?.onFollowClicked(data.encryptedID) }
+        btnItemShopCta.setOnClickListener { mListener?.onFollowClicked(data) }
     }
 
 }

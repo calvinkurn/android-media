@@ -16,8 +16,8 @@ open class UserShopRecomBaseAdapter(
 ) : BaseAdapter<ShopRecomItem>(callback), ShopRecomView.Listener {
 
     interface ShopRecommendationCallback {
-        fun onCloseClicked(data: ShopRecomItem)
-        fun onFollowClicked(encryptedID: String)
+        fun onCloseClicked(item: ShopRecomItem)
+        fun onFollowClicked(item: ShopRecomItem)
         fun onItemClicked(appLink: String)
     }
 
@@ -59,42 +59,55 @@ open class UserShopRecomBaseAdapter(
         loadCompletedWithError()
     }
 
-    private fun setData(holder: ViewHolder, shopRecomItem: ShopRecomItem) {
-        holder.shopRecomView.setData(
-            ShopRecomItemUI(
-                badgeImageURL = shopRecomItem.badgeImageURL,
-                encryptedID = shopRecomItem.encryptedID,
-                logoImageURL = shopRecomItem.logoImageURL,
-                id = shopRecomItem.id,
-                name = shopRecomItem.name,
-                nickname = shopRecomItem.nickname,
-                type = shopRecomItem.type,
-                applink = shopRecomItem.applink
-            )
-        )
+    private fun setData(holder: ViewHolder, item: ShopRecomItem) {
+        holder.shopRecomView.setData(item.transformToShopRecomItemUI())
         holder.shopRecomView.setListener(this)
     }
 
-    override fun onCloseClicked(data: ShopRecomItemUI) {
-        shopRecomCallback.onCloseClicked(
-            ShopRecomItem(
-                badgeImageURL = data.badgeImageURL,
-                encryptedID = data.encryptedID,
-                logoImageURL = data.logoImageURL,
-                id = data.id,
-                name = data.name,
-                nickname = data.nickname,
-                type = data.type
-            )
-        )
+    fun updateItem(item: ShopRecomItem) {
+        val position = items.indexOf(item)
+        items[position].isFollow = !item.isFollow
+        notifyItemChanged(position, item)
     }
 
-    override fun onFollowClicked(encryptedID: String) {
-        shopRecomCallback.onFollowClicked(encryptedID)
+    override fun onCloseClicked(item: ShopRecomItemUI) {
+        shopRecomCallback.onCloseClicked(item.transformToShopRecomItem())
+    }
+
+    override fun onFollowClicked(item: ShopRecomItemUI) {
+        shopRecomCallback.onFollowClicked(item.transformToShopRecomItem())
     }
 
     override fun onShopItemClicked(appLink: String) {
         shopRecomCallback.onItemClicked(appLink)
+    }
+
+    private fun ShopRecomItem.transformToShopRecomItemUI(): ShopRecomItemUI {
+        return ShopRecomItemUI(
+            badgeImageURL = badgeImageURL,
+            encryptedID = encryptedID,
+            logoImageURL = logoImageURL,
+            id = id,
+            name = name,
+            nickname = nickname,
+            type = type,
+            applink = applink,
+            isFollow = isFollow
+        )
+    }
+
+    private fun ShopRecomItemUI.transformToShopRecomItem(): ShopRecomItem {
+        return ShopRecomItem(
+            badgeImageURL = badgeImageURL,
+            encryptedID = encryptedID,
+            logoImageURL = logoImageURL,
+            id = id,
+            name = name,
+            nickname = nickname,
+            type = type,
+            applink = applink,
+            isFollow = isFollow
+        )
     }
 
 }

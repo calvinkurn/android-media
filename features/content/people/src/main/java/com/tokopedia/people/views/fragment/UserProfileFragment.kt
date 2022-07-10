@@ -656,8 +656,8 @@ class UserProfileFragment @Inject constructor(
         return bundle
     }
 
-    override fun onCloseClicked(data: ShopRecomItem) {
-        mAdapterShopRecom.remove(data)
+    override fun onCloseClicked(item: ShopRecomItem) {
+        mAdapterShopRecom.remove(item)
         if (mAdapterShopRecom.itemCount == 0) {
             with(mainBinding.includeShopRecommendation) {
                 txtWordingFollow.hide()
@@ -666,8 +666,9 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
-    override fun onFollowClicked(encryptedID: String) {
-        Timber.d(encryptedID)
+    override fun onFollowClicked(item: ShopRecomItem) {
+        mAdapterShopRecom.updateItem(item)
+        submitAction(UserProfileAction.ClickFollowButtonShopRecom(item))
     }
 
     override fun onItemClicked(appLink: String) {
