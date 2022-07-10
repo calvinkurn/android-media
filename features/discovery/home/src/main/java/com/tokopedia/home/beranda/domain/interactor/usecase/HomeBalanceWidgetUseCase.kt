@@ -43,9 +43,8 @@ class HomeBalanceWidgetUseCase @Inject constructor(
 
         try {
             val getHomeBalanceWidget = getHomeBalanceWidgetRepository.getRemoteData()
-
+            currentHeaderDataModel.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.clear()
             var homeBalanceModel = getHomeBalanceModel(currentHeaderDataModel, HomeBalanceModel.BALANCE_POSITION_FIRST, HomeBalanceModel.BALANCE_POSITION_SECOND)
-
             getHomeBalanceWidget.getHomeBalanceList.balancesList.forEach {
                 when (it.type) {
                     BALANCE_TYPE_GOPAY -> {
