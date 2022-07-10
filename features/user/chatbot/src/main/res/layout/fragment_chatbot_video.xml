@@ -18,7 +18,7 @@
 
     </com.tokopedia.unifycomponents.LoaderUnify>
 
-    <com.google.android.exoplayer2.ui.SimpleExoPlayerView
+    <com.google.android.exoplayer2.ui.PlayerView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:id="@+id/video_player"
@@ -29,6 +29,19 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
 
+
+    <com.tokopedia.chatbot.view.widget.ChatbotVideoControlView
+        android:id="@+id/video_control"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:controller_layout_id="@layout/exoplayer_controller"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:show_timeout="0">
+
+    </com.tokopedia.chatbot.view.widget.ChatbotVideoControlView>
 
     <ImageView
         android:layout_width="wrap_content"

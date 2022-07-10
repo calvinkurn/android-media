@@ -14,19 +14,17 @@ import com.google.android.exoplayer2.source.dash.DashMediaSource
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
+import com.google.android.exoplayer2.ui.PlayerControlView
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
-import com.tokopedia.chatbot.R
 import com.tokopedia.media.preview.ui.player.VideoControlView
 
-class ChatbotExoPlayer(val context : Context) {
+class ChatbotExoPlayer(val context : Context, var videoControl: ChatbotVideoControlView) : ChatbotVideoControlView.Listener{
 
    private var loadControl: LoadControl = DefaultLoadControl()
 
     private var videoStateListener: VideoStateListener? = null
-    private var videoPlayingListener: VideoPlayingListener? = null
-
 
     private val exoPlayer: SimpleExoPlayer = SimpleExoPlayer.Builder(context)
         .setTrackSelector(DefaultTrackSelector(context))
@@ -37,6 +35,9 @@ class ChatbotExoPlayer(val context : Context) {
 
         exoPlayer.volume = MUTE_VOLUME
         exoPlayer.videoScalingMode = C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
+        videoControl?.player = exoPlayer
+        videoControl?.listener = this
+
         exoPlayer.addListener(object : Player.EventListener {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                 val isPlaying = playWhenReady && playbackState == Player.STATE_READY
@@ -63,11 +64,13 @@ class ChatbotExoPlayer(val context : Context) {
                     )
                 }
             }
-        })
-    }
 
-    fun reset() {
-        exoPlayer.seekTo(1)
+            override fun onIsPlayingChanged(isPlaying: Boolean) {
+                super.onIsPlayingChanged(isPlaying)
+                videoControl?.updateCenterButtonState(isPlaying)
+                videoControl?.showController(isPlaying)
+            }
+        })
     }
 
     fun setVideoStateListener(videoStateListener: VideoStateListener?) {
@@ -85,7 +88,6 @@ class ChatbotExoPlayer(val context : Context) {
     }
 
     fun resume() {
-        reset()
         exoPlayer.playWhenReady = true
     }
 
@@ -143,6 +145,26 @@ class ChatbotExoPlayer(val context : Context) {
 
     interface VideoPlayingListener {
         fun isPlayingOnChanged(isPlaying : Boolean)
+    }
+
+    override fun onCenterPlayButtonClicked() {
+        resume()
+    }
+
+    override fun onCenterPauseButtonClicked() {
+       pause()
+    }
+
+    override fun onScrubStart() {
+        pause()
+    }
+
+    override fun onScrubStop() {
+        resume()
+    }
+
+    override fun onScrubMove(position: Long) {
+        exoPlayer.seekTo(position)
     }
 }
 

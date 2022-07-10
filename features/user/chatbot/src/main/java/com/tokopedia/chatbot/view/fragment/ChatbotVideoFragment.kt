@@ -8,11 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.MediaController
+import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.view.activity.ChatbotVideoActivity
 import com.tokopedia.chatbot.view.widget.ChatbotExoPlayer
+import com.tokopedia.chatbot.view.widget.ChatbotVideoControlView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -23,10 +25,11 @@ import com.tokopedia.videoplayer.view.widget.VideoPlayerView
 class ChatbotVideoFragment : BaseDaggerFragment(){
 
     private var videoUrl = ""
-    private lateinit var videoPlayerView : SimpleExoPlayerView
+    private lateinit var videoPlayerView : PlayerView
     private lateinit var progressLoader : LoaderUnify
     private lateinit var errorImage : ImageView
     private lateinit var chatbotExoPlayer: ChatbotExoPlayer
+    private lateinit var chatbotVideoControl: ChatbotVideoControlView
 
     override fun getScreenName(): String {
         return ""
@@ -49,10 +52,12 @@ class ChatbotVideoFragment : BaseDaggerFragment(){
     }
 
     private fun initViews(view : View) {
-        chatbotExoPlayer = ChatbotExoPlayer(view.context)
+        chatbotVideoControl = view.findViewById(R.id.video_control)
+        chatbotExoPlayer = ChatbotExoPlayer(view.context, chatbotVideoControl)
         videoPlayerView = view.findViewById(R.id.video_player)
         progressLoader = view.findViewById(R.id.loader)
         errorImage = view.findViewById(R.id.error_image)
+
         progressLoader.visible()
         progressLoader.bringToFront()
         initVideoPlayer()
