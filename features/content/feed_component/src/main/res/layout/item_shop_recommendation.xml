@@ -9,6 +9,7 @@
     app:layout_constraintCircleRadius="@dimen/unify_space_8">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_item_shop_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/up_bg_shop"

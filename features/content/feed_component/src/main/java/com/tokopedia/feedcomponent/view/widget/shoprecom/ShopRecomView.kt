@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.pojo.people.ShopRecomItemUI
 import com.tokopedia.unifycomponents.ImageUnify
@@ -26,10 +27,12 @@ class ShopRecomView : FrameLayout {
     interface Listener {
         fun onCloseClicked(data: ShopRecomItemUI)
         fun onFollowClicked(encryptedID: String)
+        fun onShopItemClicked(shopID: Long)
     }
 
     private var mListener: Listener? = null
 
+    private val clItemShopContainer: ConstraintLayout
     private val txtItemShopName: Typography
     private val txtItemShopUsername: Typography
     private val imgItemShopImage: ImageUnify
@@ -39,6 +42,7 @@ class ShopRecomView : FrameLayout {
 
     init {
         val view = View.inflate(context, R.layout.item_shop_recommendation, this)
+        clItemShopContainer = view.findViewById(R.id.cl_item_shop_container)
         txtItemShopName = view.findViewById(R.id.txt_item_shop_name)
         txtItemShopUsername = view.findViewById(R.id.txt_item_shop_username)
         imgItemShopImage = view.findViewById(R.id.img_item_shop_image)
@@ -57,6 +61,7 @@ class ShopRecomView : FrameLayout {
         imgItemShopImage.setImageUrl(data.logoImageURL)
         imgItemShopBadge.setImageUrl(data.badgeImageURL)
 
+        clItemShopContainer.setOnClickListener { mListener?.onShopItemClicked(data.id) }
         imgItemShopClose.setOnClickListener { mListener?.onCloseClicked(data) }
         btnItemShopCta.setOnClickListener { mListener?.onFollowClicked(data.encryptedID) }
     }
