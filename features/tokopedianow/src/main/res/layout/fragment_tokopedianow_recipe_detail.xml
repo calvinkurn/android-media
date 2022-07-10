@@ -7,6 +7,28 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvRecipeDetail"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent" />
+
+    <com.tokopedia.tokopedianow.common.view.StatusBarView
+        android:id="@+id/statusBar"
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@id/toolbarHeader"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/toolbarHeader"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        app:layout_constraintTop_toBottomOf="@id/statusBar"
+        app:unify_header_is_show_back_button="true"
+        app:unify_header_is_show_shadow="false"
+        app:unify_header_transparent_mode="true" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/headerDivider"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        app:layout_constraintTop_toBottomOf="@id/toolbarHeader" />
 </androidx.constraintlayout.widget.ConstraintLayout>

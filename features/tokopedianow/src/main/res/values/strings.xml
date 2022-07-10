@@ -176,6 +176,19 @@
 
     <string name="tokopedianow_on_boarding_2h_toaster">Selamat menikmati layanan NOW! maks. 2 jam tiba!</string>
     <string name="tokopedianow_on_boarding_20m_toaster">Kamu sekarang berada di halaman khusus produk NOW! 20 menit tiba. Selamat belanja!</string>
+    <string name="tokopedianow_recipe_info_label">Tokopedia NOW!</string>
+    <string name="tokopedianow_recipe_portion">%1$d Orang</string>
+    <string name="tokopedianow_recipe_duration">%1$d Menit</string>
+    <string name="tokopedianow_recipe_ingredient_quantity">%1$d %2$s</string>
+    <string name="tokopedianow_recipe_other_label">+ %1$d lainnya</string>
+    <string name="tokopedianow_recipe_ingredient_section_title">Bahan-bahan</string>
+    <string name="tokopedianow_recipe_instruction_section_title">Cara membuat</string>
+    <string name="tokopedianow_recipe_ingredient_tab_title">Belanja Bahan</string>
+    <string name="tokopedianow_recipe_instruction_tab_title"><![CDATA[Bahan & Cara Masak]]></string>
+
+    <string name="tokopedianow_similar_product_text">Produk Serupa</string>
+    <string name="tokopedianow_add_to_cart_text">+ Keranjang</string>
+    <string name="tokopedianow_stock_empty_text">Stok Habis</string>
 
     <!-- Recipe Bookmark -->
     <string name="tokopedianow_recipe_bookmark_title_page">Buku Resep Saya</string>

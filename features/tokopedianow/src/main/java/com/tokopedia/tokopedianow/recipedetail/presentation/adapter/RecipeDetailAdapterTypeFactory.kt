@@ -7,12 +7,15 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.MediaSliderUiModel
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.RecipeInfoUiModel
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.RecipeTabUiModel
+import com.tokopedia.tokopedianow.recipedetail.presentation.view.RecipeDetailView
 import com.tokopedia.tokopedianow.recipedetail.presentation.viewholders.MediaSliderViewHolder
 import com.tokopedia.tokopedianow.recipedetail.presentation.viewholders.RecipeInfoViewHolder
 import com.tokopedia.tokopedianow.recipedetail.presentation.viewholders.RecipeTabViewHolder
 
 
-class RecipeDetailAdapterTypeFactory: BaseAdapterTypeFactory(), RecipeDetailTypeFactory {
+class RecipeDetailAdapterTypeFactory(
+    private val view: RecipeDetailView
+): BaseAdapterTypeFactory(), RecipeDetailTypeFactory {
 
     override fun type(uiModel: MediaSliderUiModel): Int = MediaSliderViewHolder.LAYOUT
 
@@ -24,7 +27,7 @@ class RecipeDetailAdapterTypeFactory: BaseAdapterTypeFactory(), RecipeDetailType
         return when(type) {
             MediaSliderViewHolder.LAYOUT -> MediaSliderViewHolder(parent)
             RecipeInfoViewHolder.LAYOUT -> RecipeInfoViewHolder(parent)
-            RecipeTabViewHolder.LAYOUT -> RecipeTabViewHolder(parent)
+            RecipeTabViewHolder.LAYOUT -> RecipeTabViewHolder(parent, view)
             else -> super.createViewHolder(parent, type)
         }
     }
