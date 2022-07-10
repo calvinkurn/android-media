@@ -21,7 +21,7 @@ class ChatbotVideoControlView(context: Context, attributeSet: AttributeSet) :
 
     private val centerPlayButton: ImageView = findViewById(R.id.video_center_play_button)
     private val centerPauseButton: ImageView = findViewById(R.id.video_center_pause_button)
-
+    private val volumeButton: ImageView = findViewById(R.id.ic_volume)
     private val videoControlContainer: LinearLayout = findViewById(R.id.nav_container)
 
     var listener: Listener? = null
@@ -51,7 +51,7 @@ class ChatbotVideoControlView(context: Context, attributeSet: AttributeSet) :
     private fun setUpListener() {
         centerPlayButton.setOnClickListener {
             listener?.onCenterPlayButtonClicked()
-            if (!videoControlContainer.isVisible){
+            if (!videoControlContainer.isVisible) {
                 showController(true)
             }
         }
@@ -61,6 +61,11 @@ class ChatbotVideoControlView(context: Context, attributeSet: AttributeSet) :
             centerPlayButton.show()
             listener?.onCenterPauseButtonClicked()
         }
+
+        volumeButton.setOnClickListener {
+            listener?.toggleVolume()
+        }
+
 
         scrubber.addListener(object : TimeBar.OnScrubListener {
             override fun onScrubStart(timeBar: TimeBar, position: Long) {
@@ -79,7 +84,15 @@ class ChatbotVideoControlView(context: Context, attributeSet: AttributeSet) :
 
     }
 
-    fun showController(toShow : Boolean) {
+     fun toggleVolume(isMute : Boolean) {
+        if (isMute) {
+            volumeButton.setImageResource(R.drawable.chatbot_ic_volume_mute)
+        } else {
+            volumeButton.setImageResource(R.drawable.chatbot_ic_volume_high)
+        }
+    }
+
+    fun showController(toShow: Boolean) {
         videoControlContainer.showWithCondition(toShow)
     }
 
@@ -89,6 +102,7 @@ class ChatbotVideoControlView(context: Context, attributeSet: AttributeSet) :
         fun onScrubStart()
         fun onScrubStop()
         fun onScrubMove(position: Long)
+        fun toggleVolume()
     }
 
 }

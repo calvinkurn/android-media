@@ -77,11 +77,11 @@ class ChatbotExoPlayer(val context : Context, var videoControl: ChatbotVideoCont
         this.videoStateListener = videoStateListener
     }
 
-    fun start(videoUrl : String, isMute : Boolean) {
+    fun start(videoUrl : String) {
         if(videoUrl.isBlank())
             return
         val mediaSource = getMediaSourceBySource(context, Uri.parse(videoUrl))
-        //toggleVideoVolume(isMute)
+     //   toggleVideoVolume(false)
         exoPlayer.repeatMode = Player.REPEAT_MODE_ALL
         exoPlayer.playWhenReady = true
         exoPlayer.prepare(mediaSource, true, false)
@@ -102,14 +102,6 @@ class ChatbotExoPlayer(val context : Context, var videoControl: ChatbotVideoCont
 
     fun destroy() {
         exoPlayer.release()
-    }
-
-    fun toggleVideoVolume(isMute: Boolean) {
-        if (isMute) {
-            exoPlayer.volume = MUTE_VOLUME
-        } else {
-            exoPlayer.volume = UNMUTE_VOLUME
-        }
     }
 
     fun getExoPlayer(): SimpleExoPlayer = exoPlayer
@@ -165,6 +157,17 @@ class ChatbotExoPlayer(val context : Context, var videoControl: ChatbotVideoCont
 
     override fun onScrubMove(position: Long) {
         exoPlayer.seekTo(position)
+    }
+
+    override fun toggleVolume() {
+        val currentVolume = exoPlayer.volume
+        if (currentVolume == MUTE_VOLUME){
+            exoPlayer.volume = UNMUTE_VOLUME
+            videoControl.toggleVolume(false)
+        }else {
+            exoPlayer.volume = MUTE_VOLUME
+            videoControl.toggleVolume(true)
+        }
     }
 }
 
