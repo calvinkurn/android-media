@@ -29,7 +29,6 @@ import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
-import com.bumptech.glide.Glide
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -93,7 +92,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackDa
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceCoachmark
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder
@@ -167,8 +165,6 @@ import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.locationmanager.DeviceLocation
@@ -435,16 +431,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private var fragmentCurrentCacheState: Boolean = true
     private var fragmentCurrentVisitableCount: Int = -1
     private var fragmentCurrentScrollPosition: Int = -1
-
-    @Suppress("TooGenericExceptionCaught")
-    private fun isEligibleForSuperGraphicHeader(): Boolean {
-        return try {
-            getAbTestPlatform().getString(RollenceKey.SUPER_GRAPHIC_HEADER, "") == RollenceKey.SUPER_GRAPHIC_HEADER
-        } catch (e: Exception) {
-            e.printStackTrace()
-            false
-        }
-    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -2877,9 +2863,5 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun deletePayLaterWidget() {
         getHomeViewModel().deletePayLaterWidget()
-    }
-
-    override fun isSuperGraphicHeaderActive(): Boolean {
-        return isEligibleForSuperGraphicHeader()
     }
 }

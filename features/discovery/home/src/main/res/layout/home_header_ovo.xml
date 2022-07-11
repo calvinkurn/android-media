@@ -17,7 +17,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container_super_graphic_header"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="214dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -26,21 +26,11 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:src="@drawable/bg_gradient_super_graphic_header"
-            app:layout_constraintBottom_toBottomOf="@+id/header_background_home"
-            app:layout_constraintTop_toTopOf="@+id/header_background_home"
-            app:unify_image_corner_radius="0"
-            />
-
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/header_background_home"
-            android:layout_width="match_parent"
-            android:layout_height="214dp"
-            android:adjustViewBounds="true"
-            android:scaleType="centerCrop"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:unify_image_corner_radius="0" />
+            app:unify_image_corner_radius="0"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

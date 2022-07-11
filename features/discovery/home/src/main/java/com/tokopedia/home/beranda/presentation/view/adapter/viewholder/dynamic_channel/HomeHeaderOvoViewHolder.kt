@@ -29,13 +29,10 @@ class HomeHeaderOvoViewHolder(itemView: View,
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_header_ovo
-        private const val SUPER_GRAPHIC_HEADER = "https://dhabawidhikari.com/wp-content/uploads/2022/06/super_graphic_header_big.png"
-        private const val POSITION_TOP_WIDGET = 0f
     }
 
     override fun bind(element: HomeHeaderDataModel) {
         BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_HEADER_OVO)
-        renderHeaderImage()
         renderEmptySpace()
         element.headerDataModel?.let {
             renderBalanceLayout(
@@ -47,16 +44,6 @@ class HomeHeaderOvoViewHolder(itemView: View,
 
         renderChooseAddress(element.needToShowChooseAddress)
         BenchmarkHelper.endSystraceSection()
-    }
-
-    private fun renderHeaderImage() {
-        binding?.containerSuperGraphicHeader?.y = POSITION_TOP_WIDGET
-        if (listener.isSuperGraphicHeaderActive()) {
-            binding?.headerBackgroundHome?.visible()
-            binding?.headerBackgroundHome?.setImageUrl(SUPER_GRAPHIC_HEADER)
-        } else {
-            binding?.headerBackgroundHome?.invisible()
-        }
     }
 
     override fun bind(element: HomeHeaderDataModel, payloads: MutableList<Any>) {

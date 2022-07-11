@@ -134,6 +134,4 @@ interface HomeCategoryListener {
     fun onTokonowViewCaptured(view: View?, parentPosition: Int)
 
     fun dismissTokonowCoachmark(parentPosition: Int)
-
-    fun isSuperGraphicHeaderActive() : Boolean
 }
