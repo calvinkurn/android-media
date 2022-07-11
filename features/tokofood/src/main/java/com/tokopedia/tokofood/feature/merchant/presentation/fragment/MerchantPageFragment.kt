@@ -56,7 +56,6 @@ import com.tokopedia.tokofood.common.util.Constant
 import com.tokopedia.tokofood.common.util.TokofoodExt.getSuccessUpdateResultPair
 import com.tokopedia.tokofood.common.util.TokofoodExt.showErrorToaster
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
-import com.tokopedia.tokofood.common.util.TokofoodRouteManager.isMostTopFragment
 import com.tokopedia.tokofood.databinding.FragmentMerchantPageLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.analytics.MerchantPageAnalytics
 import com.tokopedia.tokofood.feature.merchant.common.util.MerchantShareComponentUtil
@@ -924,16 +923,17 @@ class MerchantPageFragment : BaseMultiFragment(),
                         }
                     }
                     UiEvent.EVENT_SUCCESS_VALIDATE_CHECKOUT -> {
-                        (it.data as? CheckoutTokoFoodData)?.let { checkOutTokoFoodData ->
-                            val purchaseAmount = checkOutTokoFoodData.summaryDetail.totalPrice
+                        (it.data as? Pair<CheckoutTokoFoodData, String>)?.let { data ->
+                            val purchaseAmount = data.first.summaryDetail.totalPrice
 
                             merchantPageAnalytics.clickCheckoutOnMiniCart(
                                 purchaseAmount,
                                 merchantId
                             )
-                        }
-                        if (this@MerchantPageFragment.isMostTopFragment()){
-                            navigateToNewFragment(TokoFoodPurchaseFragment.createInstance())
+
+                            if (data.second == SOURCE){
+                                navigateToNewFragment(TokoFoodPurchaseFragment.createInstance())
+                            }
                         }
                     }
                 }

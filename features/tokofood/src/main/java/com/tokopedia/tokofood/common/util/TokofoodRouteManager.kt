@@ -76,17 +76,4 @@ object TokofoodRouteManager {
             }
         }
     }
-
-    fun Fragment.isMostTopFragment(): Boolean  {
-        var lastFragment : Fragment? = null
-        val currentFragmentTag = this.javaClass.name
-        this.parentFragmentManager.fragments.reversed().forEach {
-            if (it is IBaseMultiFragment){
-                lastFragment = it
-                return@forEach
-            }
-        }
-        val lastFragmentTag = lastFragment?.javaClass?.name.orEmpty()
-        return currentFragmentTag == lastFragmentTag
-    }
 }
