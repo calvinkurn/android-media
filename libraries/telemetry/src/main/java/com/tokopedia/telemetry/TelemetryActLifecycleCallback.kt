@@ -57,7 +57,7 @@ class TelemetryActLifecycleCallback(
 
                 val sensorGyro: Sensor? = sensorManager?.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
                 sensorManager?.registerListener(TelemetryGyroListener, sensorGyro, samplingRate)
-                TelemetryAccelListener.setActivity(activity)
+                TelemetryGyroListener.setActivity(activity)
 
                 if (activity is BaseActivity) {
                     activity.addListener(TelemetryTouchListener)
