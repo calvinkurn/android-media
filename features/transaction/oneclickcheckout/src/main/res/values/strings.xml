@@ -101,6 +101,6 @@
 
     <!--PLATFORM FEE-->
     <string name="occ_payment_fee_title_info">Tentang %s</string>
-    <string name="occ_service_fee_title_info">Tentang biaya layanan</string>
+    <string name="occ_service_fee_title_info">Biaya Layanan</string>
     <string name="occ_service_fee_tooltip_info">Biaya ini dikenakan khusus pembayaran dengan metode tertentu.</string>
 </resources>
