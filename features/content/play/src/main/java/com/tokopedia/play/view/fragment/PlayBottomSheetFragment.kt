@@ -175,7 +175,7 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     override fun onEmptyButtonClicked(view: ProductSheetViewComponent) {
-        dismissSheets()
+        playViewModel.onHideProductSheet()
     }
 
     override fun onProductsImpressed(
@@ -417,11 +417,6 @@ class PlayBottomSheetFragment @Inject constructor(
     private fun copyToClipboard(content: String) {
         (requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
                 .setPrimaryClip(ClipData.newPlainText("play-room-bottom-sheet", content))
-    }
-
-    private fun dismissSheets(){
-        playFragment.hideKeyboard()
-        playViewModel.hideInsets(isKeyboardHandled = true)
     }
 
     /**
