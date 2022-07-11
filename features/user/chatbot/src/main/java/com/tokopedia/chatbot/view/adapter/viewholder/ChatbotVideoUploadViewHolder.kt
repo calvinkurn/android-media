@@ -74,10 +74,10 @@ class ChatbotVideoUploadViewHolder(
         super.bind(element)
         prerequisiteUISetup()
         setupChatBubbleAlignment(chatBalloon, element)
+        setDefaultVideoDuration()
         bindClickListener(element)
         bindVideoAttachment(element)
         bindRetry(element)
-        setDefaultVideoDuration()
         setUpChatReadStatus(element)
         bindBackground()
         setHeaderDate(element)
@@ -147,6 +147,7 @@ class ChatbotVideoUploadViewHolder(
         )
         if (element.isDummy) {
             progressBarSendVideo?.show()
+            videoTotalLength?.text = convertVideoLength(element.length)
         } else {
             progressBarSendVideo?.gone()
         }
