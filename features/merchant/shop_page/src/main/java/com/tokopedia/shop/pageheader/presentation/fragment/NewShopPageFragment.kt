@@ -335,7 +335,6 @@ class NewShopPageFragment :
         get() = shopViewModel?.isUserSessionActive ?: false
 
     private val feedShopFragmentClassName = Class.forName(FEED_SHOP_FRAGMENT)
-    private val reviewTabFragmentClassName = Class.forName(SHOP_REVIEW_FRAGMENT)
 
     override fun getComponent() = activity?.run {
         DaggerShopPageComponent.builder().shopPageModule(ShopPageModule())
@@ -1602,10 +1601,13 @@ class NewShopPageFragment :
                 }
             }
             if (shouldOverrideTabToReview) {
-                selectedPosition = if (viewPagerAdapter?.isFragmentObjectExists(reviewTabFragmentClassName) == true) {
-                    viewPagerAdapter?.getFragmentPosition(reviewTabFragmentClassName).orZero()
-                } else {
-                    selectedPosition
+                val reviewTabFragmentClassName = getReviewTabFragmentClassName()
+                reviewTabFragmentClassName?.let { reviewTabClass ->
+                    selectedPosition = if (viewPagerAdapter?.isFragmentObjectExists(reviewTabClass) == true) {
+                        viewPagerAdapter?.getFragmentPosition(reviewTabClass).orZero()
+                    } else {
+                        selectedPosition
+                    }
                 }
             }
         }
@@ -1716,6 +1718,14 @@ class NewShopPageFragment :
                 }
             }
         } else {
+            null
+        }
+    }
+
+    private fun getReviewTabFragmentClassName(): Class<*>? {
+        return try {
+            Class.forName(SHOP_REVIEW_FRAGMENT)
+        } catch (e: Exception) {
             null
         }
     }
