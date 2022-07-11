@@ -134,7 +134,7 @@ class DigitalCartActivityWithSubscriptionTest {
                 withId(R.id.tvCheckoutMyBillsHeaderTitle)) )
         checkoutSubscriptionHeaderTitle.perform(CustomActionUtils.nestedScrollTo())
         checkoutSubscriptionHeaderTitle.check(matches(isDisplayed()))
-        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 1)).check(matches(
+        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 0)).check(matches(
             not(isDisplayed())))
 
         val checkoutSubcriptionBody = onView(AllOf.allOf(withText("Text Before Checked"),
@@ -154,11 +154,11 @@ class DigitalCartActivityWithSubscriptionTest {
                 withId(R.id.tvCheckoutMyBillsDescription)) )
         checkoutMyBillsSubtitle.check(matches(isDisplayed()))
 
-        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 2)).perform(click())
-        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 2)).check(matches(not(isChecked())))
+        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 1)).perform(click())
+        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 1)).check(matches(not(isChecked())))
         Thread.sleep(1000)
-        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 2)).perform(click())
-        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 2)).check(matches(isChecked()))
+        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 1)).perform(click())
+        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 1)).check(matches(isChecked()))
     }
 
     private fun validatePaymentPriceOnUi() {
@@ -195,8 +195,8 @@ class DigitalCartActivityWithSubscriptionTest {
         onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailValue), withText("Rp500"))).check(matches(isDisplayed()))
 
         // uncheck protection bills
-        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 2)).perform(click())
-        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 2)).check(matches(not(isChecked())))
+        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 1)).perform(click())
+        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 1)).check(matches(not(isChecked())))
 
         onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailLabel), withText("purchase-protection"))).check(doesNotExist())
         onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailValue), withText("Rp500"))).check(doesNotExist())

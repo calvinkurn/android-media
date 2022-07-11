@@ -183,14 +183,14 @@ class DigitalCartActivityWithFintechTest {
                 withId(R.id.tvCheckoutMyBillsDescription)))
         checkoutSubcriptionBody.check(matches(isDisplayed()))
 
-        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 1)).perform(click())
-        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 1)).check(matches(isChecked()))
-        onView(getElementFromMatchAtPosition(withId(R.id.tvCheckoutMyBillsDescription), 1))
+        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 0)).perform(click())
+        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 0)).check(matches(isChecked()))
+        onView(getElementFromMatchAtPosition(withId(R.id.tvCheckoutMyBillsDescription), 0))
                 .check(matches(withText("Body content after subscribed")))
 
         Thread.sleep(1000)
-        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 1)).perform(click())
-        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 1)).check(matches(not(isChecked())))
+        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 0)).perform(click())
+        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 0)).check(matches(not(isChecked())))
         checkoutSubcriptionBody.check(matches(withText("Body content before not subscribed")))
     }
 
@@ -206,8 +206,8 @@ class DigitalCartActivityWithFintechTest {
                 withId(R.id.tvCheckoutMyBillsDescription)))
         checkoutMyBillsSubtitle.check(matches(isDisplayed()))
 
-        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 2)).perform(click())
-        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 2)).check(matches(not(isChecked())))
+        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 1)).perform(click())
+        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 1)).check(matches(not(isChecked())))
 
         onView(withId(R.id.contentCheckout)).perform(ViewActions.swipeUp())
         onView(withId(R.id.tvTotalPayment)).check(matches(withText("Rp15.500")))
@@ -226,11 +226,11 @@ class DigitalCartActivityWithFintechTest {
         onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailValue), withText("Rp3.000"))).check(matches(isDisplayed()))
 
         // check fintech product
+        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 1)).perform(click())
+        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 1)).check(matches(isChecked()))
+
         onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 2)).perform(click())
         onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 2)).check(matches(isChecked()))
-
-        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 3)).perform(click())
-        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 3)).check(matches(isChecked()))
 
         onView(withId(R.id.contentCheckout)).perform(ViewActions.swipeUp())
 
@@ -243,13 +243,13 @@ class DigitalCartActivityWithFintechTest {
         onView(withId(R.id.tvTotalPayment)).check(matches(withText("Rp17.000")))
 
         //untick and tick tebus murah
-        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 3)).perform(click())
-        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 3)).check(matches(isNotChecked()))
+        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 2)).perform(click())
+        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 2)).check(matches(isNotChecked()))
         onView(withId(R.id.tvTotalPayment)).check(matches(withText("Rp16.000")))
 
         Thread.sleep(1000)
-        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 3)).perform(click())
-        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 3)).check(matches(isChecked()))
+        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 2)).perform(click())
+        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 2)).check(matches(isChecked()))
     }
 
     @After

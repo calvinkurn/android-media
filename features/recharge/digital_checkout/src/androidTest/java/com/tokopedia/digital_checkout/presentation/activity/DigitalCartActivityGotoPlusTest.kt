@@ -154,14 +154,14 @@ class DigitalCartActivityGotoPlusTest {
 
     private fun clickConsentWidget(){
         //tick consent widget should enable button
-        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 0)).perform(click())
-        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 0)).check(matches(isChecked()))
+        onView(getElementFromMatchAtPosition(withId(R.id.cb_consent_widget), 0)).perform(click())
+        onView(getElementFromMatchAtPosition(withId(R.id.cb_consent_widget), 0)).check(matches(isChecked()))
         onView(getElementFromMatchAtPosition(withId(R.id.btnCheckout),0)).check(matches(isEnabled()))
         Thread.sleep(1000)
 
         //untick consent widget should disable button
-        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 0)).perform(click())
-        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 0)).check(matches(not(isChecked())))
+        onView(getElementFromMatchAtPosition(withId(R.id.cb_consent_widget), 0)).perform(click())
+        onView(getElementFromMatchAtPosition(withId(R.id.cb_consent_widget), 0)).check(matches(not(isChecked())))
         onView(getElementFromMatchAtPosition(withId(R.id.btnCheckout),0)).check(matches(not(isEnabled())))
     }
 
