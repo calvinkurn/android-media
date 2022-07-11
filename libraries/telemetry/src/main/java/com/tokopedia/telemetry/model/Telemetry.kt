@@ -173,7 +173,7 @@ object Telemetry {
     }
 
     @JvmStatic
-    fun addTouch(type: Int, x: Int, y: Int, pressure: Float) {
+    fun addTouch(type: Int, x: Int, y: Int, pressure: Float): Boolean {
         if (telemetrySectionList.size > 0 &&
             type == MotionEvent.ACTION_DOWN
         ) {
@@ -182,8 +182,11 @@ object Telemetry {
                 telemetrySectionList[0].touchList.add(
                     Touch(timeDiff, x, y, pressure)
                 )
+            } else {
+                return false
             }
         }
+        return true
     }
 
     fun hasOpenTime() = telemetrySectionList.size > 0 && telemetrySectionList[0].endTime == 0L
@@ -191,15 +194,15 @@ object Telemetry {
     fun getElapsedDiff() = (System.currentTimeMillis() - currStartTime).toInt()
 
     @JvmStatic
-    fun addAccel(x: Float, y: Float, z: Float) {
+    fun addAccel(x: Float, y: Float, z: Float): Boolean {
         val accelList = telemetrySectionList[0].accelList
-        addToListCheckLastCoord(accelList, x, y, z)
+        return addToListCheckLastCoord(accelList, x, y, z)
     }
 
     @JvmStatic
-    fun addGyro(x: Float, y: Float, z: Float) {
+    fun addGyro(x: Float, y: Float, z: Float): Boolean {
         val gyroList = telemetrySectionList[0].gyroList
-        addToListCheckLastCoord(gyroList, x, y, z)
+        return addToListCheckLastCoord(gyroList, x, y, z)
     }
 
     private fun addToListCheckLastCoord(
@@ -207,21 +210,22 @@ object Telemetry {
         x: Float,
         y: Float,
         z: Float
-    ) {
+    ): Boolean {
         val lastCoord = list.lastOrNull()
-        if (lastCoord != null && lastCoord.equal(x, y, z)) {
-            list.last().visit++
+        val elapsedDiff = getElapsedDiff()
+        val diffPrev = if (lastCoord != null) {
+            elapsedDiff - lastCoord.diff
         } else {
-            val elapsedDiff = getElapsedDiff()
-            val diffPrev = if (lastCoord != null) {
-                elapsedDiff - lastCoord.diff
-            } else {
-                SAMPLING_RATE_MS
-            }
-            if (diffPrev >= SAMPLING_RATE_MS && elapsedDiff < SECTION_TELEMETRY_DURATION) {
+            SAMPLING_RATE_MS
+        }
+        if (diffPrev >= SAMPLING_RATE_MS) {
+            if (elapsedDiff < SECTION_TELEMETRY_DURATION) {
                 list.add(Coord(elapsedDiff, x, y, z, 0))
+            } else {
+                return false
             }
         }
+        return true
     }
 
     @JvmStatic

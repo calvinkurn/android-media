@@ -54,9 +54,11 @@ class TelemetryActLifecycleCallback(
 
                 val samplingRate = getSamplingRate()
                 sensorManager?.registerListener(TelemetryAccelListener, sensor, samplingRate)
+                TelemetryAccelListener.setActivity(activity)
 
                 val sensorGyro: Sensor? = sensorManager?.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
                 sensorManager?.registerListener(TelemetryGyroListener, sensorGyro, samplingRate)
+                TelemetryAccelListener.setActivity(activity)
 
                 if (activity is BaseActivity) {
                     activity.addListener(TelemetryTouchListener)
@@ -98,7 +100,8 @@ class TelemetryActLifecycleCallback(
             } else { // this activity is not telemetry activity
                 collectTelemetryInNonTeleActivity(activity)
             }
-        } catch (ignored: Throwable) { }
+        } catch (ignored: Throwable) {
+        }
     }
 
     override fun onActivityResumed(activity: Activity) {}
@@ -172,7 +175,9 @@ class TelemetryActLifecycleCallback(
         try {
             val sensorManager = activity.getSystemService(Context.SENSOR_SERVICE) as SensorManager?
             sensorManager?.unregisterListener(TelemetryAccelListener)
+            TelemetryAccelListener.setActivity(null)
             sensorManager?.unregisterListener(TelemetryGyroListener)
+            TelemetryGyroListener.setActivity(null)
         } catch (ignored: Exception) {
         }
     }
