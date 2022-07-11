@@ -1,6 +1,7 @@
 package com.tokopedia.shop.common.data.model
 
 import android.annotation.SuppressLint
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class ShopPageGetDynamicTabResponse(
