@@ -60,8 +60,6 @@ data class FeedXCard(
     @SerializedName("maximumDiscountPercentageFmt")
     var maximumDisPercentFmt: String = "",
 
-
-
     //FeedXCardPost Data Type
     @SerializedName("appLink")
     var appLink: String = "",

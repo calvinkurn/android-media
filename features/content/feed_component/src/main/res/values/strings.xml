@@ -203,7 +203,7 @@
     <string name="feed_video_tab_success_add_reminder">Pengingat berhasil terpasang!</string>
     <string name="feed_video_tab_success_remove_reminder">Pengingat berhasil terhapus!</string>
     <string name="feed_video_tab_error_reminder">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>
-
+    <string name="feed_asgc_diskon_toko">Barang diskon</string>
 
 
 </resources>
