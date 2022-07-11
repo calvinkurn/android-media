@@ -228,10 +228,7 @@ class BalanceViewHolder(v: View) : RecyclerView.ViewHolder(v) {
                     itemView.context.getString(com.tokopedia.home.R.string.text_reload)
                 binding?.homeContainerBalance?.handleItemCLickType(
                     element = element,
-                    ovoWalletAction = { listener?.onRetryWalletApp() },
-                    rewardsAction = { listener?.onRetryMembership() },
-                    bboAction = { listener?.onRetryMembership() },
-                    tokopointsAction = { listener?.onRetryMembership() },
+                    rewardsAction = { listener?.onRetryMembership(adapterPosition, element.headerTitle) },
                     walletAppAction = { listener?.onRetryWalletApp() }
                 )
             }

@@ -11,8 +11,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_FREE_ONGKIR
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_REWARDS
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_SUBSCRIPTION
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_TOKOPOINT
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_UNKNOWN
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_APP_LINKED
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_APP_NOT_LINKED
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_OTHER
@@ -34,12 +32,6 @@ data class HomeBalanceModel(
         // State 2: Tokopoints, Ovo, Bebas Ongkir
         const val TYPE_STATE_2 = 2
 
-        const val OVO_TITLE = "OVO"
-        const val OVO_TOP_UP = "Top-up OVO"
-        const val OVO_POINTS_BALANCE = "%s Points"
-
-        private const val HASH_CODE = 39
-
         const val ERROR_TITLE = "Gagal Memuat"
         const val ERROR_SUBTITLE = "Coba Lagi"
 
@@ -54,6 +46,8 @@ data class HomeBalanceModel(
         const val STATUS_LOADING = 0
         const val STATUS_SUCCESS = 1
         const val STATUS_ERROR = 2
+
+        const val DEFAULT_BALANCE_POSITION = -1
     }
 
     override fun type(typeFactory: BalanceWidgetTypeFactory): Int {
@@ -104,20 +98,16 @@ data class HomeBalanceModel(
         subscriptionsData?.let { mapSubscriptions(subscriptionsData, headerTitle) }
     }
 
-    fun mapErrorTokopoints(headerTitle: String) {
-        when (balanceType) {
-            TYPE_STATE_2 -> {
-                balanceDrawerItemModels.add(getDefaultTokopointsErrorState(headerTitle))
-            }
+    fun mapErrorTokopoints(headerTitle: String, position: Int = DEFAULT_BALANCE_POSITION) {
+        if (position == DEFAULT_BALANCE_POSITION) {
+            balanceDrawerItemModels.add(getDefaultTokopointsErrorState(headerTitle))
+        } else if (balanceDrawerItemModels.size > position) {
+            balanceDrawerItemModels[position]
         }
     }
 
     fun mapErrorWallet(headerTitle: String) {
-        when (balanceType) {
-            TYPE_STATE_2 -> {
-                balanceDrawerItemModels.add(getDefaultGopayErrorState(headerTitle))
-            }
-        }
+        balanceDrawerItemModels.add(getDefaultGopayErrorState(headerTitle))
     }
 
     private fun getDefaultGopayErrorState(headerTitle: String): BalanceDrawerItemModel {
@@ -143,7 +133,7 @@ data class HomeBalanceModel(
 
     private fun getDefaultTokopointsErrorState(headerTitle: String): BalanceDrawerItemModel {
         return BalanceDrawerItemModel(
-            drawerItemType = TYPE_TOKOPOINT,
+            drawerItemType = TYPE_REWARDS,
             defaultIconRes = R.drawable.ic_new_tokopoints,
             balanceTitleTextAttribute = getDefaultErrorTitleTextAttribute(),
             balanceSubTitleTextAttribute = getDefaultErrorSubTItleTextAttribute(),
@@ -210,7 +200,7 @@ data class HomeBalanceModel(
 
     private fun mapTokopoint(tokopointDrawerListHomeData: TokopointsDrawerListHomeData?, headerTitle: String) {
         val tokopointMapData = tokopointDrawerListHomeData?.tokopointsDrawerList?.drawerList?.map {
-            val type = getDrawerType(it.type)
+            val type = TYPE_REWARDS
             it.mapToHomeBalanceItemModel(
                     drawerItemType = type,
                     state = STATE_SUCCESS,
@@ -237,7 +227,7 @@ data class HomeBalanceModel(
                     }
             )
         } else {
-            flagStateCondition(itemType = TYPE_TOKOPOINT,
+            flagStateCondition(itemType = TYPE_REWARDS,
                     action = {
                         balanceDrawerItemModels.add( getDefaultTokopointsErrorState(headerTitle).apply {
                             state = STATE_ERROR
@@ -259,7 +249,6 @@ data class HomeBalanceModel(
     }
 
     private fun mapTokopointDefaultIconRes(type: Int) = when (type) {
-        TYPE_TOKOPOINT -> R.drawable.ic_new_tokopoints
         TYPE_COUPON -> R.drawable.ic_new_coupon
         TYPE_REWARDS -> R.drawable.ic_new_points
         TYPE_FREE_ONGKIR -> R.drawable.ic_new_bbo
@@ -288,14 +277,6 @@ data class HomeBalanceModel(
         }
     }
 
-    private fun getDrawerType(type: String) = when (type) {
-        "TokoPoints" -> TYPE_TOKOPOINT
-        "Rewards" -> TYPE_REWARDS
-        "Coupon" -> TYPE_COUPON
-        "BBO" -> TYPE_FREE_ONGKIR
-        else -> TYPE_UNKNOWN
-    }
-
     private fun flagStateCondition(
         itemType: Int,
         action: () -> Unit
@@ -305,7 +286,6 @@ data class HomeBalanceModel(
                 itemTypeCondition(
                         itemType,
                         typeWalletCondition = { action.invoke() },
-                        typeTokopointCondition = { action.invoke() },
                         typeFreeOngkirCondition = { action.invoke() },
                         typeCouponCondition = { action.invoke() },
                         typeRewardsCondition = { action.invoke() }
@@ -316,14 +296,12 @@ data class HomeBalanceModel(
 
     private fun itemTypeCondition(
         type: Int,
-        typeTokopointCondition: () -> Unit = {},
         typeWalletCondition: () -> Unit = {},
         typeCouponCondition: () -> Unit = {},
         typeFreeOngkirCondition: () -> Unit = {},
         typeRewardsCondition: () -> Unit = {}
     ) {
         when (type) {
-            TYPE_TOKOPOINT -> typeTokopointCondition.invoke()
             TYPE_WALLET_OTHER,
             TYPE_WALLET_WITH_TOPUP,
             TYPE_WALLET_PENDING_CASHBACK,

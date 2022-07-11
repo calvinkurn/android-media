@@ -63,7 +63,7 @@ interface HomeCategoryListener {
 
     fun onDynamicChannelClicked(applink: String)
 
-    fun onRetryMembership()
+    fun onRetryMembership(position: Int, headerTitle: String)
 
     fun onRetryWalletApp()
 

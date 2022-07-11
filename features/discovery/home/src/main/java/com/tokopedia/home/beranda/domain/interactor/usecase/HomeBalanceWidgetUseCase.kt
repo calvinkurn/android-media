@@ -9,6 +9,7 @@ import com.tokopedia.home.beranda.domain.model.HomeFlag
 import com.tokopedia.home.beranda.domain.model.InjectCouponTimeBased
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel.Companion.DEFAULT_BALANCE_POSITION
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.network.exception.MessageErrorException
@@ -69,8 +70,6 @@ class HomeBalanceWidgetUseCase @Inject constructor(
                 needToShowUserWallet = homeFlagRepository.getCachedData().homeFlag.getFlag(HomeFlag.TYPE.HAS_TOKOPOINTS)
             )
         } catch (e: Exception) {
-            //TODO delete logger
-            Log.d("dhabalog", e.localizedMessage)
             currentHeaderDataModel.headerDataModel?.homeBalanceModel?.status = HomeBalanceModel.STATUS_ERROR
             currentHeaderDataModel.headerDataModel?.isUserLogin = userSession.isLoggedIn
             return currentHeaderDataModel
@@ -88,15 +87,15 @@ class HomeBalanceWidgetUseCase @Inject constructor(
         }
     }
 
-    suspend fun onGetTokopointData(currentHeaderDataModel: HomeHeaderDataModel): HomeHeaderDataModel {
+    suspend fun onGetTokopointData(currentHeaderDataModel: HomeHeaderDataModel, position: Int, headerTitle: String): HomeHeaderDataModel {
         if (!userSession.isLoggedIn) return currentHeaderDataModel
 
         var homeBalanceModel = getHomeBalanceModel(currentHeaderDataModel, HomeBalanceModel.BALANCE_POSITION_SECOND)
         //TODO put the right header title
-        homeBalanceModel = getTokopointData(homeBalanceModel, "")
+        homeBalanceModel = getTokopointData(homeBalanceModel, headerTitle, position)
         return currentHeaderDataModel.copy(
                 headerDataModel = currentHeaderDataModel.headerDataModel?.copy(
-                        homeBalanceModel = homeBalanceModel,
+                        homeBalanceModel = homeBalanceModel.copy(status = HomeBalanceModel.STATUS_SUCCESS),
                         isUserLogin = userSession.isLoggedIn
                 ),
                 needToShowUserWallet = homeFlagRepository.getCachedData().homeFlag.getFlag(HomeFlag.TYPE.HAS_TOKOPOINTS)?: false
@@ -136,13 +135,14 @@ class HomeBalanceWidgetUseCase @Inject constructor(
 
     private suspend fun getTokopointData(
         homeBalanceModel: HomeBalanceModel,
-        headerTitle: String
+        headerTitle: String,
+        position: Int = DEFAULT_BALANCE_POSITION
     ): HomeBalanceModel {
         try {
             homeBalanceModel.mapBalanceData(tokopointDrawerListHomeData = homeTokopointsListRepository.getRemoteData(), headerTitle = headerTitle)
         } catch (e: Exception) {
             homeBalanceModel.isTokopointsOrOvoFailed = true
-            homeBalanceModel.mapErrorTokopoints(headerTitle)
+            homeBalanceModel.mapErrorTokopoints(headerTitle, position)
         }
         return homeBalanceModel
     }

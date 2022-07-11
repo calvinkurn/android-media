@@ -14,7 +14,7 @@ data class BalanceDrawerItemModel(
         var balanceSubTitleTextAttribute: BalanceTextAttribute? = null,
         var balanceTitleTagAttribute: BalanceTagAttribute? = null,
         var balanceSubTitleTagAttribute: BalanceTagAttribute? = null,
-        val drawerItemType: Int = TYPE_TOKOPOINT,
+        val drawerItemType: Int = TYPE_REWARDS,
         val mainPageTitle: String = "",
         var state: Int = STATE_LOADING,
         val trackingAttribute: String = "",

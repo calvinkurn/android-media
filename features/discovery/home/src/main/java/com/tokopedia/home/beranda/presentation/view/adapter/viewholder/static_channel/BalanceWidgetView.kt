@@ -99,6 +99,10 @@ class BalanceWidgetView: FrameLayout {
         }
     }
 
+    fun showLoading() {
+        balanceWidgetAdapter?.setVisitables(listOf(BalanceShimmerModel()))
+    }
+
     fun getTokopointsView(): View? {
         tokopointsView = findViewById(R.id.home_coachmark_item_tokopoints)
         return tokopointsView

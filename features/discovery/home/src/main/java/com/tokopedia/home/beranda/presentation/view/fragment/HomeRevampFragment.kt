@@ -866,11 +866,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun getBalanceWidgetView(): BalanceWidgetView? {
         val view = homeRecyclerView?.findViewHolderForAdapterPosition(HOME_HEADER_POSITION)
-        (view as? HomeHeaderOvoViewHolder)?.let {
+        (view as? HomeHeaderOvoViewHolder)?.let { it ->
             val balanceWidgetView = it.itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget)
-            if ((balanceWidgetView.getGopayView() != null || balanceWidgetView.getGopayNewView() != null) && balanceWidgetView?.y?:VIEW_DEFAULT_HEIGHT > VIEW_DEFAULT_HEIGHT) {
-                return balanceWidgetView
-            }
+            balanceWidgetView?.let { balanceWidget -> return balanceWidget }
         }
         return null
     }
@@ -1131,6 +1129,14 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 val balanceWidgetView = getBalanceWidgetView()
                 balanceWidgetView?.startRotationForPosition(TOKOPOINTS_ITEM_POSITION)
             }
+        }
+    }
+
+    private fun startShimmeringBalanceWidget() {
+        val view = homeRecyclerView?.findViewHolderForAdapterPosition(HOME_HEADER_POSITION)
+        (view as? HomeHeaderOvoViewHolder)?.let {
+            val balanceWidgetView = getBalanceWidgetView()
+            balanceWidgetView?.showLoading()
         }
     }
 
@@ -2175,8 +2181,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         getHomeViewModel().getBusinessUnitData(tabId, position, tabName)
     }
 
-    override fun onRetryMembership() {
-        getHomeViewModel().onRefreshMembership()
+    override fun onRetryMembership(position: Int, headerTitle: String) {
+        startShimmeringBalanceWidget()
+        getHomeViewModel().onRefreshMembership(position, headerTitle)
     }
 
     override fun onRetryWalletApp() {

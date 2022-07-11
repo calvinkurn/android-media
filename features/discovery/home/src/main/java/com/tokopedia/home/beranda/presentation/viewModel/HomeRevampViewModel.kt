@@ -24,6 +24,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
@@ -372,11 +373,12 @@ open class HomeRevampViewModel @Inject constructor(
         findWidget<TickerDataModel> { tickerModel, index -> deleteWidget(tickerModel, index) }
     }
 
-    fun onRefreshMembership() {
+    fun onRefreshMembership(position: Int, headerTitle: String) {
         if (!userSession.get().isLoggedIn) return
         findWidget<HomeHeaderDataModel> { headerModel, index ->
             launch {
-                val currentHeaderDataModel = homeBalanceWidgetUseCase.get().onGetTokopointData(headerModel)
+                val currentHeaderDataModel = homeBalanceWidgetUseCase.get()
+                    .onGetTokopointData(headerModel, position, headerTitle)
                 val visitable = updateHeaderData(currentHeaderDataModel, index)
                 visitable?.let { updateWidget(visitable, index) }
             }
