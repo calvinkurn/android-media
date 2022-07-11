@@ -23,9 +23,9 @@ import com.tokopedia.common.topupbills.data.TopupBillsBanner
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
-import com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoSavedNumberActivity
-import com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoSavedNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
-import com.tokopedia.common.topupbills.favorite.view.model.TopupBillsSavedNumber
+import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity
+import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
+import com.tokopedia.common.topupbills.favoritepage.view.model.TopupBillsSavedNumber
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsUtil
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment.Companion.REQUEST_CODE_CART_DIGITAL
@@ -50,17 +50,17 @@ import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagCompon
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpDataPlanBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
-import com.tokopedia.digital_product_detail.domain.model.AutoCompleteModel
-import com.tokopedia.digital_product_detail.domain.model.FavoriteChipModel
-import com.tokopedia.digital_product_detail.domain.model.PrefillModel
-import com.tokopedia.digital_product_detail.domain.util.FavoriteNumberType
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.AutoCompleteModel
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.FavoriteChipModel
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.PrefillModel
+import com.tokopedia.common.topupbills.favoritepdp.util.FavoriteNumberType
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.FilterPDPBottomsheet
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.ProductDescBottomSheet
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryTelcoBottomSheet
 import com.tokopedia.digital_product_detail.presentation.listener.DigitalHistoryIconListener
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPAnalytics
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
-import com.tokopedia.digital_product_detail.presentation.utils.DigitalKeyboardWatcher
+import com.tokopedia.common_digital.common.util.DigitalKeyboardWatcher
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPWidgetMapper
 import com.tokopedia.digital_product_detail.presentation.utils.setupDynamicScrollListener
 import com.tokopedia.digital_product_detail.presentation.utils.toggle
@@ -85,7 +85,9 @@ import com.tokopedia.recharge_component.model.InputNumberActionType
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
-import com.tokopedia.digital_product_detail.domain.model.MenuDetailModel
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.MenuDetailModel
+import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
+import com.tokopedia.recharge_component.model.client_number.RechargeClientNumberChipModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
@@ -1165,7 +1167,7 @@ class DigitalPDPDataPlanFragment :
         }
     }
 
-    override fun onClickFilterChip(isLabeled: Boolean, operatorId: String) {
+    override fun onClickFilterChip(isLabeled: Boolean, favorite: RechargeClientNumberChipModel) {
         inputNumberActionType = InputNumberActionType.CHIP
         if (isLabeled) {
             onHideBuyWidget()
@@ -1208,9 +1210,9 @@ class DigitalPDPDataPlanFragment :
     //endregion
 
     //region ClientNumberAutoCompleteListener
-    override fun onClickAutoComplete(isFavoriteContact: Boolean) {
+    override fun onClickAutoComplete(favorite: TopupBillsAutoCompleteContactModel) {
         inputNumberActionType = InputNumberActionType.AUTOCOMPLETE
-        if (isFavoriteContact) {
+        if (favorite.name.isNotEmpty()) {
             digitalPDPAnalytics.clickFavoriteContactAutoComplete(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,

@@ -149,7 +149,7 @@ class PlayWidgetCardJumboView : FrameLayout, PlayVideoPlayerReceiver {
         tvAuthor.text = model.partner.name
         tvTitle.text = model.title
         tvTotalView.text = model.totalView.totalViewFmt
-        ivGiveaway.showWithCondition(model.hasGiveaway)
+        ivGiveaway.showWithCondition(model.hasGame)
 
         setIconToggleReminder(model.reminderType)
         reminderBadge.setOnClickListener {
