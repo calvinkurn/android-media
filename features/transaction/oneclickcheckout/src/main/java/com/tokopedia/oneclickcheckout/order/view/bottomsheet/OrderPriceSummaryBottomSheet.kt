@@ -1,14 +1,18 @@
 package com.tokopedia.oneclickcheckout.order.view.bottomsheet
 
 import android.annotation.SuppressLint
+import android.graphics.Paint
 import android.view.LayoutInflater
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.databinding.BottomSheetOrderPriceSummaryBinding
 import com.tokopedia.oneclickcheckout.databinding.ItemCashbackDetailBinding
+import com.tokopedia.oneclickcheckout.databinding.ItemPaymentFeeBinding
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCost
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentFee
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -27,7 +31,7 @@ class OrderPriceSummaryBottomSheet {
                 view.view?.height?.div(2)?.let { height ->
                     customPeekHeight = height
                 }
-                setupView(binding, orderCost)
+                setupView(binding, orderCost, view)
                 setChild(binding.root)
                 show(it, null)
             }
@@ -35,7 +39,7 @@ class OrderPriceSummaryBottomSheet {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun setupView(binding: BottomSheetOrderPriceSummaryBinding, orderCost: OrderCost) {
+    private fun setupView(binding: BottomSheetOrderPriceSummaryBinding, orderCost: OrderCost, view: OrderSummaryPageFragment) {
         binding.tvTotalProductPriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.totalItemPrice, false).removeDecimalSuffix()
 
         if (orderCost.hasAddOn) {
@@ -90,21 +94,42 @@ class OrderPriceSummaryBottomSheet {
             binding.tvTotalInsurancePriceValue.gone()
         }
 
-        if (orderCost.paymentFee > 0.0) {
-            binding.tvTotalPaymentFeePriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.paymentFee, false).removeDecimalSuffix()
-            binding.tvTotalPaymentFeePriceLabel.visible()
-            binding.tvTotalPaymentFeePriceValue.visible()
-        } else {
-            binding.tvTotalPaymentFeePriceLabel.gone()
-            binding.tvTotalPaymentFeePriceValue.gone()
-        }
+//        if (orderCost.paymentFee > 0.0) {
+//        binding.tvTotalPaymentFeePriceLabel.text = serviceFee.title
+//        binding.tvTotalPaymentFeePriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.paymentFee, false).removeDecimalSuffix()
+//        binding.tvTotalPaymentFeePriceLabel.visible()
+//        binding.tvTotalPaymentFeePriceValue.visible()
+//        binding.imgPaymentFeeInfo.setOnClickListener {
+//            showTransactionFeeInfoBottomSheet(view, serviceFee.tooltipTitle, serviceFee.tooltipInfo)
+//        }
+//        binding.imgPaymentFeeInfo.visible()
+//        } else {
+//            binding.tvTotalPaymentFeePriceLabel.gone()
+//            binding.tvTotalPaymentFeePriceValue.gone()
+//            binding.imgPaymentFeeInfo.gone()
+//        }
 
-        binding.tvPlatformFeeSlashPriceValue.text = "Rp2.000"
-        binding.tvPlatformFeePriceValue.text = "Rp1.000"
+//        binding.tvPlatformFeePriceLabel.text = platformFee.title
+//        if (platformFee.showSlashed) {
+//            binding.tvPlatformFeeSlashPriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(platformFee.slashedFee, false).removeDecimalSuffix()
+//            binding.tvPlatformFeeSlashPriceValue.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+//            binding.tvPlatformFeeSlashPriceValue.visible()
+//        }
+//        else {
+//            binding.tvPlatformFeeSlashPriceValue.invisible()
+//        }
+//        binding.tvPlatformFeePriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(platformFee.fee, false).removeDecimalSuffix()
+//        binding.imgPlatformFeeInfo.setOnClickListener {
+//            showTransactionFeeInfoBottomSheet(view, platformFee.tooltipTitle, platformFee.tooltipInfo)
+//        }
 
-        binding.tvTotalPaymentPriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.totalPrice, false).removeDecimalSuffix()
+        binding.tvTotalPaymentPriceValue.text =
+            CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.totalPrice, false)
+                .removeDecimalSuffix()
 
         renderCashbacks(orderCost, binding)
+
+        renderPaymentFee(view, binding, orderCost)
 
         renderInstallment(binding, orderCost)
     }
@@ -178,5 +203,66 @@ class OrderPriceSummaryBottomSheet {
             binding.tvTotalInstallmentLastDateLabel.gone()
             binding.dividerInstallment.gone()
         }
+    }
+
+    private fun renderPaymentFee(
+        view: OrderSummaryPageFragment,
+        binding: BottomSheetOrderPriceSummaryBinding,
+        orderCost: OrderCost
+    ) {
+        binding.llPaymentFee.removeAllViews()
+        if (orderCost.isInstallment) {
+            renderPaymentFeeView(
+                view, binding, OrderPaymentFee(
+                    title = view.getString(com.tokopedia.oneclickcheckout.R.string.occ_service_fee_title_info),
+                    fee = orderCost.paymentFee,
+                    showTooltip = true,
+                    tooltipInfo = view.getString(com.tokopedia.oneclickcheckout.R.string.occ_service_fee_tooltip_info)
+                )
+            )
+        }
+        if (orderCost.orderPaymentFees.isNotEmpty()) {
+            for (orderPaymentFee in orderCost.orderPaymentFees) {
+                renderPaymentFeeView(view, binding, orderPaymentFee)
+            }
+            binding.dividerTransactionFee.visible()
+            binding.llPaymentFee.visible()
+            binding.tvTransactionFee.visible()
+        }
+        else if (orderCost.orderPaymentFees.isEmpty() && !orderCost.isInstallment) {
+            binding.dividerTransactionFee.gone()
+            binding.llPaymentFee.gone()
+            binding.tvTransactionFee.gone()
+        }
+    }
+
+    private fun renderPaymentFeeView(
+        view: OrderSummaryPageFragment,
+        binding: BottomSheetOrderPriceSummaryBinding,
+        orderPaymentFee: OrderPaymentFee
+    ) {
+        val itemPaymentFeeBinding =
+            ItemPaymentFeeBinding.inflate(LayoutInflater.from(binding.root.context))
+        itemPaymentFeeBinding.apply {
+            tvPaymentFeePriceLabel.text = orderPaymentFee.title
+            if (orderPaymentFee.showSlashed) {
+                tvPaymentFeeSlashPriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderPaymentFee.slashedFee, false).removeDecimalSuffix()
+                tvPaymentFeeSlashPriceValue.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+                tvPaymentFeeSlashPriceValue.visible()
+            } else {
+                tvPaymentFeeSlashPriceValue.invisible()
+            }
+            tvPaymentFeePriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderPaymentFee.fee, false).removeDecimalSuffix()
+
+            if (orderPaymentFee.showTooltip) {
+                imgPaymentFeeInfo.visible()
+                imgPaymentFeeInfo.setOnClickListener {
+                    TransactionFeeInfoBottomSheet().show(view, orderPaymentFee)
+                }
+            } else {
+                imgPaymentFeeInfo.gone()
+            }
+        }
+        binding.llPaymentFee.addView(itemPaymentFeeBinding.root)
     }
 }

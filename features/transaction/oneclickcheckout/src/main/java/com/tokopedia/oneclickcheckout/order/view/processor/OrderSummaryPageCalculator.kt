@@ -258,6 +258,8 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                     totalItemPriceAndShippingFee = cost.totalItemPriceAndShippingFee,
                     totalAdditionalFee = cost.totalAdditionalFee,
                     totalDiscounts = cost.totalDiscounts,
+                    orderPaymentFees = payment.paymentFees,
+                    isInstallment = payment.isInstallment()
             )
             return@withContext orderCost to payment
         }

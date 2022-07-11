@@ -98,4 +98,9 @@
     <string name="occ_lbl_gocicil_installment_inactive_description">Periode cicilan tidak tersedia.</string>
     <string name="occ_lbl_gocicil_installment_bottom_sheet_message">%1$s (%2$s)</string>
     <string name="occ_lbl_gocicil_installment_period">%1$d months</string>
+
+    <!--PLATFORM FEE-->
+    <string name="occ_payment_fee_title_info">Tentang %s</string>
+    <string name="occ_service_fee_title_info">Tentang biaya layanan</string>
+    <string name="occ_service_fee_tooltip_info">Biaya ini dikenakan khusus pembayaran dengan metode tertentu.</string>
 </resources>

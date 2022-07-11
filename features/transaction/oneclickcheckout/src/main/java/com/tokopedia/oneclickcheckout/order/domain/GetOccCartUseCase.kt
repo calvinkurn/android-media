@@ -477,6 +477,15 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
                 selected_tenure
             }
           }
+          payment_fee_detail {
+            fee
+            show_slashed
+            show_tooltip
+            slashed_fee
+            title
+            tooltip_info
+            type
+          }
         }
         shipment {
           service_id

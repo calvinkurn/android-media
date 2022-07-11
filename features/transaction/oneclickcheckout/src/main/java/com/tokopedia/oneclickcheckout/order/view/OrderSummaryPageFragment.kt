@@ -1410,7 +1410,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             val orderTotal = viewModel.orderTotal.value
             if (orderTotal.buttonState != OccButtonState.LOADING) {
                 GoCicilInstallmentDetailBottomSheet(viewModel.paymentProcessor.get()).show(this@OrderSummaryPageFragment,
-                        viewModel.orderCart, viewModel.orderPayment.value, orderTotal.orderCost, userSession.get().userId,
+                        viewModel.orderCart, viewModel.orderPayment.value, viewModel.orderProfile.value, orderTotal.orderCost, userSession.get().userId,
                         object : GoCicilInstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
                             override fun onSelectInstallment(selectedInstallment: OrderPaymentGoCicilTerms, installmentList: List<OrderPaymentGoCicilTerms>, isSilent: Boolean) {
                                 viewModel.chooseInstallment(selectedInstallment, installmentList, isSilent)

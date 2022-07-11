@@ -298,7 +298,8 @@ class GetOccCartMapper @Inject constructor() {
                 errorData = null,
                 bid = payment.bid,
                 specificGatewayCampaignOnlyType = payment.specificGatewayCampaignOnlyType,
-                walletData = mapPaymentWalletData(payment.walletAdditionalData, data.paymentAdditionalData.callbackUrl)
+                walletData = mapPaymentWalletData(payment.walletAdditionalData, data.paymentAdditionalData.callbackUrl),
+                paymentFees = mapPaymentFee(payment.paymentFeeDetail)
         )
     }
 
@@ -402,6 +403,29 @@ class GetOccCartMapper @Inject constructor() {
                 headerTitle = walletData.headerTitle,
                 urlLink = walletData.urlLink
         )
+    }
+
+    private fun mapPaymentFee(paymentFeeDetails: List<PaymentFeeDetailResponse>): List<OrderPaymentFee> {
+        return listOf(
+            OrderPaymentFee(
+                "Biaya Jasa Aplikasi",
+                1000.0,
+                true,
+                true,
+                2000,
+                "Terima kasih sudah belanja di Tokopedia! Biaya jasa aplikasi akan kami pakai untuk terus berikan layanan terbaik buat kamu."
+            )
+        )
+//        return paymentFeeDetails.map { paymentFeeDetail ->
+//            OrderPaymentFee(
+//                title = paymentFeeDetail.title,
+//                fee = paymentFeeDetail.fee,
+//                showTooltip = paymentFeeDetail.showTooltip,
+//                showSlashed = paymentFeeDetail.showSlashed,
+//                slashedFee = paymentFeeDetail.slashedFee,
+//                tooltipInfo = paymentFeeDetail.tooltipInfo,
+//            )
+//        }
     }
 
     private fun mapPaymentGoCicilData(goCicilData: GoCicilData): OrderPaymentGoCicilData {
