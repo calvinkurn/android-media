@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.flashsale.domain.entity.TabMeta
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignEligibilityUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignListMetaUseCase
@@ -19,6 +21,11 @@ class CampaignListContainerViewModel @Inject constructor(
     private val getSellerCampaignListMetaUseCase: GetSellerCampaignListMetaUseCase,
     private val getSellerCampaignEligibilityUseCase: GetSellerCampaignEligibilityUseCase
 ) : BaseViewModel(dispatchers.main) {
+
+    companion object {
+        private const val ACTIVE_CAMPAIGN_ID = 1
+        private const val HISTORY_CAMPAIGN_ID = 2
+    }
 
     private var autoFocusTabPosition = 0
     private var storedTabsMetadata : List<TabMeta> = emptyList()
@@ -85,5 +92,18 @@ class CampaignListContainerViewModel @Inject constructor(
 
     fun getAutoFocusTabPosition(): Int {
         return autoFocusTabPosition
+    }
+
+    fun isIneligibleAccess(prerequisiteData: PrerequisiteData) : Boolean {
+        val isEligible = prerequisiteData.isEligible
+
+        val activeCampaign = prerequisiteData.tabsMetadata.find { tab -> tab.id == ACTIVE_CAMPAIGN_ID }
+        val historyCampaign = prerequisiteData.tabsMetadata.find { tab -> tab.id == HISTORY_CAMPAIGN_ID }
+        val activeCampaignCount = activeCampaign?.totalCampaign
+        val historyCampaignCount = historyCampaign?.totalCampaign
+
+        val hasActiveCampaign = activeCampaignCount.isMoreThanZero()
+        val hasHistoryCampaign = historyCampaignCount.isMoreThanZero()
+        return !isEligible && !hasActiveCampaign && !hasHistoryCampaign
     }
 }

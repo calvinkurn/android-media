@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
-import com.tokopedia.seller_shop_flash_sale.R
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
@@ -16,10 +15,10 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignListContainerBinding
 import com.tokopedia.shop.flashsale.common.constant.Constant
 import com.tokopedia.shop.flashsale.common.extension.doOnDelayFinished
@@ -44,8 +43,6 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
     companion object {
         private const val FIRST_TAB = 0
         private const val SECOND_TAB = 1
-        private const val ACTIVE_CAMPAIGN_ID = 1
-        private const val HISTORY_CAMPAIGN_ID = 2
         private const val BUNDLE_KEY_AUTO_FOCUS_TAB_POSITION = "auto_focus_tab_position"
         private const val REDIRECTION_DELAY : Long = 500
         private const val EMPTY_STATE_IMAGE_URL = "https://images.tokopedia.net/img/android/campaign/flash-sale-toko/shop_outdoor.png"
@@ -309,14 +306,7 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
     private fun validateSellerEligibility(
         prerequisiteData: CampaignListContainerViewModel.PrerequisiteData
     ) {
-        val isEligible = prerequisiteData.isEligible
-        val activeCampaignCount = prerequisiteData.tabsMetadata.find { tab -> tab.id == ACTIVE_CAMPAIGN_ID }?.totalCampaign
-        val historyCampaignCount = prerequisiteData.tabsMetadata.find { tab -> tab.id == HISTORY_CAMPAIGN_ID }?.totalCampaign
-
-        val hasActiveCampaign = activeCampaignCount.isMoreThanZero()
-        val hasHistoryCampaign = historyCampaignCount.isMoreThanZero()
-        val shouldShowIneligibleAccess = !isEligible && !hasActiveCampaign && !hasHistoryCampaign
-
+        val shouldShowIneligibleAccess = viewModel.isIneligibleAccess(prerequisiteData)
         if (shouldShowIneligibleAccess) {
             showIneligibleAccessNotice()
         } else {
@@ -345,7 +335,7 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
 
     private fun routeToFeatureIntro() {
         if (!isAdded) return
-        val encodedUrl = URLEncoder.encode(FEATURE_INTRODUCTION_URL, "utf-8")
+        val encodedUrl = FEATURE_INTRODUCTION_URL.encodeToUtf8()
         val route = String.format("%s?url=%s", ApplinkConst.WEBVIEW, encodedUrl)
         RouteManager.route(requireActivity(), route)
     }
