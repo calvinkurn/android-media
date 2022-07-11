@@ -100,6 +100,13 @@ class ProductCarouselUiView(
         sendImpression()
     }
 
+    fun setProducts(products: List<PlayProductUiModel.Product>) {
+        if (products != adapter.getItems()) invalidateItemDecorations()
+        adapter.setItemsAndAnimateChanges(products)
+
+        sendImpression()
+    }
+
     fun setLoading() {
         val placeholders = getPlaceholder()
         if (placeholders != adapter.getItems()) invalidateItemDecorations()

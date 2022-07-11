@@ -16,16 +16,16 @@ import javax.inject.Inject
 class PlayProductTagUiMapper @Inject constructor() {
 
     fun mapSection(input: Section) = ProductSectionUiModel.Section(
-//        productList = input.listOfProducts.map {
-//            mapProduct(it, ProductSectionType.getSectionValue(sectionType = input.sectionType))
-//        },
-        productList = input.listOfProducts.mapIndexed { index, product ->
-            mapProduct(
-                product,
-                ProductSectionType.getSectionValue(sectionType = input.sectionType),
-                index == 0
-            )
+        productList = input.listOfProducts.map {
+            mapProduct(it, ProductSectionType.getSectionValue(sectionType = input.sectionType))
         },
+//        productList = input.listOfProducts.mapIndexed { index, product ->
+//            mapProduct(
+//                product,
+//                ProductSectionType.getSectionValue(sectionType = input.sectionType),
+//                index == 0
+//            )
+//        },
         config = mapConfig(input),
         id = input.id,
     )
@@ -46,7 +46,7 @@ class PlayProductTagUiMapper @Inject constructor() {
 
     private fun mapReminder(hasReminder: Boolean, campaignId: Long) : PlayUpcomingBellStatus = if(hasReminder) PlayUpcomingBellStatus.Off(campaignId) else PlayUpcomingBellStatus.Unknown
 
-    private fun mapProduct(input: Product, sectionType: ProductSectionType = ProductSectionType.Unknown, isPinned: Boolean): PlayProductUiModel.Product {
+    private fun mapProduct(input: Product, sectionType: ProductSectionType = ProductSectionType.Unknown): PlayProductUiModel.Product {
         return PlayProductUiModel.Product(
             id = input.id,
             shopId = input.shopId,
@@ -71,7 +71,7 @@ class PlayProductTagUiMapper @Inject constructor() {
             minQty = input.minimumQuantity,
             isFreeShipping = input.isFreeShipping,
             applink = input.appLink,
-            isPinned = isPinned,
+            isPinned = false, //TODO("match gql")
         )
     }
 }

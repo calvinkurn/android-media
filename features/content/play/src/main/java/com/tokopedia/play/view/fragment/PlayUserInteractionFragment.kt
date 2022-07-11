@@ -589,6 +589,7 @@ class PlayUserInteractionFragment @Inject constructor(
                     binding = productFeaturedBinding,
                     bus = eventBus,
                     scope = viewLifecycleOwner.lifecycleScope,
+                    dispatchers = dispatchers,
                 )
             )
         }

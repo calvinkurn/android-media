@@ -8,6 +8,7 @@ import com.tokopedia.play.ui.productfeatured.viewholder.ProductFeaturedViewHolde
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.R
 import com.tokopedia.play.ui.product.ProductBasicViewHolder
+import com.tokopedia.play.ui.productfeatured.adapter.delegate.ProductFeaturedPlaceholderAdapterDelegate
 import com.tokopedia.play.ui.view.carousel.viewholder.ProductCarouselViewHolder
 
 /**
@@ -22,6 +23,7 @@ class ProductCarouselAdapter(
         delegatesManager
             .addDelegate(ProductDelegate(listener))
             .addDelegate(PinnedProductDelegate(pinnedProductListener))
+            .addDelegate(ProductFeaturedPlaceholderAdapterDelegate())
     }
 
     override fun areItemsTheSame(
