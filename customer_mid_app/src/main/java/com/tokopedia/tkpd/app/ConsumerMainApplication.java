@@ -245,6 +245,11 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             public Boolean invoke() {
                 return remoteConfig.getBoolean(REMOTE_CONFIG_TELEMETRY_ENABLED, true);
             }
+        },new Function0<Boolean>() {
+            @Override
+            public Boolean invoke() {
+                return getUserSession().isLoggedIn();
+            }
         }));
     }
 

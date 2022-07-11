@@ -38,6 +38,7 @@ class Coord(var diff: Int, val x: Float, val y: Float, val z: Float, var visit: 
 class TelemetrySection(
     var eventName: String,
     var startTime: Long,
+    var isLogin: Boolean = false
 ) {
     var endTime: Long = 0L
     var eventNameEnd: String = ""
@@ -123,16 +124,24 @@ object Telemetry {
     private const val MAX_SECTION = 10
 
     @JvmStatic
-    fun addSection(eventName: String) {
-        currStartTime = System.currentTimeMillis()
+    fun addSection(eventName: String, isLogin: Boolean) {
         if (telemetrySectionList.size >= MAX_SECTION) {
             telemetrySectionList.removeLast()
         }
+        // only preserve last event for non login
+        if (!isLogin) {
+            val lastSection = telemetrySectionList.lastOrNull()
+            if (lastSection!= null && !lastSection.isLogin) {
+                telemetrySectionList.remove(lastSection)
+            }
+        }
+        currStartTime = System.currentTimeMillis()
         telemetrySectionList.add(
             0,
             TelemetrySection(
                 eventName,
-                currStartTime
+                currStartTime,
+                isLogin
             )
         )
     }

@@ -27,7 +27,8 @@ import java.lang.Exception
 import java.lang.ref.WeakReference
 
 class TelemetryActLifecycleCallback(
-    val isEnabled: (() -> (Boolean))
+    val isEnabled: (() -> (Boolean)),
+    val isLogin: (() -> (Boolean))
 ) : Application.ActivityLifecycleCallbacks {
 
     companion object {
@@ -88,40 +89,16 @@ class TelemetryActLifecycleCallback(
         }
 
         if (!isEnabled.invoke()) {
-            return;
-        }
-
-        // start new telemetry section
-        if (activity !is AppCompatActivity) {
             return
         }
-        if (activity is ITelemetryActivity) {
-            val sectionName = activity.getTelemetrySectionName()
 
-            // Only send telemetry if section Name is different
-            if (sectionName != Telemetry.getCurrentSectionName()) {
-                collectTelemetry(activity, sectionName)
+        try {
+            if (activity is ITelemetryActivity) {
+                collectTelemetryInTeleActivity(activity)
+            } else { // this activity is not telemetry activity
+                collectTelemetryInNonTeleActivity(activity)
             }
-        } else { // this activity is not telemetry activity
-            if (Telemetry.hasOpenTime()) {
-                // check if it is already past section duration or not
-                val elapsedDiff = Telemetry.getElapsedDiff()
-                if (elapsedDiff < (SECTION_TELEMETRY_DURATION - STOP_THRES)) {
-                    registerTelemetryListener(activity)
-                    // timer to stop after telemetry duration
-                    activity.lifecycleScope.launch {
-                        val remainingDurr = SECTION_TELEMETRY_DURATION - elapsedDiff
-                        delay(remainingDurr)
-                        stopTelemetryListener(activity)
-                        Telemetry.addStopTime()
-                    }
-                } else { // duration is due
-                    val estimatedDuration =
-                        Telemetry.telemetrySectionList[0].startTime + SECTION_TELEMETRY_DURATION
-                    Telemetry.addStopTime("", estimatedDuration)
-                }
-            }
-        }
+        } catch (ignored: Throwable) { }
     }
 
     override fun onActivityResumed(activity: Activity) {}
@@ -133,12 +110,48 @@ class TelemetryActLifecycleCallback(
     override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
     override fun onActivityDestroyed(activity: Activity) {}
 
+    private fun collectTelemetryInTeleActivity(activity: ITelemetryActivity) {
+        if (activity !is AppCompatActivity) {
+            return;
+        }
+        val sectionName = activity.getTelemetrySectionName()
+
+        // Only send telemetry if section Name is different
+        if (sectionName != Telemetry.getCurrentSectionName()) {
+            collectTelemetry(activity, sectionName)
+        }
+    }
+
+    private fun collectTelemetryInNonTeleActivity(activity: Activity) {
+        if (activity !is AppCompatActivity) {
+            return;
+        }
+        if (Telemetry.hasOpenTime()) {
+            // check if it is already past section duration or not
+            val elapsedDiff = Telemetry.getElapsedDiff()
+            if (elapsedDiff < (SECTION_TELEMETRY_DURATION - STOP_THRES)) {
+                registerTelemetryListener(activity)
+                // timer to stop after telemetry duration
+                activity.lifecycleScope.launch {
+                    val remainingDurr = SECTION_TELEMETRY_DURATION - elapsedDiff
+                    delay(remainingDurr)
+                    stopTelemetryListener(activity)
+                    Telemetry.addStopTime()
+                }
+            } else { // duration is due
+                val estimatedDuration =
+                    Telemetry.telemetrySectionList[0].startTime + SECTION_TELEMETRY_DURATION
+                Telemetry.addStopTime("", estimatedDuration)
+            }
+        }
+    }
+
     private fun collectTelemetry(activity: AppCompatActivity, sectionName: String) {
         //stop time for prev telemetry
         Telemetry.addStopTime(sectionName)
         TelemetryWorker.scheduleWorker(activity.applicationContext)
 
-        Telemetry.addSection(sectionName)
+        Telemetry.addSection(sectionName, isLogin.invoke())
         registerTelemetryListener(activity)
 
         // timer to stop after telemetry duration

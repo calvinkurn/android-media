@@ -49,24 +49,28 @@ class TelemetryWorker : CoroutineScope {
                 val telemetrySectionSize = telemetrySectionList.size
                 if (telemetrySectionSize > 0) {
                     for (i in telemetrySectionSize - 1 downTo 0) {
-                        val telemetrySection = telemetrySectionList[i]
+                        val telemetrySection = telemetrySectionList.getOrNull(i) ?: continue
                         if (telemetrySection.eventNameEnd.isNotEmpty()) {
-                            var telemetryResponse:TelemetryResponse? = null
+                            var telemetryResponse: TelemetryResponse? = null
                             try {
                                 telemetryResponse = telemetryUseCase.execute(telemetrySection)
-                            } catch (e:Exception) {
+                            } catch (e: Exception) {
                                 // no internet connection
                                 if (e is UnknownHostException ||
                                     e is SocketException ||
                                     e is InterruptedIOException ||
                                     e is ConnectionShutdownException ||
-                                    e is CancellationException) {
+                                    e is CancellationException
+                                ) {
                                     // do send data later, break the loop.
                                     break
                                 }
                             }
                             if (telemetryResponse?.isError() == true) {
-                                sendLog(ERROR_TYPE_SEND_BACKEND, telemetryResponse.subDvcTl.data.errorMessage)
+                                sendLog(
+                                    ERROR_TYPE_SEND_BACKEND,
+                                    telemetryResponse.subDvcTl.data.errorMessage
+                                )
                             } else {
                                 telemetrySectionList.removeAt(i)
                             }
@@ -114,7 +118,7 @@ class TelemetryWorker : CoroutineScope {
             getWorker(context).doWork()
         }
 
-        private fun getWorker(context: Context): TelemetryWorker{
+        private fun getWorker(context: Context): TelemetryWorker {
             val tmp = telemetryWorker
             return if (tmp == null) {
                 val obj = TelemetryWorker()
