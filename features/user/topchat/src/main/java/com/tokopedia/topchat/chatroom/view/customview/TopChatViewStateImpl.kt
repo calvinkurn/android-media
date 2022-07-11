@@ -761,7 +761,11 @@ open class TopChatViewStateImpl constructor(
     }
 
     fun updateProductPreviews(mapProducts: ArrayMap<String, Attachment>) {
-        attachmentPreviewAdapter.updateDeferredAttachment(mapProducts)
+        val listProductPreview = arrayListOf<Attachment>()
+        mapProducts.forEach {
+            listProductPreview.add(it.value)
+        }
+        attachmentPreviewAdapter.updateDeferredAttachment(listProductPreview)
     }
 
     override fun showAttachmentPreview(attachmentPreview: ArrayList<SendablePreview>) {

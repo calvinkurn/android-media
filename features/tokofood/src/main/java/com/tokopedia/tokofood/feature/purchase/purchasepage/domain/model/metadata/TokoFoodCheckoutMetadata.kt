@@ -21,8 +21,8 @@ data class TokoFoodCheckoutMetadata(
     val userAddress: TokoFoodCheckoutUserAddress = TokoFoodCheckoutUserAddress(),
     @SerializedName("available_section")
     val availableSection: TokoFoodCheckoutAvailabilitySection = TokoFoodCheckoutAvailabilitySection(),
-    @SerializedName("unavailable_section")
-    val unavailableSection: TokoFoodCheckoutAvailabilitySection = TokoFoodCheckoutAvailabilitySection(),
+    @SerializedName("unavailable_sections")
+    val unavailableSections: List<TokoFoodCheckoutAvailabilitySection> = listOf(),
     @SerializedName("shipping")
     val shipping: TokoFoodCheckoutShipping = TokoFoodCheckoutShipping(),
     @SerializedName("shopping_summary")
@@ -42,9 +42,11 @@ data class TokoFoodCheckoutMetadata(
                 availableSection = TokoFoodCheckoutAvailabilitySection.convertToMetadata(
                     tokoFood.data.availableSection
                 ),
-                unavailableSection = TokoFoodCheckoutAvailabilitySection.convertToMetadata(
-                    tokoFood.data.unavailableSections.firstOrNull() ?: CheckoutTokoFoodAvailabilitySection()
-                ),
+                unavailableSections = tokoFood.data.unavailableSections.map {
+                    TokoFoodCheckoutAvailabilitySection.convertToMetadata(
+                        it
+                    )
+                },
                 shipping = TokoFoodCheckoutShipping.convertToMetadata(tokoFood.data.shipping),
                 shoppingSummary = TokoFoodCheckoutShoppingSummary.convertToMetadata(tokoFood.data.shoppingSummary)
             )
