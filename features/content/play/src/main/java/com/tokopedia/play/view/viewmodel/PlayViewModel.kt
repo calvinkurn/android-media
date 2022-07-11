@@ -31,6 +31,7 @@ import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.CastPlayerHelper
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateListener
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
+import com.tokopedia.play.util.logger.PlayLog
 import com.tokopedia.play.util.chat.ChatStreams
 import com.tokopedia.play.util.setValue
 import com.tokopedia.play.util.share.PlayShareExperience
@@ -65,6 +66,7 @@ import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.sse.*
+import com.tokopedia.play_common.util.PlayLiveRoomMetricsCommon
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
@@ -109,7 +111,9 @@ class PlayViewModel @AssistedInject constructor(
     private val timerFactory: TimerFactory,
     private val castPlayerHelper: CastPlayerHelper,
     private val playShareExperience: PlayShareExperience,
+    private val playLog: PlayLog,
     chatStreamsFactory: ChatStreams.Factory,
+    private val liveRoomMetricsCommon : PlayLiveRoomMetricsCommon,
 ) : ViewModel() {
 
     @AssistedFactory
@@ -488,7 +492,11 @@ class PlayViewModel @AssistedInject constructor(
 
     private val videoPerformanceListener = object : PlayViewerVideoPerformanceListener {
         override fun onPlaying() {
-            if (videoLatencyPerformanceMonitoring.hasStarted) videoLatencyPerformanceMonitoring.stop()
+            if (videoLatencyPerformanceMonitoring.hasStarted) {
+                videoLatencyPerformanceMonitoring.stop()
+                val durationInSecond = videoLatencyPerformanceMonitoring.totalDuration / DURATION_DIVIDER
+                playLog.logTimeToFirstByte(durationInSecond.toInt())
+            }
         }
 
         override fun onError() {
@@ -957,6 +965,7 @@ class PlayViewModel @AssistedInject constructor(
         updateChannelStatus()
 
         updateChannelInfo(channelData)
+        sendInitialLog()
     }
 
     fun defocusPage(shouldPauseVideo: Boolean) {
@@ -2501,6 +2510,11 @@ class PlayViewModel @AssistedInject constructor(
         if(delayTapJob?.isActive == true) delayTapJob?.cancel()
     }
 
+    private fun sendInitialLog(){
+        playLog.logDownloadSpeed(liveRoomMetricsCommon.getInetSpeed())
+        playLog.sendAll(channelId, videoPlayer)
+    }
+
     companion object {
         private const val FIREBASE_REMOTE_CONFIG_KEY_PIP = "android_mainapp_enable_pip"
         private const val FIREBASE_REMOTE_CONFIG_KEY_INTERACTIVE = "android_main_app_enable_play_interactive"
@@ -2528,5 +2542,6 @@ class PlayViewModel @AssistedInject constructor(
          * Reminder
          */
         private const val INTERVAL_LIKE_REMINDER_IN_MIN = 5L
+        private const val DURATION_DIVIDER = 1000
     }
 }
