@@ -82,6 +82,7 @@ class NestedScrollableHost : FrameLayout {
         }
     }
 
+    @Suppress("MagicNumber")
     private fun handleInterceptTouchEvent(e: MotionEvent) {
         if (isScrollLocked) {
             targetParent.requestDisallowInterceptTouchEvent(true)
