@@ -20,5 +20,5 @@ data class ShopRecomItemUI(
     @SerializedName("applink")
     val applink: String = "",
     @SerializedName("isFollow")
-    var isFollow: Boolean = false
+    var isFollow: Boolean = false,
 )
