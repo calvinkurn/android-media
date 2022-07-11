@@ -11,7 +11,6 @@ import androidx.transition.Transition
 import androidx.transition.TransitionManager
 import androidx.transition.TransitionSet
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.databinding.WidgetReviewCredibilityAchievementBoxBinding
@@ -29,7 +28,6 @@ class ReviewCredibilityAchievementBoxWidget @JvmOverloads constructor(
         private const val FIRST_ACHIEVEMENT_INDEX = 0
         private const val SECOND_ACHIEVEMENT_INDEX = 1
         private const val THIRD_ACHIEVEMENT_INDEX = 2
-        private const val MAX_ACHIEVEMENT_COUNT = 3
     }
 
     override val binding: WidgetReviewCredibilityAchievementBoxBinding =
@@ -40,50 +38,19 @@ class ReviewCredibilityAchievementBoxWidget @JvmOverloads constructor(
     private val partialWidgetAchievement1 by lazy(LazyThreadSafetyMode.NONE) {
         PartialReviewCredibilityAchievement(binding.widgetReviewCredibilityAchievement1)
     }
-    private val partialWidgetAchievementLoading1 by lazy(LazyThreadSafetyMode.NONE) {
-        PartialReviewCredibilityAchievementLoading(binding.widgetReviewCredibilityAchievement1Loading)
-    }
     private val partialWidgetAchievement2 by lazy(LazyThreadSafetyMode.NONE) {
         PartialReviewCredibilityAchievement(binding.widgetReviewCredibilityAchievement2)
     }
-    private val partialWidgetAchievementLoading2 by lazy(LazyThreadSafetyMode.NONE) {
-        PartialReviewCredibilityAchievementLoading(binding.widgetReviewCredibilityAchievement2Loading)
-    }
     private val partialWidgetAchievement3 by lazy(LazyThreadSafetyMode.NONE) {
         PartialReviewCredibilityAchievement(binding.widgetReviewCredibilityAchievement3)
-    }
-    private val partialWidgetAchievementLoading3 by lazy(LazyThreadSafetyMode.NONE) {
-        PartialReviewCredibilityAchievementLoading(binding.widgetReviewCredibilityAchievement3Loading)
     }
 
     private var listener: Listener? = null
 
     private fun hideWidget() {
-        animateHide {
+        animateHide(onAnimationEnd = {
             listener?.onAchievementBoxTransitionEnd()
-        }
-    }
-
-    private fun showLoading() {
-        binding.tvReviewCredibilityAchievementTitle.gone()
-        binding.tvReviewCredibilityAchievementLabel.gone()
-        binding.btnReviewCredibilityAchievementSeeMore.invisible()
-        partialWidgetAchievement1.hide()
-        partialWidgetAchievement2.hide()
-        partialWidgetAchievement3.hide()
-        binding.loaderReviewCredibilityAchievementTitle.show()
-        binding.loaderReviewCredibilityAchievementLabel1.show()
-        binding.loaderReviewCredibilityAchievementLabel2.show()
-        binding.loaderReviewCredibilityAchievementSeeMore.show()
-        partialWidgetAchievementLoading1.show()
-        partialWidgetAchievementLoading2.show()
-        partialWidgetAchievementLoading2.show()
-        updateAchievementItemsConstraint(
-            achievementItemCount = MAX_ACHIEVEMENT_COUNT, showCTA = true, isLoading = true
-        )
-        animateShow {
-            listener?.onAchievementBoxTransitionEnd()
-        }
+        })
     }
 
     private fun showData(data: ReviewCredibilityAchievementBoxUiModel) {
@@ -91,23 +58,15 @@ class ReviewCredibilityAchievementBoxWidget @JvmOverloads constructor(
         showUIData(data)
         updateAchievementItemsConstraint(
             achievementItemCount = data.achievements.size,
-            showCTA = data.cta.text.isNotBlank() && data.cta.appLink.isNotBlank(),
-            isLoading = false
+            showCTA = data.cta.text.isNotBlank() && data.cta.appLink.isNotBlank()
         )
-        animateShow {
+        animateShow(onAnimationEnd = {
             listener?.onAchievementBoxTransitionEnd()
-        }
+        })
     }
 
     private fun showUIData(data: ReviewCredibilityAchievementBoxUiModel) {
         val showCTA = data.cta.text.isNotBlank() && data.cta.appLink.isNotBlank()
-        binding.loaderReviewCredibilityAchievementTitle.gone()
-        binding.loaderReviewCredibilityAchievementLabel1.gone()
-        binding.loaderReviewCredibilityAchievementLabel2.gone()
-        binding.loaderReviewCredibilityAchievementSeeMore.invisible()
-        partialWidgetAchievementLoading1.hide()
-        partialWidgetAchievementLoading2.hide()
-        partialWidgetAchievementLoading3.hide()
         binding.tvReviewCredibilityAchievementTitle.show()
         binding.tvReviewCredibilityAchievementLabel.show()
         partialWidgetAchievement1.showData(data.achievements.getOrNull(FIRST_ACHIEVEMENT_INDEX))
@@ -126,23 +85,12 @@ class ReviewCredibilityAchievementBoxWidget @JvmOverloads constructor(
         }
     }
 
-    private fun updateAchievementItemsConstraint(
-        achievementItemCount: Int, showCTA: Boolean, isLoading: Boolean
-    ) {
+    private fun updateAchievementItemsConstraint(achievementItemCount: Int, showCTA: Boolean) {
         val constraintSet = ConstraintSet()
-        val reviewCredibilityAchievementTopView = if (isLoading) {
-            binding.loaderReviewCredibilityAchievementLabel2.id
+        val reviewCredibilitySeeMoreAchievementTopView = if (showCTA) {
+            binding.widgetReviewCredibilityAchievement1.root.id
         } else {
-            binding.tvReviewCredibilityAchievementLabel.id
-        }
-        val reviewCredibilitySeeMoreAchievementTopView = if (isLoading) {
-            binding.widgetReviewCredibilityAchievement1Loading.root.id
-        } else {
-            if (showCTA) {
-                binding.widgetReviewCredibilityAchievement1.root.id
-            } else {
-                binding.layoutReviewCredibilityAchievementBoxContent.id
-            }
+            binding.layoutReviewCredibilityAchievementBoxContent.id
         }
         constraintSet.clone(binding.layoutReviewCredibilityAchievementBoxContent)
         constraintSet.connect(
@@ -152,55 +100,25 @@ class ReviewCredibilityAchievementBoxWidget @JvmOverloads constructor(
             ConstraintSet.START
         )
         constraintSet.connect(
-            binding.widgetReviewCredibilityAchievement1Loading.root.id,
-            ConstraintSet.START,
-            binding.layoutReviewCredibilityAchievementBoxContent.id,
-            ConstraintSet.START
-        )
-        constraintSet.connect(
             binding.widgetReviewCredibilityAchievement1.root.id,
             ConstraintSet.TOP,
-            reviewCredibilityAchievementTopView,
-            ConstraintSet.BOTTOM
-        )
-        constraintSet.connect(
-            binding.widgetReviewCredibilityAchievement1Loading.root.id,
-            ConstraintSet.TOP,
-            reviewCredibilityAchievementTopView,
+            binding.tvReviewCredibilityAchievementLabel.id,
             ConstraintSet.BOTTOM
         )
         constraintSet.connect(
             binding.widgetReviewCredibilityAchievement2.root.id,
             ConstraintSet.TOP,
-            reviewCredibilityAchievementTopView,
-            ConstraintSet.BOTTOM
-        )
-        constraintSet.connect(
-            binding.widgetReviewCredibilityAchievement2Loading.root.id,
-            ConstraintSet.TOP,
-            reviewCredibilityAchievementTopView,
+            binding.tvReviewCredibilityAchievementLabel.id,
             ConstraintSet.BOTTOM
         )
         constraintSet.connect(
             binding.widgetReviewCredibilityAchievement3.root.id,
             ConstraintSet.TOP,
-            reviewCredibilityAchievementTopView,
-            ConstraintSet.BOTTOM
-        )
-        constraintSet.connect(
-            binding.widgetReviewCredibilityAchievement3Loading.root.id,
-            ConstraintSet.TOP,
-            reviewCredibilityAchievementTopView,
+            binding.tvReviewCredibilityAchievementLabel.id,
             ConstraintSet.BOTTOM
         )
         constraintSet.connect(
             binding.btnReviewCredibilityAchievementSeeMore.id,
-            ConstraintSet.TOP,
-            reviewCredibilitySeeMoreAchievementTopView,
-            ConstraintSet.BOTTOM
-        )
-        constraintSet.connect(
-            binding.loaderReviewCredibilityAchievementSeeMore.id,
             ConstraintSet.TOP,
             reviewCredibilitySeeMoreAchievementTopView,
             ConstraintSet.BOTTOM
@@ -214,52 +132,25 @@ class ReviewCredibilityAchievementBoxWidget @JvmOverloads constructor(
                     ConstraintSet.END
                 )
                 constraintSet.connect(
-                    binding.widgetReviewCredibilityAchievement1Loading.root.id,
-                    ConstraintSet.END,
-                    binding.layoutReviewCredibilityAchievementBoxContent.id,
-                    ConstraintSet.END
-                )
-                constraintSet.connect(
                     binding.widgetReviewCredibilityAchievement2.root.id,
                     ConstraintSet.START,
                     binding.widgetReviewCredibilityAchievement1.root.id,
                     ConstraintSet.END
                 )
                 constraintSet.connect(
-                    binding.widgetReviewCredibilityAchievement2Loading.root.id,
-                    ConstraintSet.START,
-                    binding.widgetReviewCredibilityAchievement1Loading.root.id,
-                    ConstraintSet.END
-                )
-                constraintSet.connect(
                     binding.widgetReviewCredibilityAchievement2.root.id,
                     ConstraintSet.END,
                     binding.widgetReviewCredibilityAchievement3.root.id,
                     ConstraintSet.START
                 )
                 constraintSet.connect(
-                    binding.widgetReviewCredibilityAchievement2Loading.root.id,
-                    ConstraintSet.END,
-                    binding.widgetReviewCredibilityAchievement3Loading.root.id,
-                    ConstraintSet.START
-                )
-                constraintSet.connect(
                     binding.widgetReviewCredibilityAchievement3.root.id,
                     ConstraintSet.START,
                     binding.widgetReviewCredibilityAchievement2.root.id,
-                    ConstraintSet.END
-                )
-                constraintSet.connect(
-                    binding.widgetReviewCredibilityAchievement3Loading.root.id,
-                    ConstraintSet.START,
-                    binding.widgetReviewCredibilityAchievement2Loading.root.id,
                     ConstraintSet.END
                 )
                 constraintSet.clear(
                     binding.widgetReviewCredibilityAchievement3.root.id, ConstraintSet.END
-                )
-                constraintSet.clear(
-                    binding.widgetReviewCredibilityAchievement3Loading.root.id, ConstraintSet.END
                 )
             }
             2 -> {
@@ -270,31 +161,13 @@ class ReviewCredibilityAchievementBoxWidget @JvmOverloads constructor(
                     ConstraintSet.START
                 )
                 constraintSet.connect(
-                    binding.widgetReviewCredibilityAchievement1Loading.root.id,
-                    ConstraintSet.END,
-                    binding.widgetReviewCredibilityAchievement2Loading.root.id,
-                    ConstraintSet.START
-                )
-                constraintSet.connect(
                     binding.widgetReviewCredibilityAchievement2.root.id,
                     ConstraintSet.START,
                     binding.widgetReviewCredibilityAchievement1.root.id,
                     ConstraintSet.END
                 )
                 constraintSet.connect(
-                    binding.widgetReviewCredibilityAchievement2Loading.root.id,
-                    ConstraintSet.START,
-                    binding.widgetReviewCredibilityAchievement1Loading.root.id,
-                    ConstraintSet.END
-                )
-                constraintSet.connect(
                     binding.widgetReviewCredibilityAchievement2.root.id,
-                    ConstraintSet.END,
-                    binding.layoutReviewCredibilityAchievementBoxContent.id,
-                    ConstraintSet.END
-                )
-                constraintSet.connect(
-                    binding.widgetReviewCredibilityAchievement2Loading.root.id,
                     ConstraintSet.END,
                     binding.layoutReviewCredibilityAchievementBoxContent.id,
                     ConstraintSet.END
@@ -305,17 +178,8 @@ class ReviewCredibilityAchievementBoxWidget @JvmOverloads constructor(
                     binding.widgetReviewCredibilityAchievement2.root.id,
                     ConstraintSet.END
                 )
-                constraintSet.connect(
-                    binding.widgetReviewCredibilityAchievement3Loading.root.id,
-                    ConstraintSet.START,
-                    binding.widgetReviewCredibilityAchievement2Loading.root.id,
-                    ConstraintSet.END
-                )
                 constraintSet.clear(
                     binding.widgetReviewCredibilityAchievement3.root.id, ConstraintSet.END
-                )
-                constraintSet.clear(
-                    binding.widgetReviewCredibilityAchievement3Loading.root.id, ConstraintSet.END
                 )
             }
             else -> {
@@ -326,33 +190,15 @@ class ReviewCredibilityAchievementBoxWidget @JvmOverloads constructor(
                     ConstraintSet.START
                 )
                 constraintSet.connect(
-                    binding.widgetReviewCredibilityAchievement1Loading.root.id,
-                    ConstraintSet.END,
-                    binding.widgetReviewCredibilityAchievement2Loading.root.id,
-                    ConstraintSet.START
-                )
-                constraintSet.connect(
                     binding.widgetReviewCredibilityAchievement2.root.id,
                     ConstraintSet.START,
                     binding.widgetReviewCredibilityAchievement1.root.id,
                     ConstraintSet.END
                 )
                 constraintSet.connect(
-                    binding.widgetReviewCredibilityAchievement2Loading.root.id,
-                    ConstraintSet.START,
-                    binding.widgetReviewCredibilityAchievement1Loading.root.id,
-                    ConstraintSet.END
-                )
-                constraintSet.connect(
                     binding.widgetReviewCredibilityAchievement2.root.id,
                     ConstraintSet.END,
                     binding.widgetReviewCredibilityAchievement3.root.id,
-                    ConstraintSet.START
-                )
-                constraintSet.connect(
-                    binding.widgetReviewCredibilityAchievement2Loading.root.id,
-                    ConstraintSet.END,
-                    binding.widgetReviewCredibilityAchievement3Loading.root.id,
                     ConstraintSet.START
                 )
                 constraintSet.connect(
@@ -362,19 +208,7 @@ class ReviewCredibilityAchievementBoxWidget @JvmOverloads constructor(
                     ConstraintSet.END
                 )
                 constraintSet.connect(
-                    binding.widgetReviewCredibilityAchievement3Loading.root.id,
-                    ConstraintSet.START,
-                    binding.widgetReviewCredibilityAchievement2Loading.root.id,
-                    ConstraintSet.END
-                )
-                constraintSet.connect(
                     binding.widgetReviewCredibilityAchievement3.root.id,
-                    ConstraintSet.END,
-                    binding.layoutReviewCredibilityAchievementBoxContent.id,
-                    ConstraintSet.END
-                )
-                constraintSet.connect(
-                    binding.widgetReviewCredibilityAchievement3Loading.root.id,
                     ConstraintSet.END,
                     binding.layoutReviewCredibilityAchievementBoxContent.id,
                     ConstraintSet.END
@@ -399,7 +233,6 @@ class ReviewCredibilityAchievementBoxWidget @JvmOverloads constructor(
     fun updateUiState(uiState: ReviewCredibilityAchievementBoxUiState) {
         when (uiState) {
             is ReviewCredibilityAchievementBoxUiState.Hidden -> hideWidget()
-            is ReviewCredibilityAchievementBoxUiState.Loading -> showLoading()
             is ReviewCredibilityAchievementBoxUiState.Showed -> showData(uiState.data)
         }
     }

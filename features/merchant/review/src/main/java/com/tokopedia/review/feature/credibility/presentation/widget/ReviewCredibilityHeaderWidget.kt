@@ -36,25 +36,25 @@ class ReviewCredibilityHeaderWidget @JvmOverloads constructor(
     private var listener: Listener? = null
 
     private fun hideWidget() {
-        animateHide {
+        animateHide(onAnimationEnd = {
             listener?.onHeaderTransitionEnd()
-        }
+        })
     }
 
     private fun showLoading() {
         headerBinding.root.gone()
         headerLoadingBinding.root.show()
-        animateShow {
+        animateShow(onAnimationEnd = {
             listener?.onHeaderTransitionEnd()
-        }
+        })
     }
 
     private fun showData(data: ReviewCredibilityHeaderUiModel) {
         runTransitions(createShowDataTransition())
         showUIData(data)
-        animateShow {
+        animateShow(onAnimationEnd = {
             listener?.onHeaderTransitionEnd()
-        }
+        })
     }
 
     private fun showUIData(data: ReviewCredibilityHeaderUiModel) {

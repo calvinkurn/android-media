@@ -67,7 +67,7 @@ class ReviewCredibilityViewModel @Inject constructor(
     ).stateIn(
         scope = this,
         started = SharingStarted.WhileSubscribed(STATE_FLOW_STOP_TIMEOUT_MILLIS),
-        initialValue = ReviewCredibilityAchievementBoxUiState.Loading
+        initialValue = ReviewCredibilityAchievementBoxUiState.Hidden
     )
     val reviewCredibilityStatisticBoxUiState = combine(
         shouldLoadReviewCredibilityData,
@@ -111,7 +111,6 @@ class ReviewCredibilityViewModel @Inject constructor(
             combine(
                 shouldLoadReviewCredibilityData,
                 reviewCredibilityHeaderUiState,
-                reviewCredibilityAchievementBoxUiState,
                 reviewCredibilityStatisticBoxUiState,
                 reviewCredibilityFooterUiState,
                 reviewCredibilityGlobalErrorUiState,
@@ -119,11 +118,10 @@ class ReviewCredibilityViewModel @Inject constructor(
                 reviewCredibilityAchievementBoxTransitioning,
                 reviewCredibilityStatisticBoxTransitioning,
                 reviewCredibilityFooterTransitioning
-            ) { loadCredibilityData, headerUiState, achievementBoxUiState, statisticBoxUiState,
+            ) { loadCredibilityData, headerUiState, statisticBoxUiState,
                 footerUiState, globalErrorUiState, headerTransitioning, achievementBoxTransitioning,
                 statisticBoxTransitioning, footerTransitioning ->
                 loadCredibilityData && headerUiState is ReviewCredibilityHeaderUiState.Loading &&
-                        achievementBoxUiState is ReviewCredibilityAchievementBoxUiState.Loading &&
                         statisticBoxUiState is ReviewCredibilityStatisticBoxUiState.Loading &&
                         footerUiState is ReviewCredibilityFooterUiState.Loading &&
                         globalErrorUiState is ReviewCredibilityGlobalErrorUiState.Hidden &&
@@ -175,10 +173,10 @@ class ReviewCredibilityViewModel @Inject constructor(
     ): ReviewCredibilityAchievementBoxUiState {
         val currentUiState = reviewCredibilityAchievementBoxUiState.value
         return if (shouldLoadCredibilityData) {
-            if (currentUiState !is ReviewCredibilityAchievementBoxUiState.Loading) {
+            if (currentUiState !is ReviewCredibilityAchievementBoxUiState.Hidden) {
                 reviewCredibilityAchievementBoxTransitioning.value = true
             }
-            ReviewCredibilityAchievementBoxUiState.Loading
+            ReviewCredibilityAchievementBoxUiState.Hidden
         } else {
             when (requestState) {
                 is RequestState.Success -> {
@@ -195,12 +193,6 @@ class ReviewCredibilityViewModel @Inject constructor(
                             ReviewCredibilityMapper.mapReviewCredibilityResponseToReviewCredibilityAchievementBoxUiModel(requestState.result)
                         )
                     }
-                }
-                is RequestState.Requesting -> {
-                    if (currentUiState !is ReviewCredibilityAchievementBoxUiState.Loading) {
-                        reviewCredibilityAchievementBoxTransitioning.value = true
-                    }
-                    ReviewCredibilityAchievementBoxUiState.Loading
                 }
                 else -> {
                     if (currentUiState !is ReviewCredibilityAchievementBoxUiState.Hidden) {

@@ -42,25 +42,25 @@ class ReviewCredibilityFooterWidget @JvmOverloads constructor(
     private var listener: Listener? = null
 
     private fun hideWidget() {
-        animateHide {
+        animateHide(onAnimationEnd = {
             listener?.onFooterTransitionEnd()
-        }
+        })
     }
 
     private fun showLoading() {
         footerBinding.root.gone()
         footerLoadingBinding.root.show()
-        animateShow {
+        animateShow(onAnimationEnd = {
             listener?.onFooterTransitionEnd()
-        }
+        })
     }
 
     private fun showData(data: ReviewCredibilityFooterUiModel) {
         runTransitions(createShowDataTransition())
         showUIData(data)
-        animateShow {
+        animateShow(onAnimationEnd = {
             listener?.onFooterTransitionEnd()
-        }
+        })
     }
 
     private fun showUIData(data: ReviewCredibilityFooterUiModel) {
