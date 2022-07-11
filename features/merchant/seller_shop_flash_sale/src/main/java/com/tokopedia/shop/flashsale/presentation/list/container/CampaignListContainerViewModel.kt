@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.flashsale.domain.entity.TabMeta
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignEligibilityUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignListMetaUseCase
@@ -30,9 +29,9 @@ class CampaignListContainerViewModel @Inject constructor(
     private var autoFocusTabPosition = 0
     private var storedTabsMetadata : List<TabMeta> = emptyList()
 
-    private val _prerequisiteData = MutableLiveData<Result<PrerequisiteData>>()
-    val prerequisiteData: LiveData<Result<PrerequisiteData>>
-        get() = _prerequisiteData
+    private val _isEligible = MutableLiveData<Result<Boolean>>()
+    val isEligible: LiveData<Result<Boolean>>
+        get() = _isEligible
 
     private val _tabsMeta = MutableLiveData<Result<List<TabMeta>>>()
     val tabsMeta: LiveData<Result<List<TabMeta>>>
@@ -55,10 +54,15 @@ class CampaignListContainerViewModel @Inject constructor(
                     tabsDeferred.await()
                 )
 
-                _prerequisiteData.postValue(Success(prerequisiteData))
+                val isEligible = !isIneligibleAccess(prerequisiteData)
+                if (isEligible) {
+                    _tabsMeta.postValue(Success(prerequisiteData.tabsMetadata))
+                }
+
+                _isEligible.postValue(Success(isEligible))
             },
             onError = { error ->
-                _prerequisiteData.postValue(Fail(error))
+                _isEligible.postValue(Fail(error))
             }
         )
 
@@ -94,7 +98,7 @@ class CampaignListContainerViewModel @Inject constructor(
         return autoFocusTabPosition
     }
 
-    fun isIneligibleAccess(prerequisiteData: PrerequisiteData) : Boolean {
+    private fun isIneligibleAccess(prerequisiteData: PrerequisiteData) : Boolean {
         val isEligible = prerequisiteData.isEligible
 
         val activeCampaign = prerequisiteData.tabsMetadata.find { tab -> tab.id == ACTIVE_CAMPAIGN_ID }

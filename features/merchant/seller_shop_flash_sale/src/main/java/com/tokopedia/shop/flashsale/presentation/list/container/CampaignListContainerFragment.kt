@@ -35,7 +35,6 @@ import com.tokopedia.unifycomponents.setCustomText
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import java.net.URLEncoder
 import javax.inject.Inject
 
 class CampaignListContainerFragment : BaseDaggerFragment() {
@@ -96,17 +95,17 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
         setupView()
         setupTabs()
         observeTabsMeta()
-        observePrerequisiteData()
+        observeSellerEligibility()
         viewModel.getPrerequisiteData()
     }
 
-    private fun observePrerequisiteData() {
-        viewModel.prerequisiteData.observe(viewLifecycleOwner) { result ->
+    private fun observeSellerEligibility() {
+        viewModel.isEligible.observe(viewLifecycleOwner) { result ->
             binding?.loader?.gone()
 
             when (result) {
                 is Success -> {
-                    validateSellerEligibility(result.data)
+                    handleSellerEligibility(result.data)
                 }
                 is Fail -> {
                     displayError(result.throwable)
@@ -254,7 +253,8 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
 
     private fun handleCancelCampaignSuccess() {
         viewModel.setAutoFocusTabPosition(SECOND_TAB)
-        getCampaigns()
+        binding?.loader?.visible()
+        viewModel.getTabsMeta()
     }
 
     private fun focusTo(delay: Long = 0, tabPosition : Int) {
@@ -303,21 +303,10 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
         fun onSaveDraftSuccess()
     }
 
-    private fun validateSellerEligibility(
-        prerequisiteData: CampaignListContainerViewModel.PrerequisiteData
-    ) {
-        val shouldShowIneligibleAccess = viewModel.isIneligibleAccess(prerequisiteData)
-        if (shouldShowIneligibleAccess) {
+    private fun handleSellerEligibility(isEligible: Boolean) {
+        if (!isEligible) {
             showIneligibleAccessNotice()
-        } else {
-            hideIneligibleAccessNotice()
-            getCampaigns()
         }
-    }
-
-    private fun getCampaigns() {
-        binding?.loader?.visible()
-        viewModel.getTabsMeta()
     }
 
     private fun showIneligibleAccessNotice() {
@@ -327,10 +316,6 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
             emptyState.setTitle(getString(R.string.sfs_forbidden_access_title))
             emptyState.setDescription(getString(R.string.sfs_forbidden_access_description))
         }
-    }
-
-    private fun hideIneligibleAccessNotice() {
-        binding?.groupIneligibleAccess?.gone()
     }
 
     private fun routeToFeatureIntro() {
