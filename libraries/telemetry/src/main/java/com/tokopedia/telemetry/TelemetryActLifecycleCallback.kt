@@ -174,9 +174,7 @@ class TelemetryActLifecycleCallback(
         try {
             val sensorManager = activity.getSystemService(Context.SENSOR_SERVICE) as SensorManager?
             sensorManager?.unregisterListener(TelemetryAccelListener)
-            TelemetryAccelListener.setActivity(null)
             sensorManager?.unregisterListener(TelemetryGyroListener)
-            TelemetryGyroListener.setActivity(null)
         } catch (ignored: Exception) {
         }
     }
