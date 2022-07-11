@@ -11,6 +11,7 @@ import com.tokopedia.digital.home.databinding.LayoutDigitalHorizontalProductCard
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.play_common.util.extension.marginLp
 import com.tokopedia.unifycomponents.BaseCustomView
 
 class DigitalHorizontalProductCard @JvmOverloads constructor(
@@ -30,8 +31,6 @@ class DigitalHorizontalProductCard @JvmOverloads constructor(
     var productSlashPrice: String = ""
     var actionListener: ActionListener? = null
 
-    var cardHeight: Int = 0
-
     init {
         with(binding.tgHorizontalCardProductSlashPrice) {
             paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
@@ -43,15 +42,6 @@ class DigitalHorizontalProductCard @JvmOverloads constructor(
         setupProductDetail()
         setupProductPrice()
         setupProductSlashPrice()
-
-        binding.root.viewTreeObserver.addOnGlobalLayoutListener(object :
-            ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                binding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                cardHeight = binding.root.measuredHeight
-            }
-        })
-
         setupProductImage()
 
         binding.root.setOnClickListener {
@@ -69,12 +59,14 @@ class DigitalHorizontalProductCard @JvmOverloads constructor(
                 ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
                     viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    val contentHeight = measureContentHeight()
 
-                    Toast.makeText(context, "Card Height : $cardHeight", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Card Height : $contentHeight", Toast.LENGTH_SHORT)
+                        .show()
 
                     val ratio: Double =
                         layoutParams.width.toDouble() / layoutParams.height.toDouble()
-                    val newWidth = cardHeight
+                    val newWidth = contentHeight
                     val newHeight = newWidth / ratio
 
                     Toast.makeText(
@@ -134,6 +126,28 @@ class DigitalHorizontalProductCard @JvmOverloads constructor(
                 hide()
             }
         }
+    }
+
+    private fun measureContentHeight(): Int {
+        var contentHeight = 0
+
+        contentHeight += binding.tgHorizontalCardProductCategory.measuredHeight
+        contentHeight += binding.tgHorizontalCardProductCategory.marginLp.topMargin
+        contentHeight += binding.tgHorizontalCardProductCategory.marginLp.bottomMargin
+
+        Toast.makeText(context, "Category : $contentHeight", Toast.LENGTH_SHORT).show()
+
+        contentHeight += binding.tgHorizontalCardProductDetail.measuredHeight
+        contentHeight += binding.tgHorizontalCardProductDetail.marginLp.topMargin
+        contentHeight += binding.tgHorizontalCardProductDetail.marginLp.bottomMargin
+        Toast.makeText(context, "Detail : $contentHeight", Toast.LENGTH_SHORT).show()
+
+        contentHeight += binding.tgHorizontalCardProductPrice.measuredHeight
+        contentHeight += binding.tgHorizontalCardProductPrice.marginLp.topMargin
+        contentHeight += binding.tgHorizontalCardProductPrice.marginLp.bottomMargin
+        Toast.makeText(context, "Price : $contentHeight", Toast.LENGTH_SHORT).show()
+
+        return contentHeight
     }
 
     interface ActionListener {
