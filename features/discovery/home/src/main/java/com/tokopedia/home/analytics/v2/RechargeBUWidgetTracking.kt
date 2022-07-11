@@ -32,55 +32,35 @@ object RechargeBUWidgetTracking : BaseTracking() {
     private const val KEY_ITEM_LIST = "item_list"
     private const val IDR_CURRENCY = "IDR"
     private const val DEFAULT_TRACKING_LABEL_VALUES = "-"
-    private const val PATTERN_EVENT_LABEL_IMPRESSION_BU_WIDGET = "%s - %s - %s - %s - %s - %s - %s - %s - %s - %s - %s"
     private const val PATTERN_EVENT_LABEL_CLICK_BU_WIDGET = "%s - %s - %s - %s - %s - %s - %s - %s - %d"
     private const val PATTERN_EVENT_LABEL_IMPRESSION_HOME_BU_WIDGET = "%s - %s - %s - %s - %d - %s - %s - %s - %d"
 
     fun homeRechargeBUWidgetImpressionTracker(
         trackingQueue: TrackingQueue,
         data: RechargeBUWidgetDataModel,
-        userId: String,
-        position: Int
+        userId: String
     ) {
-        if (position < data.data.items.size){
-            val persoType = data.channel.trackingAttributionModel.persoType.toIntOrZero()
-            val promotions = data.data.items.mapIndexed { index, item ->
-                val productName = if (item.mediaUrlType == IMAGE_TYPE_FULL) item.subtitle else item.title
-                Promotion(
-                    id = "${data.channel.id}_0_0_$persoType",
-                    creative = "${getHeaderName(data.channel)} - $productName",
-                    name = "/ - p${data.channel.verticalPosition} - $RECHARGE_BU_WIDGET_NAME - $RECHARGE_BU_WIDGET_BANNER_CARD - ${getHeaderName(data.channel)}",
-                    position = (index + 1).toString()
-                )
-            }
-
-            val item = data.data.items[position]
-
-            val eventLabel = String.format(PATTERN_EVENT_LABEL_IMPRESSION_BU_WIDGET,
-                item.trackingData.channelId.ifNullOrBlank { DEFAULT_TRACKING_LABEL_VALUES },
-                data.data.trackingData.userType.ifNullOrBlank { DEFAULT_TRACKING_LABEL_VALUES },
-                getHeaderName(data.channel).ifNullOrBlank { DEFAULT_TRACKING_LABEL_VALUES },
-                item.trackingData.itemType.ifNullOrBlank { DEFAULT_TRACKING_LABEL_VALUES },
-                position + 1,
-                item.trackingData.categoryId.ifNullOrBlank { DEFAULT_TRACKING_LABEL_VALUES },
-                item.trackingData.operatorId.ifNullOrBlank { DEFAULT_TRACKING_LABEL_VALUES },
-                item.trackingData.productId.ifNullOrBlank { DEFAULT_TRACKING_LABEL_VALUES },
-                item.label1.ifNullOrBlank { DEFAULT_TRACKING_LABEL_VALUES },
-                item.label2.ifNullOrBlank { DEFAULT_TRACKING_LABEL_VALUES },
-                item.trackingData.categoryName.ifNullOrBlank { DEFAULT_TRACKING_LABEL_VALUES }
+        val persoType = data.channel.trackingAttributionModel.persoType.toIntOrZero()
+        val promotions = data.data.items.mapIndexed { index, item ->
+            val productName = if (item.mediaUrlType == IMAGE_TYPE_FULL) item.subtitle else item.title
+            Promotion(
+                id = "${data.channel.id}_0_0_$persoType",
+                creative = "${getHeaderName(data.channel)} - $productName",
+                name = "/ - p${data.channel.verticalPosition} - $RECHARGE_BU_WIDGET_NAME - $RECHARGE_BU_WIDGET_BANNER_CARD - ${getHeaderName(data.channel)}",
+                position = (index + 1).toString()
             )
-
-            trackingQueue.putEETracking(getBasicPromotionView(
-                Event.PROMO_VIEW,
-                RECHARGE_BU_WIDGET_EVENT_CATEGORY,
-                Action.IMPRESSION_ON.format("$RECHARGE_BU_WIDGET_BANNER_CARD $RECHARGE_BU_WIDGET_NAME"),
-                eventLabel,
-                promotions,
-                userId,
-                currentSite = RECHARGE_BU_WIDGET_CURRENT_SITE,
-                businessUnit = RECHARGE_BU_WIDGET_BUSINESS_UNIT
-            ) as? HashMap<String, Any>)
         }
+
+        trackingQueue.putEETracking(getBasicPromotionView(
+            Event.PROMO_VIEW,
+            RECHARGE_BU_WIDGET_EVENT_CATEGORY,
+            Action.IMPRESSION_ON.format("$RECHARGE_BU_WIDGET_BANNER_CARD $RECHARGE_BU_WIDGET_NAME"),
+            "",
+            promotions,
+            userId,
+            currentSite = RECHARGE_BU_WIDGET_CURRENT_SITE,
+            businessUnit = RECHARGE_BU_WIDGET_BUSINESS_UNIT
+        ) as? HashMap<String, Any>)
     }
 
     fun homeRechargeBUWidgetProductCardClickTracker(
