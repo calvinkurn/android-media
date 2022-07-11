@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
+import com.tokopedia.productcard.R.dimen.product_card_label_variant_reposition_color_offset
 import com.tokopedia.productcard.utils.COLOR_LIMIT_REPOSITION
 import com.tokopedia.productcard.utils.EXTRA_CHAR_SPACE_REPOSITION
 import com.tokopedia.productcard.utils.LABEL_VARIANT_CHAR_LIMIT_REPOSITION
@@ -341,10 +342,12 @@ internal open class FashionStrategyReposition: FashionStrategy {
 
         listLabelVariant.forEachIndexed { index, labelGroupVariant ->
             val gradientDrawable = createColorSampleDrawable(context, labelGroupVariant.hexColor)
-            val colorOffset = -2
+            val colorOffset = context.resources.getDimensionPixelSize(
+                product_card_label_variant_reposition_color_offset
+            )
 
             val layoutParams = LinearLayout.LayoutParams(colorSampleSize, colorSampleSize)
-            layoutParams.marginStart = if (index > 0) colorOffset.toPx() else 0
+            layoutParams.marginStart = if (index > 0) colorOffset else 0
 
             val colorSampleImageView = ImageView(context)
             colorSampleImageView.setImageDrawable(gradientDrawable)

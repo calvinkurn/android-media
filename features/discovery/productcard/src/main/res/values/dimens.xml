@@ -23,6 +23,8 @@
     <dimen name="product_card_label_variant_reposition_margin_right">4dp</dimen>
     <dimen name="product_card_label_variant_reposition_side_padding">4dp</dimen>
 
+    <dimen name="product_card_label_variant_reposition_color_offset">-2dp</dimen>
+
     <dimen name="product_card_label_discount_margin_top">2dp</dimen>
     <dimen name="product_card_label_discount_margin_left_fashion">4dp</dimen>
     <dimen name="product_card_label_discount_height">20dp</dimen>
