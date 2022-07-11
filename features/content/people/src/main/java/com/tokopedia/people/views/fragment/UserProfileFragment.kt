@@ -44,6 +44,7 @@ import com.tokopedia.people.analytic.UserProfileTracker
 import com.tokopedia.people.databinding.UpFragmentUserProfileBinding
 import com.tokopedia.people.databinding.UpLayoutUserProfileHeaderBinding
 import com.tokopedia.people.model.ShopRecomItem
+import com.tokopedia.people.model.UserPostModel
 import com.tokopedia.people.utils.showErrorToast
 import com.tokopedia.people.utils.showToast
 import com.tokopedia.people.utils.withCache
@@ -70,6 +71,7 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import timber.log.Timber
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -681,8 +683,13 @@ class UserProfileFragment @Inject constructor(
     }
 
     override fun onEmptyList(rawObject: Any?) {
-        if (viewModel.isSelfProfile) return
-        mainBinding.userPostContainer.displayedChild = PAGE_EMPTY
+        if (rawObject is UserPostModel) {
+            if (viewModel.isSelfProfile) return
+            mainBinding.userPostContainer.displayedChild = PAGE_EMPTY
+        } else {
+            mainBinding.userPostContainer.displayedChild = PAGE_EMPTY
+            mainBinding.includeShopRecommendation.root.hide()
+        }
     }
 
     override fun onStartFirstPageLoad() {
