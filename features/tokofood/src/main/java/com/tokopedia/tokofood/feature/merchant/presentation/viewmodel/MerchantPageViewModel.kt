@@ -136,10 +136,10 @@ class MerchantPageViewModel @Inject constructor(
             val today = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
             // response data from be always start from monday with index 0
             // monday index from be = 0 ; Calendar.MONDAY = 2
-            var day = index + 2
+            var day = index + DAYS_INCREASE
             // sunday index from be = 6 ; Calendar.SUNDAY = 1
             if (index == opsHourDetails.lastIndex) {
-                day -= 5
+                day -= DAYS_DECREASE
             }
             MerchantOpsHour(
                     initial = opsHourDetail.day.firstOrNull(),
@@ -326,5 +326,10 @@ class MerchantPageViewModel @Inject constructor(
 
     fun isTickerDetailEmpty(tickerData: TokoFoodTickerDetail): Boolean {
         return tickerData.title.isBlank() && tickerData.subtitle.isBlank()
+    }
+
+    companion object {
+        private const val DAYS_DECREASE = 5
+        private const val DAYS_INCREASE = 2
     }
 }
