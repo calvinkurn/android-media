@@ -1,5 +1,6 @@
 package com.tokopedia.shop.flashsale.common.tracker
 
+import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignStatus
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
@@ -123,4 +124,62 @@ class ShopFlashSaleTracker @Inject constructor(private val userSession : UserSes
             .send()
     }
     //endregion
+
+    //region campaign list bottom sheet
+    fun sendClickShareCampaignPopupEvent (campaign: CampaignUiModel) {
+        val eventLabel = "${campaign.campaignId} - ${campaign.campaignName} - ${campaign.status.id}"
+        Tracker.Builder()
+            .setEvent(EVENT)
+            .setEventAction("click share campaign - popup")
+            .setEventCategory("fs toko - campaign aktif")
+            .setEventLabel(eventLabel)
+            .setBusinessUnit(BUSINESS_UNIT)
+            .setCurrentSite(CURRENT_SITE)
+            .setShopId(userSession.shopId.toString())
+            .build()
+            .send()
+    }
+
+    fun sendClickBatalkanPopupEvent (campaign: CampaignUiModel) {
+        val eventLabel = "${campaign.campaignId} - ${campaign.campaignName} - ${campaign.status.id}"
+        Tracker.Builder()
+            .setEvent(EVENT)
+            .setEventAction("click batalkan - popup")
+            .setEventCategory("fs toko - campaign aktif")
+            .setEventLabel(eventLabel)
+            .setBusinessUnit(BUSINESS_UNIT)
+            .setCurrentSite(CURRENT_SITE)
+            .setShopId(userSession.shopId.toString())
+            .build()
+            .send()
+    }
+
+    fun sendClickHentikanPopupEvent (campaign: CampaignUiModel) {
+        val eventLabel = "${campaign.campaignId} - ${campaign.campaignName} - ${campaign.status.id}"
+        Tracker.Builder()
+            .setEvent(EVENT)
+            .setEventAction("click hentikan - popup")
+            .setEventCategory("fs toko - campaign aktif")
+            .setEventLabel(eventLabel)
+            .setBusinessUnit(BUSINESS_UNIT)
+            .setCurrentSite(CURRENT_SITE)
+            .setShopId(userSession.shopId.toString())
+            .build()
+            .send()
+    }
+
+    fun sendClickEditPopupEvent (campaign: CampaignUiModel) {
+        val eventLabel = "${campaign.campaignId} - ${campaign.campaignName} - ${campaign.status.id}"
+        Tracker.Builder()
+            .setEvent(EVENT)
+            .setEventAction("click edit - popup")
+            .setEventCategory("fs toko - campaign aktif")
+            .setEventLabel(eventLabel)
+            .setBusinessUnit(BUSINESS_UNIT)
+            .setCurrentSite(CURRENT_SITE)
+            .setShopId(userSession.shopId.toString())
+            .build()
+            .send()
+    }
+    //end region
 }
