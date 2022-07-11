@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance
 
 import com.tokopedia.home.R
+import com.tokopedia.home.beranda.data.model.SubscriptionsData
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerListHomeData
 import com.tokopedia.navigation_common.usecase.pojo.walletapp.WalletAppData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_ERROR
@@ -94,10 +95,12 @@ data class HomeBalanceModel(
     fun mapBalanceData(
         tokopointDrawerListHomeData: TokopointsDrawerListHomeData? = null,
         walletAppData: WalletAppData? = null,
-        headerTitle: String
+        headerTitle: String,
+        subscriptionsData: SubscriptionsData? = null
     ) {
         tokopointDrawerListHomeData?.let { mapTokopoint(tokopointDrawerListHomeData, headerTitle) }
         walletAppData?.let { mapWalletApp(walletAppData, headerTitle) }
+        subscriptionsData?.let { mapSubscriptions(subscriptionsData, headerTitle) }
     }
 
     fun mapErrorTokopoints(headerTitle: String) {
@@ -239,6 +242,16 @@ data class HomeBalanceModel(
                             state = STATE_ERROR
                         })
                     })
+        }
+    }
+
+    private fun mapSubscriptions(subscriptionData: SubscriptionsData, headerTitle: String) {
+        subscriptionData.drawerList.map {
+            val drawerSubscription = it.mapToHomeBalanceItemModel(
+                    state = STATE_SUCCESS,
+                    headerTitle = headerTitle
+            )
+            balanceDrawerItemModels.add(drawerSubscription)
         }
     }
 

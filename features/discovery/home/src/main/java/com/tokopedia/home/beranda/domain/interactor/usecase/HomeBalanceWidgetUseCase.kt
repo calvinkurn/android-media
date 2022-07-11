@@ -154,7 +154,7 @@ class HomeBalanceWidgetUseCase @Inject constructor(
     ): HomeBalanceModel {
         try {
             val subscriptionsData = Gson().fromJson<SubscriptionsData>(subscriptions, SubscriptionsData::class.java)
-            val x = 1
+            homeBalanceModel.mapBalanceData(subscriptionsData = subscriptionsData, headerTitle = headerTitle)
         } catch (e: Exception) {
             homeBalanceModel.mapErrorTokopoints(headerTitle)
         }
