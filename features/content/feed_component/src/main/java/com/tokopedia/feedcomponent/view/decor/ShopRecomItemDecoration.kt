@@ -4,9 +4,13 @@ import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 
-class ShopRecomItemDecoration(
-    val space: Int = 26
-) : RecyclerView.ItemDecoration() {
+class ShopRecomItemDecoration : RecyclerView.ItemDecoration() {
+
+    companion object {
+        private const val FIRST_ITEM = 0
+        private const val SPACE_SHOP = 40
+        private const val SPACE_EDGE = 26
+    }
 
     override fun getItemOffsets(
         outRect: Rect,
@@ -18,12 +22,12 @@ class ShopRecomItemDecoration(
         val last = parent.adapter?.itemCount ?: 0
 
         when (position) {
-            0 -> outRect.left = 40
+            FIRST_ITEM -> outRect.left = SPACE_SHOP
             last - 1 -> {
-                outRect.left = space
-                outRect.right = 40
+                outRect.left = SPACE_EDGE
+                outRect.right = SPACE_SHOP
             }
-            else -> outRect.left = space
+            else -> outRect.left = SPACE_EDGE
         }
     }
 
