@@ -123,9 +123,7 @@ class OrderPriceSummaryBottomSheet {
 //            showTransactionFeeInfoBottomSheet(view, platformFee.tooltipTitle, platformFee.tooltipInfo)
 //        }
 
-        binding.tvTotalPaymentPriceValue.text =
-            CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.totalPrice, false)
-                .removeDecimalSuffix()
+        binding.tvTotalPaymentPriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.totalPrice, false).removeDecimalSuffix()
 
         renderCashbacks(orderCost, binding)
 
