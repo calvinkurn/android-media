@@ -1,111 +1,113 @@
 package com.tokopedia.product.manage.feature.campaignstock.domain.usecase
 
 import com.tokopedia.abstraction.common.network.exception.ResponseDataNullException
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.constant.ErrorNetMessage
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.GetStockAllocationData
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.GetStockAllocationResponse
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
-class CampaignStockAllocationUseCase @Inject constructor(
-        private val gqlRepository: GraphqlRepository): GraphqlUseCase<GetStockAllocationData>(gqlRepository) {
+private const val QUERY = """
+        query CampaignGetStockAllocation (${'$'}productIds: String!, ${'$'}shopId: String!, ${'$'}warehouseID: String, ${'$'}isBundle: Boolean) {
+          GetStockAllocation(productIDs: ${'$'}productIds, shopID: ${'$'}shopId, sellerWh: true, warehouseID: ${'$'}warehouseID, extraInfo:{campaignMultiloc: true, bundle: ${'$'}isBundle}) {
+            header {
+              process_time
+              messages
+              reason
+              error_code
+            }
+            data {
+              summary {
+                is_variant
+                product_name
+                sellable_stock
+                reserve_stock
+                total_stock
+              }
+              detail {
+                sellable {
+                  product_id
+                  warehouse_id
+                  product_name
+                  stock
+                  campaign_types {
+                    name
+                    icon_url
+                  }
+                }
+                reserve {
+                  event_info {
+                    event_type
+                    event_name
+                    description
+                    stock
+                    start_time
+                    end_time
+                    campaign_type {
+                      id
+                      name
+                      icon_url
+                    }
+                    product {
+                      product_id
+                      warehouse_id
+                      product_name
+                      description
+                      stock
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+    """
+
+@GqlQuery("CampaignGetStockAllocation", QUERY)
+class CampaignStockAllocationUseCase @Inject constructor(gqlRepository: GraphqlRepository) :
+    GraphqlUseCase<GetStockAllocationResponse>(gqlRepository) {
 
     companion object {
-        private const val QUERY = "query getStockAllocation (\$productIds: String!, \$shopId: String!, \$warehouseID: String) {\n" +
-                "  GetStockAllocation(productIDs: \$productIds, shopID: \$shopId, sellerWh: true, warehouseID: \$warehouseID %1s) {\n" +
-                "    header {\n" +
-                "      process_time\n" +
-                "      messages\n" +
-                "      reason\n" +
-                "      error_code\n" +
-                "    }\n" +
-                "    data {\n" +
-                "      summary {\n" +
-                "        is_variant\n" +
-                "        product_name\n" +
-                "        sellable_stock\n" +
-                "        reserve_stock\n" +
-                "        total_stock\n" +
-                "      }\n" +
-                "      detail {\n" +
-                "        sellable {\n" +
-                "          product_id\n" +
-                "          warehouse_id\n" +
-                "          product_name\n" +
-                "          stock\n" +
-                "          campaign_types {\n" +
-                "            name\n" +
-                "            icon_url\n" +
-                "          }\n" +
-                "        }\n" +
-                "        reserve {\n" +
-                "          event_info {\n" +
-                "            event_type\n" +
-                "            event_name\n" +
-                "            description\n" +
-                "            stock\n" +
-                "            action_wording\n" +
-                "            action_url\n" +
-                "            product {\n" +
-                "              product_id\n" +
-                "              warehouse_id\n" +
-                "              product_name\n" +
-                "              description\n" +
-                "              stock\n" +
-                "            }\n" +
-                "          }\n" +
-                "        }\n" +
-                "      }\n" +
-                "    }\n" +
-                "  }\n" +
-                "}"
-
-        private const val BUNDLE_EXTRA_INFO_QUERY = ",extraInfo:{bundle:true}"
-
         private const val PRODUCT_IDS_KEY = "productIds"
         private const val SHOP_ID_KEY = "shopId"
         private const val WAREHOUSE_ID_KEY = "warehouseID"
+        private const val IS_BUNDLE_KEY = "isBundle"
 
         @JvmStatic
         fun createRequestParam(
             productIds: List<String>,
             shopId: String,
-            warehouseId: String
+            warehouseId: String,
+            isBundling: Boolean
         ): RequestParams = RequestParams.create().apply {
             putString(PRODUCT_IDS_KEY, productIds.joinToString())
             putString(SHOP_ID_KEY, shopId)
             putString(WAREHOUSE_ID_KEY, warehouseId)
+            putBoolean(IS_BUNDLE_KEY, isBundling)
         }
     }
 
-    var params: RequestParams = RequestParams.EMPTY
-    var isBundling = false
-
-    override suspend fun executeOnBackground(): GetStockAllocationData {
-        val query =
-            if (isBundling) {
-                String.format(QUERY, BUNDLE_EXTRA_INFO_QUERY)
-            } else {
-                String.format(QUERY, "")
-            }
-        val gqlRequest = GraphqlRequest(query, GetStockAllocationResponse::class.java, params.parameters)
-        val gqlResponse = gqlRepository.response(listOf(gqlRequest))
-
-        val errors = gqlResponse.getError(GetStockAllocationResponse::class.java)
-        if (errors.isNullOrEmpty()) {
-            val data = gqlResponse.getData<GetStockAllocationResponse>(GetStockAllocationResponse::class.java)
-            data.getStockAllocation.data.let { stockData ->
-                stockData.firstOrNull()?.run {
-                    return this
-                }
-            }
-            throw ResponseDataNullException(ErrorNetMessage.MESSAGE_ERROR_NULL_DATA)
-        } else {
-            throw MessageErrorException(errors.joinToString { it.message })
-        }
+    init {
+        setTypeClass(GetStockAllocationResponse::class.java)
+        setGraphqlQuery(CampaignGetStockAllocation())
     }
+
+    suspend fun execute(productIds: List<String>,
+                        shopId: String,
+                        warehouseId: String,
+                        isBundling: Boolean): GetStockAllocationData {
+        val requestParams = createRequestParam(productIds, shopId, warehouseId, isBundling)
+        setRequestParams(requestParams.parameters)
+        val data = executeOnBackground()
+        data.getStockAllocation.data.let { stockData ->
+            stockData.firstOrNull()?.run {
+                return this
+            }
+        }
+        throw ResponseDataNullException(ErrorNetMessage.MESSAGE_ERROR_NULL_DATA)
+    }
+
 }

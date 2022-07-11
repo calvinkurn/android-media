@@ -18,35 +18,4 @@ data class ShopPageGetHomeType(
             val shopPageGetHomeType: ShopPageGetHomeType = ShopPageGetHomeType()
     )
 
-    data class HomeLayoutData(
-            @SerializedName("layoutID")
-            @Expose
-            val layoutId: String = "",
-
-            @SerializedName("masterLayoutID")
-            @Expose
-            val masterLayoutId: String = "",
-
-            @SerializedName("widgetIDList")
-            @Expose
-            val widgetIdList: List<WidgetIdList> = listOf(),
-    ) {
-        data class WidgetIdList(
-                @SerializedName("widgetID")
-                @Expose
-                val widgetId: String = "",
-
-                @SerializedName("widgetMasterID")
-                @Expose
-                val widgetMasterId: String = "",
-
-                @SerializedName("widgetType")
-                @Expose
-                val widgetType: String = "",
-
-                @SerializedName("widgetName")
-                @Expose
-                val widgetName: String = ""
-        )
-    }
 }

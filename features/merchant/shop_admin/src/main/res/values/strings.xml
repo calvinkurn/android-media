@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_shop_admin">Shop Admin</string>
+    <string name="title_admin_invitation_confirmation">Admin Invitation Confirmation</string>
+    <string name="title_admin_invitation_accepted">Admin Invitation Accepted</string>
+
+    <string name="title_invitation_expires">Oops, undangan akses admin sudah tidak berlaku</string>
+    <string name="desc_invitation_expires">Kamu telah melewati batas waktu yang ditentukan untuk menerima undangan akses. hubungi pemilik toko jika ini merupakan kesalahan, ya.</string>
+    <string name="desc_invitation_expires_empty">Jika ini merupakan kesalahan, hubungi pemilik toko, ya.</string>
+
+
+    <string name="title_invitation_has_been_rejected">Kamu telah menolak akses admin sebelumnya</string>
+    <string name="title_invitation_rejected">Akses admin berhasil ditolak</string>
+    <string name="desc_invitation_rejected">Kamu telah menolak undangan untuk menjadi admin di toko %s. Hubungi pemilik toko jika ini merupakan kesalahan, ya.</string>
+
+    <string name="btn_admin_understand">Oke, Saya Mengerti</string>
+
+    <string name="title_admin_confirmation_invitation">Kamu diundang untuk menjadi admin di toko %s!</string>
+    <string name="label_admin_confirmation_invitation_with_email">Klik Terima Akses supaya kamu bisa mengakses toko sebagai admin, ya.</string>
+    <string name="label_admin_confirmation_invitation_with_no_email">Sebelum Terima Akses menjadi admin, tambahkan email ke akun Tokopedia-mu dulu, ya.</string>
+
+    <string name="placeholder_admin_email">Email</string>
+
+    <string name="title_reject_access_button">Tolak Akses</string>
+    <string name="title_accept_access_button">Terima Akses</string>
+
+    <!-- Invitation Accepted -->
+    <string name="title_admin_success_invitation_accepted">Hi %1s, kamu berhasil menjadi admin di %2s!</string>
+    <string name="label_admin_feature_detail">Detail fitur yang bisa kamu akses:</string>
+
+    <string name="label_tnc_invitation_accepted">Saya setuju dengan &lt;a href="#"&gt;S&amp;K&lt;/a&gt; yang berlaku.</string>
+    <string name="title_not_yet_checked_tnc">Kamu belum menyetujui S&amp;K yang berlaku.</string>
+    <string name="action_not_yet_checked_tnc">Oke</string>
+    <string name="btn_go_to_shop">Masuk Toko</string>
+    
+    <string name="title_tnc_header">Syarat dan Ketentuan Admin</string>
+
+    <!-- Invitation Confirmation Reject-->
+    <string name="title_admin_confirmation_reject">Yakin tolak akses admin?</string>
+    <string name="desc_admin_confirmation_reject">Jika kamu menolak, penolakan akses admin tidak dapat dibatalkan.</string>
+    <string name="primary_btn_admin_confirmation_reject">Ya, Tolak</string>
+    <string name="secondary_btn_admin_confirmation_reject">Tidak</string>
+    <string name="error_message_confirmation_accepted">Akses gagal diterima. Coba lagi, ya.</string>
+    <string name="error_message_confirmation_rejected">Akses gagal ditolak. Coba lagi, ya.</string>
+
+    <!-- Invitation Confirmation -->
+    <string name="error_message_email_has_been_registered">E-mail ini sudah terdaftar, masukkan e-mail lain.</string>
+    
+    <string name="error_message_article_detail">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>
+    <string name="error_admin_try_again_action">Coba Lagi</string>
+
+    <!-- Shop Admin Redirection -->
+    <string name="error_message_shop_admin_redirection">Gagal memuat konten. Coba lagi, ya.</string>
+</resources>

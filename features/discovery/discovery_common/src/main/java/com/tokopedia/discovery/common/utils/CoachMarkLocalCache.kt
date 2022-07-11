@@ -3,7 +3,6 @@ package com.tokopedia.discovery.common.utils
 import android.content.Context
 import android.content.SharedPreferences
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey.FULFILLMENT_REBRANDING
 
 /**
  * Created by Yehezkiel on 24/02/21
@@ -26,21 +25,8 @@ class CoachMarkLocalCache(context: Context?) {
         context?.getSharedPreferences(KEY_PREF_NAME_PM_PRO, Context.MODE_PRIVATE)
     }
 
-    private fun isEnableBoeCoachmarkRollence(): Boolean {
-        return try {
-            val abTestPlatform = RemoteConfigInstance.getInstance().abTestPlatform
-            val abTestFFRebranding = abTestPlatform.getString(FULFILLMENT_REBRANDING, "")
-
-            abTestFFRebranding == FULFILLMENT_REBRANDING
-        } catch (throwable: Throwable) {
-            false
-        }
-    }
-
     fun shouldShowBoeCoachmark(): Boolean {
-        val shouldShow =
-            sharedPref?.getBoolean(KEY_SHOW_COACHMARK_BOE, true) ?: false
-                && isEnableBoeCoachmarkRollence()
+        val shouldShow = sharedPref?.getBoolean(KEY_SHOW_COACHMARK_BOE, true) ?: false
         if (shouldShow) {
             setShown()
         }
