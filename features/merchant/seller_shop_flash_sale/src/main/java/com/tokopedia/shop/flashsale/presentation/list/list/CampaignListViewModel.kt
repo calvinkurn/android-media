@@ -184,11 +184,11 @@ class CampaignListViewModel @Inject constructor(
     }
 
     fun onMoreMenuCancelClicked(campaign: CampaignUiModel) {
-        tracker.sendClickBatalkanPopupEvent(campaign)
+        tracker.sendClickCancelPopupEvent(campaign)
     }
 
     fun onMoreMenuStopClicked(campaign: CampaignUiModel) {
-        tracker.sendClickHentikanPopupEvent(campaign)
+        tracker.sendClickStopPopupEvent(campaign)
     }
 
     fun onMoreMenuShareClicked(campaign: CampaignUiModel) {

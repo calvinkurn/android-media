@@ -126,7 +126,7 @@ class ShopFlashSaleTracker @Inject constructor(private val userSession : UserSes
     //endregion
 
     //region campaign list bottom sheet
-    fun sendClickShareCampaignPopupEvent (campaign: CampaignUiModel) {
+    fun sendClickShareCampaignPopupEvent(campaign: CampaignUiModel) {
         val eventLabel = "${campaign.campaignId} - ${campaign.campaignName} - ${campaign.status.id}"
         Tracker.Builder()
             .setEvent(EVENT)
@@ -140,7 +140,7 @@ class ShopFlashSaleTracker @Inject constructor(private val userSession : UserSes
             .send()
     }
 
-    fun sendClickBatalkanPopupEvent (campaign: CampaignUiModel) {
+    fun sendClickCancelPopupEvent(campaign: CampaignUiModel) {
         val eventLabel = "${campaign.campaignId} - ${campaign.campaignName} - ${campaign.status.id}"
         Tracker.Builder()
             .setEvent(EVENT)
@@ -154,7 +154,7 @@ class ShopFlashSaleTracker @Inject constructor(private val userSession : UserSes
             .send()
     }
 
-    fun sendClickHentikanPopupEvent (campaign: CampaignUiModel) {
+    fun sendClickStopPopupEvent(campaign: CampaignUiModel) {
         val eventLabel = "${campaign.campaignId} - ${campaign.campaignName} - ${campaign.status.id}"
         Tracker.Builder()
             .setEvent(EVENT)
@@ -168,7 +168,7 @@ class ShopFlashSaleTracker @Inject constructor(private val userSession : UserSes
             .send()
     }
 
-    fun sendClickEditPopupEvent (campaign: CampaignUiModel) {
+    fun sendClickEditPopupEvent(campaign: CampaignUiModel) {
         val eventLabel = "${campaign.campaignId} - ${campaign.campaignName} - ${campaign.status.id}"
         Tracker.Builder()
             .setEvent(EVENT)
