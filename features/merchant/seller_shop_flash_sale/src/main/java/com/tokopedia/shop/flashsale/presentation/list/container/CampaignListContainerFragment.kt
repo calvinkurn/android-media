@@ -49,7 +49,7 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
         private const val BUNDLE_KEY_AUTO_FOCUS_TAB_POSITION = "auto_focus_tab_position"
         private const val REDIRECTION_DELAY : Long = 500
         private const val EMPTY_STATE_IMAGE_URL = "https://images.tokopedia.net/img/android/campaign/flash-sale-toko/shop_outdoor.png"
-        private const val FEATURE_INTRODUCTION_URL = "https://seller.tokopedia.com/dekorasi-toko"
+        private const val FEATURE_INTRODUCTION_URL = "https://seller.tokopedia.com/edu/flash-sale-toko/"
 
         @JvmStatic
         fun newInstance(autoFocusTabPosition: Int = FIRST_TAB): CampaignListContainerFragment {
