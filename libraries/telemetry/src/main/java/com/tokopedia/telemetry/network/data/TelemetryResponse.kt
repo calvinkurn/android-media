@@ -3,7 +3,7 @@ package com.tokopedia.telemetry.network.data
 import com.google.gson.annotations.SerializedName
 
 data class TelemetryResponse(
-        @SerializedName("SubDvcTl")
+        @SerializedName("subDvcTl")
         val subDvcTl: SubDvcTl
 ) {
         fun isError() = subDvcTl.isError
