@@ -241,10 +241,10 @@ class MerchantPageFragment : BaseMultiFragment(),
     override fun onStart() {
         super.onStart()
         cartDataUpdateJob = viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            collectCartData()
+            collectCartDataFlow()
         }
         uiEventUpdateJob = viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            collectUiEvent()
+            collectUiEventFlow()
         }
     }
 
@@ -307,169 +307,6 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     override fun navigateToNewFragment(fragment: Fragment) {
         (activity as? BaseTokofoodActivity)?.navigateToNewFragment(fragment)
-    }
-
-    private suspend fun collectCartData() {
-        activityViewModel?.cartDataFlow?.collect { cartData ->
-            cartData?.availableSection?.products?.let { products ->
-                viewModel.selectedProducts = products
-            }
-        }
-    }
-
-    private suspend fun collectUiEvent() {
-        activityViewModel?.cartDataValidationFlow?.collect {
-            when (it.state) {
-                UiEvent.EVENT_SUCCESS_LOAD_CART -> {
-                    toggleMiniCartVisibility(true)
-                }
-                UiEvent.EVENT_FAILED_LOAD_CART -> {
-                    toggleMiniCartVisibility(false)
-                }
-                UiEvent.EVENT_FAILED_ADD_TO_CART -> {
-                    view?.showErrorToaster(it.throwable?.message.orEmpty())
-                }
-                UiEvent.EVENT_SUCCESS_ADD_TO_CART -> {
-                    onSuccessAddCart(it.data?.getSuccessUpdateResultPair())
-                }
-                UiEvent.EVENT_PHONE_VERIFICATION -> {
-                    val bottomSheetData = it.data as? CartTokoFoodBottomSheet
-                    bottomSheetData?.run {
-                        if (isShowBottomSheet) {
-                            val bottomSheet = PhoneNumberVerificationBottomSheet.createInstance(
-                                bottomSheetData = this,
-                                clickListener = this@MerchantPageFragment
-                            )
-                            bottomSheet.show(childFragmentManager)
-                        }
-                    }
-                }
-                UiEvent.EVENT_SUCCESS_UPDATE_CART -> {
-                    onSuccessUpdateCart(it.data?.getSuccessUpdateResultPair())
-                }
-                UiEvent.EVENT_SUCCESS_UPDATE_NOTES -> {
-                    (it.data as? Pair<*, *>)?.let { pair ->
-                        (pair.first as? UpdateParam)?.productList?.firstOrNull()
-                            ?.let { requestParam ->
-                                (pair.second as? CartTokoFoodData)?.let { cartTokoFoodData ->
-                                    cartTokoFoodData.carts.firstOrNull { data -> data.productId == requestParam.productId }
-                                        ?.let { cartTokoFood ->
-                                            val cardPositions =
-                                                viewModel.productMap[requestParam.productId]
-                                            cardPositions?.run {
-                                                productListAdapter?.updateProductUiModel(
-                                                    cartTokoFood = cartTokoFood,
-                                                    dataSetPosition = viewModel.getDataSetPosition(
-                                                        this
-                                                    ),
-                                                    adapterPosition = viewModel.getAdapterPosition(
-                                                        this
-                                                    )
-                                                )
-                                            }
-                                        }
-                                }
-                                view?.let { view ->
-                                    Toaster.build(
-                                        view = view,
-                                        text = getString(com.tokopedia.tokofood.R.string.text_note_saved_message),
-                                        duration = Toaster.LENGTH_SHORT,
-                                        type = Toaster.TYPE_NORMAL
-                                    ).show()
-                                }
-                            }
-                    }
-                }
-                UiEvent.EVENT_SUCCESS_DELETE_PRODUCT -> {
-                    (it.data as? Pair<*, *>)?.let { pair ->
-                        (pair.first as? String)?.let { cartId ->
-                            (pair.second as? CartTokoFoodData)?.carts?.firstOrNull()
-                                ?.let { product ->
-                                    val cardPositions =
-                                        viewModel.productMap[product.productId]
-                                    cardPositions?.run {
-                                        val dataSetPosition =
-                                            viewModel.getDataSetPosition(this)
-                                        val productUiModel =
-                                            productListAdapter?.getProductUiModel(
-                                                dataSetPosition
-                                            )
-                                        if (productUiModel?.isCustomizable == true) {
-                                            productListAdapter?.removeCustomOrder(
-                                                cartId = cartId,
-                                                dataSetPosition = dataSetPosition,
-                                                adapterPosition = viewModel.getAdapterPosition(
-                                                    this
-                                                )
-                                            )
-                                        } else {
-                                            productListAdapter?.resetProductUiModel(
-                                                dataSetPosition = dataSetPosition,
-                                                adapterPosition = viewModel.getAdapterPosition(
-                                                    this
-                                                )
-                                            )
-                                        }
-                                        view?.let { view ->
-                                            Toaster.build(
-                                                view = view,
-                                                text = getString(com.tokopedia.tokofood.R.string.text_product_removed),
-                                                duration = Toaster.LENGTH_SHORT,
-                                                type = Toaster.TYPE_NORMAL
-                                            ).show()
-                                        }
-                                    }
-                                }
-                        }
-                    }
-                }
-                UiEvent.EVENT_SUCCESS_UPDATE_QUANTITY -> {
-                    (it.data as? Pair<*, *>)?.let { pair ->
-                        (pair.first as? UpdateParam)?.productList?.firstOrNull()
-                            ?.let { requestParam ->
-                                (pair.second as? CartTokoFoodData)?.let { cartTokoFoodData ->
-                                    cartTokoFoodData.carts.firstOrNull { data -> data.productId == requestParam.productId }
-                                        ?.let { cartTokoFood ->
-                                            val cardPositions = viewModel.productMap[requestParam.productId]
-                                            cardPositions?.run {
-                                                val dataSetPosition = viewModel.getDataSetPosition(this)
-                                                val productUiModel = productListAdapter?.getProductUiModel(dataSetPosition)
-                                                if (productUiModel?.isCustomizable == true) {
-                                                    productListAdapter?.updateCustomOrderQty(
-                                                        cartId = cartTokoFood.cartId,
-                                                        orderQty = cartTokoFood.quantity,
-                                                        dataSetPosition = dataSetPosition
-                                                    )
-                                                } else {
-                                                    productListAdapter?.updateProductUiModel(
-                                                        cartTokoFood = cartTokoFood,
-                                                        dataSetPosition = dataSetPosition,
-                                                        adapterPosition = viewModel.getAdapterPosition(
-                                                            this
-                                                        )
-                                                    )
-                                                }
-                                            }
-                                        }
-                                }
-                            }
-                    }
-                }
-                UiEvent.EVENT_SUCCESS_VALIDATE_CHECKOUT -> {
-                    (it.data as? CheckoutTokoFoodData)?.let { checkOutTokoFoodData ->
-                        val purchaseAmount = checkOutTokoFoodData.summaryDetail.totalPrice
-
-                        merchantPageAnalytics.clickCheckoutOnMiniCart(
-                            purchaseAmount,
-                            merchantId
-                        )
-                    }
-                    if (this@MerchantPageFragment.isMostTopFragment()){
-                        navigateToNewFragment(TokoFoodPurchaseFragment.createInstance())
-                    }
-                }
-            }
-        }
     }
 
     private fun setBackgroundDefaultColor() {
@@ -773,48 +610,54 @@ class MerchantPageFragment : BaseMultiFragment(),
         })
     }
 
-    private fun collectCartDataFlow() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            activityViewModel?.cartDataFlow?.collect { cartData ->
-                cartData?.availableSection?.products?.let { products ->
-                    viewModel.selectedProducts = products
-                }
+    private suspend fun collectCartDataFlow() {
+        activityViewModel?.cartDataFlow?.collect { cartData ->
+            cartData?.availableSection?.products?.let { products ->
+                viewModel.selectedProducts = products
             }
         }
     }
 
-    private fun collectFlow() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            activityViewModel?.cartDataValidationFlow?.collect {
-                when (it.state) {
-                    UiEvent.EVENT_SUCCESS_LOAD_CART -> {
-                        toggleMiniCartVisibility(true)
-                    }
-                    UiEvent.EVENT_FAILED_LOAD_CART -> {
-                        toggleMiniCartVisibility(false)
-                    }
-                    UiEvent.EVENT_FAILED_ADD_TO_CART -> {
+    private suspend fun collectUiEventFlow() {
+        activityViewModel?.cartDataValidationFlow?.collect {
+            when (it.state) {
+                UiEvent.EVENT_SUCCESS_LOAD_CART -> {
+                    toggleMiniCartVisibility(true)
+                }
+                UiEvent.EVENT_FAILED_LOAD_CART -> {
+                    toggleMiniCartVisibility(false)
+                }
+                UiEvent.EVENT_FAILED_ADD_TO_CART -> {
+                    if (it.source == SOURCE) {
                         view?.showErrorToaster(it.throwable?.message.orEmpty())
                     }
-                    UiEvent.EVENT_SUCCESS_ADD_TO_CART -> {
+                }
+                UiEvent.EVENT_SUCCESS_ADD_TO_CART -> {
+                    if (it.source == SOURCE) {
                         onSuccessAddCart(it.data?.getSuccessUpdateResultPair())
                     }
-                    UiEvent.EVENT_PHONE_VERIFICATION -> {
+                }
+                UiEvent.EVENT_PHONE_VERIFICATION -> {
+                    if (it.source == SOURCE) {
                         val bottomSheetData = it.data as? CartTokoFoodBottomSheet
                         bottomSheetData?.run {
                             if (isShowBottomSheet) {
                                 val bottomSheet = PhoneNumberVerificationBottomSheet.createInstance(
-                                        bottomSheetData = this,
-                                        clickListener = this@MerchantPageFragment
+                                    bottomSheetData = this,
+                                    clickListener = this@MerchantPageFragment
                                 )
                                 bottomSheet.show(childFragmentManager)
                             }
                         }
                     }
-                    UiEvent.EVENT_SUCCESS_UPDATE_CART -> {
+                }
+                UiEvent.EVENT_SUCCESS_UPDATE_CART -> {
+                    if (it.source == SOURCE) {
                         onSuccessUpdateCart(it.data?.getSuccessUpdateResultPair())
                     }
-                    UiEvent.EVENT_SUCCESS_UPDATE_NOTES -> {
+                }
+                UiEvent.EVENT_SUCCESS_UPDATE_NOTES -> {
+                    if (it.source == SOURCE) {
                         (it.data as? Pair<*, *>)?.let { pair ->
                             (pair.first as? UpdateParam)?.productList?.firstOrNull()
                                 ?.let { requestParam ->
@@ -847,7 +690,9 @@ class MerchantPageFragment : BaseMultiFragment(),
                                 }
                         }
                     }
-                    UiEvent.EVENT_SUCCESS_DELETE_PRODUCT -> {
+                }
+                UiEvent.EVENT_SUCCESS_DELETE_PRODUCT -> {
+                    if (it.source == SOURCE) {
                         (it.data as? Pair<*, *>)?.let { pair ->
                             (pair.first as? String)?.let { cartId ->
                                 (pair.second as? CartTokoFoodData)?.carts?.firstOrNull()
@@ -890,7 +735,9 @@ class MerchantPageFragment : BaseMultiFragment(),
                             }
                         }
                     }
-                    UiEvent.EVENT_SUCCESS_UPDATE_QUANTITY -> {
+                }
+                UiEvent.EVENT_SUCCESS_UPDATE_QUANTITY -> {
+                    if (it.source == SOURCE) {
                         (it.data as? Pair<*, *>)?.let { pair ->
                             (pair.first as? UpdateParam)?.productList?.firstOrNull()
                                 ?.let { requestParam ->
@@ -922,18 +769,17 @@ class MerchantPageFragment : BaseMultiFragment(),
                                 }
                         }
                     }
-                    UiEvent.EVENT_SUCCESS_VALIDATE_CHECKOUT -> {
-                        (it.data as? Pair<CheckoutTokoFoodData, String>)?.let { data ->
-                            val purchaseAmount = data.first.summaryDetail.totalPrice
+                }
+                UiEvent.EVENT_SUCCESS_VALIDATE_CHECKOUT -> {
+                    (it.data as? CheckoutTokoFoodData)?.let { data ->
+                        if (it.source == SOURCE){
+                            val purchaseAmount = data.summaryDetail.totalPrice
 
                             merchantPageAnalytics.clickCheckoutOnMiniCart(
                                 purchaseAmount,
                                 merchantId
                             )
-
-                            if (data.second == SOURCE){
-                                navigateToNewFragment(TokoFoodPurchaseFragment.createInstance())
-                            }
+                            navigateToNewFragment(TokoFoodPurchaseFragment.createInstance())
                         }
                     }
                 }
@@ -1495,6 +1341,7 @@ class MerchantPageFragment : BaseMultiFragment(),
             productUiModel = productListItem.productUiModel,
             cartId = cartId,
             merchantId = merchantId,
+            source = SOURCE,
             cacheManagerId = cacheManager?.id.orEmpty(),
             isChangeMerchant = isChangeMerchant
         )

@@ -102,6 +102,7 @@ class MultipleFragmentsViewModel @Inject constructor(
                 cartDataValidationState.emit(
                     UiEvent(
                         state = UiEvent.EVENT_SUCCESS_DELETE_PRODUCT,
+                        source = source,
                         data = cartId to it.data
                     )
                 )
@@ -110,6 +111,7 @@ class MultipleFragmentsViewModel @Inject constructor(
             cartDataValidationState.emit(
                 UiEvent(
                     state = UiEvent.EVENT_FAILED_DELETE_PRODUCT,
+                    source = source,
                     throwable = it
                 )
             )
@@ -179,6 +181,7 @@ class MultipleFragmentsViewModel @Inject constructor(
                 cartDataValidationState.emit(
                     UiEvent(
                         state = UiEvent.EVENT_SUCCESS_UPDATE_NOTES,
+                        source = source,
                         data = updateParam to it.data
                     )
                 )
@@ -187,6 +190,7 @@ class MultipleFragmentsViewModel @Inject constructor(
             cartDataValidationState.emit(
                 UiEvent(
                     state = UiEvent.EVENT_FAILED_UPDATE_NOTES,
+                    source = source,
                     throwable = it
                 )
             )
@@ -206,6 +210,7 @@ class MultipleFragmentsViewModel @Inject constructor(
                 cartDataValidationState.emit(
                     UiEvent(
                         state = UiEvent.EVENT_SUCCESS_UPDATE_QUANTITY,
+                        source = source,
                         data = updateParam to it.data
                     )
                 )
@@ -214,6 +219,7 @@ class MultipleFragmentsViewModel @Inject constructor(
             cartDataValidationState.emit(
                 UiEvent(
                     state = UiEvent.EVENT_FAILED_UPDATE_QUANTITY,
+                    source = source,
                     throwable = it
                 )
             )
@@ -236,6 +242,7 @@ class MultipleFragmentsViewModel @Inject constructor(
                 cartDataValidationState.emit(
                     UiEvent(
                         state = UiEvent.EVENT_SUCCESS_UPDATE_CART,
+                        source = source,
                         data = updateParam to it.data
                     )
                 )
@@ -244,6 +251,7 @@ class MultipleFragmentsViewModel @Inject constructor(
             cartDataValidationState.emit(
                 UiEvent(
                     state = UiEvent.EVENT_FAILED_UPDATE_CART,
+                    source = source,
                     throwable = it
                 )
             )
@@ -260,6 +268,7 @@ class MultipleFragmentsViewModel @Inject constructor(
                     cartDataValidationState.emit(
                         UiEvent(
                             state = UiEvent.EVENT_PHONE_VERIFICATION,
+                            source = source,
                             data = it.data.bottomSheet
                         )
                     )
@@ -274,6 +283,7 @@ class MultipleFragmentsViewModel @Inject constructor(
                     cartDataValidationState.emit(
                         UiEvent(
                             state = UiEvent.EVENT_SUCCESS_ADD_TO_CART,
+                            source = source,
                             data = updateParam to it.data
                         )
                     )
@@ -283,6 +293,7 @@ class MultipleFragmentsViewModel @Inject constructor(
             cartDataValidationState.emit(
                 UiEvent(
                     state = UiEvent.EVENT_FAILED_ADD_TO_CART,
+                    source = source,
                     throwable = it
                 )
             )
@@ -294,7 +305,8 @@ class MultipleFragmentsViewModel @Inject constructor(
             cartDataValidationState.emit(
                 UiEvent(
                     state = UiEvent.EVENT_SUCCESS_VALIDATE_CHECKOUT,
-                    data = Pair(cartDataFlow.value, source)
+                    source = source,
+                    data = cartDataFlow.value
                 )
             )
         }
