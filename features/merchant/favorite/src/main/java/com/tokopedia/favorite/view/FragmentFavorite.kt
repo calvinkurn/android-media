@@ -33,6 +33,7 @@ import com.tokopedia.favorite.view.viewlistener.FavoriteClickListener
 import com.tokopedia.favorite.view.viewmodel.FavoriteShopUiModel
 import com.tokopedia.favorite.view.viewmodel.TopAdsShopItem
 import com.tokopedia.favorite.view.viewmodel.TopAdsShopUiModel
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -326,8 +327,11 @@ class FragmentFavorite() : BaseDaggerFragment(), FavoriteClickListener, OnRefres
     }
 
     private fun addFavoriteShop(shopUiModel: FavoriteShopUiModel) {
-        val favoriteShopPosition = Int.ZERO
-        favoriteAdapter?.addElement(favoriteShopPosition, shopUiModel)
+        val favoriteShopPosition = Int.ONE
+        if (favoriteAdapter?.itemCount ?: Int.ZERO > Int.ZERO) favoriteAdapter?.addElement(
+            favoriteShopPosition,
+            shopUiModel
+        )
     }
 
     private fun sendFavoriteShopImpression(clickUrl: String) {
