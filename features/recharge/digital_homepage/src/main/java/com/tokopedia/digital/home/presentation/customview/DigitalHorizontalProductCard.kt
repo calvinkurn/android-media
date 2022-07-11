@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.ViewTreeObserver
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.digital.home.databinding.LayoutDigitalHorizontalProductCardBinding
 import com.tokopedia.kotlin.extensions.view.hide
@@ -51,6 +52,23 @@ class DigitalHorizontalProductCard @JvmOverloads constructor(
             if (imageUrl.isNotEmpty()) {
                 loadImage(imageUrl)
             }
+
+            viewTreeObserver.addOnGlobalLayoutListener(object :
+                ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    viewTreeObserver.removeOnGlobalLayoutListener(this)
+
+                    val ratio: Double =
+                        binding.tgHorizontalCardProductImage.measuredWidth.toDouble() / binding.tgHorizontalCardProductImage.measuredHeight.toDouble()
+
+                    val newWidth = binding.bgHorizontalCardProductImage.measuredWidth
+                    val newHeight = newWidth / ratio
+
+                    layoutParams.width = newWidth
+                    layoutParams.height = newHeight.toInt()
+                    requestLayout()
+                }
+            })
         }
     }
 
