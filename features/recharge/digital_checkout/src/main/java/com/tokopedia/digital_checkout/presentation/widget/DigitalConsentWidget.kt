@@ -1,6 +1,7 @@
 package com.tokopedia.digital_checkout.presentation.widget
 
 import android.content.Context
+import android.graphics.Color
 import android.graphics.Typeface
 import android.text.Selection
 import android.text.Spannable
@@ -90,6 +91,7 @@ class DigitalConsentWidget @JvmOverloads constructor(
                 )
             }
         }
+        this.highlightColor = Color.TRANSPARENT
         this.movementMethod = LinkMovementMethod.getInstance()
         this.text = spannableString
     }
