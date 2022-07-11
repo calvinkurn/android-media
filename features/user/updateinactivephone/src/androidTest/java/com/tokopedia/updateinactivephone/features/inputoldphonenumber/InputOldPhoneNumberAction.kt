@@ -1,6 +1,11 @@
 package com.tokopedia.updateinactivephone.features.inputoldphonenumber
 
-import com.tokopedia.updateinactivephone.common.viewaction.*
+import com.tokopedia.updateinactivephone.common.viewaction.clickOnButton
+import com.tokopedia.updateinactivephone.common.viewaction.scrollAndIsDisplayed
+import com.tokopedia.updateinactivephone.common.viewaction.scrollToView
+import com.tokopedia.updateinactivephone.common.viewaction.setText
+import com.tokopedia.updateinactivephone.common.viewaction.isTextDisplayed
+import com.tokopedia.updateinactivephone.common.viewaction.isTextNotDisplayed
 import com.tokopedia.updateinactivephone.features.inputoldphonenumber.InputOldPhoneNumberGeneralTest.Companion.ERROR_PHONE_EMPTY
 import com.tokopedia.updateinactivephone.features.inputoldphonenumber.InputOldPhoneNumberGeneralTest.Companion.ERROR_PHONE_TOO_LONG
 import com.tokopedia.updateinactivephone.features.inputoldphonenumber.InputOldPhoneNumberGeneralTest.Companion.ERROR_PHONE_TOO_SHORT

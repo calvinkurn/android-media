@@ -10,9 +10,9 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.graphql.domain.GraphqlUseCaseInterface
+import com.tokopedia.test.application.datastore.TestUserSessionDataStore
 import com.tokopedia.updateinactivephone.stub.di.CoroutineAndroidTestDispatchersProvider
 import com.tokopedia.user.session.datastore.UserSessionDataStore
-import com.tokopedia.user.session.datastore.UserSessionDataStoreClient.getInstance
 import dagger.Module
 import dagger.Provides
 
@@ -52,7 +52,7 @@ class FakeAppModule(val context: Context) {
     }
 
     @Provides
-    fun provideUserSessionDataStore(@ApplicationContext context: Context): UserSessionDataStore {
-        return getInstance(context)
+    fun provideUserSessionDataStore(): UserSessionDataStore {
+        return TestUserSessionDataStore()
     }
 }

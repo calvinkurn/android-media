@@ -21,11 +21,15 @@ class InputOldPhoneNumberNotRegisteredTest : BaseInputOldPhoneNumberTest() {
 
     @Test
     fun input_not_registered_number_then_success() {
+        //GIVEN
         val phone = "012345678910"
 
         runTest {
+            //WHEN
             setPhoneNumberText(phone)
             clickOnButtonSubmit()
+
+            //THEN
             checkErrorMessageOnInputPhone(ERROR_PHONE_NOT_REGISTERED)
         }
     }

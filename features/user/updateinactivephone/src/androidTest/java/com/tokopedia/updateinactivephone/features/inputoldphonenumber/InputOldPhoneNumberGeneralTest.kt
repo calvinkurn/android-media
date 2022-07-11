@@ -23,6 +23,9 @@ class InputOldPhoneNumberGeneralTest : BaseInputOldPhoneNumberTest() {
 
     @Test
     fun init_view_is_show() {
+        //WHEN first time launch
+
+        //THEN
         runTest {
             checkInitViewIsShowing()
         }
@@ -30,44 +33,60 @@ class InputOldPhoneNumberGeneralTest : BaseInputOldPhoneNumberTest() {
 
     @Test
     fun input_empty_phone_number_then_show_message_error() {
+        //GIVEN
         val phone = ""
 
         runTest {
+            //WHEN
             setPhoneNumberText(phone)
             clickOnButtonSubmit()
+
+            //THEN
             checkErrorMessageOnInputPhone(ERROR_PHONE_EMPTY)
         }
     }
 
     @Test
     fun input_too_long_phone_number_then_show_message_error() {
+        //GIVEN
         val phone = "0821375674837463231"
 
         runTest {
+            //WHEN
             setPhoneNumberText(phone)
             clickOnButtonSubmit()
+
+            //THEN
             checkErrorMessageOnInputPhone(ERROR_PHONE_TOO_LONG)
         }
     }
 
     @Test
     fun input_too_long_short_number_then_show_message_error() {
+        //GIVEN
         val phone = "0821375"
 
         runTest {
+            //WHEN
             setPhoneNumberText(phone)
             clickOnButtonSubmit()
+
+            //THEN
             checkErrorMessageOnInputPhone(ERROR_PHONE_TOO_SHORT)
         }
     }
 
     @Test
     fun input_registered_number_then_success() {
+        //GIVEN
         val phone = "082137567654"
 
         runTest {
+            //WHEN
             setPhoneNumberText(phone)
             clickOnButtonSubmit()
+
+            //THEN
             checkErrorMessageIsNotDisplayed()
         }
     }

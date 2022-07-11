@@ -5,7 +5,6 @@ import com.tokopedia.updateinactivephone.features.inputoldphonenumber.fragment.I
 
 class InputOldPhoneNumberFragmentStub : InputOldPhoneNumberFragment() {
     companion object {
-        @JvmStatic
         fun newInstance(bundle: Bundle) =
             InputOldPhoneNumberFragmentStub().apply {
                 arguments = bundle
