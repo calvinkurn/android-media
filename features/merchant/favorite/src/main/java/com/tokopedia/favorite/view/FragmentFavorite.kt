@@ -230,7 +230,11 @@ class FragmentFavorite() : BaseDaggerFragment(), FavoriteClickListener, OnRefres
             val viewSelected = favoriteShopViewSelected
             if (viewSelected != null && shopItemSelected != null) {
                 viewSelected.isEnabled = false
-                viewModel!!.addFavoriteShop(viewSelected, shopItemSelected!!)
+                viewModel?.addFavoriteShop(
+                    viewSelected,
+                    shopItemSelected,
+                    shopItemSelected?.shopId ?: ""
+                )
             }
         }.showRetrySnackbar()
     }

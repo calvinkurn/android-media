@@ -227,7 +227,7 @@ class FavoriteViewModel
             }
             val elements = ArrayList<Visitable<*>>(emptyList())
             addTopAdsShop(dataFavorite, elements)
-            addFavoriteShop(dataFavorite, elements)
+            addFavoriteShopToList(dataFavorite, elements)
 
             _refreshData.value = elements
             _refresh.value = false
@@ -242,7 +242,7 @@ class FavoriteViewModel
     private fun getDataFavoriteUiModel(dataFavorite: DataFavorite): List<Visitable<*>> {
         val visitables = ArrayList<Visitable<*>>()
         addTopAdsShop(dataFavorite, visitables)
-        addFavoriteShop(dataFavorite, visitables)
+        addFavoriteShopToList(dataFavorite, visitables)
         return visitables
     }
 
@@ -267,7 +267,7 @@ class FavoriteViewModel
                 (_isFavoriteShopNetworkFailed.value ?: false)
     }
 
-    private fun addFavoriteShop(
+    private fun addFavoriteShopToList(
             dataFavorite: DataFavorite?, dataFavoriteItemList: MutableList<Visitable<*>>
     ) {
         val favoriteShop: FavoriteShop? = dataFavorite?.favoriteShop
