@@ -76,6 +76,7 @@ class ProductDetailBottomSheet(private val clickListener: OnProductDetailClickLi
                 val isCustomizable = productUiModel.isCustomizable
                 // !isAtc + isCustomizable = onNavigateToOrderCustomizationPage
                 if (!isAtc && isCustomizable) {
+                    dismiss()
                     clickListener.onNavigateToOrderCustomizationPage(
                             cartId = "",
                             productUiModel = productUiModel,
