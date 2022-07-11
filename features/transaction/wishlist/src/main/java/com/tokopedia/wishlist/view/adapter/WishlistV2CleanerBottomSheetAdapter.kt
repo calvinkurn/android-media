@@ -7,12 +7,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.wishlist.data.model.WishlistV2UiModel
 import com.tokopedia.wishlist.data.model.response.WishlistV2Response
 import com.tokopedia.wishlist.databinding.BottomsheetWishlistStorageCleanerItemBinding
 
 class WishlistV2CleanerBottomSheetAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var wishlistItem = WishlistV2Response.Data.WishlistV2.Item()
-    var cleanerBottomSheet = WishlistV2Response.Data.WishlistV2.StorageCleanerBottomSheet()
+    var cleanerBottomSheet = WishlistV2UiModel.StorageCleanerBottomSheet()
     private var selectedOption = -1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -35,7 +36,7 @@ class WishlistV2CleanerBottomSheetAdapter : RecyclerView.Adapter<RecyclerView.Vi
 
     inner class WishlistV2CleanerOptionItemViewHolder(private val binding: BottomsheetWishlistStorageCleanerItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(
-            optionCleanerItem: WishlistV2Response.Data.WishlistV2.StorageCleanerBottomSheet.OptionCleanerBottomsheet,
+            optionCleanerItem: WishlistV2UiModel.StorageCleanerBottomSheet.OptionCleanerBottomsheet,
             isHideDivider: Boolean,
             adapterPosition: Int
         ) {

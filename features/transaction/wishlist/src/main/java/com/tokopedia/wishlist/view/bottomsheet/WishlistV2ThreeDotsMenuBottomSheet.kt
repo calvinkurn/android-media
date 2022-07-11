@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.wishlist.data.model.WishlistV2UiModel
 import com.tokopedia.wishlist.data.model.response.WishlistV2Response
 import com.tokopedia.wishlist.databinding.BottomsheetWishlistV2ThreeDotsMenuBinding
 import com.tokopedia.wishlist.view.adapter.WishlistV2ThreeDotsMenuBottomSheetAdapter
@@ -53,7 +54,7 @@ class WishlistV2ThreeDotsMenuBottomSheet : BottomSheetUnify() {
     }
 
     interface BottomSheetListener {
-        fun onThreeDotsMenuItemSelected(wishlistItem: WishlistV2Response.Data.WishlistV2.Item,
-                                        additionalItem: WishlistV2Response.Data.WishlistV2.Item.Buttons.AdditionalButtonsItem)
+        fun onThreeDotsMenuItemSelected(wishlistItem: WishlistV2UiModel.Item,
+                                        additionalItem: WishlistV2UiModel.Item.Buttons.AdditionalButtonsItem)
     }
 }

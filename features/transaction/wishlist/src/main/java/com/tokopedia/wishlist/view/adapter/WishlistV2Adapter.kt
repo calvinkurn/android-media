@@ -8,9 +8,8 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.wishlist.R
-import com.tokopedia.wishlist.data.model.response.WishlistV2Response
 import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
-import com.tokopedia.wishlist.data.model.response.DeleteWishlistProgressV2Response
+import com.tokopedia.wishlist.data.model.WishlistV2UiModel
 import com.tokopedia.wishlist.databinding.*
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_COUNT_MANAGE_ROW
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_DELETION_PROGRESS_WIDGET
@@ -29,6 +28,7 @@ import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_TICKER
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_TOPADS
 import com.tokopedia.wishlist.view.adapter.viewholder.*
 import com.tokopedia.wishlist.view.fragment.WishlistV2Fragment
+import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionDetailFragment
 
 class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var actionListener: ActionListener? = null
@@ -61,23 +61,23 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     interface ActionListener {
         fun onCariBarangClicked()
         fun onNotFoundButtonClicked(keyword: String)
-        fun onThreeDotsMenuClicked(itemWishlist: WishlistV2Response.Data.WishlistV2.Item)
+        fun onThreeDotsMenuClicked(itemWishlist: WishlistV2UiModel.Item)
         fun onCheckBulkDeleteOption(productId: String, isChecked: Boolean, position: Int)
         fun onUncheckAutomatedBulkDelete(productId: String, isChecked: Boolean, position: Int)
-        fun onAtc(wishlistItem: WishlistV2Response.Data.WishlistV2.Item, position: Int)
+        fun onAtc(wishlistItem: WishlistV2UiModel.Item, position: Int)
         fun onCheckSimilarProduct(url: String)
         fun onResetFilter()
         fun onManageClicked(showCheckbox: Boolean)
-        fun onProductItemClicked(wishlistItem: WishlistV2Response.Data.WishlistV2.Item, position: Int)
+        fun onProductItemClicked(wishlistItem: WishlistV2UiModel.Item, position: Int)
         fun onProductRecommItemClicked(recommendationItem: RecommendationItem)
-        fun onViewProductCard(wishlistItem: WishlistV2Response.Data.WishlistV2.Item, position: Int)
+        fun onViewProductCard(wishlistItem: WishlistV2UiModel.Item, position: Int)
         fun onBannerTopAdsImpression(topAdsImageViewModel: TopAdsImageViewModel, position: Int)
         fun onBannerTopAdsClick(topAdsImageViewModel: TopAdsImageViewModel, position: Int)
         fun onRecommendationItemImpression(recommendationItem: RecommendationItem, position: Int)
         fun onRecommendationItemClick(recommendationItem: RecommendationItem, position: Int)
         fun onRecommendationCarouselItemImpression(recommendationItem: RecommendationItem, position: Int)
         fun onRecommendationCarouselItemClick(recommendationItem: RecommendationItem, position: Int)
-        fun onTickerCTAShowBottomSheet(bottomSheetCleanerData: WishlistV2Response.Data.WishlistV2.StorageCleanerBottomSheet)
+        fun onTickerCTAShowBottomSheet(bottomSheetCleanerData: WishlistV2UiModel.StorageCleanerBottomSheet)
         fun onTickerCTASortFromLatest()
         fun onTickerCloseIconClicked()
     }
@@ -310,6 +310,10 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     fun setActionListener(v2Fragment: WishlistV2Fragment) {
+        this.actionListener = v2Fragment
+    }
+
+    fun setActionListener(v2Fragment: WishlistCollectionDetailFragment) {
         this.actionListener = v2Fragment
     }
 

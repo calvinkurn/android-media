@@ -41,4 +41,8 @@ object WishlistV2Consts {
     const val SPEC_0 = 0
     const val SPEC_2 = 2
     const val CREATE_NEW_COLLECTION_BG_IMAGE = "https://images.tokopedia.net/img/android/wishlist_collection/bg_create_new.png"
+    const val EMPTY_WISHLIST_PAGE_NAME = "empty_wishlist"
+    const val WISHLIST_TOPADS_SOURCE = "6"
+    const val WISHLIST_TOPADS_ADS_COUNT = 1
+    const val WISHLIST_TOPADS_DIMENS = 3
 }

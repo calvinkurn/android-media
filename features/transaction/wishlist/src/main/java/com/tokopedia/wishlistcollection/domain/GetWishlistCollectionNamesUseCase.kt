@@ -15,13 +15,12 @@ import javax.inject.Inject
 @GqlQuery("GetWishlistCollectionNamesQuery", GQL_GET_WISHLIST_COLLECTION_NAMES)
 class GetWishlistCollectionNamesUseCase @Inject constructor(private val gqlRepository: GraphqlRepository) :
     UseCase<Result<GetWishlistCollectionNamesResponse.Data.GetWishlistCollectionNames>>() {
-    private var params: Map<String, Any?>? = null
 
     override suspend fun executeOnBackground(): Result<GetWishlistCollectionNamesResponse.Data.GetWishlistCollectionNames> {
         return try {
             val request = GraphqlRequest(
                 GetWishlistCollectionNamesQuery(),
-                GetWishlistCollectionNamesResponse.Data::class.java, params
+                GetWishlistCollectionNamesResponse.Data::class.java
             )
             val response = gqlRepository.response(listOf(request)).getSuccessData<GetWishlistCollectionNamesResponse.Data>()
             Success(response.getWishlistCollectionNames)

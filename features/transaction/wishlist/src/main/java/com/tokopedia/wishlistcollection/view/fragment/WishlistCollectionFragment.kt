@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -13,6 +14,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
+import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -25,7 +27,7 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wishlist.R
-import com.tokopedia.wishlistcollection.data.model.CollectionWishlistTypeLayoutData
+import com.tokopedia.wishlistcollection.data.model.WishlistCollectionTypeLayoutData
 import com.tokopedia.wishlistcollection.data.response.CollectionWishlistResponse
 import com.tokopedia.wishlist.databinding.FragmentCollectionWishlistBinding
 import com.tokopedia.wishlistcollection.di.WishlistCollectionModule
@@ -35,6 +37,8 @@ import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_COLLECTION_TICKER
 import com.tokopedia.wishlist.view.fragment.WishlistV2Fragment
 import com.tokopedia.wishlistcollection.di.DaggerWishlistCollectionComponent
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter
+import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetCreateNewCollectionWishlist
+import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetKebabMenuWishlistCollectionItem
 import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionViewModel
 import javax.inject.Inject
 
@@ -212,17 +216,17 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
         }
     }
 
-    private fun mapCollection(data: CollectionWishlistResponse.Data.GetWishlistCollections.WishlistCollectionResponseData): List<CollectionWishlistTypeLayoutData> {
-        val listCollection = arrayListOf<CollectionWishlistTypeLayoutData>()
-        val tickerObject = CollectionWishlistTypeLayoutData(data.ticker, TYPE_COLLECTION_TICKER)
+    private fun mapCollection(data: CollectionWishlistResponse.Data.GetWishlistCollections.WishlistCollectionResponseData): List<WishlistCollectionTypeLayoutData> {
+        val listCollection = arrayListOf<WishlistCollectionTypeLayoutData>()
+        val tickerObject = WishlistCollectionTypeLayoutData(data.ticker, TYPE_COLLECTION_TICKER)
         listCollection.add(tickerObject)
 
         data.collections.forEach { item ->
-            val collectionItemObject = CollectionWishlistTypeLayoutData(item, TYPE_COLLECTION_ITEM)
+            val collectionItemObject = WishlistCollectionTypeLayoutData(item, TYPE_COLLECTION_ITEM)
             listCollection.add(collectionItemObject)
         }
 
-        val createNewItem = CollectionWishlistTypeLayoutData(data.placeholder, TYPE_COLLECTION_CREATE)
+        val createNewItem = WishlistCollectionTypeLayoutData(data.placeholder, TYPE_COLLECTION_CREATE)
         listCollection.add(createNewItem)
 
         return listCollection
@@ -241,32 +245,33 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
         }
     }
 
-    /*private fun addImageList() {
-        binding?.run {
-            val params: GridLayout.LayoutParams = GridLayout.LayoutParams(testCardImage.imgCollection1.layoutParams)
-            params.rowSpec = GridLayout.spec(0, 2) // First cell in first row use rowSpan 2.
-            params.height = toDp(154)
-            testCardImage.imgCollection1.layoutParams = params
-            testCardImage.imgCollection1.setImageUrl("https://ecs7.tokopedia.net/img/cache/300/VqbcmM/2022/3/1/810d40b6-385b-4f33-ae37-03b92c552f9a.jpg")
-            testCardImage.imgCollection1.scaleType = ImageView.ScaleType.CENTER_CROP
-
-            testCardImage.imgCollection2.setImageUrl("https://ecs7.tokopedia.net/img/cache/300/VqbcmM/2022/3/9/a18a95e6-87bb-4a38-b596-fd81312e8d02.jpg")
-            testCardImage.imgCollection3.setImageUrl("https://ecs7.tokopedia.net/img/cache/300/VqbcmM/2020/12/29/0d60ce27-26f1-4f1e-b2aa-8d3d5f73d7c4.jpg")
-            testCardImage.imgCollection4.gone()
-
-            testCardNewCollection.wishlistCollectionCreateNew.setImageUrl("https://images.tokopedia.net/img/android/wishlist_collection/bg_create_new.png")
-
-            testTickerCollection.apply {
-                collectionTickerCard.cardType = CardUnify2.TYPE_SHADOW
-                icCloseTickerCollectionWishlist.setOnClickListener { println("++ keclick close") }
-                icCloseTickerCollectionWishlist.bringToFront()
-                wishlistCollectionTickerTitle.text = "Pakai fitur Koleksi, Wishlist jadi rapi"
-                wishlistCollectionTickerDesc.text = "Kelompokkan barang di Wishlist sesukamu"
-            }
-        }
-    }*/
-
     override fun onCloseTicker() {
         collectionAdapter.hideTicker()
+    }
+
+    override fun onKebabMenuClicked() {
+        showBottomSheetKebabMenu()
+    }
+
+    private fun showBottomSheetKebabMenu() {
+        val bottomSheetKebabMenu = BottomSheetKebabMenuWishlistCollectionItem.newInstance()
+        if (bottomSheetKebabMenu.isAdded || childFragmentManager.isStateSaved) return
+        bottomSheetKebabMenu.show(childFragmentManager)
+    }
+
+    override fun onCreateNewCollectionClicked() {
+        showBottomSheetCreateNewCollection(childFragmentManager)
+    }
+
+    private fun showBottomSheetCreateNewCollection(fragmentManager: FragmentManager) {
+        val bottomSheetCreateCollection = BottomSheetCreateNewCollectionWishlist.newInstance("")
+        if (bottomSheetCreateCollection.isAdded || fragmentManager.isStateSaved) return
+        bottomSheetCreateCollection.show(fragmentManager)
+    }
+
+    override fun onCollectionItemClicked(id: String) {
+        val detailCollection = "${ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL}?${ApplinkConstInternalPurchasePlatform.PATH_COLLECTION_ID}=$id"
+        val intentCollectionDetail = RouteManager.getIntent(context, detailCollection)
+        startActivity(intentCollectionDetail)
     }
 }

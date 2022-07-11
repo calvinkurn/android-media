@@ -1,7 +1,6 @@
 package com.tokopedia.wishlist.view.adapter.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.wishlist.R
 import com.tokopedia.wishlist.data.model.WishlistV2CountManageRowData
 import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData

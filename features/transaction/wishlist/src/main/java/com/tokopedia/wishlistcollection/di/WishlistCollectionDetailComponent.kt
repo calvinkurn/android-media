@@ -5,11 +5,11 @@ import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionDetailFr
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionFragment
 import dagger.Component
 
-@WishlistCollectionScope
+@WishlistCollectionDetailScope
 @Component(
-    modules = [WishlistCollectionModule::class, WishlistCollectionViewModelModule::class],
+    modules = [WishlistCollectionDetailModule::class, WishlistCollectionDetailViewModelModule::class],
     dependencies = [BaseAppComponent::class]
 )
-interface WishlistCollectionComponent {
-    fun inject(fragment: WishlistCollectionFragment)
+interface WishlistCollectionDetailComponent {
+    fun inject(fragment: WishlistCollectionDetailFragment)
 }

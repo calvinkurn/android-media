@@ -2,6 +2,7 @@
 <resources>
     <string name="page_name_wishlist">Wishlist</string>
     <string name="page_name_wishlist_collection">Wishlist Collection</string>
+    <string name="page_name_wishlist_collection_detail">Wishlist Collection</string>
     <string name="content_desc_wishlist_checkbox">checkbox pilih wishlist</string>
     <string name="hint_cari_wishlist">Cari di Wishlist</string>
     <string name="error_message_minimum_search_keyword">Masukkan min. 1 karakter di kolom pencarian.</string>
@@ -51,4 +52,7 @@
     <string name="collection_create_bottomsheet_button_label">Buat Koleksi</string>
     <string name="collection_create_bottomsheet_title">Buat koleksi baru</string>
     <string name="collection_create_bottomsheet_name_error">Kamu sudah punya koleksi dengan nama ini</string>
+    <string name="collection_item_kebab_menu_1">Ubah Nama Koleksi</string>
+    <string name="collection_item_kebab_menu_2">Hapus Koleksi</string>
+
 </resources>

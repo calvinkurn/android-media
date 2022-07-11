@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.wishlistcollection.data.model.CollectionWishlistTypeLayoutData
+import com.tokopedia.wishlistcollection.data.model.WishlistCollectionTypeLayoutData
 import com.tokopedia.wishlistcollection.data.response.CollectionWishlistResponse
 import com.tokopedia.wishlist.databinding.CollectionWishlistTickerItemBinding
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter
@@ -14,7 +14,7 @@ class WishlistCollectionTickerItemViewHolder(
     private val binding: CollectionWishlistTickerItemBinding,
     private val actionListener: WishlistCollectionAdapter.ActionListener?
 ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: CollectionWishlistTypeLayoutData, isTickerClosed: Boolean) {
+        fun bind(item: WishlistCollectionTypeLayoutData, isTickerClosed: Boolean) {
             if (item.dataObject is CollectionWishlistResponse.Data.GetWishlistCollections.WishlistCollectionResponseData.Ticker) {
                 if (item.dataObject.title.isNotEmpty() && !isTickerClosed) {
                     binding.root.visible()

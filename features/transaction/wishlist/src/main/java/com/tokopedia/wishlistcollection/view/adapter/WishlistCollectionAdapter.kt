@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.wishlistcollection.data.model.CollectionWishlistTypeLayoutData
+import com.tokopedia.wishlistcollection.data.model.WishlistCollectionTypeLayoutData
 import com.tokopedia.wishlist.databinding.CollectionWishlistCreateItemBinding
 import com.tokopedia.wishlist.databinding.CollectionWishlistItemBinding
 import com.tokopedia.wishlist.databinding.CollectionWishlistTickerItemBinding
@@ -18,7 +18,7 @@ import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionFragment
 
 class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var actionListener: ActionListener? = null
-    private var listTypeData = mutableListOf<CollectionWishlistTypeLayoutData>()
+    private var listTypeData = mutableListOf<WishlistCollectionTypeLayoutData>()
     private var isTickerCloseClicked = false
 
     companion object {
@@ -29,6 +29,9 @@ class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
 
     interface ActionListener {
         fun onCloseTicker()
+        fun onKebabMenuClicked()
+        fun onCreateNewCollectionClicked()
+        fun onCollectionItemClicked(id: String)
     }
 
     fun setActionListener(collectionWishlistFragment: WishlistCollectionFragment) {
@@ -97,7 +100,7 @@ class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
         }
     }
 
-    fun addList(list: List<CollectionWishlistTypeLayoutData>) {
+    fun addList(list: List<WishlistCollectionTypeLayoutData>) {
         listTypeData.clear()
         listTypeData.addAll(list)
         notifyDataSetChanged()

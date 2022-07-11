@@ -121,12 +121,22 @@ class BottomSheetCreateNewCollectionWishlist: BottomSheetUnify(), HasComponent<B
     }
 
     private fun enableSaveButton() {
-        val arrayProductIds = arrayListOf<String>()
-        arguments?.getString(PRODUCT_IDs)?.let { arrayProductIds.add(it) }
-        binding?.run {
-            collectionCreateButton.apply {
-                isEnabled = true
-                setOnClickListener { saveNewCollection(newCollectionName, arrayProductIds) }
+        val productIds = arguments?.getString(PRODUCT_IDs)
+        if (productIds?.isNotEmpty() == true) {
+            val arrayProductIds = arrayListOf<String>()
+            arrayProductIds.add(productIds)
+            binding?.run {
+                collectionCreateButton.apply {
+                    isEnabled = true
+                    setOnClickListener { saveNewCollection(newCollectionName, arrayProductIds) }
+                }
+            }
+        } else {
+            binding?.run {
+                collectionCreateButton.apply {
+                    isEnabled = true
+                    setOnClickListener {  }
+                }
             }
         }
     }
