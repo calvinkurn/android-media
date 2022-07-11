@@ -22,6 +22,7 @@
             app:contentInsetStart="0dp"
             app:contentInsetStartWithNavigation="0dp"
             app:elevation="@dimen/unify_space_4"
+            android:background="@color/Unify_NN600"
             app:unify_header_is_show_back_button="true"
             app:unify_header_is_show_shadow="false"
             app:unify_header_transparent_mode="false" />
@@ -187,7 +188,7 @@
                     <View
                         android:layout_width="1dp"
                         android:layout_height="@dimen/unify_space_32"
-                        android:background="#BFC9D9"
+                        android:background="@color/Unify_NN300"
                         app:layout_constraintBottom_toBottomOf="@id/text_content_label"
                         app:layout_constraintEnd_toStartOf="@id/text_follower_label"
                         app:layout_constraintStart_toEndOf="@id/text_content_label"
@@ -196,7 +197,7 @@
                     <View
                         android:layout_width="1dp"
                         android:layout_height="@dimen/unify_space_32"
-                        android:background="#BFC9D9"
+                        android:background="@color/Unify_NN300"
                         app:layout_constraintBottom_toBottomOf="@id/text_content_label"
                         app:layout_constraintEnd_toStartOf="@id/text_following_label"
                         app:layout_constraintStart_toEndOf="@id/text_follower_label"
@@ -291,7 +292,7 @@
                             android:layout_marginStart="0dp"
                             android:layout_marginTop="@dimen/unify_space_16"
                             android:layout_marginEnd="0dp"
-                            android:background="#BFC9D9" />
+                            android:background="@color/Unify_NN300" />
                     </LinearLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

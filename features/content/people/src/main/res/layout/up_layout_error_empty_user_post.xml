@@ -10,7 +10,7 @@
         android:layout_width="@dimen/unify_space_48"
         android:layout_height="@dimen/unify_space_48"
         android:layout_marginTop="@dimen/user_profile_page_top_margin"
-        android:tint="@color/Unify_Static_Black"
+        android:tint="@color/Unify_NN1000"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
