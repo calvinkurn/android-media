@@ -284,7 +284,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                             highlighted = true,
                             etalaseRules = listOf()
                     )),
-                    isShowNewShopHomeTab = false,
+                    isShopWidgetAlreadyShown = false,
                     widgetUserAddressLocalData = addressWidgetData,
                     context
             )
@@ -559,7 +559,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                             highlighted = true,
                             etalaseRules = listOf()
                     )),
-                    isShowNewShopHomeTab = false,
+                    isShopWidgetAlreadyShown = false,
                     widgetUserAddressLocalData = addressWidgetData,
                     context
             )
@@ -619,7 +619,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                             highlighted = true,
                             etalaseRules = listOf()
                     )),
-                    isShowNewShopHomeTab = false,
+                    isShopWidgetAlreadyShown = false,
                     widgetUserAddressLocalData = addressWidgetData,
                     context
             )
@@ -678,7 +678,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                             highlighted = true,
                             etalaseRules = listOf()
                     )),
-                    isShowNewShopHomeTab = false,
+                    isShopWidgetAlreadyShown = false,
                     widgetUserAddressLocalData = addressWidgetData,
                     context
             )
@@ -735,7 +735,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                             highlighted = false,
                             etalaseRules = listOf()
                     )),
-                    isShowNewShopHomeTab = false,
+                    isShopWidgetAlreadyShown = false,
                     widgetUserAddressLocalData = addressWidgetData,
                     context
             )
@@ -794,7 +794,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                             highlighted = true,
                             etalaseRules = listOf()
                     )),
-                    isShowNewShopHomeTab = false,
+                    isShopWidgetAlreadyShown = false,
                     widgetUserAddressLocalData = addressWidgetData,
                     context
             )
@@ -854,7 +854,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                             highlighted = true,
                             etalaseRules = listOf()
                     )),
-                    isShowNewShopHomeTab = false,
+                    isShopWidgetAlreadyShown = false,
                     widgetUserAddressLocalData = addressWidgetData,
                     context
             )
@@ -913,7 +913,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                             highlighted = true,
                             etalaseRules = listOf()
                     )),
-                    isShowNewShopHomeTab = false,
+                    isShopWidgetAlreadyShown = false,
                     widgetUserAddressLocalData = addressWidgetData,
                     context
             )
@@ -971,7 +971,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                             highlighted = true,
                             etalaseRules = listOf()
                     )),
-                    isShowNewShopHomeTab = false,
+                    isShopWidgetAlreadyShown = false,
                     widgetUserAddressLocalData = addressWidgetData,
                     context
             )
@@ -1020,7 +1020,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                             highlighted = true,
                             etalaseRules = listOf()
                     )),
-                    isShowNewShopHomeTab = false,
+                    isShopWidgetAlreadyShown = false,
                     widgetUserAddressLocalData = addressWidgetData,
                     context
             )
@@ -1069,7 +1069,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                             highlighted = true,
                             etalaseRules = listOf()
                     )),
-                    isShowNewShopHomeTab = true,
+                    isShopWidgetAlreadyShown = true,
                     widgetUserAddressLocalData = addressWidgetData,
                     context
             )
@@ -1124,7 +1124,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                             highlighted = true,
                             etalaseRules = listOf()
                     )),
-                    isShowNewShopHomeTab = false,
+                    isShopWidgetAlreadyShown = false,
                     widgetUserAddressLocalData = addressWidgetData,
                     context
             )

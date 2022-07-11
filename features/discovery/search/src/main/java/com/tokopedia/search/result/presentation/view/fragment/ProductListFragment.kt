@@ -77,7 +77,6 @@ import com.tokopedia.search.analytics.SearchEventTracking
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.di.module.SearchContextModule
 import com.tokopedia.search.result.presentation.ProductListSectionContract
-import com.tokopedia.search.result.presentation.model.BannerDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
@@ -87,7 +86,6 @@ import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDa
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.presentation.model.TickerDataView
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
-import com.tokopedia.search.result.presentation.view.listener.BannerListener
 import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.search.result.presentation.view.listener.LastFilterListener
@@ -102,6 +100,7 @@ import com.tokopedia.search.result.presentation.view.listener.TopAdsImageViewLis
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl
 import com.tokopedia.search.result.product.ClassNameProvider
 import com.tokopedia.search.result.product.ProductListParameterListener
+import com.tokopedia.search.result.product.banner.BannerListenerDelegate
 import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.result.product.SearchParameterProvider
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressListener
@@ -155,7 +154,6 @@ class ProductListFragment: BaseDaggerFragment(),
     SearchNavigationClickListener,
     TopAdsImageViewListener,
     ChooseAddressListener,
-    BannerListener,
     LastFilterListener,
     ProductListParameterListener,
     QueryKeyProvider,
@@ -443,7 +441,7 @@ class ProductListFragment: BaseDaggerFragment(),
             searchNavigationListener = this,
             topAdsImageViewListener = this,
             chooseAddressListener = this,
-            bannerListener = this,
+            bannerListener = BannerListenerDelegate(iris, activity),
             lastFilterListener = this,
             inspirationSizeListener = inspirationWidgetListenerDelegate,
             violationListener = ViolationListenerDelegate(activity),
@@ -1997,12 +1995,6 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun onLocalizingAddressSelected() {
         presenter?.onLocalizingAddressSelected()
     }
-
-    //region Banner
-    override fun onBannerClicked(bannerDataView: BannerDataView) {
-        redirectionStartActivity(bannerDataView.applink, "")
-    }
-    //endregion
 
     //region Last Filter Widget
     override fun onImpressedLastFilter(lastFilterDataView: LastFilterDataView) {
