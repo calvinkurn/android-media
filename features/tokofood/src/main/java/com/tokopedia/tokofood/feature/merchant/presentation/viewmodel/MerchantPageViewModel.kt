@@ -275,6 +275,18 @@ class MerchantPageViewModel @Inject constructor(
         return mutableProductListItems.toList()
     }
 
+    fun getAppliedProductSelection(): List<ProductListItem>? {
+        return (getMerchantDataResultLiveData.value as? Success)?.data?.tokofoodGetMerchantData?.let { merchantData ->
+            val isShopClosed = merchantData.merchantProfile.opsHourFmt.isWarning
+            val foodCategories = merchantData.categories
+            val productListItems = mapFoodCategoriesToProductListItems(
+                isShopClosed,
+                foodCategories
+            )
+            applyProductSelection(productListItems, selectedProducts)
+        }
+    }
+
     fun mapProductUiModelToAtcRequestParam(shopId: String, productUiModel: ProductUiModel): UpdateParam {
         return TokoFoodMerchantUiModelMapper.mapProductUiModelToAtcRequestParam(
                 shopId = shopId,

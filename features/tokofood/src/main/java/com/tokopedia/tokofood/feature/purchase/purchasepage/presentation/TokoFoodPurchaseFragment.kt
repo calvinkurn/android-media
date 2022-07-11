@@ -128,6 +128,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
             actvt.title = getFragmentTitle()
             actvt.setUpActionBar(getFragmentToolbar())
         }
+        loadData()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -151,7 +152,6 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         collectShouldRefreshCartData()
         collectTrackerLoadCheckoutData()
         collectTrackerPaymentCheckoutData()
-        loadData()
     }
 
     override fun getFragmentToolbar(): Toolbar? {
@@ -471,7 +471,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     }
 
     private fun collectSharedUiState() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             activityViewModel?.cartDataValidationFlow?.collect {
                 hideLoadingDialog()
                 when(it.state) {
