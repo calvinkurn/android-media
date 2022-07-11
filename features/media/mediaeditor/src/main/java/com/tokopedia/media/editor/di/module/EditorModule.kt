@@ -14,6 +14,8 @@ import com.tokopedia.media.editor.data.repository.ColorFilterRepository
 import com.tokopedia.media.editor.data.repository.ColorFilterRepositoryImpl
 import com.tokopedia.media.editor.data.repository.ContrastFilterRepository
 import com.tokopedia.media.editor.data.repository.ContrastFilterRepositoryImpl
+import com.tokopedia.media.editor.data.repository.WatermarkFilterRepository
+import com.tokopedia.media.editor.data.repository.WatermarkFilterRepositoryImpl
 import com.tokopedia.media.editor.di.EditorQualifier
 import com.tokopedia.media.editor.domain.SetRemoveBackgroundUseCase
 import com.tokopedia.user.session.UserSession
@@ -78,5 +80,11 @@ object EditorModule {
     @ActivityScope
     fun provideContrastFilterRepository(): ContrastFilterRepository {
         return ContrastFilterRepositoryImpl()
+    }
+
+    @Provides
+    @ActivityScope
+    fun provideWatermarkFilterRepository(): WatermarkFilterRepository {
+        return WatermarkFilterRepositoryImpl()
     }
 }

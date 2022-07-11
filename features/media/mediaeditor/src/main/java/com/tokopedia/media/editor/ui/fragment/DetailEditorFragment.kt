@@ -16,18 +16,22 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.base.BaseEditorFragment
 import com.tokopedia.media.editor.data.repository.ContrastFilterRepositoryImpl
+import com.tokopedia.media.editor.data.repository.WatermarkFilterRepositoryImpl
 import com.tokopedia.media.editor.databinding.FragmentDetailEditorBinding
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorActivity
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorViewModel
 import com.tokopedia.media.editor.ui.component.BrightnessToolUiComponent
 import com.tokopedia.media.editor.ui.component.ContrastToolsUiComponent
 import com.tokopedia.media.editor.ui.component.RemoveBackgroundToolUiComponent
+import com.tokopedia.media.editor.ui.component.WatermarkToolUiComponent
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.utils.getDestinationUri
 import com.tokopedia.media.loader.MediaLoaderTarget
 import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageWithTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
+import com.tokopedia.media.loader.utils.MediaTarget
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.types.EditorToolType
 import com.tokopedia.utils.view.binding.viewBinding
@@ -41,16 +45,19 @@ class DetailEditorFragment @Inject constructor(
 ) : BaseEditorFragment()
     , BrightnessToolUiComponent.Listener
     , ContrastToolsUiComponent.Listener
-    , RemoveBackgroundToolUiComponent.Listener {
+    , RemoveBackgroundToolUiComponent.Listener
+    , WatermarkToolUiComponent.Listener {
 
     private val viewBinding: FragmentDetailEditorBinding? by viewBinding()
     private val viewModel: DetailEditorViewModel by activityViewModels { viewModelFactory }
 
     @Inject lateinit var contrastFilterRepositoryImpl: ContrastFilterRepositoryImpl
+    @Inject lateinit var watermarkFilterRepositoryImpl: WatermarkFilterRepositoryImpl
 
     private val brightnessComponent by uiComponent { BrightnessToolUiComponent(it, this) }
     private val removeBgComponent by uiComponent { RemoveBackgroundToolUiComponent(it, this) }
     private val contrastComponent by uiComponent { ContrastToolsUiComponent(it, this) }
+    private val watermarkComponent by uiComponent { WatermarkToolUiComponent(it, this) }
 
     private var data = EditorDetailUiModel()
 
@@ -87,6 +94,13 @@ class DetailEditorFragment @Inject constructor(
     override fun onRemoveBackgroundClicked() {
         data.removeBackgroundUrl?.let {
             viewModel.setRemoveBackground(it)
+        }
+    }
+
+    override fun onWatermarkChanged(value: Int) {
+        originalBitmap?.let {
+            val result = watermarkFilterRepositoryImpl.watermark(it, value)
+            viewBinding?.imgPreview?.setImageBitmap(result)
         }
     }
 
@@ -152,33 +166,60 @@ class DetailEditorFragment @Inject constructor(
             EditorToolType.REMOVE_BACKGROUND -> removeBgComponent.setupView()
             EditorToolType.CONTRAST -> {
                 contrastComponent.setupView(data.contrastValue ?: DEFAULT_VALUE_CONTRAST)
-
+            }
+            EditorToolType.WATERMARK -> {
+                watermarkComponent.setupView()
             }
         }
     }
 
     private fun renderImagePreview(imageUrl: String) {
-        MediaLoaderTarget.loadImage(requireContext(), Properties(imageUrl), MediaBitmapEmptyTarget(
-            onCleared = { },
-            onReady = {
-                originalBitmap = it
-                originalBitmap?.let { itBitmap ->
-                    val cloneOriginal = itBitmap.copy(itBitmap.config, true)
+//        loadImageWithTarget(requireContext(), imageUrl, {},
+//            MediaTarget(
+//                viewComponent = object: View(requireContext()){},
+//                onReady = {_, resource ->
+//                    originalBitmap = resource
+//                    originalBitmap?.let {
+//                        viewBinding?.imgPreview?.let {
+//                            it.setImageBitmap(resource)
+//                        }
+//                    }
+//                }
+//            )
+//        )
 
+//        MediaLoaderTarget.loadImage(requireContext(), Properties(imageUrl), MediaBitmapEmptyTarget(
+//            onCleared = { },
+//            onReady = {
+//                originalBitmap = it
+//                originalBitmap?.let { itBitmap ->
+//                    val cloneOriginal = itBitmap.copy(itBitmap.config, true)
+//
 //                    viewBinding?.imgPreview
 //                        ?.setImageBitmap(contrastFilterRepositoryImpl
 //                            .contrast(data.contrastValue ?: DEFAULT_VALUE_CONTRAST, cloneOriginal))
+//
+//                    viewBinding?.imgPreview?.setImageBitmap(originalBitmap)
+//                }
+//            }
+//        ) )
+
+
+        viewBinding?.imgPreview?.loadImage(imageUrl) {
+            centerCrop()
+            this.listener(onSuccess = {bitmap, _ ->
+                bitmap?.let {
+                    originalBitmap = bitmap
+                    val cloneOriginal = it.copy(it.config, true)
+
+                    viewBinding?.imgPreview
+                        ?.setImageBitmap(contrastFilterRepositoryImpl
+                            .contrast(data.contrastValue ?: DEFAULT_VALUE_CONTRAST, cloneOriginal))
 
                     viewBinding?.imgPreview?.setImageBitmap(originalBitmap)
                 }
-            }
-        ) )
-//        viewBinding?.imgPreview?.loadImage(imageUrl) {
-//            centerCrop()
-//            this.listener(onSuccess = {bitmap, _ ->
-//                originalBitmap = bitmap
-//            })
-//        }
+            })
+        }
     }
 
     private fun initButtonListener() {

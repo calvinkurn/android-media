@@ -31,6 +31,7 @@ fun createDefaultEditorTools() = arrayListOf(
     EditorToolType.CONTRAST,
     EditorToolType.CROP,
     EditorToolType.ROTATE,
+    EditorToolType.WATERMARK
 )
 
 @Parcelize
