@@ -150,7 +150,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
 
     private fun initSortFilterChip(favnum: List<TopupBillsSeamlessFavNumberItem>) {
         val sortFilter = arrayListOf<SortFilterItem>()
-        for (number in favnum.take(5)) {
+        for (number in favnum.take(MAX_CHIP_SIZE)) {
             if (number.clientName.isEmpty()) {
                 listener.onShowFilterChip(false)
             } else {
@@ -173,7 +173,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
             sortFilter.add(sortFilterItem)
         }
 
-        val isMoreThanFive = favnum.size > 5
+        val isMoreThanFive = favnum.size > MAX_CHIP_SIZE
         if (isMoreThanFive) {
             val sortFilterItem = SortFilterItem(
                 "",
@@ -335,6 +335,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         private const val SORT_FILTER_PADDING_16 = 16
         private const val LABEL_MAX_CHAR = 18
         private const val ELLIPSIZE = "..."
+        private const val MAX_CHIP_SIZE = 5
 
         private const val AUTOCOMPLETE_THRESHOLD = 1
         private const val AUTOCOMPLETE_DROPDOWN_VERTICAL_OFFSET = 10

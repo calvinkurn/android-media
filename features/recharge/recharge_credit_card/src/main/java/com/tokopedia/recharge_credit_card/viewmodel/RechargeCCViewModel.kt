@@ -73,7 +73,7 @@ class RechargeCCViewModel @Inject constructor(
                 val graphqlRequest = GraphqlRequest(rawQuery, RechargeCCMenuDetailResponse::class.java, mapParam)
                 graphqlRepository.response(listOf(graphqlRequest),
                         GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build())
+                                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * CACHE_MINUTES_MENU_DETAIL).build())
             }.getSuccessData<RechargeCCMenuDetailResponse>()
 
             categoryName = data.menuDetail.menuName
@@ -98,7 +98,7 @@ class RechargeCCViewModel @Inject constructor(
                 val graphqlRequest = GraphqlRequest(rawQuery, RechargeCCBankListReponse::class.java, mapParam)
                 graphqlRepository.response(listOf(graphqlRequest),
                         GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 10).build())
+                                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * CACHE_MINUTES_GET_LIST_BANK).build())
             }.getSuccessData<RechargeCCBankListReponse>()
 
             if (data.rechargeCCBankList.messageError.isEmpty()) {
@@ -197,5 +197,8 @@ class RechargeCCViewModel @Inject constructor(
     companion object {
         private const val CATEGORY_ID = "categoryId"
         private const val MENU_ID = "menuId"
+
+        private const val CACHE_MINUTES_MENU_DETAIL = 5
+        private const val CACHE_MINUTES_GET_LIST_BANK = 10
     }
 }
