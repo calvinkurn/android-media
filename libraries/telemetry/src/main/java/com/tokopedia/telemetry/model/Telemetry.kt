@@ -37,8 +37,7 @@ class Coord(var diff: Int, val x: Float, val y: Float, val z: Float, var visit: 
 @Suppress("MagicNumber")
 class TelemetrySection(
     var eventName: String,
-    var startTime: Long,
-    var isLogin: Boolean = false
+    var startTime: Long
 ) {
     var endTime: Long = 0L
     var eventNameEnd: String = ""
@@ -121,27 +120,19 @@ object Telemetry {
     var telemetrySectionList: MutableList<TelemetrySection> = mutableListOf()
 
     private var currStartTime = 0L
-    private const val MAX_SECTION = 10
+    private const val MAX_SECTION = 5
 
     @JvmStatic
-    fun addSection(eventName: String, isLogin: Boolean) {
+    fun addSection(eventName: String) {
         if (telemetrySectionList.size >= MAX_SECTION) {
             telemetrySectionList.removeLast()
-        }
-        // only preserve last event for non login
-        if (!isLogin) {
-            val lastSection = telemetrySectionList.lastOrNull()
-            if (lastSection!= null && !lastSection.isLogin) {
-                telemetrySectionList.remove(lastSection)
-            }
         }
         currStartTime = System.currentTimeMillis()
         telemetrySectionList.add(
             0,
             TelemetrySection(
                 eventName,
-                currStartTime,
-                isLogin
+                currStartTime
             )
         )
     }

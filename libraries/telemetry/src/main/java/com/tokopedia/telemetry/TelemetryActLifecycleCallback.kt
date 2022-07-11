@@ -27,8 +27,7 @@ import java.lang.Exception
 import java.lang.ref.WeakReference
 
 class TelemetryActLifecycleCallback(
-    val isEnabled: (() -> (Boolean)),
-    val isLogin: (() -> (Boolean))
+    val isEnabled: (() -> (Boolean))
 ) : Application.ActivityLifecycleCallbacks {
 
     companion object {
@@ -154,7 +153,7 @@ class TelemetryActLifecycleCallback(
         Telemetry.addStopTime(sectionName)
         TelemetryWorker.scheduleWorker(activity.applicationContext)
 
-        Telemetry.addSection(sectionName, isLogin.invoke())
+        Telemetry.addSection(sectionName)
         registerTelemetryListener(activity)
 
         // timer to stop after telemetry duration
