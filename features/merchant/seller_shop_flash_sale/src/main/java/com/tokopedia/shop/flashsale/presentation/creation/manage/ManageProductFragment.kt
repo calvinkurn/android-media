@@ -74,7 +74,6 @@ class ManageProductFragment : BaseDaggerFragment() {
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ManageProductViewModel::class.java) }
-    private var binding by autoClearedNullable<SsfsFragmentManageProductBinding>()
     private val loaderDialog by lazy { context?.let { LoaderDialog(it) } }
     private val campaignId by lazy { arguments?.getLong(BUNDLE_KEY_CAMPAIGN_ID).orZero() }
     private val manageProductListAdapter by lazy {
@@ -83,6 +82,8 @@ class ManageProductFragment : BaseDaggerFragment() {
             onDeleteClicked = ::deleteProduct
         )
     }
+    private var binding by autoClearedNullable<SsfsFragmentManageProductBinding>()
+    private var autoShowEditProduct = true
 
     override fun getScreenName(): String = ManageProductFragment::class.java.canonicalName.orEmpty()
 
@@ -177,7 +178,7 @@ class ManageProductFragment : BaseDaggerFragment() {
             }
         }
     }
-    private var autoShowEditProduct = true
+
     private fun observeIncompleteProducts() {
         viewModel.incompleteProducts.observe(viewLifecycleOwner) {
             if (autoShowEditProduct) {
