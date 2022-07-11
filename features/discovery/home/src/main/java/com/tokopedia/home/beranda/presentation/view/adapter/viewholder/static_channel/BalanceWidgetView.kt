@@ -17,10 +17,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel.Companion.TYPE_STATE_2
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.balancewidget.BalanceWidgetTypeFactoryImpl
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BalanceAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BalanceWidgetAdapter
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.show
 
 /**
  * Created by yfsx on 3/1/21.
@@ -96,7 +93,7 @@ class BalanceWidgetView: FrameLayout {
         if (!disableAnimation) {
             val viewholder = rvBalance?.findViewHolderForAdapterPosition(position)
             viewholder?.let {
-                (it as? BalanceAdapter.Holder)?.let {
+                (it as? BalanceViewHolder)?.let {
                 }
             }
         }

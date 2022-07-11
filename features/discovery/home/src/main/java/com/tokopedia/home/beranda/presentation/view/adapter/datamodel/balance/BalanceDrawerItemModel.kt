@@ -49,8 +49,4 @@ data class BalanceDrawerItemModel(
         const val STATE_LOADING = 1
         const val STATE_ERROR = 2
     }
-
-    fun buildDefaultData(titleTagAttributes: BalanceTagAttribute) {
-        balanceTitleTagAttribute = titleTagAttributes
-    }
 }
