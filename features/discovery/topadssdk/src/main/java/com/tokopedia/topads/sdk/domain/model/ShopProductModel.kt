@@ -23,6 +23,7 @@ data class ShopProductModel(
             val position: Int,
             val isFollowed: Boolean = false,
             val layoutType:Int? = LAYOUT_5,
+            val shopId:String = "",
             val impressHolder: ImpressHolder? = null,
 
             ) {

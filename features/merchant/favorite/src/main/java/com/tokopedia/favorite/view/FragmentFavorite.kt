@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import androidx.fragment.app.Fragment
@@ -189,6 +188,11 @@ class FragmentFavorite() : BaseDaggerFragment(), FavoriteClickListener, OnRefres
                     validateMessageError()
                 }
         )
+        viewModel?.isRefreshPage?.observe(viewLifecycleOwner,{ isRefresh: Boolean ->
+            if (isRefresh) {
+                viewModel?.refreshAllDataFavoritePage()
+            }
+        })
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
@@ -331,15 +335,15 @@ class FragmentFavorite() : BaseDaggerFragment(), FavoriteClickListener, OnRefres
         viewModel!!.refreshAllDataFavoritePage()
     }
 
-    override fun onFavoriteShopClicked(view: View?, shopItemSelected: TopAdsShopItem?) {
-        if (view == null) {
-            viewModel?.refreshAllDataFavoritePage()
-        } else {
-            favoriteShopViewSelected = view
-            this.shopItemSelected = shopItemSelected
-            favoriteShopViewSelected?.isEnabled = false
-            viewModel!!.addFavoriteShop(favoriteShopViewSelected!!, this.shopItemSelected!!)
-        }
+    override fun onFavoriteShopClicked(
+        view: View?,
+        shopItemSelected: TopAdsShopItem?,
+        shopId: String
+    ) {
+        favoriteShopViewSelected = view
+        this.shopItemSelected = shopItemSelected
+        favoriteShopViewSelected?.isEnabled = false
+        viewModel!!.addFavoriteShop(favoriteShopViewSelected, this.shopItemSelected, shopId)
     }
 
     private fun prepareView() {

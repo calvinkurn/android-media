@@ -62,8 +62,8 @@ class TopAdsShopViewHolder(
 
                 },
                 object : FollowButtonClickListener {
-                    override fun onItemClicked() {
-                        favoriteClickListener.onFavoriteShopClicked(null, null)
+                    override fun onItemClicked(shopId: String) {
+                        favoriteClickListener.onFavoriteShopClicked(null, null, shopId)
                     }
 
                 }
@@ -84,7 +84,8 @@ class TopAdsShopViewHolder(
                 impressHolder = it.imageShop,
                 location = it.shopLocation ?: "",
                 position = index,
-                layoutType = it.layout
+                layoutType = it.layout,
+                shopId = it.shopId ?: ""
             )
             list.add(item)
         }

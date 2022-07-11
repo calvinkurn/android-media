@@ -97,6 +97,13 @@ class FavoriteViewModel
     val isErrorAddFavoriteShop: LiveData<Boolean>
         get() = _isErrorAddFavoriteShop
 
+    val isRefreshPage: LiveData<Boolean>
+        get() = _isRefreshPage
+
+    private val _isRefreshPage by lazy {
+        MutableLiveData<Boolean>()
+    }
+
     //==============================
 
     /**
@@ -151,23 +158,30 @@ class FavoriteViewModel
         })
     }
 
-    fun addFavoriteShop(view: View?, shopItem: TopAdsShopItem) {
-        val params = ToggleFavouriteShopUseCase.createRequestParam(shopItem.shopId);
+    fun addFavoriteShop(view: View?, shopItem: TopAdsShopItem?, shopId: String) {
+        val params = ToggleFavouriteShopUseCase.createRequestParam(shopId)
         launchCatchError(block = {
             val isValid = withContext(dispatcherProvider.io) {
                 toggleFavouriteShopUseCase.createObservable(params).toBlocking().single()
             }
-            view?.clearAnimation()
-            if (isValid != null && isValid) {
-                val favoriteShopUiModel = FavoriteShopUiModel()
-                favoriteShopUiModel.shopId = shopItem.shopId
-                favoriteShopUiModel.shopName = shopItem.shopName
-                favoriteShopUiModel.shopAvatarImageUrl = shopItem.shopImageUrl
-                favoriteShopUiModel.shopLocation = shopItem.shopLocation
-                favoriteShopUiModel.isFavoriteShop = shopItem.isFav
-                _addedFavoriteShop.value = favoriteShopUiModel
-                _favoriteShopImpression.value = shopItem.shopClickUrl
+            if (view == null){
+                if (isValid){
+                    _isRefreshPage.value = true
+                }
+            }else{
+                view.clearAnimation()
+                if (isValid != null && isValid) {
+                    val favoriteShopUiModel = FavoriteShopUiModel()
+                    favoriteShopUiModel.shopId = shopItem?.shopId
+                    favoriteShopUiModel.shopName = shopItem?.shopName
+                    favoriteShopUiModel.shopAvatarImageUrl = shopItem?.shopImageUrl
+                    favoriteShopUiModel.shopLocation = shopItem?.shopLocation
+                    favoriteShopUiModel.isFavoriteShop = shopItem?.isFav ?: false
+                    _addedFavoriteShop.value = favoriteShopUiModel
+                    _favoriteShopImpression.value = shopItem?.shopClickUrl
+                }
             }
+
         }, onError = { e ->
             Timber.e("onError: %s", e.toString())
             _isErrorAddFavoriteShop.value = true
