@@ -36,7 +36,7 @@
       "currentSite": "tokopediamarketplace",
       "event": "view_item",
       "userId": ".+",
-      "eventAction": "impression on banner .*",
+      "eventAction": "impression on banner dynamic channel bu carousel",
       "sessionIris": ".+",
       "eventLabel": ".*"
     },
