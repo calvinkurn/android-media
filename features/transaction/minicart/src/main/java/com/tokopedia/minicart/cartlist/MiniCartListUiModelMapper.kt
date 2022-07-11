@@ -395,7 +395,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
     private fun mapTickerErrorUiModel(totalProductUnavailable: Int, totalProductAvailable: Int): MiniCartTickerErrorUiModel {
         return MiniCartTickerErrorUiModel().apply {
             unavailableItemCount = totalProductUnavailable
-            isShowErrorActionLabel = totalProductAvailable > 1
+            isShowErrorActionLabel = totalProductAvailable > 0 && totalProductUnavailable > 0
         }
     }
 
