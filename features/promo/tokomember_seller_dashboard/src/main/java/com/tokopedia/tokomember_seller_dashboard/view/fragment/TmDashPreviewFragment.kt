@@ -91,7 +91,6 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
             programActionType = it
         }
         observeViewModel()
-        observeViewModel()
         tmTracker = TmTracker()
         tmCouponPreviewData =
             arguments?.getParcelable(BUNDLE_COUPON_PREVIEW_DATA) ?: TmCouponPreviewData()
