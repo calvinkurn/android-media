@@ -194,8 +194,8 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         getComponent(HomeAccountUserComponents::class.java).inject(this)
     }
 
-    private fun isEnableLinkAccount(): Boolean  {
-        return getRemoteConfig().getBoolean(REMOTE_CONFIG_KEY_ACCOUNT_LINKING, true)
+    private fun isEnablePrivacyAccount(): Boolean  {
+        return getRemoteConfig().getBoolean(REMOTE_CONFIG_KEY_PRIVACY_ACCOUNT, false)
     }
 
     private fun isEnableExplicitProfileMenu(): Boolean {
@@ -396,7 +396,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         grantResults: IntArray
     ) {
         when (requestCode) {
-            888 -> {
+            REQUEST_CODE_PERMISSION -> {
                 if (grantResults.isNotEmpty() &&
                     grantResults[0] == PackageManager.PERMISSION_GRANTED
                 ) {
@@ -841,7 +841,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             if (isFirstItemIsProfile()) {
                 removeItemAt(0)
             }
-            addItem(0, mapper.mapToProfileDataView(buyerAccount, isEnableLinkAccount = isEnableLinkAccount()))
+            addItem(0, mapper.mapToProfileDataView(buyerAccount))
             notifyDataSetChanged()
         }
         hideLoading()
@@ -989,12 +989,25 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     private fun setupSettingList() {
         val userSettingsMenu = menuGenerator.generateUserSettingMenu()
 
-        userSettingsMenu.items.forEach {
-            if(it.id == AccountConstants.SettingCode.SETTING_LINK_ACCOUNT && !isEnableLinkAccount()) {
-                userSettingsMenu.items.remove(it)
-            } else if (it.id == AccountConstants.SettingCode.SETTING_EXPLICIT_PROFILE && !isEnableExplicitProfileMenu()) {
-                userSettingsMenu.items.remove(it)
-            }
+        val settingsMenuIterator = userSettingsMenu.items.listIterator()
+
+        while (settingsMenuIterator.hasNext()) {
+            val value = settingsMenuIterator.next()
+
+            settingsMenuIterator.shouldRemove(
+                when(value.id) {
+                    AccountConstants.SettingCode.SETTING_LINK_ACCOUNT -> {
+                        isEnablePrivacyAccount()
+                    }
+                    AccountConstants.SettingCode.SETTING_PRIVACY_ACCOUNT -> {
+                        !isEnablePrivacyAccount()
+                    }
+                    AccountConstants.SettingCode.SETTING_EXPLICIT_PROFILE -> {
+                        !isEnableExplicitProfileMenu()
+                    }
+                    else -> false
+                }
+            )
         }
         addItem(userSettingsMenu, addSeparator = true)
         addItem(menuGenerator.generateApplicationSettingMenu(
@@ -1009,6 +1022,10 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                 CommonDataView(id = AccountConstants.SettingCode.SETTING_OUT_ID, title = getString(R.string.menu_account_title_sign_out), body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = IconUnify.SIGN_OUT, endText = "Versi ${GlobalConfig.VERSION_NAME}")
         ), isExpanded = true), addSeparator = true)
         adapter?.notifyDataSetChanged()
+    }
+
+    private fun MutableListIterator<CommonDataView>.shouldRemove(shouldRemove: Boolean){
+        if (shouldRemove) this.remove()
     }
 
     private fun addItem(item: Any, addSeparator: Boolean, position: Int = -1) {
@@ -1298,7 +1315,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION
             ),
-            888
+            REQUEST_CODE_PERMISSION
         )
     }
 
@@ -1357,7 +1374,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     private fun initCoachMark(position: Int, itemView: View, data: Any) {
         if (accountPref.isShowCoachmark()) {
             if (!isProfileSectionBinded) {
-                if (coachMarkItem.count() < 3) {
+                if (coachMarkItem.count() < MAX_COACH_MARK_SIZE) {
                     if (position == 0 && data is ProfileDataView) {
                         coachMarkItem.add(
                             CoachMark2Item(
@@ -1649,6 +1666,9 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     }
 
     companion object {
+        private const val MAX_COACH_MARK_SIZE = 3
+
+        private const val REQUEST_CODE_PERMISSION = 888
         private const val REQUEST_CODE_CHANGE_NAME = 300
         private const val REQUEST_CODE_PROFILE_SETTING = 301
         private const val REQUEST_FROM_PDP = 394
@@ -1671,7 +1691,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         private const val USER_CENTRALIZED_ASSET_CONFIG_USER_PAGE = "user_page"
 
         private const val REMOTE_CONFIG_KEY_HOME_ACCOUNT_BIOMETRIC_OFFERING = "android_user_home_account_biometric_offering"
-        private const val REMOTE_CONFIG_KEY_ACCOUNT_LINKING = "android_user_link_account_entry_point"
+        private const val REMOTE_CONFIG_KEY_PRIVACY_ACCOUNT = "android_user_privacy_account_enabled"
         private const val EXPLICIT_PROFILE_MENU_ROLLOUT = "explicit_android"
         private const val CLICK_TYPE_WISHLIST = "&click_type=wishlist"
 

@@ -6,6 +6,7 @@ import com.tokopedia.home_account.linkaccount.di.module.LinkAccountModule
 import com.tokopedia.home_account.linkaccount.di.module.LinkAccountViewModelModule
 import com.tokopedia.home_account.linkaccount.view.LinkAccountFragment
 import com.tokopedia.home_account.linkaccount.view.LinkAccountWebviewFragment
+import com.tokopedia.home_account.linkaccount.view.PrivacyAccountFragment
 import dagger.Component
 
 @ActivityScope
@@ -15,4 +16,5 @@ import dagger.Component
 interface LinkAccountComponent {
     fun inject(fragment: LinkAccountFragment)
     fun inject(fragment: LinkAccountWebviewFragment)
+    fun inject(fragment: PrivacyAccountFragment)
 }
