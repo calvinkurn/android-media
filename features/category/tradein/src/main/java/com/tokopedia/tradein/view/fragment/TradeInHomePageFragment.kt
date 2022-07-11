@@ -234,16 +234,17 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
             errorIllustration.hide()
             errorTitle.text = getString(com.tokopedia.tradein.R.string.tradein_cant_continue)
             errorDescription.text = it?.message
+            errorAction.text = getString(R.string.tradein_pelajari_selengkapnya)
             setButtonFull(true)
             errorSecondaryAction.gone()
             view?.findViewById<View>(R.id.tradein_error_layout)?.show()
             view?.findViewById<DeferredImageView>(R.id.error_image_view)?.let {
                 it.show()
-                it.mCompleteUrl = LAKU6_ERROR_IMAGE
+                it.loadRemoteImageDrawable("", LAKU6_ERROR_IMAGE)
             }
             setActionClickListener {
                 view?.findViewById<View>(R.id.tradein_error_layout)?.hide()
-                refreshPage()
+                setUpEducationalFragment()
             }
         }
     }
@@ -267,10 +268,11 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
                 }
             }
             if(isFraud){
+                errorAction.text = getString(R.string.tradein_pelajari_selengkapnya)
                 errorIllustration.hide()
                 view?.findViewById<DeferredImageView>(R.id.error_image_view)?.let {
                     it.show()
-                    it.mCompleteUrl = FRAUD_ERROR_IMAGE
+                    it.loadRemoteImageDrawable("", FRAUD_ERROR_IMAGE)
                 }
             } else {
                 errorIllustration.show()
@@ -279,7 +281,10 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
             view?.findViewById<View>(R.id.tradein_error_layout)?.show()
             setActionClickListener {
                 view?.findViewById<View>(R.id.tradein_error_layout)?.hide()
-                refreshPage()
+                if(isFraud)
+                    setUpEducationalFragment()
+                else
+                    refreshPage()
             }
         }
     }
