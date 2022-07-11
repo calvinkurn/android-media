@@ -39,7 +39,7 @@ data class CartDigitalInfoData(
 
         var channelId: String = "",
 
-        var collection_point_id: String = ""
+        var collectionPointId: String = ""
 ) : Parcelable {
 
     @Parcelize

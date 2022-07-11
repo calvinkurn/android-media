@@ -154,7 +154,7 @@ object DigitalCheckoutMapper {
             cartDigitalInfoData.smsState = responseRechargeGetCart.response.sms_state
             cartDigitalInfoData.title = responseRechargeGetCart.response.title
             cartDigitalInfoData.channelId = responseRechargeGetCart.response.channelId
-            cartDigitalInfoData.collection_point_id = responseRechargeGetCart.response.collectionPointId
+            cartDigitalInfoData.collectionPointId = responseRechargeGetCart.response.collectionPointId
 
             return cartDigitalInfoData
 

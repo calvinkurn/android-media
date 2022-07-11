@@ -320,7 +320,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             renderPostPaidPopup(cartInfo.attributes.postPaidPopupAttribute)
         }
 
-        val isGoToPlusCheckout = cartInfo.collection_point_id.isNotEmpty()
+        val isGoToPlusCheckout = cartInfo.collectionPointId.isNotEmpty()
         checkoutBottomViewWidget.isGoToPlusCheckout = isGoToPlusCheckout
         checkoutBottomViewWidget.isCheckoutButtonEnabled = !isGoToPlusCheckout
     }
