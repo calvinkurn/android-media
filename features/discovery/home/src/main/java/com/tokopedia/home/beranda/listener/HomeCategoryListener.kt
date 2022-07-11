@@ -65,7 +65,7 @@ interface HomeCategoryListener {
 
     fun onRetryMembership(position: Int, headerTitle: String)
 
-    fun onRetryWalletApp()
+    fun onRetryWalletApp(position: Int, headerTitle: String)
 
     fun onLegoBannerClicked(actionLink: String, trackingAttribution: String)
 

@@ -385,11 +385,12 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    fun onRefreshWalletApp() {
+    fun onRefreshWalletApp(position: Int, headerTitle: String) {
         if (!userSession.get().isLoggedIn) return
         findWidget<HomeHeaderDataModel> { headerModel, index ->
             launch {
-                val currentHeaderDataModel = homeBalanceWidgetUseCase.get().onGetWalletAppData(headerModel)
+                val currentHeaderDataModel = homeBalanceWidgetUseCase.get()
+                    .onGetWalletAppData(headerModel, position, headerTitle)
                 val visitable = updateHeaderData(currentHeaderDataModel, index)
                 visitable?.let { updateWidget(visitable, index) }
             }

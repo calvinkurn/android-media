@@ -87,7 +87,11 @@ class HomeBalanceWidgetUseCase @Inject constructor(
         }
     }
 
-    suspend fun onGetTokopointData(currentHeaderDataModel: HomeHeaderDataModel, position: Int, headerTitle: String): HomeHeaderDataModel {
+    suspend fun onGetTokopointData(
+        currentHeaderDataModel: HomeHeaderDataModel,
+        position: Int,
+        headerTitle: String
+    ): HomeHeaderDataModel {
         if (!userSession.isLoggedIn) return currentHeaderDataModel
 
         var homeBalanceModel = getHomeBalanceModel(currentHeaderDataModel, HomeBalanceModel.BALANCE_POSITION_SECOND)
@@ -101,15 +105,18 @@ class HomeBalanceWidgetUseCase @Inject constructor(
         )
     }
 
-    suspend fun onGetWalletAppData(currentHeaderDataModel: HomeHeaderDataModel): HomeHeaderDataModel {
+    suspend fun onGetWalletAppData(
+        currentHeaderDataModel: HomeHeaderDataModel,
+        position: Int,
+        headerTitle: String
+    ): HomeHeaderDataModel {
         if (!userSession.isLoggedIn) return currentHeaderDataModel
 
         var homeBalanceModel = getHomeBalanceModel(currentHeaderDataModel, HomeBalanceModel.BALANCE_POSITION_FIRST)
-        // TODO put the right header title
-        homeBalanceModel = getDataUsingWalletApp(homeBalanceModel, "")
+        homeBalanceModel = getDataUsingWalletApp(homeBalanceModel, headerTitle, position)
         return currentHeaderDataModel.copy(
             headerDataModel = currentHeaderDataModel.headerDataModel?.copy(
-                homeBalanceModel = homeBalanceModel,
+                homeBalanceModel = homeBalanceModel.copy(status = HomeBalanceModel.STATUS_SUCCESS),
                 isUserLogin = userSession.isLoggedIn
             ),
             needToShowUserWallet = homeFlagRepository.getCachedData().homeFlag.getFlag(HomeFlag.TYPE.HAS_TOKOPOINTS)?: false
@@ -164,12 +171,20 @@ class HomeBalanceWidgetUseCase @Inject constructor(
         return homeBalanceModel
     }
 
-    private suspend fun getDataUsingWalletApp(homeBalanceModel: HomeBalanceModel, headerTitle: String): HomeBalanceModel {
+    private suspend fun getDataUsingWalletApp(
+        homeBalanceModel: HomeBalanceModel,
+        headerTitle: String,
+        position: Int = DEFAULT_BALANCE_POSITION
+    ): HomeBalanceModel {
         try {
             val walletAppData = homeWalletAppRepository.getRemoteData()
             walletAppData.let { walletContent ->
                 if (walletContent.walletappGetBalance.balances.isNotEmpty()) {
-                    homeBalanceModel.mapBalanceData(walletAppData = walletAppData, headerTitle = headerTitle)
+                    homeBalanceModel.mapBalanceData(
+                        walletAppData = walletAppData,
+                        headerTitle = headerTitle,
+                        position = position
+                    )
                 } else {
                     HomeServerLogger.logWarning(
                             type = HomeServerLogger.TYPE_WALLET_APP_ERROR,
@@ -181,7 +196,7 @@ class HomeBalanceWidgetUseCase @Inject constructor(
             }
         } catch (e: Exception) {
             homeBalanceModel.isTokopointsOrOvoFailed = true
-            homeBalanceModel.mapErrorWallet(headerTitle)
+            homeBalanceModel.mapErrorWallet(headerTitle, position)
         }
         return homeBalanceModel
     }

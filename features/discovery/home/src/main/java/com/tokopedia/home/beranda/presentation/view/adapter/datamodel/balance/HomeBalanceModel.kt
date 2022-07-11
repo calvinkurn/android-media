@@ -95,7 +95,7 @@ data class HomeBalanceModel(
         position: Int = DEFAULT_BALANCE_POSITION
     ) {
         tokopointDrawerListHomeData?.let { mapTokopoint(tokopointDrawerListHomeData, headerTitle, position) }
-        walletAppData?.let { mapWalletApp(walletAppData, headerTitle) }
+        walletAppData?.let { mapWalletApp(walletAppData, headerTitle, position) }
         subscriptionsData?.let { mapSubscriptions(subscriptionsData, headerTitle) }
     }
 
@@ -103,12 +103,16 @@ data class HomeBalanceModel(
         if (position == DEFAULT_BALANCE_POSITION) {
             balanceDrawerItemModels.add(getDefaultTokopointsErrorState(headerTitle))
         } else if (balanceDrawerItemModels.size > position) {
-            balanceDrawerItemModels[position]
+            balanceDrawerItemModels[position] = getDefaultTokopointsErrorState(headerTitle)
         }
     }
 
-    fun mapErrorWallet(headerTitle: String) {
-        balanceDrawerItemModels.add(getDefaultGopayErrorState(headerTitle))
+    fun mapErrorWallet(headerTitle: String, position: Int = DEFAULT_BALANCE_POSITION) {
+        if (position == DEFAULT_BALANCE_POSITION) {
+            balanceDrawerItemModels.add(getDefaultGopayErrorState(headerTitle))
+        } else if (balanceDrawerItemModels.size > position) {
+            balanceDrawerItemModels[position] = getDefaultGopayErrorState(headerTitle)
+        }
     }
 
     private fun getDefaultGopayErrorState(headerTitle: String): BalanceDrawerItemModel {
@@ -265,7 +269,11 @@ data class HomeBalanceModel(
         else -> null
     }
 
-    private fun mapWalletApp(walletAppData: WalletAppData?, headerTitle: String) {
+    private fun mapWalletApp(
+        walletAppData: WalletAppData?,
+        headerTitle: String,
+        position: Int = DEFAULT_BALANCE_POSITION
+    ) {
         walletAppData?.let { walletApp ->
             val selectedBalance =
                 walletApp.mapToHomeBalanceItemModel(state = STATE_SUCCESS, headerTitle = headerTitle)
@@ -273,7 +281,13 @@ data class HomeBalanceModel(
                 selectedBalance.let { balance ->
                     flagStateCondition(
                         itemType = balance.drawerItemType,
-                        action = { balanceDrawerItemModels.add(balance) }
+                        action = {
+                            if (position == DEFAULT_BALANCE_POSITION) {
+                                balanceDrawerItemModels.add(balance)
+                            } else if (balanceDrawerItemModels.size > position) {
+                                balanceDrawerItemModels[position] = balance
+                            }
+                        }
                     )
                 }
             } else {

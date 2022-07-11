@@ -229,7 +229,7 @@ class BalanceViewHolder(v: View) : RecyclerView.ViewHolder(v) {
                 binding?.homeContainerBalance?.handleItemCLickType(
                     element = element,
                     rewardsAction = { listener?.onRetryMembership(adapterPosition, element.headerTitle) },
-                    walletAppAction = { listener?.onRetryWalletApp() }
+                    walletAppAction = { listener?.onRetryWalletApp(adapterPosition, element.headerTitle) }
                 )
             }
         }

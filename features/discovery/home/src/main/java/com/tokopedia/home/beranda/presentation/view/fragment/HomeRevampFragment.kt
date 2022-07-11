@@ -2186,8 +2186,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         getHomeViewModel().onRefreshMembership(position, headerTitle)
     }
 
-    override fun onRetryWalletApp() {
-        getHomeViewModel().onRefreshWalletApp()
+    override fun onRetryWalletApp(position: Int, headerTitle: String) {
+        startShimmeringBalanceWidget()
+        getHomeViewModel().onRefreshWalletApp(position, headerTitle)
     }
 
     override fun onLegoBannerClicked(actionLink: String, trackingAttribution: String) {
