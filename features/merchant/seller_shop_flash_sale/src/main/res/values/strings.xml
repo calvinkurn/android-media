@@ -254,7 +254,7 @@
     <string name="chooseproduct_save_button_text_empty">Tambah Produk</string>
     <string name="chooseproduct_sku_text">SKU: %s</string>
     <string name="chooseproduct_stock_total_text">Total stok: %d</string>
-    <string name="chooseproduct_variant_text">+ %d Variant Produk</string>
+    <string name="chooseproduct_variant_text">+ %d Varian lain</string>
 
     <!--Manage Product-->
     <string name="manage_product_complete_product_info_warning_label">Klik <b>Ubah</b> untuk melengkapi informasi produk ini, ya.</string>
