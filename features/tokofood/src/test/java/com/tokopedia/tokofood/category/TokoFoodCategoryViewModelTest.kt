@@ -1,5 +1,6 @@
 package com.tokopedia.tokofood.category
 
+import android.accounts.NetworkErrorException
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.tokofood.data.createLoadMoreState
 import com.tokopedia.tokofood.data.createLoadingCategoryState
@@ -194,5 +195,32 @@ class TokoFoodCategoryViewModelTest: TokoFoodCategoryViewModelTestFixture() {
 
 
         verifyGetCategoryLayoutResponseSuccess(expectedResponse)
+    }
+
+    @Test
+    fun `when check is page showing error should return true`() {
+        viewModel.showErrorState(NetworkErrorException())
+
+        val actualResponse = viewModel.isShownEmptyState()
+
+        verifyCategoryIsShowingErrorState(actualResponse)
+    }
+
+    @Test
+    fun `when check is page not showing error and show loader should return false`() {
+
+        viewModel.showProgressBar()
+
+        val actualResponse = viewModel.isShownEmptyState()
+
+        verifyCategoryIsNotShowingErrorState(actualResponse)
+    }
+
+    @Test
+    fun `when check is page not showing error should return false`() {
+
+        val actualResponse = viewModel.isShownEmptyState()
+
+        verifyCategoryIsNotShowingErrorState(actualResponse)
     }
 }
