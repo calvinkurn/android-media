@@ -19,6 +19,7 @@ import com.tokopedia.pdp.fintech.analytics.PdpFintechWidgetAnalytics
 import com.tokopedia.pdp.fintech.di.components.DaggerFintechWidgetComponent
 import com.tokopedia.pdp.fintech.domain.datamodel.ChipsData
 import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
+import com.tokopedia.pdp.fintech.domain.datamodel.WidgetBottomsheet
 import com.tokopedia.pdp.fintech.domain.datamodel.WidgetDetail
 import com.tokopedia.pdp.fintech.listner.ProductUpdateListner
 import com.tokopedia.pdp.fintech.listner.WidgetClickListner
@@ -63,6 +64,17 @@ class PdpFintechWidget @JvmOverloads constructor(
         initInjector()
         initView()
         initRecycler()
+        initClickListner()
+    }
+
+    private fun initClickListner() {
+        binding.lihatSemu.setOnClickListener {
+            routeToPdp(FintechRedirectionWidgetDataClass(1,
+                "tokopedia://fintech/paylater",0,"",
+                "ETC",0,"","",
+                WidgetBottomsheet(false),"0"
+            ))
+        }
     }
 
 

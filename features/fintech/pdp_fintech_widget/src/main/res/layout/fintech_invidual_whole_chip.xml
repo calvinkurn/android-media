@@ -16,10 +16,10 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/partnerIcon"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_marginStart="10dp"
-            android:paddingEnd="10dp"
+            android:paddingEnd="8dp"
             app:layout_constraintRight_toLeftOf="@id/chipHeader"
             app:layout_constraintBottom_toBottomOf="@+id/chipHeader"
             app:layout_constraintLeft_toLeftOf="parent"
