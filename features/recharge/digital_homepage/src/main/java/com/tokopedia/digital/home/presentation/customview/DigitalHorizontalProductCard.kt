@@ -5,6 +5,7 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.ViewTreeObserver
+import android.widget.Toast
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.digital.home.databinding.LayoutDigitalHorizontalProductCardBinding
 import com.tokopedia.kotlin.extensions.view.hide
@@ -29,6 +30,8 @@ class DigitalHorizontalProductCard @JvmOverloads constructor(
     var productSlashPrice: String = ""
     var actionListener: ActionListener? = null
 
+    var cardHeight: Int = 0
+
     init {
         with(binding.tgHorizontalCardProductSlashPrice) {
             paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
@@ -36,11 +39,20 @@ class DigitalHorizontalProductCard @JvmOverloads constructor(
     }
 
     fun buildView() {
-        setupProductImage()
         setupProductCategory()
         setupProductDetail()
         setupProductPrice()
         setupProductSlashPrice()
+
+        binding.root.viewTreeObserver.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                binding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                cardHeight = binding.root.measuredHeight
+            }
+        })
+
+        setupProductImage()
 
         binding.root.setOnClickListener {
             actionListener?.onClick()
@@ -58,11 +70,18 @@ class DigitalHorizontalProductCard @JvmOverloads constructor(
                 override fun onGlobalLayout() {
                     viewTreeObserver.removeOnGlobalLayoutListener(this)
 
-                    val ratio: Double =
-                        binding.tgHorizontalCardProductImage.measuredWidth.toDouble() / binding.tgHorizontalCardProductImage.measuredHeight.toDouble()
+                    Toast.makeText(context, "Card Height : $cardHeight", Toast.LENGTH_SHORT).show()
 
-                    val newWidth = binding.bgHorizontalCardProductImage.measuredWidth
+                    val ratio: Double =
+                        layoutParams.width.toDouble() / layoutParams.height.toDouble()
+                    val newWidth = cardHeight
                     val newHeight = newWidth / ratio
+
+                    Toast.makeText(
+                        context,
+                        "New Width : $newWidth ... New Height : $newHeight",
+                        Toast.LENGTH_SHORT
+                    ).show()
 
                     layoutParams.width = newWidth
                     layoutParams.height = newHeight.toInt()
