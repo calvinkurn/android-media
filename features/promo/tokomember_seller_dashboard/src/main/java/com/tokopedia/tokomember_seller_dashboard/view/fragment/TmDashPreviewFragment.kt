@@ -113,7 +113,14 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
                 arguments?.getInt(BUNDLE_SHOP_ID) ?: 0,
                 "create"
             )
-        } else {
+        }
+        else if(programActionType == ProgramActionType.CREATE_BUAT || programActionType == ProgramActionType.CREATE_FROM_COUPON){
+            isShowBottomSheet = false
+            viewBgPreview.show()
+            carouselPreview.show()
+            tmDashCreateViewModel.getCardInfo(cardId)
+        }
+        else {
             isShowBottomSheet = true
             viewBgPreview.show()
             carouselPreview.show()

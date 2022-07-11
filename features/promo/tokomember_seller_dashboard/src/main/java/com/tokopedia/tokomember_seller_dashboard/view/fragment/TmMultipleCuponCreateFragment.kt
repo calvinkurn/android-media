@@ -70,6 +70,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_RETRY
 import com.tokopedia.tokomember_seller_dashboard.util.ErrorState
 import com.tokopedia.tokomember_seller_dashboard.util.PREMIUM
+import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_CTA
 import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_TYPE_AUTO
 import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_TYPE_MANUAL
 import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_VALIDATION_CTA_TEXT
@@ -731,19 +732,36 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
     private fun renderHeader() {
         headerKupon?.apply {
 
+            progressKupon?.apply {
+                progressBarColorType = ProgressBarUnify.COLOR_GREEN
+                progressBarHeight = ProgressBarUnify.SIZE_SMALL
+                setValue(80, false)
+            }
+
+            title = COUPON_HEADER_TITLE
             when(programActionType){
                 ProgramActionType.CREATE_BUAT ->{
+                    title = PROGRAM_CTA
                     subtitle = COUPON_HEADER_SUBTITLE_2
                 }
                 ProgramActionType.CREATE ->{
                     subtitle = COUPON_HEADER_SUBTITLE
+                }
+                ProgramActionType.CREATE_FROM_COUPON ->{
+                    title = PROGRAM_CTA
+                    subtitle = COUPON_HEADER_SUBTITLE_2
+
+                    progressKupon?.apply {
+                        progressBarColorType = ProgressBarUnify.COLOR_GREEN
+                        progressBarHeight = ProgressBarUnify.SIZE_SMALL
+                        setValue(67, false)
+                    }
                 }
                 ProgramActionType.EXTEND ->{
                     subtitle = COUPON_HEADER_SUBTITLE_2
                 }
             }
 
-            title = COUPON_HEADER_TITLE
             isShowBackButton = true
             setNavigationOnClickListener {
                 if(arguments?.getInt(BUNDLE_CREATE_SCREEN_TYPE) == CreateScreenType.COUPON_MULTIPLE_BUAT){
@@ -754,12 +772,6 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 }
                 activity?.onBackPressed()
             }
-        }
-
-        progressKupon?.apply {
-            progressBarColorType = ProgressBarUnify.COLOR_GREEN
-            progressBarHeight = ProgressBarUnify.SIZE_SMALL
-            setValue(80, false)
         }
     }
 

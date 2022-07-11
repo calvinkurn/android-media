@@ -79,6 +79,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_RETRY
 import com.tokopedia.tokomember_seller_dashboard.util.ErrorState
 import com.tokopedia.tokomember_seller_dashboard.util.LOADING_TEXT
 import com.tokopedia.tokomember_seller_dashboard.util.PREMIUM
+import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_CTA
 import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_VALIDATION_CTA_TEXT
 import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_VALIDATION_ERROR_DESC
 import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_VALIDATION_ERROR_TITLE
@@ -824,12 +825,18 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         else{
             message
         }
+        val cta = if(openProgramCreation){
+            PROGRAM_CTA
+        }
+        else{
+            PROGRAM_VALIDATION_CTA_TEXT
+        }
         val bundle = Bundle()
         val tmIntroBottomSheetModel = TmIntroBottomsheetModel(
             title,
             desc ,
             TM_ERROR_PROGRAM,
-            PROGRAM_VALIDATION_CTA_TEXT
+            cta
         )
         bundle.putString(TokomemberBottomsheet.ARG_BOTTOMSHEET, Gson().toJson(tmIntroBottomSheetModel))
         val bottomSheet = TokomemberBottomsheet.createInstance(bundle)

@@ -24,6 +24,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
 import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_DETAIL_ACTIVE
 import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_DETAIL_WAITING
 import com.tokopedia.tokomember_seller_dashboard.util.TM_DETAIL_BG
+import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmDashCreateViewModel
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
@@ -94,7 +95,15 @@ class TokomemberDashProgramDetailFragment : BaseDaggerFragment() {
         })
     }
     private fun setMainUi(membershipGetProgramForm: MembershipGetProgramForm?) {
-        tvProgramPeriod.text = "${membershipGetProgramForm?.programForm?.timeWindow?.startTime} - ${membershipGetProgramForm?.programForm?.timeWindow?.endTime}"
+        tvProgramPeriod.setText("${membershipGetProgramForm?.programForm?.timeWindow?.startTime?.let {
+            TmDateUtil.setDatePreview(
+                it
+            )
+        }} - ${membershipGetProgramForm?.programForm?.timeWindow?.endTime?.let {
+            TmDateUtil.setDatePreview(
+                it
+            )
+        }}")
         tvMemberCount.text = membershipGetProgramForm?.programForm?.analytics?.totalNewMember
         tvProgramStatus.visibility = View.VISIBLE
         tvProgramStatus.text = membershipGetProgramForm?.programForm?.statusStr

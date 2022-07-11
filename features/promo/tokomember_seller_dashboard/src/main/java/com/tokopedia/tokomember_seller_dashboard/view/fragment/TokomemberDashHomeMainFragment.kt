@@ -20,6 +20,7 @@ import com.tokopedia.media.loader.clearImage
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmProgramDetailCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOW_TOAST
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberDashHomeViewpagerAdapter
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashHomeViewmodel
 import com.tokopedia.unifycomponents.TabsUnify
@@ -97,6 +98,10 @@ class TokomemberDashHomeMainFragment : BaseDaggerFragment() {
         adapter.addFragment(TokomemberDashCouponFragment.newInstance(arguments), "Kupon Tokomember")
 
         homeViewPager.adapter = adapter
+
+        if(arguments?.getBoolean(BUNDLE_SHOW_TOAST) == false){
+            homeViewPager.currentItem = 1
+        }
 
         homeTabs.getUnifyTabLayout().removeAllTabs()
         homeTabs.customTabMode = TabLayout.MODE_SCROLLABLE

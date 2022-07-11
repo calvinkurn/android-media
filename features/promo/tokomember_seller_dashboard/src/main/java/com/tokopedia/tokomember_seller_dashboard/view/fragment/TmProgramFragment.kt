@@ -332,14 +332,14 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
             ProgramActionType.CREATE_FROM_COUPON ->{
                 btnCreateProgram.text = PROGRAM_CTA
                 headerProgram?.apply {
-                    title = HEADER_TITLE_CREATE
-                    subtitle = HEADER_TITLE_DESC
+                    title = HEADER_TITLE_CREATE_BUAT
+                    subtitle = HEADER_TITLE_EXTEND_DESC
                     isShowBackButton = true
                 }
                 progressProgram?.apply {
                     progressBarColorType = ProgressBarUnify.COLOR_GREEN
                     progressBarHeight = ProgressBarUnify.SIZE_SMALL
-                    setValue(50, false)
+                    setValue(33, false)
                 }
             }
             ProgramActionType.EXTEND ->{

@@ -19,6 +19,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_OPTION_MENU
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_VOUCHER_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_VOUCHER_MAX_CASHBACK
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_VOUCHER_QUOTA
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_VOUCHER_TYPE
 import com.tokopedia.tokomember_seller_dashboard.util.CANCEL
@@ -43,6 +44,7 @@ class TokomemberOptionsMenuBottomsheet: BottomSheetUnify() {
     private var voucherId = ""
     private var voucherType = ""
     private var voucherQuota = 0
+    private var maxCashback: Int = 1
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -64,6 +66,9 @@ class TokomemberOptionsMenuBottomsheet: BottomSheetUnify() {
         }
         arguments?.getInt(BUNDLE_PROGRAM_ID)?.let {
             programId = it
+        }
+        arguments?.getInt(BUNDLE_VOUCHER_MAX_CASHBACK)?.let {
+            maxCashback = it
         }
     }
 
@@ -127,7 +132,7 @@ class TokomemberOptionsMenuBottomsheet: BottomSheetUnify() {
                     it.option(type, shopId = shopId, programId = programId)
                 }
                 if(it is TmCouponActions){
-                    it.option(type, voucherId = voucherId, voucherType, voucherQuota)
+                    it.option(type, voucherId = voucherId, voucherType, voucherQuota, maxCashback = maxCashback)
                 }
             }
             dismiss()
@@ -181,6 +186,7 @@ class TokomemberOptionsMenuBottomsheet: BottomSheetUnify() {
             bundle.putString(BUNDLE_VOUCHER_ID, voucherId)
             bundle.putString(BUNDLE_VOUCHER_TYPE, voucherType)
             bundle.putInt(BUNDLE_VOUCHER_QUOTA, voucherQuota)
+            bundle.putInt(BUNDLE_VOUCHER_MAX_CASHBACK, maxCashback)
             val tokomemberIntroBottomsheet = TokomemberOptionsMenuBottomsheet().apply {
                 arguments = bundle
             }
