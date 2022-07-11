@@ -31,6 +31,7 @@ import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.play_common.R as commonR
 
 /**
  * Created by jegul on 31/07/20
@@ -43,7 +44,7 @@ class ProductSheetViewComponent(
     private val clProductContent: ConstraintLayout = findViewById(R.id.cl_product_content)
     private val clProductVoucher: FrameLayout = findViewById(R.id.cl_product_voucher_info)
     private val clVoucherContent: ConstraintLayout = findViewById(R.id.cl_product_voucher_content)
-    private val tvSheetTitle: TextView = findViewById(com.tokopedia.play_common.R.id.tv_sheet_title)
+    private val tvSheetTitle: TextView = findViewById(commonR.id.tv_sheet_title)
     private val rvProductList: RecyclerView = findViewById(R.id.rv_product_list)
     private val vBottomOverlay: View = findViewById(R.id.v_bottom_overlay)
 
@@ -111,7 +112,7 @@ class ProductSheetViewComponent(
     private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
 
     init {
-        findViewById<ImageView>(com.tokopedia.play_common.R.id.iv_sheet_close)
+        findViewById<ImageView>(commonR.id.iv_sheet_close)
                 .setOnClickListener {
                     listener.onCloseButtonClicked(this@ProductSheetViewComponent)
                 }
