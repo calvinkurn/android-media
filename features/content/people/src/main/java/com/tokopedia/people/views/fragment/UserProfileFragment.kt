@@ -74,8 +74,26 @@ import kotlinx.coroutines.flow.collectLatest
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+import com.tokopedia.people.views.activity.FollowerFollowingListingActivity
+import com.tokopedia.people.views.adapter.UserPostBaseAdapter
+import com.tokopedia.people.analytic.UserProfileTracker
+import com.tokopedia.people.databinding.UpFragmentUserProfileBinding
+import com.tokopedia.people.databinding.UpLayoutUserProfileHeaderBinding
+import com.tokopedia.people.utils.showErrorToast
+import com.tokopedia.people.utils.showToast
+import com.tokopedia.people.utils.withCache
+import com.tokopedia.people.viewmodels.factory.UserProfileViewModelFactory
+import com.tokopedia.people.views.uimodel.action.UserProfileAction
+import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
+import com.tokopedia.people.views.uimodel.profile.ProfileType
+import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
+import com.tokopedia.people.views.uimodel.state.UserProfileUiState
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import com.tokopedia.abstraction.R as abstractionR
 import com.tokopedia.unifyprinciples.R as unifyR
+import com.tokopedia.feedcomponent.R as feedComponentR
+import com.tokopedia.feedcomponent.onboarding.view.fragment.FeedUGCOnboardingParentFragment
 
 class UserProfileFragment @Inject constructor(
     private val viewModelFactoryCreator: UserProfileViewModelFactory.Creator,
@@ -171,6 +189,8 @@ class UserProfileFragment @Inject constructor(
             mainBinding.rvPost.canScrollVertically(-1) || !shouldRefreshRecyclerView
         }
 
+        mainBinding.appBarUserProfile.addOnOffsetChangedListener(feedFloatingButtonManager.offsetListener)
+
         mainBinding.userShopRecommendation.hide()
 
         context?.let {
@@ -185,7 +205,7 @@ class UserProfileFragment @Inject constructor(
 
     override fun onDestroyView() {
         super.onDestroyView()
-        mainBinding.rvPost.removeOnScrollListener(feedFloatingButtonManager.scrollListener)
+        mainBinding.appBarUserProfile.removeOnOffsetChangedListener(feedFloatingButtonManager.offsetListener)
         feedFloatingButtonManager.cancel()
 
         _binding = null
@@ -194,11 +214,13 @@ class UserProfileFragment @Inject constructor(
     override fun onAttachFragment(childFragment: Fragment) {
         super.onAttachFragment(childFragment)
         when(childFragment) {
-            is FeedUserCompleteOnboardingBottomSheet -> {
-                /** TODO: set listener */
-            }
-            is FeedUserTnCOnboardingBottomSheet -> {
-                /** TODO: set listener */
+            is FeedUGCOnboardingParentFragment -> {
+                childFragment.setListener(object : FeedUGCOnboardingParentFragment.Listener {
+                    override fun onSuccess() {
+                        submitAction(UserProfileAction.LoadProfile())
+                        goToCreatePostPage()
+                    }
+                })
             }
         }
     }
@@ -232,18 +254,18 @@ class UserProfileFragment @Inject constructor(
             }
 
             fabUserProfile.setOnClickListener {
-                FeedUserTnCOnboardingBottomSheet.getFragment(
-                    childFragmentManager,
-                    requireActivity().classLoader
-                ).showNow(childFragmentManager)
-//            FeedUserCompleteOnboardingBottomSheet.getFragment(
-//                childFragmentManager,
-//                requireActivity().classLoader
-//            ).showNow(childFragmentManager)
+                if(viewModel.needOnboarding) {
+                    val bundle = Bundle().apply {
+                        putString(FeedUGCOnboardingParentFragment.KEY_USERNAME, viewModel.profileUsername)
+                    }
+                    childFragmentManager.beginTransaction()
+                        .add(FeedUGCOnboardingParentFragment::class.java, bundle, FeedUGCOnboardingParentFragment.TAG)
+                        .commit()
+                }
+                else {
+                    goToCreatePostPage()
+                }
             }
-
-            mainBinding.rvPost.addOnScrollListener(feedFloatingButtonManager.scrollListener)
-//        recyclerviewPost?.let { feedFloatingButtonManager.setDelayForExpandFab(it) }
         }
     }
 
@@ -619,13 +641,9 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
-    private fun getDefaultErrorMessage(): String {
-        return requireContext().getString(abstractionR.string.default_request_error_unknown)
-    }
+    private fun getDefaultErrorMessage() = getString(R.string.up_error_unknown)
 
-    private fun getUsernameWithAdd(): String {
-        return requireContext().getString(R.string.up_username_template, viewModel.profileUsername)
-    }
+    private fun getUsernameWithAdd() = getString(R.string.up_username_template, viewModel.profileUsername)
 
     override fun getScreenName(): String {
         return ""
@@ -645,6 +663,16 @@ class UserProfileFragment @Inject constructor(
                 getFollowersBundle(isFollowers)
             )
         })
+    }
+
+    private fun goToCreatePostPage() {
+        val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2)
+        intent.putExtra(KEY_APPLINK_AFTER_CAMERA_CAPTURE, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
+        intent.putExtra(KEY_MAX_MULTI_SELECT_ALLOWED, KEY_MAX_MULTI_SELECT_ALLOWED_VALUE)
+        intent.putExtra(KEY_TITLE, getString(feedComponentR.string.feed_post_sebagai))
+        intent.putExtra(KEY_APPLINK_FOR_GALLERY_PROCEED, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
+        intent.putExtra(KEY_IS_CREATE_POST_AS_BUYER, true)
+        startActivity(intent)
     }
 
     private fun getFollowersBundle(isFollowers: Boolean): Bundle {
@@ -790,6 +818,13 @@ class UserProfileFragment @Inject constructor(
         private const val EXTRA_IS_REMINDER = "EXTRA_IS_REMINDER"
         private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
 
+        private const val KEY_APPLINK_AFTER_CAMERA_CAPTURE = "link_cam"
+        private const val KEY_MAX_MULTI_SELECT_ALLOWED = "max_multi_select"
+        private const val KEY_MAX_MULTI_SELECT_ALLOWED_VALUE = 5
+        private const val KEY_TITLE = "title"
+        private const val KEY_APPLINK_FOR_GALLERY_PROCEED = "link_gall"
+        private const val KEY_IS_CREATE_POST_AS_BUYER = "is_create_post_as_buyer"
+
         private const val TAG = "UserProfileFragment"
 
         fun getFragment(
@@ -928,5 +963,4 @@ class UserProfileFragment @Inject constructor(
     override fun shrinkFab() {
         mainBinding.fabUserProfile.shrink()
     }
-
 }

@@ -79,7 +79,7 @@
         android:id="@+id/tv_accept_tnc"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/unify_space_12"
+        android:layout_marginStart="@dimen/spacing_lvl2"
         android:text="@string/feed_ugc_onboarding_accept_tnc"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintEnd_toEndOf="parent"

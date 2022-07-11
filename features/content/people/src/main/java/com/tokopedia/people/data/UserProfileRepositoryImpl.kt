@@ -2,7 +2,7 @@ package com.tokopedia.people.data
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistNewUseCase
-import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase.Companion.WHITELIST_ENTRY_POINT
+import com.tokopedia.feedcomponent.domain.usecase.WHITELIST_ENTRY_POINT
 import com.tokopedia.people.domains.*
 import com.tokopedia.people.domains.repository.UserProfileRepository
 import com.tokopedia.people.model.ProfileHeaderBase
@@ -48,9 +48,9 @@ class UserProfileRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getWhitelist(userId: String): ProfileWhitelistUiModel {
+    override suspend fun getWhitelist(): ProfileWhitelistUiModel {
         return withContext(dispatcher.io) {
-            val result = getWhitelistNewUseCase.execute(WHITELIST_ENTRY_POINT, userId)
+            val result = getWhitelistNewUseCase.execute(WHITELIST_ENTRY_POINT)
 
             mapper.mapUserWhitelist(result)
         }

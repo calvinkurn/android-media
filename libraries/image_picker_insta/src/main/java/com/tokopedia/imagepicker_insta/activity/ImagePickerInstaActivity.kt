@@ -22,6 +22,7 @@ class ImagePickerInstaActivity : PermissionActivity() {
     var applinkForGalleryProceed = ""
     var applinkForBackNavigation = ""
     var videoMaxDurationInSeconds:Long = VideoUtil.DEFAULT_DURATION_MAX_LIMIT
+    var isCreatePostAsBuyer: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,6 +75,7 @@ class ImagePickerInstaActivity : PermissionActivity() {
         if(videoMaxDurationInSeconds == 0L){
             videoMaxDurationInSeconds = VideoUtil.DEFAULT_DURATION_MAX_LIMIT
         }
+        isCreatePostAsBuyer = intent.extras?.getBoolean(BundleData.IS_CREATE_POST_AS_BUYER, false) ?: false
     }
 
     override fun finish() {

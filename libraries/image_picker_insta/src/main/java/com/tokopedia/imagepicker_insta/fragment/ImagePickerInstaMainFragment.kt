@@ -206,7 +206,8 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getFeedAccountList()
+        val isCreatePostAsBuyer = (requireActivity() as? ImagePickerInstaActivity)?.isCreatePostAsBuyer ?: false
+        viewModel.getFeedAccountList(isCreatePostAsBuyer)
     }
 
     private fun hasReadPermission(): Boolean {

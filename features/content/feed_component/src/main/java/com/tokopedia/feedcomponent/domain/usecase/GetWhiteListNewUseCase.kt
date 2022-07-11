@@ -32,6 +32,10 @@ const val GET_WHITE_LIST_QUERY: String = """query WhitelistQuery(${'$'}type: Str
       link
       badge
       type
+      post {
+        enable
+        has_username
+      }
     }
     error
   }

@@ -86,6 +86,9 @@ class UserProfileViewModel @AssistedInject constructor(
     val profileWebLink: String
         get() = _profileInfo.value.shareLink.webLink
 
+    val needOnboarding: Boolean
+        get() = _profileWhitelist.value.hasAcceptTnc.not()
+
     private val _savedReminderData = MutableStateFlow<SavedReminderData>(SavedReminderData.NoData)
     private val _profileInfo = MutableStateFlow(ProfileUiModel.Empty)
     private val _followInfo = MutableStateFlow(FollowInfoUiModel.Empty)
@@ -296,7 +299,7 @@ class UserProfileViewModel @AssistedInject constructor(
         _profileType.update { profileType }
 
         if(profileType == ProfileType.Self) {
-            _profileWhitelist.update {  repo.getWhitelist(followInfo.userID) }
+            _profileWhitelist.update {  repo.getWhitelist() }
         }
 
         /**
