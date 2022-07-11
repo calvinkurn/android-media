@@ -158,6 +158,7 @@ const val TM_DIALOG_CANCEL_CTA_PRIMARY_COUPON_EDIT = "Lanjut Ubah"
 const val TM_DIALOG_CANCEL_CTA_SECONDARY_COUPON = "Batal"
 
 const val PROGRAM_CTA = "Buat Program"
+const val PROGRAM_EXTEND_CTA = "Perpanjang Program"
 const val PROGRAM_CTA_EDIT = "Simpan"
 
 const val TM_PROGRAM_MIN_PURCHASE_ERROR = "Tidak boleh melebihi level VIP (Level 2)"

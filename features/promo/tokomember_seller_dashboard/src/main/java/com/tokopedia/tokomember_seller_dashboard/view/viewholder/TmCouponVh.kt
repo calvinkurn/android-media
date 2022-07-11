@@ -28,7 +28,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.COUPON_VIP
 import com.tokopedia.tokomember_seller_dashboard.util.DELETE
 import com.tokopedia.tokomember_seller_dashboard.util.EDIT
 import com.tokopedia.tokomember_seller_dashboard.util.STOP
-import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDate
+import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDatePreview
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberOptionsMenuBottomsheet
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -63,9 +63,9 @@ class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) :
         ivCoupon = itemView.findViewById(R.id.iv_coupon)
         btnAddQuota = itemView.findViewById(R.id.btn_add_quota)
 
-        tvDate.text = "${item.voucherStartTime?.let { setDate(it) }} - ${
+        tvDate.text = "${item.voucherStartTime?.let { setDatePreview(it.replace("T", " ").replace("Z", "")) }} - ${
             item.voucherFinishTime?.let {
-                setDate(it)
+                setDatePreview(it.replace("T", " ").replace("Z", ""))
             }
         }"
         tvCouponTitle.text = item.voucherName

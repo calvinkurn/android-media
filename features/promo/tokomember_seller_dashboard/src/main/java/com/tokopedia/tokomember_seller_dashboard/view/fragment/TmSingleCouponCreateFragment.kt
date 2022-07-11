@@ -69,6 +69,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.COUPON_VIP
 import com.tokopedia.tokomember_seller_dashboard.util.CREATE
 import com.tokopedia.tokomember_seller_dashboard.util.DATE_DESC
 import com.tokopedia.tokomember_seller_dashboard.util.DATE_DESC_END
+import com.tokopedia.tokomember_seller_dashboard.util.DATE_FORMAT
 import com.tokopedia.tokomember_seller_dashboard.util.DATE_TITLE
 import com.tokopedia.tokomember_seller_dashboard.util.DATE_TITLE_END
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA
@@ -270,7 +271,10 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                         val active = it.data?.membershipGetProgramList?.programSellerList?.count {
                             it?.status == ACTIVE
                         }
-                        if(wait != 0 && active == 0){
+                        val active_older = it.data?.membershipGetProgramList?.programSellerList?.count {
+                            it?.status == ACTIVE_OLDER
+                        }
+                        if(wait != 0 && (active_older?.let { it1 -> active?.plus(it1) }) == 0){
                             programStatus = WAITING
                             startTime = it.data.membershipGetProgramList.programSellerList.firstOrNull()?.timeWindow?.startTime
                             endTime = it.data.membershipGetProgramList.programSellerList.firstOrNull()?.timeWindow?.endTime
@@ -1030,10 +1034,11 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                                     it
                                 )
                             })
-                        val todayDate = TmDateUtil.setDatePreview(TmDateUtil.getDateFromUnix(todayCalendar))
+                        todayCalendar.set(Calendar.MONTH, 9)
+                        val todayDate = TmDateUtil.setDatePreview(TmDateUtil.getDateFromUnix(todayCalendar), DATE_FORMAT)
                         val day = getDayOfWeekID(todayCalendar.get(Calendar.DAY_OF_WEEK))
                         textFieldProgramStartDate.editText.setText("$day, $todayDate")
-                        textFieldProgramEndDate.editText.setText("$day, $todayDate")
+                        textFieldProgramEndDate.editText.setText(TmDateUtil.setDatePreview(programData?.timeWindow?.endTime.toString()))
 
                         val minTimeStart = GregorianCalendar(context?.let {
                             LocaleUtils.getCurrentLocale(
@@ -1067,9 +1072,9 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                         calEnd.time = programData?.timeWindow?.endTime.toString().toDate(SIMPLE_DATE_FORMAT)
                         tmCouponEndDateUnix = calEnd
                         tmCouponEndTimeUnix = calEnd
-                        textFieldProgramStartDate.editText.setText(TmDateUtil.setDate(programData?.timeWindow?.startTime.toString()))
+                        textFieldProgramStartDate.editText.setText(TmDateUtil.setDatePreview(programData?.timeWindow?.startTime.toString()))
                         textFieldProgramStartTime.editText.setText(TmDateUtil.setTime(programData?.timeWindow?.startTime.toString()))
-                        textFieldProgramEndDate.editText.setText(TmDateUtil.setDate(programData?.timeWindow?.endTime.toString()))
+                        textFieldProgramEndDate.editText.setText(TmDateUtil.setDatePreview(programData?.timeWindow?.endTime.toString()))
                         textFieldProgramEndTime.editText.setText(TmDateUtil.setTime(programData?.timeWindow?.endTime.toString()))
                     }
                 }
@@ -1175,7 +1180,8 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
             val calendarMax = GregorianCalendar(LocaleUtils.getCurrentLocale(it))
             calendarMax.time = defaultCalendar.time
             if(tmCouponStartDateUnix != null){
-                calendarMax.time = tmCouponStartDateUnix?.time
+                defaultCalendar.time = tmCouponStartDateUnix?.time
+                calendarMax.time = defaultCalendar.time
             }
             calendarMax.add(Calendar.YEAR, 1)
 

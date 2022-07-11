@@ -71,6 +71,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_RETRY
 import com.tokopedia.tokomember_seller_dashboard.util.ErrorState
 import com.tokopedia.tokomember_seller_dashboard.util.PREMIUM
 import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_CTA
+import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_EXTEND_CTA
 import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_TYPE_AUTO
 import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_TYPE_MANUAL
 import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_VALIDATION_CTA_TEXT
@@ -758,6 +759,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                     }
                 }
                 ProgramActionType.EXTEND ->{
+                    title = PROGRAM_EXTEND_CTA
                     subtitle = COUPON_HEADER_SUBTITLE_2
                 }
             }
@@ -1040,8 +1042,8 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
 
         val endDate = GregorianCalendar(locale)
         val sde = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
-        endDate.time = sde.parse(manualStartTimeProgram + "00") ?: Date()
-        val dayEnd = startDate.get(Calendar.DAY_OF_WEEK)
+        endDate.time = sde.parse(manualEndTimeProgram + "00") ?: Date()
+        val dayEnd = endDate.get(Calendar.DAY_OF_WEEK)
         val dayOfWeekEnd = getDayOfWeekID(dayEnd)
 
         textFieldProgramEndDate.editText.setText("$dayOfWeekEnd, ${setDatePreview(manualEndTimeProgram)}")

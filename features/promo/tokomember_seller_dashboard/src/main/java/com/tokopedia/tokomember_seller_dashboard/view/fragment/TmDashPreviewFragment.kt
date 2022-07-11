@@ -35,6 +35,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID_IN_TOOLS
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_TYPE
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_NAME
+import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_EXTEND_CTA
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDatePreview
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setTime
 import com.tokopedia.tokomember_seller_dashboard.util.TmPrefManager
@@ -259,6 +260,9 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
     }
 
     private fun renderButton(){
+        if(programActionType == ProgramActionType.EXTEND){
+            btnPreview.text = PROGRAM_EXTEND_CTA
+        }
         btnPreview.setOnClickListener {
             openLoadingDialog()
             if(arguments?.getInt(BUNDLE_CREATE_SCREEN_TYPE) == CreateScreenType.PREVIEW_BUAT){

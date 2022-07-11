@@ -1,6 +1,7 @@
 package com.tokopedia.tokomember_seller_dashboard.util
 
 import android.annotation.SuppressLint
+import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.utils.date.toDate
 import java.text.SimpleDateFormat
 import java.util.*
@@ -9,8 +10,6 @@ import kotlin.math.absoluteValue
 const val DATE_FORMAT = "yyyy-MM-dd"
 const val HOUR_MIN_FORMAT = "HH:mm"
 const val DD_FORMAT = "dd"
-const val MMMM_FORMAT = "MMMM"
-const val MMM_FORMAT = "MMM"
 const val SIMPLE_DATE_FORMAT_Z = "yyyy-MM-dd HH:mm:ss Z"
 const val SIMPLE_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss"
 const val UTC = "UTC"
@@ -29,21 +28,18 @@ object TmDateUtil {
     }
 
     @SuppressLint("SimpleDateFormat")
-    fun setDate(time: String): String {
-        val selectedTime = time.substringBefore(" ")
-        val date = selectedTime.toDate(DATE_FORMAT)
-        val day = SimpleDateFormat(DD_FORMAT).format(date)
-        val month = SimpleDateFormat(MMMM_FORMAT).format(date)
-        val year = selectedTime.substringBefore("-")
-        return "$day $month $year"
-    }
+    fun setDatePreview(time: String, sdf: String = SIMPLE_DATE_FORMAT): String {
+        val startDate = GregorianCalendar(locale)
+        val sds = SimpleDateFormat(sdf, locale)
+        startDate.time = sds.parse(time + "00") ?: Date()
+//        val dayStart = startDate.get(Calendar.DAY_OF_WEEK)
+//        val dayOfWeekStart = getDayOfWeekID(dayStart)
 
-    @SuppressLint("SimpleDateFormat")
-    fun setDatePreview(time: String): String {
+        val month = startDate.getDisplayName(Calendar.MONTH, Calendar.LONG, LocaleUtils.getIDLocale())?.substring(0, 3)
+
         val selectedTime = time.substringBefore(" ")
         val date = selectedTime.toDate(DATE_FORMAT)
         val day = SimpleDateFormat(DD_FORMAT).format(date)
-        val month = SimpleDateFormat(MMM_FORMAT).format(date)
         val year = selectedTime.substringBefore("-")
         return "$day $month $year"
     }
@@ -52,21 +48,6 @@ object TmDateUtil {
         val selectedTime = time.substringAfter(" ").substringBefore(" ").substringBeforeLast(":")
             .substringAfter("T")
         return "$selectedTime WIB"
-    }
-
-    fun setTimeEnd(time: String): String {
-        val parseTime = SimpleDateFormat(SIMPLE_DATE_FORMAT_Z, locale)
-        parseTime.timeZone = TimeZone.getTimeZone(UTC)
-        val date = parseTime.parse(time + "00")
-        val calendar = Calendar.getInstance(locale)
-        date?.let {
-            calendar.time = it
-            calendar.add(Calendar.MINUTE, -59)
-        }
-        val requireTime =
-            SimpleDateFormat(SIMPLE_DATE_FORMAT_Z, locale).format(calendar.time)
-
-        return requireTime.substringAfter(" ").substringBefore(" ").substringBeforeLast(":")
     }
 
     fun setTimeStart(time: String): String {
@@ -144,25 +125,6 @@ object TmDateUtil {
         }
     }
 
-    fun getTimeInMillisEnd(dateStr: String): String {
-        val parseTime = SimpleDateFormat(SIMPLE_DATE_FORMAT_Z, locale)
-        parseTime.timeZone = TimeZone.getTimeZone(UTC)
-        val date = parseTime.parse(dateStr + "00")
-        return try {
-            val calendar = Calendar.getInstance(locale)
-            date?.let {
-                calendar.time = it
-                calendar.add(Calendar.HOUR, -1)
-            }
-            (calendar.timeInMillis / 1000).toString()
-        } catch (e: Exception) {
-            "0"
-        }
-    }
-
-    fun getDateForCouponProgram(dateStr: String): String {
-        return dateStr.substringBefore(" ")
-    }
 
     fun getTimeMillisForCouponValidate(dateInput: String): String {
         //replace z by +0700
@@ -217,39 +179,6 @@ object TmDateUtil {
             }
             parseTime.format(calendar.time)
 
-        } catch (e: Exception) {
-            "0"
-        }
-    }
-
-    fun setTimeStartSingleWaiting(startTime: String?): String? {
-        val parseTime = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
-        parseTime.timeZone = TimeZone.getTimeZone(UTC)
-        val date = parseTime.parse(startTime + "00")
-        return try {
-            val calendar = Calendar.getInstance(locale)
-            date?.let {
-                calendar.time = it
-                calendar.set(Calendar.HOUR, 0)
-                calendar.set(Calendar.MINUTE, 30)
-            }
-            parseTime.format(calendar.time)
-        } catch (e: Exception) {
-            "0"
-        }
-    }
-    fun setTimeEndSingleWaiting(startTime: String?): String? {
-        val parseTime = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
-        parseTime.timeZone = TimeZone.getTimeZone(UTC)
-        val date = parseTime.parse(startTime + "00")
-        return try {
-            val calendar = Calendar.getInstance(locale)
-            date?.let {
-                calendar.time = it
-                calendar.set(Calendar.HOUR, 23)
-                calendar.set(Calendar.MINUTE, 30)
-            }
-            parseTime.format(calendar.time)
         } catch (e: Exception) {
             "0"
         }

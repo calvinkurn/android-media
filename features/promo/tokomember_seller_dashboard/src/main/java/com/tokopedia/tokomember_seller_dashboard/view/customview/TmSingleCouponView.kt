@@ -67,7 +67,7 @@ class TmSingleCouponView @JvmOverloads constructor(
                 selectedChipPositionKupon = position
                 when(selectedChipPositionKupon){
                     CouponType.CASHBACK -> {
-                        textFieldMaxCashback.labelText.text = MAX_CASHBACK_LABEL
+                        textFieldMaxCashback.setLabel(MAX_CASHBACK_LABEL)
                         tvCashbackType.show()
                         chipGroupCashbackType.show()
                         ivPreviewCoupon.showHideCashBackValueView(true)
@@ -76,7 +76,7 @@ class TmSingleCouponView @JvmOverloads constructor(
                     CouponType.SHIPPING -> {
                         tvCashbackType.hide()
                         chipGroupCashbackType.hide()
-                        textFieldMaxCashback.labelText.text = MAX_GRATIS_LABEL
+                        textFieldMaxCashback.setLabel(MAX_GRATIS_LABEL)
                         ivPreviewCoupon.showHideCashBackValueView(false)
                         ivPreviewCoupon.setCouponType(COUPON_SHIPPING_PREVIEW)
                     }

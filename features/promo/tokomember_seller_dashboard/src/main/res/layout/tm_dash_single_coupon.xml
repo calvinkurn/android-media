@@ -68,7 +68,7 @@
         app:layout_goneMarginTop="@dimen/tm_dash_dp_20"
         app:unify_text_field_clearable="false"
         app:unify_text_field_input_type="number"
-        app:unify_text_field_label="Maks. Potengen"
+        app:unify_text_field_label="Maks. Cashback"
         app:unify_text_field_label_static="false"
         app:unify_text_field_prepend_text="Rp" />
 

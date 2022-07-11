@@ -60,7 +60,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.SIMPLE_DATE_FORMAT
 import com.tokopedia.tokomember_seller_dashboard.util.TM_PROGRAM_MIN_PURCHASE_ERROR
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.convertDateTime
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.getDayOfWeekID
-import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDate
+import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDatePreview
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.mapper.ProgramUpdateMapper
@@ -413,7 +413,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         }else {
             membershipGetProgramForm?.programForm?.timeWindow?.startTime?.let {
                 selectedTime = it
-                textFieldDuration.editText.setText(setDate(selectedTime))
+                textFieldDuration.editText.setText(setDatePreview(selectedTime))
             }
         }
         membershipGetProgramForm?.timePeriodList?.forEach {
