@@ -99,7 +99,7 @@ class DetailEditorFragment @Inject constructor(
 
     override fun onWatermarkChanged(value: Int) {
         originalBitmap?.let {
-            val result = watermarkFilterRepositoryImpl.watermark(it, value)
+            val result = watermarkFilterRepositoryImpl.watermark(requireContext(), it, value)
             viewBinding?.imgPreview?.setImageBitmap(result)
         }
     }

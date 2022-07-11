@@ -1,43 +1,58 @@
 package com.tokopedia.media.editor.data.repository
 
-import android.R.attr
 import android.graphics.Bitmap
-import kotlinx.coroutines.flow.Flow
-import java.io.File
-import android.R.color
 import com.tokopedia.unifycomponents.dpToPx
-import android.R.attr.src
+import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
+import android.graphics.drawable.Drawable
+import androidx.core.content.ContextCompat
 import com.tokopedia.media.editor.ui.component.WatermarkToolUiComponent
 import javax.inject.Inject
-
-
+import com.tokopedia.media.editor.R
+import com.tokopedia.unifyprinciples.R as principleR
 
 interface WatermarkFilterRepository {
-    fun watermark(source: Bitmap, watermarkType: Int): Bitmap
+    fun watermark(context: Context, source: Bitmap, watermarkType: Int): Bitmap
 }
 
-class WatermarkFilterRepositoryImpl @Inject constructor(): WatermarkFilterRepository {
-    override fun watermark(source: Bitmap, watermarkType: Int): Bitmap {
+class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepository {
+    private val mainText = "Tokopedia"
+    private val shopText = "Nama Toko"
+
+    private var topedDrawable: Drawable? = null
+
+    // image ratio 14:3 || refer to watermark_tokopedia.xml vector drawable
+    private var imageWidth: Float = 0f
+    set(value) {
+        field = value
+        imageHeight = (value / 14) * 3
+    }
+
+    private var imageHeight: Float = 0f
+
+    override fun watermark(context: Context, source: Bitmap, watermarkType: Int): Bitmap {
+        if (topedDrawable == null) {
+            topedDrawable = ContextCompat.getDrawable(context, R.drawable.watermark_tokopedia)
+        }
+
         val w: Int = source.width
         val h: Int = source.height
         val result = Bitmap.createBitmap(w, h, source.config)
 
+        imageWidth = (w / 5).toFloat()
+
         val canvas = Canvas(result)
         canvas.drawBitmap(source, 0f, 0f, null)
 
-        val watermarkText = "Watermark"
         val fontSize = 14f.dpToPx()
-
         val paint = Paint()
-        paint.color = Color.RED
+        paint.color = ContextCompat.getColor(context,principleR.color.Unify_NN200)
         paint.textSize = fontSize
         paint.isAntiAlias = true
 
-        when(watermarkType){
+        when (watermarkType) {
             WatermarkToolUiComponent.WATERMARK_TOKOPEDIA -> {
                 watermark1(w, h, canvas, paint)
             }
@@ -50,39 +65,42 @@ class WatermarkFilterRepositoryImpl @Inject constructor(): WatermarkFilterReposi
         return result
     }
 
+    // tengah gambar
     private fun watermark2(
         width: Int,
         height: Int,
         canvas: Canvas,
         paint: Paint
     ) {
-        val textTokopedia = "Tokopedia"
-        val textShop = "Nama Toko"
-
-        val tokopediaTextBound = Rect()
-        paint.getTextBounds(textTokopedia, 0, textTokopedia.length, tokopediaTextBound)
         val shopTextBound = Rect()
-        paint.getTextBounds(textShop, 0, textShop.length, shopTextBound)
+        paint.getTextBounds(shopText, 0, shopText.length, shopTextBound)
 
-        var xPos = ((width / 2) - (tokopediaTextBound.width() / 2)).toFloat()
-        var yPos = (height / 2).toFloat()
-        canvas.drawText(textTokopedia, xPos, yPos, paint)
+        var xPos = ((width / 2) - (shopTextBound.width() / 2)).toFloat()
+        var yPos = ((height / 2) + shopTextBound.height()).toFloat()
+        canvas.drawText(shopText, xPos, yPos, paint)
 
-        xPos = ((width / 2) - (shopTextBound.width() / 2)).toFloat()
-        yPos = ((height / 2) + shopTextBound.height()).toFloat()
-        canvas.drawText(textShop, xPos, yPos, paint)
+
+        xPos = ((width / 2) - (imageWidth / 2))
+        yPos = ((height / 2) - (imageHeight))
+        topedDrawable?.setBounds(
+            0,
+            0,
+            imageWidth.toInt(),
+            imageHeight.toInt()
+        )
+        canvas.translate(xPos, yPos)
+        topedDrawable?.draw(canvas)
     }
 
+    // miring & full image
     private fun watermark1(
         width: Int,
         height: Int,
         canvas: Canvas,
         paint: Paint
     ) {
-        val text = "Tokopedia"
-
         val textBound = Rect()
-        paint.getTextBounds(text, 0, text.length, textBound)
+        paint.getTextBounds(mainText, 0, mainText.length, textBound)
 
         val paddingHorizontal = width / 5
         val paddingVertical = height / 5
@@ -90,13 +108,27 @@ class WatermarkFilterRepositoryImpl @Inject constructor(): WatermarkFilterReposi
         var xLastPost: Float
         var yLastPost = textBound.height().toFloat()
 
-        while (yLastPost <= height) {
-            xLastPost = 0f
+        val yLimit = height + (height / 2)
+        val xStart = -(width / 2)
+
+        while (yLastPost <= yLimit) {
+            xLastPost = xStart.toFloat()
             while (xLastPost <= width) {
-                canvas.drawText(text, xLastPost, yLastPost, paint)
-                xLastPost += (textBound.width() + (paddingHorizontal))
+                canvas.save()
+                canvas.rotate(-30f)
+                topedDrawable?.setBounds(
+                    0,
+                    0,
+                    imageWidth.toInt(),
+                    imageHeight.toInt()
+                )
+                canvas.translate(xLastPost, yLastPost)
+                topedDrawable?.draw(canvas)
+                canvas.restore()
+
+                xLastPost += (imageWidth + (paddingHorizontal))
             }
-            yLastPost += (textBound.height()) + (paddingVertical)
+            yLastPost += imageHeight + (paddingVertical)
         }
     }
 }
