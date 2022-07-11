@@ -33,30 +33,30 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
 
-        chipsData[position].gatewayId?.let {
-            setSeeMoreLogic(it,holder)
+
+            chipsData[position].gatewayId?.let {
+                setSeeMoreLogic(it, holder)
+            }
+            chipsData[position].header?.let {
+                setHeaderData(it, holder)
+            } ?: run {
+                removeViewVisibility(holder.headerPartner)
+            }
+            chipsData[position].subheaderColor?.let {
+                setSubHeaderColor(it, holder)
+            }
+            chipsData[position].subheader?.let {
+                setSubHeaderData(it, holder)
+            } ?: run {
+                removeViewVisibility(holder.subheaderPartner)
+            }
+            setIcon(position, holder.partnerIcon)
         }
-        chipsData[position].header?.let {
-            setHeaderData(it,holder)
-        } ?: run {
-            removeViewVisibility(holder.headerPartner)
-        }
-        chipsData[position].subheaderColor?.let {
-            setSubHeaderColor(it, holder)
-        }
-        chipsData[position].subheader?.let {
-            setSubHeaderData(it,holder)
-        } ?: run {
-            removeViewVisibility(holder.subheaderPartner)
-        }
-        setIcon(position, holder.partnerIcon)
-    }
+
 
     private fun setSeeMoreLogic(it: Int, holder: FintechWidgetAdapter.MyViewHolder) {
         if (it == 0) {
-            holder.dummyView.visibility = View.GONE
-            holder.seeMoreIcon.visibility = View.VISIBLE
-            holder.seeMoreIcon.loadImage(R.drawable.fintechwidget_procced_icon)
+           holder.cardContainer.visibility = View.GONE
         } else {
             holder.dummyView.visibility = View.VISIBLE
             holder.seeMoreIcon.visibility = View.GONE
@@ -157,6 +157,7 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
         val subheaderPartner = itemView.findViewById<Typography>(R.id.chipSubHeader)
         val seeMoreIcon = itemView.findViewById<ImageUnify>(R.id.seeMore_Icon)
         val dummyView = itemView.findViewById<View>(R.id.dummyViewForMargin)
+        val cardContainer = itemView.findViewById<View>(R.id.card_container)
 
         init {
 
@@ -201,6 +202,10 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
         }
         return counter != -1
 
+    }
+    companion object {
+        // Do not inflate if gatway id is 0
+        const val GATEWAY_ID_SEE_MORE = 0
     }
 
 }

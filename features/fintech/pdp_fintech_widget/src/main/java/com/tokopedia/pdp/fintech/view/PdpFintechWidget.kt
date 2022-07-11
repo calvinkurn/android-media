@@ -99,8 +99,11 @@ class PdpFintechWidget @JvmOverloads constructor(
 
     private fun updateTestForChip(widgetDetail: WidgetDetail) {
         widgetDetail.baseWidgetResponse?.baseData?.let { baseChipResponse ->
-            if (baseChipResponse.list.size > 0)
+            if (baseChipResponse.list.size > 0) {
                 binding.quickText.text = baseChipResponse.list[0].title
+                binding.lihatSemu.visibility = VISIBLE
+            }
+
         }
     }
 
