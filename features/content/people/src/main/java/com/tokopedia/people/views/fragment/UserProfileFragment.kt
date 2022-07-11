@@ -17,8 +17,6 @@ import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.feedcomponent.bottomsheets.onboarding.FeedUserCompleteOnboardingBottomSheet
-import com.tokopedia.feedcomponent.bottomsheets.onboarding.FeedUserTnCOnboardingBottomSheet
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
 import com.tokopedia.feedcomponent.view.decor.ShopRecomItemDecoration
@@ -74,23 +72,6 @@ import kotlinx.coroutines.flow.collectLatest
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
-import com.tokopedia.people.views.activity.FollowerFollowingListingActivity
-import com.tokopedia.people.views.adapter.UserPostBaseAdapter
-import com.tokopedia.people.analytic.UserProfileTracker
-import com.tokopedia.people.databinding.UpFragmentUserProfileBinding
-import com.tokopedia.people.databinding.UpLayoutUserProfileHeaderBinding
-import com.tokopedia.people.utils.showErrorToast
-import com.tokopedia.people.utils.showToast
-import com.tokopedia.people.utils.withCache
-import com.tokopedia.people.viewmodels.factory.UserProfileViewModelFactory
-import com.tokopedia.people.views.uimodel.action.UserProfileAction
-import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
-import com.tokopedia.people.views.uimodel.profile.ProfileType
-import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
-import com.tokopedia.people.views.uimodel.state.UserProfileUiState
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
-import com.tokopedia.abstraction.R as abstractionR
 import com.tokopedia.unifyprinciples.R as unifyR
 import com.tokopedia.feedcomponent.R as feedComponentR
 import com.tokopedia.feedcomponent.onboarding.view.fragment.FeedUGCOnboardingParentFragment
