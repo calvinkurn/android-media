@@ -243,7 +243,7 @@ class ChatbotPresenter @Inject constructor(
                             chatResponse.attachment?.attributes,
                             SessionChangeAttributes::class.java
                         )
-                        handleReplyBubble(agentMode)
+                        handleSessionChange(agentMode)
                     }
 
 
@@ -287,7 +287,7 @@ class ChatbotPresenter @Inject constructor(
         mSubscription.add(subscription)
     }
 
-    private fun handleReplyBubble(agentMode: SessionChangeAttributes) {
+    private fun handleSessionChange(agentMode: SessionChangeAttributes) {
         if (agentMode!=null){
             if (agentMode.sessionChange.mode==MODE_AGENT){
                 view.sessionChangeStateHandler(true)

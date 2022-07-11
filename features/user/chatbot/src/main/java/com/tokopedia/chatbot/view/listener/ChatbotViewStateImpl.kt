@@ -338,6 +338,10 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         getAdapter().showRetryForVideo(video)
     }
 
+    override fun hideDummyVideoAttachment() {
+        getAdapter().removeDummyVideo()
+    }
+
     override fun removeDummy(visitable: Visitable<*>) {
         getAdapter().removeDummy(visitable)
     }

@@ -46,6 +46,23 @@ class ChatbotAdapter(private val adapterTypeFactory: ChatbotTypeFactoryImpl)
         }
     }
 
+    fun removeDummyVideo() {
+        if (visitables.isNotEmpty()) {
+            val iter = visitables.iterator()
+
+            while (iter.hasNext()) {
+                val chatItem = iter.next()
+                if (chatItem is VideoUploadUiModel
+                    && chatItem.isDummy) {
+                    val position = this.visitables.indexOf(chatItem)
+                    this.visitables.remove(chatItem)
+                    notifyItemRemoved(position)
+                    break
+                }
+            }
+        }
+    }
+
     override fun isPreviousItemSender(adapterPosition: Int): Boolean {
         val item = visitables.getOrNull(adapterPosition + 1)
         return if (item is SendableUiModel && item.isSender || item is ChatSepratorViewModel) {

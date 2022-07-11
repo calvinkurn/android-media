@@ -780,9 +780,14 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         sendEventForWelcomeMessage(visitable)
         manageActionBubble(visitable)
         managePreviousStateOfBubble(visitable)
+        manageVideoBubble()
         mapMessageToList(visitable)
         getViewState()?.hideEmptyMessage(visitable)
         getViewState()?.onCheckToHideQuickReply(visitable)
+    }
+
+    private fun manageVideoBubble() {
+        getViewState()?.hideDummyVideoAttachment()
     }
 
     private fun managePreviousStateOfBubble(visitable: Visitable<*>) {

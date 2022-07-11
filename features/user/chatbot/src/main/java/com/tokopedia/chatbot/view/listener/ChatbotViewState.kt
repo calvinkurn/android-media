@@ -77,4 +77,6 @@ interface ChatbotViewState : BaseChatViewState {
 
     fun showRetryUploadVideos(it: VideoUploadUiModel)
 
+    fun hideDummyVideoAttachment()
+
 }
