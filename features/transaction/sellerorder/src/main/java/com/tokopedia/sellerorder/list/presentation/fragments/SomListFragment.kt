@@ -418,6 +418,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             } else if (quickFilter.isShippingFilter()) {
                 viewModel.addShippingFilter(quickFilter.id)
             }
+            SomAnalytics.eventClickStatusFilter(listOf(quickFilter.id.toString()), quickFilter.name)
         } else {
             if (quickFilter.isOrderTypeFilter()) {
                 viewModel.removeOrderTypeFilter(quickFilter.id)
