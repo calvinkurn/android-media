@@ -341,10 +341,10 @@ internal open class FashionStrategyReposition: FashionStrategy {
 
         listLabelVariant.forEachIndexed { index, labelGroupVariant ->
             val gradientDrawable = createColorSampleDrawable(context, labelGroupVariant.hexColor)
-            val colorOffset = (-2).toPx()
+            val colorOffset = -2
 
             val layoutParams = LinearLayout.LayoutParams(colorSampleSize, colorSampleSize)
-            layoutParams.marginStart = if (index > 0) colorOffset else 0
+            layoutParams.marginStart = if (index > 0) colorOffset.toPx() else 0
 
             val colorSampleImageView = ImageView(context)
             colorSampleImageView.setImageDrawable(gradientDrawable)

@@ -1,6 +1,7 @@
 package com.tokopedia.productcard.test.utils
 
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
@@ -17,11 +18,8 @@ private class WithDimensionRatioMatcher(
     }
 
     override fun matchesSafely(item: View?): Boolean {
-        val ratioList = ratio.split(":")
-        if (ratioList.size != 2 && item == null) return false
+        if (item == null) return false
 
-        val imageRatio: Float = ratioList[1].toFloat() / ratioList[0].toFloat()
-
-        return item!!.measuredWidth * imageRatio == item.measuredHeight.toFloat()
+        return (item.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio == ratio
     }
 }
