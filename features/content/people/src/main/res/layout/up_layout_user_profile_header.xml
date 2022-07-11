@@ -17,12 +17,12 @@
             android:id="@+id/header_profile"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
+            android:background="@color/Unify_NN600"
             android:elevation="@dimen/unify_space_4"
             app:contentInsetLeft="0dp"
             app:contentInsetStart="0dp"
             app:contentInsetStartWithNavigation="0dp"
             app:elevation="@dimen/unify_space_4"
-            android:background="@color/Unify_NN600"
             app:unify_header_is_show_back_button="true"
             app:unify_header_is_show_shadow="false"
             app:unify_header_transparent_mode="false" />
@@ -300,21 +300,16 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <ViewFlipper
-            android:id="@+id/user_shop_recommendation"
+        <include
+            android:id="@+id/shop_recommendation"
+            layout="@layout/up_layout_shop_recommendation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linear_button"
-            tools:visibility="visible">
-
-            <include
-                android:id="@+id/include_shop_recommendation"
-                layout="@layout/up_layout_shop_recommendation" />
-
-        </ViewFlipper>
+            app:layout_constraintTop_toBottomOf="@+id/linear_button" />
 
         <ViewFlipper
             android:id="@+id/user_post_container"

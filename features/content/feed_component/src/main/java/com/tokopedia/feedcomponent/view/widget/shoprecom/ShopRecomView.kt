@@ -55,7 +55,7 @@ class ShopRecomView : FrameLayout {
     }
 
     private fun buttonFollowState(isFollow: Boolean) = with(binding) {
-        btnItemShopCta.apply {
+        btnItemShop.apply {
             text = context.getString(if (isFollow) up_btn_text_following else up_btn_text_follow)
             buttonVariant = if (isFollow) GHOST else FILLED
             buttonType = if (isFollow) ALTERNATE else MAIN
@@ -65,7 +65,7 @@ class ShopRecomView : FrameLayout {
     private fun onClickListener(data: ShopRecomItemUI) = with(binding) {
         clItemShopContainer.setOnClickListener { mListener?.onShopRecomItemClicked(data.applink) }
         imgItemShopClose.setOnClickListener { mListener?.onShopRecomCloseClicked(data) }
-        btnItemShopCta.setOnClickListener { mListener?.onShopRecomFollowClicked(data) }
+        btnItemShop.setOnClickListener { mListener?.onShopRecomFollowClicked(data) }
     }
 
 }

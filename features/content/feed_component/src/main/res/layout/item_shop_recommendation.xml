@@ -82,7 +82,7 @@
             tools:text="nike_indonesia_indonesia_indonesia" />
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btn_item_shop_cta"
+            android:id="@+id/btn_item_shop"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_8"

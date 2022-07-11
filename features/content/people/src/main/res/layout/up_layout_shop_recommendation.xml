@@ -31,7 +31,7 @@
             tools:listitem="@layout/up_layout_shop_recommendation" />
 
         <include
-            android:id="@+id/include_error"
+            android:id="@+id/layout_error"
             layout="@layout/up_layout_error_empty_user_post"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

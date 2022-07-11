@@ -175,8 +175,6 @@ class UserProfileFragment @Inject constructor(
 
         mainBinding.appBarUserProfile.addOnOffsetChangedListener(feedFloatingButtonManager.offsetListener)
 
-        mainBinding.userShopRecommendation.hide()
-
         context?.let {
             screenShotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
                 it,
@@ -253,7 +251,7 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
-    private fun initShopRecommendation() = with(mainBinding.includeShopRecommendation.rvShopRecom) {
+    private fun initShopRecommendation() = with(mainBinding.shopRecommendation.rvShopRecom) {
         mAdapterShopRecom = UserShopRecomBaseAdapter(
             this@UserProfileFragment,
             this@UserProfileFragment
@@ -375,8 +373,8 @@ class UserProfileFragment @Inject constructor(
                 }
                 is Success -> {
                     mAdapterShopRecom.onSuccess(it.data)
-                    mainBinding.userShopRecommendation.show()
-                    with(mainBinding.includeShopRecommendation) {
+                    with(mainBinding.shopRecommendation) {
+                        root.show()
                         txtWordingFollow.show()
                         rvShopRecom.show()
                     }
@@ -674,7 +672,7 @@ class UserProfileFragment @Inject constructor(
     override fun onShopRecomCloseClicked(item: ShopRecomItem) {
         mAdapterShopRecom.remove(item)
         if (mAdapterShopRecom.itemCount == 0) {
-            with(mainBinding.includeShopRecommendation) {
+            with(mainBinding.shopRecommendation) {
                 txtWordingFollow.hide()
                 rvShopRecom.hide()
             }
@@ -699,12 +697,12 @@ class UserProfileFragment @Inject constructor(
             mainBinding.userPostContainer.displayedChild = PAGE_EMPTY
         } else {
             mainBinding.userPostContainer.displayedChild = PAGE_EMPTY
-            mainBinding.includeShopRecommendation.root.hide()
+            mainBinding.shopRecommendation.root.hide()
         }
     }
 
     override fun onStartFirstPageLoad() {
-        mainBinding.userShopRecommendation.hide()
+        mainBinding.shopRecommendation.root.hide()
         mainBinding.userPostContainer.displayedChild = PAGE_LOADING
     }
 
