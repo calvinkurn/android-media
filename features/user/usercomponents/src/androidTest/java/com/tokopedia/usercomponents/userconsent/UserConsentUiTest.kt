@@ -21,7 +21,6 @@ import com.tokopedia.usercomponents.userconsent.common.UserConsentUiTestCons.TNC
 import com.tokopedia.usercomponents.userconsent.common.UserConsentUiTestCons.TNC_SINGLE_MANDATORY
 import com.tokopedia.usercomponents.userconsent.common.UserConsentUiTestCons.TNC_SINGLE_OPTIONAL
 import com.tokopedia.usercomponents.userconsent.fakes.FakeGetCollectionResponseDataModel
-import com.tokopedia.usercomponents.userconsent.fakes.FakeUserConsentDebugActivity
 import com.tokopedia.usercomponents.userconsent.fakes.GET_COLLECTION_JSON
 import org.junit.After
 import org.junit.Before
@@ -33,7 +32,7 @@ class UserConsentUiTest {
 
     @get:Rule
     var activityRule = IntentsTestRule(
-        FakeUserConsentDebugActivity::class.java, false, false
+        UserConsentDebugActivity::class.java, false, false
     )
 
     @get:Rule
