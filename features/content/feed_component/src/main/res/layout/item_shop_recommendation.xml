@@ -17,11 +17,12 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/img_item_shop_close"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/unify_space_12"
+            android:layout_height="@dimen/unify_space_12"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_close" />
+            app:tint="@color/Unify_NN900"
+            app:srcCompat="@drawable/iconunify_close" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/img_item_shop_image"
