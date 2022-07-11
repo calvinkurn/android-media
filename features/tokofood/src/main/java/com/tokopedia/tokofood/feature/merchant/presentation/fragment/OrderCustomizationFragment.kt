@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.EMPTY
@@ -41,6 +42,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
+import timber.log.Timber
 import javax.inject.Inject
 
 @FlowPreview
@@ -281,6 +283,7 @@ class OrderCustomizationFragment : BaseMultiFragment(),
                 when (it.state) {
                     UiEvent.EVENT_HIDE_LOADING_ADD_TO_CART, UiEvent.EVENT_HIDE_LOADING_UPDATE_TO_CART -> {
                         binding?.atcButton?.isLoading = false
+                        hideKeyboard()
                         parentFragmentManager.popBackStack()
                     }
                     UiEvent.EVENT_PHONE_VERIFICATION -> {
@@ -340,6 +343,14 @@ class OrderCustomizationFragment : BaseMultiFragment(),
                 duration = Toaster.LENGTH_SHORT,
                 type = Toaster.TYPE_NORMAL
             ).show()
+        }
+    }
+
+    private fun hideKeyboard() {
+        try {
+            KeyboardHandler.hideSoftKeyboard(activity)
+        } catch (ex: Exception) {
+            Timber.e(ex)
         }
     }
 
