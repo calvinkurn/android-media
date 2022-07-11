@@ -71,7 +71,6 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
-import timber.log.Timber
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -660,7 +659,7 @@ class UserProfileFragment @Inject constructor(
         return bundle
     }
 
-    override fun onCloseClicked(item: ShopRecomItem) {
+    override fun onShopRecomCloseClicked(item: ShopRecomItem) {
         mAdapterShopRecom.remove(item)
         if (mAdapterShopRecom.itemCount == 0) {
             with(mainBinding.includeShopRecommendation) {
@@ -670,11 +669,11 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
-    override fun onFollowClicked(item: ShopRecomItem) {
+    override fun onShopRecomFollowClicked(item: ShopRecomItem) {
         submitAction(UserProfileAction.ClickFollowButtonShopRecom(item))
     }
 
-    override fun onItemClicked(appLink: String) {
+    override fun onShopRecomItemClicked(appLink: String) {
         RouteManager.route(requireContext(), appLink)
     }
 

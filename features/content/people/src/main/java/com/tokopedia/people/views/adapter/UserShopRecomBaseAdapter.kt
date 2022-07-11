@@ -16,9 +16,9 @@ open class UserShopRecomBaseAdapter(
 ) : BaseAdapter<ShopRecomItem>(callback), ShopRecomView.Listener {
 
     interface ShopRecommendationCallback {
-        fun onCloseClicked(item: ShopRecomItem)
-        fun onFollowClicked(item: ShopRecomItem)
-        fun onItemClicked(appLink: String)
+        fun onShopRecomCloseClicked(item: ShopRecomItem)
+        fun onShopRecomFollowClicked(item: ShopRecomItem)
+        fun onShopRecomItemClicked(appLink: String)
     }
 
     var cursor: String = ""
@@ -70,16 +70,16 @@ open class UserShopRecomBaseAdapter(
         notifyItemChanged(position, item)
     }
 
-    override fun onCloseClicked(item: ShopRecomItemUI) {
-        shopRecomCallback.onCloseClicked(item.transformToShopRecomItem())
+    override fun onShopRecomCloseClicked(item: ShopRecomItemUI) {
+        shopRecomCallback.onShopRecomCloseClicked(item.transformToShopRecomItem())
     }
 
-    override fun onFollowClicked(item: ShopRecomItemUI) {
-        shopRecomCallback.onFollowClicked(item.transformToShopRecomItem())
+    override fun onShopRecomFollowClicked(item: ShopRecomItemUI) {
+        shopRecomCallback.onShopRecomFollowClicked(item.transformToShopRecomItem())
     }
 
-    override fun onShopItemClicked(appLink: String) {
-        shopRecomCallback.onItemClicked(appLink)
+    override fun onShopRecomItemClicked(appLink: String) {
+        shopRecomCallback.onShopRecomItemClicked(appLink)
     }
 
     private fun ShopRecomItem.transformToShopRecomItemUI(): ShopRecomItemUI {
