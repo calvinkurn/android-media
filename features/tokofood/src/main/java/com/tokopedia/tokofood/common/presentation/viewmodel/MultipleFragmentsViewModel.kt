@@ -1,6 +1,9 @@
 package com.tokopedia.tokofood.common.presentation.viewmodel
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -21,6 +24,10 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -47,8 +54,25 @@ class MultipleFragmentsViewModel @Inject constructor(
         MutableStateFlow<Result<MiniCartUiModel>>(Result.Success(MiniCartUiModel()))
     val miniCartFlow = miniCartUiModelState.asStateFlow()
 
+    private val _hasCartUpdatedIntoLatestState = MutableLiveData<Boolean>()
+    val hasCartUpdatedIntoLatestState: LiveData<Boolean>
+        get() = _hasCartUpdatedIntoLatestState
+
     val shopId: String
         get() = cartDataState.value?.shop?.shopId.orEmpty()
+
+    init {
+        viewModelScope.launch {
+            miniCartUiModelState.flatMapConcat { miniCartState ->
+                flow {
+                    val hasCartUpdated = miniCartState !is Result.Loading
+                    emit(hasCartUpdated)
+                }
+            }.collect { hasCartUpdate ->
+                _hasCartUpdatedIntoLatestState.value = hasCartUpdate
+            }
+        }
+    }
 
     fun onSavedInstanceState() {
         savedStateHandle[MINI_CART_STATE_KEY] =
@@ -102,6 +126,7 @@ class MultipleFragmentsViewModel @Inject constructor(
                 cartDataValidationState.emit(
                     UiEvent(
                         state = UiEvent.EVENT_SUCCESS_DELETE_PRODUCT,
+                        source = source,
                         data = cartId to it.data
                     )
                 )
@@ -110,6 +135,7 @@ class MultipleFragmentsViewModel @Inject constructor(
             cartDataValidationState.emit(
                 UiEvent(
                     state = UiEvent.EVENT_FAILED_DELETE_PRODUCT,
+                    source = source,
                     throwable = it
                 )
             )
@@ -179,6 +205,7 @@ class MultipleFragmentsViewModel @Inject constructor(
                 cartDataValidationState.emit(
                     UiEvent(
                         state = UiEvent.EVENT_SUCCESS_UPDATE_NOTES,
+                        source = source,
                         data = updateParam to it.data
                     )
                 )
@@ -187,6 +214,7 @@ class MultipleFragmentsViewModel @Inject constructor(
             cartDataValidationState.emit(
                 UiEvent(
                     state = UiEvent.EVENT_FAILED_UPDATE_NOTES,
+                    source = source,
                     throwable = it
                 )
             )
@@ -206,6 +234,7 @@ class MultipleFragmentsViewModel @Inject constructor(
                 cartDataValidationState.emit(
                     UiEvent(
                         state = UiEvent.EVENT_SUCCESS_UPDATE_QUANTITY,
+                        source = source,
                         data = updateParam to it.data
                     )
                 )
@@ -214,6 +243,7 @@ class MultipleFragmentsViewModel @Inject constructor(
             cartDataValidationState.emit(
                 UiEvent(
                     state = UiEvent.EVENT_FAILED_UPDATE_QUANTITY,
+                    source = source,
                     throwable = it
                 )
             )
@@ -236,6 +266,7 @@ class MultipleFragmentsViewModel @Inject constructor(
                 cartDataValidationState.emit(
                     UiEvent(
                         state = UiEvent.EVENT_SUCCESS_UPDATE_CART,
+                        source = source,
                         data = updateParam to it.data
                     )
                 )
@@ -244,6 +275,7 @@ class MultipleFragmentsViewModel @Inject constructor(
             cartDataValidationState.emit(
                 UiEvent(
                     state = UiEvent.EVENT_FAILED_UPDATE_CART,
+                    source = source,
                     throwable = it
                 )
             )
@@ -260,6 +292,7 @@ class MultipleFragmentsViewModel @Inject constructor(
                     cartDataValidationState.emit(
                         UiEvent(
                             state = UiEvent.EVENT_PHONE_VERIFICATION,
+                            source = source,
                             data = it.data.bottomSheet
                         )
                     )
@@ -274,6 +307,7 @@ class MultipleFragmentsViewModel @Inject constructor(
                     cartDataValidationState.emit(
                         UiEvent(
                             state = UiEvent.EVENT_SUCCESS_ADD_TO_CART,
+                            source = source,
                             data = updateParam to it.data
                         )
                     )
@@ -283,6 +317,7 @@ class MultipleFragmentsViewModel @Inject constructor(
             cartDataValidationState.emit(
                 UiEvent(
                     state = UiEvent.EVENT_FAILED_ADD_TO_CART,
+                    source = source,
                     throwable = it
                 )
             )
@@ -294,7 +329,8 @@ class MultipleFragmentsViewModel @Inject constructor(
             cartDataValidationState.emit(
                 UiEvent(
                     state = UiEvent.EVENT_SUCCESS_VALIDATE_CHECKOUT,
-                    data = Pair(cartDataFlow.value, source)
+                    source = source,
+                    data = cartDataFlow.value
                 )
             )
         }

@@ -567,9 +567,9 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
             activityViewModel?.cartDataValidationFlow?.collect { uiEvent ->
                 when(uiEvent.state) {
                     UiEvent.EVENT_SUCCESS_VALIDATE_CHECKOUT -> {
-                        (uiEvent.data as? Pair<CheckoutTokoFoodData, String>)?.let {
-                            analytics.clickAtc(userSession.userId, localCacheModel?.district_id, it.first)
-                            if (it.second == MINI_CART_SOURCE){
+                        (uiEvent.data as? CheckoutTokoFoodData)?.let {
+                            analytics.clickAtc(userSession.userId, localCacheModel?.district_id, it)
+                            if (uiEvent.source == MINI_CART_SOURCE){
                                 goToPurchasePage()
                             }
                         }
