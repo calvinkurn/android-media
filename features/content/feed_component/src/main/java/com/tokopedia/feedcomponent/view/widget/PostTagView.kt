@@ -27,6 +27,7 @@ private const val POINTER_HEIGHT = 8
 private const val POINTER_ACTUAL_WIDTH = 79
 private const val BUBBLE_HEIGHT = 52
 private const val DOT_HALF_DIMEN = 8
+private const val PRICE_PADDING_WIDTH = 8F
 private const val CENTER_POS_X = 0.5
 private const val THRESHOLD_POS_Y_TO_INFLATE_TAGGING_BUBBLE_DOWNWARD = 0.70
 
@@ -57,7 +58,6 @@ class PostTagView @JvmOverloads constructor(
     private var feedXTag: com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging = feedXMediaTagging
     private var initialBubbleVisible: Boolean
     private var view : View
-    private var paddingWidth : Float = 8F
 
     init {
         initialBubbleVisible = false
@@ -120,7 +120,7 @@ class PostTagView @JvmOverloads constructor(
             if (priceWidthDP > 0)
                 result += priceWidthPX
             if (slashedPriceWidthDP > 0)
-                result += slashedPriceWidthPX + convertDpToPx(paddingWidth)
+                result += slashedPriceWidthPX + convertDpToPx(PRICE_PADDING_WIDTH)
             if (result > productViewName.maxWidth && productViewSlashedPrice.isVisible)
                 productViewName.maxWidth = result.toInt()
 

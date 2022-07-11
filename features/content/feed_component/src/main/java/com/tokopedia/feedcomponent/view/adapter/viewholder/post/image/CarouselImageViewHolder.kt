@@ -217,7 +217,7 @@ internal class CarouselImageViewHolder(
         } else itemView.context.getString(R.string.feeds_cek_sekarang)
 
         topAdsCard.showWithCondition(
-            shouldShow = card.isTypeProductHighlight || card.isTypeVOD || card.isTopAds
+            shouldShow = card.isTypeProductHighlight || card.isTopAds
         )
 
         topAdsCard.setOnClickListener {
