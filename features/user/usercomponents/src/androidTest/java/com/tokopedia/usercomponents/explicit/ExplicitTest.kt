@@ -8,16 +8,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.test.application.annotations.UiTest
-import com.tokopedia.usercomponents.explicit.ExplicitAction.clickButtonAnswer
-import com.tokopedia.usercomponents.explicit.ExplicitAction.clickOnDismiss
-import com.tokopedia.usercomponents.explicit.ExplicitAction.initQuestionDisplayed
-import com.tokopedia.usercomponents.explicit.ExplicitAction.isErrorDisplayed
-import com.tokopedia.usercomponents.explicit.ExplicitAction.isHideQuestion
-import com.tokopedia.usercomponents.explicit.ExplicitAction.isSuccessDisplayed
 import com.tokopedia.usercomponents.explicit.fake_view.ExplicitDebugActivity
-import com.tokopedia.usercomponents.explicit.stub.data.ExplicitUseCaseStub
+import com.tokopedia.usercomponents.explicit.stub.data.ExplicitRepositoryStub
 import com.tokopedia.usercomponents.explicit.stub.data.TestState
-import com.tokopedia.usercomponents.stub.di.FakeBaseAppComponentBuilder.getComponent
+import com.tokopedia.usercomponents.stub.di.getComponent
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -36,14 +30,14 @@ class ExplicitTest {
         get() = InstrumentationRegistry
             .getInstrumentation().context.applicationContext
 
-    private lateinit var repositoryStub: ExplicitUseCaseStub
+    private lateinit var repositoryStub: ExplicitRepositoryStub
 
     @Before
     fun before() {
         val fakeBaseComponent = getComponent(applicationContext)
         ApplicationProvider.getApplicationContext<BaseMainApplication>()
             .setComponent(fakeBaseComponent)
-        repositoryStub = fakeBaseComponent.repo() as ExplicitUseCaseStub
+        repositoryStub = fakeBaseComponent.repo() as ExplicitRepositoryStub
     }
 
     @Test

@@ -13,7 +13,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.graphql.domain.GraphqlUseCaseInterface
 import com.tokopedia.test.application.datastore.TestUserSessionDataStore
 import com.tokopedia.user.session.datastore.UserSessionDataStore
-import com.tokopedia.usercomponents.explicit.stub.data.ExplicitUseCaseStub
+import com.tokopedia.usercomponents.explicit.stub.data.ExplicitRepositoryStub
 import dagger.Module
 import dagger.Provides
 
@@ -56,7 +56,7 @@ class FakeAppModule(private val context: Context) {
     @ApplicationContext
     @ApplicationScope
     fun provideGraphqlRepository(): GraphqlRepository {
-        return ExplicitUseCaseStub()
+        return ExplicitRepositoryStub()
     }
 
     @ApplicationScope

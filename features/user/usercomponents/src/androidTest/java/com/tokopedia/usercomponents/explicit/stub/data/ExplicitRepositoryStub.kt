@@ -10,7 +10,7 @@ import com.tokopedia.usercomponents.utils.FileUtils.createResponseFromJson
 import com.tokopedia.usercomponents.test.R
 import javax.inject.Inject
 
-class ExplicitUseCaseStub @Inject constructor() : GraphqlRepository {
+class ExplicitRepositoryStub @Inject constructor() : GraphqlRepository {
 
     private var _state: TestState = TestState.HIDE_QUESTION
 

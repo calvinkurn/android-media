@@ -8,36 +8,24 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 
-fun isDisplayed(resId: Int) {
-    onView(withId(resId))
-        .check(matches(isDisplayed()))
-}
-
-fun isDisplayed(listResId: List<Int>) {
-    listResId.forEach {
-        isDisplayed(it)
+fun isDisplayed(vararg resIds: Int) {
+    resIds.forEach {
+        onView(withId(it))
+            .check(matches(isDisplayed()))
     }
 }
 
-fun isTextDisplayed(text: String) {
-    onView(withText(text))
-        .check(matches(isDisplayed()))
-}
-
-fun isTextDisplayed(listText: List<String>) {
-    listText.forEach {
-        isTextDisplayed(it)
+fun isTextDisplayed(vararg texts: String) {
+    texts.forEach {
+        onView(withText(it))
+            .check(matches(isDisplayed()))
     }
 }
 
-fun isNotDisplayed(resId: Int) {
-    onView(withId(resId))
-        .check(doesNotExist())
-}
-
-fun isNotDisplayed(listResId: List<Int>) {
-    listResId.forEach {
-        isNotDisplayed(it)
+fun isNotDisplayed(vararg resIds: Int) {
+    resIds.forEach {
+        onView(withId(it))
+            .check(doesNotExist())
     }
 }
 
