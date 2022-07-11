@@ -621,11 +621,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         val startDate = viewModel.getSelectedStartDate()
         val endDate = viewModel.getSelectedEndDate()
         val showTeaser = binding?.switchTeaser?.isChecked.orFalse()
-        val decreaseByHour = if (showTeaser) {
-            binding?.quantityEditor?.editText?.text.toString().trim().toIntOrZero()
-        } else {
-            Constant.ZERO
-        }
+        val decreaseByHour = binding?.quantityEditor?.editText?.text.toString().trim().toIntOrZero()
         val teaserDate = startDate.decreaseHourBy(decreaseByHour)
         val firstColor = viewModel.getColor().first
         val secondColor = viewModel.getColor().second
