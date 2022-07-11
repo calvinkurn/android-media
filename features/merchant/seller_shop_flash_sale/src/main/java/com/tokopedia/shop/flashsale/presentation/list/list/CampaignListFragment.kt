@@ -17,6 +17,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -26,7 +27,6 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignListBinding
-import com.tokopedia.shop.flashsale.common.constant.Constant.EMPTY_STRING
 import com.tokopedia.shop.flashsale.common.constant.Constant.FIRST_PAGE
 import com.tokopedia.shop.flashsale.common.constant.Constant.ZERO
 import com.tokopedia.shop.flashsale.common.customcomponent.BaseSimpleListFragment
@@ -64,7 +64,6 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import java.net.URLEncoder
 import javax.inject.Inject
 
 class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiModel>(),
@@ -244,7 +243,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
             PAGE_SIZE,
             FIRST_PAGE,
             campaignStatusIds?.toList().orEmpty(),
-            EMPTY_STRING
+            ""
         )
     }
 
@@ -785,7 +784,9 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
     private fun showFeatureIntroductionDialog() {
         val dialog = FeatureIntroductionDialog()
-        dialog.setOnPrimaryActionClick { launchCampaignInformationPage() }
+        dialog.setOnPrimaryActionClick {
+            viewModel.validateCampaignCreationEligibility()
+        }
         dialog.setOnHyperlinkClick { routeToShopDecorationArticle() }
         dialog.show(requireActivity())
     }
@@ -813,7 +814,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
     private fun routeToShopDecorationArticle() {
         if (!isAdded) return
-        val encodedUrl = URLEncoder.encode(SHOP_DECORATION_ARTICLE_URL, "utf-8")
+        val encodedUrl = SHOP_DECORATION_ARTICLE_URL.encodeToUtf8()
         val route = String.format("%s?url=%s", ApplinkConst.WEBVIEW, encodedUrl)
         RouteManager.route(requireActivity(), route)
     }

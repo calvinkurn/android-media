@@ -12,10 +12,13 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignListContainerBinding
 import com.tokopedia.shop.flashsale.common.constant.Constant
 import com.tokopedia.shop.flashsale.common.extension.doOnDelayFinished
@@ -41,6 +44,8 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
         private const val SECOND_TAB = 1
         private const val BUNDLE_KEY_AUTO_FOCUS_TAB_POSITION = "auto_focus_tab_position"
         private const val REDIRECTION_DELAY : Long = 500
+        private const val EMPTY_STATE_IMAGE_URL = "https://images.tokopedia.net/img/android/campaign/flash-sale-toko/shop_outdoor.png"
+        private const val FEATURE_INTRODUCTION_URL = "https://seller.tokopedia.com/edu/flash-sale-toko/"
 
         @JvmStatic
         fun newInstance(autoFocusTabPosition: Int = FIRST_TAB): CampaignListContainerFragment {
@@ -54,9 +59,7 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
     }
 
     private var binding by autoClearedNullable<SsfsFragmentCampaignListContainerBinding>()
-    private val autoFocusTabPosition by lazy {
-        arguments?.getInt(BUNDLE_KEY_AUTO_FOCUS_TAB_POSITION).orZero()
-    }
+
     private var listener : ActiveCampaignListListener? = null
 
     @Inject
@@ -92,24 +95,39 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
         setupView()
         setupTabs()
         observeTabsMeta()
-        viewModel.getTabsMeta()
+        observeSellerEligibility()
+        viewModel.getPrerequisiteData()
+    }
+
+    private fun observeSellerEligibility() {
+        viewModel.isEligible.observe(viewLifecycleOwner) { result ->
+            binding?.loader?.gone()
+
+            when (result) {
+                is Success -> {
+                    handleSellerEligibility(result.data)
+                }
+                is Fail -> {
+                    displayError(result.throwable)
+                }
+            }
+        }
+
     }
 
     private fun observeTabsMeta() {
         viewModel.tabsMeta.observe(viewLifecycleOwner) { result ->
+            binding?.loader?.gone()
+
             when (result) {
                 is Success -> {
-                    binding?.loader?.gone()
                     binding?.groupContent?.visible()
-                    binding?.globalError?.gone()
                     viewModel.storeTabsMetadata(result.data)
                     displayTabs(result.data)
                 }
                 is Fail -> {
-                    binding?.loader?.gone()
                     binding?.groupContent?.gone()
-                    binding?.globalError?.gone()
-                    displayError(result.throwable)
+                    binding?.container showError result.throwable
                 }
             }
         }
@@ -119,6 +137,7 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
     private fun setupView() {
         binding?.run {
             header.setNavigationOnClickListener { activity?.finish() }
+            btnLearnMore.setOnClickListener { routeToFeatureIntro() }
         }
     }
 
@@ -149,7 +168,7 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
         binding?.loader?.visible()
         binding?.groupContent?.gone()
         binding?.globalError?.gone()
-        viewModel.getTabsMeta()
+        viewModel.getPrerequisiteData()
     }
 
     private val onRecyclerViewScrollDown: () -> Unit = {
@@ -234,6 +253,7 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
 
     private fun handleCancelCampaignSuccess() {
         viewModel.setAutoFocusTabPosition(SECOND_TAB)
+        binding?.loader?.visible()
         viewModel.getTabsMeta()
     }
 
@@ -283,4 +303,25 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
         fun onSaveDraftSuccess()
     }
 
+    private fun handleSellerEligibility(isEligible: Boolean) {
+        if (!isEligible) {
+            showIneligibleAccessNotice()
+        }
+    }
+
+    private fun showIneligibleAccessNotice() {
+        binding?.run {
+            groupIneligibleAccess.visible()
+            emptyState.setImageUrl(EMPTY_STATE_IMAGE_URL)
+            emptyState.setTitle(getString(R.string.sfs_forbidden_access_title))
+            emptyState.setDescription(getString(R.string.sfs_forbidden_access_description))
+        }
+    }
+
+    private fun routeToFeatureIntro() {
+        if (!isAdded) return
+        val encodedUrl = FEATURE_INTRODUCTION_URL.encodeToUtf8()
+        val route = String.format("%s?url=%s", ApplinkConst.WEBVIEW, encodedUrl)
+        RouteManager.route(requireActivity(), route)
+    }
 }
