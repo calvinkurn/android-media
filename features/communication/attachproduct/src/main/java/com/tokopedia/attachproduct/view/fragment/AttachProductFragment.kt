@@ -40,7 +40,7 @@ import com.tokopedia.attachproduct.view.viewmodel.AttachProductViewModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 import javax.inject.Inject
 
@@ -51,11 +51,7 @@ class AttachProductFragment :
     BaseListFragment<AttachProductItemUiModel, AttachProductListAdapterTypeFactory>(),
     CheckableInteractionListenerWithPreCheckedAction, AttachProductContract.View {
 
-    private var binding: FragmentAttachProductBinding? by viewBinding(
-        onClear = {
-            clearViewBinding()
-        }
-    )
+    private var binding: FragmentAttachProductBinding? by autoClearedNullable()
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -72,6 +68,7 @@ class AttachProductFragment :
     private var warehouseId = "0"
     private var maxChecked = AttachProductActivity.MAX_CHECKED_DEFAULT
     private var hiddenProducts: ArrayList<String>? = ArrayList()
+    private var timer: Timer = Timer()
 
     fun setActivityContract(activityContract: AttachProductContract.Activity?) {
         this.activityContract = activityContract
@@ -137,11 +134,9 @@ class AttachProductFragment :
 
     private fun initSearchBar() {
         binding?.searchInputView?.searchBarTextField?.addTextChangedListener(object : TextWatcher {
-            var timer: Timer? = null
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable) {
-                timer = Timer()
                 timer?.schedule(object : TimerTask() {
                     override fun run() {
                         binding?.searchInputView?.context?.mainLooper?.let {
@@ -181,7 +176,12 @@ class AttachProductFragment :
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_attach_product, container, false)
+        binding = FragmentAttachProductBinding.inflate(
+            LayoutInflater.from(context),
+            container,
+            false
+        )
+        return binding?.root
     }
 
     override fun onStart() {
@@ -416,14 +416,7 @@ class AttachProductFragment :
 
     override fun onDestroyView() {
         super.onDestroyView()
-        binding = null
-    }
-
-    private fun clearViewBinding() {
-        binding?.searchInputView?.searchBarTextField?.addTextChangedListener(null)
-        binding?.searchInputView?.searchBarTextField?.setOnEditorActionListener(null)
-        binding?.sendButtonAttachProduct?.setOnClickListener(null)
-        binding?.swipeRefreshLayout?.setOnClickListener(null)
+        timer.cancel()
     }
 
     companion object {
