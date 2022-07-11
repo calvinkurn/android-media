@@ -29,6 +29,7 @@ import com.tokopedia.recharge_credit_card.util.RechargeCCConst
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -134,7 +135,7 @@ class RechargeCCViewModel @Inject constructor(
     }
 
     fun getFavoriteNumbers(categoryIds: List<Int>, favoriteNumberTypes: List<FavoriteNumberType>) {
-        launchCatchError(block = {
+        launch {
             val data = rechargeFavoriteNumberRepo.getFavoriteNumbers(favoriteNumberTypes, categoryIds)
             for (type in favoriteNumberTypes) {
                 when (type) {
@@ -149,8 +150,6 @@ class RechargeCCViewModel @Inject constructor(
                     }
                 }
             }
-        }) {
-            // this section is not reachable due to no fail scenario
         }
     }
 
@@ -181,7 +180,7 @@ class RechargeCCViewModel @Inject constructor(
     }
 
     fun validateCCNumber(creditCard: String) {
-        validatorJob = launchCatchError(block = {
+        validatorJob = launch {
             if (creditCard.isMasked()) {
                 _prefixValidation.postValue(true)
             } else {
@@ -192,8 +191,6 @@ class RechargeCCViewModel @Inject constructor(
                 delay(RechargeCCConst.VALIDATOR_DELAY_TIME)
                 _prefixValidation.postValue(isValid)
             }
-        }) {
-
         }
     }
 

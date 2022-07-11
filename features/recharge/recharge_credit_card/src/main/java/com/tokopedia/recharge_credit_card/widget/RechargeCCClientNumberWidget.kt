@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsAutoCompleteAdapter
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -381,7 +382,7 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(@NotNull context: C
 
     private fun setLengthMaxTextField() {
         val filterArray = arrayOfNulls<InputFilter>(1)
-        filterArray[0] = InputFilter.LengthFilter(DEFAULT_MAX_SYMBOLS_LENGTH)
+        filterArray[Int.ZERO] = InputFilter.LengthFilter(DEFAULT_MAX_SYMBOLS_LENGTH)
         binding.clientNumberWidgetMainLayout.clientNumberWidgetBase
             .clientNumberWidgetInputField.editText.filters = filterArray
     }
