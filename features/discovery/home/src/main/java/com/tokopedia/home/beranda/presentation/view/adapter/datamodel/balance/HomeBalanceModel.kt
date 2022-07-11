@@ -91,9 +91,10 @@ data class HomeBalanceModel(
         tokopointDrawerListHomeData: TokopointsDrawerListHomeData? = null,
         walletAppData: WalletAppData? = null,
         headerTitle: String,
-        subscriptionsData: SubscriptionsData? = null
+        subscriptionsData: SubscriptionsData? = null,
+        position: Int = DEFAULT_BALANCE_POSITION
     ) {
-        tokopointDrawerListHomeData?.let { mapTokopoint(tokopointDrawerListHomeData, headerTitle) }
+        tokopointDrawerListHomeData?.let { mapTokopoint(tokopointDrawerListHomeData, headerTitle, position) }
         walletAppData?.let { mapWalletApp(walletAppData, headerTitle) }
         subscriptionsData?.let { mapSubscriptions(subscriptionsData, headerTitle) }
     }
@@ -198,7 +199,11 @@ data class HomeBalanceModel(
         return null
     }
 
-    private fun mapTokopoint(tokopointDrawerListHomeData: TokopointsDrawerListHomeData?, headerTitle: String) {
+    private fun mapTokopoint(
+        tokopointDrawerListHomeData: TokopointsDrawerListHomeData?,
+        headerTitle: String,
+        position: Int = DEFAULT_BALANCE_POSITION
+    ) {
         val tokopointMapData = tokopointDrawerListHomeData?.tokopointsDrawerList?.drawerList?.map {
             val type = TYPE_REWARDS
             it.mapToHomeBalanceItemModel(
@@ -223,7 +228,12 @@ data class HomeBalanceModel(
             flagStateCondition(
                     itemType = tokopointAnimDrawerContent.drawerItemType,
                     action = {
-                        balanceDrawerItemModels.add(tokopointAnimDrawerContent)
+                        if (position == DEFAULT_BALANCE_POSITION) {
+                            balanceDrawerItemModels.add(tokopointAnimDrawerContent)
+                        }
+                        else if (balanceDrawerItemModels.size > position) {
+                            balanceDrawerItemModels[position] = tokopointAnimDrawerContent
+                        }
                     }
             )
         } else {

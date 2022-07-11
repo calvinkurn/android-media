@@ -91,7 +91,6 @@ class HomeBalanceWidgetUseCase @Inject constructor(
         if (!userSession.isLoggedIn) return currentHeaderDataModel
 
         var homeBalanceModel = getHomeBalanceModel(currentHeaderDataModel, HomeBalanceModel.BALANCE_POSITION_SECOND)
-        //TODO put the right header title
         homeBalanceModel = getTokopointData(homeBalanceModel, headerTitle, position)
         return currentHeaderDataModel.copy(
                 headerDataModel = currentHeaderDataModel.headerDataModel?.copy(
@@ -139,7 +138,11 @@ class HomeBalanceWidgetUseCase @Inject constructor(
         position: Int = DEFAULT_BALANCE_POSITION
     ): HomeBalanceModel {
         try {
-            homeBalanceModel.mapBalanceData(tokopointDrawerListHomeData = homeTokopointsListRepository.getRemoteData(), headerTitle = headerTitle)
+            homeBalanceModel.mapBalanceData(
+                tokopointDrawerListHomeData = homeTokopointsListRepository.getRemoteData(),
+                headerTitle = headerTitle,
+                position = position
+            )
         } catch (e: Exception) {
             homeBalanceModel.isTokopointsOrOvoFailed = true
             homeBalanceModel.mapErrorTokopoints(headerTitle, position)
