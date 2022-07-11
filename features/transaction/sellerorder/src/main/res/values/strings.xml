@@ -232,7 +232,7 @@
     <string name="som_list_failed_accept_order">Gagal terima pesanan.</string>
     <string name="som_list_order_cannot_be_selected">Oops, pesanan tidak dapat dipilih</string>
     <string name="som_list_coachmark_order_card_title">Cek ringkasan pesanan</string>
-    <string name="som_list_coachmark_order_card_description">Perhatikan tipe pesanan, tipe kurir, dan batas respons. Utamakan pesanan GoTo PLUS untuk kamu proses, ya.</string>
+    <string name="som_list_coachmark_order_card_description">Perhatikan tipe pesanan, tipe kurir, dan batas respons. Utamakan pesanan PLUS untuk kamu proses, ya.</string>
     <string name="som_list_coachmark_sort_filter_title">Gunakan filter pesanan</string>
     <string name="som_list_coachmark_sort_filter_description">Temukan tipe pesanan yang ingin kamu layani duluan dan tipe kurir yang sering kamu gunakan.</string>
     <string name="som_list_empty_state_not_found_title">Oops, pesanan yang kamu cari nggak ditemukan.</string>
