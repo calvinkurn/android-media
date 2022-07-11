@@ -32,10 +32,8 @@ data class ShopPageGetDynamicTabResponse(
             @SerializedName("type")
             var type: String = "",
             @SerializedName("bgColors")
-            @Expose
             var listBackgroundColor: List<String> = listOf(),
             @SerializedName("textColor")
-            @Expose
             var textColor: String = "",
             @SerializedName("shopLayoutFeature")
             var shopLayoutFeature: List<ShopLayoutFeature> = arrayListOf(),
@@ -55,7 +53,6 @@ data class ShopPageGetDynamicTabResponse(
 
                 @SuppressLint("Invalid Data Type")
                 @SerializedName("widgetIDList")
-                @Expose
                 val widgetIdList: List<WidgetIdList> = listOf()
             )
         }
