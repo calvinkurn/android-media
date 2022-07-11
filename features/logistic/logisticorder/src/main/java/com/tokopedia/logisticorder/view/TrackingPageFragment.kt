@@ -1,5 +1,8 @@
 package com.tokopedia.logisticorder.view
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -26,11 +29,7 @@ import com.tokopedia.logisticorder.adapter.TrackingHistoryAdapter
 import com.tokopedia.logisticorder.databinding.FragmentTrackingPageBinding
 import com.tokopedia.logisticorder.di.DaggerTrackingPageComponent
 import com.tokopedia.logisticorder.di.TrackingPageComponent
-import com.tokopedia.logisticorder.uimodel.EtaModel
-import com.tokopedia.logisticorder.uimodel.PageModel
-import com.tokopedia.logisticorder.uimodel.LastDriverModel
-import com.tokopedia.logisticorder.uimodel.TrackOrderModel
-import com.tokopedia.logisticorder.uimodel.TrackingDataModel
+import com.tokopedia.logisticorder.uimodel.*
 import com.tokopedia.logisticorder.utils.TippingConstant.OPEN
 import com.tokopedia.logisticorder.utils.TippingConstant.REFUND_TIP
 import com.tokopedia.logisticorder.utils.TippingConstant.SUCCESS_PAYMENT
@@ -54,10 +53,11 @@ import rx.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImageClicked {
+class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImageClicked {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -76,8 +76,8 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
 
     override fun initInjector() {
         val component: TrackingPageComponent = DaggerTrackingPageComponent.builder()
-                .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
+            .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
+            .build()
         component.inject(this)
     }
 
@@ -126,7 +126,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
         viewModel.retryAvailability.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    val avail =  it.data.retryAvailability
+                    val avail = it.data.retryAvailability
                     val deadline = avail.deadlineRetryUnixtime.toLong()
                     if (avail.showRetryButton && avail.availabilityRetry) {
                         setRetryButton(true, 0L)
@@ -143,7 +143,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
         })
 
         viewModel.retryBooking.observe(viewLifecycleOwner, Observer {
-            when(it) {
+            when (it) {
                 is Success -> startSuccessCountdown()
                 is Fail -> showError(it.throwable)
             }
@@ -176,12 +176,13 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
         setEmptyHistoryView(model)
         setLiveTrackingButton(model)
         setTicketInfoCourier(trackingDataModel.page)
+        initClickToCopy(model.shippingRefNum)
 
     }
 
     private fun setDriverInfo(data: TrackingDataModel) {
         val tippingData = data.tipping
-        if (tippingData.status == OPEN || tippingData.status == WAITING_PAYMENT || tippingData.status == SUCCESS_PAYMENT || tippingData.status ==  SUCCESS_TO_GOJEK || tippingData.status == REFUND_TIP) {
+        if (tippingData.status == OPEN || tippingData.status == WAITING_PAYMENT || tippingData.status == SUCCESS_PAYMENT || tippingData.status == SUCCESS_TO_GOJEK || tippingData.status == REFUND_TIP) {
             setTippingData(data)
             binding?.tippingGojekLayout?.root?.visibility = View.VISIBLE
             binding?.dividerTippingGojek?.visibility = View.VISIBLE
@@ -222,7 +223,12 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
                 imgFindDriver.visibility = View.GONE
                 bgActiveUp.visibility = View.GONE
                 context?.let { ctx ->
-                    tippingLayout.setCardBackgroundColor(MethodChecker.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
+                    tippingLayout.setCardBackgroundColor(
+                        MethodChecker.getColor(
+                            ctx,
+                            com.tokopedia.unifyprinciples.R.color.Unify_NN0
+                        )
+                    )
                     val textColor = MethodChecker.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_N700)
                     tippingText.setTextColor(textColor)
                     tippingDescription.setTextColor(textColor)
@@ -358,7 +364,8 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
         val strFormat = if (context != null) context?.getString(R.string.retry_dateline_info) else ""
         mOrderId?.let {
             OrderAnalyticsOrderTracking.eventViewLabelTungguRetry(
-                    DateUtils.formatElapsedTime(timeInMillis / 1000), it)
+                DateUtils.formatElapsedTime(timeInMillis / 1000), it
+            )
         }
         mCountDownTimer = object : CountDownTimer(timeInMillis, PER_SECOND.toLong()) {
             override fun onTick(millsUntilFinished: Long) {
@@ -381,22 +388,22 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
     private fun startSuccessCountdown() {
         binding?.retryPickupButton?.text = getText(R.string.find_new_driver)
         Observable.timer(NEW_DRIVER_COUNT_DOWN, TimeUnit.SECONDS)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object: Subscriber<Long>() {
-                    override fun onNext(t: Long?) {
-                        fetchData()
-                    }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Subscriber<Long>() {
+                override fun onNext(t: Long?) {
+                    fetchData()
+                }
 
-                    override fun onCompleted() {
-                       //no-op
-                    }
+                override fun onCompleted() {
+                    //no-op
+                }
 
-                    override fun onError(e: Throwable) {
-                        showError(e)
-                    }
+                override fun onError(e: Throwable) {
+                    showError(e)
+                }
 
-                })
+            })
     }
 
     private fun initialHistoryView() {
@@ -531,4 +538,17 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
 
         startActivity(intent)
     }
+
+    private fun initClickToCopy(referenceNumber : String) {
+        binding?.maskTriggerReferenceNumber?.setOnClickListener {
+            onTextCopied(getString(R.string.label_copy_reference_number), referenceNumber)
+        }
+    }
+
+    private fun onTextCopied(label: String, str: String) {
+        val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        clipboardManager.setPrimaryClip(ClipData.newPlainText(label, str))
+        Toaster.build(requireView(), getString(R.string.success_copy_reference_number), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
+    }
 }
+
