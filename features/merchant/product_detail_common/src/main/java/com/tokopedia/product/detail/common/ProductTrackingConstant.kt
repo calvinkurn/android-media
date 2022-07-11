@@ -37,6 +37,7 @@ object ProductTrackingConstant {
         const val KEY_GROUP_NAME = "productGroupName"
         const val KEY_GROUP_ID = "productGroupId"
         const val KEY_CATEGORY_ID = "categoryId"
+        const val KEY_TRACKER_ID = "trackerId"
 
         /**
          * Tracking Key - Product Level
@@ -335,5 +336,10 @@ object ProductTrackingConstant {
         // example /tokonow - recomproduct - pdp_1 - rekomendasi untuk anda - {recommendation type}
         const val PARAM_ATC_DIMENS_40 = "/tokonow - recomproduct - %s - rekomendasi untuk anda - %s"
         const val PARAM_EVENT_PAGE_SOURCE = "%s.%s" //page source like PDP, recommendationType
+    }
+
+    object TrackerId {
+        const val TRACKER_ID_CLICK_THUMBNAIL = "31790"
+        const val TRACKER_ID_IMPRESS_THUMBNAIL = "31789"
     }
 }
