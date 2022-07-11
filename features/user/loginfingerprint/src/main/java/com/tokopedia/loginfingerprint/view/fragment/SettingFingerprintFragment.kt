@@ -17,7 +17,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loginfingerprint.R
 import com.tokopedia.loginfingerprint.data.model.CheckFingerprintResult
-import com.tokopedia.loginfingerprint.data.model.RegisterFingerprintResult
 import com.tokopedia.loginfingerprint.databinding.FragmentSettingFingerprintBinding
 import com.tokopedia.loginfingerprint.di.LoginFingerprintComponent
 import com.tokopedia.loginfingerprint.tracker.BiometricTracker
@@ -166,6 +165,7 @@ class SettingFingerprintFragment: BaseDaggerFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_SECURITY_QUESTION) {
             if(resultCode == Activity.RESULT_OK && data != null) {
+                loading()
                 viewModel.registerFingerprint()
             } else if(resultCode == Activity.RESULT_CANCELED) {
                 enableSwitch = true
@@ -174,21 +174,6 @@ class SettingFingerprintFragment: BaseDaggerFragment() {
         } else {
             super.onActivityResult(requestCode, resultCode, data)
         }
-    }
-
-    fun onSuccessRegisterFingerprint(data: RegisterFingerprintResult) {
-        if (data.success) {
-            tracker.trackRegisterFpSuccess()
-            enableSwitch = false
-            binding?.fragmentFingerprintSettingSwitch?.isChecked = true
-            view?.let {
-                Toaster.build(it, getString(R.string.fingerprint_success_login_toaster), Toaster.LENGTH_LONG).show()
-            }
-        } else {
-            tracker.trackRegisterFpFailed(data.errorMessage)
-            onErrorRegisterFingerprint(Throwable(message = getString(R.string.error_failed_register_fingerprint)))
-        }
-        enableSwitch = true
     }
 
     fun onErrorRegisterFingerprint(throwable: Throwable) {
