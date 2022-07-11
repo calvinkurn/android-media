@@ -157,12 +157,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                 checkoutTokoFoodUseCase.get().execute(SOURCE)
             }.let {
                 if (it.isEmptyProduct()) {
-                    _uiEvent.value = PurchaseUiEvent(
-                        state = PurchaseUiEvent.EVENT_EMPTY_PRODUCTS,
-                        data = it.data.shop.shopId.takeIf { responseShopId ->
-                            responseShopId.isNotBlank()
-                        } ?: shopId.value
-                    )
+                    _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_EMPTY_PRODUCTS)
                     return@launchCatchError
                 }
                 _fragmentUiModel.value = TokoFoodPurchaseUiModelMapper.mapShopInfoToUiModel(it.data.shop)
@@ -228,12 +223,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                 checkoutTokoFoodUseCase.get().execute(SOURCE)
             }.let {
                 if (it.isEmptyProduct()) {
-                    _uiEvent.value = PurchaseUiEvent(
-                        state = PurchaseUiEvent.EVENT_EMPTY_PRODUCTS,
-                        data = it.data.shop.shopId.takeIf { responseShopId ->
-                            responseShopId.isNotBlank()
-                        } ?: shopId.value
-                    )
+                    _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_EMPTY_PRODUCTS)
                     return@launchCatchError
                 }
                 val isPreviousPopupPromo = checkoutTokoFoodResponse.value?.data?.isPromoPopupType() == true
@@ -289,10 +279,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
             _visitables.value = dataList
             _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_SUCCESS_REMOVE_PRODUCT, data = productCount)
         } else {
-            _uiEvent.value = PurchaseUiEvent(
-                state = PurchaseUiEvent.EVENT_EMPTY_PRODUCTS,
-                data = shopId.value
-            )
+            _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_EMPTY_PRODUCTS)
         }
     }
 
@@ -536,9 +523,9 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                     } else {
                         val checkoutGeneralData = response.checkoutGeneralTokoFood.data
                         val errorMessage =
-                            checkoutGeneralData.error.takeIf { it.isNotBlank() }
-                                ?: checkoutGeneralData.getErrorMetadataObject()?.popupErrorMessage?.text?.takeIf { it.isNotBlank() }
+                            checkoutGeneralData.getErrorMetadataObject()?.popupErrorMessage?.text?.takeIf { it.isNotBlank() }
                                 ?: checkoutGeneralData.getErrorMetadataObject()?.popupMessage?.text?.takeIf { it.isNotBlank() }
+                                ?: checkoutGeneralData.error.takeIf { it.isNotBlank() }
                                 ?: checkoutGeneralData.message
                         _uiEvent.value = PurchaseUiEvent(
                             state = PurchaseUiEvent.EVENT_FAILED_CHECKOUT_GENERAL_TOASTER,
@@ -596,7 +583,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
     }
 
     private fun CheckoutTokoFood.isEmptyProduct(): Boolean {
-        return data.availableSection.products.isEmpty() && data.unavailableSections.firstOrNull()?.products?.isEmpty() == true
+        return data.availableSection.products.isEmpty() && data.unavailableSections.firstOrNull()?.products.isNullOrEmpty()
     }
 
     private fun getUpdatePartialVisitables(partialData: PartialTokoFoodUiModel): MutableList<Visitable<*>> {

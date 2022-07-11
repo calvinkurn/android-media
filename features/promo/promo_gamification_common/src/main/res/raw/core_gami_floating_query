@@ -19,5 +19,6 @@
     timerBGColor
     unixTimestamp
     imgURL
+    isPermanent
   }
 }

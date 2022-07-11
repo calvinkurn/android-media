@@ -124,7 +124,7 @@ class PlayWidgetCardMediumChannelView : FrameLayout, PlayVideoPlayerReceiver {
         tvTitle.text = data.title
         tvStartTime.text = data.startTime
         tvTotalView.text = data.totalView.totalViewFmt
-        ivGiveaway.visibility = if(data.hasGiveaway) View.VISIBLE else View.GONE
+        ivGiveaway.visibility = if(data.hasGame) View.VISIBLE else View.GONE
 
         setIconToggleReminder(data.reminderType)
         reminderBadge.setOnClickListener {

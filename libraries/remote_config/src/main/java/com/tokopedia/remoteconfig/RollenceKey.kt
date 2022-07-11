@@ -59,9 +59,6 @@ object RollenceKey {
     const val WISHLIST_V2_VARIANT = "experiment_variant"
     const val ADD_REMOVE_WISHLIST_V2 = "addremove_wishlistv2"
 
-    // Fulfillment Rebranding
-    const val FULFILLMENT_REBRANDING = "fulfill_rebranding"
-
     // Logistic
     const val LCA_REFRESH = "android_lca_refresh"
 
@@ -82,4 +79,9 @@ object RollenceKey {
 
     // Food
     const val KEY_ROLLENCE_FOOD = "m1_gofood"
+
+    // PDP
+    const val PDP_CAROUSEL_ANDROID = "pdp_carousel_android"
+    const val PDP_SHOW_THUMBNAIL = "pdp_show_thumbnail"
+    const val PDP_HIDE_THUMBNAIL = "pdp_hide_thumbnail"
 }

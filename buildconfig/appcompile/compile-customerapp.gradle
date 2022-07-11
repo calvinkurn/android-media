@@ -168,6 +168,8 @@ includeIfEnabled("features:merchant:variant_common")
 includeIfEnabled("features:merchant:favorite")
 includeIfEnabled("features:merchant:product_add_edit")
 includeIfEnabled("features:merchant:shop_score")
+includeIfEnabled("features:merchant:shop_admin")
+includeIfEnabled("features:merchant:shop_admin_common")
 includeIfEnabled("features:merchant:shop_showcase")
 includeIfEnabled("features:merchant:youtube_common")
 
