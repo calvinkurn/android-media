@@ -1503,11 +1503,12 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             ?: return
         recommendationItem.isWishlist = productCardOptionsModel.wishlistResult.isAddWishlist
 
-        if (productCardOptionsModel.wishlistResult.isAddWishlist)
+        if (productCardOptionsModel.wishlistResult.isAddWishlist) {
             showSuccessAddWishlistV2(productCardOptionsModel.wishlistResult)
             if (productCardOptionsModel.isTopAds) hitWishlistClickUrl(productCardOptionsModel)
-        else
+        } else {
             showSuccessRemoveWishlistV2(productCardOptionsModel.wishlistResult)
+        }
     }
 
     private fun hitWishlistClickUrl(item: ProductCardOptionsModel) {

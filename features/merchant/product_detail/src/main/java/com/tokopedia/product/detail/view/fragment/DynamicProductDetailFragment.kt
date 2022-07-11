@@ -88,7 +88,10 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.reminded
 import com.tokopedia.product.detail.BuildConfig
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.*
+import com.tokopedia.product.detail.common.AtcVariantHelper
+import com.tokopedia.product.detail.common.AtcVariantMapper
+import com.tokopedia.product.detail.common.ProductCartHelper
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APPLINK_AVAILABLE_VARIANT
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APPLINK_IS_VARIANT_SELECTED
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APPLINK_SHOP_ID
@@ -116,6 +119,8 @@ import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
+import com.tokopedia.product.detail.common.showToasterError
+import com.tokopedia.product.detail.common.showToasterSuccess
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.product.detail.common.view.ProductDetailCoachMarkHelper
 import com.tokopedia.product.detail.common.view.ProductDetailCommonBottomSheetBuilder
@@ -180,8 +185,14 @@ import com.tokopedia.product.detail.view.fragment.partialview.PartialButtonActio
 import com.tokopedia.product.detail.view.fragment.partialview.TokoNowButtonData
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.listener.PartialButtonActionListener
-import com.tokopedia.product.detail.view.util.*
+import com.tokopedia.product.detail.view.util.PdpUiUpdater
+import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
+import com.tokopedia.product.detail.view.util.ProductDetailErrorHelper
+import com.tokopedia.product.detail.view.util.ProductDetailLogger
+import com.tokopedia.product.detail.view.util.ProductDetailVariantLogic
 import com.tokopedia.product.detail.view.util.createProductCardOptionsModel
+import com.tokopedia.product.detail.view.util.doSuccessOrFail
+import com.tokopedia.product.detail.view.util.getIntentImagePreviewWithoutDownloadButton
 import com.tokopedia.product.detail.view.viewholder.ProductSingleVariantViewHolder
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
@@ -220,21 +231,19 @@ import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
-import com.tokopedia.usercomponents.stickylogin.common.StickyLoginConstant
-import com.tokopedia.usercomponents.stickylogin.view.StickyLoginAction
-import com.tokopedia.usercomponents.stickylogin.view.StickyLoginView
 import com.tokopedia.topads.detail_sheet.TopAdsDetailSheet
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
-import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.usercomponents.stickylogin.common.StickyLoginConstant
+import com.tokopedia.usercomponents.stickylogin.view.StickyLoginAction
+import com.tokopedia.usercomponents.stickylogin.view.StickyLoginView
 import com.tokopedia.variant_common.util.VariantCommonMapper
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
@@ -243,7 +252,8 @@ import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
-import java.util.*
+import java.util.Locale
+import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -2684,9 +2694,9 @@ open class DynamicProductDetailFragment :
 
     private fun showWarehouseChangeBs(productMultiloc: ProductMultilocation) {
         if (productMultiloc.isReroute && !alreadyShowMultilocBottomSheet) {
-            alreadyShowMultilocBottomSheet = true
             goToApplink(productMultiloc.eduLink.applink)
         }
+        alreadyShowMultilocBottomSheet = true
     }
 
     private fun setupProductVideoCoordinator() {
@@ -3414,12 +3424,21 @@ open class DynamicProductDetailFragment :
                 if (wishlistResult.isAddWishlist) errorMessage =
                     getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
 
-                view?.let { v ->
-                    if (wishlistResult.isUsingWishlistV2) AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(
-                        errorMessage,
-                        v
-                    )
-                    else v.showToasterError(errorMessage)
+                if (wishlistResult.isUsingWishlistV2) {
+                    view?.let { v ->
+                        if (wishlistResult.messageV2.isNotEmpty()) errorMessage = wishlistResult.messageV2
+                        if (wishlistResult.ctaTextV2.isNotEmpty() && wishlistResult.ctaActionV2.isNotEmpty()) {
+                            context?.let { c ->
+                                AddRemoveWishlistV2Handler.showWishlistV2ErrorToasterWithCta(errorMessage, wishlistResult.ctaTextV2, wishlistResult.ctaActionV2, v, c)
+                            }
+                        } else {
+                            AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMessage, v)
+                        }
+                    }
+                } else {
+                    view?.let { v ->
+                        v.showToasterError(errorMessage)
+                    }
                 }
             }
         } else {

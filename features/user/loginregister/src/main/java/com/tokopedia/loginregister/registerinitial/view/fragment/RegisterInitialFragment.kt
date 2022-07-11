@@ -28,6 +28,7 @@ import com.google.android.gms.tasks.Task
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -80,7 +81,6 @@ import com.tokopedia.loginregister.registerinitial.view.listener.RegisterInitial
 import com.tokopedia.loginregister.registerinitial.view.util.RegisterInitialRouterHelper
 import com.tokopedia.loginregister.registerinitial.viewmodel.RegisterInitialViewModel
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl

@@ -39,7 +39,6 @@ import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.ImageMenu
-import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
@@ -67,6 +66,7 @@ import com.tokopedia.chatbot.ChatbotConstant.TOKOPEDIA_ATTACH_INVOICE_REQ_CODE
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.analytics.ChatbotAnalytics
 import com.tokopedia.chatbot.attachinvoice.domain.mapper.AttachInvoiceMapper
+import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.attachinvoice.view.TransactionInvoiceBottomSheet
 import com.tokopedia.chatbot.attachinvoice.view.TransactionInvoiceBottomSheetListener
 import com.tokopedia.chatbot.attachinvoice.view.resultmodel.SelectedInvoice
@@ -579,7 +579,10 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 this,
                 (activity as BaseChatToolbarActivity).getToolbar(),
                 adapter,
-                onChatMenuButtonClicked
+                onChatMenuButtonClicked,
+                sendAnalytics = { impressionType ->
+                    chatbotAnalytics.get().eventShowView(impressionType)
+            }
         )
     }
 
@@ -1295,6 +1298,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     override fun transactionNotFoundClick() {
         val selected = presenter.getActionBubbleforNoTrasaction()
         presenter.sendActionBubble(messageId, selected, SendableUiModel.generateStartTime(), opponentId)
+        getViewState()?.handleReplyBox(true)
     }
 }
 

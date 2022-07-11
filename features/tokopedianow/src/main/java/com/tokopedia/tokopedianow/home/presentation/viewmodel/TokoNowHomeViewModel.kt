@@ -849,12 +849,11 @@ class TokoNowHomeViewModel @Inject constructor(
                 ServiceType.NOW_15M
             }
 
-            // 20m switcher must be in 2h service type
             _homeSwitchServiceTracker.postValue(HomeSwitchServiceTracker(
                 userId = userSession.userId,
                 whIdOrigin = whIdOrigin,
                 whIdDestination = whIdDestination,
-                is20mSwitcher = serviceType == ServiceType.NOW_2H,
+                isNow15 = serviceType == ServiceType.NOW_15M,
                 isImpressionTracker = isImpressionTracker
             ))
         }) { /* nothing to do */ }

@@ -23,7 +23,7 @@ object ProductCartHelper {
             ProductDetailCommonConstant.BEBAS_ONGKIR_NORMAL -> {
                 ProductDetailCommonConstant.VALUE_BEBAS_ONGKIR
             }
-            ProductDetailCommonConstant.BO_TOKONOW -> {
+            ProductDetailCommonConstant.BO_TOKONOW, ProductDetailCommonConstant.BO_TOKONOW_15 -> {
                 ProductDetailCommonConstant.VALUE_TOKONOW
             }
             else -> ProductDetailCommonConstant.VALUE_NONE_OTHER
