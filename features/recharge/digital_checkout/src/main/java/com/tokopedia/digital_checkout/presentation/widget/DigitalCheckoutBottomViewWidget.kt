@@ -1,33 +1,16 @@
 package com.tokopedia.digital_checkout.presentation.widget
 
 import android.content.Context
-import android.graphics.Color
-import android.graphics.Typeface
-import android.text.Selection
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.TextPaint
-import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
-import android.text.style.StyleSpan
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.annotation.ColorRes
-import androidx.annotation.DimenRes
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.res.ResourcesCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.digital_checkout.R
-import com.tokopedia.kotlin.extensions.view.getDimens
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.unifycomponents.BaseCustomView
-import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.layout_digital_checkout_bottom_view.view.*
 import org.jetbrains.annotations.NotNull
 
@@ -35,27 +18,8 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(@NotNull context
                                                                 attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : BaseCustomView(context, attrs, defStyleAttr) {
 
-    private companion object{
-        @DimenRes
-        val SPACE = com.tokopedia.unifycomponents.R.dimen.unify_space_16
-
-        @ColorRes
-        val SPAN_COLOR = com.tokopedia.unifycomponents.R.color.Unify_GN500
-
-        const val START_INDEX_LINK = -1
-    }
-
     init {
         LayoutInflater.from(context).inflate(R.layout.layout_digital_checkout_bottom_view, this, true)
-
-        setupMarginBottom()
-    }
-
-    private fun setupMarginBottom(){
-        digitalPromoBtnView.rootView
-            .findViewById<ConstraintLayout>(com.tokopedia.promocheckout.common.R.id.cl_promo_checkout).apply {
-                setMargin(getDimens(SPACE),0,getDimens(SPACE),0)
-            }
     }
 
     var isGoToPlusCheckout: Boolean = false
@@ -63,21 +27,13 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(@NotNull context
             field = isGoToPlus
             with(view_consent_goto_plus){
                 shouldShowWithAction(isGoToPlusCheckout){
-                    setTitle(context.getString(
+                    setDescription(context.getString(
                         R.string.digital_cart_goto_plus_consent,
                         context.getString(R.string.digital_cart_goto_plus_tos),
                         context.getString(R.string.digital_cart_goto_plus_privacy_policy)
                     ))
-                    setDescription("")
-                    hasMoreInfo(false)
+                    setOnTickCheckbox { isCheckoutButtonEnabled = it }
                     setLinkMovement()
-                    actionListener = object : DigitalCartMyBillsWidget.ActionListener{
-                        override fun onMoreInfoClicked() { /*no op*/ }
-
-                        override fun onCheckChanged(isChecked: Boolean) {
-                            isCheckoutButtonEnabled = isChecked
-                        }
-                    }
                 }
             }
         }
@@ -165,55 +121,14 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(@NotNull context
     }
 
     private fun setLinkMovement(){
-        (view_consent_goto_plus.parent as ConstraintLayout).also { parentView ->
-            parentView.findViewById<Typography>(R.id.tvCheckoutMyBillsHeaderTitle).apply {
-                highlightColor = Color.TRANSPARENT
-                clickableLink(
-                    Pair(context.getString(R.string.digital_cart_goto_plus_tos), {
-                        onClickConsentListener?.invoke()
-                    }),
-                    Pair(context.getString(R.string.digital_cart_goto_plus_privacy_policy), {
-                        onClickConsentListener?.invoke()
-                    })
-                )
-            }
-        }
-    }
-
-    private fun Typography.clickableLink(vararg links: Pair<String, (View) -> Unit>) {
-        val spannableString = SpannableString(this.text)
-        var startIndexOfLink = START_INDEX_LINK
-        for (link in links) {
-            val clickableSpan = object : ClickableSpan() {
-                override fun updateDrawState(ds: TextPaint) {
-                    ds.apply {
-                        color = ResourcesCompat.getColor(resources, SPAN_COLOR, null)
-                        isUnderlineText = false
-                    }
-                }
-
-                override fun onClick(view: View) {
-                    Selection.setSelection((view as TextView).text as Spannable, 0)
-                    view.invalidate()
-                    link.second.invoke(view)
-                }
-            }
-            startIndexOfLink = this.text.toString().indexOf(link.first, startIndexOfLink + 1)
-
-            spannableString.apply {
-                setSpan(
-                    clickableSpan, startIndexOfLink, startIndexOfLink + link.first.length,
-                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-                setSpan(
-                    StyleSpan(Typeface.BOLD),
-                    startIndexOfLink, startIndexOfLink + link.first.length,
-                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-            }
-        }
-        this.movementMethod = LinkMovementMethod.getInstance()
-        this.text = spannableString
+        view_consent_goto_plus.setOnClickUrl(
+            Pair(context.getString(R.string.digital_cart_goto_plus_tos), {
+                onClickConsentListener?.invoke()
+            }),
+            Pair(context.getString(R.string.digital_cart_goto_plus_privacy_policy), {
+                onClickConsentListener?.invoke()
+            })
+        )
     }
 
     override fun onDetachedFromWindow() {
