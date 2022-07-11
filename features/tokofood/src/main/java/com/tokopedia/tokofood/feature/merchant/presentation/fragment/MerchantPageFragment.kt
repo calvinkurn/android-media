@@ -418,8 +418,12 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     private fun applySelectedProducts() {
-        viewModel.getAppliedProductSelection()?.let { appliedProductList ->
-            renderProductList(appliedProductList)
+        activityViewModel?.hasCartUpdatedIntoLatestState?.value?.let { hasCartUpdated ->
+            if (hasCartUpdated) {
+                viewModel.getAppliedProductSelection()?.let { appliedProductList ->
+                    renderProductList(appliedProductList)
+                }
+            }
         }
     }
 
