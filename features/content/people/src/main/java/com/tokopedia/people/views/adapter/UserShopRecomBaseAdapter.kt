@@ -65,8 +65,8 @@ open class UserShopRecomBaseAdapter(
     }
 
     fun updateItem(item: ShopRecomItem) {
-        val position = items.indexOf(item)
-        items[position].isFollow = !item.isFollow
+        val position = items.indexOf(item.copy(isFollow = !item.isFollow))
+        items[position].isFollow = item.isFollow
         notifyItemChanged(position, item)
     }
 

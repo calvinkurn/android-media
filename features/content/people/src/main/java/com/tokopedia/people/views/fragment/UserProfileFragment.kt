@@ -17,8 +17,11 @@ import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.feedcomponent.bottomsheets.onboarding.FeedUserCompleteOnboardingBottomSheet
+import com.tokopedia.feedcomponent.bottomsheets.onboarding.FeedUserTnCOnboardingBottomSheet
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
+import com.tokopedia.feedcomponent.view.decor.ShopRecomItemDecoration
 import com.tokopedia.globalerror.GlobalError.Companion.NO_CONNECTION
 import com.tokopedia.globalerror.GlobalError.Companion.PAGE_FULL
 import com.tokopedia.globalerror.GlobalError.Companion.PAGE_NOT_FOUND
@@ -37,9 +40,25 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.people.*
 import com.tokopedia.people.R
-import com.tokopedia.people.views.itemdecoration.GridSpacingItemDecoration
+import com.tokopedia.people.analytic.UserProfileTracker
+import com.tokopedia.people.databinding.UpFragmentUserProfileBinding
+import com.tokopedia.people.databinding.UpLayoutUserProfileHeaderBinding
+import com.tokopedia.people.model.ShopRecomItem
+import com.tokopedia.people.utils.showErrorToast
+import com.tokopedia.people.utils.showToast
+import com.tokopedia.people.utils.withCache
 import com.tokopedia.people.viewmodels.UserProfileViewModel
+import com.tokopedia.people.viewmodels.factory.UserProfileViewModelFactory
+import com.tokopedia.people.views.activity.FollowerFollowingListingActivity
 import com.tokopedia.people.views.activity.UserProfileActivity.Companion.EXTRA_USERNAME
+import com.tokopedia.people.views.adapter.UserPostBaseAdapter
+import com.tokopedia.people.views.adapter.UserShopRecomBaseAdapter
+import com.tokopedia.people.views.itemdecoration.GridSpacingItemDecoration
+import com.tokopedia.people.views.uimodel.action.UserProfileAction
+import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
+import com.tokopedia.people.views.uimodel.profile.ProfileType
+import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
+import com.tokopedia.people.views.uimodel.state.UserProfileUiState
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
@@ -49,31 +68,11 @@ import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListe
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
-import com.tokopedia.feedcomponent.bottomsheets.onboarding.FeedUserCompleteOnboardingBottomSheet
-import com.tokopedia.feedcomponent.bottomsheets.onboarding.FeedUserTnCOnboardingBottomSheet
-import com.tokopedia.feedcomponent.view.decor.ShopRecomItemDecoration
-import com.tokopedia.people.views.activity.FollowerFollowingListingActivity
-import com.tokopedia.people.views.adapter.UserPostBaseAdapter
-import com.tokopedia.people.analytic.UserProfileTracker
-import com.tokopedia.people.databinding.UpFragmentUserProfileBinding
-import com.tokopedia.people.databinding.UpLayoutUserProfileHeaderBinding
-import com.tokopedia.people.model.ShopRecomItem
-import com.tokopedia.people.utils.showErrorToast
-import com.tokopedia.people.utils.showToast
-import com.tokopedia.people.utils.withCache
-import com.tokopedia.people.viewmodels.factory.UserProfileViewModelFactory
-import com.tokopedia.people.views.adapter.UserShopRecomBaseAdapter
-import com.tokopedia.people.views.uimodel.action.UserProfileAction
-import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
-import com.tokopedia.people.views.uimodel.profile.ProfileType
-import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
-import com.tokopedia.people.views.uimodel.state.UserProfileUiState
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
-import timber.log.Timber
 import com.tokopedia.abstraction.R as abstractionR
 import com.tokopedia.unifyprinciples.R as unifyR
 
@@ -341,6 +340,9 @@ class UserProfileFragment @Inject constructor(
                                 else -> SERVER_ERROR
                             }
                         )
+                    }
+                    is UserProfileUiEvent.SuccessFollowShopRecom -> {
+                        mAdapterShopRecom.updateItem(event.data)
                     }
                 }
             }
@@ -667,7 +669,6 @@ class UserProfileFragment @Inject constructor(
     }
 
     override fun onFollowClicked(item: ShopRecomItem) {
-        mAdapterShopRecom.updateItem(item)
         submitAction(UserProfileAction.ClickFollowButtonShopRecom(item))
     }
 
