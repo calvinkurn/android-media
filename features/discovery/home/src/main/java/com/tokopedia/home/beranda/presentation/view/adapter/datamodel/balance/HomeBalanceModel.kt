@@ -10,6 +10,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_COUPON
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_FREE_ONGKIR
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_REWARDS
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_SUBSCRIPTION
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_TOKOPOINT
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_UNKNOWN
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_APP_LINKED
@@ -248,9 +249,11 @@ data class HomeBalanceModel(
     private fun mapSubscriptions(subscriptionData: SubscriptionsData, headerTitle: String) {
         subscriptionData.drawerList.map {
             val drawerSubscription = it.mapToHomeBalanceItemModel(
-                    state = STATE_SUCCESS,
-                    headerTitle = headerTitle
-            )
+                state = STATE_SUCCESS,
+                headerTitle = headerTitle,
+                isSubscriber = subscriptionData.isSubscriber,
+                drawerItemType = TYPE_SUBSCRIPTION
+                )
             balanceDrawerItemModels.add(drawerSubscription)
         }
     }

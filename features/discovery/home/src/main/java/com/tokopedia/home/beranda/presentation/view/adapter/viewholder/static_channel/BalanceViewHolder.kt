@@ -8,6 +8,7 @@ import com.tokopedia.home.R
 import com.tokopedia.home.analytics.v2.OvoWidgetTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_SUBSCRIPTION
 import com.tokopedia.home.databinding.ItemBalanceWidgetNewBinding
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -66,7 +67,6 @@ class BalanceViewHolder(v: View) : RecyclerView.ViewHolder(v) {
                 }
                 element.iconImageUrl?.let {
                     binding?.homeIvLogoBalance?.visible()
-
                     if (it.isNotEmpty()) binding?.homeIvLogoBalance?.setImageUrl(it)
                 }
 
@@ -78,13 +78,23 @@ class BalanceViewHolder(v: View) : RecyclerView.ViewHolder(v) {
                 //load reserve balance
                 val reserveBalance = element.balanceSubTitleTextAttribute?.text ?: ""
                 binding?.homeTvReserveBalance?.text = reserveBalance
-                binding?.homeTvReserveBalance?.setWeight(Typography.REGULAR)
-                binding?.homeTvReserveBalance?.setTextColor(
-                    ContextCompat.getColor(
-                        itemView.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                if (element.drawerItemType == TYPE_SUBSCRIPTION && !element.isSubscriberGoToPlus) {
+                    binding?.homeTvReserveBalance?.setWeight(Typography.BOLD)
+                    binding?.homeTvReserveBalance?.setTextColor(
+                        ContextCompat.getColor(
+                            itemView.context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_GN400
+                        )
                     )
-                )
+                } else {
+                    binding?.homeTvReserveBalance?.setWeight(Typography.REGULAR)
+                    binding?.homeTvReserveBalance?.setTextColor(
+                        ContextCompat.getColor(
+                            itemView.context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                        )
+                    )
+                }
 
                 binding?.homeContainerBalance?.handleItemCLickType(
                     element = element,

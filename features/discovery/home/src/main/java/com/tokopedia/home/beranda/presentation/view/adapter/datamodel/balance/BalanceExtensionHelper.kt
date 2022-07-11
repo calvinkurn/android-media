@@ -109,7 +109,7 @@ fun WalletAppData.mapToHomeBalanceItemModel(state: Int, headerTitle: String): Ba
     return null
 }
 
-fun SubscriptionsDrawerList.mapToHomeBalanceItemModel(state: Int, headerTitle: String): BalanceDrawerItemModel {
+fun SubscriptionsDrawerList.mapToHomeBalanceItemModel(state: Int, headerTitle: String, isSubscriber: Boolean, drawerItemType: Int): BalanceDrawerItemModel {
     val balanceTitleTextAttribute = sectionContent.getOrNull(0)?.subscriptionsTextAttributes?.mapToBalanceTextAttributes()
     val balanceSubTitleTextAttribute = sectionContent.getOrNull(1)?.subscriptionsTextAttributes?.mapToBalanceTextAttributes()
 
@@ -117,16 +117,18 @@ fun SubscriptionsDrawerList.mapToHomeBalanceItemModel(state: Int, headerTitle: S
     val balanceSubTitleTagAttribute = sectionContent.getOrNull(1)?.tagAttributes?.mapToBalanceTagAttributes()
 
     return BalanceDrawerItemModel(
-            applinkContainer = redirectAppLink,
-            applinkActionText = redirectAppLink,
-            redirectUrl = redirectURL,
-            iconImageUrl = iconImageURL,
-            balanceTitleTextAttribute = balanceTitleTextAttribute,
-            balanceSubTitleTextAttribute = balanceSubTitleTextAttribute,
-            balanceTitleTagAttribute = balanceTitleTagAttribute,
-            balanceSubTitleTagAttribute = balanceSubTitleTagAttribute,
-            state = state,
-            headerTitle = headerTitle
+        applinkContainer = redirectAppLink,
+        applinkActionText = redirectAppLink,
+        redirectUrl = redirectURL,
+        iconImageUrl = iconImageURL,
+        balanceTitleTextAttribute = balanceTitleTextAttribute,
+        balanceSubTitleTextAttribute = balanceSubTitleTextAttribute,
+        balanceTitleTagAttribute = balanceTitleTagAttribute,
+        balanceSubTitleTagAttribute = balanceSubTitleTagAttribute,
+        state = state,
+        headerTitle = headerTitle,
+        isSubscriberGoToPlus = isSubscriber,
+        drawerItemType = drawerItemType
     )
 }
 
