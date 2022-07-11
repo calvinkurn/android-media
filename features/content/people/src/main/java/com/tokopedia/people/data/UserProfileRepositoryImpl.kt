@@ -3,7 +3,13 @@ package com.tokopedia.people.data
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistNewUseCase
 import com.tokopedia.feedcomponent.domain.usecase.WHITELIST_ENTRY_POINT
-import com.tokopedia.people.domains.*
+import com.tokopedia.people.domains.UserDetailsUseCase
+import com.tokopedia.people.domains.PlayPostContentUseCase
+import com.tokopedia.people.domains.ProfileFollowUseCase
+import com.tokopedia.people.domains.ProfileUnfollowedUseCase
+import com.tokopedia.people.domains.ProfileTheyFollowedUseCase
+import com.tokopedia.people.domains.VideoPostReminderUseCase
+import com.tokopedia.people.domains.ShopRecomUseCase
 import com.tokopedia.people.domains.repository.UserProfileRepository
 import com.tokopedia.people.model.ProfileHeaderBase
 import com.tokopedia.people.model.UserPostModel

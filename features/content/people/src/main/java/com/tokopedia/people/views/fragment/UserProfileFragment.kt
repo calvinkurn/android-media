@@ -36,7 +36,6 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.linker.share.DataMapper
-import com.tokopedia.people.*
 import com.tokopedia.people.R
 import com.tokopedia.people.analytic.UserProfileTracker
 import com.tokopedia.people.databinding.UpFragmentUserProfileBinding
@@ -58,7 +57,6 @@ import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.people.views.uimodel.profile.ProfileType
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
 import com.tokopedia.people.views.uimodel.state.UserProfileUiState
-import com.tokopedia.unifycomponents.*
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
@@ -75,6 +73,11 @@ import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyR
 import com.tokopedia.feedcomponent.R as feedComponentR
 import com.tokopedia.feedcomponent.onboarding.view.fragment.FeedUGCOnboardingParentFragment
+import com.tokopedia.people.ErrorMessage
+import com.tokopedia.people.Loading
+import com.tokopedia.people.Success
+import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.UnifyButton
 
 class UserProfileFragment @Inject constructor(
     private val viewModelFactoryCreator: UserProfileViewModelFactory.Creator,
