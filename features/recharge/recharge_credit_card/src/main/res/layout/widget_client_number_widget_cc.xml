@@ -26,7 +26,7 @@
             android:elevation="4dp"
             android:scaleType="centerCrop"
             android:src="@drawable/placeholder_grey"
-            android:contentDescription=""
+            android:contentDescription="@string/cc_widget_operator_icon_content_desc"
             app:layout_constraintBottom_toBottomOf="@id/client_number_widget_operator_view"
             app:layout_constraintEnd_toEndOf="@id/client_number_widget_operator_view"
             app:layout_constraintStart_toStartOf="@id/client_number_widget_operator_view"

@@ -121,7 +121,7 @@ class RechargeCCViewModel @Inject constructor(
                 val graphqlRequest = GraphqlRequest(rawQuery, RechargeCCCatalogPrefix::class.java, mapParam)
                 graphqlRepository.response(listOf(graphqlRequest),
                         GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 10).build())
+                                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * CACHE_MINUTES_GET_PREFIX).build())
             }.getSuccessData()
 
             _prefixSelect.postValue(RechargeNetworkResult.Success(prefixData))
@@ -200,5 +200,6 @@ class RechargeCCViewModel @Inject constructor(
 
         private const val CACHE_MINUTES_MENU_DETAIL = 5
         private const val CACHE_MINUTES_GET_LIST_BANK = 10
+        private const val CACHE_MINUTES_GET_PREFIX = 10
     }
 }
