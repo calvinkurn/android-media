@@ -5,7 +5,6 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.ViewTreeObserver
-import android.widget.Toast
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.digital.home.databinding.LayoutDigitalHorizontalProductCardBinding
 import com.tokopedia.kotlin.extensions.view.hide
@@ -61,19 +60,10 @@ class DigitalHorizontalProductCard @JvmOverloads constructor(
                     viewTreeObserver.removeOnGlobalLayoutListener(this)
                     val contentHeight = measureContentHeight()
 
-                    Toast.makeText(context, "Card Height : $contentHeight", Toast.LENGTH_SHORT)
-                        .show()
-
                     val ratio: Double =
                         layoutParams.width.toDouble() / layoutParams.height.toDouble()
                     val newWidth = contentHeight
                     val newHeight = newWidth / ratio
-
-                    Toast.makeText(
-                        context,
-                        "New Width : $newWidth ... New Height : $newHeight",
-                        Toast.LENGTH_SHORT
-                    ).show()
 
                     layoutParams.width = newWidth
                     layoutParams.height = newHeight.toInt()
@@ -135,17 +125,13 @@ class DigitalHorizontalProductCard @JvmOverloads constructor(
         contentHeight += binding.tgHorizontalCardProductCategory.marginLp.topMargin
         contentHeight += binding.tgHorizontalCardProductCategory.marginLp.bottomMargin
 
-        Toast.makeText(context, "Category : $contentHeight", Toast.LENGTH_SHORT).show()
-
         contentHeight += binding.tgHorizontalCardProductDetail.measuredHeight
         contentHeight += binding.tgHorizontalCardProductDetail.marginLp.topMargin
         contentHeight += binding.tgHorizontalCardProductDetail.marginLp.bottomMargin
-        Toast.makeText(context, "Detail : $contentHeight", Toast.LENGTH_SHORT).show()
 
         contentHeight += binding.tgHorizontalCardProductPrice.measuredHeight
         contentHeight += binding.tgHorizontalCardProductPrice.marginLp.topMargin
         contentHeight += binding.tgHorizontalCardProductPrice.marginLp.bottomMargin
-        Toast.makeText(context, "Price : $contentHeight", Toast.LENGTH_SHORT).show()
 
         return contentHeight
     }
