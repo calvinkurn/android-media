@@ -285,11 +285,11 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
     }
 
     private fun showLoading() {
-        binding?.mainProgressBar?.visibility = View.VISIBLE
+        binding?.loadingView?.root?.visibility = View.VISIBLE
     }
 
     private fun hideLoading() {
-        binding?.mainProgressBar?.visibility = View.GONE
+        binding?.loadingView?.root?.visibility = View.GONE
     }
 
     private fun showError(error: Throwable) {

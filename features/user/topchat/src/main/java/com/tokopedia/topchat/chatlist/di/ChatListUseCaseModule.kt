@@ -2,7 +2,7 @@ package com.tokopedia.topchat.chatlist.di
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
+import com.tokopedia.topchat.chatlist.domain.pojo.ChatListPojo
 import dagger.Module
 import dagger.Provides
 

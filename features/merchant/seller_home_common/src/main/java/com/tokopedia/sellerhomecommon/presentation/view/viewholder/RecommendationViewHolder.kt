@@ -127,7 +127,6 @@ class RecommendationViewHolder(
             itemView.addOnImpressionListener(element.impressHolder) {
                 listener.sendRecommendationImpressionEvent(element)
             }
-            listener.showRecommendationWidgetCoachMark(binding.containerShcRecommendation)
         }
     }
 
@@ -364,8 +363,6 @@ class RecommendationViewHolder(
     }
 
     interface Listener : BaseViewHolderListener {
-        fun showRecommendationWidgetCoachMark(view: View) {}
-
         fun sendRecommendationImpressionEvent(element: RecommendationWidgetUiModel) {}
 
         fun sendRecommendationCtaClickEvent(element: RecommendationWidgetUiModel) {}

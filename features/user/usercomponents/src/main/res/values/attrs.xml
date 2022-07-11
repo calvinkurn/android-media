@@ -1,14 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--  STICKY LOGIN  -->
     <declare-styleable name="StickyLoginView">
         <attr name="sticky_left_icon" format="reference" />
         <attr name="sticky_text" format="string|reference" />
         <attr name="sticky_text_highlight" format="string|reference" />
         <attr name="sticky_highlight_color" format="reference|color" />
     </declare-styleable>
-  
-  <declare-styleable name="EllipsizedTextView">
-    <attr name="highlight" format="string"/>
-    <attr name="highlight_color" format="reference|color"/>
-  </declare-styleable>
+    <declare-styleable name="EllipsizedTextView">
+        <attr name="highlight" format="string" />
+        <attr name="highlight_color" format="reference|color" />
+    </declare-styleable>
+
+    <!--  USER CONSENT  -->
+    <declare-styleable name="UserConsentWidget">
+        <attr name="actionText" format="string" />
+    </declare-styleable>
+
+    <!--EXPLICIT PROFILE-->
+    <declare-styleable name="ExplicitView">
+        <attr name="template_name" format="string"/>
+        <attr name="page_name" format="string"/>
+        <attr name="page_path" format="string"/>
+        <attr name="page_type" format="string"/>
+    </declare-styleable>
 </resources>

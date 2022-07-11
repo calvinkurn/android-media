@@ -157,8 +157,8 @@ class TradeInAnalytics @Inject constructor(
     fun clickEducationalButton(is3PL : Boolean, imei : String, isDiagnosed : Boolean) {
         val map = mutableMapOf<String, Any>(
             EVENT to CLICK_PG,
-            EVENT_CATEGORY to TRADE_IN_CLICK_EDUCATIONAL_PAGE_BUTTON,
-            EVENT_ACTION to TRADE_IN_START_PAGE,
+            EVENT_CATEGORY to TRADE_IN_START_PAGE,
+            EVENT_ACTION to TRADE_IN_CLICK_EDUCATIONAL_PAGE_BUTTON,
             EVENT_LABEL to (if(isDiagnosed) "with test" else "without test")
                     + " - "
                     + (if(imei.isNotEmpty()) "with IMEI" else "without IMEI")
@@ -174,8 +174,8 @@ class TradeInAnalytics @Inject constructor(
     fun expandDropDown(is3PL : Boolean, imei : String, isDiagnosed : Boolean) {
         val map = mutableMapOf<String, Any>(
             EVENT to CLICK_PG,
-            EVENT_CATEGORY to TRADE_IN_CLICK_DROPDOWN,
-            EVENT_ACTION to TRADE_IN_START_PAGE,
+            EVENT_CATEGORY to TRADE_IN_START_PAGE,
+            EVENT_ACTION to TRADE_IN_CLICK_DROPDOWN,
             EVENT_LABEL to (if(isDiagnosed) "with test" else "without test")
                     + " - "
                     + (if(imei.isNotEmpty()) "with IMEI" else "without IMEI")
@@ -248,18 +248,24 @@ class TradeInAnalytics @Inject constructor(
     }
 
     //15
-    fun clickExchangeMethods(is1PLAvailable : Boolean, price1PL : String, is3PLAvailable : Boolean, price3Pl : String) {
+    fun clickExchangeMethods(
+        is3PL: Boolean,
+        price1PL: String,
+        price3Pl: String
+    ) {
         val map = mutableMapOf<String, Any>(
             EVENT to CLICK_PG,
             EVENT_CATEGORY to TRADE_IN_START_PAGE,
             EVENT_ACTION to "click exchange methods",
-            EVENT_LABEL to "alamatmu: " + (if(is1PLAvailable) "available" else "unavailable")
-                    + " - price_range_alamatmu: $price1PL"
-                    + " - indomaret: " + (if(is3PLAvailable) "available" else "unavailable")
-                    + " - price_range_indomaret: $price3Pl",
+            EVENT_LABEL to if (is3PL) {
+                "indomaret - $price3Pl"
+            } else {
+                "alamatmu - $price1PL"
+            },
             KEY_BUSINESS_UNIT to BUSINESS_UNIT,
             KEY_CURRENT_SITE to CURRENT_SITE,
-            KEY_USER_ID to userSession.userId)
+            KEY_USER_ID to userSession.userId
+        )
         getTracker().sendGeneralEvent(map)
     }
 

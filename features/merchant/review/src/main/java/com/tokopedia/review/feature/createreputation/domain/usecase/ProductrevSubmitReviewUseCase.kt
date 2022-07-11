@@ -4,6 +4,7 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.review.feature.createreputation.model.ProductrevSubmitReviewResponseWrapper
+import java.io.Serializable
 import javax.inject.Inject
 
 @GqlQuery(
@@ -60,7 +61,7 @@ class ProductrevSubmitReviewUseCase @Inject constructor(graphqlRepository: Graph
         val videoAttachments: List<VideoAttachment> = emptyList(),
         val utmSource: String,
         val badRatingCategoryIds: List<String>
-    ) {
+    ): Serializable {
         fun toRequestParamMap(): Map<String, Any> {
             return mapOf(
                 PARAM_REPUTATION_ID to reputationId,
@@ -80,7 +81,7 @@ class ProductrevSubmitReviewUseCase @Inject constructor(graphqlRepository: Graph
         data class VideoAttachment(
             val uploadId: String,
             val videoUrl: String
-        ) {
+        ): Serializable {
             fun toRequestParamMap(): Map<String, Any> {
                 return mapOf(
                     PARAM_VIDEO_ATTACHMENT_UPLOAD_ID to uploadId,

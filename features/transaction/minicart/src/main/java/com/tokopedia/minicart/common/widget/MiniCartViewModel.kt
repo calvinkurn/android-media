@@ -36,7 +36,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartCheckoutData
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.minicart.common.domain.data.getMiniCartItemBundle
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemBundleGroup
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListUseCase
@@ -154,7 +154,6 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     }
 
     private fun getMiniCartItems(): List<MiniCartItem> {
-        // TODO: check if direct get from map is possible for changes
         return miniCartSimplifiedData.value?.miniCartItems?.values?.toList() ?: emptyList()
     }
 
@@ -477,7 +476,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
                                     notes = it.notes
                             )
                     )
-                } else if (it is MiniCartItem.MiniCartItemBundle && !it.isError) {
+                } else if (it is MiniCartItem.MiniCartItemBundleGroup && !it.isError) {
                     it.products.values.forEach { product ->
                         updateCartRequests.add(
                                 UpdateCartRequest(
@@ -652,13 +651,14 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         val visitables = getVisitables()
         val productId = element.productId
         val bundleId = element.bundleId
+        val bundleGroupId = element.bundleGroupId
         val isBundling = element.isBundlingItem
         // flag to identify cart group
         var isInBundle = false
         loop@ for (visitable in visitables) {
             if (visitable is MiniCartProductUiModel && !visitable.isProductDisabled) {
                 val updateNonBundle = !isBundling && visitable.productId == productId
-                val updateBundle = isBundling && visitable.bundleId == bundleId
+                val updateBundle = isBundling && visitable.bundleId == bundleId && visitable.bundleGroupId == bundleGroupId
                 if (updateNonBundle) {
                     visitable.setQuantity(newQty)
                     break@loop
@@ -681,7 +681,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
                 }
             }
         } else {
-            miniCartSimplifiedData.value?.miniCartItems?.getMiniCartItemBundle(bundleId)?.apply {
+            miniCartSimplifiedData.value?.miniCartItems?.getMiniCartItemBundleGroup(bundleGroupId)?.apply {
                 if (!isError) {
                     bundleQuantity = newQty
                     products.forEach {
@@ -692,7 +692,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         }
     }
 
-    fun updateProductNotes(productId: String, isBundlingItem: Boolean, bundleId: String, newNotes: String) {
+    fun updateProductNotes(productId: String, isBundlingItem: Boolean, bundleId: String, bundleGroupId: String, newNotes: String) {
         val visitables = getVisitables()
         loop@ for (visitable in visitables) {
             if (visitable is MiniCartProductUiModel && visitable.productId == productId && !visitable.isProductDisabled) {
@@ -708,7 +708,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
                 }
             }
         } else {
-            miniCartSimplifiedData.value?.miniCartItems?.getMiniCartItemBundle(bundleId)?.apply {
+            miniCartSimplifiedData.value?.miniCartItems?.getMiniCartItemBundleGroup(bundleGroupId)?.apply {
                 if (!isError) {
                     products[MiniCartItemKey(productId)]?.notes = newNotes
                 }
@@ -820,7 +820,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         val allProductList = visitables.filterIsInstance<MiniCartProductUiModel>()
         val nonBundleProductList = allProductList.filter { !it.isBundlingItem }
         val bundleProductList = allProductList.filter { it.isBundlingItem }
-                .distinctBy { it.bundleId }
+                .distinctBy { it.bundleGroupId }
         val productList = nonBundleProductList + bundleProductList
 
         productList.forEach { visitable ->

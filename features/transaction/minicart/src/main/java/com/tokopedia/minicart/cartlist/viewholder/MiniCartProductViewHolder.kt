@@ -317,7 +317,7 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
                         delay(NOTES_CHANGE_DELAY)
                         val notes = s.toString()
                         element.productNotes = notes
-                        listener.onNotesChanged(element.productId, element.isBundlingItem, element.bundleId, notes)
+                        listener.onNotesChanged(element.productId, element.isBundlingItem, element.bundleId, element.bundleGroupId, notes)
                     }
                 }
 

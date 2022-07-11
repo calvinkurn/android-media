@@ -860,12 +860,6 @@ open class ShopScoreMapper @Inject constructor(
         return copyItemDetail
     }
 
-    private fun mapToItemPMUiModel(): ItemStatusPMUiModel {
-        return ItemStatusPMUiModel(
-            descPM = R.string.desc_content_pm_not_eligible_pm_pro
-        )
-    }
-
     private fun mapToCardPotentialBenefitNonEligible(): SectionRMPotentialPMBenefitUiModel {
         return SectionRMPotentialPMBenefitUiModel(
             potentialPMBenefitList = mapToItemPotentialBenefit()

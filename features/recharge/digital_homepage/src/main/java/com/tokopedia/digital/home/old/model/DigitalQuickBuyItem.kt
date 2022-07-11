@@ -9,7 +9,7 @@ import kotlinx.android.parcel.Parcelize
 class DigitalQuickBuyItem(
         @SerializedName("id")
         @Expose
-        val id: Int = 0,
+        val id: String = "0",
         @SerializedName("name")
         @Expose
         val name: String = "",
@@ -51,5 +51,5 @@ class DigitalQuickBuyItem(
         val pricePrefix: String = "",
         @SerializedName("template_id")
         @Expose
-        val templateId: Int = 0
+        val templateId: String = "0"
 ): Parcelable

@@ -3,6 +3,7 @@ package com.tokopedia.gm.common.domain.interactor
 import com.tokopedia.gm.common.data.source.cloud.model.GMShopInfoResponse
 import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
 import com.tokopedia.gm.common.domain.mapper.PMShopInfoMapper
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -15,13 +16,16 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 09/03/21
  */
 
+@GqlQuery("GetPMShopInfoGqlQuery", GetPMShopInfoUseCase.QUERY)
 class GetPMShopInfoUseCase @Inject constructor(
-        private val gqlRepository: GraphqlRepository,
-        private val mapper: PMShopInfoMapper
+    private val gqlRepository: GraphqlRepository,
+    private val mapper: PMShopInfoMapper
 ) : BaseGqlUseCase<PMShopInfoUiModel>() {
 
     override suspend fun executeOnBackground(): PMShopInfoUiModel {
-        val gqlRequest = GraphqlRequest(QUERY, GMShopInfoResponse::class.java, params.parameters)
+        val gqlRequest = GraphqlRequest(
+            GetPMShopInfoGqlQuery(), GMShopInfoResponse::class.java, params.parameters
+        )
         val gqlResponse = gqlRepository.response(listOf(gqlRequest), cacheStrategy)
 
         val errors: List<GraphqlError>? = gqlResponse.getError(GMShopInfoResponse::class.java)
@@ -34,12 +38,7 @@ class GetPMShopInfoUseCase @Inject constructor(
     }
 
     companion object {
-        private const val KEY_SHOP_ID = "shop_id"
-        private const val KEY_SOURCE = "source"
-        private const val KEY_FILTER = "filter"
-        private const val KEY_INCLUDING_PM_PRO_ELIGIBILITY = "including_pm_pro_eligibility"
-
-        private val QUERY = """
+        internal const val QUERY = """
           query goldGetPMShopInfo(${'$'}shop_id: Int!, ${'$'}source: String!, ${'$'}filter: GetPMShopInfoFilter) {
             goldGetPMShopInfo(shop_id: ${'$'}shop_id, source: ${'$'}source, filter: ${'$'}filter) {
               is_new_seller
@@ -78,11 +77,15 @@ class GetPMShopInfoUseCase @Inject constructor(
                 next_monthly_refresh_date
             }
           }
-        """.trimIndent()
+        """
+        private const val KEY_SHOP_ID = "shop_id"
+        private const val KEY_SOURCE = "source"
+        private const val KEY_FILTER = "filter"
+        private const val KEY_INCLUDING_PM_PRO_ELIGIBILITY = "including_pm_pro_eligibility"
 
         fun createParams(shopId: String, source: String): RequestParams {
             val filter: Map<String, Boolean> = mapOf(
-                    KEY_INCLUDING_PM_PRO_ELIGIBILITY to true
+                KEY_INCLUDING_PM_PRO_ELIGIBILITY to true
             )
             return RequestParams.create().apply {
                 putLong(KEY_SHOP_ID, shopId.toLongOrZero())

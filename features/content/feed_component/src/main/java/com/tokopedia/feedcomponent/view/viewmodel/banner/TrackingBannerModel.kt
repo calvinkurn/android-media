@@ -11,7 +11,7 @@ data class TrackingBannerModel(
         val tagsType: String = "",
         val bannerUrl: String = "",
         val applink: String = "",
-        val postId: Int = 0,
+        val postId: String = "",
         val totalBanner: Int = 0,
         val bannerPosition: Int = 0
 )

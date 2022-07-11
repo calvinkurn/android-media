@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -51,6 +50,11 @@ private const val CLICK_TAMBAH_KATA_KUNCI_NEGATIVE = "click - tambah kata kunci 
 
 class NegKeywordTabFragment : BaseDaggerFragment() {
 
+    private lateinit var adapter: NegKeywordAdapter
+    private val groupId by lazy(LazyThreadSafetyMode.NONE) {
+        arguments?.getInt(TopAdsDashboardConstant.GROUP_ID, 0).toString()
+    }
+
     companion object {
         fun createInstance(bundle: Bundle): NegKeywordTabFragment {
             val frag = NegKeywordTabFragment()
@@ -71,7 +75,6 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
     private var loader: LoaderUnify? = null
     private lateinit var recyclerView: RecyclerView
 
-    private lateinit var adapter: NegKeywordAdapter
     private var deleteCancel = false
     private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
     private lateinit var layoutManager: LinearLayoutManager
@@ -83,7 +86,7 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelProvider by lazy {
-        ViewModelProviders.of(this, viewModelFactory)
+        ViewModelProvider(this, viewModelFactory)
     }
     private val viewModel by lazy {
         viewModelProvider.get(GroupDetailViewModel::class.java)
@@ -124,7 +127,7 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
         savedInstanceState: Bundle?,
     ): View? {
         val view =
-            inflater.inflate(resources.getLayout(R.layout.topads_dash_fragment_neg_keyword_list),
+            inflater.inflate(context?.resources?.getLayout(R.layout.topads_dash_fragment_neg_keyword_list),
                 container, false)
         recyclerView = view.findViewById(R.id.neg_key_list)
         actionbar = view.findViewById(R.id.actionbar)
@@ -162,6 +165,7 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
     }
 
     private fun fetchNextPage(currentPage: Int) {
+        val resources = context?.resources ?: return
         viewModel.getGroupKeywordData(resources,
             0,
             arguments?.getInt(TopAdsDashboardConstant.GROUP_ID)
@@ -185,14 +189,10 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
     }
 
     private fun startEditActivity() {
-        val intent =
-            RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)?.apply {
-                putExtra(TopAdsDashboardConstant.TAB_POSITION, 1)
-                putExtra(TopAdsDashboardConstant.GROUPID,
-                    arguments?.getInt(TopAdsDashboardConstant.GROUP_ID).toString())
-                putExtra(ParamObject.ISWHITELISTEDUSER,
-                    arguments?.getBoolean(ParamObject.ISWHITELISTEDUSER) ?: false)
-            }
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)?.apply {
+            putExtra(TopAdsDashboardConstant.TAB_POSITION, 1)
+            putExtra(TopAdsDashboardConstant.GROUPID, arguments?.getInt(TopAdsDashboardConstant.GROUP_ID).toString())
+        }
         startActivityForResult(intent, TopAdsDashboardConstant.EDIT_GROUP_REQUEST_CODE)
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(
             CLICK_TAMBAH_KATA_KUNCI_NEGATIVE,
@@ -208,6 +208,7 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
     }
 
     private fun performAction(actionActivate: String) {
+        val resources = context?.resources ?: return
         if (actionActivate == ACTION_DELETE) {
             view.let {
                 Toaster.make(it!!,
@@ -225,10 +226,7 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
                 delay(TOASTER_DURATION)
                 if (activity != null && isAdded) {
                     if (!deleteCancel) {
-                        viewModel.setKeywordAction(actionActivate,
-                            getAdIds(),
-                            resources,
-                            ::onSuccessAction)
+                        viewModel.setKeywordActionForGroup(groupId, actionActivate, getAdIds(), resources, ::onSuccessAction)
                         activity?.setResult(Activity.RESULT_OK)
                     }
                     deleteCancel = false
@@ -236,7 +234,7 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
                 }
             }
         } else {
-            viewModel.setKeywordAction(actionActivate, getAdIds(), resources, ::onSuccessAction)
+            viewModel.setKeywordActionForGroup(groupId, actionActivate, getAdIds(), resources, ::onSuccessAction)
         }
     }
 
@@ -245,6 +243,7 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
         loader?.visibility = View.VISIBLE
         adapter.items.clear()
         adapter.notifyDataSetChanged()
+        val resources = context?.resources ?: return
         viewModel.getGroupKeywordData(resources, 0,
             arguments?.getInt(TopAdsDashboardConstant.GROUP_ID) ?: 0,
             searchBar?.searchBarTextField?.text.toString(), null, null,

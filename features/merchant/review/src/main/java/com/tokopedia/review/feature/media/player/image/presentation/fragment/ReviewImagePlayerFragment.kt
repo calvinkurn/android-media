@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.image_gallery.ImagePreview
@@ -89,6 +90,11 @@ class ReviewImagePlayerFragment : BaseDaggerFragment() {
         ViewModelProvider(requireActivity(), detailedReviewMediaGalleryViewModelFactory).get(
             SharedReviewMediaGalleryViewModel::class.java
         )
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        SplitCompat.installActivity(requireContext())
+        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(

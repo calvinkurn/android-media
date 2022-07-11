@@ -10,8 +10,8 @@ fun Map<MiniCartItemKey, MiniCartItem>.getMiniCartItemProduct(productId: String)
     return get(MiniCartItemKey(productId)) as? MiniCartItem.MiniCartItemProduct
 }
 
-fun Map<MiniCartItemKey, MiniCartItem>.getMiniCartItemBundle(bundleId: String): MiniCartItem.MiniCartItemBundle? {
-    return get(MiniCartItemKey(bundleId, MiniCartItemType.BUNDLE)) as? MiniCartItem.MiniCartItemBundle
+fun Map<MiniCartItemKey, MiniCartItem>.getMiniCartItemBundleGroup(bundleGroupId: String): MiniCartItem.MiniCartItemBundleGroup? {
+    return get(MiniCartItemKey(bundleGroupId, MiniCartItemType.BUNDLE)) as? MiniCartItem.MiniCartItemBundleGroup
 }
 
 fun Map<MiniCartItemKey, MiniCartItem>.getMiniCartItemParentProduct(parentId: String): MiniCartItem.MiniCartItemParentProduct? {
@@ -50,7 +50,7 @@ sealed class MiniCartItemType {
 }
 
 sealed class MiniCartItem {
-    data class MiniCartItemBundle(
+    data class MiniCartItemBundleGroup(
             var isError: Boolean = false,
             var bundleId: String = "",
             var bundleGroupId: String = "",

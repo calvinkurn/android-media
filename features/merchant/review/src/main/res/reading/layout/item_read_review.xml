@@ -17,7 +17,6 @@
         android:id="@+id/read_review_basic_info"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl1"
         android:layout_marginEnd="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/read_review_product_info"
@@ -35,17 +34,6 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/read_review_variant_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/Unify_N700_68"
-        android:layout_marginTop="@dimen/spacing_lvl2"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginEnd="@dimen/layout_lvl2"
-        app:typographyType="body_3"
-        app:layout_constraintTop_toBottomOf="@id/read_review_basic_info" />
-
-    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/read_review_item_review"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -55,8 +43,8 @@
         android:ellipsize="end"
         android:maxLines="3"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/read_review_variant_name"
-        app:typographyType="body_2"
+        app:layout_constraintTop_toBottomOf="@id/read_review_basic_info"
+        app:typographyType="display_2"
         app:typographyWeight="reguler"
         tools:text="Saya sangat puas sekali!! Awalnya saya gak percaya. Dengan memakai handphone ini, saya bisa mendengarkan suaara jernih... Selengkapnya" />
 
@@ -96,7 +84,7 @@
         android:layout_marginStart="@dimen/spacing_lvl2"
         app:layout_constraintStart_toEndOf="@id/read_review_like_button"
         app:layout_constraintTop_toTopOf="@id/read_review_like_button"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         app:typographyWeight="reguler"
         tools:text="@string/review_reading_like" />
 
@@ -108,7 +96,7 @@
         android:text="@string/review_reading_show_response"
         app:layout_constraintEnd_toStartOf="@id/read_review_show_response_chevron"
         app:layout_constraintTop_toTopOf="@id/read_review_like_button"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         app:typographyWeight="reguler" />
 
     <com.tokopedia.iconunify.IconUnify
@@ -139,9 +127,9 @@
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl2"
-        android:background="@color/Unify_N75"
+        android:background="@color/Unify_NN50"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/read_review_item_barrier" />
 

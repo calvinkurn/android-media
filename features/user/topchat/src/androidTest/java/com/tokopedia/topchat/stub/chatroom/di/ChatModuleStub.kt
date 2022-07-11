@@ -17,22 +17,16 @@ import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.topchat.FakeTopchatCacheManager
-import com.tokopedia.topchat.chatlist.data.factory.MessageFactory
-import com.tokopedia.topchat.chatlist.data.mapper.DeleteMessageMapper
-import com.tokopedia.topchat.chatlist.data.repository.MessageRepository
-import com.tokopedia.topchat.chatlist.data.repository.MessageRepositoryImpl
 import com.tokopedia.topchat.chatroom.di.ChatScope
 import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.imageserver.ChatImageServerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingResponse
-import com.tokopedia.topchat.common.chat.api.ChatApi
 import com.tokopedia.topchat.common.di.qualifier.InboxQualifier
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.common.websocket.*
 import com.tokopedia.topchat.stub.common.UserSessionStub
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.websocket.RxWebSocketUtil
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Module
 import dagger.Provides
@@ -136,27 +130,6 @@ class ChatModuleStub {
         return retrofitBuilder.baseUrl(ChatUrl.TOPCHAT)
                 .client(okHttpClient)
                 .build()
-    }
-
-    @ChatScope
-    @Provides
-    fun provideChatApi(@InboxQualifier retrofit: Retrofit): ChatApi {
-        return retrofit.create(ChatApi::class.java)
-    }
-
-
-    @ChatScope
-    @Provides
-    fun provideMessageFactory(
-            chatApi: ChatApi,
-            deleteMessageMapper: DeleteMessageMapper): MessageFactory {
-        return MessageFactory(chatApi, deleteMessageMapper)
-    }
-
-    @ChatScope
-    @Provides
-    fun provideMessageRepository(messageFactory: MessageFactory): MessageRepository {
-        return MessageRepositoryImpl(messageFactory)
     }
 
     @ChatScope

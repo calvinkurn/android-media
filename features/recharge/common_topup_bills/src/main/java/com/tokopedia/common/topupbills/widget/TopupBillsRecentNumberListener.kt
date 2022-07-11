@@ -4,6 +4,6 @@ import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.view.model.TopupBillsTrackRecentTransaction
 
 interface TopupBillsRecentNumberListener {
-    fun onClickRecentNumber(topupBillsRecommendation: TopupBillsRecommendation, categoryId: Int, position: Int)
+    fun onClickRecentNumber(topupBillsRecommendation: TopupBillsRecommendation, categoryId: String, position: Int)
     fun onTrackImpressionRecentList(topupBillsTrackRecentList: List<TopupBillsTrackRecentTransaction>)
 }

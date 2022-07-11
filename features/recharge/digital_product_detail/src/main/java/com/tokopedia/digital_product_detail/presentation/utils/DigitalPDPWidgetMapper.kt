@@ -1,7 +1,7 @@
 package com.tokopedia.digital_product_detail.presentation.utils
 
-import com.tokopedia.digital_product_detail.domain.model.AutoCompleteModel
-import com.tokopedia.digital_product_detail.domain.model.FavoriteChipModel
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.AutoCompleteModel
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.FavoriteChipModel
 import com.tokopedia.recharge_component.model.client_number.RechargeClientNumberAutoCompleteModel
 import com.tokopedia.recharge_component.model.client_number.RechargeClientNumberChipModel
 

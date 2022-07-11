@@ -57,8 +57,8 @@
             android:layout_width="@dimen/layout_lvl4"
             android:layout_height="@dimen/layout_lvl4"
             android:visibility="gone"
-            app:layout_constraintStart_toStartOf="@id/img_winner"
             android:background="@drawable/bg_play_circle_winner"
+            app:layout_constraintStart_toStartOf="@id/img_winner"
             app:layout_constraintTop_toTopOf="@id/img_winner"
             tools:visibility="visible"
             />
@@ -77,12 +77,14 @@
             tools:text="@tools:sample/full_names"
             />
 
-        <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/icon_winner_chat"
-            android:layout_width="@dimen/layout_lvl3"
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:text="@string/play_interactive_winner_chat"
+            android:textColor="@color/Unify_GN500"
+            android:id="@+id/tv_winner_chat"
+            android:layout_width="0dp"
             android:layout_height="@dimen/layout_lvl3"
             android:visibility="gone"
-            app:icon_name="CHAT"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/img_winner"
             app:layout_constraintBottom_toBottomOf="@id/img_winner"

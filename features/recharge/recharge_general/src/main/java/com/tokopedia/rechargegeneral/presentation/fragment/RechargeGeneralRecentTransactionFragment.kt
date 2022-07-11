@@ -55,7 +55,7 @@ class RechargeGeneralRecentTransactionFragment: BaseDaggerFragment(), TopupBills
         }
     }
 
-    override fun onClickRecentNumber(topupBillsRecommendation: TopupBillsRecommendation, categoryId: Int, position: Int) {
+    override fun onClickRecentNumber(topupBillsRecommendation: TopupBillsRecommendation, categoryId: String, position: Int) {
         topupBillsRecommendation.position = position
         viewModel.setRecommendationItem(topupBillsRecommendation)
     }

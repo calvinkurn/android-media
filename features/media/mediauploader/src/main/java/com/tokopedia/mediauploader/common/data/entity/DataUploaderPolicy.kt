@@ -5,4 +5,9 @@ import com.google.gson.annotations.SerializedName
 
 data class DataUploaderPolicy(
     @Expose @SerializedName("uploadpedia_policy") val dataPolicy: UploaderPolicy = UploaderPolicy()
-)
+) {
+
+    // simplify sub-class access of sourcePolicy
+    fun sourcePolicy() = dataPolicy.sourcePolicy
+
+}

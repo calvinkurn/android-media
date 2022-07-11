@@ -45,6 +45,10 @@ abstract class HotelBaseActivity : BaseSimpleActivity(), TravelMenuBottomSheet.T
         initInjector()
     }
 
+    override fun getToolbarResourceID(): Int = R.id.hotel_base_header
+
+    override fun getParentViewResourceID(): Int = R.id.hotel_base_fragment_view
+
     private fun initInjector() {
         getHotelComponent().inject(this)
     }

@@ -11,14 +11,14 @@ public class ValuesItem implements Parcelable {
     private String name;
 
     @SerializedName("id")
-    private int id;
+    private String id;
 
     @SerializedName("priority")
     private int priority;
 
     protected ValuesItem(Parcel in) {
         name = in.readString();
-        id = in.readInt();
+        id = in.readString();
         priority = in.readInt();
     }
 
@@ -42,11 +42,11 @@ public class ValuesItem implements Parcelable {
         return name;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -76,7 +76,7 @@ public class ValuesItem implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
-        dest.writeInt(id);
+        dest.writeString(id);
         dest.writeInt(priority);
     }
 }
