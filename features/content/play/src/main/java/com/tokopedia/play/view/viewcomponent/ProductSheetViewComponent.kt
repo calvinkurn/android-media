@@ -113,7 +113,7 @@ class ProductSheetViewComponent(
     init {
         findViewById<ImageView>(com.tokopedia.play_common.R.id.iv_sheet_close)
                 .setOnClickListener {
-                    listener.onCloseButtonClicked(this)
+                    listener.onCloseButtonClicked(this@ProductSheetViewComponent)
                 }
 
         rvProductList.apply {
