@@ -3,6 +3,7 @@ package com.tokopedia.shop.flashsale.presentation.creation.manage.mapper
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.shop.flashsale.data.request.DoSellerCampaignProductSubmissionRequest
+import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
 import com.tokopedia.shop.flashsale.presentation.creation.manage.model.EditProductInputModel
 import com.tokopedia.shop.flashsale.presentation.creation.manage.model.WarehouseUiModel
 
@@ -52,5 +53,27 @@ object EditProductMapper {
 
     private fun Int?.orDefaultMaxPrice(input: EditProductInputModel): Int {
         return this ?: input.productMapData.originalStock
+    }
+
+    fun mapInputData(
+        product: SellerCampaignProductList.Product,
+        warehouseList: List<WarehouseUiModel>
+    ): EditProductInputModel {
+        val productMapData = product.productMapData
+        return if (product.isInfoComplete) {
+            EditProductInputModel(
+                productId = product.productId,
+                productMapData = productMapData,
+                price = productMapData.discountedPrice,
+                stock = productMapData.customStock,
+                maxOrder = productMapData.maxOrder,
+                warehouseId = warehouseList.getSelected().toString()
+            )
+        } else {
+            EditProductInputModel(
+                productId = product.productId,
+                productMapData = productMapData
+            )
+        }
     }
 }

@@ -304,8 +304,8 @@
     <string name="editproduct_required_text">Wajib diisi</string>
     <string name="editproduct_max_prefix">Maks. </string>
     <string name="editproduct_min_prefix">Min. </string>
-    <string name="editproduct_max_percent_text">Maks. %d\%</string>
-    <string name="editproduct_min_percent_text">Min. %d\%</string>
+    <string name="editproduct_max_percent_text">Maks. %d%%</string>
+    <string name="editproduct_min_percent_text">Min. %d%%</string>
     <string name="editproduct_order_exceed_stock_error">Tidak boleh melebihi stok utama</string>
     <string name="editproduct_bs_warehouse_title">Pilih lokasi</string>
     <string name="editproduct_warehouse_title_default">Lokasi Seller</string>
