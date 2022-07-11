@@ -60,16 +60,19 @@ class ShopAdsProductAdapter(
             }
 
             shopProductRoot.setOnClickListener { shopAdsProductListener.onItemClicked(shopProductModelItem.position) }
-            setFollowButton(shopProductModelItem.isFollowed, shopProductModelItem.layoutType, shopProductModelItem.shopId)
+            setFollowButton(shopProductModelItem.isFollowed, shopProductModelItem.layoutType, shopProductModelItem)
 
         }
 
-        private fun setFollowButton(followed: Boolean, layoutType: Int?, shopId: String) {
+        private fun setFollowButton(
+            followed: Boolean,
+            layoutType: Int?,
+            shopProductModelItem: ShopProductModelItem) {
             if (layoutType == LAYOUT_5) buttonFollow.hide()
             else{
                 buttonFollow.show()
                 buttonFollow.setOnClickListener {
-                    followButtonClickListener?.onItemClicked(shopId)
+                    followButtonClickListener?.onItemClicked(shopProductModelItem)
                 }
             }
 

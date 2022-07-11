@@ -32,6 +32,8 @@ import com.tokopedia.favorite.view.adapter.TopAdsShopAdapter
 import com.tokopedia.favorite.view.viewlistener.FavoriteClickListener
 import com.tokopedia.favorite.view.viewmodel.FavoriteShopUiModel
 import com.tokopedia.favorite.view.viewmodel.TopAdsShopItem
+import com.tokopedia.favorite.view.viewmodel.TopAdsShopUiModel
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
@@ -188,10 +190,8 @@ class FragmentFavorite() : BaseDaggerFragment(), FavoriteClickListener, OnRefres
                     validateMessageError()
                 }
         )
-        viewModel?.isRefreshPage?.observe(viewLifecycleOwner,{ isRefresh: Boolean ->
-            if (isRefresh) {
-                viewModel?.refreshAllDataFavoritePage()
-            }
+        viewModel?.topAdsData?.observe(viewLifecycleOwner,{ topAdsData: TopAdsShopUiModel ->
+            favoriteAdapter?.setElement(Int.ZERO, topAdsData)
         })
     }
 
@@ -232,8 +232,7 @@ class FragmentFavorite() : BaseDaggerFragment(), FavoriteClickListener, OnRefres
                 viewSelected.isEnabled = false
                 viewModel?.addFavoriteShop(
                     viewSelected,
-                    shopItemSelected,
-                    shopItemSelected?.shopId ?: ""
+                    shopItemSelected
                 )
             }
         }.showRetrySnackbar()
@@ -327,7 +326,7 @@ class FragmentFavorite() : BaseDaggerFragment(), FavoriteClickListener, OnRefres
     }
 
     private fun addFavoriteShop(shopUiModel: FavoriteShopUiModel) {
-        val favoriteShopPosition = 2
+        val favoriteShopPosition = Int.ZERO
         favoriteAdapter?.addElement(favoriteShopPosition, shopUiModel)
     }
 
@@ -341,13 +340,12 @@ class FragmentFavorite() : BaseDaggerFragment(), FavoriteClickListener, OnRefres
 
     override fun onFavoriteShopClicked(
         view: View?,
-        shopItemSelected: TopAdsShopItem?,
-        shopId: String
+        shopItemSelected: TopAdsShopItem?
     ) {
         favoriteShopViewSelected = view
         this.shopItemSelected = shopItemSelected
         favoriteShopViewSelected?.isEnabled = false
-        viewModel!!.addFavoriteShop(favoriteShopViewSelected, this.shopItemSelected, shopId)
+        viewModel?.addFavoriteShop(favoriteShopViewSelected, this.shopItemSelected)
     }
 
     private fun prepareView() {

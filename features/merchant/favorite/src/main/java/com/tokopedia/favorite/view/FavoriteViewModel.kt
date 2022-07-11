@@ -9,18 +9,17 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler.PagingHandlerModel
-import com.tokopedia.favorite.domain.interactor.GetAllDataFavoriteUseCaseWithCoroutine
-import com.tokopedia.favorite.domain.interactor.GetFavoriteShopUseCaseWithCoroutine
-import com.tokopedia.favorite.domain.interactor.GetFavoriteShopUsecase
-import com.tokopedia.favorite.domain.interactor.GetInitialDataPageUseCaseWithCoroutine
+import com.tokopedia.favorite.domain.interactor.*
 import com.tokopedia.favorite.domain.model.DataFavorite
 import com.tokopedia.favorite.domain.model.FavoriteShop
 import com.tokopedia.favorite.domain.model.TopAdsShop
 import com.tokopedia.favorite.view.viewmodel.DataFavoriteMapper
 import com.tokopedia.favorite.view.viewmodel.FavoriteShopUiModel
 import com.tokopedia.favorite.view.viewmodel.TopAdsShopItem
+import com.tokopedia.favorite.view.viewmodel.TopAdsShopUiModel
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
@@ -32,6 +31,8 @@ class FavoriteViewModel
         private val toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
         private val getAllDataFavoriteUseCase: GetAllDataFavoriteUseCaseWithCoroutine,
         private val getFavoriteShopUseCaseWithCoroutine: GetFavoriteShopUseCaseWithCoroutine,
+        private val getTopAdsShopUseCase: GetTopAdsShopUseCaseWithCoroutine,
+        private val userSession: UserSessionInterface,
         private val pagingHandler: PagingHandler
 ): BaseViewModel(dispatcherProvider.main) {
 
@@ -97,11 +98,11 @@ class FavoriteViewModel
     val isErrorAddFavoriteShop: LiveData<Boolean>
         get() = _isErrorAddFavoriteShop
 
-    val isRefreshPage: LiveData<Boolean>
-        get() = _isRefreshPage
+    val topAdsData: LiveData<TopAdsShopUiModel>
+        get() = _topAdsData
 
-    private val _isRefreshPage by lazy {
-        MutableLiveData<Boolean>()
+    private val _topAdsData  by lazy {
+        MutableLiveData<TopAdsShopUiModel>()
     }
 
     //==============================
@@ -158,27 +159,25 @@ class FavoriteViewModel
         })
     }
 
-    fun addFavoriteShop(view: View?, shopItem: TopAdsShopItem?, shopId: String) {
-        val params = ToggleFavouriteShopUseCase.createRequestParam(shopId)
+    fun addFavoriteShop(view: View?, shopItem: TopAdsShopItem?) {
+        val params = ToggleFavouriteShopUseCase.createRequestParam(shopItem?.shopId)
         launchCatchError(block = {
             val isValid = withContext(dispatcherProvider.io) {
                 toggleFavouriteShopUseCase.createObservable(params).toBlocking().single()
             }
-            if (view == null){
-                if (isValid){
-                    _isRefreshPage.value = true
-                }
-            }else{
-                view.clearAnimation()
-                if (isValid != null && isValid) {
-                    val favoriteShopUiModel = FavoriteShopUiModel()
-                    favoriteShopUiModel.shopId = shopItem?.shopId
-                    favoriteShopUiModel.shopName = shopItem?.shopName
-                    favoriteShopUiModel.shopAvatarImageUrl = shopItem?.shopImageUrl
-                    favoriteShopUiModel.shopLocation = shopItem?.shopLocation
-                    favoriteShopUiModel.isFavoriteShop = shopItem?.isFav ?: false
-                    _addedFavoriteShop.value = favoriteShopUiModel
-                    _favoriteShopImpression.value = shopItem?.shopClickUrl
+
+            view?.clearAnimation()
+            if (isValid == true) {
+                val favoriteShopUiModel = FavoriteShopUiModel()
+                favoriteShopUiModel.shopId = shopItem?.shopId
+                favoriteShopUiModel.shopName = shopItem?.shopName
+                favoriteShopUiModel.shopAvatarImageUrl = shopItem?.shopImageUrl
+                favoriteShopUiModel.shopLocation = shopItem?.shopLocation
+                favoriteShopUiModel.isFavoriteShop = shopItem?.isFav ?: false
+                _addedFavoriteShop.value = favoriteShopUiModel
+                view?.let { _favoriteShopImpression.value = shopItem?.shopClickUrl }
+                if (view == null) {
+                    replaceTopAds(getTopAdsShop())
                 }
             }
 
@@ -187,6 +186,14 @@ class FavoriteViewModel
             _isErrorAddFavoriteShop.value = true
             view?.clearAnimation()
         })
+    }
+
+    private suspend fun getTopAdsShop(): TopAdsShop {
+        val requestParams = GetTopAdsShopUseCase.defaultParams()
+        requestParams.putString(GetTopAdsShopUseCase.KEY_USER_ID, userSession.userId)
+        getTopAdsShopUseCase.requestParams = requestParams
+
+        return getTopAdsShopUseCase.executeOnBackground()
     }
 
     fun loadMoreFavoriteShop() {
@@ -261,6 +268,16 @@ class FavoriteViewModel
             dataFavoriteItemList.add(DataFavoriteMapper.prepareDataTopAdsShop(topAdsShop))
         }
     }
+
+
+    private fun replaceTopAds(topAdsShop: TopAdsShop) {
+        validateNetworkTopAdsShop(topAdsShop)
+        val topAdsShopItemList = topAdsShop.topAdsShopItemList
+        if (!topAdsShopItemList.isNullOrEmpty()) {
+            _topAdsData.value =  DataFavoriteMapper.prepareDataTopAdsShop(topAdsShop)
+        }
+    }
+
 
     private fun combineLatestNetworkFailedData(): Boolean {
         return (_isTopAdsShopNetworkFailed.value ?: false) ||

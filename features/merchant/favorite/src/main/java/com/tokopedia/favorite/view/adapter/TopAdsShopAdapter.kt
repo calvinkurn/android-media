@@ -199,7 +199,7 @@ class TopAdsShopAdapter(
                 item.isFav = true
                 holder.favButton.setImageResource(R.drawable.ic_faved)
             }
-            favoriteClickListener?.onFavoriteShopClicked(view, item, item.shopId ?: "")
+            favoriteClickListener?.onFavoriteShopClicked(view, item)
         }
     }
 

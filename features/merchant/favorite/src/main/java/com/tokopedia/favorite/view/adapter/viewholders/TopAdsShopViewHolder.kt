@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.favorite.R
 import com.tokopedia.favorite.view.adapter.TopAdsShopAdapter
 import com.tokopedia.favorite.view.viewlistener.FavoriteClickListener
+import com.tokopedia.favorite.view.viewmodel.TopAdsShopItem
 import com.tokopedia.favorite.view.viewmodel.TopAdsShopUiModel
 import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_13
 import com.tokopedia.topads.sdk.domain.model.ShopProductModel
@@ -62,13 +63,27 @@ class TopAdsShopViewHolder(
 
                 },
                 object : FollowButtonClickListener {
-                    override fun onItemClicked(shopId: String) {
-                        favoriteClickListener.onFavoriteShopClicked(null, null, shopId)
+                    override fun onItemClicked(shopProductModelItem: ShopProductModel.ShopProductModelItem) {
+                        favoriteClickListener.onFavoriteShopClicked(
+                            null,
+                            getShopItem(shopProductModelItem)
+                        )
                     }
 
                 }
             )
         }
+    }
+
+    private fun getShopItem(shopProductModelItem: ShopProductModel.ShopProductModelItem): TopAdsShopItem {
+
+        return TopAdsShopItem(
+            shopId = shopProductModelItem.shopId,
+            shopName = shopProductModelItem.shopName,
+            shopImageUrl = shopProductModelItem.shopIcon,
+            shopLocation = shopProductModelItem.location,
+            isFav = shopProductModelItem.isFollowed
+        )
     }
 
     private fun getShopProductItem(element: TopAdsShopUiModel?): List<ShopProductModel.ShopProductModelItem> {

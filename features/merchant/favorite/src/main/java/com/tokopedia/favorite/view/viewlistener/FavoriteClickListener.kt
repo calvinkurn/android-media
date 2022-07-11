@@ -8,6 +8,6 @@ import com.tokopedia.favorite.view.viewmodel.TopAdsShopItem
  */
 interface FavoriteClickListener {
 
-    fun onFavoriteShopClicked(view: View?, shopItem: TopAdsShopItem?, shopId: String)
+    fun onFavoriteShopClicked(view: View?, shopItem: TopAdsShopItem?)
 
 }
