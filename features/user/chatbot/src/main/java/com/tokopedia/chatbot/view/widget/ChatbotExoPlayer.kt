@@ -2,9 +2,9 @@ package com.tokopedia.chatbot.view.widget
 
 import android.content.Context
 import android.net.Uri
-import android.view.View
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.DefaultLoadControl
+import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.LoadControl
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -14,11 +14,8 @@ import com.google.android.exoplayer2.source.dash.DashMediaSource
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.ui.PlayerControlView
-import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
-import com.tokopedia.media.preview.ui.player.VideoControlView
 
 class ChatbotExoPlayer(val context : Context, var videoControl: ChatbotVideoControlView? = null) : ChatbotVideoControlView.Listener{
 
@@ -69,6 +66,11 @@ class ChatbotExoPlayer(val context : Context, var videoControl: ChatbotVideoCont
                 super.onIsPlayingChanged(isPlaying)
                 videoControl?.updateCenterButtonState(isPlaying)
                 videoControl?.showController(isPlaying)
+            }
+
+            override fun onPlayerError(error: ExoPlaybackException) {
+                super.onPlayerError(error)
+                videoStateListener?.onVideoPlayerError(error)
             }
         })
     }
@@ -132,10 +134,7 @@ class ChatbotExoPlayer(val context : Context, var videoControl: ChatbotVideoCont
         fun onInitialStateLoading()
         fun onVideoReadyToPlay()
         fun onVideoStateChange(stopDuration : Long, videoDuration : Long)
-    }
-
-    interface VideoPlayingListener {
-        fun isPlayingOnChanged(isPlaying : Boolean)
+        fun onVideoPlayerError(e : ExoPlaybackException)
     }
 
     override fun onCenterPlayButtonClicked() {

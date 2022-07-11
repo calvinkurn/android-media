@@ -9,10 +9,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.cardview.widget.CardView
-import androidx.core.content.ContextCompat
-import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.BaseChatUiModel
@@ -26,6 +23,7 @@ import com.tokopedia.chatbot.view.widget.ChatbotExoPlayer
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifyprinciples.Typography
 import java.util.concurrent.TimeUnit
 
@@ -38,10 +36,8 @@ class ChatbotVideoUploadViewHolder(
     override fun alwaysShowTime() = true
     override fun useWhiteReadStatus() = true
     private fun getVideoPlayerId() = R.id.video_player
-    private fun getProgressBarSendImageId() = R.id.progress_bar
+    private fun getProgressBarSendVideoId() = R.id.progress_bar
     private fun getLeftActionId() = R.id.left_action
-    private var maxDuration = 1_000_000L
-
     private fun getReadStatusId() = com.tokopedia.chat_common.R.id.chat_status
     private fun getChatBalloonId() = R.id.card_group_chat_message
     private fun getVideoTotalLengthId() = R.id.video_length
@@ -49,8 +45,14 @@ class ChatbotVideoUploadViewHolder(
     private val chatBalloon: View? = itemView?.findViewById(getChatBalloonId())
     private val videoTotalLength: Typography? = itemView?.findViewById(getVideoTotalLengthId())
     private val cancelUpload = itemView?.findViewById<ImageView>(R.id.progress_cross)
-
+    private val chatStatus: ImageView? = itemView?.findViewById(getReadStatusId())
+    private val action: ImageView? = itemView?.findViewById(getLeftActionId())
+    private val progressBarSendVideo: View? = itemView?.findViewById(getProgressBarSendVideoId())
+    private val videoPlayerView: PlayerView? = itemView?.findViewById(getVideoPlayerId())
     private lateinit var chatbotExoPlayer: ChatbotExoPlayer
+
+    override val dateId: Int
+        get() = R.id.date
 
     private val bgSender = ViewUtil.generateBackgroundWithShadow(
         chatBalloon,
@@ -70,27 +72,30 @@ class ChatbotVideoUploadViewHolder(
     override fun bind(element: VideoUploadUiModel) {
         if (element == null) return
         super.bind(element)
-        prerequisiteUISetup(element)
+        prerequisiteUISetup()
         setupChatBubbleAlignment(chatBalloon, element)
         bindClickListener(element)
         bindVideoAttachment(element)
         bindRetry(element)
-        setVisibility(videoPlayerView, View.VISIBLE)
         setDefaultVideoDuration()
-        chatStatus?.let { bindChatReadStatus(element, it) }
+        setUpChatReadStatus(element)
         bindBackground()
-        cancelUpload?.setOnClickListener { listener.onVideoUploadCancelClicked(element) }
         setHeaderDate(element)
+        setUpChatbotExoPlayer(element)
+        setUpExoPlayerListener()
+    }
 
-        chatbotExoPlayer = ChatbotExoPlayer(itemView.context)
-        videoPlayerView?.player = chatbotExoPlayer.getExoPlayer()
-        val mediaSource = chatbotExoPlayer.getMediaSourceBySource(itemView.context, Uri.parse(element.videoUrl))
-        chatbotExoPlayer?.getExoPlayer().prepare(mediaSource)
+    private fun setUpChatReadStatus(element: VideoUploadUiModel) {
+        chatStatus?.let {
+            bindChatReadStatus(element, it)
+        }
+    }
 
+    private fun setUpExoPlayerListener() {
         chatbotExoPlayer.getExoPlayer().addListener(object : Player.EventListener {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                 super.onPlayerStateChanged(playWhenReady, playbackState)
-                if(playbackState == Player.STATE_READY) {
+                if (playbackState == Player.STATE_READY) {
                     var duration = chatbotExoPlayer.getExoPlayer().duration
                     setTimeData(duration)
                 }
@@ -98,14 +103,21 @@ class ChatbotVideoUploadViewHolder(
         })
     }
 
+    private fun setUpChatbotExoPlayer(element: VideoUploadUiModel) {
+        chatbotExoPlayer = ChatbotExoPlayer(itemView.context)
+        videoPlayerView?.player = chatbotExoPlayer.getExoPlayer()
+        val mediaSource =
+            chatbotExoPlayer.getMediaSourceBySource(itemView.context, Uri.parse(element.videoUrl))
+        chatbotExoPlayer?.getExoPlayer().prepare(mediaSource)
+    }
+
     private fun setDefaultVideoDuration() {
         videoTotalLength?.text = itemView.context.getString(R.string.chatbot_default_video_duration)
     }
 
-    private fun setTimeData(duration : Long) {
+    private fun setTimeData(duration: Long) {
         var totalLengthInString = convertVideoLength(duration)
         videoTotalLength?.text = totalLengthInString
-        videoTotalLength?.setTextColor(R.color.unify_G500)
     }
 
     private fun convertVideoLength(totalLength: Long): String {
@@ -120,7 +132,6 @@ class ChatbotVideoUploadViewHolder(
             else ->
                 String.format("%02d:%02d:%02d", hours, minutes, seconds)
         }
-
     }
 
     private fun bindBackground() {
@@ -135,40 +146,14 @@ class ChatbotVideoUploadViewHolder(
             )
         )
         if (element.isDummy) {
-            setVisibility(progressBarSendImage, View.VISIBLE)
+            progressBarSendVideo?.show()
         } else {
-            setVisibility(progressBarSendImage, View.GONE)
+            progressBarSendVideo?.gone()
         }
     }
 
     fun getStrokeWidthSenderDimenRes(): Int {
         return R.dimen.dp_chatbot_3
-    }
-
-    private fun loadImage(
-        imageview: ImageView,
-        url: String?
-    ) {
-        try {
-            if (imageview.context != null) {
-                Glide.with(imageview.context)
-                    .load(url)
-                    .fitCenter()
-                    .dontAnimate()
-                    .placeholder(R.drawable.chatbot_video_placeholder)
-                    .error(R.drawable.chatbot_video_placeholder)
-                    .into(imageview)
-            }
-        } catch (e: Exception) {
-            if (imageview.context != null) {
-                imageview.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        imageview.context,
-                        com.tokopedia.resources.common.R.drawable.chatbot_image_placeloader
-                    )
-                )
-            }
-        }
     }
 
     private fun bindChatReadStatus(element: VideoUploadUiModel, checkMark: ImageView) {
@@ -203,15 +188,6 @@ class ChatbotVideoUploadViewHolder(
         }
     }
 
-    override val dateId: Int
-        get() = R.id.date
-
-    private val chatStatus: ImageView? = itemView?.findViewById(getReadStatusId())
-
-    private val action: ImageView? = itemView?.findViewById(getLeftActionId())
-    private val progressBarSendImage: View? = itemView?.findViewById(getProgressBarSendImageId())
-    private val videoPlayerView: PlayerView? = itemView?.findViewById(getVideoPlayerId())
-
     private fun bindRetry(element: VideoUploadUiModel) {
         if (element.isRetry) {
             setRetryView(element)
@@ -223,6 +199,9 @@ class ChatbotVideoUploadViewHolder(
             if (element.videoUrl != null && element.replyTime != null) {
                 listener.onUploadedVideoClicked(element.videoUrl ?: "")
             }
+        }
+        cancelUpload?.setOnClickListener {
+            listener.onVideoUploadCancelClicked(element)
         }
     }
 
@@ -238,16 +217,15 @@ class ChatbotVideoUploadViewHolder(
     private fun setChatLeft(chatBalloon: View?) {
         setAlignParent(RelativeLayout.ALIGN_PARENT_LEFT, chatBalloon)
         alignHour(RelativeLayout.ALIGN_PARENT_LEFT, hour)
-        setVisibility(chatStatus, View.GONE)
+        chatStatus?.gone()
     }
 
     private fun setChatRight(chatBalloon: View?) {
         setAlignParent(RelativeLayout.ALIGN_PARENT_RIGHT, chatBalloon)
         alignHour(RelativeLayout.ALIGN_PARENT_RIGHT, hour)
-        setVisibility(chatStatus, View.VISIBLE)
+        chatStatus?.visible()
     }
 
-    //TODO check
     private fun alignHour(alignment: Int, hour: TextView?) {
         setAlignParent(alignment, hour)
     }
@@ -262,24 +240,18 @@ class ChatbotVideoUploadViewHolder(
     }
 
     private fun setRetryView(element: VideoUploadUiModel) {
-        setVisibility(action, View.VISIBLE)
-        setVisibility(hour, View.GONE)
-        setVisibility(chatStatus, View.GONE)
-        setVisibility(progressBarSendImage, View.GONE)
+        action?.visible()
+        hour?.gone()
+        chatStatus?.gone()
+        progressBarSendVideo?.gone()
         action?.setOnClickListener {
             listener.onRetrySendVideo(element)
         }
     }
 
-    private fun prerequisiteUISetup(element: VideoUploadUiModel) {
+    private fun prerequisiteUISetup() {
         action?.visibility = View.GONE
-        progressBarSendImage?.visibility = View.GONE
-    }
-
-    private fun setVisibility(view: View?, visibility: Int) {
-        if (view != null) {
-            view.visibility = visibility
-        }
+        progressBarSendVideo?.visibility = View.GONE
     }
 
     override fun onViewRecycled() {
