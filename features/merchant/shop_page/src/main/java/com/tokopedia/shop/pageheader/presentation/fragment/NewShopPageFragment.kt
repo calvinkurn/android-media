@@ -22,6 +22,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
 import androidx.viewpager2.widget.ViewPager2
+import com.airbnb.lottie.LottieCompositionFactory
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayout
@@ -2793,5 +2794,18 @@ class NewShopPageFragment :
 
     override fun permissionAction(action: String, label: String) {
         shopPageTracking?.clickUniversalSharingPermission(action, label, shopId, userId)
+    }
+
+    fun setupShopPageLottieAnimation(lottieUrl: String){
+        context?.let {
+            val lottieCompositionLottieTask = LottieCompositionFactory.fromUrl(it, lottieUrl)
+            lottieCompositionLottieTask.addListener { result ->
+                viewBinding?.shopPageLottie?.apply {
+                    show()
+                    setComposition(result)
+                    playAnimation()
+                }
+            }
+        }
     }
 }
