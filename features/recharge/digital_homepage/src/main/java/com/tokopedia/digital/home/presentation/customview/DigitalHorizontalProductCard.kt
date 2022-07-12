@@ -5,6 +5,7 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.ViewTreeObserver
+import android.widget.Toast
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.digital.home.databinding.LayoutDigitalHorizontalProductCardBinding
 import com.tokopedia.kotlin.extensions.view.hide
@@ -64,6 +65,8 @@ class DigitalHorizontalProductCard @JvmOverloads constructor(
                         layoutParams.width.toDouble() / layoutParams.height.toDouble()
                     val newWidth = contentHeight
                     val newHeight = newWidth / ratio
+
+                    Toast.makeText(context, "Ratio : $ratio", Toast.LENGTH_SHORT).show()
 
                     layoutParams.width = newWidth
                     layoutParams.height = newHeight.toInt()
