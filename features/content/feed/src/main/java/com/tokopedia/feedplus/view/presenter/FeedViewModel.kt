@@ -373,11 +373,12 @@ class FeedViewModel @Inject constructor(
         rowNumber: Int,
         adapterPosition: Int,
         shopId: String,
-        follow: Boolean = true
+        follow: Boolean = true,
+        isUnfollowFromBottomSheetMenu: Boolean = false
     ) {
         launchCatchError(block = {
             val results = withContext(baseDispatcher.io) {
-                toggleFavoriteShop(rowNumber, adapterPosition, shopId)
+                toggleFavoriteShop(rowNumber, adapterPosition, shopId, isUnfollowFromBottomSheetMenu)
             }
             toggleFavoriteShopResp.value = Success(results)
         }) {
@@ -718,13 +719,15 @@ class FeedViewModel @Inject constructor(
     private fun toggleFavoriteShop(
         rowNumber: Int,
         adapterPosition: Int,
-        shopId: String
+        shopId: String,
+        isUnfollowClickedFromBottomSheetMenu: Boolean = false
     ): FavoriteShopViewModel {
         try {
             val data = FavoriteShopViewModel()
             data.rowNumber = rowNumber
             data.adapterPosition = adapterPosition
             data.shopId = shopId
+            data.isUnfollowFromShopsMenu = isUnfollowClickedFromBottomSheetMenu
             val params = ToggleFavouriteShopUseCase.createRequestParam(shopId)
             val isSuccess = doFavoriteShopUseCase.createObservable(params).toBlocking().first()
             data.isSuccess = isSuccess
