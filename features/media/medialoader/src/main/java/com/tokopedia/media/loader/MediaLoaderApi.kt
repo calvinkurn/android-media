@@ -27,7 +27,7 @@ internal object MediaLoaderApi {
     private val bitmap by lazy { BitmapFactory() }
     private val gif by lazy { GifFactory() }
 
-    private fun LazyHeaders.Builder.headers(accessToken: String, userId: String) {
+    internal fun LazyHeaders.Builder.headers(accessToken: String, userId: String) {
         addHeader(HEADER_KEY_AUTH /* Accounts-Authorization */, "$PREFIX_BEARER %s".format(accessToken))
         addHeader(HEADER_X_DEVICE /* X-Device */, "android-${GlobalConfig.VERSION_NAME}")
         addHeader(HEADER_USER_ID /* Tkpd-UserId */, userId)
@@ -58,18 +58,6 @@ internal object MediaLoaderApi {
                     // url builder
                     val source = Loader.urlBuilder(properties.data.toString())
 
-                    val url = GlideUrl(source, LazyHeaders.Builder()
-                        .apply {
-                            if (isSecure) {
-                                headers(
-                                    accessToken = properties.accessToken,
-                                    userId = properties.userId
-                                )
-                            }
-                        }
-                        .build()
-                    )
-
                     // get the imageView size
                     properties.setImageSize(
                         width = imageView.measuredWidth,
@@ -82,7 +70,20 @@ internal object MediaLoaderApi {
                         context = context,
                         properties = properties,
                         request = this
-                    ).load(url)
+                    ).load(
+                        if (!isSecure) source
+                        else {
+                            GlideUrl(source, LazyHeaders.Builder()
+                                .also {
+                                    it.headers(
+                                        accessToken = properties.accessToken,
+                                        userId = properties.userId
+                                    )
+                                }
+                                .build()
+                            )
+                        }
+                    )
                 }
                 else -> {
                     bitmap.build(

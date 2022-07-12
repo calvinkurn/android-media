@@ -80,6 +80,7 @@ import com.tokopedia.shop.common.constant.ShopPageConstant.VALUE_INT_ONE
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
+import com.tokopedia.shop.common.data.model.HomeLayoutData
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
 import com.tokopedia.shop.common.util.*
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.ERROR_WHEN_GET_YOUTUBE_DATA
@@ -1289,13 +1290,16 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         lastVisibleItemPosition: Int,
         firstVisibleItemPosition: Int
     ) {
+        val lastVisibleShopWidgetPosition = shopHomeAdapter.getLastVisibleShopWidgetPosition(
+            lastVisibleItemPosition
+        )
         val shouldLoadLastVisibleItem =
-            shopHomeAdapter.isLoadNextHomeWidgetData(lastVisibleItemPosition)
+            shopHomeAdapter.isLoadNextHomeWidgetData(lastVisibleShopWidgetPosition)
         val shouldLoadFirstVisibleItem =
             shopHomeAdapter.isLoadNextHomeWidgetData(firstVisibleItemPosition)
         if (shouldLoadLastVisibleItem || shouldLoadFirstVisibleItem) {
             val position = if (shouldLoadLastVisibleItem)
-                lastVisibleItemPosition
+                lastVisibleShopWidgetPosition
             else
                 firstVisibleItemPosition
             val listWidgetLayoutToLoad = getListWidgetLayoutToLoad(position)
@@ -1588,15 +1592,18 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                         productQuantity = selectedMultipleBundle.minOrder
                 )
             }
+            shopPageHomeTracking.clickAtcProductBundleMultiple(
+                    shopId = shopId,
+                    userId = userId,
+                    bundleId = selectedMultipleBundle.bundleId,
+                    bundleName = bundleName,
+                    bundlePriceCut = selectedMultipleBundle.discountPercentage.toString(),
+                    bundlePrice = selectedMultipleBundle.displayPriceRaw,
+                    quantity = selectedMultipleBundle.minOrder.toString(),
+                    shopName = shopName,
+                    shopType = customDimensionShopPage.shopType.orEmpty()
+            )
         }
-        shopPageHomeTracking.clickAtcProductBundleMultiple(
-                shopId = shopId,
-                userId = userId,
-                bundleId = selectedMultipleBundle.bundleId,
-                bundleName = bundleName,
-                bundlePriceCut = selectedMultipleBundle.discountPercentage.toString(),
-                bundlePrice = selectedMultipleBundle.displayPriceRaw
-        )
     }
 
     override fun addSingleBundleToCart(
@@ -1631,17 +1638,20 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                         productQuantity = selectedBundle.minOrder
                 )
             }
+            shopPageHomeTracking.clickAtcProductBundleSingle(
+                    shopId = shopId,
+                    userId = userId,
+                    bundleId = selectedBundle.bundleId,
+                    bundleName = bundleName,
+                    bundlePriceCut = selectedBundle.discountPercentage.toString(),
+                    bundlePrice = selectedBundle.displayPriceRaw,
+                    selectedPackage = selectedBundle.minOrderWording,
+                    productId = bundleProducts.productId,
+                    quantity = selectedBundle.minOrder.toString(),
+                    shopName = shopName,
+                    shopType = customDimensionShopPage.shopType.orEmpty()
+            )
         }
-        shopPageHomeTracking.clickAtcProductBundleSingle(
-                shopId = shopId,
-                userId = userId,
-                bundleId = selectedBundle.bundleId,
-                bundleName = bundleName,
-                bundlePriceCut = selectedBundle.discountPercentage.toString(),
-                bundlePrice = selectedBundle.displayPriceRaw,
-                selectedPackage = selectedBundle.minOrderWording,
-                productId = bundleProducts.productId
-        )
     }
 
     private fun handleOnFinishAtcBundle(
@@ -3284,7 +3294,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         this.initialProductListData = productListData
     }
 
-    fun setListWidgetLayoutData(homeLayoutData: ShopPageGetHomeType.HomeLayoutData) {
+    fun setListWidgetLayoutData(homeLayoutData: HomeLayoutData) {
         this.shopPageHomeLayoutUiModel =
             ShopPageHomeMapper.mapToShopHomeWidgetLayoutData(homeLayoutData)
     }

@@ -12,6 +12,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.Attachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.previewattachment.AttachmentPreviewViewHolder
 import com.tokopedia.topchat.chatroom.view.uimodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.uimodel.TopchatProductAttachmentPreviewUiModel
+import kotlin.math.min
 
 class AttachmentPreviewAdapter(
         private val attachmentPreviewListener: AttachmentPreviewListener,
@@ -28,17 +29,18 @@ class AttachmentPreviewAdapter(
 
     private var attachments = arrayListOf<SendablePreview>()
 
-    fun updateDeferredAttachment(mapProducts: ArrayMap<String, Attachment>) {
-        for ((index, attachment) in attachments.withIndex()) {
-            if (attachment is TopchatProductAttachmentPreviewUiModel) {
-                val actualProduct = mapProducts[attachment.productId] ?: continue
-                attachment.updateData(actualProduct.parsedAttributes)
-                if (actualProduct is ErrorAttachment) {
+    fun updateDeferredAttachment(listProducts: ArrayList<Attachment>) {
+        val iteration = min(attachments.size, listProducts.size)
+        for (i in 0 until iteration) {
+            if (attachments[i] is TopchatProductAttachmentPreviewUiModel) {
+                val attachment = attachments[i] as TopchatProductAttachmentPreviewUiModel
+                attachment.updateData(listProducts[i].parsedAttributes)
+                if (listProducts[i] is ErrorAttachment) {
                     attachment.syncError()
                 } else {
                     attachment.finishLoading()
                 }
-                notifyItemChanged(index, Payload.REBIND)
+                notifyItemChanged(i, Payload.REBIND)
             }
         }
     }

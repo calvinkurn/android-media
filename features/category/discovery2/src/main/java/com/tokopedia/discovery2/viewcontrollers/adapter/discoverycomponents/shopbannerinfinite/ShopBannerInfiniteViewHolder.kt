@@ -15,6 +15,7 @@ class ShopBannerInfiniteViewHolder(itemView: View, private val fragment: Fragmen
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         mShopBannerInfiniteViewModel = discoveryBaseViewModel as ShopBannerInfiniteViewModel
+        mShopBannerInfiniteViewModel.checkForDarkMode(itemView.context)
         getSubComponent().inject(mShopBannerInfiniteViewModel)
     }
 
