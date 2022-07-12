@@ -460,6 +460,10 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 variant{
                   name
                 }
+                userLabel
+                userStat {
+                  formatted
+                }
               }
             }
             rating {

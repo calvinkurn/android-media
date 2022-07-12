@@ -40,11 +40,25 @@ data class Review(
 
         @SerializedName("variant")
         @Expose
-        val variant: ProductVariantReview = ProductVariantReview()
+        val variant: ProductVariantReview = ProductVariantReview(),
+
+        @SerializedName("userLabel")
+        @Expose
+        val userLabel: String = "",
+
+        @SerializedName("userStat")
+        @Expose
+        val userStat: List<UserStatistic>? = null
 )
 
 data class ProductVariantReview(
         @SerializedName("name")
         @Expose
         val variantTitle: String = ""
+)
+
+data class UserStatistic(
+        @SerializedName("formatted")
+        @Expose
+        val formatted: String = ""
 )

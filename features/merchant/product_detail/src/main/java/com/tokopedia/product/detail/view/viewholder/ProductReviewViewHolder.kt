@@ -187,11 +187,11 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
     }
 
     private fun setReviewAuthorLabel(review: Review) {
-        binding.basicInfoMostHelpfulReview.setReviewerLabel(review.user.label)
+        binding.basicInfoMostHelpfulReview.setReviewerLabel(review.userLabel)
     }
 
     private fun setReviewAuthorStats(review: Review) {
-        binding.basicInfoMostHelpfulReview.setStats(emptyList())
+        binding.basicInfoMostHelpfulReview.setStatsString(review.userStat.orEmpty().joinToString(separator = " • "))
     }
 
     private fun setReviewVariant(review: Review) {
