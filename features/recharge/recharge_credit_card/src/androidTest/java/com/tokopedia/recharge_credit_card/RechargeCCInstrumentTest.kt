@@ -95,17 +95,6 @@ class RechargeCCInstrumentTest: BaseRechargeCCTest() {
     }
 
     @Test
-    fun show_loading_state_on_type_credit_card_number_after_7_digit() {
-        clientNumberWidget_typeCreditCardNumber("4111")
-        Thread.sleep(2500)
-        clientNumberWidget_checkIsLoadingStateHidden()
-        clientNumberWidget_typeCreditCardNumber("1111")
-        clientNumberWidget_checkIsLoadingStateShown()
-        Thread.sleep(2500)
-        clientNumberWidget_checkIsLoadingStateHidden()
-    }
-
-    @Test
     fun operator_icon_should_shown_on_found_prefix_credit_card_number() {
         // > 7 digit, valid number, prefix found should show operator icon
         clientNumberWidget_checkIsOperatorIconHidden()
