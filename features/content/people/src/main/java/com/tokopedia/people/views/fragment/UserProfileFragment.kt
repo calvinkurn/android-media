@@ -367,10 +367,7 @@ class UserProfileFragment @Inject constructor(
     private fun addShopRecomObserver() {
         viewModel.shopRecomContentLiveData.observe(viewLifecycleOwner) {
             when (it) {
-                is Loading -> {
-                    mAdapterShopRecom.resetAdapter()
-                    mAdapterShopRecom.notifyDataSetChanged()
-                }
+                is Loading -> mAdapterShopRecom.resetAdapter()
                 is Success -> {
                     mAdapterShopRecom.onSuccess(it.data)
                     with(mainBinding.shopRecommendation) {
