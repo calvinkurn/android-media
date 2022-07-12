@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/spacing_lvl4"
         android:layout_weight="1"
-        android:text="@string/cta"
+        android:text="@string/pp_up_upload_foto_resep_dokter_cta"
         app:typographyType="display_3"
         android:textColor="@color/Unify_NN950" />
 

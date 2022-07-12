@@ -22,7 +22,7 @@ class UploadPrescriptionViewHolder(val view: View, private val actionListener: S
     companion object {
         @SuppressLint("ResourcePackage")
         @JvmStatic
-        val ITEM_VIEW_UPLOAD = R.layout.upload_prescription
+        val ITEM_VIEW_UPLOAD = R.layout.item_upload_prescription
     }
 
     fun bindViewHolder(cartShipmentAddressFormData: CartShipmentAddressFormData){
