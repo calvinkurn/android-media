@@ -2,97 +2,66 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/containerShcRecommendationLoading"
+    android:id="@+id/containerShcUnificationSuccess"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:paddingStart="16dp"
+    android:paddingTop="8dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="16dp"
     android:visibility="gone"
     tools:visibility="visible">
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guidelineStart"
-        android:layout_width="wrap_content"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvShcUnificationTab"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_begin="@dimen/layout_lvl2" />
+        android:background="@drawable/shc_filter_view_background"
+        android:paddingStart="12dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_2"
+        tools:text="Terlaris (6)" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guidelineEnd"
-        android:layout_width="wrap_content"
+    <com.tokopedia.sellerhomecommon.presentation.view.customview.tableview.TableView
+        android:id="@+id/tableShcUnification"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_end="@dimen/layout_lvl2" />
-
-    <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/shimmer1"
-        android:layout_width="@dimen/shc_dimen_156dp"
-        android:layout_height="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/layout_lvl2"
-        app:loader_corner_radius="5dp"
-        app:loader_type="rect"
-        app:layout_constraintStart_toStartOf="@id/guidelineStart"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/shimmer2"
-        android:layout_width="@dimen/layout_lvl8"
-        android:layout_height="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/layout_lvl2"
-        app:loader_corner_radius="5dp"
-        app:loader_type="rect"
-        app:layout_constraintStart_toStartOf="@id/guidelineStart"
-        app:layout_constraintTop_toBottomOf="@+id/shimmer1" />
-
-    <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/shimmer3"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/layout_lvl2"
-        app:loader_corner_radius="5dp"
-        app:loader_type="rect"
-        app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
-        app:layout_constraintStart_toStartOf="@id/guidelineStart"
-        app:layout_constraintTop_toBottomOf="@+id/shimmer2" />
-
-    <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/shimmer4"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/layout_lvl2"
-        app:loader_corner_radius="5dp"
-        app:loader_type="rect"
-        app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
-        app:layout_constraintStart_toStartOf="@id/guidelineStart"
-        app:layout_constraintTop_toBottomOf="@+id/shimmer3" />
-
-    <include
-        android:id="@+id/shimmer5"
-        layout="@layout/shc_recommendation_item_shimmer"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl2"
-        app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
-        app:layout_constraintStart_toEndOf="@id/guidelineStart"
-        app:layout_constraintTop_toBottomOf="@+id/shimmer4" />
-
-    <include
-        android:id="@+id/shimmer6"
-        layout="@layout/shc_recommendation_item_shimmer"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl2"
-        app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
-        app:layout_constraintStart_toEndOf="@id/guidelineStart"
-        app:layout_constraintTop_toBottomOf="@+id/shimmer5" />
-
-    <include
-        android:id="@+id/shimmer7"
-        layout="@layout/shc_recommendation_item_shimmer"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl2"
-        android:layout_marginBottom="@dimen/layout_lvl2"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
-        app:layout_constraintStart_toEndOf="@id/guidelineStart"
-        app:layout_constraintTop_toBottomOf="@+id/shimmer6" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvShcUnificationTab" />
+
+    <com.tokopedia.sellerhomecommon.presentation.view.customview.LastUpdatedView
+        android:id="@+id/luvShcUnification"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btnShcUnificationCta"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tableShcUnification" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/btnShcUnificationCta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:paddingStart="@dimen/layout_lvl0"
+        android:paddingEnd="@dimen/spacing_lvl2"
+        android:textColor="@color/Unify_G500"
+        android:textSize="@dimen/fontSize_lvl3"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tableShcUnification"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
+        tools:text="Selengkapnya"
+        tools:visibility="visible" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

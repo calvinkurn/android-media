@@ -18,6 +18,7 @@ import com.tokopedia.usecase.RequestParams
 @GqlQuery("GetUnificationDataGqlQuery", GetUnificationDataUseCase.QUERY)
 class GetUnificationDataUseCase(
     gqlRepository: GraphqlRepository,
+    getTableDataUseCase: GetTableDataUseCase,
     unificationMapper: UnificationMapper,
     dispatchers: CoroutineDispatchers
 ) : CloudAndCacheGraphqlUseCase<GetUnificationDataResponse, List<UnificationDataUiModel>>(

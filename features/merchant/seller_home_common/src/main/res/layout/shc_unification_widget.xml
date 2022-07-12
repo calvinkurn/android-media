@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardCornerRadius="8dp">
@@ -10,22 +11,39 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvShcUnificationTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            app:typographyType="display_2"
+            app:typographyWeight="bold"
+            tools:text="Cek keadaan produkmu" />
+
         <ViewStub
             android:id="@+id/stubShcUnificationLoading"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/tvShcUnificationTitle"
             android:layout="@layout/shc_unification_widget_loading" />
 
         <ViewStub
             android:id="@+id/stubShcUnificationSuccess"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/tvShcUnificationTitle"
             android:layout="@layout/shc_unification_widget_success" />
 
         <ViewStub
             android:id="@+id/stubShcUnificationError"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/tvShcUnificationTitle"
             android:layout="@layout/shc_unification_widget_error" />
     </RelativeLayout>
 </com.tokopedia.unifycomponents.CardUnify>

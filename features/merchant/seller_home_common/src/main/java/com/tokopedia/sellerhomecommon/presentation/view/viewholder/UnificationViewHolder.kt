@@ -2,6 +2,8 @@ package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcUnificationWidgetBinding
 import com.tokopedia.sellerhomecommon.databinding.ShcUnificationWidgetErrorBinding
@@ -38,7 +40,37 @@ class UnificationViewHolder(
         ShcUnificationWidgetSuccessBinding.bind(view)
     }
 
-    override fun bind(element: UnificationWidgetUiModel?) {
+    override fun bind(element: UnificationWidgetUiModel) {
+        setTitle(element.title)
+        observeState(element)
+    }
+
+    private fun setTitle(title: String) {
+        binding.tvShcUnificationTitle.text = title.parseAsHtml()
+    }
+
+    private fun observeState(element: UnificationWidgetUiModel) {
+        val data = element.data
+        when {
+            data == null || element.showLoadingState -> showLoadingState()
+            data.error.isNotEmpty() -> {
+                showErrorState(element)
+            }
+            else -> showSuccessState(element)
+        }
+    }
+
+    private fun showLoadingState() {
+        loadingStateBinding.containerShcRecommendationLoading.visible()
+
+    }
+
+    private fun showErrorState(element: UnificationWidgetUiModel) {
+        errorStateBinding.containerShcUnificationError.visible()
+    }
+
+    private fun showSuccessState(element: UnificationWidgetUiModel) {
+        successStateBinding.containerShcUnificationSuccess.visible()
 
     }
 }
