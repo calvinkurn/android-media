@@ -25,6 +25,8 @@ class BalanceAdapter(
 
     var attachedRecyclerView: RecyclerView? = null
     private var itemMap: HomeBalanceModel = HomeBalanceModel()
+    private var positionGopay = -1
+    private var positionRewards = -1
 
     companion object {
         var disableAnimation: Boolean = false
@@ -36,8 +38,15 @@ class BalanceAdapter(
 
         val balanceModelList = mutableListOf<BalanceDrawerItemModel>()
         try {
+            var counter = 0
             itemMap.balanceDrawerItemModels.forEach {
                 balanceModelList.add(it)
+                if (it.drawerItemType == BalanceDrawerItemModel.TYPE_WALLET_APP_LINKED) {
+                    positionGopay = counter
+                } else if (it.drawerItemType == BalanceDrawerItemModel.TYPE_REWARDS) {
+                    positionRewards = counter
+                }
+                counter++
             }
             submitList(balanceModelList.toMutableList())
         } catch (e: Exception) {
@@ -75,12 +84,12 @@ class BalanceAdapter(
     }
 
     fun getGopayView() : View? {
-        val viewHolder = attachedRecyclerView?.findViewHolderForAdapterPosition(0) as BalanceViewHolder
+        val viewHolder = attachedRecyclerView?.findViewHolderForAdapterPosition(positionGopay) as BalanceViewHolder
         return viewHolder.gopayViewCoachMark
     }
 
     fun getRewardsView() : View? {
-        val viewHolder = attachedRecyclerView?.findViewHolderForAdapterPosition(1) as BalanceViewHolder
+        val viewHolder = attachedRecyclerView?.findViewHolderForAdapterPosition(positionRewards) as BalanceViewHolder
         return viewHolder.rewardsViewCoachMark
     }
 }
