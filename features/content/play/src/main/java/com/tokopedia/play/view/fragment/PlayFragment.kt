@@ -102,7 +102,7 @@ class PlayFragment @Inject constructor(
     private val keyboardWatcher = KeyboardWatcher()
 
     private val orientation: ScreenOrientation
-        get() = ScreenOrientation.getByInt(resources.configuration.orientation)
+        get() = ScreenOrientation.getByInt(requireContext().resources.configuration.orientation)
 
     private val playNavigation: PlayNavigation
         get() = requireActivity() as PlayNavigation
@@ -258,11 +258,13 @@ class PlayFragment @Inject constructor(
     }
 
     fun setResultBeforeFinish() {
-        activity?.setResult(Activity.RESULT_OK, Intent().apply {
-            val totalView = playViewModel.totalView
-            if (totalView.isNotEmpty()) putExtra(EXTRA_TOTAL_VIEW, totalView)
-            if (channelId.isNotEmpty()) putExtra(EXTRA_CHANNEL_ID, channelId)
-        })
+        if(playViewModel.isTotalViewLoaded) {
+            activity?.setResult(Activity.RESULT_OK, Intent().apply {
+                val totalView = playViewModel.totalView
+                if (totalView.isNotEmpty()) putExtra(EXTRA_TOTAL_VIEW, totalView)
+                if (channelId.isNotEmpty()) putExtra(EXTRA_CHANNEL_ID, channelId)
+            })
+        }
     }
 
     fun setCurrentVideoTopBounds(videoOrientation: VideoOrientation, topBounds: Int) {
