@@ -11,10 +11,12 @@ sealed class PlayWidgetPromoType {
 
     data class Default(
             override val promoText: String,
+            val isRilisanSpesial: Boolean
     ) : PlayWidgetPromoType()
 
     data class LiveOnly(
             override val promoText: String,
+            val isRilisanSpesial: Boolean
     ) : PlayWidgetPromoType()
 
     object Unknown : PlayWidgetPromoType() {
@@ -32,9 +34,11 @@ sealed class PlayWidgetPromoType {
     companion object {
 
         fun getByType(type: String, promoText: String): PlayWidgetPromoType {
-            return when (type.uppercase(Locale.getDefault())) {
-                "SPECIAL_CAMPAIGN_LIVE" -> LiveOnly(promoText)
-                "SPECIAL_CAMPAIGN" -> Default(promoText)
+            return when (type.toUpperCase(Locale.getDefault())) {
+                "RILISAN_SPESIAL_LIVE" -> LiveOnly(promoText, true)
+                "RILISAN_SPESIAL" -> Default(promoText, true)
+                "DEFAULT" -> Default(promoText, false)
+                "ONLY_LIVE" -> LiveOnly(promoText, false)
                 "" -> NoPromo
                 else -> Unknown
             }

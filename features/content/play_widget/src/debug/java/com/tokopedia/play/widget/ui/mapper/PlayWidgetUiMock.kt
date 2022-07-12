@@ -61,7 +61,7 @@ object PlayWidgetUiMock {
         appLink = "",
         startTime = "",
         totalView = PlayWidgetTotalView("33.1 rb", true),
-        promoType = PlayWidgetPromoType.Default("Rilisan Spesial"),
+        promoType = PlayWidgetPromoType.Default("Rilisan Spesial", true),
         reminderType = PlayWidgetReminderType.NotReminded,
         partner = PlayWidgetPartnerUiModel("11232713", "Tokopedia Play"),
         video = getVideoUiModel(channelType),
