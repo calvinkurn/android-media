@@ -209,6 +209,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private static final String SHIPMENT_TRACE = "mp_shipment";
 
+    private static final String KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA = "epharmacy_prescription_ids";
     public static final String ARG_IS_ONE_CLICK_SHIPMENT = "ARG_IS_ONE_CLICK_SHIPMENT";
     public static final String ARG_CHECKOUT_LEASING_ID = "ARG_CHECKOUT_LEASING_ID";
     public static final String ARG_CHECKOUT_PAGE_SOURCE = "ARG_CHECKOUT_PAGE_SOURCE";
@@ -258,6 +259,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     BenefitSummaryInfoUiModel benefitSummaryInfoUiModel;
     ShipmentButtonPaymentModel savedShipmentButtonPaymentModel;
     LastApplyUiModel savedLastApplyData;
+    UploadPrescriptionUiModel uploadPrescriptionUiModel;
 
     private boolean hasClearPromoBeforeCheckout = false;
     private boolean hasRunningApiCall = false;
@@ -3420,8 +3422,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     private void onUploadPrescriptionResult(Intent data){
-        if(getView() != null)
-            Toaster.build(getView(),data.getExtras().getLongArray("epharmacy_prescription_ids").length + "",Toaster.LENGTH_LONG,Toaster.TYPE_NORMAL);
+        if(data != null && data.getExtras() != null){
+            UploadPrescriptionUiModel uploadModel = shipmentPresenter.getUploadPrescriptionUiModel();
+            uploadModel.setPrescriptionIds(data.getExtras().getStringArrayList(KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA));
+            uploadPrescriptionUiModel = uploadModel;
+        }
     }
 
     private void updateLocalCacheAddressData(SaveAddressDataModel saveAddressDataModel) {
