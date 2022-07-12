@@ -40,11 +40,11 @@ open class DraftDeleteBottomSheet(
     lateinit var viewModel: DraftDeleteViewModel
     protected var typographyDraftDeleteDesc: Typography? = null
     protected var typographyQuestionTitle: Typography? = null
+    protected var btnStop: UnifyButton? = null
     private var etQuestionOther: TextAreaUnify2? = null
     private var rvQuestionList: RecyclerView? = null
     private var questionListAdapter = DraftDeleteQuestionAdapter()
     private var otherReasonText: String = ""
-    private var btnStop: UnifyButton? = null
     private var btnBack: View? = null
 
     init {
