@@ -67,6 +67,7 @@ class DigitalHorizontalProductCard @JvmOverloads constructor(
                             transition: Transition<in Bitmap>?
                         ) {
                             imageRatio = resource.width.toDouble() / resource.height.toDouble()
+                            setImageBitmap(resource)
                         }
 
                         override fun onLoadCleared(placeholder: Drawable?) {
