@@ -7,10 +7,10 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home_account.privacy_account.data.DataSetConsent
 import com.tokopedia.home_account.privacy_account.data.LinkStatusResponse
-import com.tokopedia.home_account.privacy_account.domain.GetConsentUseCase
+import com.tokopedia.home_account.privacy_account.domain.GetConsentSocialNetworkUseCase
 import com.tokopedia.home_account.privacy_account.domain.GetLinkStatusUseCase
 import com.tokopedia.home_account.privacy_account.domain.GetUserProfile
-import com.tokopedia.home_account.privacy_account.domain.SetConsentUseCase
+import com.tokopedia.home_account.privacy_account.domain.SetConsentSocialNetworkUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -25,8 +25,8 @@ import javax.inject.Inject
 class PrivacyAccountViewModel @Inject constructor(
     private val getLinkStatusUseCase: GetLinkStatusUseCase,
     private val getProfileUseCase: GetUserProfile,
-    private val getConsentUseCase: GetConsentUseCase,
-    private val setConsentUseCase: SetConsentUseCase,
+    private val getConsentSocialNetworkUseCase: GetConsentSocialNetworkUseCase,
+    private val setConsentSocialNetworkUseCase: SetConsentSocialNetworkUseCase,
     private val userSession: UserSessionInterface,
     dispatcher: CoroutineDispatchers
 ): BaseViewModel(dispatcher.main), LifecycleObserver {
@@ -34,11 +34,11 @@ class PrivacyAccountViewModel @Inject constructor(
     private val _linkStatus = MutableLiveData<Result<LinkStatusResponse>>()
     val linkStatus: LiveData<Result<LinkStatusResponse>> get() = _linkStatus
 
-    private val _getUserConsent = MutableLiveData<Result<Boolean>>()
-    val getUserConsent: LiveData<Result<Boolean>> get() = _getUserConsent
+    private val _getConsentSocialNetwork = MutableLiveData<Result<Boolean>>()
+    val getConsentSocialNetwork: LiveData<Result<Boolean>> get() = _getConsentSocialNetwork
 
-    private val _setUserConsent = MutableLiveData<Result<DataSetConsent>>()
-    val setUserConsent: LiveData<Result<DataSetConsent>> get() = _setUserConsent
+    private val _setConsentSocialNetwork = MutableLiveData<Result<DataSetConsent>>()
+    val setConsentSocialNetwork: LiveData<Result<DataSetConsent>> get() = _setConsentSocialNetwork
 
     fun getLinkStatus(isGetProfile: Boolean = false) {
         launchCatchError(block = {
@@ -60,19 +60,19 @@ class PrivacyAccountViewModel @Inject constructor(
 
     fun getConsentSocialNetwork() {
         launchCatchError(coroutineContext, {
-            val response = getConsentUseCase(Unit)
-            _getUserConsent.value = Success(response.socialNetworkGetConsent.data.optIn)
+            val response = getConsentSocialNetworkUseCase(Unit)
+            _getConsentSocialNetwork.value = Success(response.socialNetworkGetConsent.data.optIn)
         }) {
-            _getUserConsent.value = Fail(it)
+            _getConsentSocialNetwork.value = Fail(it)
         }
     }
 
     fun setConsentSocialNetwork(consentValue: Boolean) {
         launchCatchError(coroutineContext, {
-            val response = setConsentUseCase(consentValue)
-            _setUserConsent.value = Success(response.socialNetworkSetConsent.data)
+            val response = setConsentSocialNetworkUseCase(consentValue)
+            _setConsentSocialNetwork.value = Success(response.socialNetworkSetConsent.data)
         }) {
-            _setUserConsent.value = Fail(it)
+            _setConsentSocialNetwork.value = Fail(it)
         }
     }
 }

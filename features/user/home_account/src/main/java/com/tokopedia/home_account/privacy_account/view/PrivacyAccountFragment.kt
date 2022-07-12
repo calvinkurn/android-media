@@ -80,7 +80,7 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setViewDescPrivacyAccount()
+        setViewDescSocialNetworkConsent()
         initObserver()
     }
 
@@ -90,7 +90,7 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
         viewModel.getConsentSocialNetwork()
         viewModel.getLinkStatus()
 
-        viewModel.getUserConsent.observe(viewLifecycleOwner) {
+        viewModel.getConsentSocialNetwork.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     setViewDataUsage(it.data)
@@ -115,7 +115,7 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
             }
         }
 
-        viewModel.setUserConsent.observe(viewLifecycleOwner) {
+        viewModel.setConsentSocialNetwork.observe(viewLifecycleOwner) {
             showLoaderDialog(false)
             val isChecked = binding?.switchPermissionDataUsage?.isChecked == true
             when (it) {
@@ -143,8 +143,8 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
             incLoaderDataUsage.loaderDesc.gone()
             incLoaderDataUsage.cardLoad.showWithCondition(!isVisible)
             switchPermissionDataUsage.visibleWithCondition(isVisible)
-            txtHeaderPrivacyAccount.visibleWithCondition(isVisible)
-            txtDescPrivacyAccount.visibleWithCondition(isVisible)
+            txtHeaderConsentSocialNetwork.visibleWithCondition(isVisible)
+            txtDescConsentSocialNetwork.visibleWithCondition(isVisible)
             dividerUnify.visibleWithCondition(isVisible)
         }
 
@@ -170,8 +170,8 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
             incLoaderDataUsage.loaderDesc.show()
             incLoaderDataUsage.cardLoad.gone()
             switchPermissionDataUsage.invisible()
-            txtHeaderPrivacyAccount.invisible()
-            txtDescPrivacyAccount.invisible()
+            txtHeaderConsentSocialNetwork.invisible()
+            txtDescConsentSocialNetwork.invisible()
             dividerUnify.invisible()
         }
     }
@@ -318,7 +318,7 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setViewDescPrivacyAccount() {
+    private fun setViewDescSocialNetworkConsent() {
         val message = getString(R.string.opt_desc)
         val spannable = SpannableString(message)
         spannable.setSpan(
@@ -335,13 +335,15 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
                     )
                 }
             },
-            message.indexOf(TEXT_LINK_DESC_PRIVACY_ACCOUNT),
+            message.indexOf(TEXT_LINK_DESC_CONSENT_SOCIAL_NETWORK),
             message.length,
             0
         )
-        binding?.txtDescPrivacyAccount?.movementMethod = LinkMovementMethod.getInstance()
-        binding?.txtDescPrivacyAccount?.highlightColor = Color.TRANSPARENT
-        binding?.txtDescPrivacyAccount?.setText(spannable, TextView.BufferType.SPANNABLE)
+        binding?.txtDescConsentSocialNetwork?.apply {
+            movementMethod = LinkMovementMethod.getInstance()
+            highlightColor = Color.TRANSPARENT
+            setText(spannable, TextView.BufferType.SPANNABLE)
+        }
     }
 
     private fun showClarificationDataUsage() {
@@ -448,7 +450,7 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
         private const val TAG_BOTTOM_SHEET_CLARIFICATION = "TAG BOTTOM SHEET CLARIFICATION"
         private const val TAG_BOTTOM_SHEET_VERIFICATION = "TAG BOTTOM SHEET VERIFICATION"
 
-        private const val TEXT_LINK_DESC_PRIVACY_ACCOUNT = "Cek Data yang Dipakai"
+        private const val TEXT_LINK_DESC_CONSENT_SOCIAL_NETWORK = "Cek Data yang Dipakai"
         private val SCREEN_NAME = PrivacyAccountFragment::class.java.simpleName
 
         @JvmStatic

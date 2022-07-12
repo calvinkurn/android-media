@@ -8,7 +8,7 @@ import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.home_account.privacy_account.data.GetConsentDataModel
 import javax.inject.Inject
 
-class GetConsentUseCase @Inject constructor(
+class GetConsentSocialNetworkUseCase @Inject constructor(
     @ApplicationContext private val graphqlRepository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
 ) : CoroutineUseCase<Unit, GetConsentDataModel>(dispatcher.io) {

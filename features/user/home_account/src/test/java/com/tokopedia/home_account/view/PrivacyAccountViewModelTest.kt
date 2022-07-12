@@ -7,10 +7,10 @@ import com.tokopedia.home_account.privacy_account.data.GetConsentDataModel
 import com.tokopedia.home_account.privacy_account.data.LinkStatus
 import com.tokopedia.home_account.privacy_account.data.LinkStatusResponse
 import com.tokopedia.home_account.privacy_account.data.SetConsentDataModel
-import com.tokopedia.home_account.privacy_account.domain.GetConsentUseCase
+import com.tokopedia.home_account.privacy_account.domain.GetConsentSocialNetworkUseCase
 import com.tokopedia.home_account.privacy_account.domain.GetLinkStatusUseCase
 import com.tokopedia.home_account.privacy_account.domain.GetUserProfile
-import com.tokopedia.home_account.privacy_account.domain.SetConsentUseCase
+import com.tokopedia.home_account.privacy_account.domain.SetConsentSocialNetworkUseCase
 import com.tokopedia.home_account.privacy_account.viewmodel.PrivacyAccountViewModel
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -34,8 +34,8 @@ class PrivacyAccountViewModelTest {
 
     private lateinit var viewModel: PrivacyAccountViewModel
 
-    private val getConsentUseCase = mockk<GetConsentUseCase>(relaxed = true)
-    private val setConsentUseCase = mockk<SetConsentUseCase>(relaxed = true)
+    private val getConsentSocialNetworkUseCase = mockk<GetConsentSocialNetworkUseCase>(relaxed = true)
+    private val setConsentSocialNetworkUseCase = mockk<SetConsentSocialNetworkUseCase>(relaxed = true)
     private val getLinkStatusUseCase = mockk<GetLinkStatusUseCase>(relaxed = true)
     private val getUserProfile = mockk<GetUserProfile>(relaxed = true)
     private val userSession = mockk<UserSessionInterface>(relaxed = true)
@@ -48,7 +48,7 @@ class PrivacyAccountViewModelTest {
 
     @Before
     fun setUp() {
-        viewModel = PrivacyAccountViewModel(getLinkStatusUseCase, getUserProfile, getConsentUseCase, setConsentUseCase, userSession, CoroutineTestDispatchersProvider)
+        viewModel = PrivacyAccountViewModel(getLinkStatusUseCase, getUserProfile, getConsentSocialNetworkUseCase, setConsentSocialNetworkUseCase, userSession, CoroutineTestDispatchersProvider)
         viewModel.linkStatus.observeForever(linkStatusResponse)
     }
 
@@ -173,19 +173,19 @@ class PrivacyAccountViewModelTest {
     fun `on get consent then success`() {
         val data = GetConsentDataModel()
 
-        coEvery { getConsentUseCase(Unit) } returns data
+        coEvery { getConsentSocialNetworkUseCase(Unit) } returns data
         viewModel.getConsentSocialNetwork()
 
-        val result = viewModel.getUserConsent.getOrAwaitValue()
+        val result = viewModel.getConsentSocialNetwork.getOrAwaitValue()
         assertTrue(Success(data.socialNetworkGetConsent.data.optIn) == result)
     }
 
     @Test
     fun `on get consent then error`() {
-        coEvery { getConsentUseCase(Unit) } throws throwable
+        coEvery { getConsentSocialNetworkUseCase(Unit) } throws throwable
         viewModel.getConsentSocialNetwork()
 
-        val result = viewModel.getUserConsent.getOrAwaitValue()
+        val result = viewModel.getConsentSocialNetwork.getOrAwaitValue()
         assertTrue(Fail(throwable) == result)
     }
 
@@ -194,10 +194,10 @@ class PrivacyAccountViewModelTest {
         val value = true
         val data = SetConsentDataModel()
 
-        coEvery { setConsentUseCase(value) } returns data
+        coEvery { setConsentSocialNetworkUseCase(value) } returns data
         viewModel.setConsentSocialNetwork(value)
 
-        val result = viewModel.setUserConsent.getOrAwaitValue()
+        val result = viewModel.setConsentSocialNetwork.getOrAwaitValue()
         assertTrue(Success(data.socialNetworkSetConsent.data) == result)
     }
 
@@ -205,10 +205,10 @@ class PrivacyAccountViewModelTest {
     fun `on set consent then error`() {
         val value = true
 
-        coEvery { setConsentUseCase(value) } throws throwable
+        coEvery { setConsentSocialNetworkUseCase(value) } throws throwable
         viewModel.setConsentSocialNetwork(value)
 
-        val result = viewModel.setUserConsent.getOrAwaitValue()
+        val result = viewModel.setConsentSocialNetwork.getOrAwaitValue()
         assertTrue(Fail(throwable) == result)
     }
 
