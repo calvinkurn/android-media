@@ -3398,6 +3398,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         checkoutAnalyticsCourierSelection.eventViewAddOnsWidget(listCartString.toString());
     }
 
+    @Override
+    public void uploadPrescriptionAction(CartShipmentAddressFormData cartShipmentAddressFormData) {
+
+    }
+
     private void updateLocalCacheAddressData(SaveAddressDataModel saveAddressDataModel) {
         Activity activity = getActivity();
         if (activity != null) {
