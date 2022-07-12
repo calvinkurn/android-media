@@ -95,7 +95,7 @@ import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.util.ChatBubbleItemDecorator
-import com.tokopedia.chatbot.util.VideoLengthFinder
+import com.tokopedia.chatbot.util.VideoUtil
 import com.tokopedia.chatbot.util.ViewUtil
 import com.tokopedia.chatbot.view.ChatbotInternalRouter
 import com.tokopedia.chatbot.view.activity.ChatBotCsatActivity
@@ -128,6 +128,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.chatbot_layout_rating.view.*
 import kotlinx.android.synthetic.main.fragment_chatbot.*
+import java.io.File
 import javax.inject.Inject
 
 /**
@@ -972,6 +973,9 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         paths.originalPaths.forEach { path ->
             processVideoPathToUpload(path)?.let { videoUploadUiModel ->
                 getViewState()?.onVideoUpload(videoUploadUiModel)
+
+                sendAnalyticsForVideoUpload(path)
+
                 presenter.uploadVideo(
                     videoUploadUiModel,
                     SOURCE_ID_FOR_VIDEO_UPLOAD,
@@ -984,8 +988,16 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         }
     }
 
+    //TODO clear doubts here
+    private fun sendAnalyticsForVideoUpload(videoFilePath : String) {
+        val videoFile = File(videoFilePath)
+        val extension = VideoUtil.findVideoExtension(videoFile)
+        val videoSize = VideoUtil.findVideoSize(videoFile)
+        chatbotAnalytics.get().eventOnVideoUpload(videoFilePath, extension, videoSize)
+    }
+
     private fun processVideoPathToUpload(path: String): VideoUploadUiModel? {
-        val totalLength = VideoLengthFinder.findVideoLength(context, path)
+        val totalLength = VideoUtil.findVideoLength(context, path)
 
         if (!TextUtils.isEmpty(path)) {
             return generateChatViewModelWithVideo(path, totalLength)
@@ -1241,12 +1253,15 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun onClickAttachImage(menu: AttachmentMenu) {
         super.onClickAttachImage(menu)
-        pickImageFromDevice()
+        pickVideoFromDevice()
+        //TODO CHANGE THE LOCATION OF THIS ANALYTICS
+        chatbotAnalytics?.get().eventOnVideoPick()
     }
 
     override fun onClickAttachVideo(menu: AttachmentMenu) {
         super.onClickAttachVideo(menu)
         pickVideoFromDevice()
+        //TODO PLACE THE ANALYTICS HERE
     }
 
     override fun showErrorToast(it: Throwable) {
