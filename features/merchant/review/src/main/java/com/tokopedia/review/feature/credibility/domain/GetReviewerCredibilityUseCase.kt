@@ -31,6 +31,17 @@ class GetReviewerCredibilityUseCase @Inject constructor(
                       ctaText
                       infoText
                       ctaApplink
+                      name
+                      sublabel
+                      achievements {
+                        image
+                        name
+                        total
+                        color
+                        mementoLink
+                      }
+                      totalAchievementFmt
+                      achievementListLink
                     }
                     stats {
                       key
