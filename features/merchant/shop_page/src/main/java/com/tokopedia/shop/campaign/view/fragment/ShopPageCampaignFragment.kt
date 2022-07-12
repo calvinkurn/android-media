@@ -192,12 +192,6 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
 
     }
 
-    // TODO: 12/07/22 Just temporary, delete this immediately after implement other widget
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setCampaignTabBackgroundGradient()
-    }
-
     override fun onSuccessGetShopHomeWidgetContentData(mapWidgetContentData: Map<Pair<String, String>, Visitable<*>?>) {
         super.onSuccessGetShopHomeWidgetContentData(mapWidgetContentData)
         setCampaignTabBackgroundGradient()
@@ -220,6 +214,128 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
         // TODO: 12/07/22 Implement mvc voucher tracker
     }
     // mvc widget listener end region
+
+    // region Product bundle multiple widget
+    override fun addMultipleBundleToCart(
+        selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
+        bundleListSize: Int,
+        productDetails: List<ShopHomeBundleProductUiModel>,
+        bundleName: String,
+        widgetLayout: ShopHomeWidgetLayout
+    ) {
+        if (isOwner) {
+            // disable owner add their own bundle to cart
+            showErrorToast(getString(R.string.shop_page_product_bundle_failed_atc_text_for_shop_owner))
+        } else {
+            if (selectedMultipleBundle.isProductsHaveVariant) {
+                // go to bundling selection page
+                goToBundlingSelectionPage(selectedMultipleBundle.bundleId)
+            } else {
+                // atc bundle directly from shop page home
+                val widgetLayoutParams = ShopPageWidgetLayoutUiModel(
+                    widgetId = widgetLayout.widgetId,
+                    widgetMasterId = widgetLayout.widgetMasterId,
+                    widgetType = widgetLayout.widgetType,
+                    widgetName = widgetLayout.widgetName
+                )
+                viewModel?.addBundleToCart(
+                    shopId = shopId,
+                    userId = userId,
+                    bundleId = selectedMultipleBundle.bundleId,
+                    productDetails = productDetails,
+                    onFinishAddToCart = { handleOnFinishAtcBundle(it, bundleListSize, widgetLayoutParams) },
+                    onErrorAddBundleToCart = { handleOnErrorAtcBundle(it) },
+                    productQuantity = selectedMultipleBundle.minOrder
+                )
+            }
+        }
+        // TODO: 12/07/22 Implement atc tracker bundle multiple
+
+    }
+
+    override fun impressionProductBundleMultiple(
+        selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
+        bundleName: String,
+        bundlePosition: Int
+    ) {
+        // TODO: 12/07/22 Implement multiple bundle impression tracker
+    }
+
+    override fun onMultipleBundleProductClicked(
+        selectedProduct: ShopHomeBundleProductUiModel,
+        selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
+        bundleName: String,
+        bundlePosition: Int
+    ) {
+        // TODO: 12/07/22 Implement multiple bundle tracker
+
+        goToPDP(selectedProduct.productId)
+    }
+    // endregion
+
+
+    // region Product bundle single widget
+    override fun onSingleBundleProductClicked(
+        selectedProduct: ShopHomeBundleProductUiModel,
+        selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
+        bundleName: String,
+        bundlePosition: Int
+    ) {
+        // TODO: 12/07/22 Implement single bundle product clicked tracker
+
+        goToPDP(selectedProduct.productId)
+    }
+
+    override fun addSingleBundleToCart(
+        selectedBundle: ShopHomeProductBundleDetailUiModel,
+        bundleListSize: Int,
+        bundleProducts: ShopHomeBundleProductUiModel,
+        bundleName: String,
+        widgetLayout: ShopHomeWidgetLayout
+    ) {
+        if (isOwner) {
+            // disable owner add their own bundle to cart
+            showErrorToast(getString(R.string.shop_page_product_bundle_failed_atc_text_for_shop_owner))
+        } else {
+            if (selectedBundle.isProductsHaveVariant) {
+                // go to bundling selection page
+                goToBundlingSelectionPage(selectedBundle.bundleId)
+            } else {
+                // atc bundle directly from shop page home
+                val widgetLayoutParams = ShopPageWidgetLayoutUiModel(
+                    widgetId = widgetLayout.widgetId,
+                    widgetMasterId = widgetLayout.widgetMasterId,
+                    widgetType = widgetLayout.widgetType,
+                    widgetName = widgetLayout.widgetName
+                )
+                viewModel?.addBundleToCart(
+                    shopId = shopId,
+                    userId = userId,
+                    bundleId = selectedBundle.bundleId,
+                    productDetails = listOf(bundleProducts),
+                    onFinishAddToCart = { handleOnFinishAtcBundle(it, bundleListSize, widgetLayoutParams) },
+                    onErrorAddBundleToCart = { handleOnErrorAtcBundle(it) },
+                    productQuantity = selectedBundle.minOrder
+                )
+            }
+        }
+
+        // TODO: 12/07/22 Implement atc bundle single tracker
+    }
+
+    override fun onTrackSingleVariantChange(selectedProduct: ShopHomeBundleProductUiModel, selectedSingleBundle: ShopHomeProductBundleDetailUiModel, bundleName: String) {
+        // TODO: 12/07/22 Implement variant change single bundle tracker
+    }
+
+    override fun impressionProductBundleSingle(
+        selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
+        selectedProduct: ShopHomeBundleProductUiModel,
+        bundleName: String,
+        bundlePosition: Int
+    ) {
+        // TODO: 12/07/22 Implement impression product bundle single
+    }
+    // endregion
 
     private fun setCampaignTabBackgroundGradient() {
         if (listBackgroundColor.isNotEmpty()) {
@@ -517,179 +633,6 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
-    }
-
-    override fun impressionProductBundleMultiple(
-            selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
-            bundleName: String,
-            bundlePosition: Int
-    ) {
-        shopPageHomeTracking.impressionMultipleBundleWidget(
-                shopId = shopId,
-                userId = userId,
-                bundleId = selectedMultipleBundle.bundleId,
-                bundleName = bundleName,
-                bundlePriceCut = selectedMultipleBundle.discountPercentage.toString(),
-                bundlePrice = selectedMultipleBundle.displayPriceRaw,
-                bundlePosition = bundlePosition
-        )
-    }
-
-    override fun onMultipleBundleProductClicked(
-            selectedProduct: ShopHomeBundleProductUiModel,
-            selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
-            bundleName: String,
-            bundlePosition: Int
-    ) {
-        shopPageHomeTracking.clickOnMultipleBundleProduct(
-                shopId = shopId,
-                userId = userId,
-                bundleId = selectedMultipleBundle.bundleId,
-                bundleName = bundleName,
-                bundlePriceCut = selectedMultipleBundle.discountPercentage.toString(),
-                bundlePrice = selectedMultipleBundle.displayPriceRaw,
-                bundlePosition = bundlePosition,
-                clickedProduct = selectedProduct
-        )
-        goToPDP(selectedProduct.productId)
-    }
-
-    override fun onTrackSingleVariantChange(selectedProduct: ShopHomeBundleProductUiModel, selectedSingleBundle: ShopHomeProductBundleDetailUiModel, bundleName: String) {
-        shopPageHomeTracking.onTrackSingleVariantChange(
-                shopId = shopId,
-                userId = userId,
-                productId = selectedProduct.productId,
-                bundleName = bundleName,
-                bundleId = selectedSingleBundle.bundleId,
-                bundlePriceCut = selectedSingleBundle.discountPercentage.toString(),
-                selectedPackage = selectedSingleBundle.minOrderWording
-        )
-    }
-
-    override fun impressionProductBundleSingle(
-            selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
-            selectedProduct: ShopHomeBundleProductUiModel,
-            bundleName: String,
-            bundlePosition: Int
-    ) {
-        shopPageHomeTracking.impressionSingleBundleWidget(
-                shopId = shopId,
-                userId = userId,
-                productId = selectedProduct.productId,
-                bundleId = selectedSingleBundle.bundleId,
-                bundleName = bundleName,
-                bundlePriceCut = selectedSingleBundle.discountPercentage.toString(),
-                bundlePrice = selectedSingleBundle.displayPriceRaw,
-                bundlePosition = bundlePosition
-        )
-    }
-
-    override fun onSingleBundleProductClicked(
-            selectedProduct: ShopHomeBundleProductUiModel,
-            selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
-            bundleName: String,
-            bundlePosition: Int
-    ) {
-        shopPageHomeTracking.clickOnSingleBundleProduct(
-                shopId = shopId,
-                userId = userId,
-                bundleId = selectedSingleBundle.bundleId,
-                bundleName = bundleName,
-                bundlePriceCut = selectedSingleBundle.discountPercentage.toString(),
-                bundlePrice = selectedSingleBundle.displayPriceRaw,
-                bundlePosition = bundlePosition,
-                clickedProduct = selectedProduct,
-                selectedPackage = selectedSingleBundle.minOrderWording
-        )
-        goToPDP(selectedProduct.productId)
-    }
-
-    override fun addMultipleBundleToCart(
-            selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
-            bundleListSize: Int,
-            productDetails: List<ShopHomeBundleProductUiModel>,
-            bundleName: String,
-            widgetLayout: ShopHomeWidgetLayout
-    ) {
-        if (isOwner) {
-            // disable owner add their own bundle to cart
-            showErrorToast(getString(R.string.shop_page_product_bundle_failed_atc_text_for_shop_owner))
-        } else {
-            if (selectedMultipleBundle.isProductsHaveVariant) {
-                // go to bundling selection page
-                goToBundlingSelectionPage(selectedMultipleBundle.bundleId)
-            } else {
-                // atc bundle directly from shop page home
-                val widgetLayoutParams = ShopPageWidgetLayoutUiModel(
-                        widgetId = widgetLayout.widgetId,
-                        widgetMasterId = widgetLayout.widgetMasterId,
-                        widgetType = widgetLayout.widgetType,
-                        widgetName = widgetLayout.widgetName
-                )
-                viewModel?.addBundleToCart(
-                        shopId = shopId,
-                        userId = userId,
-                        bundleId = selectedMultipleBundle.bundleId,
-                        productDetails = productDetails,
-                        onFinishAddToCart = { handleOnFinishAtcBundle(it, bundleListSize, widgetLayoutParams) },
-                        onErrorAddBundleToCart = { handleOnErrorAtcBundle(it) },
-                        productQuantity = selectedMultipleBundle.minOrder
-                )
-            }
-        }
-        shopPageHomeTracking.clickAtcProductBundleMultiple(
-                shopId = shopId,
-                userId = userId,
-                bundleId = selectedMultipleBundle.bundleId,
-                bundleName = bundleName,
-                bundlePriceCut = selectedMultipleBundle.discountPercentage.toString(),
-                bundlePrice = selectedMultipleBundle.displayPriceRaw
-        )
-    }
-
-    override fun addSingleBundleToCart(
-            selectedBundle: ShopHomeProductBundleDetailUiModel,
-            bundleListSize: Int,
-            bundleProducts: ShopHomeBundleProductUiModel,
-            bundleName: String,
-            widgetLayout: ShopHomeWidgetLayout
-    ) {
-        if (isOwner) {
-            // disable owner add their own bundle to cart
-            showErrorToast(getString(R.string.shop_page_product_bundle_failed_atc_text_for_shop_owner))
-        } else {
-            if (selectedBundle.isProductsHaveVariant) {
-                // go to bundling selection page
-                goToBundlingSelectionPage(selectedBundle.bundleId)
-            } else {
-                // atc bundle directly from shop page home
-                val widgetLayoutParams = ShopPageWidgetLayoutUiModel(
-                        widgetId = widgetLayout.widgetId,
-                        widgetMasterId = widgetLayout.widgetMasterId,
-                        widgetType = widgetLayout.widgetType,
-                        widgetName = widgetLayout.widgetName
-                )
-                viewModel?.addBundleToCart(
-                        shopId = shopId,
-                        userId = userId,
-                        bundleId = selectedBundle.bundleId,
-                        productDetails = listOf(bundleProducts),
-                        onFinishAddToCart = { handleOnFinishAtcBundle(it, bundleListSize, widgetLayoutParams) },
-                        onErrorAddBundleToCart = { handleOnErrorAtcBundle(it) },
-                        productQuantity = selectedBundle.minOrder
-                )
-            }
-        }
-        shopPageHomeTracking.clickAtcProductBundleSingle(
-                shopId = shopId,
-                userId = userId,
-                bundleId = selectedBundle.bundleId,
-                bundleName = bundleName,
-                bundlePriceCut = selectedBundle.discountPercentage.toString(),
-                bundlePrice = selectedBundle.displayPriceRaw,
-                selectedPackage = selectedBundle.minOrderWording,
-                productId = bundleProducts.productId
-        )
     }
 
     private fun handleOnFinishAtcBundle(
