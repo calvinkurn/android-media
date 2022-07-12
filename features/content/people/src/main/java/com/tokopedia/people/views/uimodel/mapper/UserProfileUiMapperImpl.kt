@@ -2,12 +2,14 @@ package com.tokopedia.people.views.uimodel.mapper
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.people.views.uimodel.profile.*
-import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
 import com.tokopedia.feedcomponent.data.pojo.whitelist.Author
+import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
 import com.tokopedia.people.R
 import com.tokopedia.people.model.*
 import com.tokopedia.people.views.uimodel.MutationUiModel
+import com.tokopedia.people.views.uimodel.profile.*
+import com.tokopedia.people.views.uimodel.shoprecom.ShopRecomUiModel
+import com.tokopedia.people.views.uimodel.shoprecom.ShopRecomUiModelItem
 import javax.inject.Inject
 
 /**
@@ -80,6 +82,28 @@ class UserProfileUiMapperImpl @Inject constructor(
         return with(response.playToggleChannelReminder) {
             if(header.status == SUCCESS_UPDATE_REMINDER_CODE) MutationUiModel.Success(header.message)
             else MutationUiModel.Error(header.message)
+        }
+    }
+
+    override fun mapShopRecom(response: UserShopRecomModel): ShopRecomUiModel {
+        return with(response.feedXRecomWidget) {
+            ShopRecomUiModel(
+                isShown = isShown,
+                items = items.map {
+                  ShopRecomUiModelItem(
+                      badgeImageURL = it.badgeImageURL,
+                      encryptedID = it.encryptedID,
+                      id = it.id,
+                      logoImageURL = it.logoImageURL,
+                      name = it.name,
+                      nickname = it.nickname,
+                      type = it.type,
+                      applink = it.applink,
+                  )
+                },
+                nextCursor = nextCursor,
+                title = title,
+            )
         }
     }
 

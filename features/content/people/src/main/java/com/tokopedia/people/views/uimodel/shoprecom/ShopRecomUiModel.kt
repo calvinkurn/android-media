@@ -1,25 +1,20 @@
-package com.tokopedia.people.model
+package com.tokopedia.people.views.uimodel.shoprecom
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.library.baseadapter.BaseItem
 
-data class UserShopRecomModel(
-    @SerializedName("feedXRecomWidget")
-    val feedXRecomWidget: FeedXRecomWidget = FeedXRecomWidget(),
-)
-
-data class FeedXRecomWidget(
+data class ShopRecomUiModel(
     @SerializedName("isShown")
     val isShown: Boolean = false,
     @SerializedName("items")
-    val items: List<ShopRecomItem> = emptyList(),
+    val items: List<ShopRecomUiModelItem> = emptyList(),
     @SerializedName("nextCursor")
     val nextCursor: String = "",
     @SerializedName("title")
     val title: String = "",
 )
 
-data class ShopRecomItem(
+data class ShopRecomUiModelItem(
     @SerializedName("badgeImageURL")
     val badgeImageURL: String = "",
     @SerializedName("encryptedID")
@@ -36,4 +31,6 @@ data class ShopRecomItem(
     val type: Int = 0,
     @SerializedName("applink")
     val applink: String = "",
+    @SerializedName("isFollow")
+    var isFollow: Boolean = false,
 ): BaseItem()

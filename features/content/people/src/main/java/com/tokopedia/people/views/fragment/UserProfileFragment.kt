@@ -40,7 +40,6 @@ import com.tokopedia.people.R
 import com.tokopedia.people.analytic.UserProfileTracker
 import com.tokopedia.people.databinding.UpFragmentUserProfileBinding
 import com.tokopedia.people.databinding.UpLayoutUserProfileHeaderBinding
-import com.tokopedia.people.model.ShopRecomItem
 import com.tokopedia.people.model.UserPostModel
 import com.tokopedia.people.utils.showErrorToast
 import com.tokopedia.people.utils.showToast
@@ -76,6 +75,7 @@ import com.tokopedia.feedcomponent.onboarding.view.fragment.FeedUGCOnboardingPar
 import com.tokopedia.people.ErrorMessage
 import com.tokopedia.people.Loading
 import com.tokopedia.people.Success
+import com.tokopedia.people.views.uimodel.shoprecom.ShopRecomUiModelItem
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.UnifyButton
 
@@ -367,17 +367,11 @@ class UserProfileFragment @Inject constructor(
     private fun addShopRecomObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.shopRecomContent.collect {
-                when (it) {
-                    is Loading -> mAdapterShopRecom.resetAdapter()
-                    is Success -> {
-                        mAdapterShopRecom.onSuccess(it.data)
-                        with(mainBinding.shopRecommendation) {
-                            root.show()
-                            txtWordingFollow.show()
-                            rvShopRecom.show()
-                        }
-                    }
-                    is ErrorMessage -> mAdapterShopRecom.onError()
+                mAdapterShopRecom.onSuccess(it)
+                with(mainBinding.shopRecommendation) {
+                    root.show()
+                    txtWordingFollow.show()
+                    rvShopRecom.show()
                 }
             }
         }
@@ -668,7 +662,7 @@ class UserProfileFragment @Inject constructor(
         return bundle
     }
 
-    override fun onShopRecomCloseClicked(item: ShopRecomItem) {
+    override fun onShopRecomCloseClicked(item: ShopRecomUiModelItem) {
         mAdapterShopRecom.remove(item)
         if (mAdapterShopRecom.itemCount == 0) {
             with(mainBinding.shopRecommendation) {
@@ -678,7 +672,7 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
-    override fun onShopRecomFollowClicked(item: ShopRecomItem) {
+    override fun onShopRecomFollowClicked(item: ShopRecomUiModelItem) {
         submitAction(UserProfileAction.ClickFollowButtonShopRecom(item))
     }
 

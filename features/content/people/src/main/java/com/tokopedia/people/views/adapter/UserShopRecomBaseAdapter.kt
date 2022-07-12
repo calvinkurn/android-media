@@ -7,17 +7,16 @@ import com.tokopedia.feedcomponent.view.widget.shoprecom.ShopRecomView
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.library.baseadapter.BaseAdapter
 import com.tokopedia.people.databinding.UpLayoutShopRecommendationItemBinding
-import com.tokopedia.people.model.ShopRecomItem
-import com.tokopedia.people.model.UserShopRecomModel
+import com.tokopedia.people.views.uimodel.shoprecom.ShopRecomUiModelItem
 
 open class UserShopRecomBaseAdapter(
     callback: AdapterCallback,
     private val shopRecomCallback: ShopRecommendationCallback
-) : BaseAdapter<ShopRecomItem>(callback), ShopRecomView.Listener {
+) : BaseAdapter<ShopRecomUiModelItem>(callback), ShopRecomView.Listener {
 
     interface ShopRecommendationCallback {
-        fun onShopRecomCloseClicked(item: ShopRecomItem)
-        fun onShopRecomFollowClicked(item: ShopRecomItem)
+        fun onShopRecomCloseClicked(item: ShopRecomUiModelItem)
+        fun onShopRecomFollowClicked(item: ShopRecomUiModelItem)
         fun onShopRecomItemClicked(appLink: String)
     }
 
@@ -25,7 +24,7 @@ open class UserShopRecomBaseAdapter(
 
     inner class ViewHolder(view: UpLayoutShopRecommendationItemBinding) : BaseVH(view.root) {
         internal var shopRecomView: ShopRecomView = view.peopleShopRecommendation
-        override fun bindView(item: ShopRecomItem, position: Int) {
+        override fun bindView(item: ShopRecomUiModelItem, position: Int) {
             setData(this, item)
         }
     }
@@ -43,13 +42,13 @@ open class UserShopRecomBaseAdapter(
         super.loadData(currentPageIndex, *args)
     }
 
-    fun onSuccess(data: UserShopRecomModel) {
-        if (data.feedXRecomWidget.items.isEmpty()) {
+    fun onSuccess(data: List<ShopRecomUiModelItem>) {
+        if (data.isEmpty()) {
             loadCompleted(emptyList(), data)
             isLastPage = true
             cursor = ""
         } else {
-            data.feedXRecomWidget.items.let { loadCompleted(it, data) }
+            loadCompleted(data, data)
             isLastPage = true
             cursor = ""
         }
@@ -59,12 +58,12 @@ open class UserShopRecomBaseAdapter(
         loadCompletedWithError()
     }
 
-    private fun setData(holder: ViewHolder, item: ShopRecomItem) {
+    private fun setData(holder: ViewHolder, item: ShopRecomUiModelItem) {
         holder.shopRecomView.setData(item.transformToShopRecomItemUI())
         holder.shopRecomView.setListener(this)
     }
 
-    fun updateItem(item: ShopRecomItem) {
+    fun updateItem(item: ShopRecomUiModelItem) {
         val position = items.indexOf(item.copy(isFollow = !item.isFollow))
         items[position].isFollow = item.isFollow
         notifyItemChanged(position, item)
@@ -82,7 +81,7 @@ open class UserShopRecomBaseAdapter(
         shopRecomCallback.onShopRecomItemClicked(appLink)
     }
 
-    private fun ShopRecomItem.transformToShopRecomItemUI(): ShopRecomItemUI {
+    private fun ShopRecomUiModelItem.transformToShopRecomItemUI(): ShopRecomItemUI {
         return ShopRecomItemUI(
             badgeImageURL = badgeImageURL,
             encryptedID = encryptedID,
@@ -96,8 +95,8 @@ open class UserShopRecomBaseAdapter(
         )
     }
 
-    private fun ShopRecomItemUI.transformToShopRecomItem(): ShopRecomItem {
-        return ShopRecomItem(
+    private fun ShopRecomItemUI.transformToShopRecomItem(): ShopRecomUiModelItem {
+        return ShopRecomUiModelItem(
             badgeImageURL = badgeImageURL,
             encryptedID = encryptedID,
             logoImageURL = logoImageURL,

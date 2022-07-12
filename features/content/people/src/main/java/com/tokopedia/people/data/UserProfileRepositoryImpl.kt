@@ -13,12 +13,12 @@ import com.tokopedia.people.domains.ShopRecomUseCase
 import com.tokopedia.people.domains.repository.UserProfileRepository
 import com.tokopedia.people.model.ProfileHeaderBase
 import com.tokopedia.people.model.UserPostModel
-import com.tokopedia.people.model.UserShopRecomModel
 import com.tokopedia.people.views.uimodel.MutationUiModel
 import com.tokopedia.people.views.uimodel.mapper.UserProfileUiMapper
 import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileWhitelistUiModel
+import com.tokopedia.people.views.uimodel.shoprecom.ShopRecomUiModel
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -94,10 +94,11 @@ class UserProfileRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getShopRecom(): UserShopRecomModel = withContext(dispatcher.io) {
-        return@withContext shopRecomUseCase.apply {
+    override suspend fun getShopRecom(): ShopRecomUiModel = withContext(dispatcher.io) {
+        val result = shopRecomUseCase.apply {
             setRequestParams(ShopRecomUseCase.createParam())
         }.executeOnBackground()
+        return@withContext mapper.mapShopRecom(result)
     }
 
     companion object {

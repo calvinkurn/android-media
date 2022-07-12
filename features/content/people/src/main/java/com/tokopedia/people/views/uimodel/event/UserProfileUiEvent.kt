@@ -1,6 +1,6 @@
 package com.tokopedia.people.views.uimodel.event
 
-import com.tokopedia.people.model.ShopRecomItem
+import com.tokopedia.people.views.uimodel.shoprecom.ShopRecomUiModelItem
 
 /**
  * Created By : Jonathan Darwin on June 28, 2022
@@ -13,5 +13,5 @@ sealed interface UserProfileUiEvent {
     data class SuccessUpdateReminder(val message: String, val position: Int) : UserProfileUiEvent
     data class ErrorUpdateReminder(val throwable: Throwable) : UserProfileUiEvent
 
-    data class SuccessFollowShopRecom(val data: ShopRecomItem): UserProfileUiEvent
+    data class SuccessFollowShopRecom(val data: ShopRecomUiModelItem): UserProfileUiEvent
 }

@@ -8,14 +8,13 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.people.Resources
 import com.tokopedia.people.Success
 import com.tokopedia.people.domains.repository.UserProfileRepository
-import com.tokopedia.people.model.ShopRecomItem
 import com.tokopedia.people.model.UserPostModel
-import com.tokopedia.people.model.UserShopRecomModel
 import com.tokopedia.people.views.uimodel.MutationUiModel
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.people.views.uimodel.profile.*
 import com.tokopedia.people.views.uimodel.saved.SavedReminderData
+import com.tokopedia.people.views.uimodel.shoprecom.ShopRecomUiModelItem
 import com.tokopedia.people.views.uimodel.state.UserProfileUiState
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
@@ -46,8 +45,8 @@ class UserProfileViewModel @AssistedInject constructor(
     private val userPost = MutableLiveData<Boolean>()
     val userPostLiveData : LiveData<Boolean> get() = userPost
 
-    private val _shopRecomContent = MutableSharedFlow<Resources<UserShopRecomModel>>()
-    val shopRecomContent: Flow<Resources<UserShopRecomModel>> get() = _shopRecomContent
+    private val _shopRecomContent = MutableSharedFlow<List<ShopRecomUiModelItem>>()
+    val shopRecomContent: Flow<List<ShopRecomUiModelItem>> get() = _shopRecomContent
 
     private val playPostContent = MutableLiveData<Resources<UserPostModel>>()
     val playPostContentLiveData : LiveData<Resources<UserPostModel>> get() = playPostContent
@@ -151,9 +150,8 @@ class UserProfileViewModel @AssistedInject constructor(
      * */
     private fun handleLoadShopRecom() {
         launchCatchError(block = {
-            val data = repo.getShopRecom()
-            if (data != null) _shopRecomContent.emit(Success(data))
-            else throw NullPointerException("data is null")
+            val result = repo.getShopRecom()
+            _shopRecomContent.emit(result.items)
         }, onError = {
             userPostError.value = it
         })
@@ -247,7 +245,7 @@ class UserProfileViewModel @AssistedInject constructor(
         _savedReminderData.update { SavedReminderData.NoData }
     }
 
-    private fun handleClickFollowButtonShopRecom(data: ShopRecomItem) {
+    private fun handleClickFollowButtonShopRecom(data: ShopRecomUiModelItem) {
         launchCatchError(block = {
 
             val followInfo = _followInfo.value
