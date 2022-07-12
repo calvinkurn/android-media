@@ -21,8 +21,8 @@
             android:layout_height="@dimen/unify_space_12"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/Unify_NN900"
-            app:srcCompat="@drawable/iconunify_close" />
+            app:srcCompat="@drawable/iconunify_close"
+            app:tint="@color/Unify_NN900" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/img_item_shop_image"
@@ -35,37 +35,38 @@
             app:unify_image_type="circle"
             tools:src="@tools:sample/avatars" />
 
-        <LinearLayout
-            android:id="@+id/ll_badge_name"
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/img_item_shop_badge"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:scaleType="centerCrop"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toBottomOf="@id/txt_item_shop_name"
+            app:layout_constraintEnd_toStartOf="@id/txt_item_shop_name"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/txt_item_shop_name"
+            app:layout_constraintWidth_default="wrap"
+            app:unify_image_type="rect"
+            tools:src="@tools:sample/avatars" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txt_item_shop_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_4"
             android:layout_marginTop="@dimen/unify_space_8"
+            android:ellipsize="end"
             android:gravity="center"
-            android:orientation="horizontal"
+            android:maxLines="1"
+            android:textColor="@color/Unify_NN950"
+            android:textSize="@dimen/unify_font_12"
+            app:layout_constrainedWidth="true"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/img_item_shop_image">
-
-            <com.tokopedia.unifycomponents.ImageUnify
-                android:id="@+id/img_item_shop_badge"
-                android:layout_width="@dimen/unify_space_16"
-                android:layout_height="@dimen/unify_space_16"
-                app:unify_image_type="rect"
-                tools:src="@tools:sample/avatars" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/txt_item_shop_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/unify_space_2"
-                android:ellipsize="end"
-                android:gravity="center_horizontal"
-                android:maxLines="1"
-                android:textColor="@color/Unify_NN950"
-                android:textSize="@dimen/unify_font_12"
-                tools:text="Nike Official Indonesia" />
-
-        </LinearLayout>
+            app:layout_constraintStart_toEndOf="@id/img_item_shop_badge"
+            app:layout_constraintTop_toBottomOf="@id/img_item_shop_image"
+            app:layout_constraintWidth_default="wrap"
+            tools:text="Nike Official Indonesia" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txt_item_shop_username"
@@ -77,7 +78,7 @@
             android:textColor="@color/Unify_NN600"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ll_badge_name"
+            app:layout_constraintTop_toBottomOf="@id/txt_item_shop_name"
             app:typographyType="small"
             tools:text="nike_indonesia_indonesia_indonesia" />
 
