@@ -331,17 +331,17 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
 
     private fun sendResultToCheckout() {
         Intent().apply {
-            val prescriptionIds = arrayListOf<Long>()
+            val prescriptionIds = arrayListOf<String>()
             uploadPrescriptionViewModel.prescriptionImages.value?.let {  presImages ->
                 presImages.forEach { presImage ->
                     presImage?.prescriptionId?.let { presId ->
                         if(presId != DEFAULT_ZERO_VALUE){
-                            prescriptionIds.add(presId)
+                            prescriptionIds.add(presId.toString())
                         }
                     }
                 }
             }
-            putExtra(EPHARMACY_PRESCRIPTION_IDS,prescriptionIds)
+            putStringArrayListExtra(EPHARMACY_PRESCRIPTION_IDS,prescriptionIds)
             activity?.setResult(EPHARMACY_REQUEST_CODE,this)
         }
     }
