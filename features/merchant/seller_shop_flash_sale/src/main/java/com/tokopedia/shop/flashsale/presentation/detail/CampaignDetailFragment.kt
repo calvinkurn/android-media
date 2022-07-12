@@ -31,6 +31,7 @@ import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignDeta
 import com.tokopedia.shop.flashsale.common.constant.DateConstant
 import com.tokopedia.shop.flashsale.common.extension.convertRupiah
 import com.tokopedia.shop.flashsale.common.extension.formatTo
+import com.tokopedia.shop.flashsale.common.extension.setFragmentToUnifyBgColor
 import com.tokopedia.shop.flashsale.common.extension.showError
 import com.tokopedia.shop.flashsale.common.share_component.ShareComponentInstanceBuilder
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
@@ -128,6 +129,7 @@ class CampaignDetailFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setFragmentToUnifyBgColor()
         initCampaignDetail()
         setUpView()
     }

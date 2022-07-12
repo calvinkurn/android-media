@@ -21,8 +21,6 @@ import kotlinx.coroutines.launch
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
-private const val DEFAULT_SCROLL_ANIMATION_DURATION = 200
-
 infix fun View?.showError(throwable: Throwable) {
     this?.run {
         val errorMessage = context.getString(R.string.sfs_error_message_connection_error)
@@ -70,46 +68,38 @@ fun View.disable() {
 }
 
 
-fun View?.slideUp(duration: Int = DEFAULT_SCROLL_ANIMATION_DURATION) {
+fun View?.slideUp(duration: Int? = null) {
     this?.let {
+        val defaultDuration = it.resources.getInteger(com.tokopedia.unifyprinciples.R.integer.Unify_T2)
         val animate = TranslateAnimation(0f, 0f, this.height.toFloat(), 0f)
-        animate.duration = duration.toLong()
+        animate.duration = (duration ?: defaultDuration).toLong()
         animate.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationStart(animation: Animation?) {
-
-            }
+            override fun onAnimationStart(animation: Animation?) {}
 
             override fun onAnimationEnd(animation: Animation?) {
                 visible()
             }
 
-            override fun onAnimationRepeat(animation: Animation?) {
-
-            }
-
+            override fun onAnimationRepeat(animation: Animation?) {}
         })
         this.startAnimation(animate)
     }
 }
 
-fun View?.slideDown(duration: Int = DEFAULT_SCROLL_ANIMATION_DURATION) {
+fun View?.slideDown(duration: Int? = null) {
     this?.let {
+        val defaultDuration = it.resources.getInteger(com.tokopedia.unifyprinciples.R.integer.Unify_T2)
         val animate =
             TranslateAnimation(Float.ZERO, Float.ZERO, Float.ZERO, this.height.toFloat())
-        animate.duration = duration.toLong()
+        animate.duration = (duration ?: defaultDuration).toLong()
         animate.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationStart(animation: Animation?) {
-
-            }
+            override fun onAnimationStart(animation: Animation?) {}
 
             override fun onAnimationEnd(animation: Animation?) {
                 gone()
             }
 
-            override fun onAnimationRepeat(animation: Animation?) {
-
-            }
-
+            override fun onAnimationRepeat(animation: Animation?) {}
         })
         this.startAnimation(animate)
     }
