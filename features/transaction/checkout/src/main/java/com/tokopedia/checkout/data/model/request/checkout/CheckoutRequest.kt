@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.data.model.request.checkout
 
 import android.annotation.SuppressLint
+import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.checkout.data.model.request.checkout.cross_sell.CrossSellRequest
 import com.tokopedia.checkout.data.model.request.checkout.old.*
@@ -10,7 +11,7 @@ import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 
 const val FEATURE_TYPE_REGULAR_PRODUCT = 3
 const val FEATURE_TYPE_TOKONOW_PRODUCT = 12
-
+const val UPLOAD_PRESCRIPTION_META_DATA_KEY = "prescription_ids"
 data class Carts(
         @SerializedName("has_promo_stacking")
         var hasPromoStacking: Boolean = false,
@@ -262,7 +263,7 @@ object CheckoutRequestMapper {
 
     private fun mapPrescriptionIds(prescriptionIds: ArrayList<String>?) : List<OrderMetadata>{
         if(prescriptionIds != null && prescriptionIds.isNotEmpty()){
-            return arrayListOf(OrderMetadata("prescription_ids",prescriptionIds.toString()))
+            return arrayListOf(OrderMetadata(UPLOAD_PRESCRIPTION_META_DATA_KEY, Gson().toJson(prescriptionIds)))
         }
         return emptyList()
     }
