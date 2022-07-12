@@ -37,6 +37,7 @@ object ProductTrackingConstant {
         const val KEY_GROUP_NAME = "productGroupName"
         const val KEY_GROUP_ID = "productGroupId"
         const val KEY_CATEGORY_ID = "categoryId"
+        const val KEY_TRACKER_ID = "trackerId"
 
         /**
          * Tracking Key - Product Level
@@ -296,6 +297,12 @@ object ProductTrackingConstant {
     object ImageReview {
         const val ACTION_SEE_ITEM = "click - review gallery on foto dari pembeli"
         const val ACTION_SEE_ALL = "click - lihat semua review gallery"
+    }
+
+    object MostHelpfulReview {
+        const val TRACKER_ID_CLICK_REVIEWER_NAME = "33836"
+        const val ACTON_CLICK_REVIEWER_NAME = "click - reviewer name"
+        const val LABEL_CLICK_REVIEWER_NAME = "feedback_id:%s;user_id:%s;statistics:%s;label:%s;"
     }
 
     object MerchantVoucher {

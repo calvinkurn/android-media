@@ -1523,14 +1523,20 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    override fun onSeeReviewCredibility(userId: String) {
+    override fun onSeeReviewCredibility(
+        reviewID: String,
+        reviewerUserID: String,
+        userStatistics: String,
+        userLabel: String,
+        componentTrackData: ComponentTrackDataModel
+    ) {
         viewModel.getDynamicProductInfoP1?.run {
-            RouteManager.route(
+            val routed = RouteManager.route(
                 context,
                 Uri.parse(
                     UriUtil.buildUri(
                         ApplinkConstInternalMarketplace.REVIEW_CREDIBILITY,
-                        userId,
+                        reviewID,
                         ReviewApplinkConst.REVIEW_CREDIBILITY_SOURCE_REVIEW_MOST_HELPFUL
                     )
                 ).buildUpon()
@@ -1538,6 +1544,17 @@ open class DynamicProductDetailFragment :
                     .build()
                     .toString()
             )
+            if (routed) {
+                DynamicProductDetailTracking.Click.onClickReviewerName(
+                    dynamicProductInfoP1 = this,
+                    reviewID = reviewID,
+                    userId = viewModel.userId,
+                    reviewerUserID = reviewerUserID,
+                    statistics = userStatistics,
+                    label = userLabel,
+                    componentTrackData = componentTrackData
+                )
+            }
         }
     }
 

@@ -11,6 +11,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulReviewDataModel
 import com.tokopedia.product.detail.data.model.review.Review
+import com.tokopedia.product.detail.data.model.review.UserStatistic
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.databinding.ItemDynamicReviewBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
@@ -149,7 +150,15 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
         binding.basicInfoMostHelpfulReview.setListeners(
             reviewBasicInfoListener = object : ReviewBasicInfoListener {
                 override fun onUserNameClicked(userId: String) {
-                    listener.onSeeReviewCredibility(review.user.userId.toString())
+                    element?.let {
+                        listener.onSeeReviewCredibility(
+                            review.reviewId.toString(),
+                            review.user.userId.toString(),
+                            composeUserStatistics(review.userStat.orEmpty()),
+                            review.userLabel,
+                            getComponentTrackData(it)
+                        )
+                    }
                 }
 
                 override fun trackOnUserInfoClicked(
@@ -191,7 +200,7 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
     }
 
     private fun setReviewAuthorStats(review: Review) {
-        binding.basicInfoMostHelpfulReview.setStatsString(review.userStat.orEmpty().joinToString(separator = " • "))
+        binding.basicInfoMostHelpfulReview.setStatsString(composeUserStatistics(review.userStat.orEmpty()))
     }
 
     private fun setReviewVariant(review: Review) {
@@ -275,5 +284,9 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
                 return@let
             }
         }
+    }
+
+    private fun composeUserStatistics(userStatistics: List<UserStatistic>): String {
+        return userStatistics.joinToString(separator = " • ")
     }
 }
