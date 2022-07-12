@@ -30,6 +30,7 @@ data class SomListOrderUiModel(
     val tickerInfo: TickerInfo = TickerInfo(),
     val buttons: List<Button> = emptyList(),
     val orderPlusData: OrderPlusData? = null,
+    val multiSelectEnabled: Boolean = false,
     var isChecked: Boolean = false,
     var searchParam: String,
     var isOpen: Boolean = false
@@ -38,6 +39,10 @@ data class SomListOrderUiModel(
     override fun type(typeFactory: SomListAdapterTypeFactory?): Int {
         return typeFactory?.type(this).orZero()
     }
+
+    fun isOrderWithCancellationRequest() = cancelRequest == 1 && cancelRequestStatus != 0
+
+    fun hasActiveRequestCancellation() = cancelRequest != 0 && cancelRequestStatus != 0
 
     data class OrderProduct(
         val productId: String = "",
