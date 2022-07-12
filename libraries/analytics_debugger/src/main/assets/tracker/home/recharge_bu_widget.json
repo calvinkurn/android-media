@@ -16,7 +16,7 @@
       "eventCategory": "homepage",
       "currentSite": "tokopediamarketplace",
       "event": "view_item",
-      "userId": ".*",
+      "userId": ".+",
       "eventAction": "impression on banner card dynamic channel bu carousel",
       "sessionIris": ".+",
       "eventLabel": ".*-.*"
