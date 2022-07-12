@@ -50,7 +50,6 @@ object BannerAdsTracking: BaseTrackerConst() {
             headerName: String,
             channelId: String,
             userId: String,
-            position: Int,
             channel: DynamicHomeChannel.Channels,
             topAdsId: String
     ): Map<String, Any> {
@@ -65,7 +64,7 @@ object BannerAdsTracking: BaseTrackerConst() {
                                 id = buildTopAdsTdnBannerId(channelId = channelId, topAdsId = topAdsId),
                                 name = channel.promoName,
                                 creative = "",
-                                position = (position+1).toString()
+                                position = BANNER_ADS_DEFAULT_POSITION.toString()
                         )
                 ))
                 .appendChannelId(channelId)
@@ -91,7 +90,6 @@ object BannerAdsTracking: BaseTrackerConst() {
                         channelModel.header.name,
                         channelModel.id,
                         userId,
-                        position,
                         channelModel,
                         topAdsId
                 )
