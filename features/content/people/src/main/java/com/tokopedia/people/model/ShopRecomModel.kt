@@ -12,7 +12,7 @@ data class FeedXRecomWidget(
     @SerializedName("isShown")
     val isShown: Boolean = false,
     @SerializedName("items")
-    val items: List<ShopRecomItem> = listOf(),
+    val items: List<ShopRecomItem> = emptyList(),
     @SerializedName("nextCursor")
     val nextCursor: String = "",
     @SerializedName("title")
