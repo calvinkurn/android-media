@@ -1,12 +1,13 @@
 package com.tokopedia.shop.campaign.view.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
@@ -25,10 +26,10 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartBundleModel
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant
@@ -37,8 +38,6 @@ import com.tokopedia.shop.campaign.util.mapper.ShopPageCampaignMapper
 import com.tokopedia.shop.campaign.view.adapter.ShopCampaignTabAdapter
 import com.tokopedia.shop.campaign.view.adapter.ShopCampaignTabAdapterTypeFactory
 import com.tokopedia.shop.common.constant.*
-import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_BUYER_FLOW_TAG
-import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.data.model.ShopPageWidgetLayoutUiModel
 import com.tokopedia.shop.common.data.model.WidgetIdList
 import com.tokopedia.shop.common.util.*
@@ -48,14 +47,12 @@ import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUi
 import com.tokopedia.shop.common.widget.model.ShopHomeWidgetLayout
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
-import com.tokopedia.shop.home.util.CheckCampaignNplException
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.bottomsheet.ShopHomeFlashSaleTncBottomSheet
 import com.tokopedia.shop.home.view.bottomsheet.ShopHomeNplCampaignTncBottomSheet
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.home.view.listener.*
 import com.tokopedia.shop.home.view.model.*
-import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
 import com.tokopedia.shop.pageheader.presentation.fragment.NewShopPageFragment
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
@@ -63,9 +60,10 @@ import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
 import com.tokopedia.shop_widget.thematicwidget.viewholder.ThematicWidgetViewHolder
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.utils.date.getDayDiffFromToday
+import java.util.*
+import kotlin.math.absoluteValue
 
 class ShopPageCampaignFragment : ShopPageHomeFragment() {
 
@@ -84,6 +82,11 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
         private const val LOAD_WIDGET_ITEM_PER_PAGE = 3
         private const val LIST_WIDGET_LAYOUT_START_INDEX = 0
         private const val MIN_BUNDLE_SIZE = 1
+        private const val SHOP_CAMPAIGN_TAB_PREFERENCE = "CAMPAIGN_TAB_PREFERENCE"
+        private const val SHARED_PREF_CONFETTI_ALREADY_SHOWN = "confetti_already_shown"
+        private const val SHARED_PREF_LAST_CONFETTI_ALREADY_SHOWN = "last_confetti_already_shown"
+        private const val ONE_DAY = 1
+        private const val CONFETTI_URL = "https://assets.tokopedia.net/asts/android/shop_page/shop_campaign_tab_confetti.json"
 
         fun createInstance(
             shopId: String,
@@ -122,7 +125,7 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
     private var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
     private val shopCampaignTabAdapter: ShopCampaignTabAdapter
         get() = adapter as ShopCampaignTabAdapter
-
+    private var sharedPreferences: SharedPreferences? = null
     private val shopCampaignTabAdapterTypeFactory by lazy {
         val userSession = UserSession(context)
         val _shopId = arguments?.getString(KEY_SHOP_ID, "") ?: ""
@@ -149,6 +152,11 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
     }
 
     private var globalErrorShopPage: GlobalError? = null
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        sharedPreferences = activity?.getSharedPreferences(SHOP_CAMPAIGN_TAB_PREFERENCE, Context.MODE_PRIVATE)
+    }
 
     override fun getRecyclerViewResourceId(): Int {
         return R.id.recycler_view
@@ -190,8 +198,54 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
     }
 
     override fun onSuccessGetShopHomeWidgetContentData(mapWidgetContentData: Map<Pair<String, String>, Visitable<*>?>) {
+        if(shopCampaignTabAdapter.isAllWidgetLoading()){
+            setCampaignTabBackgroundGradient()
+            checkShowCampaignTabConfetti()
+        }
         super.onSuccessGetShopHomeWidgetContentData(mapWidgetContentData)
-        setCampaignTabBackgroundGradient()
+    }
+
+    private fun checkShowCampaignTabConfetti() {
+        checkLastShownConfettiAlreadyExpired()
+        if(isShowConfetti()){
+            (parentFragment as? NewShopPageFragment)?.setupShopPageLottieAnimation(CONFETTI_URL)
+        }
+    }
+
+    private fun checkLastShownConfettiAlreadyExpired() {
+        val dateDiffFromLastShownConfetti = Date(
+            getLastCampaignConfettiAlreadyShown()
+        ).getDayDiffFromToday().absoluteValue
+        if (dateDiffFromLastShownConfetti >= ONE_DAY) {
+            setIsCampaignConfettiAlreadyShown(false)
+        }
+    }
+
+    private fun isShowConfetti(): Boolean {
+        val isConfettiAlreadyShown = isConfettiAlreadyShown()
+        return if (isConfettiAlreadyShown) {
+            false
+        } else {
+            setIsCampaignConfettiAlreadyShown(true)
+            setLastCampaignConfettiAlreadyShown(Date().time)
+            true
+        }
+    }
+
+    private fun isConfettiAlreadyShown(): Boolean {
+        return sharedPreferences?.getBoolean(SHARED_PREF_CONFETTI_ALREADY_SHOWN, false).orFalse()
+    }
+
+    private fun setIsCampaignConfettiAlreadyShown(isShown: Boolean) {
+        sharedPreferences?.edit()?.putBoolean(SHARED_PREF_CONFETTI_ALREADY_SHOWN, isShown)?.apply()
+    }
+
+    private fun getLastCampaignConfettiAlreadyShown(): Long {
+        return sharedPreferences?.getLong(SHARED_PREF_LAST_CONFETTI_ALREADY_SHOWN, 0L).orZero()
+    }
+
+    private fun setLastCampaignConfettiAlreadyShown(time: Long) {
+        sharedPreferences?.edit()?.putLong(SHARED_PREF_LAST_CONFETTI_ALREADY_SHOWN, time)?.apply()
     }
 
     override fun observeShopProductFilterParameterSharedViewModel() {}

@@ -23,4 +23,14 @@ class ShopCampaignTabAdapter(
         submitList(newList)
     }
 
+    fun isAllWidgetLoading(): Boolean {
+        return visitables.filterIsInstance<Visitable<*>>().all {
+            when(it) {
+                is BaseShopHomeWidgetUiModel -> it.widgetState == WidgetState.PLACEHOLDER || it.widgetState == WidgetState.LOADING
+                is ThematicWidgetUiModel -> it.widgetState == WidgetState.PLACEHOLDER || it.widgetState == WidgetState.LOADING
+                else -> false
+            }
+        }
+    }
+
 }
