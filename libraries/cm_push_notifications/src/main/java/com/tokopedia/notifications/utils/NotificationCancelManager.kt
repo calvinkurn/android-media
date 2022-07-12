@@ -8,7 +8,7 @@ import androidx.core.app.NotificationManagerCompat
 import com.tokopedia.notifications.common.CMRemoteConfigUtils
 import com.tokopedia.notifications.model.BaseNotificationModel
 import com.tokopedia.remoteconfig.RemoteConfigKey.CM_CAMPAIGN_ID_EXCLUDE_LIST
-import com.tokopedia.remoteconfig.RemoteConfigKey.NOTIFICATION_TRAY_CLEAR_V2
+import com.tokopedia.remoteconfig.RemoteConfigKey.NOTIFICATION_TRAY_CLEAR
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 import com.tokopedia.notifications.database.pushRuleEngine.PushRepository.Companion.getInstance as pushRepository
@@ -31,7 +31,7 @@ open class NotificationCancelManager: CoroutineScope {
     fun clearNotifications(context: Context) {
         val remoteConfig = CMRemoteConfigUtils(context)
 
-        if (remoteConfig.getBooleanRemoteConfig(NOTIFICATION_TRAY_CLEAR_V2, false)) {
+        if (remoteConfig.getBooleanRemoteConfig(NOTIFICATION_TRAY_CLEAR, false)) {
             cancellableItems(context, remoteConfig) { notifications ->
                 kotlin.runCatching {
                     notifications.forEach {

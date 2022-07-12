@@ -225,8 +225,7 @@ public class RemoteConfigKey {
     public static final String FREE_SHIPPING_FEATURE_DISABLED = "android_free_shipping_feature_disabled";
     public static final String ENABLE_PUSH_NOTIFICATION_CHAT_SELLER = "android_sellerapp_enable_push_notif_reply_chat";
 
-    public static final String NOTIFICATION_TRAY_CLEAR_V2 = "app_notif_tray_clear_v2";
-    public static final String NOTIFICATION_TRAY_CLEAR_V1 = "app_notif_tray_clear";
+    public static final String NOTIFICATION_TRAY_CLEAR = "app_notif_tray_clear_v2";
     public static final String CM_CAMPAIGN_ID_EXCLUDE_LIST = "android_cm_push_exclude_list_removal";
 
     public static final String CUSTOMER_APP_UPDATE = "android_customer_app_update";

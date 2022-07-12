@@ -1,6 +1,6 @@
 package com.tokopedia.notifications.inApp.applifecycle;
 
-import static com.tokopedia.remoteconfig.RemoteConfigKey.NOTIFICATION_TRAY_CLEAR_V1;
+import static com.tokopedia.notifications.common.CMRemoteConfigKey.NOTIFICATION_TRAY_CLEAR_V1;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
