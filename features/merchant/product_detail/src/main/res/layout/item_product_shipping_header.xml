@@ -183,7 +183,7 @@
     <ImageView
         android:id="@+id/img_pdp_shipping_bo"
         android:layout_width="wrap_content"
-        android:layout_height="18dp"
+        android:layout_height="16dp"
         android:layout_marginTop="12dp"
         android:contentDescription="@null"
         android:scaleType="centerInside"
