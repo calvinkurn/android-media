@@ -109,7 +109,10 @@ class EditorFragment @Inject constructor() : BaseEditorFragment()
                     editorToolType = type
                 )
 
-                editorUiModel.editList.forEach { item ->
+                editorUiModel.editList.forEachIndexed { index, item ->
+                    if(index > ((editorUiModel.editList.size - 1) - editorUiModel.backValue)) {
+                        return@forEachIndexed
+                    }
                     paramData.brightnessValue = item.brightnessValue
                     paramData.contrastValue = item.contrastValue
                     paramData.watermarkMode = item.watermarkMode
@@ -148,6 +151,12 @@ class EditorFragment @Inject constructor() : BaseEditorFragment()
     private fun observeUpdateIndex(){
         viewModel.updatedIndexItem.observe(viewLifecycleOwner){
             thumbnailDrawerComponent.refreshItem(it, viewModel.editStateList.values.toList())
+
+            val editorUiModel = viewModel.getEditState(activeImageUrl)
+            if (editorUiModel != null) {
+                viewBinding?.btnUndo?.text = renderUndoText(editorUiModel)
+                viewBinding?.btnRedo?.text = renderRedoText(editorUiModel)
+            }
         }
     }
 

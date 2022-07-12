@@ -36,6 +36,14 @@ class EditorViewModel : ViewModel() {
             newKeyObject.editList.add(newValue)
             _editStateList[urlKey] = newKeyObject
         } else {
+            // if state not last edit (user did undo and do edit again) then we will remove last state until current redo state)
+            if(editorDetailUiModel.backValue != 0){
+                for (i in 0 until editorDetailUiModel.backValue){
+                    editorDetailUiModel.editList.removeLast()
+                }
+                editorDetailUiModel.backValue = 0
+            }
+
             if(newValue.removeBackgroundUrl != null){
                 editorDetailUiModel.removedBackgroundUrl = newValue.removeBackgroundUrl
             }
