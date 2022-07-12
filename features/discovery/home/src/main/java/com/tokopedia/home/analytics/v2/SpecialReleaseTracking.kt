@@ -29,7 +29,7 @@ object SpecialReleaseTracking : BaseTrackerConst() {
     private const val SPECIAL_RELEASE = "Rilisan Spesial"
     private const val FLASH_SALE = "Flash Sale Toko"
 
-    private const val PROMO_NAME_SPECIAL_RELEASE_FORMAT = "/ - p%s - dynamic channel carousel - %s"
+    private const val PROMO_NAME_SPECIAL_RELEASE_FORMAT = "/ - p%s - dynamic channel feature campaign - banner - %s"
     private const val PROMO_NAME_HEADER_DEFAULT = "default"
 
     fun sendSpecialReleaseItemClick(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, userId: String) {
