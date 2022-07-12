@@ -3,15 +3,14 @@ package com.tokopedia.loginregister.login.view.activity
 import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.setLightStatusBar
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
-import com.tokopedia.loginregister.common.di.DaggerLoginRegisterComponent
-import com.tokopedia.loginregister.common.di.LoginRegisterComponent
+import com.tokopedia.loginregister.login.di.ActivityComponentFactory
+import com.tokopedia.loginregister.login.di.LoginComponent
 import com.tokopedia.loginregister.login.view.fragment.SellerSeamlessLoginFragment
 
 /**
@@ -19,7 +18,7 @@ import com.tokopedia.loginregister.login.view.fragment.SellerSeamlessLoginFragme
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 
-class SellerSeamlessLoginActivity : BaseSimpleActivity(), HasComponent<LoginRegisterComponent> {
+class SellerSeamlessLoginActivity : BaseSimpleActivity(), HasComponent<LoginComponent> {
 
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()
@@ -51,7 +50,7 @@ class SellerSeamlessLoginActivity : BaseSimpleActivity(), HasComponent<LoginRegi
         }
     }
 
-    override fun getComponent(): LoginRegisterComponent {
-        return DaggerLoginRegisterComponent.builder().baseAppComponent((application as BaseMainApplication).baseAppComponent).build()
+    override fun getComponent(): LoginComponent {
+        return ActivityComponentFactory.instance.createLoginComponent(application)
     }
 }

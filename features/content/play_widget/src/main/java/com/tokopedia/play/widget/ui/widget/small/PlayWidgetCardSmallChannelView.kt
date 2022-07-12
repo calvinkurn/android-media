@@ -130,12 +130,7 @@ class PlayWidgetCardSmallChannelView : FrameLayout, PlayVideoPlayerReceiver {
 
         setOnClickListener {
             mListener?.onChannelClicked(this, data)
-            mListener?.onLabelPromoClicked(this, data)
         }
-
-        tvContextualInfo.isVisibleOnTheScreen(onViewVisible = {
-            mListener?.onLabelPromoImpressed(this, data)
-        }, onViewNotVisible = {})
     }
 
 
@@ -184,9 +179,5 @@ class PlayWidgetCardSmallChannelView : FrameLayout, PlayVideoPlayerReceiver {
             view: PlayWidgetCardSmallChannelView,
             model: PlayWidgetChannelUiModel
         )
-
-        fun onLabelPromoClicked(view: View, item: PlayWidgetChannelUiModel)
-
-        fun onLabelPromoImpressed(view: View, item: PlayWidgetChannelUiModel)
     }
 }

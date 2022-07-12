@@ -21,6 +21,9 @@ data class PlayWidgetUiModel(
 
     override val impressHolder: ImpressHolder = ImpressHolder()
 
+    val hasAction: Boolean
+        get() = isActionVisible && actionAppLink.isNotEmpty()
+
     companion object {
         val Empty: PlayWidgetUiModel
             get() = PlayWidgetUiModel(

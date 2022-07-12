@@ -21,7 +21,7 @@ import javax.inject.Inject
  * @author by furqan on 10/06/2021
  */
 abstract class BaseFlightActivity : BaseSimpleActivity(),
-        TravelMenuBottomSheet.TravelMenuListener {
+    TravelMenuBottomSheet.TravelMenuListener {
 
     @Inject
     lateinit var flightAnalytics: FlightAnalytics

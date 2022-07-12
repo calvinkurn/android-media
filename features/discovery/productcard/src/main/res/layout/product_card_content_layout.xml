@@ -76,7 +76,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/imageViewPdpView"
         app:layout_goneMarginTop="@dimen/product_card_text_view_product_name_gone_margin_top"
-        app:typographyType="body_3"
+        app:typographyType="paragraph_3"
         tools:text="Product Name"
         tools:visibility="visible" />
 

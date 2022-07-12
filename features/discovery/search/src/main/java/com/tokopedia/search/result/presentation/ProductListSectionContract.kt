@@ -130,7 +130,6 @@ interface ProductListSectionContract {
         val dynamicFilterModel: DynamicFilterModel?
         fun onPriceFilterTickerDismissed()
         val isTickerHasDismissed: Boolean
-        fun hasNextPage(): Boolean
         fun clearData()
         val startFrom: Int
         fun onViewCreated()
@@ -148,6 +147,7 @@ interface ProductListSectionContract {
         fun onBroadMatchItemClick(broadMatchItemDataView: BroadMatchItemDataView)
         fun onBroadMatchImpressed(broadMatchDataView: BroadMatchDataView)
         fun onBroadMatchSeeMoreClick(broadMatchDataView: BroadMatchDataView)
+        fun onBroadMatchViewAllCardClicked(broadMatchDataView: BroadMatchDataView)
         fun onInspirationCarouselProductImpressed(product: InspirationCarouselDataView.Option.Product)
         fun onInspirationCarouselProductClick(product: InspirationCarouselDataView.Option.Product)
         fun onThreeDotsClick(item: ProductItemDataView, adapterPosition: Int)

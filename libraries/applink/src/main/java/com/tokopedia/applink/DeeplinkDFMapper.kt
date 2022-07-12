@@ -211,6 +211,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.VOUCHER_DETA
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.VOUCHER_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.VOUCHER_PRODUCT_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.WELCOME
+import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_CUSTOMER
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
@@ -272,6 +273,7 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_MERCHANT_LOGIN = "df_merchant_login"
     const val DF_CONTENT_PROFILE = "df_content_profile"
     const val DF_TOKOPEDIA_NOW = "df_tokopedianow"
+    const val DF_TOKOFOOD = "df_tokofood"
     const val DF_CONTENT_PLAY_BROADCASTER = "df_content_play_broadcaster"
     const val DF_IMAGE_PICKER_INSTA = "df_imagepicker_insta"
     const val DF_CREATE_POST = "df_createpost"
@@ -465,7 +467,7 @@ object DeeplinkDFMapper : CoroutineScope {
             }, DF_MERCHANT_NONLOGIN, R.string.title_create_review))
 
             add(DFP({
-                it.startsWithPattern(ApplinkConstInternalMarketplace.SHOP_REVIEW) ||
+                it.startsWithPattern(ApplinkConstInternalMarketplace.SHOP_REVIEW_FULL_PAGE) ||
                         it.startsWithPattern(ApplinkConstInternalMarketplace.PRODUCT_REVIEW)
             }, DF_MERCHANT_NONLOGIN, R.string.title_product_review))
 
@@ -677,6 +679,11 @@ object DeeplinkDFMapper : CoroutineScope {
                     it.startsWith(ApplinkConstInternalTokopediaNow.SEARCH) ||
                     it.startsWith(ApplinkConstInternalTokopediaNow.REPURCHASE)
             }, DF_TOKOPEDIA_NOW, R.string.title_tokopedia_now))
+
+            // Tokofood
+            add(DFP({
+                it.startsWith(ApplinkConstInternalTokoFood.INTERNAL_TOKO_FOOD)
+            }, DF_TOKOFOOD, R.string.title_tokofood))
 
             // Review Reminder
             add(DFP({ it.startsWith(REVIEW_REMINDER_PREVIOUS) }, DF_MERCHANT_NONLOGIN, R.string.title_review_reminder))

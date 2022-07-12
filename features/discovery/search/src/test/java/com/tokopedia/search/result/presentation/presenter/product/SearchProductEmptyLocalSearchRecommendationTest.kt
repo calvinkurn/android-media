@@ -46,7 +46,6 @@ internal class SearchProductEmptyLocalSearchRecommendationTest : ProductListPres
 
         `Then verify request params for local search recommendation`(listOf(0))
         `Then verify view interaction for success get local search recommendation`(localSearchRecommendationModel)
-        `Then verify has next page`(true)
     }
 
     private fun `Given get local search recommendation will return SearchProductModel`(
@@ -127,10 +126,6 @@ internal class SearchProductEmptyLocalSearchRecommendationTest : ProductListPres
         searchProductTitleViewModel.isRecommendationTitle shouldBe true
     }
 
-    private fun `Then verify has next page`(expectedHasNextPage: Boolean) {
-        productListPresenter.hasNextPage() shouldBe expectedHasNextPage
-    }
-
     @Test
     fun `Get empty local search recommendation failed during local search - page 1`() {
         val searchProductModel = searchProductLocalSearchEmptyJSON.jsonToObject<SearchProductModel>()
@@ -179,7 +174,6 @@ internal class SearchProductEmptyLocalSearchRecommendationTest : ProductListPres
 
         `Then verify request params for local search recommendation`(listOf(0, 8))
         `Then verify visitable list for set empty recommendation page 2`(localSearchRecommendationModel)
-        `Then verify has next page`(false)
     }
 
     private fun `Given mechanism to set product position`() {

@@ -21,6 +21,7 @@ import com.tokopedia.topads.common.domain.interactor.TopAdsProductActionUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsCreateUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetGroupListUseCase
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.data.model.DataStatistic
@@ -236,6 +237,20 @@ class GroupDetailViewModel @Inject constructor(
         })
     }
 
+    fun setProductActionMoveGroup(
+        groupId: String, productIds: List<String>, onSuccess: (() -> Unit),
+    ) {
+        launchCatchError(block = {
+            val param = topAdsCreateUseCase.createRequestParamMoveGroup(
+                groupId, TopAdsDashboardConstant.SOURCE_DASH, productIds, ParamObject.ACTION_ADD
+            )
+            topAdsCreateUseCase.execute(param)
+            onSuccess()
+        }, onError = {
+            it.printStackTrace()
+        })
+    }
+
     fun setProductAction(
         onSuccess: () -> Unit, action: String, adIds: List<String>, selectedFilter: String?
     ) {
@@ -254,6 +269,27 @@ class GroupDetailViewModel @Inject constructor(
             val requestParams = topAdsGroupActionUseCase.setParams(action, groupIds)
 
             topAdsGroupActionUseCase.execute(query, requestParams)
+        }, onError = {
+            it.printStackTrace()
+        })
+    }
+
+    fun setKeywordActionForGroup(
+        groupId: String,action: String, keywordIds: List<String>,
+        resources: Resources, onSuccess: (() -> Unit)
+    ) {
+
+        if(action != TopAdsDashboardConstant.ACTION_DELETE) {
+            setKeywordAction(action, keywordIds, resources, onSuccess)
+            return
+        }
+
+        launchCatchError(block = {
+            val param = topAdsCreateUseCase.createRequestParamActionDelete(
+                TopAdsDashboardConstant.SOURCE_DASH, groupId, keywordIds
+            )
+            topAdsCreateUseCase.execute(param)
+            onSuccess()
         }, onError = {
             it.printStackTrace()
         })

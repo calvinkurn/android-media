@@ -46,6 +46,6 @@
         app:layout_constraintEnd_toStartOf="@id/imageSliderPageControl"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
-        app:typographyType="heading_5" />
+        app:typographyType="display_2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
