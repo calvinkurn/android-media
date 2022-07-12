@@ -45,7 +45,7 @@ open class UserShopRecomBaseAdapter(
 
     fun onSuccess(data: UserShopRecomModel) {
         if (data.feedXRecomWidget.items.isEmpty()) {
-            loadCompleted(listOf(), data)
+            loadCompleted(emptyList(), data)
             isLastPage = true
             cursor = ""
         } else {
