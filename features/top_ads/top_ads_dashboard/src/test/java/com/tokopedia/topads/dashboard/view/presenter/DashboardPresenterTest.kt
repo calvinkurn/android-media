@@ -442,13 +442,13 @@ class DashboardPresenterTest {
     }
 
     @Test
-    fun `get expiray date success`() {
+    fun `get expiry date success`() {
         val expected = "iot"
 
         every {
-            getExpiryDateUseCase.execute(captureLambda(), any())
+            getExpiryDateUseCase.execute(captureLambda())
         } answers {
-            firstArg<(ExpiryDateResponse) -> Unit>().invoke(ExpiryDateResponse(ExpiryDateResponse.TopAdsGetFreeDeposit(
+            firstArg<(ExpiryDateResponse.TopAdsGetFreeDeposit) -> Unit>().invoke(ExpiryDateResponse(ExpiryDateResponse.TopAdsGetFreeDeposit(
                 expected)))
         }
 
