@@ -33,9 +33,9 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
 
-
+        if (chipsData[position].gatewayId != GATEWAY_ID_SEE_MORE) {
             chipsData[position].gatewayId?.let {
-                setSeeMoreLogic(it, holder)
+                holder.dummyView.visibility = View.VISIBLE
             }
             chipsData[position].header?.let {
                 setHeaderData(it, holder)
@@ -52,15 +52,8 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
             }
             setIcon(position, holder.partnerIcon)
         }
-
-
-    private fun setSeeMoreLogic(it: Int, holder: FintechWidgetAdapter.MyViewHolder) {
-        if (it == 0) {
-           holder.cardContainer.visibility = View.GONE
-        } else {
-            holder.dummyView.visibility = View.VISIBLE
-            holder.seeMoreIcon.visibility = View.GONE
-        }
+        else
+            holder.cardContainer.visibility = View.GONE
     }
 
     private fun setHeaderData(it: String,
@@ -155,7 +148,6 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
         val partnerIcon = itemView.findViewById<ImageUnify>(R.id.partnerIcon)
         val headerPartner = itemView.findViewById<Typography>(R.id.chipHeader)
         val subheaderPartner = itemView.findViewById<Typography>(R.id.chipSubHeader)
-        val seeMoreIcon = itemView.findViewById<ImageUnify>(R.id.seeMore_Icon)
         val dummyView = itemView.findViewById<View>(R.id.dummyViewForMargin)
         val cardContainer = itemView.findViewById<View>(R.id.card_container)
 
