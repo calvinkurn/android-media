@@ -58,7 +58,7 @@ class ReviewCredibilityViewModel @Inject constructor(
     ).stateIn(
         scope = this,
         started = SharingStarted.WhileSubscribed(STATE_FLOW_STOP_TIMEOUT_MILLIS),
-        initialValue = ReviewCredibilityHeaderUiState.Loading
+        initialValue = ReviewCredibilityHeaderUiState.Hidden
     )
     val reviewCredibilityAchievementBoxUiState = combine(
         shouldLoadReviewCredibilityData,
@@ -76,7 +76,7 @@ class ReviewCredibilityViewModel @Inject constructor(
     ).stateIn(
         scope = this,
         started = SharingStarted.WhileSubscribed(STATE_FLOW_STOP_TIMEOUT_MILLIS),
-        initialValue = ReviewCredibilityStatisticBoxUiState.Loading
+        initialValue = ReviewCredibilityStatisticBoxUiState.Hidden
     )
     val reviewCredibilityFooterUiState = combine(
         shouldLoadReviewCredibilityData,
@@ -85,7 +85,7 @@ class ReviewCredibilityViewModel @Inject constructor(
     ).stateIn(
         scope = this,
         started = SharingStarted.WhileSubscribed(STATE_FLOW_STOP_TIMEOUT_MILLIS),
-        initialValue = ReviewCredibilityFooterUiState.Loading
+        initialValue = ReviewCredibilityFooterUiState.Hidden
     )
     val reviewCredibilityGlobalErrorUiState = combine(
         shouldLoadReviewCredibilityData,
