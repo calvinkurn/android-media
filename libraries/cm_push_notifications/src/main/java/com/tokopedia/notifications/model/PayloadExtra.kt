@@ -18,4 +18,5 @@ data class PayloadExtra(
 
     @SerializedName(PayloadExtraDataKey.SESSION_ID)
     val sessionId : String? = null,
+
 ) : Parcelable
