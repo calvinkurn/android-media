@@ -50,6 +50,10 @@ class EditorFragment @Inject constructor() : BaseEditorFragment()
         viewBinding?.btnUndo?.setOnClickListener {
             backState()
         }
+
+        viewBinding?.btnRedo?.setOnClickListener {
+            forwardState()
+        }
     }
 
     private fun backState(){
@@ -59,10 +63,36 @@ class EditorFragment @Inject constructor() : BaseEditorFragment()
             if(it.backValue >= imageEditStateCount) return@let
 
             it.backValue++
-            viewBinding?.imgMainPreview?.loadImage(it.getImageUrl())
+            viewBinding?.imgMainPreview?.loadImage(it.getImageUrl()){
+                this.centerCrop()
+            }
 
             viewBinding?.btnUndo?.text = renderUndoText(it)
+            viewBinding?.btnRedo?.text = renderRedoText(it)
         }
+    }
+
+    private fun forwardState() {
+        val targetEditorUiModel = viewModel.getEditState(activeImageUrl)
+        targetEditorUiModel?.let {
+            if(it.backValue == 0) return@let
+
+            it.backValue--
+            viewBinding?.imgMainPreview?.loadImage(it.getImageUrl()){
+                this.centerCrop()
+            }
+
+            viewBinding?.btnUndo?.text = renderUndoText(it)
+            viewBinding?.btnRedo?.text = renderRedoText(it)
+        }
+    }
+
+    private fun renderUndoText(editList: EditorUiModel): String{
+        return if(editList.editList.isNotEmpty()) "Undo (${editList.editList.size - editList.backValue})" else "-"
+    }
+
+    private fun renderRedoText(editList: EditorUiModel): String{
+        return if(editList.backValue != 0) "Redo (${editList.backValue})" else "-"
     }
 
     override fun initObserver() {
@@ -108,10 +138,6 @@ class EditorFragment @Inject constructor() : BaseEditorFragment()
         }
     }
 
-    private fun renderUndoText(editList: EditorUiModel): String{
-        return if(editList.editList.isNotEmpty()) "Undo (${editList.editList.size - editList.backValue})" else "-"
-    }
-
     private fun observeEditorParam() {
         viewModel.editorParam.observe(viewLifecycleOwner) {
             editorToolComponent.setupView(it.editorTools)
@@ -124,16 +150,6 @@ class EditorFragment @Inject constructor() : BaseEditorFragment()
             thumbnailDrawerComponent.refreshItem(it, viewModel.editStateList.values.toList())
         }
     }
-
-//    private fun editStateMapToList(): List<String> {
-//        return viewModel.editStateList.values.map { editorUiModel ->
-//            if (editorUiModel.editList.isEmpty())
-//                editorUiModel.originalUrl
-//            else
-//                editorUiModel.editList.last().resultUrl ?: editorUiModel.originalUrl
-//        }
-//
-//    }
 
     override fun getScreenName() = SCREEN_NAME
 
