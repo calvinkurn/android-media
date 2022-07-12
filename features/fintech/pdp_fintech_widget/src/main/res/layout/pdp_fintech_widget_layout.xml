@@ -50,12 +50,13 @@
         android:id="@+id/recycler_items"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
         android:layout_marginTop="@dimen/pdp_fintech_widget_16_dp"
         android:layout_marginBottom="@dimen/pdp_fintech_widget_12_dp"
+        android:clipToPadding="false"
+        android:paddingLeft="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/quickText" />
+        app:layout_constraintTop_toBottomOf="@id/quickText"
+         />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
