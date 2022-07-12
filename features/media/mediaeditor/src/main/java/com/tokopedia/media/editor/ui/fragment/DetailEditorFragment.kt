@@ -4,11 +4,13 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.net.toFile
 import androidx.core.net.toUri
+import androidx.core.view.drawToBitmap
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
@@ -114,16 +116,37 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
+//    private var contrastSliderWaiting = false
     private fun observerContrast() {
         viewModel.contrastFilter.observe(viewLifecycleOwner) {
-            viewBinding?.imgPreview?.apply {
-                originalBitmap?.let { itBitmap ->
-                    val cloneOriginal = itBitmap.copy(itBitmap.config, true)
-                    setImageBitmap(contrastFilterRepositoryImpl.contrast(it, cloneOriginal))
-                }
+            originalBitmap?.let { itBitmap ->
+                val cloneOriginal = itBitmap.copy(itBitmap.config, true)
+                viewBinding?.imgPreview?.setImageBitmap(contrastFilterRepositoryImpl.contrast(it, cloneOriginal))
             }
+
+//            if(!contrastSliderWaiting){
+//                recurWaitingSliderTask(it, DEFAULT_VALUE_CONTRAST)
+//                contrastSliderWaiting = true
+//            }
         }
     }
+
+//    private fun recurWaitingSliderTask(currentValue: Float, previousValue: Float){
+//        Handler().postDelayed({
+//            if(currentValue == previousValue) implementContrast(currentValue)
+//            else recurWaitingSliderTask(viewModel.contrastFilter.value ?: currentValue, currentValue)
+//        },500)
+//    }
+//
+//    private fun implementContrast(value: Float){
+//        viewBinding?.imgPreview?.apply {
+//            originalBitmap?.let { itBitmap ->
+//                val cloneOriginal = itBitmap.copy(itBitmap.config, true)
+//                setImageBitmap(contrastFilterRepositoryImpl.contrast(value, cloneOriginal))
+//            }
+//        }
+//        contrastSliderWaiting = false
+//    }
 
     private fun observeRemoveBackground() {
         viewModel.removeBackground.observe(viewLifecycleOwner) {
@@ -177,18 +200,11 @@ class DetailEditorFragment @Inject constructor(
                     onReady = { imageView, resource ->
                         originalBitmap = resource
 
-                        if (data.contrastValue != null) {
-                            val cloneOriginal = resource.copy(resource.config, true)
-                            imageView.setImageBitmap(
-                                contrastFilterRepositoryImpl.contrast(
-                                    data.contrastValue ?: DEFAULT_VALUE_CONTRAST,
-                                    cloneOriginal
-                                )
-                            )
-                        } else {
-                            imageView.setImageBitmap(resource)
+                        imageView.setImageBitmap(resource)
+                        imageView.post {
+                            if(data.brightnessValue != null) viewModel.setBrightness(data.brightnessValue!!)
+                            if(data.contrastValue != null) viewModel.setContrast(data.contrastValue!!)
                         }
-
                     }
                 )
             )
@@ -216,7 +232,7 @@ class DetailEditorFragment @Inject constructor(
     private fun saveImage(){
         viewBinding?.let {
             try {
-                val bitmap = (it.imgPreview.drawable as BitmapDrawable).bitmap
+                val bitmap = it.imgPreview.drawToBitmap()
 
                 val file = getDestinationUri(requireContext()).toFile()
                 file.createNewFile()

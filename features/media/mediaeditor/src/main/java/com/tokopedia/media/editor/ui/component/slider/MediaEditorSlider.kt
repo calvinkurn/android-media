@@ -2,6 +2,7 @@ package com.tokopedia.media.editor.ui.component.slider
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Handler
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -31,6 +32,11 @@ class MediaEditorSlider(context: Context, attributeSet: AttributeSet) :
     private var thumbWidth = 0f
 
     var listener: Listener? = null
+
+    var isValueUpdateDelay = false
+    var delayTime = 500L
+
+    private var delayFlag = false
 
     private var sliderStepNumber = DEFAULT_SLIDER_STEP
         set(value) {
@@ -148,11 +154,31 @@ class MediaEditorSlider(context: Context, attributeSet: AttributeSet) :
             val value = stepToValue(stepIndex).toInt().toString()
             if (sliderText.text != value) {
                 sliderText.text = value
-                listener?.valueUpdated(stepIndex, value.toFloat())
+
+                if(!isValueUpdateDelay && !delayFlag) {
+                    listener?.valueUpdated(stepIndex, value.toFloat())
+                } else if(!delayFlag) {
+                    checkIsThumbStop(value.toFloat(), stepIndex, 0f, 0)
+                    delayFlag = true
+                }
             }
 
             true
         }
+    }
+
+    private fun checkIsThumbStop(currentValue: Float, currentStepIndex: Int, previousValue: Float, previousStepIndex: Int){
+        Handler().postDelayed({
+            if (currentValue == previousValue) {
+                listener?.valueUpdated(currentStepIndex, currentValue)
+                delayFlag = false
+            }
+            else {
+                val stepIndex = xToStep(sliderThumb.x)
+                val value = stepToValue(stepIndex).toInt().toString()
+                checkIsThumbStop(value.toFloat(), stepIndex, currentValue, currentStepIndex)
+            }
+        }, delayTime)
     }
 
     private fun stepToValue(stepIndex: Int): Float {

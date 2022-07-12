@@ -23,6 +23,8 @@ class ContrastToolsUiComponent constructor(
             sliderInitValue.toInt()
         )
         contrastSlider.listener = this
+        contrastSlider.isValueUpdateDelay = true
+        contrastSlider.delayTime = 250L
     }
 
     override fun valueUpdated(step: Int, value: Float) {
