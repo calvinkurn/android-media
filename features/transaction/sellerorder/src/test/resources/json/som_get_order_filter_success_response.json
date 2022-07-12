@@ -1,7 +1,7 @@
 {
   "data": {
     "orderFilterSom": {
-      "order_type": [
+      "order_types": [
         {
           "id": 2,
           "key": "same_day",
