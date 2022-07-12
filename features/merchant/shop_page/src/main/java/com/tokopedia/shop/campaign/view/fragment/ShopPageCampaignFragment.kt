@@ -164,6 +164,9 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
         recyclerViewTopPadding = getRecyclerView(view)?.paddingTop ?: 0
         globalErrorShopPage?.hide()
         shopCampaignTabAdapter.isOwner = isOwner
+        shopPageHomeLayoutUiModel?.let {
+            setShopHomeWidgetLayoutData(it)
+        }
         setWidgetLayoutPlaceholder()
     }
 
@@ -189,6 +192,12 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
 
     }
 
+    // TODO: 12/07/22 Just temporary, delete this immediately after implement other widget
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setCampaignTabBackgroundGradient()
+    }
+
     override fun onSuccessGetShopHomeWidgetContentData(mapWidgetContentData: Map<Pair<String, String>, Visitable<*>?>) {
         super.onSuccessGetShopHomeWidgetContentData(mapWidgetContentData)
         setCampaignTabBackgroundGradient()
@@ -197,6 +206,20 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
     override fun observeShopProductFilterParameterSharedViewModel() {}
 
     override fun observeShopChangeProductGridSharedViewModel() {}
+
+    // mvc widget listener region
+    override fun onVoucherImpression(model: ShopHomeVoucherUiModel, position: Int) {
+        // TODO: 12/07/22 Implement mvc voucher tracker
+    }
+
+    override fun onVoucherReloaded() {
+        getMvcWidgetData()
+    }
+
+    override fun onVoucherTokoMemberInformationImpression(model: ShopHomeVoucherUiModel, position: Int) {
+        // TODO: 12/07/22 Implement mvc voucher tracker
+    }
+    // mvc widget listener end region
 
     private fun setCampaignTabBackgroundGradient() {
         if (listBackgroundColor.isNotEmpty()) {
@@ -350,13 +373,6 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
 
     override fun setShopHomeWidgetLayoutData(data: ShopPageHomeWidgetLayoutUiModel) {
         listWidgetLayout = data.listWidgetLayout.toMutableList()
-        val shopHomeWidgetContentData = ShopPageHomeMapper.mapShopHomeWidgetLayoutToListShopHomeWidget(
-            data.listWidgetLayout,
-            isOwner,
-            isLogin,
-            isThematicWidgetShown
-        )
-        shopCampaignTabAdapter.setHomeLayoutData(shopHomeWidgetContentData)
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, AdapterTypeFactory> {
@@ -445,7 +461,16 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
                 firstVisibleItemPosition
             val listWidgetLayoutToLoad = getListWidgetLayoutToLoad(position)
             shopCampaignTabAdapter.updateShopHomeWidgetStateToLoading(listWidgetLayoutToLoad)
+
+            val widgetMvcLayout = listWidgetLayoutToLoad.firstOrNull { isWidgetMvc(it) }?.apply {
+                listWidgetLayoutToLoad.remove(this)
+            }
             getWidgetContentData(listWidgetLayoutToLoad)
+
+            // get mvc widget content data
+            widgetMvcLayout?.let {
+                getMvcWidgetData()
+            }
             listWidgetLayoutToLoad.clear()
         }
     }
@@ -1143,12 +1168,6 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
             String::class.java,
             ""
         ).orEmpty()
-    }
-
-    fun setListWidgetLayoutData(listWidgetId: List<WidgetIdList>) {
-        this.listWidgetLayout = ShopPageCampaignMapper.mapToListWidgetLayoutData(
-            listWidgetId
-        ).toMutableList()
     }
 
     override fun scrollToTop() {

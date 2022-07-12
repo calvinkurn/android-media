@@ -105,6 +105,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SHARE_BOTT
 import com.tokopedia.shop.campaign.view.fragment.ShopPageCampaignFragment
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HEADER_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
+import com.tokopedia.shop.common.data.model.HomeLayoutData
 import com.tokopedia.shop.common.data.model.ShopPageGetDynamicTabResponse
 import com.tokopedia.shop.common.util.ShopAsyncErrorException
 import com.tokopedia.shop.common.util.ShopLogger
@@ -1861,7 +1862,9 @@ class NewShopPageFragment :
             shopAttribution ?: "",
             shopRef
         ).apply {
-            setListWidgetLayoutData(tabData.data.widgetIdList)
+            setListWidgetLayoutData(HomeLayoutData(
+                widgetIdList = tabData.data.widgetIdList
+            ))
             setPageBackgroundColor(tabData.listBackgroundColor)
             setPageTextColor(tabData.textColor)
         }

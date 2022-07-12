@@ -1,6 +1,11 @@
 package com.tokopedia.shop.campaign.view.adapter
 
+import android.view.View
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
+import com.tokopedia.shop.campaign.WidgetName.VOUCHER_STATIC
+import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignVoucherViewHolder
 import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
 import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleListener
 import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleListener
@@ -8,6 +13,7 @@ import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductListSellerEmptyListener
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVoucherViewHolder
 import com.tokopedia.shop.home.view.listener.*
+import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
 import com.tokopedia.shop_widget.thematicwidget.viewholder.ThematicWidgetViewHolder
 
@@ -48,5 +54,20 @@ class ShopCampaignTabAdapterTypeFactory(
     thematicWidgetListener,
     shopHomeProductListSellerEmptyListener
 ) {
+
+    override fun type(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
+        return when (baseShopHomeWidgetUiModel.name) {
+            VOUCHER_STATIC -> ShopCampaignVoucherViewHolder.LAYOUT
+            else -> HideViewHolder.LAYOUT
+        }
+    }
+
+    override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
+        val viewHolder = when (type) {
+            ShopCampaignVoucherViewHolder.LAYOUT -> ShopCampaignVoucherViewHolder(parent, onMerchantVoucherListWidgetListener)
+            else -> return super.createViewHolder(parent, type)
+        }
+        return viewHolder
+    }
 
 }
