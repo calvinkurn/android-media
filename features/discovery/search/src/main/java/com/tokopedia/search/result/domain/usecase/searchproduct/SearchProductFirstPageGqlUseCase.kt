@@ -405,6 +405,7 @@ class SearchProductFirstPageGqlUseCase(
                     value
                   }
                   tracking_option
+                  component_id
                 }
               }
             }"""

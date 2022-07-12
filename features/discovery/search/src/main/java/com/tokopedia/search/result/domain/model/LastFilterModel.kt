@@ -5,7 +5,6 @@ import com.tokopedia.discovery.common.constants.SearchConstant.SaveLastFilter.CA
 import com.tokopedia.filter.common.data.SavedOption
 import com.tokopedia.filter.common.helper.getSortFilterParamsString
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
-import com.tokopedia.search.utils.UrlParamUtils
 
 class LastFilterModel(
     @SerializedName("fetchLastFilter")
@@ -35,12 +34,10 @@ class LastFilterModel(
 
         @SerializedName("tracking_option")
         val trackingOption: Int = 0,
+
+        @SerializedName("component_id")
+        val componentId: String ="",
     ) {
-        val componentId by lazy {
-            val paramString = UrlParamUtils.getQueryParams(applink)
-            val paramsMap = UrlParamUtils.getParamMap(paramString)
-            paramsMap["srp_component_id"] ?: ""
-        }
 
         fun sortFilterParamsString(): String {
             val optionList = filters.map(SavedOption::asOption)
