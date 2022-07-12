@@ -2,41 +2,43 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/upload_prescription_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/spacing_lvl4"
-    android:orientation="horizontal"
-    android:layout_alignParentLeft="true"
-    android:layout_alignParentRight="true"
-    android:layout_centerVertical="true"
-    tools:visibility="visible"
-    android:visibility="gone"
-    android:background="@drawable/bg_gifting_addon_rounded_grey" >
+    android:background="@color/Unify_Background">
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/upload_icon"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_margin="@dimen/spacing_lvl4"
-        android:layout_weight="0" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/upload_prescription_text"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/upload_prescription_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/spacing_lvl4"
-        android:layout_weight="1"
-        app:typographyType="display_3"
-        android:textColor="@color/Unify_NN950" />
+        android:background="@drawable/bg_gifting_addon_rounded_grey"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        tools:visibility="visible">
 
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/iv_upload_right"
-        android:layout_width="@dimen/spacing_lvl4"
-        android:layout_height="@dimen/spacing_lvl4"
-        android:layout_weight="0"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/unify_space_12"
-        app:icon_name="CHEVRON_RIGHT"
-         />
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/upload_icon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_margin="@dimen/spacing_lvl4"
+            android:layout_weight="0" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/upload_prescription_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/spacing_lvl4"
+            android:layout_weight="1"
+            android:textColor="@color/Unify_NN950"
+            app:typographyType="display_3" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/iv_upload_right"
+            android:layout_width="@dimen/spacing_lvl4"
+            android:layout_height="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginEnd="@dimen/unify_space_12"
+            android:layout_weight="0"
+            app:icon_name="CHEVRON_RIGHT" />
+    </LinearLayout>
 </LinearLayout>
