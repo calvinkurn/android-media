@@ -345,11 +345,9 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
     }
 
     private fun showClarificationDataUsage() {
-        if (clarificationDataUsageBottomSheet == null) {
-            clarificationDataUsageBottomSheet = ClarificationDataUsageBottomSheet()
-        }
+        clarificationDataUsageBottomSheet = ClarificationDataUsageBottomSheet()
         clarificationDataUsageBottomSheet?.show(
-            childFragmentManager,
+            parentFragmentManager,
             TAG_BOTTOM_SHEET_CLARIFICATION
         )
     }
@@ -364,7 +362,7 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
         }
 
         verificationEnabledDataUsageBottomSheet?.show(
-            childFragmentManager,
+            parentFragmentManager,
             TAG_BOTTOM_SHEET_VERIFICATION
         )
     }

@@ -17,10 +17,11 @@ import com.tokopedia.home_account.databinding.LayoutBottomSheetPrivacyAccountEna
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class VerificationEnabledDataUsageBottomSheet : BottomSheetUnify() {
 
-    private var _binding: LayoutBottomSheetPrivacyAccountEnabledDataUsageBinding? = null
+    private var _binding: LayoutBottomSheetPrivacyAccountEnabledDataUsageBinding? by autoClearedNullable()
     private val binding get() = _binding
 
     private var btnVerificationClickedListener: (() -> Unit)? = null

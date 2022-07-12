@@ -9,10 +9,11 @@ import com.tokopedia.home_account.databinding.LayoutBottomSheetPrivacyAccountCla
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class ClarificationDataUsageBottomSheet : BottomSheetUnify() {
 
-    private var _binding: LayoutBottomSheetPrivacyAccountClarificationDataUsageBinding? = null
+    private var _binding: LayoutBottomSheetPrivacyAccountClarificationDataUsageBinding? by autoClearedNullable()
     private val binding get() = _binding
 
     override fun onCreateView(
