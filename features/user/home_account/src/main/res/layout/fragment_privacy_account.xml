@@ -26,7 +26,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/txt_header_privacy_account"
+        android:id="@+id/txt_header_consent_social_network"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/opt_header"
@@ -40,7 +40,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/txt_desc_privacy_account"
+        android:id="@+id/txt_desc_consent_social_network"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/opt_desc"
@@ -48,9 +48,9 @@
         android:layout_marginTop="@dimen/unify_space_4"
         app:layout_constrainedWidth="true"
         android:textColor="@color/Unify_NN600"
-        app:layout_constraintEnd_toEndOf="@id/txt_header_privacy_account"
-        app:layout_constraintStart_toStartOf="@id/txt_header_privacy_account"
-        app:layout_constraintTop_toBottomOf="@id/txt_header_privacy_account" />
+        app:layout_constraintEnd_toEndOf="@id/txt_header_consent_social_network"
+        app:layout_constraintStart_toStartOf="@id/txt_header_consent_social_network"
+        app:layout_constraintTop_toBottomOf="@id/txt_header_consent_social_network" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/dividerUnify"
@@ -59,7 +59,7 @@
         android:layout_marginTop="@dimen/unify_space_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txt_desc_privacy_account" />
+        app:layout_constraintTop_toBottomOf="@id/txt_desc_consent_social_network" />
 
     <include
         android:id="@+id/inc_loader_link_account"
