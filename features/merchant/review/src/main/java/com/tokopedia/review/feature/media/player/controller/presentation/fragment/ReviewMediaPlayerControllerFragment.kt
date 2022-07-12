@@ -25,7 +25,8 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
-import java.util.*
+import java.util.Formatter
+import java.util.Locale
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
