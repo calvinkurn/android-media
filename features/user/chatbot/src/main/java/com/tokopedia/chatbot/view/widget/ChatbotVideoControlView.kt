@@ -86,9 +86,9 @@ class ChatbotVideoControlView(context: Context, attributeSet: AttributeSet) :
 
      fun toggleVolume(isMute : Boolean) {
         if (isMute) {
-            volumeButton.setImageResource(R.drawable.chatbot_ic_volume_mute)
+            volumeButton.setImageResource(R.drawable.chatbot_video_volume_down)
         } else {
-            volumeButton.setImageResource(R.drawable.chatbot_ic_volume_high)
+            volumeButton.setImageResource(R.drawable.chatbot_video_volume_up)
         }
     }
 

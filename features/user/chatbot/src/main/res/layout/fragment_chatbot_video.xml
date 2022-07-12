@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/Unify_Static_Black">
+    android:background="@color/chatbot_dms_video_fragment_bg">
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="42dp"
