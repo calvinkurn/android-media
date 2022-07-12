@@ -1,27 +1,30 @@
 package com.tokopedia.chatbot.util
 
 import android.content.Context
-import android.media.MediaPlayer
+import android.media.MediaMetadataRetriever
 import android.net.Uri
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import java.io.File
 
 object VideoUtil {
 
-    fun findVideoLength(context: Context?, filePath: String): Long {
-        var videoLength: Long = 0
-        return try {
-            val uri = Uri.parse(filePath)
-            MediaPlayer.create(context, uri).also {
-                videoLength = it.duration.toLong()
-                it.reset()
-                it.release()
-            }
-            videoLength
-        } catch (e : Exception) {
-            videoLength
-        }
+    private const val KEY_DURATION = MediaMetadataRetriever.METADATA_KEY_DURATION
 
-        return videoLength
+    fun retrieveVideoLength(context: Context?, filePath: String): Long {
+        val uri = Uri.parse(filePath)
+
+        return try {
+            with(MediaMetadataRetriever()) {
+                setDataSource(context, uri)
+                val durationData = extractMetadata(KEY_DURATION)
+
+                release()
+
+                durationData.toLongOrZero()
+            }
+        } catch (e: Throwable) {
+            0
+        }
     }
 
     fun findVideoSize(videoFile: File) : String {

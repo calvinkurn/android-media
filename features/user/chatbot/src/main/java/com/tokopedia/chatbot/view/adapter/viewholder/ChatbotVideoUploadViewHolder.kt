@@ -13,6 +13,7 @@ import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.BaseChatUiModel
+import com.tokopedia.chat_common.data.BaseChatUiModel.Companion.SENDING_TEXT
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
@@ -91,6 +92,7 @@ class ChatbotVideoUploadViewHolder(
         }
     }
 
+    //TODO where to release it
     private fun setUpExoPlayerListener() {
         chatbotExoPlayer.getExoPlayer().addListener(object : Player.EventListener {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
@@ -126,9 +128,7 @@ class ChatbotVideoUploadViewHolder(
         var seconds = TimeUnit.MILLISECONDS.toSeconds(totalLength) % 60
 
         return when {
-            hours == 0L -> String.format(
-                "%02d:%02d", minutes, seconds
-            )
+            hours == 0L -> String.format("%02d:%02d", minutes, seconds)
             else ->
                 String.format("%02d:%02d:%02d", hours, minutes, seconds)
         }
@@ -147,7 +147,7 @@ class ChatbotVideoUploadViewHolder(
         )
         if (element.isDummy) {
             progressBarSendVideo?.show()
-            videoTotalLength?.text = convertVideoLength(element.length)
+            hour?.text = SENDING_TEXT
         } else {
             progressBarSendVideo?.gone()
         }
