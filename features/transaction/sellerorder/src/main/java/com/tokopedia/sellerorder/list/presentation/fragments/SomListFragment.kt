@@ -46,6 +46,7 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -139,6 +140,7 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -171,6 +173,9 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         private const val TICKER_ENTER_LEAVE_ANIMATION_DURATION = 300L
         private const val TICKER_ENTER_LEAVE_ANIMATION_DELAY = 10L
         private const val RV_TOP_POSITION = 0
+        private const val SEARCH_BAR_MARGIN_START_MAIN_APP = 0
+        private const val SEARCH_BAR_MARGIN_START_SELLER_APP = 14
+        private const val SEARCH_BAR_MARGIN_END = 12
 
         private const val KEY_LAST_SELECTED_ORDER_ID = "lastSelectedOrderId"
 
@@ -2744,6 +2749,16 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             isWaitingPaymentOrderPageOpened = true
             updateToolbarMenu()
         }
+        somListHeaderBinding?.searchBarSomList?.setMargin(
+            if (GlobalConfig.isSellerApp()) {
+                SEARCH_BAR_MARGIN_START_SELLER_APP.toPx()
+            } else {
+                SEARCH_BAR_MARGIN_START_MAIN_APP.toPx()
+            },
+            Int.ZERO,
+            SEARCH_BAR_MARGIN_END.toPx(),
+            Int.ZERO
+        )
         updateToolbarMenu()
     }
 

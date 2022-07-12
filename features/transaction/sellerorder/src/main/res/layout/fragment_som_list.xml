@@ -14,7 +14,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            app:constraint_referenced_ids="sortFilterShimmer1,sortFilterShimmer2,sortFilterShimmer3,sortFilterShimmer4,sortFilterShimmer5" />
+            app:constraint_referenced_ids="tab_filter_shimmer1,tab_filter_shimmer2,tab_filter_shimmer3,sortFilterShimmer1,sortFilterShimmer2,sortFilterShimmer3,sortFilterShimmer4,sortFilterShimmer5" />
 
         <com.tokopedia.unifycomponents.ticker.Ticker
             android:id="@+id/tickerSomList"
@@ -30,7 +30,6 @@
             layout="@layout/som_list_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="14dp"
             android:layout_marginTop="4dp"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -107,6 +106,36 @@
         <!--  start shimmer views  -->
 
         <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/tab_filter_shimmer1"
+            android:layout_width="123dp"
+            android:layout_height="12dp"
+            android:layout_marginStart="14dp"
+            app:layout_constraintBottom_toBottomOf="@id/som_list_tab_filter"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/som_list_toolbar"
+            app:loader_type="rect" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/tab_filter_shimmer2"
+            android:layout_width="123dp"
+            android:layout_height="12dp"
+            android:layout_marginStart="29dp"
+            app:layout_constraintBottom_toBottomOf="@id/som_list_tab_filter"
+            app:layout_constraintStart_toEndOf="@id/tab_filter_shimmer1"
+            app:layout_constraintTop_toBottomOf="@id/som_list_toolbar"
+            app:loader_type="rect" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/tab_filter_shimmer3"
+            android:layout_width="123dp"
+            android:layout_height="12dp"
+            android:layout_marginStart="29dp"
+            app:layout_constraintBottom_toBottomOf="@id/som_list_tab_filter"
+            app:layout_constraintStart_toEndOf="@id/tab_filter_shimmer2"
+            app:layout_constraintTop_toBottomOf="@id/som_list_toolbar"
+            app:loader_type="rect" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/sortFilterShimmer1"
             android:layout_width="@dimen/som_list_sort_filter_shimmer_width"
             android:layout_height="@dimen/som_list_sort_filter_shimmer_height"
@@ -163,7 +192,9 @@
             android:layout_height="wrap_content"
             app:barrierDirection="bottom"
             app:constraint_referenced_ids="sortFilterShimmer1,sortFilterSomList"
-            tools:layout_constraintTop_toBottomOf="@id/sortFilterShimmer1" />
+            tools:layout_constraintTop_toBottomOf="@id/sortFilterShimmer1"
+            tools:layout_height="0dp"
+            tools:layout_width="0dp" />
 
         <include
             android:id="@+id/loaderSomList1"
