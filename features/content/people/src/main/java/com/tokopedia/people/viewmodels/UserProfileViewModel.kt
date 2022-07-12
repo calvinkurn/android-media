@@ -158,6 +158,10 @@ class UserProfileViewModel @AssistedInject constructor(
         })
     }
 
+    /**
+    * play video will be moved to dedicated fragment when
+    * developing another tab user profile eventually. so gonna leave as is for now
+    * */
     private fun handleLoadPlayVideo(cursor: String) {
         viewModelScope.launchCatchError(block = {
             val data = repo.getPlayVideo(profileUserID, cursor)
