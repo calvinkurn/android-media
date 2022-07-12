@@ -4,16 +4,16 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.animation.AnimationUtils
-import android.widget.RelativeLayout
 import android.widget.ViewFlipper
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ViewModelProvider
@@ -23,6 +23,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.promoui.common.dpToPx
@@ -42,16 +44,6 @@ import com.tokopedia.tokomember_seller_dashboard.view.viewholder.TmIntroButtonVh
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmDashIntroViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.tm_dash_intro.*
-import kotlinx.android.synthetic.main.tm_dash_intro.btnContinue
-import kotlinx.android.synthetic.main.tm_dash_intro.buttonContainer
-import kotlinx.android.synthetic.main.tm_dash_intro.cardTokmemberParent
-import kotlinx.android.synthetic.main.tm_dash_intro.frame_video
-import kotlinx.android.synthetic.main.tm_dash_intro.ivBg
-import kotlinx.android.synthetic.main.tm_dash_intro.recyclerView
-import kotlinx.android.synthetic.main.tm_dash_intro.scrollContainer
-import kotlinx.android.synthetic.main.tm_dash_intro.tvSubtitle
-import kotlinx.android.synthetic.main.tm_dash_intro.tvTitle
 import kotlinx.android.synthetic.main.tm_dash_intro_new.*
 import javax.inject.Inject
 
@@ -97,7 +89,6 @@ class TmIntroFragment : BaseDaggerFragment(),
         rootView = view.findViewById(R.id.rootView)
         ivBg.loadImage(TM_INTRO_BG)
         hideStatusBar()
-       // setStatusBarViewHeight()
         observeViewModel()
         arguments?.getInt(BUNDLE_SHOP_ID, 0)?.let {
             tmTracker?.viewIntroPage(it.toString())
@@ -113,8 +104,8 @@ class TmIntroFragment : BaseDaggerFragment(),
         }
 
         scrollContainer?.viewTreeObserver?.addOnScrollChangedListener {
-            var y = scrollContainer.scrollY
-            var diff = dpToPx(30)
+            val y = scrollContainer.scrollY
+            val diff = dpToPx(30)
 
             if (y > diff) {
                 status_bar_bg?.alpha = 1F
@@ -142,11 +133,13 @@ class TmIntroFragment : BaseDaggerFragment(),
             when (it) {
                 is Success -> {
                     viewFlipperIntro?.displayedChild = 1
+                    buttonContainer.show()
                     cardID = it.data.membershipGetSellerOnboarding?.cardID.toIntOrZero()
                     populateUI(it.data )
                 }
                 is Fail -> {
                     viewFlipperIntro?.displayedChild = 0
+                    buttonContainer.hide()
                 }
             }
         })
