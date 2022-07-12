@@ -690,14 +690,20 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
                 endDate.time = sdf.parse(manualEndTimeProgram + "00") ?: Date()
 
-                manualEndTimeProgram = if (endDate > maxProgramEndDate) {
-                    convertDateTimeRemoveTimeDiff(maxProgramEndDate.time)
-                } else {
-                    convertDateTimeRemoveTimeDiff(endDate.time)
-                }
+                manualEndTimeProgram = convertDateTimeRemoveTimeDiff(endDate.time)
             }
             else -> {
-                manualStartTimeProgram = timeWindow?.startTime ?: ""
+                val currentDate = GregorianCalendar(locale)
+                val currentTime = currentDate.get(Calendar.HOUR_OF_DAY)
+                if(currentTime>=21) {
+                    val currentStartDate = GregorianCalendar(locale)
+                    val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
+                    currentStartDate.time = sdf.parse(timeWindow?.startTime ?: "" + "00") ?: Date()
+                    currentStartDate.add(Calendar.HOUR,3)
+                    manualStartTimeProgram = convertDateTimeRemoveTimeDiff(currentStartDate.time)
+                }else {
+                    manualStartTimeProgram = timeWindow?.startTime ?: ""
+                }
                 manualEndTimeProgram = timeWindow?.endTime ?: ""
             }
         }

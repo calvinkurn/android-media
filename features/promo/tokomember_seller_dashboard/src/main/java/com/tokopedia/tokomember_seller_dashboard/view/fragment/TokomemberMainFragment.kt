@@ -20,7 +20,7 @@ import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashInt
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmEligibilityViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.tm_dash_intro_container.*
+import kotlinx.android.synthetic.main.tm_dash_intro_new.*
 import kotlinx.android.synthetic.main.tm_layout_no_access.*
 import javax.inject.Inject
 
@@ -42,7 +42,7 @@ class TokomemberMainFragment : BaseDaggerFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.tm_dash_intro_container, container, false)
+        return inflater.inflate(R.layout.tm_dash_intro_new, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

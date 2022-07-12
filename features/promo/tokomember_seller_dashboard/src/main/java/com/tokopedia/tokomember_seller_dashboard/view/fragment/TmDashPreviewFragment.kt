@@ -91,7 +91,6 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
             programActionType = it
         }
         observeViewModel()
-        observeViewModel()
         tmTracker = TmTracker()
         tmCouponPreviewData =
             arguments?.getParcelable(BUNDLE_COUPON_PREVIEW_DATA) ?: TmCouponPreviewData()
@@ -223,6 +222,7 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
 
     private fun renderHeader() {
         var subtitle = ""
+        var title = "Buat Program"
         when(programActionType){
             ProgramActionType.CREATE ->{
                 subtitle = "Langkah 4 dari 4"
@@ -235,14 +235,11 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
             }
             ProgramActionType.EXTEND ->{
                 subtitle = "Langkah 3 dari 3"
+                title = "Perpanjang TokoMember"
             }
         }
         headerPreview?.apply {
-            title = "Buat Program"
-            if(programActionType == ProgramActionType.EXTEND){
-                title = PROGRAM_EXTEND_CTA
-            }
-
+            this.title = title
             this.subtitle = subtitle
             isShowBackButton = true
             setNavigationOnClickListener {
