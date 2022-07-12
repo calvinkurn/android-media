@@ -40,19 +40,18 @@
                 app:srcCompat="@drawable/bg_button_promostacking"
                 tools:ignore="contentDescription" />
 
-        <com.tokopedia.design.component.TextViewCompat
-            android:id="@+id/title_button_coupon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="20dp"
-            android:layout_marginLeft="20dp"
-            android:layout_toRightOf="@id/ic_button_coupon"
-            android:fontFamily="sans-serif-medium"
-            android:gravity="center"
-            android:text="Pakai Promo Tokopedia"
-            android:textColor="@color/Unify_G400"
-            android:textSize="@dimen/sp_12" />
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/title_button_coupon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_toRightOf="@id/ic_button_coupon"
+                android:gravity="center"
+                android:text="@string/ticker_promo_stacking_title_coupon_label"
+                android:textColor="@color/Unify_G400"
+                app:typographyType="display_3" />
 
             <LinearLayout
                 android:id="@+id/layout_counter_coupons"
@@ -65,33 +64,34 @@
                 android:layout_marginRight="10dp"
                 android:background="@drawable/bg_counter">
 
-            <com.tokopedia.design.component.TextViewCompat
-                android:id="@+id/counter_coupons"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:paddingStart="@dimen/dp_3"
-                android:paddingLeft="@dimen/dp_3"
-                android:paddingEnd="@dimen/dp_3"
-                android:paddingRight="@dimen/dp_3"
-                android:textColor="@color/Unify_N0"
-                android:textSize="@dimen/sp_10" />
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/counter_coupons"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:paddingStart="@dimen/dp_3"
+                    android:paddingLeft="@dimen/dp_3"
+                    android:paddingEnd="@dimen/dp_3"
+                    android:paddingRight="@dimen/dp_3"
+                    android:textColor="@color/Unify_N0"
+                    app:typographyType="small"
+                    tools:text="1" />
 
             </LinearLayout>
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/title_action_coupon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="10dp"
-            android:layout_marginRight="10dp"
-            android:text="Cek"
-            android:textColor="@color/Unify_N700_68"
-            app:typographyType="body_3"
-            android:visibility="gone" />
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/title_action_coupon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
+                android:text="Cek"
+                android:textColor="@color/Unify_N700_68"
+                android:visibility="gone"
+                app:typographyType="body_3" />
 
         </RelativeLayout>
 
@@ -110,7 +110,8 @@
                 android:id="@+id/layoutTickerFrameGlobal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/background_checkout_ticker_view_green">
+                android:background="@drawable/background_checkout_ticker_view_green"
+                tools:ignore="UselessParent">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -174,40 +175,40 @@
                         <com.tokopedia.unifyprinciples.Typography
                             android:id="@+id/titleCouponGlobal"
                             style="@style/TextView.Micro11.FontMedium.Bold"
-                            android:textColor="@color/Unify_N700_96"
                             android:layout_marginEnd="5dp"
                             android:layout_marginRight="5dp"
                             android:ellipsize="end"
                             android:maxLines="2"
+                            android:textColor="@color/Unify_N700_96"
                             android:textSize="@dimen/sp_13"
                             tools:text="Kupon Gratis Ongkir JT Rp 50000" />
 
                         <com.tokopedia.unifyprinciples.Typography
                             android:id="@+id/descCouponGlobal"
                             style="@style/TextView.Micro11.FontMedium.BlackDisabled"
-                            android:textColor="@color/Unify_N700_68"
                             android:layout_marginTop="@dimen/dp_3"
                             android:layout_marginEnd="5dp"
                             android:layout_marginRight="5dp"
                             android:layout_marginBottom="@dimen/dp_3"
                             android:lineSpacingExtra="2sp"
                             android:maxLines="2"
+                            android:textColor="@color/Unify_N700_68"
                             android:textSize="@dimen/sp_13"
                             android:visibility="gone"
                             tools:text="Pilih Kurir terlebih dahulu untuk memastikan benefit yang akan didapat" />
 
                     </LinearLayout>
 
-                <FrameLayout
-                    android:id="@+id/loading_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_alignTop="@+id/layout_content"
-                    android:layout_alignBottom="@+id/layout_content"
-                    android:layout_centerInParent="true"
-                    android:alpha="0.6"
-                    android:background="@color/Unify_N0"
-                    android:visibility="gone">
+                    <FrameLayout
+                        android:id="@+id/loading_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignTop="@+id/layout_content"
+                        android:layout_alignBottom="@+id/layout_content"
+                        android:layout_centerInParent="true"
+                        android:alpha="0.6"
+                        android:background="@color/Unify_N0"
+                        android:visibility="gone">
 
                         <com.tokopedia.unifycomponents.LoaderUnify
                             android:layout_width="@dimen/layout_lvl4"

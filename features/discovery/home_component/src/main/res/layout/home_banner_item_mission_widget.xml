@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/card_container_mission_widget"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:cardUseCompatPadding="true"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/image_mission_widget"
+            android:layout_width="@dimen/home_mission_widget_image_size"
+            android:layout_height="@dimen/home_mission_widget_image_size"
+            android:contentDescription="@string/content_desc_mission_widget"
+            app:unify_image_corner_radius="0"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/title_mission_widget"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            tools:text="Lihat lagi, yuk!"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:typographyType="small"
+            android:textColor="@color/Unify_NN950"
+            android:layout_marginTop="8dp"
+            android:layout_marginHorizontal="8dp"
+            app:layout_constraintStart_toStartOf="@id/image_mission_widget"
+            app:layout_constraintEnd_toEndOf="@id/image_mission_widget"
+            app:layout_constraintTop_toBottomOf="@id/image_mission_widget"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/subtitle_mission_widget"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            tools:text="Lihat lagi, yuk! Apa tuh yg bisa diliatttttttt"
+            android:maxLines="2"
+            android:ellipsize="end"
+            app:typographyType="paragraph_3"
+            app:typographyWeight="bold"
+            android:textColor="@color/Unify_NN950"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintStart_toStartOf="@id/title_mission_widget"
+            app:layout_constraintEnd_toEndOf="@id/title_mission_widget"
+            app:layout_constraintTop_toBottomOf="@id/title_mission_widget"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify2>

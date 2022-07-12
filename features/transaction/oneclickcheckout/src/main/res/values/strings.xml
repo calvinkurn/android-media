@@ -85,7 +85,7 @@
     <!--GOPAYLATERCICIL-->
     <string name="occ_gocicil_bottom_sheet_title">Bayarnya mau berapa lama?</string>
     <string name="occ_gocicil_default_installment">Pilih periode cicilan</string>
-    <string name="occ_lbl_installment_summary_period">Installment Period</string>
+    <string name="occ_lbl_installment_summary_period">Lama Pembayaran</string>
     <string name="occ_lbl_installment_summary_amount_per_period">Cicilan per Bulan</string>
     <string name="occ_lbl_installment_summary_first_date">Jatuh Tempo Pertama</string>
     <string name="occ_lbl_installment_summary_last_date">Perkiraan Jatuh Tempo Terakhir</string>
@@ -94,5 +94,5 @@
     <string name="occ_lbl_gocicil_installment_title_without_price">Cicil %1$dx</string>
     <string name="occ_lbl_gocicil_installment_inactive_description">Periode cicilan tidak tersedia.</string>
     <string name="occ_lbl_gocicil_installment_bottom_sheet_message">%1$s (%2$s)</string>
-    <string name="occ_lbl_gocicil_installment_period">%1$d months</string>
+    <string name="occ_lbl_gocicil_installment_period">%1$d Bulan</string>
 </resources>

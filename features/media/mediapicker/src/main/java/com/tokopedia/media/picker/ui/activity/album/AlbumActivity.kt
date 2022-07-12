@@ -2,6 +2,7 @@ package com.tokopedia.media.picker.ui.activity.album
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -118,6 +119,22 @@ class AlbumActivity : BaseActivity(), NavToolbarComponent.Listener {
     companion object {
         const val INTENT_BUCKET_ID = "bucket_id"
         const val INTENT_BUCKET_NAME = "bucket_name"
+
+        fun start(fragment: Fragment, reqCode: Int) {
+            fragment.startActivityForResult(
+                Intent(
+                    fragment.requireContext(),
+                    AlbumActivity::class.java
+                ), reqCode
+            )
+        }
+
+        fun getAlbumBucketDetails(intent: Intent?): Pair<Long, String> {
+            val bucketId = intent?.getLongExtra(INTENT_BUCKET_ID, 0)?: -1
+            val bucketName = intent?.getStringExtra(INTENT_BUCKET_NAME)?: ""
+
+            return Pair(bucketId, bucketName)
+        }
     }
 
 }

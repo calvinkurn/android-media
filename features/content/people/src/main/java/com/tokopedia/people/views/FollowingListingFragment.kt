@@ -82,7 +82,7 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        followersContainer = view.findViewById(R.id.container)
+        followersContainer = view.findViewById(R.id.container_follower_list)
         globalError = view?.findViewById(R.id.ge_followers)
         initObserver()
         initMainUi()

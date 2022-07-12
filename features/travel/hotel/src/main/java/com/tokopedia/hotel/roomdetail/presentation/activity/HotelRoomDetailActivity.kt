@@ -22,11 +22,6 @@ class HotelRoomDetailActivity : HotelBaseActivity(), HasComponent<HotelRoomDetai
         supportActionBar?.hide()
     }
 
-    override fun getParentViewResourceID() = com.tokopedia.abstraction.R.id.parent_view
-
-    override fun getLayoutRes() = com.tokopedia.abstraction.R.layout.activity_base_simple
-
-
     override fun getComponent(): HotelRoomDetailComponent =
             DaggerHotelRoomDetailComponent.builder()
                     .hotelComponent(HotelComponentInstance.getHotelComponent(application))

@@ -3,6 +3,7 @@ package com.tokopedia.media.preview.ui.activity
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.ComponentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -37,8 +38,9 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import javax.inject.Inject
 
-class PickerPreviewActivity : BaseActivity(), NavToolbarComponent.Listener,
-    DrawerSelectionWidget.Listener {
+class PickerPreviewActivity : BaseActivity()
+    , NavToolbarComponent.Listener
+    , DrawerSelectionWidget.Listener {
 
     @Inject
     lateinit var param: ParamCacheManager
@@ -313,6 +315,15 @@ class PickerPreviewActivity : BaseActivity(), NavToolbarComponent.Listener,
 
     companion object {
         private const val CACHE_LAST_SELECTION = "cache_last_selection"
+
+        fun start(activity: ComponentActivity, medias: ArrayList<MediaUiModel>, reqCode: Int) {
+            activity.startActivityForResult(
+                Intent(activity.applicationContext, PickerPreviewActivity::class.java).apply {
+                    putExtra(EXTRA_INTENT_PREVIEW, medias)
+                },
+                reqCode
+            )
+        }
     }
 
 }
