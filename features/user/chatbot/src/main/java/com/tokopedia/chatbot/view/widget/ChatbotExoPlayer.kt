@@ -19,9 +19,9 @@ import com.google.android.exoplayer2.util.Util
 
 class ChatbotExoPlayer(val context : Context, var videoControl: ChatbotVideoControlView? = null) : ChatbotVideoControlView.Listener{
 
-   private var loadControl: LoadControl = DefaultLoadControl()
+    private var loadControl: LoadControl = DefaultLoadControl()
 
-    private var videoStateListener: VideoStateListener? = null
+    var videoStateListener: ChatbotVideoStateListener? = null
 
     private val exoPlayer: SimpleExoPlayer = SimpleExoPlayer.Builder(context)
         .setTrackSelector(DefaultTrackSelector(context))
@@ -75,15 +75,10 @@ class ChatbotExoPlayer(val context : Context, var videoControl: ChatbotVideoCont
         })
     }
 
-    fun setVideoStateListener(videoStateListener: VideoStateListener?) {
-        this.videoStateListener = videoStateListener
-    }
-
     fun start(videoUrl : String) {
         if(videoUrl.isBlank())
             return
         val mediaSource = getMediaSourceBySource(context, Uri.parse(videoUrl))
-     //   toggleVideoVolume(false)
         exoPlayer.repeatMode = Player.REPEAT_MODE_ALL
         exoPlayer.playWhenReady = true
         exoPlayer.prepare(mediaSource, true, false)
@@ -108,7 +103,6 @@ class ChatbotExoPlayer(val context : Context, var videoControl: ChatbotVideoCont
 
     fun getExoPlayer(): SimpleExoPlayer = exoPlayer
 
-
     fun getMediaSourceBySource(context: Context, uri: Uri): MediaSource {
         val mDataSourceFactory =
             DefaultDataSourceFactory(context, Util.getUserAgent(context, "Tokopedia Android"))
@@ -122,19 +116,11 @@ class ChatbotExoPlayer(val context : Context, var videoControl: ChatbotVideoCont
         return mediaSource.createMediaSource(uri)
     }
 
-
     companion object {
         const val MUTE_VOLUME = 0F
         const val UNMUTE_VOLUME = 1F
 
         const val VIDEO_AT_FIRST_POSITION = 0L
-    }
-
-    interface VideoStateListener {
-        fun onInitialStateLoading()
-        fun onVideoReadyToPlay()
-        fun onVideoStateChange(stopDuration : Long, videoDuration : Long)
-        fun onVideoPlayerError(e : ExoPlaybackException)
     }
 
     override fun onCenterPlayButtonClicked() {
@@ -161,11 +147,16 @@ class ChatbotExoPlayer(val context : Context, var videoControl: ChatbotVideoCont
         val currentVolume = exoPlayer.volume
         if (currentVolume == MUTE_VOLUME){
             exoPlayer.volume = UNMUTE_VOLUME
-            videoControl?.toggleVolume(false)
         }else {
             exoPlayer.volume = MUTE_VOLUME
-            videoControl?.toggleVolume(true)
         }
+    }
+
+    interface ChatbotVideoStateListener {
+        fun onInitialStateLoading()
+        fun onVideoReadyToPlay()
+        fun onVideoStateChange(stopDuration : Long, videoDuration : Long)
+        fun onVideoPlayerError(e : ExoPlaybackException)
     }
 }
 

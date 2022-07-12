@@ -16,9 +16,10 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 
-class ChatbotVideoFragment : BaseDaggerFragment(){
+class ChatbotVideoFragment : BaseDaggerFragment(), ChatbotExoPlayer.ChatbotVideoStateListener{
 
     private var videoUrl = ""
     private lateinit var videoPlayerView : PlayerView
@@ -53,41 +54,29 @@ class ChatbotVideoFragment : BaseDaggerFragment(){
         videoPlayerView = view.findViewById(R.id.video_player)
         progressLoader = view.findViewById(R.id.loader)
         errorImage = view.findViewById(R.id.error_image)
-
-        progressLoader.visible()
-        progressLoader.bringToFront()
         initVideoPlayer()
     }
 
     private fun initVideoPlayer() {
         videoPlayerView.player = chatbotExoPlayer.getExoPlayer()
         chatbotExoPlayer.start(videoUrl)
-        chatbotExoPlayer.setVideoStateListener(object : ChatbotExoPlayer.VideoStateListener{
-            override fun onInitialStateLoading() {
-                progressLoader.visible()
-                progressLoader.bringToFront()
-            }
-
-            override fun onVideoReadyToPlay() {
-                progressLoader.gone()
-            }
-
-            override fun onVideoStateChange(stopDuration: Long, videoDuration: Long) {
-
-            }
-
-            override fun onVideoPlayerError(e: ExoPlaybackException) {
-                onErrorVideoLoad()
-            }
-        })
+        chatbotExoPlayer.videoStateListener = this
     }
 
     private fun onErrorVideoLoad(){
-        progressLoader.gone()
         errorImage.visible()
         errorImage.setImageResource(R.drawable.chatbot_video_error)
-        context?.getString(R.string.chatbot_video_can_not_be_played)
-            ?.let { Toaster.build(videoPlayerView, it, type = TYPE_ERROR) }
+        progressLoader.gone()
+        context?.let {
+            Toaster.build(
+                videoPlayerView, getString(R.string.chatbot_video_can_not_be_played), LENGTH_SHORT,
+                TYPE_ERROR, getString(R.string.chatbot_video_refresh)
+            ) {
+                chatbotExoPlayer.start(videoUrl)
+                errorImage.gone()
+            }.show()
+        }
+
     }
 
     companion object {
@@ -97,6 +86,23 @@ class ChatbotVideoFragment : BaseDaggerFragment(){
             fragment.arguments = bundle
             return fragment
         }
+    }
+
+    override fun onInitialStateLoading() {
+        progressLoader.visible()
+        progressLoader.bringToFront()
+    }
+
+    override fun onVideoReadyToPlay() {
+        progressLoader.gone()
+    }
+
+    override fun onVideoStateChange(stopDuration: Long, videoDuration: Long) {
+
+    }
+
+    override fun onVideoPlayerError(e: ExoPlaybackException) {
+        onErrorVideoLoad()
     }
 
 }

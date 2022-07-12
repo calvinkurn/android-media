@@ -48,6 +48,7 @@
     <string name="chatbot_your_video_has_been_deleted">Videomu sudah dihapus.</string>
     <string name="chatbot_video_title">Gambar Terkirim</string>
     <string name="chatbot_video_can_not_be_played">Gambar gagal dimuat. Refresh halaman ini atau cek koneksi internetmu.</string>
+    <string name="chatbot_video_refresh">Refresh</string>
     <string name="chatbot_default_video_duration">0:00</string>
     <string name="chatbot_text_for_no_transaction_found">Transaksi yang berkendala tidak ada di daftar pilihan.</string>
     <string name="chatbot_action_text_for_no_transaction_found">transaction_not_listed</string>

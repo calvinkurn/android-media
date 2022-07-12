@@ -141,23 +141,6 @@
 
         </LinearLayout>
 
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/layout_volume"
-            android:orientation="horizontal"
-            app:layout_constraintLeft_toRightOf="@id/exo_progress"
-            android:layout_marginLeft="@dimen/chatcommon_10dp">
-
-            <ImageView
-                android:layout_width="@dimen/unify_space_24"
-                android:layout_height="@dimen/unify_space_24"
-                android:src="@drawable/chatbot_video_volume_up"
-                android:id="@+id/ic_volume"/>
-
-        </LinearLayout>
-
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -21,7 +21,6 @@ class ChatbotVideoControlView(context: Context, attributeSet: AttributeSet) :
 
     private val centerPlayButton: ImageView = findViewById(R.id.video_center_play_button)
     private val centerPauseButton: ImageView = findViewById(R.id.video_center_pause_button)
-    private val volumeButton: ImageView = findViewById(R.id.ic_volume)
     private val videoControlContainer: LinearLayout = findViewById(R.id.nav_container)
 
     var listener: Listener? = null
@@ -62,11 +61,6 @@ class ChatbotVideoControlView(context: Context, attributeSet: AttributeSet) :
             listener?.onCenterPauseButtonClicked()
         }
 
-        volumeButton.setOnClickListener {
-            listener?.toggleVolume()
-        }
-
-
         scrubber.addListener(object : TimeBar.OnScrubListener {
             override fun onScrubStart(timeBar: TimeBar, position: Long) {
                 listener?.onScrubMove(position)
@@ -82,14 +76,6 @@ class ChatbotVideoControlView(context: Context, attributeSet: AttributeSet) :
 
         })
 
-    }
-
-     fun toggleVolume(isMute : Boolean) {
-        if (isMute) {
-            volumeButton.setImageResource(R.drawable.chatbot_video_volume_down)
-        } else {
-            volumeButton.setImageResource(R.drawable.chatbot_video_volume_up)
-        }
     }
 
     fun showController(toShow: Boolean) {
