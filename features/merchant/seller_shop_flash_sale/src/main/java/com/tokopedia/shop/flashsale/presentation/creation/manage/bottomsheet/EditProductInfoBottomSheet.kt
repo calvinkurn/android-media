@@ -140,7 +140,6 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
     private fun setupProductMapDataObserver() {
         viewModel.productInputData.observe(viewLifecycleOwner) {
             productInput = it
-            resetInputData()
         }
     }
 
@@ -151,6 +150,7 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
             if (isDataFirstLoaded) {
                 // do not display validation on first loading product data
                 isDataFirstLoaded = false
+                resetInputData()
             } else {
                 displayValidationResult(validationResult)
                 if (isSuccess) {
@@ -366,9 +366,6 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
         stockField?.isInputError = true
 
         when {
-            stockField?.editText?.text?.toString().orEmpty().isEmpty() -> {
-                stockField?.setMessage(getString(R.string.editproduct_required_text))
-            }
             isMaxError -> {
                 stockField?.setMessage(getString(R.string.editproduct_max_prefix) + validationResult.maxStock)
             }
@@ -398,7 +395,6 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
             tfCampaignPrice.text = discountedPrice
             tfStock.editText.setText(customStock)
             tfMaxSold.editText.setText(maxOrder)
-            tfStock.setMessage(getString(R.string.editproduct_stock_total_text, productInput.productMapData.originalStock))
         }
     }
 
