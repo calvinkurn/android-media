@@ -4,41 +4,57 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:id="@+id/upload_prescription_layout"
     android:background="@color/Unify_Background">
 
-    <LinearLayout
-        android:id="@+id/upload_prescription_layout"
+    <com.tokopedia.unifycomponents.CardUnify2
+        android:id="@+id/upload_prescription_card"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/spacing_lvl4"
-        android:background="@drawable/bg_gifting_addon_rounded_grey"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        tools:visibility="visible">
-
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/upload_icon"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_margin="@dimen/spacing_lvl4"
-            android:layout_weight="0" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/upload_prescription_text"
-            android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:layout_marginBottom="@dimen/unify_space_12"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/spacing_lvl4"
-            android:layout_weight="1"
-            android:textColor="@color/Unify_NN950"
-            app:typographyType="display_3" />
+            android:layout_marginStart="@dimen/unify_space_12"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:layout_marginBottom="@dimen/unify_space_12"
+            android:layout_marginEnd="@dimen/spacing_lvl2"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            android:gravity="center"
+            tools:visibility="visible"
+            >
 
-        <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/iv_upload_right"
-            android:layout_width="@dimen/spacing_lvl4"
-            android:layout_height="@dimen/spacing_lvl4"
-            android:layout_marginTop="@dimen/spacing_lvl4"
-            android:layout_marginEnd="@dimen/unify_space_12"
-            android:layout_weight="0"
-            app:icon_name="CHEVRON_RIGHT" />
-    </LinearLayout>
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/upload_icon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_weight="0"
+                />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/upload_prescription_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_weight="1"
+                android:textColor="@color/Unify_NN950"
+                app:typographyType="display_3"
+                app:typographyWeight="bold"
+                tools:text="Upload Foto Resep Dokter"
+                />
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/iv_upload_right"
+                android:layout_width="@dimen/spacing_lvl5"
+                android:layout_height="@dimen/spacing_lvl5"
+                android:layout_weight="0"
+                app:icon_name="CHEVRON_RIGHT" />
+        </LinearLayout>
+
+    </com.tokopedia.unifycomponents.CardUnify2>
 </LinearLayout>

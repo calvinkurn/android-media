@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.UploadPrescriptionUiModel
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
@@ -18,6 +19,7 @@ class UploadPrescriptionViewHolder(val view: View, private val actionListener: S
     private val uploadPrescriptionLayout: LinearLayout = view.findViewById(R.id.upload_prescription_layout)
     private val uploadPrescText: Typography = view.findViewById(R.id.upload_prescription_text)
     private val uploadPrescIcon: ImageUnify = view.findViewById(R.id.upload_icon)
+    private val uploadPrescCardUnify: CardUnify2 = view.findViewById(R.id.upload_prescription_card)
 
     companion object {
         @SuppressLint("ResourcePackage")
@@ -26,6 +28,7 @@ class UploadPrescriptionViewHolder(val view: View, private val actionListener: S
     }
 
     fun bindViewHolder(uploadPrescriptionUiModel: UploadPrescriptionUiModel){
+        uploadPrescCardUnify.cardType = CardUnify2.TYPE_BORDER
 
         when{
             uploadPrescriptionUiModel.uploadImageText?.isEmpty() == true -> {
