@@ -1581,9 +1581,10 @@ class PlayViewModel @AssistedInject constructor(
                 _tagItems.update {
                     it.copy(
                         product = it.product.copy(
-                            productSectionList = mappedData.first
+                            productSectionList = mappedData.first,
+                            canShow = mappedData.second.second,
                         ),
-                        maxFeatured = mappedData.second,
+                        maxFeatured = mappedData.second.first,
                         bottomSheetTitle = mappedData.third
                     )
                 }
