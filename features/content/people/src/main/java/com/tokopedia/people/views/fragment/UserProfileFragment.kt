@@ -365,18 +365,20 @@ class UserProfileFragment @Inject constructor(
     }
 
     private fun addShopRecomObserver() {
-        viewModel.shopRecomContentLiveData.observe(viewLifecycleOwner) {
-            when (it) {
-                is Loading -> mAdapterShopRecom.resetAdapter()
-                is Success -> {
-                    mAdapterShopRecom.onSuccess(it.data)
-                    with(mainBinding.shopRecommendation) {
-                        root.show()
-                        txtWordingFollow.show()
-                        rvShopRecom.show()
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.shopRecomContent.collect {
+                when (it) {
+                    is Loading -> mAdapterShopRecom.resetAdapter()
+                    is Success -> {
+                        mAdapterShopRecom.onSuccess(it.data)
+                        with(mainBinding.shopRecommendation) {
+                            root.show()
+                            txtWordingFollow.show()
+                            rvShopRecom.show()
+                        }
                     }
+                    is ErrorMessage -> mAdapterShopRecom.onError()
                 }
-                is ErrorMessage -> mAdapterShopRecom.onError()
             }
         }
     }

@@ -46,8 +46,8 @@ class UserProfileViewModel @AssistedInject constructor(
     private val userPost = MutableLiveData<Boolean>()
     val userPostLiveData : LiveData<Boolean> get() = userPost
 
-    private val shopRecomContent = MutableLiveData<Resources<UserShopRecomModel>>()
-    val shopRecomContentLiveData : LiveData<Resources<UserShopRecomModel>> get() = shopRecomContent
+    private val _shopRecomContent = MutableSharedFlow<Resources<UserShopRecomModel>>()
+    val shopRecomContent: Flow<Resources<UserShopRecomModel>> get() = _shopRecomContent
 
     private val playPostContent = MutableLiveData<Resources<UserPostModel>>()
     val playPostContentLiveData : LiveData<Resources<UserPostModel>> get() = playPostContent
@@ -152,7 +152,7 @@ class UserProfileViewModel @AssistedInject constructor(
     private fun handleLoadShopRecom() {
         launchCatchError(block = {
             val data = repo.getShopRecom()
-            if (data != null) shopRecomContent.value = Success(data)
+            if (data != null) _shopRecomContent.emit(Success(data))
             else throw NullPointerException("data is null")
         }, onError = {
             userPostError.value = it
