@@ -21,7 +21,7 @@ data class ShopProductModel(
             val isPMPro: Boolean = false,
             val goldShop: Int = 0,
             val position: Int,
-            val isFollowed: Boolean = false,
+            var isFollowed: Boolean = false,
             val layoutType:Int? = LAYOUT_5,
             val shopId:String = "",
             val impressHolder: ImpressHolder? = null,

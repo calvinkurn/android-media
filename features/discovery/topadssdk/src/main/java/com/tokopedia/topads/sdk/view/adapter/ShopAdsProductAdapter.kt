@@ -72,6 +72,7 @@ class ShopAdsProductAdapter(
             else{
                 buttonFollow.show()
                 buttonFollow.setOnClickListener {
+                    shopProductModelItem.isFollowed = true
                     followButtonClickListener?.onItemClicked(shopProductModelItem)
                 }
             }
