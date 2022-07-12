@@ -444,12 +444,8 @@ class ShopHomeViewModel @Inject constructor(
     ): List<MiniCartItem.MiniCartItemProduct?>? {
         val isVariant = shopHomeProductUiModel.isVariant
         return if (isVariant) {
-            val parentProductId = getParentProductOnMiniCart(
-                shopHomeProductUiModel.id.orEmpty(),
-                miniCartData
-            )
             return miniCartData?.miniCartItems?.values?.filter {
-                it is MiniCartItem.MiniCartItemProduct && (it.productParentId == parentProductId)
+                it is MiniCartItem.MiniCartItemProduct && (it.productParentId == shopHomeProductUiModel.parentId)
             }?.map {
                 it as? MiniCartItem.MiniCartItemProduct
             }

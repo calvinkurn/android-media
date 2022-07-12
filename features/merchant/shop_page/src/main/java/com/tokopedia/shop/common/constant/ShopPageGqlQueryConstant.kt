@@ -69,6 +69,7 @@ object ShopPageGqlQueryConstant {
                     url
                   }
                   hasVariant
+                  parent_id
                 }
                 suggestion {
                   text

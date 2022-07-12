@@ -122,6 +122,7 @@ object ShopPageProductListMapper {
                     it.isVariant = hasVariant
                     it.minimumOrder = minimumOrder
                     it.stock = stock
+                    it.parentId = parentId
                 }
             }
 

@@ -732,12 +732,8 @@ class ShopPageProductListViewModel @Inject constructor(
     ): List<MiniCartItem.MiniCartItemProduct?>? {
         val isVariant = shopProductUiModel.isVariant
         return if (isVariant) {
-            val parentProductId = getParentProductOnMiniCart(
-                shopProductUiModel.id.orEmpty(),
-                miniCartData
-            )
             return miniCartData?.miniCartItems?.values?.filter {
-                it is MiniCartItem.MiniCartItemProduct && (it.productParentId == parentProductId)
+                it is MiniCartItem.MiniCartItemProduct && (it.productParentId == shopProductUiModel.parentId)
             }?.map {
                 it as? MiniCartItem.MiniCartItemProduct
             }

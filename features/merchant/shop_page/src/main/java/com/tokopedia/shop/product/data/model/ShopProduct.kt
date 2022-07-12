@@ -66,6 +66,10 @@ data class ShopProduct(
         @SerializedName("hasVariant")
         @Expose
         val hasVariant: Boolean = false,
+
+        @SerializedName("parent_id")
+        @Expose
+        val parentId: String = ""
 ){
         data class Response(
                 @SerializedName("GetShopProduct")

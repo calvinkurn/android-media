@@ -93,6 +93,7 @@ object ShopPageHomeMapper {
                 it.stock = stock
                 it.isEnableDirectPurchase = isEnableDirectPurchase
                 it.isVariant = hasVariant
+                it.parentId = parentId
             }
         }
 
