@@ -38,6 +38,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.validat
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.SummariesItemUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.UploadPrescriptionUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel;
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata;
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData;
@@ -363,6 +364,10 @@ public interface ShipmentContract {
         void setLatValidateUseRequest(ValidateUsePromoRequest latValidateUseRequest);
 
         ValidateUsePromoRequest getLastValidateUseRequest();
+
+        void setUploadPrescriptionData(UploadPrescriptionUiModel uploadPrescriptionUiModel);
+
+        UploadPrescriptionUiModel getUploadPrescriptionUiModel();
 
         String generateRatesMvcParam(String cartString);
 

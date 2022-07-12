@@ -130,6 +130,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.SummariesItemUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.TrackingDetailsItemUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.UploadPrescriptionUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel;
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata;
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleActionListener;
@@ -202,6 +203,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private static final int REQUEST_CODE_EDIT_ADDRESS = 11;
     private static final int REQUEST_CODE_COURIER_PINPOINT = 13;
     private static final int REQUEST_CODE_PROMO = 954;
+    public static final int REQUEST_CODE_UPLOAD_PRESCRIPTION = 10021;
     private static final int ADD_ON_STATUS_ACTIVE = 1;
     private static final int ADD_ON_STATUS_DISABLE = 2;
 
@@ -212,6 +214,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public static final String ARG_CHECKOUT_PAGE_SOURCE = "ARG_CHECKOUT_PAGE_SOURCE";
     private static final String DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION = "LAST_CHOOSE_COURIER_ITEM_POSITION";
     private static final String DATA_STATE_LAST_CHOOSEN_SERVICE_ID = "DATA_STATE_LAST_CHOOSEN_SERVICE_ID";
+    public static String EXTRA_CHECKOUT_ID_STRING = "extra_checkout_id";
 
     private RecyclerView rvShipment;
     private SwipeToRefresh swipeToRefresh;
@@ -499,6 +502,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                       ShipmentCostModel shipmentCostModel,
                                       EgoldAttributeModel egoldAttributeModel,
                                       ShipmentButtonPaymentModel shipmentButtonPaymentModel,
+                                      UploadPrescriptionUiModel uploadPrescriptionUiModel,
                                       boolean isInitialRender,
                                       boolean isReloadAfterPriceChangeHigher,
                                       boolean isLocalReload) {
@@ -593,6 +597,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         if (isReloadAfterPriceChangeHigher) {
             delayScrollToFirstShop();
+        }
+
+        if(uploadPrescriptionUiModel != null && uploadPrescriptionUiModel.getShowImageUpload() != null
+                && uploadPrescriptionUiModel.getShowImageUpload()){
+            shipmentAdapter.addUploadPrescriptionUiDataModel(uploadPrescriptionUiModel);
         }
     }
 
@@ -819,6 +828,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentPresenter.getShipmentCostModel(),
                 shipmentPresenter.getEgoldAttributeModel(),
                 shipmentPresenter.getShipmentButtonPaymentModel(),
+                shipmentPresenter.getUploadPrescriptionUiModel(),
                 isInitialRender,
                 isReloadAfterPriceChangeHigher,
                 false
@@ -852,6 +862,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentPresenter.getShipmentCostModel(),
                 shipmentPresenter.getEgoldAttributeModel(),
                 shipmentPresenter.getShipmentButtonPaymentModel(),
+                shipmentPresenter.getUploadPrescriptionUiModel(),
                 false,
                 false,
                 true
@@ -1220,6 +1231,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             onUpdateResultAddOnProductLevelBottomSheet(data);
         } else if (requestCode == REQUEST_ADD_ON_ORDER_LEVEL_BOTTOMSHEET) {
             onUpdateResultAddOnOrderLevelBottomSheet(data);
+        }else if (requestCode == REQUEST_CODE_UPLOAD_PRESCRIPTION) {
+            onUploadPrescriptionResult(data);
         }
     }
 
@@ -3399,8 +3412,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void uploadPrescriptionAction(CartShipmentAddressFormData cartShipmentAddressFormData) {
+    public void uploadPrescriptionAction(UploadPrescriptionUiModel uploadPrescriptionUiModel) {
+        // TODO get epharmacy link from BE
+        Intent uploadPrescriptionIntent = RouteManager.getIntent(getActivityContext(),"tokopedia://epharmacy/");
+        uploadPrescriptionIntent.putExtra(EXTRA_CHECKOUT_ID_STRING, "GY27816GA");
+        startActivityForResult(uploadPrescriptionIntent,REQUEST_CODE_UPLOAD_PRESCRIPTION);
+    }
 
+    private void onUploadPrescriptionResult(Intent data){
+        if(getView() != null)
+            Toaster.build(getView(),data.getExtras().getLongArray("epharmacy_prescription_ids").length + "",Toaster.LENGTH_LONG,Toaster.TYPE_NORMAL);
     }
 
     private void updateLocalCacheAddressData(SaveAddressDataModel saveAddressDataModel) {

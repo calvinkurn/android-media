@@ -125,6 +125,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoClashVoucherOrdersUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoSpIdUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.UploadPrescriptionUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel;
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata;
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData;
@@ -210,6 +211,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private String statusOK = "OK";
     private RatesResponseStateConverter stateConverter;
     private LastApplyUiModel lastApplyData;
+    private UploadPrescriptionUiModel uploadPrescriptionUiModel;
 
     @Inject
     public ShipmentPresenter(CompositeSubscription compositeSubscription,
@@ -734,6 +736,15 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         isShowOnboarding = cartShipmentAddressFormData.isShowOnboarding();
         isIneligiblePromoDialogEnabled = cartShipmentAddressFormData.isIneligiblePromoDialogEnabled();
+
+        if(cartShipmentAddressFormData.getShowImageUpload()){
+            setUploadPrescriptionData(new UploadPrescriptionUiModel(
+                    cartShipmentAddressFormData.getShowImageUpload(),
+                    cartShipmentAddressFormData.getUploadPrescText(),
+                    cartShipmentAddressFormData.getRightIconUrl(),
+                    cartShipmentAddressFormData.getLeftIconUrl()
+                    ));
+        }
     }
 
     public void setPurchaseProtection(boolean isPurchaseProtectionPage) {
@@ -2201,6 +2212,16 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public ValidateUsePromoRequest getLastValidateUseRequest() {
         return lastValidateUsePromoRequest;
+    }
+
+    @Override
+    public void setUploadPrescriptionData(UploadPrescriptionUiModel uploadPrescriptionUiModel) {
+        this.uploadPrescriptionUiModel = uploadPrescriptionUiModel;
+    }
+
+    @Override
+    public UploadPrescriptionUiModel getUploadPrescriptionUiModel() {
+        return uploadPrescriptionUiModel;
     }
 
     private boolean isLastAppliedPromo(String promoCode) {
