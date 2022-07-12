@@ -298,4 +298,5 @@
     <!-- leaderboard bottomsheet -->
     <string name="play_bro_finished_bottomsheet_option_right_empty">Gak ada yang pilih jawaban ini</string>
     <string name="play_bro_finished_bottomsheet_option_empty">Yaah, nggak ada yang ikutan quiz ini</string>
+    <string name="play_bro_pin">Pin</string>
 </resources>
