@@ -28,7 +28,7 @@
         app:layout_constraintBottom_toBottomOf="@id/tgp_flash_sale_campaign_name"
         app:layout_constraintLeft_toRightOf="@id/tgp_flash_sale_campaign_name"
         app:layout_constraintTop_toTopOf="@id/tgp_flash_sale_campaign_name"
-        app:srcCompat="@drawable/ic_information" />
+        app:srcCompat="@drawable/ic_information_campaign_tab" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tgp_flash_sale_timer_desc"

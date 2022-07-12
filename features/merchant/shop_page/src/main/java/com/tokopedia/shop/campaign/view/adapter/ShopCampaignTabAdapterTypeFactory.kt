@@ -5,10 +5,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.shop.campaign.WidgetName.FLASH_SALE_TOKO
+import com.tokopedia.shop.campaign.WidgetName.NEW_PRODUCT_LAUNCH_CAMPAIGN
 import com.tokopedia.shop.campaign.WidgetName.PRODUCT_BUNDLE_MULTIPLE
 import com.tokopedia.shop.campaign.WidgetName.PRODUCT_BUNDLE_SINGLE
 import com.tokopedia.shop.campaign.WidgetName.VOUCHER_STATIC
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignFlashSaleViewHolder
+import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignNplPlaceholderViewHolder
+import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignNplViewHolder
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignProductBundleParentWidgetViewHolder
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignVoucherViewHolder
 import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
@@ -71,6 +74,7 @@ class ShopCampaignTabAdapterTypeFactory(
         return when (baseShopHomeWidgetUiModel.name) {
             VOUCHER_STATIC -> ShopCampaignVoucherViewHolder.LAYOUT
             FLASH_SALE_TOKO -> ShopCampaignFlashSaleViewHolder.LAYOUT
+            NEW_PRODUCT_LAUNCH_CAMPAIGN -> getShopHomeNplCampaignViewHolder(baseShopHomeWidgetUiModel)
             PRODUCT_BUNDLE_SINGLE, PRODUCT_BUNDLE_MULTIPLE -> ShopCampaignProductBundleParentWidgetViewHolder.LAYOUT
             else -> HideViewHolder.LAYOUT
         }
@@ -79,15 +83,23 @@ class ShopCampaignTabAdapterTypeFactory(
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         val viewHolder = when (type) {
             ShopCampaignVoucherViewHolder.LAYOUT -> ShopCampaignVoucherViewHolder(parent, onMerchantVoucherListWidgetListener)
+            ShopCampaignFlashSaleViewHolder.LAYOUT -> ShopCampaignFlashSaleViewHolder(parent, shopHomeFlashSaleWidgetListener)
+            ShopCampaignNplViewHolder.LAYOUT -> ShopCampaignNplViewHolder(parent, shopHomeCampaignNplWidgetListener)
+            ShopCampaignNplPlaceholderViewHolder.LAYOUT -> ShopCampaignNplPlaceholderViewHolder(parent)
             ShopCampaignProductBundleParentWidgetViewHolder.LAYOUT -> ShopCampaignProductBundleParentWidgetViewHolder(
                 parent,
                 multipleProductBundleListener,
                 singleProductBundleListener
             )
-            ShopCampaignFlashSaleViewHolder.LAYOUT -> return ShopCampaignFlashSaleViewHolder(parent, shopHomeFlashSaleWidgetListener)
             else -> return super.createViewHolder(parent, type)
         }
         return viewHolder
     }
 
+    override fun getShopHomeNplCampaignViewHolder(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
+        return if(isShowHomeWidgetPlaceHolder(baseShopHomeWidgetUiModel))
+            ShopCampaignNplPlaceholderViewHolder.LAYOUT
+        else
+            ShopCampaignNplViewHolder.LAYOUT
+    }
 }

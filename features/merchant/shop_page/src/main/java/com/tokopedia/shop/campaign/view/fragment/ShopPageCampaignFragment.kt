@@ -207,7 +207,6 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
         topView = viewBinding?.topView
         centerView = viewBinding?.centerView
         bottomView = viewBinding?.bottomView
-
     }
 
     override fun onSuccessGetShopHomeWidgetContentData(mapWidgetContentData: Map<Pair<String, String>, Visitable<*>?>) {
@@ -481,6 +480,152 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
                 RouteManager.route(this, model.header.ctaLink)
             }
         }
+    }
+    // endregion
+
+    // region npl widget
+    override fun onCampaignCarouselProductItemClicked(
+        parentPosition: Int,
+        itemPosition: Int,
+        shopHomeNewProductLaunchCampaignUiModel: ShopHomeNewProductLaunchCampaignUiModel,
+        shopHomeProductViewModel: ShopHomeProductUiModel?
+    ) {
+        sendShopHomeWidgetClickedTracker(
+            ShopPageTrackingConstant.VALUE_SHOP_DECOR_CAMPAIGN,
+            shopHomeNewProductLaunchCampaignUiModel.name,
+            shopHomeNewProductLaunchCampaignUiModel.widgetId,
+            ShopUtil.getActualPositionFromIndex(parentPosition)
+        )
+        shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.let {
+            shopPageHomeTracking.clickCampaignNplProduct(
+                isOwner,
+                it.statusCampaign,
+                shopHomeProductViewModel?.name ?: "",
+                shopHomeProductViewModel?.id ?: "",
+                shopHomeProductViewModel?.displayedPrice ?: "",
+                shopName,
+                ShopUtil.getActualPositionFromIndex(parentPosition),
+                itemPosition,
+                isLogin,
+                customDimensionShopPage
+            )
+        }
+        shopHomeProductViewModel?.let {
+            goToPDP(it.id ?: "")
+        }
+    }
+
+    override fun onCampaignCarouselProductItemImpression(
+        parentPosition: Int,
+        itemPosition: Int,
+        shopHomeNewProductLaunchCampaignUiModel: ShopHomeNewProductLaunchCampaignUiModel,
+        shopHomeProductViewModel: ShopHomeProductUiModel?
+    ) {
+        shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.let {
+            shopPageHomeTracking.impressionCampaignNplProduct(
+                isOwner,
+                it.statusCampaign,
+                shopHomeProductViewModel?.name ?: "",
+                shopHomeProductViewModel?.id ?: "",
+                shopHomeProductViewModel?.displayedPrice ?: "",
+                shopName,
+                ShopUtil.getActualPositionFromIndex(parentPosition),
+                itemPosition,
+                isLogin,
+                customDimensionShopPage
+            )
+        }
+    }
+
+    override fun onClickTncCampaignNplWidget(model: ShopHomeNewProductLaunchCampaignUiModel) {
+        model.data?.firstOrNull()?.let {
+            shopPageHomeTracking.clickTncButton(isOwner, it.statusCampaign, customDimensionShopPage)
+            showNplCampaignTncBottomSheet(
+                it.campaignId,
+                it.statusCampaign,
+                it.dynamicRule.dynamicRoleData.ruleID
+            )
+        }
+    }
+
+    override fun onClickRemindMe(model: ShopHomeNewProductLaunchCampaignUiModel) {
+        viewModel?.let {
+            val campaignId = model.data?.firstOrNull()?.campaignId.orEmpty()
+            if (it.isLogin) {
+                shopCampaignTabAdapter.showNplRemindMeLoading(campaignId)
+                handleClickRemindMe(model)
+            } else {
+                setNplRemindMeClickedCampaignId(campaignId)
+                redirectToLoginPage()
+            }
+        }
+    }
+
+    override fun onClickCtaCampaignNplWidget(model: ShopHomeNewProductLaunchCampaignUiModel) {
+        model.data?.firstOrNull()?.let {
+            shopPageHomeTracking.clickCtaCampaignNplWidget(
+                isOwner,
+                it.statusCampaign,
+                customDimensionShopPage
+            )
+            context?.let { context ->
+                // expected ctaLink produce ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT_LIST
+                val showcaseIntent = RouteManager.getIntent(context, model.header.ctaLink).apply {
+                    // set isNeedToReload data to true for sync shop info data in product result fragment
+                    putExtra(ShopCommonExtraConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, true)
+                }
+                startActivity(showcaseIntent)
+            }
+        }
+    }
+
+    override fun onImpressionCampaignNplWidget(
+        position: Int,
+        shopHomeNewProductLaunchCampaignUiModel: ShopHomeNewProductLaunchCampaignUiModel
+    ) {
+        shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.let {
+            val statusCampaign = it.statusCampaign
+            val selectedBannerType = when (statusCampaign.toLowerCase()) {
+                StatusCampaign.UPCOMING.statusCampaign.toLowerCase() -> BannerType.UPCOMING.bannerType
+                StatusCampaign.ONGOING.statusCampaign.toLowerCase() -> BannerType.LIVE.bannerType
+                StatusCampaign.FINISHED.statusCampaign.toLowerCase() -> BannerType.FINISHED.bannerType
+                else -> ""
+            }
+            val selectedBanner = it.bannerList.firstOrNull {
+                it.bannerType.toLowerCase() == selectedBannerType.toLowerCase()
+            }
+            val isSeeCampaign =
+                if (statusCampaign.toLowerCase() == StatusCampaign.UPCOMING.statusCampaign.toLowerCase()) {
+                    it.totalNotifyWording.isNotEmpty()
+                } else {
+                    null
+                }
+            sendShopHomeWidgetImpressionTracker(
+                ShopPageTrackingConstant.VALUE_SHOP_DECOR_CAMPAIGN,
+                shopHomeNewProductLaunchCampaignUiModel.name,
+                shopHomeNewProductLaunchCampaignUiModel.widgetId,
+                ShopUtil.getActualPositionFromIndex(position)
+            )
+            shopPageHomeTracking.impressionCampaignNplWidget(
+                it.statusCampaign,
+                shopId,
+                ShopUtil.getActualPositionFromIndex(position),
+                isSeeCampaign,
+                selectedBanner?.imageId.orEmpty(),
+                selectedBanner?.imageUrl ?: "",
+                customDimensionShopPage,
+                isOwner
+            )
+        }
+    }
+
+    override fun onTimerFinished(model: ShopHomeNewProductLaunchCampaignUiModel) {
+        shopCampaignTabAdapter.removeWidget(model)
+        endlessRecyclerViewScrollListener.resetState()
+        shopCampaignTabAdapter.removeProductList()
+        shopCampaignTabAdapter.showLoading()
+        viewModel?.getShopPageHomeWidgetLayoutData(shopId, extParam)
+        scrollToTop()
     }
     // endregion
 
@@ -954,70 +1099,6 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
         }
     }
 
-    override fun onCampaignCarouselProductItemClicked(
-        parentPosition: Int,
-        itemPosition: Int,
-        shopHomeNewProductLaunchCampaignUiModel: ShopHomeNewProductLaunchCampaignUiModel,
-        shopHomeProductViewModel: ShopHomeProductUiModel?
-    ) {
-        sendShopHomeWidgetClickedTracker(
-            ShopPageTrackingConstant.VALUE_SHOP_DECOR_CAMPAIGN,
-            shopHomeNewProductLaunchCampaignUiModel.name,
-            shopHomeNewProductLaunchCampaignUiModel.widgetId,
-            ShopUtil.getActualPositionFromIndex(parentPosition)
-        )
-        shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.let {
-            shopPageHomeTracking.clickCampaignNplProduct(
-                isOwner,
-                it.statusCampaign,
-                shopHomeProductViewModel?.name ?: "",
-                shopHomeProductViewModel?.id ?: "",
-                shopHomeProductViewModel?.displayedPrice ?: "",
-                shopName,
-                ShopUtil.getActualPositionFromIndex(parentPosition),
-                itemPosition,
-                isLogin,
-                customDimensionShopPage
-            )
-        }
-        shopHomeProductViewModel?.let {
-            goToPDP(it.id ?: "")
-        }
-    }
-
-    override fun onCampaignCarouselProductItemImpression(
-        parentPosition: Int,
-        itemPosition: Int,
-        shopHomeNewProductLaunchCampaignUiModel: ShopHomeNewProductLaunchCampaignUiModel,
-        shopHomeProductViewModel: ShopHomeProductUiModel?
-    ) {
-        shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.let {
-            shopPageHomeTracking.impressionCampaignNplProduct(
-                isOwner,
-                it.statusCampaign,
-                shopHomeProductViewModel?.name ?: "",
-                shopHomeProductViewModel?.id ?: "",
-                shopHomeProductViewModel?.displayedPrice ?: "",
-                shopName,
-                ShopUtil.getActualPositionFromIndex(parentPosition),
-                itemPosition,
-                isLogin,
-                customDimensionShopPage
-            )
-        }
-    }
-
-    override fun onClickTncCampaignNplWidget(model: ShopHomeNewProductLaunchCampaignUiModel) {
-        model.data?.firstOrNull()?.let {
-            shopPageHomeTracking.clickTncButton(isOwner, it.statusCampaign, customDimensionShopPage)
-            showNplCampaignTncBottomSheet(
-                it.campaignId,
-                it.statusCampaign,
-                it.dynamicRule.dynamicRoleData.ruleID
-            )
-        }
-    }
-
     private fun showNplCampaignTncBottomSheet(
         campaignId: String,
         statusCampaign: String,
@@ -1037,19 +1118,6 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
     private fun showFlashTncSaleBottomSheet(campaignId: String) {
         val bottomSheet = ShopHomeFlashSaleTncBottomSheet.createInstance(campaignId)
         bottomSheet.show(childFragmentManager, "")
-    }
-
-    override fun onClickRemindMe(model: ShopHomeNewProductLaunchCampaignUiModel) {
-        viewModel?.let {
-            val campaignId = model.data?.firstOrNull()?.campaignId.orEmpty()
-            if (it.isLogin) {
-                shopCampaignTabAdapter.showNplRemindMeLoading(campaignId)
-                handleClickRemindMe(model)
-            } else {
-                setNplRemindMeClickedCampaignId(campaignId)
-                redirectToLoginPage()
-            }
-        }
     }
 
     private fun handleClickRemindMe(model: ShopHomeNewProductLaunchCampaignUiModel) {
@@ -1072,85 +1140,6 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
         }
         val campaignId = model.data?.firstOrNull()?.campaignId ?: ""
         viewModel?.clickFlashSaleReminder(campaignId, action)
-    }
-
-    override fun onClickCtaCampaignNplWidget(model: ShopHomeNewProductLaunchCampaignUiModel) {
-        model.data?.firstOrNull()?.let {
-            shopPageHomeTracking.clickCtaCampaignNplWidget(
-                isOwner,
-                it.statusCampaign,
-                customDimensionShopPage
-            )
-            context?.let { context ->
-                // expected ctaLink produce ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT_LIST
-                val showcaseIntent = RouteManager.getIntent(context, model.header.ctaLink).apply {
-                    // set isNeedToReload data to true for sync shop info data in product result fragment
-                    putExtra(ShopCommonExtraConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, true)
-                }
-                startActivity(showcaseIntent)
-            }
-        }
-    }
-
-    override fun onClickCampaignBannerAreaNplWidget(model: ShopHomeNewProductLaunchCampaignUiModel) {
-        model.data?.firstOrNull()?.let {
-            context?.let { context ->
-                val appLink = model.header.ctaLink
-                if (appLink.isNotEmpty()) {
-                    RouteManager.route(context, appLink)
-                }
-            }
-        }
-    }
-
-    override fun onImpressionCampaignNplWidget(
-        position: Int,
-        shopHomeNewProductLaunchCampaignUiModel: ShopHomeNewProductLaunchCampaignUiModel
-    ) {
-        shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.let {
-            val statusCampaign = it.statusCampaign
-            val selectedBannerType = when (statusCampaign.toLowerCase()) {
-                StatusCampaign.UPCOMING.statusCampaign.toLowerCase() -> BannerType.UPCOMING.bannerType
-                StatusCampaign.ONGOING.statusCampaign.toLowerCase() -> BannerType.LIVE.bannerType
-                StatusCampaign.FINISHED.statusCampaign.toLowerCase() -> BannerType.FINISHED.bannerType
-                else -> ""
-            }
-            val selectedBanner = it.bannerList.firstOrNull {
-                it.bannerType.toLowerCase() == selectedBannerType.toLowerCase()
-            }
-            val isSeeCampaign =
-                if (statusCampaign.toLowerCase() == StatusCampaign.UPCOMING.statusCampaign.toLowerCase()) {
-                    it.totalNotifyWording.isNotEmpty()
-                } else {
-                    null
-                }
-            sendShopHomeWidgetImpressionTracker(
-                ShopPageTrackingConstant.VALUE_SHOP_DECOR_CAMPAIGN,
-                shopHomeNewProductLaunchCampaignUiModel.name,
-                shopHomeNewProductLaunchCampaignUiModel.widgetId,
-                ShopUtil.getActualPositionFromIndex(position)
-            )
-            shopPageHomeTracking.impressionCampaignNplWidget(
-                    it.statusCampaign,
-                    shopId,
-                    ShopUtil.getActualPositionFromIndex(position),
-                    isSeeCampaign,
-                    selectedBanner?.imageId.orEmpty(),
-                    selectedBanner?.imageUrl ?: "",
-                    customDimensionShopPage,
-                    isOwner
-            )
-        }
-    }
-
-    // npl widget
-    override fun onTimerFinished(model: ShopHomeNewProductLaunchCampaignUiModel) {
-        shopCampaignTabAdapter.removeWidget(model)
-        endlessRecyclerViewScrollListener.resetState()
-        shopCampaignTabAdapter.removeProductList()
-        shopCampaignTabAdapter.showLoading()
-        viewModel?.getShopPageHomeWidgetLayoutData(shopId, extParam)
-        scrollToTop()
     }
 
     private fun setNplRemindMeClickedCampaignId(campaignId: String) {

@@ -11,7 +11,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.common.widget.bundle.adapter.ShopHomeProductBundleWidgetAdapter
 import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleListener
 import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleListener
-import com.tokopedia.shop.databinding.ItemShopHomeProductBundleParentWidgetBinding
+import com.tokopedia.shop.databinding.ItemShopCampaignProductBundleParentWidgetBinding
 import com.tokopedia.shop.home.view.model.ShopHomeProductBundleListUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -32,7 +32,7 @@ class ShopCampaignProductBundleParentWidgetViewHolder (
         private const val BUNDLE_SINGLE_ITEM_SIZE = 1
     }
 
-    private val viewBinding: ItemShopHomeProductBundleParentWidgetBinding? by viewBinding()
+    private val viewBinding: ItemShopCampaignProductBundleParentWidgetBinding? by viewBinding()
     private var tvWidgetTitle : TextView? = null
     private var rvBundleList : RecyclerView? = null
     private var rvBundleAdapter : ShopHomeProductBundleWidgetAdapter? = null

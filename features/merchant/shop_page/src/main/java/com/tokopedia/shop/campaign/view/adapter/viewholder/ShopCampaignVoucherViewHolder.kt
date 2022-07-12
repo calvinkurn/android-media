@@ -18,7 +18,7 @@ import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.views.MvcView
 
 import com.tokopedia.shop.R
-import com.tokopedia.shop.databinding.ItemShopHomeMerchantVoucherBinding
+import com.tokopedia.shop.databinding.ItemShopCampaignMerchantVoucherBinding
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVoucherViewHolder
 import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -38,7 +38,7 @@ class ShopCampaignVoucherViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.item_shop_campaign_merchant_voucher
     }
-    private val viewBinding: ItemShopHomeMerchantVoucherBinding? by viewBinding()
+    private val viewBinding: ItemShopCampaignMerchantVoucherBinding? by viewBinding()
     private var merchantVoucherWidget: MvcView? = null
     private var merchantVoucherReload: CardView? = null
     private var merchantVoucherUiModel: ShopHomeVoucherUiModel? = null

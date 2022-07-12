@@ -144,7 +144,7 @@ open class ShopHomeAdapterTypeFactory(
         }
     }
 
-    private fun getShopHomeNplCampaignViewHolder(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
+    open fun getShopHomeNplCampaignViewHolder(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
         return if(isShowHomeWidgetPlaceHolder(baseShopHomeWidgetUiModel))
             ShopHomeNplCampaignPlaceholderViewHolder.LAYOUT
         else
@@ -186,7 +186,7 @@ open class ShopHomeAdapterTypeFactory(
             ShopHomeMultipleImageColumnViewHolder.LAYOUT_RES
     }
 
-    private fun isShowHomeWidgetPlaceHolder(model: BaseShopHomeWidgetUiModel): Boolean {
+    fun isShowHomeWidgetPlaceHolder(model: BaseShopHomeWidgetUiModel): Boolean {
         return model.widgetState == WidgetState.PLACEHOLDER || model.widgetState == WidgetState.LOADING
     }
 
