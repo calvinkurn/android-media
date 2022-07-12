@@ -22,6 +22,7 @@ import com.tokopedia.sellerhomecommon.domain.mapper.ProgressMapper
 import com.tokopedia.sellerhomecommon.domain.mapper.RecommendationMapper
 import com.tokopedia.sellerhomecommon.domain.mapper.TableMapper
 import com.tokopedia.sellerhomecommon.domain.mapper.TickerMapper
+import com.tokopedia.sellerhomecommon.domain.mapper.UnificationMapper
 import com.tokopedia.sellerhomecommon.domain.usecase.GetAnnouncementDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetBarChartDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetCalendarDataUseCase
@@ -37,6 +38,7 @@ import com.tokopedia.sellerhomecommon.domain.usecase.GetProgressDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetRecommendationDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetTableDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetTickerUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetUnificationDataUseCase
 import dagger.Module
 import dagger.Provides
 
@@ -209,10 +211,19 @@ class SellerHomeUseCaseModule {
 
     @SellerHomeScope
     @Provides
+    fun provideGetUnificationDataUseCase(
+        gqlRepository: GraphqlRepository,
+        mapper: UnificationMapper,
+        dispatchers: CoroutineDispatchers
+    ): GetUnificationDataUseCase {
+        return GetUnificationDataUseCase(gqlRepository, mapper, dispatchers)
+    }
+
+    @SellerHomeScope
+    @Provides
     fun provideGetTickerUseCase(
         gqlRepository: GraphqlRepository,
         mapper: TickerMapper,
         dispatchers: CoroutineDispatchers
     ): GetTickerUseCase = GetTickerUseCase(gqlRepository, mapper, dispatchers)
-
 }

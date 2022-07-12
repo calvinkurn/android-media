@@ -20,13 +20,13 @@ data class UnificationWidgetUiModel(
     override val gridSize: Int,
     override val isShowEmpty: Boolean,
     override var data: BaseDataUiModel?,
-    override var impressHolder: ImpressHolder,
     override var isLoaded: Boolean,
     override var isLoading: Boolean,
     override var isFromCache: Boolean,
-    override var isNeedToBeRemoved: Boolean,
     override var emptyState: WidgetEmptyStateUiModel,
-    override var showLoadingState: Boolean
+    override var impressHolder: ImpressHolder = ImpressHolder(),
+    override var isNeedToBeRemoved: Boolean = false,
+    override var showLoadingState: Boolean = false
 
 ) : BaseWidgetUiModel<BaseDataUiModel> {
 

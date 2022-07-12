@@ -23,6 +23,7 @@ import com.tokopedia.sellerhomecommon.domain.usecase.GetPostDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetProgressDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetRecommendationDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetTableDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetUnificationDataUseCase
 import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BarChartDataUiModel
@@ -53,6 +54,8 @@ import com.tokopedia.sellerhomecommon.presentation.model.RecommendationWidgetUiM
 import com.tokopedia.sellerhomecommon.presentation.model.SectionWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.UnificationDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.UnificationWidgetUiModel
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.sellerhomecommon.utils.Utils
 import dagger.Lazy
@@ -81,6 +84,7 @@ class SellerHomeLayoutHelper @Inject constructor(
     private val getRecommendationUseCase: Lazy<GetRecommendationDataUseCase>,
     private val getMilestoneDataUseCase: Lazy<GetMilestoneDataUseCase>,
     private val getCalendarDataUseCase: Lazy<GetCalendarDataUseCase>,
+    private val getUnificationDataUseCase: Lazy<GetUnificationDataUseCase>,
     private val remoteConfig: Lazy<SellerHomeRemoteConfig>,
     private val dispatcher: CoroutineDispatchers
 ) {
@@ -282,6 +286,7 @@ class SellerHomeLayoutHelper @Inject constructor(
                             WidgetType.RECOMMENDATION -> getRecommendationData(it)
                             WidgetType.MILESTONE -> getMilestoneData(it)
                             WidgetType.CALENDAR -> getCalendarData(it)
+                            WidgetType.UNIFICATION -> getUnificationData(it)
                             else -> null
                         }
                     }.orEmpty()
@@ -553,6 +558,20 @@ class SellerHomeLayoutHelper @Inject constructor(
         withContext(dispatcher.main) {
             startWidgetCustomMetricTag.value =
                 SellerHomePerformanceMonitoringConstant.SELLER_HOME_CALENDAR_TRACE
+        }
+        val shouldUseCache = remoteConfig.get().isSellerHomeDashboardCachingEnabled()
+                && useCase.isFirstLoad
+        return getDataFromUseCase(useCase, shouldUseCache)
+    }
+
+    private suspend fun getUnificationData(widgets: List<BaseWidgetUiModel<*>>): List<UnificationDataUiModel> {
+        widgets.setLoading()
+        val dataKeys = Utils.getWidgetDataKeys<UnificationWidgetUiModel>(widgets)
+        val useCase = getUnificationDataUseCase.get()
+        useCase.params = GetUnificationDataUseCase.createParams(dataKeys)
+        withContext(dispatcher.main) {
+            startWidgetCustomMetricTag.value =
+                SellerHomePerformanceMonitoringConstant.SELLER_HOME_UNIFICATION_TRACE
         }
         val shouldUseCache = remoteConfig.get().isSellerHomeDashboardCachingEnabled()
                 && useCase.isFirstLoad

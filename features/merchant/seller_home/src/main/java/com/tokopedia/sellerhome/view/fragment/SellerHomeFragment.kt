@@ -44,6 +44,7 @@ import com.tokopedia.sellerhome.analytic.performance.HomeLayoutLoadTimeMonitorin
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_ANNOUNCEMENT_TRACE
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_BAR_CHART_TRACE
+import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_CALENDAR_TRACE
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_CARD_TRACE
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_CAROUSEL_TRACE
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_LINE_GRAPH_TRACE
@@ -54,6 +55,7 @@ import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonito
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_PROGRESS_TRACE
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_RECOMMENDATION_TRACE
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_TABLE_TRACE
+import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_UNIFICATION_TRACE
 import com.tokopedia.sellerhome.common.SellerHomeConst
 import com.tokopedia.sellerhome.common.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
@@ -250,6 +252,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         observeWidgetData(sellerHomeViewModel.recommendationWidgetData, WidgetType.RECOMMENDATION)
         observeWidgetData(sellerHomeViewModel.milestoneWidgetData, WidgetType.MILESTONE)
         observeWidgetData(sellerHomeViewModel.calendarWidgetData, WidgetType.CALENDAR)
+        observeWidgetData(sellerHomeViewModel.unificationWidgetData, WidgetType.UNIFICATION)
         observeTickerLiveData()
         observeCustomTracePerformanceMonitoring()
         observeShopShareData()
@@ -1072,13 +1075,20 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun getCalendarData(widgets: List<BaseWidgetUiModel<*>>) {
-        startCustomMetric(SELLER_HOME_MILESTONE_TRACE)
+        startCustomMetric(SELLER_HOME_CALENDAR_TRACE)
         widgets.setLoading()
         val dataKeys = widgets.filterIsInstance<CalendarWidgetUiModel>()
             .map {
                 it.filter
             }
         sellerHomeViewModel.getCalendarWidgetData(dataKeys)
+    }
+
+    private fun getUnificationData(widgets: List<BaseWidgetUiModel<*>>) {
+        startCustomMetric(SELLER_HOME_UNIFICATION_TRACE)
+        widgets.setLoading()
+        val dataKeys = Utils.getWidgetDataKeys<UnificationWidgetUiModel>(widgets)
+        sellerHomeViewModel.getUnificationWidgetData(dataKeys)
     }
 
     private fun setupShopSharing() {
@@ -1387,6 +1397,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         groupedWidgets[WidgetType.RECOMMENDATION]?.run { getRecommendationData(this) }
         groupedWidgets[WidgetType.MILESTONE]?.run { getMilestoneData(this) }
         groupedWidgets[WidgetType.CALENDAR]?.run { getCalendarData(this) }
+        groupedWidgets[WidgetType.UNIFICATION]?.run { getUnificationData(this) }
         groupedWidgets[WidgetType.SECTION]?.run {
             recyclerView?.post {
                 val newWidgetList = adapter.data.toMutableList()
