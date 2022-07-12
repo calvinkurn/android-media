@@ -266,4 +266,25 @@ object SmartBillsQueries {
         """.trimIndent()
     }
 
+    val RECHARGE_RECOMMENDATION by lazy {
+        """
+            query rechargeRecommendation(${'$'}type : Int!) {
+              rechargeRecommendation(recommendationType: ${'$'}type) {
+                UUID
+                Recommendations {
+                  ContentID
+                  MainText
+                  SubText
+                  AppLink
+                  Link
+                  IconURL
+            	  Title
+            	  BackgroundColor
+            	  ButtonText
+                }
+              }
+            }
+        """.trimIndent()
+    }
+
 }

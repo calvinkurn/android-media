@@ -14,6 +14,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.smartbills.data.*
@@ -57,6 +58,8 @@ class SmartBillsViewModel @Inject constructor(
     private val mutableHighlightCategory = MutableLiveData<Result<HighlightCategoryUiModel>>()
     val highlightCategory: LiveData<Result<HighlightCategoryUiModel>>
         get() = mutableHighlightCategory
+
+    var positionRechargeActive: Int = 0
 
     fun getStatementMonths(mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
         launchCatchError(block = {
@@ -197,6 +200,24 @@ class SmartBillsViewModel @Inject constructor(
         }
     }
 
+    fun getHightlightCategory() {
+        launchCatchError(block = {
+            val graphqlRequest = GraphqlRequest(
+                SmartBillsQueries.RECHARGE_RECOMMENDATION,
+                RechargeRecommendation::class.java, createParamHighlightCategory()
+            )
+
+            val data = withContext(dispatcher.io) {
+                graphqlRepository.response(listOf(graphqlRequest), GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+            }.getSuccessData<RechargeRecommendation>()
+
+            mutableHighlightCategory.postValue(Success(mapperHighlightUiModel(data, positionRechargeActive)))
+        }
+        ) {
+            mutableHighlightCategory.postValue(Fail(it))
+        }
+    }
+
     fun createStatementMonthsParams(limit: Int): Map<String, Int> {
         return mapOf(PARAM_LIMIT to limit)
     }
@@ -240,25 +261,37 @@ class SmartBillsViewModel @Inject constructor(
         return map
     }
 
+    fun createParamHighlightCategory(): Map<String, Any> {
+        val map = mutableMapOf(PARAM_RECHARGE_RECOM to RECHARGE_RECOM_TYPE)
+        return map
+    }
+
     fun convertSBMMultiResponse(typeRestResponseMap: Map<Type, RestResponse?>): DataRechargeMultiCheckoutResponse {
         return typeRestResponseMap[DataRechargeMultiCheckoutResponse::class.java]?.getData() as DataRechargeMultiCheckoutResponse
     }
 
-    fun getHightlightCategory() {
-        launchCatchError(block = {
-            val data = HighlightCategoryUiModel(
-                "1",
-                "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2020/8/28/47197032/47197032_914c9752-19e1-42b0-8181-91ef0629fd8a.png",
-                "Bayar sekaligus Pajak PBB 2022",
-                "Tagihan PBB 2022",
-                "Masukkan nomor PBB disini",
-                "tokopedia://digital/form?category_id=1&menu_id=2&template=telcopre&is_add_sbm=true"
+    fun isHighlightNotEmpty(highlight: HighlightCategoryUiModel): Boolean {
+        return highlight.imageUrl.isNotEmpty()
+                || highlight.id.isNotEmpty()
+                || highlight.applink.isNotEmpty()
+                || highlight.date.isNotEmpty()
+    }
+
+    private fun mapperHighlightUiModel(rechargeRecommendation: RechargeRecommendation, position: Int): HighlightCategoryUiModel {
+        if (rechargeRecommendation.recommendations.size >= (position + Int.ONE)){
+            val recommendation = rechargeRecommendation.recommendations.get(position)
+            return HighlightCategoryUiModel(
+                recommendation.contentID,
+                recommendation.iconURL,
+                recommendation.title,
+                recommendation.mainText,
+                recommendation.subText,
+                recommendation.applink
             )
-            mutableHighlightCategory.postValue(Success(data))
+        } else {
+            return HighlightCategoryUiModel()
         }
-        ) {
-            mutableHighlightCategory.postValue(Fail(it))
-        }
+
     }
 
     companion object {
@@ -269,6 +302,7 @@ class SmartBillsViewModel @Inject constructor(
         const val PARAM_UUIDS = "uuids"
         const val PARAM_PLATFORM_ID = "platformID"
         const val PARAM_DELETE_SBM = "req"
+        const val PARAM_RECHARGE_RECOM = "type"
 
         const val STATEMENT_MONTHS_ERROR = "STATEMENT_MONTHS_ERROR"
         const val STATEMENT_BILLS_ERROR = "STATEMENT_BILLS_ERROR"
@@ -279,6 +313,7 @@ class SmartBillsViewModel @Inject constructor(
         const val CONTENT_TYPE = "Content-Type"
 
         const val CACHE_DURATION_MINUTES = 5
+        const val RECHARGE_RECOM_TYPE = 1
 
         const val HARD_CODE_EMPTY_RESPONSE = "error get base data: [favorite] empty favorite data"
     }

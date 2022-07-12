@@ -329,7 +329,11 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         viewLifecycleOwner.observe(viewModel.highlightCategory) {
             when(it){
                 is Success -> {
-                    showHighlightCategory(it.data)
+                    if (viewModel.isHighlightNotEmpty(it.data)){
+                        showHighlightCategory(it.data)
+                    } else {
+                        hideHighlightCategory()
+                    }
                 }
 
                 is Fail -> {
