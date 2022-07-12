@@ -36,7 +36,8 @@ class ShopHomeFlashSaleProductCardGridViewHolder(
             isHasAddToCartButton = false,
             hasThreeDots = false,
             shopHomeProductViewModel = uiModel,
-            widgetName = fsUiModel?.name.orEmpty()
+            widgetName = fsUiModel?.name.orEmpty(),
+            statusCampaign = fsUiModel?.data?.firstOrNull()?.statusCampaign.orEmpty()
         )
         productCardGrid?.setProductModel(productCardModel)
         setupAddToCartListener(listener)

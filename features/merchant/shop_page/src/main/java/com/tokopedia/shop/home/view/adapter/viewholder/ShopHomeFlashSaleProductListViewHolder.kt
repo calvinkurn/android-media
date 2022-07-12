@@ -33,7 +33,8 @@ class ShopHomeFlashSaleProductListViewHolder(
             isHasAddToCartButton = false,
             hasThreeDots = false,
             shopHomeProductViewModel = uiModel,
-            widgetName = fsUiModel?.name.orEmpty()
+            widgetName = fsUiModel?.name.orEmpty(),
+            statusCampaign = fsUiModel?.data?.firstOrNull()?.statusCampaign.orEmpty()
         )
         productCardList?.setProductModel(productCardModel)
         setupAddToCartListener(listener)

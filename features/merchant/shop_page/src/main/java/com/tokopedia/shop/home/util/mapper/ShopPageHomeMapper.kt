@@ -286,7 +286,8 @@ object ShopPageHomeMapper {
         isHasAddToCartButton: Boolean,
         hasThreeDots: Boolean,
         shopHomeProductViewModel: ShopHomeProductUiModel,
-        widgetName: String
+        widgetName: String,
+        statusCampaign: String
     ): ProductCardModel {
         val discountWithoutPercentageString =
             shopHomeProductViewModel.discountPercentage?.replace("%", "")
@@ -324,6 +325,7 @@ object ShopPageHomeMapper {
                 shopHomeProductViewModel.isEnableDirectPurchase,
                 widgetName
             ) && isProductCardIsNotSoldOut(shopHomeProductViewModel.isSoldOut)
+            && isStatusCampaignIsOngoing(statusCampaign)
         ) {
             if (shopHomeProductViewModel.isVariant) {
                 createProductCardWithVariantAtcModel(shopHomeProductViewModel, baseProductCardModel)
@@ -340,6 +342,10 @@ object ShopPageHomeMapper {
         } else {
             baseProductCardModel
         }
+    }
+
+    private fun isStatusCampaignIsOngoing(statusCampaign: String): Boolean {
+        return statusCampaign.equals(StatusCampaign.ONGOING.statusCampaign, true)
     }
 
     private fun isShopCampaignWidgetEnableDirectPurchase(
