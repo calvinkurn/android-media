@@ -64,7 +64,7 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
                 reviewerName = reviewDetailData.user.fullName,
                 reviewerStatsSummary = reviewDetailData.userStats.joinToString(separator = " • ") {
                     it.formatted
-                }.let { if (it.isNotBlank()) " • $it" else it }
+                }
             ),
             supplementaryInfoUiModel = ReviewDetailSupplementaryInfoUiModel(
                 review = reviewDetailData.review,
@@ -146,7 +146,7 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
     }
 
     @Test
-    fun `reviewDetailFragmentUiState should equal to Showing when _basicInfoUiState is Showing, _supplementaryInfoUiState is Hidden and _expanded is false`() = runBlockingTest {
+    fun `reviewDetailFragmentUiState should equal to Showing when _basicInfoUiState is Showing, _supplementaryInfoUiState is Hidden`() = runBlockingTest {
         val firstMedia = getDetailedReviewMediaResultWithImageAndVideo.reviewMedia.first()
         val mediaItemUiModel = VideoMediaItemUiModel(
             id = firstMedia.videoId,
@@ -162,7 +162,7 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
         Assert.assertTrue(
             reviewDetailFragmentUiState is ReviewDetailFragmentUiState.Showing &&
             reviewDetailFragmentUiState.basicInfoUiState is ReviewDetailBasicInfoUiState.Showing &&
-            reviewDetailFragmentUiState.supplementaryUiState is ReviewDetailSupplementaryUiState.Hidden
+            reviewDetailFragmentUiState.supplementaryUiState is ReviewDetailSupplementaryUiState.Showing
         )
     }
 
@@ -181,15 +181,14 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
     }
 
     @Test
-    fun `saveState should put _expanded and _showExpandedReviewDetailBottomSheet value to given Bundle object`() {
+    fun `saveState should put _showExpandedReviewDetailBottomSheet value to given Bundle object`() {
         val outState = mockk<Bundle>(relaxed = true)
         viewModel.saveState(outState)
-        verify { outState.putBoolean(ReviewDetailViewModel.SAVED_STATE_EXPANDED, any()) }
         verify { outState.putBoolean(ReviewDetailViewModel.SAVED_STATE_SHOW_EXPANDED_REVIEW_DETAIL_BOTTOM_SHEET, any()) }
     }
 
     @Test
-    fun `restoreSavedState should restore _expanded and _showExpandedReviewDetailBottomSheet latest state saved in given Bundle object`() = runBlockingTest {
+    fun `restoreSavedState should restore _showExpandedReviewDetailBottomSheet latest state saved in given Bundle object`() = runBlockingTest {
         val firstMedia = getDetailedReviewMediaResultWithImageAndVideo.reviewMedia.first()
         val mediaItemUiModel = VideoMediaItemUiModel(
             id = firstMedia.videoId,
@@ -210,15 +209,10 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
         viewModel.dismissExpandedReviewDetailBottomSheet()
 
         // verify state changed
-        val resetReviewDetailFragmentUiState = viewModel.reviewDetailFragmentUiState.first()
         val resetExpandedReviewDetailBottomSheetUiState = viewModel.expandedReviewDetailBottomSheetUiState.first()
-        Assert.assertNotEquals(latestReviewDetailFragmentUiState, resetReviewDetailFragmentUiState)
         Assert.assertNotEquals(latestExpandedReviewDetailBottomSheetUiState, resetExpandedReviewDetailBottomSheetUiState)
 
         val savedState = mockk<Bundle>(relaxed = true) {
-            every {
-                getSavedState(ReviewDetailViewModel.SAVED_STATE_EXPANDED, false)
-            } returns true
             every {
                 getSavedState(ReviewDetailViewModel.SAVED_STATE_SHOW_EXPANDED_REVIEW_DETAIL_BOTTOM_SHEET, false)
             } returns true
@@ -231,7 +225,7 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
     }
 
     @Test
-    fun `restoreSavedState should not change _expanded and _showExpandedReviewDetailBottomSheet if no state is saved`() = runBlockingTest {
+    fun `restoreSavedState should not change _showExpandedReviewDetailBottomSheet if no state is saved`() = runBlockingTest {
         val firstMedia = getDetailedReviewMediaResultWithImageAndVideo.reviewMedia.first()
         val mediaItemUiModel = VideoMediaItemUiModel(
             id = firstMedia.videoId,
@@ -254,13 +248,9 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
         // verify state changed
         val resetReviewDetailFragmentUiState = viewModel.reviewDetailFragmentUiState.first()
         val resetExpandedReviewDetailBottomSheetUiState = viewModel.expandedReviewDetailBottomSheetUiState.first()
-        Assert.assertNotEquals(latestReviewDetailFragmentUiState, resetReviewDetailFragmentUiState)
         Assert.assertNotEquals(latestExpandedReviewDetailBottomSheetUiState, resetExpandedReviewDetailBottomSheetUiState)
 
         val savedState = mockk<Bundle> {
-            every {
-                getSavedState(ReviewDetailViewModel.SAVED_STATE_EXPANDED, false)
-            } returns null
             every {
                 getSavedState(ReviewDetailViewModel.SAVED_STATE_SHOW_EXPANDED_REVIEW_DETAIL_BOTTOM_SHEET, false)
             } returns null
@@ -268,8 +258,8 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
         viewModel.restoreSavedState(savedState)
         val currentReviewDetailFragmentUiState = viewModel.reviewDetailFragmentUiState.first()
         val currentExpandedReviewDetailBottomSheetUiState = viewModel.expandedReviewDetailBottomSheetUiState.first()
-        Assert.assertNotEquals(latestReviewDetailFragmentUiState, currentReviewDetailFragmentUiState)
         Assert.assertNotEquals(latestExpandedReviewDetailBottomSheetUiState, currentExpandedReviewDetailBottomSheetUiState)
+        Assert.assertEquals(latestReviewDetailFragmentUiState, currentReviewDetailFragmentUiState)
         Assert.assertEquals(resetReviewDetailFragmentUiState, currentReviewDetailFragmentUiState)
         Assert.assertEquals(resetExpandedReviewDetailBottomSheetUiState, currentExpandedReviewDetailBottomSheetUiState)
     }

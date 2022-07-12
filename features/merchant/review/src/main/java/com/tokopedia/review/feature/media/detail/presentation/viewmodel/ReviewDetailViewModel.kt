@@ -29,7 +29,6 @@ class ReviewDetailViewModel @Inject constructor(
     companion object {
         private const val STATE_FLOW_STOP_TIMEOUT_MILLIS = 5000L
 
-        const val SAVED_STATE_EXPANDED = "savedStateExpanded"
         const val SAVED_STATE_SHOW_EXPANDED_REVIEW_DETAIL_BOTTOM_SHEET = "savedStateShowExpandedReviewDetailBottomSheet"
     }
 
