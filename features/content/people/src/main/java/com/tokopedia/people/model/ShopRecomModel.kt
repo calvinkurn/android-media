@@ -36,4 +36,4 @@ data class ShopRecomItem(
     val type: Int = 0,
     @SerializedName("applink")
     val applink: String = "",
-): BaseItem()
+)
