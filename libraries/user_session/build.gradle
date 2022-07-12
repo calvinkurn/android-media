@@ -17,7 +17,7 @@ buildscript {
 
 android {
     defaultConfig {
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
         testInstrumentationRunnerArguments clearPackageData: 'true'
     }
     buildFeatures {
@@ -40,6 +40,7 @@ dependencies {
     androidTestImplementation(rootProject.ext.testDependencies.workManagerTest)
     androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
     androidTestUtil rootProject.ext.testDependencies.orchestrator
 }
 
