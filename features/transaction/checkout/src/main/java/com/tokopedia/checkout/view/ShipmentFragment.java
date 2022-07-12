@@ -3423,7 +3423,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     private void onUploadPrescriptionResult(Intent data){
-        if(data != null && data.getExtras() != null){
+        if(data != null && data.getExtras() != null && data.getExtras().containsKey(KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA)){
             UploadPrescriptionUiModel uploadModel = shipmentPresenter.getUploadPrescriptionUiModel();
             uploadModel.setPrescriptionIds(data.getExtras().getStringArrayList(KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA));
             uploadPrescriptionUiModel = uploadModel;
