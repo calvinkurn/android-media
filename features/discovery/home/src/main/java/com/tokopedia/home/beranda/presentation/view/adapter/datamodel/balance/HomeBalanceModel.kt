@@ -174,28 +174,28 @@ data class HomeBalanceModel(
     }
 
     fun containsNewGopayAndTokopoints(): Boolean {
-        val isContainsNewGopay = (balanceDrawerItemModels[BALANCE_POSITION_FIRST]?.drawerItemType == TYPE_WALLET_APP_LINKED
-                || balanceDrawerItemModels[BALANCE_POSITION_FIRST]?.drawerItemType == TYPE_WALLET_APP_NOT_LINKED) &&
-                balanceDrawerItemModels[BALANCE_POSITION_FIRST]?.state == STATE_SUCCESS
-        val isContainsNewTokopoint = balanceDrawerItemModels[BALANCE_POSITION_SECOND]?.state == STATE_SUCCESS
+        val isContainsNewGopay = (balanceDrawerItemModels[1]?.drawerItemType == TYPE_WALLET_APP_LINKED
+                || balanceDrawerItemModels[1]?.drawerItemType == TYPE_WALLET_APP_NOT_LINKED) &&
+                balanceDrawerItemModels[1]?.state == STATE_SUCCESS
+        val isContainsNewTokopoint = balanceDrawerItemModels[0]?.state == STATE_SUCCESS
         return isContainsNewGopay && isContainsNewTokopoint
     }
 
     fun isGopayActive(): Boolean {
-        val isGopayActive = (balanceDrawerItemModels[BALANCE_POSITION_FIRST]?.drawerItemType == TYPE_WALLET_APP_LINKED &&
-                balanceDrawerItemModels[BALANCE_POSITION_FIRST]?.state == STATE_SUCCESS)
+        val isGopayActive = (balanceDrawerItemModels[1]?.drawerItemType == TYPE_WALLET_APP_LINKED &&
+                balanceDrawerItemModels[1]?.state == STATE_SUCCESS)
         return isGopayActive
     }
 
     fun containsGopay(): Boolean {
-        val isContainsNewGopay = (balanceDrawerItemModels[BALANCE_POSITION_FIRST]?.drawerItemType == TYPE_WALLET_APP_LINKED
-                || balanceDrawerItemModels[BALANCE_POSITION_FIRST]?.drawerItemType == TYPE_WALLET_APP_NOT_LINKED) &&
-                balanceDrawerItemModels[BALANCE_POSITION_FIRST]?.state == STATE_SUCCESS
+        val isContainsNewGopay = (balanceDrawerItemModels[1]?.drawerItemType == TYPE_WALLET_APP_LINKED
+                || balanceDrawerItemModels[1]?.drawerItemType == TYPE_WALLET_APP_NOT_LINKED) &&
+                balanceDrawerItemModels[1]?.state == STATE_SUCCESS
         return isContainsNewGopay
     }
 
     fun getTokopointsBalanceCoachmark(): BalanceCoachmark? {
-        val balanceItem = balanceDrawerItemModels[BALANCE_POSITION_SECOND]
+        val balanceItem = balanceDrawerItemModels[1]
         val isContainsNewTokopoint = balanceItem?.state == STATE_SUCCESS
         if (isContainsNewTokopoint) {
             return balanceItem?.balanceCoachmark

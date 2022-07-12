@@ -47,7 +47,7 @@ class HomeBalanceWidgetUseCase @Inject constructor(
         try {
             val getHomeBalanceWidget = getHomeBalanceWidgetRepository.getRemoteData()
             currentHeaderDataModel.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.clear()
-            var homeBalanceModel = getHomeBalanceModel(currentHeaderDataModel, HomeBalanceModel.BALANCE_POSITION_FIRST, HomeBalanceModel.BALANCE_POSITION_SECOND)
+            var homeBalanceModel = getHomeBalanceModel(currentHeaderDataModel)
             getHomeBalanceWidget.getHomeBalanceList.balancesList.forEach {
                 when (it.type) {
                     BALANCE_TYPE_GOPAY -> {
@@ -76,14 +76,14 @@ class HomeBalanceWidgetUseCase @Inject constructor(
         }
     }
 
-    private fun getHomeBalanceModel(currentHeaderDataModel: HomeHeaderDataModel, vararg positionToReset: Int): HomeBalanceModel {
+    private fun getHomeBalanceModel(currentHeaderDataModel: HomeHeaderDataModel): HomeBalanceModel {
         return HomeBalanceModel().apply {
             val currentHomeBalanceModel = currentHeaderDataModel.headerDataModel?.homeBalanceModel
                     ?: HomeBalanceModel()
             balanceDrawerItemModels = currentHomeBalanceModel.balanceDrawerItemModels
-            positionToReset.forEach {
-                resetDrawerItem(it)
-            }
+//            positionToReset.forEach {
+//                resetDrawerItem(it)
+//            }
         }
     }
 
@@ -94,7 +94,7 @@ class HomeBalanceWidgetUseCase @Inject constructor(
     ): HomeHeaderDataModel {
         if (!userSession.isLoggedIn) return currentHeaderDataModel
 
-        var homeBalanceModel = getHomeBalanceModel(currentHeaderDataModel, HomeBalanceModel.BALANCE_POSITION_SECOND)
+        var homeBalanceModel = getHomeBalanceModel(currentHeaderDataModel)
         homeBalanceModel = getTokopointData(homeBalanceModel, headerTitle, position)
         return currentHeaderDataModel.copy(
                 headerDataModel = currentHeaderDataModel.headerDataModel?.copy(
@@ -112,7 +112,7 @@ class HomeBalanceWidgetUseCase @Inject constructor(
     ): HomeHeaderDataModel {
         if (!userSession.isLoggedIn) return currentHeaderDataModel
 
-        var homeBalanceModel = getHomeBalanceModel(currentHeaderDataModel, HomeBalanceModel.BALANCE_POSITION_FIRST)
+        var homeBalanceModel = getHomeBalanceModel(currentHeaderDataModel)
         homeBalanceModel = getDataUsingWalletApp(homeBalanceModel, headerTitle, position)
         return currentHeaderDataModel.copy(
             headerDataModel = currentHeaderDataModel.headerDataModel?.copy(
