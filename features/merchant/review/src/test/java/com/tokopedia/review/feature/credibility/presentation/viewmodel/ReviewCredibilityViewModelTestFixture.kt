@@ -1,8 +1,7 @@
 package com.tokopedia.review.feature.credibility.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.review.feature.credibility.domain.usecase.GetReviewerCredibilityUseCase
-import com.tokopedia.review.feature.credibility.presentation.viewmodel.old.ReviewCredibilityViewModel
+import com.tokopedia.review.feature.credibility.domain.GetReviewerCredibilityUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
