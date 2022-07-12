@@ -111,6 +111,7 @@ import com.tokopedia.config.GlobalConfig
  */
 object DeeplinkMapper {
 
+    private const val TOKOPEDIANOW_SEARCH_PATH = "/now/search"
     const val TOKOPOINTS = "tokopoints"
     val LOCK = Any()
 
@@ -269,8 +270,8 @@ object DeeplinkMapper {
             return DeeplinkMapperAccount.getLoginByQr(uri)
         }
 
-        if (uri.path == "/now/search") {
-            return ApplinkConstInternalTokopediaNow.SEARCH + "?${uri.query}"
+        if (uri.path == TOKOPEDIANOW_SEARCH_PATH) {
+            return getRegisteredNavigationTokopediaNowSearch(deeplink)
         }
 
         return ""
