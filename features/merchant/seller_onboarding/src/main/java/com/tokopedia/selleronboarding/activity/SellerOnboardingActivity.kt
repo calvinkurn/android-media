@@ -121,7 +121,7 @@ class SellerOnboardingActivity : BaseActivity() {
         try {
             val slideItem = slideItems[position]
             binding?.imgSobHeader?.loadImage(slideItem.headerResBg)
-        } catch (e: IndexOutOfBoundsException) {
+        } catch (e: Exception) {
             //do nothing
         }
     }

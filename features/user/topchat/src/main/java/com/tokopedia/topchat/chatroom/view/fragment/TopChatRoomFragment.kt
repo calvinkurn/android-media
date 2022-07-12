@@ -642,7 +642,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun isOCCActive(): Boolean {
-        return abTestPlatform.getString(AB_TEST_OCC, AB_TEST_NON_OCC) == AB_TEST_OCC
+        /**
+         * AB Test Removed because of expired rollence
+         * The OCC feature will be used again in next feature (group buy)
+         */
+        return false
     }
 
     private fun initFireBase() {
@@ -3070,13 +3074,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         private const val REQUEST_CODE_IMAGE_MEDIA_PICKER = 121
 
         private const val ELLIPSIZE_MAX_CHAR = 20
+        private const val PREFIX_SELLER_APPLINK = "sellerapp://"
 
         private const val ROLLENCE_ENABLE_MEDIA_PICKER = "android_chat_picker"
-
-        const val AB_TEST_OCC = "chat_occ_exp"
-        const val AB_TEST_NON_OCC = "chat_occ_control"
-
-        private const val PREFIX_SELLER_APPLINK = "sellerapp://"
 
         fun createInstance(bundle: Bundle): BaseChatFragment {
             return TopChatRoomFragment().apply {
