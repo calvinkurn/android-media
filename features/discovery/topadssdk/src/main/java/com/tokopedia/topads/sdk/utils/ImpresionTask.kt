@@ -1,6 +1,5 @@
 package com.tokopedia.topads.sdk.utils
 
-import android.util.Log
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.common.network.coroutines.RestRequestInteractor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
@@ -33,10 +32,10 @@ class ImpresionTask {
         try {
             var traceElement: StackTraceElement
             var stackTraceElements = Thread.currentThread().stackTrace
-            if (stackTraceElements[4].className.equals(TopAdsUrlHitter::class.qualifiedName)) {
-                traceElement = stackTraceElements[5]
+            if (stackTraceElements[CONST_FOUR].className.equals(TopAdsUrlHitter::class.qualifiedName)) {
+                traceElement = stackTraceElements[CONST_FIVE]
             } else {
-                traceElement = stackTraceElements[4]
+                traceElement = stackTraceElements[CONST_FOUR]
             }
             fileName = traceElement.fileName
             methodName = traceElement.methodName
@@ -108,7 +107,6 @@ class ImpresionTask {
                             topAdsHeaderResponseListener?.onSuccess(headers[RESPONSE_HEADER_KEY] ?: "")
                         }
                     }
-                    Log.d("myHeaders", "execute: $headers")
                 } catch (e: IOException) {
                     e.printStackTrace()
                 } catch (e: RuntimeException) {
@@ -119,6 +117,7 @@ class ImpresionTask {
     }
 
     companion object {
-        private const val KEY_SESSION_ID = "Tkpd-SessionID"
+        private const val CONST_FOUR = 4
+        private const val CONST_FIVE = 5
     }
 }
