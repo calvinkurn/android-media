@@ -151,12 +151,6 @@ class ReviewCredibilityViewModel @Inject constructor(
                         ReviewCredibilityMapper.mapReviewCredibilityResponseToReviewCredibilityHeaderUiModel(requestState.result)
                     )
                 }
-                is RequestState.Requesting -> {
-                    if (currentUiState !is ReviewCredibilityHeaderUiState.Loading) {
-                        reviewCredibilityHeaderTransitioning.value = true
-                    }
-                    ReviewCredibilityHeaderUiState.Loading
-                }
                 else -> {
                     if (currentUiState !is ReviewCredibilityHeaderUiState.Hidden) {
                         reviewCredibilityHeaderTransitioning.value = true
@@ -231,12 +225,6 @@ class ReviewCredibilityViewModel @Inject constructor(
                         }
                     }
                 }
-                is RequestState.Requesting -> {
-                    if (currentUiState !is ReviewCredibilityStatisticBoxUiState.Loading) {
-                        reviewCredibilityStatisticBoxTransitioning.value = true
-                    }
-                    ReviewCredibilityStatisticBoxUiState.Loading
-                }
                 else -> {
                     if (currentUiState !is ReviewCredibilityStatisticBoxUiState.Hidden) {
                         reviewCredibilityStatisticBoxTransitioning.value = true
@@ -266,12 +254,6 @@ class ReviewCredibilityViewModel @Inject constructor(
                     ReviewCredibilityFooterUiState.Showed(
                         ReviewCredibilityMapper.mapReviewCredibilityResponseToReviewCredibilityFooterUiModel(requestState.result)
                     )
-                }
-                is RequestState.Requesting -> {
-                    if (currentUiState !is ReviewCredibilityFooterUiState.Loading) {
-                        reviewCredibilityStatisticBoxTransitioning.value = true
-                    }
-                    ReviewCredibilityFooterUiState.Loading
                 }
                 else -> {
                     if (currentUiState !is ReviewCredibilityFooterUiState.Hidden) {
@@ -373,11 +355,11 @@ class ReviewCredibilityViewModel @Inject constructor(
 
     fun saveUiState(outState: Bundle) {
         outState.putSerializable(SAVED_STATE_KEY_GET_REVIEW_CREDIBILITY_RESULT, getReviewCredibilityResult.value)
-        outState.putSerializable(SAVED_STATE_KEY_PRODUCT_ID, productID)
-        outState.putSerializable(SAVED_STATE_KEY_REVIEWER_USER_ID, reviewerUserID)
-        outState.putSerializable(SAVED_STATE_KEY_SOURCE, source)
-        outState.putSerializable(SAVED_STATE_KEY_PENDING_APP_LINK, pendingAppLink)
-        outState.putSerializable(SAVED_STATE_KEY_SHOULD_LOAD_REVIEW_CREDIBILITY_DATA, shouldLoadReviewCredibilityData.value)
+        outState.putString(SAVED_STATE_KEY_PRODUCT_ID, productID)
+        outState.putString(SAVED_STATE_KEY_REVIEWER_USER_ID, reviewerUserID)
+        outState.putString(SAVED_STATE_KEY_SOURCE, source)
+        outState.putString(SAVED_STATE_KEY_PENDING_APP_LINK, pendingAppLink)
+        outState.putBoolean(SAVED_STATE_KEY_SHOULD_LOAD_REVIEW_CREDIBILITY_DATA, shouldLoadReviewCredibilityData.value)
     }
 
     fun restoreUiState(savedInstanceState: Bundle) {
