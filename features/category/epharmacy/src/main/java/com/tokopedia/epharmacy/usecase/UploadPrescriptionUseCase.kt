@@ -13,7 +13,7 @@ import com.tokopedia.epharmacy.network.response.EPharmacyPrescriptionUploadRespo
 import com.tokopedia.epharmacy.utils.EPharmacyImageQuality
 import com.tokopedia.epharmacy.utils.EPharmacyImageQualityDecreaseFactor
 import com.tokopedia.epharmacy.utils.EPharmacyMinImageQuality
-import com.tokopedia.epharmacy.utils.MAX_BYTES
+import com.tokopedia.epharmacy.utils.UPLOAD_MAX_BYTES
 import okio.utf8Size
 import java.io.ByteArrayOutputStream
 import java.lang.reflect.Type
@@ -62,7 +62,7 @@ class UploadPrescriptionUseCase @Inject constructor(
             prescriptionImageBitmap.recycle()
 
             val encodedString = Base64.encodeToString(byteArrayImage, Base64.DEFAULT)
-            return if(encodedString.utf8Size(0,encodedString.length) >= MAX_BYTES && quality >= EPharmacyMinImageQuality){
+            return if(encodedString.utf8Size(0,encodedString.length) >= UPLOAD_MAX_BYTES && quality >= EPharmacyMinImageQuality){
                 getBase64OfPrescriptionImage(localFilePath , (quality * EPharmacyImageQualityDecreaseFactor).toInt())
             } else
                 "${IMAGE_DATA_PREFIX}${encodedString}"

@@ -13,10 +13,7 @@ import com.tokopedia.epharmacy.network.response.EPharmacyDataResponse
 import com.tokopedia.epharmacy.network.response.EPharmacyPrescriptionUploadResponse
 import com.tokopedia.epharmacy.network.response.EPharmacyUploadPrescriptionIdsResponse
 import com.tokopedia.epharmacy.network.response.PrescriptionImage
-import com.tokopedia.epharmacy.usecase.GetEPharmacyCheckoutDetailUseCase
-import com.tokopedia.epharmacy.usecase.GetEPharmacyOrderDetailUseCase
-import com.tokopedia.epharmacy.usecase.PostPrescriptionIdUseCase
-import com.tokopedia.epharmacy.usecase.UploadPrescriptionUseCase
+import com.tokopedia.epharmacy.usecase.*
 import com.tokopedia.epharmacy.utils.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -286,22 +283,38 @@ class UploadPrescriptionViewModel @Inject constructor(
         checkPrescriptionImages()
     }
 
-    fun uploadPrescriptionIds(uploadKey: String, id: String) {
+    fun uploadPrescriptionIdsInOrder(orderId: Long) {
+        getPrescriptionIds()?.let {
+            postPrescriptionIdUseCase.cancelJobs()
+            postPrescriptionIdUseCase.postPrescriptionIdsOrder(
+                ::onUploadPrescriptionIdSuccess,
+                ::onUploadPrescriptionIdFail, orderId , it
+            )
+        }
+    }
+
+    fun uploadPrescriptionIdsInCheckout(checkoutId : String) {
+        getPrescriptionIds()?.let {
+            postPrescriptionIdUseCase.cancelJobs()
+            postPrescriptionIdUseCase.postPrescriptionIdsCheckout(
+                ::onUploadPrescriptionIdSuccess,
+                ::onUploadPrescriptionIdFail,
+                checkoutId ,it
+            )
+        }
+    }
+
+    private fun getPrescriptionIds() : ArrayList<Long?>?{
         val prescriptionIds = arrayListOf<Long?>()
         _prescriptionImages.value?.forEach { prescriptionImage ->
             if(prescriptionImage?.prescriptionId != DEFAULT_ZERO_VALUE){
                 prescriptionIds.add(prescriptionImage?.prescriptionId)
             }else {
                 checkPrescriptionImages()
-                return
+                return null
             }
         }
-        postPrescriptionIdUseCase.cancelJobs()
-        postPrescriptionIdUseCase.postPrescriptionIds(
-            ::onUploadPrescriptionIdSuccess,
-            ::onUploadPrescriptionIdFail,
-            uploadKey, id ,prescriptionIds
-        )
+        return prescriptionIds
     }
 
     private fun onUploadPrescriptionIdSuccess(data : EPharmacyUploadPrescriptionIdsResponse) {
