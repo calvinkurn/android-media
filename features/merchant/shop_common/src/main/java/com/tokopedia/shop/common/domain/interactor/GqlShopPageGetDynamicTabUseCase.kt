@@ -19,6 +19,15 @@ class GqlShopPageGetDynamicTabUseCase @Inject constructor(
         setupUseCase()
     }
 
+    fun setParams(shopId: Int, extParam: String) {
+        setRequestParams(
+            mapOf<String, Any>(
+                PARAM_SHOP_ID to shopId,
+                PARAM_EXT_PARAM to extParam
+            )
+        )
+    }
+
     @GqlQuery(QUERY_NAME, QUERY)
     private fun setupUseCase() {
         setGraphqlQuery(ShopPageGetDynamicTabQuery())

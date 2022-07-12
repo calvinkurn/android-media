@@ -1508,7 +1508,9 @@ class NewShopPageFragment :
     }
 
     private fun getIsEnableDirectPurchase(shopPageP1Data: NewShopPageP1HeaderData): Boolean {
-        return shopPageP1Data.shopLayoutFeatures.firstOrNull {
+        return shopPageP1Data.listDynamicTabData.firstOrNull {
+            it.name == ShopPageTabName.HOME
+        }?.shopLayoutFeature?.firstOrNull {
             it.name == DIRECT_PURCHASE && it.isActive
         } != null
     }
@@ -1857,7 +1859,8 @@ class NewShopPageFragment :
                         shopPageHeaderDataModel?.isGoldMerchant ?: false,
                         shopPageHeaderDataModel?.shopName.orEmpty(),
                         shopAttribution ?: "",
-                        shopRef
+                        shopRef,
+                        shopPageHeaderDataModel?.isEnableDirectPurchase.orFalse()
                     ).apply {
                         shopViewModel?.productListData?.let {
                             setInitialProductListData(it)
@@ -1872,7 +1875,8 @@ class NewShopPageFragment :
                         isOfficial = shopPageHeaderDataModel?.isOfficial ?: false,
                         isGoldMerchant = shopPageHeaderDataModel?.isGoldMerchant ?: false,
                         shopAttribution = shopAttribution,
-                        shopRef = shopRef
+                        shopRef = shopRef,
+                        isEnableDirectPurchase = shopPageHeaderDataModel?.isEnableDirectPurchase.orFalse()
                     )
                     shopViewModel?.productListData?.let {
                         shopPageProductFragment.setInitialProductListData(it)

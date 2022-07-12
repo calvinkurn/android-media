@@ -45,8 +45,7 @@ object NewShopPageHeaderMapper {
                 "",
                 feedWhitelistData.isWhitelist,
                 feedWhitelistData.url,
-                listShopHeaderWidget,
-                shopPageHomeTypeData.shopLayoutFeatures
+                listShopHeaderWidget
         )
     }
 

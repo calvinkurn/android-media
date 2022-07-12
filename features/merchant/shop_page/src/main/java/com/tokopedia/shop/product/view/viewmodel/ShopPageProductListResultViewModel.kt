@@ -9,15 +9,12 @@ import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.common.constant.ShopPageConstant
-import com.tokopedia.shop.common.data.model.RestrictionEngineRequestParams
 import com.tokopedia.shop.common.data.response.RestrictValidateRestriction
 import com.tokopedia.shop.common.domain.GetShopFilterBottomSheetDataUseCase
 import com.tokopedia.shop.common.domain.GetShopFilterProductCountUseCase
 import com.tokopedia.shop.common.domain.GqlGetShopSortUseCase
 import com.tokopedia.shop.common.domain.RestrictionEngineNplUseCase
-import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.SHOP_PRODUCT_LIST_RESULT_SOURCE
-import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
 import com.tokopedia.shop.common.util.ShopUtil
@@ -31,16 +28,13 @@ import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.shop.common.data.model.RestrictionEngineModel
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
-import com.tokopedia.shop.common.domain.interactor.GetFollowStatusUseCase
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
-import com.tokopedia.shop.common.data.model.ShopPageAtcTracker
-import com.tokopedia.shop.common.data.model.ShopPageGetHomeType
-import com.tokopedia.shop.common.domain.interactor.GqlShopPageGetHomeType
+import com.tokopedia.shop.common.data.model.*
+import com.tokopedia.shop.common.domain.interactor.*
 import com.tokopedia.shop.common.util.ShopUtil.setElement
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
@@ -72,7 +66,7 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
                                                              private val restrictionEngineNplUseCase: RestrictionEngineNplUseCase,
                                                              private val toggleFavouriteShopUseCase: Lazy<ToggleFavouriteShopUseCase>,
                                                              private val getFollowStatusUseCase: GetFollowStatusUseCase,
-                                                             private val getShopHomeTypeUseCase: GqlShopPageGetHomeType,
+                                                             private val gqlShopPageGetDynamicTabUseCase: GqlShopPageGetDynamicTabUseCase,
                                                              private val addToCartUseCase: AddToCartUseCase,
                                                              private val updateCartUseCase: UpdateCartUseCase,
                                                              private val deleteCartUseCase: DeleteCartUseCase
@@ -137,17 +131,17 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
                 shopData.value = Fail(it)
                 null
             })
-            val shopHomeTypeAsync = asyncCatchError(dispatcherProvider.io, block = {
-                getShopHomeResponse(shopId)
+            val shopDynamicTabDataAsync = asyncCatchError(dispatcherProvider.io, block = {
+                getGqlShopPageGetDynamicTabUseCase(shopId)
             }, onError = {
                 shopData.value = Fail(it)
                 null
             })
             shopInfoAsync.await()?.let { shopInfo ->
-                shopHomeTypeAsync.await()?.let { shopHomeData ->
+                shopDynamicTabDataAsync.await()?.let { shopDynamicTabData ->
                     shopData.value = Success(ShopPageProductResultPageData(
                         shopInfo,
-                        shopHomeData
+                        shopDynamicTabData.shopPageGetDynamicTab
                     ))
                 }
             }
@@ -156,9 +150,9 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
         }
     }
 
-    private suspend fun getShopHomeResponse(shopId: String) : ShopPageGetHomeType {
-        getShopHomeTypeUseCase.params = GqlShopPageGetHomeType.createParams(shopId, "")
-        return getShopHomeTypeUseCase.executeOnBackground()
+    private suspend fun getGqlShopPageGetDynamicTabUseCase(shopId: String) : ShopPageGetDynamicTabResponse {
+        gqlShopPageGetDynamicTabUseCase.setParams(shopId.toIntOrZero(), "")
+        return gqlShopPageGetDynamicTabUseCase.executeOnBackground()
     }
 
     private suspend fun getShopInfoResponse(

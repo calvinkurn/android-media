@@ -30,7 +30,7 @@ data class ShopPageGetDynamicTabResponse(
             var iconFocus: String = "",
             @SerializedName("type")
             var type: String = "",
-            @SerializedName("shopLayoutFeature")
+            @SerializedName("shopLayoutFeatures")
             var shopLayoutFeature: List<ShopLayoutFeature> = arrayListOf(),
             @SerializedName("data")
             var data: Data = Data()

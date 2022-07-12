@@ -80,6 +80,7 @@ import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
 import com.tokopedia.shop.databinding.FragmentShopProductListResultNewBinding
+import com.tokopedia.shop.pageheader.util.ShopPageTabName
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
 import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
@@ -462,7 +463,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         viewModel.shopData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    isEnableDirectPurchase = getIsEnableDirectPurchase(it.data.shopHomeType)
+                    isEnableDirectPurchase = getIsEnableDirectPurchase(it.data.shopDynamicTab)
                     initMiniCart()
                     onSuccessGetShopInfo(it.data.shopInfo)
                 }
@@ -675,8 +676,12 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         miniCart?.show()
     }
 
-    private fun getIsEnableDirectPurchase(shopHomeType: ShopPageGetHomeType): Boolean {
-        return shopHomeType.shopLayoutFeatures.firstOrNull {
+    private fun getIsEnableDirectPurchase(
+        shopDynamicTabData: ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab
+    ): Boolean {
+        return shopDynamicTabData.tabData.firstOrNull {
+            it.name == ShopPageTabName.HOME
+        }?.shopLayoutFeature?.firstOrNull {
             it.name == ShopPageConstant.ShopLayoutFeatures.DIRECT_PURCHASE && it.isActive
         } != null
     }

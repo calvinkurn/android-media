@@ -342,7 +342,6 @@ object ShopPageTrackingConstant {
     const val DIMENSION_61 = "dimension61"
     const val IS_LOGGED_IN_STATUS = "isLoggedInStatus"
     const val ITEM_LIST = "item_list"
-    const val TRACKER_ID = "trackerId"
 
     //SCREEN/PAGES
     const val SCREEN_SHOP_PAGE = "Shop Page"
