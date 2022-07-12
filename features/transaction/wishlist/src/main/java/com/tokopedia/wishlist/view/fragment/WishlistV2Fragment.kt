@@ -1321,7 +1321,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     override fun onRecommendationCarouselItemClick(recommendationItem: RecommendationItem, position: Int) {
-        WishlistV2Analytics.clickCarouselRecommendationItem(recommendationItem, position)
+        WishlistV2Analytics.clickCarouselRecommendationItem(recommendationItem, position, userSession.userId)
         if(recommendationItem.isTopAds) {
             TopAdsUrlHitter(context).hitClickUrl(
                     this::class.java.simpleName,
