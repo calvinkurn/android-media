@@ -20,7 +20,7 @@ class ReserveProductAdapter(
     }
 
     override fun onBindViewHolder(holder: ReserveProductViewHolder, position: Int) {
-        holder.bind(items[position], inputEnabled)
+        holder.bind(items[position], selectedProduct, inputEnabled)
     }
 
     override fun getItemCount() = items.size
