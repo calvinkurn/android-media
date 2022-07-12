@@ -43,9 +43,16 @@ object RatesMapper {
 
     private fun mapToServicesData(rates: RatesModel): MutableList<ProductShippingVisitable> {
         return rates.services.map { service ->
-            val servicesDetail = service.products.map {
-                ProductServiceDetailDataModel(it.name, it.eta.textEta, it.price.priceFmt, it.cod.isCodAvailable == 1, it.cod.text, it.features.dynamicPrice.dynamicPriceString)
-            }
+            val servicesDetail = service.products.asSequence().filter { !it.uiRatesHidden }.map {
+                ProductServiceDetailDataModel(
+                    it.name,
+                    it.eta.textEta,
+                    it.price.priceFmt,
+                    it.cod.isCodAvailable == 1,
+                    it.cod.text,
+                    it.features.dynamicPrice.dynamicPriceString,
+                )
+            }.toList()
             ProductShippingServiceDataModel(service.id.toLong(), service.name, servicesDetail)
         }.toMutableList()
     }

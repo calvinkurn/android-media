@@ -144,6 +144,7 @@ class GetRatesEstimateUseCase @Inject constructor(private val graphqlRepository:
                                       recommend
                                       checksum
                                       ut
+                                      ui_rates_hidden
                                       price {
                                           price
                                           formatted_price
