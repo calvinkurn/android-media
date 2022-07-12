@@ -42,8 +42,8 @@
         app:layout_constraintTop_toTopOf="@id/tvDetailTitle"
         app:layout_constraintBottom_toBottomOf="@id/tvDetailTitle"
         app:layout_constraintLeft_toRightOf="@id/tvDetailTitle"
-        android:layout_marginLeft="@dimen/unify_space_4"
-        android:src="@drawable/ic_circle_red"
+        android:layout_marginStart="@dimen/unify_space_4"
+        android:src="@drawable/saldo_ic_circle_red"
         android:visibility="gone"
         />
 
