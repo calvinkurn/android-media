@@ -6,6 +6,7 @@ import com.tokopedia.search.di.module.IrisModule
 import com.tokopedia.search.di.module.RemoteConfigModule
 import com.tokopedia.search.di.module.SearchContextModule
 import com.tokopedia.search.di.module.SearchOnBoardingLocalCacheModule
+import com.tokopedia.search.di.module.TrackingQueueModule
 import com.tokopedia.search.di.module.UserSessionModule
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.domain.usecase.getdynamicfilter.GetDynamicFilterGqlUseCaseModule
@@ -16,6 +17,7 @@ import com.tokopedia.search.result.domain.usecase.savelastfilter.SaveLastFilterU
 import com.tokopedia.search.result.domain.usecase.searchproduct.SearchProductUseCaseModule
 import com.tokopedia.search.result.presentation.presenter.product.ProductListPresenterModule
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressViewModule
+import com.tokopedia.search.result.product.pagination.PaginationModule
 import com.tokopedia.search.result.product.performancemonitoring.PerformanceMonitoringModule
 import com.tokopedia.search.utils.ProductionSchedulersProviderModule
 import com.tokopedia.topads.sdk.di.TopAdsUrlHitterModule
@@ -39,6 +41,9 @@ import dagger.Component
     IrisModule::class,
     PerformanceMonitoringModule::class,
     ChooseAddressViewModule::class,
+    PaginationModule::class,
+    TrackingQueueModule::class,
+    ProductListProvidersModule::class,
     ProductListPresenterModule::class,
  ], dependencies = [BaseAppComponent::class])
 interface ProductListViewComponent {

@@ -18,7 +18,14 @@ import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.common.topupbills.data.*
+import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
+import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
+import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
+import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
+import com.tokopedia.common.topupbills.data.TopupBillsPromo
+import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
+import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.constant.TelcoComponentName
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
@@ -49,7 +56,7 @@ import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity
 import com.tokopedia.topupbills.telco.common.di.DigitalTelcoComponent
 import com.tokopedia.topupbills.telco.common.model.TelcoTabItem
 import com.tokopedia.topupbills.telco.common.viewmodel.SharedTelcoViewModel
-import com.tokopedia.topupbills.telco.prepaid.widget.DigitalClientNumberWidget
+import com.tokopedia.topupbills.telco.common.widget.DigitalClientNumberWidget
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -426,11 +433,11 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         var idTab = 1L
         if (recom.isNotEmpty()) {
             viewModel.setRecommendationTelco(recom)
-            listMenu.add(TelcoTabItem(null, TelcoComponentName.RECENTS, idTab++))
+            listMenu.add(TelcoTabItem(TelcoComponentName.RECENTS, idTab++))
         }
         if (promo.isNotEmpty()) {
             viewModel.setPromoTelco(promo)
-            listMenu.add(TelcoTabItem(null, TelcoComponentName.PROMO, idTab++))
+            listMenu.add(TelcoTabItem(TelcoComponentName.PROMO, idTab++))
         }
 
         viewModel.setTitleMenu(listMenu.size < 2)
