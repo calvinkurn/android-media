@@ -16,6 +16,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
 import com.tokopedia.globalerror.GlobalError.Companion.NO_CONNECTION
@@ -125,9 +126,9 @@ class UserProfileFragment @Inject constructor(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = UpFragmentUserProfileBinding.inflate(inflater, container, false)
-        return _binding?.root
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -157,6 +158,10 @@ class UserProfileFragment @Inject constructor(
         mainBinding.swipeRefreshLayout.setOnChildScrollUpCallback { _, _ ->
             mainBinding.rvPost.canScrollVertically(-1) || !shouldRefreshRecyclerView
         }
+
+        mainBinding.cardUserReminder.clContainer.setBackgroundResource(
+            R.drawable.bg_card_profile_reminder
+        )
 
         mainBinding.appBarUserProfile.addOnOffsetChangedListener(feedFloatingButtonManager.offsetListener)
 
@@ -210,14 +215,18 @@ class UserProfileFragment @Inject constructor(
                 isViewMoreClickedBio = true
             }
 
-            btnActionFollow.setOnClickListener {
-                if(!userSession.isLoggedIn) {
+            btnAction.setOnClickListener {
+                if (viewModel.isSelfProfile) {
+                    navigateToEditProfile()
+                    return@setOnClickListener
+                }
+
+                if (!userSession.isLoggedIn) {
                     startActivityForResult(
                         RouteManager.getIntent(activity, ApplinkConst.LOGIN),
                         REQUEST_CODE_LOGIN_TO_FOLLOW
                     )
-                }
-                else doFollowUnfollow(isFromLogin = false)
+                } else doFollowUnfollow()
             }
 
             fabUserProfile.setOnClickListener {
@@ -232,6 +241,10 @@ class UserProfileFragment @Inject constructor(
                 else {
                     goToCreatePostPage()
                 }
+            }
+
+            mainBinding.cardUserReminder.btnCompleteProfile.setOnClickListener {
+                navigateToEditProfile()
             }
         }
     }
@@ -275,8 +288,9 @@ class UserProfileFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest {
                 renderProfileInfo(it.prevValue?.profileInfo, it.value.profileInfo)
-                renderFollowInfo(it.prevValue, it.value)
+                renderButtonAction(it.prevValue, it.value)
                 renderCreatePostButton(it.prevValue, it.value)
+                renderProfileReminder(it.prevValue, it.value)
             }
         }
     }
@@ -404,6 +418,7 @@ class UserProfileFragment @Inject constructor(
 
             /** Setup Bio */
             val displayBioText = HtmlLinkHelper(requireContext(), curr.biography).spannedString
+            textBio.showWithCondition(displayBioText?.isNotEmpty() == true)
             textBio.text = displayBioText
 
             if (displayBioText?.lines()?.count().orZero() > SEE_ALL_LINE) {
@@ -414,42 +429,31 @@ class UserProfileFragment @Inject constructor(
                     textBio.maxLines = SEE_ALL_LINE
                     textSeeMore.show()
                 }
-            } else {
-                textSeeMore.hide()
-            }
-
-
-            if (!userSession.isLoggedIn)
-                updateToUnFollowUi()
+            } else textSeeMore.hide()
 
             headerProfile.title = curr.name
         }
     }
 
-    private fun renderFollowInfo(
+    private fun renderButtonAction(
         prev: UserProfileUiState?,
         value: UserProfileUiState
     ) {
-
-        if(prev?.followInfo == value.followInfo &&
+        if (prev?.followInfo == value.followInfo &&
             prev.profileType == value.profileType
         ) return
 
-        with(mainBinding) {
-            when(value.profileType) {
-                ProfileType.NotLoggedIn -> btnActionFollow.show()
-                ProfileType.OtherUser -> {
-                    with(value) {
-                        btnActionFollow.show()
-                        if (followInfo.status)
-                            updateToFollowUi()
-                        else
-                            updateToUnFollowUi()
-                    }
-                }
-                ProfileType.Unknown,
-                ProfileType.Self -> btnActionFollow.hide()
+        when(value.profileType) {
+            ProfileType.NotLoggedIn, ProfileType.OtherUser -> {
+                if (userSession.isLoggedIn && value.followInfo.status) buttonActionUIFollow()
+                else buttonActionUIUnFollow()
+                mainBinding.btnAction.show()
             }
+            ProfileType.Self -> {
+                buttonActionUIEditProfile()
+                mainBinding.btnAction.show()
+            }
+            ProfileType.Unknown -> mainBinding.btnAction.hide()
         }
     }
 
@@ -467,20 +471,44 @@ class UserProfileFragment @Inject constructor(
         )
     }
 
-    private fun updateToFollowUi() {
-        mainBinding.btnActionFollow.text =  getString(R.string.up_btn_text_following)
-        mainBinding.btnActionFollow.buttonVariant = UnifyButton.Variant.GHOST
-        mainBinding.btnActionFollow.buttonType = UnifyButton.Type.ALTERNATE
+    private fun renderProfileReminder(
+        prev: UserProfileUiState?,
+        value: UserProfileUiState
+    ) {
+        if (prev?.followInfo == value.followInfo &&
+            prev.profileType == value.profileType
+        ) return
+
+        val usernameEmpty = value.profileInfo.username.isBlank()
+        val biographyEmpty = value.profileInfo.biography.isBlank()
+
+        val isShowProfileReminder = viewModel.isSelfProfile && usernameEmpty && biographyEmpty
+
+        mainBinding.cardUserReminder.root.shouldShowWithAction(isShowProfileReminder) {
+            mainBinding.btnAction.hide()
+        }
+    }
+
+    private fun buttonActionUIFollow() = with(mainBinding.btnAction) {
+        text = getString(R.string.up_btn_text_following)
+        buttonVariant = UnifyButton.Variant.GHOST
+        buttonType = UnifyButton.Type.ALTERNATE
 
         activity?.intent?.putExtra(EXTRA_FOLLOW_UNFOLLOW_STATUS, EXTRA_VALUE_IS_FOLLOWED)
     }
 
-    private fun updateToUnFollowUi() {
-        mainBinding.btnActionFollow.text = getString(R.string.up_btn_text_follow)
-        mainBinding.btnActionFollow.buttonVariant = UnifyButton.Variant.FILLED
-        mainBinding.btnActionFollow.buttonType = UnifyButton.Type.MAIN
+    private fun buttonActionUIUnFollow() = with(mainBinding.btnAction) {
+        text = getString(R.string.up_btn_text_follow)
+        buttonVariant = UnifyButton.Variant.FILLED
+        buttonType = UnifyButton.Type.MAIN
 
         activity?.intent?.putExtra(EXTRA_FOLLOW_UNFOLLOW_STATUS, EXTRA_VALUE_IS_NOT_FOLLOWED)
+    }
+
+    private fun buttonActionUIEditProfile() = with(mainBinding.btnAction) {
+        text = getString(R.string.up_btn_profile)
+        buttonVariant = UnifyButton.Variant.GHOST
+        buttonType = UnifyButton.Type.ALTERNATE
     }
 
     private fun setProfileImg(profile: ProfileUiModel) {
@@ -552,7 +580,11 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
-    private fun doFollowUnfollow(isFromLogin: Boolean) {
+    private fun navigateToEditProfile() {
+        RouteManager.route(requireContext(), ApplinkConstInternalUserPlatform.SETTING_PROFILE)
+    }
+
+    private fun doFollowUnfollow(isFromLogin: Boolean = false) {
         if(viewModel.isFollowed.not() || isFromLogin)
             userProfileTracker.clickFollow(userSession.userId, viewModel.isSelfProfile)
         else userProfileTracker.clickUnfollow(userSession.userId, viewModel.isSelfProfile)
