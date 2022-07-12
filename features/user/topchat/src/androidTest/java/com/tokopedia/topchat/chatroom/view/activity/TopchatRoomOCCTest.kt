@@ -22,7 +22,7 @@ import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRes
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult.hasProductBuyButtonWithText
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult.hasProductCarouselBuyButtonWithText
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRobot.clickBuyButtonAt
-import com.tokopedia.topchat.chatroom.view.fragment.TopChatRoomFragment
+import com.tokopedia.topchat.stub.chatroom.view.fragment.TopChatRoomFragmentStub
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -33,27 +33,13 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
     @Before
     override fun before() {
         super.before()
-        activateOcc()
+        TopChatRoomFragmentStub.isOCCActive = true
     }
 
     @After
     override fun tearDown() {
         super.tearDown()
-        deactivateOcc()
-    }
-
-    private fun activateOcc() {
-        abTestPlatform.setString(
-            TopChatRoomFragment.AB_TEST_OCC,
-            TopChatRoomFragment.AB_TEST_OCC
-        )
-    }
-
-    private fun deactivateOcc() {
-        abTestPlatform.setString(
-            TopChatRoomFragment.AB_TEST_OCC,
-            TopChatRoomFragment.AB_TEST_NON_OCC
-        )
+        TopChatRoomFragmentStub.isOCCActive = false
     }
 
     @Test

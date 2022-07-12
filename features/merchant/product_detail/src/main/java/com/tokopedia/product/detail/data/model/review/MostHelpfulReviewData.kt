@@ -12,7 +12,7 @@ data class MostHelpfulReviewData(
 data class Review(
         @SerializedName("reviewId")
         @Expose
-        val reviewId: Long = 0,
+        val reviewId: String = "",
 
         @SerializedName("message")
         @Expose

@@ -11,7 +11,6 @@ import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.ActivityResultMatchers.hasResultCode
 import androidx.test.espresso.contrib.ActivityResultMatchers.hasResultData
-import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers
@@ -32,7 +31,6 @@ import com.tokopedia.common.topupbills.view.model.search.TopupBillsSearchNumberD
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.test.application.matcher.RecyclerViewMatcher
 import com.tokopedia.topupbills.searchnumber.view.DigitalSearchNumberActivity
-import com.tokopedia.topupbills.telco.prepaid.adapter.viewholder.TelcoProductViewHolder
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.AllOf
 import org.junit.Rule
@@ -79,7 +77,6 @@ class DigitalSearchNumberActivityTest {
         show_contents_search_number_page()
         type_new_client_number()
         search_existing_favorite_number()
-        click_favorite_number()
     }
 
     fun show_contents_search_number_page() {
@@ -116,13 +113,6 @@ class DigitalSearchNumberActivityTest {
             hasAction(Intent.ACTION_PICK)))
     }
 
-    fun click_favorite_number() {
-        Intents.intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, stubSearchNumberActivityResult()))
-        val viewInteraction = onView(AllOf.allOf(ViewMatchers.isDisplayingAtLeast(30), withId(R.id.telco_search_number_rv))).check(matches(isDisplayed()))
-        viewInteraction.perform(actionOnItemAtPosition<TelcoProductViewHolder>(0, click()))
-        validateIntentExtraParam()
-    }
-
     private fun clickClearSearchBar() {
         onView(withId(R.id.searchbar_icon)).perform(click())
         onView(withId(R.id.searchbar_textfield)).check(matches(withText("")))
@@ -140,16 +130,6 @@ class DigitalSearchNumberActivityTest {
 
     private fun validateRecyclerViewSize(size: Int){
         assert(getRecyclerViewItemCount(R.id.telco_search_number_rv) == size)
-    }
-
-    private fun validateIntentExtraParam() {
-        assertThat(mActivityRule.activityResult, hasResultCode(Activity.RESULT_OK));
-        assertThat(mActivityRule.activityResult, hasResultData(IntentMatchers.hasExtraWithKey(
-            TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER
-        )))
-        assertThat(mActivityRule.activityResult, hasResultData(IntentMatchers.hasExtraWithKey(
-            TopupBillsSearchNumberActivity.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE
-        )))
     }
 
     private fun getRecyclerViewItemCount(resId: Int): Int {

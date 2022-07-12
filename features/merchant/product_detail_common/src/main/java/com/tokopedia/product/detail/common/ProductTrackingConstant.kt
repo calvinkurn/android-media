@@ -343,4 +343,9 @@ object ProductTrackingConstant {
         const val PARAM_ATC_DIMENS_40 = "/tokonow - recomproduct - %s - rekomendasi untuk anda - %s"
         const val PARAM_EVENT_PAGE_SOURCE = "%s.%s" //page source like PDP, recommendationType
     }
+
+    object TrackerId {
+        const val TRACKER_ID_CLICK_THUMBNAIL = "31790"
+        const val TRACKER_ID_IMPRESS_THUMBNAIL = "31789"
+    }
 }

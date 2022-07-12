@@ -281,6 +281,7 @@ object CommonTopupBillsGqlQuery {
               title
               subtitle
               mediaURL
+              token
               trackingData {
                 clientNumber
                 lastOrderDate
