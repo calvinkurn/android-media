@@ -11,8 +11,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/pm_label_rating_power_merchant_experience"
-        android:textColor="@color/Unify_N700"
-        app:typographyType="heading_4" />
+        android:textColor="@color/Unify_NN950"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"/>
 
     <com.tokopedia.reputation.common.view.AnimatedRatingPickerCreateReviewView
         android:id="@+id/ratingPmDeactivation"
@@ -21,15 +22,6 @@
         android:layout_marginTop="@dimen/layout_lvl2"
         app:star_height="@dimen/pm_spacing_28dp"
         app:star_width="@dimen/pm_spacing_28dp" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvPmRatingStatus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl1"
-        android:textColor="@color/Unify_N700_96"
-        app:typographyType="body_3"
-        tools:text="Kurang" />
 
     <View
         android:layout_width="match_parent"

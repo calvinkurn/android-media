@@ -129,7 +129,7 @@ class ShopPageProductListViewModel @Inject constructor(
     fun getBuyerViewContentData(
             shopId: String,
             etalaseList: List<ShopEtalaseItemDataModel>,
-            isShowNewShopHomeTab: Boolean,
+            isShopWidgetAlreadyShown: Boolean,
             widgetUserAddressLocalData: LocalCacheModel,
             context: Context?,
             isEnableDirectPurchase: Boolean
@@ -144,15 +144,15 @@ class ShopPageProductListViewModel @Inject constructor(
                     }
                 }
                 val shopMerchantVoucherDataAsync = async(dispatcherProvider.io) {
-                    if (isShowNewShopHomeTab) null
+                    if (isShopWidgetAlreadyShown) null
                     else getMerchantVoucherCoupon(shopId, context)
                 }
                 val shopProductFeaturedDataAsync = async(dispatcherProvider.io) {
-                    if (isShowNewShopHomeTab) null
+                    if (isShopWidgetAlreadyShown) null
                     else getFeaturedProductData(shopId, userId, widgetUserAddressLocalData)
                 }
                 val shopProductEtalaseHighlightDataAsync = async(dispatcherProvider.io) {
-                    if (isShowNewShopHomeTab) null
+                    if (isShopWidgetAlreadyShown) null
                     else getShopProductEtalaseHighlightData(shopId, etalaseList,widgetUserAddressLocalData, isEnableDirectPurchase)
                 }
                 membershipStampProgressDataAsync.await()?.let {

@@ -87,10 +87,10 @@ data class PlayPostContentItemStats(
 
 data class StatsView(
     @SerializedName("value")
-    val value: String,
+    var value: String,
 
     @SerializedName("formatted")
-    val formatted: String
+    var formatted: String
 )
 
 data class PlayPostConfigurations(

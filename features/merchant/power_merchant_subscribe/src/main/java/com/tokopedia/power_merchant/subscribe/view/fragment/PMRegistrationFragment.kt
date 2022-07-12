@@ -94,6 +94,9 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
     }
 
     override fun showShopLevelInfoBottomSheet() {
+        powerMerchantTracking.sendEventClickTooltipShopLevel(
+            shopLevelInfo?.shopLevel.orZero().toString()
+        )
         shopLevelInfo?.let { shopLevel ->
             if (childFragmentManager.isStateSaved) return
 
@@ -193,8 +196,6 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
             currentIncome = shopInfo?.netItemValueOneMonth.orZero(),
             benefitPages = PMRegistrationBenefitHelper.getPMBenefitList(requireContext(), shopInfo),
             ctaAppLink = Constant.Url.POWER_MERCHANT_EDU,
-            isEligiblePm = shopInfo?.isEligiblePm.orFalse(),
-            isEligiblePmPro = shopInfo?.isEligiblePmPro.orFalse(),
             shopScore = shopInfo?.shopScore.orZero()
         )
     }
@@ -236,7 +237,9 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
                 powerMerchantTracking.sendEventClickAddOneProductPopUp()
             })
 
-        powerMerchantTracking.sendEventShowPopupAddNewProduct(pmBasicInfo?.shopInfo?.shopScore.orZero().toString())
+        powerMerchantTracking.sendEventShowPopupAddNewProduct(
+            pmBasicInfo?.shopInfo?.shopScore.orZero().toString()
+        )
         powerMerchantTracking.sendEventClickInterestedToRegister()
     }
 

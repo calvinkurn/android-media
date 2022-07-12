@@ -1,5 +1,6 @@
 package com.tokopedia.shop.pageheader.data.model
 
+import com.tokopedia.shop.common.data.model.ShopPageGetDynamicTabResponse
 import com.tokopedia.shop.common.graphql.data.shopinfo.Broadcaster
 
 data class ShopPageHeaderDataModel(
@@ -23,5 +24,6 @@ data class ShopPageHeaderDataModel(
         var shopBadge: String = "",
         var description: String = "",
         var tagline: String = "",
+        var listDynamicTabData: List<ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData> = listOf(),
         var isEnableDirectPurchase: Boolean = false
 )

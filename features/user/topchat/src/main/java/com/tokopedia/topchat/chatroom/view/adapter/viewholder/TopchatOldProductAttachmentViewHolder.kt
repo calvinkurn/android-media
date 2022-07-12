@@ -14,8 +14,7 @@ class TopchatOldProductAttachmentViewHolder(
 
     private var thumbnail: ImageView? = itemView?.findViewById(com.tokopedia.chat_common.R.id.attach_product_chat_image)
 
-    override fun bind(product: ProductAttachmentUiModel?) {
-        if (product == null) return
+    override fun bind(product: ProductAttachmentUiModel) {
         super.bind(product)
         bindImageClick(product)
     }

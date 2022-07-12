@@ -20,6 +20,7 @@ import com.tokopedia.play.broadcaster.util.logger.PlayLogger
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.model.mapper.PlayChannelInteractiveMapper
+import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
@@ -49,8 +50,8 @@ internal class PlayBroadcastViewModelRobot(
     userSession: UserSessionInterface = mockk(relaxed = true),
     playBroadcastWebSocket: PlayWebSocket = mockk(relaxed = true),
     playBroadcastMapper: PlayBroadcastMapper = PlayBroadcastUiMapper(TestHtmlTextTransformer()),
-    productMapper: PlayBroProductUiMapper = mockk(relaxed = true),
-    channelInteractiveMapper: PlayChannelInteractiveMapper = PlayChannelInteractiveMapper(),
+    playInteractiveMapper: PlayInteractiveMapper = PlayInteractiveMapper(TestHtmlTextTransformer()),
+    productMapper: PlayBroProductUiMapper = PlayBroProductUiMapper(),
     channelRepo: PlayBroadcastRepository = mockk(relaxed = true),
     logger: PlayLogger = mockk(relaxed = true),
 ) : Closeable {
@@ -69,23 +70,13 @@ internal class PlayBroadcastViewModelRobot(
         playBroadcastWebSocket,
         playBroadcastMapper,
         productMapper,
-        channelInteractiveMapper,
+        playInteractiveMapper,
         channelRepo,
         logger,
     )
 
     fun recordState(fn: suspend PlayBroadcastViewModelRobot.() -> Unit): PlayBroadcastUiState {
-        val scope = CoroutineScope(dispatchers.coroutineDispatcher)
-        lateinit var uiState: PlayBroadcastUiState
-        scope.launch {
-            viewModel.uiState.collect {
-                uiState = it
-            }
-        }
-        dispatchers.coroutineDispatcher.runBlockingTest { fn() }
-        dispatchers.coroutineDispatcher.advanceUntilIdle()
-        scope.cancel()
-        return uiState
+        return recordStateAsList(fn).last()
     }
 
     fun recordStateAsList(fn: suspend PlayBroadcastViewModelRobot.() -> Unit): List<PlayBroadcastUiState> {

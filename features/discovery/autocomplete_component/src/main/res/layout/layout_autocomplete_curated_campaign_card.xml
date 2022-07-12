@@ -46,7 +46,7 @@
             app:layout_constraintBottom_toTopOf="@id/autocompleteCuratedCampaignSubtitle"
             app:layout_constraintLeft_toRightOf="@id/autocompleteCuratedCampaignImage"
             app:layout_constraintRight_toRightOf="parent"
-            app:typographyType="body_2"
+            app:typographyType="display_2"
             app:typographyWeight="bold"/>
 
         <com.tokopedia.unifyprinciples.Typography
@@ -65,7 +65,7 @@
             app:layout_constraintLeft_toRightOf="@id/autocompleteCuratedCampaignImage"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/autocompleteCuratedCampaignTitle"
-            app:typographyType="body_3" />
+            app:typographyType="display_3" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

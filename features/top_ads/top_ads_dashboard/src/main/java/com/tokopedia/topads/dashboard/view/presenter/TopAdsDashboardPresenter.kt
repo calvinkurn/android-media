@@ -2,6 +2,7 @@ package com.tokopedia.topads.dashboard.view.presenter
 
 import android.content.res.Resources
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.network.data.model.RestResponse
@@ -27,6 +28,7 @@ import com.tokopedia.topads.common.data.util.Utils.locale
 import com.tokopedia.topads.common.domain.interactor.*
 import com.tokopedia.topads.common.domain.usecase.*
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.*
 import com.tokopedia.topads.dashboard.data.model.insightkey.InsightKeyData
@@ -68,9 +70,8 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
             private val getStatisticUseCase: TopAdsGetStatisticsUseCase,
             private val budgetRecomUseCase: GraphqlUseCase<DailyBudgetRecommendationModel>,
             private val productRecomUseCase: GraphqlUseCase<ProductRecommendationModel>,
-            private val topAdsEditUseCase: TopAdsEditUseCase,
             private val validGroupUseCase: TopAdsGroupValidateNameUseCase,
-            private val createGroupUseCase: CreateGroupUseCase,
+            private val topAdsCreateUseCase: TopAdsCreateUseCase,
             private val bidInfoUseCase: BidInfoUseCase,
             private val groupInfoUseCase: GroupInfoUseCase,
             private val autoTopUpUSeCase: TopAdsAutoTopUpUSeCase,
@@ -197,6 +198,20 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
         }, onError = { error ->
             error.printStackTrace()
             error.message?.let { view?.onError(it) }
+        })
+    }
+
+    fun setProductActionMoveGroup(
+        groupId: String, productIds: List<String>, onSuccess: (() -> Unit),
+    ) {
+        launchCatchError(block = {
+            val param = topAdsCreateUseCase.createRequestParamMoveGroup(
+                groupId, TopAdsDashboardConstant.SOURCE_DASH, productIds, ParamObject.ACTION_ADD
+            )
+            topAdsCreateUseCase.execute(param)
+            onSuccess()
+        }, onError = {
+            it.printStackTrace()
         })
     }
 
@@ -349,19 +364,21 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
     }
 
     fun editBudgetThroughInsight(
-        productData: MutableList<GroupEditInput.Group.AdOperationsItem>?,
-        groupData: HashMap<String, Any?>?,
+        adOperations: MutableList<GroupEditInput.Group.AdOperationsItem>?,
+        priceBid: Float?, currentGroupId: String, dailyBudget: Double?,
         onSuccess: ((FinalAdResponse.TopadsManageGroupAds)) -> Unit,
         onError: ((String)) -> Unit,
     ) {
         launchCatchError(block = {
-            val params = topAdsEditUseCase.setParam(productData, groupData)
-
-            val response = topAdsEditUseCase.execute(params)
+            val params = topAdsCreateUseCase.createRequestParamEditBudgetInsight(
+                adOperations, priceBid, dailyBudget, currentGroupId
+            )
+            val response = topAdsCreateUseCase.execute(params)
 
             onSuccess(response.topadsManageGroupAds)
         }, onError = {
             it.printStackTrace()
+            Timber.e(it, "P1#TOPADS_DASHBOARD_PRESENTER_EDIT_RECOM_BUDGET#%s", it.localizedMessage)
         })
     }
 
@@ -376,17 +393,19 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
                 })
     }
 
-    fun createGroup(param: HashMap<String, Any>, onSuccess: ((ResponseCreateGroup.TopadsCreateGroupAds) -> Unit)) {
-        createGroupUseCase.setParams(param)
-        createGroupUseCase.executeQuerySafeMode(
-                {
-                    onSuccess(it)
+    fun createGroup(
+        productIds: List<String>, currentGroupName: String, priceBid: Double,
+        suggestedBidValue: Double, error: (String?) -> Unit,
+    ) {
+        val param =
+            topAdsCreateUseCase.createRequestParamActionCreate(productIds, currentGroupName, priceBid, suggestedBidValue)
 
-                }, {
-            Timber.e(it, "P1#TOPADS_DASHBOARD_PRESENTER_CREATE_GROUP#%s", it.localizedMessage)
-
-        }
-        )
+        launchCatchError(onError = {
+            error(it.localizedMessage)
+        }, block = {
+            topAdsCreateUseCase.execute(param)
+            error(null)
+        })
     }
 
     fun getBidInfo(suggestion: List<DataSuggestions>, onSuccess: ((List<TopadsBidInfo.DataItem>) -> Unit)) {
@@ -451,7 +470,6 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
         budgetRecomUseCase.cancelJobs()
         validGroupUseCase.cancelJobs()
         productRecomUseCase.cancelJobs()
-        createGroupUseCase.cancelJobs()
         bidInfoUseCase.cancelJobs()
         bidInfoUseCase.cancelJobs()
         groupInfoUseCase.cancelJobs()

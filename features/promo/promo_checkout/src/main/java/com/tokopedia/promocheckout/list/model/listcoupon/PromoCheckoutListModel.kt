@@ -14,10 +14,10 @@ class PromoCheckoutListModel() : Visitable<PromoCheckoutListAdapterFactory>, Par
 
     @SerializedName("id")
     @Expose
-    var id: Int = 0
+    var id: String = "0"
     @SerializedName("promoID")
     @Expose
-    var promoID: Int = 0
+    var promoID: String = "0"
     @SerializedName("code")
     @Expose
     var code: String? = null
@@ -86,8 +86,8 @@ class PromoCheckoutListModel() : Visitable<PromoCheckoutListAdapterFactory>, Par
     var minimumUsageLabel: String? = null
 
     constructor(parcel: Parcel) : this() {
-        id = parcel.readInt()
-        promoID = parcel.readInt()
+        id = parcel.readString() ?: "0"
+        promoID = parcel.readString() ?: "0"
         code = parcel.readString()
         expired = parcel.readString()
         title = parcel.readString()
@@ -112,8 +112,8 @@ class PromoCheckoutListModel() : Visitable<PromoCheckoutListAdapterFactory>, Par
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(id)
-        parcel.writeInt(promoID)
+        parcel.writeString(id)
+        parcel.writeString(promoID)
         parcel.writeString(code)
         parcel.writeString(expired)
         parcel.writeString(title)

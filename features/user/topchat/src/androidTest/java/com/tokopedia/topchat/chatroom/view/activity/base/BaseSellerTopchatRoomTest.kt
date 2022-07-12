@@ -202,13 +202,13 @@ open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
                 attachment.attributes, ProductAttachmentAttributes::class.java
         )
         if (isCampaign) {
-            product.productProfile.campaignId = 1000L
+            product.productProfile.campaignId = "1000"
             product.productProfile.dropPercentage = "50"
             product.productProfile.priceBefore = "Rp 10.000.000"
         } else {
             product.productProfile.dropPercentage = ""
             product.productProfile.priceBefore = ""
-            product.productProfile.campaignId = 0
+            product.productProfile.campaignId = "0"
         }
         attachment.attributes = gson.toJson(product)
         return this

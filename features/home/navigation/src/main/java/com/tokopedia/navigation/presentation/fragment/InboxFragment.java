@@ -1,7 +1,5 @@
 package com.tokopedia.navigation.presentation.fragment;
 
-import static com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED;
-
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -25,6 +23,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.discovery.common.manager.ProductCardOptionsManager;
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel;
 import com.tokopedia.discovery.common.utils.ViewUtilsKt;
+import com.tokopedia.iconunify.IconUnify;
 import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.analytics.InboxGtmTracker;
@@ -100,6 +99,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     private static final int SHIFTING_INDEX = 1;
     private static final int TOP_ADS_BANNER_COUNT = 2;
     private static final int HEADLINE_ADS_BANNER_COUNT = 2;
+    private static final String CLICK_TYPE_WISHLIST = "&click_type=wishlist";
 
     @Inject
     InboxPresenter presenter;
@@ -198,12 +198,22 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         adapter.notifyItemChanged(productCardOptionsModel.getProductPosition(), isAddWishlist);
 
         if (isAddWishlist) {
-            if (isUsingWishlistV2) showSuccessAddWishlistV2(productCardOptionsModel.getWishlistResult());
+            if (isUsingWishlistV2) {
+                showSuccessAddWishlistV2(productCardOptionsModel.getWishlistResult());
+                if (productCardOptionsModel.isTopAds()) onClickTopAdsWishlistV2(productCardOptionsModel);
+            }
             else showSuccessAddWishlist();
         } else {
             if (isUsingWishlistV2) showSuccessRemoveWishlistV2(productCardOptionsModel.getWishlistResult());
             else showSuccessRemoveWishlist();
         }
+    }
+
+    private void onClickTopAdsWishlistV2(ProductCardOptionsModel productCardOptionsModel) {
+        String clickUrl = productCardOptionsModel.getTopAdsClickUrl() + CLICK_TYPE_WISHLIST;
+        new TopAdsUrlHitter(getContext()).hitClickUrl(getActivity().getClass().getName(), clickUrl,
+                productCardOptionsModel.getProductId(), productCardOptionsModel.getProductName(),
+                productCardOptionsModel.getProductImageUrl(), COMPONENT_NAME_TOP_ADS);
     }
 
     private void showSuccessAddWishlist() {
@@ -264,7 +274,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     }
 
     private void handleWishlistActionFailedV2(ProductCardOptionsModel.WishlistResult wishlistResult) {
-        if (getView() == null) return;
+        if (getView() == null || getActivity() == null) return;
         View rootView = getView().getRootView();
 
         String errorMsg;
@@ -275,7 +285,12 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
             else errorMsg = getString(com.tokopedia.wishlist_common.R.string.on_failed_remove_from_wishlist_msg);
         }
 
-        AddRemoveWishlistV2Handler.INSTANCE.showWishlistV2ErrorToaster(errorMsg, rootView);
+        if (!wishlistResult.getCtaTextV2().isEmpty() && !wishlistResult.getCtaActionV2().isEmpty()) {
+            String ctaText = wishlistResult.getCtaTextV2();
+            AddRemoveWishlistV2Handler.INSTANCE.showWishlistV2ErrorToasterWithCta(errorMsg, ctaText, wishlistResult.getCtaActionV2(), rootView, getActivity());
+        } else {
+            AddRemoveWishlistV2Handler.INSTANCE.showWishlistV2ErrorToaster(errorMsg, rootView);
+        }
     }
 
     @Override
@@ -449,6 +464,9 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         productCardOptionsModel.setProductId(String.valueOf(recommendationItem.getProductId()));
         productCardOptionsModel.setTopAds(recommendationItem.isTopAds());
         productCardOptionsModel.setTopAdsWishlistUrl(recommendationItem.getWishlistUrl());
+        productCardOptionsModel.setTopAdsClickUrl(recommendationItem.getClickUrl());
+        productCardOptionsModel.setProductName(recommendationItem.getName());
+        productCardOptionsModel.setProductImageUrl(recommendationItem.getImageUrl());
         productCardOptionsModel.setProductPosition(productPosition);
 
         return productCardOptionsModel;
@@ -473,10 +491,26 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
 
     private List<Visitable> getData() {
         List<Visitable> inboxList = new ArrayList<>();
-        inboxList.add(new Inbox(R.drawable.ic_topchat, R.string.chat, R.string.chat_desc));
-        inboxList.add(new Inbox(R.drawable.ic_tanyajawab, R.string.diskusi, R.string.diskusi_desc));
-        inboxList.add(new Inbox(R.drawable.ic_ulasan, R.string.ulasan, R.string.ulasan_desc));
-        inboxList.add(new Inbox(R.drawable.ic_pesan_bantuan, R.string.pesan_bantuan, R.string.pesan_bantuan_desc));
+        inboxList.add(new Inbox(
+                IconUnify.CHAT,
+                R.string.chat,
+                R.string.chat_desc
+        ));
+        inboxList.add(new Inbox(
+                IconUnify.DISCUSSION,
+                R.string.diskusi,
+                R.string.diskusi_desc
+        ));
+        inboxList.add(new Inbox(
+                IconUnify.STAR,
+                R.string.ulasan,
+                R.string.ulasan_desc
+        ));
+        inboxList.add(new Inbox(
+                IconUnify.CALL_CENTER,
+                R.string.pesan_bantuan,
+                R.string.pesan_bantuan_desc
+        ));
         inboxList.add(new InboxTopAdsBannerUiModel());
         return inboxList;
     }
@@ -594,23 +628,24 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         this.visitables = list;
         adapter.addElement(list);
         int index = 0;
-        if (pageNum == 0) {
-            headlineExperimentPosition = headlineIndexList.get(0);
-        } else if (headlineIndexList.size() == HEADLINE_ADS_BANNER_COUNT && pageNum < HEADLINE_ADS_BANNER_COUNT) {
-            headlineExperimentPosition = headlineIndexList.get(1);
-            index = 1;
-        }
-
-        if ((headlineExperimentPosition != HEADLINE_POS_NOT_TO_BE_ADDED || (headlineIndexList.size() == HEADLINE_ADS_BANNER_COUNT && pageNum < HEADLINE_ADS_BANNER_COUNT))
-                && headlineExperimentPosition <= adapter.getList().size() && (!isAdded || (headlineIndexList.size() == HEADLINE_ADS_BANNER_COUNT && pageNum < HEADLINE_ADS_BANNER_COUNT))) {
-            if (isTopAdsBannerAdded) {
-                adapter.addElement(headlineExperimentPosition + SHIFTING_INDEX,
-                        new TopadsHeadlineUiModel(headlineData, 0, index));
-            } else {
-                adapter.addElement(headlineExperimentPosition,
-                        new TopadsHeadlineUiModel(headlineData, 0, index));
+        if (headlineIndexList != null && !headlineIndexList.isEmpty()){
+            if (pageNum == 0) {
+                headlineExperimentPosition = headlineIndexList.get(0);
+            } else if (headlineIndexList.size() == HEADLINE_ADS_BANNER_COUNT && pageNum < HEADLINE_ADS_BANNER_COUNT) {
+                headlineExperimentPosition = headlineIndexList.get(1);
+                index = 1;
             }
-            isAdded = true;
+            if ((headlineExperimentPosition != HEADLINE_POS_NOT_TO_BE_ADDED || (headlineIndexList.size() == HEADLINE_ADS_BANNER_COUNT && pageNum < HEADLINE_ADS_BANNER_COUNT))
+                    && headlineExperimentPosition <= adapter.getList().size() && (!isAdded || (headlineIndexList.size() == HEADLINE_ADS_BANNER_COUNT && pageNum < HEADLINE_ADS_BANNER_COUNT))) {
+                if (isTopAdsBannerAdded) {
+                    adapter.addElement(headlineExperimentPosition + SHIFTING_INDEX,
+                            new TopadsHeadlineUiModel(headlineData, 0, index));
+                } else {
+                    adapter.addElement(headlineExperimentPosition,
+                            new TopadsHeadlineUiModel(headlineData, 0, index));
+                }
+                isAdded = true;
+            }
         }
 
         if (toAdsBannerExperimentPosition != TOP_ADS_BANNER_POS_NOT_TO_BE_ADDED

@@ -13,9 +13,10 @@ class ImagePreview(
     private val context: Context
 ) : BasePagerPreview {
 
-    private var mScaleFactor = 1f
     private lateinit var mImageViewRef: ImageView
     private lateinit var mScaleGestureDetector: ScaleGestureDetector
+
+    private var mScaleFactor = 1f
     private var onScaling = false
     private var wrapperWidth = 0
     private var wrapperHeight = 0
@@ -26,14 +27,6 @@ class ImagePreview(
     private var posX = 0f
     private var posY = 0f
 
-    /**
-     * zoom in & zoom out size limit
-     * zoom in max 5x original size
-     * zoom out max 1x original size
-     */
-    private val zoomInLimit = 5f
-    private val zoomOutLimit = 1f
-
     override val layout: Int
         get() = R.layout.view_item_preview_image
 
@@ -41,8 +34,8 @@ class ImagePreview(
         return rootLayoutView(context).also {
             mImageViewRef = it.findViewById(R.id.img_preview)
 
-            mImageViewRef.loadImage(media.data.path, properties = {
-                listener({_, _ ->
+            mImageViewRef.loadImage(media.data.file?.path, properties = {
+                listener({ _, _ ->
                     mImageViewRef.post {
                         wrapperWidth = it.width
                         wrapperHeight = it.height
@@ -51,7 +44,7 @@ class ImagePreview(
                         assetWidth = mImageViewRef.drawable.intrinsicWidth
                         assetHeight = mImageViewRef.drawable.intrinsicHeight
                     }
-                },{})
+                }, {})
             })
 
             mScaleGestureDetector = ScaleGestureDetector(context, scaleGestureListener())
@@ -60,23 +53,23 @@ class ImagePreview(
         }
     }
 
-    private fun scaleGestureListener() = object: ScaleGestureDetector.SimpleOnScaleGestureListener(){
-        override fun onScale(detector: ScaleGestureDetector?): Boolean {
-            detector?.let {
-                mScaleFactor *= it.scaleFactor
+    private fun scaleGestureListener() = object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
+            override fun onScale(detector: ScaleGestureDetector?): Boolean {
+                detector?.let {
+                    mScaleFactor *= it.scaleFactor
 
-                mScaleFactor = when {
-                    mScaleFactor < zoomOutLimit -> zoomOutLimit
-                    mScaleFactor > zoomInLimit -> zoomInLimit
-                    else -> mScaleFactor
+                    mScaleFactor = when {
+                        mScaleFactor < zoomOutLimit -> zoomOutLimit
+                        mScaleFactor > zoomInLimit -> zoomInLimit
+                        else -> mScaleFactor
+                    }
+
+                    mImageViewRef.scaleX = mScaleFactor
+                    mImageViewRef.scaleY = mScaleFactor
                 }
-
-                mImageViewRef.scaleX = mScaleFactor
-                mImageViewRef.scaleY = mScaleFactor
+                return true
             }
-            return true
         }
-    }
 
     private fun touchListener() = View.OnTouchListener { v, event ->
         v.performClick()
@@ -125,8 +118,8 @@ class ImagePreview(
     }
 
     private fun moveImageValidation(targetX: Float, targetY: Float): Coordinate {
-        var scaledWidth = assetWidth * mScaleFactor
-        var scaledHeight = assetHeight * mScaleFactor
+        val scaledWidth = assetWidth * mScaleFactor
+        val scaledHeight = assetHeight * mScaleFactor
 
         /**
          * xMax -> limit drag movement to the right
@@ -154,23 +147,23 @@ class ImagePreview(
     }
 
     private fun rescalingPosition(targetX: Float, targetY: Float): Coordinate {
-        var scaledWidth = assetWidth * mScaleFactor
-        var scaledHeight = assetHeight * mScaleFactor
+        val scaledWidth = assetWidth * mScaleFactor
+        val scaledHeight = assetHeight * mScaleFactor
 
-        var xMax = ((scaledWidth - wrapperWidth) / 2)
-        var xMin = -xMax
+        val xMax = ((scaledWidth - wrapperWidth) / 2)
+        val xMin = -xMax
 
-        var yMax = ((scaledHeight - wrapperHeight) / 2)
-        var yMin = -yMax
+        val yMax = ((scaledHeight - wrapperHeight) / 2)
+        val yMin = -yMax
 
-        var newX = when {
+        val newX = when {
             scaledWidth < wrapperWidth -> 0f
             targetX > xMax -> xMax
             targetX < xMin -> xMin
             else -> targetX
         }
 
-        var newY = when {
+        val newY = when {
             scaledHeight < wrapperHeight -> 0f
             targetY > yMax -> yMax
             targetY < yMin -> yMin
@@ -179,5 +172,15 @@ class ImagePreview(
         return Coordinate(newX, newY)
     }
 
-    inner class Coordinate (var x: Float, var y: Float)
+    inner class Coordinate(var x: Float, var y: Float)
+
+    companion object {
+        /**
+         * zoom in & zoom out size limit
+         * zoom in max 5x original size
+         * zoom out max 1x original size
+         */
+        private const val zoomInLimit = 5f
+        private const val zoomOutLimit = 1f
+    }
 }

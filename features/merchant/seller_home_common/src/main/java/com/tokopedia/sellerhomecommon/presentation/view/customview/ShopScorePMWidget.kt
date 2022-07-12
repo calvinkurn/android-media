@@ -5,7 +5,8 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
-import androidx.core.content.ContextCompat
+import androidx.annotation.ColorRes
+import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcProgressBarWidgetBinding
 
@@ -14,6 +15,10 @@ import com.tokopedia.sellerhomecommon.databinding.ShcProgressBarWidgetBinding
  */
 
 class ShopScorePMWidget : FrameLayout {
+
+    companion object {
+        private const val MAX_PROGRESS_FORMAT = "/%s"
+    }
 
     constructor(context: Context) : super(context) {
         initView(context)
@@ -49,7 +54,7 @@ class ShopScorePMWidget : FrameLayout {
     }
 
     fun setMaxProgressText(progress: String) {
-        binding?.tvShcMaxProgress?.text = "/".plus(progress)
+        binding?.tvShcMaxProgress?.text = String.format(MAX_PROGRESS_FORMAT, progress)
     }
 
     fun setProgressValue(progress: Int) {
@@ -64,68 +69,38 @@ class ShopScorePMWidget : FrameLayout {
         val colors = when (state) {
             is State.Good -> {
                 binding?.tvShcCurrentProgress?.setTextColor(
-                    ContextCompat.getColor(
-                        context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_G500
-                    )
+                    context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
                 )
                 intArrayOf(
-                    ContextCompat.getColor(
-                        context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_G400
-                    ),
-                    ContextCompat.getColor(
-                        context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_G600
-                    )
+                    context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_G400),
+                    context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_G600)
                 )
             }
             is State.Warning -> {
                 binding?.tvShcCurrentProgress?.setTextColor(
-                    ContextCompat.getColor(
-                        context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_Y400
-                    )
+                    context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Y400)
                 )
                 intArrayOf(
-                    ContextCompat.getColor(
-                        context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_Y300
-                    ),
-                    ContextCompat.getColor(
-                        context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_Y400
-                    )
+                    context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Y300),
+                    context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Y400)
                 )
             }
             is State.Custom -> {
                 binding?.tvShcCurrentProgress?.setTextColor(
-                    ContextCompat.getColor(
-                        context,
-                        state.valueTextColorResId
-                    )
+                    context.getResColor(state.valueTextColorResId)
                 )
                 intArrayOf(
-                    ContextCompat.getColor(context, state.barStartColorResId),
-                    ContextCompat.getColor(context, state.barEndColorResId)
+                    context.getResColor(state.barStartColorResId),
+                    context.getResColor(state.barEndColorResId)
                 )
             }
             else -> {
                 binding?.tvShcCurrentProgress?.setTextColor(
-                    ContextCompat.getColor(
-                        context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_R500
-                    )
+                    context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_R500)
                 )
                 intArrayOf(
-                    ContextCompat.getColor(
-                        context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_R400
-                    ),
-                    ContextCompat.getColor(
-                        context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_R500
-                    )
+                    context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_R400),
+                    context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_R500)
                 )
             }
         }
@@ -148,9 +123,9 @@ class ShopScorePMWidget : FrameLayout {
         object Danger : State(DANGER)
 
         data class Custom(
-            val valueTextColorResId: Int,
-            val barStartColorResId: Int,
-            val barEndColorResId: Int
+            @ColorRes val valueTextColorResId: Int,
+            @ColorRes val barStartColorResId: Int,
+            @ColorRes val barEndColorResId: Int
         ) : State(CUSTOM)
     }
 }

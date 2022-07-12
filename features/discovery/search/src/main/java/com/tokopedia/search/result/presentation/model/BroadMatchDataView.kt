@@ -8,6 +8,7 @@ import com.tokopedia.search.result.presentation.view.typefactory.ProductListType
 
 data class BroadMatchDataView(
     val keyword: String = "",
+    val subtitle: String = "",
     val url: String = "",
     val applink: String = "",
     val isAppendTitleInTokopedia: Boolean = false,
@@ -17,6 +18,7 @@ data class BroadMatchDataView(
     val componentId: String = "",
     val trackingOption: Int = 0,
     val actualKeyword: String = "",
+    val cardButton: CardButton = CardButton(),
 ) : ImpressHolder(),
     Visitable<ProductListTypeFactory>,
     SearchComponentTracking by searchComponentTracking(
@@ -31,4 +33,6 @@ data class BroadMatchDataView(
     override fun type(typeFactory: ProductListTypeFactory): Int {
         return typeFactory.type(this)
     }
+
+    data class CardButton(val title: String = "", val applink: String = "")
 }

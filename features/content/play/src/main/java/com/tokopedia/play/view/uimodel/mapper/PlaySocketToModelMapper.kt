@@ -11,10 +11,13 @@ import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
-import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
-import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
-import com.tokopedia.play_common.model.mapper.PlayChannelInteractiveMapper
+import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
+import com.tokopedia.play_common.domain.model.interactive.GetCurrentInteractiveResponse
+import com.tokopedia.play_common.domain.model.interactive.QuizResponse
+import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -26,7 +29,7 @@ class PlaySocketToModelMapper @Inject constructor(
     private val merchantVoucherMapper: PlayMerchantVoucherUiMapper,
     private val chatMapper: PlayChatUiMapper,
     private val channelStatusMapper: PlayChannelStatusMapper,
-    private val channelInteractiveMapper: PlayChannelInteractiveMapper,
+    private val interactiveMapper: PlayInteractiveMapper,
     private val realTimeNotificationMapper: PlayRealTimeNotificationMapper,
     private val multipleLikesMapper: PlayMultipleLikesMapper,
     private val userWinnerStatusMapper: PlayUserWinnerStatusMapper,
@@ -72,8 +75,13 @@ class PlaySocketToModelMapper @Inject constructor(
         return channelStatusMapper.mapStatusBanned(isBanned)
     }
 
-    fun mapInteractive(input: ChannelInteractive): PlayCurrentInteractiveModel {
-        return channelInteractiveMapper.mapInteractive(input)
+    fun mapInteractive(input: GiveawayResponse): InteractiveUiModel.Giveaway {
+        val waitingDurationInMillis = TimeUnit.SECONDS.toMillis(input.waitingDuration.toLong())
+        return interactiveMapper.mapGiveaway(input, waitingDurationInMillis)
+    }
+
+    fun mapInteractive(input: GetCurrentInteractiveResponse.Data): InteractiveUiModel {
+        return interactiveMapper.mapInteractive(input)
     }
 
     fun mapRealTimeNotification(input: RealTimeNotification): RealTimeNotificationUiModel {
@@ -88,6 +96,11 @@ class PlaySocketToModelMapper @Inject constructor(
 
     fun mapUserWinnerStatus(userWinnerStatus: UserWinnerStatus): PlayUserWinnerStatusUiModel {
         return userWinnerStatusMapper.mapUserWinnerStatus(userWinnerStatus)
+    }
+
+    fun mapQuizFromSocket(response: QuizResponse): InteractiveUiModel {
+        val waitingDurationInMillis = TimeUnit.SECONDS.toMillis(response.waitingDuration)
+        return interactiveMapper.mapQuiz(response, waitingDurationInMillis)
     }
 
     /**

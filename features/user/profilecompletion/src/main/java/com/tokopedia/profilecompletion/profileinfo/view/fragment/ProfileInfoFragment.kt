@@ -15,9 +15,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
@@ -29,6 +32,8 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.R.string.*
@@ -41,10 +46,13 @@ import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoConstants
 import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoData
 import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoError
 import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoUiModel
+import com.tokopedia.profilecompletion.profileinfo.data.Detail
+import com.tokopedia.profilecompletion.profileinfo.tracker.CloseAccountTracker
 import com.tokopedia.profilecompletion.profileinfo.tracker.ProfileInfoTracker
 import com.tokopedia.profilecompletion.profileinfo.tracker.ProfileInfoTracker.Companion.LABEL_ENTRY_POINT_USER_ID
 import com.tokopedia.profilecompletion.profileinfo.view.adapter.ProfileInfoAdapter
 import com.tokopedia.profilecompletion.profileinfo.view.adapter.ProfileInfoListTypeFactory
+import com.tokopedia.profilecompletion.profileinfo.view.bottomsheet.CloseAccountBottomSheet
 import com.tokopedia.profilecompletion.profileinfo.view.uimodel.DividerProfileUiModel
 import com.tokopedia.profilecompletion.profileinfo.view.uimodel.ProfileInfoItemUiModel
 import com.tokopedia.profilecompletion.profileinfo.view.uimodel.ProfileInfoTitleUiModel
@@ -53,6 +61,7 @@ import com.tokopedia.profilecompletion.profileinfo.view.viewholder.ProfileInfoTi
 import com.tokopedia.profilecompletion.profileinfo.viewmodel.ProfileViewModel
 import com.tokopedia.profilecompletion.settingprofile.domain.UrlSettingProfileConst
 import com.tokopedia.profilecompletion.settingprofile.view.fragment.SettingProfileFragment
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
@@ -60,6 +69,8 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.phonenumber.PhoneNumberUtil
 import com.tokopedia.utils.view.binding.viewBinding
@@ -82,6 +93,9 @@ class ProfileInfoFragment : BaseDaggerFragment(),
     @Inject
     lateinit var tracker: ProfileInfoTracker
 
+    @Inject
+    lateinit var closeAccountTracker: CloseAccountTracker
+
     private val binding: FragmentProfileInfoBinding? by viewBinding()
 
     val adapter by lazy {
@@ -103,6 +117,8 @@ class ProfileInfoFragment : BaseDaggerFragment(),
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(ProfileViewModel::class.java)
     }
+
+    private var loaderCloseAccount: LoaderDialog? = null
 
     override fun initInjector() {
         getComponent(ProfileCompletionSettingComponent::class.java).inject(this)
@@ -136,6 +152,16 @@ class ProfileInfoFragment : BaseDaggerFragment(),
 
         binding?.profileInfoImageSubtitle?.setOnClickListener(editPhotoListener)
         binding?.profileInfoImageUnify?.setImageUrl(userSession.profilePicture)
+
+        val isUsingRollenceCloseAccount = isUsingRollenceCloseAccount()
+        binding?.dividerCloseAccount?.showWithCondition(isUsingRollenceCloseAccount)
+        binding?.tgCloseAccount?.showWithCondition(isUsingRollenceCloseAccount)
+        if (isUsingRollenceCloseAccount) {
+            binding?.tgCloseAccount?.setOnClickListener {
+                closeAccountTracker.trackClickCloseAccount(CloseAccountTracker.LABEL_KLIK)
+                checkFinancialAssets()
+            }
+        }
     }
 
     private fun setupObserver() {
@@ -178,6 +204,22 @@ class ProfileInfoFragment : BaseDaggerFragment(),
             binding?.profileInfoImageUnify?.setImageUrl(it)
             tracker.trackOnChangeProfilePictureClick(ProfileInfoTracker.LABEL_SUCCESS)
             showNormalToaster(getString(success_change_profile_picture))
+        }
+
+        viewModel.userFinancialAssets.observe(viewLifecycleOwner) {
+            checkFinancialAssetsIsLoading(false)
+            when (it) {
+                is Success -> {
+                    if (it.data.hasFinancialAssets)
+                        showCloseAccount(it.data.detail)
+                    else
+                        goToCloseAccount()
+                }
+                is Fail -> {
+                    closeAccountTracker.trackClickCloseAccount(CloseAccountTracker.LABEL_FAILED)
+                    showToasterError(getString(close_account_failed))
+                }
+            }
         }
     }
 
@@ -673,6 +715,45 @@ class ProfileInfoFragment : BaseDaggerFragment(),
         startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_EDIT_BOD)
     }
 
+    private fun checkFinancialAssetsIsLoading(isLoading: Boolean) {
+        if (isLoading) {
+            loaderCloseAccount = LoaderDialog(requireActivity())
+            loaderCloseAccount?.apply {
+                setLoadingText(EMPTY_STRING)
+                dialog.setOverlayClose(false)
+                show()
+            }
+        } else {
+            loaderCloseAccount?.dialog?.dismiss()
+        }
+    }
+
+    private fun checkFinancialAssets() {
+        checkFinancialAssetsIsLoading(true)
+        viewModel.checkFinancialAssets()
+    }
+
+    private fun showCloseAccount(detail: Detail) {
+        val bottomSheetCloseAccount = CloseAccountBottomSheet(detail)
+        bottomSheetCloseAccount.show(childFragmentManager, TAG_BOTTOM_SHEET_CLOSE_ACCOUNT)
+    }
+
+    private fun goToCloseAccount() {
+        RouteManager.route(
+            context,
+            "${ApplinkConst.WEBVIEW}?${WEBVIEW_PARAM_HIDE_TITLEBAR}&${WEBVIEW_PARAM_BACK_PRESSED_DISABLED}&url=" +
+                    TokopediaUrl.getInstance().MOBILEWEB.plus(TOKOPEDIA_CLOSE_ACCOUNT_PATH)
+        )
+    }
+
+    private fun isUsingRollenceCloseAccount(): Boolean {
+        val newCloseAccountAbTestKey = RemoteConfigInstance.getInstance().abTestPlatform?.getString(
+            ROLLENCE_KEY_CLOSE_ACCOUNT,
+            ""
+        ).orEmpty()
+        return newCloseAccountAbTestKey.isNotEmpty()
+    }
+
     companion object {
         const val MAX_FILE_SIZE = 2048
         const val REQUEST_CODE_EDIT_PROFILE_PHOTO = 200
@@ -680,6 +761,12 @@ class ProfileInfoFragment : BaseDaggerFragment(),
         private const val ENTRY_POINT_DISABLED = -1
         private const val GENDER_MALE = 1
         private const val GENDER_FEMALE = 2
+        private const val TAG_BOTTOM_SHEET_CLOSE_ACCOUNT = "bottom sheet close account"
+        private const val EMPTY_STRING = ""
+        private const val WEBVIEW_PARAM_HIDE_TITLEBAR = "${com.tokopedia.webview.KEY_TITLEBAR}=false"
+        private const val WEBVIEW_PARAM_BACK_PRESSED_DISABLED = "${com.tokopedia.webview.KEY_BACK_PRESSED_ENABLED}=false"
+        private const val TOKOPEDIA_CLOSE_ACCOUNT_PATH = "user/close-account"
+        private const val ROLLENCE_KEY_CLOSE_ACCOUNT = "close_account"
 
         fun createInstance(): ProfileInfoFragment {
             return ProfileInfoFragment()

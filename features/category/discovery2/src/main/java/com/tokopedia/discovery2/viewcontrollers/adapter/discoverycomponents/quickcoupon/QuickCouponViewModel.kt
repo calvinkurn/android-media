@@ -1,15 +1,18 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickcoupon
 
 import android.app.Application
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.quickcouponresponse.ClickCouponData
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
+import com.tokopedia.discovery2.usecase.HideSectionUseCase
 import com.tokopedia.discovery2.usecase.quickcouponusecase.QuickCouponUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -24,9 +27,13 @@ class QuickCouponViewModel(val application: Application, private val components:
     private val couponVisibilityStatus: MutableLiveData<Boolean> = MutableLiveData()
     private val couponAdded: MutableLiveData<Boolean> = MutableLiveData()
     private val loggedInStatusLiveData: MutableLiveData<Boolean> = MutableLiveData()
+    private val _hideSection = SingleLiveEvent<String>()
 
     @Inject
     lateinit var quickCouponUseCase: QuickCouponUseCase
+
+    @Inject
+    lateinit var hideSectionUseCase: HideSectionUseCase
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
@@ -39,6 +46,7 @@ class QuickCouponViewModel(val application: Application, private val components:
     fun getCouponAddedStatus() = couponAdded
     fun getLoggedInStatusLiveData() = loggedInStatusLiveData
     fun getComponentData() = components
+    val hideSectionLD: LiveData<String> = _hideSection
 
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
@@ -56,10 +64,22 @@ class QuickCouponViewModel(val application: Application, private val components:
                 clickCouponLiveData.value = it
                 checkComponentVisibility()
                 loggedInStatus()
+            } ?: run {
+                hideIfPresentInSection()
             }
         }, onError = {
+            hideIfPresentInSection()
             it.printStackTrace()
         })
+    }
+
+    private fun hideIfPresentInSection() {
+        val response = hideSectionUseCase.checkForHideSectionHandling(components)
+        if(response.shouldHideSection){
+            if(response.sectionId.isNotEmpty())
+                _hideSection.value = response.sectionId
+            syncData.value = true
+        }
     }
 
     private fun checkComponentVisibility() {
@@ -67,8 +87,13 @@ class QuickCouponViewModel(val application: Application, private val components:
             if (it) {
                 updateCouponAppliedStatus()
             }
+            else{
+                hideIfPresentInSection()
+            }
             components.isApplicable = it
             couponVisibilityStatus.value = it
+        } ?: run {
+            hideIfPresentInSection()
         }
     }
 

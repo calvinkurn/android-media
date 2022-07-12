@@ -11,15 +11,14 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.model.GlideUrl
-import com.bumptech.glide.load.model.LazyHeaders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
+import com.tokopedia.logisticCommon.data.constant.PodConstant
 import com.tokopedia.logisticCommon.ui.DelayedEtaBottomSheetFragment
 import com.tokopedia.logisticorder.R
 import com.tokopedia.logisticorder.adapter.EmptyTrackingNotesAdapter
@@ -37,11 +36,6 @@ import com.tokopedia.logisticorder.utils.TippingConstant.REFUND_TIP
 import com.tokopedia.logisticorder.utils.TippingConstant.SUCCESS_PAYMENT
 import com.tokopedia.logisticorder.utils.TippingConstant.SUCCESS_TO_GOJEK
 import com.tokopedia.logisticorder.utils.TippingConstant.WAITING_PAYMENT
-import com.tokopedia.logisticorder.utils.TrackingPageUtil
-import com.tokopedia.logisticorder.utils.TrackingPageUtil.DEFAULT_OS_TYPE
-import com.tokopedia.logisticorder.utils.TrackingPageUtil.HEADER_KEY_AUTH
-import com.tokopedia.logisticorder.utils.TrackingPageUtil.IMAGE_LARGE_SIZE
-import com.tokopedia.logisticorder.utils.TrackingPageUtil.getDeliveryImage
 import com.tokopedia.logisticorder.view.bottomsheet.DriverInfoBottomSheet
 import com.tokopedia.logisticorder.view.bottomsheet.DriverTippingBottomSheet
 import com.tokopedia.logisticorder.view.livetracking.LiveTrackingActivity
@@ -291,11 +285,11 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
     }
 
     private fun showLoading() {
-        binding?.mainProgressBar?.visibility = View.VISIBLE
+        binding?.loadingView?.root?.visibility = View.VISIBLE
     }
 
     private fun hideLoading() {
-        binding?.mainProgressBar?.visibility = View.GONE
+        binding?.loadingView?.root?.visibility = View.GONE
     }
 
     private fun showError(error: Throwable) {
@@ -523,33 +517,18 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
     }
 
     override fun onImageItemClicked(imageId: String, orderId: Long, description: String) {
-        val url = getDeliveryImage(imageId, orderId, IMAGE_LARGE_SIZE,
-                userSession.userId, DEFAULT_OS_TYPE, userSession.deviceId)
-        val authKey = String.format("%s %s", TrackingPageUtil.HEADER_VALUE_BEARER, userSession.accessToken)
-        val newUrl = GlideUrl(
-            url, LazyHeaders.Builder()
-                .addHeader(HEADER_KEY_AUTH, authKey)
-                .build()
-        )
-
-        binding?.root?.let {
-            binding?.imgProof?.let { imgProof ->
-                Glide.with(it.context)
-                    .load(newUrl)
-                    .placeholder(it.context.getDrawable(R.drawable.ic_image_error))
-                    .error(it.context.getDrawable(R.drawable.ic_image_error))
-                    .dontAnimate()
-                    .into(imgProof)
-            }
-        }
-
-        binding?.run {
-            proofDescription.text = description
-            imagePreviewLarge.visibility = View.VISIBLE
-            iconClose.setOnClickListener {
-                binding?.imagePreviewLarge?.visibility = View.GONE
-            }
-        }
+        navigateToPodActivity(imageId, orderId, description)
     }
 
+    //POD: navigate to pod activity
+    private fun navigateToPodActivity(imageId: String, orderId: Long, description: String) {
+        val appLink = Uri.parse(ApplinkConstInternalLogistic.PROOF_OF_DELIVERY).buildUpon()
+            .appendQueryParameter(PodConstant.QUERY_IMAGE_ID, imageId)
+            .appendQueryParameter(PodConstant.QUERY_DESCRIPTION, description)
+            .build()
+            .toString()
+        val intent = RouteManager.getIntent(activity, appLink, orderId.toString())
+
+        startActivity(intent)
+    }
 }

@@ -39,7 +39,6 @@ class ReviewMediaThumbnail @JvmOverloads constructor(
 
     init {
         binding.root.layoutManager = ReviewMediaThumbnailLayoutManager(context)
-        (binding.root.layoutManager as? LinearLayoutManager)?.recycleChildrenOnDetach = true
     }
 
     fun setData(data: ReviewMediaThumbnailUiModel) {
@@ -54,6 +53,7 @@ class ReviewMediaThumbnail @JvmOverloads constructor(
     }
 
     fun setRecycledViewPool(recycledViewPool: RecyclerView.RecycledViewPool) {
+        (binding.root.layoutManager as? LinearLayoutManager)?.recycleChildrenOnDetach = true
         binding.root.setRecycledViewPool(recycledViewPool)
     }
 

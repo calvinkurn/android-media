@@ -1,5 +1,6 @@
 package com.tokopedia.flight.booking.data
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -17,6 +18,7 @@ data class FlightCheckoutParam(
         var promoCode: String = ""
 ) {
     data class CartItem(
+            @SuppressLint("Invalid Data Type")
             @SerializedName("productID")
             @Expose
             var productId: Int = 0,
@@ -51,6 +53,7 @@ data class FlightCheckoutParam(
             @Expose
             val userAgent: String = "",
 
+            @SuppressLint("Invalid Data Type")
             @SerializedName("did")
             @Expose
             val did: Int = 0

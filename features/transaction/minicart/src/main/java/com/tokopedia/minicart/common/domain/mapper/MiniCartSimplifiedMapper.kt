@@ -92,9 +92,9 @@ class MiniCartSimplifiedMapper @Inject constructor() {
                     val key = MiniCartItemKey(product.productId)
                     val bundleDetail = cartDetail.bundleDetail
                     if (bundleDetail.isBundlingItem()) {
-                        val bundleKey = MiniCartItemKey(bundleDetail.bundleId, type = MiniCartItemType.BUNDLE)
+                        val bundleKey = MiniCartItemKey(bundleDetail.bundleGroupId, type = MiniCartItemType.BUNDLE)
                         if (!miniCartSimplifiedDataList.contains(bundleKey)) {
-                            miniCartSimplifiedDataList[bundleKey] = MiniCartItem.MiniCartItemBundle(
+                            miniCartSimplifiedDataList[bundleKey] = MiniCartItem.MiniCartItemBundleGroup(
                                     bundleId = bundleDetail.bundleId,
                                     bundleGroupId = bundleDetail.bundleGroupId,
                                     bundleTitle = bundleDetail.bundleName,
@@ -107,7 +107,7 @@ class MiniCartSimplifiedMapper @Inject constructor() {
                                     products = hashMapOf(key to item)
                             )
                         } else {
-                            val currentBundleItem = miniCartSimplifiedDataList[bundleKey] as MiniCartItem.MiniCartItemBundle
+                            val currentBundleItem = miniCartSimplifiedDataList[bundleKey] as MiniCartItem.MiniCartItemBundleGroup
                             val products = HashMap(currentBundleItem.products)
                             products[key] = item
                             miniCartSimplifiedDataList[bundleKey] = currentBundleItem.copy(products = products)
@@ -157,9 +157,9 @@ class MiniCartSimplifiedMapper @Inject constructor() {
                         val key = MiniCartItemKey(product.productId)
                         val bundleDetail = cartDetail.bundleDetail
                         if (bundleDetail.isBundlingItem()) {
-                            val bundleKey = MiniCartItemKey(bundleDetail.bundleId, type = MiniCartItemType.BUNDLE)
+                            val bundleKey = MiniCartItemKey(bundleDetail.bundleGroupId, type = MiniCartItemType.BUNDLE)
                             if (!miniCartSimplifiedDataList.contains(bundleKey)) {
-                                miniCartSimplifiedDataList[bundleKey] = MiniCartItem.MiniCartItemBundle(
+                                miniCartSimplifiedDataList[bundleKey] = MiniCartItem.MiniCartItemBundleGroup(
                                         isError = true,
                                         bundleId = bundleDetail.bundleId,
                                         bundleGroupId = bundleDetail.bundleGroupId,
@@ -173,7 +173,7 @@ class MiniCartSimplifiedMapper @Inject constructor() {
                                         products = hashMapOf(key to item)
                                 )
                             } else {
-                                val currentBundleItem = miniCartSimplifiedDataList[bundleKey] as MiniCartItem.MiniCartItemBundle
+                                val currentBundleItem = miniCartSimplifiedDataList[bundleKey] as MiniCartItem.MiniCartItemBundleGroup
                                 val products = HashMap(currentBundleItem.products)
                                 products[key] = item
                                 miniCartSimplifiedDataList[bundleKey] = currentBundleItem.copy(products = products)

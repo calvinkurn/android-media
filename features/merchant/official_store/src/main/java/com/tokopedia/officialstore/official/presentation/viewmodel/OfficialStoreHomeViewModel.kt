@@ -212,7 +212,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
     private suspend fun getOfficialStoreBanners(
         categoryId: String,
         isCache: Boolean,
-        onCompleteInvokeData: () -> Unit = {}
+        onCompleteInvokeData: () -> Unit
     ): Result<OfficialStoreBanners> {
         return withContext(dispatchers.io) {
             try {
@@ -284,7 +284,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
             val bestSellerDataModel = bestSellerMapper.mappingRecommendationWidget(data.first().copy(channelId = channelId))
             _recomWidget.value = Success(bestSellerDataModel)
         } catch (t: Throwable) {
-            Fail(t)
+            _recomWidget.value = Fail(t)
         }
     }
 
@@ -407,10 +407,6 @@ class OfficialStoreHomeViewModel @Inject constructor(
             _featuredShopRemove.value = featuredShopDataModel
         }
     }
-
-    fun isLoggedIn() = userSessionInterface.isLoggedIn
-
-    fun getUserId() = userSessionInterface.userId
 
     fun resetIsFeatureShopAllowed() {
         isFeaturedShopAllowed = false

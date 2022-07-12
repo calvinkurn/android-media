@@ -3,12 +3,13 @@ package com.tokopedia.recharge_credit_card.datamodel
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class RechargeCCCatalogPrefix(
+data class RechargeCCCatalogPrefix(
         @SerializedName("rechargeCatalogPrefixSelect")
         @Expose
-        val prefixSelect: CatalogPrefixSelect = CatalogPrefixSelect())
+        val prefixSelect: CatalogPrefixSelect = CatalogPrefixSelect()
+)
 
-class CatalogPrefixSelect(
+data class CatalogPrefixSelect(
         @SerializedName("text")
         @Expose
         val text: String = "",
@@ -20,7 +21,7 @@ class CatalogPrefixSelect(
         val prefixes: List<CatalogPrefixs> = listOf()
 )
 
-class CatalogPrefixs(
+data class CatalogPrefixs(
         @SerializedName("key")
         @Expose
         val key: String = "",
@@ -32,7 +33,7 @@ class CatalogPrefixs(
         val operator: CatalogOperator = CatalogOperator()
 )
 
-class CatalogOperator(
+data class CatalogOperator(
         @SerializedName("id")
         @Expose
         val id: String = "",
@@ -41,7 +42,7 @@ class CatalogOperator(
         val attribute: CatalogPrefixAttributes = CatalogPrefixAttributes()
 )
 
-class CatalogPrefixAttributes(
+data class CatalogPrefixAttributes(
         @SerializedName("image_url")
         @Expose
         val imageUrl: String = "",

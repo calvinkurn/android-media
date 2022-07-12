@@ -1,6 +1,7 @@
 package com.tokopedia.centralizedpromo.domain.usecase
 
 import com.tokopedia.centralizedpromo.domain.model.SellerHomeWhiteListUserResponse
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -9,6 +10,7 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
+@GqlQuery("SellerHomeGetWhiteListedUserGqlQuery", SellerHomeGetWhiteListedUserUseCase.QUERY)
 class SellerHomeGetWhiteListedUserUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository,
     val userSession: UserSessionInterface
@@ -16,7 +18,7 @@ class SellerHomeGetWhiteListedUserUseCase @Inject constructor(
 
     init {
         setTypeClass(SellerHomeWhiteListUserResponse::class.java)
-        setGraphqlQuery(GET_WHITELISTED_USERS_SELLER_HOME)
+        setGraphqlQuery(SellerHomeGetWhiteListedUserGqlQuery())
     }
 
     suspend fun executeQuery(): Boolean {
@@ -39,24 +41,22 @@ class SellerHomeGetWhiteListedUserUseCase @Inject constructor(
     }
 
     companion object {
-        val GET_WHITELISTED_USERS_SELLER_HOME: String =
-            """query topAdsGetShopWhitelistedFeature(${'$'}shopID: String!){
-  topAdsGetShopWhitelistedFeature(shopID: ${'$'}shopID){
-      data {
-        featureID
-        featureName
-      }
-      errors {
-         code
-         detail
-         title
-      }
-  }
-}
-""".trimIndent()
-
+        const val QUERY: String = """
+            query topAdsGetShopWhitelistedFeature(${'$'}shopID: String!){
+              topAdsGetShopWhitelistedFeature(shopID: ${'$'}shopID){
+                  data {
+                    featureID
+                    featureName
+                  }
+                  errors {
+                     code
+                     detail
+                     title
+                  }
+              }
+            }
+        """
         private const val KEY_SHOP_ID = "shopID"
         private const val ON_BOARDING = "onboarding"
     }
-
 }

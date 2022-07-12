@@ -1,4 +1,4 @@
-package com.tokopedia.wishlist.data.model
+package com.tokopedia.wishlistcommon.data
 
 import com.google.gson.annotations.SerializedName
 
@@ -19,7 +19,10 @@ data class WishlistV2Params(
         var sortFilters: ArrayList<WishlistSortFilterParam> = arrayListOf(),
 
         @SerializedName("source")
-        var source: String = "wishlist"
+        var source: String = "wishlist",
+
+        @SerializedName("chosen_address")
+        var wishlistChosenAddress: WishlistChosenAddress = WishlistChosenAddress()
 ) {
         data class WishlistSortFilterParam(
                 @SerializedName("name")
@@ -27,5 +30,25 @@ data class WishlistV2Params(
 
                 @SerializedName("selected")
                 var selected: ArrayList<String> = arrayListOf()
+        )
+
+        data class WishlistChosenAddress(
+                @SerializedName("district_id")
+                var districtId: String = "",
+
+                @SerializedName("city_id")
+                var cityId: String = "",
+
+                @SerializedName("latitude")
+                var latitude: String = "",
+
+                @SerializedName("longitude")
+                var longitude: String = "",
+
+                @SerializedName("postal_code")
+                var postalCode: String = "",
+
+                @SerializedName("address_id")
+                var addressId: String = ""
         )
 }

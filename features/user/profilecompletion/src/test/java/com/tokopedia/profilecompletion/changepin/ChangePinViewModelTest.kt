@@ -2,6 +2,7 @@ package com.tokopedia.profilecompletion.changepin
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
@@ -9,22 +10,30 @@ import com.tokopedia.profilecompletion.addpin.data.*
 import com.tokopedia.profilecompletion.changepin.data.ChangePin2FAData
 import com.tokopedia.profilecompletion.changepin.data.ResetPin2FaPojo
 import com.tokopedia.profilecompletion.changepin.data.ResetPinResponse
+import com.tokopedia.profilecompletion.changepin.data.model.ResetPinV2Response
+import com.tokopedia.profilecompletion.changepin.data.model.UpdatePinV2Response
 import com.tokopedia.profilecompletion.changepin.data.usecase.ResetPinV2UseCase
 import com.tokopedia.profilecompletion.changepin.data.usecase.UpdatePinV2UseCase
 import com.tokopedia.profilecompletion.changepin.view.viewmodel.ChangePinViewModel
+import com.tokopedia.profilecompletion.common.PinPreference
+import com.tokopedia.profilecompletion.common.model.CheckPinV2Data
+import com.tokopedia.profilecompletion.common.model.CheckPinV2Response
+import com.tokopedia.profilecompletion.common.usecase.CheckPinV2UseCase
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
+import com.tokopedia.sessioncommon.data.GenerateKeyPojo
+import com.tokopedia.sessioncommon.data.KeyData
 import com.tokopedia.sessioncommon.data.pin.PinStatusData
 import com.tokopedia.sessioncommon.data.pin.PinStatusResponse
+import com.tokopedia.sessioncommon.data.pin.ValidatePinV2Data
+import com.tokopedia.sessioncommon.data.pin.ValidatePinV2Response
 import com.tokopedia.sessioncommon.domain.usecase.CheckPinHashV2UseCase
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
+import com.tokopedia.sessioncommon.domain.usecase.ValidatePinV2UseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.coEvery
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -33,6 +42,7 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.ArgumentMatchers.any
 import kotlin.test.assertTrue
 
 /**
@@ -69,16 +79,22 @@ class ChangePinViewModelTest {
     private var validatePinObserver = mockk<Observer<Result<ValidatePinData>>>(relaxed = true)
     private var changePinObserver = mockk<Observer<Result<AddChangePinData>>>(relaxed = true)
     private var resetPin2FAObserver = mockk<Observer<Result<ChangePin2FAData>>>(relaxed = true)
+    private var validatePinV2Observer = mockk<Observer<Result<ValidatePinV2Data>>>(relaxed = true)
+    private var checkPinV2Observer = mockk<Observer<Result<CheckPinV2Data>>>(relaxed = true)
 
     val resetPinV2UseCase = mockk<ResetPinV2UseCase>(relaxed = true)
     val updatePinV2UseCase = mockk<UpdatePinV2UseCase>(relaxed = true)
     val generatePublicKeyUseCase = mockk<GeneratePublicKeyUseCase>(relaxed = true)
     val checkPinHashV2UseCase = mockk<CheckPinHashV2UseCase>(relaxed = true)
+    val validatePinV2UseCase = mockk<ValidatePinV2UseCase>(relaxed = true)
+    val checkPinV2UseCase = mockk<CheckPinV2UseCase>(relaxed = true)
+    val pinPreference = mockk<PinPreference>(relaxed = true)
 
     @Before
     fun setUp() {
         viewModel = ChangePinViewModel(
                 validatePinUseCase,
+                validatePinV2UseCase,
                 checkPinUseCase,
                 checkPin2FAUseCase,
                 resetPinUseCase,
@@ -86,10 +102,12 @@ class ChangePinViewModelTest {
                 reset2FAPinUseCase,
                 changePinUseCase,
                 updatePinV2UseCase,
+                checkPinV2UseCase,
                 userSession,
                 rawQueries,
                 checkPinHashV2UseCase,
                 generatePublicKeyUseCase,
+                pinPreference,
                 testDispatcher
         )
         viewModel.resetPinResponse.observeForever(resetPinObserver)
@@ -97,6 +115,9 @@ class ChangePinViewModelTest {
         viewModel.validatePinResponse.observeForever(validatePinObserver)
         viewModel.changePinResponse.observeForever(changePinObserver)
         viewModel.resetPin2FAResponse.observeForever(resetPin2FAObserver)
+        viewModel.validatePinV2Response.observeForever(validatePinV2Observer)
+        viewModel.checkPinV2Response.observeForever(checkPinV2Observer)
+        mockkObject(RsaUtils)
     }
 
     val token = "abcd1234"
@@ -107,7 +128,7 @@ class ChangePinViewModelTest {
     val pin = "123456"
     val pinConfirm = "123456"
     val pinOld = "654321"
-    val OTP_TYPE_SKIP_VALIDATION = 124
+    val hashedPin = "abc1234b"
 
     val resetPinResponse = ResetPinResponse(data = resetPinPojo)
 
@@ -548,7 +569,10 @@ class ChangePinViewModelTest {
         viewModel.resetPin2FA(userId, validateToken)
 
         /* Then */
-        verify { resetPin2FAObserver.onChanged(Success(resetPin2FaPojo.data)) }
+        verify {
+            userSession.setToken(any(), any())
+            resetPin2FAObserver.onChanged(Success(resetPin2FaPojo.data))
+        }
     }
 
     @Test
@@ -613,4 +637,355 @@ class ChangePinViewModelTest {
             assertTrue(viewModel.isNeedHash("", ""))
         }
     }
+
+    @Test
+    fun `validatePinV2 - true` () {
+        val validatePinV2Data = ValidatePinV2Data(valid = true)
+        val validatePinV2Response = ValidatePinV2Response(validatePinV2Data)
+
+        val keydata = KeyData(hash = "abc123")
+        val generateKeyPojo = GenerateKeyPojo(keydata)
+
+        /* When */
+        every { RsaUtils.encryptWithSalt(any(), any(), any()) } returns hashedPin
+        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { validatePinV2UseCase(any()) } returns validatePinV2Response
+
+        runBlocking {
+            validatePinV2Observer.onChanged(Success(validatePinV2Data))
+        }
+    }
+
+    @Test
+    fun `validatePinV2 - exception` () {
+
+        val keydata = KeyData(hash = "abc123")
+        val generateKeyPojo = GenerateKeyPojo(keydata)
+
+        /* When */
+        every { RsaUtils.encryptWithSalt(any(), any(), any()) } returns hashedPin
+        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { validatePinV2UseCase(any()) } throws mockThrowable
+
+        runBlocking {
+            validatePinV2Observer.onChanged(any<Fail>())
+        }
+    }
+
+    @Test
+    fun `change pin v2 success`() {
+        val data = AddChangePinData(success = true)
+        val response = UpdatePinV2Response(data)
+
+
+        val keydata = KeyData(hash = "abc123")
+        val generateKeyPojo = GenerateKeyPojo(keydata)
+
+        /* When */
+        every { RsaUtils.encryptWithSalt(any(), any(), any()) } returns hashedPin
+        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { updatePinV2UseCase(any()) } returns response
+
+        viewModel.changePinV2("", "")
+
+        coVerify {
+            generatePublicKeyUseCase.executeOnBackground()
+            changePinObserver.onChanged(Success(data))
+        }
+    }
+
+    @Test
+    fun `change pin v2 has erros msg`() {
+        val errMsg = "Error"
+        val data = AddChangePinData(success = false)
+        val response = UpdatePinV2Response(data)
+
+        response.mutatePinV2data.errorAddChangePinData = listOf(ErrorAddChangePinData(message = errMsg))
+
+        val hashedPin = "abc1234b"
+
+        val keydata = KeyData(hash = "abc123")
+        val generateKeyPojo = GenerateKeyPojo(keydata)
+
+        /* When */
+        every { RsaUtils.encryptWithSalt(any(), any(), any()) } returns hashedPin
+        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { updatePinV2UseCase(any()) } returns response
+
+        viewModel.changePinV2("", "")
+
+        Assert.assertEquals(response.mutatePinV2data.errorAddChangePinData[0].message, (viewModel.changePinResponse.value as Fail).throwable.message)
+    }
+
+    @Test
+    fun `change pin v2 throw exception`() {
+        /* When */
+        every { RsaUtils.encryptWithSalt(any(), any(), any()) } throws mockThrowable
+
+        viewModel.changePinV2("", "")
+
+        runBlocking {
+            changePinObserver.onChanged(any<Fail>())
+        }
+    }
+
+    @Test
+    fun `change pin v2 other errors`() {
+        val data = AddChangePinData(success = false)
+        val response = UpdatePinV2Response(data)
+
+        response.mutatePinV2data.errorAddChangePinData = listOf()
+
+        val hashedPin = "abc1234b"
+
+        val keydata = KeyData(hash = "abc123")
+        val generateKeyPojo = GenerateKeyPojo(keydata)
+
+        /* When */
+        every { RsaUtils.encryptWithSalt(any(), any(), any()) } returns hashedPin
+        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { updatePinV2UseCase(any()) } returns response
+
+        viewModel.changePinV2("", "")
+
+        runBlocking {
+            changePinObserver.onChanged(any<Fail>())
+        }
+    }
+
+    @Test
+    fun `reset pin v2 success`() {
+        val data = AddChangePinData(success = true)
+        val responseReset = ResetPinV2Response(data)
+
+        coEvery { pinPreference.getTempPin() } returns "abc123"
+        coEvery { resetPinV2UseCase(any()) } returns responseReset
+
+        /* When */
+        viewModel.resetPinV2("")
+
+        coVerify {
+            resetPinObserver.onChanged(Success(data))
+        }
+    }
+
+    @Test
+    fun `reset pin v2 has error msg`() {
+        val data = AddChangePinData(success = false)
+        val response = ResetPinV2Response(data)
+
+        response.mutatePinV2data.errorAddChangePinData = listOf(ErrorAddChangePinData(message = "error"))
+
+        /* When */
+        coEvery { resetPinV2UseCase(any()) } returns response
+
+        viewModel.resetPinV2("")
+
+        coVerify {
+            resetPinObserver.onChanged(any<Fail>())
+        }
+    }
+
+    @Test
+    fun `reset pin v2 other errors`() {
+        val data = AddChangePinData(success = false)
+        val response = ResetPinV2Response(data)
+
+        response.mutatePinV2data.errorAddChangePinData = listOf()
+
+        /* When */
+        coEvery { resetPinV2UseCase(any()) } returns response
+
+        viewModel.resetPinV2("")
+
+        assert((viewModel.resetPinResponse.value as Fail).throwable is RuntimeException)
+        coVerify {
+            resetPinObserver.onChanged(any<Fail>())
+        }
+    }
+
+    @Test
+    fun `reset pin v2 throw exception`() {
+        /* When */
+        coEvery { resetPinV2UseCase(any()) } throws mockThrowable
+
+        viewModel.resetPinV2("")
+
+        assert((viewModel.resetPinResponse.value as Fail).throwable == mockThrowable)
+        coVerify {
+            resetPinObserver.onChanged(any<Fail>())
+        }
+    }
+
+    @Test
+    fun `validate pin v2 success` () {
+
+        val data = ValidatePinV2Data()
+        val response = ValidatePinV2Response(data)
+
+        val keydata = KeyData(hash = "abc123")
+        val generateKeyPojo = GenerateKeyPojo(keydata)
+
+        /* When */
+        every { RsaUtils.encryptWithSalt(any(), any(), any()) } returns hashedPin
+        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { validatePinV2UseCase(any()) } returns response
+
+        viewModel.validatePinV2("")
+
+        verify {
+            validatePinV2Observer.onChanged(Success(data))
+        }
+    }
+
+    @Test
+    fun `validate pin v2 throw exception` () {
+        /* When */
+        coEvery { generatePublicKeyUseCase.executeOnBackground() } throws mockThrowable
+
+        viewModel.validatePinV2("")
+
+        assert((viewModel.validatePinV2Response.value as Fail).throwable == mockThrowable)
+        verify {
+            validatePinV2Observer.onChanged(any<Fail>())
+        }
+    }
+
+    @Test
+    fun `check pin v2 success` () {
+        val data = CheckPinV2Data(valid = true)
+        val response = CheckPinV2Response(data)
+
+        val keydata = KeyData(hash = "abc123")
+        val generateKeyPojo = GenerateKeyPojo(keydata)
+
+        /* When */
+        every { RsaUtils.encryptWithSalt(any(), any(), any()) } returns hashedPin
+        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { checkPinV2UseCase(any()) } returns response
+
+        viewModel.checkPinV2("")
+
+        verify {
+            checkPinV2Observer.onChanged(Success(data))
+        }
+    }
+
+    @Test
+    fun `check pin v2 has error msg` () {
+        val data = CheckPinV2Data(valid = false, errorMessage = "error")
+        val response = CheckPinV2Response(data)
+
+        val keydata = KeyData(hash = "abc123")
+        val generateKeyPojo = GenerateKeyPojo(keydata)
+
+        /* When */
+        every { RsaUtils.encryptWithSalt(any(), any(), any()) } returns hashedPin
+        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { checkPinV2UseCase(any()) } returns response
+
+        viewModel.checkPinV2("")
+
+        verify {
+            checkPinV2Observer.onChanged(Success(data))
+        }
+    }
+
+    @Test
+    fun `check pin v2 throw exception` () {
+        /* When */
+        coEvery { generatePublicKeyUseCase.executeOnBackground() } throws mockThrowable
+
+        viewModel.checkPinV2("")
+
+        assert((viewModel.checkPinV2Response.value as Fail).throwable == mockThrowable)
+        verify {
+            checkPinV2Observer.onChanged(any<Fail>())
+        }
+    }
+
+    @Test
+    fun `check pin v2 other errors` () {
+        val data = CheckPinV2Data(valid = false)
+        val response = CheckPinV2Response(data)
+
+        val keydata = KeyData(hash = "abc123")
+        val generateKeyPojo = GenerateKeyPojo(keydata)
+
+        /* When */
+        every { RsaUtils.encryptWithSalt(any(), any(), any()) } returns hashedPin
+        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { checkPinV2UseCase(any()) } returns response
+
+        viewModel.checkPinV2("")
+
+        assert((viewModel.checkPinV2Response.value as Fail).throwable is RuntimeException)
+        verify {
+            checkPinV2Observer.onChanged(any<Fail>())
+        }
+    }
+
+    @Test
+    fun `validate pin mediator need hash` () {
+        val pinData = PinStatusData(isNeedHash = true)
+        val pinResp = PinStatusResponse(pinData)
+
+        val data = ValidatePinV2Data()
+        val response = ValidatePinV2Response(data)
+
+        val keydata = KeyData(hash = "abc123")
+        val generateKeyPojo = GenerateKeyPojo(keydata)
+
+        /* When */
+        every { userSession.userId } returns "12345"
+        coEvery { checkPinHashV2UseCase(any()) } returns pinResp
+
+        every { RsaUtils.encryptWithSalt(any(), any(), any()) } returns hashedPin
+        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { validatePinV2UseCase(any()) } returns response
+
+        viewModel.validatePinMediator(pin)
+
+        verify {
+            userSession.userId
+            validatePinV2Observer.onChanged(Success(data))
+        }
+    }
+
+    @Test
+    fun `validate pin mediator need no hash` () {
+        val data = PinStatusData(isNeedHash = false)
+        val resp = PinStatusResponse(data)
+        val pin = "123456"
+        validatePinPojo.data.valid = true
+
+        /* When */
+        every { userSession.userId } returns "12345"
+        coEvery { checkPinHashV2UseCase(any()) } returns resp
+
+        /* When */
+        every { validatePinUseCase.execute(any(), any()) } answers {
+            firstArg<(ValidatePinPojo) -> Unit>().invoke(validatePinPojo)
+        }
+
+        viewModel.validatePinMediator(pin)
+
+        verify {
+            userSession.userId
+            validatePinObserver.onChanged(Success(validatePinPojo.data))
+        }
+    }
+
+    @Test
+    fun `validate pin mediator throw exception` () {
+        coEvery { checkPinHashV2UseCase(any()) } throws mockThrowable
+
+        viewModel.validatePinMediator(pin)
+
+        assert((viewModel.validatePinResponse.value as Fail).throwable == mockThrowable)
+        verify {
+            validatePinObserver.onChanged(any<Fail>())
+        }
+    }
+
 }

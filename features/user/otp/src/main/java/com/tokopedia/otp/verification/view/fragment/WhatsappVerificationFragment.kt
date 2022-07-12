@@ -5,7 +5,7 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.view.View
 import com.tokopedia.otp.R
-import com.tokopedia.otp.verification.domain.data.OtpConstant
+import com.tokopedia.otp.verification.data.OtpConstant
 import com.tokopedia.otp.verification.domain.data.OtpRequestData
 import com.tokopedia.otp.verification.view.activity.VerificationActivity
 

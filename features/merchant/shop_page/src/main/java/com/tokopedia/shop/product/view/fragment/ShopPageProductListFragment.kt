@@ -147,27 +147,24 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         private const val REQUEST_CODE_SORT = 300
         private const val KEY_SHOP_ID = "SHOP_ID"
         private const val KEY_SHOP_NAME = "SHOP_NAME"
-        private const val KEY_SHOP_HOME_TYPE = "SHOP_HOME_TYPE"
         private const val KEY_IS_OFFICIAL = "IS_OFFICIAL"
         private const val KEY_IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT"
         private const val KEY_ENABLE_SHOP_DIRECT_PURCHASE = "ENABLE_SHOP_DIRECT_PURCHASE"
 
         @JvmStatic
         fun createInstance(
-            shopId: String,
-            shopName: String,
-            isOfficial: Boolean,
-            isGoldMerchant: Boolean,
-            shopHomeType: String,
-            shopAttribution: String?,
-            shopRef: String,
-            isEnableDirectPurchase: Boolean
+                shopId: String,
+                shopName: String,
+                isOfficial: Boolean,
+                isGoldMerchant: Boolean,
+                shopAttribution: String?,
+                shopRef: String,
+                isEnableDirectPurchase: Boolean
         ): ShopPageProductListFragment {
             val fragment = ShopPageProductListFragment()
             val bundle = Bundle()
             bundle.putString(KEY_SHOP_ID, shopId)
             bundle.putString(KEY_SHOP_NAME, shopName)
-            bundle.putString(KEY_SHOP_HOME_TYPE, shopHomeType)
             bundle.putBoolean(KEY_IS_OFFICIAL, isOfficial)
             bundle.putBoolean(KEY_IS_GOLD_MERCHANT, isGoldMerchant)
             bundle.putString(SHOP_ATTRIBUTION, shopAttribution)
@@ -216,7 +213,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     private var urlNeedTobBeProceed: String? = null
     private var shopId: String = ""
     private var shopName: String = ""
-    private var shopHomeType: String = ""
     private var shopRef: String = ""
     private var isEnableDirectPurchase: Boolean = false
     private var isOfficialStore: Boolean = false
@@ -1259,7 +1255,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             shopName = it.getString(KEY_SHOP_NAME, "")
             isOfficialStore = it.getBoolean(KEY_IS_OFFICIAL, false)
             isGoldMerchant = it.getBoolean(KEY_IS_GOLD_MERCHANT, false)
-            shopHomeType = it.getString(KEY_SHOP_HOME_TYPE, "")
             isEnableDirectPurchase = it.getBoolean(KEY_ENABLE_SHOP_DIRECT_PURCHASE, false)
         }
     }
@@ -1609,7 +1604,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             viewModel.getBuyerViewContentData(
                     shopId,
                     data,
-                    isShowNewShopHomeTab(),
+                    isShopWidgetAlreadyShown(),
                     ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel(),
                     context,
                     isEnableDirectPurchase
@@ -1628,8 +1623,8 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         }
     }
 
-    private fun isShowNewShopHomeTab(): Boolean {
-        return shopHomeType == ShopHomeType.NATIVE
+    private fun isShopWidgetAlreadyShown(): Boolean {
+        return (parentFragment as? NewShopPageFragment)?.isShopWidgetAlreadyShown() ?: false
     }
 
     private fun onSuccessClaimBenefit(data: MembershipClaimBenefitResponse) {

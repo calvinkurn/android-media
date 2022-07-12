@@ -20,7 +20,6 @@ class PortraitDynamicLayoutManager(
 
     private val playButtonView: View = container.findViewById(R.id.view_play_button)
     private val statsInfoView: View = container.findViewById(R.id.view_stats_info)
-    private val winnerBadgeView: View? = container.findViewById(R.id.view_interactive_winner_badge)
     private val immersiveBoxView: View = container.findViewById(R.id.v_immersive_box)
 
     override fun onVideoOrientationChanged(videoOrientation: VideoOrientation) {
@@ -42,9 +41,6 @@ class PortraitDynamicLayoutManager(
                 setDimensionRatio(immersiveBoxView.id, "H, ${videoOrientation.aspectRatio}")
             } else {
                 connect(immersiveBoxView.id, ConstraintSet.TOP, statsInfoView.id, ConstraintSet.BOTTOM)
-                if (winnerBadgeView != null) {
-                    connect(immersiveBoxView.id, ConstraintSet.BOTTOM, winnerBadgeView.id, ConstraintSet.TOP, offset16)
-                }
             }
         }
     }

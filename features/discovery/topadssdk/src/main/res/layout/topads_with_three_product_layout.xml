@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/shopWidgetRootLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <View
+        android:id="@+id/widgetHeader"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bodyContainer"/>
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/headerShopImage"
+        android:layout_width="@dimen/sdk_dp_36"
+        android:layout_height="@dimen/sdk_dp_36"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@tools:sample/avatars" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/shopAdsText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_8"
+        android:paddingTop="@dimen/unify_space_2"
+        android:text="@string/topads_ads_text"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintBottom_toBottomOf="@+id/shopName"
+        app:layout_constraintStart_toEndOf="@+id/headerShopImage"
+        app:layout_constraintTop_toTopOf="@+id/shopName"
+        app:typographyType="small"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/shopBadge"
+        android:layout_width="@dimen/unify_space_16"
+        android:layout_height="@dimen/unify_space_16"
+        android:contentDescription="@string/topads_sdk_shop_banner_content_description"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/shopName"
+        app:layout_constraintStart_toEndOf="@+id/shopAdsText"
+        app:layout_constraintTop_toTopOf="@+id/shopName"
+        tools:src="@tools:sample/avatars"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/shopName"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_4"
+        android:layout_marginTop="@dimen/unify_space_8"
+        android:layout_marginEnd="@dimen/unify_space_4"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayoutMerchantVoucher"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@+id/shopBadge"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_5"
+        tools:text="Lego Official Store" />
+
+    <LinearLayout
+        android:id="@+id/linearLayoutMerchantVoucher"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_8"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/guideline"
+        app:layout_constraintStart_toEndOf="@id/headerShopImage"
+        app:layout_constraintTop_toBottomOf="@id/shopName" />
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="@dimen/unify_space_64" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bodyContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:background="@drawable/purple_gradient"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/guideline">
+
+        <View
+            android:id="@+id/parallax_background"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/unify_space_0"
+            android:paddingTop="@dimen/sdk_dp_14"
+            android:paddingBottom="@dimen/sdk_dp_14"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/viewVish"
+            android:layout_width="@dimen/sdk_dp_140"
+            android:layout_height="@dimen/unify_space_0"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:orientation="horizontal">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/adsDescription"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            app:typographyType="heading_6"
+            android:layout_marginStart="@dimen/unify_space_16"
+            android:layout_marginTop="@dimen/unify_space_16"
+            android:layout_marginEnd="@dimen/unify_space_16"
+            android:textColor="@color/Unify_N0"
+            android:gravity="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Handphone Xiaomi diskon hingga 5% Cek sekarang harga mulai Rp9.999.000" />
+
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/shopWidgetImage"
+            android:layout_width="@dimen/sdk_dp_110"
+            android:layout_height="@dimen/sdk_dp_94"
+            android:layout_marginTop="@dimen/unify_space_16"
+            app:layout_constraintEnd_toEndOf="@id/adsDescription"
+            app:layout_constraintStart_toStartOf="@id/adsDescription"
+            app:layout_constraintTop_toBottomOf="@+id/adsDescription"
+            tools:src="@tools:sample/avatars" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/btnLihat"
+            android:layout_width="@dimen/sdk_dp_112"
+            android:layout_height="@dimen/unify_space_32"
+            tools:text="Lihat Sekarang"
+            android:padding="@dimen/unify_space_8"
+            app:typographyType="heading_6"
+            android:gravity="center"
+            android:background="@drawable/bg_lihat_button"
+            android:textColor="@color/Unify_N0"
+            android:textAllCaps="false"
+            android:layout_marginBottom="@dimen/sdk_dp_10"
+            app:layout_constraintEnd_toEndOf="@id/adsDescription"
+            app:layout_constraintStart_toStartOf="@id/adsDescription"
+            app:layout_constraintTop_toBottomOf="@+id/shopWidgetImage"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:visibility="visible" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/productList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/unify_space_8"
+            android:paddingRight="@dimen/sdk_dp_10"
+            android:paddingBottom="@dimen/sdk_dp_10"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:itemCount="@integer/int_3"
+            tools:layout_height="@dimen/sdk_dp_300"
+            tools:listitem="@layout/layout_ads_banner_shop_a_product"
+            tools:orientation="horizontal"
+            tools:translationX="200dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

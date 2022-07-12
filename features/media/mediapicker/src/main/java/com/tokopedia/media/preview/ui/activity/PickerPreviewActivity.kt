@@ -3,6 +3,7 @@ package com.tokopedia.media.preview.ui.activity
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.ComponentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -31,15 +32,15 @@ import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.component.NavToolbarComponent
 import com.tokopedia.picker.common.component.ToolbarTheme
 import com.tokopedia.picker.common.uimodel.MediaUiModel
-import com.tokopedia.picker.common.utils.safeFileDelete
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import javax.inject.Inject
 
-class PickerPreviewActivity : BaseActivity(), NavToolbarComponent.Listener,
-    DrawerSelectionWidget.Listener {
+class PickerPreviewActivity : BaseActivity()
+    , NavToolbarComponent.Listener
+    , DrawerSelectionWidget.Listener {
 
     @Inject
     lateinit var param: ParamCacheManager
@@ -255,10 +256,10 @@ class PickerPreviewActivity : BaseActivity(), NavToolbarComponent.Listener,
     private fun retakeButtonAction(media: MediaUiModel) {
         binding?.btnRetake?.show()
 
-        val retakeState = if (media.isVideo() && media.isFromPickerCamera) {
+        val retakeState = if (media.file?.isVideo() == true && media.isFromPickerCamera) {
             binding?.btnRetake?.videoMode()
             PREVIEW_RETAKE_RECORDER
-        } else if (!media.isVideo() && media.isFromPickerCamera) {
+        } else if (media.file?.isImage() == true && media.isFromPickerCamera) {
             binding?.btnRetake?.photoMode()
             PREVIEW_RETAKE_CAMMERA
         } else {
@@ -273,7 +274,10 @@ class PickerPreviewActivity : BaseActivity(), NavToolbarComponent.Listener,
     }
 
     private fun onCancelOrRetakeMedia(media: MediaUiModel) {
-        if (media.isFromPickerCamera) safeFileDelete(media.path)
+        if (media.isFromPickerCamera) {
+            media.file?.safeDelete()
+        }
+
         cancelIntent()
     }
 
@@ -311,6 +315,15 @@ class PickerPreviewActivity : BaseActivity(), NavToolbarComponent.Listener,
 
     companion object {
         private const val CACHE_LAST_SELECTION = "cache_last_selection"
+
+        fun start(activity: ComponentActivity, medias: ArrayList<MediaUiModel>, reqCode: Int) {
+            activity.startActivityForResult(
+                Intent(activity.applicationContext, PickerPreviewActivity::class.java).apply {
+                    putExtra(EXTRA_INTENT_PREVIEW, medias)
+                },
+                reqCode
+            )
+        }
     }
 
 }

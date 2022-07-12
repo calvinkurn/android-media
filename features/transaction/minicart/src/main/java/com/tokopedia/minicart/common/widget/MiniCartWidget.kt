@@ -504,7 +504,7 @@ class MiniCartWidget @JvmOverloads constructor(
             renderUnavailableWidget(miniCartSimplifiedData)
         } else {
             renderAvailableWidget(miniCartSimplifiedData)
-            showOnBoarding()
+            showOnBoarding(miniCartSimplifiedData.isShowMiniCartWidget)
         }
         setTotalAmountLoading(false)
         setAmountViewLayoutParams()
@@ -635,9 +635,9 @@ class MiniCartWidget @JvmOverloads constructor(
         }
     }
 
-    private fun showOnBoarding() {
+    private fun showOnBoarding(isShowMiniCartWidget: Boolean) {
         context?.let { context ->
-            if (!CoachMarkPreference.hasShown(context, COACH_MARK_TAG)) {
+            if (!CoachMarkPreference.hasShown(context, COACH_MARK_TAG) && isShowMiniCartWidget) {
                 coachMark = CoachMark2(context)
                 this.totalAmount?.labelTitleView?.let { anchor ->
                     coachMark?.let { coachMark2 ->

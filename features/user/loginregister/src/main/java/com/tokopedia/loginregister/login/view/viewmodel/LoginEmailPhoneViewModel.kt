@@ -24,7 +24,6 @@ import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.PopupError
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
-import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.domain.mapper.LoginV2Mapper
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
@@ -35,7 +34,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import javax.inject.Named
 
 class LoginEmailPhoneViewModel @Inject constructor(
         private val registerCheckUseCase: RegisterCheckUseCase,
@@ -50,7 +48,6 @@ class LoginEmailPhoneViewModel @Inject constructor(
         private val dynamicBannerUseCase: DynamicBannerUseCase,
         private val registerCheckFingerprintUseCase: RegisterCheckFingerprintUseCase,
         private val loginFingerprintUseCase: LoginFingerprintUseCase,
-        @Named(SessionModule.SESSION_MODULE)
         private val userSession: UserSessionInterface,
         private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {

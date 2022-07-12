@@ -17,9 +17,9 @@ class TopAdsPdpAffiliateResponse {
 
             class PdpAffiliate {
                 @SerializedName("AdId")
-                var adId: Int = 0
+                var adId: String = ""
                 @SerializedName("ProductId")
-                var productId: Int = 0
+                var productId: String = ""
                 @SerializedName("AffiliatedByUser")
                 var isAffiliatedByUser: Boolean = false
                 @SerializedName("CommissionPercent")
