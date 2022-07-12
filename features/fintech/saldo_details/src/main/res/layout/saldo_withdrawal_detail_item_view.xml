@@ -9,16 +9,41 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvDetailTitle"
-        android:layout_width="@dimen/unify_space_0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/unify_space_8"
         android:textColor="@color/Unify_N700_68"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/tvDetailAmount"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2"
+        app:layout_constraintWidth_default="wrap"
+        android:layout_marginRight="@dimen/unify_space_8"
         tools:text="Jumlah Penarikan" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvDetailLastUpdate"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_2"
+        android:textColor="@color/Unify_N700_68"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/tvDetailAmount"
+        app:layout_constraintStart_toStartOf="@id/tvDetailTitle"
+        app:layout_constraintTop_toBottomOf="@id/tvDetailTitle"
+        app:typographyType="small"
+
+        tools:text="sfgdfgdfgsg" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/lateNotifier"
+        android:layout_width="@dimen/unify_space_4"
+        android:layout_height="@dimen/unify_space_4"
+        app:layout_constraintTop_toTopOf="@id/tvDetailTitle"
+        app:layout_constraintBottom_toBottomOf="@id/tvDetailTitle"
+        app:layout_constraintLeft_toRightOf="@id/tvDetailTitle"
+        android:layout_marginLeft="@dimen/unify_space_4"
+        android:src="@drawable/ic_circle_red"
+        android:visibility="gone"
+        />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvDetailAmount"

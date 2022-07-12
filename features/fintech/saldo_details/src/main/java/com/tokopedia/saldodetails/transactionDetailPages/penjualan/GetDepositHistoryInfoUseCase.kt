@@ -35,7 +35,7 @@ class GetDepositHistoryInfoUseCase @Inject constructor(
 
     private fun parseResponse(response: DepositHistoryInvoiceDetail, onSuccess: (DepositHistoryData) -> Unit, onError: (Throwable) -> Unit) {
         if (response.isSuccess) {
-            response.data.depositDetail.add(FeeDetailData(context.getString(R.string.saldo_sales_total_received), response.data.totalAmount))
+            response.data.depositDetail.add(FeeDetailData(context.getString(R.string.saldo_sales_total_received), response.data.totalAmount,false,""))
             onSuccess(response.data)
         } else onError(NullPointerException("GQL Failure"))
     }

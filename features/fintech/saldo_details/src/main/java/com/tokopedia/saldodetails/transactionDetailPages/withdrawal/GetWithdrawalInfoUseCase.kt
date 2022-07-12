@@ -42,9 +42,9 @@ class GetWithdrawalInfoUseCase
 
     private fun getFeeDetailData(data: WithdrawalInfoData) =
         arrayListOf(
-            FeeDetailData(context.getString(R.string.saldo_withdrawal_amount), data.amount),
-            FeeDetailData(context.getString(R.string.saldo_withdrawal_fee), data.fee),
-            FeeDetailData(context.getString(R.string.saldo_transferred_amount), data.transferredAmount)
+            FeeDetailData(context.getString(R.string.saldo_withdrawal_amount), data.amount,false,""),
+            FeeDetailData(context.getString(R.string.saldo_withdrawal_fee), data.fee,false,""),
+            FeeDetailData(context.getString(R.string.saldo_transferred_amount), data.transferredAmount,false,"")
         )
 
     private fun getRequestParams(withdrawalId: String) =
