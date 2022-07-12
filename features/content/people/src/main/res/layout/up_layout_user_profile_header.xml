@@ -285,6 +285,26 @@
                             app:unifyButtonSize="small"
                             app:unifyButtonVariant="text" />
 
+                        <include
+                            android:id="@+id/card_user_reminder"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
+                            layout="@layout/up_layout_user_profile_reminder"
+                            android:layout_marginTop="@dimen/unify_space_8"
+                            android:layout_marginHorizontal="@dimen/unify_space_16"/>
+
+                        <com.tokopedia.unifycomponents.UnifyButton
+                            android:id="@+id/btn_action"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/Unify_NN300"
+                            android:layout_marginTop="@dimen/unify_space_16"
+                            android:layout_marginStart="@dimen/unify_space_16"
+                            android:layout_marginEnd="@dimen/unify_space_16"
+                            app:unifyButtonSize="small"
+                            app:unifyButtonVariant="text" />
+
                         <View
                             android:id="@+id/view_line"
                             android:layout_width="match_parent"
@@ -294,6 +314,7 @@
                             android:layout_marginEnd="0dp"
                             android:background="@color/Unify_NN300" />
                     </LinearLayout>
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>
