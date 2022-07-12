@@ -1,16 +1,20 @@
 package com.tokopedia.digital.home.presentation.customview
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Paint
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.ViewTreeObserver
 import android.widget.Toast
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.digital.home.databinding.LayoutDigitalHorizontalProductCardBinding
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.play_common.util.extension.marginLp
 import com.tokopedia.unifycomponents.BaseCustomView
 
@@ -30,6 +34,8 @@ class DigitalHorizontalProductCard @JvmOverloads constructor(
     var productPrice: String = ""
     var productSlashPrice: String = ""
     var actionListener: ActionListener? = null
+
+    var imageRatio: Double = 0.0
 
     init {
         with(binding.tgHorizontalCardProductSlashPrice) {
@@ -52,7 +58,20 @@ class DigitalHorizontalProductCard @JvmOverloads constructor(
     private fun setupProductImage() {
         with(binding.tgHorizontalCardProductImage) {
             if (imageUrl.isNotEmpty()) {
-                loadImage(imageUrl)
+                Glide.with(context)
+                    .asBitmap()
+                    .load(imageUrl)
+                    .into(object : CustomTarget<Bitmap>() {
+                        override fun onResourceReady(
+                            resource: Bitmap,
+                            transition: Transition<in Bitmap>?
+                        ) {
+                            imageRatio = resource.width.toDouble() / resource.height.toDouble()
+                        }
+
+                        override fun onLoadCleared(placeholder: Drawable?) {
+                        }
+                    })
             }
 
             viewTreeObserver.addOnGlobalLayoutListener(object :
@@ -60,12 +79,10 @@ class DigitalHorizontalProductCard @JvmOverloads constructor(
                 override fun onGlobalLayout() {
                     viewTreeObserver.removeOnGlobalLayoutListener(this)
 
-                    val ratio: Double =
-                        layoutParams.width.toDouble() / layoutParams.height.toDouble()
                     val newWidth = measureContentHeight()
-                    val newHeight = newWidth / ratio
+                    val newHeight = newWidth / imageRatio
 
-                    Toast.makeText(context, "Ratio : $ratio", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Ratio : $imageRatio", Toast.LENGTH_SHORT).show()
 
                     layoutParams.width = newWidth
                     layoutParams.height = newHeight.toInt()
