@@ -269,6 +269,10 @@ object DeeplinkMapper {
             return DeeplinkMapperAccount.getLoginByQr(uri)
         }
 
+        if (uri.path == "/now/search") {
+            return ApplinkConstInternalTokopediaNow.SEARCH + "?${uri.query}"
+        }
+
         return ""
     }
 
