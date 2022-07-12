@@ -13,6 +13,7 @@
         android:layout_height="0dp"
         android:background="#D3D3D3"
         android:contentDescription="@string/cd_img_preview"
+        android:scaleType="centerCrop"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

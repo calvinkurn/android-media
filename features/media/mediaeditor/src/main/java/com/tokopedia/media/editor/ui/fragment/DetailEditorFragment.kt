@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -174,51 +175,17 @@ class DetailEditorFragment @Inject constructor(
     }
 
     private fun renderImagePreview(imageUrl: String) {
-//        loadImageWithTarget(requireContext(), imageUrl, {},
-//            MediaTarget(
-//                viewComponent = object: View(requireContext()){},
-//                onReady = {_, resource ->
-//                    originalBitmap = resource
-//                    originalBitmap?.let {
-//                        viewBinding?.imgPreview?.let {
-//                            it.setImageBitmap(resource)
-//                        }
-//                    }
-//                }
-//            )
-//        )
-
-//        MediaLoaderTarget.loadImage(requireContext(), Properties(imageUrl), MediaBitmapEmptyTarget(
-//            onCleared = { },
-//            onReady = {
-//                originalBitmap = it
-//                originalBitmap?.let { itBitmap ->
-//                    val cloneOriginal = itBitmap.copy(itBitmap.config, true)
-//
-//                    viewBinding?.imgPreview
-//                        ?.setImageBitmap(contrastFilterRepositoryImpl
-//                            .contrast(data.contrastValue ?: DEFAULT_VALUE_CONTRAST, cloneOriginal))
-//
-//                    viewBinding?.imgPreview?.setImageBitmap(originalBitmap)
-//                }
-//            }
-//        ) )
-
-
-        viewBinding?.imgPreview?.loadImage(imageUrl) {
-            centerCrop()
-            this.listener(onSuccess = {bitmap, _ ->
-                bitmap?.let {
-                    originalBitmap = bitmap
-                    val cloneOriginal = it.copy(it.config, true)
-
-                    viewBinding?.imgPreview
-                        ?.setImageBitmap(contrastFilterRepositoryImpl
-                            .contrast(data.contrastValue ?: DEFAULT_VALUE_CONTRAST, cloneOriginal))
-
-                    viewBinding?.imgPreview?.setImageBitmap(originalBitmap)
-                }
-            })
+        viewBinding?.imgPreview?.let {
+            loadImageWithTarget(requireContext(), imageUrl, {},
+                MediaTarget(
+                    viewComponent = it,
+                    onReady = { imageView, resource ->
+                        originalBitmap = resource
+                        val cloneOriginal = resource.copy(resource.config, true)
+                        imageView.setImageBitmap(contrastFilterRepositoryImpl.contrast(data.contrastValue ?: DEFAULT_VALUE_CONTRAST, cloneOriginal))
+                    }
+                )
+            )
         }
     }
 
