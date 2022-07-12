@@ -10,7 +10,7 @@ class ShopSuggestionProcessing {
     private val NOT_CONTAINS = -1
 
     private var renderedShopAds = ""
-    private var excludedOrganicShop = ""
+    private var excludedOrganicShop: String? = null
 
     fun processData(headlineAdsIdList: HeadlineAdsIdList, shopIdList: ShopIdList) {
         val mainHeadlineAdsId = headlineAdsIdList.list.firstOrNull()
