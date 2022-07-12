@@ -1,4 +1,4 @@
 package com.tokopedia.autocompletecomponent.util
 
 @JvmInline
-value class ShopIdList(val list: List<String>)
+value class SuggestionItemIdList(val list: List<String>)

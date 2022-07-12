@@ -18,7 +18,7 @@ import com.tokopedia.autocompletecomponent.suggestion.title.convertToTitleHeader
 import com.tokopedia.autocompletecomponent.suggestion.topshop.SuggestionTopShopCardDataView
 import com.tokopedia.autocompletecomponent.suggestion.topshop.convertToTopShopWidgetVisitableList
 import com.tokopedia.autocompletecomponent.util.HeadlineAdsIdList
-import com.tokopedia.autocompletecomponent.util.ShopIdList
+import com.tokopedia.autocompletecomponent.util.SuggestionItemIdList
 import com.tokopedia.autocompletecomponent.util.getProfileIdFromApplink
 import com.tokopedia.autocompletecomponent.util.getShopIdFromApplink
 import com.tokopedia.discovery.common.constants.SearchApiConst
@@ -113,12 +113,8 @@ class SuggestionPresenter @Inject constructor(
         val items = suggestionUniverse.data.items
 
         shopSuggestionProcessing.processData(
-            HeadlineAdsIdList(suggestionUniverse.cpmModel.data.map {it.cpm.cpmShop.id}),
-            ShopIdList(items.mapNotNull { suggestionItem ->
-                suggestionItem.suggestionId.takeIf {
-                    suggestionItem.type == TYPE_SHOP
-                }
-            })
+            HeadlineAdsIdList(suggestionUniverse.cpmModel.data.map { it.cpm.cpmShop.id }),
+            SuggestionItemIdList(items.map { it.suggestionId })
         )
 
         for (item in items) {

@@ -2,7 +2,7 @@ package com.tokopedia.autocompletecomponent.suggestion
 
 import com.tokopedia.autocompletecomponent.suggestion.domain.model.SuggestionItem
 import com.tokopedia.autocompletecomponent.util.HeadlineAdsIdList
-import com.tokopedia.autocompletecomponent.util.ShopIdList
+import com.tokopedia.autocompletecomponent.util.SuggestionItemIdList
 
 class ShopSuggestionProcessing {
     companion object {
@@ -16,13 +16,14 @@ class ShopSuggestionProcessing {
 
     private var excludedOrganicShop: String? = null
 
-    fun processData(headlineAdsIdList: HeadlineAdsIdList, shopIdList: ShopIdList) {
+    fun processData(headlineAdsIdList: HeadlineAdsIdList, suggestionItemIdList: SuggestionItemIdList) {
         val mainHeadlineAdsId = headlineAdsIdList.list.firstOrNull()
         val subHeadlineAdsId = headlineAdsIdList.list.secondOrNull()
+        val nonEmptySuggestionItemIdList = suggestionItemIdList.list.filter { it.isNotEmpty() }
 
         if (mainHeadlineAdsId == null) return
 
-        when (shopIdList.list.take(FILTER_SHOP_COUNT).indexOf(mainHeadlineAdsId)) {
+        when (nonEmptySuggestionItemIdList.take(FILTER_SHOP_COUNT).indexOf(mainHeadlineAdsId)) {
             NOT_CONTAINS -> renderedShopAds = mainHeadlineAdsId
             CONTAINS_AT_FIRST_INDEX -> renderedShopAds = subHeadlineAdsId ?: ""
             else -> {
@@ -33,7 +34,7 @@ class ShopSuggestionProcessing {
     }
 
     fun shouldSkipSuggestionItem(item: SuggestionItem): Boolean {
-        return (item.type == TYPE_SHOP && item.suggestionId == excludedOrganicShop)
+        return item.suggestionId == excludedOrganicShop
     }
 
     @Suppress("MagicNumber")
