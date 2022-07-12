@@ -14,7 +14,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.digital.home.databinding.LayoutDigitalHorizontalProductCardBinding
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.play_common.util.extension.marginLp
 import com.tokopedia.unifycomponents.BaseCustomView
 
@@ -68,6 +67,8 @@ class DigitalHorizontalProductCard @JvmOverloads constructor(
                         ) {
                             imageRatio = resource.width.toDouble() / resource.height.toDouble()
 
+                            binding.tgHorizontalCardProductImage.setImageBitmap(resource)
+
                             val newWidth = measureContentHeight()
                             val newHeight = newWidth / imageRatio
 
@@ -79,7 +80,6 @@ class DigitalHorizontalProductCard @JvmOverloads constructor(
                         override fun onLoadCleared(placeholder: Drawable?) {
                         }
                     })
-                loadImage(imageUrl)
             }
 
             viewTreeObserver.addOnGlobalLayoutListener(object :
