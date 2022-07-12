@@ -449,4 +449,6 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
         uploadPrescriptionViewModel.reUploadPrescriptionImage((adapterPosition) ,image.localPath ?: "")
     }
 
+
+
 }

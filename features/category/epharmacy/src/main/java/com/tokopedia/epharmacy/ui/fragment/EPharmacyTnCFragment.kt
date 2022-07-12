@@ -10,5 +10,4 @@ class EPharmacyTnCFragment : BaseSessionWebViewFragment() {
             return newInstance(url)
         }
     }
-
 }

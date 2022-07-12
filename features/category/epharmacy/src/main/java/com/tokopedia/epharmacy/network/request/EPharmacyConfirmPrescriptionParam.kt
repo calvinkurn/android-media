@@ -1,9 +1,8 @@
 package com.tokopedia.epharmacy.network.request
 
-
 import com.google.gson.annotations.SerializedName
 
-data class EpharmacyConfirmPrescriptionParam(
+data class EPharmacyConfirmPrescriptionParam(
     @SerializedName("input")
     val input: Input?
 ) {
