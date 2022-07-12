@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home.R
-import com.tokopedia.home.beranda.listener.BalanceWidgetListener
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
@@ -77,6 +76,11 @@ class BalanceAdapter(
 
     fun getGopayView() : View? {
         val viewHolder = attachedRecyclerView?.findViewHolderForAdapterPosition(0) as BalanceViewHolder
-        return viewHolder.gopayViewText
+        return viewHolder.gopayViewCoachMark
+    }
+
+    fun getRewardsView() : View? {
+        val viewHolder = attachedRecyclerView?.findViewHolderForAdapterPosition(1) as BalanceViewHolder
+        return viewHolder.rewardsViewCoachMark
     }
 }

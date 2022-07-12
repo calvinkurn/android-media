@@ -86,10 +86,14 @@ class BalanceWidgetViewHolder(itemView: View, val listener: HomeCategoryListener
 
     fun getGopayNewView(): View? {
         if (balanceAdapter?.getItemMap()?.containsGopay() == true) {
-            val gopayTextForCoachMark = balanceAdapter?.getGopayView()
-            return gopayTextForCoachMark
-//            val gopayViewNew: View = itemView.findViewById(R.id.home_coachmark_item_gopay_new)
-//            return gopayViewNew
+            return balanceAdapter?.getGopayView()
+        }
+        return null
+    }
+
+    fun getRewardsView(): View? {
+        if (balanceAdapter?.getItemMap()?.containsGopay() == true) {
+            return balanceAdapter?.getRewardsView()
         }
         return null
     }

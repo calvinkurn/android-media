@@ -134,8 +134,11 @@ class BalanceWidgetView: FrameLayout {
         return gopayActivateNewView
     }
 
-    fun getTokopointsNewView(): View? {
-        tokopointsViewNew = findViewById(R.id.home_coachmark_item_tokopoint_new)
-        return tokopointsViewNew
+    fun getRewardsView(): View? {
+        val firstViewHolder = rvBalance?.findViewHolderForAdapterPosition(0)
+        if (firstViewHolder is BalanceWidgetViewHolder) {
+            return firstViewHolder.getRewardsView()
+        }
+        return null
     }
 }
