@@ -38,6 +38,9 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
+import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -328,10 +331,24 @@ class FragmentFavorite() : BaseDaggerFragment(), FavoriteClickListener, OnRefres
 
     private fun addFavoriteShop(shopUiModel: FavoriteShopUiModel) {
         val favoriteShopPosition = Int.ONE
-        if (favoriteAdapter?.itemCount ?: Int.ZERO > Int.ZERO) favoriteAdapter?.addElement(
-            favoriteShopPosition,
-            shopUiModel
-        )
+        if (favoriteAdapter?.itemCount ?: Int.ZERO > Int.ZERO) {
+            favoriteAdapter?.addElement(
+                favoriteShopPosition,
+                shopUiModel
+            )
+            view?.let { view ->
+                Toaster.build(
+                    view,
+                    activity?.getString(R.string.favorite_on_success_favorite_text)
+                        ?: "",
+                    LENGTH_SHORT,
+                    TYPE_NORMAL,
+                    activity?.getString(R.string.favorite_on_success_favorite_action_text)
+                        ?: ""
+                ) { }.show()
+            }
+
+        }
     }
 
     private fun sendFavoriteShopImpression(clickUrl: String) {

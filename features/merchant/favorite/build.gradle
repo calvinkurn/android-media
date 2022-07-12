@@ -74,6 +74,7 @@ dependencies {
     implementation rootProject.ext.networkDependencies.retrofit
 
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.supportLibDependencies.design
 
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     kapt rootProject.ext.miscDependencies.daggerCompiler
