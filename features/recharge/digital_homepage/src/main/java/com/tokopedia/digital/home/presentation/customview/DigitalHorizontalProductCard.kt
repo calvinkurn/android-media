@@ -59,11 +59,10 @@ class DigitalHorizontalProductCard @JvmOverloads constructor(
                 ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
                     viewTreeObserver.removeOnGlobalLayoutListener(this)
-                    val contentHeight = measureContentHeight()
 
                     val ratio: Double =
                         layoutParams.width.toDouble() / layoutParams.height.toDouble()
-                    val newWidth = contentHeight
+                    val newWidth = measureContentHeight()
                     val newHeight = newWidth / ratio
 
                     Toast.makeText(context, "Ratio : $ratio", Toast.LENGTH_SHORT).show()

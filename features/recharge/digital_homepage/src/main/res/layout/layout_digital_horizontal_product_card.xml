@@ -33,7 +33,6 @@
             android:contentDescription="@string/horizontal_card_product_image_content_description"
             app:layout_constraintBottom_toBottomOf="@id/bg_horizontal_card_product_image"
             app:layout_constraintLeft_toLeftOf="@id/bg_horizontal_card_product_image"
-            app:layout_constraintRight_toRightOf="@id/bg_horizontal_card_product_image"
             app:layout_constraintTop_toTopOf="@id/bg_horizontal_card_product_image" />
 
         <com.tokopedia.unifyprinciples.Typography
