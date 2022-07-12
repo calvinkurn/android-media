@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.seller_shop_flash_sale.R
+import com.tokopedia.shop.flashsale.common.constant.Constant.CAMPAIGN_NOT_CREATED_ID
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
 
@@ -38,7 +39,7 @@ class CampaignInformationActivity : BaseSimpleActivity() {
     }
 
     private val campaignId by lazy {
-        intent?.extras?.getLong(BUNDLE_KEY_CAMPAIGN_ID).orZero()
+        intent?.extras?.getLong(BUNDLE_KEY_CAMPAIGN_ID, CAMPAIGN_NOT_CREATED_ID).orZero()
     }
 
     override fun getLayoutRes() = R.layout.ssfs_activity_campaign_information

@@ -26,6 +26,7 @@ class ChooseRelatedCampaignViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
 ) : BaseViewModel(dispatchers.main) {
     companion object {
+        private const val DEFAULT_CAMPAIGN_ID = -1L
         private const val MAX_SELECTED_CAMPAIGN = 10
         private const val KEYWORD_SEARCH_DEBOUNCE_DURATION = 300L
     }
@@ -42,6 +43,7 @@ class ChooseRelatedCampaignViewModel @Inject constructor(
         get() = selectedCampaignCount >= MAX_SELECTED_CAMPAIGN
 
     private val keyword = MutableLiveData<String>()
+    private var campaignId: Long = DEFAULT_CAMPAIGN_ID
 
     @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
     private val searchKeywordFlow = keyword.asFlow()
@@ -52,7 +54,7 @@ class ChooseRelatedCampaignViewModel @Inject constructor(
         }
         .mapLatest { keyword ->
             try {
-                val result = getRelatedCampaignsUseCase.execute(keyword)
+                val result = getRelatedCampaignsUseCase.execute(keyword, campaignId)
                 if (keyword.isNotEmpty() && result.isEmpty()) {
                     ChooseRelatedCampaignResult.SearchEmptyResult
                 } else {
@@ -81,6 +83,10 @@ class ChooseRelatedCampaignViewModel @Inject constructor(
                 _relatedCampaignsResult.postValue(result)
             }
         }
+    }
+
+    fun setCampaignId(campaignId: Long) {
+        this.campaignId = campaignId
     }
 
     fun setSelectedCampaigns(relatedCampaignIds: List<RelatedCampaignItem>) {

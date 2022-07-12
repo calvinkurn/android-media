@@ -152,6 +152,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
         observeTNCClickEvent()
         observeTNCConfirmationClick()
         observeCampaignCreationAllowed()
+        observeAddRelatedCampaignButtonEvent()
         observeSaveDraftState()
         observeCreateCampaignState()
     }
@@ -209,7 +210,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
         }
 
         binding.btnChoosePreviousCampaign.setOnClickListener {
-            showChooseRelatedCampaignBottomSheet()
+            viewModel.onAddRelatedCampaignButtonClicked()
         }
 
         childFragmentManager.registerFragmentLifecycleCallbacks(object :
@@ -554,7 +555,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
                     hideSaveDraftButtonLoading()
                     showValidationErrorMessage(it.result)
                 }
-                is CampaignRuleActionResult.Success -> routeToCampaignListPage()
+                is CampaignRuleActionResult.Success -> routeToCampaignListPage(isSaveDraft = true)
                 is CampaignRuleActionResult.Fail -> {
                     showActionErrorMessage(it.error)
                     hideSaveDraftButtonLoading()
@@ -692,14 +693,19 @@ class CampaignRuleFragment : BaseDaggerFragment(),
         binding?.btnCreateCampaign.stopLoading()
     }
 
-    private fun routeToCampaignListPage() {
+    private fun routeToCampaignListPage(isSaveDraft: Boolean = false) {
         val context = context ?: return
-        CampaignListActivity.start(context, isClearTop = true)
+        CampaignListActivity.start(context, isSaveDraft = isSaveDraft, isClearTop = true)
     }
 
-    private fun showChooseRelatedCampaignBottomSheet() {
-        val selectedRelatedCampaign = viewModel.relatedCampaigns.value ?: emptyList()
-        ChooseRelatedCampaignBottomSheet.createInstance(selectedRelatedCampaign)
+    private fun observeAddRelatedCampaignButtonEvent() {
+        viewModel.addRelatedCampaignButtonEvent.observe(viewLifecycleOwner) {
+            showChooseRelatedCampaignBottomSheet(it)
+        }
+    }
+
+    private fun showChooseRelatedCampaignBottomSheet(request: AddRelatedCampaignRequest) {
+        ChooseRelatedCampaignBottomSheet.createInstance(request.campaignId, request.selectedRelatedCampaign)
             .show(childFragmentManager)
     }
 

@@ -11,13 +11,24 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.FragmentSsfsManageHighlightedProductBinding
-import com.tokopedia.shop.flashsale.common.extension.*
+import com.tokopedia.shop.flashsale.common.extension.doOnDelayFinished
+import com.tokopedia.shop.flashsale.common.extension.setFragmentToUnifyBgColor
+import com.tokopedia.shop.flashsale.common.extension.showError
 import com.tokopedia.shop.flashsale.common.extension.showLoading
+import com.tokopedia.shop.flashsale.common.extension.showToaster
+import com.tokopedia.shop.flashsale.common.extension.slideDown
+import com.tokopedia.shop.flashsale.common.extension.slideUp
+import com.tokopedia.shop.flashsale.common.extension.smoothSnapToPosition
+import com.tokopedia.shop.flashsale.common.extension.stopLoading
 import com.tokopedia.shop.flashsale.common.preference.SharedPreferenceDataStore
-import com.tokopedia.shop.flashsale.common.tracker.ShopFlashSaleTracker
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.HighlightableProduct
 import com.tokopedia.shop.flashsale.domain.entity.ProductSubmissionResult
@@ -66,13 +77,14 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
     private val campaignId by lazy {
         arguments?.getLong(BUNDLE_KEY_CAMPAIGN_ID).orZero()
     }
+
     private var isFirstLoad = true
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ManageHighlightedProductViewModel::class.java) }
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
 
     private val productAdapter by lazy {
-        HighlightedProductAdapter(preferenceDataStore, onProductSelectionChange)
+        HighlightedProductAdapter(onProductSelectionChange)
     }
 
     override fun getScreenName(): String = ManageHighlightedProductFragment::class.java.canonicalName.orEmpty()
@@ -115,6 +127,11 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
         binding?.recyclerView?.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         binding?.recyclerView?.adapter = productAdapter
         binding?.recyclerView?.addItemDecoration(ProductListItemDecoration(requireActivity()))
+        productAdapter.setOnCoachMarkDisplayed {
+            preferenceDataStore.markHighlightCampaignProductComplete()
+        }
+        val shouldShowCoachMark = !preferenceDataStore.isHighlightCampaignProductDismissed()
+        productAdapter.shouldDisplayCoachMark(shouldShowCoachMark)
 
         endlessRecyclerViewScrollListener = object : EndlessRecyclerViewScrollListener(binding?.recyclerView?.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
@@ -403,7 +420,7 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
 
     private fun routeToCampaignListPage() {
         val context = context ?: return
-        CampaignListActivity.start(context, isClearTop = true)
+        CampaignListActivity.start(context, isSaveDraft = true)
     }
 
     private fun displayError(result: ProductSubmissionResult) {

@@ -3,7 +3,6 @@ package com.tokopedia.shop.flashsale.domain.usecase.aggregate
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.shop.flashsale.common.constant.Constant
-import com.tokopedia.shop.flashsale.common.constant.DraftConstant.MAX_DRAFT_COUNT
 import com.tokopedia.shop.flashsale.common.util.DateManager
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.CampaignPrerequisiteData
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.ShareComponentMetadata
@@ -22,11 +21,15 @@ class GetCampaignPrerequisiteDataUseCase @Inject constructor(
     private val dateManager: DateManager
 ) : GraphqlUseCase<ShareComponentMetadata>(repository) {
 
+    companion object {
+        private const val DRAFT_COUNT_TO_FETCH = 50
+    }
+
     suspend fun execute(): CampaignPrerequisiteData {
         return coroutineScope {
             val campaignDraftDeferred = async {
                 getSellerCampaignListUseCase.execute(
-                    rows = MAX_DRAFT_COUNT,
+                    rows = DRAFT_COUNT_TO_FETCH,
                     offset = Constant.FIRST_PAGE,
                     statusId = listOf(CampaignStatus.DRAFT.id)
                 )

@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.shop.flashsale.common.constant.Constant.CAMPAIGN_NOT_CREATED_ID
 import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant.CAMPAIGN_TEASER_MAXIMUM_UPCOMING_HOUR
 import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant.CAMPAIGN_TEASER_MINIMUM_UPCOMING_HOUR
 import com.tokopedia.shop.flashsale.common.extension.hourOnly
@@ -14,6 +15,7 @@ import com.tokopedia.shop.flashsale.domain.entity.CampaignAction
 import com.tokopedia.shop.flashsale.domain.entity.CampaignCreationResult
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.Gradient
+import com.tokopedia.shop.flashsale.domain.entity.RelatedCampaign
 import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
 import com.tokopedia.shop.flashsale.domain.entity.enums.PaymentType
 import com.tokopedia.shop.flashsale.domain.usecase.DoSellerCampaignCreationUseCase
@@ -24,7 +26,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
-import java.util.*
+import java.util.Date
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -78,6 +80,9 @@ class CampaignInformationViewModel @Inject constructor(
     private var paymentType = PaymentType.INSTANT
     private var remainingQuota = Int.ZERO
     private var selection : Selection? = null
+    private var campaignId: Long = CAMPAIGN_NOT_CREATED_ID
+    private var relatedCampaigns: List<RelatedCampaign> = emptyList()
+    private var isCampaignRuleSubmit = false
 
     private val forbiddenWords = listOf(
         "kejar diskon",
@@ -183,7 +188,15 @@ class CampaignInformationViewModel @Inject constructor(
 
     }
 
-    fun createCampaign(selection: Selection) {
+    fun submit(selection: Selection) {
+        if (campaignId == CAMPAIGN_NOT_CREATED_ID) {
+            createCampaign(selection)
+        } else {
+            updateCampaign(selection, campaignId)
+        }
+    }
+
+    private fun createCampaign(selection: Selection) {
         launchCatchError(
             dispatchers.io,
             block = {
@@ -201,6 +214,10 @@ class CampaignInformationViewModel @Inject constructor(
                     )
                 val result = doSellerCampaignCreationUseCase.execute(param)
                 _campaignCreation.postValue(Success(result))
+
+                if (result.isSuccess) {
+                    campaignId = result.campaignId
+                }
             },
             onError = { error ->
                 _campaignCreation.postValue(Fail(error))
@@ -209,7 +226,7 @@ class CampaignInformationViewModel @Inject constructor(
 
     }
 
-    fun updateCampaign(selection: Selection, campaignId: Long) {
+    private fun updateCampaign(selection: Selection, campaignId: Long) {
         launchCatchError(
             dispatchers.io,
             block = {
@@ -222,7 +239,9 @@ class CampaignInformationViewModel @Inject constructor(
                         showTeaser = selection.showTeaser,
                         firstColor = selection.firstColor,
                         secondColor = selection.secondColor,
-                        paymentType = selection.paymentType
+                        paymentType = selection.paymentType,
+                        campaignRelation = relatedCampaigns.map { it.id },
+                        isCampaignRuleSubmit = isCampaignRuleSubmit,
                 )
                 val result = doSellerCampaignCreationUseCase.execute(param)
                 _campaignUpdate.postValue(Success(result))
@@ -253,7 +272,9 @@ class CampaignInformationViewModel @Inject constructor(
                     showTeaser = selection.showTeaser,
                     firstColor = selection.firstColor,
                     secondColor = selection.secondColor,
-                    paymentType = selection.paymentType
+                    paymentType = selection.paymentType,
+                    campaignRelation = relatedCampaigns.map { it.id },
+                    isCampaignRuleSubmit = isCampaignRuleSubmit,
                 )
                 val result = doSellerCampaignCreationUseCase.execute(param)
                 _saveDraft.postValue(Success(result))
@@ -271,6 +292,8 @@ class CampaignInformationViewModel @Inject constructor(
             dispatchers.io,
             block = {
                 val result = getSellerCampaignDetailUseCase.execute(campaignId)
+                relatedCampaigns = result.relatedCampaigns
+                isCampaignRuleSubmit = result.isCampaignRuleSubmit
                 _campaignDetail.postValue(Success(result))
             },
             onError = { error ->
@@ -296,6 +319,10 @@ class CampaignInformationViewModel @Inject constructor(
             }
         )
 
+    }
+
+    fun setCampaignId(campaignId: Long) {
+        this.campaignId = campaignId
     }
 
     fun setPaymentType(paymentType : PaymentType) {

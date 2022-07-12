@@ -182,4 +182,22 @@ class CampaignListViewModel @Inject constructor(
     fun getThumbnailImageUrl(): String {
         return thumbnailImageUrl
     }
+
+    fun onMoreMenuCancelClicked(campaign: CampaignUiModel) {
+        tracker.sendClickCancelPopupEvent(campaign)
+    }
+
+    fun onMoreMenuStopClicked(campaign: CampaignUiModel) {
+        tracker.sendClickStopPopupEvent(campaign)
+    }
+
+    fun onMoreMenuShareClicked(campaign: CampaignUiModel) {
+        getShareComponentThumbnailImageUrl(campaign.campaignId)
+        tracker.sendClickShareCampaignPopupEvent(campaign)
+    }
+
+    fun onMoreMenuEditClicked(campaign: CampaignUiModel) {
+        tracker.sendClickEditPopupEvent(campaign)
+    }
+
 }

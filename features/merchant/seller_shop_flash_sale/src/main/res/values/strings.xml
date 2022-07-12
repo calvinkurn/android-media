@@ -71,7 +71,9 @@
     <string name="sfs_fst_introduction_description">Flash Sale yang berhasil dibuat akan tampil di halaman Home tokomu sesuai dengan waktu yang sudah diatur.</string>
     <string name="sfs_start_create_flash_sale">Mulai Buat Flash Sale</string>
     <string name="sfs_later">Nanti saja</string>
-
+    <string name="sfs_forbidden_access_title">Yah, kamu belum bisa akses ke Flash Sale Toko</string>
+    <string name="sfs_forbidden_access_description">Pelajari dulu agar tokomu bisa pakai Flash Sale Toko, yuk!</string>
+    <string name="sfs_forbidden_access_learn_more">Pelajari Flash Sale Toko</string>
 
     <!--Share Component-->
     <string name="sfs_share_description_upcoming">Segera hadir, Flash Sale dari %s di \@Tokopedia. Mulai %s pukul %s</string>
@@ -281,6 +283,7 @@
     <string name="manage_product_first_list_coachmark">Klik Ubah di setiap produk untuk mengubah atau memperbaiki informasi tiap produk.</string>
     <string name="manage_product_second_list_coachmark">Klik di sini untuk menambah produk, ya.</string>
     <string name="manage_product_success_edit_toaster_message">Info produk berhasil diubah.</string>
+    <string name="manage_product_success_delete_toaster_message">Info produk berhasil dihapus.</string>
 
     <!--Manage Product Highlight -->
     <string name="sfs_manage_highlight">Atur Highlight</string>

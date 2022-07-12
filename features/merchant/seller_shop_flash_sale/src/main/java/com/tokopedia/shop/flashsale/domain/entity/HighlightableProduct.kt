@@ -19,7 +19,8 @@ data class HighlightableProduct(
 ) {
     data class Warehouse(
         val warehouseId: Long,
-        val customStock: Long
+        val customStock: Long,
+        val isSelected: Boolean
     )
 
     enum class DisabledReason {

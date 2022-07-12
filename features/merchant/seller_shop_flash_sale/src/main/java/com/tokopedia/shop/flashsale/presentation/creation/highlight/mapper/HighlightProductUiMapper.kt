@@ -40,7 +40,8 @@ class HighlightProductUiMapper @Inject constructor() {
         return this.warehouseList.map {
             HighlightableProduct.Warehouse(
                 it.warehouseId.toLongOrZero(),
-                it.customStock.toLong()
+                it.stock.toLong(),
+                it.chosenWarehouse
             )
         }
     }

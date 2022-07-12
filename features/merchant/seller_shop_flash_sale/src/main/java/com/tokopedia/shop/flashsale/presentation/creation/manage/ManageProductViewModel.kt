@@ -118,16 +118,22 @@ class ManageProductViewModel @Inject constructor(
     }
 
     fun getBannerType(productList: SellerCampaignProductList) {
+        var isProductContainingError = false
         productList.productList.forEach { product ->
             if (productErrorStatusHandler.getErrorType(product.productMapData) != NOT_ERROR) {
                 _bannerType.postValue(ERROR_BANNER)
+                isProductContainingError = true
             } else {
                 if (!isProductInfoComplete(product.productMapData)) {
                     if (bannerType.value != ERROR_BANNER) {
                         _bannerType.postValue(EMPTY_BANNER)
+                        isProductContainingError = true
                     }
                 }
             }
+        }
+        if (!isProductContainingError) {
+            _bannerType.postValue(HIDE_BANNER)
         }
     }
 

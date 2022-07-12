@@ -18,13 +18,11 @@ import com.tokopedia.shop.flashsale.common.extension.convertRupiah
 import com.tokopedia.shop.flashsale.common.extension.disable
 import com.tokopedia.shop.flashsale.common.extension.enable
 import com.tokopedia.shop.flashsale.common.extension.strikethrough
-import com.tokopedia.shop.flashsale.common.preference.SharedPreferenceDataStore
 import com.tokopedia.shop.flashsale.domain.entity.HighlightableProduct
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 
 class HighlightedProductAdapter(
-    private val preferenceDataStore: SharedPreferenceDataStore,
     private val onProductSelectionChange: (HighlightableProduct, Boolean) -> Unit
 ) : RecyclerView.Adapter<HighlightedProductAdapter.HighlightedProductViewHolder>() {
 
@@ -35,6 +33,8 @@ class HighlightedProductAdapter(
 
     private var products: MutableList<HighlightableProduct> = mutableListOf()
     private var isLoading = false
+    private var onCoachMarkDisplayed : () -> Unit = {}
+    private var shouldShowCoachMark = false
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -110,7 +110,6 @@ class HighlightedProductAdapter(
         }
 
         private fun handleCoachMark(anchorView: View) {
-            val shouldShowCoachMark = !preferenceDataStore.isHighlightCampaignProductDismissed()
             if (shouldShowCoachMark && itemCount.isMoreThanZero() && adapterPosition == 0) {
                 showCoachMark(anchorView)
             }
@@ -181,12 +180,8 @@ class HighlightedProductAdapter(
         private fun showCoachMark(anchorView: View) {
             val coachMark = CoachMark2(anchorView.context)
             coachMark.showCoachMark(populateCoachMarkItems(anchorView), null)
-            coachMark.onFinishListener = {
-                preferenceDataStore.markHighlightCampaignProductComplete()
-            }
-            coachMark.onDismissListener = {
-                preferenceDataStore.markHighlightCampaignProductComplete()
-            }
+            coachMark.onFinishListener = { onCoachMarkDisplayed() }
+            coachMark.onDismissListener = { onCoachMarkDisplayed() }
         }
 
         private fun populateCoachMarkItems(anchorView : View): ArrayList<CoachMark2Item> {
@@ -200,6 +195,14 @@ class HighlightedProductAdapter(
             )
         }
 
+    }
+
+    fun setOnCoachMarkDisplayed(onCoachMarkDisplayed: () -> Unit) {
+        this.onCoachMarkDisplayed = onCoachMarkDisplayed
+    }
+
+    fun shouldDisplayCoachMark(shouldShowCoachMark : Boolean) {
+        this.shouldShowCoachMark = shouldShowCoachMark
     }
 
     inner class DiffCallback(

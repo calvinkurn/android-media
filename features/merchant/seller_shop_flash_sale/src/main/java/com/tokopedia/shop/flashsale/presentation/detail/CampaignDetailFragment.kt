@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,7 +39,6 @@ import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.MerchantCampaignTNC
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.ShareComponent
-import com.tokopedia.shop.flashsale.domain.entity.aggregate.ShareComponentMetadata
 import com.tokopedia.shop.flashsale.domain.entity.enums.isActive
 import com.tokopedia.shop.flashsale.domain.entity.enums.isAvailable
 import com.tokopedia.shop.flashsale.domain.entity.enums.isCancelled
@@ -266,7 +264,6 @@ class CampaignDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    @SuppressLint("ResourcePackage")
     private fun showCancelCampaignDialog(campaign: CampaignUiModel) {
         val bottomSheet = CancelCampaignBottomSheet(
             campaign.campaignId,
@@ -300,7 +297,6 @@ class CampaignDetailFragment : BaseDaggerFragment(),
 
     }
 
-    @SuppressLint("ResourcePackage")
     private fun showRegisteredEventCampaignCancelErrorMessage() {
         val binding = binding ?: return
         val errorMessage = getString(
@@ -328,7 +324,6 @@ class CampaignDetailFragment : BaseDaggerFragment(),
         CampaignInformationActivity.startUpdateMode(context, campaignId)
     }
 
-    @SuppressLint("ResourcePackage")
     private fun showRegisteredEventCampaignEditErrorMessage() {
         val binding = binding ?: return
         val errorMessage =
@@ -344,7 +339,6 @@ class CampaignDetailFragment : BaseDaggerFragment(),
         }
         toaster.show()
     }
-
 
     private fun observeCampaign() {
         viewModel.campaign.observe(viewLifecycleOwner) { result ->
@@ -373,7 +367,6 @@ class CampaignDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    @SuppressLint("ResourcePackage")
     private fun displayCampaignDetailInformation(data: CampaignDetailMeta) {
         val campaign = data.campaign
         handleCampaignToolbar(campaign)
