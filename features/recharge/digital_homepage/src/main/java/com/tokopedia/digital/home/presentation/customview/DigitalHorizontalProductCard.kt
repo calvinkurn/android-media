@@ -67,7 +67,12 @@ class DigitalHorizontalProductCard @JvmOverloads constructor(
                             transition: Transition<in Bitmap>?
                         ) {
                             imageRatio = resource.width.toDouble() / resource.height.toDouble()
-                            setImageBitmap(resource)
+                            Toast.makeText(
+                                context,
+                                "Width ${resource.width}, Height : ${resource.height}",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            binding.tgHorizontalCardProductImage.setImageBitmap(resource)
                         }
 
                         override fun onLoadCleared(placeholder: Drawable?) {
