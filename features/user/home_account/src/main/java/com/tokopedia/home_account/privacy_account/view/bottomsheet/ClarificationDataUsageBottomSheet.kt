@@ -39,14 +39,12 @@ class ClarificationDataUsageBottomSheet : BottomSheetUnify() {
             val img = item.findViewById<ImageUnify>(R.id.image_banner_clarification_data_usage)
             img.loadImage(data.toString())
         }
-        binding?.carousel?.addItems(R.layout.item_custom_image_banner, LIST_IMAGE_BANNER, itemParam)
-    }
-
-    companion object {
-        private const val BANNER_IMAGE_1 = "https://images.tokopedia.net/img/android/user/optinout/img_privacy_account_banner_1.png"
-        private const val BANNER_IMAGE_2 = "https://images.tokopedia.net/img/android/user/optinout/img_privacy_account_banner_2.png"
-        private const val BANNER_IMAGE_3 = "https://images.tokopedia.net/img/android/user/optinout/img_privacy_account_banner_3.png"
-        val LIST_IMAGE_BANNER = arrayListOf<Any>(BANNER_IMAGE_1, BANNER_IMAGE_2, BANNER_IMAGE_3)
+        val listImageBanner = arrayListOf<Any>(
+            getString(R.string.privacy_account_bottom_sheet_clarification_image_banner_1),
+            getString(R.string.privacy_account_bottom_sheet_clarification_image_banner_2),
+            getString(R.string.privacy_account_bottom_sheet_clarification_image_banner_3)
+        )
+        binding?.carousel?.addItems(R.layout.item_custom_image_banner, listImageBanner, itemParam)
     }
 
 }

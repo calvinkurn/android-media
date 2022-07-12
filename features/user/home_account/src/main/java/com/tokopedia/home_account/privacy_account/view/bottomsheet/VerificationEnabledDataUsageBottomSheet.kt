@@ -47,7 +47,7 @@ class VerificationEnabledDataUsageBottomSheet : BottomSheetUnify() {
     }
 
     private fun setView() {
-        binding?.imgHeader?.loadImage(SOURCE_IMAGE_HEADER)
+        binding?.imgHeader?.loadImage(getString(R.string.privacy_account_bottom_sheet_verification_image_header))
 
         binding?.cbVerification?.setOnCheckedChangeListener { _, isChecked ->
             binding?.btnVerification?.isEnabled = isChecked
@@ -128,6 +128,5 @@ class VerificationEnabledDataUsageBottomSheet : BottomSheetUnify() {
         private const val PRIVACY_POLICY_PATH = "privacy"
         private const val TERM_AND_CONDITION = "Syarat & Ketentuan"
         private const val PRIVACY_POLICY = "Kebijakan Privasi"
-        private const val SOURCE_IMAGE_HEADER = "https://images.tokopedia.net/img/android/user/optinout/img_privacy_account_verification.png"
     }
 }
