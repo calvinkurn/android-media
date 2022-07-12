@@ -5,11 +5,15 @@ import com.tokopedia.autocompletecomponent.util.HeadlineAdsIdList
 import com.tokopedia.autocompletecomponent.util.ShopIdList
 
 class ShopSuggestionProcessing {
-    private val FILTER_SHOP_COUNT = 5
-    private val CONTAINS_AT_FIRST_INDEX = 0
-    private val NOT_CONTAINS = -1
+    companion object {
+        private const val FILTER_SHOP_COUNT = 5
+        private const val CONTAINS_AT_FIRST_INDEX = 0
+        private const val NOT_CONTAINS = -1
+    }
 
-    private var renderedShopAds = ""
+    var renderedShopAds = ""
+        private set
+
     private var excludedOrganicShop: String? = null
 
     fun processData(headlineAdsIdList: HeadlineAdsIdList, shopIdList: ShopIdList) {
@@ -32,8 +36,7 @@ class ShopSuggestionProcessing {
         return (item.type == TYPE_SHOP && item.suggestionId == excludedOrganicShop)
     }
 
-    fun getRenderedShopAds(): String = renderedShopAds
-
+    @Suppress("MagicNumber")
     private fun <T> List<T>.secondOrNull(): T? =
         if(this.size >= 2) this[1] else null
 
