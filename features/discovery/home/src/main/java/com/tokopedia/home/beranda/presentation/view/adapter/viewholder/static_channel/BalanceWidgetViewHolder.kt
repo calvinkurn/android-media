@@ -84,6 +84,16 @@ class BalanceWidgetViewHolder(itemView: View, val listener: HomeCategoryListener
         balanceDividerAdapter?.addDivider(totalData)
     }
 
+    fun getGopayNewView(): View? {
+        if (balanceAdapter?.getItemMap()?.containsGopay() == true) {
+            val gopayTextForCoachMark = balanceAdapter?.getGopayView()
+            return gopayTextForCoachMark
+//            val gopayViewNew: View = itemView.findViewById(R.id.home_coachmark_item_gopay_new)
+//            return gopayViewNew
+        }
+        return null
+    }
+
     private fun getLayoutManager(totalData: Int): NpaGridLayoutManager {
         return NpaGridLayoutManager(itemView.context, totalData)
     }

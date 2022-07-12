@@ -91,7 +91,9 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUti
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceCoachmark
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder
@@ -1418,29 +1420,29 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 scrollPosition = layoutManager?.findLastVisibleItemPosition()
             )
             adapter?.submitList(data)
-//            showCoachmarkWithDataValidation(data)
+            showCoachmarkWithDataValidation(data)
         }
     }
 
-//    private fun showCoachmarkWithDataValidation(data: List<Visitable<*>>? = null) {
-//        (data?.firstOrNull { it is HomeHeaderDataModel } as? HomeHeaderDataModel)?.let {
-//            val isBalanceWidgetNotEmpty =
-//                it.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty()
-//                    ?: false
-//            if (isBalanceWidgetNotEmpty) {
-//                val isContainsNewGopayAndTokopoints =
-//                    it.headerDataModel?.homeBalanceModel?.containsNewGopayAndTokopoints() ?: false
-//                isGopayActivated = it.headerDataModel?.homeBalanceModel?.isGopayActive()?:false
-//                if (isContainsNewGopayAndTokopoints) {
-//                    showCoachMark(
-//                        tokopointsBalanceCoachmark = it.headerDataModel?.homeBalanceModel?.getTokopointsBalanceCoachmark()
-//                    )
-//                }
-//            } else {
-//                showCoachMark()
-//            }
-//        }
-//    }
+    private fun showCoachmarkWithDataValidation(data: List<Visitable<*>>? = null) {
+        (data?.firstOrNull { it is HomeHeaderDataModel } as? HomeHeaderDataModel)?.let {
+            val isBalanceWidgetNotEmpty =
+                it.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty()
+                    ?: false
+            if (isBalanceWidgetNotEmpty) {
+                val isContainsNewGopayAndTokopoints =
+                    it.headerDataModel?.homeBalanceModel?.containsNewGopayAndTokopoints() ?: false
+                isGopayActivated = it.headerDataModel?.homeBalanceModel?.isGopayActive()?:false
+                if (isContainsNewGopayAndTokopoints) {
+                    showCoachMark(
+                        tokopointsBalanceCoachmark = it.headerDataModel?.homeBalanceModel?.getTokopointsBalanceCoachmark()
+                    )
+                }
+            } else {
+                showCoachMark()
+            }
+        }
+    }
 
     private fun <T> containsInstance(list: List<T>, type: Class<*>): Boolean {
         val instance = list.filterIsInstance(type)
@@ -2871,5 +2873,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun deletePayLaterWidget() {
         getHomeViewModel().deletePayLaterWidget()
+    }
+
+    override fun showBalanceWidgetCoachMark(homeBalanceModel: HomeBalanceModel) {
+        showCoachMark(homeBalanceModel.getTokopointsBalanceCoachmark())
     }
 }

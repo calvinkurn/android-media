@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home.R
@@ -85,6 +86,10 @@ class BalanceWidgetView: FrameLayout {
             }
             else -> {
                 balanceWidgetAdapter?.setVisitables(listOf(element))
+                rvBalance?.post {
+                    Toast.makeText(itemContext, "Success load balancewidget", Toast.LENGTH_LONG).show()
+                    listener?.showBalanceWidgetCoachMark(element)
+                }
             }
         }
     }
@@ -117,10 +122,10 @@ class BalanceWidgetView: FrameLayout {
     }
 
     fun getGopayNewView(): View? {
-//        if (balanceAdapter?.getItemMap()?.containsGopay() == true) {
-//            val gopayViewNew: View = findViewById(R.id.home_coachmark_item_gopay_new)
-//            return gopayViewNew
-//        }
+        val firstViewHolder = rvBalance?.findViewHolderForAdapterPosition(0)
+        if (firstViewHolder is BalanceWidgetViewHolder) {
+            return firstViewHolder.getGopayNewView()
+        }
         return null
     }
 

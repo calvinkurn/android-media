@@ -1,11 +1,13 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home.R
+import com.tokopedia.home.beranda.listener.BalanceWidgetListener
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
@@ -49,6 +51,10 @@ class BalanceAdapter(
         }
     }
 
+    fun getItemMap():  HomeBalanceModel {
+        return itemMap
+    }
+
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
         this.attachedRecyclerView = recyclerView
@@ -67,5 +73,10 @@ class BalanceAdapter(
             itemMap.balanceDrawerItemModels[position],
             listener
         )
+    }
+
+    fun getGopayView() : View? {
+        val viewHolder = attachedRecyclerView?.findViewHolderForAdapterPosition(0) as BalanceViewHolder
+        return viewHolder.gopayViewText
     }
 }

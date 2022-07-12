@@ -6,9 +6,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.v2.OvoWidgetTracking
+import com.tokopedia.home.beranda.listener.BalanceWidgetListener
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_SUBSCRIPTION
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_APP_LINKED
 import com.tokopedia.home.databinding.ItemBalanceWidgetNewBinding
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -26,6 +28,7 @@ class BalanceViewHolder(v: View) : RecyclerView.ViewHolder(v) {
 
     private val binding: ItemBalanceWidgetNewBinding? by viewBinding()
     private var listener: HomeCategoryListener? = null
+    var gopayViewText : View? = null
 
     fun bind(
         drawerItem: BalanceDrawerItemModel?,
@@ -94,6 +97,9 @@ class BalanceViewHolder(v: View) : RecyclerView.ViewHolder(v) {
                             com.tokopedia.unifyprinciples.R.color.Unify_NN600
                         )
                     )
+                    if (element.drawerItemType == TYPE_WALLET_APP_LINKED) {
+                        gopayViewText = binding?.homeTvReserveBalance
+                    }
                 }
 
                 binding?.homeContainerBalance?.handleItemCLickType(
@@ -261,4 +267,14 @@ class BalanceViewHolder(v: View) : RecyclerView.ViewHolder(v) {
             }
         }
     }
+
+//    override var gopayView: View? = gopayViewText
+//
+//    override fun getRewardsView(): View {
+//        TODO("Not yet implemented")
+//    }
+//
+//    override fun getSubscriptionsView(): View {
+//        TODO("Not yet implemented")
+//    }
 }
