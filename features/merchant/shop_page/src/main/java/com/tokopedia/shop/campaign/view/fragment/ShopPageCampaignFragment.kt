@@ -265,7 +265,7 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
 
     override fun observeShopChangeProductGridSharedViewModel() {}
 
-    // mvc widget listener region
+    // region mvc widget listener
     override fun onVoucherImpression(model: ShopHomeVoucherUiModel, position: Int) {
         // TODO: 12/07/22 Implement mvc voucher tracker
     }
@@ -277,7 +277,7 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
     override fun onVoucherTokoMemberInformationImpression(model: ShopHomeVoucherUiModel, position: Int) {
         // TODO: 12/07/22 Implement mvc voucher tracker
     }
-    // mvc widget listener end region
+    // endregion mvc widget listener end region
 
     // region Product bundle multiple widget
     override fun addMultipleBundleToCart(
@@ -336,7 +336,6 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
         goToPDP(selectedProduct.productId)
     }
     // endregion
-
 
     // region Product bundle single widget
     override fun onSingleBundleProductClicked(
@@ -398,6 +397,90 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
         bundlePosition: Int
     ) {
         // TODO: 12/07/22 Implement impression product bundle single
+    }
+    // endregion
+
+    // region flash sale toko widget
+    override fun onClickTncFlashSaleWidget(model: ShopHomeFlashSaleUiModel) {
+        model.data?.firstOrNull()?.let {
+            shopPageHomeTracking.onClickTnCButtonFlashSaleWidget(
+                campaignId = it.campaignId,
+                shopId = shopId,
+                userId = userId,
+                isOwner = isOwner
+            )
+            showFlashTncSaleBottomSheet(it.campaignId)
+        }
+    }
+
+    override fun onClickSeeAllFlashSaleWidget(model: ShopHomeFlashSaleUiModel) {
+        context?.run {
+            if (shopId.isNotBlank() && model.header.ctaLink.isNotBlank()) {
+                model.data?.firstOrNull()?.let { flashSaleItem ->
+                    shopPageHomeTracking.onClickSeeAllButtonFlashSaleWidget(
+                        statusCampaign = flashSaleItem.statusCampaign,
+                        shopId = shopId,
+                        userId = userId,
+                        isOwner = isOwner
+                    )
+                }
+                RouteManager.route(this, model.header.ctaLink)
+            }
+        }
+    }
+
+    override fun onClickFlashSaleReminder(model: ShopHomeFlashSaleUiModel) {
+        viewModel?.let {
+            val campaignId = model.data?.firstOrNull()?.campaignId.orEmpty()
+            if (it.isLogin) {
+                handleFlashSaleClickReminder(model)
+            } else {
+                setFlashSaleRemindMeClickedCampaignId(campaignId)
+                redirectToLoginPage()
+            }
+            shopPageHomeTracking.onClickReminderButtonFlashSaleWidget(
+                campaignId = campaignId,
+                shopId = shopId,
+                userId = userId,
+                isOwner = isOwner
+            )
+        }
+    }
+
+    override fun onTimerFinished(model: ShopHomeFlashSaleUiModel) {
+        shopCampaignTabAdapter.removeWidget(model)
+        endlessRecyclerViewScrollListener.resetState()
+        shopCampaignTabAdapter.removeProductList()
+        shopCampaignTabAdapter.showLoading()
+        viewModel?.getShopPageHomeWidgetLayoutData(shopId, extParam)
+        scrollToTop()
+    }
+
+    override fun onFlashSaleProductClicked(model: ShopHomeProductUiModel) {
+        goToPDP(model.id ?: "")
+    }
+
+    override fun onFlashSaleWidgetImpressed(model: ShopHomeFlashSaleUiModel, position: Int) {
+        model.data?.firstOrNull()?.let { itemFlashSale ->
+            val campaignId = itemFlashSale.campaignId
+            val statusCampaign = itemFlashSale.statusCampaign
+            shopPageHomeTracking.impressionCampaignFlashSaleWidget(
+                campaignId = campaignId,
+                statusCampaign = statusCampaign,
+                shopId = shopId,
+                userId = userId,
+                position = position,
+                isOwner = isOwner
+            )
+        }
+    }
+
+    override fun onPlaceHolderClickSeeAll(model: ShopHomeFlashSaleUiModel) {
+        context?.run {
+            if (shopId.isNotBlank() && model.header.ctaLink.isNotBlank()) {
+                RouteManager.route(this, model.header.ctaLink)
+            }
+        }
     }
     // endregion
 
@@ -935,34 +1018,6 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
         }
     }
 
-    override fun onClickTncFlashSaleWidget(model: ShopHomeFlashSaleUiModel) {
-        model.data?.firstOrNull()?.let {
-            shopPageHomeTracking.onClickTnCButtonFlashSaleWidget(
-                campaignId = it.campaignId,
-                shopId = shopId,
-                userId = userId,
-                isOwner = isOwner
-            )
-            showFlashTncSaleBottomSheet(it.campaignId)
-        }
-    }
-
-    override fun onClickSeeAllFlashSaleWidget(model: ShopHomeFlashSaleUiModel) {
-        context?.run {
-            if (shopId.isNotBlank() && model.header.ctaLink.isNotBlank()) {
-                model.data?.firstOrNull()?.let { flashSaleItem ->
-                    shopPageHomeTracking.onClickSeeAllButtonFlashSaleWidget(
-                        statusCampaign = flashSaleItem.statusCampaign,
-                        shopId = shopId,
-                        userId = userId,
-                        isOwner = isOwner
-                    )
-                }
-                RouteManager.route(this, model.header.ctaLink)
-            }
-        }
-    }
-
     private fun showNplCampaignTncBottomSheet(
         campaignId: String,
         statusCampaign: String,
@@ -993,36 +1048,6 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
             } else {
                 setNplRemindMeClickedCampaignId(campaignId)
                 redirectToLoginPage()
-            }
-        }
-    }
-
-    override fun onClickFlashSaleReminder(model: ShopHomeFlashSaleUiModel) {
-        viewModel?.let {
-            val campaignId = model.data?.firstOrNull()?.campaignId.orEmpty()
-            if (it.isLogin) {
-                handleFlashSaleClickReminder(model)
-            } else {
-                setFlashSaleRemindMeClickedCampaignId(campaignId)
-                redirectToLoginPage()
-            }
-            shopPageHomeTracking.onClickReminderButtonFlashSaleWidget(
-                campaignId = campaignId,
-                shopId = shopId,
-                userId = userId,
-                isOwner = isOwner
-            )
-        }
-    }
-
-    override fun onFlashSaleProductClicked(model: ShopHomeProductUiModel) {
-        goToPDP(model.id ?: "")
-    }
-
-    override fun onPlaceHolderClickSeeAll(model: ShopHomeFlashSaleUiModel) {
-        context?.run {
-            if (shopId.isNotBlank() && model.header.ctaLink.isNotBlank()) {
-                RouteManager.route(this, model.header.ctaLink)
             }
         }
     }
@@ -1118,33 +1143,8 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
         }
     }
 
-    override fun onFlashSaleWidgetImpressed(model: ShopHomeFlashSaleUiModel, position: Int) {
-        model.data?.firstOrNull()?.let { itemFlashSale ->
-            val campaignId = itemFlashSale.campaignId
-            val statusCampaign = itemFlashSale.statusCampaign
-            shopPageHomeTracking.impressionCampaignFlashSaleWidget(
-                campaignId = campaignId,
-                statusCampaign = statusCampaign,
-                shopId = shopId,
-                userId = userId,
-                position = position,
-                isOwner = isOwner
-            )
-        }
-    }
-
     // npl widget
     override fun onTimerFinished(model: ShopHomeNewProductLaunchCampaignUiModel) {
-        shopCampaignTabAdapter.removeWidget(model)
-        endlessRecyclerViewScrollListener.resetState()
-        shopCampaignTabAdapter.removeProductList()
-        shopCampaignTabAdapter.showLoading()
-        viewModel?.getShopPageHomeWidgetLayoutData(shopId, extParam)
-        scrollToTop()
-    }
-
-    // flash sale widget
-    override fun onTimerFinished(model: ShopHomeFlashSaleUiModel) {
         shopCampaignTabAdapter.removeWidget(model)
         endlessRecyclerViewScrollListener.resetState()
         shopCampaignTabAdapter.removeProductList()

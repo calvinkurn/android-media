@@ -4,9 +4,11 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
+import com.tokopedia.shop.campaign.WidgetName.FLASH_SALE_TOKO
 import com.tokopedia.shop.campaign.WidgetName.PRODUCT_BUNDLE_MULTIPLE
 import com.tokopedia.shop.campaign.WidgetName.PRODUCT_BUNDLE_SINGLE
 import com.tokopedia.shop.campaign.WidgetName.VOUCHER_STATIC
+import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignFlashSaleViewHolder
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignProductBundleParentWidgetViewHolder
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignVoucherViewHolder
 import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
@@ -68,6 +70,7 @@ class ShopCampaignTabAdapterTypeFactory(
     override fun type(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
         return when (baseShopHomeWidgetUiModel.name) {
             VOUCHER_STATIC -> ShopCampaignVoucherViewHolder.LAYOUT
+            FLASH_SALE_TOKO -> ShopCampaignFlashSaleViewHolder.LAYOUT
             PRODUCT_BUNDLE_SINGLE, PRODUCT_BUNDLE_MULTIPLE -> ShopCampaignProductBundleParentWidgetViewHolder.LAYOUT
             else -> HideViewHolder.LAYOUT
         }
@@ -81,6 +84,7 @@ class ShopCampaignTabAdapterTypeFactory(
                 multipleProductBundleListener,
                 singleProductBundleListener
             )
+            ShopCampaignFlashSaleViewHolder.LAYOUT -> return ShopCampaignFlashSaleViewHolder(parent, shopHomeFlashSaleWidgetListener)
             else -> return super.createViewHolder(parent, type)
         }
         return viewHolder
