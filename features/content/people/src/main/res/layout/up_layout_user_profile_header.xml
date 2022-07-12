@@ -31,6 +31,7 @@
             android:id="@+id/app_bar_user_profile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/Unify_Background"
             app:elevation="@dimen/layout_lvl0">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
@@ -275,16 +276,6 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/text_see_more">
 
-                        <com.tokopedia.unifycomponents.UnifyButton
-                            android:id="@+id/btn_action_follow"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/unify_space_16"
-                            android:layout_marginEnd="@dimen/unify_space_16"
-                            android:textColor="@color/Unify_NN300"
-                            app:unifyButtonSize="small"
-                            app:unifyButtonVariant="text" />
-
                         <include
                             android:id="@+id/card_user_reminder"
                             android:layout_width="match_parent"
@@ -313,6 +304,7 @@
                             android:layout_marginTop="@dimen/unify_space_16"
                             android:layout_marginEnd="0dp"
                             android:background="@color/Unify_NN300" />
+
                     </LinearLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
