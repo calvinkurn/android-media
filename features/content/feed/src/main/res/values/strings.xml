@@ -133,8 +133,7 @@ dari Feed.</string>
     <string name="feed_fab_create_content">Buat Konten</string>
     <string name="feed_fab_create_post">Buat Post</string>
     <string name="feed_fab_create_live">Buat Live</string>
-    <string name="feed_detail_page_header">Semua Barang Terbaru</string>
-    <string name="feed_detail_page_header_new">Dalam Post Ini</string>
+    <string name="feed_detail_page_header">Dalam Post Ini</string>
     <string name="feed_play_header_text">Lagi Live, Nih!</string>
     <string name="feed_play_header_upcoming_text">Nantikan live seru lainnya!</string>
 
