@@ -69,7 +69,6 @@ class ProductAdapter(
     }
 
     fun updateAll(items: List<Product>) {
-        //Add try catch block to prevent intermittent and unreproducible OutOfBoundException: Inconsistency detected issue
         try {
             this.products = items.toMutableList()
             notifyItemRangeChanged(FIRST_ITEM, items.size)
