@@ -19,7 +19,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginStart="10dp"
-            android:paddingEnd="8dp"
+            android:paddingEnd="4dp"
             app:layout_constraintRight_toLeftOf="@id/chipHeader"
             app:layout_constraintBottom_toBottomOf="@+id/chipHeader"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -39,7 +39,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_goneMarginBottom="@dimen/dp_10"
             app:layout_goneMarginLeft="10dp"
-            app:typographyType="body_3"
+            app:typographyType="display_2"
             tools:text="Rp1.dsf250*10." />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -52,7 +52,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/partnerIcon"
             app:layout_constraintTop_toBottomOf="@+id/chipHeader"
-            app:typographyType="small"
+            app:typographyType="paragraph_3"
             tools:text="credit available: Rp 9.500" />
 
         <androidx.constraintlayout.widget.Barrier
