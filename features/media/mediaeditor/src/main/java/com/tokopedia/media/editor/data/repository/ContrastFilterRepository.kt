@@ -1,6 +1,7 @@
 package com.tokopedia.media.editor.data.repository
 
 import android.graphics.Bitmap
+import com.tokopedia.media.editor.ui.component.ContrastToolsUiComponent
 import javax.inject.Inject
 
 interface ContrastFilterRepository {
@@ -13,6 +14,7 @@ class ContrastFilterRepositoryImpl @Inject constructor(): ContrastFilterReposito
      * @param value float value for contrast adjustment
      */
     override fun contrast(value: Float, source: Bitmap): Bitmap {
+        val standardContrastValue = ContrastToolsUiComponent.contrastRawToStdValue(value)
         val width = source.width
         val height = source.height
         val pixels = IntArray(width * height)
@@ -21,7 +23,7 @@ class ContrastFilterRepositoryImpl @Inject constructor(): ContrastFilterReposito
             width = width,
             height = height,
             pixels = pixels,
-            tempValue = value
+            tempValue = standardContrastValue
         )
         source.setPixels(pixels, 0, width, 0, 0, width, height)
         return source

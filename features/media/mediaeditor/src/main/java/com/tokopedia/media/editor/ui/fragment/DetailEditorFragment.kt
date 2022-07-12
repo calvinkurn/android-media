@@ -4,7 +4,6 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,11 +26,7 @@ import com.tokopedia.media.editor.ui.component.RemoveBackgroundToolUiComponent
 import com.tokopedia.media.editor.ui.component.WatermarkToolUiComponent
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.utils.getDestinationUri
-import com.tokopedia.media.loader.MediaLoaderTarget
-import com.tokopedia.media.loader.common.Properties
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithTarget
-import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.media.loader.utils.MediaTarget
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.types.EditorToolType
@@ -89,7 +84,7 @@ class DetailEditorFragment @Inject constructor(
 
     override fun onContrastValueChanged(value: Float) {
         viewModel.setContrast(value)
-        data.contrastValue = value * ContrastToolsUiComponent.CONTRAST_SLIDER_VALUE_DIVIDER
+        data.contrastValue = value
     }
 
     override fun onRemoveBackgroundClicked() {
@@ -181,8 +176,19 @@ class DetailEditorFragment @Inject constructor(
                     viewComponent = it,
                     onReady = { imageView, resource ->
                         originalBitmap = resource
-                        val cloneOriginal = resource.copy(resource.config, true)
-                        imageView.setImageBitmap(contrastFilterRepositoryImpl.contrast(data.contrastValue ?: DEFAULT_VALUE_CONTRAST, cloneOriginal))
+
+                        if (data.contrastValue != null) {
+                            val cloneOriginal = resource.copy(resource.config, true)
+                            imageView.setImageBitmap(
+                                contrastFilterRepositoryImpl.contrast(
+                                    data.contrastValue ?: DEFAULT_VALUE_CONTRAST,
+                                    cloneOriginal
+                                )
+                            )
+                        } else {
+                            imageView.setImageBitmap(resource)
+                        }
+
                     }
                 )
             )

@@ -26,7 +26,7 @@ class ContrastToolsUiComponent constructor(
     }
 
     override fun valueUpdated(step: Int, value: Float) {
-        listener.onContrastValueChanged(value / CONTRAST_SLIDER_VALUE_DIVIDER)
+        listener.onContrastValueChanged(value)
     }
 
     interface Listener {
@@ -34,6 +34,11 @@ class ContrastToolsUiComponent constructor(
     }
 
     companion object {
-        const val CONTRAST_SLIDER_VALUE_DIVIDER = 10
+        private const val CONTRAST_SLIDER_VALUE_DIVIDER = 10
+
+        // convert raw value (storage value & slider value is raw value) to contrast range [0..10]
+        fun contrastRawToStdValue(rawStorageValue: Float): Float{
+            return rawStorageValue / CONTRAST_SLIDER_VALUE_DIVIDER
+        }
     }
 }
