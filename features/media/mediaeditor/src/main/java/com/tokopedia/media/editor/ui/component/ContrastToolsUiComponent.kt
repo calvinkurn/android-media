@@ -16,12 +16,17 @@ class ContrastToolsUiComponent constructor(
     fun setupView(sliderInitValue: Float) {
         container().show()
 
-        contrastSlider.setRangeSliderValue(50,100,1, sliderInitValue.toInt() * SLIDER_VALUE_DIVIDER)
+        contrastSlider.setRangeSliderValue(
+            50,
+            100,
+            1,
+            sliderInitValue.toInt()
+        )
         contrastSlider.listener = this
     }
 
     override fun valueUpdated(step: Int, value: Float) {
-        listener.onContrastValueChanged(value/SLIDER_VALUE_DIVIDER)
+        listener.onContrastValueChanged(value / CONTRAST_SLIDER_VALUE_DIVIDER)
     }
 
     interface Listener {
@@ -29,6 +34,6 @@ class ContrastToolsUiComponent constructor(
     }
 
     companion object {
-        private const val SLIDER_VALUE_DIVIDER = 10
+        const val CONTRAST_SLIDER_VALUE_DIVIDER = 10
     }
 }

@@ -89,7 +89,7 @@ class DetailEditorFragment @Inject constructor(
 
     override fun onContrastValueChanged(value: Float) {
         viewModel.setContrast(value)
-        data.contrastValue = value
+        data.contrastValue = value * ContrastToolsUiComponent.CONTRAST_SLIDER_VALUE_DIVIDER
     }
 
     override fun onRemoveBackgroundClicked() {
@@ -235,7 +235,7 @@ class DetailEditorFragment @Inject constructor(
     companion object {
         private const val SCREEN_NAME = "Detail Editor"
 
-        private const val DEFAULT_VALUE_CONTRAST = 1f
+        private const val DEFAULT_VALUE_CONTRAST = 10f
     }
 
 }
