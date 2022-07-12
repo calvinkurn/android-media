@@ -5,6 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/upload_prescription_layout"
+    android:visibility="gone"
+    tools:visibility="visible"
     android:background="@color/Unify_Background">
 
     <com.tokopedia.unifycomponents.CardUnify2
@@ -24,9 +26,7 @@
             android:layout_marginBottom="@dimen/unify_space_12"
             android:layout_marginEnd="@dimen/spacing_lvl2"
             android:orientation="horizontal"
-            android:visibility="gone"
             android:gravity="center"
-            tools:visibility="visible"
             >
 
             <com.tokopedia.unifycomponents.ImageUnify
