@@ -68,7 +68,7 @@ class PdpFintechWidget @JvmOverloads constructor(
     }
 
     private fun initClickListner() {
-        binding.lihatSemu.setOnClickListener {
+        binding.pdpFintechWidgetSeeMore.setOnClickListener {
             routeToPdp(FintechRedirectionWidgetDataClass(1,
                 "tokopedia://fintech/paylater",0,"",
                 "ETC",0,"","",
@@ -113,7 +113,7 @@ class PdpFintechWidget @JvmOverloads constructor(
         widgetDetail.baseWidgetResponse?.baseData?.let { baseChipResponse ->
             if (baseChipResponse.list.size > 0) {
                 binding.quickText.text = baseChipResponse.list[0].title
-                binding.lihatSemu.visibility = VISIBLE
+                binding.pdpFintechWidgetSeeMore.visibility = VISIBLE
             }
 
         }
