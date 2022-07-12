@@ -36,7 +36,7 @@
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/pdp_shipment_icon"
         android:layout_width="wrap_content"
-        android:layout_height="24dp"
+        android:layout_height="16dp"
         android:adjustViewBounds="true"
         app:layout_constraintBottom_toBottomOf="@id/pdp_shipment_title"
         app:layout_constraintRight_toRightOf="parent"
