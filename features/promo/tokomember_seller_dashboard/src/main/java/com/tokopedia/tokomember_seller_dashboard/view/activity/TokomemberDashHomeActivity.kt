@@ -25,6 +25,8 @@ import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashHom
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashProgramDetailFragment
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmProgramListViewModel
 import com.tokopedia.unifycomponents.TabsUnify
+import com.tokopedia.unifycomponents.Toaster
+import kotlinx.android.synthetic.main.tm_activity_tokomember_dash_home.*
 import javax.inject.Inject
 
 class TokomemberDashHomeActivity : AppCompatActivity(), TmProgramDetailCallback {
@@ -111,6 +113,7 @@ class TokomemberDashHomeActivity : AppCompatActivity(), TmProgramDetailCallback 
             if(resultCode == Activity.RESULT_OK){
                 val state = data?.getIntExtra("REFRESH_STATE", REFRESH)
                 if (state != null) {
+                    Toaster.build(container_home, "Program TokoMember kamu berhasil diubah.", Toaster.TYPE_NORMAL).show()
                     tmProgramListViewModel.refreshList(state)
                 }
             }

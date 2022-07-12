@@ -239,6 +239,9 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
         }
         headerPreview?.apply {
             title = "Buat Program"
+            if(programActionType == ProgramActionType.EXTEND){
+                title = PROGRAM_EXTEND_CTA
+            }
 
             this.subtitle = subtitle
             isShowBackButton = true

@@ -147,10 +147,11 @@ const val TM_DIALOG_CANCEL_DESC_EDIT_PROGRAM = "Program yang sudah diubah ini ti
 const val TM_DIALOG_CANCEL_CTA_PRIMARY_PROGRAM = "Lanjut"
 const val TM_DIALOG_CANCEL_CTA_SECONDARY_PROGRAM = "Batalkan Program"
 const val TM_DIALOG_CANCEL_CTA_SECONDARY_EXTEND_PROGRAM = "Batalkan Perpanjangan"
-const val TM_DIALOG_CANCEL_CTA_PRIMARY_EDIT_PROGRAM = "Lanjut Ubah"
-const val TM_DIALOG_CANCEL_CTA_SECONDARY_EDIT_PROGRAM = "Batal"
+const val TM_DIALOG_CANCEL_CTA_PRIMARY_EDIT_PROGRAM = "Lanjut"
+const val TM_DIALOG_CANCEL_CTA_SECONDARY_EDIT_PROGRAM = "Batalkan Ubah Program"
 
 const val TM_DIALOG_CANCEL_TITLE_COUPON = "Batal membuat kupon?"
+const val TM_DIALOG_CANCEL_TITLE_COUPON_EDIT = "Batal mengubah kupon?"
 const val TM_DIALOG_CANCEL_DESC_COUPON = "Member tokomu bisa makin aktif belanja dengan kupon yang kamu buat, lho."
 const val TM_DIALOG_CANCEL_DESC_COUPON_EDIT = "Kupon yang sudah diubah ini tidak akan tersimpan."
 const val TM_DIALOG_CANCEL_CTA_PRIMARY_COUPON = "Lanjut Buat"

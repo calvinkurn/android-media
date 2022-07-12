@@ -31,7 +31,11 @@ object TmDateUtil {
     fun setDatePreview(time: String, sdf: String = SIMPLE_DATE_FORMAT): String {
         val startDate = GregorianCalendar(locale)
         val sds = SimpleDateFormat(sdf, locale)
-        startDate.time = sds.parse(time + "00") ?: Date()
+        var time = time
+        if(sdf != DATE_FORMAT){
+            time += "00"
+        }
+        startDate.time = sds.parse(time) ?: Date()
 //        val dayStart = startDate.get(Calendar.DAY_OF_WEEK)
 //        val dayOfWeekStart = getDayOfWeekID(dayStart)
 
@@ -165,6 +169,16 @@ object TmDateUtil {
             7 -> SATURDAY
             else -> ""
         }
+    }
+
+    fun getDayFromTimeWindow(time: String): String {
+        var time = time.substringBefore(" ")
+        time += " 00:00:00"
+        // setting time to 00 because 23:59 case will return next day
+        val endDate = GregorianCalendar(locale)
+        val sdf = SimpleDateFormat(DATE_FORMAT, locale)
+        endDate.time = sdf.parse(time) ?: Date()
+        return getDayOfWeekID(endDate.get(Calendar.DAY_OF_WEEK))
     }
 
     fun setTimeStartSingle(startTime: String?): String? {

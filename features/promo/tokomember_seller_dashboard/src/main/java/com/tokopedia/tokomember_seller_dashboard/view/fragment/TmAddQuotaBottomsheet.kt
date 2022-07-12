@@ -2,8 +2,6 @@ package com.tokopedia.tokomember_seller_dashboard.view.fragment
 
 import android.content.Context
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,12 +17,15 @@ import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_VOUCHER_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_VOUCHER_MAX_CASHBACK
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_VOUCHER_QUOTA
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_VOUCHER_TYPE
+import com.tokopedia.tokomember_seller_dashboard.util.MAX_QUOTA_LABEL
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
+import com.tokopedia.tokomember_seller_dashboard.view.customview.MAX_QUOTA_CHECK
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmCouponViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
+import com.tokopedia.utils.text.currency.NumberTextWatcher
 import kotlinx.android.synthetic.main.tm_layout_add_quota.*
 import javax.inject.Inject
 
@@ -132,24 +133,26 @@ class TmAddQuotaBottomsheet: BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        textFieldQuota.editText.addTextChangedListener(object : TextWatcher{
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-                tvCouponBenefit.text = "Rp" + CurrencyFormatHelper.convertToRupiah((maxCashback.times(textFieldQuota.editText.text.toString().toIntOrZero()).toString()))
-                if(textFieldQuota.editText.text.toString().toIntOrZero() <= voucherQuota){
-                    textFieldQuota.isInputError = true
-                    textFieldQuota.setMessage("Kuota harus lebih dari $voucherQuota")
+        textFieldQuota.editText.setText(voucherQuota.toString())
+        tvCouponBenefit.text = "Rp" + CurrencyFormatHelper.convertToRupiah((maxCashback.times(voucherQuota).toString()))
+        textFieldQuota.editText.addTextChangedListener(object : NumberTextWatcher(textFieldQuota.editText){
+            override fun onNumberChanged(number: Double) {
+                super.onNumberChanged(number)
+                when {
+                    number <= voucherQuota -> {
+                        textFieldQuota.isInputError = true
+                        textFieldQuota.setMessage("Kuota harus lebih dari $voucherQuota")
+                    }
+                    number> MAX_QUOTA_CHECK -> {
+                        textFieldQuota.isInputError = true
+                        textFieldQuota.setMessage(MAX_QUOTA_LABEL)
+                    }
+                    else -> {
+                        textFieldQuota.isInputError = false
+                        textFieldQuota.setMessage("")
+                    }
                 }
-                else{
-                    textFieldQuota.isInputError = false
-                    textFieldQuota.setMessage("")
-                }
+                tvCouponBenefit.text = "Rp" + CurrencyFormatHelper.convertToRupiah((maxCashback.times(CurrencyFormatHelper.convertRupiahToInt(number.toString())).toString()))
             }
         })
         btnContinue.setOnClickListener {
