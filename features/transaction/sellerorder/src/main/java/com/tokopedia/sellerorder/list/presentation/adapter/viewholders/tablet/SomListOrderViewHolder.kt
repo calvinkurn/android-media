@@ -43,7 +43,7 @@ class SomListOrderViewHolder(
 
     override fun setupOrderCard(element: SomListOrderUiModel) {
         binding?.run {
-            if ((listener.isMultiSelectEnabled() && element.cancelRequest != 0 && element.cancelRequestStatus != 0)) {
+            if ((element.multiSelectEnabled && element.cancelRequest != 0 && element.cancelRequestStatus != 0)) {
                 cardSomOrder.animateFadeOut()
             } else {
                 cardSomOrder.animateFadeIn()
@@ -54,7 +54,7 @@ class SomListOrderViewHolder(
                 somOrderListOpenIndicator?.gone()
             }
             root.setOnClickListener {
-                if (listener.isMultiSelectEnabled()) touchCheckBox(element)
+                if (element.multiSelectEnabled) touchCheckBox(element)
                 else listener.onOrderClicked(element)
             }
         }

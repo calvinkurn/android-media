@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.graphics.ColorFilter
 import android.graphics.LightingColorFilter
 import android.graphics.Typeface
-import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.StyleSpan
@@ -16,7 +15,14 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.getDimens
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.loadImageRounded
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_ACCEPT_ORDER
@@ -42,8 +48,6 @@ open class SomListOrderViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_som_list_order
-
-        const val TOGGLE_SELECTION = "toggle_selection"
 
         private val completedOrderStatusCodes = intArrayOf(690, 691, 695, 698, 699, 700, 701)
         private val cancelledOrderStatusCodes = intArrayOf(0, 4, 6, 10, 11, 15)
@@ -76,30 +80,19 @@ open class SomListOrderViewHolder(
 
     override fun bind(element: SomListOrderUiModel?, payloads: MutableList<Any>) {
         payloads.firstOrNull()?.let {
-            if (it is Bundle) {
-                if (it.containsKey(TOGGLE_SELECTION)) {
-                    binding?.container?.layoutTransition?.enableTransitionType(CHANGING)
-                    element?.let {
-                        setupOrderCard(it)
-                        setupStatusIndicator(it)
-                        setupCheckBox(it)
-                        setupQuickActionButton(element)
-                    }
-                    binding?.container?.layoutTransition?.disableTransitionType(CHANGING)
-                    return
-                }
-            } else if (it is Pair<*, *>) {
+            if (it is Pair<*, *>) {
                 val oldItem = it.first
                 val newItem = it.second
                 if (oldItem is SomListOrderUiModel && newItem is SomListOrderUiModel) {
                     setupOrderCard(newItem)
                     val oldIsEnded = oldItem.orderStatusId in endedOrderStatusCode
                     val newIsEnded = newItem.orderStatusId in endedOrderStatusCode
+                    val multiSelectEnableChanged = oldItem.multiSelectEnabled != newItem.multiSelectEnabled
                     binding?.container?.layoutTransition?.enableTransitionType(CHANGING)
-                    if (oldItem.statusIndicatorColor != newItem.statusIndicatorColor) {
+                    if (oldItem.statusIndicatorColor != newItem.statusIndicatorColor || multiSelectEnableChanged) {
                         setupStatusIndicator(newItem)
                     }
-                    if (oldItem.isChecked != newItem.isChecked || oldItem.cancelRequest != newItem.cancelRequest) {
+                    if (oldItem.isChecked != newItem.isChecked || oldItem.cancelRequest != newItem.cancelRequest || multiSelectEnableChanged) {
                         setupCheckBox(newItem)
                     }
                     if (oldItem.status != newItem.status) {
@@ -129,7 +122,7 @@ open class SomListOrderViewHolder(
                     if (oldIsEnded != newIsEnded || oldItem.destinationProvince != newItem.destinationProvince) {
                         setupDestinationInfo(newItem, newIsEnded)
                     }
-                    if (oldItem.buttons.firstOrNull() != newItem.buttons.firstOrNull()) {
+                    if (oldItem.buttons.firstOrNull() != newItem.buttons.firstOrNull() || multiSelectEnableChanged) {
                         setupQuickActionButton(newItem)
                     }
                     onBindFinished(newItem)
@@ -144,7 +137,7 @@ open class SomListOrderViewHolder(
     protected open fun setupQuickActionButton(element: SomListOrderUiModel) {
         binding?.run{
             val firstButton = element.buttons.firstOrNull()
-            if (firstButton != null && !listener.isMultiSelectEnabled()) {
+            if (firstButton != null && !element.multiSelectEnabled) {
                 btnQuickAction?.text = firstButton.displayName
                 btnQuickAction?.buttonVariant = if (firstButton.type == SomConsts.KEY_PRIMARY_DIALOG_BUTTON) UnifyButton.Variant.FILLED else UnifyButton.Variant.GHOST
                 btnQuickAction?.setOnClickListener { onQuickActionButtonClicked(element) }
@@ -289,7 +282,7 @@ open class SomListOrderViewHolder(
     @SuppressLint("ClickableViewAccessibility")
     private fun setupCheckBox(element: SomListOrderUiModel) {
         binding?.run {
-            checkBoxSomListMultiSelect.showWithCondition(listener.isMultiSelectEnabled())
+            checkBoxSomListMultiSelect.showWithCondition(element.multiSelectEnabled)
             checkBoxSomListMultiSelect.isChecked = element.isChecked
             checkBoxSomListMultiSelect.skipAnimation()
             checkBoxSomListMultiSelect.setOnTouchListener { _, event ->
@@ -311,7 +304,7 @@ open class SomListOrderViewHolder(
 
     private fun setupStatusIndicator(element: SomListOrderUiModel) {
         binding?.run {
-            if (listener.isMultiSelectEnabled()) {
+            if (element.multiSelectEnabled) {
                 somOrderListIndicator.gone()
             } else {
                 somOrderListIndicator.background = Utils.getColoredIndicator(root.context, element.statusIndicatorColor)
@@ -368,15 +361,11 @@ open class SomListOrderViewHolder(
     }
 
     protected open fun setupOrderCard(element: SomListOrderUiModel) {
-        binding?.cardSomOrder?.alpha = if (listener.isMultiSelectEnabled() && hasActiveRequestCancellation(element)) 0.5f else 1f
+        binding?.cardSomOrder?.alpha = if (element.multiSelectEnabled && element.hasActiveRequestCancellation()) 0.5f else 1f
         binding?.root?.setOnClickListener {
-            if (listener.isMultiSelectEnabled()) touchCheckBox(element)
+            if (element.multiSelectEnabled) touchCheckBox(element)
             else listener.onOrderClicked(element)
         }
-    }
-
-    private fun hasActiveRequestCancellation(element: SomListOrderUiModel): Boolean {
-        return element.cancelRequest != 0 && element.cancelRequestStatus != 0
     }
 
     private fun skipValidateOrder(element: SomListOrderUiModel): Boolean {
@@ -396,6 +385,5 @@ open class SomListOrderViewHolder(
         fun onEditAwbButtonClicked(orderId: String)
         fun onChangeCourierClicked(orderId: String)
         fun onFinishBindNewOrder(view: View, itemIndex: Int)
-        fun isMultiSelectEnabled(): Boolean
     }
 }
