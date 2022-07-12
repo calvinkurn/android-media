@@ -1,6 +1,6 @@
 package com.tokopedia.hotel.destination.usecase
 
-import com.tokopedia.graphql.GraphqlConstant
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -15,16 +15,16 @@ import javax.inject.Inject
  * @author by jessica on 03/11/20
  */
 
+@GqlQuery("QueryHotelRecentSearch", HotelGqlQuery.GET_HOTEL_RECENT_SEARCH_QUERY)
 class GetHotelRecentSearchUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository
 ): UseCase<List<RecentSearch>>() {
 
     var params = mapOf<String, Any>()
     override suspend fun executeOnBackground(): List<RecentSearch> {
-        val gqlRequest = GraphqlRequest(HotelGqlQuery.GET_HOTEL_RECENT_SEARCH_QUERY, RecentSearch.Response::class.java, params)
+        val gqlRequest = GraphqlRequest(QueryHotelRecentSearch(), RecentSearch.Response::class.java, params)
         val gqlResponse = graphqlRepository.response(listOf(gqlRequest), GraphqlCacheStrategy
-                .Builder(CacheType.CACHE_FIRST)
-                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_30.`val`()).build())
+                .Builder(CacheType.ALWAYS_CLOUD).build())
         val errors = gqlResponse.getError(RecentSearch.Response::class.java)
         if (!errors.isNullOrEmpty()){
             throw  MessageErrorException(errors[0].message)

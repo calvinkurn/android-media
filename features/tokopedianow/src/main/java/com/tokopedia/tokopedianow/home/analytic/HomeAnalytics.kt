@@ -1325,10 +1325,10 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         userId: String,
         whIdOrigin: String,
         whIdDestination: String,
-        is20mSwitcher: Boolean
+        isNow15: Boolean
     ): String {
         var switcherName = NOW2HR
-        if (is20mSwitcher) {
+        if (isNow15) {
             switcherName = NOW15M
         }
         return "$switcherName - $userId - $whIdOrigin - $whIdDestination"
@@ -1339,7 +1339,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         userId: String,
         whIdOrigin: String,
         whIdDestination: String,
-        is20mSwitcher: Boolean
+        isNow15: Boolean
     ) {
         Tracker.Builder()
             .setEvent(EVENT_VIEW_GROWTH_IRIS)
@@ -1349,7 +1349,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
                 userId,
                 whIdOrigin,
                 whIdDestination,
-                is20mSwitcher
+                isNow15
             ))
             .setBusinessUnit(BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE)
             .setCurrentSite(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
@@ -1364,7 +1364,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         userId: String,
         whIdOrigin: String,
         whIdDestination: String,
-        is20mSwitcher: Boolean
+        isNow15: Boolean
     ) {
         Tracker.Builder()
             .setEvent(EVENT_CLICK_GROWTH)
@@ -1374,7 +1374,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
                 userId,
                 whIdOrigin,
                 whIdDestination,
-                is20mSwitcher
+                isNow15
             ))
             .setBusinessUnit(BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE)
             .setCurrentSite(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)

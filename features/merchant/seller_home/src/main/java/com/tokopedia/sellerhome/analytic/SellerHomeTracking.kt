@@ -152,7 +152,7 @@ object SellerHomeTracking {
         TrackingHelper.sendGeneralEvent(map)
     }
 
-    fun sendImpressionProgressBarEvent(dataKey: String, stateColor: String, valueScore: Int) {
+    fun sendImpressionProgressBarEvent(dataKey: String, stateColor: String, valueScore: Long) {
         val map = createEventMap(
             event = TrackingConstant.VIEW_HOMEPAGE_IRIS,
             category = arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME)
@@ -163,7 +163,7 @@ object SellerHomeTracking {
         TrackingHelper.sendGeneralEvent(map)
     }
 
-    fun sendClickProgressBarEvent(dataKey: String, stateColor: String, valueScore: Int) {
+    fun sendClickProgressBarEvent(dataKey: String, stateColor: String, valueScore: Long) {
         val map = createEventMap(
             TrackingConstant.CLICK_HOMEPAGE,
             arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
@@ -383,8 +383,7 @@ object SellerHomeTracking {
     fun sendTableClickHyperlinkEvent(
         dataKey: String,
         url: String,
-        isEmpty: Boolean,
-        userId: String
+        isEmpty: Boolean
     ) {
         val state = if (isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
 
@@ -610,7 +609,7 @@ object SellerHomeTracking {
         TrackingHelper.sendGeneralEvent(eventMap)
     }
 
-    fun sendMultiLineGraphImpressionEvent(model: MultiLineGraphWidgetUiModel, userId: String) {
+    fun sendMultiLineGraphImpressionEvent(model: MultiLineGraphWidgetUiModel) {
         val isEmpty = model.data?.metrics?.getOrNull(0)?.isEmpty ?: true
         val emptyStatus = if (isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
 
@@ -626,7 +625,7 @@ object SellerHomeTracking {
         TrackingHelper.sendGeneralEvent(eventMap)
     }
 
-    fun sendMultiLineGraphEmptyStateCtaClick(model: MultiLineGraphWidgetUiModel, userId: String) {
+    fun sendMultiLineGraphEmptyStateCtaClick(model: MultiLineGraphWidgetUiModel) {
         val isEmpty = model.data?.metrics?.getOrNull(0)?.isEmpty ?: true
         val emptyStatus = if (isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
 

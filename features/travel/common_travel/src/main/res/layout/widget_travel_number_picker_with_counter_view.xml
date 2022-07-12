@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -13,26 +14,27 @@
 
     <LinearLayout
         android:layout_width="0dp"
-        android:layout_weight="1"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="@dimen/spacing_lvl2"
-        android:layout_marginRight="@dimen/spacing_lvl2">
-        <androidx.appcompat.widget.AppCompatTextView
+        android:layout_marginRight="@dimen/spacing_lvl2"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/decimal_input_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:layout_gravity="center_vertical"
-            android:textSize="@dimen/sp_16"
+            android:gravity="center"
+            app:typographyType="display_1"
             tools:text="12" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/Unify_N150"
-            android:layout_marginBottom="@dimen/spacing_lvl2"/>
+            android:layout_marginBottom="@dimen/spacing_lvl2"
+            android:background="@color/Unify_N150" />
 
     </LinearLayout>
 

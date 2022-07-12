@@ -114,7 +114,7 @@ class GetChatViewModelTest: BaseTopChatViewModelTest() {
         //Given
         val expectedResponse = GetExistingChatPojo(
             chatReplies = ChatReplies(
-                contacts = arrayListOf(Contact(userId = testUserId.toLongOrZero()))
+                contacts = arrayListOf(Contact(userId = testUserId))
             )
         )
         val expectedMetaData = existingChatMapper.generateRoomMetaData(testMessageId, expectedResponse)

@@ -450,6 +450,22 @@ class TokoNowHomeViewModel @Inject constructor(
         }
     }
 
+    fun switchServiceOrLoadLayout(externalServiceType: String, localCacheModel: LocalCacheModel) {
+        /*
+           Note :
+            - There are 2 types of external service we'll receive, those are 20m and 2h.
+            - 20m will be changed to 15m temporarily.
+            - 15m still used in LCA and BE as 20m service type.
+         */
+        val currentServiceType = localCacheModel.getServiceType()
+
+        if (externalServiceType != currentServiceType && externalServiceType.isNotBlank()) {
+            switchService(localCacheModel, externalServiceType)
+        } else {
+            getLoadingState()
+        }
+    }
+
     /***
      * Switch between NOW 20 minutes/2 hours
      * @param localCacheModel local data from choose address
@@ -833,12 +849,11 @@ class TokoNowHomeViewModel @Inject constructor(
                 ServiceType.NOW_15M
             }
 
-            // 20m switcher must be in 2h service type
             _homeSwitchServiceTracker.postValue(HomeSwitchServiceTracker(
                 userId = userSession.userId,
                 whIdOrigin = whIdOrigin,
                 whIdDestination = whIdDestination,
-                is20mSwitcher = serviceType == ServiceType.NOW_2H,
+                isNow15 = serviceType == ServiceType.NOW_15M,
                 isImpressionTracker = isImpressionTracker
             ))
         }) { /* nothing to do */ }

@@ -152,7 +152,9 @@ class InteractiveSetupDialogFragment @Inject constructor(
             formView.setListener(object : GiveawayFormView.Listener {
                 override fun onExit(view: GiveawayFormView) {
                     analytic.onClickBackGiveaway(viewModel.channelId, viewModel.channelTitle)
-                    dismiss() }
+                    dismiss()
+                }
+
                 override fun onDone(view: GiveawayFormView, data: GiveawayFormView.Data) {
                     viewModel.submitAction(
                         PlayBroadcastAction.CreateGiveaway(
@@ -161,12 +163,17 @@ class InteractiveSetupDialogFragment @Inject constructor(
                         )
                     )
                 }
+
                 override fun onClickBackSetTimer() {
                     analytic.onclickBackSetTimerGiveAway(viewModel.channelId, viewModel.channelTitle)
                 }
 
                 override fun onClickContinue() {
                     analytic.onClickContinueGiveaway(viewModel.channelId, viewModel.channelTitle)
+                }
+
+                override fun getRemainingTimeInMillis(): Long {
+                    return viewModel.remainingDurationInMillis
                 }
             })
             formView

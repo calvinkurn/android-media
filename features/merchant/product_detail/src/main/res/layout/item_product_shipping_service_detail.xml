@@ -13,7 +13,7 @@
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         android:layout_marginTop="2dp"
         tools:text="• AnterAja" />
 
@@ -50,7 +50,7 @@
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/pdp_service_detail_name"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         tools:text="Estimasi tiba Besok" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -62,7 +62,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         tools:text="Rp39.000" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

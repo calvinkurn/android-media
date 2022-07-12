@@ -25,7 +25,7 @@ class AttachInvoiceViewModel @Inject constructor(
     fun loadInvoices(page: Int, messageId: String) {
         if (messageId.isEmpty()) return
         launchCatchError(block = {
-            val param = generateParams(msgId = messageId.toInt(), page = page)
+            val param = generateParams(msgId = messageId, page = page)
             val result = attachInvoiceUseCase(param)
             onSuccessGetInvoice(result)
         }, onError = {
@@ -33,7 +33,7 @@ class AttachInvoiceViewModel @Inject constructor(
         })
     }
 
-    private fun generateParams(msgId: Int, page: Int): ParamInvoice {
+    private fun generateParams(msgId: String, page: Int): ParamInvoice {
         return ParamInvoice(msgId, page)
     }
 

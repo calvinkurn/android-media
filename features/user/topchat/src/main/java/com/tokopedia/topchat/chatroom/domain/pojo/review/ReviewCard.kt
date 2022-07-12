@@ -10,9 +10,9 @@ data class ReviewCard(
         @SerializedName("product_name")
         val productName: String = "",
         @SerializedName("reputation_id")
-        val reputationId: Long = 0,
+        val reputationId: String = "0",
         @SerializedName("buyer_id")
-        val buyerId: Long = 0,
+        val buyerId: String = "0",
         @SerializedName("allow_review")
         val allowReview: Boolean = false,
         @SerializedName("is_reviewed")

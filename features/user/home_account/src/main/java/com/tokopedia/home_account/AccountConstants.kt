@@ -224,6 +224,7 @@ object AccountConstants {
 
     object REQUEST {
         const val REQUEST_ADD_PASSWORD = 100
+        const val REQUEST_LOCATION_PERMISSION = 888
     }
 
     object TDNBanner {
@@ -253,5 +254,9 @@ object AccountConstants {
         const val REKSADANA = "reksadana"
         const val EMAS = "emas"
         const val PAYLATER = "paylater"
+    }
+
+    object RollenceKey {
+        const val BIOMETRIC_ENTRY_POINT = "and_biom_entry_point"
     }
 }

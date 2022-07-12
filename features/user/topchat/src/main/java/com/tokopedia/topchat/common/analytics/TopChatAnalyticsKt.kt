@@ -39,7 +39,7 @@ object TopChatAnalyticsKt {
         itemBundle.putString(ITEM_ID, element.productId)
         itemBundle.putString(ITEM_NAME, element.productName)
         itemBundle.putString(ITEM_VARIANT, getValueOrEmpty(element.variants))
-        itemBundle.putDouble(PRICE, element.priceInt.toDouble())
+        itemBundle.putDouble(PRICE, element.priceNumber.toDouble())
         itemBundle.putInt(QUANTITY, element.minOrder)
         itemBundle.putString(SHOP_ID, chatData.headerModel.shopId.toString())
         itemBundle.putString(SHOP_NAME, chatData.shopName)

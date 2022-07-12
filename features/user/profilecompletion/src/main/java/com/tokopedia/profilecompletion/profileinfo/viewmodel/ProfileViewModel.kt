@@ -4,17 +4,18 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
+import com.tokopedia.profilecompletion.profileinfo.data.CheckUserFinancialAssets
 import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoError
 import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoUiModel
-import com.tokopedia.profilecompletion.profileinfo.usecase.ProfileFeedInfoUseCase
-import com.tokopedia.profilecompletion.profileinfo.usecase.ProfileInfoUseCase
-import com.tokopedia.profilecompletion.profileinfo.usecase.ProfileRoleUseCase
-import com.tokopedia.profilecompletion.profileinfo.usecase.SaveProfilePictureUseCase
+import com.tokopedia.profilecompletion.profileinfo.usecase.*
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -27,6 +28,7 @@ class ProfileViewModel @Inject constructor(
     private val profileFeedInfoUseCase: ProfileFeedInfoUseCase,
     private val uploader: UploaderUseCase,
     private val saveProfilePictureUseCase: SaveProfilePictureUseCase,
+    private val userFinancialAssetsUseCase: UserFinancialAssetsUseCase,
     private val userSession: UserSessionInterface,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
@@ -45,12 +47,15 @@ class ProfileViewModel @Inject constructor(
         mutableErrorMessage.value = ProfileInfoError.GeneralError(error)
     }
 
+    private val _userFinancialAssets = SingleLiveEvent<Result<CheckUserFinancialAssets>>()
+    val userFinancialAssets: LiveData<Result<CheckUserFinancialAssets>> get() = _userFinancialAssets
+
     fun getProfileInfo() {
-        launch (coroutineErrorHandler) {
+        launch(coroutineErrorHandler) {
             try {
                 val profileInfo = async { profileInfoUseCase(Unit) }
                 val profileRole = async { profileRoleUseCase(Unit) }
-                val profileFeed = async { profileFeedInfoUseCase(Unit)}
+                val profileFeed = async { profileFeedInfoUseCase(Unit) }
 
                 mutableProfileInfoUiData.value = ProfileInfoUiModel(
                     profileInfo.await().profileInfoData,
@@ -70,7 +75,8 @@ class ProfileViewModel @Inject constructor(
                 val param = uploader.createParams(filePath = image, sourceId = SOURCE_ID)
                 when (val result = uploader(param)) {
                     is UploadResult.Success -> saveProfilePicture(result.uploadId)
-                    else -> mutableErrorMessage.value = ProfileInfoError.ErrorSavePhoto((result as UploadResult.Error).message)
+                    else -> mutableErrorMessage.value =
+                        ProfileInfoError.ErrorSavePhoto((result as UploadResult.Error).message)
                 }
             } catch (e: Exception) {
                 mutableErrorMessage.value = ProfileInfoError.ErrorSavePhoto(e.message)
@@ -93,7 +99,8 @@ class ProfileViewModel @Inject constructor(
                     userSession.profilePicture = imgUrl
                     _saveImageProfileResponse.value = imgUrl
                 } else {
-                    mutableErrorMessage.value = ProfileInfoError.ErrorSavePhoto(res.data.errorMessage.first())
+                    mutableErrorMessage.value =
+                        ProfileInfoError.ErrorSavePhoto(res.data.errorMessage.first())
                 }
             } catch (e: Exception) {
                 mutableErrorMessage.value = ProfileInfoError.ErrorSavePhoto(e.message)
@@ -101,7 +108,16 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    fun checkFinancialAssets() {
+        launchCatchError(coroutineContext, {
+            val response = userFinancialAssetsUseCase(Unit)
+            _userFinancialAssets.value = Success(response.checkUserFinancialAssets)
+        }) {
+            _userFinancialAssets.value = Fail(it)
+        }
+    }
+
     companion object {
-        private val SOURCE_ID = "tPxBYm"
+        private const val SOURCE_ID = "tPxBYm"
     }
 }

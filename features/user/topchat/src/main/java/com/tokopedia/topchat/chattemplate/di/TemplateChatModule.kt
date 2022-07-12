@@ -23,7 +23,6 @@ import com.tokopedia.network.converter.StringResponseConverter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
-import com.tokopedia.topchat.common.chat.api.ChatApi
 import com.tokopedia.topchat.common.chat.api.ChatTemplateApi
 import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepositoryImpl
 import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepository
@@ -120,12 +119,6 @@ open class TemplateChatModule {
             .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
             .client(okHttpClient)
             .build()
-    }
-
-    @ActivityScope
-    @Provides
-    fun provideChatApi(@InboxQualifier retrofit: Retrofit): ChatApi {
-        return retrofit.create(ChatApi::class.java)
     }
 
     @ActivityScope
