@@ -450,7 +450,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                               String pageSource) {
         CheckoutRequest checkoutRequest = generateCheckoutRequest(
                 dataCheckoutRequests, shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0,
-                listShipmentCrossSellModel, leasingId
+                listShipmentCrossSellModel, leasingId,uploadPrescriptionUiModel.getPrescriptionIds()
         );
         Map<String, Object> eeDataLayer = generateCheckoutAnalyticsDataLayer(checkoutRequest, step, pageSource);
         if (eeDataLayer != null) {
@@ -742,7 +742,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     cartShipmentAddressFormData.getShowImageUpload(),
                     cartShipmentAddressFormData.getUploadPrescText(),
                     cartShipmentAddressFormData.getRightIconUrl(),
-                    cartShipmentAddressFormData.getLeftIconUrl()
+                    cartShipmentAddressFormData.getLeftIconUrl(),
+                    new ArrayList<>()
                     ));
         }
     }
