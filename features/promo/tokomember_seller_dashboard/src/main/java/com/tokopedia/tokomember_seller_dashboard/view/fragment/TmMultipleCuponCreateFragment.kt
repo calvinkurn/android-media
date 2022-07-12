@@ -690,11 +690,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
                 endDate.time = sdf.parse(manualEndTimeProgram + "00") ?: Date()
 
-                manualEndTimeProgram = if (endDate > maxProgramEndDate) {
-                    convertDateTimeRemoveTimeDiff(maxProgramEndDate.time)
-                } else {
-                    convertDateTimeRemoveTimeDiff(endDate.time)
-                }
+                manualEndTimeProgram = convertDateTimeRemoveTimeDiff(endDate.time)
             }
             else -> {
                 manualStartTimeProgram = timeWindow?.startTime ?: ""

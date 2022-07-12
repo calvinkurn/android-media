@@ -20,6 +20,7 @@ import com.tokopedia.media.loader.clearImage
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmProgramDetailCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_IS_SHOW_BS
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOW_TOAST
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberDashHomeViewpagerAdapter
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashHomeViewmodel
@@ -99,7 +100,7 @@ class TokomemberDashHomeMainFragment : BaseDaggerFragment() {
 
         homeViewPager.adapter = adapter
 
-        if(arguments?.getBoolean(BUNDLE_SHOW_TOAST) == false){
+        if(arguments?.getBoolean(BUNDLE_SHOW_TOAST) == false || arguments?.getBoolean(BUNDLE_IS_SHOW_BS) == false){
             homeViewPager.currentItem = 1
         }
 
