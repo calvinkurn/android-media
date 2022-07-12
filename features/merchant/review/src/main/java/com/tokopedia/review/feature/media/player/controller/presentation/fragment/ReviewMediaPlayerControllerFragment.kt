@@ -54,16 +54,11 @@ class ReviewMediaPlayerControllerFragment : BaseDaggerFragment(), CoroutineScope
     private val stringBuilder = StringBuilder()
     private val formatter = Formatter(stringBuilder, Locale.getDefault())
 
-    private val tvDurationView: Typography?
-        get() = view?.findViewById(com.google.android.exoplayer2.ui.R.id.exo_duration)
-    private val icMaximizeControl: IconUnify?
-        get() = view?.findViewById(R.id.review_media_gallery_maximize_control)
-    private val icMinimizeControl: IconUnify?
-        get() = view?.findViewById(R.id.review_media_gallery_minimize_control)
-    private val icVolumeMutedControl: IconUnify?
-        get() = view?.findViewById(R.id.review_media_gallery_volume_muted_control)
-    private val icVolumeUnMutedControl: IconUnify?
-        get() = view?.findViewById(R.id.review_media_gallery_volume_unmuted_control)
+    private var tvDurationView: Typography? = null
+    private var icMaximizeControl: IconUnify? = null
+    private var icMinimizeControl: IconUnify? = null
+    private var icVolumeMutedControl: IconUnify? = null
+    private var icVolumeUnMutedControl: IconUnify? = null
 
     private val reviewMediaPlayerControllerViewModel by lazy(LazyThreadSafetyMode.NONE) {
         ViewModelProvider(
@@ -100,6 +95,7 @@ class ReviewMediaPlayerControllerFragment : BaseDaggerFragment(), CoroutineScope
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        bindViews(view)
         setupLayout()
         initUiStateCollectors()
     }
@@ -115,6 +111,14 @@ class ReviewMediaPlayerControllerFragment : BaseDaggerFragment(), CoroutineScope
 
     override fun initInjector() {
         ReviewMediaPlayerControllerComponentInstance.getInstance(requireContext()).inject(this)
+    }
+
+    private fun bindViews(view: View) {
+        tvDurationView = view.findViewById(com.google.android.exoplayer2.ui.R.id.exo_duration)
+        icMaximizeControl = view.findViewById(R.id.review_media_gallery_maximize_control)
+        icMinimizeControl = view.findViewById(R.id.review_media_gallery_minimize_control)
+        icVolumeMutedControl = view.findViewById(R.id.review_media_gallery_volume_muted_control)
+        icVolumeUnMutedControl = view.findViewById(R.id.review_media_gallery_volume_unmuted_control)
     }
 
     private fun setupLayout() {
