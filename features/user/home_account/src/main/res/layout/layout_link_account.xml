@@ -37,7 +37,8 @@
         app:layout_constraintStart_toStartOf="@+id/tv_header_link_account"
         app:layout_constraintTop_toBottomOf="@+id/tv_header_link_account"
         app:typographyType="paragraph_3"
-        tools:text="Belum tersambung" />
+        tools:text="Belum tersambung"
+        android:layout_marginTop="@dimen/unify_space_2"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_linking_account"
@@ -45,6 +46,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/unify_space_16"
         app:typographyType="display_3"
+        app:typographyWeight="bold"
         android:textColor="@color/Unify_GN500"
         app:layout_constraintBottom_toBottomOf="@+id/tv_desc_link_account"
         app:layout_constraintEnd_toEndOf="parent"

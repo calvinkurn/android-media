@@ -60,8 +60,8 @@ import com.tokopedia.home_account.analytics.HomeAccountAnalytics
 import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.databinding.HomeAccountUserFragmentBinding
 import com.tokopedia.home_account.di.HomeAccountUserComponents
-import com.tokopedia.home_account.linkaccount.view.LinkAccountWebViewActivity
-import com.tokopedia.home_account.linkaccount.view.LinkAccountWebviewFragment
+import com.tokopedia.home_account.privacy_account.view.LinkAccountWebViewActivity
+import com.tokopedia.home_account.privacy_account.view.LinkAccountWebviewFragment
 import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.home_account.view.HomeAccountUserViewModel
 import com.tokopedia.home_account.view.activity.HomeAccountUserActivity
