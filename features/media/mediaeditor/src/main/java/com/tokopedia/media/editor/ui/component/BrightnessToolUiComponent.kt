@@ -16,7 +16,7 @@ class BrightnessToolUiComponent constructor(
     fun setupView(sliderInitValue: Float) {
         container().show()
 
-        brightnessSlider.setRangeSliderValue(0,200, sliderInitValue.toInt())
+        brightnessSlider.setRangeSliderValue(0,200, 1, sliderInitValue.toInt())
         brightnessSlider.listener = this
     }
 
