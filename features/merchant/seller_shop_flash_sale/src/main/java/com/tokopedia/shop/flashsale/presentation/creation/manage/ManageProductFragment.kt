@@ -320,7 +320,7 @@ class ManageProductFragment : BaseDaggerFragment() {
         binding?.apply {
             tickerErrorProductInfo.gone()
             cardIncompleteProductInfo.visible()
-            btnContinue.enable()
+            btnContinue.disable()
         }
     }
 
