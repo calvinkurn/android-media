@@ -1,6 +1,7 @@
 package com.tokopedia.wishlistcollection.view.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,6 +21,7 @@ class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
     private var actionListener: ActionListener? = null
     private var listTypeData = mutableListOf<WishlistCollectionTypeLayoutData>()
     private var isTickerCloseClicked = false
+    private var allCollectionView: View? = null
 
     companion object {
         const val LAYOUT_COLLECTION_TICKER = 0
@@ -32,6 +34,7 @@ class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
         fun onKebabMenuClicked()
         fun onCreateNewCollectionClicked()
         fun onCollectionItemClicked(id: String)
+        fun onCreateCollectionItemBind(allCollectionView: View, createCollectionView: View)
     }
 
     fun setActionListener(collectionWishlistFragment: WishlistCollectionFragment) {
@@ -79,9 +82,14 @@ class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
                 }
                 TYPE_COLLECTION_ITEM -> {
                     (holder as WishlistCollectionItemViewHolder).bind(element)
+                    allCollectionView = if (holder.isAllWishlist) holder.itemView else null
                 }
                 TYPE_COLLECTION_CREATE -> {
                     (holder as WishlistCollectionCreateItemViewHolder).bind(element)
+                    actionListener?.onCreateCollectionItemBind(
+                        allCollectionView ?: holder.itemView,
+                        holder.itemView
+                    )
                 }
             }
         }

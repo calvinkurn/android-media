@@ -15,6 +15,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -273,5 +275,36 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
         val detailCollection = "${ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL}?${ApplinkConstInternalPurchasePlatform.PATH_COLLECTION_ID}=$id"
         val intentCollectionDetail = RouteManager.getIntent(context, detailCollection)
         startActivity(intentCollectionDetail)
+    }
+
+    override fun onCreateCollectionItemBind(allCollectionView: View, createCollectionView: View) {
+        showWishlistCollectionCoachMark(allCollectionView, createCollectionView)
+    }
+
+    private fun showWishlistCollectionCoachMark(view1: View, view2: View) {
+        val coachMarkItem = ArrayList<CoachMark2Item>()
+        val coachMark = CoachMark2(requireContext())
+        coachMarkItem.add(
+            CoachMark2Item(
+                view1,
+                "",
+                getString(R.string.collection_coachmark_see_all_wishlist),
+                CoachMark2.POSITION_BOTTOM
+            )
+        )
+        coachMarkItem.add(
+            CoachMark2Item(
+                view2,
+                "",
+                getString(R.string.collection_coachmark_create_collection),
+                CoachMark2.POSITION_BOTTOM
+            )
+        )
+        coachMark.onFinishListener = {
+            showBottomSheetCreateNewCollection(childFragmentManager)
+        }
+        coachMark.stepButtonTextLastChild = getString(R.string.collection_coachmark_try_create_wishlist)
+        coachMark.stepPrev?.text = getString(R.string.collection_coachmark_back)
+        coachMark.showCoachMark(coachMarkItem, null)
     }
 }
