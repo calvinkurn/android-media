@@ -534,6 +534,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
         cartIdsStringBuilder.replace(cartIdsStringBuilder.lastIndexOf(","), cartIdsStringBuilder.lastIndexOf(",") + 1, "");
 
+        if(uploadPrescriptionUiModel != null && uploadPrescriptionUiModel.getShowImageUpload() != null
+                && uploadPrescriptionUiModel.getShowImageUpload()){
+            shipmentAdapter.addUploadPrescriptionUiDataModel(uploadPrescriptionUiModel);
+        }
+
         if (shipmentDonationModel != null) {
             if (!shipmentDonationModel.getDonation().getTitle().isEmpty() && shipmentDonationModel.getDonation().getNominal() != 0) {
                 shipmentAdapter.addShipmentDonationModel(shipmentDonationModel);
@@ -601,10 +606,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             delayScrollToFirstShop();
         }
 
-        if(uploadPrescriptionUiModel != null && uploadPrescriptionUiModel.getShowImageUpload() != null
-                && uploadPrescriptionUiModel.getShowImageUpload()){
-            shipmentAdapter.addUploadPrescriptionUiDataModel(uploadPrescriptionUiModel);
-        }
     }
 
     private ArrayList<Long> getCrossSellChildCategoryId(List<ShipmentCartItemModel> shipmentCartItemModelList) {
