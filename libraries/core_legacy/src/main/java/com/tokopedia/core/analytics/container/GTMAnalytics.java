@@ -1269,14 +1269,16 @@ public class GTMAnalytics extends ContextAnalytics {
             for (int i = 0, size = promotionList.size(); i < size; i++) {
                 Bundle bundlePromotion = ((Bundle) promotionList.get(i));
                 String itemId = bundlePromotion.getString(ITEM_ID);
+                Bundle newBundle = new Bundle();
+                copyBundleString(bundlePromotion, newBundle);
                 if (itemId != null) {
-                    bundlePromotion.putString(FirebaseAnalytics.Param.PROMOTION_ID, itemId);
+                    newBundle.putString(FirebaseAnalytics.Param.PROMOTION_ID, itemId);
                 }
                 String itemName = bundlePromotion.getString(ITEM_NAME);
                 if (itemName != null) {
-                    bundlePromotion.putString(FirebaseAnalytics.Param.PROMOTION_NAME, itemName);
+                    newBundle.putString(FirebaseAnalytics.Param.PROMOTION_NAME, itemName);
                 }
-                promotionsGA4.add(bundlePromotion);
+                promotionsGA4.add(newBundle);
             }
             Bundle ecommerceBundleGA4 = new Bundle();
             copyBundleString(oriBundle, ecommerceBundleGA4);
