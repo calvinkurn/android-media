@@ -129,7 +129,7 @@ object PayloadConverter {
         model.type = data.type
         model.pushPayloadExtra = PushPayloadExtra(
             isReviewNotif = data.isReviewNotif,
-            replyType = data.replyType
+            replyType = data.replyType ?: ""
         )
 
         setNotificationSound(model, data)
