@@ -19,7 +19,7 @@ object UserSessionAbTestPlatform {
     }
 }
 
-class DataStorePreference @Inject constructor(private val context: Context) {
+open class DataStorePreference @Inject constructor(private val context: Context) {
 
     private val dsPref: SharedPreferences by lazy {
         context.getSharedPreferences(
