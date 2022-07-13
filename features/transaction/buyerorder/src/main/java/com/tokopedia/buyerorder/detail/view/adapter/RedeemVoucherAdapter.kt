@@ -7,8 +7,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.databinding.LayoutScanQrCodeItemBinding
 import com.tokopedia.buyerorder.detail.data.RedeemVoucherModel
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
 
@@ -42,9 +40,7 @@ class RedeemVoucherAdapter( private val items:List<RedeemVoucherModel>): Recycle
             with(binding){
                 tvVoucherCode.text = data.voucherCode
                 tvPoweredBy.text = data.poweredBy
-                with(tvLabelPoweredBy) {
-                    if (data.poweredBy.isNullOrEmpty()) hide() else show()
-                }
+                tvLabelPoweredBy.showWithCondition(!data.poweredBy.isNullOrEmpty())
                 ivQrCode.loadImage(data.qrCodeUrl)
                 tvIsRedeem.showWithCondition(data.statusLabel.isNotEmpty())
                 tvCopyCode.showWithCondition(data.statusLabel.isEmpty())
