@@ -15,14 +15,13 @@
         android:background="@drawable/up_bg_shop"
         android:padding="@dimen/unify_space_8">
 
-        <com.tokopedia.unifycomponents.ImageUnify
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/img_item_shop_close"
             android:layout_width="@dimen/unify_space_12"
             android:layout_height="@dimen/unify_space_12"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/iconunify_close"
-            app:tint="@color/Unify_NN900" />
+            app:icon_name="CLOSE" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/img_item_shop_image"
