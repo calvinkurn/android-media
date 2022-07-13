@@ -960,9 +960,7 @@ class MainNavViewModel @Inject constructor(
                 val response = getTokopediaPlusUseCase(mapOf(
                     TokopediaPlusUseCase.PARAM_SOURCE to TokopediaPlusCons.SOURCE_GLOBAL_MENU
                 ))
-                val result = response.tokopediaPlus.apply {
-                    isShown = true
-                }
+                val result = response.tokopediaPlus
 
                 accountModel.setTokopediaPlus(
                     tokopediaPlusParam = TokopediaPlusParam(TokopediaPlusCons.SOURCE_GLOBAL_MENU, result),
