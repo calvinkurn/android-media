@@ -11,7 +11,7 @@
       "event": "clickShopPage",
       "eventAction": "click tab",
       "sessionIris": ".+",
-      "eventLabel":"click - (Product|Feed|Review|Home) Tab"
+      "eventLabel":"click - (Product|Feed|Review|Home|Etalase) Tab"
     }
   ]
 }

@@ -215,4 +215,9 @@ public interface SearchConstant {
         String INPUT_PARAMS = "input_params";
         String SAVE_LAST_FILTER_USE_CASE = "save_last_filter_use_case";
     }
+
+    interface ProductListType {
+        String VAR_LONG_IMG = "var_long_img";
+        String VAR_REPOSITION = "var_reposition";
+    }
 }
