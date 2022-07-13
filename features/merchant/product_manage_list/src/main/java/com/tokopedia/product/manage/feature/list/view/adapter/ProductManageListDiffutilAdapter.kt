@@ -45,15 +45,18 @@ class ProductManageListDiffutilAdapter(
     override fun hideLoading() {
         if(isLoading) {
             val items = getItems()
-            items.removeAt(lastIndex)
-            submitList(items)
+            items.lastIndex.takeIf { it != RecyclerView.NO_POSITION }?.let { lastIndex ->
+                items.removeAt(lastIndex)
+                submitList(items)
+            }
         }
     }
 
     override fun removeErrorNetwork() {
         val items = getItems()
-        items.remove(errorNetworkModel)
-        submitList(items)
+        if (items.remove(errorNetworkModel)) {
+            submitList(items)
+        }
     }
 
     override fun addElement(itemList: MutableList<out Visitable<Any>>?) {
