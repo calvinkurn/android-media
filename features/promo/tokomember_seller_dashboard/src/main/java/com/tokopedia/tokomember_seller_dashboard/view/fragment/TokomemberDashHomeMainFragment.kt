@@ -17,6 +17,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.media.loader.clearImage
+import com.tokopedia.tokomember_common_widget.util.ProgramActionType
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmProgramDetailCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
@@ -25,6 +26,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOW_TOAST
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberDashHomeViewpagerAdapter
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashHomeViewmodel
 import com.tokopedia.unifycomponents.TabsUnify
+import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
 class TokomemberDashHomeMainFragment : BaseDaggerFragment() {
@@ -33,6 +35,7 @@ class TokomemberDashHomeMainFragment : BaseDaggerFragment() {
     private lateinit var homeTabs: TabsUnify
     private lateinit var homeViewPager: ViewPager
     private lateinit var homeFragmentCallback: TmProgramDetailCallback
+    private var programActionType = -1
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -64,6 +67,10 @@ class TokomemberDashHomeMainFragment : BaseDaggerFragment() {
         homeHeader = view.findViewById(R.id.home_header)
         homeTabs = view.findViewById(R.id.home_tabs)
         homeViewPager = view.findViewById(R.id.home_viewpager)
+        programActionType = arguments?.getInt(BUNDLE_SHOW_TOAST)?:0
+        if (programActionType!=-1) {
+            setTabsAndShowToast()
+        }
 
         homeHeader.apply {
             title = "TokoMember"
@@ -100,15 +107,23 @@ class TokomemberDashHomeMainFragment : BaseDaggerFragment() {
 
         homeViewPager.adapter = adapter
 
-        if(arguments?.getBoolean(BUNDLE_SHOW_TOAST) == false || arguments?.getBoolean(BUNDLE_IS_SHOW_BS) == false){
-            homeViewPager.currentItem = 1
-        }
-
         homeTabs.getUnifyTabLayout().removeAllTabs()
         homeTabs.customTabMode = TabLayout.MODE_SCROLLABLE
         homeTabs.addNewTab("Home")
         homeTabs.addNewTab("Program")
         homeTabs.addNewTab("Kupon Tokomember")
+    }
+
+    private fun setTabsAndShowToast(){
+        homeViewPager.currentItem = 1
+        when(programActionType){
+            ProgramActionType.CREATE_BUAT -> {
+                view?.let { Toaster.build(it, "Yay! Program berhasil diperpanjang.", Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show() }
+            }
+            ProgramActionType.EXTEND ->{
+                view?.let { Toaster.build(it, " Yay, pengaturan TokoMember sudah dibuat. Kamu bisa cek progresnya di menu Home.", Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show() }
+            }
+        }
     }
 
     override fun getScreenName() = ""

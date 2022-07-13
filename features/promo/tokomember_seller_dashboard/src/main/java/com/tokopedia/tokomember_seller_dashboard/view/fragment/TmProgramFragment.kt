@@ -33,6 +33,7 @@ import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
 import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
 import com.tokopedia.tokomember_seller_dashboard.util.*
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.convertDateTime
+import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.getDayFromTimeWindow
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.getDayOfWeekID
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDatePreview
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
@@ -385,9 +386,10 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
             )
             membershipGetProgramForm?.programForm?.timeWindow?.startTime = convertDateTime(currentDate.time)
         }else {
+            val day = getDayFromTimeWindow(membershipGetProgramForm?.programForm?.timeWindow?.startTime?:"")
             membershipGetProgramForm?.programForm?.timeWindow?.startTime?.let {
                 selectedTime = it
-                textFieldDuration.editText.setText(setDatePreview(selectedTime))
+                textFieldDuration.editText.setText("$day, ${setDatePreview(selectedTime)}")
             }
         }
         membershipGetProgramForm?.timePeriodList?.forEach {

@@ -55,10 +55,16 @@ object ProgramUpdateMapper {
             this.getOrNull(0)?.name = "Premium"
             this.getOrNull(1)?.name = "VIP"
         }
+
+        val programName = if (membershipGetProgramForm?.programForm?.name?.isEmpty() == true) {
+            "Program Name"
+        } else {
+            membershipGetProgramForm?.programForm?.name
+        }
         val programUpdateResponse = ProgramUpdateDataInput(
             id = membershipGetProgramForm?.programForm?.id.toIntSafely(),
             cardID = membershipGetProgramForm?.programForm?.cardID,
-            name = membershipGetProgramForm?.programForm?.name,
+            name = programName,
             tierLevels = tierLevels,
             programAttributes = programAttributes,
             actionType = actionType,
