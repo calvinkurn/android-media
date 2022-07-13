@@ -1,22 +1,31 @@
 package com.tokopedia.productcard.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Outline
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.ShapeDrawable
+import android.view.Gravity
 import android.view.TouchDelegate
 import android.view.View
+import android.view.ViewOutlineProvider
 import android.view.ViewStub
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.Space
 import android.widget.TextView
+import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.BlendModeColorFilterCompat
+import androidx.core.graphics.BlendModeCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -28,9 +37,11 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
-import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.resources.isDarkMode
+import com.tokopedia.video_widget.VideoPlayerView
+import timber.log.Timber
 import com.tokopedia.unifyprinciples.R.color as unifyRColor
 
 internal val View.isVisible: Boolean
@@ -239,23 +250,23 @@ private fun String?.toUnifyTextColor(context: Context): Int {
         when (this) {
             TEXT_DARK_ORANGE -> ContextCompat.getColor(
                 context,
-                unifyRColor.Unify_Y400
+                unifyRColor.Unify_YN500
             )
             TEXT_DARK_RED -> ContextCompat.getColor(
                 context,
-                unifyRColor.Unify_R500
+                unifyRColor.Unify_RN500
             )
             TEXT_DARK_GREY -> ContextCompat.getColor(
                 context,
-                unifyRColor.Unify_N700_68
+                unifyRColor.Unify_NN600
             )
             TEXT_LIGHT_GREY -> ContextCompat.getColor(
                 context,
-                unifyRColor.Unify_N700_44
+                unifyRColor.Unify_NN100
             )
             TEXT_GREEN -> ContextCompat.getColor(
                 context,
-                unifyRColor.Unify_G500
+                unifyRColor.Unify_GN500
             )
             else -> Color.parseColor(this)
         }
@@ -332,7 +343,7 @@ private fun Typography.initLabelBestSeller(labelBestSellerModel: ProductCardMode
 private fun Typography.showLabelBestSeller(labelBestSellerModel: ProductCardModel.LabelGroup) {
     show()
 
-    val defaultColor = "#E1AA1D"
+    val defaultColor = ContextCompat.getColor(context, unifyRColor.Unify_YN400)
     background.overrideColor(labelBestSellerModel.type, defaultColor)
     text = labelBestSellerModel.title
 }
@@ -387,11 +398,11 @@ private fun Typography.showLabelCategoryBottom(categoryBottomModel: ProductCardM
     setTextColor(categoryBottomModel.type.toUnifyTextColor(context))
 }
 
-internal fun Drawable.overrideColor(hexColor: String, defaultColor: String) {
+internal fun Drawable.overrideColor(hexColor: String, defaultColor: Int) {
     when (this) {
-        is GradientDrawable -> setColor(safeParseColor(hexColor, Color.parseColor(defaultColor)))
-        is ShapeDrawable -> paint.color = safeParseColor(hexColor, Color.parseColor(defaultColor))
-        is ColorDrawable -> color = safeParseColor(hexColor, Color.parseColor(defaultColor))
+        is GradientDrawable -> setColor(safeParseColor(hexColor, defaultColor))
+        is ShapeDrawable -> paint.color = safeParseColor(hexColor, defaultColor)
+        is ColorDrawable -> color = safeParseColor(hexColor, defaultColor)
     }
 }
 
@@ -464,4 +475,124 @@ fun <T: View?> View.showWithCondition(viewStubId: ViewStubId, viewId: ViewId, is
     } else {
         findViewById<T>(viewId.id)?.gone()
     }
+}
+
+internal fun setupImageRatio(
+    constraintLayoutProductCard: ConstraintLayout?,
+    imageProduct: ImageView?,
+    mediaAnchorProduct: Space?,
+    videoProduct: VideoPlayerView?,
+    ratio: String,
+) {
+    constraintLayoutProductCard.applyConstraintSet {
+        imageProduct?.id?.let { id ->
+            it.setDimensionRatio(id, ratio)
+        }
+        mediaAnchorProduct?.id?.let { id ->
+            it.setDimensionRatio(id, ratio)
+        }
+        videoProduct?.id?.let { id ->
+            it.setDimensionRatio(id, ratio)
+        }
+    }
+}
+
+internal fun renderLabelReposition(
+    isShow: Boolean,
+    labelRepositionBackground: ImageView?,
+    labelReposition: Typography?,
+    labelGroup: ProductCardModel.LabelGroup?,
+) {
+    if (isShow) {
+        showRepositionLabel(
+            labelRepositionBackground,
+            labelReposition,
+            labelGroup,
+        )
+    } else {
+        labelReposition?.hide()
+        labelRepositionBackground?.hide()
+    }
+}
+
+private fun showRepositionLabel(
+    labelBackground: ImageView?,
+    textViewLabel: Typography?,
+    labelGroup: ProductCardModel.LabelGroup?,
+) {
+    if (labelGroup != null) {
+        textViewLabel.shouldShowWithAction(labelGroup.title.isNotEmpty()) {
+            it.text = labelGroup.title
+
+            val context = it.context
+            it.setTextColor(labelGroup.toRepositionLabelTextColor(context))
+        }
+
+        labelBackground.shouldShowWithAction(labelGroup.title.isNotEmpty()) {
+            val labelBackgroundColor = labelGroup.toRepositionLabelBackground(it.context)
+            it.background?.colorFilter =
+                BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
+                    labelBackgroundColor,
+                    BlendModeCompat.SRC_ATOP
+                )
+        }
+    } else {
+        textViewLabel?.hide()
+        labelBackground?.hide()
+    }
+}
+
+@ColorInt
+private fun ProductCardModel.LabelGroup.toRepositionLabelTextColor(context: Context?): Int {
+    if (context == null) return 0
+
+    return try {
+        val staticWhiteColor = ContextCompat.getColor(
+            context,
+            unifyRColor.Unify_Static_White
+        )
+        if (isGimmick()) type.toUnifyTextColor(context)
+        else staticWhiteColor
+    } catch (throwable: Throwable) {
+        Timber.e(throwable)
+        ContextCompat.getColor(
+            context,
+            unifyRColor.Unify_Static_White
+        )
+    }
+}
+
+@ColorInt
+private fun ProductCardModel.LabelGroup.toRepositionLabelBackground(context: Context?): Int {
+    if (context == null) return 0
+
+    return try {
+        val whiteColor = ContextCompat.getColor(
+            context,
+            unifyRColor.Unify_NN0
+        )
+        if (isGimmick()) whiteColor
+        else type.toUnifyTextColor(context)
+    } catch (throwable: Throwable) {
+        Timber.e(throwable)
+        ContextCompat.getColor(
+            context,
+            unifyRColor.Unify_NN0
+        )
+    }
+}
+
+internal fun createColorSampleDrawable(context: Context, colorString: String): GradientDrawable {
+    val gradientDrawable = GradientDrawable()
+    val strokeWidth = 1.toPx()
+
+    gradientDrawable.shape = GradientDrawable.OVAL
+    gradientDrawable.cornerRadii = floatArrayOf(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f)
+    gradientDrawable.setStroke(
+        strokeWidth,
+        ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN200),
+    )
+    gradientDrawable.setColor(com.tokopedia.productcard.safeParseColor(colorString))
+
+    return gradientDrawable
 }

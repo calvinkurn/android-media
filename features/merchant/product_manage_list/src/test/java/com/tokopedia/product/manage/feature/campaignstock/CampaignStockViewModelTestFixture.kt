@@ -13,6 +13,7 @@ import com.tokopedia.product.manage.feature.campaignstock.ui.viewmodel.CampaignS
 import com.tokopedia.product.manage.common.feature.variant.domain.EditProductVariantUseCase
 import com.tokopedia.product.manage.common.feature.variant.domain.GetProductVariantUseCase
 import com.tokopedia.shop.common.data.source.cloud.model.MaxStockThresholdResponse
+import com.tokopedia.product.manage.feature.list.view.datasource.TickerStaticDataProvider
 import com.tokopedia.shop.common.domain.interactor.GetAdminInfoShopLocationUseCase
 import com.tokopedia.shop.common.domain.interactor.GetMaxStockThresholdUseCase
 import com.tokopedia.shop.common.domain.interactor.UpdateProductStockWarehouseUseCase
@@ -60,6 +61,9 @@ open class CampaignStockViewModelTestFixture {
     lateinit var getMaxStockThresholdUseCase: GetMaxStockThresholdUseCase
 
     @RelaxedMockK
+    lateinit var tickerStaticDataProvider: TickerStaticDataProvider
+
+    @RelaxedMockK
     lateinit var userSession: UserSessionInterface
 
     @RelaxedMockK
@@ -81,7 +85,8 @@ open class CampaignStockViewModelTestFixture {
             getAdminInfoShopLocationUseCase,
             getMaxStockThresholdUseCase,
             userSession,
-            CoroutineTestDispatchersProvider
+            CoroutineTestDispatchersProvider,
+            tickerStaticDataProvider
         ).also {
             it.getStockAllocationData.observeForever(getStockAllocationLiveDataObserver)
         }

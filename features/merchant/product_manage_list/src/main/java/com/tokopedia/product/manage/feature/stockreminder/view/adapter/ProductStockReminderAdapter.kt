@@ -127,7 +127,7 @@ class ProductStockReminderAdapter(
             }
         }
 
-        fun validateMinMaxStock(stock: Int, maxStock: Int?) {
+        private fun validateMinMaxStock(stock: Int, maxStock: Int?) {
             val maxStockReminder = maxStock ?: MAXIMUM_STOCK_REMINDER
             when {
                 stock < MINIMUM_STOCK_REMINDER -> {

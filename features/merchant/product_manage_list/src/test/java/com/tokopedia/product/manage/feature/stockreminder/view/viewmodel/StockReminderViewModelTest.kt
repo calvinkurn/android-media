@@ -41,7 +41,7 @@ class StockReminderViewModelTest : StockReminderViewModelTestFixture() {
             val shopId = "1011"
 
             val productWareHouse =
-                ProductWareHouse(productId, wareHouseId, stock, price, threshold, shopId)
+                ProductWareHouse(productId, wareHouseId, stock, price.toString(), threshold, shopId)
             val product = GetProduct(productId, listOf(productWareHouse))
             val data = listOf(product)
             val dataWrapper = GetDataWrapper(data)

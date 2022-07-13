@@ -14,6 +14,7 @@ object ReadReviewTrackingConstants {
     const val KEY_POSITION = "position"
     const val KEY_SHOP_ID = "shopId"
     const val KEY_PROMO_CLICK = "promoClick"
+    const val KEY_TRACKER_ID = "trackerId"
 
     const val BUSINESS_UNIT = "product detail page"
     const val PHYSICAL_GOODS = "physical goods"
@@ -72,4 +73,8 @@ object ReadReviewTrackingConstants {
     const val VARIANT = "variant"
     const val PRICE = "price"
     const val NONE = "none"
+
+    const val FILTER_NAME_SORT = "sort"
+
+    const val TRACKER_ID_CLICK_FILTER_CHIPS = "31902"
 }

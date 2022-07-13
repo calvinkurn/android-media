@@ -111,7 +111,7 @@
       "shopId": ".+",
       "shopType": ".+",
       "event": "clickShopPage",
-      "eventAction": "click (product|feed|review|home) tab",
+      "eventAction": "click (product|feed|review|home|etalase) tab",
       "sessionIris": ".+",
       "eventLabel":""
     },

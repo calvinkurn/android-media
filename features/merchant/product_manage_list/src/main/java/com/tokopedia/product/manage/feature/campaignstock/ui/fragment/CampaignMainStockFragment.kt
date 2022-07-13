@@ -248,6 +248,7 @@ class CampaignMainStockFragment : BaseListFragment<Visitable<CampaignStockTypeFa
     }
 
     private fun onOngoingPromotionClicked(campaignTypeList: List<ProductCampaignType>)  {
+        if (!isAdded) return
         showOngoingPromotionBottomSheet(campaignTypeList)
     }
 

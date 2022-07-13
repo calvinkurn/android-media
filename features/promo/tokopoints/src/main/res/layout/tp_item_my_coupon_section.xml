@@ -38,8 +38,8 @@
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/img_time"
-                    android:layout_width="@dimen/dp_22"
-                    android:layout_height="@dimen/dp_22"
+                    android:layout_width="@dimen/gami_core_floating_egg_dp_22"
+                    android:layout_height="@dimen/gami_core_floating_egg_dp_22"
                     android:layout_marginStart="6dp"
                     android:layout_marginLeft="6dp"
                     app:layout_constraintBottom_toBottomOf="parent"
