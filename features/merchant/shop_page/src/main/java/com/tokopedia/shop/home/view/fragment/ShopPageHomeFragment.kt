@@ -243,9 +243,9 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
     var shopName: String = ""
     var shopAttribution: String = ""
     var shopRef: String = ""
+    var isThematicWidgetShown: Boolean = false
     private var productListName: String = ""
     private var decodeExtParam: String = ""
-    private var isThematicWidgetShown: Boolean = false
     private var sortId
         get() = shopProductFilterParameter?.getSortId().orEmpty()
         set(value) {
@@ -268,7 +268,7 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
         get() = viewModel?.isLogin ?: false
     val isOwner: Boolean
         get() = ShopUtil.isMyShop(shopId, viewModel?.userSessionShopId ?: "")
-    private var shopPageHomeLayoutUiModel: ShopPageHomeWidgetLayoutUiModel? = null
+    protected var shopPageHomeLayoutUiModel: ShopPageHomeWidgetLayoutUiModel? = null
     private val customDimensionShopPage: CustomDimensionShopPage by lazy {
         CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
     }
@@ -1320,7 +1320,7 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
         }
     }
 
-    private fun getMvcWidgetData() {
+    protected fun getMvcWidgetData() {
         shopHomeAdapter.getMvcWidgetUiModel()?.let {
             viewModel?.getMerchantVoucherCoupon(shopId, context, it)
         }
@@ -1345,7 +1345,7 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
         }
     }
 
-    private fun isWidgetMvc(data: ShopPageWidgetLayoutUiModel): Boolean {
+    protected fun isWidgetMvc(data: ShopPageWidgetLayoutUiModel): Boolean {
         return data.widgetType == PROMO && data.widgetName == VOUCHER_STATIC
     }
 

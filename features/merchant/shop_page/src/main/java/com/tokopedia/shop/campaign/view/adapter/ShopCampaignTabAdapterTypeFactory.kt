@@ -1,14 +1,38 @@
 package com.tokopedia.shop.campaign.view.adapter
 
+import android.view.View
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
+import com.tokopedia.shop.campaign.WidgetName.FLASH_SALE_TOKO
+import com.tokopedia.shop.campaign.WidgetName.NEW_PRODUCT_LAUNCH_CAMPAIGN
+import com.tokopedia.shop.campaign.WidgetName.PRODUCT_BUNDLE_MULTIPLE
+import com.tokopedia.shop.campaign.WidgetName.PRODUCT_BUNDLE_SINGLE
+import com.tokopedia.shop.campaign.WidgetName.VOUCHER_STATIC
+import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignFlashSaleViewHolder
+import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignNplPlaceholderViewHolder
+import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignNplViewHolder
+import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignProductBundleParentWidgetViewHolder
+import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignThematicWidgetLoadingStateViewHolder
+import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignThematicWidgetViewHolder
+import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignVoucherViewHolder
 import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
 import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleListener
 import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleListener
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductListSellerEmptyListener
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVoucherViewHolder
-import com.tokopedia.shop.home.view.listener.*
+import com.tokopedia.shop.home.view.listener.ShopHomeCampaignNplWidgetListener
+import com.tokopedia.shop.home.view.listener.ShopHomeCardDonationListener
+import com.tokopedia.shop.home.view.listener.ShopHomeCarouselProductListener
+import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
+import com.tokopedia.shop.home.view.listener.ShopHomeEndlessProductListener
+import com.tokopedia.shop.home.view.listener.ShopHomeFlashSaleWidgetListener
+import com.tokopedia.shop.home.view.listener.ShopHomePlayWidgetListener
+import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseListWidgetListener
+import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
+import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
 import com.tokopedia.shop_widget.thematicwidget.viewholder.ThematicWidgetViewHolder
 
 class ShopCampaignTabAdapterTypeFactory(
@@ -49,4 +73,45 @@ class ShopCampaignTabAdapterTypeFactory(
     shopHomeProductListSellerEmptyListener
 ) {
 
+    override fun type(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
+        return when (baseShopHomeWidgetUiModel.name) {
+            VOUCHER_STATIC -> ShopCampaignVoucherViewHolder.LAYOUT
+            FLASH_SALE_TOKO -> ShopCampaignFlashSaleViewHolder.LAYOUT
+            NEW_PRODUCT_LAUNCH_CAMPAIGN -> getShopHomeNplCampaignViewHolder(baseShopHomeWidgetUiModel)
+            PRODUCT_BUNDLE_SINGLE, PRODUCT_BUNDLE_MULTIPLE -> ShopCampaignProductBundleParentWidgetViewHolder.LAYOUT
+            else -> HideViewHolder.LAYOUT
+        }
+    }
+
+    override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
+        val viewHolder = when (type) {
+            ShopCampaignVoucherViewHolder.LAYOUT -> ShopCampaignVoucherViewHolder(parent, onMerchantVoucherListWidgetListener)
+            ShopCampaignFlashSaleViewHolder.LAYOUT -> ShopCampaignFlashSaleViewHolder(parent, shopHomeFlashSaleWidgetListener)
+            ShopCampaignNplViewHolder.LAYOUT -> ShopCampaignNplViewHolder(parent, shopHomeCampaignNplWidgetListener)
+            ShopCampaignNplPlaceholderViewHolder.LAYOUT -> ShopCampaignNplPlaceholderViewHolder(parent)
+            ShopCampaignThematicWidgetViewHolder.LAYOUT -> ShopCampaignThematicWidgetViewHolder(parent, thematicWidgetListener)
+            ShopCampaignThematicWidgetLoadingStateViewHolder.LAYOUT -> ShopCampaignThematicWidgetLoadingStateViewHolder(parent)
+            ShopCampaignProductBundleParentWidgetViewHolder.LAYOUT -> ShopCampaignProductBundleParentWidgetViewHolder(
+                parent,
+                multipleProductBundleListener,
+                singleProductBundleListener
+            )
+            else -> return super.createViewHolder(parent, type)
+        }
+        return viewHolder
+    }
+
+    override fun getShopHomeNplCampaignViewHolder(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
+        return if(isShowHomeWidgetPlaceHolder(baseShopHomeWidgetUiModel))
+            ShopCampaignNplPlaceholderViewHolder.LAYOUT
+        else
+            ShopCampaignNplViewHolder.LAYOUT
+    }
+
+    override fun type(uiModel: ThematicWidgetUiModel): Int {
+        return if(isShowThematicWidgetPlaceHolder(uiModel))
+            ShopCampaignThematicWidgetLoadingStateViewHolder.LAYOUT
+        else
+            ShopCampaignThematicWidgetViewHolder.LAYOUT
+    }
 }

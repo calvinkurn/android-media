@@ -162,6 +162,11 @@
     <string name="shop_page_label_see_all">Lihat Semua</string>
     <string name="shop_page_label_oke">Oke</string>
 
+    <!-- Thematic Widget -->
+    <string name="thematic_widget_see_all">Lihat Semua</string>
+    <string name="thematic_widget_subtitle">Berakhir dalam</string>
+    <string name="thematic_widget_see_all_desc">Masih banyak barang lainnya, lho!</string>
+
     <!-- Product Bundling Widget -->
     <string name="shop_page_product_bundle_success_atc_text">Paket berhasil dimasukkan ke keranjang belanja</string>
     <string name="shop_page_product_bundle_failed_atc_text_for_shop_owner">Oops, kamu nggak bisa menambahkan barang jualanmu ke keranjang.</string>

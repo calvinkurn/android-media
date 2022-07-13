@@ -26,21 +26,22 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartBundleModel
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
-import com.tokopedia.shop.campaign.util.mapper.ShopPageCampaignMapper
 import com.tokopedia.shop.campaign.view.adapter.ShopCampaignTabAdapter
 import com.tokopedia.shop.campaign.view.adapter.ShopCampaignTabAdapterTypeFactory
-import com.tokopedia.shop.common.constant.*
+import com.tokopedia.shop.common.constant.ShopCommonExtraConstant
 import com.tokopedia.shop.common.data.model.ShopPageWidgetLayoutUiModel
-import com.tokopedia.shop.common.data.model.WidgetIdList
-import com.tokopedia.shop.common.util.*
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
@@ -51,8 +52,17 @@ import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.bottomsheet.ShopHomeFlashSaleTncBottomSheet
 import com.tokopedia.shop.home.view.bottomsheet.ShopHomeNplCampaignTncBottomSheet
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
-import com.tokopedia.shop.home.view.listener.*
-import com.tokopedia.shop.home.view.model.*
+import com.tokopedia.shop.home.view.model.BannerType
+import com.tokopedia.shop.home.view.model.CheckCampaignNotifyMeUiModel
+import com.tokopedia.shop.home.view.model.GetCampaignNotifyMeUiModel
+import com.tokopedia.shop.home.view.model.NotifyMeAction
+import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeFlashSaleUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
+import com.tokopedia.shop.home.view.model.ShopPageHomeWidgetLayoutUiModel
+import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
 import com.tokopedia.shop.pageheader.presentation.fragment.NewShopPageFragment
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
@@ -110,7 +120,6 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
         }
     }
 
-    private var isThematicWidgetShown: Boolean = false
     private var recyclerViewTopPadding = 0
     private var isClickToScrollToTop = false
     private var latestCompletelyVisibleItemIndex = -1
@@ -172,6 +181,9 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
         recyclerViewTopPadding = getRecyclerView(view)?.paddingTop ?: 0
         globalErrorShopPage?.hide()
         shopCampaignTabAdapter.isOwner = isOwner
+        shopPageHomeLayoutUiModel?.let {
+            setShopHomeWidgetLayoutData(it)
+        }
         setWidgetLayoutPlaceholder()
     }
 
@@ -194,7 +206,6 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
         topView = viewBinding?.topView
         centerView = viewBinding?.centerView
         bottomView = viewBinding?.bottomView
-
     }
 
     override fun onSuccessGetShopHomeWidgetContentData(mapWidgetContentData: Map<Pair<String, String>, Visitable<*>?>) {
@@ -251,6 +262,444 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
     override fun observeShopProductFilterParameterSharedViewModel() {}
 
     override fun observeShopChangeProductGridSharedViewModel() {}
+
+    // region mvc widget listener
+    override fun onVoucherImpression(model: ShopHomeVoucherUiModel, position: Int) {
+        // TODO: 12/07/22 Implement mvc voucher tracker
+    }
+
+    override fun onVoucherReloaded() {
+        getMvcWidgetData()
+    }
+
+    override fun onVoucherTokoMemberInformationImpression(model: ShopHomeVoucherUiModel, position: Int) {
+        // TODO: 12/07/22 Implement mvc voucher tracker
+    }
+    // endregion
+
+    // region Product bundle multiple widget
+    override fun addMultipleBundleToCart(
+        selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
+        bundleListSize: Int,
+        productDetails: List<ShopHomeBundleProductUiModel>,
+        bundleName: String,
+        widgetLayout: ShopHomeWidgetLayout
+    ) {
+        if (isOwner) {
+            // disable owner add their own bundle to cart
+            showErrorToast(getString(R.string.shop_page_product_bundle_failed_atc_text_for_shop_owner))
+        } else {
+            if (selectedMultipleBundle.isProductsHaveVariant) {
+                // go to bundling selection page
+                goToBundlingSelectionPage(selectedMultipleBundle.bundleId)
+            } else {
+                // atc bundle directly from shop page home
+                val widgetLayoutParams = ShopPageWidgetLayoutUiModel(
+                    widgetId = widgetLayout.widgetId,
+                    widgetMasterId = widgetLayout.widgetMasterId,
+                    widgetType = widgetLayout.widgetType,
+                    widgetName = widgetLayout.widgetName
+                )
+                viewModel?.addBundleToCart(
+                    shopId = shopId,
+                    userId = userId,
+                    bundleId = selectedMultipleBundle.bundleId,
+                    productDetails = productDetails,
+                    onFinishAddToCart = { handleOnFinishAtcBundle(it, bundleListSize, widgetLayoutParams) },
+                    onErrorAddBundleToCart = { handleOnErrorAtcBundle(it) },
+                    productQuantity = selectedMultipleBundle.minOrder
+                )
+            }
+        }
+        // TODO: 12/07/22 Implement atc tracker bundle multiple
+
+    }
+
+    override fun impressionProductBundleMultiple(
+        selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
+        bundleName: String,
+        bundlePosition: Int
+    ) {
+        // TODO: 12/07/22 Implement multiple bundle impression tracker
+    }
+
+    override fun onMultipleBundleProductClicked(
+        selectedProduct: ShopHomeBundleProductUiModel,
+        selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
+        bundleName: String,
+        bundlePosition: Int
+    ) {
+        // TODO: 12/07/22 Implement multiple bundle tracker
+
+        goToPDP(selectedProduct.productId)
+    }
+    // endregion
+
+    // region Product bundle single widget
+    override fun onSingleBundleProductClicked(
+        selectedProduct: ShopHomeBundleProductUiModel,
+        selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
+        bundleName: String,
+        bundlePosition: Int
+    ) {
+        // TODO: 12/07/22 Implement single bundle product clicked tracker
+
+        goToPDP(selectedProduct.productId)
+    }
+
+    override fun addSingleBundleToCart(
+        selectedBundle: ShopHomeProductBundleDetailUiModel,
+        bundleListSize: Int,
+        bundleProducts: ShopHomeBundleProductUiModel,
+        bundleName: String,
+        widgetLayout: ShopHomeWidgetLayout
+    ) {
+        if (isOwner) {
+            // disable owner add their own bundle to cart
+            showErrorToast(getString(R.string.shop_page_product_bundle_failed_atc_text_for_shop_owner))
+        } else {
+            if (selectedBundle.isProductsHaveVariant) {
+                // go to bundling selection page
+                goToBundlingSelectionPage(selectedBundle.bundleId)
+            } else {
+                // atc bundle directly from shop page home
+                val widgetLayoutParams = ShopPageWidgetLayoutUiModel(
+                    widgetId = widgetLayout.widgetId,
+                    widgetMasterId = widgetLayout.widgetMasterId,
+                    widgetType = widgetLayout.widgetType,
+                    widgetName = widgetLayout.widgetName
+                )
+                viewModel?.addBundleToCart(
+                    shopId = shopId,
+                    userId = userId,
+                    bundleId = selectedBundle.bundleId,
+                    productDetails = listOf(bundleProducts),
+                    onFinishAddToCart = { handleOnFinishAtcBundle(it, bundleListSize, widgetLayoutParams) },
+                    onErrorAddBundleToCart = { handleOnErrorAtcBundle(it) },
+                    productQuantity = selectedBundle.minOrder
+                )
+            }
+        }
+
+        // TODO: 12/07/22 Implement atc bundle single tracker
+    }
+
+    override fun onTrackSingleVariantChange(selectedProduct: ShopHomeBundleProductUiModel, selectedSingleBundle: ShopHomeProductBundleDetailUiModel, bundleName: String) {
+        // TODO: 12/07/22 Implement variant change single bundle tracker
+    }
+
+    override fun impressionProductBundleSingle(
+        selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
+        selectedProduct: ShopHomeBundleProductUiModel,
+        bundleName: String,
+        bundlePosition: Int
+    ) {
+        // TODO: 12/07/22 Implement impression product bundle single
+    }
+    // endregion
+
+    // region flash sale toko widget
+    override fun onClickTncFlashSaleWidget(model: ShopHomeFlashSaleUiModel) {
+        model.data?.firstOrNull()?.let {
+            shopPageHomeTracking.onClickTnCButtonFlashSaleWidget(
+                campaignId = it.campaignId,
+                shopId = shopId,
+                userId = userId,
+                isOwner = isOwner
+            )
+            showFlashTncSaleBottomSheet(it.campaignId)
+        }
+    }
+
+    override fun onClickSeeAllFlashSaleWidget(model: ShopHomeFlashSaleUiModel) {
+        context?.run {
+            if (shopId.isNotBlank() && model.header.ctaLink.isNotBlank()) {
+                model.data?.firstOrNull()?.let { flashSaleItem ->
+                    shopPageHomeTracking.onClickSeeAllButtonFlashSaleWidget(
+                        statusCampaign = flashSaleItem.statusCampaign,
+                        shopId = shopId,
+                        userId = userId,
+                        isOwner = isOwner
+                    )
+                }
+                RouteManager.route(this, model.header.ctaLink)
+            }
+        }
+    }
+
+    override fun onClickFlashSaleReminder(model: ShopHomeFlashSaleUiModel) {
+        viewModel?.let {
+            val campaignId = model.data?.firstOrNull()?.campaignId.orEmpty()
+            if (it.isLogin) {
+                handleFlashSaleClickReminder(model)
+            } else {
+                setFlashSaleRemindMeClickedCampaignId(campaignId)
+                redirectToLoginPage()
+            }
+            shopPageHomeTracking.onClickReminderButtonFlashSaleWidget(
+                campaignId = campaignId,
+                shopId = shopId,
+                userId = userId,
+                isOwner = isOwner
+            )
+        }
+    }
+
+    override fun onTimerFinished(model: ShopHomeFlashSaleUiModel) {
+        shopCampaignTabAdapter.removeWidget(model)
+        endlessRecyclerViewScrollListener.resetState()
+        shopCampaignTabAdapter.removeProductList()
+        shopCampaignTabAdapter.showLoading()
+        viewModel?.getShopPageHomeWidgetLayoutData(shopId, extParam)
+        scrollToTop()
+    }
+
+    override fun onFlashSaleProductClicked(model: ShopHomeProductUiModel) {
+        goToPDP(model.id ?: "")
+    }
+
+    override fun onFlashSaleWidgetImpressed(model: ShopHomeFlashSaleUiModel, position: Int) {
+        model.data?.firstOrNull()?.let { itemFlashSale ->
+            val campaignId = itemFlashSale.campaignId
+            val statusCampaign = itemFlashSale.statusCampaign
+            shopPageHomeTracking.impressionCampaignFlashSaleWidget(
+                campaignId = campaignId,
+                statusCampaign = statusCampaign,
+                shopId = shopId,
+                userId = userId,
+                position = position,
+                isOwner = isOwner
+            )
+        }
+    }
+
+    override fun onPlaceHolderClickSeeAll(model: ShopHomeFlashSaleUiModel) {
+        context?.run {
+            if (shopId.isNotBlank() && model.header.ctaLink.isNotBlank()) {
+                RouteManager.route(this, model.header.ctaLink)
+            }
+        }
+    }
+    // endregion
+
+    // region npl widget
+    override fun onCampaignCarouselProductItemClicked(
+        parentPosition: Int,
+        itemPosition: Int,
+        shopHomeNewProductLaunchCampaignUiModel: ShopHomeNewProductLaunchCampaignUiModel,
+        shopHomeProductViewModel: ShopHomeProductUiModel?
+    ) {
+        sendShopHomeWidgetClickedTracker(
+            ShopPageTrackingConstant.VALUE_SHOP_DECOR_CAMPAIGN,
+            shopHomeNewProductLaunchCampaignUiModel.name,
+            shopHomeNewProductLaunchCampaignUiModel.widgetId,
+            ShopUtil.getActualPositionFromIndex(parentPosition)
+        )
+        shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.let {
+            shopPageHomeTracking.clickCampaignNplProduct(
+                isOwner,
+                it.statusCampaign,
+                shopHomeProductViewModel?.name ?: "",
+                shopHomeProductViewModel?.id ?: "",
+                shopHomeProductViewModel?.displayedPrice ?: "",
+                shopName,
+                ShopUtil.getActualPositionFromIndex(parentPosition),
+                itemPosition,
+                isLogin,
+                customDimensionShopPage
+            )
+        }
+        shopHomeProductViewModel?.let {
+            goToPDP(it.id ?: "")
+        }
+    }
+
+    override fun onCampaignCarouselProductItemImpression(
+        parentPosition: Int,
+        itemPosition: Int,
+        shopHomeNewProductLaunchCampaignUiModel: ShopHomeNewProductLaunchCampaignUiModel,
+        shopHomeProductViewModel: ShopHomeProductUiModel?
+    ) {
+        shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.let {
+            shopPageHomeTracking.impressionCampaignNplProduct(
+                isOwner,
+                it.statusCampaign,
+                shopHomeProductViewModel?.name ?: "",
+                shopHomeProductViewModel?.id ?: "",
+                shopHomeProductViewModel?.displayedPrice ?: "",
+                shopName,
+                ShopUtil.getActualPositionFromIndex(parentPosition),
+                itemPosition,
+                isLogin,
+                customDimensionShopPage
+            )
+        }
+    }
+
+    override fun onClickTncCampaignNplWidget(model: ShopHomeNewProductLaunchCampaignUiModel) {
+        model.data?.firstOrNull()?.let {
+            shopPageHomeTracking.clickTncButton(isOwner, it.statusCampaign, customDimensionShopPage)
+            showNplCampaignTncBottomSheet(
+                it.campaignId,
+                it.statusCampaign,
+                it.dynamicRule.dynamicRoleData.ruleID
+            )
+        }
+    }
+
+    override fun onClickRemindMe(model: ShopHomeNewProductLaunchCampaignUiModel) {
+        viewModel?.let {
+            val campaignId = model.data?.firstOrNull()?.campaignId.orEmpty()
+            if (it.isLogin) {
+                shopCampaignTabAdapter.showNplRemindMeLoading(campaignId)
+                handleClickRemindMe(model)
+            } else {
+                setNplRemindMeClickedCampaignId(campaignId)
+                redirectToLoginPage()
+            }
+        }
+    }
+
+    override fun onClickCtaCampaignNplWidget(model: ShopHomeNewProductLaunchCampaignUiModel) {
+        model.data?.firstOrNull()?.let {
+            shopPageHomeTracking.clickCtaCampaignNplWidget(
+                isOwner,
+                it.statusCampaign,
+                customDimensionShopPage
+            )
+            context?.let { context ->
+                // expected ctaLink produce ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT_LIST
+                val showcaseIntent = RouteManager.getIntent(context, model.header.ctaLink).apply {
+                    // set isNeedToReload data to true for sync shop info data in product result fragment
+                    putExtra(ShopCommonExtraConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, true)
+                }
+                startActivity(showcaseIntent)
+            }
+        }
+    }
+
+    override fun onImpressionCampaignNplWidget(
+        position: Int,
+        shopHomeNewProductLaunchCampaignUiModel: ShopHomeNewProductLaunchCampaignUiModel
+    ) {
+        shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.let {
+            val statusCampaign = it.statusCampaign
+            val selectedBannerType = when (statusCampaign.toLowerCase()) {
+                StatusCampaign.UPCOMING.statusCampaign.toLowerCase() -> BannerType.UPCOMING.bannerType
+                StatusCampaign.ONGOING.statusCampaign.toLowerCase() -> BannerType.LIVE.bannerType
+                StatusCampaign.FINISHED.statusCampaign.toLowerCase() -> BannerType.FINISHED.bannerType
+                else -> ""
+            }
+            val selectedBanner = it.bannerList.firstOrNull {
+                it.bannerType.toLowerCase() == selectedBannerType.toLowerCase()
+            }
+            val isSeeCampaign =
+                if (statusCampaign.toLowerCase() == StatusCampaign.UPCOMING.statusCampaign.toLowerCase()) {
+                    it.totalNotifyWording.isNotEmpty()
+                } else {
+                    null
+                }
+            sendShopHomeWidgetImpressionTracker(
+                ShopPageTrackingConstant.VALUE_SHOP_DECOR_CAMPAIGN,
+                shopHomeNewProductLaunchCampaignUiModel.name,
+                shopHomeNewProductLaunchCampaignUiModel.widgetId,
+                ShopUtil.getActualPositionFromIndex(position)
+            )
+            shopPageHomeTracking.impressionCampaignNplWidget(
+                it.statusCampaign,
+                shopId,
+                ShopUtil.getActualPositionFromIndex(position),
+                isSeeCampaign,
+                selectedBanner?.imageId.orEmpty(),
+                selectedBanner?.imageUrl ?: "",
+                customDimensionShopPage,
+                isOwner
+            )
+        }
+    }
+
+    override fun onTimerFinished(model: ShopHomeNewProductLaunchCampaignUiModel) {
+        shopCampaignTabAdapter.removeWidget(model)
+        endlessRecyclerViewScrollListener.resetState()
+        shopCampaignTabAdapter.removeProductList()
+        shopCampaignTabAdapter.showLoading()
+        viewModel?.getShopPageHomeWidgetLayoutData(shopId, extParam)
+        scrollToTop()
+    }
+    // endregion
+
+    // region Thematic Widget
+    private fun thematicWidgetProductClickListenerImpl(): ThematicWidgetViewHolder.ThematicWidgetListener = object : ThematicWidgetViewHolder.ThematicWidgetListener {
+
+        override fun onThematicWidgetImpressListener(model: ThematicWidgetUiModel, position: Int) {
+            shopPageHomeTracking.impressionThematicWidgetCampaign(
+                campaignName = model.name,
+                campaignId = model.campaignId,
+                shopId = shopId,
+                userId = userId,
+                position = position
+            )
+        }
+
+        override fun onProductCardThematicWidgetImpressListener(
+            products: List<ProductCardUiModel>,
+            position: Int,
+            campaignId: String,
+            campaignName: String
+        ) {
+            shopPageHomeTracking.impressionProductCardThematicWidgetCampaign(
+                campaignName = campaignName,
+                campaignId =campaignId,
+                shopId = shopId,
+                userId = userId,
+                products = products,
+            )
+        }
+
+        override fun onProductCardThematicWidgetClickListener(
+            product: ProductCardUiModel,
+            campaignId: String,
+            campaignName: String,
+            position: Int
+        ) {
+            shopPageHomeTracking.clickProductCardThematicWidgetCampaign(
+                campaignName = campaignName,
+                campaignId = campaignId,
+                shopId = shopId,
+                userId = userId,
+                product = product,
+                position = position
+            )
+            RouteManager.route(context, product.productUrl)
+        }
+
+        override fun onProductCardSeeAllThematicWidgetClickListener(appLink: String, campaignId: String, campaignName: String) {
+            shopPageHomeTracking.clickProductCardSeeAllThematicWidgetCampaign(
+                campaignId = campaignId,
+                campaignName = campaignName,
+                shopId = shopId,
+                userId = userId,
+            )
+            RouteManager.route(context, appLink)
+        }
+
+        override fun onSeeAllThematicWidgetClickListener(appLink: String, campaignId: String, campaignName: String) {
+            shopPageHomeTracking.clickSeeAllThematicWidgetCampaign(
+                campaignId = campaignId,
+                campaignName = campaignName,
+                shopId = shopId,
+                userId = userId,
+            )
+            RouteManager.route(context, appLink)
+        }
+
+        override fun onThematicWidgetTimerFinishListener(model: ThematicWidgetUiModel?) {
+            model?.apply {
+                shopCampaignTabAdapter.removeWidget(this)
+            }
+        }
+    }
+    // endregion
 
     private fun setCampaignTabBackgroundGradient() {
         if (listBackgroundColor.isNotEmpty()) {
@@ -404,13 +853,6 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
 
     override fun setShopHomeWidgetLayoutData(data: ShopPageHomeWidgetLayoutUiModel) {
         listWidgetLayout = data.listWidgetLayout.toMutableList()
-        val shopHomeWidgetContentData = ShopPageHomeMapper.mapShopHomeWidgetLayoutToListShopHomeWidget(
-            data.listWidgetLayout,
-            isOwner,
-            isLogin,
-            isThematicWidgetShown
-        )
-        shopCampaignTabAdapter.setHomeLayoutData(shopHomeWidgetContentData)
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, AdapterTypeFactory> {
@@ -499,7 +941,16 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
                 firstVisibleItemPosition
             val listWidgetLayoutToLoad = getListWidgetLayoutToLoad(position)
             shopCampaignTabAdapter.updateShopHomeWidgetStateToLoading(listWidgetLayoutToLoad)
+
+            val widgetMvcLayout = listWidgetLayoutToLoad.firstOrNull { isWidgetMvc(it) }?.apply {
+                listWidgetLayoutToLoad.remove(this)
+            }
             getWidgetContentData(listWidgetLayoutToLoad)
+
+            // get mvc widget content data
+            widgetMvcLayout?.let {
+                getMvcWidgetData()
+            }
             listWidgetLayoutToLoad.clear()
         }
     }
@@ -546,179 +997,6 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
-    }
-
-    override fun impressionProductBundleMultiple(
-            selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
-            bundleName: String,
-            bundlePosition: Int
-    ) {
-        shopPageHomeTracking.impressionMultipleBundleWidget(
-                shopId = shopId,
-                userId = userId,
-                bundleId = selectedMultipleBundle.bundleId,
-                bundleName = bundleName,
-                bundlePriceCut = selectedMultipleBundle.discountPercentage.toString(),
-                bundlePrice = selectedMultipleBundle.displayPriceRaw,
-                bundlePosition = bundlePosition
-        )
-    }
-
-    override fun onMultipleBundleProductClicked(
-            selectedProduct: ShopHomeBundleProductUiModel,
-            selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
-            bundleName: String,
-            bundlePosition: Int
-    ) {
-        shopPageHomeTracking.clickOnMultipleBundleProduct(
-                shopId = shopId,
-                userId = userId,
-                bundleId = selectedMultipleBundle.bundleId,
-                bundleName = bundleName,
-                bundlePriceCut = selectedMultipleBundle.discountPercentage.toString(),
-                bundlePrice = selectedMultipleBundle.displayPriceRaw,
-                bundlePosition = bundlePosition,
-                clickedProduct = selectedProduct
-        )
-        goToPDP(selectedProduct.productId)
-    }
-
-    override fun onTrackSingleVariantChange(selectedProduct: ShopHomeBundleProductUiModel, selectedSingleBundle: ShopHomeProductBundleDetailUiModel, bundleName: String) {
-        shopPageHomeTracking.onTrackSingleVariantChange(
-                shopId = shopId,
-                userId = userId,
-                productId = selectedProduct.productId,
-                bundleName = bundleName,
-                bundleId = selectedSingleBundle.bundleId,
-                bundlePriceCut = selectedSingleBundle.discountPercentage.toString(),
-                selectedPackage = selectedSingleBundle.minOrderWording
-        )
-    }
-
-    override fun impressionProductBundleSingle(
-            selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
-            selectedProduct: ShopHomeBundleProductUiModel,
-            bundleName: String,
-            bundlePosition: Int
-    ) {
-        shopPageHomeTracking.impressionSingleBundleWidget(
-                shopId = shopId,
-                userId = userId,
-                productId = selectedProduct.productId,
-                bundleId = selectedSingleBundle.bundleId,
-                bundleName = bundleName,
-                bundlePriceCut = selectedSingleBundle.discountPercentage.toString(),
-                bundlePrice = selectedSingleBundle.displayPriceRaw,
-                bundlePosition = bundlePosition
-        )
-    }
-
-    override fun onSingleBundleProductClicked(
-            selectedProduct: ShopHomeBundleProductUiModel,
-            selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
-            bundleName: String,
-            bundlePosition: Int
-    ) {
-        shopPageHomeTracking.clickOnSingleBundleProduct(
-                shopId = shopId,
-                userId = userId,
-                bundleId = selectedSingleBundle.bundleId,
-                bundleName = bundleName,
-                bundlePriceCut = selectedSingleBundle.discountPercentage.toString(),
-                bundlePrice = selectedSingleBundle.displayPriceRaw,
-                bundlePosition = bundlePosition,
-                clickedProduct = selectedProduct,
-                selectedPackage = selectedSingleBundle.minOrderWording
-        )
-        goToPDP(selectedProduct.productId)
-    }
-
-    override fun addMultipleBundleToCart(
-            selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
-            bundleListSize: Int,
-            productDetails: List<ShopHomeBundleProductUiModel>,
-            bundleName: String,
-            widgetLayout: ShopHomeWidgetLayout
-    ) {
-        if (isOwner) {
-            // disable owner add their own bundle to cart
-            showErrorToast(getString(R.string.shop_page_product_bundle_failed_atc_text_for_shop_owner))
-        } else {
-            if (selectedMultipleBundle.isProductsHaveVariant) {
-                // go to bundling selection page
-                goToBundlingSelectionPage(selectedMultipleBundle.bundleId)
-            } else {
-                // atc bundle directly from shop page home
-                val widgetLayoutParams = ShopPageWidgetLayoutUiModel(
-                        widgetId = widgetLayout.widgetId,
-                        widgetMasterId = widgetLayout.widgetMasterId,
-                        widgetType = widgetLayout.widgetType,
-                        widgetName = widgetLayout.widgetName
-                )
-                viewModel?.addBundleToCart(
-                        shopId = shopId,
-                        userId = userId,
-                        bundleId = selectedMultipleBundle.bundleId,
-                        productDetails = productDetails,
-                        onFinishAddToCart = { handleOnFinishAtcBundle(it, bundleListSize, widgetLayoutParams) },
-                        onErrorAddBundleToCart = { handleOnErrorAtcBundle(it) },
-                        productQuantity = selectedMultipleBundle.minOrder
-                )
-            }
-        }
-        shopPageHomeTracking.clickAtcProductBundleMultiple(
-                shopId = shopId,
-                userId = userId,
-                bundleId = selectedMultipleBundle.bundleId,
-                bundleName = bundleName,
-                bundlePriceCut = selectedMultipleBundle.discountPercentage.toString(),
-                bundlePrice = selectedMultipleBundle.displayPriceRaw
-        )
-    }
-
-    override fun addSingleBundleToCart(
-            selectedBundle: ShopHomeProductBundleDetailUiModel,
-            bundleListSize: Int,
-            bundleProducts: ShopHomeBundleProductUiModel,
-            bundleName: String,
-            widgetLayout: ShopHomeWidgetLayout
-    ) {
-        if (isOwner) {
-            // disable owner add their own bundle to cart
-            showErrorToast(getString(R.string.shop_page_product_bundle_failed_atc_text_for_shop_owner))
-        } else {
-            if (selectedBundle.isProductsHaveVariant) {
-                // go to bundling selection page
-                goToBundlingSelectionPage(selectedBundle.bundleId)
-            } else {
-                // atc bundle directly from shop page home
-                val widgetLayoutParams = ShopPageWidgetLayoutUiModel(
-                        widgetId = widgetLayout.widgetId,
-                        widgetMasterId = widgetLayout.widgetMasterId,
-                        widgetType = widgetLayout.widgetType,
-                        widgetName = widgetLayout.widgetName
-                )
-                viewModel?.addBundleToCart(
-                        shopId = shopId,
-                        userId = userId,
-                        bundleId = selectedBundle.bundleId,
-                        productDetails = listOf(bundleProducts),
-                        onFinishAddToCart = { handleOnFinishAtcBundle(it, bundleListSize, widgetLayoutParams) },
-                        onErrorAddBundleToCart = { handleOnErrorAtcBundle(it) },
-                        productQuantity = selectedBundle.minOrder
-                )
-            }
-        }
-        shopPageHomeTracking.clickAtcProductBundleSingle(
-                shopId = shopId,
-                userId = userId,
-                bundleId = selectedBundle.bundleId,
-                bundleName = bundleName,
-                bundlePriceCut = selectedBundle.discountPercentage.toString(),
-                bundlePrice = selectedBundle.displayPriceRaw,
-                selectedPackage = selectedBundle.minOrderWording,
-                productId = bundleProducts.productId
-        )
     }
 
     private fun handleOnFinishAtcBundle(
@@ -893,98 +1171,6 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
         }
     }
 
-    override fun onCampaignCarouselProductItemClicked(
-        parentPosition: Int,
-        itemPosition: Int,
-        shopHomeNewProductLaunchCampaignUiModel: ShopHomeNewProductLaunchCampaignUiModel,
-        shopHomeProductViewModel: ShopHomeProductUiModel?
-    ) {
-        sendShopHomeWidgetClickedTracker(
-            ShopPageTrackingConstant.VALUE_SHOP_DECOR_CAMPAIGN,
-            shopHomeNewProductLaunchCampaignUiModel.name,
-            shopHomeNewProductLaunchCampaignUiModel.widgetId,
-            ShopUtil.getActualPositionFromIndex(parentPosition)
-        )
-        shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.let {
-            shopPageHomeTracking.clickCampaignNplProduct(
-                isOwner,
-                it.statusCampaign,
-                shopHomeProductViewModel?.name ?: "",
-                shopHomeProductViewModel?.id ?: "",
-                shopHomeProductViewModel?.displayedPrice ?: "",
-                shopName,
-                ShopUtil.getActualPositionFromIndex(parentPosition),
-                itemPosition,
-                isLogin,
-                customDimensionShopPage
-            )
-        }
-        shopHomeProductViewModel?.let {
-            goToPDP(it.id ?: "")
-        }
-    }
-
-    override fun onCampaignCarouselProductItemImpression(
-        parentPosition: Int,
-        itemPosition: Int,
-        shopHomeNewProductLaunchCampaignUiModel: ShopHomeNewProductLaunchCampaignUiModel,
-        shopHomeProductViewModel: ShopHomeProductUiModel?
-    ) {
-        shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.let {
-            shopPageHomeTracking.impressionCampaignNplProduct(
-                isOwner,
-                it.statusCampaign,
-                shopHomeProductViewModel?.name ?: "",
-                shopHomeProductViewModel?.id ?: "",
-                shopHomeProductViewModel?.displayedPrice ?: "",
-                shopName,
-                ShopUtil.getActualPositionFromIndex(parentPosition),
-                itemPosition,
-                isLogin,
-                customDimensionShopPage
-            )
-        }
-    }
-
-    override fun onClickTncCampaignNplWidget(model: ShopHomeNewProductLaunchCampaignUiModel) {
-        model.data?.firstOrNull()?.let {
-            shopPageHomeTracking.clickTncButton(isOwner, it.statusCampaign, customDimensionShopPage)
-            showNplCampaignTncBottomSheet(
-                it.campaignId,
-                it.statusCampaign,
-                it.dynamicRule.dynamicRoleData.ruleID
-            )
-        }
-    }
-
-    override fun onClickTncFlashSaleWidget(model: ShopHomeFlashSaleUiModel) {
-        model.data?.firstOrNull()?.let {
-            shopPageHomeTracking.onClickTnCButtonFlashSaleWidget(
-                campaignId = it.campaignId,
-                shopId = shopId,
-                userId = userId,
-                isOwner = isOwner
-            )
-            showFlashTncSaleBottomSheet(it.campaignId)
-        }
-    }
-
-    override fun onClickSeeAllFlashSaleWidget(model: ShopHomeFlashSaleUiModel) {
-        context?.run {
-            if (shopId.isNotBlank() && model.header.ctaLink.isNotBlank()) {
-                model.data?.firstOrNull()?.let { flashSaleItem ->
-                    shopPageHomeTracking.onClickSeeAllButtonFlashSaleWidget(
-                        statusCampaign = flashSaleItem.statusCampaign,
-                        shopId = shopId,
-                        userId = userId,
-                        isOwner = isOwner
-                    )
-                }
-                RouteManager.route(this, model.header.ctaLink)
-            }
-        }
-    }
-
     private fun showNplCampaignTncBottomSheet(
         campaignId: String,
         statusCampaign: String,
@@ -1004,49 +1190,6 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
     private fun showFlashTncSaleBottomSheet(campaignId: String) {
         val bottomSheet = ShopHomeFlashSaleTncBottomSheet.createInstance(campaignId)
         bottomSheet.show(childFragmentManager, "")
-    }
-
-    override fun onClickRemindMe(model: ShopHomeNewProductLaunchCampaignUiModel) {
-        viewModel?.let {
-            val campaignId = model.data?.firstOrNull()?.campaignId.orEmpty()
-            if (it.isLogin) {
-                shopCampaignTabAdapter.showNplRemindMeLoading(campaignId)
-                handleClickRemindMe(model)
-            } else {
-                setNplRemindMeClickedCampaignId(campaignId)
-                redirectToLoginPage()
-            }
-        }
-    }
-
-    override fun onClickFlashSaleReminder(model: ShopHomeFlashSaleUiModel) {
-        viewModel?.let {
-            val campaignId = model.data?.firstOrNull()?.campaignId.orEmpty()
-            if (it.isLogin) {
-                handleFlashSaleClickReminder(model)
-            } else {
-                setFlashSaleRemindMeClickedCampaignId(campaignId)
-                redirectToLoginPage()
-            }
-            shopPageHomeTracking.onClickReminderButtonFlashSaleWidget(
-                campaignId = campaignId,
-                shopId = shopId,
-                userId = userId,
-                isOwner = isOwner
-            )
-        }
-    }
-
-    override fun onFlashSaleProductClicked(model: ShopHomeProductUiModel) {
-        goToPDP(model.id ?: "")
-    }
-
-    override fun onPlaceHolderClickSeeAll(model: ShopHomeFlashSaleUiModel) {
-        context?.run {
-            if (shopId.isNotBlank() && model.header.ctaLink.isNotBlank()) {
-                RouteManager.route(this, model.header.ctaLink)
-            }
-        }
     }
 
     private fun handleClickRemindMe(model: ShopHomeNewProductLaunchCampaignUiModel) {
@@ -1069,110 +1212,6 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
         }
         val campaignId = model.data?.firstOrNull()?.campaignId ?: ""
         viewModel?.clickFlashSaleReminder(campaignId, action)
-    }
-
-    override fun onClickCtaCampaignNplWidget(model: ShopHomeNewProductLaunchCampaignUiModel) {
-        model.data?.firstOrNull()?.let {
-            shopPageHomeTracking.clickCtaCampaignNplWidget(
-                isOwner,
-                it.statusCampaign,
-                customDimensionShopPage
-            )
-            context?.let { context ->
-                // expected ctaLink produce ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT_LIST
-                val showcaseIntent = RouteManager.getIntent(context, model.header.ctaLink).apply {
-                    // set isNeedToReload data to true for sync shop info data in product result fragment
-                    putExtra(ShopCommonExtraConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, true)
-                }
-                startActivity(showcaseIntent)
-            }
-        }
-    }
-
-    override fun onClickCampaignBannerAreaNplWidget(model: ShopHomeNewProductLaunchCampaignUiModel) {
-        model.data?.firstOrNull()?.let {
-            context?.let { context ->
-                val appLink = model.header.ctaLink
-                if (appLink.isNotEmpty()) {
-                    RouteManager.route(context, appLink)
-                }
-            }
-        }
-    }
-
-    override fun onImpressionCampaignNplWidget(
-        position: Int,
-        shopHomeNewProductLaunchCampaignUiModel: ShopHomeNewProductLaunchCampaignUiModel
-    ) {
-        shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.let {
-            val statusCampaign = it.statusCampaign
-            val selectedBannerType = when (statusCampaign.toLowerCase()) {
-                StatusCampaign.UPCOMING.statusCampaign.toLowerCase() -> BannerType.UPCOMING.bannerType
-                StatusCampaign.ONGOING.statusCampaign.toLowerCase() -> BannerType.LIVE.bannerType
-                StatusCampaign.FINISHED.statusCampaign.toLowerCase() -> BannerType.FINISHED.bannerType
-                else -> ""
-            }
-            val selectedBanner = it.bannerList.firstOrNull {
-                it.bannerType.toLowerCase() == selectedBannerType.toLowerCase()
-            }
-            val isSeeCampaign =
-                if (statusCampaign.toLowerCase() == StatusCampaign.UPCOMING.statusCampaign.toLowerCase()) {
-                    it.totalNotifyWording.isNotEmpty()
-                } else {
-                    null
-                }
-            sendShopHomeWidgetImpressionTracker(
-                ShopPageTrackingConstant.VALUE_SHOP_DECOR_CAMPAIGN,
-                shopHomeNewProductLaunchCampaignUiModel.name,
-                shopHomeNewProductLaunchCampaignUiModel.widgetId,
-                ShopUtil.getActualPositionFromIndex(position)
-            )
-            shopPageHomeTracking.impressionCampaignNplWidget(
-                    it.statusCampaign,
-                    shopId,
-                    ShopUtil.getActualPositionFromIndex(position),
-                    isSeeCampaign,
-                    selectedBanner?.imageId.orEmpty(),
-                    selectedBanner?.imageUrl ?: "",
-                    customDimensionShopPage,
-                    isOwner
-            )
-        }
-    }
-
-    override fun onFlashSaleWidgetImpressed(model: ShopHomeFlashSaleUiModel, position: Int) {
-        model.data?.firstOrNull()?.let { itemFlashSale ->
-            val campaignId = itemFlashSale.campaignId
-            val statusCampaign = itemFlashSale.statusCampaign
-            shopPageHomeTracking.impressionCampaignFlashSaleWidget(
-                campaignId = campaignId,
-                statusCampaign = statusCampaign,
-                shopId = shopId,
-                userId = userId,
-                position = position,
-                isOwner = isOwner
-            )
-        }
-    }
-
-    // npl widget
-    override fun onTimerFinished(model: ShopHomeNewProductLaunchCampaignUiModel) {
-        shopCampaignTabAdapter.removeWidget(model)
-        endlessRecyclerViewScrollListener.resetState()
-        shopCampaignTabAdapter.removeProductList()
-        shopCampaignTabAdapter.showLoading()
-        viewModel?.getShopPageHomeWidgetLayoutData(shopId, extParam)
-        scrollToTop()
-    }
-
-    // flash sale widget
-    override fun onTimerFinished(model: ShopHomeFlashSaleUiModel) {
-        shopCampaignTabAdapter.removeWidget(model)
-        endlessRecyclerViewScrollListener.resetState()
-        shopCampaignTabAdapter.removeProductList()
-        shopCampaignTabAdapter.showLoading()
-        viewModel?.getShopPageHomeWidgetLayoutData(shopId, extParam)
-        scrollToTop()
     }
 
     private fun setNplRemindMeClickedCampaignId(campaignId: String) {
@@ -1199,12 +1238,6 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
         ).orEmpty()
     }
 
-    fun setListWidgetLayoutData(listWidgetId: List<WidgetIdList>) {
-        this.listWidgetLayout = ShopPageCampaignMapper.mapToListWidgetLayoutData(
-            listWidgetId
-        ).toMutableList()
-    }
-
     override fun scrollToTop() {
         isClickToScrollToTop = true
         getRecyclerView(view)?.scrollToPosition(0)
@@ -1220,77 +1253,6 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
 
     private fun showScrollToTopButton() {
         (parentFragment as? NewShopPageFragment)?.showScrollToTopButton()
-    }
-
-    private fun thematicWidgetProductClickListenerImpl(): ThematicWidgetViewHolder.ThematicWidgetListener = object : ThematicWidgetViewHolder.ThematicWidgetListener {
-
-        override fun onThematicWidgetImpressListener(model: ThematicWidgetUiModel, position: Int) {
-            shopPageHomeTracking.impressionThematicWidgetCampaign(
-                campaignName = model.name,
-                campaignId = model.campaignId,
-                shopId = shopId,
-                userId = userId,
-                position = position
-            )
-        }
-
-        override fun onProductCardThematicWidgetImpressListener(
-            products: List<ProductCardUiModel>,
-            position: Int,
-            campaignId: String,
-            campaignName: String
-        ) {
-            shopPageHomeTracking.impressionProductCardThematicWidgetCampaign(
-                campaignName = campaignName,
-                campaignId =campaignId,
-                shopId = shopId,
-                userId = userId,
-                products = products,
-            )
-        }
-
-        override fun onProductCardThematicWidgetClickListener(
-            product: ProductCardUiModel,
-            campaignId: String,
-            campaignName: String,
-            position: Int
-        ) {
-            shopPageHomeTracking.clickProductCardThematicWidgetCampaign(
-                campaignName = campaignName,
-                campaignId = campaignId,
-                shopId = shopId,
-                userId = userId,
-                product = product,
-                position = position
-            )
-            RouteManager.route(context, product.productUrl)
-        }
-
-        override fun onProductCardSeeAllThematicWidgetClickListener(appLink: String, campaignId: String, campaignName: String) {
-            shopPageHomeTracking.clickProductCardSeeAllThematicWidgetCampaign(
-                campaignId = campaignId,
-                campaignName = campaignName,
-                shopId = shopId,
-                userId = userId,
-            )
-            RouteManager.route(context, appLink)
-        }
-
-        override fun onSeeAllThematicWidgetClickListener(appLink: String, campaignId: String, campaignName: String) {
-            shopPageHomeTracking.clickSeeAllThematicWidgetCampaign(
-                campaignId = campaignId,
-                campaignName = campaignName,
-                shopId = shopId,
-                userId = userId,
-            )
-            RouteManager.route(context, appLink)
-        }
-
-        override fun onThematicWidgetTimerFinishListener(model: ThematicWidgetUiModel?) {
-            model?.apply {
-                shopCampaignTabAdapter.removeWidget(this)
-            }
-        }
     }
 
     fun setPageBackgroundColor(listBackgroundColor: List<String>) {
