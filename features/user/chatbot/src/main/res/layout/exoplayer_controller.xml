@@ -120,7 +120,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="@dimen/unify_space_8"
                 android:layout_marginRight="@dimen/unify_space_8"
-                android:text="@string/picker_video_duration_separator_char"
+                android:text="@string/chatbot_exoplayer_time_separator"
                 android:textColor="@color/Unify_NN0"
                 app:typographyType="display_3"
                 tools:text="/" />
