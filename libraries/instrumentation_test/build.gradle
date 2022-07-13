@@ -123,6 +123,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.rxJava
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
+    implementation "com.github.tmurakami:dexopener:2.0.5"
 
     api rootProject.ext.miscDependencies.coroutineTest
 
