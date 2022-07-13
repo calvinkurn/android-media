@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <string name="app_name">people</string>
     <string name="up_common_failed_desc">Klik ikon di samping untuk coba lagi.</string>
     <string name="up_common_failed_title">Bagian ini gagal ditampilkan</string>
