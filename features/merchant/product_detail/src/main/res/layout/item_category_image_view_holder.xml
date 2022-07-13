@@ -29,7 +29,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/product_category_widget_img"
         app:layout_constraintStart_toEndOf="@+id/product_category_widget_img"
         app:layout_constraintTop_toTopOf="@+id/product_category_widget_img"
-        app:typographyType="body_2"
+        app:typographyType="display_2"
         tools:text="Telur" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

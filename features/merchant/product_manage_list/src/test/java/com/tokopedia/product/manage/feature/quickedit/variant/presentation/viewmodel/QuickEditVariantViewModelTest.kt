@@ -33,7 +33,7 @@ class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
             createSelectionResponse(options = secondOption)
         )
         val response = createGetVariantResponse(
-            productName,
+            productName = productName,
             products = variantList,
             selections = selections
         )
@@ -86,7 +86,7 @@ class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
             createProductVariantResponse(productID = "1", price = 100.0),
             createProductVariantResponse(productID = "2", price = 200.0)
         )
-        val response = createGetVariantResponse(productName, products = variantList)
+        val response = createGetVariantResponse(productName = productName, products = variantList)
 
         onGetProductVariant_thenReturn(response)
 
@@ -113,7 +113,7 @@ class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
             createProductVariantResponse(productID = "1", stock = 2),
             createProductVariantResponse(productID = "2", stock = 3)
         )
-        val response = createGetVariantResponse(productName, products = variantList)
+        val response = createGetVariantResponse(productName = productName, products = variantList)
 
         onGetProductVariant_thenReturn(response)
 
@@ -147,7 +147,7 @@ class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
             createProductVariantResponse(productID = "1", status = ProductStatus.ACTIVE),
             createProductVariantResponse(productID = "2", status = ProductStatus.INACTIVE)
         )
-        val response = createGetVariantResponse(productName, products = variantList)
+        val response = createGetVariantResponse(productName = productName, products = variantList)
 
         onGetProductVariant_thenReturn(response)
 

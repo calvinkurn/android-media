@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.media.picker.ui.activity.album.AlbumViewModel
-import com.tokopedia.media.picker.ui.activity.main.PickerViewModel
+import com.tokopedia.media.picker.ui.activity.picker.PickerViewModel
 import com.tokopedia.media.picker.ui.fragment.camera.CameraViewModel
 import com.tokopedia.media.picker.ui.fragment.gallery.GalleryViewModel
 import com.tokopedia.media.picker.ui.fragment.permission.PermissionViewModel

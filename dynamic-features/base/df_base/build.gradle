@@ -101,6 +101,7 @@ dependencies {
 
     //Logistic
     implementation projectOrAar(rootProject.ext.features.logisticorder)
+    implementation projectOrAar(rootProject.ext.features.logisticseller)
     implementation projectOrAar(rootProject.ext.features.logisticaddaddress)
     implementation projectOrAar(rootProject.ext.features.manageaddress)
 
@@ -110,7 +111,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.shopShowcase)
     implementation projectOrAar(rootProject.ext.features.brandlist)
     implementation projectOrAar(rootProject.ext.features.productDetail)
-    implementation projectOrAar(rootProject.ext.features.productDetailIntegration)
+    implementation projectOrAar(rootProject.ext.features.productDetailAdditionalInfo)
     implementation projectOrAar(rootProject.ext.features.atcVariant)
     implementation projectOrAar(rootProject.ext.features.shopPage)
     implementation projectOrAar(rootProject.ext.features.shopPageWidget)
@@ -162,5 +163,4 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.buyerorder)
     implementation projectOrAar(rootProject.ext.features.snapshot)
     implementation projectOrAar(rootProject.ext.features.buyercancellationorder)
-    implementation projectOrAar(rootProject.ext.features.people)
 }

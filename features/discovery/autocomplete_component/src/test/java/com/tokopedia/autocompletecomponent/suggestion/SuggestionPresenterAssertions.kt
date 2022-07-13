@@ -102,17 +102,24 @@ internal fun BaseSuggestionDataView.assertShopAdsSuggestionData(
     this.shopAdsDataView!!.imageUrl shouldBe cpmData.cpm.cpmImage.fullEcs
 }
 
-internal fun SuggestionDoubleLineDataDataView.assertBoldText(expectedValue: Boolean) {
-    isBoldText() shouldBe expectedValue
+internal fun BaseSuggestionDataView.assertBoldAllText(expectedValue: Boolean) {
+    isBoldAllText() shouldBe expectedValue
 }
 
-internal fun Visitable<*>.shouldBeSuggestionDoubleLineDataView(isBold: Boolean) {
+internal fun BaseSuggestionDataView.assertCircleImage(expectedValue: Boolean) {
+    isCircleImage() shouldBe expectedValue
+}
+
+internal fun Visitable<*>.shouldBeSuggestionDoubleLineDataView(isBoldAllText: Boolean = false, isCircle: Boolean = false) {
     shouldBeInstanceOf<SuggestionDoubleLineDataDataView>()
-    (this as SuggestionDoubleLineDataDataView).assertBoldText(isBold)
+    (this as SuggestionDoubleLineDataDataView).data.assertBoldAllText(isBoldAllText)
+    (this as SuggestionDoubleLineDataDataView).data.assertCircleImage(isCircle)
 }
 
-internal fun Visitable<*>.shouldBeSuggestionSingleLineDataDataView() {
+internal fun Visitable<*>.shouldBeSuggestionSingleLineDataDataView(isBoldAllText: Boolean = false, isCircle: Boolean = false) {
     shouldBeInstanceOf<SuggestionSingleLineDataDataView>()
+    (this as SuggestionSingleLineDataDataView).data.assertBoldAllText(isBoldAllText)
+    (this as SuggestionSingleLineDataDataView).data.assertCircleImage(isCircle)
 }
 
 internal fun Visitable<*>.shouldBeSuggestionTitleDataView() {

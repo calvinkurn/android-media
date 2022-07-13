@@ -27,7 +27,7 @@ class VideoPreview(
             viewPlayer.player = videoPlayer.player()
             videoControl?.player = videoPlayer.player()
 
-            videoPlayer.videoUrl = media.data.path
+            videoPlayer.videoUrl = media.data.file?.path.orEmpty()
 
             videoPlayer.listener = this
             videoControl?.listener = this

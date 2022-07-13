@@ -111,6 +111,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             }
         }
 
+    val remainingDurationInMillis: Long
+        get() = livePusherMediator.remainingDurationInMillis
+
     val observableConfigInfo: LiveData<NetworkResult<ConfigurationUiModel>>
         get() = _observableConfigInfo
     val observableTotalView: LiveData<TotalViewUiModel>
@@ -704,6 +707,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _interactive.value = giveaway
         when (giveaway.status) {
             InteractiveUiModel.Giveaway.Status.Finished -> displayGameResultWidgetIfHasLeaderBoard()
+            InteractiveUiModel.Giveaway.Status.Unknown -> stopInteractive()
         }
     }
 
@@ -711,7 +715,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _interactive.value = quiz
         when (quiz.status) {
             InteractiveUiModel.Quiz.Status.Finished -> displayGameResultWidgetIfHasLeaderBoard()
-            InteractiveUiModel.Quiz.Status.Unknown -> stopQuiz()
+            InteractiveUiModel.Quiz.Status.Unknown -> stopInteractive()
         }
     }
 
@@ -1317,7 +1321,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private fun stopQuiz(){
+    private fun stopInteractive(){
         setActiveInteractiveTitle("")
         setInteractiveId("")
         displayGameResultWidgetIfHasLeaderBoard()

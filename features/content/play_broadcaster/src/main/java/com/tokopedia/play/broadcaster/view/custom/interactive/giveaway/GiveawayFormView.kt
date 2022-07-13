@@ -63,6 +63,7 @@ class GiveawayFormView : ConstraintLayout {
     private var mListener: Listener? = null
 
     private var mEligibleDurations = emptyList<Long>()
+    private var mRemainingTimeInMillis: Long = Long.MAX_VALUE
 
     private var mStep = Step.AddTitle
         set(value) {
@@ -137,7 +138,10 @@ class GiveawayFormView : ConstraintLayout {
         if (isLoading()) return
 
         val nextStep = mStep.getNext()
-        if (nextStep != null) mStep = nextStep
+        if (nextStep != null) {
+            mRemainingTimeInMillis = mListener?.getRemainingTimeInMillis() ?: Long.MAX_VALUE
+            mStep = nextStep
+        }
         else mListener?.onDone(
             this,
             Data(
@@ -166,6 +170,7 @@ class GiveawayFormView : ConstraintLayout {
                 binding.groupActionBar.show()
             }
             Step.SetDuration -> {
+                setEligibleDurations(mEligibleDurations.filter { it < mRemainingTimeInMillis })
                 binding.viewGiveaway.getHeader().isEditable = false
                 showDurationPicker(true)
                 binding.groupActionBar.hide()
@@ -279,5 +284,6 @@ class GiveawayFormView : ConstraintLayout {
 
         fun onClickBackSetTimer()
         fun onClickContinue()
+        fun getRemainingTimeInMillis(): Long
     }
 }

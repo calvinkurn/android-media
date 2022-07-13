@@ -1,91 +1,96 @@
 package com.tokopedia.chat_common.domain.pojo.productattachment
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.chat_common.data.AttachmentVariant
 
-class ProductProfile {
+data class ProductProfile (
     @SerializedName("min_order")
-    @Expose
-    val minOrder: Int = 1
+    val minOrder: Int = 1,
+
     @SerializedName("image_url")
-    @Expose
-    val imageUrl: String = ""
+    val imageUrl: String = "",
+
     @SerializedName("name")
-    @Expose
-    val name: String = ""
+    val name: String = "",
+
     @SerializedName("price")
-    @Expose
-    val price: String = ""
+    val price: String = "",
+
     @SerializedName("url")
-    @Expose
-    val url: String = ""
+    val url: String = "",
+
     @SerializedName("price_int")
-    @Expose
-    val priceInt: Long = 0
+    val priceInt: Double = 0.0,
+
     @SerializedName("category_breadcrumb")
-    @Expose
-    val category: String = ""
+    val category: String = "",
+
     @SerializedName("category_id")
-    @Expose
-    val categoryId: Long = 0
+    val categoryId: String = "0",
+
     @SerializedName("variant")
-    @Expose
-    val variant: List<AttachmentVariant>? = listOf()
+    val variant: List<AttachmentVariant>? = listOf(),
+
     @SerializedName("drop_percentage")
-    @Expose
-    var dropPercentage: String = ""
+    var dropPercentage: String = "",
+
     @SerializedName("price_before")
-    @Expose
-    var priceBefore: String = ""
+    var priceBefore: String = "",
+
     @SerializedName("shop_id")
-    @Expose
-    val shopId: Long = 0
+    val shopId: String = "0",
+
     @SerializedName("free_ongkir")
-    @Expose
-    val freeShipping: FreeShipping = FreeShipping()
+    val freeShipping: FreeShipping = FreeShipping(),
+
     @SerializedName("playstore_product_data")
-    @Expose
-    val playStoreData: PlayStoreData = PlayStoreData()
+    val playStoreData: PlayStoreData = PlayStoreData(),
+
     @SerializedName("remaining_stock")
-    @Expose
-    var remainingStock: Int = 0
+    var remainingStock: Int = 0,
+
     @SerializedName("status")
-    @Expose
-    var status: Int = 1
+    var status: Int = 1,
+
     @SerializedName("wishlist")
-    @Expose
-    val wishList: Boolean = false
+    val wishList: Boolean = false,
+
     @SerializedName("list_image_url")
-    @Expose
-    val images: List<String> = emptyList()
+    val images: List<String> = emptyList(),
+
     @SerializedName("rating")
-    @Expose
-    val rating: TopchatProductRating = TopchatProductRating()
+    val rating: TopchatProductRating = TopchatProductRating(),
+
     @SerializedName("is_preorder")
-    @Expose
-    val isPreOrder: Boolean = false
+    val isPreOrder: Boolean = false,
+
     @SerializedName("campaign_id")
-    @Expose
-    var campaignId: Long = 0
+    var campaignId: String = "0",
+
     @SerializedName("is_fulfillment")
-    @Expose
-    var isFulFillment: Boolean = false
+    var isFulFillment: Boolean = false,
+
     @SerializedName("icon_tokocabang")
-    @Expose
-    var urlTokocabang: String = ""
+    var urlTokocabang: String = "",
+
     @SerializedName("desc_tokocabang")
-    @Expose
-    var descTokocabang: String = ""
+    var descTokocabang: String = "",
+
     @SerializedName("parent_id")
-    @Expose
-    var parentId: String = "0"
+    var parentId: String = "0",
+
     @SerializedName("is_variant")
-    var isSupportVariant: Boolean = false
+    var isSupportVariant: Boolean = false,
+
     @SerializedName("is_upcoming_campaign_product")
-    @Expose
-    var isUpcomingCampaign: Boolean = false
+    var isUpcomingCampaign: Boolean = false,
+
     @SerializedName("location_stock")
-    @Expose
-    var locationStock: LocationStock = LocationStock()
-}
+    var locationStock: LocationStock = LocationStock(),
+
+    @SerializedName("android_url")
+    var androidUrl: String = "",
+
+    @SerializedName("ios_url")
+    var iosUrl: String = ""
+)

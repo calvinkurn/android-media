@@ -2,7 +2,7 @@ package com.tokopedia.inbox.fake.view.fragment
 
 import com.tokopedia.inbox.view.activity.base.InboxTest
 import com.tokopedia.topchat.chatlist.di.ChatListComponent
-import com.tokopedia.topchat.chatlist.fragment.ChatListInboxFragment
+import com.tokopedia.topchat.chatlist.view.fragment.ChatListInboxFragment
 
 class FakeChatListInboxFragment : ChatListInboxFragment() {
     override fun generateChatListComponent(): ChatListComponent {

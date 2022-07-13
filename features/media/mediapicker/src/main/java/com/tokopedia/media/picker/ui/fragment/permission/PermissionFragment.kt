@@ -17,8 +17,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.R
 import com.tokopedia.media.databinding.FragmentPermissionBinding
 import com.tokopedia.media.picker.di.DaggerPickerComponent
-import com.tokopedia.media.picker.ui.fragment.permission.recyclers.adapter.PermissionAdapter
-import com.tokopedia.media.picker.ui.fragment.permission.recyclers.utils.ItemDividerDecoration
+import com.tokopedia.media.picker.ui.adapter.PermissionAdapter
+import com.tokopedia.media.picker.ui.adapter.decoration.ItemDividerDecoration
 import com.tokopedia.media.picker.ui.uimodel.PermissionUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject

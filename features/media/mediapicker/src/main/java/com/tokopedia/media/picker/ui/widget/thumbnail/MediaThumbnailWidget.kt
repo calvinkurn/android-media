@@ -9,11 +9,10 @@ import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.databinding.WidgetMediaThumbnailBinding
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.media.picker.ui.widget.layout.SquareFrameLayout
-import com.tokopedia.picker.common.utils.videoDuration
-import com.tokopedia.media.picker.utils.pickerLoadImage
-import com.tokopedia.picker.common.utils.toReadableFormat
+import com.tokopedia.picker.common.utils.wrapper.PickerFile
 import com.tokopedia.media.R as mediaResources
 import com.tokopedia.unifyprinciples.Typography.Companion.BODY_3
 import com.tokopedia.unifyprinciples.Typography.Companion.SMALL
@@ -43,11 +42,23 @@ class MediaThumbnailWidget @JvmOverloads constructor(
 
     private fun renderView(element: MediaUiModel?) {
         if (element == null) return
+        val file = element.file?: return
+
         binding.container.show()
-        binding.imgPreview.pickerLoadImage(element.path)
-        binding.bgVideoShadow.showWithCondition(element.isVideo())
-        binding.txtDuration.shouldShowWithAction(element.isVideo()) {
-            videoDuration(element.path)
+
+        binding.imgPreview.loadImage(file.path) {
+            isAnimate(true)
+            setPlaceHolder(-1)
+            centerCrop()
+        }
+
+        onVideoShow(file)
+    }
+
+    private fun onVideoShow(file: PickerFile) {
+        binding.bgVideoShadow.showWithCondition(file.isVideo())
+        binding.txtDuration.shouldShowWithAction(file.isVideo()) {
+            binding.txtDuration.text = file.readableVideoDuration(context)
         }
     }
 
@@ -55,15 +66,13 @@ class MediaThumbnailWidget @JvmOverloads constructor(
         binding.container.hide()
     }
 
-    private fun videoDuration(filePath: String) {
-        val duration = videoDuration(context, filePath)
-        binding.txtDuration.text = duration.toReadableFormat()
-    }
-
-    fun setThumbnailSelected(isSelected: Boolean){
-        if(isSelected){
+    fun setThumbnailSelected(isSelected: Boolean) {
+        if (isSelected) {
             val paddingSize = resources.getDimension(mediaResources.dimen.picker_thumbnail_selected_padding).toInt()
-            val backgroundAsset = MethodChecker.getDrawable(context, mediaResources.drawable.picker_rect_green_selected_thumbnail)
+            val backgroundAsset = MethodChecker.getDrawable(
+                context,
+                mediaResources.drawable.picker_rect_green_selected_thumbnail
+            )
 
             binding.imgPreview.setPadding(paddingSize, paddingSize, paddingSize, paddingSize)
             binding.imgPreview.background = backgroundAsset
