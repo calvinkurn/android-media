@@ -121,7 +121,7 @@ class UserProfileFragment @Inject constructor(
         ShopRecomAdapter(this)
     }
 
-    private val mAdapter: UserPostBaseAdapter by lazy {
+    private val mAdapter: UserPostBaseAdapter by lazy(LazyThreadSafetyMode.NONE) {
         UserPostBaseAdapter(this, this) { cursor ->
             submitAction(UserProfileAction.LoadContent(cursor))
         }
