@@ -653,7 +653,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     }
 
     private fun cancelCampaign(campaign: CampaignUiModel) {
-        if (campaign.thematicParticipation) {
+        if (!campaign.isCancellable) {
             val errorWording = findCancelCampaignErrorWording(campaign.status)
             binding?.cardView showError errorWording
             return
