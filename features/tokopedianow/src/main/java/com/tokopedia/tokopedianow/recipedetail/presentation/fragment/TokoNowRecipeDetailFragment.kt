@@ -9,23 +9,31 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
+import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.tokopedianow.common.view.ToolbarHeaderView
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowRecipeDetailBinding
 import com.tokopedia.tokopedianow.recipedetail.di.component.DaggerRecipeDetailComponent
 import com.tokopedia.tokopedianow.recipedetail.presentation.adapter.RecipeDetailAdapter
 import com.tokopedia.tokopedianow.recipedetail.presentation.adapter.RecipeDetailAdapterTypeFactory
+import com.tokopedia.tokopedianow.recipedetail.presentation.listener.RecipeProductListener
 import com.tokopedia.tokopedianow.recipedetail.presentation.view.RecipeDetailView
 import com.tokopedia.tokopedianow.recipedetail.presentation.viewmodel.TokoNowRecipeDetailViewModel
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView {
+class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidgetListener {
 
     companion object {
         private const val KEY_PARAM_RECIPE_ID = "recipe_id"
@@ -42,7 +50,14 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView {
     @Inject
     lateinit var viewModel: TokoNowRecipeDetailViewModel
 
-    private val adapter by lazy { RecipeDetailAdapter(RecipeDetailAdapterTypeFactory(this)) }
+    private val adapter by lazy {
+        RecipeDetailAdapter(
+            RecipeDetailAdapterTypeFactory(
+                view = this,
+                productListener = RecipeProductListener(viewModel)
+            )
+        )
+    }
 
     private var binding by autoClearedNullable<FragmentTokopedianowRecipeDetailBinding>()
 
@@ -59,10 +74,15 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupHeader()
+        val recipeId = activity?.intent?.data
+            ?.getQueryParameter(KEY_PARAM_RECIPE_ID).orEmpty()
+
+        setupToolbarHeader()
         setupRecyclerView()
+        updateAddressData()
         observeLiveData()
-        getRecipe()
+
+        getRecipe(recipeId)
     }
 
     override fun onAttach(context: Context) {
@@ -70,14 +90,25 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView {
         super.onAttach(context)
     }
 
-    override fun getFragmentActivity() = activity
-
-    private fun setupHeader() {
-        setupToolbarHeader()
-        setToolbarClickListener()
+    override fun onResume() {
+        super.onResume()
+        updateAddressData()
+        getMiniCart()
     }
 
+    override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        viewModel.setProductAddToCartQuantity(miniCartSimplifiedData)
+    }
+
+    override fun getFragmentActivity() = activity
+
     private fun setupToolbarHeader() {
+        initToolbarHeader()
+        setToolbarClickListener()
+        setToolbarScrollListener()
+    }
+
+    private fun initToolbarHeader() {
         toolbarHeader = ToolbarHeaderView(
             header = binding?.toolbarHeader,
             statusBar = binding?.statusBar
@@ -126,18 +157,120 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView {
         }
 
         observe(viewModel.recipeInfo) {
-            setHeaderTitle(it.title)
-            setToolbarScrollListener()
+            if(it is Success) {
+                setHeaderTitle(it.data.title)
+            }
+        }
+
+        observe(viewModel.addItemToCart) {
+            when (it) {
+                is Success -> onSuccessAddItemToCart(it.data)
+                is Fail -> showErrorToaster(it)
+            }
+        }
+
+        observe(viewModel.removeCartItem) {
+            when (it) {
+                is Success -> onSuccessRemoveCartItem(it.data)
+                is Fail -> showErrorToaster(it)
+            }
+        }
+
+        observe(viewModel.updateCartItem) {
+            when (it) {
+                is Success -> onSuccessUpdateCartItem()
+                is Fail -> showErrorToaster(it)
+            }
+        }
+
+        observe(viewModel.miniCart) {
+            when(it) {
+                is Success -> {
+                    val data = it.data
+                    showMiniCart(data)
+                    setupPadding(data)
+                }
+                is Fail -> {
+                    hideMiniCart()
+                    resetPadding()
+                }
+            }
         }
     }
 
-    private fun getRecipe() {
-        context?.let {
-            val recipeId = activity?.intent?.data?.getQueryParameter(KEY_PARAM_RECIPE_ID).orEmpty()
-            val addressData = ChooseAddressUtils.getLocalizingAddressData(it)
-            val warehouseId = addressData.warehouse_id
-            viewModel.getRecipe(recipeId, warehouseId)
+    private fun showMiniCart(data: MiniCartSimplifiedData) {
+        val miniCartWidget = binding?.miniCart
+        val showMiniCartWidget = data.isShowMiniCartWidget
+
+        if(showMiniCartWidget) {
+            val shopId = viewModel.getShopId()
+            val pageName = MiniCartAnalytics.Page.HOME_PAGE
+            val shopIds = listOf(shopId)
+            val source = MiniCartSource.TokonowHome
+            miniCartWidget?.initialize(
+                shopIds = shopIds,
+                fragment = this,
+                listener = this,
+                pageName = pageName,
+                source = source
+            )
+            miniCartWidget?.show()
+        } else {
+            hideMiniCart()
         }
+    }
+
+    private fun hideMiniCart() {
+        binding?.miniCart?.apply {
+            hideCoachMark()
+            hide()
+        }
+    }
+
+    private fun setupPadding(data: MiniCartSimplifiedData) {
+        binding?.miniCart?.post {
+            val paddingZero = context?.resources?.getDimensionPixelSize(
+                com.tokopedia.unifyprinciples.R.dimen.layout_lvl0
+            ).orZero()
+
+            val paddingBottom = if (data.isShowMiniCartWidget) {
+                getMiniCartHeight()
+            } else {
+                paddingZero
+            }
+            binding?.root?.setPadding(paddingZero, paddingZero, paddingZero, paddingBottom)
+        }
+    }
+
+    private fun resetPadding() {
+        val paddingZero = context?.resources?.getDimensionPixelSize(
+            com.tokopedia.unifyprinciples.R.dimen.layout_lvl0
+        ).orZero()
+        binding?.root?.setPadding(paddingZero, paddingZero, paddingZero, paddingZero)
+    }
+
+    private fun onSuccessAddItemToCart(data: AddToCartDataModel) {
+        val message = data.errorMessage.joinToString(separator = ", ")
+        showToaster(message = message)
+        getMiniCart()
+    }
+
+    private fun onSuccessRemoveCartItem(data: Pair<String, String>) {
+        showToaster(message = data.second)
+        getMiniCart()
+    }
+
+    private fun onSuccessUpdateCartItem() {
+        val shopId = viewModel.getShopId()
+        binding?.miniCart?.updateData(listOf(shopId))
+    }
+
+    private fun getRecipe(recipeId: String) {
+        viewModel.getRecipe(recipeId)
+    }
+
+    private fun getMiniCart() {
+        viewModel.getMiniCart()
     }
 
     private fun setHeaderTitle(title: String) {
@@ -161,5 +294,49 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView {
         val vh = rv.findViewHolderForAdapterPosition(RECIPE_INFO_POSITION)
         val statusBarHeight = binding?.statusBar?.height.orZero()
         return vh?.itemView?.y.orZero() - statusBarHeight
+    }
+
+    private fun showToaster(
+        message: String,
+        duration: Int = Toaster.LENGTH_SHORT,
+        type: Int = Toaster.TYPE_NORMAL
+    ) {
+        view?.let { view ->
+            if (message.isNotBlank()) {
+                Toaster.toasterCustomBottomHeight = getMiniCartHeight()
+                val toaster = Toaster.build(
+                    view = view,
+                    text = message,
+                    duration = duration,
+                    type = type
+                )
+                toaster.show()
+            }
+        }
+    }
+
+    private fun showErrorToaster(error: Fail) {
+        showToaster(
+            message = error.throwable.message.orEmpty(),
+            type = Toaster.TYPE_ERROR
+        )
+    }
+
+    private fun getMiniCartHeight(): Int {
+        val space16 = context?.resources?.getDimension(
+            com.tokopedia.unifyprinciples.R.dimen.unify_space_16
+        )?.toInt().orZero()
+        return binding?.miniCart?.height.orZero() - space16
+    }
+
+    private fun updateAddressData() {
+        context?.let { context ->
+            viewModel.localAddressData?.let { currentData ->
+                if (ChooseAddressUtils.isLocalizingAddressHasUpdated(context, currentData)) {
+                    val addressData = ChooseAddressUtils.getLocalizingAddressData(context)
+                    viewModel.localAddressData = addressData
+                }
+            }
+        }
     }
 }

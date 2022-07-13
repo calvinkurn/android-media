@@ -185,8 +185,10 @@
     <string name="tokopedianow_recipe_instruction_section_title">Cara membuat</string>
     <string name="tokopedianow_recipe_ingredient_tab_title">Belanja Bahan</string>
     <string name="tokopedianow_recipe_instruction_tab_title"><![CDATA[Bahan & Cara Masak]]></string>
+    <string name="tokopedianow_recipe_buy_all_label">Beli semua bahan hanya</string>
 
     <string name="tokopedianow_similar_product_text">Produk Serupa</string>
     <string name="tokopedianow_add_to_cart_text">+ Keranjang</string>
     <string name="tokopedianow_stock_empty_text">Stok Habis</string>
+    <string name="tokopedianow_buy_all_text">Beli Semua</string>
 </resources>

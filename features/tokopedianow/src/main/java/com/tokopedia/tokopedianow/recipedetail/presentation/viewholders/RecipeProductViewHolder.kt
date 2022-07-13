@@ -1,10 +1,13 @@
 package com.tokopedia.tokopedianow.recipedetail.presentation.viewholders
 
 import android.graphics.Paint
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowRecipeProductBinding
@@ -13,7 +16,8 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.utils.view.binding.viewBinding
 
 class RecipeProductViewHolder(
-    itemView: View
+    itemView: View,
+    private val listener: RecipeProductListener?
 ) : AbstractViewHolder<RecipeProductUiModel>(itemView) {
 
     companion object {
@@ -22,11 +26,15 @@ class RecipeProductViewHolder(
 
     private var binding: ItemTokopedianowRecipeProductBinding? by viewBinding()
 
+    private var qtyEditorListener: TextWatcher? = null
+
     override fun bind(product: RecipeProductUiModel) {
         renderProductInfo(product)
         renderSlashedPrice(product)
         renderDiscountLabel(product)
         renderProductButton(product)
+        renderQuantityEditor(product)
+        renderDeleteBtn(product)
     }
 
     private fun renderProductInfo(product: RecipeProductUiModel) {
@@ -77,5 +85,72 @@ class RecipeProductViewHolder(
                 isEnabled = true
             }
         }
+    }
+
+    private fun renderQuantityEditor(product: RecipeProductUiModel) {
+        binding?.apply {
+            val stock = product.stock
+            val quantity = product.quantity
+
+            removeTextChangeListener(qtyEditorListener)
+            qtyEditorListener = qtyEditorListener(product)
+
+            if (stock > 0 && quantity > 0) {
+                btnDeleteCart.show()
+                btnProductCta.hide()
+                quantityEditor.show()
+                quantityEditor.setValue(quantity)
+                addTextChangeListener(qtyEditorListener)
+            } else {
+                btnDeleteCart.hide()
+                btnProductCta.show()
+                quantityEditor.hide()
+            }
+        }
+    }
+
+    private fun addTextChangeListener(qtyEditorListener: TextWatcher?) {
+        binding?.quantityEditor?.editText
+            ?.addTextChangedListener(qtyEditorListener)
+    }
+
+    private fun removeTextChangeListener(qtyEditorListener: TextWatcher?) {
+        binding?.quantityEditor?.editText
+            ?.removeTextChangedListener(qtyEditorListener)
+    }
+
+    private fun renderDeleteBtn(product: RecipeProductUiModel) {
+        binding?.btnDeleteCart?.setOnClickListener {
+            listener?.onDeleteCartItem(product.id)
+        }
+    }
+
+    private fun qtyEditorListener(product: RecipeProductUiModel): TextWatcher {
+        return object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+                val input = p0?.toString()
+
+                if(input?.isNotEmpty() == true) {
+                    listener?.onQuantityChanged(
+                        productId = product.id,
+                        shopId = product.shopId,
+                        quantity = input.toIntOrZero()
+                    )
+                }
+            }
+        }
+    }
+
+    interface RecipeProductListener {
+        fun onQuantityChanged(productId: String, shopId: String, quantity: Int)
+        fun onDeleteCartItem(productId: String)
     }
 }

@@ -14,6 +14,7 @@ import com.tokopedia.tokopedianow.recipedetail.di.component.DaggerRecipeDetailCo
 import com.tokopedia.tokopedianow.recipedetail.presentation.adapter.RecipeIngredientAdapter
 import com.tokopedia.tokopedianow.recipedetail.presentation.adapter.RecipeIngredientAdapterTypeFactory
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.IngredientTabUiModel
+import com.tokopedia.tokopedianow.recipedetail.presentation.viewholders.RecipeProductViewHolder.RecipeProductListener
 import com.tokopedia.tokopedianow.recipedetail.presentation.viewmodel.TokoNowRecipeIngredientViewModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -35,7 +36,8 @@ class TokoNowRecipeIngredientFragment : Fragment() {
     @Inject
     lateinit var viewModel: TokoNowRecipeIngredientViewModel
 
-    private val adapter by lazy { RecipeIngredientAdapter(RecipeIngredientAdapterTypeFactory()) }
+    private var adapter: RecipeIngredientAdapter? = null
+    private var productListener: RecipeProductListener? = null
 
     private var binding by autoClearedNullable<FragmentTokopedianowRecipeIngredientBinding>()
 
@@ -50,18 +52,13 @@ class TokoNowRecipeIngredientFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val ingredient = arguments?.getParcelable<IngredientTabUiModel>(EXTRA_INGREDIENT_DATA)
+        val data = arguments
+            ?.getParcelable<IngredientTabUiModel>(EXTRA_INGREDIENT_DATA)
 
-        binding?.rvIngredient?.apply {
-            adapter = this@TokoNowRecipeIngredientFragment.adapter
-            layoutManager = LinearLayoutManager(context)
-        }
+        setupRecyclerView()
+        observeLiveData()
 
-        observe(viewModel.ingredientItemList) {
-            adapter.submitList(it)
-        }
-
-        viewModel.getIngredientItems(ingredient)
+        viewModel.getLayout(data)
     }
 
     override fun onAttach(context: Context) {
@@ -69,10 +66,31 @@ class TokoNowRecipeIngredientFragment : Fragment() {
         super.onAttach(context)
     }
 
+    private fun setupRecyclerView() {
+        adapter = RecipeIngredientAdapter(RecipeIngredientAdapterTypeFactory(
+            productListener = productListener
+        ))
+
+        binding?.rvIngredient?.apply {
+            adapter = this@TokoNowRecipeIngredientFragment.adapter
+            layoutManager = LinearLayoutManager(context)
+        }
+    }
+
+    private fun observeLiveData() {
+        observe(viewModel.itemList) {
+            adapter?.submitList(it)
+        }
+    }
+
     private fun injectDependencies() {
         DaggerRecipeDetailComponent.builder()
             .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
             .build()
             .inject(this)
+    }
+
+    fun setProductListener(productListener: RecipeProductListener) {
+        this.productListener = productListener
     }
 }
