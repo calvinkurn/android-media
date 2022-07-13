@@ -3,8 +3,6 @@ package com.tokopedia.search.result.domain.model
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.discovery.common.constants.SearchConstant.SaveLastFilter.CATEGORY_ID_L2
 import com.tokopedia.filter.common.data.SavedOption
-import com.tokopedia.filter.common.helper.getSortFilterParamsString
-import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 
 class LastFilterModel(
     @SerializedName("fetchLastFilter")
@@ -37,12 +35,5 @@ class LastFilterModel(
 
         @SerializedName("component_id")
         val componentId: String ="",
-    ) {
-
-        fun sortFilterParamsString(): String {
-            val optionList = filters.map(SavedOption::asOption)
-            val optionMap = OptionHelper.toMap(optionList) as Map<String?, String>
-            return getSortFilterParamsString(optionMap)
-        }
-    }
+    )
 }

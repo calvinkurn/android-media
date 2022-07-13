@@ -430,7 +430,6 @@ class ProductViewModelMapper {
             filterList = lastFilterData.filters,
             title = lastFilterData.title,
             keyword = keyword,
-            filterParamsString = lastFilterData.sortFilterParamsString(),
             applink = lastFilterData.applink,
             trackingOption = lastFilterData.trackingOption,
             componentId = lastFilterData.componentId,

@@ -2010,11 +2010,6 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun applyLastFilter(lastFilterDataView: LastFilterDataView) {
-        SearchTracking.trackEventLastFilterClickApply(
-            queryKey,
-            lastFilterDataView.sortFilterParamsString(),
-            getDimension90(),
-        )
         lastFilterListener.applyLastFilter(lastFilterDataView)
 
         filterController.setFilter(lastFilterDataView.filterOptions())
@@ -2026,11 +2021,6 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun closeLastFilter(lastFilterDataView: LastFilterDataView) {
-        SearchTracking.trackEventLastFilterClickClose(
-            queryKey,
-            lastFilterDataView.sortFilterParamsString(),
-            getDimension90(),
-        )
         lastFilterListener.closeLastFilter(lastFilterDataView)
 
         val searchParameterMap = searchParameter?.getSearchParameterMap() ?: mapOf()

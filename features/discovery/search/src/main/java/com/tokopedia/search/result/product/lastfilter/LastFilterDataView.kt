@@ -15,7 +15,6 @@ class LastFilterDataView(
     val title: String = "",
     val applink: String = "",
     val keyword: String = "",
-    val filterParamsString: String = "",
     val trackingOption: Int = 0,
     val componentId: String = "",
     val dimension90: String = "",
@@ -24,7 +23,7 @@ class LastFilterDataView(
         trackingOption = trackingOption,
         keyword = keyword,
         applink = applink,
-        valueName = filterParamsString,
+        valueName = title,
         componentId = componentId,
         dimension90 = dimension90,
     ) {
