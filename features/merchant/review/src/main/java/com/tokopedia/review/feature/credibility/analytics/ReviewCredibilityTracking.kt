@@ -1,63 +1,153 @@
 package com.tokopedia.review.feature.credibility.analytics
 
-import com.tokopedia.applink.review.ReviewApplinkConst
+import android.os.Bundle
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.review.common.analytics.ReviewTrackingConstant
-import com.tokopedia.track.TrackApp
+import com.tokopedia.review.feature.credibility.presentation.uimodel.ReviewCredibilityAchievementBoxUiModel
+import com.tokopedia.reviewcommon.constant.AnalyticConstant
+import com.tokopedia.reviewcommon.extension.appendBusinessUnit
+import com.tokopedia.reviewcommon.extension.appendCurrentSite
+import com.tokopedia.reviewcommon.extension.appendGeneralEventData
+import com.tokopedia.reviewcommon.extension.appendProductID
+import com.tokopedia.reviewcommon.extension.appendProductId
+import com.tokopedia.reviewcommon.extension.appendTrackerIdIfNotBlank
+import com.tokopedia.reviewcommon.extension.appendUserId
+import com.tokopedia.reviewcommon.extension.sendEnhancedEcommerce
+import com.tokopedia.reviewcommon.extension.sendGeneralEvent
 
 object ReviewCredibilityTracking {
 
-    fun trackOnClickCTASelfCredibility(ctaValue: String, userId: String, source: String, viewerUserId: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            mapOf(
-                ReviewTrackingConstant.EVENT to ReviewCredibilityTrackingConstant.EVENT_CLICK_INBOX_REVIEW,
-                ReviewTrackingConstant.EVENT_ACTION to ReviewCredibilityTrackingConstant.EVENT_ACTION_CLICK_CTA_SELF,
-                ReviewTrackingConstant.EVENT_CATEGORY to getEventCategoryBasedOnSource(source),
-                ReviewTrackingConstant.EVENT_LABEL to String.format(
-                    ReviewCredibilityTrackingConstant.EVENT_LABEL_CLICK_CTA,
-                    ctaValue,
-                    userId
-                ),
-                ReviewTrackingConstant.KEY_BUSINESS_UNIT to ReviewTrackingConstant.BUSINESS_UNIT,
-                ReviewTrackingConstant.KEY_CURRENT_SITE to ReviewTrackingConstant.CURRENT_SITE,
-                ReviewTrackingConstant.KEY_USER_ID to viewerUserId
-            )
-        )
-    }
-
-    fun trackOnClickCTAOtherUserCredibility(ctaValue: String, userId: String, productId: String, source: String, viewerUserId: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            mapOf(
-                ReviewTrackingConstant.EVENT to ReviewCredibilityTrackingConstant.EVENT_CLICK_INBOX_REVIEW,
-                ReviewTrackingConstant.EVENT_ACTION to ReviewCredibilityTrackingConstant.EVENT_ACTION_CLICK_CTA_OTHER_USER,
-                ReviewTrackingConstant.EVENT_CATEGORY to getEventCategoryBasedOnSource(source),
-                ReviewTrackingConstant.EVENT_LABEL to String.format(
-                    ReviewCredibilityTrackingConstant.EVENT_LABEL_CLICK_CTA,
-                    ctaValue,
-                    userId
-                ),
-                ReviewTrackingConstant.KEY_BUSINESS_UNIT to ReviewTrackingConstant.BUSINESS_UNIT,
-                ReviewTrackingConstant.KEY_CURRENT_SITE to ReviewTrackingConstant.CURRENT_SITE,
-                ReviewTrackingConstant.KEY_USER_ID to viewerUserId,
-                ReviewTrackingConstant.KEY_PRODUCT_ID to productId
-            )
-        )
-    }
-
-    private fun getEventCategoryBasedOnSource(source: String): String {
-        return when (source) {
-            ReviewApplinkConst.REVIEW_CREDIBILITY_SOURCE_REVIEW_READING,
-            ReviewApplinkConst.REVIEW_CREDIBILITY_SOURCE_REVIEW_MOST_HELPFUL -> {
-                ReviewCredibilityTrackingConstant.EVENT_CATEGORY_READING
-            }
-            ReviewApplinkConst.REVIEW_CREDIBILITY_SOURCE_REVIEW_READING_IMAGE_PREVIEW -> {
-                ReviewCredibilityTrackingConstant.EVENT_CATEGORY_READING_IMAGE_PREVIEW
-            }
-            ReviewApplinkConst.REVIEW_CREDIBILITY_SOURCE_REVIEW_GALLERY -> {
-                ReviewCredibilityTrackingConstant.EVENT_CATEGORY_GALLERY
-            }
-            else -> {
-                ReviewCredibilityTrackingConstant.EVENT_CATEGORY_INBOX
+    private fun Bundle.appendImpressAchievementPromotionsEE(
+        achievements: List<ReviewCredibilityAchievementBoxUiModel.ReviewCredibilityAchievementUiModel>
+    ): Bundle {
+        val promotions = achievements.mapIndexed { index, reviewCredibilityAchievementUiModel ->
+            Bundle().apply {
+                putString(AnalyticConstant.KEY_EE_CREATIVE_NAME, reviewCredibilityAchievementUiModel.counter)
+                putInt(AnalyticConstant.KEY_EE_CREATIVE_SLOT, index)
+                putString(AnalyticConstant.KEY_EE_ITEM_ID, ReviewCredibilityTrackingConstant.ITEM_ID_ACHIEVEMENT_STICKER)
+                putString(AnalyticConstant.KEY_EE_ITEM_NAME, reviewCredibilityAchievementUiModel.name)
             }
         }
+        putParcelableArrayList(AnalyticConstant.KEY_EE_PROMOTIONS, ArrayList(promotions))
+        return this
+    }
+
+    fun trackOnClickCTASelfCredibility(
+        ctaValue: String, productId: String, viewerUserId: String
+    ) {
+        mutableMapOf<String, Any>().appendGeneralEventData(
+            AnalyticConstant.EVENT_CLICK_PG,
+            ReviewCredibilityTrackingConstant.EVENT_CATEGORY_PERSONAL_STATISTICS_BOTTOM_SHEET,
+            ReviewCredibilityTrackingConstant.EVENT_ACTION_CLICK_CTA,
+            String.format(ReviewCredibilityTrackingConstant.EVENT_LABEL_CLICK_CTA, ctaValue)
+        ).appendBusinessUnit(ReviewTrackingConstant.BUSINESS_UNIT)
+            .appendCurrentSite(ReviewTrackingConstant.CURRENT_SITE)
+            .appendUserId(viewerUserId)
+            .appendProductId(productId)
+            .appendTrackerIdIfNotBlank(ReviewCredibilityTrackingConstant.TRACKER_ID_CLICK_CTA_SELF)
+            .sendGeneralEvent()
+    }
+
+    fun trackOnClickCTAOtherUserCredibility(
+        ctaValue: String, productId: String, viewerUserId: String
+    ) {
+        mutableMapOf<String, Any>().appendGeneralEventData(
+            AnalyticConstant.EVENT_CLICK_PG,
+            ReviewCredibilityTrackingConstant.EVENT_CATEGORY_OTHERS_STATISTICS_BOTTOM_SHEET,
+            ReviewCredibilityTrackingConstant.EVENT_ACTION_CLICK_CTA,
+            String.format(ReviewCredibilityTrackingConstant.EVENT_LABEL_CLICK_CTA, ctaValue)
+        ).appendBusinessUnit(ReviewTrackingConstant.BUSINESS_UNIT)
+            .appendCurrentSite(ReviewTrackingConstant.CURRENT_SITE)
+            .appendUserId(viewerUserId)
+            .appendProductId(productId)
+            .appendTrackerIdIfNotBlank(ReviewCredibilityTrackingConstant.TRACKER_ID_CLICK_CTA_OTHER)
+            .sendGeneralEvent()
+    }
+
+    fun trackOnClickAchievementSticker(
+        usersOwnCredibility: Boolean, name: String, viewerUserId: String, productID: String
+    ) {
+        mutableMapOf<String, Any>().appendGeneralEventData(
+            AnalyticConstant.EVENT_CLICK_PG,
+            if (usersOwnCredibility) {
+                ReviewCredibilityTrackingConstant.EVENT_CATEGORY_PERSONAL_STATISTICS_BOTTOM_SHEET
+            } else {
+                ReviewCredibilityTrackingConstant.EVENT_CATEGORY_OTHERS_STATISTICS_BOTTOM_SHEET
+            },
+            ReviewCredibilityTrackingConstant.EVENT_ACTION_CLICK_ACHIEVEMENT_STICKER,
+            String.format(
+                ReviewCredibilityTrackingConstant.EVENT_LABEL_CLICK_ACHIEVEMENT_STICKER,
+                name,
+                Int.ZERO
+            )
+        ).appendBusinessUnit(ReviewTrackingConstant.BUSINESS_UNIT)
+            .appendCurrentSite(ReviewTrackingConstant.CURRENT_SITE)
+            .appendUserId(viewerUserId)
+            .appendProductId(productID)
+            .appendTrackerIdIfNotBlank(
+                if (usersOwnCredibility) {
+                    ReviewCredibilityTrackingConstant.TRACKER_ID_CLICK_ACHIEVEMENT_STICKER_SELF
+                } else {
+                    ReviewCredibilityTrackingConstant.TRACKER_ID_CLICK_ACHIEVEMENT_STICKER_OTHER
+                }
+            ).sendGeneralEvent()
+    }
+
+    fun trackOnClickSeeMoreAchievement(
+        usersOwnCredibility: Boolean, buttonText: String, viewerUserId: String, productID: String
+    ) {
+        mutableMapOf<String, Any>().appendGeneralEventData(
+            AnalyticConstant.EVENT_CLICK_PG,
+            if (usersOwnCredibility) {
+                ReviewCredibilityTrackingConstant.EVENT_CATEGORY_PERSONAL_STATISTICS_BOTTOM_SHEET
+            } else {
+                ReviewCredibilityTrackingConstant.EVENT_CATEGORY_OTHERS_STATISTICS_BOTTOM_SHEET
+            },
+            ReviewCredibilityTrackingConstant.EVENT_ACTION_CLICK_SEE_MORE_ACHIEVEMENT,
+            String.format(
+                ReviewCredibilityTrackingConstant.EVENT_LABEL_CLICK_SEE_MORE_ACHIEVEMENT,
+                buttonText
+            )
+        ).appendBusinessUnit(ReviewTrackingConstant.BUSINESS_UNIT)
+            .appendCurrentSite(ReviewTrackingConstant.CURRENT_SITE)
+            .appendUserId(viewerUserId)
+            .appendProductId(productID)
+            .appendTrackerIdIfNotBlank(
+                if (usersOwnCredibility) {
+                    ReviewCredibilityTrackingConstant.TRACKER_ID_CLICK_SEE_MORE_ACHIEVEMENT_SELF
+                } else {
+                    ReviewCredibilityTrackingConstant.TRACKER_ID_CLICK_SEE_MORE_ACHIEVEMENT_OTHER
+                }
+            ).sendGeneralEvent()
+    }
+
+    fun trackImpressAchievementStickers(
+        usersOwnCredibility: Boolean,
+        achievements: List<ReviewCredibilityAchievementBoxUiModel.ReviewCredibilityAchievementUiModel>,
+        viewerUserId: String,
+        productID: String
+    ) {
+        Bundle().appendGeneralEventData(
+            AnalyticConstant.EVENT_VIEW_ITEM,
+            if (usersOwnCredibility) {
+                ReviewCredibilityTrackingConstant.EVENT_CATEGORY_PERSONAL_STATISTICS_BOTTOM_SHEET
+            } else {
+                ReviewCredibilityTrackingConstant.EVENT_CATEGORY_OTHERS_STATISTICS_BOTTOM_SHEET
+            },
+            ReviewCredibilityTrackingConstant.EVENT_ACTION_IMPRESS_ACHIEVEMENT_STICKER,
+            ""
+        ).appendBusinessUnit(ReviewTrackingConstant.BUSINESS_UNIT)
+            .appendCurrentSite(ReviewTrackingConstant.CURRENT_SITE)
+            .appendUserId(viewerUserId)
+            .appendProductID(productID)
+            .appendTrackerIdIfNotBlank(
+                if (usersOwnCredibility) {
+                    ReviewCredibilityTrackingConstant.TRACKER_ID_IMPRESS_ACHIEVEMENT_STICKER_SELF
+                } else {
+                    ReviewCredibilityTrackingConstant.TRACKER_ID_IMPRESS_ACHIEVEMENT_STICKER_OTHER
+                }
+            )
+            .appendImpressAchievementPromotionsEE(achievements)
+            .sendEnhancedEcommerce(AnalyticConstant.EVENT_VIEW_ITEM)
     }
 }

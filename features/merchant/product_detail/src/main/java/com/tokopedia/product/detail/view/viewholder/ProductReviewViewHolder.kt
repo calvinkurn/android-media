@@ -149,23 +149,15 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
     private fun setBasicInfoListener(review: Review) {
         binding.basicInfoMostHelpfulReview.setListeners(
             reviewBasicInfoListener = object : ReviewBasicInfoListener {
-                override fun onUserNameClicked(userId: String) {
+                override fun onUserNameClicked(
+                    feedbackId: String, userId: String, statistics: String, label: String
+                ) {
                     element?.let {
                         listener.onSeeReviewCredibility(
-                            review.reviewId.toString(),
-                            review.user.userId.toString(),
-                            composeUserStatistics(review.userStat.orEmpty()),
-                            review.userLabel,
-                            getComponentTrackData(it)
+                            feedbackId, userId, statistics, label, getComponentTrackData(it)
                         )
                     }
                 }
-
-                override fun trackOnUserInfoClicked(
-                    feedbackId: String,
-                    userId: String,
-                    statistics: String
-                ) {}
             }, threeDotsListener = null
         )
     }

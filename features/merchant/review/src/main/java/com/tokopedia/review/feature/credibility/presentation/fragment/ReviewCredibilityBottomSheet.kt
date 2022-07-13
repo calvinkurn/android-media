@@ -17,6 +17,7 @@ import com.tokopedia.review.common.extension.collectLatestWhenResumed
 import com.tokopedia.review.databinding.BottomsheetReviewCredibilityBinding
 import com.tokopedia.review.feature.credibility.analytics.ReviewCredibilityTracking
 import com.tokopedia.review.feature.credibility.di.ReviewCredibilityComponent
+import com.tokopedia.review.feature.credibility.presentation.uimodel.ReviewCredibilityAchievementBoxUiModel
 import com.tokopedia.review.feature.credibility.presentation.uistate.ReviewCredibilityGlobalErrorUiState
 import com.tokopedia.review.feature.credibility.presentation.viewmodel.ReviewCredibilityViewModel
 import com.tokopedia.review.feature.credibility.presentation.widget.ReviewCredibilityAchievementBoxWidget
@@ -106,6 +107,39 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), ReviewCredibilityFooter
         viewModel.onAchievementBoxStopTransitioning()
     }
 
+    override fun onClickAchievementSticker(appLink: String, name: String) {
+        val routed = RouteManager.route(context, appLink)
+        if (routed) {
+            ReviewCredibilityTracking.trackOnClickAchievementSticker(
+                viewModel.isUsersOwnCredibility(),
+                name,
+                viewModel.getUserID(),
+                viewModel.getProductID()
+            )
+        }
+    }
+
+    override fun onClickSeeMoreAchievement(appLink: String, buttonText: String) {
+        val routed = RouteManager.route(context, appLink)
+        if (routed) {
+            ReviewCredibilityTracking.trackOnClickSeeMoreAchievement(
+                viewModel.isUsersOwnCredibility(),
+                buttonText,
+                viewModel.getUserID(),
+                viewModel.getProductID()
+            )
+        }
+    }
+
+    override fun onImpressAchievementStickers(achievements: List<ReviewCredibilityAchievementBoxUiModel.ReviewCredibilityAchievementUiModel>) {
+        ReviewCredibilityTracking.trackImpressAchievementStickers(
+            viewModel.isUsersOwnCredibility(),
+            achievements,
+            viewModel.getUserID(),
+            viewModel.getProductID()
+        )
+    }
+
     override fun onStatisticBoxTransitionEnd() {
         viewModel.onStatisticBoxStopTransitioning()
     }
@@ -117,18 +151,13 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), ReviewCredibilityFooter
     override fun onClickCTAButton(appLink: String, buttonText: String) {
         if (viewModel.isUsersOwnCredibility()) {
             ReviewCredibilityTracking.trackOnClickCTASelfCredibility(
-                buttonText,
-                viewModel.getUserID(),
-                viewModel.getSource(),
-                viewModel.getReviewerUserID()
+                buttonText, viewModel.getProductID(), viewModel.getUserID()
             )
         } else {
             ReviewCredibilityTracking.trackOnClickCTAOtherUserCredibility(
                 buttonText,
-                viewModel.getUserID(),
                 viewModel.getProductID(),
-                viewModel.getSource(),
-                viewModel.getReviewerUserID()
+                viewModel.getUserID()
             )
         }
         handleRouting(appLink)

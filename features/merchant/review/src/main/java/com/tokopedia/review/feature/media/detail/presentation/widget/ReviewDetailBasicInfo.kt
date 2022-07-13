@@ -26,21 +26,6 @@ open class ReviewDetailBasicInfo @JvmOverloads constructor(
     )
     private var showReviewerInfo: Boolean = true
     private var listener: Listener? = null
-    private var uiState: ReviewDetailBasicInfoUiState? = null
-
-    init {
-        binding.layoutReviewDetailBasicInfo.overlayLikeDislikeClickArea.setOnClickListener {
-            it?.generateHapticFeedback()
-            listener?.onToggleLikeClicked()
-        }
-        binding.layoutReviewDetailBasicInfo.overlayCredibilityClickArea.setOnClickListener {
-            uiState?.let {
-                if (it is ReviewDetailBasicInfoUiState.Showing && !it.data.anonymous) {
-                    listener?.onGoToCredibilityClicked(it.data.userId, it.data.reviewerStatsSummary)
-                }
-            }
-        }
-    }
 
     private fun hideReviewDetailBasicInfo() {
         gone()
@@ -72,11 +57,11 @@ open class ReviewDetailBasicInfo @JvmOverloads constructor(
             setupReviewerName(data.reviewerName, source)
             setupReviewerStatsSummary(data.reviewerStatsSummary, source)
             setupProductVariant(data.variant, source)
+            setupListeners(data, source)
         }
     }
 
     fun updateUi(uiState: ReviewDetailBasicInfoUiState, source: Source) {
-        this.uiState = uiState
         when (uiState) {
             is ReviewDetailBasicInfoUiState.Hidden -> hideReviewDetailBasicInfo()
             is ReviewDetailBasicInfoUiState.Loading -> showReviewDetailBasicInfoLoading()
@@ -182,9 +167,41 @@ open class ReviewDetailBasicInfo @JvmOverloads constructor(
         }
     }
 
+    private fun PartialWidgetReviewDetailBasicInfoBinding.setupListeners(
+        data: ReviewDetailBasicInfoUiModel,
+        source: Source
+    ) {
+        setupLikeDislikeListener()
+        setupOverlayCredibilityListener(data, source)
+    }
+
+    private fun PartialWidgetReviewDetailBasicInfoBinding.setupLikeDislikeListener() {
+        overlayLikeDislikeClickArea.setOnClickListener {
+            it?.generateHapticFeedback()
+            listener?.onToggleLikeClicked()
+        }
+    }
+
+    private fun PartialWidgetReviewDetailBasicInfoBinding.setupOverlayCredibilityListener(
+        data: ReviewDetailBasicInfoUiModel,
+        source: Source
+    ) {
+        overlayCredibilityClickArea.setOnClickListener {
+            if (!data.anonymous && source == Source.EXPANDED_REVIEW_DETAIL_BOTTOM_SHEET) {
+                listener?.onGoToCredibilityClicked(
+                    data.userId, data.reviewerStatsSummary, data.reviewerLabel
+                )
+            }
+        }
+    }
+
     interface Listener {
         fun onToggleLikeClicked()
-        fun onGoToCredibilityClicked(userId: String, reviewerStatsSummary: String)
+        fun onGoToCredibilityClicked(
+            userId: String,
+            reviewerStatsSummary: String,
+            reviewerLabel: String
+        )
     }
 
     enum class Source {

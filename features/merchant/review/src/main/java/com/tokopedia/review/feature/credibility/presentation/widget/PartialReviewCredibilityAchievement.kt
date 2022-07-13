@@ -1,7 +1,6 @@
 package com.tokopedia.review.feature.credibility.presentation.widget
 
 import androidx.core.content.ContextCompat
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.review.R
@@ -10,8 +9,10 @@ import com.tokopedia.review.feature.credibility.presentation.uimodel.ReviewCredi
 import com.tokopedia.reviewcommon.extension.toColorInt
 
 class PartialReviewCredibilityAchievement(
-    private val binding: PartialReviewCredibilityAchievementBinding
+    private val binding: PartialReviewCredibilityAchievementBinding,
+    private var listener: ReviewCredibilityAchievementBoxWidget.Listener?
 ) {
+
     fun hide() {
         binding.root.invisible()
     }
@@ -32,12 +33,16 @@ class PartialReviewCredibilityAchievement(
                 data.color.toColorInt(com.tokopedia.unifyprinciples.R.color.Unify_TN600)
             )
             binding.cardReviewCredibilityAchievement.setOnClickListener {
-                RouteManager.route(binding.root.context, data.mementoLink)
+                listener?.onClickAchievementSticker(data.mementoLink, data.name)
             }
             binding.ivReviewCredibilityAchievementAvatar.setOnClickListener {
-                RouteManager.route(binding.root.context, data.mementoLink)
+                listener?.onClickAchievementSticker(data.mementoLink, data.name)
             }
             binding.root.visible()
         }
+    }
+
+    fun setListener(newListener: ReviewCredibilityAchievementBoxWidget.Listener?) {
+        listener = newListener
     }
 }

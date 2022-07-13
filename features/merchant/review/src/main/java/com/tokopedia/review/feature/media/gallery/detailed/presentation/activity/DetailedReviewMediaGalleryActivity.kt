@@ -34,6 +34,8 @@ import com.tokopedia.review.R
 import com.tokopedia.review.common.extension.collectLatestWhenResumed
 import com.tokopedia.review.common.extension.collectWhenResumed
 import com.tokopedia.review.databinding.ActivityDetailedReviewMediaGalleryBinding
+import com.tokopedia.review.feature.media.detail.analytic.ReviewDetailTracker
+import com.tokopedia.review.feature.media.detail.analytic.ReviewDetailTrackerConstant
 import com.tokopedia.review.feature.media.detail.presentation.fragment.ReviewDetailFragment
 import com.tokopedia.review.feature.media.detail.presentation.uimodel.ReviewDetailUiModel
 import com.tokopedia.review.feature.media.gallery.base.presentation.fragment.ReviewMediaGalleryFragment
@@ -612,8 +614,13 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
     }
 
     private inner class ReviewerBasicInfoListener : ReviewBasicInfoListener {
-        override fun onUserNameClicked(userId: String) {
-            RouteManager.route(
+        override fun onUserNameClicked(
+            feedbackId: String,
+            userId: String,
+            statistics: String,
+            label: String
+        ) {
+            val routed = RouteManager.route(
                 this@DetailedReviewMediaGalleryActivity,
                 Uri.parse(
                     UriUtil.buildUri(
@@ -628,12 +635,18 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
                     ).build()
                     .toString()
             )
+            if (routed) {
+                ReviewDetailTracker.trackClickReviewerName(
+                    sharedReviewMediaGalleryViewModel.isFromGallery(),
+                    sharedReviewMediaGalleryViewModel.currentReviewDetail.value?.feedbackID.orEmpty(),
+                    userId,
+                    statistics,
+                    sharedReviewMediaGalleryViewModel.getProductId(),
+                    sharedReviewMediaGalleryViewModel.getUserID(),
+                    label,
+                    ReviewDetailTrackerConstant.TRACKER_ID_CLICK_REVIEWER_NAME_FROM_DETAILED_REVIEW_MEDIA_GALLERY
+                )
+            }
         }
-
-        override fun trackOnUserInfoClicked(
-            feedbackId: String,
-            userId: String,
-            statistics: String
-        ) {}
     }
 }

@@ -17,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.common.extension.collectLatestWhenResumed
 import com.tokopedia.review.databinding.FragmentReviewDetailCommonBinding
 import com.tokopedia.review.feature.media.detail.analytic.ReviewDetailTracker
+import com.tokopedia.review.feature.media.detail.analytic.ReviewDetailTrackerConstant
 import com.tokopedia.review.feature.media.detail.di.ReviewDetailComponentInstance
 import com.tokopedia.review.feature.media.detail.di.qualifier.ReviewDetailViewModelFactory
 import com.tokopedia.review.feature.media.detail.presentation.bottomsheet.ExpandedReviewDetailBottomSheet
@@ -28,7 +29,6 @@ import com.tokopedia.review.feature.media.detail.presentation.widget.ReviewDetai
 import com.tokopedia.review.feature.media.gallery.detailed.di.qualifier.DetailedReviewMediaGalleryViewModelFactory
 import com.tokopedia.review.feature.media.gallery.detailed.domain.usecase.ToggleLikeReviewUseCase
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.viewmodel.SharedReviewMediaGalleryViewModel
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -45,9 +45,6 @@ class ReviewDetailFragment : BaseDaggerFragment(), CoroutineScope {
 
     @Inject
     lateinit var dispatchers: CoroutineDispatchers
-
-    @Inject
-    lateinit var userSession: UserSessionInterface
 
     @Inject
     @ReviewDetailViewModelFactory
@@ -256,20 +253,21 @@ class ReviewDetailFragment : BaseDaggerFragment(), CoroutineScope {
             }
         }
 
-        override fun onGoToCredibilityClicked(userId: String, reviewerStatsSummary: String) {
+        override fun onGoToCredibilityClicked(
+            userId: String,
+            reviewerStatsSummary: String,
+            reviewerLabel: String
+        ) {
             val routed = RouteManager.route(
-                context,
-                Uri.parse(
+                context, Uri.parse(
                     UriUtil.buildUri(
                         ApplinkConstInternalMarketplace.REVIEW_CREDIBILITY,
                         userId,
                         getCredibilitySource()
                     )
-                ).buildUpon()
-                    .appendQueryParameter(
-                        PARAM_PRODUCT_ID, sharedReviewMediaGalleryViewModel.getProductId()
-                    ).build()
-                    .toString()
+                ).buildUpon().appendQueryParameter(
+                    PARAM_PRODUCT_ID, sharedReviewMediaGalleryViewModel.getProductId()
+                ).build().toString()
             )
             if (routed) {
                 ReviewDetailTracker.trackClickReviewerName(
@@ -278,7 +276,9 @@ class ReviewDetailFragment : BaseDaggerFragment(), CoroutineScope {
                     userId,
                     reviewerStatsSummary,
                     sharedReviewMediaGalleryViewModel.getProductId(),
-                    userSession.userId
+                    sharedReviewMediaGalleryViewModel.getUserID(),
+                    reviewerLabel,
+                    ReviewDetailTrackerConstant.TRACKER_ID_CLICK_REVIEWER_NAME_FROM_EXPANDED_REVIEW_DETAIL
                 )
             }
         }

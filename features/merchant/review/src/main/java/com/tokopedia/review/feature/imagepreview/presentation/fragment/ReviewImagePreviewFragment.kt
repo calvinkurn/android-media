@@ -242,15 +242,23 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    override fun trackOnUserInfoClicked(feedbackId: String, userId: String, statistics: String) {
-        ReviewImagePreviewTracking.trackClickReviewerName(
-            isFromGallery, feedbackId, userId, statistics,
-            if (isFromGallery) viewModel.getProductId() else productId, viewModel.getUserId()
-        )
-    }
-
-    override fun onUserNameClicked(userId: String) {
-        goToReviewCredibility(userId)
+    override fun onUserNameClicked(
+        feedbackId: String,
+        userId: String,
+        statistics: String,
+        label: String
+    ) {
+        if (goToReviewCredibility(userId)) {
+            ReviewImagePreviewTracking.trackClickReviewerName(
+                isFromGallery,
+                feedbackId,
+                userId,
+                statistics,
+                if (isFromGallery) viewModel.getProductId() else productId,
+                viewModel.getUserId(),
+                label
+            )
+        }
     }
 
     private fun getDataFromArguments() {
@@ -772,8 +780,8 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         return reviewGalleryImageThumbnailUiModel
     }
 
-    private fun goToReviewCredibility(userId: String) {
-        RouteManager.route(
+    private fun goToReviewCredibility(userId: String): Boolean {
+        return RouteManager.route(
             context,
             Uri.parse(
                 UriUtil.buildUri(

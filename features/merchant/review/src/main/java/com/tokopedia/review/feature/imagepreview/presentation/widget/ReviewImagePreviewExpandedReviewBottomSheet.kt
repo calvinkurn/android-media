@@ -63,20 +63,24 @@ class ReviewImagePreviewExpandedReviewBottomSheet : BottomSheetUnify(), ReviewBa
         setBadRatingReason()
     }
 
-    override fun onUserNameClicked(userId: String) {
-        dismiss()
-        goToReviewCredibility(userId, uiModel.source)
-    }
-
-    override fun trackOnUserInfoClicked(feedbackId: String, userId: String, statistics: String) {
-        ReviewImagePreviewTracking.trackClickReviewerName(
-            uiModel.isFromGallery,
-            feedbackId,
-            userId,
-            statistics,
-            uiModel.productId,
-            uiModel.currentUserId
-        )
+    override fun onUserNameClicked(
+        feedbackId: String,
+        userId: String,
+        statistics: String,
+        label: String
+    ) {
+        if (goToReviewCredibility(userId, uiModel.source)) {
+            dismiss()
+            ReviewImagePreviewTracking.trackClickReviewerName(
+                uiModel.isFromGallery,
+                feedbackId,
+                userId,
+                statistics,
+                uiModel.productId,
+                uiModel.currentUserId,
+                label
+            )
+        }
     }
 
     private fun setBasicInfo() {
@@ -116,8 +120,8 @@ class ReviewImagePreviewExpandedReviewBottomSheet : BottomSheetUnify(), ReviewBa
         bottomSheetHeader.hide()
     }
 
-    private fun goToReviewCredibility(userId: String, source: String) {
-        RouteManager.route(
+    private fun goToReviewCredibility(userId: String, source: String): Boolean {
+        return RouteManager.route(
             context,
             Uri.parse(
                 UriUtil.buildUri(

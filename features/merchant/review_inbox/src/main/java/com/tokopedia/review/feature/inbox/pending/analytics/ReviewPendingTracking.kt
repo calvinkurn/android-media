@@ -3,8 +3,11 @@ package com.tokopedia.review.feature.inbox.pending.analytics
 import android.os.Bundle
 import com.tokopedia.review.common.analytics.ReviewInboxTrackingConstants
 import com.tokopedia.review.common.analytics.ReviewTrackingConstant
+import com.tokopedia.reviewcommon.extension.appendBusinessUnit
+import com.tokopedia.reviewcommon.extension.appendCurrentSite
+import com.tokopedia.reviewcommon.extension.appendGeneralEventData
+import com.tokopedia.reviewcommon.extension.appendUserId
 import com.tokopedia.track.TrackApp
-import com.tokopedia.track.TrackAppUtils
 
 object ReviewPendingTracking {
 
@@ -72,34 +75,6 @@ object ReviewPendingTracking {
                     KEY_PAGE_SOURCE to source
             )
         }
-    }
-
-    private fun Bundle.appendGeneralEventData(
-        eventName: String,
-        eventCategory: String,
-        eventAction: String,
-        eventLabel: String
-    ): Bundle {
-        putString(TrackAppUtils.EVENT, eventName)
-        putString(TrackAppUtils.EVENT_CATEGORY, eventCategory)
-        putString(TrackAppUtils.EVENT_ACTION, eventAction)
-        putString(TrackAppUtils.EVENT_LABEL, eventLabel)
-        return this
-    }
-
-    private fun Bundle.appendBusinessUnit(businessUnit: String): Bundle {
-        putString(ReviewPendingTrackingConstants.BUSINESS_UNIT, businessUnit)
-        return this
-    }
-
-    private fun Bundle.appendCurrentSite(currentSite: String): Bundle {
-        putString(ReviewPendingTrackingConstants.CURRENT_SITE, currentSite)
-        return this
-    }
-
-    private fun Bundle.appendUserId(userId: String): Bundle {
-        putString(ReviewTrackingConstant.KEY_USER_ID, userId)
-        return this
     }
 
     private fun Bundle.appendBannerPromotions(position: Int, title: String): Bundle {

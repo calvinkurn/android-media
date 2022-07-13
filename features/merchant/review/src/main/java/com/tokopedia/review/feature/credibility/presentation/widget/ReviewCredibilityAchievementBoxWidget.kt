@@ -10,7 +10,6 @@ import androidx.transition.Fade
 import androidx.transition.Transition
 import androidx.transition.TransitionManager
 import androidx.transition.TransitionSet
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.databinding.WidgetReviewCredibilityAchievementBoxBinding
@@ -36,13 +35,13 @@ class ReviewCredibilityAchievementBoxWidget @JvmOverloads constructor(
         )
 
     private val partialWidgetAchievement1 by lazy(LazyThreadSafetyMode.NONE) {
-        PartialReviewCredibilityAchievement(binding.widgetReviewCredibilityAchievement1)
+        PartialReviewCredibilityAchievement(binding.widgetReviewCredibilityAchievement1, listener)
     }
     private val partialWidgetAchievement2 by lazy(LazyThreadSafetyMode.NONE) {
-        PartialReviewCredibilityAchievement(binding.widgetReviewCredibilityAchievement2)
+        PartialReviewCredibilityAchievement(binding.widgetReviewCredibilityAchievement2, listener)
     }
     private val partialWidgetAchievement3 by lazy(LazyThreadSafetyMode.NONE) {
-        PartialReviewCredibilityAchievement(binding.widgetReviewCredibilityAchievement3)
+        PartialReviewCredibilityAchievement(binding.widgetReviewCredibilityAchievement3, listener)
     }
 
     private var listener: Listener? = null
@@ -81,8 +80,9 @@ class ReviewCredibilityAchievementBoxWidget @JvmOverloads constructor(
         binding.tvReviewCredibilityAchievementLabel.text = data.label
         binding.btnReviewCredibilityAchievementSeeMore.text = data.cta.text
         binding.btnReviewCredibilityAchievementSeeMore.setOnClickListener {
-            RouteManager.route(context, data.cta.appLink)
+            listener?.onClickSeeMoreAchievement(data.cta.appLink, data.cta.text)
         }
+        listener?.onImpressAchievementStickers(data.achievements)
     }
 
     private fun updateAchievementItemsConstraint(achievementItemCount: Int, showCTA: Boolean) {
@@ -239,9 +239,15 @@ class ReviewCredibilityAchievementBoxWidget @JvmOverloads constructor(
 
     fun setListener(newListener: Listener) {
         listener = newListener
+        partialWidgetAchievement1.setListener(newListener)
+        partialWidgetAchievement2.setListener(newListener)
+        partialWidgetAchievement3.setListener(newListener)
     }
 
     interface Listener {
         fun onAchievementBoxTransitionEnd()
+        fun onClickAchievementSticker(appLink: String, name: String)
+        fun onClickSeeMoreAchievement(appLink: String, buttonText: String)
+        fun onImpressAchievementStickers(achievements: List<ReviewCredibilityAchievementBoxUiModel.ReviewCredibilityAchievementUiModel>)
     }
 }

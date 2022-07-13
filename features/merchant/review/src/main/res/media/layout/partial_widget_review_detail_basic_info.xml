@@ -123,7 +123,7 @@
         android:id="@+id/iv_review_detail_reviewer_profile_picture"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:layout_marginStart="2dp"
+        android:layout_marginTop="4dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/barrier_first_row_bottom"
         app:unify_image_type="circle" />
@@ -165,6 +165,7 @@
         android:id="@+id/tv_review_detail_product_variant"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
         android:paddingHorizontal="2dp"
         android:textColor="@color/Unify_Static_White"
         app:layout_constraintTop_toBottomOf="@id/iv_review_detail_reviewer_profile_picture"

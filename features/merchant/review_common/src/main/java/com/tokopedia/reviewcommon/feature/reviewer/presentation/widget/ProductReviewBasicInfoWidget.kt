@@ -80,7 +80,6 @@ open class ProductReviewBasicInfoWidget : BaseCustomView {
             if (shouldShowCredibility()) {
                 setOnClickListener {
                     goToCredibility()
-                    trackOnUserInfoClicked()
                 }
             } else {
                 setOnClickListener { }
@@ -94,7 +93,6 @@ open class ProductReviewBasicInfoWidget : BaseCustomView {
             if (shouldShowCredibility()) {
                 setOnClickListener {
                     goToCredibility()
-                    trackOnUserInfoClicked()
                 }
             } else {
                 setOnClickListener { }
@@ -108,7 +106,6 @@ open class ProductReviewBasicInfoWidget : BaseCustomView {
             if (shouldShowCredibility()) {
                 setOnClickListener {
                     goToCredibility()
-                    trackOnUserInfoClicked()
                 }
             } else {
                 setOnClickListener {}
@@ -121,7 +118,6 @@ open class ProductReviewBasicInfoWidget : BaseCustomView {
             text = reviewerLabel
             setOnClickListener {
                 goToCredibility()
-                trackOnUserInfoClicked()
             }
             showWithCondition(reviewerLabel.isNotBlank())
         }
@@ -175,7 +171,6 @@ open class ProductReviewBasicInfoWidget : BaseCustomView {
                 text = textToShow
                 setOnClickListener {
                     goToCredibility()
-                    trackOnUserInfoClicked()
                 }
             }
         }
@@ -194,7 +189,6 @@ open class ProductReviewBasicInfoWidget : BaseCustomView {
                 text = userStatsString
                 setOnClickListener {
                     goToCredibility()
-                    trackOnUserInfoClicked()
                 }
             }
         }
@@ -209,7 +203,6 @@ open class ProductReviewBasicInfoWidget : BaseCustomView {
                 if (!isAnonymous) {
                     setOnClickListener {
                         goToCredibility()
-                        trackOnUserInfoClicked()
                     }
                 } else {
                     setOnClickListener {}
@@ -227,9 +220,7 @@ open class ProductReviewBasicInfoWidget : BaseCustomView {
     fun setListeners(reviewBasicInfoListener: ReviewBasicInfoListener, threeDotsListener: ReviewBasicInfoThreeDotsListener?) {
         this.listener = reviewBasicInfoListener
         if (shouldShowCredibility()) {
-            setOnClickListener {
-                listener?.onUserNameClicked(userId)
-            }
+            setOnClickListener { goToCredibility() }
         } else {
             setOnClickListener {  }
         }
@@ -249,11 +240,7 @@ open class ProductReviewBasicInfoWidget : BaseCustomView {
     }
 
     private fun goToCredibility() {
-        listener?.onUserNameClicked(userId)
-    }
-
-    private fun trackOnUserInfoClicked() {
-        listener?.trackOnUserInfoClicked(feedbackId, userId, reviewerStats?.text.toString())
+        listener?.onUserNameClicked(feedbackId, userId, reviewerStats?.text.toString(), tvReviewerLabel?.text.toString())
     }
 
     fun shouldShowCredibility(): Boolean {

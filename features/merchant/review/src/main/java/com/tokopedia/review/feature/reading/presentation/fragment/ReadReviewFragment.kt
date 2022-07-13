@@ -39,7 +39,6 @@ import com.tokopedia.review.common.presentation.listener.ReviewReportBottomSheet
 import com.tokopedia.review.common.presentation.widget.ReviewReportBottomSheet
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.common.util.getErrorMessage
-import com.tokopedia.review.feature.credibility.presentation.activity.ReviewCredibilityActivity
 import com.tokopedia.review.feature.reading.analytics.ReadReviewTracking
 import com.tokopedia.review.feature.reading.analytics.ReadReviewTrackingConstants
 import com.tokopedia.review.feature.reading.data.LikeDislike
@@ -71,7 +70,6 @@ import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewFilter
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewHeader
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewRatingOnlyEmptyState
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewStatisticsBottomSheet
-import com.tokopedia.reviewcommon.constant.ReviewCommonConstants
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
@@ -751,18 +749,22 @@ open class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAd
         )
     }
 
-    override fun trackOnUserInfoClicked(feedbackId: String, userId: String, statistics: String) {
-        ReadReviewTracking.trackOnGoToCredibility(
-            feedbackId,
-            userId,
-            statistics,
-            viewModel.getProductId(),
-            viewModel.userId
-        )
-    }
-
-    override fun onUserNameClicked(userId: String) {
-        goToReviewCredibility(userId)
+    override fun onUserNameClicked(
+        feedbackId: String,
+        userId: String,
+        statistics: String,
+        label: String
+    ) {
+        if (goToReviewCredibility(userId)) {
+            ReadReviewTracking.trackOnGoToCredibility(
+                feedbackId,
+                userId,
+                statistics,
+                viewModel.getProductId(),
+                viewModel.userId,
+                label
+            )
+        }
     }
 
     protected fun showShopPageReviewHeader() {
@@ -1143,8 +1145,8 @@ open class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAd
         return likeStatus == LikeDislike.LIKED
     }
 
-    private fun goToReviewCredibility(userId: String) {
-        RouteManager.route(
+    private fun goToReviewCredibility(userId: String): Boolean {
+        return RouteManager.route(
             context,
             Uri.parse(
                 UriUtil.buildUri(

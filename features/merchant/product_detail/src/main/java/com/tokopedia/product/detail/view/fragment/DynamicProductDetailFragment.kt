@@ -255,8 +255,7 @@ import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
-import java.util.Locale
-import java.util.UUID
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -1537,7 +1536,7 @@ open class DynamicProductDetailFragment :
                 Uri.parse(
                     UriUtil.buildUri(
                         ApplinkConstInternalMarketplace.REVIEW_CREDIBILITY,
-                        reviewID,
+                        reviewerUserID,
                         ReviewApplinkConst.REVIEW_CREDIBILITY_SOURCE_REVIEW_MOST_HELPFUL
                     )
                 ).buildUpon()
