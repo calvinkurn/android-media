@@ -275,7 +275,7 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
     override fun onVoucherTokoMemberInformationImpression(model: ShopHomeVoucherUiModel, position: Int) {
         // TODO: 12/07/22 Implement mvc voucher tracker
     }
-    // endregion mvc widget listener end region
+    // endregion
 
     // region Product bundle multiple widget
     override fun addMultipleBundleToCart(
@@ -625,6 +625,79 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
         shopCampaignTabAdapter.showLoading()
         viewModel?.getShopPageHomeWidgetLayoutData(shopId, extParam)
         scrollToTop()
+    }
+    // endregion
+
+    // region Thematic Widget
+    private fun thematicWidgetProductClickListenerImpl(): ThematicWidgetViewHolder.ThematicWidgetListener = object : ThematicWidgetViewHolder.ThematicWidgetListener {
+
+        override fun onThematicWidgetImpressListener(model: ThematicWidgetUiModel, position: Int) {
+            shopPageHomeTracking.impressionThematicWidgetCampaign(
+                campaignName = model.name,
+                campaignId = model.campaignId,
+                shopId = shopId,
+                userId = userId,
+                position = position
+            )
+        }
+
+        override fun onProductCardThematicWidgetImpressListener(
+            products: List<ProductCardUiModel>,
+            position: Int,
+            campaignId: String,
+            campaignName: String
+        ) {
+            shopPageHomeTracking.impressionProductCardThematicWidgetCampaign(
+                campaignName = campaignName,
+                campaignId =campaignId,
+                shopId = shopId,
+                userId = userId,
+                products = products,
+            )
+        }
+
+        override fun onProductCardThematicWidgetClickListener(
+            product: ProductCardUiModel,
+            campaignId: String,
+            campaignName: String,
+            position: Int
+        ) {
+            shopPageHomeTracking.clickProductCardThematicWidgetCampaign(
+                campaignName = campaignName,
+                campaignId = campaignId,
+                shopId = shopId,
+                userId = userId,
+                product = product,
+                position = position
+            )
+            RouteManager.route(context, product.productUrl)
+        }
+
+        override fun onProductCardSeeAllThematicWidgetClickListener(appLink: String, campaignId: String, campaignName: String) {
+            shopPageHomeTracking.clickProductCardSeeAllThematicWidgetCampaign(
+                campaignId = campaignId,
+                campaignName = campaignName,
+                shopId = shopId,
+                userId = userId,
+            )
+            RouteManager.route(context, appLink)
+        }
+
+        override fun onSeeAllThematicWidgetClickListener(appLink: String, campaignId: String, campaignName: String) {
+            shopPageHomeTracking.clickSeeAllThematicWidgetCampaign(
+                campaignId = campaignId,
+                campaignName = campaignName,
+                shopId = shopId,
+                userId = userId,
+            )
+            RouteManager.route(context, appLink)
+        }
+
+        override fun onThematicWidgetTimerFinishListener(model: ThematicWidgetUiModel?) {
+            model?.apply {
+                shopCampaignTabAdapter.removeWidget(this)
+            }
+        }
     }
     // endregion
 
@@ -1180,77 +1253,6 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
 
     private fun showScrollToTopButton() {
         (parentFragment as? NewShopPageFragment)?.showScrollToTopButton()
-    }
-
-    private fun thematicWidgetProductClickListenerImpl(): ThematicWidgetViewHolder.ThematicWidgetListener = object : ThematicWidgetViewHolder.ThematicWidgetListener {
-
-        override fun onThematicWidgetImpressListener(model: ThematicWidgetUiModel, position: Int) {
-            shopPageHomeTracking.impressionThematicWidgetCampaign(
-                campaignName = model.name,
-                campaignId = model.campaignId,
-                shopId = shopId,
-                userId = userId,
-                position = position
-            )
-        }
-
-        override fun onProductCardThematicWidgetImpressListener(
-            products: List<ProductCardUiModel>,
-            position: Int,
-            campaignId: String,
-            campaignName: String
-        ) {
-            shopPageHomeTracking.impressionProductCardThematicWidgetCampaign(
-                campaignName = campaignName,
-                campaignId =campaignId,
-                shopId = shopId,
-                userId = userId,
-                products = products,
-            )
-        }
-
-        override fun onProductCardThematicWidgetClickListener(
-            product: ProductCardUiModel,
-            campaignId: String,
-            campaignName: String,
-            position: Int
-        ) {
-            shopPageHomeTracking.clickProductCardThematicWidgetCampaign(
-                campaignName = campaignName,
-                campaignId = campaignId,
-                shopId = shopId,
-                userId = userId,
-                product = product,
-                position = position
-            )
-            RouteManager.route(context, product.productUrl)
-        }
-
-        override fun onProductCardSeeAllThematicWidgetClickListener(appLink: String, campaignId: String, campaignName: String) {
-            shopPageHomeTracking.clickProductCardSeeAllThematicWidgetCampaign(
-                campaignId = campaignId,
-                campaignName = campaignName,
-                shopId = shopId,
-                userId = userId,
-            )
-            RouteManager.route(context, appLink)
-        }
-
-        override fun onSeeAllThematicWidgetClickListener(appLink: String, campaignId: String, campaignName: String) {
-            shopPageHomeTracking.clickSeeAllThematicWidgetCampaign(
-                campaignId = campaignId,
-                campaignName = campaignName,
-                shopId = shopId,
-                userId = userId,
-            )
-            RouteManager.route(context, appLink)
-        }
-
-        override fun onThematicWidgetTimerFinishListener(model: ThematicWidgetUiModel?) {
-            model?.apply {
-                shopCampaignTabAdapter.removeWidget(this)
-            }
-        }
     }
 
     fun setPageBackgroundColor(listBackgroundColor: List<String>) {
