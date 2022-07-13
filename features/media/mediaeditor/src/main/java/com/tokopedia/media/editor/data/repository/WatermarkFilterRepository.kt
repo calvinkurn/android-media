@@ -54,7 +54,7 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
 
         when (watermarkType) {
             WatermarkToolUiComponent.WATERMARK_TOKOPEDIA -> {
-                watermark1(w, h, canvas, paint)
+                watermark1(w, h, canvas)
             }
             WatermarkToolUiComponent.WATERMARK_SHOP -> {
                 watermark2(w, h, canvas, paint)
@@ -96,17 +96,13 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
     private fun watermark1(
         width: Int,
         height: Int,
-        canvas: Canvas,
-        paint: Paint
+        canvas: Canvas
     ) {
-        val textBound = Rect()
-        paint.getTextBounds(mainText, 0, mainText.length, textBound)
-
         val paddingHorizontal = width / 5
         val paddingVertical = height / 5
 
         var xLastPost: Float
-        var yLastPost = textBound.height().toFloat()
+        var yLastPost = imageHeight
 
         val yLimit = height + (height / 2)
         val xStart = -(width / 2)
