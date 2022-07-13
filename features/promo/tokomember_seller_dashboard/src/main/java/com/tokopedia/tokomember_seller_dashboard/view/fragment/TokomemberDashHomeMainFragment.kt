@@ -20,7 +20,7 @@ import com.tokopedia.media.loader.clearImage
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmProgramDetailCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOW_TOAST
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ACTION
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberDashHomeViewpagerAdapter
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashHomeViewmodel
 import com.tokopedia.unifycomponents.TabsUnify
@@ -64,10 +64,7 @@ class TokomemberDashHomeMainFragment : BaseDaggerFragment() {
         homeHeader = view.findViewById(R.id.home_header)
         homeTabs = view.findViewById(R.id.home_tabs)
         homeViewPager = view.findViewById(R.id.home_viewpager)
-        programActionType = arguments?.getInt(BUNDLE_SHOW_TOAST)?:0
-        if (programActionType!=-1) {
-            setTabsProgramList()
-        }
+        programActionType = arguments?.getInt(BUNDLE_PROGRAM_ACTION)?:0
 
         homeHeader.apply {
             title = "TokoMember"
@@ -109,6 +106,10 @@ class TokomemberDashHomeMainFragment : BaseDaggerFragment() {
         homeTabs.addNewTab("Home")
         homeTabs.addNewTab("Program")
         homeTabs.addNewTab("Kupon Tokomember")
+
+        if (programActionType!=-1) {
+            setTabsProgramList()
+        }
     }
 
     private fun setTabsProgramList(){
