@@ -7,15 +7,10 @@ import com.tokopedia.navigation_common.usecase.pojo.walletapp.WalletAppData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_ERROR
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_LOADING
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_SUCCESS
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_COUPON
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_FREE_ONGKIR
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_REWARDS
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_SUBSCRIPTION
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_APP_LINKED
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_APP_NOT_LINKED
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_OTHER
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_PENDING_CASHBACK
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_WITH_TOPUP
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.balancewidget.BalanceWidgetTypeFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.balancewidget.BalanceWidgetVisitable
 import com.tokopedia.home.util.HomeServerLogger
@@ -235,9 +230,7 @@ data class HomeBalanceModel(
     }
 
     private fun mapTokopointDefaultIconRes(type: Int) = when (type) {
-        TYPE_COUPON -> R.drawable.ic_new_coupon
         TYPE_REWARDS -> R.drawable.ic_new_points
-        TYPE_FREE_ONGKIR -> R.drawable.ic_new_bbo
         else -> null
     }
 
@@ -280,8 +273,6 @@ data class HomeBalanceModel(
         itemTypeCondition(
             itemType,
             typeWalletCondition = { action.invoke() },
-            typeFreeOngkirCondition = { action.invoke() },
-            typeCouponCondition = { action.invoke() },
             typeRewardsCondition = { action.invoke() }
         )
     }
@@ -289,18 +280,11 @@ data class HomeBalanceModel(
     private fun itemTypeCondition(
         type: Int,
         typeWalletCondition: () -> Unit = {},
-        typeCouponCondition: () -> Unit = {},
-        typeFreeOngkirCondition: () -> Unit = {},
         typeRewardsCondition: () -> Unit = {}
     ) {
         when (type) {
-            TYPE_WALLET_OTHER,
-            TYPE_WALLET_WITH_TOPUP,
-            TYPE_WALLET_PENDING_CASHBACK,
             TYPE_WALLET_APP_LINKED,
             TYPE_WALLET_APP_NOT_LINKED -> typeWalletCondition.invoke()
-            TYPE_COUPON -> typeCouponCondition.invoke()
-            TYPE_FREE_ONGKIR -> typeFreeOngkirCondition.invoke()
             TYPE_REWARDS -> typeRewardsCondition.invoke()
         }
     }
