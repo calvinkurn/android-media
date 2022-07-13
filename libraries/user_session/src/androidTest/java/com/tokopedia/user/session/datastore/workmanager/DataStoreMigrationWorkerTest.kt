@@ -8,6 +8,7 @@ import androidx.work.testing.TestListenableWorkerBuilder
 import androidx.work.workDataOf
 import com.tokopedia.di.FakeComponentFactory
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.datastore.DataStorePreference
 import com.tokopedia.user.session.datastore.UserSessionAbTestPlatform
 import com.tokopedia.user.session.datastore.UserSessionDataStoreClient
 import com.tokopedia.user.session.datastore.workmanager.WorkOps.MIGRATED
@@ -32,19 +33,14 @@ import org.junit.runner.RunWith
 class DataStoreMigrationWorkerTest {
 
     lateinit var context: Context
+    lateinit var spykedPref: DataStorePreference
 
     @Before
     fun setup() {
         context = ApplicationProvider.getApplicationContext()
         val factory = FakeComponentFactory()
         ComponentFactory.instance = factory
-
-        // This is to always enable data store regardless of ab test condition, this stubbing is not
-        // recommended (as opposed to injection that already used in the DataStoreMigrationWorker,
-        // but because of we are unable to inject UserSession easily, we have to use this
-        // method and requires object type implementation.
-        mockkObject(UserSessionAbTestPlatform)
-        every { UserSessionAbTestPlatform.isDataStoreEnable(any()) } returns true
+        spykedPref = factory.spykedPreference
     }
 
     @Test
@@ -52,8 +48,7 @@ class DataStoreMigrationWorkerTest {
         val sample = SampleUserModel(
             true, "fakeId", "Foo Name", "fooToken", "barToken"
         )
-
-        with(UserSession(context)) {
+        with(UserSession(context, spykedPref)) {
             setSample(sample)
         }
 
@@ -72,8 +67,7 @@ class DataStoreMigrationWorkerTest {
         val sample = SampleUserModel(
             true, "fakeId", "Foo Name", "fooToken", "barToken"
         )
-
-        with(UserSession(context)) {
+        with(UserSession(context, spykedPref)) {
             setSample(sample)
         }
 
@@ -95,8 +89,7 @@ class DataStoreMigrationWorkerTest {
         val sample = SampleUserModel(
             true, "fakeId", "Foo Name", "fooToken", "barToken"
         )
-
-        val userSession = UserSession(context).apply {
+        val userSession = UserSession(context, spykedPref).apply {
             setSample(sample)
         }
 

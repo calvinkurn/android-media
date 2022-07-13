@@ -55,6 +55,7 @@ import android.provider.Settings;
 import android.text.TextUtils;
 
 import com.tokopedia.device.info.DeviceInfo;
+import com.tokopedia.user.session.datastore.DataStorePreference;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -77,6 +78,10 @@ public class UserSession extends MigratedUserSession implements UserSessionInter
     @Inject
     public UserSession(Context context) {
         super(context);
+    }
+
+    public UserSession(Context context, DataStorePreference dataStorePreference) {
+        super(context, dataStorePreference);
     }
 
     public String getAccessToken() {

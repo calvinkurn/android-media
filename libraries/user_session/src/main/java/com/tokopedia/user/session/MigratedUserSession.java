@@ -15,6 +15,7 @@ import com.tokopedia.encryption.security.AeadEncryptor;
 import com.tokopedia.encryption.security.AeadEncryptorImpl;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
+import com.tokopedia.user.session.datastore.DataStorePreference;
 import com.tokopedia.user.session.datastore.UserSessionAbTestPlatform;
 import com.tokopedia.user.session.datastore.UserSessionDataStore;
 import com.tokopedia.user.session.datastore.UserSessionDataStoreClient;
@@ -29,18 +30,21 @@ public class MigratedUserSession {
     public static final String suffix = "_v2";
     protected Context context;
 
-    private AeadEncryptor aead;
+    final private AeadEncryptor aead;
+    final private DataStorePreference abTestPlatform;
 
     public MigratedUserSession(Context context) {
+        this(context, new DataStorePreference(context));
+    }
+
+    public MigratedUserSession(Context context, DataStorePreference abTestPlatform) {
         this.context = context.getApplicationContext();
-        aead = new AeadEncryptorImpl(context);
+        this.abTestPlatform = abTestPlatform;
+        this.aead = new AeadEncryptorImpl(context);
     }
 
     private Boolean isEnableDataStore() {
-        if (context != null) {
-            return UserSessionAbTestPlatform.INSTANCE.isDataStoreEnable(context);
-        }
-        return false;
+        return this.abTestPlatform.isDataStoreEnabled();
     }
 
     // can't use DI because it will change UserSession constructor
