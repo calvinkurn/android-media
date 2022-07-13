@@ -9,5 +9,6 @@ data class UploadPrescriptionUiModel(
         var uploadImageText : String? = "",
         var rightIconUrl : String? = "",
         var leftIconUrl : String? = "",
-        var prescriptionIds : ArrayList<String>
+        var prescriptionIds : ArrayList<String>,
+        var uploadedImageCount : Int = 0
 ) : Parcelable

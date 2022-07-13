@@ -30,24 +30,44 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/upload_prescription_text"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toEndOf="@id/upload_icon"
             app:layout_constraintTop_toTopOf="@id/upload_icon"
             app:layout_constraintBottom_toBottomOf="@id/upload_icon"
             app:layout_constraintEnd_toStartOf="@id/iv_prescription_right"
-            android:paddingTop="6dp"
-            android:paddingBottom="9dp"
-            android:orientation="vertical"
-            app:typographyWeight="bold"
-            app:typographyType="heading_5"
-            android:textColor="@color/Unify_N700_96"
-            tools:text="Upload Foto Resep"
-            android:layout_marginStart="@dimen/spacing_lvl3"
-            android:layout_marginEnd="@dimen/spacing_lvl3"
-            />
+            android:paddingTop="@dimen/spacing_lvl3"
+            android:paddingBottom="@dimen/spacing_lvl3"
+            android:orientation="vertical">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/upload_prescription_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:typographyWeight="bold"
+                app:typographyType="heading_5"
+                android:textColor="@color/Unify_N700_96"
+                android:layout_marginStart="@dimen/spacing_lvl3"
+                android:layout_marginEnd="@dimen/spacing_lvl3"
+                tools:text="Upload Foto Resep"
+                />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/upload_description_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/Unify_NN950"
+                android:layout_marginTop="@dimen/spacing_lvl2"
+                android:layout_marginStart="@dimen/spacing_lvl3"
+                android:layout_marginEnd="@dimen/spacing_lvl3"
+                app:typographyType="small"
+                app:typographyWeight="reguler"
+                tools:text="2 foto resep di-upload"
+                android:visibility="gone"
+                />
+
+        </LinearLayout>
 
 
         <com.tokopedia.unifycomponents.ImageUnify

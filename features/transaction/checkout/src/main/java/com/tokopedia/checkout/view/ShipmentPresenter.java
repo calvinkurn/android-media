@@ -743,7 +743,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     cartShipmentAddressFormData.getUploadPrescText(),
                     cartShipmentAddressFormData.getRightIconUrl(),
                     cartShipmentAddressFormData.getLeftIconUrl(),
-                    new ArrayList<>()
+                    new ArrayList<>(),0
                     ));
         }
     }

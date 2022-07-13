@@ -3417,7 +3417,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void uploadPrescriptionAction(UploadPrescriptionUiModel uploadPrescriptionUiModel) {
-        Intent uploadPrescriptionIntent = RouteManager.getIntent(getActivityContext(), UploadPrescriptionViewHolder.Companion.getEPHARMACY_APPLINK());
+        Intent uploadPrescriptionIntent = RouteManager.getIntent(getActivityContext(), UploadPrescriptionViewHolder.EPHARMACY_APPLINK);
         // TODO Checkout Id from BE
         uploadPrescriptionIntent.putExtra(EXTRA_CHECKOUT_ID_STRING, "GY27816GA");
         startActivityForResult(uploadPrescriptionIntent,REQUEST_CODE_UPLOAD_PRESCRIPTION);
@@ -3425,6 +3425,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private void onUploadPrescriptionResult(Intent data){
         if(data != null && data.getExtras() != null && data.getExtras().containsKey(KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA)){
+            // TODO Update UI with image count
             UploadPrescriptionUiModel uploadModel = shipmentPresenter.getUploadPrescriptionUiModel();
             uploadModel.setPrescriptionIds(data.getExtras().getStringArrayList(KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA));
             uploadPrescriptionUiModel = uploadModel;
