@@ -5,8 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/upload_prescription_layout"
-    android:visibility="gone"
-    tools:visibility="visible"
     android:background="@color/Unify_Background">
 
     <com.tokopedia.unifycomponents.CardUnify2

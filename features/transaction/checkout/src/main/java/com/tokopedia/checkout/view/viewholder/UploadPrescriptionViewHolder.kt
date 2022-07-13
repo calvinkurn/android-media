@@ -17,9 +17,9 @@ import com.tokopedia.unifyprinciples.Typography
 class UploadPrescriptionViewHolder(val view: View, private val actionListener: ShipmentAdapterActionListener): RecyclerView.ViewHolder(view) {
 
     private val uploadPrescriptionLayout: LinearLayout = view.findViewById(R.id.upload_prescription_layout)
-    private val uploadPrescText: Typography = view.findViewById(R.id.upload_prescription_text)
-    private val uploadPrescIcon: ImageUnify = view.findViewById(R.id.upload_icon)
-    private val uploadPrescCardUnify: CardUnify2 = view.findViewById(R.id.upload_prescription_card)
+    private val uploadPrescriptionText: Typography = view.findViewById(R.id.upload_prescription_text)
+    private val uploadPrescriptionIcon: ImageUnify = view.findViewById(R.id.upload_icon)
+    private val uploadPrescriptionCardUnify: CardUnify2 = view.findViewById(R.id.upload_prescription_card)
 
     companion object {
         @SuppressLint("ResourcePackage")
@@ -28,21 +28,9 @@ class UploadPrescriptionViewHolder(val view: View, private val actionListener: S
     }
 
     fun bindViewHolder(uploadPrescriptionUiModel: UploadPrescriptionUiModel){
-        uploadPrescCardUnify.cardType = CardUnify2.TYPE_BORDER
-
-        when{
-            uploadPrescriptionUiModel.uploadImageText?.isEmpty() == true -> {
-                uploadPrescriptionLayout.gone()
-            }
-            uploadPrescriptionUiModel.showImageUpload == false -> {
-                uploadPrescriptionLayout.gone()
-            }
-            else -> {
-                uploadPrescriptionLayout.visible()
-                uploadPrescText.text = uploadPrescriptionUiModel.uploadImageText
-                uploadPrescIcon.loadImage(uploadPrescriptionUiModel.leftIconUrl ?: "")
-            }
-        }
+        uploadPrescriptionCardUnify.cardType = CardUnify2.TYPE_BORDER
+        uploadPrescriptionText.text = uploadPrescriptionUiModel.uploadImageText
+        uploadPrescriptionIcon.loadImage(uploadPrescriptionUiModel.leftIconUrl ?: "")
         uploadPrescriptionLayout.setOnClickListener {
             actionListener.uploadPrescriptionAction(uploadPrescriptionUiModel)
         }
