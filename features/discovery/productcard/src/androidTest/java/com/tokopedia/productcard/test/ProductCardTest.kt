@@ -34,7 +34,6 @@ internal class ProductCardTest {
         recyclerViewViewInteraction = onView(withId(R.id.productCardGridTestRecyclerView))
         productCardModelMatcherData = productCardGridTestData
 
-        Thread.sleep(100000)
         startTest()
     }
 
