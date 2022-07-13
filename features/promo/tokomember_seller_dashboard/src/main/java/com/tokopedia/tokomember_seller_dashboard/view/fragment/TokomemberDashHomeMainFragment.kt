@@ -17,16 +17,13 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.media.loader.clearImage
-import com.tokopedia.tokomember_common_widget.util.ProgramActionType
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmProgramDetailCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_IS_SHOW_BS
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOW_TOAST
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberDashHomeViewpagerAdapter
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashHomeViewmodel
 import com.tokopedia.unifycomponents.TabsUnify
-import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
 class TokomemberDashHomeMainFragment : BaseDaggerFragment() {
@@ -115,7 +112,8 @@ class TokomemberDashHomeMainFragment : BaseDaggerFragment() {
     }
 
     private fun setTabsProgramList(){
-        homeViewPager.currentItem = 2
+        homeTabs.getUnifyTabLayout().getTabAt(1)?.select()
+        homeViewPager.currentItem = 1
     }
 
     override fun getScreenName() = ""

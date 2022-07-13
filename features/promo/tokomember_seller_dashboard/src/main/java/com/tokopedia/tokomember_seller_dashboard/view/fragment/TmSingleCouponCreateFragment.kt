@@ -78,6 +78,8 @@ import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_DESC
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_RETRY
 import com.tokopedia.tokomember_seller_dashboard.util.ErrorState
+import com.tokopedia.tokomember_seller_dashboard.util.MAX_CASHBACK_LABEL
+import com.tokopedia.tokomember_seller_dashboard.util.MAX_GRATIS_LABEL
 import com.tokopedia.tokomember_seller_dashboard.util.PREMIUM
 import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_CTA
 import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_VALIDATION_CTA_TEXT
@@ -123,6 +125,7 @@ import com.tokopedia.utils.text.currency.NumberTextWatcher
 import kotlinx.android.synthetic.main.tm_dash_kupon_create_container.*
 import kotlinx.android.synthetic.main.tm_dash_program_fragment.*
 import kotlinx.android.synthetic.main.tm_dash_single_coupon.*
+import kotlinx.android.synthetic.main.tm_dash_single_coupon.view.*
 import kotlinx.android.synthetic.main.tm_kupon_create_single.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -718,12 +721,23 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                 selectedChipPositionKupon = position
                 when(selectedChipPositionKupon){
                     CouponType.CASHBACK -> {
+                        textFieldMaxCashback.setLabel(MAX_CASHBACK_LABEL)
+                        tvCashbackType.show()
                         chipGroupCashbackType.show()
                         ivPreviewCoupon.showHideCashBackValueView(true)
                         ivPreviewCoupon.setCouponType(COUPON_CASHBACK_PREVIEW)
+                        if(selectedChipPositionCashback == 0){
+                            textFieldPercentCashback.hide()
+                        }
+                        if(selectedChipPositionCashback == 1){
+                            textFieldPercentCashback.show()
+                        }
                     }
                     CouponType.SHIPPING -> {
+                        textFieldMaxCashback.setLabel(MAX_GRATIS_LABEL)
+                        tvCashbackType.hide()
                         chipGroupCashbackType.hide()
+                        textFieldPercentCashback.hide()
                         ivPreviewCoupon.showHideCashBackValueView(false)
                         ivPreviewCoupon.setCouponType(COUPON_SHIPPING_PREVIEW)
                     }
