@@ -15,6 +15,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
+import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -30,6 +32,7 @@ import com.tokopedia.wishlist.R
 import com.tokopedia.wishlistcollection.data.model.WishlistCollectionTypeLayoutData
 import com.tokopedia.wishlistcollection.data.response.CollectionWishlistResponse
 import com.tokopedia.wishlist.databinding.FragmentCollectionWishlistBinding
+import com.tokopedia.wishlist.util.WishlistV2Consts.EXTRA_TOASTER_WISHLIST_COLLECTION_DETAIL
 import com.tokopedia.wishlistcollection.di.WishlistCollectionModule
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_COLLECTION_CREATE
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_COLLECTION_ITEM
@@ -39,11 +42,15 @@ import com.tokopedia.wishlistcollection.di.DaggerWishlistCollectionComponent
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetCreateNewCollectionWishlist
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetKebabMenuWishlistCollectionItem
+import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetUpdateWishlistCollectionName
+import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerFromCollectionPage
 import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionViewModel
 import javax.inject.Inject
 
 
-class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapter.ActionListener {
+class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapter.ActionListener,
+    BottomSheetKebabMenuWishlistCollectionItem.ActionListener, ActionListenerFromCollectionPage,
+    BottomSheetUpdateWishlistCollectionName.ActionListener {
     private var binding by autoClearedNullable<FragmentCollectionWishlistBinding>()
     private lateinit var collectionAdapter: WishlistCollectionAdapter
     private var activityWishlistCollection = ""
@@ -116,11 +123,17 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
 
     private fun observingData() {
         observingWishlistCollections()
+        observingDeleteWishlistCollection()
     }
 
     private fun prepareLayout() {
         context?.let {
-            activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            activity?.window?.decorView?.setBackgroundColor(
+                ContextCompat.getColor(
+                    it,
+                    com.tokopedia.unifyprinciples.R.color.Unify_N0
+                )
+            )
         }
         setToolbarTitle(DEFAULT_TITLE)
         setSwipeRefreshLayout()
@@ -128,12 +141,13 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
             setActionListener(this@WishlistCollectionFragment)
         }
         binding?.run {
-            activityWishlistCollection = arguments?.getString(PARAM_ACTIVITY_WISHLIST_COLLECTION, "") ?: ""
+            activityWishlistCollection =
+                arguments?.getString(PARAM_ACTIVITY_WISHLIST_COLLECTION, "") ?: ""
 
             val pageSource: String
             val icons: IconBuilder
             viewLifecycleOwner.lifecycle.addObserver(wishlistCollectionNavtoolbar)
-            if(activityWishlistCollection != PARAM_HOME) {
+            if (activityWishlistCollection != PARAM_HOME) {
                 wishlistCollectionNavtoolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
                 icons = IconBuilder(IconBuilderFlag()).apply {
                     addIcon(IconList.ID_CART) {}
@@ -201,14 +215,42 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
                         collectionAdapter.addList(mapCollection(result.data.data))
                     } else {
                         // TODO: show global error page?
-                        val errorMessage = result.data.errorMessage.first().ifEmpty { context?.getString(
-                            R.string.wishlist_v2_common_error_msg) }
+                        val errorMessage = result.data.errorMessage.first().ifEmpty {
+                            context?.getString(
+                                R.string.wishlist_v2_common_error_msg
+                            )
+                        }
                         errorMessage?.let { showToaster(it, "", Toaster.TYPE_ERROR) }
                     }
                 }
                 is Fail -> {
                     // TODO: show global error page?
                     finishRefresh()
+                    val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                    showToaster(errorMessage, "", Toaster.TYPE_ERROR)
+                }
+            }
+        }
+    }
+
+    private fun observingDeleteWishlistCollection() {
+        collectionViewModel.deleteCollectionResult.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    finishRefresh()
+                    if (result.data.status == OK && result.data.data.success) {
+                        getWishlistCollections()
+                        showToaster(result.data.data.message, "", Toaster.TYPE_NORMAL)
+                    } else {
+                        val errorMessage = result.data.errorMessage.first().ifEmpty {
+                            context?.getString(
+                                R.string.wishlist_v2_common_error_msg
+                            )
+                        }
+                        errorMessage?.let { showToaster(it, "", Toaster.TYPE_ERROR) }
+                    }
+                }
+                is Fail -> {
                     val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
                     showToaster(errorMessage, "", Toaster.TYPE_ERROR)
                 }
@@ -226,7 +268,8 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
             listCollection.add(collectionItemObject)
         }
 
-        val createNewItem = WishlistCollectionTypeLayoutData(data.placeholder, TYPE_COLLECTION_CREATE)
+        val createNewItem =
+            WishlistCollectionTypeLayoutData(data.placeholder, TYPE_COLLECTION_CREATE)
         listCollection.add(createNewItem)
 
         return listCollection
@@ -249,12 +292,14 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
         collectionAdapter.hideTicker()
     }
 
-    override fun onKebabMenuClicked() {
-        showBottomSheetKebabMenu()
+    override fun onKebabMenuClicked(collectionId: String, collectionName: String) {
+        showBottomSheetKebabMenu(collectionId, collectionName)
     }
 
-    private fun showBottomSheetKebabMenu() {
-        val bottomSheetKebabMenu = BottomSheetKebabMenuWishlistCollectionItem.newInstance()
+    private fun showBottomSheetKebabMenu(collectionId: String, collectionName: String) {
+        val bottomSheetKebabMenu =
+            BottomSheetKebabMenuWishlistCollectionItem.newInstance(collectionName, collectionId)
+        bottomSheetKebabMenu.setListener(this@WishlistCollectionFragment)
         if (bottomSheetKebabMenu.isAdded || childFragmentManager.isStateSaved) return
         bottomSheetKebabMenu.show(childFragmentManager)
     }
@@ -265,13 +310,70 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
 
     private fun showBottomSheetCreateNewCollection(fragmentManager: FragmentManager) {
         val bottomSheetCreateCollection = BottomSheetCreateNewCollectionWishlist.newInstance("")
-        if (bottomSheetCreateCollection.isAdded || fragmentManager.isStateSaved) return
-        bottomSheetCreateCollection.show(fragmentManager)
+        bottomSheetCreateCollection.setListener(this@WishlistCollectionFragment)
+        if (bottomSheetCreateCollection.isAdded || childFragmentManager.isStateSaved) return
+        bottomSheetCreateCollection.show(childFragmentManager)
     }
 
     override fun onCollectionItemClicked(id: String) {
-        val detailCollection = "${ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL}?${ApplinkConstInternalPurchasePlatform.PATH_COLLECTION_ID}=$id"
+        val detailCollection =
+            "${ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL}?${ApplinkConstInternalPurchasePlatform.PATH_COLLECTION_ID}=$id"
         val intentCollectionDetail = RouteManager.getIntent(context, detailCollection)
         startActivity(intentCollectionDetail)
+    }
+
+    override fun onChangeCollectionName(collectionId: String, collectionName: String) {
+        showUpdateWishlistCollectionNameBottomSheet(collectionId, collectionName)
+    }
+
+    private fun showUpdateWishlistCollectionNameBottomSheet(collectionId: String, collectionName: String) {
+        val bottomSheetUpdateWishlistCollectionName = BottomSheetUpdateWishlistCollectionName.newInstance(collectionId, collectionName)
+        bottomSheetUpdateWishlistCollectionName.setListener(this@WishlistCollectionFragment)
+        if (bottomSheetUpdateWishlistCollectionName.isAdded || childFragmentManager.isStateSaved) return
+        bottomSheetUpdateWishlistCollectionName.show(childFragmentManager)
+    }
+
+    override fun onDeleteCollectionItem(collectionId: String, collectionName: String) {
+        showDialogDeleteCollection(collectionId, collectionName)
+    }
+
+    override fun onSuccessCreateNewCollection(message: String) {
+        val detailCollection =
+            "${ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL}?${ApplinkConstInternalPurchasePlatform.PATH_COLLECTION_ID}=$id"
+        val intentCollectionDetail = RouteManager.getIntent(context, detailCollection)
+        intentCollectionDetail.putExtra(EXTRA_TOASTER_WISHLIST_COLLECTION_DETAIL, message)
+        startActivity(intentCollectionDetail)
+    }
+
+    private fun showDialogDeleteCollection(collectionId: String, collectionName: String) {
+        val dialog =
+            context?.let { DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE) }
+        dialog?.setTitle(
+            getString(
+                R.string.wishlist_collection_detail_delete_confirmation_title,
+                collectionName
+            )
+        )
+        dialog?.dialogDesc?.gone()
+        dialog?.setPrimaryCTAText(getString(R.string.wishlist_delete_label))
+        dialog?.setPrimaryCTAClickListener {
+            dialog.dismiss()
+            doDeleteCollection(collectionId)
+        }
+        dialog?.setSecondaryCTAText(getString(R.string.wishlist_cancel_manage_label))
+        dialog?.setSecondaryCTAClickListener {
+            dialog.dismiss()
+            // WishlistV2Analytics.clickBatalOnPopUpMultipleWishlistProduct()
+        }
+        dialog?.show()
+    }
+
+    private fun doDeleteCollection(collectionId: String) {
+        collectionViewModel.deleteWishlistCollection(collectionId)
+    }
+
+    override fun onSuccessUpdateCollectionName(message: String) {
+        showToaster(message, "", Toaster.TYPE_NORMAL)
+        getWishlistCollections()
     }
 }

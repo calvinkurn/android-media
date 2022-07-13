@@ -78,6 +78,7 @@ import com.tokopedia.wishlist.data.model.response.DeleteWishlistProgressV2Respon
 import com.tokopedia.wishlist.data.model.response.WishlistV2Response
 import com.tokopedia.wishlist.databinding.FragmentWishlistCollectionDetailBinding
 import com.tokopedia.wishlist.util.WishlistV2Analytics
+import com.tokopedia.wishlist.util.WishlistV2Consts.EXTRA_TOASTER_WISHLIST_COLLECTION_DETAIL
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_GRID
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_GRID_INT
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_LIST
@@ -113,6 +114,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     private var currRecommendationListPage = 1
     private var searchQuery = ""
     private var activityWishlistV2 = ""
+    private var toasterMessageInitial = ""
     private var isBulkDeleteShow = false
     private var listBulkDelete = arrayListOf<String>()
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
@@ -167,6 +169,10 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                     putString(
                         ApplinkConstInternalPurchasePlatform.PATH_COLLECTION_ID, this.getString(
                             ApplinkConstInternalPurchasePlatform.PATH_COLLECTION_ID
+                        ))
+                    putString(
+                        EXTRA_TOASTER_WISHLIST_COLLECTION_DETAIL, this.getString(
+                            EXTRA_TOASTER_WISHLIST_COLLECTION_DETAIL
                         ))
                 }
             }
@@ -495,6 +501,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         setSwipeRefreshLayout()
         binding?.run {
             activityWishlistV2 = arguments?.getString(PARAM_ACTIVITY_WISHLIST_V2, "") as String
+            toasterMessageInitial = arguments?.getString(EXTRA_TOASTER_WISHLIST_COLLECTION_DETAIL, "") as String
 
             viewLifecycleOwner.lifecycle.addObserver(wishlistCollectionDetailNavtoolbar)
             wishlistCollectionDetailNavtoolbar.setupSearchbar(searchbarType = NavToolbar.Companion.SearchBarType.TYPE_EDITABLE, hints = arrayListOf(
@@ -544,6 +551,14 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             setActionListener(this@WishlistCollectionDetailFragment)
         }
         addEndlessScrollListener()
+
+        if (toasterMessageInitial.isNotEmpty()) {
+            showToasterInitial(toasterMessageInitial)
+        }
+    }
+
+    private fun showToasterInitial(toasterMessageInitial: String) {
+        showToaster(toasterMessageInitial, "", Toaster.TYPE_NORMAL)
     }
 
     private fun setSwipeRefreshLayout() {

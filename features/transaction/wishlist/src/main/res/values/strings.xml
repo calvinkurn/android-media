@@ -54,5 +54,9 @@
     <string name="collection_create_bottomsheet_name_error">Kamu sudah punya koleksi dengan nama ini</string>
     <string name="collection_item_kebab_menu_1">Ubah Nama Koleksi</string>
     <string name="collection_item_kebab_menu_2">Hapus Koleksi</string>
+    <string name="update_collection_bottomsheet_title">Ubah nama Koleksi</string>
+    <string name="update_collection_bottomsheet_button">Simpan Perubahan</string>
+
+    <string name="wishlist_collection_detail_delete_confirmation_title">Hapus Koleksi \"%s\"</string>
 
 </resources>

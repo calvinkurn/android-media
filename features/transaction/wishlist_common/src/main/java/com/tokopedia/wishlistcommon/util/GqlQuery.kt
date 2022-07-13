@@ -303,3 +303,40 @@ package com.tokopedia.wishlistcommon.util
                     }
                   }
                 }"""
+
+    const val GQL_UPDATE_WISHLIST_COLLECTION_NAME = """
+             mutation UpdateWishlistCollectionName(${'$'}collectionID: SuperInteger, ${'$'}collectionName: String) {
+                  update_wishlist_collection_name(collectionID: ${'$'}collectionID, collectionName: ${'$'}collectionName) {
+                    status
+                    error_message
+                    data {
+                      success
+                      message
+                    }
+                  }
+                }"""
+
+    const val GQL_CREATE_WISHLIST_COLLECTION = """
+             mutation CreateWishlistCollection(${'$'}name: String) {
+                  create_wishlist_collection(name: ${'$'}name) {
+                    status
+                    error_message
+                    data {
+                      success
+                      id
+                      message
+                    }
+                  }
+                }"""
+
+    const val GQL_DELETE_WISHLIST_COLLECTION = """
+             mutation DeleteWishlistCollection(${'$'}collectionID: SuperInteger) {
+                  delete_wishlist_collection(collectionID: ${'$'}collectionID) {
+                    status
+                    error_message
+                    data {
+                      success
+                      message
+                    }
+                  }
+                }"""
