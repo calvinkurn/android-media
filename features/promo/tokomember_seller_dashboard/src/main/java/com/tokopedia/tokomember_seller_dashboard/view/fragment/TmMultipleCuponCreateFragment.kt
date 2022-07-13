@@ -665,10 +665,15 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                     val currentStartDate = GregorianCalendar(locale)
                     val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
                     currentStartDate.time = sdf.parse(timeWindow?.startTime ?: "" + "00") ?: Date()
-                    currentStartDate.set(Calendar.HOUR,currentTime)
-                    currentStartDate.set(Calendar.MINUTE,0)
-                    currentStartDate.set(Calendar.SECOND,0)
                     currentStartDate.add(Calendar.HOUR,4)
+                    val minuteCurrent = currentStartDate.get(Calendar.MINUTE)
+                    if (minuteCurrent <= 30) {
+                        currentStartDate.set(Calendar.MINUTE, 30)
+                    } else {
+                        currentStartDate.add(Calendar.HOUR_OF_DAY, 1)
+                        currentStartDate.set(Calendar.MINUTE, 0)
+                    }
+                    currentStartDate.set(Calendar.SECOND,0)
                     manualStartTimeProgram = convertDateTimeRemoveTimeDiff(currentStartDate.time)
                 }else {
                     manualStartTimeProgram = timeWindow?.startTime ?: ""
