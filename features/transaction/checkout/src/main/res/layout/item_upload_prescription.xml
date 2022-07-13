@@ -31,6 +31,7 @@
             app:layout_constraintBottom_toBottomOf="parent"/>
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/upload_prescription_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toEndOf="@id/upload_icon"
