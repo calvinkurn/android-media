@@ -30,6 +30,7 @@ class BalanceViewHolder(v: View) : RecyclerView.ViewHolder(v) {
     private var listener: HomeCategoryListener? = null
     var gopayViewCoachMark : View? = null
     var rewardsViewCoachMark: View? = null
+    var subscriptionViewCoachMark: View? = null
 
     fun bind(
         drawerItem: BalanceDrawerItemModel?,
@@ -90,6 +91,7 @@ class BalanceViewHolder(v: View) : RecyclerView.ViewHolder(v) {
                             com.tokopedia.unifyprinciples.R.color.Unify_GN400
                         )
                     )
+                    subscriptionViewCoachMark = binding?.homeTvReserveBalance
                 } else {
                     binding?.homeTvReserveBalance?.setWeight(Typography.REGULAR)
                     binding?.homeTvReserveBalance?.setTextColor(
@@ -102,6 +104,8 @@ class BalanceViewHolder(v: View) : RecyclerView.ViewHolder(v) {
                         gopayViewCoachMark = binding?.homeTvReserveBalance
                     } else if(element.drawerItemType == TYPE_REWARDS) {
                         rewardsViewCoachMark = binding?.homeTvReserveBalance
+                    } else if (element.drawerItemType == TYPE_SUBSCRIPTION) {
+                        subscriptionViewCoachMark = binding?.homeTvReserveBalance
                     }
                 }
 
@@ -270,14 +274,4 @@ class BalanceViewHolder(v: View) : RecyclerView.ViewHolder(v) {
             }
         }
     }
-
-//    override var gopayView: View? = gopayViewText
-//
-//    override fun getRewardsView(): View {
-//        TODO("Not yet implemented")
-//    }
-//
-//    override fun getSubscriptionsView(): View {
-//        TODO("Not yet implemented")
-//    }
 }

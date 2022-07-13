@@ -415,6 +415,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private var coachmarkGopay: CoachMark2? = null
     private var coachmarkTokopoint: CoachMark2? = null
     private var coachmarkTokonow: CoachMark2? = null
+    private var coachmarkSubscription: CoachMark2? = null
     private var tokonowIconRef: View? = null
     private var tokonowIconParentPosition: Int = -1
     private val coachMarkItemGopay = ArrayList<CoachMark2Item>()
@@ -696,6 +697,24 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
+//    private fun ArrayList<CoachMark2Item>.buildSubscriptionCoachMark(subscriptionBalanceCoachMark: BalanceCoachmark) {
+//        context?.let { currentContext ->
+//            val subscriptionWidget = getTokopointsNewBalanceWidgetView()
+//            tokopointWidget?.let {
+//                if (this.isEmpty()) {
+//                    positionWidgetTokopoints = it.getPositionWidgetVertical()
+//                    this.add(
+//                        CoachMark2Item(
+//                            tokopointWidget,
+//                            subscriptionBalanceCoachMark.title,
+//                            subscriptionBalanceCoachMark.description
+//                        )
+//                    )
+//                }
+//            }
+//        }
+//    }
+
     private fun ArrayList<CoachMark2Item>.buildTokonowCoachmark(tokonowIcon: View?) {
         context?.let { currentContext ->
             if (!isHomeTokonowCoachmarkShown(currentContext)) {
@@ -784,6 +803,31 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     @Suppress("TooGenericExceptionCaught")
+    private fun showSubscriptionEligibleCoachmark(
+        subscriptionBalanceCoachmark: BalanceCoachmark? = null) {
+        context?.let {
+            subscriptionBalanceCoachmark?.let { subscriptionBalanceCoachmark ->
+                coachMarkItemTokopoints.buildTokopointNewCoachmark(subscriptionBalanceCoachmark)
+                coachmarkTokopoint?.let { tokopointCoachmark ->
+                    try {
+                        if (coachMarkItemTokopoints.isNotEmpty() && isValidToShowCoachMark() && !tokopointsCoachmarkIsShowing) {
+                            tokopointCoachmark?.onDismissListener = {
+                                setNewTokopointCoachmarkShown(it)
+                                showTokonowCoachmark()
+                            }
+                            tokopointCoachmark.showCoachMark(step = coachMarkItemTokopoints, index = COACHMARK_FIRST_INDEX)
+                            tokopointsCoachmarkIsShowing = true
+                        }
+                    } catch (e: Exception) {
+                        tokopointsCoachmarkIsShowing = false
+                        e.printStackTrace()
+                    }
+                }
+            }
+        }
+    }
+
+    @Suppress("TooGenericExceptionCaught")
     private fun showTokonowCoachmark() {
         if (!userVisibleHint) return
 
@@ -848,7 +892,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun getGopayNewBalanceWidgetView(): View? {
         val view = homeRecyclerView?.findViewHolderForAdapterPosition(HOME_HEADER_POSITION)
         (view as? HomeHeaderOvoViewHolder)?.let {
-            val gopayView = getBalanceWidgetViewGopayNewOnly(it.itemView.findViewById(R.id.view_balance_widget))
+            val gopayView = getBalanceWidgetViewGopayOnly(it.itemView.findViewById(R.id.view_balance_widget))
             if (it.itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget).isShown && gopayView?.y?:VIEW_DEFAULT_HEIGHT > VIEW_DEFAULT_HEIGHT)
                 return gopayView
         }
@@ -858,7 +902,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun getGopayNewActivateBalanceWidgetView(): View? {
         val view = homeRecyclerView?.findViewHolderForAdapterPosition(HOME_HEADER_POSITION)
         (view as? HomeHeaderOvoViewHolder)?.let {
-            val gopayView = getBalanceWidgetViewGopayActivateNewOnly(it.itemView.findViewById(R.id.view_balance_widget))
+            val gopayView = getBalanceWidgetViewGopayOnly(it.itemView.findViewById(R.id.view_balance_widget))
             if (it.itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget).isShown && gopayView?.y?:VIEW_DEFAULT_HEIGHT > VIEW_DEFAULT_HEIGHT)
                 return gopayView
         }
@@ -874,20 +918,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         return null
     }
 
-    private fun getBalanceWidgetViewTokoPointsOnly(balanceWidgetView: BalanceWidgetView): View? {
-        return balanceWidgetView.getTokopointsView()
-    }
-
     private fun getBalanceWidgetViewGopayOnly(balanceWidgetView: BalanceWidgetView): View? {
         return balanceWidgetView.getGopayView()
-    }
-
-    private fun getBalanceWidgetViewGopayNewOnly(balanceWidgetView: BalanceWidgetView): View? {
-        return balanceWidgetView.getGopayNewView()
-    }
-
-    private fun getBalanceWidgetViewGopayActivateNewOnly(balanceWidgetView: BalanceWidgetView): View? {
-        return balanceWidgetView.getGopayActivateNewView()
     }
 
     private fun getBalanceWidgetViewTokoPointsNewOnly(balanceWidgetView: BalanceWidgetView): View? {
@@ -1041,6 +1073,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             coachmarkGopay = CoachMark2(it)
             coachmarkTokopoint = CoachMark2(it)
             coachmarkTokonow = CoachMark2(it)
+            coachmarkSubscription = CoachMark2(it)
         }
     }
 
@@ -1419,27 +1452,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 scrollPosition = layoutManager?.findLastVisibleItemPosition()
             )
             adapter?.submitList(data)
-            showCoachmarkWithDataValidation(data)
-        }
-    }
-
-    private fun showCoachmarkWithDataValidation(data: List<Visitable<*>>? = null) {
-        (data?.firstOrNull { it is HomeHeaderDataModel } as? HomeHeaderDataModel)?.let {
-            val isBalanceWidgetNotEmpty =
-                it.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty()
-                    ?: false
-            if (isBalanceWidgetNotEmpty) {
-                val isContainsNewGopayAndTokopoints =
-                    it.headerDataModel?.homeBalanceModel?.containsNewGopayAndTokopoints() ?: false
-                isGopayActivated = it.headerDataModel?.homeBalanceModel?.isGopayActive()?:false
-                if (isContainsNewGopayAndTokopoints) {
-                    showCoachMark(
-                        tokopointsBalanceCoachmark = it.headerDataModel?.homeBalanceModel?.getTokopointsBalanceCoachmark()
-                    )
-                }
-            } else {
-                showCoachMark()
-            }
         }
     }
 
@@ -2875,6 +2887,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun showBalanceWidgetCoachMark(homeBalanceModel: HomeBalanceModel) {
+        isGopayActivated = homeBalanceModel.isGopayActive()
         showCoachMark(homeBalanceModel.getTokopointsBalanceCoachmark())
     }
 }

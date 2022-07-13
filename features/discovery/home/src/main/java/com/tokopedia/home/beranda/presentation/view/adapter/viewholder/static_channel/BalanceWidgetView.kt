@@ -96,31 +96,7 @@ class BalanceWidgetView: FrameLayout {
         balanceWidgetAdapter?.setVisitables(listOf(BalanceShimmerModel()))
     }
 
-    fun getTokopointsView(): View? {
-        val firstViewHolder = rvBalance?.findViewHolderForAdapterPosition(0)
-        if (firstViewHolder is BalanceWidgetViewHolder) {
-            return firstViewHolder.getRewardsView()
-        }
-        return null
-    }
-
     fun getGopayView(): View? {
-        val firstViewHolder = rvBalance?.findViewHolderForAdapterPosition(0)
-        if (firstViewHolder is BalanceWidgetViewHolder) {
-            return firstViewHolder.getGopayNewView()
-        }
-        return null
-    }
-
-    fun getGopayNewView(): View? {
-        val firstViewHolder = rvBalance?.findViewHolderForAdapterPosition(0)
-        if (firstViewHolder is BalanceWidgetViewHolder) {
-            return firstViewHolder.getGopayNewView()
-        }
-        return null
-    }
-
-    fun getGopayActivateNewView(): View? {
         val firstViewHolder = rvBalance?.findViewHolderForAdapterPosition(0)
         if (firstViewHolder is BalanceWidgetViewHolder) {
             return firstViewHolder.getGopayNewView()
