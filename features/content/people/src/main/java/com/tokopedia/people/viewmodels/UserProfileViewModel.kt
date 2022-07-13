@@ -22,11 +22,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.*
 
 class UserProfileViewModel @AssistedInject constructor(
     @Assisted private val username: String,
@@ -118,15 +114,10 @@ class UserProfileViewModel @AssistedInject constructor(
         )
     }
 
-    var isFirstLoad: Boolean = true
-    private val _isFirstLoadEmpty = MutableLiveData<Boolean>()
-    val isFirstLoadEmpty: LiveData<Boolean> = _isFirstLoadEmpty
-
     fun submitAction(action: UserProfileAction) {
         when(action) {
             is UserProfileAction.LoadProfile -> handleLoadProfile(action.isRefresh)
-            is UserProfileAction.LoadShopRecom -> handleLoadShopRecom()
-            is UserProfileAction.LoadPlayVideo -> handleLoadPlayVideo(action.cursor)
+            is UserProfileAction.LoadContent -> handleLoadContent(action.cursor)
             is UserProfileAction.ClickFollowButton -> handleClickFollowButton(action.isFromLogin)
             is UserProfileAction.ClickUpdateReminder -> handleClickUpdateReminder(action.isFromLogin)
             is UserProfileAction.SaveReminderActivityResult -> handleSaveReminderActivityResult(action.channelId, action.position, action.isActive)
@@ -137,9 +128,8 @@ class UserProfileViewModel @AssistedInject constructor(
 
     /** Handle Action */
     private fun handleLoadProfile(isRefresh: Boolean) {
-        if (isRefresh) isFirstLoad = true
         viewModelScope.launchCatchError(block = {
-            loadProfileInfo(isRefresh)
+            loadProfileInfo(isRefresh = isRefresh)
         }) {
             _uiEvent.emit(UserProfileUiEvent.ErrorLoadProfile(it))
         }
@@ -149,40 +139,29 @@ class UserProfileViewModel @AssistedInject constructor(
      * play video will be moved to dedicated fragment when
      * developing another tab user profile eventually. so gonna leave as is for now
      * */
-    private fun handleLoadShopRecom() {
-        launchCatchError(block = {
-            val result = repo.getShopRecom()
-            _shopRecomContent.emit(result.items)
+    private fun handleLoadContent(cursor: String) {
+        viewModelScope.launchCatchError(block = {
+            handleLoadPlayVideo(cursor)
+            if (isSelfProfile) handleLoadShopRecom()
         }, onError = {
             userPostError.value = it
         })
     }
 
-    /**
-    * play video will be moved to dedicated fragment when
-    * developing another tab user profile eventually. so gonna leave as is for now
-    * */
-    private fun handleLoadPlayVideo(cursor: String) {
-        viewModelScope.launchCatchError(block = {
-            val data = repo.getPlayVideo(profileUserID, cursor)
-            if (data != null) {
-                if (isSelfProfile && isFirstLoad && data.playGetContentSlot.data.isNullOrEmpty()) {
-                    _isFirstLoadEmpty.value = true
-                    submitAction(UserProfileAction.LoadShopRecom())
-                }
-                playPostContent.value = Success(data)
-                isFirstLoad = false
-            } else throw NullPointerException("data is null")
-        }, onError = {
-            userPostError.value = it
-        })
+    private suspend fun handleLoadShopRecom() {
+        val result = repo.getShopRecom()
+        if (result.isShown) _shopRecomContent.emit(result.items)
+    }
+
+    private suspend fun handleLoadPlayVideo(cursor: String) {
+        val data = repo.getPlayVideo(profileUserID, cursor)
+        if (data != null) playPostContent.value = Success(data)
+        else throw NullPointerException("data is null")
     }
 
     private fun handleClickFollowButton(isFromLogin: Boolean) {
         viewModelScope.launchCatchError(block = {
-            if(isFromLogin) {
-                loadProfileInfo(false)
-            }
+            if (isFromLogin) loadProfileInfo(isFromLogin = true)
 
             val followInfo = _followInfo.value
 
@@ -208,9 +187,7 @@ class UserProfileViewModel @AssistedInject constructor(
 
     private fun handleClickUpdateReminder(isFromLogin: Boolean) {
         viewModelScope.launchCatchError(block = {
-            if(isFromLogin) {
-                loadProfileInfo(false)
-            }
+            if (isFromLogin) loadProfileInfo(isRefresh = false)
 
             val data = _savedReminderData.value
 
@@ -251,7 +228,7 @@ class UserProfileViewModel @AssistedInject constructor(
     }
 
     private fun handleClickFollowButtonShopRecom(data: ShopRecomUiModelItem) {
-        launchCatchError(block = {
+        viewModelScope.launchCatchError(block = {
 
             val followInfo = _followInfo.value
 
@@ -277,7 +254,7 @@ class UserProfileViewModel @AssistedInject constructor(
     }
 
     /** Helper */
-    private suspend fun loadProfileInfo(isRefresh: Boolean) {
+    private suspend fun loadProfileInfo(isRefresh: Boolean = false, isFromLogin: Boolean = false) {
         val deferredProfileInfo = viewModelScope.asyncCatchError(block = {
             repo.getProfile(username)
         }) {
@@ -313,6 +290,6 @@ class UserProfileViewModel @AssistedInject constructor(
          * play video will be moved to dedicated fragment when
          * developing another tab user profile eventually. so gonna leave as is for now
          * */
-        userPost.value = isRefresh
+        userPost.value = if (isFromLogin) true else isRefresh
     }
 }

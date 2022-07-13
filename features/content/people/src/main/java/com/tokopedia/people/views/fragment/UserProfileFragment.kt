@@ -122,7 +122,7 @@ class UserProfileFragment @Inject constructor(
 
     private val mAdapter: UserPostBaseAdapter by lazy {
         UserPostBaseAdapter(this, this) { cursor ->
-            submitAction(UserProfileAction.LoadPlayVideo(cursor))
+            submitAction(UserProfileAction.LoadContent(cursor))
         }
     }
 
@@ -381,6 +381,7 @@ class UserProfileFragment @Inject constructor(
     private fun addShopRecomObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.shopRecomContent.collect {
+                initShopRecommendation()
                 mAdapterShopRecom.onSuccess(it)
                 with(mainBinding.shopRecommendation) {
                     root.show()
@@ -392,7 +393,6 @@ class UserProfileFragment @Inject constructor(
     }
 
     private fun addListObserver() {
-        viewModel.isFirstLoadEmpty.observe(viewLifecycleOwner) { initShopRecommendation() }
         viewModel.playPostContentLiveData.observe(viewLifecycleOwner) {
             it?.let {
                 when (it) {
@@ -417,8 +417,7 @@ class UserProfileFragment @Inject constructor(
                 userPostContainer.displayedChild = PAGE_ERROR
 
                 globalErrorPost.refreshBtn?.setOnClickListener {
-                    userPostContainer.displayedChild = PAGE_LOADING
-                    initUserPost(viewModel.profileUserID)
+                    refreshLandingPageData(true)
                 }
             }
         }
@@ -753,7 +752,6 @@ class UserProfileFragment @Inject constructor(
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_LOGIN_TO_FOLLOW && resultCode == Activity.RESULT_OK) {
-            refreshLandingPageData(isRefreshPost = true)
             doFollowUnfollow(isFromLogin = true)
         }
         else if(requestCode == REQUEST_CODE_LOGIN_TO_SET_REMINDER && resultCode == Activity.RESULT_OK) {
