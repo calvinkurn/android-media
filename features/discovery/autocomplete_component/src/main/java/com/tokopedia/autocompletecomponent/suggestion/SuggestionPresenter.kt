@@ -130,7 +130,7 @@ class SuggestionPresenter @Inject constructor(
                         typePosition,
                         item,
                         suggestionUniverse.cpmModel,
-                        shopSuggestionProcessing.renderedShopAds
+                        shopSuggestionProcessing.renderedShopAdsId
                     )
                 SUGGESTION_TOP_SHOP_WIDGET ->
                     addTopShopWidgetToVisitable(typePosition, item, suggestionUniverse.topShop)
