@@ -3,6 +3,7 @@ package com.tokopedia.media.editor.data.repository
 import android.graphics.Bitmap
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
@@ -17,7 +18,8 @@ interface WatermarkFilterRepository {
         context: Context,
         source: Bitmap,
         watermarkType: Int,
-        shopNameParam: String
+        shopNameParam: String,
+        isThumbnail: Boolean
     ): Bitmap
 }
 
@@ -53,23 +55,31 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
         context: Context,
         source: Bitmap,
         watermarkType: Int,
-        shopNameParam: String
+        shopNameParam: String,
+        isThumbnail: Boolean
     ): Bitmap {
         shopText = if(shopNameParam.isEmpty()) DEFAULT_SHOP_NAME else shopNameParam
         if (topedDrawable == null) {
             topedDrawable = ContextCompat.getDrawable(context, R.drawable.watermark_tokopedia)
         }
 
-        watermarkColor = ContextCompat.getColor(context,
-            if(source.isDark()) R.color.dms_watermark_text_dark
-            else R.color.dms_watermark_text_light
-        )
+        watermarkColor = if(!isThumbnail) {
+            ContextCompat.getColor(context,
+                if(source.isDark()) R.color.dms_watermark_text_dark
+                else R.color.dms_watermark_text_light
+            )
+        } else {
+            Color.WHITE
+        }
 
         val w: Int = source.width
         val h: Int = source.height
         val result = Bitmap.createBitmap(w, h, source.config)
 
-        imageWidth = (w / IMAGE_SIZE_DIVIDER).toFloat()
+        imageWidth = if (!isThumbnail)
+            (w / IMAGE_SIZE_DIVIDER).toFloat()
+        else
+            w / 2.5f
 
         val canvas = Canvas(result)
         canvas.drawBitmap(source, 0f, 0f, null)
@@ -96,7 +106,6 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
                 watermark2(w, h, canvas, paint)
             }
         }
-
 
         return result
     }

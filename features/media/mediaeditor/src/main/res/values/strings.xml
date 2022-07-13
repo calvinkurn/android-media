@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Media Editor</string>
 
-<!--    Editor tool name-->
+    <!-- Editor tool name -->
     <string name="editor_tool_brightness">Brightness</string>
     <string name="editor_tool_contrast">Contrast</string>
     <string name="editor_tool_crop">Crop</string>
@@ -9,8 +9,11 @@
     <string name="editor_tool_remove_background">Hapus Latar</string>
     <string name="editor_tool_watermark">Watermark</string>
 
-<!--    Content description-->
+    <!-- Content description -->
     <string name="cd_img_preview">image preview</string>
     <string name="editor_button_title_cancel">Batal</string>
     <string name="editor_button_title_save">Simpan</string>
+
+    <!-- Other -->
+    <string name="editor_tool_watermark_label">Logo Tokopedia dan Nama Toko</string>
 </resources>

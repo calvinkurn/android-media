@@ -164,7 +164,8 @@ class DetailEditorFragment @Inject constructor(
                     requireContext(),
                     bitmap,
                     watermarkType,
-                    text
+                    text,
+                    false
                 )
                 viewBinding?.imgPreview?.setImageBitmap(result)
             }
@@ -201,10 +202,39 @@ class DetailEditorFragment @Inject constructor(
                             if (data.watermarkMode != null) viewModel.setWatermark(data.watermarkMode!!)
 
                             originalBitmap = it.drawToBitmap()
+
+                            // render result for watermark drawer item
+                            if(data.editorToolType == EditorToolType.WATERMARK) setWatermarkDrawerItem()
                         }
                     }
                 )
             )
+        }
+    }
+
+    private fun setWatermarkDrawerItem(){
+        originalBitmap?.let { bitmap ->
+            val text = "Toko Maju Jaya Perkasa Abadi Bangunan"
+            val resultBitmap1 = watermarkFilterRepositoryImpl.watermark(
+                requireContext(),
+                bitmap,
+                WatermarkToolUiComponent.WATERMARK_TOKOPEDIA,
+                text,
+                true
+            )
+
+            val resultBitmap2 = watermarkFilterRepositoryImpl.watermark(
+                requireContext(),
+                bitmap,
+                WatermarkToolUiComponent.WATERMARK_SHOP,
+                text,
+                true
+            )
+
+            watermarkComponent.getButtonRef().apply {
+                this.first.setImageBitmap(resultBitmap1)
+                this.second.setImageBitmap(resultBitmap2)
+            }
         }
     }
 
