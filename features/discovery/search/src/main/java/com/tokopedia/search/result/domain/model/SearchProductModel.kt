@@ -47,6 +47,9 @@ data class SearchProductModel(
 
     private val topAdsImageViewModelList: MutableList<TopAdsImageViewModel> = mutableListOf()
 
+    val isPostProcessing: Boolean
+        get() = searchProduct.header.meta.isPostProcessing
+
     val backendFilters: String
         get() = searchProduct.backendFilters
 

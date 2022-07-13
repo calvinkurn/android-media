@@ -362,7 +362,7 @@ class ProductListPresenter @Inject constructor(
 
         if (productDataView.productList.isEmpty()) {
             postProcessingFilter.checkPostProcessingFilter(
-                searchProductModel.searchProduct.header.meta.isPostProcessing,
+                searchProductModel.isPostProcessing,
                 searchParameter,
                 totalData,
                 ::loadMoreData
@@ -649,7 +649,7 @@ class ProductListPresenter @Inject constructor(
 
         if (productDataView.productList.isEmpty()) {
             postProcessingFilter.checkPostProcessingFilter(
-                searchProductModel.searchProduct.header.meta.isPostProcessing,
+                searchProductModel.isPostProcessing,
                 searchParameter,
                 totalData,
                 ::loadData
