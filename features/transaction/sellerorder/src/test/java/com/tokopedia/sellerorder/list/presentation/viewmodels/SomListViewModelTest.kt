@@ -5,6 +5,11 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.sellerorder.common.SomOrderBaseViewModelTest
 import com.tokopedia.sellerorder.common.util.BulkRequestPickupStatus
 import com.tokopedia.sellerorder.common.util.SomConsts
+import com.tokopedia.sellerorder.filter.SomFilterViewModelTestFixture
+import com.tokopedia.sellerorder.filter.domain.mapper.GetSomFilterMapper
+import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
+import com.tokopedia.sellerorder.list.domain.mapper.FilterResultMapper
+import com.tokopedia.sellerorder.list.domain.model.SomListFilterResponse
 import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 import com.tokopedia.sellerorder.list.domain.usecases.SomListBulkAcceptOrderUseCase
 import com.tokopedia.sellerorder.list.domain.usecases.SomListBulkRequestPickupUseCase
@@ -29,9 +34,9 @@ import com.tokopedia.sellerorder.list.presentation.models.RefreshOrder
 import com.tokopedia.sellerorder.list.presentation.models.SomListBulkAcceptOrderStatusUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListBulkAcceptOrderUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListBulkRequestPickupUiModel
-import com.tokopedia.sellerorder.list.presentation.models.SomListFilterUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
 import com.tokopedia.sellerorder.list.presentation.models.WaitingPaymentCounter
+import com.tokopedia.sellerorder.util.TestHelper
 import com.tokopedia.sellerorder.util.TestHelper.invokeSuspend
 import com.tokopedia.sellerorder.util.observeAwaitValue
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
@@ -1461,10 +1466,13 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
 
     @Test
     fun getFiltersFromCacheAndCloud_shouldSuccess() = coroutineTestRule.runBlockingTest {
+        val mockResponse = TestHelper.createSuccessResponse<SomListFilterResponse.Data>(
+            "json/som_list_get_order_filter_success_response.json"
+        )
         coEvery {
             somListGetFilterListUseCase.executeOnBackground(any())
         } answers {
-            SomListFilterUiModel(emptyList(), fromCache = args.first() as Boolean)
+            FilterResultMapper().mapResponseToUiModel(mockResponse, args.first() as Boolean)
         }
 
         every {
@@ -1487,10 +1495,13 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
 
     @Test
     fun getFiltersFromCloud_shouldSuccess() = coroutineTestRule.runBlockingTest {
+        val mockResponse = TestHelper.createSuccessResponse<SomListFilterResponse.Data>(
+            "json/som_list_get_order_filter_success_response.json"
+        )
         coEvery {
             somListGetFilterListUseCase.executeOnBackground(any())
         } answers {
-            SomListFilterUiModel(emptyList(), fromCache = args.first() as Boolean)
+            FilterResultMapper().mapResponseToUiModel(mockResponse, args.first() as Boolean)
         }
 
         every {
@@ -2003,14 +2014,6 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun setOrderTypeFilterTest() = coroutineTestRule.runBlockingTest {
-        val orderTypes = mutableSetOf<Long>(1, 2, 3, 4, 5)
-        setGetDataOrderListParams()
-        viewModel.setOrderTypeFilter(orderTypes)
-        assert(viewModel.getDataOrderListParams().orderTypeList == orderTypes)
-    }
-
-    @Test
     fun setSortOrderByTest() = coroutineTestRule.runBlockingTest {
         val sortBy = SomConsts.SORT_BY_TOTAL_OPEN_DESCENDING
         setGetDataOrderListParams()
@@ -2290,6 +2293,67 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             bulkAcceptOrderStatusUseCase.executeOnBackground()
         }
         assertNull(viewModel.bulkAcceptOrderStatusResult.value)
+    }
+
+    @Test
+    fun addOrderTypeFilter_shouldUpdateGetOrderListParams() {
+        val orderTypeFilterId = 10L
+        viewModel.addOrderTypeFilter(orderTypeFilterId)
+        assertEquals(mutableSetOf(orderTypeFilterId), viewModel.getDataOrderListParams().orderTypeList)
+    }
+
+    @Test
+    fun removeOrderTypeFilter_shouldUpdateGetOrderListParams() {
+        val orderTypeFilterId = 10L
+        viewModel.addOrderTypeFilter(orderTypeFilterId)
+        viewModel.removeOrderTypeFilter(orderTypeFilterId)
+        assertEquals(mutableSetOf<Long>(), viewModel.getDataOrderListParams().orderTypeList)
+    }
+
+    @Test
+    fun addShippingFilter_shouldUpdateGetOrderListParams() {
+        val shippingFilterId = 10L
+        viewModel.addShippingFilter(shippingFilterId)
+        assertEquals(mutableSetOf(shippingFilterId), viewModel.getDataOrderListParams().shippingList)
+    }
+
+    @Test
+    fun removeShippingFilter_shouldUpdateGetOrderListParams() {
+        val shippingFilterId = 10L
+        viewModel.addShippingFilter(shippingFilterId)
+        viewModel.removeShippingFilter(shippingFilterId)
+        assertEquals(mutableSetOf<Long>(), viewModel.getDataOrderListParams().shippingList)
+    }
+
+    @Test
+    fun updateSomFilterUiModelList_shouldUpdateSomFilterUiModelList() {
+        val somFilterUiModelList = GetSomFilterMapper.mapToSomFilterVisitable(
+            TestHelper.createSuccessResponse(
+                SomFilterViewModelTestFixture.SOM_FILTER_SUCCESS_RESPONSE
+            )
+        ).filterIsInstance<SomFilterUiModel>()
+        viewModel.updateSomFilterUiModelList(somFilterUiModelList)
+        assertEquals(somFilterUiModelList, viewModel.getSomFilterUi())
+    }
+
+    @Test
+    fun clearSomFilterUiModelList_shouldUpdateSomFilterUiModelList() {
+        updateSomFilterUiModelList_shouldUpdateSomFilterUiModelList()
+        viewModel.clearSomFilterUiModelList()
+        assertEquals(emptyList<SomFilterUiModel>(), viewModel.getSomFilterUi())
+    }
+
+    @Test
+    fun getTabActive_shouldReturnCorrespondingOrderStatusFilterKeyWhenFilterResultIsNotNull() {
+        getFiltersFromCloud_shouldSuccess()
+        viewModel.setStatusOrderFilter(listOf(220))
+        assertEquals("new_order", viewModel.getTabActive())
+    }
+
+    @Test
+    fun getTabActive_shouldReturnOrderStatusFilterFromAppLinkWhenFilterResultIsNull() {
+        viewModel.setTabActiveFromAppLink("new_order")
+        assertEquals("new_order", viewModel.getTabActive())
     }
 
     private fun doSuccessBulkAcceptOrder(
