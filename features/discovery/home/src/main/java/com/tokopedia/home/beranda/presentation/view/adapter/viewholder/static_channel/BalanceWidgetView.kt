@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home.R
@@ -16,7 +15,6 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceShimmerModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceWidgetFailedModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel.Companion.TYPE_STATE_2
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.balancewidget.BalanceWidgetTypeFactoryImpl
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BalanceWidgetAdapter
 
@@ -49,8 +47,6 @@ class BalanceWidgetView: FrameLayout {
     init {
         val view = LayoutInflater.from(context).inflate(R.layout.layout_item_widget_balance_widget, this)
         rvBalance = view.findViewById(R.id.rv_balance_widget)
-        viewBalanceCoachmark = view.findViewById(R.id.view_balance_widget_coachmark)
-        viewBalanceCoachmarkNew = view.findViewById(R.id.view_balance_widget_coachmark_new)
         this.itemView = view
         this.itemContext = view.context
     }
@@ -63,13 +59,6 @@ class BalanceWidgetView: FrameLayout {
     }
 
     private fun renderWidget(element: HomeBalanceModel) {
-        if (element.balanceType == TYPE_STATE_2) {
-            viewBalanceCoachmark?.visibility = View.GONE
-            viewBalanceCoachmarkNew?.visibility = View.INVISIBLE
-        } else {
-            viewBalanceCoachmark?.visibility = View.GONE
-            viewBalanceCoachmarkNew?.visibility = View.GONE
-        }
         layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
         if (balanceWidgetAdapter == null || rvBalance?.adapter == null) {
             balanceWidgetAdapter = BalanceWidgetAdapter(BalanceWidgetTypeFactoryImpl(listener))
@@ -87,7 +76,6 @@ class BalanceWidgetView: FrameLayout {
             else -> {
                 balanceWidgetAdapter?.setVisitables(listOf(element))
                 rvBalance?.post {
-                    Toast.makeText(itemContext, "Success load balancewidget", Toast.LENGTH_LONG).show()
                     listener?.showBalanceWidgetCoachMark(element)
                 }
             }
@@ -109,15 +97,18 @@ class BalanceWidgetView: FrameLayout {
     }
 
     fun getTokopointsView(): View? {
-        tokopointsView = findViewById(R.id.home_coachmark_item_tokopoints)
-        return tokopointsView
+        val firstViewHolder = rvBalance?.findViewHolderForAdapterPosition(0)
+        if (firstViewHolder is BalanceWidgetViewHolder) {
+            return firstViewHolder.getRewardsView()
+        }
+        return null
     }
 
     fun getGopayView(): View? {
-//        if (balanceAdapter?.getItemMap()?.containsGopay() == true) {
-//            val gopayView: View = findViewById(R.id.home_coachmark_item_gopay)
-//            return gopayView
-//        }
+        val firstViewHolder = rvBalance?.findViewHolderForAdapterPosition(0)
+        if (firstViewHolder is BalanceWidgetViewHolder) {
+            return firstViewHolder.getGopayNewView()
+        }
         return null
     }
 
@@ -130,8 +121,11 @@ class BalanceWidgetView: FrameLayout {
     }
 
     fun getGopayActivateNewView(): View? {
-        gopayActivateNewView = findViewById(R.id.home_coachmark_item_gopay_activate_new)
-        return gopayActivateNewView
+        val firstViewHolder = rvBalance?.findViewHolderForAdapterPosition(0)
+        if (firstViewHolder is BalanceWidgetViewHolder) {
+            return firstViewHolder.getGopayNewView()
+        }
+        return null
     }
 
     fun getRewardsView(): View? {

@@ -23,17 +23,12 @@ import com.tokopedia.network.exception.MessageErrorException
 
 data class HomeBalanceModel(
     var balanceDrawerItemModels: MutableList<BalanceDrawerItemModel> = mutableListOf(),
-    var balanceType: Int? = TYPE_STATE_2,
     var isTokopointsOrOvoFailed: Boolean = false,
     var status: Int = STATUS_LOADING,
     var balancePositionGopay: Int = 0,
     var balancePositionRewards: Int = 0
 ) : BalanceWidgetVisitable {
     companion object {
-
-        // State 2: Tokopoints, Ovo, Bebas Ongkir
-        const val TYPE_STATE_2 = 2
-
         const val ERROR_TITLE = "Gagal Memuat"
         const val ERROR_SUBTITLE = "Coba Lagi"
 
@@ -302,17 +297,13 @@ data class HomeBalanceModel(
         itemType: Int,
         action: () -> Unit
     ) {
-        when (balanceType) {
-            TYPE_STATE_2 -> {
-                itemTypeCondition(
-                        itemType,
-                        typeWalletCondition = { action.invoke() },
-                        typeFreeOngkirCondition = { action.invoke() },
-                        typeCouponCondition = { action.invoke() },
-                        typeRewardsCondition = { action.invoke() }
-                )
-            }
-        }
+        itemTypeCondition(
+            itemType,
+            typeWalletCondition = { action.invoke() },
+            typeFreeOngkirCondition = { action.invoke() },
+            typeCouponCondition = { action.invoke() },
+            typeRewardsCondition = { action.invoke() }
+        )
     }
 
     private fun itemTypeCondition(
