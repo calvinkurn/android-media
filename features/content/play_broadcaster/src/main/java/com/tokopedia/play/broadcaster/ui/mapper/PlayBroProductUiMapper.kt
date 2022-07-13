@@ -15,6 +15,8 @@ import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatusUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.model.paged.PagedDataUiModel
+import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinProductUiModel
+import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinStatus
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
@@ -190,7 +192,8 @@ class PlayBroProductUiMapper @Inject constructor() {
                             discountPercent = product.discount.toInt(),
                             discountedPrice = product.priceFmt,
                             discountedPriceNumber = product.price.toDouble(),
-                        )
+                        ),
+                        pinStatus = getPinStatus(isPinned = product.isPinned, canPin = product.isPinnable),
                     )
                 }
             )
@@ -211,4 +214,12 @@ class PlayBroProductUiMapper @Inject constructor() {
         calendar.add(Calendar.MILLISECOND, TimeZone.getDefault().rawOffset * -1)
         return calendar.time
     }
+
+    /**
+     * Pinned Product
+     * isPinnable -> not eligible to pin product-> hide pin container [case: out of stock]
+     * isPinned -> show [status: Lepas / Pin]
+     */
+    private fun getPinStatus(isPinned: Boolean, canPin: Boolean): PinProductUiModel =
+        PinProductUiModel(pinStatus = PinStatus.getPinStatus(isPinned), canPin = canPin)
 }

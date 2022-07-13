@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.ui.model.product
 
 import android.os.Parcelable
 import com.tokopedia.play.broadcaster.type.ProductPrice
+import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinProductUiModel
 import kotlinx.android.parcel.Parcelize
 
 /**
@@ -14,4 +15,5 @@ data class ProductUiModel(
     val imageUrl: String,
     val stock: Int,
     val price: ProductPrice,
+    val pinStatus: PinProductUiModel = PinProductUiModel.Empty,
 ) : Parcelable
