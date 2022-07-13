@@ -435,7 +435,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     }
 
     @Test
-    fun `when getting data category grid with adult data should run and give the success result`() {
+    fun `when get category grid should not add adult category to category list`() {
         val localCacheModel = LocalCacheModel(
             warehouse_id = "1"
         )
