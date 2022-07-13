@@ -7,6 +7,14 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import javax.inject.Inject
 
+
+/**
+ * Get Tokopedia Plus content data & attributes
+ *
+ * ### See this code example
+ * val response = tokopediaPlusUseCase(mapOf(TokopediaPlusUseCase.PARAM_SOURCE to source))
+ */
+
 class TokopediaPlusUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
     dispatchers: CoroutineDispatchers

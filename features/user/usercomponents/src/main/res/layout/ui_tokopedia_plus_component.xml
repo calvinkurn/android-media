@@ -10,36 +10,40 @@
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iconTokopediaPlus"
         android:layout_width="@dimen/layout_lvl6"
-        android:layout_height="@dimen/layout_lvl6"
+        android:layout_height="match_parent"
+        android:scaleType="centerInside"
+        android:adjustViewBounds="true"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/titleTokopediaPlus"
+    <LinearLayout
+        android:layout_height="@dimen/layout_lvl0"
         android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl1"
         android:layout_marginEnd="@dimen/layout_lvl1"
-        app:typographyType="body_3"
-        app:typographyWeight="bold"
+        android:orientation="vertical"
+        android:gravity="center_vertical"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/descriptionTokopediaPlus"
-        app:layout_constraintStart_toEndOf="@+id/iconTokopediaPlus"
-        app:layout_constraintEnd_toStartOf="@+id/iconDirectionTokopediaPlusPage"/>
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/descriptionTokopediaPlus"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl1"
-        android:layout_marginEnd="@dimen/layout_lvl1"
-        app:typographyType="small"
-        app:typographyWeight="reguler"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/titleTokopediaPlus"
         app:layout_constraintStart_toEndOf="@+id/iconTokopediaPlus"
-        app:layout_constraintEnd_toStartOf="@+id/iconDirectionTokopediaPlusPage"/>
+        app:layout_constraintEnd_toStartOf="@+id/iconDirectionTokopediaPlusPage">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/titleTokopediaPlus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/descriptionTokopediaPlus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:typographyType="small"
+            app:typographyWeight="reguler"/>
+
+    </LinearLayout>
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/iconDirectionTokopediaPlusPage"
