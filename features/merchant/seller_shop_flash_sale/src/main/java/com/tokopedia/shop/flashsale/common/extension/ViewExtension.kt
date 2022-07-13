@@ -75,18 +75,13 @@ fun View?.slideUp(duration: Int = DEFAULT_SCROLL_ANIMATION_DURATION) {
         val animate = TranslateAnimation(0f, 0f, this.height.toFloat(), 0f)
         animate.duration = duration.toLong()
         animate.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationStart(animation: Animation?) {
-
-            }
+            override fun onAnimationStart(animation: Animation?) {}
 
             override fun onAnimationEnd(animation: Animation?) {
                 visible()
             }
 
-            override fun onAnimationRepeat(animation: Animation?) {
-
-            }
-
+            override fun onAnimationRepeat(animation: Animation?) {}
         })
         this.startAnimation(animate)
     }
@@ -98,18 +93,13 @@ fun View?.slideDown(duration: Int = DEFAULT_SCROLL_ANIMATION_DURATION) {
             TranslateAnimation(Float.ZERO, Float.ZERO, Float.ZERO, this.height.toFloat())
         animate.duration = duration.toLong()
         animate.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationStart(animation: Animation?) {
-
-            }
+            override fun onAnimationStart(animation: Animation?) {}
 
             override fun onAnimationEnd(animation: Animation?) {
                 gone()
             }
 
-            override fun onAnimationRepeat(animation: Animation?) {
-
-            }
-
+            override fun onAnimationRepeat(animation: Animation?) {}
         })
         this.startAnimation(animate)
     }
@@ -150,8 +140,7 @@ fun Guideline.setGuidelineEnd(): Int {
 fun Guideline?.animateSlide(fromHeight: Int, targetHeight: Int, isGuidelineBegin: Boolean) =
     this?.run {
         val valueAnimator = ValueAnimator.ofInt(fromHeight, targetHeight)
-        valueAnimator.duration =
-            resources.getInteger(com.tokopedia.unifyprinciples.R.integer.Unify_T2).toLong()
+        valueAnimator.duration = DEFAULT_SCROLL_ANIMATION_DURATION.toLong()
         valueAnimator.interpolator = AccelerateDecelerateInterpolator()
         valueAnimator.addUpdateListener { animation ->
             if (isGuidelineBegin) {

@@ -130,6 +130,7 @@ class CampaignDetailFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setFragmentToUnifyBgColor()
         initCampaignDetail()
         setUpView()
     }
