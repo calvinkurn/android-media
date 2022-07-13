@@ -34,7 +34,7 @@ class ClarificationDataUsageBottomSheet : BottomSheetUnify() {
     }
 
     private fun setViewBanner() {
-        binding?.carousel?.slideToShow = 1f
+        binding?.carouselClarificationDataUsage?.slideToShow = CAROUSEL_SLIDE_TO_SHOW
 
         val itemParam = { item: View, data: Any ->
             val img = item.findViewById<ImageUnify>(R.id.image_banner_clarification_data_usage)
@@ -45,7 +45,11 @@ class ClarificationDataUsageBottomSheet : BottomSheetUnify() {
             getString(R.string.privacy_account_bottom_sheet_clarification_image_banner_2),
             getString(R.string.privacy_account_bottom_sheet_clarification_image_banner_3)
         )
-        binding?.carousel?.addItems(R.layout.item_custom_image_banner, listImageBanner, itemParam)
+        binding?.carouselClarificationDataUsage?.addItems(R.layout.item_custom_image_banner, listImageBanner, itemParam)
+    }
+
+    companion object {
+        private const val CAROUSEL_SLIDE_TO_SHOW = 1f
     }
 
 }

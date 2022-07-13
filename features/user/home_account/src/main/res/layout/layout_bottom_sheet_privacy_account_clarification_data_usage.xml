@@ -5,15 +5,17 @@
     android:layout_height="wrap_content">
 
     <com.tokopedia.carousel.CarouselUnify
-        android:id="@+id/carousel"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:id="@+id/carousel_clarification_data_usage"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:layout_marginTop="@dimen/unify_space_16"
+        app:layout_constraintDimensionRatio="328:234"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_desc_clarification_data_usage"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/opt_desc_clarification_data_usage"
@@ -22,6 +24,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/carousel" />
+        app:layout_constraintTop_toBottomOf="@+id/carousel_clarification_data_usage" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
