@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class RechargeRecommendationResponse(
     @SerializedName("rechargeRecommendation")
-    val response: RechargeRecommendation? = RechargeRecommendation()
+    val response: RechargeRecommendation = RechargeRecommendation()
 )
 
 data class RechargeRecommendation(

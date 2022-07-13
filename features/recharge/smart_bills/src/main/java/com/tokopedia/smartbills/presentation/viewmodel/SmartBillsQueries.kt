@@ -287,4 +287,17 @@ object SmartBillsQueries {
         """.trimIndent()
     }
 
+    val CLOSE_RECHARGE_RECOMMENDATION by lazy {
+        """
+            mutation declineWATFRecommendation(
+              ${'$'}request : rechargeDeclineAboveTheFoldRecommendationRequest!
+            ){
+              rechargeDeclineAboveTheFoldRecommendation(declineRequest: ${'$'}request){
+                IsError
+                Message
+              }
+            }
+        """.trimIndent()
+    }
+
 }

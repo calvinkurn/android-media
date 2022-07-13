@@ -15,7 +15,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.smartbills.data.*
@@ -59,9 +59,6 @@ class SmartBillsViewModel @Inject constructor(
     private val mutableHighlightCategory = MutableLiveData<Result<HighlightCategoryUiModel>>()
     val highlightCategory: LiveData<Result<HighlightCategoryUiModel>>
         get() = mutableHighlightCategory
-
-    private var rechargeRecommendation = RechargeRecommendation()
-    var positionActiveRecommendation: Int = 0
 
     fun getStatementMonths(mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
         launchCatchError(block = {
@@ -204,7 +201,6 @@ class SmartBillsViewModel @Inject constructor(
 
     fun getHightlightCategory() {
         launchCatchError(block = {
-            resetPositionActiveRecommendation()
             val graphqlRequest = GraphqlRequest(
                 SmartBillsQueries.RECHARGE_RECOMMENDATION,
                 RechargeRecommendationResponse::class.java, createParamHighlightCategory()
@@ -214,8 +210,7 @@ class SmartBillsViewModel @Inject constructor(
                 graphqlRepository.response(listOf(graphqlRequest), GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
             }.getSuccessData<RechargeRecommendationResponse>()
 
-            rechargeRecommendation = data.response ?: RechargeRecommendation()
-            updateHighlightUiModel()
+            mutableHighlightCategory.postValue(Success(mapperHighlightUiModel(data.response.recommendations)))
         }
         ) {
             mutableHighlightCategory.postValue(Fail(it))
@@ -281,21 +276,9 @@ class SmartBillsViewModel @Inject constructor(
                 || highlight.date.isNotEmpty()
     }
 
-    fun updatePositionActiveRecommendation() {
-        positionActiveRecommendation++
-    }
-
-    fun resetPositionActiveRecommendation() {
-        positionActiveRecommendation = 0
-    }
-
-    fun updateHighlightUiModel() {
-        mutableHighlightCategory.postValue(Success(mapperHighlightUiModel()))
-    }
-
-    private fun mapperHighlightUiModel(): HighlightCategoryUiModel {
-        if (rechargeRecommendation.recommendations.size >= (positionActiveRecommendation + Int.ONE)){
-            val recommendation = rechargeRecommendation.recommendations.get(positionActiveRecommendation)
+    private fun mapperHighlightUiModel(rechargeRecommendations: List<RechargeRecommendationData>): HighlightCategoryUiModel {
+        if (rechargeRecommendations.size.isMoreThanZero()){
+            val recommendation = rechargeRecommendations.first()
             return HighlightCategoryUiModel(
                 recommendation.contentID,
                 recommendation.iconURL,
@@ -307,7 +290,6 @@ class SmartBillsViewModel @Inject constructor(
         } else {
             return HighlightCategoryUiModel()
         }
-
     }
 
     companion object {
