@@ -2,23 +2,16 @@
 <com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container_balance_widget"
-    android:layout_marginHorizontal="@dimen/home_component_margin_default"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:card_type="clear"
+    android:layout_marginHorizontal="@dimen/home_component_margin_default"
     android:gravity="center_vertical"
     android:minHeight="1px"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    app:card_type="clear">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_balance_widget"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_balance_widget"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_height="wrap_content"/>
 </com.tokopedia.unifycomponents.CardUnify2>
