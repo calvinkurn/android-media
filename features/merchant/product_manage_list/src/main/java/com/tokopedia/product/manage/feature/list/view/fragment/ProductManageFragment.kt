@@ -106,7 +106,6 @@ import com.tokopedia.product.manage.feature.list.constant.ProductManageListConst
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.URL_TIPS_TRICK
 import com.tokopedia.product.manage.feature.list.constant.ProductManageUrl
 import com.tokopedia.product.manage.feature.list.di.ProductManageListComponent
-import com.tokopedia.product.manage.feature.list.view.adapter.ProductManageListAdapter
 import com.tokopedia.product.manage.feature.list.view.adapter.ProductManageListDiffutilAdapter
 import com.tokopedia.product.manage.feature.list.view.adapter.decoration.ProductListItemDecoration
 import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductManageAdapterFactoryImpl
@@ -192,7 +191,6 @@ import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import android.text.TextPaint
-import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -1372,11 +1370,7 @@ open class ProductManageFragment :
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, ProductManageAdapterFactoryImpl> {
-        return if (getIsAdapterEnableDiffutil()) {
-            ProductManageListDiffutilAdapter(adapterTypeFactory, userSession.deviceId.orEmpty())
-        } else {
-            ProductManageListAdapter(adapterTypeFactory, userSession.deviceId.orEmpty())
-        }
+        return ProductManageListDiffutilAdapter(adapterTypeFactory, userSession.deviceId.orEmpty())
     }
 
     override fun getAdapterTypeFactory(): ProductManageAdapterFactoryImpl {
@@ -3295,11 +3289,6 @@ open class ProductManageFragment :
         }
     }
 
-    private fun getIsAdapterEnableDiffutil(): Boolean {
-        return remoteConfig.getBoolean(PRODUCT_MANAGE_ADAPTER_ENABLE_DIFFUTIL, true)
-    }
-
-
     private fun getCoachMarkMoreMenu(btnMoreOption: View): ArrayList<CoachMark2Item> {
         return arrayListOf(
             CoachMark2Item(
@@ -3455,9 +3444,6 @@ open class ProductManageFragment :
 
         private const val VOUCHER_CREATION_PREF = "voucher_creation"
         private const val IS_PRODUCT_COUPON_FIRST_TIME = "is_product_coupon_first_time"
-
-        private const val PRODUCT_MANAGE_ADAPTER_ENABLE_DIFFUTIL =
-            "android_product_manage_adapter_enable_diffutil"
 
         private const val MIN_FEATURED_PRODUCT = 0
         private const val MAX_FEATURED_PRODUCT = 5
