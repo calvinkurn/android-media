@@ -19,7 +19,6 @@ class UploadPrescriptionViewHolder(val view: View, private val actionListener: S
     private val uploadPrescriptionLayout: LinearLayout = view.findViewById(R.id.upload_prescription_layout)
     private val uploadPrescriptionText: Typography = view.findViewById(R.id.upload_prescription_text)
     private val uploadPrescriptionIcon: ImageUnify = view.findViewById(R.id.upload_icon)
-    private val uploadPrescriptionCardUnify: CardUnify2 = view.findViewById(R.id.upload_prescription_card)
 
     companion object {
         @SuppressLint("ResourcePackage")
@@ -28,7 +27,6 @@ class UploadPrescriptionViewHolder(val view: View, private val actionListener: S
     }
 
     fun bindViewHolder(uploadPrescriptionUiModel: UploadPrescriptionUiModel){
-        uploadPrescriptionCardUnify.cardType = CardUnify2.TYPE_BORDER
         uploadPrescriptionText.text = uploadPrescriptionUiModel.uploadImageText
         uploadPrescriptionIcon.loadImage(uploadPrescriptionUiModel.leftIconUrl ?: "")
         uploadPrescriptionLayout.setOnClickListener {
