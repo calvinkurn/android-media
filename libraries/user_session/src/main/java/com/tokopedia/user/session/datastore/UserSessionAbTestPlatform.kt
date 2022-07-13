@@ -27,7 +27,7 @@ open class DataStorePreference @Inject constructor(private val context: Context)
         )
     }
 
-    fun isDataStoreEnabled(): Boolean {
+    open fun isDataStoreEnabled(): Boolean {
         val sharedPreferences = context.getSharedPreferences(
             SHARED_PREFERENCE_AB_TEST_PLATFORM,
             Context.MODE_PRIVATE
