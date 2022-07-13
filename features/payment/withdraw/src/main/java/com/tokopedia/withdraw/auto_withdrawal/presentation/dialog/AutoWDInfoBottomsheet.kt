@@ -8,8 +8,8 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -22,7 +22,7 @@ import com.tokopedia.withdraw.auto_withdrawal.presentation.adapter.AutoWDInfoAda
 import com.tokopedia.withdraw.saldowithdrawal.util.WithdrawConstant
 import javax.inject.Inject
 
-class AutoWDInfoFragment : BottomSheetUnify(), TickerCallback {
+class AutoWDInfoBottomsheet : BottomSheetUnify(), TickerCallback {
 
     private var infoAutoWD: GetInfoAutoWD? = null
 
@@ -44,8 +44,10 @@ class AutoWDInfoFragment : BottomSheetUnify(), TickerCallback {
             setChild(this)
             val ticker = findViewById<Ticker>(R.id.awdJoinRPTicker)
             ticker.setHtmlDescription(getString(R.string.swd_awd_join_rp_for_autoWD))
-            ticker.setDescriptionClickEvent(this@AutoWDInfoFragment)
-            findViewById<View>(R.id.btnMoreInfo).setOnClickListener { openMoreInfo() }
+            ticker.setDescriptionClickEvent(this@AutoWDInfoBottomsheet)
+            findViewById<View>(R.id.btnMoreInfo).setOnClickListener {
+                openMoreInfo()
+            }
             val recyclerView = findViewById<RecyclerView>(R.id.rvAutoWDInfo)
             initRecyclerAdapter(recyclerView)
         }
@@ -76,7 +78,8 @@ class AutoWDInfoFragment : BottomSheetUnify(), TickerCallback {
 
     private fun openMoreInfo() {
         context?.let {
-            val intent = RouteManager.getIntent(context,URL_AUTO_WD_MORE_INFO).apply {
+            val intent = RouteManager.getIntent(context,
+                ApplinkConstInternalGlobal.WEBVIEW,URL_AUTO_WD_MORE_INFO).apply {
                 putExtra(KEY_NEED_LOGIN, true)
             }
             it.startActivity(intent)
@@ -92,7 +95,7 @@ class AutoWDInfoFragment : BottomSheetUnify(), TickerCallback {
         private const val TAG_BOTTOM_SHEET = "AutoWDInfoFragment"
         private const val ARG_AWD_INFO = "arg_awd_info"
         fun show(context: Context?,fragmentManager: FragmentManager, getInfoAutoWD: GetInfoAutoWD){
-            val autoWDInfoFragment = AutoWDInfoFragment().apply {
+            val autoWDInfoFragment = AutoWDInfoBottomsheet().apply {
                 val bundle = Bundle()
                 bundle.putParcelable(ARG_AWD_INFO, getInfoAutoWD)
                 arguments = bundle

@@ -40,7 +40,7 @@ import com.tokopedia.withdraw.auto_withdrawal.di.component.AutoWithdrawalCompone
 import com.tokopedia.withdraw.auto_withdrawal.domain.model.*
 import com.tokopedia.withdraw.auto_withdrawal.presentation.activity.AutoWithdrawalActivity
 import com.tokopedia.withdraw.auto_withdrawal.presentation.adapter.ScheduleChangeListener
-import com.tokopedia.withdraw.auto_withdrawal.presentation.dialog.AutoWDInfoFragment
+import com.tokopedia.withdraw.auto_withdrawal.presentation.dialog.AutoWDInfoBottomsheet
 import com.tokopedia.withdraw.auto_withdrawal.presentation.dialog.ExclusiveRekPremFragment
 import com.tokopedia.withdraw.auto_withdrawal.presentation.dialog.ScheduleTimingFragment
 import com.tokopedia.withdraw.auto_withdrawal.presentation.viewModel.AutoWDSettingsViewModel
@@ -532,9 +532,9 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
     }
 
     private fun openInfoBottomSheet() {
-        activity?.let {
+        activity?.let { activity->
             getInfoAutoWD?.apply {
-                AutoWDInfoFragment.show(context, it.supportFragmentManager, this)
+                AutoWDInfoBottomsheet.show(activity, activity.supportFragmentManager, this)
             }
         }
     }
