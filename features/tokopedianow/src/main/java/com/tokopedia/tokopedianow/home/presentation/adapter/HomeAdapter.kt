@@ -13,12 +13,14 @@ class HomeAdapter(
     fun removeHomeChooseAddressWidget() {
         val items = data.toMutableList()
         val widget = getItem(TokoNowChooseAddressWidgetUiModel::class.java)
-        items.remove(widget)
-        submitList(items)
+        widget?.let {
+            items.remove(it)
+            submitList(items)
+        }
     }
 
-    inline fun <reified T: Visitable<*>> getItem(itemClass: Class<T>): T? {
-        return data.find { it.javaClass == itemClass } as T?
+    fun <T> getItem(itemClass: Class<T>): Visitable<*>? {
+        return data.find { it.javaClass == itemClass}
     }
 
     fun findPosition(visitable: Visitable<*>): Int {
