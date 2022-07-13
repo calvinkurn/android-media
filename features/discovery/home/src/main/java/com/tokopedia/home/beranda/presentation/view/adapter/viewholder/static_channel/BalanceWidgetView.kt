@@ -111,4 +111,12 @@ class BalanceWidgetView: FrameLayout {
         }
         return null
     }
+
+    fun getSubscriptionView(): View? {
+        val firstViewHolder = rvBalance?.findViewHolderForAdapterPosition(0)
+        if (firstViewHolder is BalanceWidgetViewHolder) {
+            return firstViewHolder.getSubscriptionView()
+        }
+        return null
+    }
 }

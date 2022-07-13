@@ -170,6 +170,17 @@ data class HomeBalanceModel(
         return null
     }
 
+    fun getSubscriptionBalanceCoachmark(): BalanceCoachmark? {
+        if (balanceDrawerItemModels.size > balancePositionSubscriptions) {
+            val balanceItem = balanceDrawerItemModels[balancePositionRewards]
+            val isContainsNewTokopoint = balanceItem.state == STATE_SUCCESS
+            if (isContainsNewTokopoint) {
+                return balanceItem.balanceCoachmark
+            }
+        }
+        return null
+    }
+
     private fun mapTokopoint(
         tokopointDrawerListHomeData: TokopointsDrawerListHomeData?,
         headerTitle: String,

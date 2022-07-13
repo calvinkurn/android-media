@@ -98,6 +98,13 @@ class BalanceWidgetViewHolder(itemView: View, val listener: HomeCategoryListener
         return null
     }
 
+    fun getSubscriptionView(): View? {
+        if (balanceAdapter?.getItemMap()?.containsGopay() == true) {
+            return balanceAdapter?.getSubscriptionView()
+        }
+        return null
+    }
+
     private fun getLayoutManager(totalData: Int): NpaGridLayoutManager {
         return NpaGridLayoutManager(itemView.context, totalData)
     }
