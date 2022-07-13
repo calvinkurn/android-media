@@ -38,16 +38,19 @@ import com.tokopedia.utils.file.PublicFolderUtil
 import java.io.File
 import java.util.*
 
+@Deprecated("Do not use this class",
+    ReplaceWith("Please use ImageSecurePreviewActivity")
+)
 open class ImagePreviewActivity : BaseSimpleActivity() {
     private var title: String? = null
     private var description: String? = null
     private var adapter: TouchImageAdapter? = null
-    private var fileLocations: ArrayList<String>? = null
+    var fileLocations: ArrayList<String>? = null
     private var imageDescriptions: ArrayList<String>? = null
-    private var position = 0
+    var position = 0
     private var disableDownload = false
 
-    private val viewPager by lazy {
+    val viewPager by lazy {
         findViewById<TouchViewPager>(R.id.viewPager)
     }
 
@@ -77,23 +80,24 @@ open class ImagePreviewActivity : BaseSimpleActivity() {
         }
 
         setContentView(layoutId())
-
-        adapter = TouchImageAdapter(this@ImagePreviewActivity, fileLocations)
+        setupAdapter()
 
         findViewById<TextView>(R.id.tvTitle)?.setTextAndCheckShow(title)
         findViewById<TextView>(R.id.tvDescription)?.setTextAndCheckShow(description)
 
         findViewById<View>(R.id.ivClose).setOnClickListener { finish() }
         setupDownloadButton()
+    }
+
+    open fun setupAdapter() {
+        adapter = TouchImageAdapter(this@ImagePreviewActivity, fileLocations)
         adapter?.SetonImageStateChangeListener(object : TouchImageAdapter.OnImageStateChange {
             override fun OnStateDefault() {
                 viewPager.SetAllowPageSwitching(true);
             }
-
             override fun OnStateZoom() {
                 viewPager.SetAllowPageSwitching(false);
             }
-
         })
         viewPager.adapter = adapter
         viewPager.currentItem = position
@@ -132,7 +136,7 @@ open class ImagePreviewActivity : BaseSimpleActivity() {
         }
     }
 
-    private fun openImageDownloaded(uri: Uri) {
+    protected fun openImageDownloaded(uri: Uri) {
         val intent = Intent().apply {
             action = Intent.ACTION_VIEW
             setDataAndType(uri, "image/*")
@@ -147,7 +151,7 @@ open class ImagePreviewActivity : BaseSimpleActivity() {
         return SCREEN_NAME
     }
 
-    private fun actionDownloadAndSavePicture() {
+    open fun actionDownloadAndSavePicture() {
         val filenameParam = FileUtil.generateUniqueFileNameDateFormat(viewPager.currentItem)
         val notificationId = filenameParam.hashCode()
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -155,8 +159,9 @@ open class ImagePreviewActivity : BaseSimpleActivity() {
                 ANDROID_GENERAL_CHANNEL)
         notificationBuilder.setContentTitle(filenameParam)
                 .setContentText(getString(R.string.download_in_process))
-                .setSmallIcon(R.drawable.ic_stat_notify_white)
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_big_notif_customerapp))
+                .setSmallIcon(com.tokopedia.design.R.drawable.ic_stat_notify_white)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(),
+                    com.tokopedia.design.R.drawable.ic_big_notif_customerapp))
                 .setAutoCancel(true)
         notificationBuilder.setProgress(0, 0, true);
         notificationManager.notify(notificationId, notificationBuilder.build())
@@ -198,7 +203,7 @@ open class ImagePreviewActivity : BaseSimpleActivity() {
                             findViewById<View>(android.R.id.content),
                             getString(R.string.download_success),
                             Snackbar.LENGTH_SHORT)
-                    snackbar.setAction(getString(R.string.label_open)) {
+                    snackbar.setAction(getString(R.string.image_preview_label_open)) {
                         openImageDownloaded(resultUri)
                     }
                     snackbar.addCallback(object : Snackbar.Callback() {
@@ -236,7 +241,8 @@ open class ImagePreviewActivity : BaseSimpleActivity() {
                 notificationBuilder.build().flags or Notification.FLAG_AUTO_CANCEL;
         notificationManager.notify(notificationId, notificationBuilder.build())
         Toaster.make(findViewById<View>(android.R.id.content), getString(R.string.download_failed),
-                Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.title_ok))
+                Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(
+                com.tokopedia.abstraction.R.string.title_ok))
     }
 
     override fun getNewFragment(): Fragment? {

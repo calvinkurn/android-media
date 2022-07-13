@@ -101,9 +101,7 @@ class ProductSectionViewHolder(
             }
             ProductSectionType.Tokonow -> {
                 btnInfo.showWithCondition(item.config.title.isNotEmpty())
-                btnInfo.addOnImpressionListener(item.impressHolder){
-                    listener.onInformationImpressed()
-                }
+                if(btnInfo.isVisible) listener.onInformationImpressed()
                 tvTimerInfo.hide()
                 timerSection.hide()
             }

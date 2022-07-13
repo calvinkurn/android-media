@@ -31,6 +31,7 @@ import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.CastPlayerHelper
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateListener
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
+import com.tokopedia.play.util.logger.PlayLog
 import com.tokopedia.play.util.chat.ChatStreams
 import com.tokopedia.play.util.setValue
 import com.tokopedia.play.util.share.PlayShareExperience
@@ -65,6 +66,7 @@ import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.sse.*
+import com.tokopedia.play_common.util.PlayLiveRoomMetricsCommon
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
@@ -109,7 +111,9 @@ class PlayViewModel @AssistedInject constructor(
     private val timerFactory: TimerFactory,
     private val castPlayerHelper: CastPlayerHelper,
     private val playShareExperience: PlayShareExperience,
+    private val playLog: PlayLog,
     chatStreamsFactory: ChatStreams.Factory,
+    private val liveRoomMetricsCommon : PlayLiveRoomMetricsCommon,
 ) : ViewModel() {
 
     @AssistedFactory
@@ -187,6 +191,9 @@ class PlayViewModel @AssistedInject constructor(
     private val _loadingBuy = MutableStateFlow(false)
     private val _warehouseInfo = MutableStateFlow(WarehouseInfoUiModel.Empty)
 
+    /** Needed to decide whether we need to call setResult() or no when leaving play room */
+    private val _isChannelReportLoaded = MutableStateFlow(false)
+
     private val _winnerBadgeUiState = combine(
         _leaderboard, _bottomInsets, _status, _channelDetail, _leaderboardUserBadgeState
     ) { leaderboard, bottomInsets, status, channelDetail, leaderboardUserBadgeState ->
@@ -247,7 +254,7 @@ class PlayViewModel @AssistedInject constructor(
     private val _addressUiState = combine(_partnerInfo, _warehouseInfo){ partnerInfo, warehouseInfo ->
         AddressWidgetUiState(
             warehouseInfo = warehouseInfo,
-            shouldShow = partnerInfo.type == PartnerType.Tokonow && warehouseInfo.isOOC && (channelType.isLive || channelType.isVod)
+            shouldShow = partnerInfo.type == PartnerType.Tokonow && warehouseInfo.isOOC && (channelType.isLive || channelType.isVod) && !isFreezeOrBanned
         )
     }
 
@@ -412,6 +419,9 @@ class PlayViewModel @AssistedInject constructor(
     val interactiveData: InteractiveUiModel
         get() = _interactive.value.interactive
 
+    val isTotalViewLoaded: Boolean
+        get() = _isChannelReportLoaded.value
+
     private var socketJob: Job? = null
 
     private val _observableChannelInfo = MutableLiveData<PlayChannelInfoUiModel>()
@@ -482,7 +492,11 @@ class PlayViewModel @AssistedInject constructor(
 
     private val videoPerformanceListener = object : PlayViewerVideoPerformanceListener {
         override fun onPlaying() {
-            if (videoLatencyPerformanceMonitoring.hasStarted) videoLatencyPerformanceMonitoring.stop()
+            if (videoLatencyPerformanceMonitoring.hasStarted) {
+                videoLatencyPerformanceMonitoring.stop()
+                val durationInSecond = videoLatencyPerformanceMonitoring.totalDuration / DURATION_DIVIDER
+                playLog.logTimeToFirstByte(durationInSecond.toInt())
+            }
         }
 
         override fun onError() {
@@ -951,6 +965,7 @@ class PlayViewModel @AssistedInject constructor(
         updateChannelStatus()
 
         updateChannelInfo(channelData)
+        sendInitialLog()
     }
 
     fun defocusPage(shouldPauseVideo: Boolean) {
@@ -965,6 +980,8 @@ class PlayViewModel @AssistedInject constructor(
 
         removeCastSessionListener()
         removeCastStateListener()
+        
+        resetChannelReportLoadedStatus()
     }
 
     private fun focusVideoPlayer(channelData: PlayChannelData) {
@@ -1321,9 +1338,8 @@ class PlayViewModel @AssistedInject constructor(
                             totalLikeFmt = report.totalLikeFmt
                         )
                     }
-                } catch (e: Throwable) {
-
-                }
+                    _isChannelReportLoaded.setValue { true }
+                } catch (e: Throwable) { }
 
                 val isLiked = try { deferredIsLiked.await() } catch (e: Throwable) { false }
 
@@ -1336,6 +1352,10 @@ class PlayViewModel @AssistedInject constructor(
                 copy(status = PlayLikeStatus.NotLiked, source = LikeSource.Network)
             }
         })
+    }
+
+    private fun resetChannelReportLoadedStatus() {
+        _isChannelReportLoaded.setValue { false }
     }
 
     /**
@@ -1572,9 +1592,10 @@ class PlayViewModel @AssistedInject constructor(
                 _tagItems.update {
                     it.copy(
                         product = it.product.copy(
-                            productSectionList = mappedData.first
+                            productSectionList = mappedData.first,
+                            canShow = mappedData.second.second,
                         ),
-                        maxFeatured = mappedData.second,
+                        maxFeatured = mappedData.second.first,
                         bottomSheetTitle = mappedData.third
                     )
                 }
@@ -1976,7 +1997,7 @@ class PlayViewModel @AssistedInject constructor(
             REQUEST_CODE_LOGIN_PLAY_INTERACTIVE -> handlePlayingInteractive(shouldPlay = true)
             REQUEST_CODE_USER_REPORT -> handleUserReport()
             REQUEST_CODE_LOGIN_UPCO_REMINDER -> handleSendReminder(selectedUpcomingCampaign, isFromLogin = true)
-            REQUEST_CODE_LOGIN_PLAY_TOKONOW -> updateTagItems() // need to ask if user log in and open page again
+            REQUEST_CODE_LOGIN_PLAY_TOKONOW -> updateTagItems()
             else -> {}
         }
     }
@@ -2490,6 +2511,11 @@ class PlayViewModel @AssistedInject constructor(
         if(delayTapJob?.isActive == true) delayTapJob?.cancel()
     }
 
+    private fun sendInitialLog(){
+        playLog.logDownloadSpeed(liveRoomMetricsCommon.getInetSpeed())
+        playLog.sendAll(channelId, videoPlayer)
+    }
+
     companion object {
         private const val FIREBASE_REMOTE_CONFIG_KEY_PIP = "android_mainapp_enable_pip"
         private const val FIREBASE_REMOTE_CONFIG_KEY_INTERACTIVE = "android_main_app_enable_play_interactive"
@@ -2517,5 +2543,6 @@ class PlayViewModel @AssistedInject constructor(
          * Reminder
          */
         private const val INTERVAL_LIKE_REMINDER_IN_MIN = 5L
+        private const val DURATION_DIVIDER = 1000
     }
 }

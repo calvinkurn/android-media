@@ -185,6 +185,9 @@ public interface ApplinkConst {
     String HOWTOPAY = "tokopedia://howtopay";
     String GOLD_MERCHANT_STATISTIC_DASHBOARD = "tokopedia://gold-merchant-statistic-dashboard";
     String SHOP_SCORE_DETAIL = "tokopedia://shop-score-detail";
+    String ADMIN_INVITATION = "tokopedia://shop-admin/invitation-page";
+    String ADMIN_ACCEPTED = "tokopedia://shop-admin/accepted-page";
+    String ADMIN_REDIRECTION = "tokopedia://shop-admin/redirection-page";
     String SHOP_SCORE_DETAIL_ACKNOWLEDGE_INTERRUPT = "tokopedia://shop-score-detail/acknowledge-interrupt";
 
     String EVENTS = "tokopedia://events";
@@ -530,6 +533,9 @@ public interface ApplinkConst {
         String REVIEW_REMINDER = "sellerapp://review-reminder";
         String SHOP_SCORE_DETAIL = "sellerapp://shop-score-detail";
         String SHOP_DISCOUNT = "sellerapp://shop-discount";
+        String ADMIN_INVITATION = "sellerapp://shop-admin/invitation-page";
+        String ADMIN_ACCEPTED = "sellerapp://shop-admin/accepted-page";
+        String ADMIN_REDIRECTION = "sellerapp://shop-admin/redirection-page";
     }
 
     interface TokopediaNow {

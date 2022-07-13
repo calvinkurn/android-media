@@ -46,7 +46,6 @@ import com.tokopedia.play.view.viewmodel.PlayBottomSheetViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.model.ui.LeadeboardType
@@ -559,9 +558,9 @@ class PlayBottomSheetFragment @Inject constructor(
                             else {
                                 newAnalytic.impressGlobalToaster(channelId = playViewModel.channelId, channelType = playViewModel.channelType)
                                 Triple(
-                                    getString(R.string.play_add_to_cart_message_success),
+                                    getString(R.string.play_add_to_cart_message_success_tokonow),
                                     ApplinkConstInternalMarketplace.CART,
-                                    getString(R.string.play_toaster_global_wording)
+                                    getString(R.string.play_toaster_tokonow_wording)
                                 )
                             }
 
