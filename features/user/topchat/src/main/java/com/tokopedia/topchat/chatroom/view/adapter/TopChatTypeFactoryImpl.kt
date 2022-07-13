@@ -42,6 +42,7 @@ import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundl
 import com.tokopedia.topchat.chatroom.view.viewmodel.BroadcastSpamHandlerUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
+import com.tokopedia.user.session.UserSessionInterface
 
 open class TopChatTypeFactoryImpl constructor(
     private val imageAnnouncementListener: ImageAnnouncementListener,
@@ -61,7 +62,8 @@ open class TopChatTypeFactoryImpl constructor(
     private val chatMsgListener: FlexBoxChatLayout.Listener,
     private val replyBubbleListener: ReplyBubbleAreaMessage.Listener,
     private val listener: ReminderTickerViewHolder.Listener,
-    private val productBundlingListener: ProductBundlingListener
+    private val productBundlingListener: ProductBundlingListener,
+    private val userSession: UserSessionInterface
 ) : BaseChatTypeFactoryImpl(
     imageAnnouncementListener,
     chatLinkHandlerListener,
@@ -285,7 +287,7 @@ open class TopChatTypeFactoryImpl constructor(
                 fraudAlertListener
             )
             TopchatImageUploadViewHolder.LAYOUT -> TopchatImageUploadViewHolder(
-                parent, imageUploadListener, replyBubbleListener, commonListener
+                parent, imageUploadListener, replyBubbleListener, commonListener, userSession
             )
             ImageDualAnnouncementViewHolder.LAYOUT -> ImageDualAnnouncementViewHolder(
                 parent,

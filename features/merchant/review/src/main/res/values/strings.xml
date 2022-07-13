@@ -150,6 +150,7 @@
     <string name="review_refresh">Refresh</string>
     <string name="review_toaster_page_error">Oops, halaman bermasalah. Cek koneksimu dan coba refresh, ya.</string>
     <string name="review_oke">Oke</string>
+    <string name="review_back_to_home">Ke Homepage</string>
 
     <string name="review_pending_network_error_title">Koneksi internetmu terganggu!</string>
     <string name="review_pending_network_error_content">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WiFi, atau jaringan di tempatmu.</string>
@@ -303,9 +304,9 @@
     <string name="review_create_later">Selesai</string>
     <string name="review_create_thank_you_title">Terima kasih untuk ulasanmu!</string>
     <string name="review_create_thank_you_default_button">Oke, Sip</string>
-    <string name="review_create_bottom_sheet_text_area_empty_incentive">Tulis min. 40 karakter buat dapetin hadiahnya ✍️️</string>
+    <string name="review_create_bottom_sheet_text_area_empty_incentive">Tulis min. 40 karakter buat dapetin hadiahnya ✍️️️</string>
     <string name="review_create_bottom_sheet_text_area_partial_incentive">Lengkapi sedikit lagi biar dapet hadiahnya 🙌</string>
-    <string name="review_create_bottom_sheet_text_area_eligible_for_incentive">Oke siap dikirim. Pastikan kamu sertain foto juga!  📸</string>
+    <string name="review_create_bottom_sheet_text_area_eligible_for_incentive">Testimoni sudah lengkap? Tambah foto atau video, ya  📸</string>
 
     <!-- Review Reminder -->
     <string name="review_reminder_tab_title_1">Kirim Pesan</string>
@@ -379,8 +380,8 @@
     <string name="review_reading_sort_highest_rating">Rating Tertinggi</string>
     <string name="review_reading_sort_lowest_rating">Rating Terendah</string>
     <string name="review_reading_filter_with_attachment">Foto &amp; Video</string>
-    <string name="review_reading_filter_all_ratings">Semua Rating</string>
-    <string name="review_reading_filter_all_topics">Semua Topik</string>
+    <string name="review_reading_filter_all_ratings">Rating</string>
+    <string name="review_reading_filter_all_topics">Topik</string>
     <string name="review_reading_submit_filter">Terapkan Filter</string>
     <string name="review_reading_reset_filter">Reset</string>
     <string name="review_reading_report_option">Laporkan Ulasan</string>
@@ -393,6 +394,8 @@
     <string name="review_reading_seller_label">Penjual</string>
     <string name="review_reading_hide_response">Tutup Balasan</string>
     <string name="review_reading_empty_review">Tidak ada ulasan</string>
+    <string name="review_reading_empty_review_shop_page_title">Toko ini belum punya ulasan</string>
+    <string name="review_reading_empty_review_shop_page_subtitle">Yuk, belanja di toko ini dan jadi yang pertama kasih ulasan.</string>
     <string name="review_reading_filter_multiple_rating_selected">%d Rating</string>
     <string name="review_reading_filter_multiple_topic_selected">%d Topik</string>
     <string name="review_reading_connection_error">Oops, ada kendala dengan koneksi internetmu. Coba lagi, ya!</string>

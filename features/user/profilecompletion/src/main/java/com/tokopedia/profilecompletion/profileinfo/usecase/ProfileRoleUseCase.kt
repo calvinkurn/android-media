@@ -13,11 +13,11 @@ class ProfileRoleUseCase @Inject constructor(
 ) : CoroutineUseCase<Unit, ProfileRoleResponse>(dispatcher) {
 
     override suspend fun execute(params: Unit): ProfileRoleResponse {
-	return repository.request(graphqlQuery(), params)
+        return repository.request(graphqlQuery(), params)
     }
 
     override fun graphqlQuery(): String =
-	"""
+        """
        	query userProfileRole() {
 	        userProfileRole {
 		    isAllowedChangeDob

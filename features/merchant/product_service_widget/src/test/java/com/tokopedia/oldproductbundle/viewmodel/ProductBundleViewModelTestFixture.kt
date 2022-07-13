@@ -5,18 +5,14 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartBundleUseCase
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.oldproductbundle.common.usecase.GetBundleInfoUseCase
 import com.tokopedia.oldproductbundle.common.util.ResourceProvider
+import com.tokopedia.oldproductbundle.viewmodel.ProductBundleViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.spyk
-import io.mockk.unmockkAll
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.setMain
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 
@@ -25,6 +21,9 @@ abstract class ProductBundleViewModelTestFixture {
 
     @get:Rule
     val instantTaskExcecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
 
     @RelaxedMockK
     lateinit var getBundleInfoUseCase: GetBundleInfoUseCase
@@ -41,12 +40,14 @@ abstract class ProductBundleViewModelTestFixture {
     @RelaxedMockK
     lateinit var resourceProvider: ResourceProvider
 
-    protected val testDispatcher: TestCoroutineDispatcher by lazy {
-        TestCoroutineDispatcher()
-    }
+    lateinit var viewModel: ProductBundleViewModel
+    lateinit var nonSpykViewModel2: ProductBundleViewModel
 
-    protected val viewModel: ProductBundleViewModel by lazy {
-        spyk(
+    @Before
+    @Throws(Exception::class)
+    fun setup() {
+        MockKAnnotations.init(this)
+        viewModel = spyk(
             ProductBundleViewModel(
             resourceProvider,
             CoroutineTestDispatchersProvider,
@@ -56,19 +57,14 @@ abstract class ProductBundleViewModelTestFixture {
             userSession
         )
         )
-    }
 
-    @Before
-    @Throws(Exception::class)
-    fun setup() {
-        MockKAnnotations.init(this)
-        Dispatchers.setMain(testDispatcher)
-    }
-
-    @After
-    @Throws(Exception::class)
-    fun tearDown() {
-        Dispatchers.resetMain()
-        unmockkAll()
+        nonSpykViewModel2 = ProductBundleViewModel(
+            resourceProvider,
+            CoroutineTestDispatchersProvider,
+            getBundleInfoUseCase,
+            addToCartBundleUseCase,
+            chosenAddressHelper,
+            userSession
+        )
     }
 }

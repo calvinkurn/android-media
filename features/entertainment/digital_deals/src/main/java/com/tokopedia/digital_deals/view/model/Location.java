@@ -9,13 +9,12 @@ import com.tokopedia.library.baseadapter.BaseItem;
 
 public class Location extends BaseItem implements Parcelable {
 
-
     @SerializedName("id")
     @Expose
-    private int id;
+    private String id;
     @SerializedName("category_id")
     @Expose
-    private int categoryId;
+    private String categoryId;
     @SerializedName("name")
     @Expose
     private String name;
@@ -57,7 +56,7 @@ public class Location extends BaseItem implements Parcelable {
     private String coordinates;
     @SerializedName("city_id")
     @Expose
-    private int cityId;
+    private String cityId;
     @SerializedName("city_name")
     @Expose
     private String cityName;
@@ -80,8 +79,8 @@ public class Location extends BaseItem implements Parcelable {
     };
 
     protected Location(Parcel in) {
-        this.id = in.readInt();
-        this.categoryId = in.readInt();
+        this.id = in.readString();
+        this.categoryId = in.readString();
         this.name = in.readString();
         this.searchName = in.readString();
         this.district = in.readString();
@@ -95,26 +94,34 @@ public class Location extends BaseItem implements Parcelable {
         this.address = in.readString();
         this.locType = in.readParcelable(LocationType.class.getClassLoader());
         this.coordinates = in.readString();
-        this.cityId = in.readInt();
+        this.cityId = in.readString();
         this.cityName = in.readString();
     }
 
     public Location() {
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public int getIdInInt() {
+        if (id.isEmpty()) {
+            return 0;
+        } else {
+            return Integer.parseInt(id);
+        }
+    }
+
+    public void setId(String id) {
         this.id = id;
     }
 
-    public int getCategoryId() {
+    public String getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(int categoryId) {
+    public void setCategoryId(String categoryId) {
         this.categoryId = categoryId;
     }
 
@@ -223,11 +230,11 @@ public class Location extends BaseItem implements Parcelable {
     }
 
 
-    public int getCityId() {
+    public String getCityId() {
         return cityId;
     }
 
-    public void setCityId(int cityId) {
+    public void setCityId(String cityId) {
         this.cityId = cityId;
     }
 
@@ -241,8 +248,8 @@ public class Location extends BaseItem implements Parcelable {
 
     public void writeToParcel(Parcel dest, int flags) {
 
-        dest.writeInt(id);
-        dest.writeInt(categoryId);
+        dest.writeString(id);
+        dest.writeString(categoryId);
         dest.writeString(name);
         dest.writeString(searchName);
         dest.writeString(district);
@@ -256,7 +263,7 @@ public class Location extends BaseItem implements Parcelable {
         dest.writeString(address);
         dest.writeParcelable(locType, flags);
         dest.writeString(coordinates);
-        dest.writeInt(cityId);
+        dest.writeString(cityId);
         dest.writeString(cityName);
     }
 

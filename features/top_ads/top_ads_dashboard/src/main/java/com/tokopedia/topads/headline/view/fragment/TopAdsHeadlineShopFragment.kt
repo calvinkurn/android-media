@@ -134,7 +134,7 @@ class TopAdsHeadlineShopFragment : BaseDaggerFragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
     ): View? {
         val view = inflater.inflate(
-            resources.getLayout(R.layout.topads_dash_fragment_headline_group_list),
+            context?.resources?.getLayout(R.layout.topads_dash_fragment_headline_group_list),
             container, false
         )
         initViews(view)
@@ -192,9 +192,10 @@ class TopAdsHeadlineShopFragment : BaseDaggerFragment() {
             groupIds.add(it.groupId)
             adapter?.items?.add(HeadLineAdItemsItemModel(it))
         }
+        val resources = context?.resources
         if (adapter?.items?.size.isZero()) {
             onEmptyResult()
-        } else if (groupIds.isNotEmpty()) {
+        } else if (groupIds.isNotEmpty() && resources != null) {
             presenter.getGroupStatisticsData(
                 1, ",", "", 0,
                 Utils.format.format((parentFragment as? TopAdsHeadlineBaseFragment)?.startDate?:Utils.getStartDate()),
@@ -256,6 +257,7 @@ class TopAdsHeadlineShopFragment : BaseDaggerFragment() {
     }
 
     private fun performAction(actionActivate: String) {
+        val resources = context?.resources ?: return
         if (actionActivate == TopAdsDashboardConstant.ACTION_DELETE) {
             view?.let {
                 val desc = if (getAdIds().size > 1)
@@ -308,6 +310,7 @@ class TopAdsHeadlineShopFragment : BaseDaggerFragment() {
     }
 
     private fun statusChange(pos: Int, status: Int) {
+        val resources = context?.resources ?: return
         if (status != CUREENTY_ACTIVATED)
             presenter.setGroupAction(
                 ::onSuccessAction, TopAdsDashboardConstant.ACTION_ACTIVATE,
@@ -333,7 +336,6 @@ class TopAdsHeadlineShopFragment : BaseDaggerFragment() {
         fetchFirstPage()
         btnFilter?.setOnClickListener {
             groupFilterSheet.show(childFragmentManager, "")
-            groupFilterSheet.showAdplacementFilter(false)
             groupFilterSheet.onSubmitClick = { fetchFirstPage() }
         }
         closeButton?.setOnClickListener {

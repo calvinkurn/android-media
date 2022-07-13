@@ -25,7 +25,7 @@ class GetShopFollowingStatusViewModelTest: BaseTopChatViewModelTest() {
         } returns expectedResult
 
         //When
-        viewModel.getShopFollowingStatus(testShopId.toLong())
+        viewModel.getShopFollowingStatus(testShopId)
 
         //Then
         Assert.assertEquals(
@@ -42,7 +42,7 @@ class GetShopFollowingStatusViewModelTest: BaseTopChatViewModelTest() {
         } throws expectedThrowable
 
         //When
-        viewModel.getShopFollowingStatus(testShopId.toLong())
+        viewModel.getShopFollowingStatus(testShopId)
 
         //Then
         Assert.assertEquals(

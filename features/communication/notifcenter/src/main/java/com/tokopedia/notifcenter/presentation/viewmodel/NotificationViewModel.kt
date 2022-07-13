@@ -5,8 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.DataModel
-import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.notifcenter.data.entity.bumpreminder.BumpReminderResponse
@@ -446,21 +447,20 @@ class NotificationViewModel @Inject constructor(
     }
 
     fun addProductToCart(
-        requestParams: RequestParams,
+        requestParams: AddToCartRequestParams,
         onSuccessAddToCart: (data: DataModel) -> Unit,
-        onError: (msg: String) -> Unit
+        onError: (msg: String?) -> Unit
     ) {
         launchCatchError(
             dispatcher.io,
             block = {
-                val atcResponse = addToCartUseCase.createObservable(requestParams)
-                    .toBlocking()
-                    .single().data
+                addToCartUseCase.addToCartRequestParams = requestParams
+                val atcResponse = addToCartUseCase.executeOnBackground()
                 withContext(dispatcher.main) {
-                    if (atcResponse.success == 1) {
-                        onSuccessAddToCart(atcResponse)
+                    if (atcResponse.isDataError()) {
+                        onError(atcResponse.getAtcErrorMessage())
                     } else {
-                        onError(atcResponse.message.getOrNull(0) ?: "")
+                        onSuccessAddToCart(atcResponse.data)
                     }
                 }
             },

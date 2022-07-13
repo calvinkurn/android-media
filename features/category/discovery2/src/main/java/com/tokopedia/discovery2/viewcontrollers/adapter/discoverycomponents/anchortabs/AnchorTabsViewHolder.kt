@@ -72,14 +72,19 @@ class AnchorTabsViewHolder(itemView: View, val fragment: Fragment) :
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let {
             viewModel.getCarouselItemsListData().observe(it, { item ->
-                mDiscoveryRecycleAdapter.addDataList(item)
-                anchorRV.post {
-                    if (viewModel.selectedSectionPos < viewModel.getListSize()){
-                        if(viewModel.wasSectionDeleted()){
-                            linearLayoutManager.scrollToPositionWithOffset(viewModel.selectedSectionPos,0)
-                        }else {
-                            smoothScroller.targetPosition = viewModel.selectedSectionPos
-                            linearLayoutManager.startSmoothScroll(smoothScroller)
+                if(fragment.view != null) {
+                    mDiscoveryRecycleAdapter.addDataList(item)
+                    anchorRV.post {
+                        if (viewModel.selectedSectionPos < viewModel.getListSize()) {
+                            if (viewModel.wasSectionDeleted()) {
+                                linearLayoutManager.scrollToPositionWithOffset(
+                                    viewModel.selectedSectionPos,
+                                    0
+                                )
+                            } else {
+                                smoothScroller.targetPosition = viewModel.selectedSectionPos
+                                linearLayoutManager.startSmoothScroll(smoothScroller)
+                            }
                         }
                     }
                 }

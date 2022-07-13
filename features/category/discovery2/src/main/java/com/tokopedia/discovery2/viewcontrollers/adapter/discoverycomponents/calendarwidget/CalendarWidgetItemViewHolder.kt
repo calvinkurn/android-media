@@ -236,12 +236,8 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
         calendarWidgetItemViewModel.components.properties?.calendarType?.let {
             if(it == Calendar.DYNAMIC) {
                 itemView.findViewById<View>(R.id.calendar_date_alpha).show()
-                try {
-                    itemView.findViewById<ConstraintLayout>(R.id.calendar_parent)
-                        .setBackgroundColor(Color.parseColor(boxColor))
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
+                itemView.findViewById<ConstraintLayout>(R.id.calendar_parent)
+                    .setBackgroundColor(Color.parseColor(Utils.getValidHexCode(itemView.context, boxColor)))
                 itemView.findViewById<Typography>(R.id.calendar_title)
                     .setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
                 itemView.findViewById<Typography>(R.id.calendar_date)
@@ -256,12 +252,8 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                     .setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
                 itemView.findViewById<Typography>(R.id.calendar_desc)
                     .setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
-                try {
-                    itemView.findViewById<Typography>(R.id.calendar_date)
-                        .setBackgroundColor(Color.parseColor(boxColor))
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
+                itemView.findViewById<Typography>(R.id.calendar_date)
+                    .setBackgroundColor(Color.parseColor(Utils.getValidHexCode(itemView.context, boxColor)))
             }
         }
     }

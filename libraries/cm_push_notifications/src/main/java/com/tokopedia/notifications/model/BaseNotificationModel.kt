@@ -182,4 +182,13 @@ data class BaseNotificationModel(
                 }
         }
 
+        fun isReplyChat(): Boolean {
+                return pushPayloadExtra?.let {
+                         it.replyType == REPLY_TYPE_CHAT
+                }?: false
+        }
+
+        companion object {
+                private const val REPLY_TYPE_CHAT = "Chat"
+        }
 }

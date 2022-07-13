@@ -30,7 +30,7 @@ class RecommendationItemEntity {
 
     @SerializedName("categoryId")
     @Expose
-    val categoryId: Int = 0
+    val categoryId: String = "0"
 
     @SerializedName("categoryName")
     @Expose
@@ -38,7 +38,7 @@ class RecommendationItemEntity {
 
     @SerializedName("productId")
     @Expose
-    val productId: Int = 0
+    val productId: String = "0"
 
     @SerializedName("productName")
     @Expose

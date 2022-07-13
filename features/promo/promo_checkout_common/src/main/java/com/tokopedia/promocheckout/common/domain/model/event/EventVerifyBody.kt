@@ -1,5 +1,6 @@
 package com.tokopedia.promocheckout.common.domain.model.event
 
+import android.annotation.SuppressLint
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -26,6 +27,7 @@ data class CartItemVerify(
         @SerializedName("meta_data")
         @Expose
         val metaData: MetaDataVerify = MetaDataVerify(),
+        @SuppressLint("Invalid Data Type")
         @SerializedName("product_id")
         @Expose
         val productId: Int = 0,
@@ -39,12 +41,14 @@ data class CartItemVerify(
 
 @Parcelize
 data class MetaDataVerify(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("entity_category_id")
         @Expose
         val entityCategoryId: Int = 0,
         @SerializedName("entity_category_name")
         @Expose
         val entityCategoryName: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("entity_group_id")
         @Expose
         val entityGroupId: Int = 0,
@@ -54,15 +58,18 @@ data class MetaDataVerify(
         @SerializedName("total_ticket_count")
         @Expose
         val totalTicketCount: Int = 0,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("entity_product_id")
         @Expose
         val entityProductId: Int = 0,
         @SerializedName("entity_product_name")
         @Expose
         val entityProductName: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("entity_provider_id")
         @Expose
         val entityProviderId: Int = 0,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("entity_schedule_id")
         @Expose
         val entityScheduleId: Int = 0,
@@ -96,6 +103,7 @@ data class MetaDataVerify(
         @SerializedName("total_tax_amount")
         @Expose
         val totalTaxAmount: Int = 0,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("total_ticket_price")
         @Expose
         val totalTicketPrice: Int = 0,
@@ -106,6 +114,7 @@ data class MetaDataVerify(
 
 @Parcelize
 data class EntityPackageVerify(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("package_id")
         @Expose
         val packageId: Int = 0,
@@ -115,18 +124,22 @@ data class EntityPackageVerify(
         @SerializedName("description")
         @Expose
         val description: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price_per_seat")
         @Expose
         val pricePerSeat: Int = 0,
         @SerializedName("session_id")
         @Expose
         val sessionID: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("product_id")
         @Expose
         val productId: Int = 0,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("group_id")
         @Expose
         val groupId: Int = 0,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("schedule_id")
         @Expose
         val scheduleId: Int = 0,
@@ -146,12 +159,14 @@ data class EntityPassengerVerify(
         @SerializedName("help_text")
         @Expose
         val helpText: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("id")
         @Expose
         val id: Int = 0,
         @SerializedName("name")
         @Expose
         val name: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("product_id")
         @Expose
         val productId: Int = 0,
@@ -196,6 +211,7 @@ data class EntityAddressVerify(
 
 @Parcelize
 data class ConfigurationVerify(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         @Expose
         val price: Int = 0,

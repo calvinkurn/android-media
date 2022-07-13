@@ -7,7 +7,6 @@
     <string name="shc_empty_state_title">Belum ada informasi untukmu</string>
     <string name="shc_more">Selengkapnya</string>
     <string name="shc_score">Skor</string>
-    <string name="shc_max_progress">/100</string>
     <string name="shc_table_widget_on_empty_message">Oops, belum ada data yang dapat \nditampilkan saat ini.</string>
     <string name="shc_current_period">Periode ini</string>
     <string name="shc_last_period">Periode sebelumnya</string>
@@ -52,4 +51,5 @@
     <string name="shc_last_updated_same_day">Update terakhir hari ini, %1$s</string>
     <string name="shc_last_updated_yesterday">Update terakhir kemarin"</string>
     <string name="shc_last_updated_more_then_yesterday">Update terakhir %1$s</string>
+    <string name="shc_last_updated">Update terakhir: %1$s</string>
 </resources>

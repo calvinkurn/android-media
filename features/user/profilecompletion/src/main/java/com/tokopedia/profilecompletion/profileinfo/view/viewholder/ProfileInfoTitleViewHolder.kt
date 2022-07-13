@@ -16,17 +16,17 @@ class ProfileInfoTitleViewHolder(
     private var binding: ProfileItemTitleViewBinding? by viewBinding()
 
     override fun bind(element: ProfileInfoTitleUiModel?) {
-	binding?.profileItemTitleIcon?.setOnClickListener { listener.onSectionIconClicked(element?.id) }
-	binding?.profileItemTitle?.text = element?.title
-	binding?.profileItemTitleIcon?.setImage(element?.infoIcon)
+        binding?.profileItemTitleIcon?.setOnClickListener { listener.onSectionIconClicked(element?.id) }
+        binding?.profileItemTitle?.text = element?.title
+        binding?.profileItemTitleIcon?.setImage(element?.infoIcon)
     }
 
     companion object {
-	@LayoutRes
-	val LAYOUT_RES = R.layout.profile_item_title_view
+        @LayoutRes
+        val LAYOUT_RES = R.layout.profile_item_title_view
     }
 
     interface ProfileInfoTitleInterface {
-	fun onSectionIconClicked(id: String?)
+        fun onSectionIconClicked(id: String?)
     }
 }

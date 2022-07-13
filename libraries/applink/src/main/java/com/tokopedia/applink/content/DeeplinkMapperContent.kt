@@ -6,6 +6,8 @@ import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_PRODUCT_PICKER_FROM_SHOP
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE_CREATE_POST_V2
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_FEED_CREATION_PRODUCT_SEARCH
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_FEED_CREATION_SHOP_SEARCH
 import com.tokopedia.applink.startsWithPattern
 
 /**
@@ -50,7 +52,6 @@ object DeeplinkMapperContent {
     }
 
     fun getContentCreatePostDeepLink(deepLink: String): String {
-        val uri = Uri.parse(deepLink)
         if(deepLink.startsWith(ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)){
 
                 val regexExp = "${ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2}/?".toRegex()
@@ -61,6 +62,16 @@ object DeeplinkMapperContent {
         if(deepLink.startsWithPattern(ApplinkConst.AFFILIATE_PRODUCT_PICKER_FROM_SHOP_NO_PARAM)){
                 val regexExp = "${ApplinkConst.AFFILIATE_PRODUCT_PICKER_FROM_SHOP_NO_PARAM}/?".toRegex()
                 return deepLink.replace(regexExp, INTERNAL_PRODUCT_PICKER_FROM_SHOP)
+        }
+
+        if(deepLink.startsWithPattern(ApplinkConst.FEED_CREATION_PRODUCT_SEARCH)){
+            val regexExp = "${ApplinkConst.FEED_CREATION_PRODUCT_SEARCH}/?".toRegex()
+            return deepLink.replace(regexExp, INTERNAL_FEED_CREATION_PRODUCT_SEARCH)
+        }
+
+        if(deepLink.startsWithPattern(ApplinkConst.FEED_CREATION_SHOP_SEARCH)){
+            val regexExp = "${ApplinkConst.FEED_CREATION_SHOP_SEARCH}".toRegex()
+            return deepLink.replace(regexExp, INTERNAL_FEED_CREATION_SHOP_SEARCH)
         }
 
         when {

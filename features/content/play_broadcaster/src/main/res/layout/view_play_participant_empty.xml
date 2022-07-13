@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cl_participant_empty"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:visibility="gone"
+    android:clickable="true"
+    android:focusable="true"
+    tools:visibility="visible">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_img_illustration"
+        android:layout_width="@dimen/play_interactive_illustration_width"
+        android:layout_height="@dimen/play_interactive_illustration_height"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_image_url_src="https://images.tokopedia.net/img/android/content/play/play_bro_empty_participant.webp"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_participant_empty_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        app:typographyType="heading_2"
+        app:typographyWeight="bold"
+        android:text="@string/play_bro_ongoing_bottomsheet_empty_participant_message"
+        android:textColor="@color/Unify_N700_96"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_img_illustration"
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>

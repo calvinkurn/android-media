@@ -141,6 +141,7 @@ public interface CMConstant {
         String REVIEW_NUMBER = "reviewNumber";
         String REVIEW_ICON = "reviewIcon";
         String IS_REVIEW = "isReviewNotif";
+        String REPLY_TYPE = "replyType";
 
         String MAIN_APP_PRIORITY = "mainappPriority";
         String SELLER_APP_PRIORITY = "sellerappPriority";
@@ -153,6 +154,8 @@ public interface CMConstant {
             String JOURNEY_ID = "jrnId";
             String JOURNEY_NAME = "jrnName";
             String SESSION_ID = "sesnId";
+            String INTENT_ACTION = "intentAction";
+            String TOPCHAT = "topChat";
         }
 
 

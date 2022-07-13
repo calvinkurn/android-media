@@ -1035,8 +1035,9 @@ abstract class BaseSearchCategoryViewModel(
         chooseAddressData?.let {
             val outOfCoverage = it.isOutOfCoverage()
             val showMiniCart = miniCartSimplifiedData.isShowMiniCartWidget
-            miniCartWidgetMutableLiveData.value = miniCartSimplifiedData
-            isShowMiniCartMutableLiveData.value = showMiniCart && !outOfCoverage
+            val isShowMiniCartWidget = showMiniCart && !outOfCoverage
+            miniCartWidgetMutableLiveData.value = miniCartSimplifiedData.copy(isShowMiniCartWidget = isShowMiniCartWidget)
+            isShowMiniCartMutableLiveData.value = isShowMiniCartWidget
         }
     }
 
@@ -1202,7 +1203,7 @@ abstract class BaseSearchCategoryViewModel(
     fun needToShowOnBoardBottomSheet(has20mBottomSheetBeenShown: Boolean): Boolean {
         chooseAddressData?.apply {
             val is20mServiceType = service_type == ServiceType.NOW_15M
-            return is20mServiceType && !has20mBottomSheetBeenShown
+            return is20mServiceType && !has20mBottomSheetBeenShown && warehouse_id.isValidId()
         }
         return false
     }

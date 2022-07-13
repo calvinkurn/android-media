@@ -72,4 +72,12 @@ setelah 3 x 24 jam, ada beberapa kemungkinan:</string>
     <string name="driver_section_tracking_title">Driver</string>
     <string name="content_desc_empty_tracking">empty tracking history</string>
     <string name="info_icon_tracking_page">info icon tracking page</string>
+
+    <!--   pod-->
+    <string name="label_pod">Bukti Pengiriman</string>
+    <string name="label_back">Kembali</string>
+    <string name="screen_name_pod">Proof of Delivery</string>
+    <string name="error_message_failed_get_image">"Oops, terjadi kesalahan dalam memuat gambar"</string>
+    <string name="pod_label_description">"Foto sepenuhnya diambil dan merupakan tanggung jawab kurir. Tokopedia tidak bertanggung jawab atas hasil foto yang terlampir."</string>
+    <string name="pod_not_valid_proof">Oops, foto tidak ditemukan atau terhapus otomatis karena melewati batas waktu simpan 1 bulan.</string>
 </resources>

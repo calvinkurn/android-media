@@ -17,19 +17,19 @@ data class RechargeBills(
         val index: Int = -1,
         @SerializedName("productID")
         @Expose
-        val productID: Int = 0,
+        val productID: String = "0",
         @SerializedName("productName")
         @Expose
         val productName: String = "",
         @SerializedName("categoryID")
         @Expose
-        val categoryID: Int = 0,
+        val categoryID: String = "0",
         @SerializedName("categoryName")
         @Expose
         val categoryName: String = "",
         @SerializedName("operatorID")
         @Expose
-        val operatorID: Int = 0,
+        val operatorID: String = "0",
         @SerializedName("operatorName")
         @Expose
         val operatorName: String = "",

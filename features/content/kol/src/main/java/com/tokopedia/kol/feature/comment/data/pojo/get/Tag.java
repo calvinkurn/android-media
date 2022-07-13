@@ -1,6 +1,8 @@
 
 package com.tokopedia.kol.feature.comment.data.pojo.get;
 
+import android.annotation.SuppressLint;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -8,13 +10,14 @@ public class Tag {
 
     @SerializedName("id")
     @Expose
-    private int id = 0;
+    private String id = "";
     @SerializedName("type")
     @Expose
     private String type = "";
     @SerializedName("link")
     @Expose
     private String link = "";
+    @SuppressLint("Invalid Data Type")
     @SerializedName("price")
     @Expose
     private String price = "";
@@ -25,7 +28,7 @@ public class Tag {
     @Expose
     private String caption = "";
 
-    public Tag(int id, String type, String link, String price, String url, String caption) {
+    public Tag(String id, String type, String link, String price, String url, String caption) {
         this.id = id;
         this.type = type;
         this.link = link;
@@ -34,7 +37,7 @@ public class Tag {
         this.caption = caption;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 

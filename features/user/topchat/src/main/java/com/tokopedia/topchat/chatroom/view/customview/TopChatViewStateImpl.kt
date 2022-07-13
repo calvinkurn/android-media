@@ -24,7 +24,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatlist.widget.LongClickMenu
+import com.tokopedia.topchat.chatlist.view.widget.LongClickMenu
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.view.adapter.AttachmentPreviewAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
@@ -761,7 +761,11 @@ open class TopChatViewStateImpl constructor(
     }
 
     fun updateProductPreviews(mapProducts: ArrayMap<String, Attachment>) {
-        attachmentPreviewAdapter.updateDeferredAttachment(mapProducts)
+        val listProductPreview = arrayListOf<Attachment>()
+        mapProducts.forEach {
+            listProductPreview.add(it.value)
+        }
+        attachmentPreviewAdapter.updateDeferredAttachment(listProductPreview)
     }
 
     override fun showAttachmentPreview(attachmentPreview: ArrayList<SendablePreview>) {

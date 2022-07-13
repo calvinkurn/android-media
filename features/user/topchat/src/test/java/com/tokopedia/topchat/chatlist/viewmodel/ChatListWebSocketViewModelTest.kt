@@ -10,7 +10,8 @@ import com.tokopedia.topchat.common.websocket.DefaultTopChatWebSocket
 import com.tokopedia.topchat.common.websocket.DefaultWebSocketParser
 import com.tokopedia.topchat.chatlist.domain.websocket.PendingMessageHandler
 import com.tokopedia.topchat.common.websocket.WebSocketStateHandler
-import com.tokopedia.topchat.chatlist.model.BaseIncomingItemWebSocketModel
+import com.tokopedia.topchat.chatlist.view.uimodel.base.BaseIncomingItemWebSocketModel
+import com.tokopedia.topchat.chatlist.view.viewmodel.ChatListWebSocketViewModel
 import com.tokopedia.topchat.chatlist.viewmodel.WebSocketViewModelTest.Companion.eventReplyMessage
 import com.tokopedia.topchat.chatlist.viewmodel.WebSocketViewModelTest.Companion.eventReplyMessageString
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider

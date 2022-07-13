@@ -1187,10 +1187,10 @@ class CreateReviewViewModel @Inject constructor(
                 _submitReviewResult.value = RequestState.Success(result)
             }
         } catch (t: Throwable) {
-            sendingReview.value = false
             _submitReviewResult.value = RequestState.Error(t)
             enqueueErrorSubmitReviewToaster(getErrorCode(t))
         }
+        sendingReview.value = false
     }
 
     private fun enqueueErrorUploadMediaToaster() {

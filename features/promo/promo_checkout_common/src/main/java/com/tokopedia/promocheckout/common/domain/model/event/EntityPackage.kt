@@ -1,5 +1,6 @@
 package com.tokopedia.promocheckout.common.domain.model.event
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -14,6 +15,7 @@ data class EntityPackage(
         @SerializedName("address")
         @Expose
         val address: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("base_price")
         @Expose
         val basePrice: Int = 0,
@@ -26,6 +28,7 @@ data class EntityPackage(
         @SerializedName("commision_type")
         @Expose
         val commisionType: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("currency_price")
         @Expose
         val currencyPrice: Float = 0f,
@@ -43,7 +46,7 @@ data class EntityPackage(
         val errorMessage: String = "",
         @SerializedName("group_id")
         @Expose
-        val groupId: Int = 0,
+        val groupId: String = "0",
         @SerializedName("group_name")
         @Expose
         val groupName: String = "",
@@ -52,19 +55,21 @@ data class EntityPackage(
         val invoiceStatus: String = "",
         @SerializedName("package_id")
         @Expose
-        val packageId: Int = 0,
+        val packageId: String = "0",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("package_price")
         @Expose
         val packagePrice: Int = 0,
         @SerializedName("payment_type")
         @Expose
         val paymentType: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price_per_seat")
         @Expose
         val pricePerSeat: Int = 0,
         @SerializedName("product_id")
         @Expose
-        val productId: Int = 0,
+        val productId: String = "0",
         @SerializedName("provider_invoice_indentifier")
         @Expose
         val providerInvoiceIndentifier: String = "",
@@ -82,7 +87,7 @@ data class EntityPackage(
         val scheduleDate: Int = 0,
         @SerializedName("schedule_id")
         @Expose
-        val scheduleId: Int = 0,
+        val scheduleId: String = "0",
         @SerializedName("show_date")
         @Expose
         val showDate: String = "",
@@ -91,10 +96,10 @@ data class EntityPackage(
         val strSeatinfo: String = "",
         @SerializedName("tkp_invoice_id")
         @Expose
-        val tkpInvoiceId: Int = 0,
+        val tkpInvoiceId: String = "0",
         @SerializedName("tkp_invoice_item_id")
         @Expose
-        val tkpInvoiceItemId: Int = 0,
+        val tkpInvoiceItemId: String = "0",
         @SerializedName("total_ticket_count")
         @Expose
         val totalTicketCount: Int = 0,

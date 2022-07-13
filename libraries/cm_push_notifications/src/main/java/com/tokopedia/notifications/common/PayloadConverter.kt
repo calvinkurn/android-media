@@ -12,6 +12,7 @@ import com.tokopedia.notification.common.utils.NotificationTargetPriorities
 import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.notifications.common.CMConstant.PayloadKeys.*
 import com.tokopedia.notifications.model.*
+import com.tokopedia.notifications.model.payload_extra.Topchat
 import org.json.JSONObject
 import kotlin.collections.ArrayList
 import com.tokopedia.notification.common.utils.NotificationValidationManager.NotificationPriorityType as NotificationPriorityType
@@ -44,7 +45,10 @@ object PayloadConverter {
         model.elementId = data.getString(ELEMENT_ID, "")
         model.tribeKey = data.getString(TRIBE_KEY, "")
         model.type = data.getString(NOTIFICATION_TYPE, "")
-        model.pushPayloadExtra = PushPayloadExtra(isReviewNotif = isBooleanTrue(data, IS_REVIEW))
+        model.pushPayloadExtra = PushPayloadExtra(
+            isReviewNotif = isBooleanTrue(data, IS_REVIEW),
+            replyType = data.getString(REPLY_TYPE, "")
+        )
 
         setNotificationSound(model= model, extras = data)
 
@@ -401,8 +405,19 @@ object PayloadConverter {
             journeyId = data.getString(PayloadExtraDataKey.JOURNEY_ID, null),
             journeyName = data.getString(PayloadExtraDataKey.JOURNEY_NAME, null),
             sessionId = data.getString(PayloadExtraDataKey.SESSION_ID, null),
-
+            intentAction = data.getString(PayloadExtraDataKey.INTENT_ACTION, null),
+            topchat = getTopChatData(data)
         )
+    }
+
+    private fun getTopChatData(data: Bundle): Topchat? {
+        return try {
+            val topChatDataString = data.getString(PayloadExtraDataKey.TOPCHAT)
+            Gson().fromJson(topChatDataString, Topchat::class.java)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
     }
 
     private fun getPayloadExtras(data : SerializedNotificationData) : PayloadExtra{

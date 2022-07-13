@@ -116,6 +116,8 @@ internal fun createBroadMatchListener(): BroadMatchListener {
         override fun onBroadMatchItemImpressed(broadMatchItemDataView: BroadMatchItemDataView) {}
         override fun onBroadMatchItemClicked(broadMatchItemDataView: BroadMatchItemDataView) {}
         override fun onBroadMatchThreeDotsClicked(broadMatchItemDataView: BroadMatchItemDataView) {}
+        override fun onBroadMatchViewAllCardClicked(broadMatchDataView: BroadMatchDataView) {}
+
         override val carouselRecycledViewPool: RecyclerView.RecycledViewPool?
             get() = null
         override val productCardLifecycleObserver: ProductCardLifecycleObserver?
