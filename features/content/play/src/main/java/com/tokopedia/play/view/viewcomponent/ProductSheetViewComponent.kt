@@ -154,7 +154,18 @@ class ProductSheetViewComponent(
     ) {
         showContent(true)
         tvSheetTitle.text = title
-        productSectionAdapter.setItemsAndAnimateChanges(sectionList)
+
+        val sortedSectionList = sectionList.map {
+            if (it is ProductSectionUiModel.Section) {
+                val pinnedProduct = it.productList.firstOrNull { product -> product.isPinned }
+                val sortedProductList = if (pinnedProduct != null) {
+                    val nonPinnedProductList = it.productList - pinnedProduct
+                    listOf(pinnedProduct) + nonPinnedProductList
+                } else it.productList
+                it.copy(productList = sortedProductList)
+            } else it
+        }
+        productSectionAdapter.setItemsAndAnimateChanges(sortedSectionList)
 
         if (voucherList.isEmpty()) {
             clProductVoucher.hide()
