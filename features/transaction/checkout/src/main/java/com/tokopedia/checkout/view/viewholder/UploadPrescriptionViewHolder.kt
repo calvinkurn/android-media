@@ -24,6 +24,7 @@ class UploadPrescriptionViewHolder(val view: View, private val actionListener: S
         @SuppressLint("ResourcePackage")
         @JvmStatic
         val ITEM_VIEW_UPLOAD = R.layout.item_upload_prescription
+        val EPHARMACY_APPLINK = "tokopedia://epharmacy/"
     }
 
     fun bindViewHolder(uploadPrescriptionUiModel: UploadPrescriptionUiModel){
