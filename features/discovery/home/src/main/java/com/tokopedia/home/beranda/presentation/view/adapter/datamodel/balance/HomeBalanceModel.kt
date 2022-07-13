@@ -25,7 +25,9 @@ data class HomeBalanceModel(
     var balanceDrawerItemModels: MutableList<BalanceDrawerItemModel> = mutableListOf(),
     var balanceType: Int? = TYPE_STATE_2,
     var isTokopointsOrOvoFailed: Boolean = false,
-    var status: Int = STATUS_LOADING
+    var status: Int = STATUS_LOADING,
+    var balancePositionGopay: Int = 0,
+    var balancePositionRewards: Int = 0
 ) : BalanceWidgetVisitable {
     companion object {
 
@@ -37,11 +39,6 @@ data class HomeBalanceModel(
 
         const val error_no_supported_wallet =
             "Unable to find wallet balance, possibly empty wallet app balance list or no supported wallet partner found in response"
-
-        const val BALANCE_POSITION_FIRST = 0
-        const val BALANCE_POSITION_SECOND = 1
-        const val BALANCE_POSITION_THIRD = 2
-        const val BALANCE_POSITION_FOURTH = 3
 
         const val STATUS_LOADING = 0
         const val STATUS_SUCCESS = 1
@@ -174,28 +171,28 @@ data class HomeBalanceModel(
     }
 
     fun containsNewGopayAndTokopoints(): Boolean {
-        val isContainsNewGopay = (balanceDrawerItemModels[1]?.drawerItemType == TYPE_WALLET_APP_LINKED
-                || balanceDrawerItemModels[1]?.drawerItemType == TYPE_WALLET_APP_NOT_LINKED) &&
-                balanceDrawerItemModels[1]?.state == STATE_SUCCESS
-        val isContainsNewTokopoint = balanceDrawerItemModels[0]?.state == STATE_SUCCESS
+        val isContainsNewGopay = (balanceDrawerItemModels[balancePositionGopay]?.drawerItemType == TYPE_WALLET_APP_LINKED
+                || balanceDrawerItemModels[balancePositionGopay]?.drawerItemType == TYPE_WALLET_APP_NOT_LINKED) &&
+                balanceDrawerItemModels[balancePositionGopay]?.state == STATE_SUCCESS
+        val isContainsNewTokopoint = balanceDrawerItemModels[balancePositionRewards]?.state == STATE_SUCCESS
         return isContainsNewGopay && isContainsNewTokopoint
     }
 
     fun isGopayActive(): Boolean {
-        val isGopayActive = (balanceDrawerItemModels[1]?.drawerItemType == TYPE_WALLET_APP_LINKED &&
-                balanceDrawerItemModels[1]?.state == STATE_SUCCESS)
+        val isGopayActive = (balanceDrawerItemModels[balancePositionGopay]?.drawerItemType == TYPE_WALLET_APP_LINKED &&
+                balanceDrawerItemModels[balancePositionGopay]?.state == STATE_SUCCESS)
         return isGopayActive
     }
 
     fun containsGopay(): Boolean {
-        val isContainsNewGopay = (balanceDrawerItemModels[1]?.drawerItemType == TYPE_WALLET_APP_LINKED
-                || balanceDrawerItemModels[1]?.drawerItemType == TYPE_WALLET_APP_NOT_LINKED) &&
-                balanceDrawerItemModels[1]?.state == STATE_SUCCESS
+        val isContainsNewGopay = (balanceDrawerItemModels[balancePositionGopay]?.drawerItemType == TYPE_WALLET_APP_LINKED
+                || balanceDrawerItemModels[balancePositionGopay]?.drawerItemType == TYPE_WALLET_APP_NOT_LINKED) &&
+                balanceDrawerItemModels[balancePositionGopay]?.state == STATE_SUCCESS
         return isContainsNewGopay
     }
 
     fun getTokopointsBalanceCoachmark(): BalanceCoachmark? {
-        val balanceItem = balanceDrawerItemModels[1]
+        val balanceItem = balanceDrawerItemModels[balancePositionRewards]
         val isContainsNewTokopoint = balanceItem?.state == STATE_SUCCESS
         if (isContainsNewTokopoint) {
             return balanceItem?.balanceCoachmark

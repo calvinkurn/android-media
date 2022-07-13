@@ -25,8 +25,8 @@ class BalanceAdapter(
 
     var attachedRecyclerView: RecyclerView? = null
     private var itemMap: HomeBalanceModel = HomeBalanceModel()
-    private var positionGopay = -1
-    private var positionRewards = -1
+//    private var positionGopay = -1
+//    private var positionRewards = -1
 
     companion object {
         var disableAnimation: Boolean = false
@@ -38,15 +38,17 @@ class BalanceAdapter(
 
         val balanceModelList = mutableListOf<BalanceDrawerItemModel>()
         try {
-            var counter = 0
+//            var counter = 0
             itemMap.balanceDrawerItemModels.forEach {
                 balanceModelList.add(it)
                 if (it.drawerItemType == BalanceDrawerItemModel.TYPE_WALLET_APP_LINKED) {
-                    positionGopay = counter
+//                    positionGopay = counter
+//                    itemMap.balancePositionGopay = counter
                 } else if (it.drawerItemType == BalanceDrawerItemModel.TYPE_REWARDS) {
-                    positionRewards = counter
+//                    positionRewards = counter
+//                    itemMap.balancePositionRewards = counter
                 }
-                counter++
+//                counter++
             }
             submitList(balanceModelList.toMutableList())
         } catch (e: Exception) {
@@ -84,12 +86,12 @@ class BalanceAdapter(
     }
 
     fun getGopayView() : View? {
-        val viewHolder = attachedRecyclerView?.findViewHolderForAdapterPosition(positionGopay) as BalanceViewHolder
+        val viewHolder = attachedRecyclerView?.findViewHolderForAdapterPosition(itemMap.balancePositionGopay) as BalanceViewHolder
         return viewHolder.gopayViewCoachMark
     }
 
     fun getRewardsView() : View? {
-        val viewHolder = attachedRecyclerView?.findViewHolderForAdapterPosition(positionRewards) as BalanceViewHolder
+        val viewHolder = attachedRecyclerView?.findViewHolderForAdapterPosition(itemMap.balancePositionRewards) as BalanceViewHolder
         return viewHolder.rewardsViewCoachMark
     }
 }

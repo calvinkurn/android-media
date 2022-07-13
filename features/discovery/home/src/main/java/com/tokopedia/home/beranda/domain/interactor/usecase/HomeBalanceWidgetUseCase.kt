@@ -48,18 +48,22 @@ class HomeBalanceWidgetUseCase @Inject constructor(
             val getHomeBalanceWidget = getHomeBalanceWidgetRepository.getRemoteData()
             currentHeaderDataModel.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.clear()
             var homeBalanceModel = getHomeBalanceModel(currentHeaderDataModel)
+            var counter = 0
             getHomeBalanceWidget.getHomeBalanceList.balancesList.forEach {
                 when (it.type) {
                     BALANCE_TYPE_GOPAY -> {
                         homeBalanceModel = getDataUsingWalletApp(homeBalanceModel, it.title)
+                        homeBalanceModel.balancePositionGopay = counter
                     }
                     BALANCE_TYPE_REWARDS -> {
                         homeBalanceModel = getTokopointData(homeBalanceModel, it.title)
+                        homeBalanceModel.balancePositionRewards = counter
                     }
                     BALANCE_TYPE_SUBSCRIPTIONS -> {
                         homeBalanceModel = getSubscriptionsData(homeBalanceModel, it.title, it.data)
                     }
                 }
+                counter++
             }
 
             return currentHeaderDataModel.copy(
