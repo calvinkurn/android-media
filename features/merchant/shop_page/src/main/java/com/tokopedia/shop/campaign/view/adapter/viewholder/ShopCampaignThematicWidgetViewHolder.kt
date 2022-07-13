@@ -31,7 +31,8 @@ import kotlin.math.abs
 
 class ShopCampaignThematicWidgetViewHolder (
     itemView: View,
-    private val listener: ThematicWidgetViewHolder.ThematicWidgetListener
+    private val listener: ThematicWidgetViewHolder.ThematicWidgetListener,
+    private val widgetConfigListener: WidgetConfigListener
 ) : AbstractViewHolder<ThematicWidgetUiModel>(itemView), CoroutineScope, ShopCampaignDynamicHeaderCustomView.HeaderCustomViewListener {
 
     companion object {
@@ -84,7 +85,8 @@ class ShopCampaignThematicWidgetViewHolder (
         uiModel = element
         dynamicHeaderCustomView?.setModel(
             model = element.header,
-            listener = this
+            listener = this,
+            headerTextColor = widgetConfigListener.getWidgetTextColor()
         )
         setupRecyclerView(
             element = element

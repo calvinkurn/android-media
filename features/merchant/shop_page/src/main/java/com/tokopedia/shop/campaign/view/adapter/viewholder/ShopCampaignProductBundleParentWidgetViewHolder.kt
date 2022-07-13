@@ -21,7 +21,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 class ShopCampaignProductBundleParentWidgetViewHolder (
         itemView: View,
         private val multipleProductBundleListener: MultipleProductBundleListener,
-        private val singleProductBundleListener: SingleProductBundleListener
+        private val singleProductBundleListener: SingleProductBundleListener,
+        private val widgetConfigListener: WidgetConfigListener
 ) : AbstractViewHolder<ShopHomeProductBundleListUiModel>(itemView) {
 
     companion object {
@@ -43,7 +44,10 @@ class ShopCampaignProductBundleParentWidgetViewHolder (
     }
 
     override fun bind(element: ShopHomeProductBundleListUiModel) {
-        tvWidgetTitle?.text = element.header.title
+        tvWidgetTitle?.apply {
+            text = element.header.title
+            setTextColor(widgetConfigListener.getWidgetTextColor())
+        }
         bundleListSize = element.productBundleList.size
         val bundleLayoutManager = if (bundleListSize >= BUNDLE_MULTIPLE_ITEM_SIZE) {
             LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)

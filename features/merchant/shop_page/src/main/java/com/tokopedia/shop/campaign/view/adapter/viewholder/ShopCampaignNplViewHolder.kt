@@ -20,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.thousandFormatted
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.shop.R
+import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.shop.common.view.ShopCarouselBannerImageUnify
 import com.tokopedia.shop.databinding.ItemShopCampaignNewProductLaunchBinding
 import com.tokopedia.shop.home.util.DateHelper
@@ -34,7 +35,6 @@ import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.unifycomponents.TimerUnify
 import com.tokopedia.unifyprinciples.Typography
 import java.math.RoundingMode
-import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -47,7 +47,8 @@ import kotlinx.coroutines.launch
 
 class ShopCampaignNplViewHolder(
         itemView: View,
-        private val shopHomeCampaignNplWidgetListener: ShopHomeCampaignNplWidgetListener
+        private val shopHomeCampaignNplWidgetListener: ShopHomeCampaignNplWidgetListener,
+        private val widgetConfigListener: WidgetConfigListener
 ) : AbstractViewHolder<ShopHomeNewProductLaunchCampaignUiModel>(itemView), CoroutineScope {
 
     private val viewBinding: ItemShopCampaignNewProductLaunchBinding? by viewBinding()
@@ -364,6 +365,7 @@ class ShopCampaignNplViewHolder(
                 }
                 show()
             }
+            setTextColor(widgetConfigListener.getWidgetTextColor())
         }
     }
 
@@ -399,6 +401,7 @@ class ShopCampaignNplViewHolder(
         } else {
             textTitle?.apply {
                 text = title
+                setTextColor(widgetConfigListener.getWidgetTextColor())
                 show()
             }
             imageTnc?.show()

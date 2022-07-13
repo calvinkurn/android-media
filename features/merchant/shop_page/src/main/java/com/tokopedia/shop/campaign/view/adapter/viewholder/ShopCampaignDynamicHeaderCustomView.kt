@@ -1,13 +1,12 @@
 package com.tokopedia.shop.campaign.view.adapter.viewholder
 
-import android.view.LayoutInflater
 import android.content.Context
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import androidx.annotation.AttrRes
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -17,8 +16,8 @@ import com.tokopedia.shop_widget.common.util.DateHelper
 import com.tokopedia.shop_widget.common.util.StatusCampaign
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
-import java.util.Calendar
 import java.util.Date
+import java.util.Calendar
 
 
 class ShopCampaignDynamicHeaderCustomView: FrameLayout {
@@ -40,16 +39,16 @@ class ShopCampaignDynamicHeaderCustomView: FrameLayout {
         this.itemView = view
     }
 
-    fun setModel(model: DynamicHeaderUiModel, listener: HeaderCustomViewListener? = null) {
+    fun setModel(model: DynamicHeaderUiModel, listener: HeaderCustomViewListener? = null, headerTextColor: Int) {
         this.listener = listener
-        handleHeaderComponent(model)
+        handleHeaderComponent(model, headerTextColor)
     }
 
-    private fun handleHeaderComponent(model: DynamicHeaderUiModel) {
+    private fun handleHeaderComponent(model: DynamicHeaderUiModel, headerTextColor: Int) {
         setupUi()
-        handleTitle(model.title)
-        handleSubtitle(model.subTitle, model.statusCampaign, model.endDate)
-        handleSeeAllAppLink(model.ctaText, model.ctaTextLink)
+        handleTitle(model.title, headerTextColor)
+        handleSubtitle(model.subTitle, model.statusCampaign, model.endDate, headerTextColor)
+        handleSeeAllAppLink(model.ctaText, model.ctaTextLink, headerTextColor)
     }
 
     private fun setupUi() {
@@ -60,19 +59,21 @@ class ShopCampaignDynamicHeaderCustomView: FrameLayout {
         tpSeeAll =  itemView?.findViewById(R.id.tp_see_all)
     }
 
-    private fun handleTitle(title: String) {
+    private fun handleTitle(title: String, headerTextColor: Int) {
         if (title.isNotBlank()) {
             headerContainer?.show()
             tpTitle?.text = title
+            tpTitle?.setTextColor(headerTextColor)
             tpTitle?.show()
         } else {
             headerContainer?.gone()
         }
     }
 
-    private fun handleSubtitle(subtitle: String, statusCampaign: String, endDate: String) {
+    private fun handleSubtitle(subtitle: String, statusCampaign: String, endDate: String, headerTextColor: Int) {
         if (subtitle.isNotBlank()) {
             tpSubtitle?.text = subtitle
+            tpSubtitle?.setTextColor(headerTextColor)
             handleCountDownTimer(statusCampaign, endDate)
         } else {
             tusCountDown?.gone()
@@ -80,14 +81,14 @@ class ShopCampaignDynamicHeaderCustomView: FrameLayout {
         }
     }
 
-    private fun handleSeeAllAppLink(ctaText: String, ctaTextLink: String) {
+    private fun handleSeeAllAppLink(ctaText: String, ctaTextLink: String, headerTextColor: Int) {
         if (ctaTextLink.isNotBlank()) {
             tpSeeAll?.text = if (ctaText.isNotBlank()) {
                 ctaText
             } else {
                 itemView?.context?.getString(R.string.thematic_widget_see_all)
             }
-            tpSeeAll?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+            tpSeeAll?.setTextColor(headerTextColor)
             tpSeeAll?.setOnClickListener {
                 listener?.onSeeAllClick(ctaTextLink)
             }

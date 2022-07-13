@@ -16,6 +16,7 @@ import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignProductBu
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignThematicWidgetLoadingStateViewHolder
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignThematicWidgetViewHolder
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignVoucherViewHolder
+import com.tokopedia.shop.campaign.view.adapter.viewholder.WidgetConfigListener
 import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
 import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleListener
 import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleListener
@@ -52,7 +53,8 @@ class ShopCampaignTabAdapterTypeFactory(
     private val multipleProductBundleListener: MultipleProductBundleListener,
     private val singleProductBundleListener: SingleProductBundleListener,
     private val thematicWidgetListener: ThematicWidgetViewHolder.ThematicWidgetListener,
-    private val shopHomeProductListSellerEmptyListener: ShopHomeProductListSellerEmptyListener
+    private val shopHomeProductListSellerEmptyListener: ShopHomeProductListSellerEmptyListener,
+    private val widgetConfigListener: WidgetConfigListener
 ) : ShopHomeAdapterTypeFactory(
     listener,
     onMerchantVoucherListWidgetListener,
@@ -86,15 +88,28 @@ class ShopCampaignTabAdapterTypeFactory(
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         val viewHolder = when (type) {
             ShopCampaignVoucherViewHolder.LAYOUT -> ShopCampaignVoucherViewHolder(parent, onMerchantVoucherListWidgetListener)
-            ShopCampaignFlashSaleViewHolder.LAYOUT -> ShopCampaignFlashSaleViewHolder(parent, shopHomeFlashSaleWidgetListener)
-            ShopCampaignNplViewHolder.LAYOUT -> ShopCampaignNplViewHolder(parent, shopHomeCampaignNplWidgetListener)
             ShopCampaignNplPlaceholderViewHolder.LAYOUT -> ShopCampaignNplPlaceholderViewHolder(parent)
-            ShopCampaignThematicWidgetViewHolder.LAYOUT -> ShopCampaignThematicWidgetViewHolder(parent, thematicWidgetListener)
             ShopCampaignThematicWidgetLoadingStateViewHolder.LAYOUT -> ShopCampaignThematicWidgetLoadingStateViewHolder(parent)
+            ShopCampaignThematicWidgetViewHolder.LAYOUT -> ShopCampaignThematicWidgetViewHolder(
+                parent,
+                thematicWidgetListener,
+                widgetConfigListener
+            )
+            ShopCampaignNplViewHolder.LAYOUT -> ShopCampaignNplViewHolder(
+                parent,
+                shopHomeCampaignNplWidgetListener,
+                widgetConfigListener
+            )
+            ShopCampaignFlashSaleViewHolder.LAYOUT -> ShopCampaignFlashSaleViewHolder(
+                parent,
+                shopHomeFlashSaleWidgetListener,
+                widgetConfigListener
+            )
             ShopCampaignProductBundleParentWidgetViewHolder.LAYOUT -> ShopCampaignProductBundleParentWidgetViewHolder(
                 parent,
                 multipleProductBundleListener,
-                singleProductBundleListener
+                singleProductBundleListener,
+                widgetConfigListener
             )
             else -> return super.createViewHolder(parent, type)
         }
