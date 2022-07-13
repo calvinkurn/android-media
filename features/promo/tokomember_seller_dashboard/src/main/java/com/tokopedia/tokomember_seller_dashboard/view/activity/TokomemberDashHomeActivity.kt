@@ -95,7 +95,7 @@ class TokomemberDashHomeActivity : AppCompatActivity(), TmProgramDetailCallback 
     }
 
     companion object{
-        fun openActivity(shopId: Int, cardID:Int, context: Context? , isShowBs:Boolean = false, showToast: Boolean = false){
+        fun openActivity(shopId: Int, cardID:Int, context: Context? , isShowBs:Boolean = false, showToast: Int = -1){
             context?.let {
                 val intent = Intent(it, TokomemberDashHomeActivity::class.java)
                 intent.putExtra(BUNDLE_SHOP_ID, shopId)

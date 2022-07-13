@@ -112,9 +112,9 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
         tmProgramListViewModel?.getProgramList(shopId, cardId)
         tmTracker?.viewProgramListTabSection(arguments?.getInt(BUNDLE_SHOP_ID).toString())
 
-        if(arguments?.getBoolean(BUNDLE_SHOW_TOAST, false) == true){
+       /* if(arguments?.getBoolean(BUNDLE_SHOW_TOAST, false) == true){
             Toaster.build(view, " Yay, pengaturan TokoMember sudah dibuat. Kamu bisa cek progresnya di menu Home.", Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
-        }
+        }*/
 
         btnCreateProgram.setOnClickListener {
             TmDashCreateActivity.openActivity(shopId, activity, CreateScreenType.PROGRAM, ProgramActionType.CREATE_BUAT, REQUEST_CODE_REFRESH, null, cardId)

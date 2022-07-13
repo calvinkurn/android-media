@@ -53,6 +53,7 @@ class TokomemberCreateViewModelTest {
     private val tmKuponInitialUsecase = mockk<TmKuponInitialUsecase>(relaxed = true)
     private val uploaderUseCase = mockk<UploaderUseCase>(relaxed = true)
     private val tmCouponDetailUsecase = mockk<TmCouponDetailUsecase>(relaxed = true)
+    private val tmSingleCouponCreateUsecase =  mockk<TmSingleCouponCreateUsecase>(relaxed = true)
 
     private val editCardObserver: Observer<TokoLiveDataResult<MembershipCreateEditCard>> = mockk(relaxed = true)
 
@@ -67,6 +68,7 @@ class TokomemberCreateViewModelTest {
             tokomemberDashUpdateProgramUsecase,
             tmKuponCreateValidateUsecase,
             tmKuponCreateUsecase,
+            tmSingleCouponCreateUsecase,
             tmKuponUpdateUsecase,
             tmKuponProgramValidateUsecase,
             tmKuponInitialUsecase,
