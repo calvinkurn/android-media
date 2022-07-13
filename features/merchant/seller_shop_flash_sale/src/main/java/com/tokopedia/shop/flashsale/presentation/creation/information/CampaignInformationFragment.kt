@@ -314,6 +314,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     }
 
     private fun setupRecyclerView() {
+        binding?.recyclerView?.itemAnimator = null
         binding?.recyclerView?.layoutManager = GridLayoutManager(requireActivity(), SPAN_COUNT)
         binding?.recyclerView?.adapter = adapter
         adapter.submit(campaignGradientColors)
