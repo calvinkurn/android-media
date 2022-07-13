@@ -60,6 +60,10 @@ class SmartBillsViewModel @Inject constructor(
     val highlightCategory: LiveData<Result<HighlightCategoryUiModel>>
         get() = mutableHighlightCategory
 
+    private val mutableRecommendationClose = MutableLiveData<Result<RechargeCloseResponse>>()
+    val recommendationClose: LiveData<Result<RechargeCloseResponse>>
+        get() = mutableRecommendationClose
+
     fun getStatementMonths(mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
         launchCatchError(block = {
             val graphqlRequest = GraphqlRequest(
@@ -210,10 +214,28 @@ class SmartBillsViewModel @Inject constructor(
                 graphqlRepository.response(listOf(graphqlRequest), GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
             }.getSuccessData<RechargeRecommendationResponse>()
 
-            mutableHighlightCategory.postValue(Success(mapperHighlightUiModel(data.response.recommendations)))
+            mutableHighlightCategory.postValue(Success(mapperHighlightUiModel(data.response.UUID, data.response.recommendations)))
         }
         ) {
             mutableHighlightCategory.postValue(Fail(it))
+        }
+    }
+
+    fun closeHighlight(mapParams: Map<String, Any>){
+        launchCatchError(block = {
+            val graphqlRequest = GraphqlRequest(
+                SmartBillsQueries.CLOSE_RECHARGE_RECOMMENDATION,
+                RechargeCloseResponse::class.java, mapParams
+            )
+
+            val data = withContext(dispatcher.io) {
+                graphqlRepository.response(listOf(graphqlRequest), GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+            }.getSuccessData<RechargeCloseResponse>()
+
+            mutableRecommendationClose.postValue(Success(data))
+        }
+        ) {
+            mutableRecommendationClose.postValue(Fail(it))
         }
     }
 
@@ -265,22 +287,30 @@ class SmartBillsViewModel @Inject constructor(
         return map
     }
 
+    fun createParamCloseRecom(uuid: String, contentId: String): Map<String, Any> {
+        val request =  RechargeCloseParams(uuid, contentId)
+        val map = mutableMapOf(PARAM_CLOSE_RECOM to request)
+        return map
+    }
+
     fun convertSBMMultiResponse(typeRestResponseMap: Map<Type, RestResponse?>): DataRechargeMultiCheckoutResponse {
         return typeRestResponseMap[DataRechargeMultiCheckoutResponse::class.java]?.getData() as DataRechargeMultiCheckoutResponse
     }
 
     fun isHighlightNotEmpty(highlight: HighlightCategoryUiModel): Boolean {
         return highlight.imageUrl.isNotEmpty()
-                || highlight.id.isNotEmpty()
+                || highlight.contentId.isNotEmpty()
+                || highlight.uuId.isNotEmpty()
                 || highlight.applink.isNotEmpty()
                 || highlight.date.isNotEmpty()
     }
 
-    private fun mapperHighlightUiModel(rechargeRecommendations: List<RechargeRecommendationData>): HighlightCategoryUiModel {
+    private fun mapperHighlightUiModel(uuid: String, rechargeRecommendations: List<RechargeRecommendationData>): HighlightCategoryUiModel {
         if (rechargeRecommendations.size.isMoreThanZero()){
             val recommendation = rechargeRecommendations.first()
             return HighlightCategoryUiModel(
                 recommendation.contentID,
+                uuid,
                 recommendation.iconURL,
                 recommendation.mainText,
                 recommendation.subText,
@@ -301,6 +331,7 @@ class SmartBillsViewModel @Inject constructor(
         const val PARAM_PLATFORM_ID = "platformID"
         const val PARAM_DELETE_SBM = "req"
         const val PARAM_RECHARGE_RECOM = "type"
+        const val PARAM_CLOSE_RECOM = "request"
 
         const val STATEMENT_MONTHS_ERROR = "STATEMENT_MONTHS_ERROR"
         const val STATEMENT_BILLS_ERROR = "STATEMENT_BILLS_ERROR"

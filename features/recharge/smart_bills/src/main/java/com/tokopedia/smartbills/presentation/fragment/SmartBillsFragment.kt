@@ -852,7 +852,12 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     }
 
     override fun onClickCloseHighlightCategoryWidget(uiModel: HighlightCategoryUiModel) {
-
+        viewModel.closeHighlight(
+            viewModel.createParamCloseRecom(
+                uiModel.uuId,
+                uiModel.contentId
+            )
+        )
     }
 
     override fun onClickHighlightCategoryWidget(uiModel: HighlightCategoryUiModel) {

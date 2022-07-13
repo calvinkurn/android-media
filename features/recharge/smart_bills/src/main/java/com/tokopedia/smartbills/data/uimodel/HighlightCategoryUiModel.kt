@@ -1,7 +1,8 @@
 package com.tokopedia.smartbills.data.uimodel
 
 data class HighlightCategoryUiModel (
-    val id: String = "",
+    val contentId: String = "",
+    val uuId: String = "",
     val imageUrl: String = "",
     val title: String = "",
     val date: String = "",
