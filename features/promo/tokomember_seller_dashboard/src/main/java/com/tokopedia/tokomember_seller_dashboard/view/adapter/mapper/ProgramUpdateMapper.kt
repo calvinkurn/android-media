@@ -27,6 +27,8 @@ object ProgramUpdateMapper {
         }
         val endTime = if(programType == ProgramActionType.CANCEL){
             membershipGetProgramForm?.programForm?.timeWindow?.endTime
+        } else if (programType == ProgramActionType.EXTEND){
+            addDuration(membershipGetProgramForm?.programForm?.timeWindow?.endTime ?: "", periodInMonth)
         }
         else{
             addDuration(membershipGetProgramForm?.programForm?.timeWindow?.startTime ?: "", periodInMonth)
