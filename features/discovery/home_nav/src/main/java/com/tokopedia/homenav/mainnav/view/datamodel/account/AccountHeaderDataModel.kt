@@ -24,7 +24,7 @@ data class AccountHeaderDataModel(
     var profileSellerDataModel: ProfileSellerDataModel = ProfileSellerDataModel(),
     var profileAffiliateDataModel: ProfileAffiliateDataModel = ProfileAffiliateDataModel(),
     var profileWalletAppDataModel: ProfileWalletAppDataModel = ProfileWalletAppDataModel(),
-    var tokopediaPlusParam: TokopediaPlusParam? = null
+    var tokopediaPlusDataModel: TokopediaPlusDataModel = TokopediaPlusDataModel()
 ) : MainNavVisitable, ImpressHolder() {
     override fun id(): Any = id
 
@@ -139,7 +139,13 @@ data class AccountHeaderDataModel(
         this.profileWalletAppDataModel.isWalletAppLinked = selectedBalance?.isLinked ?: false
     }
 
-    fun setTokopediaPlus(tokopediaPlusParam: TokopediaPlusParam?){
-        this.tokopediaPlusParam = tokopediaPlusParam
+    fun setTokopediaPlus(
+        tokopediaPlusParam: TokopediaPlusParam?,
+        isLoading: Boolean,
+        error: Throwable?
+    ){
+        this.tokopediaPlusDataModel.tokopediaPlusParam = tokopediaPlusParam
+        this.tokopediaPlusDataModel.isGetTokopediaPlusLoading = isLoading
+        this.tokopediaPlusDataModel.tokopediaPlusError = error
     }
 }
