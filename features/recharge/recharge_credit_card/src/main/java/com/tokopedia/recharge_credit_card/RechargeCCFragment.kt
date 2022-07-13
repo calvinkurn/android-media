@@ -37,7 +37,6 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recharge_component.listener.ClientNumberAutoCompleteListener
 import com.tokopedia.recharge_component.listener.ClientNumberFilterChipListener
 import com.tokopedia.recharge_component.listener.ClientNumberInputFieldListener
-import com.tokopedia.recharge_component.model.InputNumberActionType
 import com.tokopedia.recharge_component.model.client_number.InputFieldType
 import com.tokopedia.recharge_component.model.client_number.RechargeClientNumberChipModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
