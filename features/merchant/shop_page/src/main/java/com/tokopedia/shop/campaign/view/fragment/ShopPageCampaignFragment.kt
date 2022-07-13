@@ -120,7 +120,6 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
         }
     }
 
-    private var isThematicWidgetShown: Boolean = false
     private var recyclerViewTopPadding = 0
     private var isClickToScrollToTop = false
     private var latestCompletelyVisibleItemIndex = -1

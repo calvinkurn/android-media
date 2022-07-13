@@ -74,11 +74,7 @@ class ShopCampaignFlashSaleViewHolder(
         val productSize = flashSaleItem?.productList?.size ?: 0
         setupHeader(element.header.title ?: "")
         setupCtaSeeAll(productSize)
-        setupFlashSaleBackgroundView(
-            productList = flashSaleItem?.productList.orEmpty(),
-            startBackGroundColor = flashSaleItem?.firstBackgroundColor,
-            endBackGroundColor = flashSaleItem?.secondBackgroundColor,
-        )
+        setupFlashSaleBackgroundView(productList = flashSaleItem?.productList.orEmpty())
         setupFlashSaleCountDownTimer(element)
         if (!GlobalConfig.isSellerApp())
             setupFlashSaleReminder(flashSaleItem)
@@ -133,7 +129,7 @@ class ShopCampaignFlashSaleViewHolder(
         else ctaSeeAllView?.show()
     }
 
-    private fun setupFlashSaleBackgroundView(productList: List<ShopHomeProductUiModel>, startBackGroundColor: String?, endBackGroundColor: String?) {
+    private fun setupFlashSaleBackgroundView(productList: List<ShopHomeProductUiModel>) {
         // set flash sale background color
         val backgroundColor = Color.TRANSPARENT
         singleBackGroundView?.setBackgroundColor(backgroundColor)

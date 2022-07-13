@@ -13,6 +13,8 @@ import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignFlashSale
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignNplPlaceholderViewHolder
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignNplViewHolder
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignProductBundleParentWidgetViewHolder
+import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignThematicWidgetLoadingStateViewHolder
+import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignThematicWidgetViewHolder
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignVoucherViewHolder
 import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
 import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleListener
@@ -30,6 +32,7 @@ import com.tokopedia.shop.home.view.listener.ShopHomePlayWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseListWidgetListener
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
+import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
 import com.tokopedia.shop_widget.thematicwidget.viewholder.ThematicWidgetViewHolder
 
 class ShopCampaignTabAdapterTypeFactory(
@@ -86,6 +89,8 @@ class ShopCampaignTabAdapterTypeFactory(
             ShopCampaignFlashSaleViewHolder.LAYOUT -> ShopCampaignFlashSaleViewHolder(parent, shopHomeFlashSaleWidgetListener)
             ShopCampaignNplViewHolder.LAYOUT -> ShopCampaignNplViewHolder(parent, shopHomeCampaignNplWidgetListener)
             ShopCampaignNplPlaceholderViewHolder.LAYOUT -> ShopCampaignNplPlaceholderViewHolder(parent)
+            ShopCampaignThematicWidgetViewHolder.LAYOUT -> ShopCampaignThematicWidgetViewHolder(parent, thematicWidgetListener)
+            ShopCampaignThematicWidgetLoadingStateViewHolder.LAYOUT -> ShopCampaignThematicWidgetLoadingStateViewHolder(parent)
             ShopCampaignProductBundleParentWidgetViewHolder.LAYOUT -> ShopCampaignProductBundleParentWidgetViewHolder(
                 parent,
                 multipleProductBundleListener,
@@ -101,5 +106,12 @@ class ShopCampaignTabAdapterTypeFactory(
             ShopCampaignNplPlaceholderViewHolder.LAYOUT
         else
             ShopCampaignNplViewHolder.LAYOUT
+    }
+
+    override fun type(uiModel: ThematicWidgetUiModel): Int {
+        return if(isShowThematicWidgetPlaceHolder(uiModel))
+            ShopCampaignThematicWidgetLoadingStateViewHolder.LAYOUT
+        else
+            ShopCampaignThematicWidgetViewHolder.LAYOUT
     }
 }

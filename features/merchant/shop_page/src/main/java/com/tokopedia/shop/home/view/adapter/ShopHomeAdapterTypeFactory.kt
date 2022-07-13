@@ -190,7 +190,7 @@ open class ShopHomeAdapterTypeFactory(
         return model.widgetState == WidgetState.PLACEHOLDER || model.widgetState == WidgetState.LOADING
     }
 
-    private fun isShowThematicWidgetPlaceHolder(model: ThematicWidgetUiModel): Boolean {
+    fun isShowThematicWidgetPlaceHolder(model: ThematicWidgetUiModel): Boolean {
         return model.widgetState == WidgetState.PLACEHOLDER || model.widgetState == WidgetState.LOADING
     }
 

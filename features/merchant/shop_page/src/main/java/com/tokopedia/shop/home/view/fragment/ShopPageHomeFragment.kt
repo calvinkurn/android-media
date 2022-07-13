@@ -243,9 +243,9 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
     var shopName: String = ""
     var shopAttribution: String = ""
     var shopRef: String = ""
+    var isThematicWidgetShown: Boolean = false
     private var productListName: String = ""
     private var decodeExtParam: String = ""
-    private var isThematicWidgetShown: Boolean = false
     private var sortId
         get() = shopProductFilterParameter?.getSortId().orEmpty()
         set(value) {
