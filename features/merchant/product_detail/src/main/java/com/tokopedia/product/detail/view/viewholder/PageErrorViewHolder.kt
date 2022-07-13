@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.view.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
@@ -51,6 +52,10 @@ class PageErrorViewHolder(val view: View,
             else -> binding.globalErrorPdp.setActionClickListener {
                 listener.onRetryClicked(true)
             }
+        }
+
+        itemView.addOnImpressionListener(element.impressHolder){
+            listener.onImpressPageError()
         }
     }
 

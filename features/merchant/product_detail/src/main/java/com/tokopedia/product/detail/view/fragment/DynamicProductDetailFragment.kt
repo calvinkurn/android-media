@@ -168,6 +168,7 @@ import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.imagepreview.view.activity.ImagePreviewPdpActivity
 import com.tokopedia.product.detail.tracking.ContentWidgetTracker
 import com.tokopedia.product.detail.tracking.ContentWidgetTracking
+import com.tokopedia.product.detail.tracking.PageErrorTracking
 import com.tokopedia.product.detail.tracking.ProductDetailNavigationTracker
 import com.tokopedia.product.detail.tracking.ProductDetailNavigationTracking
 import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
@@ -1455,6 +1456,10 @@ open class DynamicProductDetailFragment :
     }
 
     override fun goToHomePageClicked() {
+        PageErrorTracking.clickBackToHomepage(
+            productId ?: "",
+            deeplinkUrl
+        )
         (activity as? ProductDetailActivity)?.goToHomePageClicked()
     }
 
@@ -5038,4 +5043,12 @@ open class DynamicProductDetailFragment :
                 )
     }
 
+    override fun onImpressPageError() {
+
+        PageErrorTracking.impressPageError(
+            productId ?: "",
+            deeplinkUrl.takeIf { isFromDeeplink } ?: "",
+            trackingQueue
+        )
+    }
 }
