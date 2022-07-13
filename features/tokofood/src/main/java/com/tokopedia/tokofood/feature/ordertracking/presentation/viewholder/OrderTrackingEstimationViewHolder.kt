@@ -20,8 +20,11 @@ class OrderTrackingEstimationViewHolder(itemView: View):
 
     override fun bind(element: OrderTrackingEstimationUiModel) {
         with(binding) {
+            val nn950Color = com.tokopedia.unifyprinciples.R.color.Unify_NN950.toString()
             tvOrderTrackingEstimation.text = MethodChecker.fromHtml(root.context.getString(
-                R.string.order_tracking_estimation_time, element.estimationLabel,
+                R.string.order_tracking_estimation_time,
+                element.estimationLabel,
+                nn950Color,
                 element.estimationTime
             ))
         }
