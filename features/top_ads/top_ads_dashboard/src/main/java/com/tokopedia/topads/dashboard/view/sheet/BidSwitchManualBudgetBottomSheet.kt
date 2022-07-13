@@ -40,6 +40,10 @@ class BidSwitchManualBudgetBottomSheet(
         setUpListeners()
     }
 
+    private fun areBidsValid() : Boolean {
+        return tfPencarian?.isTextFieldError != true && tfRecommendasi?.isTextFieldError != true
+    }
+
     private fun setUpListeners() {
         btnSave?.setOnClickListener {
             onSaveClicked(
@@ -58,11 +62,15 @@ class BidSwitchManualBudgetBottomSheet(
         }
 
         tfPencarian?.addBidValidationListener(minBid, maxBid, suggestedBid) { isError ->
-            btnSave?.isEnabled = !isError
+            updateSaveBtnStatusAsPerBidsStatus()
         }
         tfRecommendasi?.addBidValidationListener(minBid, maxBid, suggestedBid) { isError ->
-            btnSave?.isEnabled = !isError
+            updateSaveBtnStatusAsPerBidsStatus()
         }
+    }
+
+    private fun updateSaveBtnStatusAsPerBidsStatus() {
+        btnSave?.isEnabled = areBidsValid()
     }
 
     override fun onCreateView(

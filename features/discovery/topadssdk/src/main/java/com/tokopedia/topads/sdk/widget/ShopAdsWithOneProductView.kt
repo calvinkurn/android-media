@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.domain.model.ShopProductModel
 import com.tokopedia.topads.sdk.listener.ShopAdsProductListener
@@ -52,5 +53,6 @@ class ShopAdsWithOneProductView : BaseCustomView {
     private fun initTShopProductTitle(shopProductModel: ShopProductModel) {
         val title  = findViewById<Typography>(R.id.shopProductTitle)
         title.text = shopProductModel.title
+        title.showWithCondition(shopProductModel.title.isNotEmpty())
     }
 }

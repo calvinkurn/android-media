@@ -7,7 +7,15 @@ data class ShopDiscountSlashPriceProductSubmissionUiModel(
     val listSubmittedProductData: List<SubmittedProductData> = listOf()
 ) {
     data class SubmittedProductData(
+        val name: String = "",
         val success: Boolean = false,
-        val message: String = ""
-    )
+        val message: String = "",
+        val listSubmittedWarehouse: List<WarehouseData> = listOf()
+    ) {
+        data class WarehouseData(
+            val warehouseId: String = "",
+            val success: Boolean = false,
+            val message: String = ""
+        )
+    }
 }

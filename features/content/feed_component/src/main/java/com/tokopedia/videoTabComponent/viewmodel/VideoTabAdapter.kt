@@ -10,7 +10,6 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.videoTabComponent.callback.PlaySlotTabCallback
-import com.tokopedia.videoTabComponent.callback.PlayWidgetCardClickListener
 import com.tokopedia.videoTabComponent.domain.delegate.PlaySlotTabViewAdapterDelegate
 import com.tokopedia.videoTabComponent.domain.delegate.PlayWidgetViewAdapterDelegate
 import com.tokopedia.videoTabComponent.domain.mapper.WIDGET_UPCOMING
@@ -24,7 +23,6 @@ class VideoTabAdapter(
     coordinator: PlayWidgetCoordinatorVideoTab,
     listener: PlaySlotTabCallback,
     activity: Activity,
-    clickListener : PlayWidgetCardClickListener,
 ) : BaseDiffUtilAdapter<PlayFeedUiModel>(isFlexibleType = true) {
 
     private var mCurrentHeader: Pair<Int, RecyclerView.ViewHolder>? = null
@@ -32,9 +30,9 @@ class VideoTabAdapter(
 
     init {
         delegatesManager
-            .addDelegate(PlayWidgetViewAdapterDelegate.Jumbo(coordinator, clickListener))
-            .addDelegate(PlayWidgetViewAdapterDelegate.Large(coordinator, clickListener))
-            .addDelegate(PlayWidgetViewAdapterDelegate.Medium(coordinator, clickListener))
+            .addDelegate(PlayWidgetViewAdapterDelegate.Jumbo(coordinator))
+            .addDelegate(PlayWidgetViewAdapterDelegate.Large(coordinator))
+            .addDelegate(PlayWidgetViewAdapterDelegate.Medium(coordinator))
             .addDelegate(PlaySlotTabViewAdapterDelegate.SlotTab(listener, activity))
     }
 

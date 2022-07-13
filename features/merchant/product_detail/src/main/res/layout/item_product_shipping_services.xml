@@ -14,7 +14,7 @@
         android:id="@+id/product_shipping_service_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         app:typographyWeight="bold"
         tools:text="Regular" />
 

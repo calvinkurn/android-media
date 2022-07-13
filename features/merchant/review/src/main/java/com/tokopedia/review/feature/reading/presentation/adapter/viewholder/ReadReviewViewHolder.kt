@@ -49,7 +49,6 @@ class ReadReviewViewHolder(
     private var reportOption: IconUnify? = null
     private var likeImage: IconUnify? = null
     private var likeCount: Typography? = null
-    private var variantLabel: Typography? = null
     private var reviewMessage: Typography? = null
     private var attachedMedia: ReviewMediaThumbnail? = null
     private var showResponseText: Typography? = null
@@ -70,10 +69,16 @@ class ReadReviewViewHolder(
         shopId = element.shopId
         with(element.reviewData) {
             if (!isProductReview) {
+                val productVariantName = if (variantName.isNotBlank()) {
+                    getString(R.string.review_gallery_variant, variantName)
+                } else {
+                    variantName
+                }
                 setProductInfo(
                     element.productId,
                     element.productImage,
                     element.productName,
+                    productVariantName,
                     isReportable,
                     feedbackID,
                     element.shopId,
@@ -94,7 +99,6 @@ class ReadReviewViewHolder(
             setReviewerName(user.fullName)
             setReviewerStats(userReviewStats)
             setProfilePicture(user.image)
-            setVariantName(variantName)
             showReportOptionWithCondition(
                 isReportable = isReportable && !element.isShopViewHolder,
                 reviewId = feedbackID,
@@ -116,7 +120,6 @@ class ReadReviewViewHolder(
             productInfo = findViewById(R.id.read_review_product_info)
             basicInfo = findViewById(R.id.read_review_basic_info)
             reportOption = findViewById(R.id.read_review_item_three_dots)
-            variantLabel = findViewById(R.id.read_review_variant_name)
             reviewMessage = findViewById(R.id.read_review_item_review)
             attachedMedia = findViewById(R.id.read_review_attached_media)
             likeImage = findViewById(R.id.read_review_like_button)
@@ -132,13 +135,14 @@ class ReadReviewViewHolder(
         productId: String,
         productImageUrl: String,
         productName: String,
+        productVariantName: String,
         isReportable: Boolean,
         reviewId: String,
         shopId: String,
         shopName: String
     ) {
         productInfo?.apply {
-            setProductInfo(productImageUrl, productName)
+            setProductInfo(productImageUrl, productName, productVariantName)
             setListener(
                 isReportable,
                 reviewId,
@@ -182,12 +186,6 @@ class ReadReviewViewHolder(
         basicInfo?.setReviewerName(name)
     }
 
-    private fun setVariantName(variantName: String) {
-        variantLabel?.shouldShowWithAction(variantName.isNotBlank()) {
-            variantLabel?.text = getString(R.string.review_gallery_variant, variantName)
-        }
-    }
-
     private fun setReview(message: String, feedbackId: String, productId: String) {
         if (message.isEmpty()) {
             reviewMessage?.apply {
@@ -217,6 +215,7 @@ class ReadReviewViewHolder(
             } else {
                 setOnClickListener {  }
             }
+            typeface = Typography.getFontType(context, false, Typography.DISPLAY_2)
             show()
         }
     }
@@ -228,6 +227,7 @@ class ReadReviewViewHolder(
             setOnClickListener {
                 setExpandableReview(message, feedbackId, productId)
             }
+            typeface = Typography.getFontType(context, false, Typography.DISPLAY_2)
         }
     }
 

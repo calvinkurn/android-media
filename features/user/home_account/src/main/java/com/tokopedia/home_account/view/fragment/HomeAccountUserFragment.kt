@@ -98,13 +98,13 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
+import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -166,6 +166,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     private var fpmBuyer: PerformanceMonitoring? = null
     private var trackingQueue: TrackingQueue? = null
     private var widgetTitle: String = ""
+    private var topAdsHeadlineUiModel:TopadsHeadlineUiModel? = null
     private var isShowHomeAccountTokopoints = false
     private var isShowDarkModeToggle = false
     private var isShowScreenRecorder = false
@@ -261,7 +262,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         balanceAndPointAdapter = HomeAccountBalanceAndPointAdapter(this)
         memberAdapter = HomeAccountMemberAdapter(this)
 
-        adapter = HomeAccountUserAdapter(this, balanceAndPointAdapter, memberAdapter, userSession)
+        adapter = HomeAccountUserAdapter(this, balanceAndPointAdapter, memberAdapter, userSession, shopAdsNewPositionCallback)
         setupList()
         setLoadMore()
         showLoading()
@@ -299,6 +300,16 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             binding?.homeAccountUserFragmentSwipeRefresh?.isRefreshing = false
         }
     }
+
+    private val shopAdsNewPositionCallback: (Int, CpmModel) -> Unit = { index, cpmModel ->
+        val position = topAdsHeadlineUiModel?.let { topAdsHeadlineUiModel ->
+            adapter?.getItems()?.let { it.indexOf(topAdsHeadlineUiModel) + index }
+        }
+        position?.let {
+            addItem(TopadsHeadlineUiModel(cpmModel), addSeparator = false, position = it)
+        }
+    }
+
 
     override fun onLinkingAccountClicked(isLinked: Boolean) {
         homeAccountAnalytic.trackClickLinkAccount()
@@ -384,7 +395,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         grantResults: IntArray
     ) {
         when (requestCode) {
-            888 -> {
+            AccountConstants.REQUEST.REQUEST_LOCATION_PERMISSION -> {
                 if (grantResults.isNotEmpty() &&
                     grantResults[0] == PackageManager.PERMISSION_GRANTED
                 ) {
@@ -469,6 +480,8 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                 isTopAds = item.isTopAds,
                 topAdsWishlistUrl = item.wishlistUrl,
                 topAdsClickUrl = item.clickUrl,
+                productName = item.name,
+                productImageUrl = item.imageUrl,
                 productPosition = adapterPosition
             )
         )
@@ -576,7 +589,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     }
 
     private fun isEnableBiometricOffering(): Boolean {
-        return getRemoteConfig().getBoolean(REMOTE_CONFIG_KEY_HOME_ACCOUNT_BIOMETRIC_OFFERING, false)
+        return getAbTestPlatform().getString(AccountConstants.RollenceKey.BIOMETRIC_ENTRY_POINT).isNotEmpty()
     }
 
     private fun setupObserver() {
@@ -846,7 +859,8 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     }
 
     private fun addTopAdsHeadLine() {
-        addItem(TopadsHeadlineUiModel(), addSeparator = false)
+        topAdsHeadlineUiModel = TopadsHeadlineUiModel()
+        topAdsHeadlineUiModel?.let { addItem(it, addSeparator = false) }
     }
 
     private fun addRecommendationItem(
@@ -973,8 +987,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     private fun setupSettingList() {
         val userSettingsMenu = menuGenerator.generateUserSettingMenu()
-        val isRollenceEnabledDarkMode = getAbTestPlatform().getString(
-            RollenceKey.USER_DARK_MODE_TOGGLE, "").isNotEmpty()
 
         userSettingsMenu.items.forEach {
             if(it.id == AccountConstants.SettingCode.SETTING_LINK_ACCOUNT && !isEnableLinkAccount()) {
@@ -986,7 +998,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         addItem(userSettingsMenu, addSeparator = true)
         addItem(menuGenerator.generateApplicationSettingMenu(
                 accountPref, permissionChecker,
-                isShowDarkModeToggle || isRollenceEnabledDarkMode, isShowScreenRecorder),
+                isShowDarkModeToggle, isShowScreenRecorder),
                 addSeparator = true)
         addItem(menuGenerator.generateAboutTokopediaSettingMenu(), addSeparator = true)
         if (GlobalConfig.isAllowDebuggingTools()) {
@@ -1285,7 +1297,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION
             ),
-            888
+            AccountConstants.REQUEST.REQUEST_LOCATION_PERMISSION
         )
     }
 
@@ -1344,7 +1356,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     private fun initCoachMark(position: Int, itemView: View, data: Any) {
         if (accountPref.isShowCoachmark()) {
             if (!isProfileSectionBinded) {
-                if (coachMarkItem.count() < 3) {
+                if (coachMarkItem.count() < COACHMARK_SIZE) {
                     if (position == 0 && data is ProfileDataView) {
                         coachMarkItem.add(
                             CoachMark2Item(
@@ -1490,11 +1502,12 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             ?: return
         recommendationItem.isWishlist = productCardOptionsModel.wishlistResult.isAddWishlist
 
-        if (productCardOptionsModel.wishlistResult.isAddWishlist)
+        if (productCardOptionsModel.wishlistResult.isAddWishlist) {
             showSuccessAddWishlistV2(productCardOptionsModel.wishlistResult)
             if (productCardOptionsModel.isTopAds) hitWishlistClickUrl(productCardOptionsModel)
-        else
+        } else {
             showSuccessRemoveWishlistV2(productCardOptionsModel.wishlistResult)
+        }
     }
 
     private fun hitWishlistClickUrl(item: ProductCardOptionsModel) {
@@ -1525,7 +1538,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         val msg = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
         val ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
         view?.let {
-            Toaster.build(it, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, ctaText) { setOnClickSuccessAddWishlist() }.show()
+            Toaster.build(it, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, ctaText) { goToWishlist() }.show()
         }
     }
 
@@ -1534,12 +1547,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             view?.let { v ->
                 AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(wishlistResult, context, v)
             }
-        }
-    }
-
-    private fun setOnClickSuccessAddWishlist(): View.OnClickListener {
-        return View.OnClickListener {
-            goToWishlist()
         }
     }
 
@@ -1663,10 +1670,12 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             "android_user_home_account_tokopoints"
         private const val USER_CENTRALIZED_ASSET_CONFIG_USER_PAGE = "user_page"
 
-        private const val REMOTE_CONFIG_KEY_HOME_ACCOUNT_BIOMETRIC_OFFERING = "android_user_home_account_biometric_offering"
         private const val REMOTE_CONFIG_KEY_ACCOUNT_LINKING = "android_user_link_account_entry_point"
         private const val EXPLICIT_PROFILE_MENU_ROLLOUT = "explicit_android"
         private const val CLICK_TYPE_WISHLIST = "&click_type=wishlist"
+
+        private const val COACHMARK_SIZE = 3
+        private const val FIRST_INDEX = 0
 
         fun newInstance(bundle: Bundle?): Fragment {
             return HomeAccountUserFragment().apply {

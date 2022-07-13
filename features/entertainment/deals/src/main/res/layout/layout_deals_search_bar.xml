@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar_toolbar"
@@ -36,7 +37,8 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="@dimen/deals_dp_12"
                         android:layout_marginLeft="@dimen/deals_dp_12"
-                        app:srcCompat="@drawable/ic_system_action_back_grayscale_24" />
+                        app:srcCompat="@drawable/ic_system_action_back_grayscale_24"
+                        android:contentDescription="iv_button_back" />
 
 
                     <com.tokopedia.unifycomponents.SearchBarUnify
@@ -46,8 +48,8 @@
                         android:layout_marginStart="@dimen/spacing_lvl3"
                         android:layout_marginLeft="@dimen/spacing_lvl3"
                         android:layout_marginTop="@dimen/spacing_lvl3"
-                        android:layout_marginRight="@dimen/spacing_lvl4"
                         android:layout_marginEnd="@dimen/spacing_lvl4"
+                        android:layout_marginRight="@dimen/spacing_lvl4"
                         android:layout_marginBottom="@dimen/spacing_lvl3"
                         app:search_bar_placeholder="@string/deals_search_input_hint_deals"
                         app:search_bar_show_icon="false" />
@@ -71,21 +73,22 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_deals_location" />
+                        app:srcCompat="@drawable/ic_deals_location"
+                        android:contentDescription="icon map" />
 
-                    <TextView
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_location_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/spacing_lvl3"
                         android:text="@string/deals_location_text_search"
                         android:textColor="@color/Unify_N700_68"
-                        android:textSize="@dimen/fontSize_lvl3"
                         app:layout_constraintBottom_toBottomOf="@+id/iv_map"
                         app:layout_constraintLeft_toRightOf="@+id/iv_map"
-                        app:layout_constraintTop_toTopOf="@+id/iv_map" />
+                        app:layout_constraintTop_toTopOf="@+id/iv_map"
+                        app:typographyType="display_2" />
 
-                    <TextView
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_location"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -94,12 +97,13 @@
                         android:drawablePadding="@dimen/spacing_lvl2"
                         android:padding="@dimen/spacing_lvl2"
                         android:textColor="@color/Unify_N700_96"
-                        android:textSize="@dimen/fontSize_lvl3"
-                        android:textStyle="bold"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintVertical_bias="0.5"/>
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.5"
+                        app:typographyType="display_2"
+                        app:typographyWeight="bold"
+                        tools:text="Jakarta" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

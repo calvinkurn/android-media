@@ -13,7 +13,7 @@ import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConsta
 import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.UNIT_GRAM
 import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.UNIT_GRAM_STRING
 import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.UNIT_GRAM_TO_KILOGRAM_MULTIPLIER
-import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.UNIT_KILOGRAM_SRING
+import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.UNIT_KILOGRAM_STRING
 import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.UNIT_MONTH
 import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.UNIT_MONTH_STRING
 import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.UNIT_WEEK
@@ -42,6 +42,10 @@ class GetProductMapper @Inject constructor() {
             mapVariantInputModel(product.variant),
             itemSold = product.txStats.itemSold
     )
+
+    fun convertToGram(weight: Int, unit: String): Int {
+        return if (unit == UNIT_KILOGRAM_STRING) weight * UNIT_GRAM_TO_KILOGRAM_MULTIPLIER else weight
+    }
 
     private fun mapVariantInputModel(variant: Variant): VariantInputModel =
             VariantInputModel(
@@ -222,9 +226,5 @@ class GetProductMapper @Inject constructor() {
             CPLModel(),
             product.variant.products.isEmpty()
         )
-    }
-
-    private fun convertToGram(weight: Int, unit: String): Int {
-        return if (unit == UNIT_KILOGRAM_SRING) weight * UNIT_GRAM_TO_KILOGRAM_MULTIPLIER else weight
     }
 }

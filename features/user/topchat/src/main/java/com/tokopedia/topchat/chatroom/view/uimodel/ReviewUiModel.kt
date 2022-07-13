@@ -22,12 +22,12 @@ class ReviewUiModel private constructor(
 
     val isReviewed: Boolean get() = reviewCard.isReviewed
     val allowReview: Boolean get() = reviewCard.allowReview
-    val reputationId: Long get() = reviewCard.reputationId
+    val reputationId: String get() = reviewCard.reputationId
     val ratingInt: Int
         get() {
             var rate = reviewCard.rating.toInt()
-            if (rate > 5) {
-                rate = 5
+            if (rate > RATING_LIMIT) {
+                rate = RATING_LIMIT
             }
             return rate
         }
@@ -117,5 +117,9 @@ class ReviewUiModel private constructor(
         override fun build(): ReviewUiModel {
             return ReviewUiModel(this)
         }
+    }
+
+    companion object {
+        private const val RATING_LIMIT = 5
     }
 }

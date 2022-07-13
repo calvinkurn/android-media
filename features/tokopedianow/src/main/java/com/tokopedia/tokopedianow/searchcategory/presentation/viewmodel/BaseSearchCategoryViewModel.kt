@@ -33,7 +33,6 @@ import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.home_component.data.DynamicHomeChannelCommon.Channels
 import com.tokopedia.home_component.mapper.DynamicChannelComponentMapper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
@@ -76,6 +75,8 @@ import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackin
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.TOKOPEDIA_NOW
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartProductItem
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
+import com.tokopedia.tokopedianow.searchcategory.data.model.QuerySafeModel
+import com.tokopedia.tokopedianow.searchcategory.domain.mapper.mapChooseAddressToQuerySafeModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.Product
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.ProductLabelGroup
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProduct
@@ -238,6 +239,9 @@ abstract class BaseSearchCategoryViewModel(
 
     protected val setUserPreferenceMutableLiveData = SingleLiveEvent<Result<SetUserPreference.SetUserPreferenceData>>()
     val setUserPreferenceLiveData: LiveData<Result<SetUserPreference.SetUserPreferenceData>> = setUserPreferenceMutableLiveData
+
+    protected val querySafeMutableLiveData = SingleLiveEvent<QuerySafeModel>()
+    val querySafeLiveData: LiveData<QuerySafeModel> = querySafeMutableLiveData
 
     init {
         updateQueryParams()
@@ -421,6 +425,10 @@ abstract class BaseSearchCategoryViewModel(
             sendGeneralSearchTracking(searchProduct)
         }
         updateViewForFirstPage(isEmptyProductList)
+
+        querySafeMutableLiveData.value = chooseAddressData.mapChooseAddressToQuerySafeModel(
+            isQuerySafe = searchProduct.data.isQuerySafe
+        )
     }
 
     private fun initFilterController(headerDataView: HeaderDataView) {
@@ -1035,8 +1043,9 @@ abstract class BaseSearchCategoryViewModel(
         chooseAddressData?.let {
             val outOfCoverage = it.isOutOfCoverage()
             val showMiniCart = miniCartSimplifiedData.isShowMiniCartWidget
-            miniCartWidgetMutableLiveData.value = miniCartSimplifiedData
-            isShowMiniCartMutableLiveData.value = showMiniCart && !outOfCoverage
+            val isShowMiniCartWidget = showMiniCart && !outOfCoverage
+            miniCartWidgetMutableLiveData.value = miniCartSimplifiedData.copy(isShowMiniCartWidget = isShowMiniCartWidget)
+            isShowMiniCartMutableLiveData.value = isShowMiniCartWidget
         }
     }
 
@@ -1202,7 +1211,7 @@ abstract class BaseSearchCategoryViewModel(
     fun needToShowOnBoardBottomSheet(has20mBottomSheetBeenShown: Boolean): Boolean {
         chooseAddressData?.apply {
             val is20mServiceType = service_type == ServiceType.NOW_15M
-            return is20mServiceType && !has20mBottomSheetBeenShown
+            return is20mServiceType && !has20mBottomSheetBeenShown && warehouse_id.isValidId()
         }
         return false
     }

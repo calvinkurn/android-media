@@ -171,7 +171,10 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
                     (findViewById<ImageUnify>(R.id.product_image)).setImageUrl(it.productImage!!)
                 }
                 if (!it.shopBadge.isNullOrEmpty()) {
+                    (findViewById<ImageUnify>(R.id.image_shop_badge)).show()
                     (findViewById<ImageUnify>(R.id.image_shop_badge)).setImageUrl(it.shopBadge!!)
+                } else {
+                    (findViewById<ImageUnify>(R.id.image_shop_badge)).hide()
                 }
                 findViewById<Typography>(R.id.shop_name).text = it.shopName
                 findViewById<Typography>(R.id.shop_location).text = it.shopLocation
@@ -511,9 +514,9 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
     }
 
     private fun setUpDiagnosticReviewData(diagnosticReview: ArrayList<TradeInDetailModel.GetTradeInDetail.LogisticOption.DiagnosticReview>) {
-        val textSize = 14.0f
+        val textSize = TradeinConstants.TEXT_SIZE_14F
         view?.findViewById<LinearLayout>(R.id.linear_layout_hp_kamu)?.removeAllViews()
-        if(diagnosticReview.size>=3) {
+        if(diagnosticReview.size>=TradeinConstants.TRADE_IN_DIAGNOSTIC_REVIEW_LIMIT) {
             for (i in 0..2) {
                 val doubleTextView = DoubleTextView(activity, LinearLayout.HORIZONTAL)
                 doubleTextView.apply {
@@ -664,6 +667,15 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
 
     override fun getEventLabelHostPage(): String {
         return (if(tradeInHomePageVM.is3PLSelected.value == true) "ditukar di indomaret" else "ditukar di alamatmu")
+    }
+
+    override fun needToTrackTokoNow(): Boolean {
+        return true
+    }
+
+    override fun onClickChooseAddressTokoNowTracker() {
+        tradeInAnalytics.clickAttemptChangeAddress(tradeInHomePageVM.is3PLSelected.value ?: false)
+        super.onClickChooseAddressTokoNowTracker()
     }
 
     override fun onLocalizingAddressLoginSuccess() {

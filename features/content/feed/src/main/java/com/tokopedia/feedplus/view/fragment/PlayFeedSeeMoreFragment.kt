@@ -88,6 +88,10 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
     }
 
     private fun initVar() {
+        playWidgetAnalyticsListenerImp.setOnClickChannelCard { channelId, position ->
+            playFeedVideoTabViewModel.selectedPlayWidgetCard = SelectedPlayWidgetCard(channelId, position)
+        }
+
         playWidgetCoordinator = PlayWidgetCoordinatorVideoTab(this).apply {
             setListener(this@PlayFeedSeeMoreFragment)
             setAnalyticListener(playWidgetAnalyticsListenerImp)
@@ -174,10 +178,7 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
 
     private fun setupView(view: View) {
         adapter = PlaySeeMoreAdapter(
-            coordinator = playWidgetCoordinator,
-            clickListener = { channelId, position ->
-                playFeedVideoTabViewModel.selectedPlayWidgetCard = SelectedPlayWidgetCard(channelId, position)
-            }
+            coordinator = playWidgetCoordinator
         )
         endlessRecyclerViewScrollListener = getEndlessRecyclerViewScrollListener()
         endlessRecyclerViewScrollListener?.let {

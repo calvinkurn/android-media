@@ -11,9 +11,9 @@ data class Voucher(
     @SerializedName("create_time")
     val createTime: String = "",
     @SerializedName("galadriel_catalog_id")
-    val galadrielCatalogId: Int = 0,
+    val galadrielCatalogId: String = "",
     @SerializedName("galadriel_voucher_id")
-    val galadrielVoucherId: Int = 0,
+    val galadrielVoucherId: String = "",
     @SerializedName("hyperlink")
     val hyperlink: Hyperlink = Hyperlink(),
     @SerializedName("is_public")
@@ -23,7 +23,7 @@ data class Voucher(
     @SerializedName("remaining_quota")
     val remainingQuota: Int = 0,
     @SerializedName("shop_id")
-    val shopId: Int = 0,
+    val shopId: String = "",
     @SerializedName("tnc")
     val tnc: String = "",
     @SerializedName("update_by")
@@ -47,7 +47,7 @@ data class Voucher(
     @SerializedName("voucher_finish_time")
     val voucherFinishTime: String = "",
     @SerializedName("voucher_id")
-    val voucherId: Int = 0,
+    val voucherId: String = "0",
     @SerializedName("voucher_image")
     val voucherImage: String = "",
     @SerializedName("voucher_image_square")

@@ -39,8 +39,8 @@ import com.tokopedia.otp.silentverification.view.dialog.SilentVerificationDialog
 import com.tokopedia.otp.silentverification.view.fragment.SilentVerificationFragment.Companion.RESULT_DELETE_METHOD
 import com.tokopedia.otp.verification.common.VerificationPref
 import com.tokopedia.otp.verification.data.OtpData
-import com.tokopedia.otp.verification.domain.data.OtpConstant
-import com.tokopedia.otp.verification.domain.data.OtpConstant.OtpMode.SILENT_VERIFICATION
+import com.tokopedia.otp.verification.data.OtpConstant
+import com.tokopedia.otp.verification.data.OtpConstant.OtpMode.SILENT_VERIFICATION
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.otp.verification.domain.pojo.OtpModeListData
 import com.tokopedia.otp.verification.view.activity.VerificationActivity
