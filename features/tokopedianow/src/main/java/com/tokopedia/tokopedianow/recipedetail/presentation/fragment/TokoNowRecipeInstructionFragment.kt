@@ -57,11 +57,11 @@ class TokoNowRecipeInstructionFragment: Fragment() {
             layoutManager = LinearLayoutManager(context)
         }
 
-        observe(viewModel.instructionItemList) {
+        observe(viewModel.itemList) {
             adapter.submitList(it)
         }
 
-        viewModel.getInstructionItems(data)
+        viewModel.getLayout(data)
     }
 
     override fun onAttach(context: Context) {

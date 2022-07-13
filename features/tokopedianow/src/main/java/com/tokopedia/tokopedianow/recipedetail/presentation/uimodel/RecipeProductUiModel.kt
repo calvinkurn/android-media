@@ -8,6 +8,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class RecipeProductUiModel(
     val id: String,
+    val shopId: String,
     val name: String,
     val quantity: Int,
     val stock: Int,

@@ -8,8 +8,11 @@ import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.BuyAllProduc
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.RecipeProductUiModel
 import com.tokopedia.tokopedianow.recipedetail.presentation.viewholders.BuyAllProductViewHolder
 import com.tokopedia.tokopedianow.recipedetail.presentation.viewholders.RecipeProductViewHolder
+import com.tokopedia.tokopedianow.recipedetail.presentation.viewholders.RecipeProductViewHolder.RecipeProductListener
 
-class RecipeIngredientAdapterTypeFactory : BaseAdapterTypeFactory(), RecipeIngredientTypeFactory {
+class RecipeIngredientAdapterTypeFactory(
+    private val productListener: RecipeProductListener?
+) : BaseAdapterTypeFactory(), RecipeIngredientTypeFactory {
 
     override fun type(uiModel: BuyAllProductUiModel): Int = BuyAllProductViewHolder.LAYOUT
 
@@ -18,7 +21,7 @@ class RecipeIngredientAdapterTypeFactory : BaseAdapterTypeFactory(), RecipeIngre
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             BuyAllProductViewHolder.LAYOUT -> BuyAllProductViewHolder(parent)
-            RecipeProductViewHolder.LAYOUT -> RecipeProductViewHolder(parent)
+            RecipeProductViewHolder.LAYOUT -> RecipeProductViewHolder(parent, productListener)
             else -> super.createViewHolder(parent, type)
         }
     }

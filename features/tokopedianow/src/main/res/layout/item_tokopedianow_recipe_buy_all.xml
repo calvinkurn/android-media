@@ -21,7 +21,7 @@
             android:id="@+id/textLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Beli semua bahan hanya"
+            android:text="@string/tokopedianow_recipe_buy_all_label"
             android:textColor="@color/Unify_NN950"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -43,11 +43,12 @@
             android:id="@+id/btnBuyAll"
             android:layout_width="129dp"
             android:layout_height="32dp"
-            android:text="Beli Semua"
+            android:text="@string/tokopedianow_buy_all_text"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="@id/textPrice"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/textLabel"
+            app:unifyButtonSize="small"
             app:unifyButtonType="main"
             app:unifyButtonVariant="ghost" />
     </androidx.constraintlayout.widget.ConstraintLayout>
