@@ -34,8 +34,7 @@
     <View
         android:id="@+id/ivOrderTrackingDistance"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constrainedHeight="true"
+        android:layout_height="0dp"
         android:background="@drawable/ic_tokofood_distance_user_resto_line"
         app:layout_constraintStart_toStartOf="@id/icOrderTrackingMerchant"
         app:layout_constraintEnd_toEndOf="@id/icOrderTrackingMerchant"
@@ -78,7 +77,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/tvOrderTrackerMerchantName"
         app:layout_constraintTop_toTopOf="@id/icOrderTrackingUserAddress"
-        app:layout_constraintBottom_toBottomOf="@id/icOrderTrackingUserAddress"
         tools:text="Rumah"/>
 
     <com.tokopedia.unifyprinciples.Typography
