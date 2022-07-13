@@ -129,7 +129,7 @@ class UserProfileViewModel @AssistedInject constructor(
     /** Handle Action */
     private fun handleLoadProfile(isRefresh: Boolean) {
         viewModelScope.launchCatchError(block = {
-            loadProfileInfo(isRefresh = isRefresh)
+            loadProfileInfo(isRefresh)
         }) {
             _uiEvent.emit(UserProfileUiEvent.ErrorLoadProfile(it))
         }
@@ -161,7 +161,7 @@ class UserProfileViewModel @AssistedInject constructor(
 
     private fun handleClickFollowButton(isFromLogin: Boolean) {
         viewModelScope.launchCatchError(block = {
-            if (isFromLogin) loadProfileInfo(isFromLogin = true)
+            if (isFromLogin) loadProfileInfo(true)
 
             val followInfo = _followInfo.value
 
@@ -187,7 +187,7 @@ class UserProfileViewModel @AssistedInject constructor(
 
     private fun handleClickUpdateReminder(isFromLogin: Boolean) {
         viewModelScope.launchCatchError(block = {
-            if (isFromLogin) loadProfileInfo(isRefresh = false)
+            if (isFromLogin) loadProfileInfo(false)
 
             val data = _savedReminderData.value
 
@@ -254,7 +254,7 @@ class UserProfileViewModel @AssistedInject constructor(
     }
 
     /** Helper */
-    private suspend fun loadProfileInfo(isRefresh: Boolean = false, isFromLogin: Boolean = false) {
+    private suspend fun loadProfileInfo(isRefresh: Boolean) {
         val deferredProfileInfo = viewModelScope.asyncCatchError(block = {
             repo.getProfile(username)
         }) {
@@ -290,6 +290,6 @@ class UserProfileViewModel @AssistedInject constructor(
          * play video will be moved to dedicated fragment when
          * developing another tab user profile eventually. so gonna leave as is for now
          * */
-        userPost.value = if (isFromLogin) true else isRefresh
+        userPost.value = isRefresh
     }
 }
