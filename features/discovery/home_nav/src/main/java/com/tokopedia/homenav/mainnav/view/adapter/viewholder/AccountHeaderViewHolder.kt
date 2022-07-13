@@ -34,7 +34,6 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusListener
-import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusParam
 import com.tokopedia.usercomponents.tokopediaplus.ui.TokopediaPlusWidget
 import kotlinx.coroutines.*
 import java.util.*
