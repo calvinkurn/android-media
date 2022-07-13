@@ -53,6 +53,9 @@ class PostInteractiveCreateQuizUseCase @Inject constructor(
         private const val PARAM_PRIZE = "prize"
         private const val PARAM_RUNNING_TIME = "runningTime"
         private const val PARAM_CHOICES = "choices"
+        private const val PARAM_TEXT = "text"
+        private const val PARAM_CORRECT = "correct"
+
         const val QUERY_NAME = "PostInteractiveCreateQuizUseCaseQuery"
         const val QUERY = """
             mutation PostInteractiveCreateQuizUseCase(
@@ -88,7 +91,12 @@ class PostInteractiveCreateQuizUseCase @Inject constructor(
             PARAM_QUESTION to question,
             PARAM_PRIZE to prize,
             PARAM_RUNNING_TIME to runningTime,
-            PARAM_CHOICES to choices,
+            PARAM_CHOICES to choices.map {
+                 mapOf(
+                     PARAM_TEXT to it.text,
+                     PARAM_CORRECT to it.correct,
+                 )
+            },
         )
     }
 }
