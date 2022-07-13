@@ -42,7 +42,7 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
 
     private val cartExtension = ProductCardCartExtension(this)
     private val video: VideoPlayerController by lazy {
-        VideoPlayerController(this, R.id.videoProduct, R.id.imageProduct)
+        VideoPlayerController(this, R.id.videoProduct, R.id.productCardImage)
     }
     private val cardViewProductCard: CardUnify2? by lazy(NONE) {
         findViewById<CardUnify2?>(R.id.cardViewProductCard)
@@ -90,7 +90,7 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
         findViewById(R.id.textCategoryBottom)
     }
     private val imageProduct: ImageView? by lazy(NONE) {
-        findViewById(R.id.imageProduct)
+        findViewById(R.id.productCardImage)
     }
     private val buttonAddVariant: UnifyButton? by lazy(NONE) {
         findViewById(ViewStubId(R.id.buttonAddVariantStub), ViewId(R.id.buttonAddVariant))
