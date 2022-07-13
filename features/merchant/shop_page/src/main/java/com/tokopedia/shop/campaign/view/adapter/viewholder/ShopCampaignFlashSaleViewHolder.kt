@@ -25,11 +25,13 @@ import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import java.math.RoundingMode
-import java.util.*
+import java.util.Date
+import java.util.Calendar
 
 class ShopCampaignFlashSaleViewHolder(
     itemView: View,
-    private val listener: ShopHomeFlashSaleWidgetListener
+    private val listener: ShopHomeFlashSaleWidgetListener,
+    private val widgetConfigListener: WidgetConfigListener
 ) : AbstractViewHolder<ShopHomeFlashSaleUiModel>(itemView) {
 
     private var uiModel: ShopHomeFlashSaleUiModel? = null
@@ -121,7 +123,12 @@ class ShopCampaignFlashSaleViewHolder(
     }
 
     private fun setupHeader(campaignName: String) {
-        flashSaleCampaignNameView?.text = campaignName
+        flashSaleCampaignNameView?.apply {
+            text = campaignName
+            setTextColor(widgetConfigListener.getWidgetTextColor())
+        }
+        timerDescriptionView?.setTextColor(widgetConfigListener.getWidgetTextColor())
+        ctaSeeAllView?.setTextColor(widgetConfigListener.getWidgetTextColor())
     }
 
     private fun setupCtaSeeAll(productSize: Int) {

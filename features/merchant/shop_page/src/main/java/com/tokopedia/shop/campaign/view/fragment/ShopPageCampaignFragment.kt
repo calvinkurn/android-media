@@ -38,6 +38,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.campaign.view.adapter.ShopCampaignTabAdapter
 import com.tokopedia.shop.campaign.view.adapter.ShopCampaignTabAdapterTypeFactory
+import com.tokopedia.shop.campaign.view.adapter.viewholder.WidgetConfigListener
 import com.tokopedia.shop.common.constant.ShopCommonExtraConstant
 import com.tokopedia.shop.common.data.model.ShopPageWidgetLayoutUiModel
 import com.tokopedia.shop.common.util.ShopUtil
@@ -67,11 +68,11 @@ import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
 import com.tokopedia.shop_widget.thematicwidget.viewholder.ThematicWidgetViewHolder
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
+import java.util.Date
 import com.tokopedia.utils.date.getDayDiffFromToday
-import java.util.*
 import kotlin.math.absoluteValue
 
-class ShopPageCampaignFragment : ShopPageHomeFragment() {
+class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener {
 
     companion object {
         private const val KEY_SHOP_ID = "SHOP_ID"
@@ -152,7 +153,8 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
             multipleProductBundleListener = this,
             singleProductBundleListener = this,
             thematicWidgetListener = thematicWidgetProductClickListenerImpl(),
-            shopHomeProductListSellerEmptyListener = this
+            shopHomeProductListSellerEmptyListener = this,
+            widgetConfigListener = this
         )
     }
 
@@ -696,6 +698,10 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
         }
     }
     // endregion
+
+    override fun getWidgetTextColor(): Int {
+        return parseColor(textColor)
+    }
 
     private fun setCampaignTabBackgroundGradient() {
         if (listBackgroundColor.isNotEmpty()) {
