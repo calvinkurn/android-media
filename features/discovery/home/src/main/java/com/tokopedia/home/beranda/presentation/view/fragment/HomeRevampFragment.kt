@@ -647,7 +647,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         context?.let { currentContext ->
             isGopayActivated?.let {
                 if (it) {
-                    val ctaButton = getGopayNewBalanceWidgetView()
+                    val ctaButton = getGopayBalanceWidgetView()
                     ctaButton?.let { gopayWidget ->
                         if (this.isEmpty()) {
                             positionWidgetGopay = gopayWidget.getPositionWidgetVertical()
@@ -661,7 +661,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         }
                     }
                 } else {
-                    val gopayWidget = getGopayNewActivateBalanceWidgetView()
+                    val gopayWidget = getGopayBalanceWidgetView()
                     gopayWidget?.let { gopayWidget ->
                         if (this.isEmpty()) {
                             positionWidgetGopay = gopayWidget.getPositionWidgetVertical()
@@ -880,26 +880,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun getGopayBalanceWidgetView(): View? {
-        val view = homeRecyclerView?.findViewHolderForAdapterPosition(HOME_HEADER_POSITION)
-        (view as? HomeHeaderOvoViewHolder)?.let {
-            val gopayView = getBalanceWidgetViewGopayOnly(it.itemView.findViewById(R.id.view_balance_widget))
-            if (it.itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget).isShown && gopayView?.y?:VIEW_DEFAULT_HEIGHT > VIEW_DEFAULT_HEIGHT)
-                return gopayView
-        }
-        return null
-    }
-
-    private fun getGopayNewBalanceWidgetView(): View? {
-        val view = homeRecyclerView?.findViewHolderForAdapterPosition(HOME_HEADER_POSITION)
-        (view as? HomeHeaderOvoViewHolder)?.let {
-            val gopayView = getBalanceWidgetViewGopayOnly(it.itemView.findViewById(R.id.view_balance_widget))
-            if (it.itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget).isShown && gopayView?.y?:VIEW_DEFAULT_HEIGHT > VIEW_DEFAULT_HEIGHT)
-                return gopayView
-        }
-        return null
-    }
-
-    private fun getGopayNewActivateBalanceWidgetView(): View? {
         val view = homeRecyclerView?.findViewHolderForAdapterPosition(HOME_HEADER_POSITION)
         (view as? HomeHeaderOvoViewHolder)?.let {
             val gopayView = getBalanceWidgetViewGopayOnly(it.itemView.findViewById(R.id.view_balance_widget))

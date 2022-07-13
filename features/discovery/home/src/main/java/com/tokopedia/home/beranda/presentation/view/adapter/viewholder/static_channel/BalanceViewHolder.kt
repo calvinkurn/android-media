@@ -11,6 +11,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_REWARDS
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_SUBSCRIPTION
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_APP_LINKED
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_APP_NOT_LINKED
 import com.tokopedia.home.databinding.ItemBalanceWidgetNewBinding
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -100,12 +101,16 @@ class BalanceViewHolder(v: View) : RecyclerView.ViewHolder(v) {
                             com.tokopedia.unifyprinciples.R.color.Unify_NN600
                         )
                     )
-                    if (element.drawerItemType == TYPE_WALLET_APP_LINKED) {
-                        gopayViewCoachMark = binding?.homeTvReserveBalance
-                    } else if(element.drawerItemType == TYPE_REWARDS) {
-                        rewardsViewCoachMark = binding?.homeTvReserveBalance
-                    } else if (element.drawerItemType == TYPE_SUBSCRIPTION) {
-                        subscriptionViewCoachMark = binding?.homeTvReserveBalance
+                    when (element.drawerItemType) {
+                        TYPE_WALLET_APP_LINKED, TYPE_WALLET_APP_NOT_LINKED -> {
+                            gopayViewCoachMark = binding?.homeTvReserveBalance
+                        }
+                        TYPE_REWARDS -> {
+                            rewardsViewCoachMark = binding?.homeTvReserveBalance
+                        }
+                        TYPE_SUBSCRIPTION -> {
+                            subscriptionViewCoachMark = binding?.homeTvReserveBalance
+                        }
                     }
                 }
 

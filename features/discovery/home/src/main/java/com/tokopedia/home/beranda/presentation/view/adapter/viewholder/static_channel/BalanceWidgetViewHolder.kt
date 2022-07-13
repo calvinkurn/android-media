@@ -84,7 +84,7 @@ class BalanceWidgetViewHolder(itemView: View, val listener: HomeCategoryListener
         balanceDividerAdapter?.addDivider(totalData)
     }
 
-    fun getGopayNewView(): View? {
+    fun getGopayView(): View? {
         if (balanceAdapter?.getItemMap()?.containsGopay() == true) {
             return balanceAdapter?.getGopayView()
         }
