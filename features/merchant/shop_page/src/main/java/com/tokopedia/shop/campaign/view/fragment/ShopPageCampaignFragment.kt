@@ -92,10 +92,6 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
         private const val LOAD_WIDGET_ITEM_PER_PAGE = 3
         private const val LIST_WIDGET_LAYOUT_START_INDEX = 0
         private const val MIN_BUNDLE_SIZE = 1
-        private const val SHOP_CAMPAIGN_TAB_PREFERENCE = "CAMPAIGN_TAB_PREFERENCE"
-        private const val SHARED_PREF_CONFETTI_ALREADY_SHOWN = "confetti_already_shown"
-        private const val SHARED_PREF_LAST_CONFETTI_ALREADY_SHOWN = "last_confetti_already_shown"
-        private const val ONE_DAY = 1
         private const val CONFETTI_URL = "https://assets.tokopedia.net/asts/android/shop_page/shop_campaign_tab_confetti.json"
 
         fun createInstance(
@@ -134,7 +130,6 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
     private var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
     private val shopCampaignTabAdapter: ShopCampaignTabAdapter
         get() = adapter as ShopCampaignTabAdapter
-    private var sharedPreferences: SharedPreferences? = null
     private val shopCampaignTabAdapterTypeFactory by lazy {
         val userSession = UserSession(context)
         val _shopId = arguments?.getString(KEY_SHOP_ID, "") ?: ""
@@ -161,11 +156,6 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
     }
 
     private var globalErrorShopPage: GlobalError? = null
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        sharedPreferences = activity?.getSharedPreferences(SHOP_CAMPAIGN_TAB_PREFERENCE, Context.MODE_PRIVATE)
-    }
 
     override fun getRecyclerViewResourceId(): Int {
         return R.id.recycler_view
@@ -217,46 +207,22 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
     }
 
     private fun checkShowCampaignTabConfetti() {
-        checkLastShownConfettiAlreadyExpired()
         if(isShowConfetti()){
-            (parentFragment as? NewShopPageFragment)?.setupShopPageLottieAnimation(CONFETTI_URL)
+            setConfettiAlreadyShown()
+            showConfetti()
         }
     }
 
-    private fun checkLastShownConfettiAlreadyExpired() {
-        val dateDiffFromLastShownConfetti = Date(
-            getLastCampaignConfettiAlreadyShown()
-        ).getDayDiffFromToday().absoluteValue
-        if (dateDiffFromLastShownConfetti >= ONE_DAY) {
-            setIsCampaignConfettiAlreadyShown(false)
-        }
+    private fun showConfetti() {
+        (parentFragment as? NewShopPageFragment)?.setupShopPageLottieAnimation(CONFETTI_URL)
     }
 
     private fun isShowConfetti(): Boolean {
-        val isConfettiAlreadyShown = isConfettiAlreadyShown()
-        return if (isConfettiAlreadyShown) {
-            false
-        } else {
-            setIsCampaignConfettiAlreadyShown(true)
-            setLastCampaignConfettiAlreadyShown(Date().time)
-            true
-        }
+        return (parentFragment as? NewShopPageFragment)?.isShowConfetti().orFalse()
     }
 
-    private fun isConfettiAlreadyShown(): Boolean {
-        return sharedPreferences?.getBoolean(SHARED_PREF_CONFETTI_ALREADY_SHOWN, false).orFalse()
-    }
-
-    private fun setIsCampaignConfettiAlreadyShown(isShown: Boolean) {
-        sharedPreferences?.edit()?.putBoolean(SHARED_PREF_CONFETTI_ALREADY_SHOWN, isShown)?.apply()
-    }
-
-    private fun getLastCampaignConfettiAlreadyShown(): Long {
-        return sharedPreferences?.getLong(SHARED_PREF_LAST_CONFETTI_ALREADY_SHOWN, 0L).orZero()
-    }
-
-    private fun setLastCampaignConfettiAlreadyShown(time: Long) {
-        sharedPreferences?.edit()?.putLong(SHARED_PREF_LAST_CONFETTI_ALREADY_SHOWN, time)?.apply()
+    private fun setConfettiAlreadyShown(){
+        (parentFragment as? NewShopPageFragment)?.setConfettiAlreadyShown()
     }
 
     override fun observeShopProductFilterParameterSharedViewModel() {}
