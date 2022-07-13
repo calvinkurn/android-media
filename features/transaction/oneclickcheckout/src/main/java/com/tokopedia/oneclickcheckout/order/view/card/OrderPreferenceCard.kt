@@ -160,20 +160,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
             tvShippingDurationEta.gone()
             tvShippingCourierNotes.gone()
             setMultiViewsOnClickListener(tvShippingDuration, btnChangeDuration) {
-                if (profile.enable) {
-                    val shippingRecommendationData = shipment.shippingRecommendationData
-                    if (shippingRecommendationData != null) {
-                        val logisticPromoList = shippingRecommendationData.listLogisticPromo
-                        if (logisticPromoList.isNotEmpty()) {
-                            logisticPromoList.forEach { promo ->
-                                if (promo.disabled && promo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[0]) && promo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[1])) {
-                                    orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_BBO_MINIMUM)
-                                }
-                            }
-                        }
-                        listener.chooseDuration(false, shipping.getRealShipperProductId().toString(), shippingRecommendationData)
-                    }
-                }
+                showServiceBottomsheet(shipping.getRealShipperProductId().toString())
             }
             btnChangeDuration.visible()
             tvShippingCourier.text = shipping.shipperName
@@ -237,20 +224,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                 tvShippingCourierEta.gone()
             }
             setMultiViewsOnClickListener(tvShippingCourier, tvShippingPrice, tvShippingCourierEta, btnChangeCourier) {
-                if (profile.enable) {
-                    val shippingRecommendationData = shipment.shippingRecommendationData
-                    if (shippingRecommendationData != null) {
-                        val logisticPromoList = shippingRecommendationData.listLogisticPromo
-                        if (logisticPromoList.isNotEmpty()) {
-                            logisticPromoList.forEach { promo ->
-                                if (promo.disabled && promo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[0]) && promo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[1])) {
-                                    orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_BBO_MINIMUM)
-                                }
-                            }
-                        }
-                        listener.chooseDuration(false, shipping.getRealShipperProductId().toString(), shippingRecommendationData)
-                    }
-                }
+                showServiceBottomsheet(shipping.getRealShipperProductId().toString())
             }
         }
     }
@@ -282,20 +256,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                 tvShippingCourierEta,
                 btnChangeCourier
             ) {
-                if (profile.enable) {
-                    val shippingRecommendationData = shipment.shippingRecommendationData
-                    if (shippingRecommendationData != null) {
-                        val logisticPromoList = shippingRecommendationData.listLogisticPromo
-                        if (logisticPromoList.isNotEmpty()) {
-                            logisticPromoList.forEach { promo ->
-                                if (promo.disabled && promo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[0]) && promo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[1])) {
-                                    orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_BBO_MINIMUM)
-                                }
-                            }
-                        }
-                        listener.chooseDuration(false, shipping.getRealShipperProductId().toString(), shippingRecommendationData)
-                    }
-                }
+                showServiceBottomsheet(shipping.getRealShipperProductId().toString())
             }
         }
     }
@@ -395,20 +356,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
             tvShippingErrorMessage.text = span
             tvShippingErrorMessage.visible()
             tvShippingErrorMessage.setOnClickListener {
-                if (profile.enable) {
-                    val shippingRecommendationData = shipment.shippingRecommendationData
-                    if (shippingRecommendationData != null) {
-                        val logisticPromoList = shippingRecommendationData.listLogisticPromo
-                        if (logisticPromoList.isNotEmpty()) {
-                            logisticPromoList.forEach { promo ->
-                                if (promo.disabled && promo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[0]) && promo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[1])) {
-                                    orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_BBO_MINIMUM)
-                                }
-                            }
-                        }
-                        listener.chooseDuration(true, "", shippingRecommendationData)
-                    }
-                }
+                showServiceBottomsheet("")
             }
             tvShippingCourier.gone()
             btnChangeCourier.gone()
@@ -418,6 +366,23 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
             tvShippingCourierEta.gone()
             tvShippingCourierNotes.gone()
             tickerShippingPromo.gone()
+        }
+    }
+
+    private fun showServiceBottomsheet(shipperProductId: String) {
+        if (profile.enable) {
+            val shippingRecommendationData = shipment.shippingRecommendationData
+            if (shippingRecommendationData != null) {
+                val logisticPromoList = shippingRecommendationData.listLogisticPromo
+                if (logisticPromoList.isNotEmpty()) {
+                    logisticPromoList.forEach { promo ->
+                        if (promo.disabled && promo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[0]) && promo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[1])) {
+                            orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_BBO_MINIMUM)
+                        }
+                    }
+                }
+                listener.chooseDuration(shipperProductId.isEmpty(), shipperProductId, shippingRecommendationData)
+            }
         }
     }
 
