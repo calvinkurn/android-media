@@ -739,9 +739,6 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         this.onCancelCampaignSuccess = onCancelCampaignSuccess
     }
 
-    override fun onCampaignCancelled() {
-        getCampaigns(FIRST_PAGE)
-    }
 
     override fun onSaveDraftSuccess() {
         showSaveDraftSuccessMessage()

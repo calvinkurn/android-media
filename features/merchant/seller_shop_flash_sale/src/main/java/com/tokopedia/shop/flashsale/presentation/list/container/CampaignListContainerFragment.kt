@@ -263,10 +263,6 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
             val tabLayout = binding?.tabsUnify?.getUnifyTabLayout()
             val tab = tabLayout?.getTabAt(tabPosition)
             tab?.select()
-
-            if (tabPosition == SECOND_TAB) {
-                listener?.onCampaignCancelled()
-            }
         }
     }
 
@@ -299,7 +295,6 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
     }
 
     interface ActiveCampaignListListener {
-        fun onCampaignCancelled()
         fun onSaveDraftSuccess()
     }
 
