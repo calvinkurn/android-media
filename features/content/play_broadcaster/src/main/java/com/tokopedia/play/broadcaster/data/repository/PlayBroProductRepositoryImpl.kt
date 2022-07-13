@@ -5,6 +5,7 @@ import com.tokopedia.play.broadcaster.domain.repository.PlayBroProductRepository
 import com.tokopedia.play.broadcaster.domain.usecase.AddProductTagUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetProductsInEtalaseUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetSelfEtalaseListUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.SetPinnedProductUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.campaign.GetCampaignListUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.campaign.GetProductsInCampaignUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.campaign.GetProductTagSummarySectionUseCase
@@ -29,6 +30,7 @@ class PlayBroProductRepositoryImpl @Inject constructor(
     private val getProductsInEtalaseUseCase: GetProductsInEtalaseUseCase,
     private val addProductTagUseCase: AddProductTagUseCase,
     private val getProductTagSummarySectionUseCase: GetProductTagSummarySectionUseCase,
+    private val setPinnedProductUseCase: SetPinnedProductUseCase,
     private val productMapper: PlayBroProductUiMapper,
     private val userSession: UserSessionInterface,
 ) : PlayBroProductRepository {
@@ -108,6 +110,12 @@ class PlayBroProductRepositoryImpl @Inject constructor(
         }.executeOnBackground()
 
         return@withContext productMapper.mapProductTagSection(response)
+    }
+
+    override suspend fun setPinProduct(channelId: String, productId: String): Boolean = withContext(dispatchers.io){
+        return@withContext setPinnedProductUseCase.apply {
+            createParam(channelId, productId)
+        }.executeOnBackground().success
     }
 
     companion object {
