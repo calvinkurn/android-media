@@ -1,5 +1,6 @@
 package com.tokopedia.shop.flashsale.data.response
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class GetSellerCampaignProductListResponse(
@@ -26,6 +27,7 @@ data class GetSellerCampaignProductListResponse(
         @SerializedName("product_failed_count")
         val productFailedCount: Int = 0
     )
+
     data class ResponseHeader(
         @SerializedName("status")
         val status: String = "",
@@ -48,6 +50,8 @@ data class GetSellerCampaignProductListResponse(
         val productUrl: String = "",
         @SerializedName("product_sku")
         val productSku: String = "",
+        @SerializedName("stock")
+        val stock: Int = 0,
         @SerializedName("price")
         val price: Double = 0.0,
         @SerializedName("formatted_price")
@@ -62,7 +66,7 @@ data class GetSellerCampaignProductListResponse(
         val viewCount: Int = 0,
         @SerializedName("highlight_product_wording")
         val highlightProductWording: String = "",
-        )
+    )
 
     data class ImageUrl(
         @SerializedName("img_100square")
@@ -84,8 +88,10 @@ data class GetSellerCampaignProductListResponse(
         val productMapStatus: Int = 0,
         @SerializedName("product_map_admin_status")
         val productMapAdminStatus: Int = 0,
+        @SuppressLint("Invalid Data Type") // Server still using integer number data type
         @SerializedName("original_price")
         val originalPrice: Long = 0,
+        @SuppressLint("Invalid Data Type") // Server still using integer number data type
         @SerializedName("discounted_price")
         val discountedPrice: Long = 0,
         @SerializedName("discount_percentage")

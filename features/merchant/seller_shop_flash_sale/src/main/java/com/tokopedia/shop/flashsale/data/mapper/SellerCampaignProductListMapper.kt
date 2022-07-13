@@ -34,7 +34,7 @@ class SellerCampaignProductListMapper @Inject constructor() {
                        discountPercentage = product.productMapData.discountPercentage,
                        customStock = product.productMapData.customStock,
                        originalCustomStock = product.productMapData.originalCustomStock,
-                       originalStock = product.productMapData.originalStock,
+                       originalStock = product.stock,
                        campaignSoldCount = product.productMapData.campaignSoldCount,
                        maxOrder = product.productMapData.maxOrder
                    ),
