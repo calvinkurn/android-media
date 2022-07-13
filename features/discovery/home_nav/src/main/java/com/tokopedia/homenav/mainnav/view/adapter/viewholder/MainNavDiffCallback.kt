@@ -4,7 +4,6 @@ import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
 import com.tokopedia.homenav.mainnav.view.datamodel.MainNavVisitable
-import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
 
 /**
  * Created by Lukas on 20/10/20.
@@ -33,14 +32,5 @@ object MainNavDiffCallback : DiffUtil.ItemCallback<Visitable<*>>() {
         }
 
         return false
-    }
-
-    override fun getChangePayload(oldItem: Visitable<*>, newItem: Visitable<*>): Any? {
-        if(oldItem is AccountHeaderDataModel && newItem is AccountHeaderDataModel){
-            if(oldItem.tokopediaPlusParam != newItem.tokopediaPlusParam){
-               return AccountHeaderDataModel.PAYLOAD_TOKOPEDIA_PLUS
-            }
-        }
-        return super.getChangePayload(oldItem, newItem)
     }
 }
