@@ -1,8 +1,9 @@
 package com.tokopedia.epharmacy.utils
 
-
 const val EXTRA_ORDER_ID_LONG = "extra_order_id_long"
 const val EXTRA_CHECKOUT_ID_STRING = "extra_checkout_id_string"
+const val EXTRA_ENTRY_POINT_STRING = "extra_entry_point_string"
+
 const val DEFAULT_ZERO_VALUE = 0L
 
 const val MAX_MEDIA_ITEM = 5
@@ -17,9 +18,6 @@ const val PRESCRIPTION_COMPONENT = "prescription component"
 const val PRODUCT_COMPONENT = "product component"
 
 const val EPHARMACY_SCREEN_NAME = "epharmacy page"
-
-const val UPLOAD_ORDER_ID_KEY = "order_id"
-const val UPLOAD_CHECKOUT_ID_KEY = "checkout_id"
 
 const val EPHARMACY_TNC_LINK = "https://www.tokopedia.com/help/article/syarat-dan-ketentuan-tokopedia-kesehatan"
 
@@ -38,8 +36,8 @@ enum class EPharmacyPrescriptionStatus(val status : String){
 }
 
 const val EPharmacyImageQuality = 100
-const val EPharmacyMinImageQuality = 80
-const val EPharmacyImageQualityDecreaseFactor = 0.8
+const val EPharmacyMinImageQuality = 85
+const val EPharmacyImageQualityDecreaseFactor = 0.85
 
 const val FIRST_INDEX = 0
 const val UPLOAD_MAX_BYTES = 6_000_000L

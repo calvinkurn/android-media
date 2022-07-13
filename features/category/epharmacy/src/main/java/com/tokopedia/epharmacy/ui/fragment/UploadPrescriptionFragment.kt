@@ -31,6 +31,11 @@ import com.tokopedia.epharmacy.component.model.EPharmacyPrescriptionDataModel
 import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.network.response.PrescriptionImage
 import com.tokopedia.epharmacy.utils.*
+import com.tokopedia.epharmacy.utils.TrackerId.Companion.IMAGE_UPLOAD_FAILED_ID
+import com.tokopedia.epharmacy.utils.TrackerId.Companion.IMAGE_UPLOAD_SUCCESS_ID
+import com.tokopedia.epharmacy.utils.TrackerId.Companion.SUBMIT_PRESCRIPTION_ID
+import com.tokopedia.epharmacy.utils.TrackerId.Companion.SUBMIT_SUCCESS_ID
+import com.tokopedia.epharmacy.utils.TrackerId.Companion.UPLOAD_PRESCRIPTION_ID
 import com.tokopedia.epharmacy.viewmodel.UploadPrescriptionViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
@@ -40,6 +45,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
+import com.tokopedia.track.builder.Tracker
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_LONG
@@ -82,6 +88,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
 
     private var orderId = 0L
     private var checkoutId = ""
+    private var entryPoint = ""
 
     private val ePharmacyAdapter by lazy(LazyThreadSafetyMode.NONE) {
         val asyncDifferConfig: AsyncDifferConfig<BaseEPharmacyDataModel> = AsyncDifferConfig.Builder(
@@ -111,6 +118,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
     private fun initArguments() {
         orderId = arguments?.getLong(EXTRA_ORDER_ID_LONG)  ?: 0L
         checkoutId = arguments?.getString(EXTRA_CHECKOUT_ID_STRING,"") ?: ""
+        entryPoint = arguments?.getString(EXTRA_ENTRY_POINT_STRING,"") ?: ""
     }
 
     private fun setUpObservers() {
@@ -204,6 +212,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
     }
 
     private fun onDoneButtonClick(){
+        sendSubmitButtonClickEvent()
         if(orderId != DEFAULT_ZERO_VALUE){
             uploadPrescriptionViewModel.uploadPrescriptionIdsInOrder(orderId)
         }else if(checkoutId.isNotBlank()){
@@ -229,6 +238,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
             MEDIA_PICKER_REQUEST_CODE -> {
                 if(resultCode == Activity.RESULT_OK && data != null){
                     val result = MediaPicker.result(data)
+                    sendUploadPrescriptionButtonClickFromPreview()
                     uploadPrescriptionViewModel.addSelectedPrescriptionImages(result.originalPaths)
                 }
             }else -> super.onActivityResult(requestCode, resultCode, data)
@@ -293,6 +303,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
         uploadPrescriptionViewModel.uploadPrescriptionIdsData.observe(viewLifecycleOwner,{
             when(it){
                 is Success -> {
+                    sendSubmitSuccessEvent()
                     if(orderId != DEFAULT_ZERO_VALUE){
                         openOrderPage(orderId)
                     }else if (checkoutId.isNotBlank()) {
@@ -315,6 +326,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
 
     private fun observerUploadPrescriptionError() {
         uploadPrescriptionViewModel.uploadError.observe(viewLifecycleOwner,{ error ->
+            sendUploadImageFailedEvent()
             when(error){
                 is EPharmacyUploadBackendError -> showToast(error.errMsg)
                 is EPharmacyUploadEmptyImageError -> showToast(context?.resources?.getString(R.string.epharmacy_upload_error) ?: "")
@@ -449,6 +461,80 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
         uploadPrescriptionViewModel.reUploadPrescriptionImage((adapterPosition) ,image.localPath ?: "")
     }
 
+    private fun sendUploadPrescriptionButtonClickFromPreview() {
+        Tracker.Builder()
+            .setEvent(EventKeys.CLICK_CONTENT)
+            .setEventAction(ActionKeys.UPLOAD_PRESCRIPTION)
+            .setEventCategory(CategoryKeys.UPLOAD_PRESCRIPTION_PAGE)
+            .setEventLabel("entry_point: $entryPoint - id: ${getCurrentId()}")
+            .setCustomProperty(EventKeys.TRACKER_ID, UPLOAD_PRESCRIPTION_ID)
+            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
+            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
+            .build()
+            .send()
+    }
 
+    private fun sendUploadImageSuccessEvent() {
+        Tracker.Builder()
+            .setEvent(EventKeys.VIEW_CONTENT_IRIS)
+            .setEventAction(ActionKeys.IMAGE_UPLOAD_SUCCESS)
+            .setEventCategory(CategoryKeys.UPLOAD_PRESCRIPTION_PAGE)
+            .setEventLabel("entry_point: $entryPoint - id: ${getCurrentId()}")
+            .setCustomProperty(EventKeys.TRACKER_ID, IMAGE_UPLOAD_SUCCESS_ID)
+            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
+            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
+            .build()
+            .send()
+    }
+
+
+    private fun sendSubmitButtonClickEvent() {
+        Tracker.Builder()
+            .setEvent(EventKeys.CLICK_CONTENT)
+            .setEventAction(ActionKeys.SUBMIT_PRESCRIPTION)
+            .setEventCategory(CategoryKeys.UPLOAD_PRESCRIPTION_PAGE)
+            .setEventLabel("entry_point: $entryPoint - id: ${getCurrentId()}")
+            .setCustomProperty(EventKeys.TRACKER_ID, SUBMIT_PRESCRIPTION_ID)
+            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
+            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
+            .build()
+            .send()
+    }
+
+
+    private fun sendSubmitSuccessEvent() {
+        Tracker.Builder()
+            .setEvent(EventKeys.VIEW_CONTENT_IRIS)
+            .setEventAction(ActionKeys.SUBMIT_SUCCESS)
+            .setEventCategory(CategoryKeys.UPLOAD_PRESCRIPTION_PAGE)
+            .setEventLabel("entry_point: $entryPoint - id: ${getCurrentId()}")
+            .setCustomProperty(EventKeys.TRACKER_ID, SUBMIT_SUCCESS_ID)
+            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
+            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
+            .build()
+            .send()
+    }
+
+
+    private fun sendUploadImageFailedEvent() {
+        Tracker.Builder()
+            .setEvent(EventKeys.VIEW_CONTENT_IRIS)
+            .setEventAction(ActionKeys.IMAGE_UPLOAD_FAILED)
+            .setEventCategory(CategoryKeys.UPLOAD_PRESCRIPTION_PAGE)
+            .setEventLabel("entry_point: $entryPoint - id: ${getCurrentId()}")
+            .setCustomProperty(EventKeys.TRACKER_ID, IMAGE_UPLOAD_FAILED_ID)
+            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
+            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
+            .build()
+            .send()
+    }
+
+    private fun getCurrentId() : String {
+        return if(orderId == DEFAULT_ZERO_VALUE){
+            checkoutId
+        }else {
+            orderId.toString()
+        }
+    }
 
 }
