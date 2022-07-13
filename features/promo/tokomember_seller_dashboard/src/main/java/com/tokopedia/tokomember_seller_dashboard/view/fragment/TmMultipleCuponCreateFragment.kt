@@ -637,11 +637,13 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 val startDate = GregorianCalendar(locale)
                 startDate.add(Calendar.HOUR, 4)
                 val minuteCurrent = startDate.get(Calendar.MINUTE)
-                startDate.set(Calendar.MINUTE, 30)
-                startDate.set(Calendar.SECOND, 0)
-                if (minuteCurrent > 30) {
-                    startDate.add(Calendar.MINUTE, 30)
+                if (minuteCurrent <= 30) {
+                    startDate.set(Calendar.MINUTE, 30)
+                } else {
+                    startDate.add(Calendar.HOUR_OF_DAY, 1)
+                    startDate.set(Calendar.MINUTE, 0)
                 }
+                startDate.set(Calendar.SECOND, 0)
                 manualStartTimeProgram = convertDateTimeRemoveTimeDiff(startDate.time)
                 manualEndTimeProgram = TmDateUtil.addDuration(timeWindow?.endTime ?: "", periodMonth)
 
