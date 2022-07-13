@@ -12,6 +12,7 @@ import androidx.transition.TransitionManager
 import androidx.transition.TransitionSet
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.review.R
 import com.tokopedia.review.databinding.WidgetReviewCredibilityAchievementBoxBinding
 import com.tokopedia.review.feature.createreputation.presentation.widget.BaseReviewCustomView
 import com.tokopedia.review.feature.credibility.presentation.uimodel.ReviewCredibilityAchievementBoxUiModel
@@ -32,7 +33,9 @@ class ReviewCredibilityAchievementBoxWidget @JvmOverloads constructor(
     override val binding: WidgetReviewCredibilityAchievementBoxBinding =
         WidgetReviewCredibilityAchievementBoxBinding.inflate(
             LayoutInflater.from(context), this, true
-        )
+        ).apply {
+            setupView()
+        }
 
     private val partialWidgetAchievement1 by lazy(LazyThreadSafetyMode.NONE) {
         PartialReviewCredibilityAchievement(binding.widgetReviewCredibilityAchievement1, listener)
@@ -45,6 +48,10 @@ class ReviewCredibilityAchievementBoxWidget @JvmOverloads constructor(
     }
 
     private var listener: Listener? = null
+
+    private fun WidgetReviewCredibilityAchievementBoxBinding.setupView() {
+        layoutReviewCredibilityAchievementBoxContent.setBackgroundResource(R.drawable.bg_review_credibility_statistics_box)
+    }
 
     private fun hideWidget() {
         animateHide(onAnimationEnd = {

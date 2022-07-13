@@ -5,10 +5,10 @@
     android:id="@+id/container_review_credibility_statistic_box"
     android:layout_width="match_parent"
     android:layout_height="0dp"
-    android:background="@drawable/bg_review_credibility_statistics_box"
     android:padding="12dp"
     app:card_type="border"
     app:layout_constraintTop_toTopOf="parent"
+    tools:background="@drawable/bg_review_credibility_statistics_box"
     tools:layout_height="wrap_content">
 
     <com.tokopedia.unifyprinciples.Typography

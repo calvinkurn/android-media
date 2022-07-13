@@ -12,6 +12,7 @@ import androidx.transition.TransitionManager
 import androidx.transition.TransitionSet
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.review.R
 import com.tokopedia.review.databinding.WidgetReviewCredibilityStatisticBoxBinding
 import com.tokopedia.review.feature.createreputation.presentation.widget.BaseReviewCustomView
 import com.tokopedia.review.feature.credibility.presentation.uimodel.ReviewCredibilityStatisticBoxUiModel
@@ -34,7 +35,9 @@ class ReviewCredibilityStatisticBoxWidget @JvmOverloads constructor(
     override val binding: WidgetReviewCredibilityStatisticBoxBinding =
         WidgetReviewCredibilityStatisticBoxBinding.inflate(
             LayoutInflater.from(context), this, true
-        )
+        ).apply {
+            setupView()
+        }
 
     private val partialWidgetStatistic1 by lazy(LazyThreadSafetyMode.NONE) {
         PartialReviewCredibilityStatistic(binding.reviewCredibilityStatistics1)
@@ -56,6 +59,10 @@ class ReviewCredibilityStatisticBoxWidget @JvmOverloads constructor(
     }
 
     private var listener: Listener? = null
+
+    private fun WidgetReviewCredibilityStatisticBoxBinding.setupView() {
+        root.setBackgroundResource(R.drawable.bg_review_credibility_statistics_box)
+    }
 
     private fun hideWidget() {
         animateHide(onAnimationEnd = {
