@@ -209,6 +209,10 @@ data class SerializedNotificationData(
 
     @Expose
     @SerializedName(IS_REVIEW)
-    var isReviewNotif: Boolean? = false
+    var isReviewNotif: Boolean? = false,
+
+    @Expose
+    @SerializedName(REPLY_TYPE)
+    var replyType: String? = null
 
 ) : Parcelable
