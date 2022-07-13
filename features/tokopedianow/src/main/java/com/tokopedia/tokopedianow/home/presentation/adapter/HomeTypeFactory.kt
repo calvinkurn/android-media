@@ -16,5 +16,4 @@ interface HomeTypeFactory {
     fun type(uiModel: HomeQuestAllClaimedWidgetUiModel): Int
     fun type(uiModel: HomeSwitcherUiModel): Int
     fun type(uiModel: HomeLeftCarouselAtcUiModel): Int
-    fun type(uiModel: HomePlayWidgetUiModel): Int
 }

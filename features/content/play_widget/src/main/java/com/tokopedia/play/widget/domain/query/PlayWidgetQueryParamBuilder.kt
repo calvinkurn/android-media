@@ -81,6 +81,5 @@ class PlayWidgetQueryParamBuilder {
         const val PARAM_IS_WIFI = "isWifi"
         const val PARAM_PRODUCT_ID = "productIDs"
         const val PARAM_CATEGORY_ID = "categoryIDs"
-        const val PARAM_CHANNEL_TAG = "channelTag"
     }
 }

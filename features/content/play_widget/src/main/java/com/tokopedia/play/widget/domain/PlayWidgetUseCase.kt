@@ -38,7 +38,6 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
             PlayWidgetQueryParamBuilder.PARAM_AUTHOR_ID to widgetType.authorId,
             PlayWidgetQueryParamBuilder.PARAM_AUTHOR_TYPE to widgetType.authorType,
             PlayWidgetQueryParamBuilder.PARAM_WIDGET_TYPE to widgetType.typeKey,
-            PlayWidgetQueryParamBuilder.PARAM_CHANNEL_TAG to widgetType.channelTag,
             PlayWidgetQueryParamBuilder.PARAM_IS_WIFI to isWifi,
         )
 
@@ -136,10 +135,8 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
     sealed class WidgetType {
 
         abstract val typeKey: String
-
-        open val authorId: String = ""
-        open val authorType: String = ""
-        open val channelTag: String = ""
+        abstract val authorId: String
+        abstract val authorType: String
 
         data class ShopPage(val shopId: String) : WidgetType() {
             override val typeKey: String
@@ -155,11 +152,23 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
         object Home : WidgetType() {
             override val typeKey: String
                 get() = "HOME"
+
+            override val authorId: String
+                get() = ""
+
+            override val authorType: String
+                get() = ""
         }
 
         object Feeds : WidgetType() {
             override val typeKey: String
                 get() = "FEEDS"
+
+            override val authorId: String
+                get() = ""
+
+            override val authorType: String
+                get() = ""
         }
 
         data class SellerApp(val shopId: String) : WidgetType() {
@@ -179,28 +188,20 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
 
             override val authorId: String
                 get() = widgetID
+
+            override val authorType: String
+                get() = ""
         }
 
-        data class PDPWidget(
-            val productIdList: List<String>,
-            val categoryIdList: List<String>
-        ): WidgetType(){
+        data class PDPWidget(val productIdList: List<String>, val categoryIdList: List<String>): WidgetType(){
             override val typeKey: String
                 get() = "PDP_WIDGET"
-        }
 
-        data class TokoNowSmallWidget(
-            override val channelTag: String
-        ): WidgetType(){
-            override val typeKey: String
-                get() = "TOKONOW_PLAY_SMALL"
-        }
+            override val authorId: String
+                get() = ""
 
-        data class TokoNowMediumWidget(
-            override val channelTag: String
-        ): WidgetType(){
-            override val typeKey: String
-                get() = "TOKONOW_PLAY_MEDIUM"
+            override val authorType: String
+                get() = ""
         }
     }
 }
