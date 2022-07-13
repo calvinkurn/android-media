@@ -1,7 +1,8 @@
 package com.tokopedia.productcard.utils
 
 import androidx.annotation.DimenRes
-import com.tokopedia.productcard.R
+import com.tokopedia.productcard.R.dimen.dp_12
+import com.tokopedia.productcard.R.dimen.dp_13
 
 internal const val LIGHT_GREY = "lightGrey"
 internal const val LIGHT_BLUE = "lightBlue"
@@ -47,19 +48,25 @@ internal const val TYPE_VARIANT_CUSTOM = "custom"
 internal const val MIN_LABEL_VARIANT_COUNT = 2
 internal const val MAX_LABEL_VARIANT_COUNT = 5
 internal const val LABEL_VARIANT_CHAR_LIMIT = 18
+internal const val LABEL_VARIANT_CHAR_LIMIT_REPOSITION = 5
+internal const val COLOR_LIMIT_REPOSITION = 3
 internal const val EXTRA_CHAR_SPACE = 2
+internal const val EXTRA_CHAR_SPACE_REPOSITION = 0
 
 internal const val LABEL_VARIANT_TAG = "label_variant_tag"
 
 internal const val WORDING_SEGERA_HABIS = "Segera Habis"
 
 @DimenRes
-internal val FIRE_WIDTH = R.dimen.dp_12
+internal val FIRE_WIDTH = dp_12
 
 @DimenRes
-internal val FIRE_HEIGHT = R.dimen.dp_13
+internal val FIRE_HEIGHT = dp_13
 
 internal const val QUANTITY_EDITOR_DEBOUNCE_IN_MS: Long = 1000
 
 internal const val MAX_VARIANT_QUANTITY = 99
 internal const val MIN_QUANTITY_NON_VARIANT = 1
+
+internal const val SQUARE_IMAGE_RATIO = "1:1"
+internal const val LONG_IMAGE_RATIO = "4:5"

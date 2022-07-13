@@ -61,6 +61,14 @@ abstract class TokoFoodCategoryViewModelTestFixture {
         Assert.assertTrue(actualResponse is Fail)
     }
 
+    protected fun verifyCategoryIsShowingErrorState(actualResponse: Boolean) {
+        Assert.assertTrue(actualResponse)
+    }
+
+    protected fun verifyCategoryIsNotShowingErrorState(actualResponse: Boolean) {
+        Assert.assertFalse(actualResponse)
+    }
+
     protected fun onGetMerchantList_thenReturn(
         layoutResponse: TokoFoodMerchantListResponse,
         localCacheModel: LocalCacheModel = LocalCacheModel(),
