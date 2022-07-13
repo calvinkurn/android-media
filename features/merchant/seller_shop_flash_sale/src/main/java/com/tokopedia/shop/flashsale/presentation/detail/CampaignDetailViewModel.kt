@@ -134,7 +134,8 @@ class CampaignDetailViewModel @Inject constructor(
         val campaignMeta = if (campaign is Success) campaign.data else return
         val campaignData = campaignMeta.campaign
         if (!campaignData.isCancellable) {
-            _cancelCampaignActionResult.value = CancelCampaignActionResult.RegisteredEventCampaign
+            _cancelCampaignActionResult.value =
+                CancelCampaignActionResult.RegisteredEventCampaign(campaignData)
         } else if (campaignData.status.isActive()) {
             _cancelCampaignActionResult.value =
                 CancelCampaignActionResult.ActionAllowed(campaignData)

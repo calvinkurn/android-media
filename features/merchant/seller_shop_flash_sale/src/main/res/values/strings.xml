@@ -341,8 +341,6 @@
     <string name="campaign_detail_start_date_label">Tanggal dimulai</string>
     <string name="campaign_detail_end_date_label">Tanggal berakhir</string>
     <string name="campaign_detail_edit_campaign_label">Ubah Campaign</string>
-    <string name="campaign_detail_edit_registered_event_campaign_message">Campaign yang masuk ke partisipasi event hanya bisa diedit di versi desktop.</string>
-    <string name="campaign_detail_cancel_registered_event_campaign_message">Campaign yang masuk ke partisipasi event tidak dapat dihentikan.</string>
     <string name="campaign_detail_campaign_cancelled_message">Campaign %s berhasil dibatalkan.</string>
     <string name="campaign_detail_campaign_stopped_message">Campaign %s berhasil dihentikan.</string>
     <string name="campaign_detail_see_terms_and_condition_label">Lihat S&amp;K Pembelian</string>
