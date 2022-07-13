@@ -378,7 +378,17 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     private fun initAdapter() {
-        val mainNavFactory = MainNavTypeFactoryImpl(this, getUserSession(), tokopediaPlusListenerDelegate())
+        val mainNavFactory = MainNavTypeFactoryImpl(this, getUserSession(), object : TokopediaPlusListener {
+            override fun onClick(
+                pageSource: String,
+                tokopediaPlusDataModel: TokopediaPlusDataModel
+            ) {
+            }
+
+            override fun onRetry() {
+                viewModel.refreshTokopediaPlusData()
+            }
+        })
         adapter = MainNavListAdapter(mainNavFactory)
 
         activity?.let {
@@ -391,31 +401,9 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         recyclerView.adapter = adapter
     }
 
-    private fun tokopediaPlusListenerDelegate(): TokopediaPlusListener {
-        return object : TokopediaPlusListener {
-            override fun onClick(pageSource: String, tokopediaPlusDataModel: TokopediaPlusDataModel) {
-                TrackingProfileSection.onClickTokopediaPlus(tokopediaPlusDataModel.isSubscriber)
-            }
-
-            override fun onSuccessLoad(pageSource: String, tokopediaPlusDataModel: TokopediaPlusDataModel) {
-            }
-
-            override fun onFailedLoad(throwable: Throwable) {
-            }
-
-        }
-    }
-
     private fun populateAdapterData(data: MainNavigationDataModel) {
         setupViewPerformanceMonitoring(data)
         adapter.submitList(data.dataList)
-
-        val paramTokopediaPlus = TokopediaPlusParam(
-            TokopediaPlusCons.SOURCE_GLOBAL_MENU,
-            this,
-            viewLifecycleOwner
-        )
-        viewModel.setTokopediaPlusParam(paramTokopediaPlus)
 
         if (data.dataList.size > 1 && !mainNavDataFetched) {
             viewModel.getMainNavData(true)
