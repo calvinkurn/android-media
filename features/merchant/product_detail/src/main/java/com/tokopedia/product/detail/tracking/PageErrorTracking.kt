@@ -11,7 +11,7 @@ object PageErrorTracking {
     private const val ACTION_CLICK_HOMEPAGE = "click - kembali ke homepage"
     private const val CATEGORY_404_NOT_FOUND = "404 not found"
 
-    fun impressPageError(
+    fun impressPageNotFound(
         data: PageErrorTracker,
         trackingQueue: TrackingQueue
     ){
