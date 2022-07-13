@@ -230,4 +230,6 @@
     <string name="follow_account">Follow akun</string>
     <string name="btn_text_follow">Follow</string>
     <string name="btn_text_following">Following</string>
+    <string name="empty_page_title">Belum ada postingan</string>
+    <string name="empty_page_desc">Ayo buat postingan dulu, siapa tahu nanti banyak yang suka!</string>
 </resources>

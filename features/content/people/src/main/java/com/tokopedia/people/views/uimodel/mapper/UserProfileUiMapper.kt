@@ -4,7 +4,7 @@ import com.tokopedia.people.views.uimodel.profile.*
 import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
 import com.tokopedia.people.model.*
 import com.tokopedia.people.views.uimodel.MutationUiModel
-import com.tokopedia.people.views.uimodel.shoprecom.ShopRecomUiModel
+import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModel
 
 /**
  * Created By : Jonathan Darwin on June 28, 2022

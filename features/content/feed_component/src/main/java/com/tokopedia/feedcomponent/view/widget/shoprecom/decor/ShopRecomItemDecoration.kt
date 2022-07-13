@@ -1,9 +1,12 @@
-package com.tokopedia.feedcomponent.view.decor
+package com.tokopedia.feedcomponent.view.widget.shoprecom.decor
 
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 
+/**
+ * created by fachrizalmrsln on 07/07/22
+ **/
 class ShopRecomItemDecoration : RecyclerView.ItemDecoration() {
 
     companion object {

@@ -15,7 +15,7 @@ import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.people.views.uimodel.profile.*
 import com.tokopedia.people.views.uimodel.saved.SavedReminderData
-import com.tokopedia.people.views.uimodel.shoprecom.ShopRecomUiModelItem
+import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
 import com.tokopedia.people.views.uimodel.state.UserProfileUiState
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted

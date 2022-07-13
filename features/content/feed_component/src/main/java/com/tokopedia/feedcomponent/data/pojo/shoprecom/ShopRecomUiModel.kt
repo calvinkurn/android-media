@@ -1,6 +1,4 @@
-package com.tokopedia.people.views.uimodel.shoprecom
-
-import com.tokopedia.library.baseadapter.BaseItem
+package com.tokopedia.feedcomponent.data.pojo.shoprecom
 
 data class ShopRecomUiModel(
     val isShown: Boolean = false,
@@ -19,4 +17,4 @@ data class ShopRecomUiModelItem(
     val type: Int = 0,
     val applink: String = "",
     var isFollow: Boolean = false,
-) : BaseItem()
+)

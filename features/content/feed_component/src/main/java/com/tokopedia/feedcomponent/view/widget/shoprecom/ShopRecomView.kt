@@ -6,8 +6,9 @@ import android.view.LayoutInflater
 import android.widget.FrameLayout
 import com.tokopedia.feedcomponent.R.string.btn_text_follow
 import com.tokopedia.feedcomponent.R.string.btn_text_following
-import com.tokopedia.feedcomponent.data.pojo.people.ShopRecomItemUI
+import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
 import com.tokopedia.feedcomponent.databinding.ItemShopRecommendationBinding
+import com.tokopedia.feedcomponent.view.widget.shoprecom.listener.ShopRecommendationCallback
 import com.tokopedia.unifycomponents.UnifyButton.Type.ALTERNATE
 import com.tokopedia.unifycomponents.UnifyButton.Type.MAIN
 import com.tokopedia.unifycomponents.UnifyButton.Variant.FILLED
@@ -26,13 +27,7 @@ class ShopRecomView : FrameLayout {
         defStyleAttr
     )
 
-    interface Listener {
-        fun onShopRecomCloseClicked(item: ShopRecomItemUI)
-        fun onShopRecomFollowClicked(item: ShopRecomItemUI)
-        fun onShopRecomItemClicked(appLink: String)
-    }
-
-    private var mListener: Listener? = null
+    private var mListener: ShopRecommendationCallback? = null
 
     private var binding = ItemShopRecommendationBinding.inflate(
         LayoutInflater.from(this.context),
@@ -40,11 +35,11 @@ class ShopRecomView : FrameLayout {
         true
     )
 
-    fun setListener(listener: Listener?) {
+    fun setListener(listener: ShopRecommendationCallback?) {
         mListener = listener
     }
 
-    fun setData(data: ShopRecomItemUI) = with(binding) {
+    fun setData(data: ShopRecomUiModelItem) = with(binding) {
         txtItemShopName.text = data.name
         txtItemShopUsername.text = data.nickname
         imgItemShopImage.setImageUrl(data.logoImageURL)
@@ -62,7 +57,7 @@ class ShopRecomView : FrameLayout {
         }
     }
 
-    private fun onClickListener(data: ShopRecomItemUI) = with(binding) {
+    private fun onClickListener(data: ShopRecomUiModelItem) = with(binding) {
         clItemShopContainer.setOnClickListener { mListener?.onShopRecomItemClicked(data.applink) }
         imgItemShopClose.setOnClickListener { mListener?.onShopRecomCloseClicked(data) }
         btnItemShop.setOnClickListener { mListener?.onShopRecomFollowClicked(data) }

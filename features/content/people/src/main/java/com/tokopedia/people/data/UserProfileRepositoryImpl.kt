@@ -1,6 +1,7 @@
 package com.tokopedia.people.data
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModel
 import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistNewUseCase
 import com.tokopedia.feedcomponent.domain.usecase.WHITELIST_ENTRY_POINT
 import com.tokopedia.people.domains.UserDetailsUseCase
@@ -18,7 +19,6 @@ import com.tokopedia.people.views.uimodel.mapper.UserProfileUiMapper
 import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileWhitelistUiModel
-import com.tokopedia.people.views.uimodel.shoprecom.ShopRecomUiModel
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 

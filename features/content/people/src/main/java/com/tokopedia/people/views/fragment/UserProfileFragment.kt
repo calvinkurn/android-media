@@ -18,9 +18,13 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
+import com.tokopedia.feedcomponent.onboarding.view.fragment.FeedUGCOnboardingParentFragment
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
-import com.tokopedia.feedcomponent.view.decor.ShopRecomItemDecoration
+import com.tokopedia.feedcomponent.view.widget.shoprecom.adapter.ShopRecomAdapter
+import com.tokopedia.feedcomponent.view.widget.shoprecom.decor.ShopRecomItemDecoration
+import com.tokopedia.feedcomponent.view.widget.shoprecom.listener.ShopRecommendationCallback
 import com.tokopedia.globalerror.GlobalError.Companion.NO_CONNECTION
 import com.tokopedia.globalerror.GlobalError.Companion.PAGE_FULL
 import com.tokopedia.globalerror.GlobalError.Companion.PAGE_NOT_FOUND
@@ -37,11 +41,13 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.linker.share.DataMapper
+import com.tokopedia.people.ErrorMessage
+import com.tokopedia.people.Loading
 import com.tokopedia.people.R
+import com.tokopedia.people.Success
 import com.tokopedia.people.analytic.UserProfileTracker
 import com.tokopedia.people.databinding.UpFragmentUserProfileBinding
 import com.tokopedia.people.databinding.UpLayoutUserProfileHeaderBinding
-import com.tokopedia.people.model.UserPostModel
 import com.tokopedia.people.utils.showErrorToast
 import com.tokopedia.people.utils.showToast
 import com.tokopedia.people.utils.withCache
@@ -50,13 +56,14 @@ import com.tokopedia.people.viewmodels.factory.UserProfileViewModelFactory
 import com.tokopedia.people.views.activity.FollowerFollowingListingActivity
 import com.tokopedia.people.views.activity.UserProfileActivity.Companion.EXTRA_USERNAME
 import com.tokopedia.people.views.adapter.UserPostBaseAdapter
-import com.tokopedia.people.views.adapter.UserShopRecomBaseAdapter
 import com.tokopedia.people.views.itemdecoration.GridSpacingItemDecoration
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.people.views.uimodel.profile.ProfileType
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
 import com.tokopedia.people.views.uimodel.state.UserProfileUiState
+import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
@@ -70,15 +77,8 @@ import kotlinx.coroutines.flow.collectLatest
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
-import com.tokopedia.unifyprinciples.R as unifyR
 import com.tokopedia.feedcomponent.R as feedComponentR
-import com.tokopedia.feedcomponent.onboarding.view.fragment.FeedUGCOnboardingParentFragment
-import com.tokopedia.people.ErrorMessage
-import com.tokopedia.people.Loading
-import com.tokopedia.people.Success
-import com.tokopedia.people.views.uimodel.shoprecom.ShopRecomUiModelItem
-import com.tokopedia.unifycomponents.HtmlLinkHelper
-import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.R as unifyR
 
 class UserProfileFragment @Inject constructor(
     private val viewModelFactoryCreator: UserProfileViewModelFactory.Creator,
@@ -91,7 +91,7 @@ class UserProfileFragment @Inject constructor(
     ScreenShotListener,
     PermissionListener,
     UserPostBaseAdapter.PlayWidgetCallback,
-    UserShopRecomBaseAdapter.ShopRecommendationCallback,
+    ShopRecommendationCallback,
     FeedPlusContainerListener {
 
     private val linearLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
@@ -118,7 +118,7 @@ class UserProfileFragment @Inject constructor(
 
     private lateinit var viewModel: UserProfileViewModel
 
-    private lateinit var mAdapterShopRecom: UserShopRecomBaseAdapter
+    private lateinit var mAdapterShopRecom: ShopRecomAdapter
 
     private val mAdapter: UserPostBaseAdapter by lazy {
         UserPostBaseAdapter(this, this) { cursor ->
@@ -265,10 +265,7 @@ class UserProfileFragment @Inject constructor(
     }
 
     private fun initShopRecommendation() = with(mainBinding.shopRecommendation.rvShopRecom) {
-        mAdapterShopRecom = UserShopRecomBaseAdapter(
-            this@UserProfileFragment,
-            this@UserProfileFragment
-        )
+        mAdapterShopRecom = ShopRecomAdapter(this@UserProfileFragment)
         layoutManager = linearLayoutManager
         adapter = mAdapterShopRecom
         if (itemDecorationCount == 0) addItemDecoration(ShopRecomItemDecoration())
@@ -382,7 +379,8 @@ class UserProfileFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.shopRecomContent.collect {
                 initShopRecommendation()
-                mAdapterShopRecom.onSuccess(it)
+                mAdapterShopRecom.insertItem(it)
+                mainBinding.userPostContainer.hide()
                 with(mainBinding.shopRecommendation) {
                     root.show()
                     txtWordingFollow.show()
@@ -694,7 +692,7 @@ class UserProfileFragment @Inject constructor(
     }
 
     override fun onShopRecomCloseClicked(item: ShopRecomUiModelItem) {
-        mAdapterShopRecom.remove(item)
+        mAdapterShopRecom.removeItem(item)
         if (mAdapterShopRecom.itemCount == 0) {
             with(mainBinding.shopRecommendation) {
                 txtWordingFollow.hide()
@@ -716,21 +714,19 @@ class UserProfileFragment @Inject constructor(
     }
 
     override fun onEmptyList(rawObject: Any?) {
-        if (rawObject is UserPostModel) {
-            if (viewModel.isSelfProfile) return
-            mainBinding.userPostContainer.displayedChild = PAGE_EMPTY
-        } else {
-            mainBinding.userPostContainer.displayedChild = PAGE_EMPTY
-            mainBinding.shopRecommendation.root.hide()
-        }
+        if (viewModel.isSelfProfile) return
+        mainBinding.userPostContainer.show()
+        mainBinding.userPostContainer.displayedChild = PAGE_EMPTY
     }
 
     override fun onStartFirstPageLoad() {
         mainBinding.shopRecommendation.root.hide()
+        mainBinding.userPostContainer.show()
         mainBinding.userPostContainer.displayedChild = PAGE_LOADING
     }
 
     override fun onFinishFirstPageLoad(itemCount: Int, rawObject: Any?) {
+        mainBinding.userPostContainer.show()
         mainBinding.userPostContainer.displayedChild = PAGE_CONTENT
     }
 

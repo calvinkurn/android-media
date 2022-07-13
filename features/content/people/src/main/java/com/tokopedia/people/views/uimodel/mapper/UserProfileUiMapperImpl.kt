@@ -6,10 +6,10 @@ import com.tokopedia.feedcomponent.data.pojo.whitelist.Author
 import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
 import com.tokopedia.people.R
 import com.tokopedia.people.model.*
+import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
+import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModel
 import com.tokopedia.people.views.uimodel.MutationUiModel
 import com.tokopedia.people.views.uimodel.profile.*
-import com.tokopedia.people.views.uimodel.shoprecom.ShopRecomUiModel
-import com.tokopedia.people.views.uimodel.shoprecom.ShopRecomUiModelItem
 import javax.inject.Inject
 
 /**
