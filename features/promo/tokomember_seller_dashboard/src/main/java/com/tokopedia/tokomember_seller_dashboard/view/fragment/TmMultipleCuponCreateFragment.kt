@@ -661,28 +661,34 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
             else -> {
                 val currentDate = GregorianCalendar(locale)
                 val currentTime = currentDate.get(Calendar.HOUR_OF_DAY)
-                if(currentTime>=20) {
-                    val currentStartDate = GregorianCalendar(locale)
-                    val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
-                    currentStartDate.time = sdf.parse(timeWindow?.startTime ?: "" + "00") ?: Date()
-                    currentStartDate.add(Calendar.HOUR,4)
-                    val minuteCurrent = currentStartDate.get(Calendar.MINUTE)
-                    if (minuteCurrent <= 30) {
-                        currentStartDate.set(Calendar.MINUTE, 30)
-                    } else {
-                        currentStartDate.add(Calendar.HOUR_OF_DAY, 1)
-                        currentStartDate.set(Calendar.MINUTE, 0)
+                val currentStartDate = GregorianCalendar(locale)
+                val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
+                currentStartDate.time = sdf.parse(timeWindow?.startTime ?: "" + "00") ?: Date()
+                manualStartTimeProgram =
+                    if (currentTime >= 20 && checkSameDate(currentDate, currentStartDate)) {
+                        currentStartDate.add(Calendar.HOUR,4)
+                        val minuteCurrent = currentStartDate.get(Calendar.MINUTE)
+                        if (minuteCurrent <= 30) {
+                            currentStartDate.set(Calendar.MINUTE, 30)
+                        } else {
+                            currentStartDate.add(Calendar.HOUR_OF_DAY, 1)
+                            currentStartDate.set(Calendar.MINUTE, 0)
+                        }
+                        currentStartDate.set(Calendar.SECOND,0)
+                        convertDateTimeRemoveTimeDiff(currentStartDate.time)
+                    }else {
+                        timeWindow?.startTime ?: ""
                     }
-                    currentStartDate.set(Calendar.SECOND,0)
-                    manualStartTimeProgram = convertDateTimeRemoveTimeDiff(currentStartDate.time)
-                }else {
-                    manualStartTimeProgram = timeWindow?.startTime ?: ""
-                }
                 manualEndTimeProgram = timeWindow?.endTime ?: ""
             }
         }
         updatedStartTimeCoupon = manualStartTimeProgram
         updatedEndTimeCoupon = manualEndTimeProgram
+    }
+
+    private fun checkSameDate(calendarToday: Calendar, calendarProgram: Calendar): Boolean {
+        return calendarToday.get(Calendar.YEAR) == calendarProgram.get(Calendar.YEAR)
+                && calendarToday.get(Calendar.DAY_OF_YEAR) == calendarProgram.get(Calendar.DAY_OF_YEAR)
     }
 
     private fun initTotalTransactionAmount() {
