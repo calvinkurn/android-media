@@ -14,6 +14,7 @@ class SomListOrderViewHolder(
 
     companion object {
         const val TOGGLE_OPEN = "toggle_open"
+        const val ANIMATION_DURATION = 300L
     }
 
     private var fadeOutAnimation: ValueAnimator? = null
@@ -70,7 +71,7 @@ class SomListOrderViewHolder(
 
     private fun View?.animateFade(start: Float, end: Float): ValueAnimator {
         return ValueAnimator.ofFloat(start, end).apply {
-            duration = 300L
+            duration = ANIMATION_DURATION
             addUpdateListener { value ->
                 this@animateFade?.alpha = value.animatedValue as Float
             }
@@ -81,12 +82,12 @@ class SomListOrderViewHolder(
     private fun View.animateFadeOut() {
         if (fadeOutAnimation?.isRunning == true) return
         fadeInAnimation?.cancel()
-        fadeOutAnimation = animateFade(alpha, 0.5f)
+        fadeOutAnimation = animateFade(alpha, CARD_ALPHA_DISABLED)
     }
 
     private fun View.animateFadeIn() {
         if (fadeInAnimation?.isRunning == true) return
         fadeOutAnimation?.cancel()
-        fadeInAnimation = animateFade(alpha, 1f)
+        fadeInAnimation = animateFade(alpha, CARD_ALPHA_ENABLED)
     }
 }

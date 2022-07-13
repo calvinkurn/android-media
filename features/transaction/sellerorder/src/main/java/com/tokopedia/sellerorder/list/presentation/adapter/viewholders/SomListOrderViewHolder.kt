@@ -53,8 +53,8 @@ open class SomListOrderViewHolder(
         private val completedOrderStatusCodes = intArrayOf(690, 691, 695, 698, 699, 700, 701)
         private val cancelledOrderStatusCodes = intArrayOf(0, 4, 6, 10, 11, 15)
         private val endedOrderStatusCode = completedOrderStatusCodes.plus(cancelledOrderStatusCodes)
-        private const val CARD_ALPHA_ENABLED = 1f
-        private const val CARD_ALPHA_DISABLED = 0.5f
+        const val CARD_ALPHA_ENABLED = 1f
+        const val CARD_ALPHA_DISABLED = 0.5f
     }
 
     protected val binding by viewBinding<ItemSomListOrderBinding>()
