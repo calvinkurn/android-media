@@ -770,6 +770,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
+    /**
+     * In bro, warehouse Id is always 0 (OOC) dunno later
+     */
     private fun connectWebSocket(channelId: String, socketCredential: GetSocketCredentialResponse.SocketCredential) {
         playBroadcastWebSocket.connect(channelId, "0", socketCredential.gcToken, WEB_SOCKET_SOURCE_PLAY_BROADCASTER)
     }
