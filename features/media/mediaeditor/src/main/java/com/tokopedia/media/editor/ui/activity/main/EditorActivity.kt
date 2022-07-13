@@ -55,7 +55,10 @@ class EditorActivity : BaseEditorActivity() {
 //        }
 
         // sample data
-        viewModel.setEditorParam(EditorParam())
+        val editorParam = EditorParam()
+        editorParam.withRemoveBackground()
+
+        viewModel.setEditorParam(editorParam)
         viewModel.initStateList(
             arrayListOf(
                 "https://images.unsplash.com/photo-1579353977828-2a4eab540b9a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8c2FtcGxlfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=800&q=60",
