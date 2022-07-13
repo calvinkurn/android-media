@@ -26,13 +26,12 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartBundleModel
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant
@@ -53,9 +52,6 @@ import com.tokopedia.shop.home.view.bottomsheet.ShopHomeFlashSaleTncBottomSheet
 import com.tokopedia.shop.home.view.bottomsheet.ShopHomeNplCampaignTncBottomSheet
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.home.view.model.BannerType
-import com.tokopedia.shop.home.view.model.CheckCampaignNotifyMeUiModel
-import com.tokopedia.shop.home.view.model.GetCampaignNotifyMeUiModel
-import com.tokopedia.shop.home.view.model.NotifyMeAction
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeFlashSaleUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiModel
@@ -730,127 +726,6 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
         }
     }
 
-    private fun onFailCheckCampaignNplNotifyMe(campaignId: String, errorMessage: String) {
-        view?.let {
-            Toaster.build(
-                it,
-                errorMessage,
-                Toaster.LENGTH_LONG,
-                Toaster.TYPE_ERROR,
-                getString(R.string.shop_string_ok)
-            ).show()
-        }
-        shopCampaignTabAdapter.updateRemindMeStatusCampaignNplWidgetData(campaignId)
-    }
-
-    private fun onSuccessCheckCampaignNplNotifyMe(data: CheckCampaignNotifyMeUiModel) {
-        val isRegisterCampaign =
-            data.action.toLowerCase() == NotifyMeAction.REGISTER.action.toLowerCase()
-        shopCampaignTabAdapter.updateRemindMeStatusCampaignNplWidgetData(
-            data.campaignId,
-            isRegisterCampaign,
-            true
-        )
-        if (shopCampaignTabAdapter.isCampaignFollower(data.campaignId)) {
-            shopPageHomeTracking.clickNotifyMeNplFollowerButton(
-                isOwner,
-                data.action,
-                viewModel?.userId.orEmpty(),
-                customDimensionShopPage
-            )
-        } else {
-            shopPageHomeTracking.clickNotifyMeButton(
-                isOwner,
-                data.action,
-                customDimensionShopPage
-            )
-        }
-        view?.let {
-            Toaster.build(it,
-                data.message,
-                Snackbar.LENGTH_LONG,
-                Toaster.TYPE_NORMAL,
-                getString(R.string.shop_string_ok)
-            ) {
-                shopPageHomeTracking.toasterActivationClickOk(isOwner, customDimensionShopPage)
-            }.show()
-            shopPageHomeTracking.impressionToasterActivation(isOwner, customDimensionShopPage)
-        }
-    }
-
-    private fun onSuccessGetCampaignNplRemindMeStatusData(data: GetCampaignNotifyMeUiModel) {
-        shopCampaignTabAdapter.updateRemindMeStatusCampaignNplWidgetData(data.campaignId, data.isAvailable)
-        if (getNplRemindMeClickedCampaignId() == data.campaignId && !data.isAvailable) {
-            val nplCampaignModel = shopCampaignTabAdapter.getNplCampaignUiModel(data.campaignId)
-            nplCampaignModel?.let {
-                shopCampaignTabAdapter.showNplRemindMeLoading(data.campaignId)
-                handleClickRemindMe(it)
-                setNplRemindMeClickedCampaignId("")
-            }
-        }
-    }
-
-    private fun onFailCheckCampaignFlashSaleNotifyMe(campaignId: String, errorMessage: String) {
-        view?.let {
-            Toaster.build(
-                it,
-                errorMessage,
-                Toaster.LENGTH_LONG,
-                Toaster.TYPE_ERROR,
-                getString(R.string.shop_page_label_oke)
-            ).show()
-        }
-        shopCampaignTabAdapter.updateRemindMeStatusCampaignFlashSaleWidgetData(campaignId)
-    }
-
-    private fun onSuccessCheckCampaignFlashSaleNotifyMe(data: CheckCampaignNotifyMeUiModel) {
-        val isRegisterCampaign =
-            data.action.toLowerCase() == NotifyMeAction.REGISTER.action.toLowerCase()
-        shopCampaignTabAdapter.updateRemindMeStatusCampaignFlashSaleWidgetData(
-            data.campaignId,
-            isRegisterCampaign,
-            true
-        )
-        view?.let {
-            Toaster.build(
-                it,
-                data.message,
-                Snackbar.LENGTH_LONG,
-                Toaster.TYPE_NORMAL,
-                getString(R.string.shop_page_label_oke)
-            ).show()
-        }
-    }
-
-    private fun onSuccessGetCampaignFlashSaleRemindMeStatusData(data: GetCampaignNotifyMeUiModel) {
-        shopCampaignTabAdapter.updateRemindMeStatusCampaignFlashSaleWidgetData(
-            data.campaignId,
-            data.isAvailable
-        )
-        if (getFlashSaleRemindMeClickedCampaignId() == data.campaignId && !data.isAvailable) {
-            val flashSaleCampaignModel =
-                shopCampaignTabAdapter.getFlashSaleCampaignUiModel(data.campaignId)
-            flashSaleCampaignModel?.let {
-                handleFlashSaleClickReminder(it)
-                setFlashSaleRemindMeClickedCampaignId("")
-            }
-        }
-    }
-
-    private fun onErrorGetShopHomeLayoutData(throwable: Throwable) {
-        if (throwable is MessageErrorException) {
-            globalErrorShopPage?.setType(GlobalError.SERVER_ERROR)
-        } else {
-            globalErrorShopPage?.setType(GlobalError.NO_CONNECTION)
-        }
-        globalErrorShopPage?.visible()
-        getRecyclerView(view)?.hide()
-
-        globalErrorShopPage?.setOnClickListener {
-            loadInitialData()
-        }
-    }
-
     override fun setShopHomeWidgetLayoutData(data: ShopPageHomeWidgetLayoutUiModel) {
         listWidgetLayout = data.listWidgetLayout.toMutableList()
     }
@@ -1218,24 +1093,8 @@ class ShopPageCampaignFragment : ShopPageHomeFragment() {
         PersistentCacheManager.instance.put(NPL_REMIND_ME_CAMPAIGN_ID, campaignId)
     }
 
-    private fun getNplRemindMeClickedCampaignId(): String {
-        return PersistentCacheManager.instance.get(
-            NPL_REMIND_ME_CAMPAIGN_ID,
-            String::class.java,
-            ""
-        ).orEmpty()
-    }
-
     private fun setFlashSaleRemindMeClickedCampaignId(campaignId: String) {
         PersistentCacheManager.instance.put(FLASH_SALE_REMIND_ME_CAMPAIGN_ID, campaignId)
-    }
-
-    private fun getFlashSaleRemindMeClickedCampaignId(): String {
-        return PersistentCacheManager.instance.get(
-            FLASH_SALE_REMIND_ME_CAMPAIGN_ID,
-            String::class.java,
-            ""
-        ).orEmpty()
     }
 
     override fun scrollToTop() {
