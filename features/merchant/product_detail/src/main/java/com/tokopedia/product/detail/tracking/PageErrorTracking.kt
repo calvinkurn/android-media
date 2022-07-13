@@ -11,10 +11,7 @@ object PageErrorTracking {
     private const val ACTION_CLICK_HOMEPAGE = "click - kembali ke homepage"
     private const val CATEGORY_404_NOT_FOUND = "404 not found"
 
-    fun impressPageNotFound(
-        data: PageErrorTracker,
-        trackingQueue: TrackingQueue
-    ){
+    fun impressPageNotFound(data: PageErrorTracker){
         val mapEvent = hashMapOf<String, Any>(
             Hit.EVENT to Value.VIEW_PG,
             Hit.EVENT_ACTION to ACTION_IMPRESSION,
@@ -26,7 +23,7 @@ object PageErrorTracking {
             Hit.PRODUCT_ID to data.finalProductId
         )
 
-        trackingQueue.putEETracking(mapEvent)
+        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 
     fun clickBackToHomepage(data: PageErrorTracker) {
