@@ -94,7 +94,7 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
         }
 
         binding?.recyclerView?.run {
-            layoutManager = LinearLayoutManager(requireActivity())
+            layoutManager = LinearLayoutManager(activity ?: return)
             adapter = recyclerViewAdapter
         }
         recyclerViewAdapter.submit(getMenus())

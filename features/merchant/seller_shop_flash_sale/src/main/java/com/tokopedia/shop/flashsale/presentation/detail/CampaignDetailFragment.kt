@@ -239,7 +239,7 @@ class CampaignDetailFragment : BaseDaggerFragment(),
         SharingUtil.executeShareIntent(
             shareModel,
             linkerShareResult,
-            requireActivity(),
+            activity ?: return,
             view ?: return,
             outgoingText
         )

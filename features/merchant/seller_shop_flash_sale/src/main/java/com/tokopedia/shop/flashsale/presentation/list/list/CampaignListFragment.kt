@@ -558,7 +558,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         val drafts = viewModel.getCampaignDrafts()
 
         if (!data.isEligible) {
-            showIneligibleAccess(requireActivity())
+            showIneligibleAccess(activity ?: return)
             return
         }
 
@@ -584,7 +584,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
     private fun handleViewCampaignDetail(campaign: CampaignUiModel) {
         val intent = CampaignDetailActivity.buildIntent(
-            requireActivity(),
+            activity ?: return,
             campaign.campaignId,
             campaign.campaignName
         )
@@ -624,7 +624,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         SharingUtil.executeShareIntent(
             shareModel,
             linkerShareResult,
-            requireActivity(),
+            activity ?: return,
             view ?: return,
             outgoingText
         )
@@ -655,7 +655,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     }
 
     private fun handleCancelCampaign(campaign: CampaignUiModel) {
-        if (campaign.thematicParticipation) {
+        if (!campaign.isCancellable) {
             val errorWording = findCancelCampaignErrorWording(campaign.status)
             binding?.cardView showError errorWording
             return
@@ -785,7 +785,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
             viewModel.validateCampaignCreationEligibility()
         }
         dialog.setOnHyperlinkClick { routeToShopDecorationArticle() }
-        dialog.show(requireActivity())
+        dialog.show(activity ?: return)
     }
 
     private fun launchCampaignInformationPage() {
@@ -813,6 +813,6 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         if (!isAdded) return
         val encodedUrl = SHOP_DECORATION_ARTICLE_URL.encodeToUtf8()
         val route = String.format("%s?url=%s", ApplinkConst.WEBVIEW, encodedUrl)
-        RouteManager.route(requireActivity(), route)
+        RouteManager.route(activity ?: return, route)
     }
 }

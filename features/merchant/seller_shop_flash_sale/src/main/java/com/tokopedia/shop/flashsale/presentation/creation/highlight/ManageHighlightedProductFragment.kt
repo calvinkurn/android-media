@@ -126,7 +126,7 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
     private fun setupRecyclerView() {
         binding?.recyclerView?.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         binding?.recyclerView?.adapter = productAdapter
-        binding?.recyclerView?.addItemDecoration(ProductListItemDecoration(requireActivity()))
+        binding?.recyclerView?.addItemDecoration(ProductListItemDecoration(activity ?: return))
         productAdapter.setOnCoachMarkDisplayed {
             preferenceDataStore.markHighlightCampaignProductComplete()
         }
@@ -403,7 +403,7 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
     private fun handleProductSubmissionResult(result: ProductSubmissionResult) {
         val isSuccess = result.isSuccess
         if (isSuccess) {
-            CampaignRuleActivity.start(requireActivity(), campaignId)
+            CampaignRuleActivity.start(activity ?: return, campaignId)
         } else {
             displayError(result)
         }

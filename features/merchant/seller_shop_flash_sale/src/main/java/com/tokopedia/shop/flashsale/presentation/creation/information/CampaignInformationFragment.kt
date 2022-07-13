@@ -170,7 +170,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
                 handleBackConfirmation()
             }
         }
-        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
+        activity?.onBackPressedDispatcher?.addCallback(this, callback)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -315,7 +315,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
     private fun setupRecyclerView() {
         binding?.recyclerView?.itemAnimator = null
-        binding?.recyclerView?.layoutManager = GridLayoutManager(requireActivity(), SPAN_COUNT)
+        binding?.recyclerView?.layoutManager = GridLayoutManager(activity ?: return, SPAN_COUNT)
         binding?.recyclerView?.adapter = adapter
         adapter.submit(campaignGradientColors)
         adapter.setOnGradientClicked { selectedGradient -> handleSelectedColor(selectedGradient) }
@@ -793,7 +793,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
         val isDataChanged = viewModel.isDataChanged(updatedDefaultSelection, getCurrentSelection())
         if (!isDataChanged) {
-            requireActivity().finish()
+            activity?.finish()
             return
         }
 
@@ -805,22 +805,22 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     }
 
     private fun showCancelCreateCampaignConfirmationDialog() {
-        val dialog = CancelCreateCampaignConfirmationDialog(requireActivity())
-        dialog.setOnPrimaryActionClick { requireActivity().finish() }
+        val dialog = CancelCreateCampaignConfirmationDialog(activity ?: return)
+        dialog.setOnPrimaryActionClick { activity?.finish() }
         dialog.setOnThirdActionClick { validateDraft() }
         dialog.show()
     }
 
     private fun showCancelEditCampaignConfirmationDialog() {
-        val dialog = CancelEditCampaignConfirmationDialog(requireActivity())
-        dialog.setOnPrimaryActionClick { requireActivity().finish() }
+        val dialog = CancelEditCampaignConfirmationDialog(activity ?: return)
+        dialog.setOnPrimaryActionClick { activity?.finish() }
         dialog.setOnSecondaryActionClick { validateDraft() }
         dialog.show()
     }
 
 
     private fun showCoachMark() {
-        val coachMark = CoachMark2(requireActivity())
+        val coachMark = CoachMark2(activity ?: return)
         coachMark.showCoachMark(populateCoachMarkItems(), null)
         coachMark.onFinishListener = {
             sharedPreference.markCampaignInfoCoachMarkComplete()
@@ -852,7 +852,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
     private fun handleFirstStepOfCampaignCreationSuccess(result: CampaignCreationResult) {
         if (result.isSuccess) {
-            ManageProductActivity.start(requireActivity(), result.campaignId)
+            ManageProductActivity.start(activity ?: return, result.campaignId)
         } else {
             handleCreateCampaignError(result)
         }
