@@ -24,6 +24,7 @@ import com.tokopedia.homenav.mainnav.view.analytics.TrackingProfileSection
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel.Companion.NAV_PROFILE_STATE_LOADING
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel.Companion.NAV_PROFILE_STATE_SUCCESS
+import com.tokopedia.homenav.mainnav.view.datamodel.account.TokopediaPlusDataModel
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
@@ -81,9 +82,6 @@ class AccountHeaderViewHolder(itemView: View,
 
     override fun bind(element: AccountHeaderDataModel, payloads: MutableList<Any>) {
         bind(element)
-        if(payloads.isNotEmpty() && payloads[0] == AccountHeaderDataModel.PAYLOAD_TOKOPEDIA_PLUS){
-            setTokopediaPlus(element.tokopediaPlusParam)
-        }
     }
 
     override fun bind(element: AccountHeaderDataModel) {
@@ -319,6 +317,11 @@ class AccountHeaderViewHolder(itemView: View,
          * Handling seller and affiliate info value
          */
         setSellerAndAffiliate(element, recyclerSeller)
+
+        /**
+         * Handling tokopedia plus
+         */
+        setTokopediaPlus(element.tokopediaPlusDataModel)
     }
 
     private fun valuateRecyclerViewDecoration(recyclerSeller: RecyclerView) {
@@ -342,12 +345,6 @@ class AccountHeaderViewHolder(itemView: View,
         }
     }
 
-    private fun setTokopediaPlus(tokopediaPlusParam: TokopediaPlusParam?){
-        tokopediaPlusParam?.let {
-            tokopediaPlusWidget.load(tokopediaPlusParam, tokopediaPlusListener)
-        }
-    }
-
     private fun setSellerAndAffiliate(element: AccountHeaderDataModel, recyclerSeller: RecyclerView) {
         val listSellers = mutableListOf<Visitable<*>>()
         setPositionSellerAndAffiliate(element, listSellers)
@@ -355,6 +352,20 @@ class AccountHeaderViewHolder(itemView: View,
         val typeFactoryImpl = SellerTypeFactoryImpl(mainNavListener)
         adapter = SellerAdapter(listSellers, typeFactoryImpl)
         recyclerSeller.adapter = adapter
+    }
+
+    private fun setTokopediaPlus(tokopediaPlusDataModel: TokopediaPlusDataModel){
+        tokopediaPlusDataModel.let {
+            if(it.isGetTokopediaPlusLoading){
+                tokopediaPlusWidget.showLoading()
+            }
+            it.tokopediaPlusParam?.let { param ->
+                tokopediaPlusWidget.setContent(param, tokopediaPlusListener)
+            }
+            it.tokopediaPlusError?.let { error ->
+                tokopediaPlusWidget.onError(error)
+            }
+        }
     }
 
     private fun renderNonLoginState() {
