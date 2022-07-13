@@ -141,7 +141,6 @@ class CampaignDetailFragment : BaseDaggerFragment(),
     }
 
     private fun setUpView() {
-        setFragmentToUnifyBgColor()
         setUpToolbar()
         setUpClickListeners()
         observeCampaign()
