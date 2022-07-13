@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -52,6 +53,8 @@ open class SomListOrderViewHolder(
         private val completedOrderStatusCodes = intArrayOf(690, 691, 695, 698, 699, 700, 701)
         private val cancelledOrderStatusCodes = intArrayOf(0, 4, 6, 10, 11, 15)
         private val endedOrderStatusCode = completedOrderStatusCodes.plus(cancelledOrderStatusCodes)
+        private const val CARD_ALPHA_ENABLED = 1f
+        private const val CARD_ALPHA_DISABLED = 0.5f
     }
 
     protected val binding by viewBinding<ItemSomListOrderBinding>()
@@ -171,9 +174,9 @@ open class SomListOrderViewHolder(
             ivSomListProduct.apply {
                 loadImageRounded(element.orderProduct.firstOrNull()?.picture.orEmpty())
                 if (element.tickerInfo.text.isNotBlank()) {
-                    setMargin(12.toPx(), 6.5f.dpToPx().toInt(), 0, 0)
+                    setMargin(12.toPx(), 6.5f.dpToPx().toInt(), Int.ZERO, Int.ZERO)
                 } else {
-                    setMargin(12.toPx(), 11f.dpToPx().toInt(), 0, 0)
+                    setMargin(12.toPx(), 11f.dpToPx().toInt(), Int.ZERO, Int.ZERO)
                 }
             }
             val displayedProduct = element.orderProduct.firstOrNull()
@@ -190,9 +193,9 @@ open class SomListOrderViewHolder(
                         isSingleLine = true
                     }
                     if (element.orderProduct.size == 1 && productVariant.isBlank()) {
-                        setPadding(0, 0, 1.5f.dpToPx().toInt(), 0)
+                        setPadding(Int.ZERO, Int.ZERO, 1.5f.dpToPx().toInt(), Int.ZERO)
                     } else {
-                        setPadding(0, 0, 0, 0)
+                        setPadding(Int.ZERO, Int.ZERO, Int.ZERO, Int.ZERO)
                     }
                     text = productName
                     return@apply
@@ -244,9 +247,9 @@ open class SomListOrderViewHolder(
                     background = iconBackgroundDrawable
                     colorFilter = LightingColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G900), ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
                     val padding = getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
-                    setPadding(padding, padding, 0, padding)
+                    setPadding(padding, padding, Int.ZERO, padding)
                 }
-                tvSomListResponseLabel.text = composeDeadlineLabel(element.preOrderType != 0)
+                tvSomListResponseLabel.text = composeDeadlineLabel(element.preOrderType != Int.ZERO)
                 tvSomListResponseLabel.show()
                 tvSomListDeadline.show()
                 icDeadline.show()
@@ -287,7 +290,7 @@ open class SomListOrderViewHolder(
             checkBoxSomListMultiSelect.skipAnimation()
             checkBoxSomListMultiSelect.setOnTouchListener { _, event ->
                 if (event.action == MotionEvent.ACTION_UP) {
-                    if (element.cancelRequest != 0 && element.cancelRequestStatus != 0) {
+                    if (element.cancelRequest != Int.ZERO && element.cancelRequestStatus != Int.ZERO) {
                         listener.onCheckBoxClickedWhenDisabled()
                         true
                     } else {
@@ -349,7 +352,7 @@ open class SomListOrderViewHolder(
     }
 
     protected fun touchCheckBox(element: SomListOrderUiModel) {
-        if (element.cancelRequest != 0 && element.cancelRequestStatus != 0) {
+        if (element.cancelRequest != Int.ZERO && element.cancelRequestStatus != Int.ZERO) {
             listener.onCheckBoxClickedWhenDisabled()
         } else {
             binding?.checkBoxSomListMultiSelect?.run {
@@ -361,7 +364,7 @@ open class SomListOrderViewHolder(
     }
 
     protected open fun setupOrderCard(element: SomListOrderUiModel) {
-        binding?.cardSomOrder?.alpha = if (element.multiSelectEnabled && element.hasActiveRequestCancellation()) 0.5f else 1f
+        binding?.cardSomOrder?.alpha = if (element.multiSelectEnabled && element.hasActiveRequestCancellation()) CARD_ALPHA_DISABLED else CARD_ALPHA_ENABLED
         binding?.root?.setOnClickListener {
             if (element.multiSelectEnabled) touchCheckBox(element)
             else listener.onOrderClicked(element)
@@ -369,7 +372,7 @@ open class SomListOrderViewHolder(
     }
 
     private fun skipValidateOrder(element: SomListOrderUiModel): Boolean {
-        return element.cancelRequest != 0 && element.cancelRequestStatus == 0
+        return element.cancelRequest != Int.ZERO && element.cancelRequestStatus == Int.ZERO
     }
 
     interface SomListOrderItemListener {
