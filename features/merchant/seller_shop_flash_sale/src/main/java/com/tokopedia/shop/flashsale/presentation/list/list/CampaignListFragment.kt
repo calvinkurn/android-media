@@ -574,10 +574,8 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         val bottomSheet = MoreMenuBottomSheet.newInstance(campaign.campaignName, campaign.status)
         bottomSheet.setOnViewCampaignMenuSelected { handleViewCampaignDetail(campaign) }
         bottomSheet.setOnCancelCampaignMenuSelected { handleCancelCampaign(campaign) }
-        bottomSheet.setOnShareCampaignMenuSelected {
-            showLoaderDialog()
-            viewModel.getShareComponentThumbnailImageUrl(campaign.campaignId)
-        }
+        bottomSheet.setOnStopCampaignMenuSelected { handleStopCampaign(campaign) }
+        bottomSheet.setOnShareCampaignMenuSelected { handleShareCampaign(campaign) }
         bottomSheet.setOnEditCampaignMenuSelected { handleEditCampaign(campaign) }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
@@ -654,8 +652,8 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         loaderDialog.dialog.dismiss()
     }
 
-    private fun handleCancelCampaign(campaign: CampaignUiModel) {
-        if (!campaign.isCancellable) {
+    private fun cancelCampaign(campaign: CampaignUiModel) {
+        if (campaign.thematicParticipation) {
             val errorWording = findCancelCampaignErrorWording(campaign.status)
             binding?.cardView showError errorWording
             return
@@ -664,7 +662,23 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         showCancelCampaignBottomSheet(campaign)
     }
 
+    private fun handleCancelCampaign(campaign: CampaignUiModel) {
+        viewModel.onMoreMenuCancelClicked(campaign)
+        cancelCampaign(campaign)
+    }
+
+    private fun handleStopCampaign(campaign: CampaignUiModel) {
+        viewModel.onMoreMenuStopClicked(campaign)
+        cancelCampaign(campaign)
+    }
+
+    private fun handleShareCampaign(campaign: CampaignUiModel) {
+        showLoaderDialog()
+        viewModel.onMoreMenuShareClicked(campaign)
+    }
+
     private fun handleEditCampaign(campaign: CampaignUiModel) {
+        viewModel.onMoreMenuEditClicked(campaign)
         if (campaign.thematicParticipation) {
             binding?.cardView showError getString(R.string.sfs_cannot_edit_campaign)
             return
