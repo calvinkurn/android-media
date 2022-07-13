@@ -9,8 +9,6 @@ import com.tokopedia.home_account.view.adapter.HomeAccountBalanceAndPointAdapter
 import com.tokopedia.home_account.view.adapter.HomeAccountMemberAdapter
 import com.tokopedia.home_account.view.adapter.viewholder.ProfileViewHolder
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
-import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusListener
-import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusParam
 
 /**
  * Created by Yoris Prayogo on 16/10/20.
@@ -21,8 +19,6 @@ class HomeAccountUserAdapterDelegate(
     val listener: HomeAccountUserListener,
     private val balanceAndPointAdapter: HomeAccountBalanceAndPointAdapter?,
     private val memberAdapter: HomeAccountMemberAdapter?,
-    private val paramTokopediaPlus: TokopediaPlusParam,
-    private val tokopediaPlusListener: TokopediaPlusListener
 ) : TypedAdapterDelegate<ProfileDataView, Any, ProfileViewHolder>(ProfileViewHolder.LAYOUT) {
 
     override fun onBindViewHolder(item: ProfileDataView, holder: ProfileViewHolder) {
@@ -32,6 +28,6 @@ class HomeAccountUserAdapterDelegate(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, basicView: View): ProfileViewHolder {
-        return ProfileViewHolder(basicView, listener, balanceAndPointAdapter, memberAdapter, paramTokopediaPlus, tokopediaPlusListener)
+        return ProfileViewHolder(basicView, listener, balanceAndPointAdapter, memberAdapter)
     }
 }
