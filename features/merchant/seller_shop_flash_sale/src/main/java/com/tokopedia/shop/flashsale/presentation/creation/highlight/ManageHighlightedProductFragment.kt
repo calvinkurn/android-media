@@ -124,23 +124,28 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
     }
 
     private fun setupRecyclerView() {
-        binding?.recyclerView?.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-        binding?.recyclerView?.adapter = productAdapter
-        binding?.recyclerView?.addItemDecoration(ProductListItemDecoration(requireActivity()))
+        binding?.recyclerView?.run {
+            layoutManager = LinearLayoutManager(activity ?: return, LinearLayoutManager.VERTICAL, false)
+            adapter = productAdapter
+
+            val itemDecoration = ProductListItemDecoration(activity ?: return)
+            addItemDecoration(itemDecoration)
+
+            endlessRecyclerViewScrollListener = object : EndlessRecyclerViewScrollListener(layoutManager) {
+                override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                    productAdapter.showLoading()
+                    getProducts(page)
+                }
+            }
+            addOnScrollListener(endlessRecyclerViewScrollListener ?: return)
+        }
+
         productAdapter.setOnCoachMarkDisplayed {
             preferenceDataStore.markHighlightCampaignProductComplete()
         }
+
         val shouldShowCoachMark = !preferenceDataStore.isHighlightCampaignProductDismissed()
         productAdapter.shouldDisplayCoachMark(shouldShowCoachMark)
-
-        endlessRecyclerViewScrollListener = object : EndlessRecyclerViewScrollListener(binding?.recyclerView?.layoutManager) {
-            override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                productAdapter.showLoading()
-                getProducts(page)
-            }
-        }
-
-        binding?.recyclerView?.addOnScrollListener(endlessRecyclerViewScrollListener ?: return)
     }
 
     private fun setupSearchBar() {
@@ -403,7 +408,7 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
     private fun handleProductSubmissionResult(result: ProductSubmissionResult) {
         val isSuccess = result.isSuccess
         if (isSuccess) {
-            CampaignRuleActivity.start(requireActivity(), campaignId)
+            CampaignRuleActivity.start(activity ?: return, campaignId)
         } else {
             displayError(result)
         }
@@ -424,8 +429,9 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
     }
 
     private fun displayError(result: ProductSubmissionResult) {
-        val productsErrorMessage = result.failedProducts.joinToString(",") { it.message }
-        val errorMessage = productsErrorMessage.ifEmpty { result.errorMessage }
-        binding?.cardView showError errorMessage
+        val firstErrorMessage = result.failedProducts.firstOrNull()
+        val errorMessage = firstErrorMessage?.message.orEmpty()
+        val updatedErrorMessage = errorMessage.ifEmpty { result.errorMessage }
+        binding?.cardView showError updatedErrorMessage
     }
 }

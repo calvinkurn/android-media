@@ -41,7 +41,7 @@ class ShareComponentInstanceBuilder @Inject constructor(
         const val FIRST_PRODUCT = 0
         const val SECOND_PRODUCT = 1
         const val THIRD_PRODUCT = 2
-        const val FOURTH_PRODUCT = 4
+        const val FOURTH_PRODUCT = 3
 
         const val TOTAL_PRODUCT_ONE = 1
         const val TOTAL_PRODUCT_TWO = 2

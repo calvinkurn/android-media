@@ -31,6 +31,7 @@ import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignDeta
 import com.tokopedia.shop.flashsale.common.constant.DateConstant
 import com.tokopedia.shop.flashsale.common.extension.convertRupiah
 import com.tokopedia.shop.flashsale.common.extension.formatTo
+import com.tokopedia.shop.flashsale.common.extension.setFragmentToUnifyBgColor
 import com.tokopedia.shop.flashsale.common.extension.showError
 import com.tokopedia.shop.flashsale.common.share_component.ShareComponentInstanceBuilder
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
@@ -39,6 +40,7 @@ import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.MerchantCampaignTNC
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.ShareComponent
+import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignStatus
 import com.tokopedia.shop.flashsale.domain.entity.enums.isActive
 import com.tokopedia.shop.flashsale.domain.entity.enums.isAvailable
 import com.tokopedia.shop.flashsale.domain.entity.enums.isCancelled
@@ -239,7 +241,7 @@ class CampaignDetailFragment : BaseDaggerFragment(),
         SharingUtil.executeShareIntent(
             shareModel,
             linkerShareResult,
-            requireActivity(),
+            activity ?: return,
             view ?: return,
             outgoingText
         )
@@ -259,7 +261,7 @@ class CampaignDetailFragment : BaseDaggerFragment(),
         viewModel.cancelCampaignActionResult.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is CancelCampaignActionResult.ActionAllowed -> showCancelCampaignDialog(result.campaign)
-                is CancelCampaignActionResult.RegisteredEventCampaign -> showRegisteredEventCampaignCancelErrorMessage()
+                is CancelCampaignActionResult.RegisteredEventCampaign -> showRegisteredEventCampaignCancelErrorMessage(result.campaign)
             }
         }
     }
@@ -297,11 +299,9 @@ class CampaignDetailFragment : BaseDaggerFragment(),
 
     }
 
-    private fun showRegisteredEventCampaignCancelErrorMessage() {
+    private fun showRegisteredEventCampaignCancelErrorMessage(campaign: CampaignUiModel) {
         val binding = binding ?: return
-        val errorMessage = getString(
-            R.string.campaign_detail_cancel_registered_event_campaign_message
-        )
+        val errorMessage = findCancelCampaignErrorWording(campaign.status)
         val toaster = Toaster.build(
             binding.root,
             errorMessage,
@@ -326,8 +326,7 @@ class CampaignDetailFragment : BaseDaggerFragment(),
 
     private fun showRegisteredEventCampaignEditErrorMessage() {
         val binding = binding ?: return
-        val errorMessage =
-            getString(R.string.campaign_detail_edit_registered_event_campaign_message)
+        val errorMessage = getString(R.string.sfs_cannot_edit_campaign)
         val toaster = Toaster.build(
             binding.root,
             errorMessage,
@@ -579,5 +578,13 @@ class CampaignDetailFragment : BaseDaggerFragment(),
 
     private fun dismissLoaderDialog() {
         loaderDialog.dialog.dismiss()
+    }
+
+    private fun findCancelCampaignErrorWording(campaignStatus: CampaignStatus): String {
+        return if (campaignStatus.isOngoing()) {
+            getString(R.string.sfs_cannot_stop_campaign)
+        } else {
+            getString(R.string.sfs_cannot_cancel_campaign)
+        }
     }
 }
