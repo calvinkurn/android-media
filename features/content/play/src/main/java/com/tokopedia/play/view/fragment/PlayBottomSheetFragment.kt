@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -73,6 +74,7 @@ import javax.inject.Inject
 class PlayBottomSheetFragment @Inject constructor(
         private val viewModelFactory: ViewModelProvider.Factory,
         private val analytic: PlayAnalytic,
+        private val dispatchers: CoroutineDispatchers,
 ): TkpdBaseV4Fragment(),
         PlayFragmentContract,
         ProductSheetViewComponent.Listener,
@@ -87,7 +89,14 @@ class PlayBottomSheetFragment @Inject constructor(
         private const val PERCENT_VARIANT_SHEET_HEIGHT = 0.6
     }
 
-    private val productSheetView by viewComponent { ProductSheetViewComponent(it, this) }
+    private val productSheetView by viewComponent {
+        ProductSheetViewComponent(
+            it,
+            this,
+            viewLifecycleOwner.lifecycleScope,
+            dispatchers
+        )
+    }
     private val variantSheetView by viewComponent { VariantSheetViewComponent(it, this) }
     private val leaderboardSheetView by viewComponent { PlayInteractiveLeaderboardViewComponent(it, this) }
     private val couponSheetView by viewComponent { ShopCouponSheetViewComponent(it, this) }

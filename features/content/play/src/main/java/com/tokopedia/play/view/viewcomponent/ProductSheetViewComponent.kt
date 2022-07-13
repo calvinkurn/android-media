@@ -14,6 +14,7 @@ import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -31,13 +32,19 @@ import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifycomponents.UnifyButton
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * Created by jegul on 31/07/20
  */
 class ProductSheetViewComponent(
-        container: ViewGroup,
-        private val listener: Listener
+    container: ViewGroup,
+    private val listener: Listener,
+    private val scope: CoroutineScope,
+    private val dispatcher: CoroutineDispatchers,
 ) : ViewComponent(container, R.id.cl_product_sheet) {
 
     private val clProductContent: ConstraintLayout = findViewById(R.id.cl_product_content)
@@ -57,6 +64,8 @@ class ProductSheetViewComponent(
     private val tvHeaderProductEmpty: TextView = findViewById(R.id.tv_title_product_empty)
     private val tvBodyProductEmpty: TextView = findViewById(R.id.tv_desc_product_empty)
     private val ivProductEmpty: AppCompatImageView = findViewById(R.id.iv_img_illustration)
+
+    private var setProductsJob: Job? = null
 
     private val productSectionAdapter = ProductSectionAdapter(object : ProductSectionViewHolder.Listener{
         override fun onBuyProduct(
@@ -155,17 +164,22 @@ class ProductSheetViewComponent(
         showContent(true)
         tvSheetTitle.text = title
 
-        val sortedSectionList = sectionList.map {
-            if (it is ProductSectionUiModel.Section) {
-                val pinnedProduct = it.productList.firstOrNull { product -> product.isPinned }
-                val sortedProductList = if (pinnedProduct != null) {
-                    val nonPinnedProductList = it.productList - pinnedProduct
-                    listOf(pinnedProduct) + nonPinnedProductList
-                } else it.productList
-                it.copy(productList = sortedProductList)
-            } else it
+        setProductsJob?.cancel()
+        setProductsJob = scope.launch {
+            val sortedSectionList = withContext(dispatcher.computation) {
+                 sectionList.map {
+                    if (it is ProductSectionUiModel.Section) {
+                        val pinnedProduct = it.productList.firstOrNull { product -> product.isPinned }
+                        val sortedProductList = if (pinnedProduct != null) {
+                            val nonPinnedProductList = it.productList - pinnedProduct
+                            listOf(pinnedProduct) + nonPinnedProductList
+                        } else it.productList
+                        it.copy(productList = sortedProductList)
+                    } else it
+                }
+            }
+            productSectionAdapter.setItemsAndAnimateChanges(sortedSectionList)
         }
-        productSectionAdapter.setItemsAndAnimateChanges(sortedSectionList)
 
         if (voucherList.isEmpty()) {
             clProductVoucher.hide()
@@ -184,9 +198,13 @@ class ProductSheetViewComponent(
 
     fun showPlaceholder() {
         showContent(true)
-        productSectionAdapter.setItemsAndAnimateChanges(
-            List(PLACEHOLDER_COUNT) { ProductSectionUiModel.Placeholder }
-        )
+
+        setProductsJob?.cancel()
+        setProductsJob = scope.launch {
+            productSectionAdapter.setItemsAndAnimateChanges(
+                List(PLACEHOLDER_COUNT) { ProductSectionUiModel.Placeholder }
+            )
+        }
     }
 
     fun showError(isConnectionError: Boolean, onError: () -> Unit) {
