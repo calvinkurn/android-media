@@ -1,7 +1,5 @@
 package com.tokopedia.people.views.uimodel.action
 
-import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
-
 /**
  * Created By : Jonathan Darwin on June 28, 2022
  */
@@ -9,7 +7,7 @@ sealed interface UserProfileAction {
 
     data class LoadProfile(val isRefresh: Boolean = false) : UserProfileAction
 
-    data class LoadContent(val cursor: String) : UserProfileAction
+    data class LoadPlayVideo(val cursor: String) : UserProfileAction
 
     data class ClickFollowButton(val isFromLogin: Boolean) : UserProfileAction
 

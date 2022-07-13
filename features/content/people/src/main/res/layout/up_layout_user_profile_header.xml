@@ -307,22 +307,22 @@
 
                     </LinearLayout>
 
+                    <include
+                        android:id="@+id/shop_recommendation"
+                        layout="@layout/shop_recommendation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/linear_button" />
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>
 
         </com.google.android.material.appbar.AppBarLayout>
-
-        <include
-            android:id="@+id/shop_recommendation"
-            layout="@layout/shop_recommendation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linear_button" />
 
         <ViewFlipper
             android:id="@+id/user_post_container"
@@ -331,7 +331,7 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linear_button">
+            app:layout_constraintTop_toBottomOf="@+id/shop_recommendation">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_post"

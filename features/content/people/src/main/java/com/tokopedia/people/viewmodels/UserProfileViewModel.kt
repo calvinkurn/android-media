@@ -117,7 +117,7 @@ class UserProfileViewModel @AssistedInject constructor(
     fun submitAction(action: UserProfileAction) {
         when (action) {
             is UserProfileAction.LoadProfile -> handleLoadProfile(action.isRefresh)
-            is UserProfileAction.LoadContent -> handleLoadContent(action.cursor)
+            is UserProfileAction.LoadPlayVideo -> handleLoadPlayVideo(action.cursor)
             is UserProfileAction.ClickFollowButton -> handleClickFollowButton(action.isFromLogin)
             is UserProfileAction.ClickUpdateReminder -> handleClickUpdateReminder(action.isFromLogin)
             is UserProfileAction.SaveReminderActivityResult -> handleSaveReminderActivityResult(action.channelId, action.position, action.isActive)
@@ -142,10 +142,11 @@ class UserProfileViewModel @AssistedInject constructor(
      * play video will be moved to dedicated fragment when
      * developing another tab user profile eventually. so gonna leave as is for now
      * */
-    private fun handleLoadContent(cursor: String) {
+    private fun handleLoadPlayVideo(cursor: String) {
         viewModelScope.launchCatchError(block = {
-            handleLoadPlayVideo(cursor)
-            if (isSelfProfile) handleLoadShopRecom()
+            val data = repo.getPlayVideo(profileUserID, cursor)
+            if (data != null) playPostContent.value = Success(data)
+            else throw NullPointerException("data is null")
         }, onError = {
             userPostError.value = it
         })
@@ -154,12 +155,6 @@ class UserProfileViewModel @AssistedInject constructor(
     private suspend fun handleLoadShopRecom() {
         val result = repo.getShopRecom()
         if (result.isShown) _shopRecomContent.emit(result.items)
-    }
-
-    private suspend fun handleLoadPlayVideo(cursor: String) {
-        val data = repo.getPlayVideo(profileUserID, cursor)
-        if (data != null) playPostContent.value = Success(data)
-        else throw NullPointerException("data is null")
     }
 
     private fun handleClickFollowButton(isFromLogin: Boolean) {
@@ -290,8 +285,9 @@ class UserProfileViewModel @AssistedInject constructor(
         _followInfo.update { followInfo }
         _profileType.update { profileType }
 
-        if(profileType == ProfileType.Self) {
-            _profileWhitelist.update {  repo.getWhitelist() }
+        if (profileType == ProfileType.Self) {
+            _profileWhitelist.update { repo.getWhitelist() }
+            handleLoadShopRecom()
         }
 
         /**

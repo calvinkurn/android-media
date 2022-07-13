@@ -123,7 +123,7 @@ class UserProfileFragment @Inject constructor(
 
     private val mAdapter: UserPostBaseAdapter by lazy(LazyThreadSafetyMode.NONE) {
         UserPostBaseAdapter(this, this) { cursor ->
-            submitAction(UserProfileAction.LoadContent(cursor))
+            submitAction(UserProfileAction.LoadPlayVideo(cursor))
         }
     }
 
@@ -519,12 +519,7 @@ class UserProfileFragment @Inject constructor(
         if (prev?.shopRecom == value.shopRecom) return
 
         mAdapterShopRecom.updateData(value.shopRecom)
-        mainBinding.userPostContainer.hide()
-        with(mainBinding.shopRecommendation) {
-            root.show()
-            txtWordingFollow.show()
-            rvShopRecom.show()
-        }
+        mainBinding.shopRecommendation.root.show()
     }
 
     private fun buttonActionUIFollow() = with(mainBinding.btnAction) {
@@ -691,12 +686,7 @@ class UserProfileFragment @Inject constructor(
 
     override fun onShopRecomCloseClicked(itemID: Long) {
         submitAction(UserProfileAction.RemoveShopRecomItem(itemID))
-        if (mAdapterShopRecom.itemCount == 0) {
-            with(mainBinding.shopRecommendation) {
-                txtWordingFollow.hide()
-                rvShopRecom.hide()
-            }
-        }
+        if (mAdapterShopRecom.itemCount == 0) mainBinding.shopRecommendation.root.hide()
     }
 
     override fun onShopRecomFollowClicked(itemID: Long, encryptedID: String, isFollow: Boolean) {
@@ -712,19 +702,14 @@ class UserProfileFragment @Inject constructor(
     }
 
     override fun onEmptyList(rawObject: Any?) {
-        if (viewModel.isSelfProfile) return
-        mainBinding.userPostContainer.show()
         mainBinding.userPostContainer.displayedChild = PAGE_EMPTY
     }
 
     override fun onStartFirstPageLoad() {
-        mainBinding.shopRecommendation.root.hide()
-        mainBinding.userPostContainer.show()
         mainBinding.userPostContainer.displayedChild = PAGE_LOADING
     }
 
     override fun onFinishFirstPageLoad(itemCount: Int, rawObject: Any?) {
-        mainBinding.userPostContainer.show()
         mainBinding.userPostContainer.displayedChild = PAGE_CONTENT
     }
 
