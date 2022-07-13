@@ -48,7 +48,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation projectOrAar(rootProject.ext.features.mediauploader)
     implementation project(rootProject.ext.features.mediapickerCommon)
-    implementation project(rootProject.ext.features.mediapicker)
     implementation projectOrAar(rootProject.ext.libraries.webview)
 
     //test
@@ -73,7 +72,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.pushNotification)
     implementation rootProject.ext.miscDependencies.viewModelKtx
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
-    implementation project(rootProject.ext.libraries.videoplayer)
 
     implementation rootProject.ext.miscDependencies.exoPlayerCore
     implementation rootProject.ext.miscDependencies.exoPlayer
