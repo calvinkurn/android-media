@@ -8,7 +8,7 @@
     android:layout_height="match_parent">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:id="@+id/container"
+        android:id="@+id/container_user_profile_header"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/Unify_Background"

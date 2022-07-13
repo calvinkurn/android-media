@@ -11,32 +11,47 @@
         android:id="@+id/hc_camera_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/Unify_Static_Black"
         android:layout_above="@+id/camera_controls">
-
-        <com.otaliastudios.cameraview.CameraView
-            android:id="@+id/camera"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+        <com.tokopedia.unifycomponents.CardUnify
+            android:layout_width="wrap_content"
+            app:card_type="border"
+            android:contentDescription="@string/homecredit_ktp_image_border"
+            android:id="@+id/cardBorderCamera"
             android:layout_gravity="center"
-            android:keepScreenOn="true"
-            app:cameraAudio="off"
-            app:cameraFlash="off"
-            app:cameraGestureLongTap="none"
-            app:cameraGesturePinch="zoom"
-            app:cameraGestureScrollHorizontal="none"
-            app:cameraGestureScrollVertical="none"
-            app:cameraGestureTap="autoFocus"
-            app:cameraGrid="off"
-            app:cameraHdr="off"
-            app:cameraMode="picture"
-            app:cameraPlaySounds="true" />
+            android:layout_marginLeft="@dimen/unify_space_16"
+            android:layout_marginRight="@dimen/unify_space_16"
+            android:layout_height="wrap_content"
+            >
+
+            <com.otaliastudios.cameraview.CameraView
+                android:id="@+id/camera"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:keepScreenOn="true"
+                app:cameraAudio="off"
+                app:cameraFlash="off"
+                android:scaleType="centerCrop"
+                app:cameraGestureLongTap="none"
+                app:cameraGesturePinch="zoom"
+                app:cameraGestureScrollHorizontal="none"
+                app:cameraGestureScrollVertical="none"
+                app:cameraGestureTap="autoFocus"
+                app:cameraGrid="off"
+                app:cameraHdr="off"
+                app:cameraMode="picture"
+                app:cameraPlaySounds="true" />
+
+        </com.tokopedia.unifycomponents.CardUnify>
+
+
 
         <ImageView
             android:id="@+id/img_cutout"
             android:layout_width="match_parent"
+            android:contentDescription="@string/homecredit_ktp_overlay_content_description"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            app:srcCompat="@drawable/cardid_cutout" />
+          />
 
     </FrameLayout>
 
@@ -46,6 +61,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
+        android:contentDescription="@string/homecredit_display_captured"
         android:adjustViewBounds="true"
         android:scaleType="centerInside"
         android:visibility="gone" />
@@ -67,15 +83,14 @@
             android:layout_width="@dimen/unify_space_24"
             android:layout_height="@dimen/unify_space_24"
             android:layout_alignParentStart="true"
-            app:icon_color_light_enable="@color/Unify_Static_White"
             app:icon_color_light_disabled="@color/Unify_Static_White"
-            app:icon_color_night_enable="@color/Unify_Static_White"
+            app:icon_color_light_enable="@color/Unify_Static_White"
             app:icon_color_night_disabled="@color/Unify_Static_White"
+            app:icon_color_night_enable="@color/Unify_Static_White"
             app:icon_name="CLOSE" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/desc_1"
-            app:typographyType="body_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/button_cancel"
@@ -83,7 +98,8 @@
             android:gravity="center_horizontal"
             android:padding="@dimen/unify_space_4"
             android:text="@string/hc_ktp_title"
-            android:textColor="@color/Unify_Static_White" />
+            android:textColor="@color/Unify_Static_White"
+            app:typographyType="body_1" />
 
     </RelativeLayout>
 

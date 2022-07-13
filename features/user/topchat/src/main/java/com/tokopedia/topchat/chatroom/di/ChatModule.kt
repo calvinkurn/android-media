@@ -21,17 +21,12 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
-import com.tokopedia.topchat.chatlist.data.factory.MessageFactory
-import com.tokopedia.topchat.chatlist.data.mapper.DeleteMessageMapper
-import com.tokopedia.topchat.chatlist.data.repository.MessageRepository
-import com.tokopedia.topchat.chatlist.data.repository.MessageRepositoryImpl
 import com.tokopedia.topchat.chatroom.data.api.ChatRoomApi
 import com.tokopedia.topchat.chatroom.domain.pojo.imageserver.ChatImageServerResponse
 import com.tokopedia.topchat.common.Constant.NET_CONNECT_TIMEOUT
 import com.tokopedia.topchat.common.Constant.NET_READ_TIMEOUT
 import com.tokopedia.topchat.common.Constant.NET_RETRY
 import com.tokopedia.topchat.common.Constant.NET_WRITE_TIMEOUT
-import com.tokopedia.topchat.common.chat.api.ChatApi
 import com.tokopedia.topchat.common.di.qualifier.InboxQualifier
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.common.network.TopchatCacheManager
@@ -40,6 +35,7 @@ import com.tokopedia.topchat.common.websocket.*
 import com.tokopedia.topchat.common.websocket.DefaultTopChatWebSocket.Companion.PAGE_CHATROOM
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.websocket.DEFAULT_PING
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
@@ -136,6 +132,7 @@ class ChatModule {
                 .connectTimeout(retryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
                 .readTimeout(retryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
                 .writeTimeout(retryPolicy.writeTimeout.toLong(), TimeUnit.SECONDS)
+                .pingInterval(DEFAULT_PING, TimeUnit.MILLISECONDS)
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(chuckInterceptor)
@@ -152,27 +149,6 @@ class ChatModule {
         return retrofitBuilder.baseUrl(ChatUrl.TOPCHAT)
                 .client(okHttpClient)
                 .build()
-    }
-
-    @ChatScope
-    @Provides
-    fun provideChatApi(@InboxQualifier retrofit: Retrofit): ChatApi {
-        return retrofit.create(ChatApi::class.java)
-    }
-
-
-    @ChatScope
-    @Provides
-    fun provideMessageFactory(
-            chatApi: ChatApi,
-            deleteMessageMapper: DeleteMessageMapper): MessageFactory {
-        return MessageFactory(chatApi, deleteMessageMapper)
-    }
-
-    @ChatScope
-    @Provides
-    fun provideMessageRepository(messageFactory: MessageFactory): MessageRepository {
-        return MessageRepositoryImpl(messageFactory)
     }
 
     @ChatScope

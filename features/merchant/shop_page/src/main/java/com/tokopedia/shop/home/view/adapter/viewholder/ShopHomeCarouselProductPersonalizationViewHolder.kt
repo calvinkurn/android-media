@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.util.ShopUtilExt.isButtonAtcShown
 import com.tokopedia.shop.databinding.ItemShopHomeProductRecommendationCarouselBinding
 import com.tokopedia.shop.home.WidgetName.ADD_ONS
 import com.tokopedia.shop.home.WidgetName.BUY_AGAIN
@@ -52,7 +53,9 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
                     isHasOCCButton = (element.name == BUY_AGAIN) || (element.name == REMINDER),
                     occButtonText = if(isAtcOcc(element.name)) {
                         itemView.context.getString(R.string.occ_text)
-                    } else ""
+                    } else "",
+                    element.name
+
             )
         }
 
@@ -79,6 +82,72 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
                 }
             }
         }
+
+        val productAddToCartDefaultListener =
+            object : CarouselProductCardListener.OnItemAddToCartListener {
+                override fun onItemAddToCart(
+                    productCardModel: ProductCardModel,
+                    carouselProductCardPosition: Int
+                ) {
+                    val productItem = element.productList.getOrNull(carouselProductCardPosition)
+                        ?: return
+                    if (productItem.isEnableDirectPurchase) {
+                        shopHomeCarouselProductListener.onProductAtcDefaultClick(
+                            productItem,
+                            productItem.minimumOrder,
+                            element.name
+                        )
+                    } else {
+                        if (element.name == REMINDER) {
+                            shopHomeCarouselProductListener.onCarouselPersonalizationReminderProductItemClickAddToCart(
+                                adapterPosition,
+                                carouselProductCardPosition,
+                                element,
+                                productItem
+                            )
+                        } else {
+                            shopHomeCarouselProductListener.onCarouselPersonalizationProductItemClickAddToCart(
+                                adapterPosition,
+                                carouselProductCardPosition,
+                                element,
+                                productItem,
+                                isOcc = isAtcOcc(element.name)
+                            )
+                        }
+                    }
+                }
+            }
+
+        val productAddToCartNonVariantListener =
+            object : CarouselProductCardListener.OnATCNonVariantClickListener {
+                override fun onATCNonVariantClick(
+                    productCardModel: ProductCardModel,
+                    carouselProductCardPosition: Int,
+                    quantity: Int
+                ) {
+                    val productItem = element.productList.getOrNull(carouselProductCardPosition)
+                        ?: return
+                    shopHomeCarouselProductListener.onProductAtcNonVariantQuantityEditorChanged(
+                        productItem,
+                        quantity,
+                        element.name
+                    )
+                }
+
+            }
+
+        val productAddToCartVariantListener =
+            object : CarouselProductCardListener.OnAddVariantClickListener {
+                override fun onAddVariantClick(
+                    productCardModel: ProductCardModel,
+                    carouselProductCardPosition: Int
+                ) {
+                    val productItem = element.productList.getOrNull(carouselProductCardPosition)
+                        ?: return
+                    shopHomeCarouselProductListener.onProductAtcVariantClick(productItem)
+                }
+
+            }
 
         val productClickListener = object : CarouselProductCardListener.OnItemClickListener {
             override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
@@ -121,7 +190,15 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
                             productItem
                     )
                 }
-
+                if (element.name == RECENT_ACTIVITY || element.name == REMINDER) {
+                    if (productCardModel.isButtonAtcShown()) {
+                        shopHomeCarouselProductListener.onImpressionProductAtc(
+                            productItem,
+                            adapterPosition,
+                            element.name
+                        )
+                    }
+                }
             }
 
             override fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder? {
@@ -131,7 +208,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
         recyclerView?.isNestedScrollingEnabled = false
         when (element.name) {
 
-            RECENT_ACTIVITY, ADD_ONS -> {
+            ADD_ONS -> {
                 recyclerView?.bindCarouselProductCardViewGrid(
                         productCardModelList = carouselProductList,
                         carouselProductCardOnItemAddToCartListener = productAddToCartListener,
@@ -140,12 +217,34 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
                 )
             }
 
-            BUY_AGAIN, REMINDER -> {
+            RECENT_ACTIVITY -> {
+                recyclerView?.bindCarouselProductCardViewGrid(
+                    productCardModelList = carouselProductList,
+                    carouselProductCardOnItemAddToCartListener = productAddToCartDefaultListener,
+                    carouselProductCardOnItemClickListener = productClickListener,
+                    carouselProductCardOnItemImpressedListener = productImpressionListener,
+                    carouselProductCardOnItemATCNonVariantClickListener = productAddToCartNonVariantListener,
+                    carouselProductCardOnItemAddVariantClickListener = productAddToCartVariantListener
+                )
+            }
+
+            BUY_AGAIN -> {
                 recyclerView?.bindCarouselProductCardViewList(
                         productCardModelList = carouselProductList,
                         carouselProductCardOnItemAddToCartListener = productAddToCartListener,
                         carouselProductCardOnItemClickListener = productClickListener,
                         carouselProductCardOnItemImpressedListener = productImpressionListener
+                )
+            }
+
+            REMINDER -> {
+                recyclerView?.bindCarouselProductCardViewList(
+                    productCardModelList = carouselProductList,
+                    carouselProductCardOnItemAddToCartListener = productAddToCartDefaultListener,
+                    carouselProductCardOnItemClickListener = productClickListener,
+                    carouselProductCardOnItemImpressedListener = productImpressionListener,
+                    carouselProductCardOnItemATCNonVariantClickListener = productAddToCartNonVariantListener,
+                    carouselProductCardOnItemAddVariantClickListener = productAddToCartVariantListener
                 )
             }
 

@@ -74,7 +74,7 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import com.tokopedia.wishlist.data.model.WishlistV2Params
+import com.tokopedia.wishlistcommon.data.WishlistV2Params
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.GetWishlistV2UseCase
@@ -1367,6 +1367,16 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
     override fun processGetWishlistV2Data() {
         val requestParams = WishlistV2Params().apply {
             source = SOURCE_CART
+            lca?.let { address ->
+                wishlistChosenAddress = WishlistV2Params.WishlistChosenAddress(
+                    districtId = address.district_id,
+                    cityId = address.city_id,
+                    latitude = address.lat,
+                    longitude = address.long,
+                    postalCode = address.postal_code,
+                    addressId = address.address_id
+                )
+            }
         }
 
         launch(dispatchers.main) {

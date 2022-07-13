@@ -16,7 +16,7 @@ import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.state.ChannelSummaryUiState
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayInteractiveLeaderBoardBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroInteractiveBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.SummaryInfoViewComponent
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
@@ -158,18 +158,21 @@ class PlayBroadcastReportFragment @Inject constructor(
     }
 
     override fun onMetricClicked(view: SummaryInfoViewComponent, metricType: TrafficMetricType) {
-         if (metricType.isGameParticipants) viewModel.submitAction(PlayBroadcastSummaryAction.ClickViewLeaderboard)
+         if (metricType.isGameParticipants) {
+             analytic.clickInteractiveParticipantDetail(
+                 channelID = viewModel.channelId,
+                 channelTitle = viewModel.channelTitle,
+             )
+             viewModel.submitAction(PlayBroadcastSummaryAction.ClickViewLeaderboard)
+         }
     }
 
     private fun openInteractiveLeaderboardSheet() {
-        val fragmentFactory = childFragmentManager.fragmentFactory
-        val leaderBoardBottomSheet = fragmentFactory.instantiate(
-            requireContext().classLoader,
-            PlayInteractiveLeaderBoardBottomSheet::class.java.name) as PlayInteractiveLeaderBoardBottomSheet
-        leaderBoardBottomSheet.arguments = Bundle().apply {
-            putString(PlayInteractiveLeaderBoardBottomSheet.ARG_CHANNEL_ID, viewModel.channelId)
-        }
-        leaderBoardBottomSheet.show(childFragmentManager)
+        val leaderboardReportBottomSheet = PlayBroInteractiveBottomSheet.setupReportLeaderboard(
+            childFragmentManager,
+            requireContext().classLoader
+        )
+        leaderboardReportBottomSheet.show(childFragmentManager)
     }
 
     fun setListener(listener: Listener) {

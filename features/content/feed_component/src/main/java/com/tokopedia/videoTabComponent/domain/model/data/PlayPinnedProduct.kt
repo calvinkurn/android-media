@@ -1,5 +1,6 @@
 package com.tokopedia.videoTabComponent.domain.model.data
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class PlayPinnedProduct(
@@ -13,6 +14,7 @@ data class PlayPinnedProduct(
         var original_price: String = "",
         @SerializedName("original_price_fmt")
         var original_price_fmt: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         var price: String = "",
         @SerializedName("price_fmt")

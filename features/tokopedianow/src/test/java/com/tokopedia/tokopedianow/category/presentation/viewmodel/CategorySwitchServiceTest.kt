@@ -9,9 +9,71 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
+import org.junit.Assert
 import org.junit.Test
 
 class CategorySwitchServiceTest: CategoryTestFixtures() {
+
+    @Test
+    fun `when service type is 20m and bottomsheet not yet been shown should show bottomsheet`() {
+        val currentServiceType = "15m"
+        val localCacheModel = LocalCacheModel(warehouse_id = "123", service_type = currentServiceType)
+
+        `Given choose address data`(localCacheModel)
+
+        `When view reload page`()
+
+        val needToShowOnBoardBottomSheet = tokoNowCategoryViewModel.needToShowOnBoardBottomSheet(has20mBottomSheetBeenShown = false)
+        Assert.assertEquals(true, needToShowOnBoardBottomSheet)
+    }
+
+    @Test
+    fun `when service type is 20m and bottomsheet already been shown should not show bottomsheet`() {
+        val currentServiceType = "15m"
+        val localCacheModel = LocalCacheModel(service_type = currentServiceType)
+
+        `Given choose address data`(localCacheModel)
+
+        `When view reload page`()
+
+        val needToShowOnBoardBottomSheet = tokoNowCategoryViewModel.needToShowOnBoardBottomSheet(has20mBottomSheetBeenShown = true)
+        Assert.assertEquals(false, needToShowOnBoardBottomSheet)
+    }
+
+    @Test
+    fun `when service type is 2h and bottomsheet already been shown should not show bottomsheet`() {
+        val currentServiceType = "2h"
+        val localCacheModel = LocalCacheModel(service_type = currentServiceType)
+
+        `Given choose address data`(localCacheModel)
+
+        `When view reload page`()
+
+        val needToShowOnBoardBottomSheet = tokoNowCategoryViewModel.needToShowOnBoardBottomSheet(has20mBottomSheetBeenShown = true)
+        Assert.assertEquals(false, needToShowOnBoardBottomSheet)
+    }
+
+    @Test
+    fun `when service type is 2h and bottomsheet not yet been shown should not show bottomsheet`() {
+        val currentServiceType = "2h"
+        val localCacheModel = LocalCacheModel(service_type = currentServiceType)
+
+        `Given choose address data`(localCacheModel)
+
+        `When view reload page`()
+
+        val needToShowOnBoardBottomSheet = tokoNowCategoryViewModel.needToShowOnBoardBottomSheet(has20mBottomSheetBeenShown = false)
+        Assert.assertEquals(false, needToShowOnBoardBottomSheet)
+    }
+
+    @Test
+    fun `when address data is null should not show bottomsheet`() {
+        `Given address data null`()
+
+        val needToShowOnBoardBottomSheet = tokoNowCategoryViewModel.needToShowOnBoardBottomSheet(has20mBottomSheetBeenShown = true)
+
+        Assert.assertEquals(false, needToShowOnBoardBottomSheet)
+    }
 
     @Test
     fun `switch service with current service type 2h`() {

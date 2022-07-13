@@ -36,9 +36,27 @@ import com.tokopedia.applink.home.DeeplinkMapperHome.getRegisteredNavigationHome
 import com.tokopedia.applink.home.DeeplinkMapperHome.getRegisteredNavigationHomeOfficialStore
 import com.tokopedia.applink.imagepicker.DeeplinkMapperImagePicker
 import com.tokopedia.applink.inbox.DeeplinkMapperInbox
-import com.tokopedia.applink.internal.*
+import com.tokopedia.applink.internal.ApplinkConsInternalHome
+import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.getDiscoveryDeeplink
-import com.tokopedia.applink.marketplace.DeeplinkMapperLogistic
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
+import com.tokopedia.applink.internal.ApplinkConstInternalFeed
+import com.tokopedia.applink.internal.ApplinkConstInternalFintech
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
+import com.tokopedia.applink.internal.ApplinkConstInternalMedia
+import com.tokopedia.applink.internal.ApplinkConstInternalOperational
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder
+import com.tokopedia.applink.internal.ApplinkConstInternalPayment
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
+import com.tokopedia.applink.internal.ApplinkConstInternalTravel
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.applink.logistic.DeeplinkMapperLogistic
 import com.tokopedia.applink.marketplace.DeeplinkMapperMarketplace
 import com.tokopedia.applink.marketplace.DeeplinkMapperMarketplace.getRegisteredNavigationMarketplace
 import com.tokopedia.applink.marketplace.DeeplinkMapperMarketplace.getShopPageInternalAppLink
@@ -46,7 +64,6 @@ import com.tokopedia.applink.marketplace.DeeplinkMapperMarketplace.getTokopediaI
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.getRegisteredNavigationProductReview
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.getRegisteredNavigationReputation
-import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.getRegisteredNavigationShopReview
 import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerAwbChange
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerAwbInvalid
@@ -62,6 +79,7 @@ import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
 import com.tokopedia.applink.promo.getRegisteredNavigationTokopoints
 import com.tokopedia.applink.purchaseplatform.DeeplinkMapperPurchasePlatform
 import com.tokopedia.applink.recommendation.getRegisteredNavigationRecommendation
+import com.tokopedia.applink.recommendation.getRegisteredNavigationRecommendationFromHttp
 import com.tokopedia.applink.salam.DeeplinkMapperSalam.getRegisteredNavigationSalamUmrah
 import com.tokopedia.applink.salam.DeeplinkMapperSalam.getRegisteredNavigationSalamUmrahOrderDetail
 import com.tokopedia.applink.search.DeeplinkMapperSearch.getRegisteredNavigationSearch
@@ -74,13 +92,14 @@ import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomNewOrderAp
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomReadyToShipAppLink
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomShippedAppLink
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.shouldRedirectToSellerApp
+import com.tokopedia.applink.shopadmin.ShopAdminDeepLinkMapper
 import com.tokopedia.applink.shopscore.ShopScoreDeepLinkMapper
 import com.tokopedia.applink.statistic.DeepLinkMapperStatistic
 import com.tokopedia.applink.teleporter.Teleporter
+import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood
 import com.tokopedia.applink.tokonow.DeeplinkMapperTokopediaNow.getRegisteredNavigationTokopediaNowCategory
 import com.tokopedia.applink.tokonow.DeeplinkMapperTokopediaNow.getRegisteredNavigationTokopediaNowSearch
 import com.tokopedia.applink.travel.DeeplinkMapperTravel
-
 import com.tokopedia.applink.user.DeeplinkMapperUser
 import com.tokopedia.config.GlobalConfig
 
@@ -242,6 +261,11 @@ object DeeplinkMapper {
             return appLinkSnapshot
         }
 
+        val applinkRecommendation = getRegisteredNavigationRecommendationFromHttp(uri)
+        if (applinkRecommendation.isNotBlank()) {
+            return applinkRecommendation
+        }
+
         if (pathSize >= 1 && uri.pathSegments[0] == "qrcode-login") {
             return DeeplinkMapperAccount.getLoginByQr(uri)
         }
@@ -308,11 +332,13 @@ object DeeplinkMapper {
             DLP.startWith(ApplinkConst.SHOP_SCORE_DETAIL) { _, uri, _, _ -> ShopScoreDeepLinkMapper.getInternalAppLinkShopScore(uri) },
             DLP.exact(ApplinkConst.SHOP_PENALTY, ApplinkConstInternalMarketplace.SHOP_PENALTY),
             DLP.exact(ApplinkConst.SHOP_PENALTY_DETAIL, ApplinkConstInternalMarketplace.SHOP_PENALTY_DETAIL),
+            DLP.exact(ApplinkConst.ADMIN_INVITATION, ApplinkConstInternalMarketplace.ADMIN_INVITATION),
+            DLP.startWith(ApplinkConst.ADMIN_ACCEPTED) { _, uri, _, _ -> ShopAdminDeepLinkMapper.getInternalAppLinkAdminAccepted(uri) },
+            DLP.exact(ApplinkConst.ADMIN_REDIRECTION, ApplinkConstInternalMarketplace.ADMIN_REDIRECTION),
             DLP.startWith(ApplinkConst.POWER_MERCHANT_PRO_INTERRUPT) { _, _, deeplink, _ -> PowerMerchantDeepLinkMapper.getInternalAppLinkPmProInterrupt(deeplink) },
             DLP.startWith(ApplinkConst.Gamification.CRACK) { _, _, deeplink, _ -> DeeplinkMapperGamification.getGamificationDeeplink(deeplink) },
             DLP.startWith(ApplinkConst.SELLER_ORDER_DETAIL) { context, uri, deeplink, _ -> getRegisteredNavigationOrder(context, uri, deeplink) },
-            DLP.matchPattern(ApplinkConst.SHOP_REVIEW,
-                    targetDeeplink = { _, _, _, idList -> getRegisteredNavigationShopReview(idList?.getOrNull(0)) }),
+            DLP.startWith(ApplinkConst.LOGISTIC_SELLER_RESCHEDULE) { context, uri, deeplink, _ -> DeeplinkMapperLogistic.getReschedulePickupDeeplink(context, uri, deeplink) },
             DLP(Host(ApplinkConst.TOPCHAT_HOST) or Host(ApplinkConst.TOPCHAT_OLD_HOST)) { _, uri, deeplink, _ -> getRegisteredNavigationTopChat(uri, deeplink) },
             DLP.startWith(ApplinkConst.TALK) { _, _, deeplink, _ -> getRegisteredNavigationTalk(deeplink) },
             DLP.startWith(ApplinkConst.EVENTS) { ctx, _, deeplink, _ -> getRegisteredNavigationEvents(deeplink, ctx) },
@@ -354,6 +380,8 @@ object DeeplinkMapper {
                     targetDeeplink = { ctx, uri, deeplink, idList -> getShopPageInternalAppLink(ctx, uri, deeplink, UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT, idList?.getOrNull(0)), idList?.getOrNull(0).orEmpty()) }),
             DLP.matchPattern(ApplinkConst.SHOP_FEED,
                     targetDeeplink = { ctx, uri, deeplink, idList -> getShopPageInternalAppLink(ctx, uri, deeplink,UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_FEED, idList?.getOrNull(0)), idList?.getOrNull(0).orEmpty()) }),
+            DLP.matchPattern(ApplinkConst.SHOP_REVIEW,
+                    targetDeeplink = { ctx, uri, deeplink, idList -> getShopPageInternalAppLink(ctx, uri, deeplink,UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_REVIEW, idList?.getOrNull(0)), idList?.getOrNull(0).orEmpty()) }),
             DLP.matchPattern(ApplinkConst.SHOP_FOLLOWER_LIST,
                     targetDeeplink = { ctx, uri, deeplink, idList -> getShopPageInternalAppLink(ctx, uri, deeplink,UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_FAVOURITE_LIST_WITH_SHOP_ID, idList?.getOrNull(0)), idList?.getOrNull(0).orEmpty()) }),
             DLP.matchPattern(ApplinkConst.SHOP_SETTINGS_CUSTOMER_APP,
@@ -372,6 +400,8 @@ object DeeplinkMapper {
             },
             DLP.startWith(ApplinkConst.SELLER_INFO_DETAIL) { _, uri, _, _ -> DeeplinkMapperMerchant.getSellerInfoDetailApplink(uri) },
             DLP.matchPattern(ApplinkConst.ORDER_TRACKING) { _, _, deeplink, _ -> DeeplinkMapperLogistic.getRegisteredNavigationOrder(deeplink) },
+            DLP.matchPattern(ApplinkConst.ORDER_POD) { _, _, deeplink, _ -> DeeplinkMapperLogistic.getRegisteredNavigationPod(deeplink) },
+
             DLP.matchPattern(ApplinkConst.ORDER_HISTORY_SHOP) { _, _, _, idList -> UriUtil.buildUri(ApplinkConstInternalMarketplace.ORDER_HISTORY, idList?.getOrNull(0)) },
             DLP.startWith(ApplinkConst.RESET_PASSWORD, ApplinkConstInternalGlobal.FORGOT_PASSWORD),
             DLP.matchPattern(ApplinkConst.KOL_COMMENT) { _, _, deeplink, _ -> getKolDeepLink(deeplink) },
@@ -461,6 +491,8 @@ object DeeplinkMapper {
             DLP.host(ApplinkConst.BROWSER_HOST) { _, _, _, _ -> ApplinkConstInternalGlobal.BROWSER },
             DLP.startWith(ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2) { _, _, deeplink, _ -> getContentCreatePostDeepLink(deeplink) },
             DLP.startWith(ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST) { _, _, deeplink, _ -> getContentCreatePostDeepLink(deeplink) },
+            DLP.startWith(ApplinkConst.FEED_CREATION_PRODUCT_SEARCH) { _, _, deeplink, _ -> getContentCreatePostDeepLink(deeplink) },
+            DLP.startWith(ApplinkConst.FEED_CREATION_SHOP_SEARCH) { _, _, deeplink, _ -> getContentCreatePostDeepLink(deeplink) },
             DLP.matchPattern(ApplinkConst.AFFILIATE_DRAFT_POST) { _, _, deeplink, _ -> getContentCreatePostDeepLink(deeplink) },
             DLP.host(ApplinkConst.AFFILIATE_PRODUCT_PICKER_FROM_SHOP_HOST) { _, _, deeplink, _ -> getContentCreatePostDeepLink(deeplink) },
             DLP.exact(ApplinkConst.REVIEW_REMINDER_PREVIOUS, ApplinkConstInternalSellerapp.REVIEW_REMINDER),
@@ -476,7 +508,13 @@ object DeeplinkMapper {
             DLP.exact(ApplinkConst.MediaPicker.MEDIA_PICKER_PREVIEW, ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER_PREVIEW),
             DLP.host(ApplinkConst.WEB_HOST) {_, _, deeplink, _ -> getWebHostWebViewLink(deeplink)},
             DLP.exact(ApplinkConst.INPUT_INACTIVE_NUMBER) { ctx, _, deeplink, _ -> DeeplinkMapperUser.getRegisteredNavigationUser(ctx, deeplink) },
-            DLP.exact(ApplinkConst.ADD_PHONE) { ctx, _, deeplink, _ -> DeeplinkMapperUser.getRegisteredNavigationUser(ctx, deeplink) }
+            DLP.exact(ApplinkConst.ADD_PHONE) { ctx, _, deeplink, _ -> DeeplinkMapperUser.getRegisteredNavigationUser(ctx, deeplink) },
+            DLP.matchPattern(ApplinkConst.PRODUCT_EDUCATIONAL, targetDeeplink = { _, _, _, idList ->
+                UriUtil.buildUri(
+                        ApplinkConstInternalMarketplace.PRODUCT_DETAIL_EDUCATIONAL,
+                        idList?.lastOrNull() ?: "")
+            }),
+            DLP.startWith(ApplinkConst.TokoFood.MAIN_PATH) { _, uri, _, _ -> DeeplinkMapperTokoFood.mapperInternalApplinkTokoFood(uri) },
         )
 
     fun getTokopediaSchemeList():List<DLP>{
@@ -565,6 +603,7 @@ object DeeplinkMapper {
             ApplinkConst.SellerApp.WEBVIEW -> ApplinkConstInternalGlobal.WEBVIEW_BASE
             ApplinkConst.SellerApp.BROWSER -> ApplinkConstInternalGlobal.BROWSER
             ApplinkConst.SellerApp.TOPADS_DASHBOARD -> ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
+            ApplinkConst.SellerApp.SHOP_DISCOUNT -> ApplinkConstInternalSellerapp.SHOP_DISCOUNT
             ApplinkConst.SellerApp.TOPADS_CREDIT_HISTORY -> ApplinkConstInternalTopAds.TOPADS_HISTORY_CREDIT
             ApplinkConst.SellerApp.TOPADS_CREDIT -> ApplinkConstInternalTopAds.TOPADS_BUY_CREDIT
             ApplinkConst.SellerApp.TOPADS_CREATE_AUTO_ADS -> ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE
@@ -595,6 +634,9 @@ object DeeplinkMapper {
             ApplinkConst.SellerApp.REVIEW_REMINDER -> ApplinkConstInternalSellerapp.REVIEW_REMINDER
             ApplinkConst.SellerApp.STATISTIC_DASHBOARD -> DeepLinkMapperStatistic.getStatisticAppLink(uri)
             ApplinkConst.SellerApp.SHOP_SCORE_DETAIL -> ShopScoreDeepLinkMapper.getInternalAppLinkShopScore(uri)
+            ApplinkConst.SellerApp.ADMIN_INVITATION -> ApplinkConstInternalMarketplace.ADMIN_INVITATION
+            ApplinkConst.SellerApp.ADMIN_ACCEPTED -> ShopAdminDeepLinkMapper.getInternalAppLinkAdminAccepted(uri)
+            ApplinkConst.SellerApp.ADMIN_REDIRECTION -> ApplinkConstInternalMarketplace.ADMIN_REDIRECTION
             else -> when {
                 DeeplinkMapperMerchant.isShopPageFeedDeeplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationShopFeed(deeplink)
                 DeeplinkMapperMerchant.isShopPageSettingSellerApp(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationShopPageSettingSellerApp(deeplink)

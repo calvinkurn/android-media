@@ -26,4 +26,11 @@ object ProductCardRobot {
         ).perform(click())
     }
 
+    fun clickProductAttachmentAt(position: Int) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom)
+                .atPositionOnView(position, R.id.cl_info)
+        ).perform(click())
+    }
+
 }

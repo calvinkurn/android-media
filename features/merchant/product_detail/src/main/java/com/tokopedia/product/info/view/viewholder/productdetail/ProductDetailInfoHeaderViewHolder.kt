@@ -75,7 +75,7 @@ class ProductDetailInfoHeaderViewHolder(private val view: View,
                 setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
                 setWeight(Typography.BOLD)
 
-                setOnClickListener {
+                infoDetailClickArea.setOnClickListener {
                     when (data.title.toLowerCase(Locale.getDefault())) {
                         ProductDetailCommonConstant.KEY_CATEGORY -> {
                             listener.goToCategory(data.applink)
@@ -91,11 +91,20 @@ class ProductDetailInfoHeaderViewHolder(private val view: View,
                         }
                     }
                 }
-            } else {
-                setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
-                setWeight(Typography.REGULAR)
-                setOnClickListener { }
             }
+
+            if (data.infoLink.isNotEmpty()) {
+                infoDetailIcon.show()
+                infoDetailClickArea.setOnClickListener {
+                    listener.goToEducational(data.infoLink, data.title, data.subtitle, adapterPosition + 1)
+                }
+
+                data.icon.toIntOrNull()?.let { icon ->
+                    infoDetailIcon.setImage(icon)
+                }
+            }
+
+            listener.onImpressInfo(data.title, data.subtitle, adapterPosition + 1)
         }
     }
 }

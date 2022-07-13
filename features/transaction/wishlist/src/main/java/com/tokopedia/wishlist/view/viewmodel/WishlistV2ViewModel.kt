@@ -18,7 +18,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlist.R
 import com.tokopedia.wishlist.data.model.response.BulkDeleteWishlistV2Response
-import com.tokopedia.wishlist.data.model.WishlistV2Params
+import com.tokopedia.wishlistcommon.data.WishlistV2Params
 import com.tokopedia.wishlist.data.model.response.WishlistV2Response
 import com.tokopedia.wishlist.domain.BulkDeleteWishlistV2UseCase
 import com.tokopedia.wishlist.data.model.*
@@ -119,9 +119,6 @@ class WishlistV2ViewModel @Inject constructor(private val dispatcher: CoroutineD
         launch(dispatcher.main) {
             val result = withContext(dispatcher.io) { countDeletionWishlistV2UseCase.executeOnBackground() }
             if (result is Success) {
-                val successRemoved = result.data.data.successfullyRemovedItems
-                val totalItems = result.data.data.totalItems
-                println("++ getCountDeletionWishlistV2 - success removed = $successRemoved, totalItems = $totalItems")
                 _countDeletionWishlistV2.value = result
             } else  {
                 val error = (result as Fail).throwable

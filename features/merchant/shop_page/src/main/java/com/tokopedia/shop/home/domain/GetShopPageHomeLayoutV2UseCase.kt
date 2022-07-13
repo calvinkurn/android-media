@@ -118,6 +118,9 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                         url
                       }
                       minimumOrder
+                      stock
+                      childIDs
+                      parentID
                     }
                     ... on PromoWidget {
                       voucherID
@@ -199,6 +202,9 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                           title
                           url
                         }
+                        minimumOrder
+                        childIDs
+                        parentID
                       }
                       backgroundGradientColor {
                         firstColor

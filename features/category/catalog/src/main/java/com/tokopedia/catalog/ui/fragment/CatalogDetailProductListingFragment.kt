@@ -870,7 +870,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     private fun convertToSortFilterItem(title: String, options: List<Option>) =
             options.map { option ->
-                createSortFilterItem(title, option)
+                createSortFilterItem(option.name, option)
             }
 
     private fun createSortFilterItem(title: String, option: Option): SortFilterItem {

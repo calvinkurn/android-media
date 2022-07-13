@@ -17,6 +17,7 @@ object ShopPageGqlQueryConstant {
                   name
                   product_url
                   stock
+                  minimum_order
                   status
                   price{
                     text_idr
@@ -67,6 +68,8 @@ object ShopPageGqlQueryConstant {
                     title
                     url
                   }
+                  hasVariant
+                  parent_id
                 }
                 suggestion {
                   text

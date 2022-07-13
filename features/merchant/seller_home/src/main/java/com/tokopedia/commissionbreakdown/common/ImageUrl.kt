@@ -7,5 +7,5 @@ package com.tokopedia.commissionbreakdown.common
 object ImageUrl {
 
     const val IMG_BG_BACKDROP =
-        "https://images.tokopedia.net/img/android/power_merchant_subscribe/bg_sah_download_commission.png "
+        "https://images.tokopedia.net/img/android/power_merchant_subscribe/bg_sah_download_commission.png"
 }

@@ -81,7 +81,7 @@ class PlayViewModelTest {
         ) {
             createPage(channelData)
         } thenVerify {
-            viewModel.latestCompleteChannelData.isEqualTo(channelData)
+            viewModel.latestCompleteChannelData.assertEqualTo(channelData)
         }
     }
 

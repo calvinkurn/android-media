@@ -31,37 +31,37 @@
       "eventLabel": ".*"
     },
     {
-      "eventCategory": ".*",
+      "eventCategory": "os microsite",
       "event": "view_item",
-      "eventAction": "banner - impression",
+      "eventAction": "impression banner - slider banner",
       "sessionIris" : ".*",
       "promotions": [{
         "creative_name": ".*",
         "creative_slot": ".*",
         "item_id": ".*",
-        "item_name": ".*",
-        "creative_url": ".*"
+        "item_name": "/official-store/.* - slider banner"
       }],
-      "eventLabel": ".*"
+      "eventLabel": "slider banner - .*",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "userId": ".*"
     },
     {
-      "eventCategory": ".*",
-      "affinityLabel": ".*",
-      "attribution": ".*",
-      "shopId": ".*",
-      "categoryId": ".*",
-      "campaignCode": ".*",
+      "eventCategory": "os microsite",
       "event": "select_content",
-      "eventAction": "banner - click",
+      "eventAction": "click banner - slider banner",
       "sessionIris" : ".*",
       "promotions": [{
         "creative_name": ".*",
         "creative_slot": ".*",
         "item_id": ".*",
-        "item_name": ".*",
-        "creative_url": ".*"
+        "item_name": "/official-store/.* - slider banner"
       }],
-      "eventLabel": ".*"
+      "eventLabel": "slider banner - .*",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "userId": ".*",
+      "clientId": ".*"
     },
     {
       "eventCategory": ".*",
@@ -95,31 +95,31 @@
       "eventLabel": ".*"
     },
     {
-      "eventCategory": ".*",
-      "item_list": ".*",
+      "eventCategory": "os microsite",
+      "item_list": "/official-store/.* - dynamic channel top carousel - .*|/official-store/.* - dynamic channel left carousel - .*",
       "event": "view_item_list",
-      "eventAction": "impression on product dynamic channel top carousel|impression on product dynamic channel left carousel",
+      "eventAction": "impression product - dynamic channel top carousel|impression product - dynamic channel left carousel",
       "sessionIris" : ".*",
-      "businessUnit" : ".*",
+      "businessUnit" : "home & browse",
       "userId" : ".*",
-      "currentSite" : ".*",
+      "currentSite" : "tokopediamarketplace",
       "items": [{
         "item_id": ".*",
         "price": "\\d*.\\d*|\\d.\\d+E\\d",
-        "dimension40": ".*",
+        "dimension38": ".*",
         "index": "\\d*.\\d*",
         "item_name": ".*",
         "item_brand": ".*",
         "item_variant": ".*",
         "item_category": ".*"
       }],
-      "eventLabel": ".*"
+      "eventLabel": "dynamic channel top carousel - .* - .* - .*|dynamic channel left carousel - .* - .* - .*"
     },
     {
       "eventCategory": ".*",
       "item_list": ".*",
       "event": "select_content",
-      "eventAction": "click on product dynamic channel top carousel|click on product dynamic channel left carousel",
+      "eventAction": "click product - dynamic channel top carousel|click product - dynamic channel left carousel",
       "sessionIris" : ".*",
       "campaignCode" : ".*",
       "businessUnit" : ".*",
@@ -128,14 +128,14 @@
       "items": [{
         "item_id": ".*",
         "price": "\\d*.\\d*|\\d.\\d+E\\d",
-        "dimension40": ".*",
+        "dimension38": ".*",
         "index": "\\d*.\\d*",
         "item_name": ".*",
         "item_brand": ".*",
         "item_variant": ".*",
         "item_category": ".*"
       }],
-      "eventLabel": ".*"
+      "eventLabel": ".* - .* - .*"
     },
     {
       "promotions": [{
@@ -157,18 +157,20 @@
       "categoryId" : ".*"
     },
     {
-      "eventCategory": ".*",
+      "eventCategory": "os microsite",
       "event": "view_item",
-      "eventAction": "impression banner dynamic channel left carousel",
+      "eventAction": "impression banner - dynamic channel left carousel",
       "sessionIris" : ".*",
       "promotions": [{
-        "item_id": ".*",
+        "item_id": ".*_.*",
         "creative_slot": ".*",
         "creative_name": ".*",
-        "creative_url": ".*",
-        "item_name": ".*"
+        "item_name": "/official-store/.* - dynamic channel left carousel - .* - .*"
       }],
-      "eventLabel": ".*"
+      "eventLabel": "dynamic channel left carousel - .* - .* - .*",
+      "businessUnit" : "home & browse",
+      "userId" : ".*",
+      "currentSite" : "tokopediamarketplace"
     },
     {
       "eventCategory": ".*",

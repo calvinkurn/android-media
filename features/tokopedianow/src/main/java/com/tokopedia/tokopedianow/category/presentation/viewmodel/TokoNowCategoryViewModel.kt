@@ -30,6 +30,7 @@ import com.tokopedia.tokopedianow.category.utils.CATEGORY_LOAD_MORE_PAGE_USE_CAS
 import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_L1
 import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_L2
 import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_QUERY_PARAM_MAP
+import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_SERVICE_TYPE
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
@@ -62,6 +63,8 @@ class TokoNowCategoryViewModel @Inject constructor (
         val categoryL1: String,
     @param:Named(TOKONOW_CATEGORY_L2)
         val categoryL2: String,
+    @param:Named(TOKONOW_CATEGORY_SERVICE_TYPE)
+        val externalServiceType: String,
     @Named(TOKONOW_CATEGORY_QUERY_PARAM_MAP)
         queryParamMap: Map<String, String>,
     @param:Named(CATEGORY_FIRST_PAGE_USE_CASE)
@@ -106,7 +109,6 @@ class TokoNowCategoryViewModel @Inject constructor (
 
     init {
         updateQueryParamWithCategoryIds()
-
         categoryIdTracking = getCategoryIdForTracking()
     }
 
@@ -180,7 +182,11 @@ class TokoNowCategoryViewModel @Inject constructor (
 
     override fun createFooterVisitableList(): List<Visitable<*>> {
         val recomData =
-            TokoNowRecommendationCarouselUiModel(pageName = TOKONOW_CLP, miniCartSource = MiniCartSource.TokonowCategoryPage)
+            TokoNowRecommendationCarouselUiModel(
+                pageName = TOKONOW_CLP,
+                isBindWithPageName = true,
+                miniCartSource = MiniCartSource.TokonowCategoryPage
+            )
         recomData.categoryId = getRecomCategoryId(recomData)
         return listOf(
             createAisleDataView(),
@@ -220,6 +226,16 @@ class TokoNowCategoryViewModel @Inject constructor (
 
     override fun processEmptyState(isEmptyProductList: Boolean) {
         loadCategoryGrid(isEmptyProductList)
+    }
+
+    override fun onViewCreated(source: MiniCartSource?) {
+        val currentServiceType = chooseAddressData?.getServiceType()
+
+        if (externalServiceType != currentServiceType && externalServiceType.isNotBlank()) {
+            setUserPreference(externalServiceType)
+        } else {
+            super.onViewCreated(source)
+        }
     }
 
     private fun loadCategoryGrid(isEmptyProductList: Boolean) {

@@ -8,16 +8,37 @@
     android:layout_height="wrap_content"
     android:background="?attr/selectableItemBackground">
 
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/iconBarrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="colorSampleImageView, optionIconImageView"
+        app:barrierDirection="right"
+        />
+
     <ImageView
         android:id="@+id/colorSampleImageView"
-        android:layout_width="@dimen/dp_32"
-        android:layout_height="@dimen/dp_32"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:visibility="gone"
         android:layout_marginLeft="12dp"
         android:layout_marginStart="12dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        android:contentDescription="@string/content_desc_filter_colorSample"
+        tools:visibility="visible"/>
+
+    <ImageView
+        android:id="@+id/optionIconImageView"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:visibility="gone"
+        android:layout_marginStart="12dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/colorSampleImageView"
+        android:contentDescription="@string/content_desc_filter_optionIcon"
         tools:visibility="visible"/>
 
     <com.tokopedia.unifyprinciples.Typography
@@ -30,7 +51,7 @@
         android:textColor="@color/Unify_N700_96"
         app:typographyType="heading_5"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toEndOf="@id/colorSampleImageView"
+        app:layout_constraintStart_toEndOf="@id/iconBarrier"
         app:layout_constraintBottom_toTopOf="@id/filterDetailDescription"
         app:layout_goneMarginLeft="16dp"
         app:layout_goneMarginStart="16dp"

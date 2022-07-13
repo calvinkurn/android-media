@@ -5025,6 +5025,327 @@
                         "imageUrl": "",
                         "gradientColor": []
                     }
+                },
+                {
+                    "id": 196831,
+                    "dividerType": 0,
+                    "group_id": 240,
+                    "galaxy_attribution": "PG",
+                    "persona": "",
+                    "brand_id": "",
+                    "category_persona": "",
+                    "name": "Test vps v2",
+                    "layout": "4_banners_auto_vps_v2",
+                    "campaignType": 0,
+                    "type": "inspiration",
+                    "pageName": "",
+                    "showPromoBadge": false,
+                    "categoryID": "{}",
+                    "perso_type": 1,
+                    "campaignCode": "",
+                    "has_close_button": false,
+                    "isAutoRefreshAfterExpired": false,
+                    "token": "",
+                    "widgetParam": "",
+                    "contextualInfo": 0,
+                    "viewAllCard": {
+                        "id": 0,
+                        "contentType": "",
+                        "title": "",
+                        "description": "",
+                        "imageUrl": "",
+                        "gradientColor": []
+                    },
+                    "header": {
+                        "id": 216119,
+                        "name": "header test  vps v2",
+                        "subtitle": "",
+                        "url": "",
+                        "applink": "",
+                        "serverTime": 0,
+                        "expiredTime": "",
+                        "backColor": "",
+                        "backImage": "",
+                        "textColor": "#31353b"
+                    },
+                    "grids": [
+                        {
+                            "campaignCode": "",
+                            "id": 70,
+                            "back_color": "#FDFAFD",
+                            "name": "Charger Handphone",
+                            "expiredTime": "",
+                            "url": "https://www.tokopedia.com/rekomendasi/0/d/?category_id=70\u0026search_ref=homepage.4_banners_auto.1.70.196831\u0026ref=category_vps_priority\u0026max_discount=95",
+                            "applink": "tokopedia://rekomendasi/0/d/?max_discount=95\u0026category_id=70\u0026search_ref=homepage.4_banners_auto.1.70.196831\u0026ref=category_vps_priority",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://ecs7.tokopedia.net/img/attachment/2019/3/7/70/70_2cd66bd6-b266-47b9-bd17-0efa97802e82.png",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0,
+                                "name": "",
+                                "city": "",
+                                "imageUrl": "",
+                                "url": "",
+                                "applink": ""
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "Diskon Hingga",
+                                "value": "95%"
+                            },
+                            "textColor": "#000000",
+                            "badges": []
+                        },
+                        {
+                            "campaignCode": "",
+                            "id": 2520,
+                            "back_color": "#FDFAFD",
+                            "name": "Disposable Consumable",
+                            "expiredTime": "",
+                            "url": "https://www.tokopedia.com/rekomendasi/0/d/?ref=category_vps_priority\u0026max_discount=98\u0026category_id=2520\u0026search_ref=homepage.4_banners_auto.1.2520.196831",
+                            "applink": "tokopedia://rekomendasi/0/d/?ref=category_vps_priority\u0026max_discount=98\u0026category_id=2520\u0026search_ref=homepage.4_banners_auto.1.2520.196831",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://ecs7.tokopedia.net/img/attachment/2019/4/24/2520/2520_e668820a-2ee2-493f-9c4d-4edcc81a7fcf.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0,
+                                "name": "",
+                                "city": "",
+                                "imageUrl": "",
+                                "url": "",
+                                "applink": ""
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "Diskon Hingga",
+                                "value": "98%"
+                            },
+                            "textColor": "#000000",
+                            "badges": []
+                        },
+                        {
+                            "campaignCode": "",
+                            "id": 4632,
+                            "back_color": "#FDFAFD",
+                            "name": "Masker Kesehatan",
+                            "expiredTime": "",
+                            "url": "https://www.tokopedia.com/rekomendasi/0/d/?max_discount=97\u0026category_id=4632\u0026search_ref=homepage.4_banners_auto.1.4632.196831\u0026ref=category_vps_priority",
+                            "applink": "tokopedia://rekomendasi/0/d/?max_discount=97\u0026category_id=4632\u0026search_ref=homepage.4_banners_auto.1.4632.196831\u0026ref=category_vps_priority",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://ecs7.tokopedia.net/img/attachment/2020/12/15/68836097/68836097_51d9bfe7-6f30-4442-ac64-a29e8d7327eb.png",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0,
+                                "name": "",
+                                "city": "",
+                                "imageUrl": "",
+                                "url": "",
+                                "applink": ""
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "Diskon Hingga",
+                                "value": "97%"
+                            },
+                            "textColor": "#000000",
+                            "badges": []
+                        },
+                        {
+                            "campaignCode": "",
+                            "id": 3006,
+                            "back_color": "#FDFAFD",
+                            "name": "Celana Panjang Wanita",
+                            "expiredTime": "",
+                            "url": "https://www.tokopedia.com/rekomendasi/0/d/?search_ref=homepage.4_banners_auto.1.3006.196831\u0026ref=category_vps_priority\u0026max_discount=84\u0026category_id=3006",
+                            "applink": "tokopedia://rekomendasi/0/d/?max_discount=84\u0026category_id=3006\u0026search_ref=homepage.4_banners_auto.1.3006.196831\u0026ref=category_vps_priority",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://ecs7.tokopedia.net/img/attachment/2019/4/18/3006/3006_7f459aab-1b15-4168-a380-2f7601fbf7e4.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0,
+                                "name": "",
+                                "city": "",
+                                "imageUrl": "",
+                                "url": "",
+                                "applink": ""
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "Diskon Hingga",
+                                "value": "84%"
+                            },
+                            "textColor": "#000000",
+                            "badges": []
+                        }
+                    ],
+                    "banner": {
+                        "id": 0,
+                        "title": "",
+                        "description": "",
+                        "url": "",
+                        "back_color": "",
+                        "cta": {
+                            "type": "",
+                            "mode": "",
+                            "text": "",
+                            "coupon_code": ""
+                        },
+                        "applink": "",
+                        "text_color": "",
+                        "image_url": "",
+                        "attribution": "",
+                        "gradient_color": [
+                            "#FFFFFF"
+                        ]
+                    }
+                },
+                {
+                    "id": 6999441,
+                    "dividerType": 0,
+                    "group_id": 57,
+                    "galaxy_attribution": "PG",
+                    "persona": "",
+                    "brand_id": "",
+                    "category_persona": "",
+                    "name": "Mission Widget Test",
+                    "layout": "mission_widget",
+                    "type": "inspiration",
+                    "pageName": "Mission Widget",
+                    "showPromoBadge": false,
+                    "categoryID": "{}",
+                    "perso_type": 1,
+                    "campaignCode": "",
+                    "has_close_button": false,
+                    "isAutoRefreshAfterExpired": false,
+                    "token": "",
+                    "widgetParam": "&category_id=565,1024,2266,3071,3901,2136,70,2265,321,3108&affinity_position=7",
+                    "contextualInfo": 0,
+                    "viewAllCard": {
+                        "id": 0,
+                        "contentType": "",
+                        "title": "",
+                        "description": "",
+                        "imageUrl": "",
+                        "gradientColor": []
+                    },
+                    "header": {
+                        "id": 60682,
+                        "name": "Mission Widget Test",
+                        "subtitle": "",
+                        "url": "",
+                        "applink": "",
+                        "serverTime": 0,
+                        "expiredTime": "",
+                        "backColor": "",
+                        "backImage": "",
+                        "textColor": "#000000"
+                    },
+                    "grids": [
+                    ],
+                    "banner": {
+                        "id": 0,
+                        "title": "",
+                        "description": "",
+                        "url": "",
+                        "back_color": "",
+                        "cta": {
+                            "type": "",
+                            "mode": "",
+                            "text": "",
+                            "coupon_code": ""
+                        },
+                        "applink": "",
+                        "text_color": "",
+                        "image_url": "",
+                        "attribution": "",
+                        "gradient_color": [
+                            "#FFFFFF"
+                        ]
+                    }
                 }
             ]
         }

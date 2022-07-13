@@ -1,5 +1,6 @@
 package com.tokopedia.shop.home.view.model
 
+import android.os.Parcelable
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel.Header

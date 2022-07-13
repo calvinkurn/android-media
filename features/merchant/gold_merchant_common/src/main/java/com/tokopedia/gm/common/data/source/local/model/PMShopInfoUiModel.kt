@@ -1,6 +1,7 @@
 package com.tokopedia.gm.common.data.source.local.model
 
 import com.tokopedia.gm.common.constant.PMConstant
+import com.tokopedia.kotlin.extensions.view.EMPTY
 
 /**
  * Created By @ilhamsuaib on 09/03/21
@@ -23,7 +24,8 @@ data class PMShopInfoUiModel(
     val itemSoldOneMonth: Long = 0,
     val itemSoldPmProThreshold: Long = DEFAULT_ORDER_THRESHOLD,
     val netItemValueOneMonth: Long = 0,
-    val netItemValuePmProThreshold: Long = DEFAULT_NIV_THRESHOLD
+    val netItemValuePmProThreshold: Long = DEFAULT_NIV_THRESHOLD,
+    val nextMonthlyRefreshDate: String = String.EMPTY
 ) {
 
     companion object {

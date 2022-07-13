@@ -17,10 +17,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.util.ShopUtil.setElement
 import com.tokopedia.shop.home.WidgetName
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductItemBigGridViewHolder
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductItemListViewHolder
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductViewHolder
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeSliderBannerViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.*
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
@@ -202,14 +199,13 @@ class ShopHomeAdapter(
     }
 
     fun getAllProductWidgetPosition(): Int {
-        return visitables.filter {
-            (it !is LoadingModel) && (it !is LoadingMoreModel) && (it !is ShopHomeProductEtalaseTitleUiModel)
-        }.indexOfFirst { it is ShopHomeProductUiModel }
+        return visitables.indexOfFirst { it is ShopHomeProductUiModel }
     }
 
     fun updateProductWidgetData(shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel) {
         val newList = getNewVisitableItems()
         val position = newList.indexOf(shopHomeCarousellProductUiModel)
+        shopHomeCarousellProductUiModel.copy()
         shopHomeCarousellProductUiModel.isNewData = true
         newList.setElement(position, shopHomeCarousellProductUiModel)
         submitList(newList)
@@ -619,7 +615,7 @@ class ShopHomeAdapter(
 
     private fun getNewVisitableItems() = visitables.toMutableList()
 
-    private fun submitList(newList: List<Visitable<*>>) {
+    fun submitList(newList: List<Visitable<*>>) {
         val currentRecyclerViewState: Parcelable? = recyclerView?.layoutManager?.onSaveInstanceState()
         val diffCallback = ShopPageHomeDiffUtilCallback(visitables, newList)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
@@ -644,6 +640,20 @@ class ShopHomeAdapter(
             val dynamicRule = campaignItem?.dynamicRule
             val dynamicRuleDescription = dynamicRule?.descriptionHeader.orEmpty()
             nplItemCampaignId == campaignId && dynamicRuleDescription.isNotEmpty()
+        }
+    }
+
+    fun getLastVisibleShopWidgetPosition(lastVisibleItemPosition: Int): Int {
+        return when (visitables.getOrNull(lastVisibleItemPosition)) {
+            is BaseShopHomeWidgetUiModel, is ThematicWidgetUiModel -> {
+                lastVisibleItemPosition
+            }
+            else -> {
+                val lastShopWidgetUiModel = visitables.lastOrNull {
+                    it is BaseShopHomeWidgetUiModel || it is ThematicWidgetUiModel
+                }
+                visitables.lastIndexOf(lastShopWidgetUiModel)
+            }
         }
     }
 }

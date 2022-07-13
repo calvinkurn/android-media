@@ -22,7 +22,7 @@ import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRes
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult.hasProductBuyButtonWithText
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult.hasProductCarouselBuyButtonWithText
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRobot.clickBuyButtonAt
-import com.tokopedia.topchat.chatroom.view.fragment.TopChatRoomFragment
+import com.tokopedia.topchat.stub.chatroom.view.fragment.TopChatRoomFragmentStub
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -33,27 +33,13 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
     @Before
     override fun before() {
         super.before()
-        activateOcc()
+        TopChatRoomFragmentStub.isOCCActive = true
     }
 
     @After
     override fun tearDown() {
         super.tearDown()
-        deactivateOcc()
-    }
-
-    private fun activateOcc() {
-        abTestPlatform.setString(
-            TopChatRoomFragment.AB_TEST_OCC,
-            TopChatRoomFragment.AB_TEST_OCC
-        )
-    }
-
-    private fun deactivateOcc() {
-        abTestPlatform.setString(
-            TopChatRoomFragment.AB_TEST_OCC,
-            TopChatRoomFragment.AB_TEST_NON_OCC
-        )
+        TopChatRoomFragmentStub.isOCCActive = false
     }
 
     @Test
@@ -227,7 +213,7 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
     }
 
     private fun modifiedPreorder(isPreorder: Boolean): String {
-        return "{\"product_id\":1160424090,\"product_profile\":{\"name\":\"Produk Preorder\",\"price\":\"Rp20.000\",\"price_int\":0,\"image_url\":\"https://ecs7.tokopedia.net/img/cache/700/VqbcmM/2020/9/9/5e4f9c00-410c-4bcb-96ca-54b6b431b365.jpg\",\"url\":\"https://www.tokopedia.com/vip-list/piyama-baju-tidur-2\",\"playstore_product_data\":{},\"price_before\":\"\",\"drop_percentage\":\"\",\"shop_id\":0,\"status\":1,\"min_order\":0,\"category_id\":0,\"remaining_stock\":100,\"category_breadcrumb\":\"\",\"variant\":null,\"wishlist\":false,\"free_ongkir\":{\"is_active\":false,\"image_url\":\"\"},\"rating\":{},\"is_preorder\":${isPreorder}}}"
+        return "{\"product_id\":1160424090,\"product_profile\":{\"name\":\"Produk Preorder\",\"price\":\"Rp20.000\",\"price_int\":0,\"image_url\":\"https://ecs7.tokopedia.net/img/cache/700/VqbcmM/2020/9/9/5e4f9c00-410c-4bcb-96ca-54b6b431b365.jpg\",\"url\":\"https://www.tokopedia.com/vip-list/piyama-baju-tidur-2\",\"playstore_product_data\":{},\"price_before\":\"\",\"drop_percentage\":\"\",\"shop_id\":0,\"status\":1,\"min_order\":0,\"category_id\":0,\"remaining_stock\":100,\"category_breadcrumb\":\"\",\"variant\":[],\"wishlist\":false,\"free_ongkir\":{\"is_active\":false,\"image_url\":\"\"},\"rating\":{},\"is_preorder\":${isPreorder}}}"
     }
 
     private fun getVariantModified(isVariant: Boolean): String {

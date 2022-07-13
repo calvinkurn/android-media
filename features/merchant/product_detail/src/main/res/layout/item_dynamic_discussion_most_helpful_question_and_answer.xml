@@ -30,7 +30,7 @@
             android:textColor="@color/Unify_N700_68"
             android:layout_marginStart="@dimen/layout_lvl1"
             android:layout_marginLeft="@dimen/layout_lvl1"
-            app:typographyType="body_3"
+            app:typographyType="display_2"
             app:typographyWeight="bold"
             app:layout_constraintTop_toTopOf="@id/productDetailDiscussionInquirerProfilePicture"
             app:layout_constraintBottom_toBottomOf="@id/productDetailDiscussionInquirerProfilePicture"
@@ -45,7 +45,7 @@
             android:layout_marginStart="@dimen/spacing_lvl2"
             android:layout_marginLeft="@dimen/spacing_lvl2"
             app:layout_constraintStart_toEndOf="@id/productDetailDiscussionInquirerName"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="reguler"
             app:layout_constraintTop_toTopOf="@id/productDetailDiscussionInquirerProfilePicture"
             app:layout_constraintBottom_toBottomOf="@id/productDetailDiscussionInquirerProfilePicture"/>
@@ -57,7 +57,7 @@
             android:textColor="@color/Unify_N700_68"
             android:layout_marginStart="@dimen/spacing_lvl2"
             android:layout_marginLeft="@dimen/spacing_lvl2"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:layout_constraintTop_toTopOf="@id/productDetailDiscussionInquirerName"
             app:layout_constraintBottom_toBottomOf="@id/productDetailDiscussionInquirerName"
             app:layout_constraintStart_toEndOf="@id/product_detail_discussion_inquiry_dot" />
@@ -75,7 +75,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/productDetailDiscussionInquirerProfilePicture"
-            app:typographyType="body_2"
+            app:typographyType="paragraph_2"
             app:typographyWeight="reguler" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -123,7 +123,7 @@
                 android:textColor="@color/Unify_N700_68"
                 android:visibility="gone"
                 app:layout_goneMarginStart="@dimen/layout_lvl2"
-                app:typographyType="body_3"
+                app:typographyType="display_2"
                 app:typographyWeight="bold"
                 app:layout_constraintStart_toEndOf="@id/productDetailDiscussionRespondentProfilePicture"
                 app:layout_constraintTop_toTopOf="parent"
@@ -146,7 +146,7 @@
                 android:layout_marginStart="@dimen/spacing_lvl2"
                 android:layout_marginLeft="@dimen/spacing_lvl2"
                 app:layout_constraintStart_toEndOf="@id/product_detail_inquiry_barrier"
-                app:typographyType="body_3"
+                app:typographyType="display_3"
                 app:typographyWeight="reguler"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
@@ -159,7 +159,7 @@
                 android:layout_marginLeft="@dimen/spacing_lvl2"
                 android:textColor="@color/Unify_N700_68"
                 tools:text="1 jam lalu"
-                app:typographyType="body_3"
+                app:typographyType="display_3"
                 app:typographyWeight="reguler"
                 app:layout_constraintStart_toEndOf="@id/product_detail_discussion_respondent_dot"
                 app:layout_constraintTop_toTopOf="parent"
@@ -188,7 +188,7 @@
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:maxLines="2"
             android:ellipsize="end"
-            app:typographyType="body_2"
+            app:typographyType="paragraph_2"
             app:layout_constraintStart_toStartOf="@id/product_detail_discussion_respondent_info_container"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/product_detail_discussion_respondent_info_container" />
@@ -200,7 +200,7 @@
             android:layout_marginTop="@dimen/layout_lvl1"
             android:visibility="gone"
             android:textColor="@color/Unify_N700_68"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="bold"
             app:layout_constraintStart_toStartOf="@id/productDetailDiscussionRespondentAnswer"
             app:layout_constraintTop_toBottomOf="@id/productDetailDiscussionRespondentAnswer"/>
@@ -215,7 +215,7 @@
             android:visibility="gone"
             android:text="@string/product_detail_discussion_no_answers"
             android:textColor="@color/Unify_N700_68"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="bold"
             app:layout_constraintTop_toBottomOf="@id/productDetailDiscussionInquiry"
             app:layout_constraintStart_toEndOf="@id/product_detail_discussion_respondent_bar"

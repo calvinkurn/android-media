@@ -5,11 +5,11 @@ import com.google.gson.annotations.SerializedName
 
 data class AffiliateProductItem(
     @SerializedName("ad_id")
-    val adId: Int = 0,
+    val adId: String ,
     @SerializedName("app_link")
     val appLink: String = "",
     @SerializedName("category_id")
-    val categoryId: Int = 0,
+    val categoryId: String ,
     @SerializedName("commission_percent")
     val commissionPercent: Int = 0,
     @SerializedName("commission_percent_display")
@@ -25,7 +25,7 @@ data class AffiliateProductItem(
     @SerializedName("lite_link")
     val liteLink: String = "",
     @SerializedName("product_id")
-    val productId: Int = 0,
+    val productId: String = "",
     @SerializedName("ratio")
     val ratio: Int = 0,
     @SerializedName("subtitle")

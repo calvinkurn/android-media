@@ -4,9 +4,44 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.*
+import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.CardPotentialPMBenefitViewHolder
+import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.ItemDetailPerformanceViewHolder
+import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.ItemHeaderShopPerformanceViewHolder
+import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.ItemLevelScoreProjectViewHolder
+import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.ItemPMPotentialPMProViewHolder
+import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.ItemProtectedParameterSectionViewHolder
+import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.ItemRMPotentialPMProViewHolder
+import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.ItemReactivatedComebackViewHolder
+import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.ItemShopPerformanceErrorViewHolder
+import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.ItemStatusPMProPotentiallyDowngradedViewHolder
+import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.ItemStatusPMProViewHolder
+import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.ItemStatusPMViewHolder
+import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.ItemStatusRMViewHolder
+import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.ItemTimerNewSellerViewHolder
+import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.PeriodDetailPerformanceViewHolder
+import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.SectionFaqViewHolder
+import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.SectionShopFeatureRecommendationViewHolder
+import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.ShopPerformanceShimmerViewHolder
+import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.TickerReactivatedViewHolder
 import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.tablet.ItemHeaderParameterPerformanceViewHolder
-import com.tokopedia.shop.score.performance.presentation.model.*
+import com.tokopedia.shop.score.performance.presentation.model.HeaderShopPerformanceUiModel
+import com.tokopedia.shop.score.performance.presentation.model.ItemDetailPerformanceUiModel
+import com.tokopedia.shop.score.performance.presentation.model.ItemLevelScoreProjectUiModel
+import com.tokopedia.shop.score.performance.presentation.model.ItemReactivatedComebackUiModel
+import com.tokopedia.shop.score.performance.presentation.model.ItemShopPerformanceErrorUiModel
+import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMProPotentiallyDowngradedUiModel
+import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMProUiModel
+import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMUiModel
+import com.tokopedia.shop.score.performance.presentation.model.ItemStatusRMUiModel
+import com.tokopedia.shop.score.performance.presentation.model.ItemTimerNewSellerUiModel
+import com.tokopedia.shop.score.performance.presentation.model.PeriodDetailPerformanceUiModel
+import com.tokopedia.shop.score.performance.presentation.model.ProtectedParameterSectionUiModel
+import com.tokopedia.shop.score.performance.presentation.model.SectionFaqUiModel
+import com.tokopedia.shop.score.performance.presentation.model.SectionPMPotentialPMProUiModel
+import com.tokopedia.shop.score.performance.presentation.model.SectionRMPotentialPMBenefitUiModel
+import com.tokopedia.shop.score.performance.presentation.model.SectionRMPotentialPMProUiModel
+import com.tokopedia.shop.score.performance.presentation.model.SectionShopRecommendationUiModel
+import com.tokopedia.shop.score.performance.presentation.model.TickerReactivatedUiModel
 import com.tokopedia.shop.score.performance.presentation.model.tablet.ItemHeaderParameterDetailUiModel
 
 class ShopPerformanceAdapterTypeFactory(
@@ -89,6 +124,10 @@ class ShopPerformanceAdapterTypeFactory(
         return ItemHeaderParameterPerformanceViewHolder.LAYOUT
     }
 
+    override fun type(model: ItemStatusPMProPotentiallyDowngradedUiModel): Int {
+        return ItemStatusPMProPotentiallyDowngradedViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             ItemHeaderShopPerformanceViewHolder.LAYOUT -> ItemHeaderShopPerformanceViewHolder(
@@ -155,6 +194,10 @@ class ShopPerformanceAdapterTypeFactory(
                 shopPerformanceListener
             )
             ItemHeaderParameterPerformanceViewHolder.LAYOUT -> ItemHeaderParameterPerformanceViewHolder(
+                parent,
+                shopPerformanceListener
+            )
+            ItemStatusPMProPotentiallyDowngradedViewHolder.LAYOUT -> ItemStatusPMProPotentiallyDowngradedViewHolder(
                 parent,
                 shopPerformanceListener
             )

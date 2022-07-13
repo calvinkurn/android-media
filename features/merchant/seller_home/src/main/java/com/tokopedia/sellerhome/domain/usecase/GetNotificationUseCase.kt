@@ -1,12 +1,12 @@
 package com.tokopedia.sellerhome.domain.usecase
 
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.sellerhome.domain.gqlquery.GqlGetNotification
 import com.tokopedia.sellerhome.domain.mapper.NotificationMapper
 import com.tokopedia.sellerhome.domain.model.GetNotificationsResponse
 import com.tokopedia.sellerhome.view.model.NotificationUiModel
@@ -16,13 +16,18 @@ import com.tokopedia.usecase.RequestParams
  * Created By @ilhamsuaib on 2020-03-03
  */
 
+@GqlQuery("GetNotificationGqlQuery", GetNotificationUseCase.QUERY)
 class GetNotificationUseCase(
-        private val gqlRepository: GraphqlRepository,
-        private val mapper: NotificationMapper
+    private val gqlRepository: GraphqlRepository,
+    private val mapper: NotificationMapper
 ) : BaseGqlUseCase<NotificationUiModel>() {
 
     override suspend fun executeOnBackground(): NotificationUiModel {
-        val gqlRequest = GraphqlRequest(GqlGetNotification, GetNotificationsResponse::class.java, params.parameters)
+        val gqlRequest = GraphqlRequest(
+            GetNotificationGqlQuery(),
+            GetNotificationsResponse::class.java,
+            params.parameters
+        )
         val gqlResponse: GraphqlResponse = gqlRepository.response(listOf(gqlRequest))
 
         val errors: List<GraphqlError>? = gqlResponse.getError(GetNotificationsResponse::class.java)
@@ -36,6 +41,23 @@ class GetNotificationUseCase(
     }
 
     companion object {
+        const val QUERY = """
+            query getNotifications(${'$'}typeId: Int!) {
+              notifications {
+                chat {
+                  unreadsSeller
+                }
+                sellerOrderStatus {
+                  newOrder
+                  readyToShip
+                }
+              }
+              notifcenter_unread(type_id: ${'$'}typeId) {
+                notif_unread_int
+              }
+              status
+            }
+        """
         private const val TYPE_ID = "typeId"
         private const val TYPE_ID_DEFAULT = 0
         private const val TYPE_ID_SELLER = 2

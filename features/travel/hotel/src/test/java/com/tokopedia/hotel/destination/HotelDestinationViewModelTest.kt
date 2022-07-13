@@ -179,7 +179,7 @@ class HotelDestinationViewModelTest {
         //given
         val searchDestinations = mutableListOf<SearchDestination>()
         for (i in 0..3) {
-            searchDestinations.add(SearchDestination(i.toLong()))
+            searchDestinations.add(SearchDestination(i.toString()))
         }
         val graphqlSuccessResponse = GraphqlResponse(
                 mapOf<Type, Any>(HotelSuggestion.Response::class.java to HotelSuggestion.Response(HotelSuggestion(searchDestinationList = searchDestinations))),
@@ -271,6 +271,36 @@ class HotelDestinationViewModelTest {
 
         // then
         assert(hotelDestinationViewModel.longLat.value is Fail)
+    }
+
+    @Test
+    fun onGetLocation_successToGetLocation_LatLongShouldBeSuccessWithZeroLatitude() {
+        // given
+        val deviceLocation = DeviceLocation(0.0, 2.54321, 0)
+
+        // when
+        val onGetLocationFun = hotelDestinationViewModel.onGetLocation()
+        onGetLocationFun(deviceLocation)
+
+        // then
+        assert(hotelDestinationViewModel.longLat.value is Success)
+        assert((hotelDestinationViewModel.longLat.value as Success).data.first == deviceLocation.longitude)
+        assert((hotelDestinationViewModel.longLat.value as Success).data.second == deviceLocation.latitude)
+    }
+
+    @Test
+    fun onGetLocation_successToGetLocation_LatLongShouldBeSuccessWithZeroLongitude() {
+        // given
+        val deviceLocation = DeviceLocation(1.123450, 0.0, 0)
+
+        // when
+        val onGetLocationFun = hotelDestinationViewModel.onGetLocation()
+        onGetLocationFun(deviceLocation)
+
+        // then
+        assert(hotelDestinationViewModel.longLat.value is Success)
+        assert((hotelDestinationViewModel.longLat.value as Success).data.first == deviceLocation.longitude)
+        assert((hotelDestinationViewModel.longLat.value as Success).data.second == deviceLocation.latitude)
     }
 
     @Test

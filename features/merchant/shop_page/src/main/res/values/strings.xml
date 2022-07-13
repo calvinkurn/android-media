@@ -2,6 +2,7 @@
     <string name="shop_page_label_reputation">Reputasi</string>
     <string name="shop_page_label_favorite">Favoritkan</string>
     <string name="shop_page_label_featured_product">Produk Unggulan</string>
+    <string name="shop_page_seller_atc_error_message">Eits, kamu nggak bisa menambahkan barang jualanmu ke keranjang</string>
 
     <string name="shop_page_header_request_unmoderate_bottomsheet_title">Permintaan buka moderasi toko</string>
     <string name="shop_page_header_request_unmoderate_already_sent">Permintaan anda sedang dalam proses.</string>
@@ -17,6 +18,7 @@
     <string name="shop_page_reload">Muat Ulang</string>
     <string name="shop_page_reload_beginning_of_description">Data tidak berhasil ditampilkan, klik</string>
     <string name="shop_page_reload_end_of_description">untuk coba lagi</string>
+    <string name="shop_page_atc_label_cta">Oke</string>
 
     <!-- Shop Info -->
     <string name="shop_info_title">Shop Info</string>
@@ -25,6 +27,11 @@
     <string name="shop_info_title_tab_home">Home</string>
     <string name="shop_info_title_tab_discussion">Diskusi</string>
     <string name="shop_info_title_tab_feed">Feed</string>
+    <string name="shop_info_title_tab_review">Review</string>
+
+    <string name="shop_info_title_tab_shop_info">Informasi Toko</string>
+    <string name="shop_info_title_tab_note">Catatan</string>
+
     <string name="shop_info_go_apotik_sia_number_title">Nomor SIA:</string>
     <string name="shop_info_go_apotik_sipa_number_title">Nomor SIPA:</string>
     <string name="shop_info_go_apotik_apj_title">APJ:</string>

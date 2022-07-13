@@ -127,7 +127,7 @@ class SmartBillsViewModelTest {
         val statementBillsResponse = RechargeListSmartBills.Response(RechargeListSmartBills(
             month = "4", monthText = "April", isOngoing = true, sections = listOf(Section(
                 title = "Section 2", type = 2, bills = listOf(
-                RechargeBills(uuid = "122_123",flag = false, index = 0, productID =  1, productName = "test", checkoutFields = listOf(checkoutField))
+                RechargeBills(uuid = "122_123",flag = false, index = 0, productID =  "1", productName = "test", checkoutFields = listOf(checkoutField))
         )
         ))
         ))
@@ -152,7 +152,7 @@ class SmartBillsViewModelTest {
         val bills = statementBills.sections[0].bills
         assert(bills.isNotEmpty())
         assertEquals(bills[0].index, 0)
-        assertEquals(bills[0].productID, 1)
+        assertEquals(bills[0].productID, "1")
         assertEquals(bills[0].productName, "test")
         val checkoutFields = bills[0].checkoutFields
         assert(checkoutFields.isNotEmpty())
@@ -278,7 +278,7 @@ class SmartBillsViewModelTest {
         //given
         val errorResponseAttributes = RechargeMultiCheckoutResponse.MultiCheckoutResponseAttributes(
                 false,
-                listOf(RechargeMultiCheckoutResponse.Error(0, 1, "error"))
+                listOf(RechargeMultiCheckoutResponse.Error(0, "1", "error"))
         )
         val mockMultiCheckoutResponse = RechargeMultiCheckoutResponse("test", "0123456789", errorResponseAttributes)
         val dataRechargeMultiCheckoutResponse = DataRechargeMultiCheckoutResponse(mockMultiCheckoutResponse)
@@ -307,7 +307,7 @@ class SmartBillsViewModelTest {
         assert(errors.isNotEmpty())
         val error = errors[0]
         assertEquals(error.index, 0)
-        assertEquals(error.productID, 1)
+        assertEquals(error.productID, "1")
         assertEquals(error.errorMessage, "error")
     }
 
@@ -446,7 +446,7 @@ class SmartBillsViewModelTest {
     @Test
     fun createMultiCheckoutParams_Success() {
         //given
-        val bills = listOf(RechargeBills("123",false, 0, 1, checkoutFields = listOf(checkoutField)))
+        val bills = listOf(RechargeBills("123",false, 0, "1", checkoutFields = listOf(checkoutField)))
         //when
         val actual = smartBillsViewModel.createMultiCheckoutParams(bills, userSession)
         //then
@@ -466,7 +466,7 @@ class SmartBillsViewModelTest {
     @Test
     fun createMultiCheckoutParams_Fail() {
         //given
-        val bills = listOf(RechargeBills(productID = 1, checkoutFields = listOf(checkoutField)))
+        val bills = listOf(RechargeBills(productID = "1", checkoutFields = listOf(checkoutField)))
         //when
         val actual = smartBillsViewModel.createMultiCheckoutParams(bills, userSession)
         //then
@@ -517,13 +517,13 @@ class SmartBillsViewModelTest {
         val statementBillsResponse = RechargeListSmartBills.Response(RechargeListSmartBills(
                 month = "4", monthText = "April", isOngoing = true, sections = listOf(Section(
                 title = "Section 2", type = 2, bills = listOf(
-                RechargeBills(uuid = "122_123",flag = false, index = 0, productID =  1, productName = "test", checkoutFields = listOf(checkoutField))
+                RechargeBills(uuid = "122_123",flag = false, index = 0, productID =  "1", productName = "test", checkoutFields = listOf(checkoutField))
         )))))
 
         val getSBMActionResponse = RechargeMultipleSBMBill.Response(RechargeMultipleSBMBill(
                 userID = "1124",
                 bills = listOf(
-                        RechargeBills(uuid = "122_124", section = Section(title = "Main", type = 2) ,flag = false, index = 1, productID =  2, productName = "testAction", checkoutFields = listOf(checkoutField))
+                        RechargeBills(uuid = "122_124", section = Section(title = "Main", type = 2) ,flag = false, index = 1, productID = "2", productName = "testAction", checkoutFields = listOf(checkoutField))
                 )
         ))
         val result = HashMap<Type, Any>()
@@ -548,7 +548,7 @@ class SmartBillsViewModelTest {
         val bills = statementBills.sections[0].bills
         assert(bills.isNotEmpty())
         assertEquals(bills[0].index, 0)
-        assertEquals(bills[0].productID, 1)
+        assertEquals(bills[0].productID, "1")
         assertEquals(bills[0].productName, "test")
         val checkoutFields = bills[0].checkoutFields
         assert(checkoutFields.isNotEmpty())
@@ -556,7 +556,7 @@ class SmartBillsViewModelTest {
 
         assert(bills.isNotEmpty())
         assertEquals(bills[1].index, 1)
-        assertEquals(bills[1].productID, 2)
+        assertEquals(bills[1].productID, "2")
         assertEquals(bills[1].productName, "testAction")
         val checkoutFieldsAction = bills[1].checkoutFields
         assert(checkoutFieldsAction.isNotEmpty())
@@ -569,7 +569,7 @@ class SmartBillsViewModelTest {
         val statementBillsResponse = RechargeListSmartBills.Response(RechargeListSmartBills(
                 month = "4", monthText = "April", isOngoing = true, sections = listOf(Section(
                 title = "Section 2", type = 2, bills = listOf(
-                RechargeBills(uuid = "122_123",flag = false, index = 0, productID =  1, productName = "test", checkoutFields = listOf(checkoutField))
+                RechargeBills(uuid = "122_123",flag = false, index = 0, productID =  "1", productName = "test", checkoutFields = listOf(checkoutField))
         )))))
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseFail
 

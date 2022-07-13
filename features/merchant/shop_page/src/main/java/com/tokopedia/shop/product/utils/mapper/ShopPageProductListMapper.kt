@@ -1,9 +1,6 @@
 package com.tokopedia.shop.product.utils.mapper
 
-import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
-import com.tokopedia.kotlin.extensions.view.thousandFormatted
-import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
-import com.tokopedia.kotlin.extensions.view.toFloatOrZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherModel
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.productcard.ProductCardModel
@@ -51,7 +48,13 @@ object ShopPageProductListMapper {
         )
     }
 
-    fun mapShopProductToProductViewModel(shopProduct: ShopProduct, isMyOwnProduct: Boolean, etalaseId: String, etalaseType: Int? = null): ShopProductUiModel =
+    fun mapShopProductToProductViewModel(
+        shopProduct: ShopProduct,
+        isMyOwnProduct: Boolean,
+        etalaseId: String,
+        etalaseType: Int? = null,
+        isEnableDirectPurchase: Boolean
+    ): ShopProductUiModel =
             with(shopProduct) {
                 ShopProductUiModel().also {
                     it.id = productId
@@ -115,6 +118,11 @@ object ShopPageProductListMapper {
                             it.originalPrice = campaign.originalPriceFmt.toFloatOrZero().getCurrencyFormatted()
                         }
                     }
+                    it.isEnableDirectPurchase = isEnableDirectPurchase
+                    it.isVariant = hasVariant
+                    it.minimumOrder = minimumOrder
+                    it.stock = stock
+                    it.parentId = parentId
                 }
             }
 
@@ -205,7 +213,7 @@ object ShopPageProductListMapper {
 
         val freeOngkirObject = ProductCardModel.FreeOngkir(shopProductUiModel.isShowFreeOngkir, shopProductUiModel.freeOngkirPromoIcon ?: "")
 
-        return ProductCardModel(
+        val baseProductCardModel = ProductCardModel(
                 productImageUrl = shopProductUiModel.imageUrl ?: "",
                 productName = shopProductUiModel.name ?: "",
                 discountPercentage = discountPercentage.takeIf { !shopProductUiModel.hideGimmick } ?: "",
@@ -221,6 +229,66 @@ object ShopPageProductListMapper {
                 stockBarLabel = shopProductUiModel.stockLabel,
                 stockBarPercentage = shopProductUiModel.stockBarPercentage,
                 isWideContent = isWideContent
+        )
+        return if (shopProductUiModel.isEnableDirectPurchase && isProductCardIsNotSoldOut(shopProductUiModel.isSoldOut)) {
+            val productCardModel = if (shopProductUiModel.isVariant) {
+                createProductCardWithVariantAtcModel(
+                    shopProductUiModel,
+                    baseProductCardModel
+                )
+            } else {
+                if (shopProductUiModel.productInCart.isZero()) {
+                    createProductCardWithDefaultAddToCardModel(baseProductCardModel)
+                } else {
+                    createProductCardWithNonVariantAtcModel(
+                        shopProductUiModel,
+                        baseProductCardModel
+                    )
+                }
+            }
+            productCardModel.copy(
+                hasThreeDots = false
+            )
+        } else {
+            baseProductCardModel.copy(
+                hasThreeDots = isShowThreeDots
+            )
+        }
+    }
+
+    private fun isProductCardIsNotSoldOut(isProductSoldOut: Boolean): Boolean {
+        return !isProductSoldOut
+    }
+
+    private fun createProductCardWithDefaultAddToCardModel(baseProductCardModel: ProductCardModel): ProductCardModel {
+        return baseProductCardModel.copy(
+            variant = null,
+            nonVariant = null,
+            hasAddToCartButton = true
+        )
+    }
+
+    private fun createProductCardWithVariantAtcModel(
+        shopProductUiModel: ShopProductUiModel,
+        baseProductCardModel: ProductCardModel
+    ): ProductCardModel {
+        return baseProductCardModel.copy(
+            variant = ProductCardModel.Variant(
+                shopProductUiModel.productInCart
+            )
+        )
+    }
+
+    private fun createProductCardWithNonVariantAtcModel(
+        shopProductUiModel: ShopProductUiModel,
+        baseProductCardModel: ProductCardModel
+    ): ProductCardModel {
+        return baseProductCardModel.copy(
+            nonVariant = ProductCardModel.NonVariant(
+                quantity = shopProductUiModel.productInCart,
+                minQuantity = shopProductUiModel.minimumOrder,
+                maxQuantity = shopProductUiModel.stock
+            )
         )
     }
 
