@@ -15,7 +15,13 @@ sealed interface UserProfileAction {
 
     data class ClickUpdateReminder(val isFromLogin: Boolean) : UserProfileAction
 
-    data class ClickFollowButtonShopRecom(val data: ShopRecomUiModelItem) : UserProfileAction
+    data class ClickFollowButtonShopRecom(
+        val itemID: Long,
+        val encryptedID: String,
+        val isFollow: Boolean
+    ) : UserProfileAction
+
+    data class RemoveShopRecomItem(val itemID: Long,) : UserProfileAction
 
     data class SaveReminderActivityResult(
         val channelId: String,

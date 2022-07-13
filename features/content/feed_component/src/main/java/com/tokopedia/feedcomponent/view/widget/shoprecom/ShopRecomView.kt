@@ -59,8 +59,14 @@ class ShopRecomView : FrameLayout {
 
     private fun onClickListener(data: ShopRecomUiModelItem) = with(binding) {
         clItemShopContainer.setOnClickListener { mListener?.onShopRecomItemClicked(data.applink) }
-        imgItemShopClose.setOnClickListener { mListener?.onShopRecomCloseClicked(data) }
-        btnItemShop.setOnClickListener { mListener?.onShopRecomFollowClicked(data) }
+        imgItemShopClose.setOnClickListener { mListener?.onShopRecomCloseClicked(data.id) }
+        btnItemShop.setOnClickListener {
+            mListener?.onShopRecomFollowClicked(
+                data.id,
+                data.encryptedID,
+                data.isFollow
+            )
+        }
     }
 
 }

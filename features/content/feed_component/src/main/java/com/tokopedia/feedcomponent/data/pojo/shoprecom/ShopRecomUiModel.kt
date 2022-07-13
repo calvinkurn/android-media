@@ -16,5 +16,5 @@ data class ShopRecomUiModelItem(
     val nickname: String = "",
     val type: Int = 0,
     val applink: String = "",
-    var isFollow: Boolean = false,
+    val isFollow: Boolean = false,
 )

@@ -18,7 +18,6 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
-import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
 import com.tokopedia.feedcomponent.onboarding.view.fragment.FeedUGCOnboardingParentFragment
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
@@ -118,7 +117,9 @@ class UserProfileFragment @Inject constructor(
 
     private lateinit var viewModel: UserProfileViewModel
 
-    private lateinit var mAdapterShopRecom: ShopRecomAdapter
+    private val mAdapterShopRecom: ShopRecomAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        ShopRecomAdapter(this)
+    }
 
     private val mAdapter: UserPostBaseAdapter by lazy {
         UserPostBaseAdapter(this, this) { cursor ->
@@ -152,6 +153,7 @@ class UserProfileFragment @Inject constructor(
 
         initObserver()
         initListener()
+        initShopRecommendation()
         setHeader()
 
         if (arguments == null || requireArguments().getString(EXTRA_USERNAME).isNullOrBlank()) {
@@ -265,7 +267,6 @@ class UserProfileFragment @Inject constructor(
     }
 
     private fun initShopRecommendation() = with(mainBinding.shopRecommendation.rvShopRecom) {
-        mAdapterShopRecom = ShopRecomAdapter(this@UserProfileFragment)
         layoutManager = linearLayoutManager
         adapter = mAdapterShopRecom
         if (itemDecorationCount == 0) addItemDecoration(ShopRecomItemDecoration())
@@ -302,7 +303,6 @@ class UserProfileFragment @Inject constructor(
         observeUiEvent()
 
         addListObserver()
-        addShopRecomObserver()
         addUserPostObserver()
         adduserPostErrorObserver()
     }
@@ -314,6 +314,7 @@ class UserProfileFragment @Inject constructor(
                 renderButtonAction(it.prevValue, it.value)
                 renderCreatePostButton(it.prevValue, it.value)
                 renderProfileReminder(it.prevValue, it.value)
+                renderShopRecom(it.prevValue, it.value)
             }
         }
     }
@@ -357,9 +358,6 @@ class UserProfileFragment @Inject constructor(
                             }
                         )
                     }
-                    is UserProfileUiEvent.SuccessFollowShopRecom -> {
-                        mAdapterShopRecom.updateItem(event.data)
-                    }
                 }
             }
         }
@@ -370,21 +368,6 @@ class UserProfileFragment @Inject constructor(
             it?.let {
                 if (it) {
                     initUserPost(viewModel.profileUserID)
-                }
-            }
-        }
-    }
-
-    private fun addShopRecomObserver() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.shopRecomContent.collect {
-                initShopRecommendation()
-                mAdapterShopRecom.insertItem(it)
-                mainBinding.userPostContainer.hide()
-                with(mainBinding.shopRecommendation) {
-                    root.show()
-                    txtWordingFollow.show()
-                    rvShopRecom.show()
                 }
             }
         }
@@ -526,6 +509,21 @@ class UserProfileFragment @Inject constructor(
 
         mainBinding.cardUserReminder.root.shouldShowWithAction(isShowProfileReminder) {
             mainBinding.btnAction.hide()
+        }
+    }
+
+    private fun renderShopRecom(
+        prev: UserProfileUiState?,
+        value: UserProfileUiState
+    ) {
+        if (prev?.shopRecom == value.shopRecom) return
+
+        mAdapterShopRecom.updateData(value.shopRecom)
+        mainBinding.userPostContainer.hide()
+        with(mainBinding.shopRecommendation) {
+            root.show()
+            txtWordingFollow.show()
+            rvShopRecom.show()
         }
     }
 
@@ -691,8 +689,8 @@ class UserProfileFragment @Inject constructor(
         return bundle
     }
 
-    override fun onShopRecomCloseClicked(item: ShopRecomUiModelItem) {
-        mAdapterShopRecom.removeItem(item)
+    override fun onShopRecomCloseClicked(itemID: Long) {
+        submitAction(UserProfileAction.RemoveShopRecomItem(itemID))
         if (mAdapterShopRecom.itemCount == 0) {
             with(mainBinding.shopRecommendation) {
                 txtWordingFollow.hide()
@@ -701,8 +699,8 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
-    override fun onShopRecomFollowClicked(item: ShopRecomUiModelItem) {
-        submitAction(UserProfileAction.ClickFollowButtonShopRecom(item))
+    override fun onShopRecomFollowClicked(itemID: Long, encryptedID: String, isFollow: Boolean) {
+        submitAction(UserProfileAction.ClickFollowButtonShopRecom(itemID, encryptedID, isFollow))
     }
 
     override fun onShopRecomItemClicked(appLink: String) {

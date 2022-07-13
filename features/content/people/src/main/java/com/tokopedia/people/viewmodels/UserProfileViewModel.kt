@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.people.Resources
@@ -15,7 +16,6 @@ import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.people.views.uimodel.profile.*
 import com.tokopedia.people.views.uimodel.saved.SavedReminderData
-import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
 import com.tokopedia.people.views.uimodel.state.UserProfileUiState
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
@@ -41,9 +41,6 @@ class UserProfileViewModel @AssistedInject constructor(
      * */
     private val userPost = MutableLiveData<Boolean>()
     val userPostLiveData : LiveData<Boolean> get() = userPost
-
-    private val _shopRecomContent = MutableSharedFlow<List<ShopRecomUiModelItem>>()
-    val shopRecomContent: Flow<List<ShopRecomUiModelItem>> get() = _shopRecomContent
 
     private val playPostContent = MutableLiveData<Resources<UserPostModel>>()
     val playPostContentLiveData : LiveData<Resources<UserPostModel>> get() = playPostContent
@@ -94,6 +91,7 @@ class UserProfileViewModel @AssistedInject constructor(
     private val _followInfo = MutableStateFlow(FollowInfoUiModel.Empty)
     private val _profileWhitelist = MutableStateFlow(ProfileWhitelistUiModel.Empty)
     private val _profileType = MutableStateFlow(ProfileType.Unknown)
+    private val _shopRecomContent = MutableStateFlow(listOf<ShopRecomUiModelItem>())
 
     private val _uiEvent = MutableSharedFlow<UserProfileUiEvent>()
 
@@ -105,24 +103,29 @@ class UserProfileViewModel @AssistedInject constructor(
         _followInfo,
         _profileType,
         _profileWhitelist,
-    ) { profileInfo, followInfo, profileType, profileWhitelist ->
+        _shopRecomContent,
+    ) { profileInfo, followInfo, profileType, profileWhitelist, shopRecom ->
         UserProfileUiState(
             profileInfo = profileInfo,
             followInfo = followInfo,
             profileType = profileType,
             profileWhitelist = profileWhitelist,
+            shopRecom = shopRecom
         )
     }
 
     fun submitAction(action: UserProfileAction) {
-        when(action) {
+        when (action) {
             is UserProfileAction.LoadProfile -> handleLoadProfile(action.isRefresh)
             is UserProfileAction.LoadContent -> handleLoadContent(action.cursor)
             is UserProfileAction.ClickFollowButton -> handleClickFollowButton(action.isFromLogin)
             is UserProfileAction.ClickUpdateReminder -> handleClickUpdateReminder(action.isFromLogin)
             is UserProfileAction.SaveReminderActivityResult -> handleSaveReminderActivityResult(action.channelId, action.position, action.isActive)
             is UserProfileAction.RemoveReminderActivityResult -> handleRemoveReminderActivityResult()
-            is UserProfileAction.ClickFollowButtonShopRecom -> handleClickFollowButtonShopRecom(action.data)
+            is UserProfileAction.ClickFollowButtonShopRecom -> handleClickFollowButtonShopRecom(
+                action.itemID, action.encryptedID, action.isFollow
+            )
+            is UserProfileAction.RemoveShopRecomItem -> handleremoveShopRecomItem(action.itemID)
         }
     }
 
@@ -227,22 +230,23 @@ class UserProfileViewModel @AssistedInject constructor(
         _savedReminderData.update { SavedReminderData.NoData }
     }
 
-    private fun handleClickFollowButtonShopRecom(data: ShopRecomUiModelItem) {
+    private fun handleClickFollowButtonShopRecom(itemID: Long, encryptedID: String, isFollow: Boolean) {
         viewModelScope.launchCatchError(block = {
 
             val followInfo = _followInfo.value
 
-            val result = if (data.isFollow) repo.unFollowProfile(data.encryptedID)
-            else repo.followProfile(data.encryptedID)
+            val result = if (isFollow) repo.unFollowProfile(encryptedID)
+            else repo.followProfile(encryptedID)
 
             when (result) {
                 is MutationUiModel.Success -> {
                     _profileInfo.update { repo.getProfile(followInfo.userID) }
-                    _uiEvent.emit(
-                        UserProfileUiEvent.SuccessFollowShopRecom(
-                            data.copy(isFollow = !data.isFollow)
-                        )
-                    )
+                    _shopRecomContent.update {
+                        _shopRecomContent.value.map {
+                            if (itemID == it.id) it.copy(isFollow = !isFollow)
+                            else it
+                        }
+                    }
                 }
                 is MutationUiModel.Error -> {
                     _uiEvent.emit(UserProfileUiEvent.ErrorFollowUnfollow(result.message))
@@ -251,6 +255,10 @@ class UserProfileViewModel @AssistedInject constructor(
         }, onError = {
             _uiEvent.emit(UserProfileUiEvent.ErrorFollowUnfollow(""))
         })
+    }
+
+    private fun handleremoveShopRecomItem(itemID: Long) {
+        _shopRecomContent.update { _shopRecomContent.value.filterNot { it.id == itemID } }
     }
 
     /** Helper */
