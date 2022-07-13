@@ -12,37 +12,33 @@ object PageErrorTracking {
     private const val CATEGORY_404_NOT_FOUND = "404 not found"
 
     fun impressPageError(
-        productId: String,
-        deeplink: String,
+        data: PageErrorTracker,
         trackingQueue: TrackingQueue
     ){
         val mapEvent = hashMapOf<String, Any>(
             Hit.EVENT to Value.VIEW_PG,
             Hit.EVENT_ACTION to ACTION_IMPRESSION,
             Hit.EVENT_CATEGORY to CATEGORY_404_NOT_FOUND,
-            Hit.EVENT_LABEL to "PDP - $deeplink - $productId",
+            Hit.EVENT_LABEL to "PDP - ${data.deeplink} - ${data.finalProductId}",
             Hit.TRACKER_ID to "33122",
             Hit.BUSINESS_UNIT to Value.PRODUCT_DETAIL_PAGE,
             Hit.CURRENT_SITE to Value.TOKOPEDIA_MARKETPLACE,
-            Hit.PRODUCT_ID to productId,
+            Hit.PRODUCT_ID to data.finalProductId
         )
 
         trackingQueue.putEETracking(mapEvent)
     }
 
-    fun clickBackToHomepage(
-        productId: String,
-        deeplink: String
-    ) {
+    fun clickBackToHomepage(data: PageErrorTracker) {
         val mapEvent = hashMapOf<String, Any>(
             Hit.EVENT to Value.CLICK_PG,
             Hit.EVENT_ACTION to ACTION_CLICK_HOMEPAGE,
             Hit.EVENT_CATEGORY to CATEGORY_404_NOT_FOUND,
-            Hit.EVENT_LABEL to "PDP - $deeplink - $productId",
+            Hit.EVENT_LABEL to "PDP - ${data.deeplink} - ${data.finalProductId}",
             Hit.TRACKER_ID to "33123",
             Hit.BUSINESS_UNIT to Value.PRODUCT_DETAIL_PAGE,
             Hit.CURRENT_SITE to Value.TOKOPEDIA_MARKETPLACE,
-            Hit.PRODUCT_ID to productId,
+            Hit.PRODUCT_ID to data.finalProductId
         )
 
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)

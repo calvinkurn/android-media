@@ -55,7 +55,9 @@ class PageErrorViewHolder(val view: View,
         }
 
         itemView.addOnImpressionListener(element.impressHolder){
-            listener.onImpressPageError()
+            if(element.errorCode == GlobalError.PAGE_NOT_FOUND.toString()){
+                listener.onImpressPageError()
+            }
         }
     }
 
