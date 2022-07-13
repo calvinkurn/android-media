@@ -89,6 +89,7 @@ class FeedViewModel @Inject constructor(
 
     companion object {
         private const val ERROR_UNFOLLOW_MESSAGE = "Oops, gagal meng-unfollow."
+        private const val ERROR_UNFOLLOW_ON_TOGGLE_MESSAGE = "Oops, tidak bisa unfollow toko."
         private const val ERROR_FOLLOW_MESSAGE = "“Oops, gagal mem-follow."
         const val PARAM_SOURCE_RECOM_PROFILE_CLICK = "click_recom_profile"
         const val PARAM_SOURCE_SEE_ALL_CLICK = "click_see_all"
@@ -383,7 +384,7 @@ class FeedViewModel @Inject constructor(
             toggleFavoriteShopResp.value = Success(results)
         }) {
             if (follow)
-                toggleFavoriteShopResp.value = Fail(Exception(ERROR_UNFOLLOW_MESSAGE))
+                toggleFavoriteShopResp.value = Fail(Exception(ERROR_UNFOLLOW_ON_TOGGLE_MESSAGE))
             else
                 toggleFavoriteShopResp.value = Fail(Exception(ERROR_FOLLOW_MESSAGE))
 
