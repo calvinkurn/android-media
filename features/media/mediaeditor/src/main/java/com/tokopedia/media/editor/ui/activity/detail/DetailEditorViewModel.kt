@@ -61,7 +61,7 @@ class DetailEditorViewModel @Inject constructor(
         }
     }
 
-    fun setWatermark(watermarkType: Int){
+    fun setWatermark(watermarkType: Int) {
         _watermarkFilter.value = watermarkType
     }
 

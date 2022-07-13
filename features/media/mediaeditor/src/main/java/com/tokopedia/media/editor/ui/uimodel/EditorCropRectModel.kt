@@ -1,6 +1,6 @@
 package com.tokopedia.media.editor.ui.uimodel
 
-data class EditorCropRectModel (
+data class EditorCropRectModel(
     val offsetX: Int,
     val offsetY: Int,
     val imageWidth: Int,

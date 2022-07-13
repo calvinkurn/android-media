@@ -20,7 +20,7 @@ class DrawerUiComponent constructor(
     private lateinit var drawerAdapter: ThumbnailDrawerAdapter
 
     @SuppressLint("NotifyDataSetChanged")
-    fun refreshItem(updateIndex: Int, newData: List<EditorUiModel>){
+    fun refreshItem(updateIndex: Int, newData: List<EditorUiModel>) {
         if (::drawerAdapter.isInitialized) {
             drawerAdapter.updateData(updateIndex, newData)
         }
@@ -32,7 +32,7 @@ class DrawerUiComponent constructor(
 
     fun setupRecyclerView(newData: List<EditorUiModel>) {
         if (!::drawerAdapter.isInitialized) {
-            drawerAdapter = ThumbnailDrawerAdapter(newData,this)
+            drawerAdapter = ThumbnailDrawerAdapter(newData, this)
         }
 
         with(lstThumbnail) {

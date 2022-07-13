@@ -40,17 +40,16 @@ import javax.inject.Inject
 
 class DetailEditorFragment @Inject constructor(
     viewModelFactory: ViewModelProvider.Factory,
-) : BaseEditorFragment()
-    , BrightnessToolUiComponent.Listener
-    , ContrastToolsUiComponent.Listener
-    , RemoveBackgroundToolUiComponent.Listener
-    , WatermarkToolUiComponent.Listener {
+) : BaseEditorFragment(), BrightnessToolUiComponent.Listener, ContrastToolsUiComponent.Listener,
+    RemoveBackgroundToolUiComponent.Listener, WatermarkToolUiComponent.Listener {
 
     private val viewBinding: FragmentDetailEditorBinding? by viewBinding()
     private val viewModel: DetailEditorViewModel by activityViewModels { viewModelFactory }
 
-    @Inject lateinit var contrastFilterRepositoryImpl: ContrastFilterRepositoryImpl
-    @Inject lateinit var watermarkFilterRepositoryImpl: WatermarkFilterRepositoryImpl
+    @Inject
+    lateinit var contrastFilterRepositoryImpl: ContrastFilterRepositoryImpl
+    @Inject
+    lateinit var watermarkFilterRepositoryImpl: WatermarkFilterRepositoryImpl
 
     private val brightnessComponent by uiComponent { BrightnessToolUiComponent(it, this) }
     private val removeBgComponent by uiComponent { RemoveBackgroundToolUiComponent(it, this) }
@@ -115,37 +114,19 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
-//    private var contrastSliderWaiting = false
     private fun observeContrast() {
         viewModel.contrastFilter.observe(viewLifecycleOwner) {
             originalBitmap?.let { itBitmap ->
                 val cloneOriginal = itBitmap.copy(itBitmap.config, true)
-                viewBinding?.imgPreview?.setImageBitmap(contrastFilterRepositoryImpl.contrast(it, cloneOriginal))
+                viewBinding?.imgPreview?.setImageBitmap(
+                    contrastFilterRepositoryImpl.contrast(
+                        it,
+                        cloneOriginal
+                    )
+                )
             }
-
-//            if(!contrastSliderWaiting){
-//                recurWaitingSliderTask(it, DEFAULT_VALUE_CONTRAST)
-//                contrastSliderWaiting = true
-//            }
         }
     }
-
-//    private fun recurWaitingSliderTask(currentValue: Float, previousValue: Float){
-//        Handler().postDelayed({
-//            if(currentValue == previousValue) implementContrast(currentValue)
-//            else recurWaitingSliderTask(viewModel.contrastFilter.value ?: currentValue, currentValue)
-//        },500)
-//    }
-//
-//    private fun implementContrast(value: Float){
-//        viewBinding?.imgPreview?.apply {
-//            originalBitmap?.let { itBitmap ->
-//                val cloneOriginal = itBitmap.copy(itBitmap.config, true)
-//                setImageBitmap(contrastFilterRepositoryImpl.contrast(value, cloneOriginal))
-//            }
-//        }
-//        contrastSliderWaiting = false
-//    }
 
     private fun observeRemoveBackground() {
         viewModel.removeBackground.observe(viewLifecycleOwner) {
@@ -156,7 +137,6 @@ class DetailEditorFragment @Inject constructor(
                     .load(it)
                     .into(imgPreview)
             }
-
         }
     }
 
@@ -216,9 +196,9 @@ class DetailEditorFragment @Inject constructor(
 
                         imageView.setImageBitmap(resource)
                         imageView.post {
-                            if(data.brightnessValue != null) viewModel.setBrightness(data.brightnessValue!!)
-                            if(data.contrastValue != null) viewModel.setContrast(data.contrastValue!!)
-                            if(data.watermarkMode != null) viewModel.setWatermark(data.watermarkMode!!)
+                            if (data.brightnessValue != null) viewModel.setBrightness(data.brightnessValue!!)
+                            if (data.contrastValue != null) viewModel.setContrast(data.contrastValue!!)
+                            if (data.watermarkMode != null) viewModel.setWatermark(data.watermarkMode!!)
 
                             originalBitmap = it.drawToBitmap()
                         }
@@ -246,7 +226,7 @@ class DetailEditorFragment @Inject constructor(
         activity?.finish()
     }
 
-    private fun saveImage(){
+    private fun saveImage() {
         viewBinding?.let {
             try {
                 val bitmap = it.imgPreview.drawToBitmap()
@@ -265,7 +245,8 @@ class DetailEditorFragment @Inject constructor(
 
                 val uri = file.toUri()
                 data.resultUrl = uri.path
-            } catch (e: Exception){}
+            } catch (e: Exception) {
+            }
         }
     }
 

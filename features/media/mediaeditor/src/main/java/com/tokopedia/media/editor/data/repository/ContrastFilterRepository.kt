@@ -8,7 +8,7 @@ interface ContrastFilterRepository {
     fun contrast(value: Float, source: Bitmap): Bitmap
 }
 
-class ContrastFilterRepositoryImpl @Inject constructor(): ContrastFilterRepository {
+class ContrastFilterRepositoryImpl @Inject constructor() : ContrastFilterRepository {
     /**
      * @param source mutable copy of target bitmap
      * @param value float value for contrast adjustment
@@ -29,16 +29,12 @@ class ContrastFilterRepositoryImpl @Inject constructor(): ContrastFilterReposito
         return source
     }
 
-    private fun shiftPixel(width: Int, height: Int, pixels: IntArray, tempValue: Float){
+    private fun shiftPixel(width: Int, height: Int, pixels: IntArray, tempValue: Float) {
         var red: Float
         var green: Float
         var blue: Float
 
-        var R: Int
-        var G: Int
-        var B: Int
-
-        for (i in 0 until (width*height)){
+        for (i in 0 until (width * height)) {
             red = ((pixels[i] shr 16) and 0xFF).toFloat()
             green = ((pixels[i] shr 8) and 0xFF).toFloat()
             blue = (pixels[i] and 0xFF).toFloat()
@@ -63,13 +59,13 @@ class ContrastFilterRepositoryImpl @Inject constructor(): ContrastFilterReposito
             else if (blue < 0)
                 blue = 0f
 
-            R = red.toInt()
-            G = green.toInt()
-            B = blue.toInt()
+            val finalRed = red.toInt()
+            val finalGreen = green.toInt()
+            val finalBlue = blue.toInt()
             pixels[i] = (pixels[i] and 0xFF000000.toInt()) or
-                    ((R shl 16) and 0x00FF0000) or
-                    ((G shl 8) and 0x0000FF00) or
-                    (B and 0x000000FF)
+                    ((finalRed shl 16) and 0x00FF0000) or
+                    ((finalGreen shl 8) and 0x0000FF00) or
+                    (finalBlue and 0x000000FF)
         }
     }
 }

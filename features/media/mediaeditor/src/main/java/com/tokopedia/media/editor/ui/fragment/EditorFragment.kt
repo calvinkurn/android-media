@@ -20,9 +20,8 @@ import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
-class EditorFragment @Inject constructor() : BaseEditorFragment()
-    , ToolsUiComponent.Listener
-    , DrawerUiComponent.Listener {
+class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiComponent.Listener,
+    DrawerUiComponent.Listener {
 
     private val viewBinding: FragmentMainEditorBinding? by viewBinding()
     private val viewModel: EditorViewModel by activityViewModels()
@@ -56,14 +55,14 @@ class EditorFragment @Inject constructor() : BaseEditorFragment()
         }
     }
 
-    private fun backState(){
+    private fun backState() {
         val targetEditorUiModel = viewModel.getEditState(activeImageUrl)
         targetEditorUiModel?.let {
             val imageEditStateCount = it.editList.size
-            if(it.backValue >= imageEditStateCount) return@let
+            if (it.backValue >= imageEditStateCount) return@let
 
             it.backValue++
-            viewBinding?.imgMainPreview?.loadImage(it.getImageUrl()){
+            viewBinding?.imgMainPreview?.loadImage(it.getImageUrl()) {
                 this.centerCrop()
             }
 
@@ -75,10 +74,10 @@ class EditorFragment @Inject constructor() : BaseEditorFragment()
     private fun forwardState() {
         val targetEditorUiModel = viewModel.getEditState(activeImageUrl)
         targetEditorUiModel?.let {
-            if(it.backValue == 0) return@let
+            if (it.backValue == 0) return@let
 
             it.backValue--
-            viewBinding?.imgMainPreview?.loadImage(it.getImageUrl()){
+            viewBinding?.imgMainPreview?.loadImage(it.getImageUrl()) {
                 this.centerCrop()
             }
 
@@ -87,12 +86,12 @@ class EditorFragment @Inject constructor() : BaseEditorFragment()
         }
     }
 
-    private fun renderUndoText(editList: EditorUiModel): String{
-        return if(editList.editList.isNotEmpty()) "Undo (${editList.editList.size - editList.backValue})" else "-"
+    private fun renderUndoText(editList: EditorUiModel): String {
+        return if (editList.editList.isNotEmpty()) "Undo (${editList.editList.size - editList.backValue})" else "-"
     }
 
-    private fun renderRedoText(editList: EditorUiModel): String{
-        return if(editList.backValue != 0) "Redo (${editList.backValue})" else "-"
+    private fun renderRedoText(editList: EditorUiModel): String {
+        return if (editList.backValue != 0) "Redo (${editList.backValue})" else "-"
     }
 
     override fun initObserver() {
@@ -110,7 +109,7 @@ class EditorFragment @Inject constructor() : BaseEditorFragment()
                 )
 
                 editorUiModel.editList.forEachIndexed { index, item ->
-                    if(index > ((editorUiModel.editList.size - 1) - editorUiModel.backValue)) {
+                    if (index > ((editorUiModel.editList.size - 1) - editorUiModel.backValue)) {
                         return@forEachIndexed
                     }
                     paramData.brightnessValue = item.brightnessValue
@@ -130,7 +129,11 @@ class EditorFragment @Inject constructor() : BaseEditorFragment()
         }
     }
 
-    override fun onThumbnailDrawerClicked(originalUrl: String, resultUrl: String?, clickedIndex: Int) {
+    override fun onThumbnailDrawerClicked(
+        originalUrl: String,
+        resultUrl: String?,
+        clickedIndex: Int
+    ) {
         activeImageUrl = originalUrl
 
         val editList = viewModel.getEditState(originalUrl)
@@ -148,8 +151,8 @@ class EditorFragment @Inject constructor() : BaseEditorFragment()
         }
     }
 
-    private fun observeUpdateIndex(){
-        viewModel.updatedIndexItem.observe(viewLifecycleOwner){
+    private fun observeUpdateIndex() {
+        viewModel.updatedIndexItem.observe(viewLifecycleOwner) {
             thumbnailDrawerComponent.refreshItem(it, viewModel.editStateList.values.toList())
 
             val editorUiModel = viewModel.getEditState(activeImageUrl)

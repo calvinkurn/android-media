@@ -9,11 +9,8 @@ import android.view.View
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.content.ContextCompat
-import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.databinding.MediaEditorSliderLayoutBinding
 import kotlin.math.round
-import com.tokopedia.unifyprinciples.R as PrincipleR
 
 class MediaEditorSlider(context: Context, attributeSet: AttributeSet) :
     ConstraintLayout(context, attributeSet) {
@@ -75,8 +72,8 @@ class MediaEditorSlider(context: Context, attributeSet: AttributeSet) :
         resetSlider()
     }
 
-    private fun moveThumb(){
-        if(sliderInitialPosition == sliderStartValue) return
+    private fun moveThumb() {
+        if (sliderInitialPosition == sliderStartValue) return
 
         // got step size on px
         val stepSize = (sliderWidth - thumbWidth) / sliderStepNumber
@@ -91,7 +88,7 @@ class MediaEditorSlider(context: Context, attributeSet: AttributeSet) :
 
         val targetX = targetStep * stepSize
 
-        sliderThumb.x = if(sliderInitialPosition > sliderStartValue) {
+        sliderThumb.x = if (sliderInitialPosition > sliderStartValue) {
             targetX + sliderThumb.x
         } else {
             sliderThumb.x - targetX
@@ -155,9 +152,9 @@ class MediaEditorSlider(context: Context, attributeSet: AttributeSet) :
             if (sliderText.text != value) {
                 sliderText.text = value
 
-                if(!isValueUpdateDelay && !delayFlag) {
+                if (!isValueUpdateDelay && !delayFlag) {
                     listener?.valueUpdated(stepIndex, value.toFloat())
-                } else if(!delayFlag) {
+                } else if (!delayFlag) {
                     checkIsThumbStop(value.toFloat(), stepIndex, 0f, 0)
                     delayFlag = true
                 }
@@ -167,13 +164,17 @@ class MediaEditorSlider(context: Context, attributeSet: AttributeSet) :
         }
     }
 
-    private fun checkIsThumbStop(currentValue: Float, currentStepIndex: Int, previousValue: Float, previousStepIndex: Int){
+    private fun checkIsThumbStop(
+        currentValue: Float,
+        currentStepIndex: Int,
+        previousValue: Float,
+        previousStepIndex: Int
+    ) {
         Handler().postDelayed({
             if (currentValue == previousValue) {
                 listener?.valueUpdated(currentStepIndex, currentValue)
                 delayFlag = false
-            }
-            else {
+            } else {
                 val stepIndex = xToStep(sliderThumb.x)
                 val value = stepToValue(stepIndex).toInt().toString()
                 checkIsThumbStop(value.toFloat(), stepIndex, currentValue, currentStepIndex)

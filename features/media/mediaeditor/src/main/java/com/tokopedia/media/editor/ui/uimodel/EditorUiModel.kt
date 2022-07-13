@@ -8,10 +8,10 @@ class EditorUiModel(
 
     var backValue = 0
 
-    fun getImageUrl(): String{
-        return if(editList.isNotEmpty()){
+    fun getImageUrl(): String {
+        return if (editList.isNotEmpty()) {
             val index = (editList.size - 1) - backValue
-            if(index < 0) originalUrl else editList[index].resultUrl!!
+            if (index < 0) originalUrl else editList[index].resultUrl!!
         } else {
             originalUrl
         }

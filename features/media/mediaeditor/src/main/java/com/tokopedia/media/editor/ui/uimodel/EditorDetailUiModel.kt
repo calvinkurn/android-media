@@ -3,6 +3,7 @@ package com.tokopedia.media.editor.ui.uimodel
 import android.annotation.SuppressLint
 import android.os.Parcel
 import android.os.Parcelable
+import com.tokopedia.media.editor.utils.shouldNull
 import com.tokopedia.picker.common.types.EditorToolType
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parceler
@@ -37,15 +38,16 @@ data class EditorDetailUiModel(
         shouldNull(parcel.readFloat()),
         parcel.readString()
     ) {
-        val rectHeight =  parcel.readInt()
+        val rectHeight = parcel.readInt()
         val rectWidth = parcel.readInt()
         val rectOffsetX = parcel.readInt()
         val rectOffsetY = parcel.readInt()
 
-        if(rectHeight != 0 &&
+        if (rectHeight != 0 &&
             rectWidth != 0 &&
             rectOffsetX != 0 &&
-            rectOffsetY != 0){
+            rectOffsetY != 0
+        ) {
             val cropRect = EditorCropRectModel(
                 rectHeight,
                 rectWidth,
@@ -81,22 +83,4 @@ data class EditorDetailUiModel(
             }
         }
     }
-}
-
-internal fun shouldNull(value: Float): Float?{
-    return if(value != -1f){
-        value
-    } else null
-}
-
-internal fun shouldNull(value: Int): Int? {
-    return if(value != -1){
-        value
-    } else null
-}
-
-internal fun shouldNull(value: String): String? {
-    return if(value != ""){
-        value
-    } else null
 }

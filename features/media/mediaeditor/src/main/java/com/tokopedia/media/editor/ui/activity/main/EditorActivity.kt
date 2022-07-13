@@ -2,8 +2,6 @@ package com.tokopedia.media.editor.ui.activity.main
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
@@ -17,7 +15,8 @@ import javax.inject.Inject
 
 class EditorActivity : BaseEditorActivity() {
 
-    @Inject lateinit var fragmentFactory: FragmentFactory
+    @Inject
+    lateinit var fragmentFactory: FragmentFactory
     lateinit var viewModel: EditorViewModel
 
     private var param = EditorParam()
@@ -76,8 +75,9 @@ class EditorActivity : BaseEditorActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(resultCode == DetailEditorActivity.EDITOR_RESULT_CODE){
-            val asd = data?.getParcelableExtra<EditorDetailUiModel>(DetailEditorActivity.EDITOR_RESULT_PARAM)
+        if (resultCode == DetailEditorActivity.EDITOR_RESULT_CODE) {
+            val asd =
+                data?.getParcelableExtra<EditorDetailUiModel>(DetailEditorActivity.EDITOR_RESULT_PARAM)
             asd?.let {
                 viewModel.addEditState(it.originalUrl, it)
             }

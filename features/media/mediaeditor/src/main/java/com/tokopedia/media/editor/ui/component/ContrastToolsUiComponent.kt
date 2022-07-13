@@ -39,7 +39,7 @@ class ContrastToolsUiComponent constructor(
         private const val CONTRAST_SLIDER_VALUE_DIVIDER = 10
 
         // convert raw value (storage value & slider value is raw value) to contrast range [0..10]
-        fun contrastRawToStdValue(rawStorageValue: Float): Float{
+        fun contrastRawToStdValue(rawStorageValue: Float): Float {
             return rawStorageValue / CONTRAST_SLIDER_VALUE_DIVIDER
         }
     }

@@ -11,8 +11,10 @@ import javax.inject.Inject
 
 class DetailEditorActivity : BaseEditorActivity() {
 
-    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
-    @Inject lateinit var fragmentFactory: FragmentFactory
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var fragmentFactory: FragmentFactory
 
     lateinit var viewModel: DetailEditorViewModel
 

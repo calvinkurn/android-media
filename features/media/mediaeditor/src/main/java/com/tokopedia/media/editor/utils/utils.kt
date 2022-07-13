@@ -16,7 +16,7 @@ fun getEditorSaveFolderDir(context: Context): String {
 fun getDestinationUri(context: Context): Uri {
     val folderPath = getEditorSaveFolderDir(context)
     val dir = File(folderPath)
-    if(!dir.exists()) dir.mkdir()
+    if (!dir.exists()) dir.mkdir()
 
     return Uri.fromFile(File("${folderPath}/${generateFileName()}.png"))
 }
@@ -26,6 +26,18 @@ fun generateFileName(): String {
     return SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
 }
 
+fun shouldNull(value: Float): Float? {
+    return if (value != -1f) {
+        value
+    } else null
+}
+
+fun shouldNull(value: Int): Int? {
+    return if (value != -1) {
+        value
+    } else null
+}
+
 //formula to determine brightness 0.299 * r + 0.0f + 0.587 * g + 0.0f + 0.114 * b + 0.0f
 // if total of dark pixel > total of pixel * 0.45 count that as dark image
 fun Bitmap.isDark(): Boolean {
@@ -33,11 +45,20 @@ fun Bitmap.isDark(): Boolean {
         val ratio = this.width / this.height
         val widthBitmapChecker = 50
         val heightBitmapChecker = widthBitmapChecker / ratio
-        val bitmapChecker = Bitmap.createScaledBitmap(this, widthBitmapChecker, heightBitmapChecker, false)
+        val bitmapChecker =
+            Bitmap.createScaledBitmap(this, widthBitmapChecker, heightBitmapChecker, false)
         val darkThreshold = bitmapChecker.width * bitmapChecker.height * 0.45f
         var darkPixels = 0
         val pixels = IntArray(bitmapChecker.width * bitmapChecker.height)
-        bitmapChecker.getPixels(pixels, 0, bitmapChecker.width, 0, 0, bitmapChecker.width, bitmapChecker.height)
+        bitmapChecker.getPixels(
+            pixels,
+            0,
+            bitmapChecker.width,
+            0,
+            0,
+            bitmapChecker.width,
+            bitmapChecker.height
+        )
         val luminanceThreshold = 150
         for (i in pixels.indices) {
             val color = pixels[i]

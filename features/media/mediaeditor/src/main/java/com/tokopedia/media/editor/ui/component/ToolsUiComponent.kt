@@ -13,8 +13,7 @@ import com.tokopedia.picker.common.types.EditorToolType
 class ToolsUiComponent constructor(
     viewGroup: ViewGroup,
     private val listener: Listener
-) : UiComponent(viewGroup, R.id.uc_editor_tool_container)
-    , EditorToolViewHolder.Listener {
+) : UiComponent(viewGroup, R.id.uc_editor_tool_container), EditorToolViewHolder.Listener {
 
     private val lstTool: RecyclerView = findViewById(R.id.lst_tool)
 
