@@ -107,7 +107,7 @@ class TokomemberDashProgramDetailFragment : BaseDaggerFragment() {
             TmDateUtil.setDatePreview(
                 it
             )
-        }}, ${membershipGetProgramForm?.programForm?.timeWindow?.startTime?.let {
+        }}, ${membershipGetProgramForm?.programForm?.timeWindow?.endTime?.let {
             TmDateUtil.setTime(
                 it
             )

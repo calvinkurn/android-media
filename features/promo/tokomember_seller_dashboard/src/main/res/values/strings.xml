@@ -31,9 +31,9 @@
     <string name="tm_preview_program_label">Ringkasan program</string>
     <string name="tm_program_mulai">Program mulai</string>
     <string name="tm_program_preview_end">Program selesai</string>
-    <string name="tm_premium_level_1">Level 1 - Premium</string>
+    <string name="tm_premium_level_1">Level 1 - <b>Premium</b></string>
     <string name="tm_min_transaksi">Min. transaksi</string>
-    <string name="tm_vip_level_2">Level 2 - VIP</string>
+    <string name="tm_vip_level_2">Level 2 - <b>VIP</b></string>
     <string name="tm_kupon_tokomember">Kupon TokoMember</string>
     <string name="tm_preview_mulai">Mulai</string>
     <string name="tm_preview_berakhir">Berakhir</string>
