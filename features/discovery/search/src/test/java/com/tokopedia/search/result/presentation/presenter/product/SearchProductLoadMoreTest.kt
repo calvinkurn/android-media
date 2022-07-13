@@ -149,6 +149,7 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
         val loadMoreSearchParameter = createLoadMoreSearchParameter()
         `When Product List Presenter Load More Data`(loadMoreSearchParameter)
 
+        `Then verify start from is not incremented`()
         `Then verify view interaction for load data failed with exception`(slotSearchParameterErrorLog, testException, searchProductModelCommon)
         `Then verify logged error message is from search parameter`(slotSearchParameterErrorLog, requestParamsSlot.captured.getSearchProductParams())
     }
@@ -157,6 +158,12 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
         every { searchProductLoadMoreUseCase.execute(capture(requestParamsSlot), any()) }.answers {
             secondArg<Subscriber<SearchProductModel>>().error(exception)
         }
+    }
+
+    private fun `Then verify start from is not incremented`() {
+        val startFrom = productListPresenter.startFrom
+
+        startFrom shouldBe 8
     }
 
     private fun `Then verify view interaction for load data failed with exception`(
@@ -180,7 +187,7 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
 
             verifyHideLoading(productListView)
 
-            verifyShowLoadMoreError(productListView, 8)
+            verifyShowLoadMoreError(productListView)
 
             productListView.logWarning(capture(slotSearchParameterErrorLog), exception)
         }

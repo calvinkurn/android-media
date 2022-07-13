@@ -17,5 +17,6 @@ enum class PageSource(val value: String) {
     AccountDocumentSettingBank("Account Document Setting Bank"),
     ProofPayment("Upload Proof Payment"),
     FlightCancellationReason("Flight Cancellation Reason"),
+    Epharmacy("Epharmacy"),
     Unknown("")
 }

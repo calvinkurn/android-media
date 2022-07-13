@@ -2,7 +2,6 @@ package tokopedia.applink.deeplinkdf
 
 import android.net.Uri
 import com.tokopedia.applink.DeeplinkDFMapper
-import com.tokopedia.applink.DeeplinkMatcher
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
@@ -19,7 +18,7 @@ open class DeepLinkDFMapperTestFixture {
     private val mockPaths = listOf<String>()
 
     @Before
-    fun setup() {
+    open fun setup() {
         mockkStatic(Uri::class)
         every { Uri.parse(any()) } returns mockUri
         every { Uri.parse(any()).buildUpon() } returns mockBuilder
@@ -30,7 +29,7 @@ open class DeepLinkDFMapperTestFixture {
     }
 
     @After
-    fun finish()  {
+    open fun finish()  {
         unmockkStatic(Uri::class)
     }
 

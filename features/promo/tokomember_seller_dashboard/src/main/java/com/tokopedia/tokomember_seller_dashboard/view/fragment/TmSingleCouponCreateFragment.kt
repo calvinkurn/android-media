@@ -371,7 +371,6 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                     errorState.isPreValidateVipError = true
                     closeLoadingDialog()
                     handleProgramValidateNetworkError()
-                    handleProgramValidateServerError(true)
                 }
             }
         })
@@ -408,7 +407,8 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                     errorState.isValidateCouponError = false
                     setButtonState()
                     closeLoadingDialog()
-                    handleProgramValidateServerError()
+                    handleProgramValidateNetworkError()
+//                    handleProgramValidateServerError()
                 }
                 else->{}
             }
@@ -500,7 +500,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                     errorState.isUploadPremium = true
                     setButtonState()
                     closeLoadingDialog()
-                    view?.let { it1 -> Toaster.build(it1, RETRY,Toaster.TYPE_ERROR,Toaster.LENGTH_LONG).show() }
+                    handleProgramValidateNetworkError()
                 }
                 else->{}
             }
@@ -562,6 +562,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                 }
                 TokoLiveDataResult.STATUS.ERROR -> {
                     //handleError
+                    handleProgramValidateNetworkError()
                     closeLoadingDialog()
                     setButtonState()
                 }
@@ -579,13 +580,24 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                     }
                     else{
                         closeLoadingDialog()
-                        handleProgramPreValidateError(it.data.merchantPromotionCreateMV?.message, it.data.merchantPromotionCreateMV?.message)
+                        setButtonState()
+                        view?.let { it1 -> it.data.merchantPromotionCreateMV?.message?.let { it2 ->
+                            Toaster.build(it1,
+                                it2, Toaster.LENGTH_LONG , Toaster.TYPE_ERROR ).show()
+                        } }
+//                        handleProgramPreValidateError(it.data.merchantPromotionCreateMV?.message, it.data.merchantPromotionCreateMV?.message)
                     }
                 }
                 is Fail -> {
                     //handleError
                     closeLoadingDialog()
-                    handleProgramValidateServerError()
+                    setButtonState()
+                    view?.let { it1 -> it.throwable.message.let { it2 ->
+                        if (it2 != null) {
+                            Toaster.build(it1,
+                                it2, Toaster.LENGTH_LONG , Toaster.TYPE_ERROR ).show()
+                        }
+                    } }
                 }
             }
         })
@@ -666,7 +678,8 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
             couponName = tmCouponDetail?.voucherName,
             token = token,
             benefitType = benefitType,
-            benefitIdr = CurrencyFormatHelper.convertRupiahToInt(tmSingleCouponData.maxCashback) * tmSingleCouponData.quota.toInt(),
+//            benefitIdr = CurrencyFormatHelper.convertRupiahToInt(tmSingleCouponData.maxCashback) * tmSingleCouponData.quota.toInt(),
+            benefitIdr = tmCouponDetail?.voucherDiscountAmtMax,
             imagePortrait = tmCouponDetail?.voucherImagePortrait,
             quota = tmSingleCouponData.quota.toInt(),
             isPublic = tmCouponDetail?.isPublic,
@@ -705,10 +718,12 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                 selectedChipPositionKupon = position
                 when(selectedChipPositionKupon){
                     CouponType.CASHBACK -> {
+                        chipGroupCashbackType.show()
                         ivPreviewCoupon.showHideCashBackValueView(true)
                         ivPreviewCoupon.setCouponType(COUPON_CASHBACK_PREVIEW)
                     }
                     CouponType.SHIPPING -> {
+                        chipGroupCashbackType.hide()
                         ivPreviewCoupon.showHideCashBackValueView(false)
                         ivPreviewCoupon.setCouponType(COUPON_SHIPPING_PREVIEW)
                     }
@@ -716,28 +731,30 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
             }
         })
         if(data?.voucherType == COUPON_TYPE_CASHBACK){
+            chipGroupCashbackType.show()
             ivPreviewCoupon.showHideCashBackValueView(true)
             ivPreviewCoupon.setCouponType(COUPON_CASHBACK_PREVIEW)
             selectedChipPositionKupon = 0
         }
         if(data?.voucherType == COUPON_TYPE_SHIPPING){
+            chipGroupCashbackType.hide()
             ivPreviewCoupon.showHideCashBackValueView(false)
             ivPreviewCoupon.setCouponType(COUPON_SHIPPING_PREVIEW)
             selectedChipPositionKupon = 1
         }
         chipGroupKuponType.setDefaultSelection(selectedChipPositionKupon)
 
-//        chipGroupCashbackType.setCallback(object : ChipGroupCallback {
-//            override fun chipSelected(position: Int) {
-//                selectedChipPositionCashback = position
-//                if(selectedChipPositionCashback == 0){
-//                    textFieldPercentCashback.hide()
-//                }
-//                if(selectedChipPositionCashback == 1){
-//                    textFieldPercentCashback.show()
-//                }
-//            }
-//        })
+        chipGroupCashbackType.setCallback(object : ChipGroupCallback {
+            override fun chipSelected(position: Int) {
+                selectedChipPositionCashback = position
+                if(selectedChipPositionCashback == 0){
+                    textFieldPercentCashback.hide()
+                }
+                if(selectedChipPositionCashback == 1){
+                    textFieldPercentCashback.show()
+                }
+            }
+        })
 
         if(data?.voucherDiscountType == COUPON_DISCOUNT_TYPE_IDR){
             selectedChipPositionCashback = 0
@@ -1041,30 +1058,29 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                                     it
                                 )
                             })
+                        todayCalendar.apply {
+                            add(Calendar.HOUR_OF_DAY, 4)
+                        }
+                        val minuteCurrent = todayCalendar.get(Calendar.MINUTE)
+                        if (minuteCurrent <= 30){
+                            todayCalendar.set(Calendar.MINUTE, 30)
+                        }
+                        else{
+                            todayCalendar.add(Calendar.HOUR_OF_DAY, 1)
+                            todayCalendar.set(Calendar.MINUTE, 0)
+                        }
+                        todayCalendar.set(Calendar.SECOND,0)
+
                         val todayDate = TmDateUtil.setDatePreview(TmDateUtil.getDateFromUnix(todayCalendar), DATE_FORMAT)
                         val day = getDayOfWeekID(todayCalendar.get(Calendar.DAY_OF_WEEK))
                         textFieldProgramStartDate.editText.setText("$day, $todayDate")
 
                         textFieldProgramEndDate.editText.setText("${TmDateUtil.getDayFromTimeWindow(programData?.timeWindow?.endTime.toString())}, ${TmDateUtil.setDatePreview(programData?.timeWindow?.endTime.toString())}")
 
-                        val minTimeStart = GregorianCalendar(context?.let {
-                            LocaleUtils.getCurrentLocale(
-                                it
-                            )
-                        })
-                        minTimeStart.apply {
-                            add(Calendar.HOUR_OF_DAY, 4)
-                            set(Calendar.MINUTE,30)
-                            set(Calendar.SECOND,0)
-                        }
-                        val minuteCurrent = minTimeStart.get(Calendar.MINUTE)
-                        if (minuteCurrent>30){
-                            minTimeStart.add(Calendar.MINUTE,30)
-                        }
-                        textFieldProgramStartTime.editText.setText("${minTimeStart.get(Calendar.HOUR_OF_DAY)}:${minTimeStart.get(Calendar.MINUTE)} WIB")
+                        textFieldProgramStartTime.editText.setText("${todayCalendar.get(Calendar.HOUR_OF_DAY)}:${todayCalendar.get(Calendar.MINUTE)} WIB")
                         textFieldProgramEndTime.editText.setText(TmDateUtil.setTime(programData?.timeWindow?.endTime.toString()))
-                        tmCouponStartDateUnix = minTimeStart
-                        tmCouponStartTimeUnix = minTimeStart
+                        tmCouponStartDateUnix = todayCalendar
+                        tmCouponStartTimeUnix = todayCalendar
                         val cal = GregorianCalendar(context?.let { LocaleUtils.getCurrentLocale(it) })
                         cal.time = programData?.timeWindow?.endTime.toString().toDate(SIMPLE_DATE_FORMAT)
                         tmCouponEndTimeUnix = cal
@@ -1073,14 +1089,32 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                     else {
                         val calStart = GregorianCalendar(context?.let { LocaleUtils.getCurrentLocale(it) })
                         val calEnd = GregorianCalendar(context?.let { LocaleUtils.getCurrentLocale(it) })
-                        calStart.time = programData?.timeWindow?.startTime.toString().toDate(SIMPLE_DATE_FORMAT)
-                        tmCouponStartDateUnix = calStart
-                        tmCouponStartTimeUnix = calStart
+
+                        val currentDate = GregorianCalendar(com.tokopedia.tokomember_seller_dashboard.util.locale)
+                        val currentTime = currentDate.get(Calendar.HOUR_OF_DAY)
+                        if(currentTime>=21) {
+                            val currentStartDate = GregorianCalendar(com.tokopedia.tokomember_seller_dashboard.util.locale)
+                            val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT,
+                                com.tokopedia.tokomember_seller_dashboard.util.locale
+                            )
+                            currentStartDate.time = sdf.parse(programData?.timeWindow?.startTime ?: "" + "00") ?: Date()
+                            currentStartDate.add(Calendar.HOUR,3)
+                            tmCouponStartDateUnix = currentStartDate
+                            tmCouponStartTimeUnix = currentStartDate
+                            textFieldProgramStartDate.editText.setText("${TmDateUtil.getDayFromTimeWindow(programData?.timeWindow?.startTime.toString())}, ${TmDateUtil.setDatePreview(TmDateUtil.convertDateTimeRemoveTimeDiff(currentStartDate.time))}")
+                            textFieldProgramStartTime.editText.setText("00:00 WIB")
+                        }
+                        else {
+                            calStart.time = programData?.timeWindow?.startTime.toString().toDate(SIMPLE_DATE_FORMAT)
+                            tmCouponStartDateUnix = calStart
+                            tmCouponStartTimeUnix = calStart
+                            textFieldProgramStartDate.editText.setText("${TmDateUtil.getDayFromTimeWindow(programData?.timeWindow?.startTime.toString())}, ${TmDateUtil.setDatePreview(programData?.timeWindow?.startTime.toString())}")
+                            textFieldProgramStartTime.editText.setText("00:00 WIB")
+                        }
                         calEnd.time = programData?.timeWindow?.endTime.toString().toDate(SIMPLE_DATE_FORMAT)
+
                         tmCouponEndDateUnix = calEnd
                         tmCouponEndTimeUnix = calEnd
-                        textFieldProgramStartDate.editText.setText("${TmDateUtil.getDayFromTimeWindow(programData?.timeWindow?.startTime.toString())}, ${TmDateUtil.setDatePreview(programData?.timeWindow?.startTime.toString())}")
-                        textFieldProgramStartTime.editText.setText("00:00 WIB")
                         textFieldProgramEndDate.editText.setText("${TmDateUtil.getDayFromTimeWindow(programData?.timeWindow?.endTime.toString())}, ${TmDateUtil.setDatePreview(programData?.timeWindow?.endTime.toString())}")
                         textFieldProgramEndTime.editText.setText(TmDateUtil.setTime(programData?.timeWindow?.endTime.toString()))
                     }

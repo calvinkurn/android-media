@@ -246,7 +246,7 @@
                         android:layout_marginStart="@dimen/dp_10"
                         android:text="@string/tm_premium_level_1"
                         android:textColor="@color/Unify_NN950"
-                        app:typographyType="heading_6"/>
+                        app:typographyType="display_3"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -343,7 +343,7 @@
                         android:layout_marginStart="@dimen/tm_dash_dp_10"
                         android:text="@string/tm_vip_level_2"
                         android:textColor="@color/Unify_NN950"
-                        app:typographyType="heading_6"/>
+                        app:typographyType="display_3"/>
                 </LinearLayout>
 
                 <LinearLayout
