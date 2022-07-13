@@ -36,6 +36,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.data.createCategoryGridDataModel
 import com.tokopedia.tokopedianow.data.createCategoryGridListFirstFetch
 import com.tokopedia.tokopedianow.data.createCategoryGridListSecondFetch
+import com.tokopedia.tokopedianow.data.createCategoryGridWithAdultDataFetch
 import com.tokopedia.tokopedianow.data.createCategoryList
 import com.tokopedia.tokopedianow.data.createChooseAddress
 import com.tokopedia.tokopedianow.data.createDynamicChannelLayoutList
@@ -421,6 +422,66 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                         title = "Category 1",
                         imageUrl = "tokopedia://",
                         appLink = "tokoepdia://"
+                    )
+                )
+            ),
+            state = TokoNowLayoutState.SHOW
+        )
+
+        // verify use case called and response
+        verifyGetHomeLayoutDataUseCaseCalled(localCacheModel)
+        verifyGetCategoryListUseCaseCalled(count = 2)
+        verifyGetCategoryListResponseSuccess(expectedResponse)
+    }
+
+    @Test
+    fun `when getting data category grid with adult data should run and give the success result`() {
+        val localCacheModel = LocalCacheModel(
+            warehouse_id = "1"
+        )
+
+        //set mock data
+        onGetHomeLayoutData_thenReturn(createHomeLayoutList(), localCacheModel)
+        onGetCategoryList_thenReturn(createCategoryGridWithAdultDataFetch())
+
+        //fetch homeLayout
+        viewModel.getHomeLayout(localCacheModel = localCacheModel, removeAbleWidgets = listOf())
+        viewModel.getLayoutComponentData(localCacheModel = localCacheModel)
+
+        //prepare model that need to be changed
+        val model = TokoNowCategoryGridUiModel(
+            id="11111",
+            title="Category Tokonow",
+            categoryListUiModel = null,
+            state= TokoNowLayoutState.SHOW
+        )
+
+        viewModel.getCategoryGrid(model, "1")
+
+        //prepare model for expectedResult
+        val expectedResponse = TokoNowCategoryGridUiModel(
+            id = "11111",
+            title = "Category Tokonow",
+            categoryListUiModel = TokoNowCategoryListUiModel(
+                categoryList = listOf(
+                    TokoNowCategoryItemUiModel(
+                        id = "",
+                        title = "",
+                        imageUrl = null,
+                        appLink = "tokopedia-android-internal://now/category-list?warehouse_id={warehouse_id}",
+                        warehouseId = "1"
+                    ),
+                    TokoNowCategoryItemUiModel(
+                        id = "1",
+                        title = "Category 1",
+                        imageUrl = "tokopedia://",
+                        appLink = "tokoepdia://"
+                    ),
+                    TokoNowCategoryItemUiModel(
+                        id="3",
+                        title="Category 3",
+                        imageUrl="tokopedia://",
+                        appLink="tokoepdia://"
                     )
                 )
             ),
