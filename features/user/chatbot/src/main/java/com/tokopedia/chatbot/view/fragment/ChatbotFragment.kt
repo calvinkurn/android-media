@@ -45,6 +45,7 @@ import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.data.OrderStatusCode
 import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
+import com.tokopedia.chat_common.domain.pojo.attachmentmenu.ImageMenu
 import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
@@ -79,6 +80,7 @@ import com.tokopedia.chatbot.ChatbotConstant.VideoUpload.SOURCE_ID_FOR_VIDEO_UPL
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.analytics.ChatbotAnalytics
 import com.tokopedia.chatbot.attachinvoice.domain.mapper.AttachInvoiceMapper
+import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.attachinvoice.view.TransactionInvoiceBottomSheet
 import com.tokopedia.chatbot.attachinvoice.view.TransactionInvoiceBottomSheetListener
 import com.tokopedia.chatbot.attachinvoice.view.resultmodel.SelectedInvoice
@@ -615,7 +617,10 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 this,
                 this,
                 (activity as BaseChatToolbarActivity).getToolbar(),
-                adapter
+                adapter,
+                sendAnalytics = { impressionType ->
+                    chatbotAnalytics.get().eventShowView(impressionType)
+            }
         )
     }
 
@@ -875,7 +880,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         presenter.sendQuickReply(messageId, model, SendableUiModel.generateStartTime(), opponentId)
     }
 
-    override fun onImageUploadClicked(imageUrl: String, replyTime: String) {
+    override fun onImageUploadClicked(imageUrl: String, replyTime: String, isSecure: Boolean) {
 
         activity?.let {
 
@@ -949,16 +954,20 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     private fun getFilters(data: Intent?, reasonList: List<String?>?): String? {
-        val selectedOption = data?.getStringExtra(SELECTED_ITEMS)?.split(";")
-        var filters = ""
-        if (!selectedOption.isNullOrEmpty()) {
-            for (filter in selectedOption) {
-                if(filter.isNotEmpty())
-                    filters += reasonList?.get(filter.toInt()) + ","
+        try {
+            val selectedOption = data?.getStringExtra(SELECTED_ITEMS)?.split(";")
+            var filters = ""
+            if (!selectedOption.isNullOrEmpty()) {
+                for (filter in selectedOption) {
+                    if (filter.isNotEmpty())
+                        filters += reasonList?.get(filter.toInt()) + ","
+                }
+                return filters.substring(0, filters.length - 1)
             }
-            return filters.substring(0, filters.length - 1)
+            return ""
+        } catch (e : Exception) {
+            return ""
         }
-        return ""
     }
 
     private fun onSuccessSubmitCsatRating(): (String) -> Unit {
@@ -1463,6 +1472,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     override fun transactionNotFoundClick() {
         val selected = presenter.getActionBubbleforNoTrasaction()
         presenter.sendActionBubble(messageId, selected, SendableUiModel.generateStartTime(), opponentId)
+        getViewState()?.handleReplyBox(true)
     }
 
     override fun onRetrySendVideo(element: VideoUploadUiModel) {

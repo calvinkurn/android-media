@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_UPLOAD_SECURE
 import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chat_common.data.BaseChatUiModel.Companion.SENDING_TEXT
 import com.tokopedia.chat_common.data.ImageUploadUiModel
@@ -13,7 +14,9 @@ import com.tokopedia.chat_common.view.adapter.viewholder.ImageUploadViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadSecureImage
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.adapter.util.LongClickMenuItemGenerator
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
@@ -22,12 +25,14 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.getStrokeWi
 import com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
 import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.user.session.UserSessionInterface
 
 class TopchatImageUploadViewHolder(
     itemView: View?,
     private val listener: ImageUploadListener,
     private val replyBubbleListener: ReplyBubbleAreaMessage.Listener,
     private val commonListener: CommonViewHolderListener,
+    private val userSession: UserSessionInterface
 ) : ImageUploadViewHolder(itemView, listener) {
 
     private val viewContainer: LinearLayout? = itemView?.findViewById(R.id.ll_image_container)
@@ -117,8 +122,20 @@ class TopchatImageUploadViewHolder(
 
     override fun bindClickListener(element: ImageUploadUiModel) {
         attachmentUnify?.setOnClickListener { view ->
-            if (element.imageUrl != null && element.replyTime != null) {
-                listener.onImageUploadClicked(element.imageUrl!!, element.replyTime!!)
+            if (element.replyTime != null) {
+                val imageSecureUrl = element.imageSecureUrl.toEmptyStringIfNull()
+                val imageUrl = element.imageUrl.toEmptyStringIfNull()
+                val replyTime = element.replyTime.toEmptyStringIfNull()
+                if (element.attachmentType == TYPE_IMAGE_UPLOAD_SECURE
+                    && imageSecureUrl.isNotEmpty()) {
+                    listener.onImageUploadClicked(
+                        imageSecureUrl, replyTime, true
+                    )
+                } else if (imageUrl.isNotEmpty()) {
+                    listener.onImageUploadClicked(
+                        imageUrl, replyTime, false
+                    )
+                }
             }
         }
     }
@@ -187,8 +204,10 @@ class TopchatImageUploadViewHolder(
         } else {
             setVisibility(progressBarSendImage, View.GONE)
         }
-        element.imageUrl?.let {
-            attachmentUnify?.loadImage(it)
+        if (element.attachmentType == TYPE_IMAGE_UPLOAD_SECURE) {
+            attachmentUnify?.loadSecureImage(element.imageSecureUrl, userSession)
+        } else {
+            attachmentUnify?.loadImage(element.imageUrl)
         }
     }
 

@@ -9,6 +9,7 @@ import com.tokopedia.topchat.stub.chatlist.di.module.ChatListNetworkModuleStub
 import com.tokopedia.topchat.stub.chatlist.di.module.ChatListQueryModuleStub
 import com.tokopedia.topchat.stub.chatlist.usecase.GetChatListMessageUseCaseStub
 import com.tokopedia.topchat.stub.chatlist.usecase.GetChatNotificationUseCaseStub
+import com.tokopedia.topchat.stub.chatlist.usecase.GetChatWhitelistFeatureStub
 import com.tokopedia.topchat.stub.common.di.DaggerFakeBaseAppComponent
 import com.tokopedia.topchat.stub.common.di.module.FakeAppModule
 import com.tokopedia.user.session.UserSessionInterface
@@ -18,6 +19,7 @@ class ChatTabListFragmentStub : ChatTabListFragment() {
     lateinit var userSessionStub: UserSessionInterface
     lateinit var chatListUseCaseStub: GetChatListMessageUseCaseStub
     lateinit var chatNotificationUseCaseStub: GetChatNotificationUseCaseStub
+    lateinit var chatWhitelistFeatureStub: GetChatWhitelistFeatureStub
 
     override fun initInjector() {
         val baseComponent = DaggerFakeBaseAppComponent.builder()
@@ -28,7 +30,9 @@ class ChatTabListFragmentStub : ChatTabListFragment() {
                 .fakeBaseAppComponent(baseComponent)
                 .chatListContextModule(ChatListContextModule(context!!))
                 .chatListNetworkModuleStub(ChatListNetworkModuleStub(userSessionStub))
-                .chatListQueryModuleStub(ChatListQueryModuleStub(chatListUseCaseStub, chatNotificationUseCaseStub))
+                .chatListQueryModuleStub(ChatListQueryModuleStub(
+                    chatListUseCaseStub, chatNotificationUseCaseStub, chatWhitelistFeatureStub
+                ))
                 .build()
                 .inject(this)
     }
@@ -38,7 +42,8 @@ class ChatTabListFragmentStub : ChatTabListFragment() {
                 ChatListQueriesConstant.PARAM_TAB_SELLER,
                 userSessionStub,
                 chatListUseCaseStub,
-                chatNotificationUseCaseStub
+                chatNotificationUseCaseStub,
+                chatWhitelistFeatureStub
         )
     }
 
@@ -47,7 +52,8 @@ class ChatTabListFragmentStub : ChatTabListFragment() {
                 ChatListQueriesConstant.PARAM_TAB_USER,
                 userSessionStub,
                 chatListUseCaseStub,
-                chatNotificationUseCaseStub
+                chatNotificationUseCaseStub,
+                chatWhitelistFeatureStub
         )
     }
 
@@ -63,12 +69,14 @@ class ChatTabListFragmentStub : ChatTabListFragment() {
         fun create(
                 userSessionInterface: UserSessionInterface,
                 chatListUseCase: GetChatListMessageUseCaseStub,
-                chatNotificationUseCase: GetChatNotificationUseCaseStub
+                chatNotificationUseCase: GetChatNotificationUseCaseStub,
+                chatWhitelistFeature: GetChatWhitelistFeatureStub
         ): ChatTabListFragmentStub {
             return ChatTabListFragmentStub().apply {
                 userSessionStub = userSessionInterface
                 chatListUseCaseStub = chatListUseCase
                 chatNotificationUseCaseStub = chatNotificationUseCase
+                chatWhitelistFeatureStub = chatWhitelistFeature
             }
         }
     }

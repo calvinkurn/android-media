@@ -139,7 +139,7 @@ ext {
             powerMerchantSubscribe          : ":features:merchant:power_merchant_subscribe",
             productDraftDatabase            : ":features:merchant:product_draft_database",
             productDetailCommon             : ":features:merchant:product_detail_common",
-            productDetailIntegration        : ":features:merchant:product_detail_integration",
+            productDetailAdditionalInfo     : ":features:merchant:product_detail_additional_info",
             variantCommon                   : ":features:merchant:variant_common",
             productDetail                   : ":features:merchant:product_detail",
             atcVariant                      : ":features:merchant:atc_variant",
@@ -174,6 +174,8 @@ ext {
             shopCommon                      : ":features:merchant:shop_common",
             shopOpen                        : ":features:merchant:shop_open",
             shopScore                       : ":features:merchant:shop_score",
+            shopAdmin                       : ":features:merchant:shop_admin",
+            shopAdminCommon                 : ":features:merchant:shop_admin_common",
             shopShowcase                    : ":features:merchant:shop_showcase",
             shopPage                        : ":features:merchant:shop_page",
             shopPageWidget                  : ":features:merchant:shop_widget",
@@ -293,6 +295,7 @@ ext {
             promotionsTarget                : ":features:promo:promotions_target",
             logintestapp                    : ":testapp-features:user:logintestapp",
             customer_mid_app                : ":customer_mid_app",
-            telephony_masking               : ":features:user:telephony_masking"
+            telephony_masking               : ":features:user:telephony_masking",
+            tokofood                        : ":features:tokofood"
     ]
 }

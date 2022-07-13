@@ -102,6 +102,10 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
         return StickyActionButtonViewHolder.LAYOUT
     }
 
+    override fun type(attachInvoiceSentUiModel: com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel): Int {
+        return AttachedInvoiceSentViewHolder.LAYOUT
+    }
+
     override fun type(chatSepratorViewModel: ChatSepratorViewModel): Int {
         return ChatbotLiveChatSeparatorViewHolder.LAYOUT
     }
@@ -116,10 +120,6 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
 
     override fun type(csatOptionsViewModel: CsatOptionsViewModel): Int {
         return CsatOptionListViewHolder.LAYOUT
-    }
-
-    override fun type(attachInvoiceSentUiModel: AttachInvoiceSentUiModel): Int {
-        return AttachedInvoiceSentViewHolder.LAYOUT
     }
 
     override fun type(attachInvoiceSelectionViewModel: AttachInvoiceSelectionViewModel): Int {
@@ -140,6 +140,11 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
 
     override fun type(fallbackAttachmentUiModel: FallbackAttachmentUiModel): Int {
         return ChatbotFallbackAttachmentViewHolder.LAYOUT
+    }
+
+    //This case will never run
+    override fun type(attachInvoiceSentUiModel: AttachInvoiceSentUiModel): Int {
+        return ATTACH_INVOICE_CHAT_COMMON
     }
 
     override fun type(typingViewModel: TypingChatModel): Int {
@@ -163,6 +168,10 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
             ChatbotVideoUploadViewHolder.LAYOUT -> ChatbotVideoUploadViewHolder(parent, videoUploadListener)
             else -> super.createViewHolder(parent, type)
         }
+    }
+
+    companion object {
+        const val ATTACH_INVOICE_CHAT_COMMON = -1
     }
 
 }

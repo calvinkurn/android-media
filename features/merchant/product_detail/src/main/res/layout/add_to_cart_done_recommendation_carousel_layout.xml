@@ -67,7 +67,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="body_2"
+                app:typographyType="display_2"
                 tools:lines="2"
                 tools:text="Nama"
                 tools:visibility="visible" />
@@ -82,7 +82,8 @@
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/image_rating"
-                tools:visibility="visible" />
+                tools:visibility="visible"
+                android:contentDescription="shop_badge" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/shop_location"
@@ -102,7 +103,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/image_rating"
                 app:layout_goneMarginLeft="0dp"
                 app:layout_goneMarginStart="0dp"
-                app:typographyType="body_3"
+                app:typographyType="display_3"
                 tools:text="Town Location"
                 tools:visibility="visible" />
 
@@ -116,7 +117,8 @@
                 app:layout_constraintBottom_toBottomOf="@+id/review_count"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/product_name"
-                app:srcCompat="@drawable/product_card_ic_rating_active" />
+                app:srcCompat="@drawable/product_card_ic_rating_active"
+                android:contentDescription="image_rating" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/rating_count"
@@ -145,7 +147,7 @@
                 android:visibility="gone"
                 app:layout_constraintStart_toEndOf="@+id/rating_count"
                 app:layout_constraintTop_toBottomOf="@+id/product_name"
-                app:typographyType="body_3"
+                app:typographyType="display_3"
                 tools:text="(3000)"
                 tools:visibility="visible" />
 
@@ -162,7 +164,8 @@
                 app:layout_constraintTop_toTopOf="@+id/shop_location"
                 tools:background="@color/Unify_B500"
                 tools:layout_width="67dp"
-                tools:visibility="visible" />
+                tools:visibility="visible"
+                android:contentDescription="image_free_ongkir" />
 
             <com.tokopedia.unifycomponents.ticker.Ticker
                 android:id="@+id/ticker"

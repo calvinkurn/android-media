@@ -67,9 +67,8 @@
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="@+id/guidelineShcMilestoneStart"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_default="percent"
+        app:layout_constraintWidth_default="wrap"
         app:layout_constraintWidth_max="wrap"
-        app:layout_constraintWidth_percent="0.70"
         app:typographyType="heading_5"
         tools:text="Misi berjualan tokopedia" />
 

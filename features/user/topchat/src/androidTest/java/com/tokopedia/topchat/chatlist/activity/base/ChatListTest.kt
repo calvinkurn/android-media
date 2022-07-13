@@ -8,6 +8,7 @@ import com.tokopedia.topchat.chatlist.domain.pojo.ChatListPojo
 import com.tokopedia.topchat.stub.chatlist.activity.ChatListActivityStub
 import com.tokopedia.topchat.stub.chatlist.usecase.GetChatListMessageUseCaseStub
 import com.tokopedia.topchat.stub.chatlist.usecase.GetChatNotificationUseCaseStub
+import com.tokopedia.topchat.stub.chatlist.usecase.GetChatWhitelistFeatureStub
 import com.tokopedia.topchat.stub.common.UserSessionStub
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
@@ -22,6 +23,7 @@ abstract class ChatListTest {
 
     protected lateinit var chatListUseCase: GetChatListMessageUseCaseStub
     protected lateinit var chatNotificationUseCase: GetChatNotificationUseCaseStub
+    protected lateinit var chatWhitelistFeatureUseCase: GetChatWhitelistFeatureStub
     protected lateinit var userSession: UserSessionStub
     protected lateinit var activity: ChatListActivityStub
 
@@ -40,6 +42,7 @@ abstract class ChatListTest {
     fun setup() {
         chatListUseCase = GetChatListMessageUseCaseStub()
         chatNotificationUseCase = GetChatNotificationUseCaseStub()
+        chatWhitelistFeatureUseCase = GetChatWhitelistFeatureStub()
         userSession = mActivityTestRule.activity.userSessionInterface
         activity = mActivityTestRule.activity
     }

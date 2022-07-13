@@ -5,5 +5,5 @@ import com.google.gson.annotations.SerializedName
 
 data class ChatWhitelistFeature(
     @SerializedName("isWhitelist")
-    val isWhitelist: Boolean = false
+    var isWhitelist: Boolean = false
 )
