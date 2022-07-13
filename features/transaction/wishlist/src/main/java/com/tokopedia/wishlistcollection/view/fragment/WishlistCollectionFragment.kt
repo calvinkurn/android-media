@@ -326,8 +326,8 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
 
             if (!it.isShowing) {
                 it.showCoachMark(coachMarkItem, null)
-                CoachMarkPreference.setShown(requireContext(), COACHMARK_WISHLIST, true)
             }
+            CoachMarkPreference.setShown(requireContext(), COACHMARK_WISHLIST, true)
         }
     }
 }
