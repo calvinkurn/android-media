@@ -78,7 +78,6 @@ import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_DESC
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_RETRY
 import com.tokopedia.tokomember_seller_dashboard.util.ErrorState
-import com.tokopedia.tokomember_seller_dashboard.util.LOADING_TEXT
 import com.tokopedia.tokomember_seller_dashboard.util.PREMIUM
 import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_CTA
 import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_VALIDATION_CTA_TEXT
@@ -187,9 +186,6 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        renderHeader()
-        renderButton()
-        observeViewModel()
 
         tmEligibilityViewModel.getSellerInfo()
         shopName = arguments?.getString(BUNDLE_SHOP_NAME)?:""
@@ -197,6 +193,11 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         fromEdit = arguments?.getBoolean(ACTION_EDIT)?:false
         programData = arguments?.getParcelable(BUNDLE_PROGRAM_DATA)
         prefManager = context?.let { it1 -> TmPrefManager(it1) }
+
+        renderHeader()
+        renderButton()
+        observeViewModel()
+
         if(fromEdit){
             voucherId = arguments?.getInt(BUNDLE_VOUCHER_ID)?:0
             tokomemberDashCreateViewModel.getInitialCouponData(UPDATE,"")
@@ -370,6 +371,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                     errorState.isPreValidateVipError = true
                     closeLoadingDialog()
                     handleProgramValidateNetworkError()
+                    handleProgramValidateServerError(true)
                 }
             }
         })
@@ -544,7 +546,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                         closeLoadingDialog()
                         setButtonState()
                         activity?.finish()
-                        tmCouponListRefreshCallback?.refreshCouponList()
+                        tmCouponListRefreshCallback?.refreshCouponList(true)
                     }
                     else{
                         closeLoadingDialog()
@@ -681,8 +683,8 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
 
     private fun renderUIForEdit(data: TmCouponDetailData?) {
 
-        tvLevelMember.show()
-        chipGroupLevel.show()
+//        tvLevelMember.show()
+//        chipGroupLevel.show()
 
         chipGroupLevel.setCallback(object : ChipGroupCallback {
             override fun chipSelected(position: Int) {
@@ -696,7 +698,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
             selectedChipPositionLevel = 0
         }
         chipGroupLevel.setDefaultSelection(selectedChipPositionLevel)
-        chipGroupLevel.addChips(arrayListOf("Premium", "VIP"))
+//        chipGroupLevel.addChips(arrayListOf("Premium", "VIP"))
 
         chipGroupKuponType.setCallback(object : ChipGroupCallback {
             override fun chipSelected(position: Int) {
@@ -778,10 +780,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
             loaderDialog?.loaderText?.apply {
                 setType(Typography.DISPLAY_2)
             }
-            loaderDialog?.setLoadingText(Html.fromHtml(LOADING_TEXT))
-        if(fromEdit) {
             loaderDialog?.setLoadingText(Html.fromHtml(TM_SUMMARY_DIALOG_TITLE))
-        }
             loaderDialog?.show()
     }
 
@@ -862,7 +861,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         bottomSheet.show(childFragmentManager,"")
     }
 
-    private fun handleProgramValidateServerError(){
+    private fun handleProgramValidateServerError(preValidateError: Boolean = false){
         val title = when(retryCount){
             0-> ERROR_CREATING_TITLE
             else -> ERROR_CREATING_TITLE_RETRY
@@ -882,6 +881,13 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         val bottomsheet = TokomemberBottomsheet.createInstance(bundle)
         bottomsheet.setUpBottomSheetListener(object : BottomSheetClickListener{
             override fun onButtonClick(errorCount: Int) {
+                if(preValidateError){
+                    btnContinue.isEnabled = false
+                    btnContinue.isClickable = false
+                    couponPremiumData = customViewSingleCoupon?.getSingleCouponData()
+                    preValidateCouponPremium(couponPremiumData)
+                }
+                else{
                 when (errorCount) {
                     0 -> tokomemberDashCreateViewModel.validateProgram("", "", "","")
                     else -> {
@@ -891,6 +897,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                             context
                         ))
                     }
+                }
                 }
             }})
         bottomsheet.show(childFragmentManager,"")
@@ -1027,18 +1034,18 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         when(selectedChipPositionDate){
             ProgramDateType.AUTO -> {
                 if(programData!= null) {
-                    if(programStatus == ACTIVE){
+                    if(programStatus == ACTIVE || programStatus == ACTIVE_OLDER){
                         val todayCalendar =
                             GregorianCalendar(context?.let {
                                 LocaleUtils.getCurrentLocale(
                                     it
                                 )
                             })
-                        todayCalendar.set(Calendar.MONTH, 9)
                         val todayDate = TmDateUtil.setDatePreview(TmDateUtil.getDateFromUnix(todayCalendar), DATE_FORMAT)
                         val day = getDayOfWeekID(todayCalendar.get(Calendar.DAY_OF_WEEK))
                         textFieldProgramStartDate.editText.setText("$day, $todayDate")
-                        textFieldProgramEndDate.editText.setText(TmDateUtil.setDatePreview(programData?.timeWindow?.endTime.toString()))
+
+                        textFieldProgramEndDate.editText.setText("${TmDateUtil.getDayFromTimeWindow(programData?.timeWindow?.endTime.toString())}, ${TmDateUtil.setDatePreview(programData?.timeWindow?.endTime.toString())}")
 
                         val minTimeStart = GregorianCalendar(context?.let {
                             LocaleUtils.getCurrentLocale(
@@ -1072,9 +1079,9 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                         calEnd.time = programData?.timeWindow?.endTime.toString().toDate(SIMPLE_DATE_FORMAT)
                         tmCouponEndDateUnix = calEnd
                         tmCouponEndTimeUnix = calEnd
-                        textFieldProgramStartDate.editText.setText(TmDateUtil.setDatePreview(programData?.timeWindow?.startTime.toString()))
-                        textFieldProgramStartTime.editText.setText(TmDateUtil.setTime(programData?.timeWindow?.startTime.toString()))
-                        textFieldProgramEndDate.editText.setText(TmDateUtil.setDatePreview(programData?.timeWindow?.endTime.toString()))
+                        textFieldProgramStartDate.editText.setText("${TmDateUtil.getDayFromTimeWindow(programData?.timeWindow?.startTime.toString())}, ${TmDateUtil.setDatePreview(programData?.timeWindow?.startTime.toString())}")
+                        textFieldProgramStartTime.editText.setText("00:00 WIB")
+                        textFieldProgramEndDate.editText.setText("${TmDateUtil.getDayFromTimeWindow(programData?.timeWindow?.endTime.toString())}, ${TmDateUtil.setDatePreview(programData?.timeWindow?.endTime.toString())}")
                         textFieldProgramEndTime.editText.setText(TmDateUtil.setTime(programData?.timeWindow?.endTime.toString()))
                     }
                 }

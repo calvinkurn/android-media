@@ -38,6 +38,10 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
                     <com.tokopedia.unifycomponents.ImageUnify
                         android:id="@+id/ivShopIcon"
                         android:layout_width="@dimen/tm_dash_dp_30"
@@ -45,6 +49,16 @@
                         android:layout_marginStart="@dimen/unify_space_12"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.tokopedia.unifycomponents.ImageUnify
+                        android:id="@+id/ivShopIconMark"
+                        android:layout_width="@dimen/tm_dash_dp_12"
+                        android:layout_height="@dimen/tm_dash_dp_12"
+                        app:layout_constraintEnd_toEndOf="@+id/ivShopIcon"
+                        app:layout_constraintStart_toEndOf="@+id/ivShopIcon"
+                        app:srcCompat="@drawable/tm_check_mark"
+                        app:layout_constraintBottom_toBottomOf="@+id/ivShopIcon"/>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tvShopName"

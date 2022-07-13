@@ -47,6 +47,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_DESC_EDIT
 import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_DESC_EXTEND_PROGRAM
 import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_DESC_PROGRAM
 import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_TITLE_COUPON
+import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_TITLE_COUPON_EDIT
 import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_TITLE_EDIT_PROGRAM
 import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_TITLE_EXTEND_PROGRAM
 import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_TITLE_PROGRAM
@@ -141,7 +142,7 @@ class TmDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback {
                             setPrimaryCTAText(TM_DIALOG_CANCEL_CTA_PRIMARY_COUPON)
                             setSecondaryCTAText(TM_DIALOG_CANCEL_CTA_SECONDARY_COUPON)
                             if(intent.extras?.getBoolean(ACTION_EDIT) == true){
-                                setTitle(TM_DIALOG_CANCEL_TITLE_COUPON)
+                                setTitle(TM_DIALOG_CANCEL_TITLE_COUPON_EDIT)
                                 setDescription(TM_DIALOG_CANCEL_DESC_COUPON_EDIT)
                                 setPrimaryCTAText(TM_DIALOG_CANCEL_CTA_PRIMARY_COUPON_EDIT)
                                 setSecondaryCTAText(TM_DIALOG_CANCEL_CTA_SECONDARY_COUPON)
