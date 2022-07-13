@@ -1272,15 +1272,13 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun onClickAttachImage(menu: AttachmentMenu) {
         super.onClickAttachImage(menu)
-        pickVideoFromDevice()
-        //TODO CHANGE THE LOCATION OF THIS ANALYTICS
-        chatbotAnalytics?.get().eventOnVideoPick()
+        pickImageFromDevice()
     }
 
     override fun onClickAttachVideo(menu: AttachmentMenu) {
         super.onClickAttachVideo(menu)
         pickVideoFromDevice()
-        //TODO PLACE THE ANALYTICS HERE
+        chatbotAnalytics?.get().eventOnVideoPick()
     }
 
     override fun showErrorToast(it: Throwable) {
