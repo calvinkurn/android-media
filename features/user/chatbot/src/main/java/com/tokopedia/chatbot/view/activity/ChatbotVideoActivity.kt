@@ -24,7 +24,7 @@ class ChatbotVideoActivity : BaseChatToolbarActivity() {
         super.setupToolbar()
         supportActionBar?.run {
             setBackgroundDrawable(ColorDrawable(resources.getColor(R.color.chatbot_dms_video_fragment_bg)))
-            val upArrow = MethodChecker.getDrawable(applicationContext, R.drawable.ic_action_back)
+            val upArrow = MethodChecker.getDrawable(applicationContext, com.tokopedia.abstraction.R.drawable.ic_action_back)
             this.setHomeAsUpIndicator(upArrow)
         }
         val textView = (findViewById<TextView>(com.tokopedia.chatbot.R.id.title))
