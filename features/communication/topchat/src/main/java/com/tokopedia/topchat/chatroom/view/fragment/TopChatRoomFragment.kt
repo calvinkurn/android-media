@@ -141,6 +141,9 @@ import com.tokopedia.topchat.chatroom.domain.pojo.getreminderticker.ReminderTick
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderUiModel.Companion.SHOP_TYPE_TOKONOW
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.imagepreview.imagesecure.ImageSecurePreviewActivity
+import com.tokopedia.picker.common.MediaPicker
+import com.tokopedia.picker.common.PageSource
+import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder.MENU_ID_DELETE_BUBBLE
@@ -1258,7 +1261,26 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun pickImageToUpload() {
-        activity?.let {
+        if (isUsingMediaPicker()) {
+            pickImageWithMediaPicker()
+        } else {
+            pickImageWithImagePicker()
+        }
+    }
+
+    private fun pickImageWithMediaPicker() {
+        context?.let {
+            val intent = MediaPicker.intent(it) {
+                pageSource(PageSource.TopChat)
+                modeType(ModeType.IMAGE_ONLY)
+                singleSelectionMode()
+            }
+            startActivityForResult(intent, REQUEST_CODE_IMAGE_MEDIA_PICKER)
+        }
+    }
+
+    private fun pickImageWithImagePicker() {
+        context?.let {
             val builder = ImagePickerBuilder.getOriginalImageBuilder(it)
                 .withSimpleMultipleSelection(maxPick = 1).apply {
                     maxFileSizeInKB = MAX_SIZE_IMAGE_PICKER
@@ -1275,6 +1297,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         when (requestCode) {
             REQUEST_GO_TO_SETTING_TEMPLATE -> onReturnFromSettingTemplate()
             REQUEST_ATTACH_IMAGE -> onReturnFromChooseImage(resultCode, data)
+            REQUEST_CODE_IMAGE_MEDIA_PICKER -> onReturnFromMediaPicker(resultCode, data)
             TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE -> onProductAttachmentSelected(data)
             REQUEST_GO_TO_SHOP -> onReturnFromShopPage(resultCode, data)
             REQUEST_ATTACH_INVOICE -> onAttachInvoiceSelected(data, resultCode)
@@ -1411,7 +1434,21 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         if (resultCode != RESULT_OK || data == null) {
             return
         }
-        processImagePathToUpload(data)?.let { model ->
+        val imagePathList = getImagePickerResult(data)
+        handleImageToUpload(imagePathList = imagePathList)
+    }
+
+    private fun onReturnFromMediaPicker(resultCode: Int, data: Intent?) {
+        topchatViewState?.hideAttachmentMenu()
+        if (resultCode != RESULT_OK || data == null) {
+            return
+        }
+        val result = MediaPicker.result(data)
+        handleImageToUpload(imagePathList = result.originalPaths)
+    }
+
+    private fun handleImageToUpload(imagePathList: List<String>) {
+        processImagePathToUpload(imagePathList)?.let { model ->
             onSendAndReceiveMessage()
             viewModel.startUploadImages(model)
             topchatViewState?.scrollToBottom()
@@ -1473,9 +1510,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         rvSrw?.hideSrw()
     }
 
-    private fun processImagePathToUpload(data: Intent): ImageUploadUiModel? {
-        val imagePathList = ImagePickerResultExtractor.extract(data).imageUrlOrPathList
-        if (imagePathList.size <= 0) {
+    private fun getImagePickerResult(data: Intent): List<String> {
+        return ImagePickerResultExtractor.extract(data).imageUrlOrPathList
+    }
+
+    private fun processImagePathToUpload(imagePathList: List<String>): ImageUploadUiModel? {
+        if (imagePathList.isEmpty()) {
             return null
         }
         val imagePath = imagePathList[0]
@@ -3015,6 +3055,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
+    private fun isUsingMediaPicker(): Boolean {
+        return abTestPlatform.getString(ROLLENCE_ENABLE_MEDIA_PICKER) == ROLLENCE_ENABLE_MEDIA_PICKER
+    }
+
     companion object {
         const val PARAM_RATING = "rating"
         const val PARAM_UTM_SOURCE = "utmSource"
@@ -3032,10 +3076,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         private const val REQUEST_REPORT_USER = 118
         private const val REQUEST_REVIEW = 119
         private const val REQUEST_UPDATE_STOCK = 120
+        private const val REQUEST_CODE_IMAGE_MEDIA_PICKER = 121
 
         private const val ELLIPSIZE_MAX_CHAR = 20
-
         private const val PREFIX_SELLER_APPLINK = "sellerapp://"
+
+        private const val ROLLENCE_ENABLE_MEDIA_PICKER = "android_chat_picker"
 
         fun createInstance(bundle: Bundle): BaseChatFragment {
             return TopChatRoomFragment().apply {
