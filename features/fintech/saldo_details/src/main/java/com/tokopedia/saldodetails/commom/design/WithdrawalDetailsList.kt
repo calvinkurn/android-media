@@ -71,17 +71,19 @@ class WithdrawalDetailsList @JvmOverloads constructor(
             view.tvDetailTitle.text = feeDetailData[i].feeType
             view.tvDetailAmount.text = getAmountString(feeDetailData[i].amount)
             view.tvDetailAmount.visible()
-            if(feeDetailData[i].isLate) {
-                view.tvDetailLastUpdate.visibility = VISIBLE
-                view.tvDetailLastUpdate.text = feeDetailData[i].lastUpdateDetail
-                view.lateNotifier.visibility = VISIBLE
-            }
-            else
-            {
-                view.tvDetailLastUpdate.visibility = GONE
-                view.lateNotifier.visibility = GONE
-            }
+            setLateLogic(feeDetailData[i],view)
             addView(view)
+        }
+    }
+
+    private fun setLateLogic(feeDetailData: FeeDetailData, view: View) {
+        if (feeDetailData.isLate) {
+            view.tvDetailLastUpdate.visibility = VISIBLE
+            view.tvDetailLastUpdate.text = feeDetailData.lastUpdateDetail
+            view.lateNotifier.visibility = VISIBLE
+        } else {
+            view.tvDetailLastUpdate.visibility = GONE
+            view.lateNotifier.visibility = GONE
         }
     }
 
