@@ -646,10 +646,8 @@ class MerchantPageFragment : BaseMultiFragment(),
                         val bottomSheetData = it.data as? CartTokoFoodBottomSheet
                         bottomSheetData?.run {
                             if (isShowBottomSheet) {
-                                val bottomSheet = PhoneNumberVerificationBottomSheet.createInstance(
-                                    bottomSheetData = this,
-                                    clickListener = this@MerchantPageFragment
-                                )
+                                val bottomSheet = PhoneNumberVerificationBottomSheet.createInstance(bottomSheetData = this)
+                                bottomSheet.setClickListener(this@MerchantPageFragment)
                                 bottomSheet.show(childFragmentManager)
                             }
                         }
@@ -845,7 +843,8 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     private fun setupOrderNoteBottomSheet() {
-        orderNoteBottomSheet = OrderNoteBottomSheet.createInstance(this)
+        orderNoteBottomSheet = OrderNoteBottomSheet.createInstance()
+        orderNoteBottomSheet?.setClickListener(this)
     }
 
     private fun renderTicker(tickerData: TokoFoodTickerDetail) {
@@ -1001,8 +1000,9 @@ class MerchantPageFragment : BaseMultiFragment(),
             cardPositions.first,
             merchantId
         )
-        val bottomSheet = ProductDetailBottomSheet.createInstance(productUiModel, this)
+        val bottomSheet = ProductDetailBottomSheet.createInstance(productUiModel)
         bottomSheet.setOnDismissListener { viewModel.isProductDetailBottomSheetVisible = false }
+        bottomSheet.setClickListener(this)
         bottomSheet.setListener(this@MerchantPageFragment)
         bottomSheet.sendTrackerInMerchantPage {
             viewModel.merchantData?.let {

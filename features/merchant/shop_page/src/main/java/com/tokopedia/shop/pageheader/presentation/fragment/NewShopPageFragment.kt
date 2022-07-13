@@ -32,6 +32,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.*
 import com.tokopedia.applink.FragmentConst.FEED_SHOP_FRAGMENT
+import com.tokopedia.applink.FragmentConst.SHOP_REVIEW_FRAGMENT
 import com.tokopedia.applink.internal.*
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
@@ -216,6 +217,7 @@ class NewShopPageFragment :
         private const val PATH_HOME = "home"
         private const val PATH_PRODUCT = "product"
         private const val PATH_FEED = "feed"
+        private const val PATH_REVIEW = "review"
         private const val PATH_NOTE = "note"
         private const val QUERY_SHOP_REF = "shop_ref"
         private const val QUERY_SHOP_ATTRIBUTION = "tracker_attribution"
@@ -279,11 +281,12 @@ class NewShopPageFragment :
 
     private var scrollToTopButton: FloatingButtonUnify? = null
     private val intentData: Intent = Intent()
-    private var shouldOverrideTabToHome: Boolean = false
     private var isRefresh: Boolean = false
     private var extParam: String = ""
+    private var shouldOverrideTabToHome: Boolean = false
     private var shouldOverrideTabToProduct: Boolean = false
     private var shouldOverrideTabToFeed: Boolean = false
+    private var shouldOverrideTabToReview: Boolean = false
     private var shouldOpenShopNoteBottomSheet: Boolean = false
     private var shouldAutoRedirectToCreateEtalase: Boolean = false
     private var listShopPageTabModel = listOf<ShopPageTabModel>()
@@ -904,6 +907,10 @@ class NewShopPageFragment :
                     if (lastPathSegment.orEmpty() == PATH_FEED) {
                         shouldOverrideTabToFeed = true
                     }
+                    if (lastPathSegment.orEmpty() == PATH_REVIEW) {
+                        // override to review tab shop page
+                        shouldOverrideTabToReview = true
+                    }
                     if (lastPathSegment.orEmpty() == PATH_NOTE) {
                         shouldOpenShopNoteBottomSheet = true
                     }
@@ -941,7 +948,10 @@ class NewShopPageFragment :
     }
 
     private fun inflateViewStub() {
-        viewBinding?.viewStubContentLayout?.inflate()
+        try {
+            viewBinding?.viewStubContentLayout?.inflate()
+        } catch (e: Exception) {
+        }
     }
 
     private fun observeShopProductFilterParameterSharedViewModel() {
@@ -1635,6 +1645,16 @@ class NewShopPageFragment :
                     selectedPosition
                 }
             }
+            if (shouldOverrideTabToReview) {
+                val reviewTabFragmentClassName = getReviewTabFragmentClassName()
+                reviewTabFragmentClassName?.let { reviewTabClass ->
+                    selectedPosition = if (viewPagerAdapter?.isFragmentObjectExists(reviewTabClass) == true) {
+                        viewPagerAdapter?.getFragmentPosition(reviewTabClass).orZero()
+                    } else {
+                        selectedPosition
+                    }
+                }
+            }
         }
         return selectedPosition
     }
@@ -1746,7 +1766,7 @@ class NewShopPageFragment :
 
         val reviewTabFragment = RouteManager.instantiateFragmentDF(
                 activity as AppCompatActivity,
-                FragmentConst.SHOP_REVIEW_FRAGMENT,
+                SHOP_REVIEW_FRAGMENT,
                 Bundle().apply {
                     putString(ARGS_SHOP_ID_FOR_REVIEW_TAB, shopId)
                 }
@@ -1867,6 +1887,14 @@ class NewShopPageFragment :
                 }
             }
         } else {
+            null
+        }
+    }
+
+    private fun getReviewTabFragmentClassName(): Class<*>? {
+        return try {
+            Class.forName(SHOP_REVIEW_FRAGMENT)
+        } catch (e: Exception) {
             null
         }
     }

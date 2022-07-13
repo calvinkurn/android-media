@@ -643,7 +643,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun isOCCActive(): Boolean {
-        return abTestPlatform.getString(AB_TEST_OCC, AB_TEST_NON_OCC) == AB_TEST_OCC
+        /**
+         * AB Test Removed because of expired rollence
+         * The OCC feature will be used again in next feature (group buy)
+         */
+        return false
     }
 
     private fun initFireBase() {
@@ -3029,9 +3033,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         private const val REQUEST_UPDATE_STOCK = 120
 
         private const val ELLIPSIZE_MAX_CHAR = 20
-
-        const val AB_TEST_OCC = "chat_occ_exp"
-        const val AB_TEST_NON_OCC = "chat_occ_control"
 
         private const val PREFIX_SELLER_APPLINK = "sellerapp://"
 

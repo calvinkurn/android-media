@@ -182,10 +182,6 @@ class VideoPictureView @JvmOverloads constructor(
     }
 
     private fun renderVideoOnceAtPosition(position: Int) {
-        if (position == RecyclerView.NO_POSITION) {
-            return
-        }
-
         binding.pdpViewPager.addOneTimeGlobalLayoutListener {
             binding.pdpViewPager.let {
                 mListener?.getProductVideoCoordinator()?.onScrollChangedListener(it, position)
