@@ -17,7 +17,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl2"
-        app:typographyType="body_2"
+        app:typographyType="display_2"
         app:layout_constraintTop_toTopOf="@id/cb_consent_widget"
         app:layout_constraintBottom_toBottomOf="@id/cb_consent_widget"
         app:layout_constraintStart_toEndOf="@id/cb_consent_widget"
