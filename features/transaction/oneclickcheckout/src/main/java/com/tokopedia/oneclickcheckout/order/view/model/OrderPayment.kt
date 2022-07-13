@@ -35,10 +35,10 @@ data class OrderPayment(
 
     fun getRealFee(): Double {
         if (creditCard.selectedTerm != null) {
-            return creditCard.selectedTerm.fee + getTotalPaymentFee()
+            return creditCard.selectedTerm.fee
         }
         if (walletData.isGoCicil) {
-            return walletData.goCicilData.selectedTerm?.feeAmount ?: 0.0 + getTotalPaymentFee()
+            return walletData.goCicilData.selectedTerm?.feeAmount ?: 0.0
         }
         return getTotalPaymentFee()
     }

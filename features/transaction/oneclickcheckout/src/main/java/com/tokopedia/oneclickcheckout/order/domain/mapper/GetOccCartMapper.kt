@@ -406,26 +406,16 @@ class GetOccCartMapper @Inject constructor() {
     }
 
     private fun mapPaymentFee(paymentFeeDetails: List<PaymentFeeDetailResponse>): List<OrderPaymentFee> {
-        return listOf(
+        return paymentFeeDetails.map { paymentFeeDetail ->
             OrderPaymentFee(
-                "Biaya Jasa Aplikasi",
-                1000.0,
-                true,
-                true,
-                2000,
-                "Terima kasih sudah belanja di Tokopedia! Biaya jasa aplikasi akan kami pakai untuk terus berikan layanan terbaik buat kamu."
+                title = paymentFeeDetail.title,
+                fee = paymentFeeDetail.fee,
+                showTooltip = paymentFeeDetail.showTooltip,
+                showSlashed = paymentFeeDetail.showSlashed,
+                slashedFee = paymentFeeDetail.slashedFee,
+                tooltipInfo = paymentFeeDetail.tooltipInfo,
             )
-        )
-//        return paymentFeeDetails.map { paymentFeeDetail ->
-//            OrderPaymentFee(
-//                title = paymentFeeDetail.title,
-//                fee = paymentFeeDetail.fee,
-//                showTooltip = paymentFeeDetail.showTooltip,
-//                showSlashed = paymentFeeDetail.showSlashed,
-//                slashedFee = paymentFeeDetail.slashedFee,
-//                tooltipInfo = paymentFeeDetail.tooltipInfo,
-//            )
-//        }
+        }
     }
 
     private fun mapPaymentGoCicilData(goCicilData: GoCicilData): OrderPaymentGoCicilData {
