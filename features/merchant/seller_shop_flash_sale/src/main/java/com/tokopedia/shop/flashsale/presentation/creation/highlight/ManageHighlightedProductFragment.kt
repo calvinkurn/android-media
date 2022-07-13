@@ -124,23 +124,28 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
     }
 
     private fun setupRecyclerView() {
-        binding?.recyclerView?.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-        binding?.recyclerView?.adapter = productAdapter
-        binding?.recyclerView?.addItemDecoration(ProductListItemDecoration(activity ?: return))
+        binding?.recyclerView?.run {
+            layoutManager = LinearLayoutManager(activity ?: return, LinearLayoutManager.VERTICAL, false)
+            adapter = productAdapter
+
+            val itemDecoration = ProductListItemDecoration(activity ?: return)
+            addItemDecoration(itemDecoration)
+
+            endlessRecyclerViewScrollListener = object : EndlessRecyclerViewScrollListener(layoutManager) {
+                override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                    productAdapter.showLoading()
+                    getProducts(page)
+                }
+            }
+            addOnScrollListener(endlessRecyclerViewScrollListener ?: return)
+        }
+
         productAdapter.setOnCoachMarkDisplayed {
             preferenceDataStore.markHighlightCampaignProductComplete()
         }
+
         val shouldShowCoachMark = !preferenceDataStore.isHighlightCampaignProductDismissed()
         productAdapter.shouldDisplayCoachMark(shouldShowCoachMark)
-
-        endlessRecyclerViewScrollListener = object : EndlessRecyclerViewScrollListener(binding?.recyclerView?.layoutManager) {
-            override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                productAdapter.showLoading()
-                getProducts(page)
-            }
-        }
-
-        binding?.recyclerView?.addOnScrollListener(endlessRecyclerViewScrollListener ?: return)
     }
 
     private fun setupSearchBar() {
