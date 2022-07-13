@@ -201,8 +201,6 @@
 
 /features/user/chatbot/                         		@tokopedia/android-minionyoda-dev
 /features/user/chatbot_no_op/                   		@tokopedia/android-minionkevin-dev
-/features/user/topchat/                         		@tokopedia/android-minionkevin-dev
-/features/user/topchat_no_op/                   		@tokopedia/android-minionkevin-dev
 /features/user/profilecompletion/                       @tokopedia/android-minionkevin-dev
 /features/user/vote/                            		@tokopedia/android-minionkevin-dev
 /features/user/otp/                             		@tokopedia/android-minionkevin-dev
@@ -244,6 +242,7 @@
 /features/communication/inbox/                          @tokopedia/android-minionkevin-dev
 /features/communication/inbox_common/                   @tokopedia/android-minionkevin-dev
 /features/communication/notifcenter/                    @tokopedia/android-minionkevin-dev
+/features/communication/topchat/                        @tokopedia/android-minionkevin-dev
 /features/communication/push-notification-common/       @tokopedia/android-minionyoda-dev
 
 /features/operational/contact_us        				@tokopedia/android-minionyoda-dev
