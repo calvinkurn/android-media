@@ -2,36 +2,36 @@ package com.tokopedia.smartbills.data
 
 import com.google.gson.annotations.SerializedName
 
+data class RechargeRecommendationResponse(
+    @SerializedName("rechargeRecommendation")
+    val response: RechargeRecommendation? = RechargeRecommendation()
+)
+
 data class RechargeRecommendation(
     @SerializedName("UUID")
     val UUID: String = "",
 
-    @SerializedName("recommendations")
+    @SerializedName("Recommendations")
     val recommendations: List<RechargeRecommendationData> = listOf()
-) {
-    data class Response(
-        @SerializedName("rechargeRecommendation")
-        val response: RechargeRecommendation? = RechargeRecommendation()
-    )
-}
+)
 
 data class RechargeRecommendationData(
-    @SerializedName("contentID")
+    @SerializedName("ContentID")
     val contentID: String = "",
-    @SerializedName("mainText")
+    @SerializedName("MainText")
     val mainText: String = "",
-    @SerializedName("subText")
+    @SerializedName("SubText")
     val subText: String = "",
-    @SerializedName("applink")
+    @SerializedName("AppLink")
     val applink: String = "",
-    @SerializedName("link")
+    @SerializedName("Link")
     val link: String = "",
-    @SerializedName("iconURL")
+    @SerializedName("IconURL")
     val iconURL: String = "",
-    @SerializedName("title")
+    @SerializedName("Title")
     val title: String = "",
-    @SerializedName("backgroundColor")
+    @SerializedName("BackgroundColor")
     val backgroundColor: String = "",
-    @SerializedName("buttonText")
+    @SerializedName("ButtonText")
     val buttonText: String = ""
 )

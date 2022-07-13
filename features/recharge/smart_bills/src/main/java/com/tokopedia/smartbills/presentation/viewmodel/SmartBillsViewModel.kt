@@ -2,6 +2,7 @@ package com.tokopedia.smartbills.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.network.data.model.RestResponse
@@ -59,7 +60,8 @@ class SmartBillsViewModel @Inject constructor(
     val highlightCategory: LiveData<Result<HighlightCategoryUiModel>>
         get() = mutableHighlightCategory
 
-    var positionRechargeActive: Int = 0
+    private var rechargeRecommendation = RechargeRecommendation()
+    var positionActiveRecommendation: Int = 0
 
     fun getStatementMonths(mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
         launchCatchError(block = {
@@ -202,16 +204,18 @@ class SmartBillsViewModel @Inject constructor(
 
     fun getHightlightCategory() {
         launchCatchError(block = {
+            resetPositionActiveRecommendation()
             val graphqlRequest = GraphqlRequest(
                 SmartBillsQueries.RECHARGE_RECOMMENDATION,
-                RechargeRecommendation::class.java, createParamHighlightCategory()
+                RechargeRecommendationResponse::class.java, createParamHighlightCategory()
             )
 
             val data = withContext(dispatcher.io) {
                 graphqlRepository.response(listOf(graphqlRequest), GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
-            }.getSuccessData<RechargeRecommendation>()
+            }.getSuccessData<RechargeRecommendationResponse>()
 
-            mutableHighlightCategory.postValue(Success(mapperHighlightUiModel(data, positionRechargeActive)))
+            rechargeRecommendation = data.response ?: RechargeRecommendation()
+            updateHighlightUiModel()
         }
         ) {
             mutableHighlightCategory.postValue(Fail(it))
@@ -277,15 +281,27 @@ class SmartBillsViewModel @Inject constructor(
                 || highlight.date.isNotEmpty()
     }
 
-    private fun mapperHighlightUiModel(rechargeRecommendation: RechargeRecommendation, position: Int): HighlightCategoryUiModel {
-        if (rechargeRecommendation.recommendations.size >= (position + Int.ONE)){
-            val recommendation = rechargeRecommendation.recommendations.get(position)
+    fun updatePositionActiveRecommendation() {
+        positionActiveRecommendation++
+    }
+
+    fun resetPositionActiveRecommendation() {
+        positionActiveRecommendation = 0
+    }
+
+    fun updateHighlightUiModel() {
+        mutableHighlightCategory.postValue(Success(mapperHighlightUiModel()))
+    }
+
+    private fun mapperHighlightUiModel(): HighlightCategoryUiModel {
+        if (rechargeRecommendation.recommendations.size >= (positionActiveRecommendation + Int.ONE)){
+            val recommendation = rechargeRecommendation.recommendations.get(positionActiveRecommendation)
             return HighlightCategoryUiModel(
                 recommendation.contentID,
                 recommendation.iconURL,
-                recommendation.title,
                 recommendation.mainText,
                 recommendation.subText,
+                recommendation.buttonText,
                 recommendation.applink
             )
         } else {
@@ -313,7 +329,7 @@ class SmartBillsViewModel @Inject constructor(
         const val CONTENT_TYPE = "Content-Type"
 
         const val CACHE_DURATION_MINUTES = 5
-        const val RECHARGE_RECOM_TYPE = 1
+        const val RECHARGE_RECOM_TYPE = 3
 
         const val HARD_CODE_EMPTY_RESPONSE = "error get base data: [favorite] empty favorite data"
     }
