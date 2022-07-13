@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.media.editor.ui.component.WatermarkToolUiComponent
 import javax.inject.Inject
 import com.tokopedia.media.editor.R
+import com.tokopedia.media.editor.utils.isDark
 
 interface WatermarkFilterRepository {
     fun watermark(
@@ -42,11 +43,13 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
             fontSize = imageHeight
         }
 
-    private var imageHeight: Float = 0f
-    private var fontSize: Float = 0f
+    private var imageHeight = 0f
+    private var fontSize = 0f
 
-    private var textWidth: Int = 0
-    private var textHeight: Int = 0
+    private var textWidth = 0
+    private var textHeight = 0
+
+    private var watermarkColor = 0
 
     override fun watermark(
         context: Context,
@@ -59,6 +62,11 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
             topedDrawable = ContextCompat.getDrawable(context, R.drawable.watermark_tokopedia)
         }
 
+        watermarkColor = ContextCompat.getColor(context,
+            if(source.isDark()) R.color.dms_watermark_text_dark
+            else R.color.dms_watermark_text_light
+        )
+
         val w: Int = source.width
         val h: Int = source.height
         val result = Bitmap.createBitmap(w, h, source.config)
@@ -69,13 +77,12 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
         canvas.drawBitmap(source, 0f, 0f, null)
 
         val paint = Paint()
-        val colorAlpha = ContextCompat.getColor(context, R.color.dms_watermark_text_light)
 
-        paint.color = colorAlpha
+        paint.color = watermarkColor
         paint.textSize = fontSize
         paint.isAntiAlias = true
 
-        topedDrawable?.setTint(colorAlpha)
+        topedDrawable?.setTint(watermarkColor)
 
         val shopTextBound = Rect()
         paint.getTextBounds(shopText, 0, shopText.length, shopTextBound)
