@@ -4,8 +4,8 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
-import com.tokopedia.feedcomponent.R.string.up_btn_text_follow
-import com.tokopedia.feedcomponent.R.string.up_btn_text_following
+import com.tokopedia.feedcomponent.R.string.btn_text_follow
+import com.tokopedia.feedcomponent.R.string.btn_text_following
 import com.tokopedia.feedcomponent.data.pojo.people.ShopRecomItemUI
 import com.tokopedia.feedcomponent.databinding.ItemShopRecommendationBinding
 import com.tokopedia.unifycomponents.UnifyButton.Type.ALTERNATE
@@ -56,7 +56,7 @@ class ShopRecomView : FrameLayout {
 
     private fun buttonFollowState(isFollow: Boolean) = with(binding) {
         btnItemShop.apply {
-            text = context.getString(if (isFollow) up_btn_text_following else up_btn_text_follow)
+            text = context.getString(if (isFollow) btn_text_following else btn_text_follow)
             buttonVariant = if (isFollow) GHOST else FILLED
             buttonType = if (isFollow) ALTERNATE else MAIN
         }

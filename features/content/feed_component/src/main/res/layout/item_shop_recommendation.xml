@@ -87,7 +87,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_8"
-            android:text="@string/up_btn_text_follow"
+            android:text="@string/btn_text_follow"
             android:textSize="@dimen/unify_font_12"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

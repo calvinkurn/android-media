@@ -227,7 +227,7 @@
     <string name="feed_ugc_onboarding_unknown_error">Terjadi kesalahan. Ulangi beberapa saat lagi</string>
 
     <!-- Shop Recommendation -->
-    <string name="up_follow_account">Follow akun</string>
-    <string name="up_btn_text_follow">Follow</string>
-    <string name="up_btn_text_following">Following</string>
+    <string name="follow_account">Follow akun</string>
+    <string name="btn_text_follow">Follow</string>
+    <string name="btn_text_following">Following</string>
 </resources>
