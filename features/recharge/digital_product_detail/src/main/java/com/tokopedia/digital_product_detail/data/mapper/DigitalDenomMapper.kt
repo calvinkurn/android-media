@@ -187,6 +187,7 @@ class DigitalDenomMapper @Inject constructor() {
                 productType = if (isBigRecommendation) it.label1 else "",
                 productExpired = if (isBigRecommendation) it.label2 else "",
                 specialLabel = if (isBigRecommendation) it.label3 else "",
+                itemType = it.trackingData.itemType
             )
         }
     }

@@ -18,4 +18,5 @@ data class RecommendationCardWidgetModel(
     val operatorId: String = "",
     val productId: String = "",
     val specialLabel: String = "",
+    val itemType: String = "",
 ): ImpressHolder()
