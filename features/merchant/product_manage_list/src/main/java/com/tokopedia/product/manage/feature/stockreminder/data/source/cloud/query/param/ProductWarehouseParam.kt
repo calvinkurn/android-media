@@ -8,5 +8,7 @@ data class ProductWarehouseParam(
     @SerializedName("WarehouseID")
     val wareHouseId: String = "",
     @SerializedName("Threshold")
-    val threshold: String = ""
+    val threshold: String = "",
+    @SerializedName("ThresholdStatus")
+    val thresholdStatus: String = ""
 )

@@ -6,8 +6,8 @@ import com.tokopedia.topchat.common.Constant
 
 object Utils {
 
-    fun putExtraForFoldable(intent: Intent, msgId: Long, destUserRole: String) {
-        intent.putExtra(Constant.CHAT_CURRENT_ACTIVE, msgId.toString())
+    fun putExtraForFoldable(intent: Intent, msgId: String, destUserRole: String) {
+        intent.putExtra(Constant.CHAT_CURRENT_ACTIVE, msgId)
         val roleType = if(destUserRole == Constant.ROLE_SHOP) {
             RoleType.BUYER
         } else {

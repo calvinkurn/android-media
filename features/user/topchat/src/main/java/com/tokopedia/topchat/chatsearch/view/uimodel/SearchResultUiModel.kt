@@ -16,9 +16,9 @@ data class SearchResultUiModel(
         @SerializedName("lastMessage")
         val lastMessage: String = "",
         @SerializedName("msgId")
-        val msgId: Long = 0L,
+        val msgId: String = "0",
         @SerializedName("oppositeId")
-        val oppositeId: Long = 0L,
+        val oppositeId: String = "0",
         @SerializedName("oppositeType")
         val oppositeType: Long = 0L
 ) : Visitable<ChatSearchTypeFactory> {

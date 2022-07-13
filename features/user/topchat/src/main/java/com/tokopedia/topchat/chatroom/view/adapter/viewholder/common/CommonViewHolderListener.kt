@@ -9,5 +9,5 @@ interface CommonViewHolderListener {
     fun showMsgMenu(
         msg: BaseChatUiModel, text: CharSequence, menus: List<Int>
     )
-    fun getCommonShopId(): Long
+    fun getCommonShopId(): String
 }

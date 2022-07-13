@@ -81,4 +81,10 @@ class VariantDetailFieldsAdapter(variantDetailTypeFactoryImpl: VariantDetailInpu
             AddEditProductErrorHandler.logExceptionToCrashlytics(e)
         }
     }
+
+    fun getHeaderAtPosition(position: Int): VariantDetailHeaderUiModel? {
+        return list.firstOrNull {
+            (it as? VariantDetailHeaderUiModel)?.position == position
+        } as? VariantDetailHeaderUiModel
+    }
 }

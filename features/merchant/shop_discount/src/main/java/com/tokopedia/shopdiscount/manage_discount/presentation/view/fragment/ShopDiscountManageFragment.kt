@@ -31,6 +31,7 @@ import com.tokopedia.shopdiscount.databinding.FragmentManageDiscountBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.shopdiscount.manage.presentation.container.DiscountedProductManageActivity
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel
+import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSlashPriceProductSubmissionUiModel
 import com.tokopedia.shopdiscount.manage_discount.presentation.adapter.ShopDiscountManageDiscountAdapter
 import com.tokopedia.shopdiscount.manage_discount.presentation.adapter.ShopDiscountManageDiscountTypeFactoryImpl
 import com.tokopedia.shopdiscount.manage_discount.presentation.adapter.viewholder.ShopDiscountManageDiscountGlobalErrorViewHolder
@@ -41,6 +42,7 @@ import com.tokopedia.shopdiscount.manage_product_discount.presentation.activity.
 import com.tokopedia.shopdiscount.manage_product_discount.presentation.activity.ShopDiscountManageVariantActivity
 import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
 import com.tokopedia.shopdiscount.utils.extension.showError
+import com.tokopedia.shopdiscount.utils.extension.showErrorLongDuration
 import com.tokopedia.shopdiscount.utils.extension.showToaster
 import com.tokopedia.shopdiscount.utils.rv_decoration.ShopDiscountDividerItemDecoration
 import com.tokopedia.shopdiscount.utils.tracker.ShopDiscountTracker
@@ -63,6 +65,7 @@ class ShopDiscountManageFragment : BaseDaggerFragment(),
         private const val SELECTED_PRODUCT_VARIANT_ID = "selected_product_variant_id"
         private const val URL_EDU_ABUSIVE_PRODUCT =
             "https://seller.tokopedia.com/edu/ketentuan-baru-diskon-toko/"
+        private const val MAX_SUBMITTED_PRODUCT_ERROR_MESSAGES = 5
 
         fun createInstance(
             requestId: String,
@@ -302,6 +305,24 @@ class ShopDiscountManageFragment : BaseDaggerFragment(),
         view.showError(message)
     }
 
+    private fun showToasterErrorSubmitProduct(submittedProductData: ShopDiscountSlashPriceProductSubmissionUiModel) {
+        val reason = submittedProductData.responseHeader.reason
+        val listError = submittedProductData.listSubmittedProductData.filter {
+            !it.success
+        }.map {
+            val errorMessage = if (it.message.isNotEmpty()) {
+                it.message
+            } else {
+                it.listSubmittedWarehouse.firstOrNull { listSubmittedWarehouse ->
+                    listSubmittedWarehouse.message.isNotEmpty()
+                }?.message.orEmpty()
+            }
+            "- ${it.name}, $errorMessage"
+        }.take(MAX_SUBMITTED_PRODUCT_ERROR_MESSAGES)
+        val errorMessage = "$reason\n${listError.joinToString("\n")}"
+        view.showErrorLongDuration(errorMessage)
+    }
+
     private fun removeProduct(productId: String) {
         adapter.removeProduct(productId)
     }
@@ -313,7 +334,7 @@ class ShopDiscountManageFragment : BaseDaggerFragment(),
                 is Success -> {
                     val responseHeaderData = it.data.responseHeader
                     if (!responseHeaderData.success) {
-                        showToasterError(responseHeaderData.reason)
+                        showToasterErrorSubmitProduct(it.data)
                         checkProductDiscountStartDateError()
                     } else {
                         val slashPriceStatusId: Int

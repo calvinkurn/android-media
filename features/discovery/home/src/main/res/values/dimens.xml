@@ -31,7 +31,6 @@
     <dimen name="use_case_and_dynamic_icon_size">56dp</dimen>
     <dimen name="home_revamp_searchbar_transition_range">16dp</dimen>
     <dimen name="keyboard_min_height">200dp</dimen>
-    <dimen name="home_category_widget_v2_title_container_height">46dp</dimen>
 
     <!--Banner Play-->
     <dimen name="home_play_banner_play_icon_size">34dp</dimen>

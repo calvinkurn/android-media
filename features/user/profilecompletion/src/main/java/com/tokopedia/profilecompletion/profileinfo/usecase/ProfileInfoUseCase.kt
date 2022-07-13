@@ -13,11 +13,11 @@ class ProfileInfoUseCase @Inject constructor(
 ) : CoroutineUseCase<Unit, ProfileInfoResponse>(dispatcher) {
 
     override suspend fun execute(params: Unit): ProfileInfoResponse {
-	return repository.request(graphqlQuery(), params)
+        return repository.request(graphqlQuery(), params)
     }
 
     override fun graphqlQuery(): String =
-	"""
+        """
        	query userProfileInfo(){
 	    userProfileCompletion {
 		isActive,

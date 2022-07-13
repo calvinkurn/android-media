@@ -22,6 +22,7 @@ class LoadMoreViewHolder(itemView: View, private val fragment: Fragment) : Abstr
         loadMoreViewModel = discoveryBaseViewModel as LoadMoreViewModel
         with(itemView.context) {
             if(this is DiscoveryActivity) {
+                loadMoreViewModel.checkForDarkMode(this)
                 this.discoveryComponent.provideSubComponent()
                         .inject(loadMoreViewModel)
             }

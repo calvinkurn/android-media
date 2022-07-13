@@ -4,7 +4,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.feedcomponent.R
-import com.tokopedia.videoTabComponent.callback.PlayWidgetCardClickListener
 import com.tokopedia.videoTabComponent.view.viewholder.PlayFeedWidgetViewHolder
 import com.tokopedia.videoTabComponent.domain.model.data.PlayFeedUiModel
 import com.tokopedia.videoTabComponent.domain.model.data.PlayWidgetJumboUiModel
@@ -19,7 +18,6 @@ class PlayWidgetViewAdapterDelegate private constructor() {
 
     internal class Jumbo(
         private val coordinator: PlayWidgetCoordinatorVideoTab,
-        private val clickListener: PlayWidgetCardClickListener,
     ) :
         TypedAdapterDelegate<PlayWidgetJumboUiModel, PlayFeedUiModel, PlayFeedWidgetViewHolder.Jumbo>(
             R.layout.item_feed_play_widget_jumbo
@@ -29,7 +27,7 @@ class PlayWidgetViewAdapterDelegate private constructor() {
             parent: ViewGroup,
             basicView: View
         ): PlayFeedWidgetViewHolder.Jumbo {
-            return PlayFeedWidgetViewHolder.Jumbo.create(basicView, coordinator, clickListener)
+            return PlayFeedWidgetViewHolder.Jumbo.create(basicView, coordinator)
         }
 
         override fun onBindViewHolder(
@@ -42,7 +40,6 @@ class PlayWidgetViewAdapterDelegate private constructor() {
 
      class Large(
         private val coordinator: PlayWidgetCoordinatorVideoTab,
-        private val clickListener: PlayWidgetCardClickListener,
     ) :
         TypedAdapterDelegate<PlayWidgetLargeUiModel, PlayFeedUiModel, PlayFeedWidgetViewHolder.Large>(
             R.layout.item_feed_play_widget_large
@@ -58,13 +55,12 @@ class PlayWidgetViewAdapterDelegate private constructor() {
             parent: ViewGroup,
             basicView: View
         ): PlayFeedWidgetViewHolder.Large {
-            return PlayFeedWidgetViewHolder.Large.create(basicView, coordinator, clickListener)
+            return PlayFeedWidgetViewHolder.Large.create(basicView, coordinator)
         }
     }
 
     internal class Medium(
         private val coordinator: PlayWidgetCoordinatorVideoTab,
-        private val clickListener: PlayWidgetCardClickListener,
     ) :
         TypedAdapterDelegate<PlayWidgetMediumUiModel, PlayFeedUiModel, PlayFeedWidgetViewHolder.Medium>(
             R.layout.item_feed_play_widget_medium
@@ -80,7 +76,7 @@ class PlayWidgetViewAdapterDelegate private constructor() {
             parent: ViewGroup,
             basicView: View
         ): PlayFeedWidgetViewHolder.Medium {
-            return PlayFeedWidgetViewHolder.Medium.create(basicView, coordinator, clickListener)
+            return PlayFeedWidgetViewHolder.Medium.create(basicView, coordinator)
         }
     }
 }

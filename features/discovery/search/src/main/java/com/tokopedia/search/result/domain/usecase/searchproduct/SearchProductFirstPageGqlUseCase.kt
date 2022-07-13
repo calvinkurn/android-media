@@ -302,6 +302,7 @@ class SearchProductFirstPageGqlUseCase(
                         tracking_option
                         options {
                             title
+                            subtitle
                             url
                             applink
                             banner_image_url
@@ -351,6 +352,10 @@ class SearchProductFirstPageGqlUseCase(
                                     productViewUrl
                                 }
                                 customvideo_url
+                            }
+                            card_button {
+                                title
+                                applink
                             }
                         }
                     }

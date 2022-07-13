@@ -2,6 +2,7 @@ package com.tokopedia.gm.common.domain.interactor
 
 import com.tokopedia.gm.common.data.source.cloud.model.GoldActivationSubscription
 import com.tokopedia.gm.common.data.source.local.model.PMActivationStatusUiModel
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
@@ -12,13 +13,17 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 29/03/21
  */
 
+@GqlQuery("PowerMerchantActivateGqlQuery", PowerMerchantActivateUseCase.QUERY)
 class PowerMerchantActivateUseCase @Inject constructor(
     private val gqlRepository: GraphqlRepository
 ) : BaseGqlUseCase<PMActivationStatusUiModel>() {
 
     override suspend fun executeOnBackground(): PMActivationStatusUiModel {
-        val gqlRequest =
-            GraphqlRequest(QUERY, GoldActivationSubscription::class.java, params.parameters)
+        val gqlRequest = GraphqlRequest(
+            PowerMerchantActivateGqlQuery(),
+            GoldActivationSubscription::class.java,
+            params.parameters
+        )
         val gqlResponse = gqlRepository.response(listOf(gqlRequest), cacheStrategy)
 
         val gqlErrors = gqlResponse.getError(GoldActivationSubscription::class.java)
@@ -39,7 +44,7 @@ class PowerMerchantActivateUseCase @Inject constructor(
     }
 
     companion object {
-        private val QUERY = """
+        internal const val QUERY = """
          mutation activatePowerMerchant(${'$'}source: String!) {
            goldActivationSubscription(source: ${'$'}source) {
              header {
@@ -59,8 +64,7 @@ class PowerMerchantActivateUseCase @Inject constructor(
              }
            }
          }
-        """.trimIndent()
-
+        """
         private const val SOURCE = "source"
 
         fun createActivationParam(source: String): RequestParams {
