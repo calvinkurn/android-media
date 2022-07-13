@@ -69,7 +69,7 @@ class TokomemberDashHomeMainFragment : BaseDaggerFragment() {
         homeViewPager = view.findViewById(R.id.home_viewpager)
         programActionType = arguments?.getInt(BUNDLE_SHOW_TOAST)?:0
         if (programActionType!=-1) {
-            setTabsAndShowToast()
+            setTabsProgramList()
         }
 
         homeHeader.apply {
@@ -114,16 +114,8 @@ class TokomemberDashHomeMainFragment : BaseDaggerFragment() {
         homeTabs.addNewTab("Kupon Tokomember")
     }
 
-    private fun setTabsAndShowToast(){
-        homeViewPager.currentItem = 1
-        when(programActionType){
-            ProgramActionType.CREATE_BUAT -> {
-                view?.let { Toaster.build(it, "Yay! Program berhasil diperpanjang.", Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show() }
-            }
-            ProgramActionType.EXTEND ->{
-                view?.let { Toaster.build(it, " Yay, pengaturan TokoMember sudah dibuat. Kamu bisa cek progresnya di menu Home.", Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show() }
-            }
-        }
+    private fun setTabsProgramList(){
+        homeViewPager.currentItem = 2
     }
 
     override fun getScreenName() = ""

@@ -112,15 +112,23 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
         tmProgramListViewModel?.getProgramList(shopId, cardId)
         tmTracker?.viewProgramListTabSection(arguments?.getInt(BUNDLE_SHOP_ID).toString())
 
-       /* if(arguments?.getBoolean(BUNDLE_SHOW_TOAST, false) == true){
-            Toaster.build(view, " Yay, pengaturan TokoMember sudah dibuat. Kamu bisa cek progresnya di menu Home.", Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
-        }*/
-
+        setToastOnProgramAction(arguments?.getInt(BUNDLE_SHOW_TOAST)?:0)
         btnCreateProgram.setOnClickListener {
             TmDashCreateActivity.openActivity(shopId, activity, CreateScreenType.PROGRAM, ProgramActionType.CREATE_BUAT, REQUEST_CODE_REFRESH, null, cardId)
             tmTracker?.clickProgramListButton(shopId.toString())
         }
         setEmptyProgramListData()
+    }
+
+    private fun setToastOnProgramAction(programActionType:Int){
+        when(programActionType){
+            ProgramActionType.CREATE_BUAT -> {
+                view?.let { Toaster.build(it, "Yay! Program berhasil diperpanjang.", Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show() }
+            }
+            ProgramActionType.EXTEND ->{
+                view?.let { Toaster.build(it, " Yay, pengaturan TokoMember sudah dibuat. Kamu bisa cek progresnya di menu Home.", Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show() }
+            }
+        }
     }
 
     private fun observeViewModel() {

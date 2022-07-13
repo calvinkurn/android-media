@@ -645,16 +645,18 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 }
                 startDate.set(Calendar.SECOND, 0)
                 manualStartTimeProgram = convertDateTimeRemoveTimeDiff(startDate.time)
-                manualEndTimeProgram = TmDateUtil.addDuration(timeWindow?.endTime ?: "", periodMonth)
 
+                manualEndTimeProgram = TmDateUtil.addDuration(timeWindow?.endTime ?: "", periodMonth)
                 val maxProgramEndDate = GregorianCalendar(locale)
                 maxProgramEndDate.add(Calendar.YEAR, 1)
-
                 val endDate = GregorianCalendar(locale)
                 val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
                 endDate.time = sdf.parse(manualEndTimeProgram + "00") ?: Date()
-
-                manualEndTimeProgram = convertDateTimeRemoveTimeDiff(endDate.time)
+                manualEndTimeProgram = if (endDate > maxProgramEndDate) {
+                    convertDateTimeRemoveTimeDiff(maxProgramEndDate.time)
+                } else {
+                    convertDateTimeRemoveTimeDiff(endDate.time)
+                }
             }
             else -> {
                 val currentDate = GregorianCalendar(locale)
@@ -664,8 +666,8 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                     val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
                     currentStartDate.time = sdf.parse(timeWindow?.startTime ?: "" + "00") ?: Date()
                     currentStartDate.set(Calendar.HOUR,currentTime)
-                    currentStartDate.set(Calendar.HOUR,0)
-                    currentStartDate.set(Calendar.HOUR,0)
+                    currentStartDate.set(Calendar.MINUTE,0)
+                    currentStartDate.set(Calendar.SECOND,0)
                     currentStartDate.add(Calendar.HOUR,4)
                     manualStartTimeProgram = convertDateTimeRemoveTimeDiff(currentStartDate.time)
                 }else {
@@ -1124,18 +1126,19 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                     set(Calendar.HOUR_OF_DAY, 23)
                     set(Calendar.MINUTE, 59)
                 }
-
-            val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
-            currentDate.time = sdf.parse(updatedStartTimeCoupon + "00") ?: Date()
+            val minDate =
+                GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {
+                    set(Calendar.HOUR_OF_DAY, 0)
+                    set(Calendar.MINUTE, 0)
+                }
 
             val timerPickerUnify = DateTimePickerUnify(
                 context = ctx,
-                minDate = currentDate,
+                minDate = minDate,
                 defaultDate = currentDate,
                 maxDate = maxDate,
                 type = DateTimePickerUnify.TYPE_TIMEPICKER
             ).apply {
-                minuteInterval = 30
                 setTitle(title)
                 setInfo(desc)
                 setInfoVisible(true)
@@ -1144,10 +1147,6 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                     startTime = getDate()
                     selectedHour = timePicker.hourPicker.activeValue
                     selectedMinute = timePicker.minutePicker.activeValue
-
-                    currentDate.set(Calendar.HOUR,selectedHour.toIntSafely())
-                    currentDate.set(Calendar.MINUTE,selectedMinute.toIntSafely())
-                    currentDate.set(Calendar.SECOND,0)
 
                     when (type) {
                         0 -> {

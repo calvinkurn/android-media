@@ -72,10 +72,16 @@ class TmSingleCouponView @JvmOverloads constructor(
                         chipGroupCashbackType.show()
                         ivPreviewCoupon.showHideCashBackValueView(true)
                         ivPreviewCoupon.setCouponType(COUPON_CASHBACK_PREVIEW)
+                        if (selectedChipPositionCashback == 0){
+                            textFieldPercentCashback.hide()
+                        } else {
+                            textFieldPercentCashback.show()
+                        }
                     }
                     CouponType.SHIPPING -> {
                         tvCashbackType.hide()
                         chipGroupCashbackType.hide()
+                        textFieldPercentCashback.hide()
                         textFieldMaxCashback.setLabel(MAX_GRATIS_LABEL)
                         ivPreviewCoupon.showHideCashBackValueView(false)
                         ivPreviewCoupon.setCouponType(COUPON_SHIPPING_PREVIEW)
