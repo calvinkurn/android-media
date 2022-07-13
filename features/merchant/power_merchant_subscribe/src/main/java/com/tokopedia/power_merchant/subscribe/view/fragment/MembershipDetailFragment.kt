@@ -254,7 +254,7 @@ class MembershipDetailFragment : BaseDaggerFragment() {
             tabLayout.tabRippleColor = ColorStateList.valueOf(Color.TRANSPARENT)
             post {
                 if (activeTabIndex != RecyclerView.NO_POSITION) {
-                    binding?.rvPmMembership?.smoothScrollToPosition(activeTabIndex)
+                    binding?.rvPmMembership?.scrollToPosition(activeTabIndex)
                 }
                 setListeners()
             }
