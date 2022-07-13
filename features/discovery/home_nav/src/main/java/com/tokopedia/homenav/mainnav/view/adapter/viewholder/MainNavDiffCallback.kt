@@ -36,8 +36,10 @@ object MainNavDiffCallback : DiffUtil.ItemCallback<Visitable<*>>() {
     }
 
     override fun getChangePayload(oldItem: Visitable<*>, newItem: Visitable<*>): Any? {
-        if(oldItem is MainNavVisitable && newItem is MainNavVisitable){
-            return oldItem.getChangePayloadFrom(newItem)
+        if(oldItem is AccountHeaderDataModel && newItem is AccountHeaderDataModel){
+            if(oldItem.tokopediaPlusParam != newItem.tokopediaPlusParam){
+               return AccountHeaderDataModel.PAYLOAD_TOKOPEDIA_PLUS
+            }
         }
         return super.getChangePayload(oldItem, newItem)
     }

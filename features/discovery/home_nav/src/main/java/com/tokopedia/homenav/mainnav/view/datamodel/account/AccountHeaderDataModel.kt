@@ -34,12 +34,6 @@ data class AccountHeaderDataModel(
         return factory.type(this)
     }
 
-    override fun getChangePayloadFrom(visitable: MainNavVisitable): Any? {
-        return if(visitable is AccountHeaderDataModel && tokopediaPlusParam != visitable.tokopediaPlusParam){
-            PAYLOAD_TOKOPEDIA_PLUS
-        } else super.getChangePayloadFrom(visitable)
-    }
-
     companion object {
         const val LOGIN_STATE_LOGIN = 0
         const val LOGIN_STATE_NON_LOGIN = 1

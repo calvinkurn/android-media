@@ -11,5 +11,4 @@ interface MainNavVisitable : Visitable<MainNavTypeFactory>{
     fun id(): Any
     fun isContentTheSame(visitable: MainNavVisitable): Boolean
     override fun type(factory: MainNavTypeFactory): Int
-    fun getChangePayloadFrom(visitable: MainNavVisitable): Any? = null
 }
