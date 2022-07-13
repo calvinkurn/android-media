@@ -59,7 +59,7 @@ abstract class BaseMultiFragActivity : BaseToolbarActivity() {
      */
     protected abstract fun mapUriToFragment(uri: Uri): Fragment?
 
-    open fun navigateToNewFragment(fragment: Fragment) {
+    open fun navigateToNewFragment(fragment: Fragment, isFinishCurrent: Boolean = false) {
         val fragmentCount = getFragmentCount()
         val ft = supportFragmentManager.beginTransaction()
         if (fragmentCount > 0) {

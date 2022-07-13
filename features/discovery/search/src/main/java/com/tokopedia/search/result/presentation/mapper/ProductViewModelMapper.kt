@@ -71,6 +71,7 @@ class ProductViewModelMapper {
             pageTitle,
             dimension90,
             isLocalSearchRecommendation,
+            searchProductModel.getProductListType()
         )
         productDataView.tickerModel = convertToTickerDataView(
             searchProductData,
@@ -213,6 +214,7 @@ class ProductViewModelMapper {
             pageTitle: String,
             dimension90: String,
             isLocalSearchRecommendation: Boolean,
+            productListType: String,
     ): List<ProductItemDataView> {
         return productModels.mapIndexed { index, productModel ->
             val position = lastProductItemPosition + index + 1
@@ -222,6 +224,7 @@ class ProductViewModelMapper {
                 pageTitle,
                 dimension90,
                 isLocalSearchRecommendation,
+                productListType,
             )
         }
     }
@@ -232,6 +235,7 @@ class ProductViewModelMapper {
             pageTitle: String,
             dimension90: String,
             isLocalSearchRecommendation: Boolean,
+            productListType: String,
     ): ProductItemDataView {
         val productItem = ProductItemDataView()
         productItem.productID = productModel.id
@@ -274,6 +278,7 @@ class ProductViewModelMapper {
         productItem.dimension90 = dimension90
         productItem.applink = productModel.applink
         productItem.customVideoURL = productModel.customVideoURL
+        productItem.productListType = productListType
         return productItem
     }
 

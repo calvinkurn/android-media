@@ -65,6 +65,7 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
     var topadsTag: Int = 0
     var applink: String = ""
     var customVideoURL: String = ""
+    var productListType: String = ""
 
     override fun type(typeFactory: ProductListTypeFactory?): Int {
         return typeFactory?.type(this) ?: 0
@@ -124,6 +125,7 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
             topAds: TopAdsProductData,
             position: Int,
             dimension90: String,
+            productListType: String,
         ): ProductItemDataView {
             val item = ProductItemDataView()
             item.productID = topAds.product.id
@@ -160,6 +162,7 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
             item.dimension90 = dimension90
             item.applink = topAds.applinks
             item.customVideoURL = topAds.product.customVideoUrl
+            item.productListType = productListType
             return item
         }
 

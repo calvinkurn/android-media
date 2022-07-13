@@ -100,6 +100,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.resources.isDarkMode
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import java.util.*
 import javax.inject.Inject
@@ -159,6 +160,9 @@ class MerchantPageFragment : BaseMultiFragment(),
     private var productListAdapter: ProductListAdapter? = null
 
     private var merchantShareComponent: MerchantShareComponent? = null
+
+    private var cartDataUpdateJob: Job? = null
+    private var uiEventUpdateJob: Job? = null
 
     override fun getFragmentToolbar(): Toolbar? {
         return binding?.toolbar
@@ -234,6 +238,16 @@ class MerchantPageFragment : BaseMultiFragment(),
         binding = null
     }
 
+    override fun onStart() {
+        super.onStart()
+        cartDataUpdateJob = viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            collectCartDataFlow()
+        }
+        uiEventUpdateJob = viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            collectUiEventFlow()
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         initializeMiniCartWidget()
@@ -241,6 +255,7 @@ class MerchantPageFragment : BaseMultiFragment(),
             merchantId,
             viewModel.merchantData?.merchantProfile?.opsHourFmt?.isWarning.orFalse()
         )
+        applySelectedProducts()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -254,8 +269,6 @@ class MerchantPageFragment : BaseMultiFragment(),
         setupOrderNoteBottomSheet()
         setupCardSticky()
         observeLiveData()
-        collectFlow()
-        collectCartDataFlow()
 
         // TODO : move this block of code into a function
         if (viewModel.productListItems.isNotEmpty()) {
@@ -284,6 +297,12 @@ class MerchantPageFragment : BaseMultiFragment(),
             validateAddressData()
         }
 
+    }
+
+    override fun onStop() {
+        super.onStop()
+        cartDataUpdateJob?.cancel()
+        uiEventUpdateJob?.cancel()
     }
 
     override fun navigateToNewFragment(fragment: Fragment) {
@@ -382,6 +401,10 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     private fun fetchMerchantData() {
         showLoader()
+        getMerchantData()
+    }
+
+    private fun getMerchantData() {
         context?.run {
             ChooseAddressUtils.getLocalizingAddressData(this)
                 .let { addressData ->
@@ -391,6 +414,16 @@ class MerchantPageFragment : BaseMultiFragment(),
                         timezone = TimeZone.getDefault().id
                     )
                 }
+        }
+    }
+
+    private fun applySelectedProducts() {
+        activityViewModel?.hasCartUpdatedIntoLatestState?.value?.let { hasCartUpdated ->
+            if (hasCartUpdated) {
+                viewModel.getAppliedProductSelection()?.let { appliedProductList ->
+                    renderProductList(appliedProductList)
+                }
+            }
         }
     }
 
@@ -581,48 +614,52 @@ class MerchantPageFragment : BaseMultiFragment(),
         })
     }
 
-    private fun collectCartDataFlow() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            activityViewModel?.cartDataFlow?.collect { cartData ->
-                cartData?.availableSection?.products?.let { products ->
-                    viewModel.selectedProducts = products
-                }
+    private suspend fun collectCartDataFlow() {
+        activityViewModel?.cartDataFlow?.collect { cartData ->
+            cartData?.availableSection?.products?.let { products ->
+                viewModel.selectedProducts = products
             }
         }
     }
 
-    private fun collectFlow() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            activityViewModel?.cartDataValidationFlow?.collect {
-                when (it.state) {
-                    UiEvent.EVENT_SUCCESS_LOAD_CART -> {
-                        toggleMiniCartVisibility(true)
-                    }
-                    UiEvent.EVENT_FAILED_LOAD_CART -> {
-                        toggleMiniCartVisibility(false)
-                    }
-                    UiEvent.EVENT_FAILED_ADD_TO_CART -> {
+    private suspend fun collectUiEventFlow() {
+        activityViewModel?.cartDataValidationFlow?.collect {
+            when (it.state) {
+                UiEvent.EVENT_SUCCESS_LOAD_CART -> {
+                    toggleMiniCartVisibility(true)
+                }
+                UiEvent.EVENT_FAILED_LOAD_CART -> {
+                    toggleMiniCartVisibility(false)
+                }
+                UiEvent.EVENT_FAILED_ADD_TO_CART -> {
+                    if (it.source == SOURCE) {
                         view?.showErrorToaster(it.throwable?.message.orEmpty())
                     }
-                    UiEvent.EVENT_SUCCESS_ADD_TO_CART -> {
+                }
+                UiEvent.EVENT_SUCCESS_ADD_TO_CART -> {
+                    if (it.source == SOURCE) {
                         onSuccessAddCart(it.data?.getSuccessUpdateResultPair())
                     }
-                    UiEvent.EVENT_PHONE_VERIFICATION -> {
+                }
+                UiEvent.EVENT_PHONE_VERIFICATION -> {
+                    if (it.source == SOURCE) {
                         val bottomSheetData = it.data as? CartTokoFoodBottomSheet
                         bottomSheetData?.run {
                             if (isShowBottomSheet) {
-                                val bottomSheet = PhoneNumberVerificationBottomSheet.createInstance(
-                                        bottomSheetData = this,
-                                        clickListener = this@MerchantPageFragment
-                                )
+                                val bottomSheet = PhoneNumberVerificationBottomSheet.createInstance(bottomSheetData = this)
+                                bottomSheet.setClickListener(this@MerchantPageFragment)
                                 bottomSheet.show(childFragmentManager)
                             }
                         }
                     }
-                    UiEvent.EVENT_SUCCESS_UPDATE_CART -> {
+                }
+                UiEvent.EVENT_SUCCESS_UPDATE_CART -> {
+                    if (it.source == SOURCE) {
                         onSuccessUpdateCart(it.data?.getSuccessUpdateResultPair())
                     }
-                    UiEvent.EVENT_SUCCESS_UPDATE_NOTES -> {
+                }
+                UiEvent.EVENT_SUCCESS_UPDATE_NOTES -> {
+                    if (it.source == SOURCE) {
                         (it.data as? Pair<*, *>)?.let { pair ->
                             (pair.first as? UpdateParam)?.productList?.firstOrNull()
                                 ?.let { requestParam ->
@@ -655,7 +692,9 @@ class MerchantPageFragment : BaseMultiFragment(),
                                 }
                         }
                     }
-                    UiEvent.EVENT_SUCCESS_DELETE_PRODUCT -> {
+                }
+                UiEvent.EVENT_SUCCESS_DELETE_PRODUCT -> {
+                    if (it.source == SOURCE) {
                         (it.data as? Pair<*, *>)?.let { pair ->
                             (pair.first as? String)?.let { cartId ->
                                 (pair.second as? CartTokoFoodData)?.carts?.firstOrNull()
@@ -698,7 +737,9 @@ class MerchantPageFragment : BaseMultiFragment(),
                             }
                         }
                     }
-                    UiEvent.EVENT_SUCCESS_UPDATE_QUANTITY -> {
+                }
+                UiEvent.EVENT_SUCCESS_UPDATE_QUANTITY -> {
+                    if (it.source == SOURCE) {
                         (it.data as? Pair<*, *>)?.let { pair ->
                             (pair.first as? UpdateParam)?.productList?.firstOrNull()
                                 ?.let { requestParam ->
@@ -730,16 +771,18 @@ class MerchantPageFragment : BaseMultiFragment(),
                                 }
                         }
                     }
-                    UiEvent.EVENT_SUCCESS_VALIDATE_CHECKOUT -> {
-                        (it.data as? CheckoutTokoFoodData)?.let { checkOutTokoFoodData ->
-                            val purchaseAmount = checkOutTokoFoodData.summaryDetail.totalPrice
+                }
+                UiEvent.EVENT_SUCCESS_VALIDATE_CHECKOUT -> {
+                    (it.data as? CheckoutTokoFoodData)?.let { data ->
+                        if (it.source == SOURCE){
+                            val purchaseAmount = data.summaryDetail.totalPrice
 
                             merchantPageAnalytics.clickCheckoutOnMiniCart(
                                 purchaseAmount,
                                 merchantId
                             )
+                            navigateToNewFragment(TokoFoodPurchaseFragment.createInstance())
                         }
-                        navigateToNewFragment(TokoFoodPurchaseFragment.createInstance())
                     }
                 }
             }
@@ -800,7 +843,8 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     private fun setupOrderNoteBottomSheet() {
-        orderNoteBottomSheet = OrderNoteBottomSheet.createInstance(this)
+        orderNoteBottomSheet = OrderNoteBottomSheet.createInstance()
+        orderNoteBottomSheet?.setClickListener(this)
     }
 
     private fun renderTicker(tickerData: TokoFoodTickerDetail) {
@@ -956,8 +1000,9 @@ class MerchantPageFragment : BaseMultiFragment(),
             cardPositions.first,
             merchantId
         )
-        val bottomSheet = ProductDetailBottomSheet.createInstance(productUiModel, this)
+        val bottomSheet = ProductDetailBottomSheet.createInstance(productUiModel)
         bottomSheet.setOnDismissListener { viewModel.isProductDetailBottomSheetVisible = false }
+        bottomSheet.setClickListener(this)
         bottomSheet.setListener(this@MerchantPageFragment)
         bottomSheet.sendTrackerInMerchantPage {
             viewModel.merchantData?.let {
@@ -1300,6 +1345,7 @@ class MerchantPageFragment : BaseMultiFragment(),
             productUiModel = productListItem.productUiModel,
             cartId = cartId,
             merchantId = merchantId,
+            source = SOURCE,
             cacheManagerId = cacheManager?.id.orEmpty(),
             isChangeMerchant = isChangeMerchant
         )

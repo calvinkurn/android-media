@@ -56,8 +56,10 @@ public class DatePickerActivity extends BaseTabActivity {
         tabLayout.addTab(tabLayout.newTab().setText(R.string.label_date_custom));
         String title = getIntent().getExtras().getString(DatePickerConstant.EXTRA_PAGE_TITLE);
         if (!TextUtils.isEmpty(title)) {
-            getSupportActionBar().setTitle(title);
-            getSupportActionBar().show();
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setTitle(title);
+                getSupportActionBar().show();
+            }
         }
     }
 
