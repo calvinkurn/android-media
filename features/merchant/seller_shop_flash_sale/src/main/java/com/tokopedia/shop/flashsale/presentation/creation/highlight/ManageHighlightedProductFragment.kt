@@ -424,8 +424,9 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
     }
 
     private fun displayError(result: ProductSubmissionResult) {
-        val productsErrorMessage = result.failedProducts.joinToString(",") { it.message }
-        val errorMessage = productsErrorMessage.ifEmpty { result.errorMessage }
-        binding?.cardView showError errorMessage
+        val firstErrorMessage = result.failedProducts.firstOrNull()
+        val errorMessage = firstErrorMessage?.message.orEmpty()
+        val updatedErrorMessage = errorMessage.ifEmpty { result.errorMessage }
+        binding?.cardView showError updatedErrorMessage
     }
 }
