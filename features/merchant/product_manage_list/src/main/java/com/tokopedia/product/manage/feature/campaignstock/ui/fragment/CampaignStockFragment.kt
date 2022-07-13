@@ -298,7 +298,7 @@ class CampaignStockFragment : BaseDaggerFragment(), CampaignStockListener {
                     setupVariantFragmentViewPager(getStockAllocationSummary, sellableStockProductUiModels, variantReservedEventInfoUiModels, otherCampaignStockData, productManageAccess)
                 }
                 is NonVariantStockAllocationResult -> {
-                    setupNonVariantFragmentViewPager(getStockAllocationSummary, sellableStockProductUiModels, reservedEventInfoUiModels, otherCampaignStockData, productManageAccess)
+                    setupNonVariantFragmentViewPager(maxStock, getStockAllocationSummary, sellableStockProductUiModels, reservedEventInfoUiModels, otherCampaignStockData, productManageAccess)
                 }
             }
         }

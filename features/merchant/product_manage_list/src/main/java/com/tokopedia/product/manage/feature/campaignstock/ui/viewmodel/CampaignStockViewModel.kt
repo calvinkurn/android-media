@@ -102,18 +102,8 @@ class CampaignStockViewModel @Inject constructor(
                 block = {
                     mGetStockAllocationLiveData.value = Success(withContext(dispatchers.io) {
                         val warehouseId = getWarehouseId(shopId)
-                        val stockAllocationData =
-                            campaignStockAllocationUseCase.execute(productIds, shopId, warehouseId, isProductBundling)
-                        campaignStockAllocationUseCase.run {
-                            params = CampaignStockAllocationUseCase.createRequestParam(
-                                productIds,
-                                shopId,
-                                warehouseId
-                            )
-                            isBundling = isProductBundling
-                        }
                         val stockAllocationDataDeffered = async {
-                            campaignStockAllocationUseCase.executeOnBackground()
+                            campaignStockAllocationUseCase.execute(productIds, shopId, warehouseId, isProductBundling)
                         }
 
                         val maxStockDeferred = async {
@@ -451,15 +441,15 @@ class CampaignStockViewModel @Inject constructor(
             isActive = otherCampaignStockData.getIsActive(),
             access = access,
             isCampaign = otherCampaignStockData.campaign?.isActive == true,
+            maxStock = maxStock,
             sellableList = stockAllocationData.detail.sellable
         ) as ArrayList
 
         return NonVariantStockAllocationResult(
+            maxStock,
             nonVariantReservedEventInfoUiModels,
             stockAllocationData.summary,
             sellableProducts,
-            maxStock,
-            stockAllocationData,
             otherCampaignStockData,
             access
         )
