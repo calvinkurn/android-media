@@ -1,15 +1,17 @@
 package com.tokopedia.checkout.data.model.request.checkout
 
 import android.annotation.SuppressLint
+import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.checkout.data.model.request.checkout.cross_sell.CrossSellRequest
 import com.tokopedia.checkout.data.model.request.checkout.old.*
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.promocheckout.common.data.entity.request.Order
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 
 const val FEATURE_TYPE_REGULAR_PRODUCT = 3
 const val FEATURE_TYPE_TOKONOW_PRODUCT = 12
-
+const val UPLOAD_PRESCRIPTION_META_DATA_KEY = "prescription_ids"
 data class Carts(
         @SerializedName("has_promo_stacking")
         var hasPromoStacking: Boolean = false,
@@ -63,7 +65,17 @@ data class ShopOrder(
         @SerializedName("warehouse_id")
         var warehouseId: Long = 0,
         @SerializedName("items")
-        var checkoutGiftingOrderLevel: List<CheckoutGiftingAddOn> = emptyList()
+        var checkoutGiftingOrderLevel: List<CheckoutGiftingAddOn> = emptyList(),
+        @SerializedName("order_metadata")
+        var orderMetaData: List<OrderMetadata> = emptyList(),
+
+)
+
+data class OrderMetadata(
+    @SerializedName("key")
+    var key: String = "",
+    @SerializedName("value")
+    var value: String = ""
 )
 
 data class Bundle(
@@ -177,7 +189,7 @@ object CheckoutRequestMapper {
             promos = mapPromos(checkoutRequest.promos)
             isDonation = checkoutRequest.isDonation
             egold = mapEgoldData(checkoutRequest.egoldData)
-            data = mapData(checkoutRequest.data)
+            data = mapData(checkoutRequest.data, checkoutRequest.prescriptionIds)
             val tmpCornerData = checkoutRequest.cornerData
             tokopediaCorner = if (tmpCornerData != null) mapTokopediaCornerData(tmpCornerData) else null
             hasPromoStacking = checkoutRequest.hasPromoStacking
@@ -214,19 +226,19 @@ object CheckoutRequestMapper {
         }
     }
 
-    private fun mapData(dataCheckoutRequestList: List<DataCheckoutRequest>?): List<Data> {
+    private fun mapData(dataCheckoutRequestList: List<DataCheckoutRequest>?, prescriptionIds: ArrayList<String>?): List<Data> {
         val checkoutGqlDataList = mutableListOf<Data>()
         dataCheckoutRequestList?.forEach {
             checkoutGqlDataList.add(Data().apply {
                 addressId = it.addressId.toLongOrZero()
-                shopOrders = mapShopProduct(it.shopProducts)
+                shopOrders = mapShopProduct(it.shopProducts,prescriptionIds)
             })
         }
 
         return checkoutGqlDataList
     }
 
-    private fun mapShopProduct(shopProductCheckoutRequests: List<ShopProductCheckoutRequest>?): List<ShopOrder> {
+    private fun mapShopProduct(shopProductCheckoutRequests: List<ShopProductCheckoutRequest>?, prescriptionIds : ArrayList<String>?): List<ShopOrder> {
         val shopProductList = mutableListOf<ShopOrder>()
         shopProductCheckoutRequests?.forEach {
             shopProductList.add(ShopOrder().apply {
@@ -242,10 +254,18 @@ object CheckoutRequestMapper {
                 promos = mapPromos(it.promos)
                 bundle = mapBundle(it.productData)
                 checkoutGiftingOrderLevel = mapGiftingAddOn(it.giftingAddOnOrderLevel)
+                orderMetaData = mapPrescriptionIds(prescriptionIds)
             })
         }
 
         return shopProductList
+    }
+
+    private fun mapPrescriptionIds(prescriptionIds: ArrayList<String>?) : List<OrderMetadata>{
+        if(prescriptionIds != null && prescriptionIds.isNotEmpty()){
+            return arrayListOf(OrderMetadata(UPLOAD_PRESCRIPTION_META_DATA_KEY, Gson().toJson(prescriptionIds)))
+        }
+        return emptyList()
     }
 
     private fun mapBundle(productDataList: List<ProductDataCheckoutRequest>?): List<Bundle> {

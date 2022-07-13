@@ -18,6 +18,12 @@ const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
               is_ineligible_promo_dialog_enabled
               disabled_features
               donation_checkbox_status
+              image_upload {
+                show_image_upload
+                text
+                left_icon_url
+                right_icon_url
+              }
               open_prerequisite_site
               eligible_new_shipping_experience
               pop_up_message

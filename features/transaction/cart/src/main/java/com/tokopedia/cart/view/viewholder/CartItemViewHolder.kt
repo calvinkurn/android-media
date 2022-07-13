@@ -424,6 +424,12 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
             layoutProductInfo.show()
             informationLabel.add(wholesaleLabel.toLowerCase(Locale.getDefault()))
         }
+
+        if (data.needPrescription) {
+            val needPrescriptionView = createProductInfoTextWithIcon(ProductInformationWithIcon(data.butuhResepText, data.butuhResepIconUrl))
+            layoutProductInfo.addView(needPrescriptionView)
+            layoutProductInfo.show()
+        }
     }
 
     private fun createProductInfoText(it: String): Typography {

@@ -2,6 +2,7 @@ package com.tokopedia.checkout.view;
 
 import androidx.fragment.app.FragmentManager;
 
+import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.view.uimodel.CrossSellModel;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
@@ -12,6 +13,7 @@ import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.UploadPrescriptionUiModel;
 
 import java.util.List;
 
@@ -135,4 +137,6 @@ public interface ShipmentAdapterActionListener {
     void addOnProductLevelImpression(String productId);
 
     void addOnOrderLevelImpression(List<CartItemModel> cartItemModelList);
+
+    void uploadPrescriptionAction(UploadPrescriptionUiModel uploadPrescriptionUiModel);
 }

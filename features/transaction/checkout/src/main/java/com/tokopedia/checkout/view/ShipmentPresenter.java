@@ -125,6 +125,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoClashVoucherOrdersUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoSpIdUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.UploadPrescriptionUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel;
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata;
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData;
@@ -211,6 +212,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private String statusCode200 = "200";
     private RatesResponseStateConverter stateConverter;
     private LastApplyUiModel lastApplyData;
+    private UploadPrescriptionUiModel uploadPrescriptionUiModel;
 
     @Inject
     public ShipmentPresenter(CompositeSubscription compositeSubscription,
@@ -449,7 +451,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                               String pageSource) {
         CheckoutRequest checkoutRequest = generateCheckoutRequest(
                 dataCheckoutRequests, shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0,
-                listShipmentCrossSellModel, leasingId
+                listShipmentCrossSellModel, leasingId,uploadPrescriptionUiModel.getPrescriptionIds()
         );
         Map<String, Object> eeDataLayer = generateCheckoutAnalyticsDataLayer(checkoutRequest, step, pageSource);
         if (eeDataLayer != null) {
@@ -735,6 +737,16 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         isShowOnboarding = cartShipmentAddressFormData.isShowOnboarding();
         isIneligiblePromoDialogEnabled = cartShipmentAddressFormData.isIneligiblePromoDialogEnabled();
+
+        if(cartShipmentAddressFormData.getShowImageUpload()){
+            setUploadPrescriptionData(new UploadPrescriptionUiModel(
+                    cartShipmentAddressFormData.getShowImageUpload(),
+                    cartShipmentAddressFormData.getUploadPrescText(),
+                    cartShipmentAddressFormData.getRightIconUrl(),
+                    cartShipmentAddressFormData.getLeftIconUrl(),
+                    new ArrayList<>(),0
+                    ));
+        }
     }
 
     public void setPurchaseProtection(boolean isPurchaseProtectionPage) {
@@ -751,7 +763,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         removeErrorShopProduct();
         CheckoutRequest checkoutRequest = generateCheckoutRequest(null,
                 shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0,
-                listShipmentCrossSellModel, leasingId
+                listShipmentCrossSellModel, leasingId, uploadPrescriptionUiModel.getPrescriptionIds()
         );
 
         if (checkoutRequest != null && checkoutRequest.getData() != null && checkoutRequest.getData().size() > 0) {
@@ -1429,7 +1441,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     public CheckoutRequest generateCheckoutRequest(List<DataCheckoutRequest> analyticsDataCheckoutRequests,
                                                    int isDonation,
                                                    ArrayList<ShipmentCrossSellModel> listShipmentCrossSellModel,
-                                                   String leasingId) {
+                                                   String leasingId,
+                                                   ArrayList<String> prescriptionsIds) {
         if (analyticsDataCheckoutRequests == null && dataCheckoutRequestList == null) {
             getView().showToastError(getView().getActivityContext().getString(com.tokopedia.abstraction.R.string.default_request_error_unknown_short));
             return null;
@@ -1519,6 +1532,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         if (leasingId != null && !leasingId.isEmpty()) {
             checkoutRequest.setLeasingId(Integer.parseInt(leasingId));
+        }
+
+        if(prescriptionsIds != null && !prescriptionsIds.isEmpty()){
+            checkoutRequest.setPrescriptionIds(prescriptionsIds);
         }
 
         return checkoutRequest;
@@ -2233,6 +2250,16 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public ValidateUsePromoRequest getLastValidateUseRequest() {
         return lastValidateUsePromoRequest;
+    }
+
+    @Override
+    public void setUploadPrescriptionData(UploadPrescriptionUiModel uploadPrescriptionUiModel) {
+        this.uploadPrescriptionUiModel = uploadPrescriptionUiModel;
+    }
+
+    @Override
+    public UploadPrescriptionUiModel getUploadPrescriptionUiModel() {
+        return uploadPrescriptionUiModel;
     }
 
     private boolean isLastAppliedPromo(String promoCode) {
