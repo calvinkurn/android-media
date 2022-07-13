@@ -35,6 +35,9 @@ class DetailEditorViewModel @Inject constructor(
     private var _contrastFilter = MutableLiveData<Float>()
     val contrastFilter: LiveData<Float> get() = _contrastFilter
 
+    private var _watermarkFilter = MutableLiveData<Int>()
+    val watermarkFilter: LiveData<Int> get() = _watermarkFilter
+
     fun setIntentDetailUiModel(data: EditorDetailUiModel) {
         _intentUiModel.postValue(data)
     }
@@ -56,6 +59,10 @@ class DetailEditorViewModel @Inject constructor(
                     _removeBackground.value = it
                 }
         }
+    }
+
+    fun setWatermark(watermarkType: Int){
+        _watermarkFilter.value = watermarkType
     }
 
 }

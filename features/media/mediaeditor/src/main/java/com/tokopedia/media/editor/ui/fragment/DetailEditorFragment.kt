@@ -96,18 +96,16 @@ class DetailEditorFragment @Inject constructor(
     }
 
     override fun onWatermarkChanged(value: Int) {
-        originalBitmap?.let {
-            val text = "Toko Maju Jaya Perkasa Abadi Bangunan"
-            val result = watermarkFilterRepositoryImpl.watermark(requireContext(), it, value, text)
-            viewBinding?.imgPreview?.setImageBitmap(result)
-        }
+        viewModel.setWatermark(value)
+        data.watermarkMode = value
     }
 
     override fun initObserver() {
         observeIntentUiModel()
         observeLoader()
         observeBrightness()
-        observerContrast()
+        observeContrast()
+        observeWatermark()
         observeRemoveBackground()
     }
 
@@ -118,7 +116,7 @@ class DetailEditorFragment @Inject constructor(
     }
 
 //    private var contrastSliderWaiting = false
-    private fun observerContrast() {
+    private fun observeContrast() {
         viewModel.contrastFilter.observe(viewLifecycleOwner) {
             originalBitmap?.let { itBitmap ->
                 val cloneOriginal = itBitmap.copy(itBitmap.config, true)
@@ -178,6 +176,21 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
+    private fun observeWatermark() {
+        viewModel.watermarkFilter.observe(viewLifecycleOwner) { watermarkType ->
+            originalBitmap?.let { bitmap ->
+                val text = "Toko Maju Jaya Perkasa Abadi Bangunan"
+                val result = watermarkFilterRepositoryImpl.watermark(
+                    requireContext(),
+                    bitmap,
+                    watermarkType,
+                    text
+                )
+                viewBinding?.imgPreview?.setImageBitmap(result)
+            }
+        }
+    }
+
     private fun renderUiComponent(@EditorToolType type: Int) {
         when (type) {
             EditorToolType.BRIGHTNESS -> {
@@ -205,6 +218,9 @@ class DetailEditorFragment @Inject constructor(
                         imageView.post {
                             if(data.brightnessValue != null) viewModel.setBrightness(data.brightnessValue!!)
                             if(data.contrastValue != null) viewModel.setContrast(data.contrastValue!!)
+                            if(data.watermarkMode != null) viewModel.setWatermark(data.watermarkMode!!)
+
+                            originalBitmap = it.drawToBitmap()
                         }
                     }
                 )
