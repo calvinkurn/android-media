@@ -10,7 +10,7 @@ data class SubscriptionsData(
     val resultStatus: SubscriptionsResultStatus = SubscriptionsResultStatus(),
     @SerializedName("CoachMarkList")
     @Expose
-    val subscriptionsCoachMarkListList: List<SubscriptionsCoachMarkList> = listOf(),
+    val subscriptionsCoachMarkList: List<SubscriptionsCoachMarkList> = listOf(),
     @SerializedName("DrawerList")
     @Expose
     val drawerList: List<SubscriptionsDrawerList> = listOf(),

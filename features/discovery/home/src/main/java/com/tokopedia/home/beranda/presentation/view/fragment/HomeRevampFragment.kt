@@ -410,6 +410,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private var scrollPositionY = 0
     private var positionWidgetGopay = 0
     private var positionWidgetTokopoints = 0
+    private var positionWidgetSubscription = 0
     private var positionWidgetTokonow = 0
 
     private var bannerCarouselCallback: BannerComponentCallback? = null
@@ -688,7 +689,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             val subscriptionWidget = getSubscriptionBalanceWidgetView()
             subscriptionWidget?.let {
                 if (this.isEmpty()) {
-                    positionWidgetTokopoints = it.getPositionWidgetVertical()
+                    positionWidgetSubscription = it.getPositionWidgetVertical()
                     this.add(
                         CoachMark2Item(
                             it,
@@ -727,7 +728,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     ) {
         context?.let { ctx ->
             if (!isNewWalletAppCoachmarkShown(ctx)) {
-                showGopayEligibleCoachmark(tokopointsBalanceCoachmark)
+//                showGopayEligibleCoachmark(tokopointsBalanceCoachmark)
                 showSubscriptionEligibleCoachmark(subscriptionBalanceCoachMark)
             } else if (isNewWalletAppCoachmarkShown(ctx) && !isNewTokopointCoachmarkShown(ctx) && tokopointsBalanceCoachmark != null) {
                 showTokopointsEligibleCoachmark(tokopointsBalanceCoachmark)
@@ -994,6 +995,18 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun evaluateScrollSubscriptionCoachmark() {
+        coachmarkSubscription?.let { subscriptionCoachmark ->
+            context?.let {ctx ->
+                if (scrollPositionY > positionWidgetSubscription && subscriptionCoachmarkIsShowing)
+                    subscriptionCoachmark.hideCoachMark()
+                else  {
+                    subscriptionCoachmark.showCoachMark(coachMarkItemSubscription)
+                }
+            }
+        }
+    }
+
     private fun evaluateScrollTokonowCoachmark() {
         coachmarkTokonow?.let { tokonowCoachmark ->
             context?.let {ctx ->
@@ -1010,6 +1023,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         evaluateScrollGopayCoachmark()
         evaluateScrollTokopointsCoachmark()
         evaluateScrollTokonowCoachmark()
+        evaluateScrollSubscriptionCoachmark()
     }
 
     private fun evaluateHomeComponentOnScroll(recyclerView: RecyclerView) { //set refresh layout to only enabled when reach 0 offset
@@ -2236,6 +2250,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 }
                 if (tokonowCoachmarkIsShowing) {
                     coachmarkTokonow?.dismissCoachMark()
+                }
+                if (subscriptionCoachmarkIsShowing) {
+                    coachmarkSubscription?.dismissCoachMark()
                 }
             }
         }

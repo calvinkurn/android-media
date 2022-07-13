@@ -61,6 +61,7 @@ class HomeBalanceWidgetUseCase @Inject constructor(
                     }
                     BALANCE_TYPE_SUBSCRIPTIONS -> {
                         homeBalanceModel = getSubscriptionsData(homeBalanceModel, it.title, it.data)
+                        homeBalanceModel.balancePositionSubscriptions = counter
                     }
                 }
                 counter++
@@ -167,7 +168,7 @@ class HomeBalanceWidgetUseCase @Inject constructor(
         subscriptions: String
     ): HomeBalanceModel {
         try {
-            val subscriptionsData = Gson().fromJson<SubscriptionsData>(subscriptions, SubscriptionsData::class.java)
+            val subscriptionsData = Gson().fromJson(subscriptions, SubscriptionsData::class.java)
             homeBalanceModel.mapBalanceData(subscriptionsData = subscriptionsData, headerTitle = headerTitle)
         } catch (e: Exception) {
             homeBalanceModel.mapErrorTokopoints(headerTitle)

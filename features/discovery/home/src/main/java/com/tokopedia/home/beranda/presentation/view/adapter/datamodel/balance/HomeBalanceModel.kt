@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance
 
 import com.tokopedia.home.R
+import com.tokopedia.home.beranda.data.model.SubscriptionsCoachMarkData
 import com.tokopedia.home.beranda.data.model.SubscriptionsData
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerListHomeData
 import com.tokopedia.navigation_common.usecase.pojo.walletapp.WalletAppData
@@ -36,6 +37,8 @@ data class HomeBalanceModel(
         const val STATUS_ERROR = 2
 
         const val DEFAULT_BALANCE_POSITION = -1
+
+        private const val FIRST_DATA_POSITION = 0
     }
 
     override fun type(typeFactory: BalanceWidgetTypeFactory): Int {
@@ -172,9 +175,9 @@ data class HomeBalanceModel(
 
     fun getSubscriptionBalanceCoachmark(): BalanceCoachmark? {
         if (balanceDrawerItemModels.size > balancePositionSubscriptions) {
-            val balanceItem = balanceDrawerItemModels[balancePositionRewards]
-            val isContainsNewTokopoint = balanceItem.state == STATE_SUCCESS
-            if (isContainsNewTokopoint) {
+            val balanceItem = balanceDrawerItemModels[balancePositionSubscriptions]
+            val isContainsGotoPlus = balanceItem.state == STATE_SUCCESS
+            if (isContainsGotoPlus) {
                 return balanceItem.balanceCoachmark
             }
         }
@@ -234,8 +237,19 @@ data class HomeBalanceModel(
                 state = STATE_SUCCESS,
                 headerTitle = headerTitle,
                 isSubscriber = subscriptionData.isSubscriber,
-                drawerItemType = TYPE_SUBSCRIPTION
+                drawerItemType = TYPE_SUBSCRIPTION,
                 )
+            val coachMarkData =
+                if (subscriptionData.subscriptionsCoachMarkList.isNotEmpty() && subscriptionData.subscriptionsCoachMarkList[FIRST_DATA_POSITION].coachMark.isNotEmpty()) {
+                    val subscriptionCoachmarkData =
+                        subscriptionData.subscriptionsCoachMarkList[FIRST_DATA_POSITION].coachMark[FIRST_DATA_POSITION]
+                    BalanceCoachmark(
+                        description = subscriptionCoachmarkData.content,
+                        title = subscriptionCoachmarkData.title,
+                        isShown = subscriptionCoachmarkData.isShown
+                    )
+                } else BalanceCoachmark()
+            drawerSubscription.balanceCoachmark = coachMarkData
             balanceDrawerItemModels.add(drawerSubscription)
         }
     }

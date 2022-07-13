@@ -85,7 +85,7 @@ class BalanceAdapter(
     }
 
     fun getSubscriptionView() : View? {
-        val viewHolder = attachedRecyclerView?.findViewHolderForAdapterPosition(itemMap.balancePositionRewards) as BalanceViewHolder
+        val viewHolder = attachedRecyclerView?.findViewHolderForAdapterPosition(itemMap.balancePositionSubscriptions) as BalanceViewHolder
         return viewHolder.subscriptionViewCoachMark
     }
 }
