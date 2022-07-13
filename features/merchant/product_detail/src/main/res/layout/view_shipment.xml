@@ -18,7 +18,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/pdp_shipment_title_strike"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_5"
+        app:typographyType="display_1"
+        app:typographyWeight="bold"
         tools:text="Ongkir cuma Rp10.000" />
 
     <com.tokopedia.unifyprinciples.Typography
