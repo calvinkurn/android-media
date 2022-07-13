@@ -542,6 +542,8 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                     currentDate.time = sdf.parse(selectedTime + "00")?: Date()
                 } catch (e: Exception) {
                 }
+                maxDate.time = sdf.parse(selectedTime + "00")?: Date()
+                maxDate.add(Calendar.MONTH,3)
             }
             currentDate.add(Calendar.DAY_OF_MONTH,1)
             val datepickerObject = DateTimePickerUnify(it, currentDate, currentDate, maxDate ).apply {
