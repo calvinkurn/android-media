@@ -97,7 +97,8 @@ class DetailEditorFragment @Inject constructor(
 
     override fun onWatermarkChanged(value: Int) {
         originalBitmap?.let {
-            val result = watermarkFilterRepositoryImpl.watermark(requireContext(), it, value)
+            val text = "Toko Maju Jaya Perkasa Abadi Bangunan"
+            val result = watermarkFilterRepositoryImpl.watermark(requireContext(), it, value, text)
             viewBinding?.imgPreview?.setImageBitmap(result)
         }
     }

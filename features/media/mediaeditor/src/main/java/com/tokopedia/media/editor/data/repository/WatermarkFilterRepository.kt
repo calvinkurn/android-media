@@ -11,28 +11,46 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.media.editor.ui.component.WatermarkToolUiComponent
 import javax.inject.Inject
 import com.tokopedia.media.editor.R
-import com.tokopedia.unifyprinciples.R as principleR
 
 interface WatermarkFilterRepository {
-    fun watermark(context: Context, source: Bitmap, watermarkType: Int): Bitmap
+    fun watermark(
+        context: Context,
+        source: Bitmap,
+        watermarkType: Int,
+        shopNameParam: String
+    ): Bitmap
 }
 
 class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepository {
-    private val mainText = "Tokopedia"
-    private val shopText = "Nama Toko"
+    private var shopText = ""
+    set(value) {
+        field = if (value.length > SHOP_NAME_CHAR_LIMIT){
+           value.substring(0, SHOP_NAME_CHAR_LIMIT - 1) + ELLIPSIS_CONST
+        } else {
+            value
+        }
+    }
 
     private var topedDrawable: Drawable? = null
 
     // image ratio 14:3 || refer to watermark_tokopedia.xml vector drawable
     private var imageWidth: Float = 0f
-    set(value) {
-        field = value
-        imageHeight = (value / 14) * 3
-    }
+        set(value) {
+            field = value
+            imageHeight = (value / 14) * 3
+            fontSize = imageHeight
+        }
 
     private var imageHeight: Float = 0f
+    private var fontSize: Float = 0f
 
-    override fun watermark(context: Context, source: Bitmap, watermarkType: Int): Bitmap {
+    override fun watermark(
+        context: Context,
+        source: Bitmap,
+        watermarkType: Int,
+        shopNameParam: String
+    ): Bitmap {
+        shopText = if(shopNameParam.isNullOrEmpty()) DEFAULT_SHOP_NAME else shopNameParam
         if (topedDrawable == null) {
             topedDrawable = ContextCompat.getDrawable(context, R.drawable.watermark_tokopedia)
         }
@@ -46,9 +64,10 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
         val canvas = Canvas(result)
         canvas.drawBitmap(source, 0f, 0f, null)
 
-        val fontSize = 14f.dpToPx()
         val paint = Paint()
-        paint.color = ContextCompat.getColor(context,principleR.color.Unify_NN200)
+        val colorAlpha = ContextCompat.getColor(context, R.color.dms_watermark_text_light)
+
+        paint.color = colorAlpha
         paint.textSize = fontSize
         paint.isAntiAlias = true
 
@@ -126,5 +145,11 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
             }
             yLastPost += imageHeight + (paddingVertical)
         }
+    }
+
+    companion object{
+        private const val DEFAULT_SHOP_NAME = "Shop Name"
+        private const val SHOP_NAME_CHAR_LIMIT = 24
+        private const val ELLIPSIS_CONST = "..."
     }
 }
