@@ -62,6 +62,7 @@ class GetProductTagItemSectionUseCase @Inject constructor(
                     web_link: WebLink
                     min_quantity: MinQuantity
                     is_free_shipping: IsFreeShipping
+                    is_pinned: IsPinned
                   }
                 }
                 vouchers{

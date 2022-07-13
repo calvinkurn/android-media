@@ -72,15 +72,15 @@ import javax.inject.Inject
  * Created by jegul on 06/03/20
  */
 class PlayBottomSheetFragment @Inject constructor(
-        private val viewModelFactory: ViewModelProvider.Factory,
-        private val analytic: PlayAnalytic,
-        private val dispatchers: CoroutineDispatchers,
-): TkpdBaseV4Fragment(),
-        PlayFragmentContract,
-        ProductSheetViewComponent.Listener,
-        VariantSheetViewComponent.Listener,
-        PlayInteractiveLeaderboardViewComponent.Listener,
-        ShopCouponSheetViewComponent.Listener
+    private val viewModelFactory: ViewModelProvider.Factory,
+    private val analytic: PlayAnalytic,
+    private val dispatchers: CoroutineDispatchers,
+) : TkpdBaseV4Fragment(),
+    PlayFragmentContract,
+    ProductSheetViewComponent.Listener,
+    VariantSheetViewComponent.Listener,
+    PlayInteractiveLeaderboardViewComponent.Listener,
+    ShopCouponSheetViewComponent.Listener
 {
 
     companion object {
