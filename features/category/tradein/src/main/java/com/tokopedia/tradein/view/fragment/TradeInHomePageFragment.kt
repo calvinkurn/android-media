@@ -269,6 +269,7 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
             }
             if(isFraud){
                 errorAction.text = getString(R.string.tradein_pelajari_selengkapnya)
+                errorDescription.text = getString(R.string.tradein_fraud_description)
                 errorIllustration.hide()
                 view?.findViewById<DeferredImageView>(R.id.error_image_view)?.let {
                     it.show()
