@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import com.tokopedia.unifycomponents.dpToPx
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
@@ -44,13 +45,16 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
     private var imageHeight: Float = 0f
     private var fontSize: Float = 0f
 
+    private var textWidth: Int = 0
+    private var textHeight: Int = 0
+
     override fun watermark(
         context: Context,
         source: Bitmap,
         watermarkType: Int,
         shopNameParam: String
     ): Bitmap {
-        shopText = if(shopNameParam.isNullOrEmpty()) DEFAULT_SHOP_NAME else shopNameParam
+        shopText = if(shopNameParam.isEmpty()) DEFAULT_SHOP_NAME else shopNameParam
         if (topedDrawable == null) {
             topedDrawable = ContextCompat.getDrawable(context, R.drawable.watermark_tokopedia)
         }
@@ -59,7 +63,7 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
         val h: Int = source.height
         val result = Bitmap.createBitmap(w, h, source.config)
 
-        imageWidth = (w / 5).toFloat()
+        imageWidth = (w / IMAGE_SIZE_DIVIDER).toFloat()
 
         val canvas = Canvas(result)
         canvas.drawBitmap(source, 0f, 0f, null)
@@ -71,9 +75,17 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
         paint.textSize = fontSize
         paint.isAntiAlias = true
 
+        topedDrawable?.setTint(colorAlpha)
+
+        val shopTextBound = Rect()
+        paint.getTextBounds(shopText, 0, shopText.length, shopTextBound)
+
+        textWidth = shopTextBound.width()
+        textHeight = shopTextBound.height()
+
         when (watermarkType) {
             WatermarkToolUiComponent.WATERMARK_TOKOPEDIA -> {
-                watermark1(w, h, canvas)
+                watermark1(w, h, canvas, paint)
             }
             WatermarkToolUiComponent.WATERMARK_SHOP -> {
                 watermark2(w, h, canvas, paint)
@@ -91,11 +103,8 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
         canvas: Canvas,
         paint: Paint
     ) {
-        val shopTextBound = Rect()
-        paint.getTextBounds(shopText, 0, shopText.length, shopTextBound)
-
-        var xPos = ((width / 2) - (shopTextBound.width() / 2)).toFloat()
-        var yPos = ((height / 2) + shopTextBound.height()).toFloat()
+        var xPos = ((width / 2) - (textWidth / 2)).toFloat()
+        var yPos = ((height / 2) + textHeight).toFloat()
         canvas.drawText(shopText, xPos, yPos, paint)
 
 
@@ -115,33 +124,46 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
     private fun watermark1(
         width: Int,
         height: Int,
-        canvas: Canvas
+        canvas: Canvas,
+        paint: Paint
     ) {
-        val paddingHorizontal = width / 5
-        val paddingVertical = height / 5
+        val paddingHorizontal = width / PADDING_DIVIDER
+        val paddingVertical = height / PADDING_DIVIDER
 
         var xLastPost: Float
         var yLastPost = imageHeight
 
         val yLimit = height + (height / 2)
-        val xStart = -(width / 2)
+        val xStart = -(textWidth + paddingHorizontal)
+
+
+
+        var index: Int
+        topedDrawable?.setBounds(
+            0,
+            0,
+            imageWidth.toInt(),
+            imageHeight.toInt()
+        )
 
         while (yLastPost <= yLimit) {
             xLastPost = xStart.toFloat()
+            index = 0
             while (xLastPost <= width) {
                 canvas.save()
                 canvas.rotate(-30f)
-                topedDrawable?.setBounds(
-                    0,
-                    0,
-                    imageWidth.toInt(),
-                    imageHeight.toInt()
-                )
-                canvas.translate(xLastPost, yLastPost)
-                topedDrawable?.draw(canvas)
-                canvas.restore()
 
-                xLastPost += (imageWidth + (paddingHorizontal))
+                if(index % 2 == 1) {
+                    canvas.translate(xLastPost, yLastPost)
+                    topedDrawable?.draw(canvas)
+                    xLastPost += (imageWidth + (paddingHorizontal))
+                } else {
+                    canvas.drawText(shopText, xLastPost, yLastPost, paint)
+                    xLastPost += (textWidth + (paddingHorizontal))
+                }
+
+                canvas.restore()
+                index++
             }
             yLastPost += imageHeight + (paddingVertical)
         }
@@ -151,5 +173,7 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
         private const val DEFAULT_SHOP_NAME = "Shop Name"
         private const val SHOP_NAME_CHAR_LIMIT = 24
         private const val ELLIPSIS_CONST = "..."
+        private const val PADDING_DIVIDER = 6
+        private const val IMAGE_SIZE_DIVIDER = 6
     }
 }
