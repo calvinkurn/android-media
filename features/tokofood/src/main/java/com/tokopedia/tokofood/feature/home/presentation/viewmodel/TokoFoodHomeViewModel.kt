@@ -242,8 +242,9 @@ class TokoFoodHomeViewModel @Inject constructor(
 
     fun isShownEmptyState(): Boolean {
         val layoutList = homeLayoutItemList.toMutableList()
+        val isError = layoutList.firstOrNull { it.layout is TokoFoodErrorStateUiModel } != null
         val isEmptyStateShown = layoutList.firstOrNull { it.layout is TokoFoodHomeEmptyStateLocationUiModel } != null
-        return isEmptyStateShown
+        return isEmptyStateShown || isError
     }
 
     fun setPageKey(pageNew:String) {

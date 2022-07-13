@@ -36,6 +36,10 @@ object RechargeCCGqlQuery {
               Content
               Type
             }
+            user_perso {
+                user_type
+                loyalty_status
+            }
             onboarding_descriptions
           }
         }
