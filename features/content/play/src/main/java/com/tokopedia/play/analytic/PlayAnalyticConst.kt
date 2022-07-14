@@ -10,7 +10,6 @@ internal const val KEY_EVENT_LABEL = "eventLabel"
 internal const val KEY_CURRENT_SITE = "currentSite"
 internal const val KEY_USER_ID = "userId"
 internal const val KEY_BUSINESS_UNIT = "businessUnit"
-internal const val KEY_TRACKER_ID = "trackerId"
 
 internal const val KEY_TRACK_VIEW_GROUP_CHAT = "viewGroupChat"
 internal const val KEY_TRACK_CLICK_GROUP_CHAT = "clickGroupChat"
