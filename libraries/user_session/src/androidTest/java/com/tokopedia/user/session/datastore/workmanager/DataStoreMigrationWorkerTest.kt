@@ -1,6 +1,7 @@
 package com.tokopedia.user.session.datastore.workmanager
 
 import android.content.Context
+import android.util.Log
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.work.ListenableWorker.Result
@@ -116,7 +117,7 @@ class DataStoreMigrationWorkerTest {
             val cipher = aead.encrypt(msg)
             val decrypted = aead.decrypt(cipher)
             assertThat(msg, `is`(decrypted))
-            println("The process took ${System.currentTimeMillis() - start} ms")
+            Log.d(this::class.java.simpleName, "The process took ${System.currentTimeMillis() - start} ms")
         }
 
     }
