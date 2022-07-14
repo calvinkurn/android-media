@@ -15,7 +15,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/feed_component_dp_160"
+        android:layout_height="@dimen/shop_recom_shimmer_height"
         android:layout_marginTop="@dimen/unify_space_16"
         android:orientation="horizontal">
 
