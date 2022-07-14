@@ -182,7 +182,7 @@ class VideoPictureView @JvmOverloads constructor(
     }
 
     private fun renderVideoOnceAtPosition(position: Int) {
-        val checkPosition = if(position == -1) 0 else position
+        val checkPosition = if (position == -1) 0 else position
         binding.pdpViewPager.addOneTimeGlobalLayoutListener {
             binding.pdpViewPager.let {
                 mListener?.getProductVideoCoordinator()?.onScrollChangedListener(it, checkPosition)
