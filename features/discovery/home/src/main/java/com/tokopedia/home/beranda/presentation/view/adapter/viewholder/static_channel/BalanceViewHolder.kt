@@ -4,7 +4,7 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home.R
-import com.tokopedia.home.analytics.v2.OvoWidgetTracking
+import com.tokopedia.home.analytics.v2.BalanceWidgetTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_REWARDS
@@ -95,7 +95,7 @@ class BalanceViewHolder(v: View) : RecyclerView.ViewHolder(v) {
                     }
                 }
 
-                binding?.homeContainerBalance?.handleItemCLickType(
+                binding?.homeContainerBalance?.handleItemClickType(
                     element = element,
                     rewardsAction = {
                         //handle click for type rewards
@@ -107,20 +107,31 @@ class BalanceViewHolder(v: View) : RecyclerView.ViewHolder(v) {
                             else
                                 element.mainPageTitle
                         )
-                        OvoWidgetTracking.sendClickOnRewardsBalanceWidgetTracker(
+                        BalanceWidgetTracking.sendClickOnRewardsBalanceWidgetTracker(
                             listener?.userId ?: ""
                         )
                     },
-                    walletAppAction = {
-                        OvoWidgetTracking.sendClickGopayLinkedWidgetTracker(
-                            balancePoints = element.balanceSubTitleTextAttribute?.text ?: "",
+                    walletAppAction = { isLinked ->
+                        if (isLinked) {
+                            BalanceWidgetTracking.sendClickGopayLinkedWidgetTracker(
+                                balancePoints = reserveBalance,
+                                userId = listener?.userId ?: ""
+                            )
+                        } else {
+                            BalanceWidgetTracking.sendClickGopayNotLinkedWidgetTracker(
+                                userId = listener?.userId ?: ""
+                            )
+                        }
+                        listener?.onSectionItemClicked(element.redirectUrl)
+                    },
+                    subscriptionAction = { isSubscriber ->
+                        BalanceWidgetTracking.sendClickOnGoToPlusSectionSubscriptionStatusEvent(
+                            isSubscriber = isSubscriber,
                             userId = listener?.userId ?: ""
                         )
                         listener?.onSectionItemClicked(element.redirectUrl)
                     }
                 )
-
-
             }
             BalanceDrawerItemModel.STATE_ERROR -> {
                 binding?.homeIvLogoBalance?.setImageDrawable(
@@ -141,7 +152,7 @@ class BalanceViewHolder(v: View) : RecyclerView.ViewHolder(v) {
                 binding?.homeTvReserveBalance?.setWeight(Typography.BOLD)
                 binding?.homeTvReserveBalance?.text =
                     itemView.context.getString(com.tokopedia.home.R.string.text_reload)
-                binding?.homeContainerBalance?.handleItemCLickType(
+                binding?.homeContainerBalance?.handleItemClickType(
                     element = element,
                     rewardsAction = { listener?.onRetryMembership(adapterPosition, element.headerTitle) },
                     walletAppAction = { listener?.onRetryWalletApp(adapterPosition, element.headerTitle) }
@@ -150,16 +161,18 @@ class BalanceViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         }
     }
 
-    private fun View.handleItemCLickType(
+    private fun View.handleItemClickType(
         element: BalanceDrawerItemModel,
         rewardsAction: () -> Unit = {},
-        walletAppAction: (isLinked: Boolean) -> Unit = {}
+        walletAppAction: (isLinked: Boolean) -> Unit = {},
+        subscriptionAction: (isSubscriber: Boolean) -> Unit = {}
     ) {
         setOnClickListener {
             when (element.drawerItemType) {
                 TYPE_REWARDS -> rewardsAction.invoke()
                 TYPE_WALLET_APP_LINKED -> walletAppAction.invoke(true)
                 TYPE_WALLET_APP_NOT_LINKED -> walletAppAction.invoke(false)
+                TYPE_SUBSCRIPTION -> subscriptionAction.invoke(element.isSubscriberGoToPlus)
             }
         }
     }
