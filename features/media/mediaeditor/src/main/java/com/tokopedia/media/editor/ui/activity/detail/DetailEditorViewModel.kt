@@ -42,11 +42,13 @@ class DetailEditorViewModel @Inject constructor(
         _intentUiModel.postValue(data)
     }
 
-    fun setBrightness(value: Float) {
+    fun setBrightness(value: Float?) {
+        if (value == null) return
         _brightnessFilter.value = colorFilterRepository.brightness(value)
     }
 
-    fun setContrast(value: Float) {
+    fun setContrast(value: Float?) {
+        if (value == null) return
         _contrastFilter.value = value
     }
 
@@ -61,7 +63,8 @@ class DetailEditorViewModel @Inject constructor(
         }
     }
 
-    fun setWatermark(watermarkType: Int) {
+    fun setWatermark(watermarkType: Int?) {
+        if (watermarkType == null) return
         _watermarkFilter.value = watermarkType
     }
 

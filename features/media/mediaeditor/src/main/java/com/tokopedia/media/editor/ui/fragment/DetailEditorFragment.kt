@@ -203,11 +203,20 @@ class DetailEditorFragment @Inject constructor(
 
                         imageView.setImageBitmap(resource)
                         imageView.post {
-                            if (data.brightnessValue != null) viewModel.setBrightness(data.brightnessValue!!)
-                            if (data.contrastValue != null) viewModel.setContrast(data.contrastValue!!)
-                            if (data.watermarkMode != null) viewModel.setWatermark(data.watermarkMode!!)
+                            if (data.brightnessValue != null
+                                && data.editorToolType != EditorToolType.BRIGHTNESS) viewModel.setBrightness(data.brightnessValue!!)
+                            if (data.contrastValue != null
+                                && data.editorToolType != EditorToolType.CONTRAST) viewModel.setContrast(data.contrastValue!!)
+                            if (data.watermarkMode != null
+                                && data.editorToolType != EditorToolType.WATERMARK) viewModel.setWatermark(data.watermarkMode!!)
 
                             originalBitmap = it.drawToBitmap()
+
+                            when(data.editorToolType){
+                                EditorToolType.WATERMARK -> viewModel.setWatermark(data.watermarkMode)
+                                EditorToolType.BRIGHTNESS -> viewModel.setBrightness(data.brightnessValue)
+                                EditorToolType.CONTRAST -> viewModel.setContrast(data.contrastValue)
+                            }
 
                             // render result for watermark drawer item
                             if(data.editorToolType == EditorToolType.WATERMARK) setWatermarkDrawerItem()
