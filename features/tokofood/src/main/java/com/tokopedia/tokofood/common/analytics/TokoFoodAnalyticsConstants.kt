@@ -18,6 +18,7 @@ object TokoFoodAnalyticsConstants {
     const val PHYSICAL_GOODS = "Physical Goods"
     const val ADD_TO_CART = "add_to_cart"
     const val VIEW_ITEM = "view_item"
+    const val BEGIN_CHECKOUT = "begin_checkout"
 
     //home
     const val EMPTY_DATA = "null"
