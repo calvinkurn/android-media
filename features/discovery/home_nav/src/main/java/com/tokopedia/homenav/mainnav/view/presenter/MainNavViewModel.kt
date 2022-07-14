@@ -99,7 +99,7 @@ class MainNavViewModel @Inject constructor(
         private val getFavoriteShopsNavUseCase: Lazy<GetFavoriteShopsNavUseCase>,
         private val getWishlistNavUseCase: Lazy<GetWishlistNavUseCase>,
         private val getReviewProductUseCase: Lazy<GetReviewProductUseCase>,
-        private val getTokopediaPlusUseCase: TokopediaPlusUseCase
+        private val getTokopediaPlusUseCase: Lazy<TokopediaPlusUseCase>
 ): BaseViewModel(baseDispatcher.get().io) {
 
     companion object {
@@ -957,7 +957,7 @@ class MainNavViewModel @Inject constructor(
             ), INDEX_MODEL_ACCOUNT)
 
             launchCatchError(coroutineContext, block = {
-                val response = getTokopediaPlusUseCase(mapOf(
+                val response = getTokopediaPlusUseCase.get().invoke(mapOf(
                     TokopediaPlusUseCase.PARAM_SOURCE to TokopediaPlusCons.SOURCE_GLOBAL_MENU
                 ))
                 val result = response.tokopediaPlus
