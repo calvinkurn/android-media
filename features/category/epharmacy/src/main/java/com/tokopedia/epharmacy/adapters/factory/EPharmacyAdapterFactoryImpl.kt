@@ -29,7 +29,7 @@ class EPharmacyAdapterFactoryImpl(private val ePharmacyListener: EPharmacyListen
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type){
-            EPharmacyStaticInfoViewHolder.LAYOUT -> EPharmacyStaticInfoViewHolder(view, ePharmacyListener)
+            EPharmacyStaticInfoViewHolder.LAYOUT -> EPharmacyStaticInfoViewHolder(view)
             EPharmacyPrescriptionViewHolder.LAYOUT -> EPharmacyPrescriptionViewHolder(view, ePharmacyListener)
             EPharmacyProductViewHolder.LAYOUT -> EPharmacyProductViewHolder(view, ePharmacyListener)
             else -> super.createViewHolder(view,type)

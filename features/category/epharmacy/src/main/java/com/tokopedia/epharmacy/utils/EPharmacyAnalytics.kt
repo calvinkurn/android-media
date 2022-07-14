@@ -2,11 +2,6 @@ package com.tokopedia.epharmacy.utils
 
 interface EventKeys {
     companion object {
-        const val KEY_EVENT = "event"
-        const val KEY_EVENT_CATEGORY = "eventCategory"
-        const val KEY_EVENT_ACTION = "eventAction"
-        const val KEY_EVENT_LABEL = "eventLabel"
-        const val KEY_USER_ID = "userId"
         const val SCREEN_NAME = "screenName"
         const val IS_LOGGED_IN = "isLoggedInStatus"
         const val OPEN_SCREEN = "openScreen"
@@ -17,9 +12,6 @@ interface EventKeys {
 
         const val BUSINESS_UNIT_VALUE= "Physical Goods"
         const val CURRENT_SITE_VALUE = "tokopediamarketplace"
-
-        const val EVENT_VALUE_CLICK = "clickAffiliate"
-        const val EVENT_VALUE_VIEW = "viewAffiliateIris"
     }
 }
 
@@ -39,8 +31,13 @@ interface ActionKeys {
     }
 }
 
-interface LabelKeys {
+interface TrackerId {
     companion object {
-        const val PRODUCT_INACTIVE = "product inactive"
+        const val OPEN_SCREEN_ID  = "32358"
+        const val IMAGE_UPLOAD_FAILED_ID = "32787"
+        const val IMAGE_UPLOAD_SUCCESS_ID = "32782"
+        const val UPLOAD_PRESCRIPTION_ID = "32781"
+        const val SUBMIT_PRESCRIPTION_ID = "32783"
+        const val SUBMIT_SUCCESS_ID = "32786"
     }
 }

@@ -11,10 +11,6 @@ import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.epharmacy.network.request.UploadPrescriptionRequest
 import com.tokopedia.epharmacy.network.response.EPharmacyPrescriptionUploadResponse
 import com.tokopedia.epharmacy.utils.EPharmacyImageQuality
-import com.tokopedia.epharmacy.utils.EPharmacyImageQualityDecreaseFactor
-import com.tokopedia.epharmacy.utils.EPharmacyMinImageQuality
-import com.tokopedia.epharmacy.utils.UPLOAD_MAX_BYTES
-import okio.utf8Size
 import java.io.ByteArrayOutputStream
 import java.lang.reflect.Type
 import javax.inject.Inject
@@ -27,7 +23,7 @@ class UploadPrescriptionUseCase @Inject constructor(
     private var id : Long = 0L
 
     override suspend fun executeOnBackground(): Map<Type, RestResponse> {
-        val base64ImageString = getBase64OfPrescriptionImage(localFilePath, EPharmacyImageQuality)
+        val base64ImageString = getBase64OfPrescriptionImage(localFilePath)
         val restRequest = RestRequest.Builder(ENDPOINT_URL, EPharmacyPrescriptionUploadResponse::class.java)
             .setBody(getUploadPrescriptionBody(base64ImageString))
             .setRequestType(RequestType.POST)
@@ -49,23 +45,20 @@ class UploadPrescriptionUseCase @Inject constructor(
         this.localFilePath = localPath
     }
 
-    private fun getBase64OfPrescriptionImage(localFilePath: String, quality : Int): String {
+    private fun getBase64OfPrescriptionImage(localFilePath: String): String {
         return try {
             val prescriptionImageBitmap: Bitmap = BitmapFactory.decodeFile(localFilePath)
             val prescriptionByteArrayOutputStream = ByteArrayOutputStream()
             prescriptionImageBitmap.compress(
                 Bitmap.CompressFormat.JPEG,
-                quality,
+                EPharmacyImageQuality,
                 prescriptionByteArrayOutputStream
             )
             val byteArrayImage = prescriptionByteArrayOutputStream.toByteArray()
             prescriptionImageBitmap.recycle()
 
             val encodedString = Base64.encodeToString(byteArrayImage, Base64.DEFAULT)
-            return if(encodedString.utf8Size(0,encodedString.length) >= UPLOAD_MAX_BYTES && quality >= EPharmacyMinImageQuality){
-                getBase64OfPrescriptionImage(localFilePath , (quality * EPharmacyImageQualityDecreaseFactor).toInt())
-            } else
-                "${IMAGE_DATA_PREFIX}${encodedString}"
+            "${IMAGE_DATA_PREFIX}${encodedString}"
         }catch (e : Exception){
             // TODO Log in Crashlytics
             e.printStackTrace()
