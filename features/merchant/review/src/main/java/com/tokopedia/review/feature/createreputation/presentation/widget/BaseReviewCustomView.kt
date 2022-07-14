@@ -92,11 +92,7 @@ abstract class BaseReviewCustomView<VB: ViewBinding> @JvmOverloads constructor(
     private fun createHeightAnimator(start: Int = binding.root.height, end: Int): Animator {
         return ValueAnimator.ofInt(start, end).apply {
             interpolator = PathInterpolatorCompat.create(CUBIC_BEZIER_X1, CUBIC_BEZIER_Y1, CUBIC_BEZIER_X2, CUBIC_BEZIER_Y2)
-            addUpdateListener { newValue ->
-                val layoutParamsCopy = binding.root.layoutParams
-                layoutParamsCopy.height = (newValue.animatedValue as Int)
-                binding.root.layoutParams = layoutParamsCopy
-            }
+            addUpdateListener { newValue -> updateRootHeight((newValue.animatedValue as Int)) }
         }
     }
 
@@ -105,6 +101,12 @@ abstract class BaseReviewCustomView<VB: ViewBinding> @JvmOverloads constructor(
             interpolator = if (end == MIN_ALPHA) DecelerateInterpolator() else AccelerateInterpolator()
             addUpdateListener { newValue -> binding.root.alpha = newValue.animatedValue as Float }
         }
+    }
+
+    private fun updateRootHeight(height: Int) {
+        val layoutParamsCopy = binding.root.layoutParams
+        layoutParamsCopy.height = height
+        binding.root.layoutParams = layoutParamsCopy
     }
 
     fun animateShow(onAnimationStart: (() -> Unit)? = null, onAnimationEnd: (() -> Unit)? = null) {
@@ -117,7 +119,10 @@ abstract class BaseReviewCustomView<VB: ViewBinding> @JvmOverloads constructor(
             showAnimator = createAnimatorSet(
                 *animator,
                 onAnimationStart = onAnimationStart,
-                onAnimationEnd = onAnimationEnd
+                onAnimationEnd = {
+                    onAnimationEnd?.invoke()
+                    updateRootHeight(LayoutParams.WRAP_CONTENT)
+                }
             )
         }
     }

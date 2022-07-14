@@ -1,15 +1,15 @@
 package com.tokopedia.review.feature.credibility.presentation.viewmodel
 
 import android.os.Bundle
-import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.review.common.extension.combine
 import com.tokopedia.review.feature.createreputation.domain.RequestState
 import com.tokopedia.review.feature.credibility.data.ReviewerCredibilityStatsWrapper
 import com.tokopedia.review.feature.credibility.domain.GetReviewerCredibilityUseCase
-import com.tokopedia.review.feature.credibility.presentation.mapper.ReviewCredibilityMapper
+import com.tokopedia.review.feature.credibility.presentation.mapper.ReviewCredibilityResponseMapper
 import com.tokopedia.review.feature.credibility.presentation.uistate.ReviewCredibilityAchievementBoxUiState
 import com.tokopedia.review.feature.credibility.presentation.uistate.ReviewCredibilityFooterUiState
 import com.tokopedia.review.feature.credibility.presentation.uistate.ReviewCredibilityGlobalErrorUiState
@@ -19,7 +19,7 @@ import com.tokopedia.reviewcommon.extension.getSavedState
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -29,9 +29,8 @@ typealias GetReviewCredibilityRequestState = RequestState<ReviewerCredibilitySta
 
 class ReviewCredibilityViewModel @Inject constructor(
     private val getReviewerCredibilityUseCase: GetReviewerCredibilityUseCase,
-    private val userSession: UserSessionInterface,
-    coroutineDispatchers: CoroutineDispatchers
-) : BaseViewModel(coroutineDispatchers.io) {
+    private val userSession: UserSessionInterface
+) : ViewModel() {
 
     companion object {
         private const val STATE_FLOW_STOP_TIMEOUT_MILLIS = 5000L
@@ -56,7 +55,7 @@ class ReviewCredibilityViewModel @Inject constructor(
         getReviewCredibilityResult,
         ::mapReviewCredibilityHeaderUiState
     ).stateIn(
-        scope = this,
+        scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(STATE_FLOW_STOP_TIMEOUT_MILLIS),
         initialValue = ReviewCredibilityHeaderUiState.Hidden
     )
@@ -65,7 +64,7 @@ class ReviewCredibilityViewModel @Inject constructor(
         getReviewCredibilityResult,
         ::mapReviewCredibilityAchievementBoxUiState
     ).stateIn(
-        scope = this,
+        scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(STATE_FLOW_STOP_TIMEOUT_MILLIS),
         initialValue = ReviewCredibilityAchievementBoxUiState.Hidden
     )
@@ -74,7 +73,7 @@ class ReviewCredibilityViewModel @Inject constructor(
         getReviewCredibilityResult,
         ::mapReviewCredibilityStatisticBoxUiState
     ).stateIn(
-        scope = this,
+        scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(STATE_FLOW_STOP_TIMEOUT_MILLIS),
         initialValue = ReviewCredibilityStatisticBoxUiState.Hidden
     )
@@ -83,7 +82,7 @@ class ReviewCredibilityViewModel @Inject constructor(
         getReviewCredibilityResult,
         ::mapReviewCredibilityFooterUiState
     ).stateIn(
-        scope = this,
+        scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(STATE_FLOW_STOP_TIMEOUT_MILLIS),
         initialValue = ReviewCredibilityFooterUiState.Hidden
     )
@@ -92,7 +91,7 @@ class ReviewCredibilityViewModel @Inject constructor(
         getReviewCredibilityResult,
         ::mapReviewCredibilityGlobalErrorUiState
     ).stateIn(
-        scope = this,
+        scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(STATE_FLOW_STOP_TIMEOUT_MILLIS),
         initialValue = ReviewCredibilityGlobalErrorUiState.Hidden
     )
@@ -107,167 +106,147 @@ class ReviewCredibilityViewModel @Inject constructor(
     }
 
     private fun handleLoadReviewCredibilityData() {
-        launch {
+        viewModelScope.launch {
             combine(
                 shouldLoadReviewCredibilityData,
-                reviewCredibilityHeaderUiState,
-                reviewCredibilityStatisticBoxUiState,
-                reviewCredibilityFooterUiState,
-                reviewCredibilityGlobalErrorUiState,
                 reviewCredibilityHeaderTransitioning,
                 reviewCredibilityAchievementBoxTransitioning,
                 reviewCredibilityStatisticBoxTransitioning,
-                reviewCredibilityFooterTransitioning
-            ) { loadCredibilityData, headerUiState, statisticBoxUiState,
-                footerUiState, globalErrorUiState, headerTransitioning, achievementBoxTransitioning,
-                statisticBoxTransitioning, footerTransitioning ->
+                reviewCredibilityFooterTransitioning,
+                reviewCredibilityHeaderUiState,
+                reviewCredibilityAchievementBoxUiState,
+                reviewCredibilityStatisticBoxUiState,
+                reviewCredibilityFooterUiState
+            ) { loadCredibilityData, headerTransitioning, achievementBoxTransitioning,
+                statisticBoxTransitioning, footerTransitioning, headerUiState,
+                achievementBoxUiState, statisticBoxUiState, footerUiState ->
                 loadCredibilityData && headerUiState is ReviewCredibilityHeaderUiState.Loading &&
+                        achievementBoxUiState is ReviewCredibilityAchievementBoxUiState.Hidden &&
                         statisticBoxUiState is ReviewCredibilityStatisticBoxUiState.Loading &&
                         footerUiState is ReviewCredibilityFooterUiState.Loading &&
-                        globalErrorUiState is ReviewCredibilityGlobalErrorUiState.Hidden &&
-                        !headerTransitioning && !achievementBoxTransitioning && !statisticBoxTransitioning &&
-                        !footerTransitioning
-            }.collectLatest { if (it) getReviewCredibility() }
+                        !headerTransitioning && !achievementBoxTransitioning &&
+                        !statisticBoxTransitioning && !footerTransitioning
+            }.collect { if (it) getReviewCredibility() }
         }
     }
 
     private fun mapReviewCredibilityHeaderUiState(
-        shouldLoadCredibilityData: Boolean,
-        requestState: GetReviewCredibilityRequestState
+        shouldLoadCredibilityData: Boolean, requestState: GetReviewCredibilityRequestState
     ): ReviewCredibilityHeaderUiState {
         val currentUiState = reviewCredibilityHeaderUiState.value
-        return if (shouldLoadCredibilityData) {
-            if (currentUiState !is ReviewCredibilityHeaderUiState.Loading) {
-                reviewCredibilityHeaderTransitioning.value = true
-            }
+        val newState = if (shouldLoadCredibilityData) {
             ReviewCredibilityHeaderUiState.Loading
         } else {
             when (requestState) {
                 is RequestState.Success -> {
-                    if (currentUiState !is ReviewCredibilityHeaderUiState.Showed) {
-                        reviewCredibilityHeaderTransitioning.value = true
-                    }
-                    ReviewCredibilityHeaderUiState.Showed(
-                        ReviewCredibilityMapper.mapReviewCredibilityResponseToReviewCredibilityHeaderUiModel(requestState.result)
-                    )
+                    ReviewCredibilityResponseMapper.toReviewCredibilityHeaderUiModel(
+                        requestState.result
+                    ).let { ReviewCredibilityHeaderUiState.Showed(it) }
+                }
+                is RequestState.Requesting -> {
+                    ReviewCredibilityHeaderUiState.Loading
                 }
                 else -> {
-                    if (currentUiState !is ReviewCredibilityHeaderUiState.Hidden) {
-                        reviewCredibilityHeaderTransitioning.value = true
-                    }
                     ReviewCredibilityHeaderUiState.Hidden
                 }
             }
         }
+        if (currentUiState != newState) {
+            reviewCredibilityHeaderTransitioning.value = true
+        }
+        return newState
     }
 
     private fun mapReviewCredibilityAchievementBoxUiState(
-        shouldLoadCredibilityData: Boolean,
-        requestState: GetReviewCredibilityRequestState
+        shouldLoadCredibilityData: Boolean, requestState: GetReviewCredibilityRequestState
     ): ReviewCredibilityAchievementBoxUiState {
         val currentUiState = reviewCredibilityAchievementBoxUiState.value
-        return if (shouldLoadCredibilityData) {
-            if (currentUiState !is ReviewCredibilityAchievementBoxUiState.Hidden) {
-                reviewCredibilityAchievementBoxTransitioning.value = true
-            }
+        val newState = if (shouldLoadCredibilityData) {
             ReviewCredibilityAchievementBoxUiState.Hidden
         } else {
             when (requestState) {
                 is RequestState.Success -> {
                     if (requestState.result.label.achievements.isNullOrEmpty()) {
-                        if (currentUiState !is ReviewCredibilityAchievementBoxUiState.Hidden) {
-                            reviewCredibilityAchievementBoxTransitioning.value = true
-                        }
                         ReviewCredibilityAchievementBoxUiState.Hidden
                     } else {
-                        if (currentUiState !is ReviewCredibilityAchievementBoxUiState.Showed) {
-                            reviewCredibilityAchievementBoxTransitioning.value = true
-                        }
-                        ReviewCredibilityAchievementBoxUiState.Showed(
-                            ReviewCredibilityMapper.mapReviewCredibilityResponseToReviewCredibilityAchievementBoxUiModel(requestState.result)
-                        )
+                        ReviewCredibilityResponseMapper.toReviewCredibilityAchievementBoxUiModel(
+                            requestState.result
+                        ).let { ReviewCredibilityAchievementBoxUiState.Showed(it) }
                     }
                 }
                 else -> {
-                    if (currentUiState !is ReviewCredibilityAchievementBoxUiState.Hidden) {
-                        reviewCredibilityAchievementBoxTransitioning.value = true
-                    }
                     ReviewCredibilityAchievementBoxUiState.Hidden
                 }
             }
         }
+        if (currentUiState != newState) {
+            reviewCredibilityAchievementBoxTransitioning.value = true
+        }
+        return newState
     }
 
     private fun mapReviewCredibilityStatisticBoxUiState(
-        shouldLoadCredibilityData: Boolean,
-        requestState: GetReviewCredibilityRequestState
+        shouldLoadCredibilityData: Boolean, requestState: GetReviewCredibilityRequestState
     ): ReviewCredibilityStatisticBoxUiState {
         val currentUiState = reviewCredibilityStatisticBoxUiState.value
-        return if (shouldLoadCredibilityData) {
-            if (currentUiState !is ReviewCredibilityStatisticBoxUiState.Loading) {
-                reviewCredibilityStatisticBoxTransitioning.value = true
-            }
+        val newState = if (shouldLoadCredibilityData) {
             ReviewCredibilityStatisticBoxUiState.Loading
         } else {
             when (requestState) {
                 is RequestState.Success -> {
-                    ReviewCredibilityMapper.mapReviewCredibilityResponseToReviewCredibilityStatisticBoxUiModel(requestState.result).let {
+                    ReviewCredibilityResponseMapper.toReviewCredibilityStatisticBoxUiModel(
+                        requestState.result
+                    ).let {
                         if (it.statistics.isEmpty()) {
-                            if (currentUiState !is ReviewCredibilityStatisticBoxUiState.Hidden) {
-                                reviewCredibilityStatisticBoxTransitioning.value = true
-                            }
                             ReviewCredibilityStatisticBoxUiState.Hidden
                         } else {
-                            if (currentUiState !is ReviewCredibilityStatisticBoxUiState.Showed) {
-                                reviewCredibilityStatisticBoxTransitioning.value = true
-                            }
                             ReviewCredibilityStatisticBoxUiState.Showed(it)
                         }
                     }
                 }
+                is RequestState.Requesting -> {
+                    ReviewCredibilityStatisticBoxUiState.Loading
+                }
                 else -> {
-                    if (currentUiState !is ReviewCredibilityStatisticBoxUiState.Hidden) {
-                        reviewCredibilityStatisticBoxTransitioning.value = true
-                    }
                     ReviewCredibilityStatisticBoxUiState.Hidden
                 }
             }
         }
+        if (currentUiState != newState) {
+            reviewCredibilityStatisticBoxTransitioning.value = true
+        }
+        return newState
     }
 
     private fun mapReviewCredibilityFooterUiState(
-        shouldLoadCredibilityData: Boolean,
-        requestState: GetReviewCredibilityRequestState
+        shouldLoadCredibilityData: Boolean, requestState: GetReviewCredibilityRequestState
     ): ReviewCredibilityFooterUiState {
         val currentUiState = reviewCredibilityFooterUiState.value
-        return if (shouldLoadCredibilityData) {
-            if (currentUiState !is ReviewCredibilityFooterUiState.Loading) {
-                reviewCredibilityStatisticBoxTransitioning.value = true
-            }
+        val newState = if (shouldLoadCredibilityData) {
             ReviewCredibilityFooterUiState.Loading
         } else {
             when (requestState) {
                 is RequestState.Success -> {
-                    if (currentUiState !is ReviewCredibilityFooterUiState.Showed) {
-                        reviewCredibilityStatisticBoxTransitioning.value = true
-                    }
-                    ReviewCredibilityFooterUiState.Showed(
-                        ReviewCredibilityMapper.mapReviewCredibilityResponseToReviewCredibilityFooterUiModel(requestState.result)
-                    )
+                    ReviewCredibilityResponseMapper.toReviewCredibilityFooterUiModel(
+                        requestState.result
+                    ).let { ReviewCredibilityFooterUiState.Showed(it) }
+                }
+                is RequestState.Requesting -> {
+                    ReviewCredibilityFooterUiState.Loading
                 }
                 else -> {
-                    if (currentUiState !is ReviewCredibilityFooterUiState.Hidden) {
-                        reviewCredibilityStatisticBoxTransitioning.value = true
-                    }
                     ReviewCredibilityFooterUiState.Hidden
                 }
             }
         }
+        if (currentUiState != newState) {
+            reviewCredibilityFooterTransitioning.value = true
+        }
+        return newState
     }
 
     private fun mapReviewCredibilityGlobalErrorUiState(
-        shouldLoadCredibilityData: Boolean,
-        requestState: GetReviewCredibilityRequestState
+        shouldLoadCredibilityData: Boolean, requestState: GetReviewCredibilityRequestState
     ): ReviewCredibilityGlobalErrorUiState {
         return if (shouldLoadCredibilityData) {
             ReviewCredibilityGlobalErrorUiState.Hidden
@@ -284,16 +263,16 @@ class ReviewCredibilityViewModel @Inject constructor(
     }
 
     private fun getReviewCredibility() {
-        launchCatchError(block = {
+        viewModelScope.launchCatchError(block = {
             getReviewCredibilityResult.value = RequestState.Requesting()
-            getReviewerCredibilityUseCase.setParams(reviewerUserID, source)
-            getReviewCredibilityResult.value = RequestState.Success(
-                getReviewerCredibilityUseCase.executeOnBackground().response
-            )
             shouldLoadReviewCredibilityData.value = false
+            getReviewCredibilityResult.value = RequestState.Success(
+                getReviewerCredibilityUseCase.apply {
+                    setParams(reviewerUserID, source)
+                }.executeOnBackground().response
+            )
         }) {
             getReviewCredibilityResult.value = RequestState.Error(it)
-            shouldLoadReviewCredibilityData.value = false
         }
     }
 
@@ -354,23 +333,35 @@ class ReviewCredibilityViewModel @Inject constructor(
     }
 
     fun saveUiState(outState: Bundle) {
-        outState.putSerializable(SAVED_STATE_KEY_GET_REVIEW_CREDIBILITY_RESULT, getReviewCredibilityResult.value)
+        outState.putSerializable(
+            SAVED_STATE_KEY_GET_REVIEW_CREDIBILITY_RESULT, getReviewCredibilityResult.value
+        )
         outState.putString(SAVED_STATE_KEY_PRODUCT_ID, productID)
         outState.putString(SAVED_STATE_KEY_REVIEWER_USER_ID, reviewerUserID)
         outState.putString(SAVED_STATE_KEY_SOURCE, source)
         outState.putString(SAVED_STATE_KEY_PENDING_APP_LINK, pendingAppLink)
-        outState.putBoolean(SAVED_STATE_KEY_SHOULD_LOAD_REVIEW_CREDIBILITY_DATA, shouldLoadReviewCredibilityData.value)
+        outState.putBoolean(
+            SAVED_STATE_KEY_SHOULD_LOAD_REVIEW_CREDIBILITY_DATA,
+            shouldLoadReviewCredibilityData.value
+        )
     }
 
     fun restoreUiState(savedInstanceState: Bundle) {
         getReviewCredibilityResult.value = savedInstanceState.getSavedState(
-            SAVED_STATE_KEY_GET_REVIEW_CREDIBILITY_RESULT,
-            getReviewCredibilityResult.value
+            SAVED_STATE_KEY_GET_REVIEW_CREDIBILITY_RESULT, getReviewCredibilityResult.value
         )!!
         setProductID(savedInstanceState.getSavedState(SAVED_STATE_KEY_PRODUCT_ID, productID)!!)
-        setReviewerUserID(savedInstanceState.getSavedState(SAVED_STATE_KEY_REVIEWER_USER_ID, reviewerUserID)!!)
+        setReviewerUserID(
+            savedInstanceState.getSavedState(
+                SAVED_STATE_KEY_REVIEWER_USER_ID, reviewerUserID
+            )!!
+        )
         setSource(savedInstanceState.getSavedState(SAVED_STATE_KEY_SOURCE, source)!!)
-        setPendingAppLink(savedInstanceState.getSavedState(SAVED_STATE_KEY_PENDING_APP_LINK, pendingAppLink)!!)
+        setPendingAppLink(
+            savedInstanceState.getSavedState(
+                SAVED_STATE_KEY_PENDING_APP_LINK, pendingAppLink
+            )!!
+        )
         shouldLoadReviewCredibilityData.value = savedInstanceState.getSavedState(
             SAVED_STATE_KEY_SHOULD_LOAD_REVIEW_CREDIBILITY_DATA,
             shouldLoadReviewCredibilityData.value

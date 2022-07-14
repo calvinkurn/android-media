@@ -8,9 +8,9 @@ import com.tokopedia.review.feature.credibility.presentation.uimodel.ReviewCredi
 import com.tokopedia.review.feature.credibility.presentation.uimodel.ReviewCredibilityHeaderUiModel
 import com.tokopedia.review.feature.credibility.presentation.uimodel.ReviewCredibilityStatisticBoxUiModel
 
-object ReviewCredibilityMapper {
+object ReviewCredibilityResponseMapper {
 
-    private fun mapReviewCredibilityResponseToReviewCredibilityAchievementUiModel(
+    private fun toReviewCredibilityAchievementUiModel(
         label: ReviewerCredibilityLabel
     ): List<ReviewCredibilityAchievementBoxUiModel.ReviewCredibilityAchievementUiModel> {
         return label.achievements?.mapNotNull {
@@ -28,7 +28,7 @@ object ReviewCredibilityMapper {
         }.orEmpty()
     }
 
-    private fun mapReviewCredibilityResponseToReviewCredibilityAchievementCtaUiModel(
+    private fun toReviewCredibilityAchievementCtaUiModel(
         label: ReviewerCredibilityLabel
     ): ReviewCredibilityAchievementBoxUiModel.Button {
         return ReviewCredibilityAchievementBoxUiModel.Button(
@@ -37,7 +37,7 @@ object ReviewCredibilityMapper {
         )
     }
 
-    private fun mapReviewCredibilityResponseToReviewCredibilityStatisticUiModel(
+    private fun toReviewCredibilityStatisticUiModel(
         stats: List<ReviewerCredibilityStat>
     ): List<ReviewCredibilityStatisticBoxUiModel.ReviewCredibilityStatisticUiModel> {
         return stats.map {
@@ -47,7 +47,7 @@ object ReviewCredibilityMapper {
         }
     }
 
-    private fun mapReviewCredibilityResponseToReviewCredibilityFooterButtonUiModel(
+    private fun toReviewCredibilityFooterButtonUiModel(
         label: ReviewerCredibilityLabel
     ): ReviewCredibilityFooterUiModel.Button {
         return ReviewCredibilityFooterUiModel.Button(
@@ -55,7 +55,7 @@ object ReviewCredibilityMapper {
         )
     }
 
-    fun mapReviewCredibilityResponseToReviewCredibilityHeaderUiModel(
+    fun toReviewCredibilityHeaderUiModel(
         response: ReviewerCredibilityStatsWrapper
     ): ReviewCredibilityHeaderUiModel {
         return ReviewCredibilityHeaderUiModel(
@@ -65,38 +65,38 @@ object ReviewCredibilityMapper {
         )
     }
 
-    fun mapReviewCredibilityResponseToReviewCredibilityAchievementBoxUiModel(
+    fun toReviewCredibilityAchievementBoxUiModel(
         response: ReviewerCredibilityStatsWrapper
     ): ReviewCredibilityAchievementBoxUiModel {
         return ReviewCredibilityAchievementBoxUiModel(
             title = response.label.name,
             label = response.label.subLabel,
-            achievements = mapReviewCredibilityResponseToReviewCredibilityAchievementUiModel(
+            achievements = toReviewCredibilityAchievementUiModel(
                 response.label
             ),
-            cta = mapReviewCredibilityResponseToReviewCredibilityAchievementCtaUiModel(
+            cta = toReviewCredibilityAchievementCtaUiModel(
                 response.label
             )
         )
     }
 
-    fun mapReviewCredibilityResponseToReviewCredibilityStatisticBoxUiModel(
+    fun toReviewCredibilityStatisticBoxUiModel(
         response: ReviewerCredibilityStatsWrapper
     ): ReviewCredibilityStatisticBoxUiModel {
         return ReviewCredibilityStatisticBoxUiModel(
             title = response.label.subtitle,
-            statistics = mapReviewCredibilityResponseToReviewCredibilityStatisticUiModel(
+            statistics = toReviewCredibilityStatisticUiModel(
                 response.stats
             )
         )
     }
 
-    fun mapReviewCredibilityResponseToReviewCredibilityFooterUiModel(
+    fun toReviewCredibilityFooterUiModel(
         response: ReviewerCredibilityStatsWrapper
     ): ReviewCredibilityFooterUiModel {
         return ReviewCredibilityFooterUiModel(
             description = response.label.footer,
-            button = mapReviewCredibilityResponseToReviewCredibilityFooterButtonUiModel(
+            button = toReviewCredibilityFooterButtonUiModel(
                 response.label
             )
         )
