@@ -3,7 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/shopProductRoot"
     android:layout_width="@dimen/layout_5_item_width"
     android:layout_height="wrap_content"
     app:cardCornerRadius="@dimen/unify_space_8"
@@ -12,6 +11,7 @@
     app:cardUseCompatPadding="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/shopProductRoot"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingBottom="@dimen/unify_space_16">
@@ -215,13 +215,14 @@
             app:layout_constraintTop_toBottomOf="@id/productShopName" />
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/buttonFollow"
+            android:id="@+id/duplicateButtonFollow"
             android:layout_width="match_parent"
             android:layout_height="@dimen/unify_space_32"
             android:layout_marginLeft="@dimen/unify_space_8"
             android:layout_marginTop="@dimen/unify_space_8"
             android:layout_marginRight="@dimen/unify_space_8"
             android:text="Follow"
+            android:clickable="false"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -233,4 +234,20 @@
             tools:visibility="visible"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/buttonFollow"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/unify_space_32"
+        android:layout_marginLeft="@dimen/unify_space_8"
+        android:layout_marginTop="@dimen/unify_space_8"
+        android:layout_marginRight="@dimen/unify_space_8"
+        android:layout_marginBottom="@dimen/unify_space_16"
+        android:text="Follow"
+        android:visibility="gone"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="ghost"
+        android:layout_gravity="bottom"
+        tools:visibility="visible"/>
 </androidx.cardview.widget.CardView>

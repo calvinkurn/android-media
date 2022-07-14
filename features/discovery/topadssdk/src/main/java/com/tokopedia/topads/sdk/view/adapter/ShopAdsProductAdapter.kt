@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
-import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
@@ -40,10 +40,11 @@ class ShopAdsProductAdapter(
         private val productShopName = itemView.findViewById<Typography>(R.id.productShopName)
         private val shopProductReviews = itemView.findViewById<LinearLayout>(R.id.shopProductReviews)
         private val reviewCount = itemView.findViewById<Typography>(R.id.reviewCount)
-        private val shopProductRoot = itemView.findViewById<CardView>(R.id.shopProductRoot)
+        private val shopProductRoot = itemView.findViewById<ConstraintLayout>(R.id.shopProductRoot)
         private val locationIcon = itemView.findViewById<ImageView>(R.id.locationIcon)
         private val locationName = itemView.findViewById<Typography>(R.id.locationName)
         private val buttonFollow = itemView.findViewById<UnifyButton>(R.id.buttonFollow)
+        private val duplicateButtonFollow = itemView.findViewById<UnifyButton>(R.id.duplicateButtonFollow)
 
 
         fun bind(shopProductModelItem: ShopProductModelItem) {
@@ -68,7 +69,10 @@ class ShopAdsProductAdapter(
             layoutType: Int?,
             shopProductModelItem: ShopProductModelItem
         ) {
-            if (layoutType == LAYOUT_5) buttonFollow.hide()
+            if (layoutType == LAYOUT_5) {
+                buttonFollow.hide()
+                duplicateButtonFollow.hide()
+            }
             else {
                 if (!shopProductModelItem.isFollowed) {
                     buttonFollow.setOnClickListener {
@@ -79,6 +83,7 @@ class ShopAdsProductAdapter(
                     }
                 }
                 buttonFollow.show()
+                duplicateButtonFollow.invisible()
             }
 
         }

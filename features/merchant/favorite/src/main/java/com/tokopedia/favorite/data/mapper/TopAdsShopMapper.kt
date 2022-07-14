@@ -73,7 +73,7 @@ class TopAdsShopMapper(
             topAdsShopItem.isPowerMerchant = dataResponse.headline?.shop?.isPowerMerchant?: false
             topAdsShopItem.imageShop = dataResponse.headline?.shop?.imageShop
             topAdsShopItem.layout = dataResponse.headline?.layout
-            topAdsShopItem.applink = dataResponse.headline?.applink
+            topAdsShopItem.applink = dataResponse.applinks
             topAdsShopItem.isFollowed = dataResponse.headline?.shop?.is_followed ?: false
             topAdsShopItems.add(topAdsShopItem)
         }

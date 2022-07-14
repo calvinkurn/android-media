@@ -57,9 +57,6 @@ class TopAdsHome {
         @SerializedName("layout")
         var layout: Int? = null
 
-        @SerializedName("applinks")
-        var applink: String? = null
-
         @SerializedName("badges")
         var badges: List<*>? = null
 
