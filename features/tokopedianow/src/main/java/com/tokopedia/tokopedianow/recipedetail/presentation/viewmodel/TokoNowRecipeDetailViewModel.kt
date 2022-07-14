@@ -22,6 +22,7 @@ import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.tokopedianow.common.util.CoroutineUtil.launchWithDelay
+import com.tokopedia.tokopedianow.recipedetail.constant.MediaType
 import com.tokopedia.tokopedianow.recipedetail.domain.usecase.GetRecipeUseCase
 import com.tokopedia.tokopedianow.recipedetail.presentation.mapper.RecipeDetailMapper.updateProductQuantity
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.BuyAllProductUiModel
@@ -29,6 +30,7 @@ import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.IngredientTa
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.IngredientUiModel
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.InstructionTabUiModel
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.InstructionUiModel
+import com.tokopedia.tokopedianow.common.model.MediaItemUiModel
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.MediaSliderUiModel
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.RecipeInfoUiModel
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.RecipeProductUiModel
@@ -85,7 +87,29 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
     fun getRecipe(recipeId: String) {
         launchCatchError(block = {
             // Temporary Hardcode Data
-            val mediaSlider = MediaSliderUiModel("", "")
+            val mediaSlider = MediaSliderUiModel(
+                items = listOf(
+                    MediaItemUiModel(
+                        id = "1",
+                        url = "https://matamu.net/wp-content/uploads/2020/03/Foto-Landscpae-Gunung-dan-Padang-Rumput.jpg",
+                        thumbnailUrl = "https://matamu.net/wp-content/uploads/2020/03/Foto-Landscpae-Gunung-dan-Padang-Rumput.jpg",
+                        type = MediaType.IMAGE
+                    ),
+                    MediaItemUiModel(
+                        id = "2",
+                        url = "https://store.sirclo.com/blog/wp-content/uploads/2020/06/4.-cara-mencari-modal-usaha.jpg",
+                        thumbnailUrl = "https://store.sirclo.com/blog/wp-content/uploads/2020/06/4.-cara-mencari-modal-usaha.jpg",
+                        type = MediaType.IMAGE
+                    ),
+                    MediaItemUiModel(
+                        id = "3",
+                        url = "https://ecs7.tokopedia.net/assets/media/careers/recruitment-process.mp4",
+                        thumbnailUrl = "https://img.freepik.com/premium-vector/meadows-landscape-with-mountains-hill_104785-943.jpg?w=2000",
+                        duration = "02:30",
+                        type = MediaType.VIDEO
+                    )
+                )
+            )
             val recipeInfo = RecipeInfoUiModel(
                 title = "Bubur Kacang Hijau",
                 portion = 1,
