@@ -27,7 +27,7 @@ const val BUNDLE_CREATE_SCREEN_TYPE = "bundle_create_screen_type"
 const val BUNDLE_REFRESH = "bundle_refresh"
 const val REQUEST_CODE_REFRESH = 1
 const val BUNDLE_IS_SHOW_BS = "bundle_is_show_bs"
-const val BUNDLE_SHOW_TOAST = "bundle_show_toast"
+const val BUNDLE_PROGRAM_ACTION = "bundle_program_action"
 
 const val ACTION_CREATE = "create"
 const val ACTION_DETAIL = "detail"
