@@ -128,7 +128,6 @@ class PlayUserInteractionFragment @Inject constructor(
         ImmersiveBoxViewComponent.Listener,
         PlayButtonViewComponent.Listener,
         PiPViewComponent.Listener,
-        ProductFeaturedViewComponent.Listener,
         CastViewComponent.Listener,
         ProductSeeMoreViewComponent.Listener,
         KebabMenuViewComponent.Listener,
@@ -148,7 +147,6 @@ class PlayUserInteractionFragment @Inject constructor(
     private val quickReplyView by viewComponentOrNull { QuickReplyViewComponent(it, R.id.rv_quick_reply, this) }
     private val chatListView by viewComponentOrNull { ChatListViewComponent(it, R.id.view_chat_list) }
     private val pinnedView by viewComponentOrNull { PinnedViewComponent(it, R.id.view_pinned, this) }
-//    private val productFeaturedView by viewComponentOrNull { ProductFeaturedViewComponent(it, this) }
     private val videoSettingsView by viewComponent { VideoSettingsViewComponent(it, R.id.view_video_settings, this) }
     private val immersiveBoxView by viewComponent { ImmersiveBoxViewComponent(it, R.id.v_immersive_box, this) }
     private val playButtonView by viewComponent { PlayButtonViewComponent(it, R.id.view_play_button, this) }
@@ -510,18 +508,6 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     /**
-     * Product Featured View Component Listener
-     */
-    override fun onProductFeaturedImpressed(view: ProductFeaturedViewComponent, products: List<Pair<PlayProductUiModel.Product, Int>>) {
-        productAnalyticHelper.trackImpressedProducts(products)
-    }
-
-    override fun onProductFeaturedClicked(view: ProductFeaturedViewComponent, product: PlayProductUiModel.Product, position: Int) {
-        viewModel.doInteractionEvent(InteractionEvent.OpenProductDetail(product, ProductSectionUiModel.Section.ConfigUiModel.Empty, position))
-//        analytic.clickFeaturedProduct(product, position)
-    }
-
-    /**
      * Cast View Component Listener
      */
     override fun onCastClicked() {
@@ -700,6 +686,8 @@ class PlayUserInteractionFragment @Inject constructor(
         observeCastState()
 
         observeAnalytic()
+
+        components.forEach { lifecycle.addObserver(it) }
     }
 
     private fun invalidateSystemUiVisibility() {
@@ -849,7 +837,6 @@ class PlayUserInteractionFragment @Inject constructor(
                 renderStatsInfoView(state.totalView)
                 renderRealTimeNotificationView(state.rtn)
                 renderViewAllProductView(state.tagItems, state.bottomInsets)
-                renderFeaturedProductView(prevState?.tagItems, state.tagItems, state.bottomInsets, state.status)
                 renderQuickReplyView(prevState?.quickReply, state.quickReply, prevState?.bottomInsets, state.bottomInsets, state.channel)
                 renderKebabMenuView(state.kebabMenu)
 
@@ -1680,31 +1667,6 @@ class PlayUserInteractionFragment @Inject constructor(
         }
 
         productSeeMoreView?.setTotalProduct(productListSize)
-    }
-
-    private fun renderFeaturedProductView(
-        prevTagItem: TagItemUiModel?,
-        tagItem: TagItemUiModel,
-        bottomInsets: Map<BottomInsetsType, BottomInsetsState>,
-        status: PlayStatusUiModel,
-    ) {
-//        if (tagItem.resultState.isLoading && tagItem.product.productSectionList.isEmpty()) {
-//            productFeaturedView?.setPlaceholder()
-//        } else if (prevTagItem?.product?.productSectionList != tagItem.product.productSectionList) {
-//            productFeaturedView?.setFeaturedProducts(
-//                tagItem.product.productSectionList,
-//                tagItem.maxFeatured,
-//            )
-//        }
-//
-//        if (!tagItem.resultState.isLoading && tagItem.product.productSectionList.isEmpty()) {
-//            productFeaturedView?.hide()
-//        } else if (tagItem.product.canShow &&
-//            !bottomInsets.isAnyShown &&
-//            !tagItem.resultState.isFail &&
-//            status.channelStatus.statusType.isActive
-//        ) productFeaturedView?.showIfNotEmpty()
-//        else productFeaturedView?.hide()
     }
 
     private fun renderQuickReplyView(

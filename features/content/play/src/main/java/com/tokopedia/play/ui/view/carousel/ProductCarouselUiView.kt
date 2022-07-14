@@ -120,6 +120,10 @@ class ProductCarouselUiView(
         binding.root.gone()
     }
 
+    fun cleanUp() {
+        binding.rvProductFeatured.removeOnScrollListener(scrollListener)
+    }
+
     private fun getPlaceholder() = List(3) { PlayProductUiModel.Placeholder }
 
     private fun invalidateItemDecorations() {

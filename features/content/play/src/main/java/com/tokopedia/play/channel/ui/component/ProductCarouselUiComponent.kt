@@ -1,5 +1,7 @@
 package com.tokopedia.play.channel.ui.component
 
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.databinding.ViewProductFeaturedBinding
 import com.tokopedia.play.extensions.isAnyShown
@@ -128,6 +130,13 @@ class ProductCarouselUiComponent(
 
         return@withContext if (pinnedProduct != null) listOf(pinnedProduct) + featuredProducts
         else featuredProducts
+    }
+
+    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+        when (event) {
+            Lifecycle.Event.ON_DESTROY -> uiView.cleanUp()
+            else -> {}
+        }
     }
 
     sealed interface Event {

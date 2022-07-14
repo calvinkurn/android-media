@@ -9,7 +9,7 @@ import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
  * Created by mzennis on 20/04/21.
  */
 class ProductAnalyticHelper(
-        private val analytic: PlayAnalytic
+    private val analytic: PlayAnalytic,
 ) {
 
     @TrackingField
