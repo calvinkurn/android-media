@@ -189,6 +189,8 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
             product_price
             category_id
             category
+            last_level_category
+            category_identifier
             wholesale_price {
               qty_min_fmt
               qty_max_fmt
@@ -343,6 +345,7 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
           city_name
           province_id
           province_name
+          country
           phone
           longitude
           latitude
