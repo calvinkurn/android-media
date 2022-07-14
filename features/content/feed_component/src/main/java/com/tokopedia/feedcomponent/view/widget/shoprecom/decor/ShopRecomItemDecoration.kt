@@ -1,5 +1,6 @@
 package com.tokopedia.feedcomponent.view.widget.shoprecom.decor
 
+import android.content.Context
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
@@ -7,13 +8,16 @@ import androidx.recyclerview.widget.RecyclerView
 /**
  * created by fachrizalmrsln on 07/07/22
  **/
-class ShopRecomItemDecoration : RecyclerView.ItemDecoration() {
+class ShopRecomItemDecoration(
+    private val context: Context
+) : RecyclerView.ItemDecoration() {
 
     companion object {
         private const val FIRST_ITEM = 0
-        private const val SPACE_SHOP = 40
-        private const val SPACE_EDGE = 26
     }
+
+    private val spaceItemEdge = context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
+    private val spaceItem = context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_font_12)
 
     override fun getItemOffsets(
         outRect: Rect,
@@ -25,12 +29,12 @@ class ShopRecomItemDecoration : RecyclerView.ItemDecoration() {
         val last = parent.adapter?.itemCount ?: 0
 
         when (position) {
-            FIRST_ITEM -> outRect.left = SPACE_SHOP
+            FIRST_ITEM -> outRect.left = spaceItemEdge
             last - 1 -> {
-                outRect.left = SPACE_EDGE
-                outRect.right = SPACE_SHOP
+                outRect.left = spaceItem
+                outRect.right = spaceItemEdge
             }
-            else -> outRect.left = SPACE_EDGE
+            else -> outRect.left = spaceItem
         }
     }
 
