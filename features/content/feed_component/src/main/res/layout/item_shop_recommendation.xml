@@ -36,8 +36,8 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/img_item_shop_badge"
-            android:layout_width="14dp"
-            android:layout_height="14dp"
+            android:layout_width="@dimen/feed_component_dp_14"
+            android:layout_height="@dimen/feed_component_dp_14"
             android:scaleType="centerCrop"
             app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toBottomOf="@id/txt_item_shop_name"
