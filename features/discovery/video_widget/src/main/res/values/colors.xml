@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="video_widget_dms_black_0_opacity">#00000000</color>
+    <color name="video_widget_dms_black_32_opacity">#52000000</color>
+    <color name="video_widget_dms_black_85_opacity">#D9000000</color>
+</resources>
