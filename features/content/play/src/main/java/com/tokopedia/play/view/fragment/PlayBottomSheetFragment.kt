@@ -572,7 +572,7 @@ class PlayBottomSheetFragment @Inject constructor(
                                 newAnalytic.impressNowToaster(channelId = playViewModel.channelId, channelType = playViewModel.channelType)
                                 Triple(
                                     getString(R.string.play_add_to_cart_message_success_mixed),
-                                    ApplinkConst.TokopediaNow.HOME + "?" +getString(R.string.play_tokonow_minicart_applink),
+                                    ApplinkConst.TokopediaNow.HOME +getString(R.string.play_tokonow_minicart_applink),
                                     getString(R.string.play_toaster_tokonow_wording)
                                 )
                             } else if (event.product.isTokoNow && !partnerTokoNow) Triple(getString(R.string.play_add_to_cart_message_success_tokonow), ApplinkConstInternalMarketplace.CART, getString(R.string.play_toaster_tokonow_wording))
