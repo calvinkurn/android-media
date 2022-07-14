@@ -7,6 +7,7 @@ object TokoFoodAnalytics {
     const val KEY_DIMENSION_79 = "dimension79"
     const val KEY_CHECKOUT_OPTION = "checkout_option"
     const val KEY_CHECKOUT_STEP = "checkout_step"
+    const val KEY_SHOP_ID = "shop_id"
     const val KEY_SHOP_NAME = "shop_name"
     const val KEY_SHOP_ID = "shop_id"
     const val KEY_SHOP_TYPE = "shop_type"
@@ -14,6 +15,7 @@ object TokoFoodAnalytics {
     const val KEY_TRACKER_ID = "trackerId"
     const val KEY_ITEMS = "items"
     const val KEY_QUANTITY = "quantity"
+    const val KEY_TRACKER_ID = "trackerId"
 
     // Event Name
     const val EVENT_CHECKOUT_PROGRESS = "checkout_progress"
@@ -37,6 +39,8 @@ object TokoFoodAnalytics {
     const val EVENT_ACTION_VIEW_MERCHANT_LIST = "view on merchant list card"
     const val EVENT_ACTION_CLICK_OUT_COVERAGE = "click ubah alamat on error state out of coverage"
     const val EVENT_ACTION_CLICK_ORDER_MINICART = "click pesan on the minicart"
+
+    const val EVENT_CHECKOUT_OPTION_MINI_CART = "click pesan to checkout on tokofood minicart"
 
     // Event Category
     const val EVENT_CATEGORY_CHECKOUT_PAGE = "tokofood checkout page"

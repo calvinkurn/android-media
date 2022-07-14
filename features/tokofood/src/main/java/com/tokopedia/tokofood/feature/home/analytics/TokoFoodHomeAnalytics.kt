@@ -16,7 +16,7 @@ import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_VI
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_VIEW_CATEGORY_WIDGET
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_VIEW_LEGO_SIX
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants
-import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.ADD_TO_CART
+import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.BEGIN_CHECKOUT
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.EMPTY_DATA
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.GOFOOD_PAGENAME
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.HOME_PAGE
@@ -24,11 +24,13 @@ import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.IS_LOG
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.NO_PIN_POIN
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.OPEN_SCREEN
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.OUT_OF_COVERAGE
+import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.PRODUCT_ID
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.SCREEN_NAME
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.VIEW_ITEM
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
 import com.tokopedia.tokofood.feature.home.analytics.TokoFoodHomeCategoryCommonAnalytics.addGeneralTracker
 import com.tokopedia.tokofood.feature.home.analytics.TokoFoodHomeCategoryCommonAnalytics.getItemATC
+import com.tokopedia.tokofood.feature.home.analytics.TokoFoodHomeCategoryCommonAnalytics.getProductIds
 import com.tokopedia.tokofood.feature.home.analytics.TokoFoodHomeCategoryCommonAnalytics.getPromotionMerchant
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeLayoutType
 import com.tokopedia.tokofood.feature.home.domain.data.DynamicIcon
@@ -37,12 +39,17 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.builder.util.BaseTrackerConst
 import com.tokopedia.track.builder.util.BaseTrackerConst.Event.SELECT_CONTENT
+import com.tokopedia.track.constant.TrackerConstant
 
 /**
  * Home
  * https://mynakama.tokopedia.com/datatracker/requestdetail/view/3053 1 - 16
  */
 class TokoFoodHomeAnalytics: BaseTrackerConst() {
+
+    companion object {
+        private const val ATC_HOME_TRACKER_ID = "31290"
+    }
 
     fun clickLCAWidget(userId: String?, destinationId: String?) {
         val eventDataLayer = Bundle().apply {
@@ -183,8 +190,8 @@ class TokoFoodHomeAnalytics: BaseTrackerConst() {
         }
         val items = getItemATC(data)
         eventDataLayer.putParcelableArrayList(TokoFoodAnalytics.KEY_ITEMS, items)
-        eventDataLayer.addToCart(userId, destinationId)
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(ADD_TO_CART, eventDataLayer)
+        eventDataLayer.addToCart(userId, destinationId, data.shop.shopId, data)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(BEGIN_CHECKOUT, eventDataLayer)
     }
 
     private fun getPromotionItemIcon(data: List<DynamicIcon>, horizontalPosition: Int = -Int.ONE, verticalPosition: Int): ArrayList<Bundle> {
@@ -258,10 +265,15 @@ class TokoFoodHomeAnalytics: BaseTrackerConst() {
         return this
     }
 
-    private fun Bundle.addToCart(userId: String?, destinationId: String?): Bundle {
+    private fun Bundle.addToCart(userId: String?, destinationId: String?, shopId: String, data: CheckoutTokoFoodData): Bundle {
         addGeneralTracker(userId, destinationId)
-        this.putString(TrackAppUtils.EVENT, ADD_TO_CART)
+        this.putString(TrackAppUtils.EVENT, BEGIN_CHECKOUT)
         this.putString(TrackAppUtils.EVENT_CATEGORY, TokoFoodAnalytics.EVENT_CATEGORY_HOME_PAGE)
+        this.putString(TrackerConstant.SHOP_ID, shopId)
+        this.putString(PRODUCT_ID, getProductIds(data))
+        this.putString(TokoFoodAnalytics.KEY_TRACKER_ID, ATC_HOME_TRACKER_ID)
+        this.putString(TokoFoodAnalytics.KEY_CHECKOUT_STEP, TokoFoodAnalytics.CHECKOUT_STEP_1)
+        this.putString(TokoFoodAnalytics.KEY_CHECKOUT_OPTION, TokoFoodAnalytics.EVENT_CHECKOUT_OPTION_MINI_CART)
         return this
     }
 
