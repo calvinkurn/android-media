@@ -1,0 +1,30 @@
+{
+  "readme": "Home Nav click tokopedia plus subscriber and non subscriber",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "clickHomepage",
+      "eventAction": "click on gotoplus - subscriber",
+      "eventCategory": "global menu",
+      "eventLabel": "",
+      "trackerId": "33342",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "userId": ".*",
+      "sessionIris": ".*",
+      "clientId": ".*"
+    },
+    {
+      "event": "clickHomepage",
+      "eventAction": "click on gotoplus - non subscriber",
+      "eventCategory": "global menu",
+      "eventLabel": "",
+      "trackerId": "33341",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "userId": ".*",
+      "sessionIris": ".*",
+      "clientId": ".*"
+    }
+  ]
+}
