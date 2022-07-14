@@ -9,6 +9,7 @@
     <dimen name="feed_component_dp_0.5">0.5dp</dimen>
     <dimen name="feed_component_dp_10">10dp</dimen>
     <dimen name="feed_component_dp_14">14dp</dimen>
+    <dimen name="feed_component_dp_160">160dp</dimen>
     <dimen name="feed_component_dp_200">200dp</dimen>
     <dimen name="feed_component_dp_3">3dp</dimen>
     <dimen name="video_tab_slot_margin_dp_12">12dp</dimen>
