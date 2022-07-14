@@ -187,7 +187,7 @@
                         app:typographyType="body_2" />
 
                     <View
-                        android:layout_width="1dp"
+                        android:layout_width="@dimen/user_profile_dp_1"
                         android:layout_height="@dimen/unify_space_32"
                         android:background="@color/Unify_NN300"
                         app:layout_constraintBottom_toBottomOf="@id/text_content_label"
@@ -196,7 +196,7 @@
                         app:layout_constraintTop_toTopOf="@id/text_content_count" />
 
                     <View
-                        android:layout_width="1dp"
+                        android:layout_width="@dimen/user_profile_dp_1"
                         android:layout_height="@dimen/unify_space_32"
                         android:background="@color/Unify_NN300"
                         app:layout_constraintBottom_toBottomOf="@id/text_content_label"
@@ -299,7 +299,7 @@
                         <View
                             android:id="@+id/view_line"
                             android:layout_width="match_parent"
-                            android:layout_height="1dp"
+                            android:layout_height="@dimen/user_profile_dp_1"
                             android:layout_marginStart="0dp"
                             android:layout_marginTop="@dimen/unify_space_16"
                             android:layout_marginEnd="0dp"
