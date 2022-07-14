@@ -836,6 +836,14 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
     }
 
     private fun handleProgramValidateError(validationError: ValidationError?, couponType: String) {
+        view?.let { v ->
+            Toaster.build(
+                v,
+                "Cek dan pastikan semua informasi yang kamu isi sudah benar, ya.",
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR
+            ).show()
+        }
         when(couponType){
             PREMIUM -> {
                 customViewSingleCoupon?.setErrorMaxBenefit(validationError?.benefitMax?:"")
@@ -962,7 +970,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         val bottomSheetUnify = BottomSheetUnify()
         bottomSheetUnify.apply {
             setTitle(TERNS_AND_CONDITION)
-            showCloseIcon  = true
+            showCloseIcon = true
             isDragable = true
             setCloseClickListener {
                 dismiss()
@@ -971,27 +979,52 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         val ss = SpannableString(COUPON_TERMS_CONDITION)
         val clickableSpan: ClickableSpan = object : ClickableSpan() {
             override fun onClick(textView: View) {
-                RouteManager.route(context,String.format("%s?url=%s", ApplinkConst.WEBVIEW, TM_TNC))
+                RouteManager.route(
+                    context,
+                    String.format("%s?url=%s", ApplinkConst.WEBVIEW, TM_TNC)
+                )
             }
+
             override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
                 ds.isUnderlineText = false
             }
         }
         val firstIndex = COUPON_TERMS_CONDITION.indexOf(TERMS)
-        ss.setSpan(clickableSpan, firstIndex, firstIndex  + TERNS_AND_CONDITION.length , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        ss.setSpan(
+            clickableSpan,
+            firstIndex,
+            firstIndex + TERNS_AND_CONDITION.length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
 
         tvTermsAndCondition.text = ss
         tvTermsAndCondition.movementMethod = LinkMovementMethod.getInstance()
         tvTermsAndCondition.highlightColor = Color.TRANSPARENT
-        if(fromEdit){
+        if (fromEdit) {
             btnContinue.text = "Ubah Kupon"
         }
         btnContinue.setOnClickListener {
-            it.isEnabled = false
-            it.isClickable = false
-            couponPremiumData = customViewSingleCoupon?.getSingleCouponData()
-            preValidateCouponPremium(couponPremiumData)
+            tmCouponStartTimeUnix?.timeInMillis?.let { start ->
+                tmCouponEndTimeUnix?.timeInMillis?.let { end ->
+                    if (start < end) {
+                        it.isEnabled = false
+                        it.isClickable = false
+                        couponPremiumData = customViewSingleCoupon?.getSingleCouponData()
+                        preValidateCouponPremium(couponPremiumData)
+                    }
+                    else{
+                        view?.let { v ->
+                            Toaster.build(
+                                v,
+                                "Pengaturan tidak disimpan. Pastikan tanggal berakhir tidak mendahului tanggal mulai.",
+                                Toaster.LENGTH_LONG,
+                                Toaster.TYPE_ERROR
+                            ).show()
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -1093,6 +1126,43 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                         }
                         todayCalendar.set(Calendar.SECOND,0)
 
+                        val maxProgramEndDate = GregorianCalendar(context?.let {
+                            LocaleUtils.getCurrentLocale(
+                                it
+                            )
+                        })
+                        maxProgramEndDate.add(Calendar.YEAR, 1)
+                        val endDate = GregorianCalendar(com.tokopedia.tokomember_seller_dashboard.util.locale)
+                        val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, com.tokopedia.tokomember_seller_dashboard.util.locale)
+                        endDate.time = sdf.parse(programData?.timeWindow?.endTime + "00") ?: Date()
+                        if (endDate > maxProgramEndDate) {
+                            tmCouponEndTimeUnix?.time = TmDateUtil.convertDateTimeRemoveTimeDiff(maxProgramEndDate.time).toDate(SIMPLE_DATE_FORMAT)
+                            tmCouponEndDateUnix?.time = TmDateUtil.convertDateTimeRemoveTimeDiff(maxProgramEndDate.time).toDate(SIMPLE_DATE_FORMAT)
+
+                            textFieldProgramEndDate.editText.setText("${tmCouponEndDateUnix?.get(Calendar.DAY_OF_WEEK)?.let {
+                                getDayOfWeekID(it)
+                            }}, ${
+                                tmCouponEndDateUnix?.let {
+                                    TmDateUtil.getDateFromUnix(
+                                        it
+                                    )
+                                }?.let { TmDateUtil.setDatePreview(it, DATE_FORMAT) }
+                            }")
+                            textFieldProgramEndTime.editText.setText(tmCouponEndDateUnix?.time?.let { TmDateUtil.convertDateTime(it) }?.let {
+                                TmDateUtil.setTime(
+                                    it
+                                )
+                            })
+
+                        } else {
+                            val cal = GregorianCalendar(context?.let { LocaleUtils.getCurrentLocale(it) })
+                            cal.time = programData?.timeWindow?.endTime.toString().toDate(SIMPLE_DATE_FORMAT)
+                            tmCouponEndTimeUnix = cal
+                            tmCouponEndDateUnix = cal
+                            textFieldProgramEndDate.editText.setText("${TmDateUtil.getDayFromTimeWindow(programData?.timeWindow?.endTime.toString())}, ${TmDateUtil.setDatePreview(programData?.timeWindow?.endTime.toString())}")
+                            textFieldProgramEndTime.editText.setText(TmDateUtil.setTime(programData?.timeWindow?.endTime.toString()))
+                        }
+
                         val todayDate = TmDateUtil.setDatePreview(TmDateUtil.getDateFromUnix(todayCalendar), DATE_FORMAT)
                         val day = getDayOfWeekID(todayCalendar.get(Calendar.DAY_OF_WEEK))
                         textFieldProgramStartDate.editText.setText("$day, $todayDate")
@@ -1103,10 +1173,6 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                         textFieldProgramEndTime.editText.setText(TmDateUtil.setTime(programData?.timeWindow?.endTime.toString()))
                         tmCouponStartDateUnix = todayCalendar
                         tmCouponStartTimeUnix = todayCalendar
-                        val cal = GregorianCalendar(context?.let { LocaleUtils.getCurrentLocale(it) })
-                        cal.time = programData?.timeWindow?.endTime.toString().toDate(SIMPLE_DATE_FORMAT)
-                        tmCouponEndTimeUnix = cal
-                        tmCouponEndDateUnix = cal
                     }
                     else {
                         val calStart = GregorianCalendar(context?.let { LocaleUtils.getCurrentLocale(it) })
