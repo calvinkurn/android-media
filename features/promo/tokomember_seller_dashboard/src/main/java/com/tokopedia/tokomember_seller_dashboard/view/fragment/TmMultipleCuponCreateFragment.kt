@@ -857,7 +857,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         tvTermsAndCondition.movementMethod = LinkMovementMethod.getInstance()
         tvTermsAndCondition.highlightColor = Color.TRANSPARENT
         btnContinue.setOnClickListener {
-            if (getTimeInMillis(couponStartDate) > getTimeInMillis(couponEndDate)) {
+            if (getTimeInMillis(updatedStartTimeCoupon) > getTimeInMillis(updatedEndTimeCoupon)) {
                 view?.let { it1 -> Toaster.build(it1,"Pengaturan tidak disimpan. Pastikan tanggal berakhir tidak mendahului tanggal mulai.",Toaster.LENGTH_LONG,Toaster.TYPE_ERROR).show() }
             } else {
                 if (arguments?.getInt(BUNDLE_CREATE_SCREEN_TYPE) == CreateScreenType.COUPON_MULTIPLE_BUAT) {
