@@ -4,12 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.shop.flashsale.common.tracker.ShopFlashSaleTracker
 import com.tokopedia.shop.flashsale.domain.entity.CampaignDetailMeta
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.MerchantCampaignTNC
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.ShareComponent
 import com.tokopedia.shop.flashsale.domain.entity.enums.isActive
+import com.tokopedia.shop.flashsale.domain.entity.enums.isOngoing
 import com.tokopedia.shop.flashsale.domain.usecase.aggregate.GenerateCampaignBannerUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.aggregate.GetCampaignDetailMetaUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.aggregate.GetShareComponentMetadataUseCase
@@ -133,6 +135,15 @@ class CampaignDetailViewModel @Inject constructor(
         } else if (campaignData.status.isActive()) {
             _cancelCampaignActionResult.value =
                 CancelCampaignActionResult.ActionAllowed(campaignData)
+            recordCancellationEvent(campaignData)
+        }
+    }
+
+    private fun recordCancellationEvent(campaign: CampaignUiModel) {
+        if (campaign.status.isOngoing()) {
+            tracker.sendClickStopCampaignEvent(campaign)
+        } else {
+            tracker.sendClickCancelCampaignEvent(campaign)
         }
     }
 

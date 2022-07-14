@@ -138,6 +138,7 @@ class ManageProductFragment : BaseDaggerFragment() {
                 }
             }
             btnContinue.setOnClickListener {
+                viewModel.onButtonProceedTapped()
                 context?.let { it1 -> ManageHighlightedProductActivity.start(it1, campaignId) }
             }
         }

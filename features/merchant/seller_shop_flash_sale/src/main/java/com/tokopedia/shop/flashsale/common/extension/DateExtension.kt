@@ -10,10 +10,14 @@ import java.util.concurrent.TimeUnit
 
 private const val ONE_MONTH_OFFSET = 1
 
-fun Date.formatTo(desiredOutputFormat: String, locale: Locale = LocaleConstant.INDONESIA): String {
+fun Date.formatTo(
+    desiredOutputFormat: String,
+    locale: Locale = LocaleConstant.INDONESIA,
+    timeZone: TimeZone = TimeZone.getTimeZone("GMT")
+): String {
     return try {
         val outputFormat = SimpleDateFormat(desiredOutputFormat, locale)
-        outputFormat.timeZone = TimeZone.getTimeZone("GMT")
+        outputFormat.timeZone = timeZone
         val output = outputFormat.format(this)
         output
     } catch (e: Exception) {
