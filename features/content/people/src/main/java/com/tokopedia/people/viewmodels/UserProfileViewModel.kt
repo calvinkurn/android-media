@@ -91,7 +91,7 @@ class UserProfileViewModel @AssistedInject constructor(
     private val _followInfo = MutableStateFlow(FollowInfoUiModel.Empty)
     private val _profileWhitelist = MutableStateFlow(ProfileWhitelistUiModel.Empty)
     private val _profileType = MutableStateFlow(ProfileType.Unknown)
-    private val _shopRecomContent = MutableStateFlow(listOf<ShopRecomUiModelItem>())
+    private val _shopRecom = MutableStateFlow(listOf<ShopRecomUiModelItem>())
 
     private val _uiEvent = MutableSharedFlow<UserProfileUiEvent>()
 
@@ -103,7 +103,7 @@ class UserProfileViewModel @AssistedInject constructor(
         _followInfo,
         _profileType,
         _profileWhitelist,
-        _shopRecomContent,
+        _shopRecom,
     ) { profileInfo, followInfo, profileType, profileWhitelist, shopRecom ->
         UserProfileUiState(
             profileInfo = profileInfo,
@@ -150,14 +150,15 @@ class UserProfileViewModel @AssistedInject constructor(
         })
     }
 
-    private suspend fun handleLoadShopRecom() {
+    private suspend fun loadShopRecom() {
         val result = repo.getShopRecom()
-        if (result.isShown) _shopRecomContent.emit(result.items)
+        if (result.isShown) _shopRecom.emit(result.items)
+        else _shopRecom.emit(emptyList())
     }
 
     private fun handleClickFollowButton(isFromLogin: Boolean) {
         viewModelScope.launchCatchError(block = {
-            if (isFromLogin) loadProfileInfo(true)
+            if (isFromLogin) loadProfileInfo(false)
 
             val followInfo = _followInfo.value
 
@@ -227,7 +228,7 @@ class UserProfileViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
 
             val followInfo = _followInfo.value
-            val currItem = _shopRecomContent.value.find { it.id == itemID } ?: return@launchCatchError
+            val currItem = _shopRecom.value.find { it.id == itemID } ?: return@launchCatchError
 
             val result = if (currItem.isFollow) repo.unFollowProfile(currItem.encryptedID)
             else repo.followProfile(currItem.encryptedID)
@@ -235,8 +236,8 @@ class UserProfileViewModel @AssistedInject constructor(
             when (result) {
                 is MutationUiModel.Success -> {
                     _profileInfo.update { repo.getProfile(followInfo.userID) }
-                    _shopRecomContent.update {
-                        _shopRecomContent.value.map {
+                    _shopRecom.update {
+                        _shopRecom.value.map {
                             if (itemID == it.id) it.copy(isFollow = !it.isFollow)
                             else it
                         }
@@ -252,7 +253,7 @@ class UserProfileViewModel @AssistedInject constructor(
     }
 
     private fun handleremoveShopRecomItem(itemID: Long) {
-        _shopRecomContent.update { _shopRecomContent.value.filterNot { it.id == itemID } }
+        _shopRecom.update { _shopRecom.value.filterNot { it.id == itemID } }
     }
 
     /** Helper */
@@ -286,7 +287,7 @@ class UserProfileViewModel @AssistedInject constructor(
 
         if (profileType == ProfileType.Self) {
             _profileWhitelist.update { repo.getWhitelist() }
-            handleLoadShopRecom()
+            loadShopRecom()
         }
 
         /**
