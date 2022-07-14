@@ -1,0 +1,26 @@
+package com.tokopedia.campaign.utils.extension
+
+import com.tokopedia.campaign.utils.constant.LocaleConstant
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.TimeZone
+
+
+fun String.toDate(inputFormat: String, timeZone: TimeZone = TimeZone.getTimeZone("GMT")): Date {
+    return try {
+        val format = SimpleDateFormat(inputFormat, LocaleConstant.INDONESIA)
+        format.timeZone = timeZone
+        format.parse(this) ?: Date()
+    } catch (e: Exception) {
+        e.printStackTrace()
+        Date()
+    }
+}
+
+fun String.digitsOnly(): Long {
+    return try {
+        this.filter { it.isDigit() }.toLong()
+    } catch (e: Exception) {
+        0
+    }
+}
