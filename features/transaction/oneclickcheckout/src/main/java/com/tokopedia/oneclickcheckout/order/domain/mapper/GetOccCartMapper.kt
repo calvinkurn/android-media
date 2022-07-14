@@ -174,6 +174,8 @@ class GetOccCartMapper @Inject constructor() {
             isPreOrder = product.isPreOrder
             categoryId = product.categoryId
             category = product.category
+            lastLevelCategory = product.lastLevelCategory
+            categoryIdentifier = product.categoryIdentifier
             campaignId = product.campaignId
             productFinsurance = product.productFinsurance
             isSlashPrice = product.productOriginalPrice > product.productPrice
@@ -233,6 +235,7 @@ class GetOccCartMapper @Inject constructor() {
                 cityName = address.cityName,
                 provinceId = address.provinceId,
                 provinceName = address.provinceName,
+                country = address.country,
                 phone = address.phone,
                 longitude = address.longitude,
                 latitude = address.latitude,
