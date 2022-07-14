@@ -720,7 +720,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
              */
             try {
                 launch {
-                    val homeFlagResponse = homeFlagRepository.getRemoteData()
+                    val homeFlagResponse = homeFlagRepository.getCachedData()
                     homeFlagResponse.homeFlag.let {
                         homeData.homeFlag = homeFlagResponse.homeFlag
                     }
