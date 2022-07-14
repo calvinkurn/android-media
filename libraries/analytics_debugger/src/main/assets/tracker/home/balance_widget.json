@@ -41,7 +41,7 @@
       "eventAction": "click on gopay section - gopaypoints",
       "eventCategory": "homepage-tokopoints",
       "eventLabel": "",
-      "balancePoints": "{info value gopay section balance widget}",
+      "balancePoints": ".*",
       "businessUnit": "home & browse",
       "currentSite": "tokopediamarketplace",
       "userId": ".*",

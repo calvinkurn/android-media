@@ -112,8 +112,8 @@ class BalanceViewHolder(v: View) : RecyclerView.ViewHolder(v) {
                         )
                     },
                     walletAppAction = {
-                        OvoWidgetTracking.sendClickOnNewWalletAppBalanceWidgetTracker(
-                            subtitle = element.balanceSubTitleTextAttribute?.text ?: "",
+                        OvoWidgetTracking.sendClickGopayLinkedWidgetTracker(
+                            balancePoints = element.balanceSubTitleTextAttribute?.text ?: "",
                             userId = listener?.userId ?: ""
                         )
                         listener?.onSectionItemClicked(element.redirectUrl)
