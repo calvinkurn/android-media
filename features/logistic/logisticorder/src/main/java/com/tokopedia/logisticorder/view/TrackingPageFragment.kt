@@ -35,6 +35,7 @@ import com.tokopedia.logisticorder.utils.TippingConstant.REFUND_TIP
 import com.tokopedia.logisticorder.utils.TippingConstant.SUCCESS_PAYMENT
 import com.tokopedia.logisticorder.utils.TippingConstant.SUCCESS_TO_GOJEK
 import com.tokopedia.logisticorder.utils.TippingConstant.WAITING_PAYMENT
+import com.tokopedia.logisticorder.utils.isHypen
 import com.tokopedia.logisticorder.utils.toHyphenIfEmptyOrNull
 import com.tokopedia.logisticorder.view.bottomsheet.DriverInfoBottomSheet
 import com.tokopedia.logisticorder.view.bottomsheet.DriverTippingBottomSheet
@@ -161,7 +162,7 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
 
     private fun populateView(trackingDataModel: TrackingDataModel) {
         val model = trackingDataModel.trackOrder
-        binding?.referenceNumber?.text = model.shippingRefNum
+        binding?.referenceNumber?.text = model.shippingRefNum.toHyphenIfEmptyOrNull()
         setDeliveryDate(model.detail.sendDate)
         binding?.storeName?.text = model.detail.shipperName.toHyphenIfEmptyOrNull()
         binding?.storeAddress?.text = model.detail.shipperCity.toHyphenIfEmptyOrNull()
@@ -176,7 +177,7 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
         setEmptyHistoryView(model)
         setLiveTrackingButton(model)
         setTicketInfoCourier(trackingDataModel.page)
-        initClickToCopy(model.shippingRefNum)
+        initClickToCopy(model.shippingRefNum.toHyphenIfEmptyOrNull())
     }
 
     private fun setDeliveryDate(sendDate: String) {
@@ -555,9 +556,16 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
     }
 
     private fun initClickToCopy(referenceNumber: String) {
-        binding?.maskTriggerReferenceNumber?.setOnClickListener {
-            onTextCopied(getString(R.string.label_copy_reference_number), referenceNumber)
+
+        if (referenceNumber.isHypen()) {
+            binding?.referenceNumberCopy?.visibility = View.GONE
+        }else{
+            binding?.maskTriggerReferenceNumber?.setOnClickListener {
+                onTextCopied(getString(R.string.label_copy_reference_number), referenceNumber)
+            }
         }
+
+
     }
 
     private fun onTextCopied(label: String, str: String) {

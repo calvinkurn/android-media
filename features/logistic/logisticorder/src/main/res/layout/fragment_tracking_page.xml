@@ -45,7 +45,7 @@
                 tools:text="486118" />
 
             <com.tokopedia.iconunify.IconUnify
-                android:id="@+id/booking_code_copy"
+                android:id="@+id/reference_number_copy"
                 android:layout_width="@dimen/layout_lvl2"
                 android:layout_height="@dimen/layout_lvl2"
                 android:layout_marginStart="@dimen/spacing_lvl2"
@@ -63,7 +63,7 @@
                 android:background="?android:selectableItemBackground"
                 android:hapticFeedbackEnabled="true"
                 app:layout_constraintBottom_toBottomOf="@id/reference_number"
-                app:layout_constraintEnd_toEndOf="@id/booking_code_copy"
+                app:layout_constraintEnd_toEndOf="@id/reference_number_copy"
                 app:layout_constraintStart_toStartOf="@id/reference_number"
                 app:layout_constraintTop_toTopOf="@id/reference_number" />
 
