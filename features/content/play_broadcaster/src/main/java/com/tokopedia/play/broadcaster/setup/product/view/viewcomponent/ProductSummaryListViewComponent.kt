@@ -22,7 +22,7 @@ internal class ProductSummaryListViewComponent(
         }
 
         override fun onPinProductClicked(product: ProductUiModel) {
-            //TODO("Not yet implemented")
+            listener.onPinProductClicked(product)
         }
     })
 
@@ -51,5 +51,6 @@ internal class ProductSummaryListViewComponent(
 
     interface Listener {
         fun onProductDeleteClicked(product: ProductUiModel)
+        fun onPinProductClicked(product: ProductUiModel)
     }
 }

@@ -25,7 +25,7 @@ class ProductTagViewComponent(
 
     private val viewHolderListener = object : ProductCarouselViewHolder.Product.Listener{
         override fun onPinProductClicked(product: ProductUiModel) {
-            //TODO("Not yet implemented")
+            listener.onPinProductClicked(product)
         }
     }
 
@@ -101,5 +101,6 @@ class ProductTagViewComponent(
     interface Listener {
         fun impressProductTag(view: ProductTagViewComponent)
         fun scrollProductTag(view: ProductTagViewComponent, product: ProductUiModel, position: Int)
+        fun onPinProductClicked(product: ProductUiModel)
     }
 }
