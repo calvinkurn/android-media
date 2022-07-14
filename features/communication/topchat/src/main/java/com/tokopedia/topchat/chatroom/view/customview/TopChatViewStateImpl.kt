@@ -230,6 +230,14 @@ open class TopChatViewStateImpl constructor(
             hideChatMenu()
             fragmentView?.collapseSrw()
         }
+
+        /**
+         * Keyboard Handler for new SRW & Tab Design menu
+         */
+        if (chatTextAreaTabLayout?.chatMenu?.isKeyboardOpened == false) {
+            chatTextAreaTabLayout?.chatMenu?.isKeyboardOpened = true
+            chatTextAreaTabLayout?.chatMenu?.hideMenu()
+        }
     }
 
     override fun onKeyboardClosed() {
@@ -238,6 +246,19 @@ open class TopChatViewStateImpl constructor(
             fragmentView?.expandSrw()
             showChatMenu()
         }
+
+        /**
+         * Keyboard Handler for new SRW & Tab Design menu
+         */
+        if (chatTextAreaTabLayout?.chatMenu?.isKeyboardOpened == true) {
+            chatTextAreaTabLayout?.chatMenu?.isKeyboardOpened = false
+            chatTextAreaTabLayout?.chatMenu?.showMenuDelayed()
+        }
+    }
+
+    override fun clearEditText() {
+        super.clearEditText()
+        chatTextAreaTabLayout?.replyEditText?.setText("")
     }
 
     override fun isKeyboardOpen(): Boolean {

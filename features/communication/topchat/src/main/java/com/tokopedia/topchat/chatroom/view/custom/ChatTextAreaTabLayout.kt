@@ -37,7 +37,7 @@ class ChatTextAreaTabLayout: ConstraintLayout {
     var tabReplyBox: View? = null
     private var textTabReplyBox: Typography? = null
     private var replyBoxLayout : ComposeMessageAreaConstraintLayout? = null
-    private var replyEditText: EditText? = null
+    var replyEditText: EditText? = null
     private var sendButton: IconUnify? = null
 
     /**
@@ -134,15 +134,21 @@ class ChatTextAreaTabLayout: ConstraintLayout {
 
     private fun initListener() {
         tabSRW?.setOnClickListener {
-            tabState = TabLayoutActiveStatus.SRW
-            updateTab(it)
-            chatMenu?.hideKeyboard()
+            onTabSrwActive(it)
         }
         tabReplyBox?.setOnClickListener {
             tabState = TabLayoutActiveStatus.ReplyBox
             updateTab(it)
             replyEditText?.requestFocus()
             chatMenu?.showKeyboard(replyEditText)
+        }
+    }
+
+    private fun onTabSrwActive(tabSrw: View?) {
+        tabSrw?.let {
+            tabState = TabLayoutActiveStatus.SRW
+            updateTab(it)
+            chatMenu?.hideKeyboard()
         }
     }
 
@@ -251,6 +257,10 @@ class ChatTextAreaTabLayout: ConstraintLayout {
         needToUpdate: List<StickerGroup> = emptyList()
     ) {
         chatMenu?.stickerMenu?.updateStickers(stickers, needToUpdate)
+    }
+
+    fun resetTab() {
+        onTabSrwActive(tabSRW)
     }
 
     internal enum class TabLayoutActiveStatus {

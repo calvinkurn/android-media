@@ -259,7 +259,7 @@ abstract class BaseChatViewStateImpl(
         return (recyclerView.adapter as BaseChatAdapter).getList()
     }
 
-    fun clearEditText() {
+    open fun clearEditText() {
         replyEditText.setText("")
     }
 

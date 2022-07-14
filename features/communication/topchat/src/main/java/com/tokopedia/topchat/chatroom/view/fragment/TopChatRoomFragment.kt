@@ -1551,6 +1551,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun removeSrwPreview() {
         handleSrw(onNewDesign = {
             topchatViewState?.chatTextAreaTabLayout?.srwLayout?.hideSrw()
+            topchatViewState?.chatTextAreaTabLayout?.resetTab()
         }, onOldDesign = {
             rvSrw?.hideSrw()
         })
