@@ -22,7 +22,7 @@ internal class ProductSummaryListViewComponent(
         }
 
         override fun onPinProductClicked(product: ProductUiModel) {
-            TODO("Not yet implemented")
+            //TODO("Not yet implemented")
         }
     })
 

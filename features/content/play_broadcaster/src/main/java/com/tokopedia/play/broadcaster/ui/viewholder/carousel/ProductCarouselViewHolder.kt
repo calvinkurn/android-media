@@ -19,10 +19,11 @@ import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 /**
  * Created by kenny.hadisaputra on 09/02/22
  */
-internal class ProductCarouselViewHolder private constructor() {
+class ProductCarouselViewHolder private constructor() {
 
     class Product(
         private val binding: ItemPlayBroProductCarouselBinding,
+        private val listener: Listener,
     ) : RecyclerView.ViewHolder(binding.root) {
 
         private val context: Context
@@ -72,18 +73,26 @@ internal class ProductCarouselViewHolder private constructor() {
 
             binding.viewPinProduct.root.showWithCondition(item.pinStatus.canPin)
             binding.viewPinProduct.ivLoaderPin.showWithCondition(item.pinStatus.isLoading)
+            binding.viewPinProduct.root.setOnClickListener {
+                listener.onPinProductClicked(item)
+            }
         }
 
         companion object {
-            fun create(parent: ViewGroup): Product {
+            fun create(parent: ViewGroup, listener: Listener): Product {
                 return Product(
                     ItemPlayBroProductCarouselBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent,
                         false,
-                    )
+                    ),
+                    listener
                 )
             }
+        }
+
+        interface Listener {
+            fun onPinProductClicked(product: ProductUiModel)
         }
     }
 
