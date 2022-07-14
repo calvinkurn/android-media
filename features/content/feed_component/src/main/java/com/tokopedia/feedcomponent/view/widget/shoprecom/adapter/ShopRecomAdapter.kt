@@ -15,7 +15,7 @@ class ShopRecomAdapter(
     private val shopRecomCallback: ShopRecommendationCallback
 ) : RecyclerView.Adapter<ShopRecomViewHolder>(), ShopRecommendationCallback {
 
-    private var shopRecomItem = mutableListOf<ShopRecomUiModelItem>()
+    private val shopRecomItem = mutableListOf<ShopRecomUiModelItem>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopRecomViewHolder {
         return ShopRecomViewHolder(ShopRecomView(parent.context), shopRecomCallback)
