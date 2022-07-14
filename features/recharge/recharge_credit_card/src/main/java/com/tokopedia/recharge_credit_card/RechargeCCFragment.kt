@@ -535,17 +535,59 @@ class RechargeCCFragment :
     }
 
     override fun onShowFilterChip(isLabeled: Boolean) {
-        // do nothing
+        if (isLabeled) {
+            creditCardAnalytics.impressionFavoriteContactChips(
+                rechargeCCViewModel.categoryName,
+                rechargeCCViewModel.loyaltyStatus,
+                userSession.userId
+            )
+        } else {
+            creditCardAnalytics.impressionFavoriteNumberChips(
+                rechargeCCViewModel.categoryName,
+                rechargeCCViewModel.loyaltyStatus,
+                userSession.userId
+            )
+        }
     }
 
     override fun onClickFilterChip(isLabeled: Boolean, favorite: RechargeClientNumberChipModel) {
         token = favorite.token
+        if (isLabeled) {
+            creditCardAnalytics.clickFavoriteContactChips(
+                rechargeCCViewModel.categoryName,
+                rechargeCCViewModel.creditCardSelected.value?.prefixName ?: "",
+                rechargeCCViewModel.loyaltyStatus,
+                userSession.userId,
+            )
+        } else {
+            creditCardAnalytics.clickFavoriteNumberChips(
+                rechargeCCViewModel.categoryName,
+                rechargeCCViewModel.creditCardSelected.value?.prefixName ?: "",
+                rechargeCCViewModel.loyaltyStatus,
+                userSession.userId
+            )
+        }
     }
     //endregion
 
     //region AutoCompleteListener
     override fun onClickAutoComplete(favorite: TopupBillsAutoCompleteContactModel) {
         token = favorite.token
+        if (favorite.name.isNotEmpty()) {
+            creditCardAnalytics.clickFavoriteContactAutoComplete(
+                rechargeCCViewModel.categoryName,
+                rechargeCCViewModel.creditCardSelected.value?.prefixName ?: "",
+                rechargeCCViewModel.loyaltyStatus,
+                userSession.userId
+            )
+        } else {
+            creditCardAnalytics.clickFavoriteNumberAutoComplete(
+                rechargeCCViewModel.categoryName,
+                rechargeCCViewModel.creditCardSelected.value?.prefixName ?: "",
+                rechargeCCViewModel.loyaltyStatus,
+                userSession.userId
+            )
+        }
     }
     //endregion
 
