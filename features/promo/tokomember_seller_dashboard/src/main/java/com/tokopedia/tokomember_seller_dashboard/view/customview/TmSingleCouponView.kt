@@ -162,9 +162,9 @@ class TmSingleCouponView @JvmOverloads constructor(
             tmSingleCouponData.cashBackPercentage =
                 textFieldPercentCashback.editText.text.toString().toIntSafely()
         }
-        if(isShowCashPercentage && tmSingleCouponData.cashBackPercentage == 0){
-            tmSingleCouponData.cashBackPercentage = PERCENTAGE_DEFAULT.toInt()
-        }
+//        if(isShowCashPercentage && tmSingleCouponData.cashBackPercentage == 0){
+//            tmSingleCouponData.cashBackPercentage = PERCENTAGE_DEFAULT.toInt()
+//        }
         return tmSingleCouponData
     }
 

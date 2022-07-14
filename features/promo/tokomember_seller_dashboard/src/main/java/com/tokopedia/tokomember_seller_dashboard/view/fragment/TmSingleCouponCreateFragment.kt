@@ -364,8 +364,16 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                         tokomemberDashCreateViewModel.validateProgram(prefManager?.shopId.toString(), startTime, endTime,"")
                     }
                     else {
+                        view?.let { v ->
+                            Toaster.build(
+                                v,
+                                "Cek dan pastikan semua informasi yang kamu isi sudah benar, ya.",
+                                Toaster.LENGTH_LONG,
+                                Toaster.TYPE_ERROR
+                            ).show()
+                        }
                         closeLoadingDialog()
-                        handleProgramValidateError(it.data?.voucherValidationPartial?.data?.validationError,"premium")
+                        handleProgramValidateError(it.data?.voucherValidationPartial?.data?.validationError, PREMIUM)
                         setButtonState()
                     }
                 }
@@ -1105,14 +1113,25 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                         val calEnd = GregorianCalendar(context?.let { LocaleUtils.getCurrentLocale(it) })
 
                         val currentDate = GregorianCalendar(com.tokopedia.tokomember_seller_dashboard.util.locale)
-                        val currentTime = currentDate.get(Calendar.HOUR_OF_DAY)
-                        if(currentTime>=21) {
-                            val currentStartDate = GregorianCalendar(com.tokopedia.tokomember_seller_dashboard.util.locale)
-                            val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT,
-                                com.tokopedia.tokomember_seller_dashboard.util.locale
-                            )
-                            currentStartDate.time = sdf.parse(programData?.timeWindow?.startTime ?: "" + "00") ?: Date()
-                            currentStartDate.add(Calendar.HOUR,3)
+                        val currentHour = currentDate.get(Calendar.HOUR_OF_DAY)
+                        val minuteCurrent = currentDate.get(Calendar.MINUTE)
+                        val currentStartDate = GregorianCalendar(com.tokopedia.tokomember_seller_dashboard.util.locale)
+                        val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT,
+                            com.tokopedia.tokomember_seller_dashboard.util.locale
+                        )
+                        currentStartDate.time = sdf.parse(programData?.timeWindow?.startTime ?: "" + "00") ?: Date()
+                        if (currentHour >= 20 && checkYesterday(currentDate, currentStartDate)) {
+                            currentStartDate.set(Calendar.HOUR,currentHour)
+                            currentStartDate.set(Calendar.MINUTE,0)
+                            currentStartDate.add(Calendar.HOUR,4)
+                            if (minuteCurrent <= 30) {
+                                currentStartDate.set(Calendar.MINUTE, 30)
+                            }
+                            else {
+                                currentStartDate.add(Calendar.HOUR_OF_DAY, 1)
+                                currentStartDate.set(Calendar.MINUTE, 0)
+                            }
+                            currentStartDate.set(Calendar.SECOND,0)
                             tmCouponStartDateUnix = currentStartDate
                             tmCouponStartTimeUnix = currentStartDate
                             textFieldProgramStartDate.editText.setText("${TmDateUtil.getDayFromTimeWindow(programData?.timeWindow?.startTime.toString())}, ${TmDateUtil.setDatePreview(TmDateUtil.convertDateTimeRemoveTimeDiff(currentStartDate.time))}")
@@ -1178,6 +1197,11 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
 
     }
 
+    private fun checkYesterday(calendarToday: Calendar, calendarProgram: Calendar): Boolean {
+        return calendarToday.get(Calendar.YEAR) == calendarProgram.get(Calendar.YEAR)
+                && calendarToday.get(Calendar.DAY_OF_YEAR) == calendarProgram.get(Calendar.DAY_OF_YEAR) - 1
+    }
+
     private fun renderSingleCoupon() {
         tvLevelMember.show()
         chipGroupLevel.show()
@@ -1234,8 +1258,12 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
             }
             val calendarMax = GregorianCalendar(LocaleUtils.getCurrentLocale(it))
             calendarMax.time = defaultCalendar.time
-            if(tmCouponStartDateUnix != null){
+            if(tmCouponStartDateUnix != null && type == 0){
                 defaultCalendar.time = tmCouponStartDateUnix?.time
+                calendarMax.time = defaultCalendar.time
+            }
+            if(tmCouponEndTimeUnix != null && type == 1){
+                defaultCalendar.time = tmCouponEndTimeUnix?.time
                 calendarMax.time = defaultCalendar.time
             }
             calendarMax.add(Calendar.YEAR, 1)
