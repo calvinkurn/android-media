@@ -4,6 +4,8 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.feedcomponent.R.string.btn_text_follow
 import com.tokopedia.feedcomponent.R.string.btn_text_following
 import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
@@ -67,6 +69,11 @@ class ShopRecomView : FrameLayout {
                 data.isFollow
             )
         }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun onDestroy() {
+        mListener = null
     }
 
 }
