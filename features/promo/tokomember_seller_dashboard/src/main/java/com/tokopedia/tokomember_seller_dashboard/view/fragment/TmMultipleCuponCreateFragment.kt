@@ -47,7 +47,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.convertDateTime
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.getDayOfWeekID
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.getTimeInMillis
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDatePreview
-import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setTimeStart
+import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setTime
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TmCouponListItemPreview
 import com.tokopedia.tokomember_seller_dashboard.view.animation.TmExpandView.collapse
@@ -660,14 +660,16 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
             }
             else -> {
                 val currentDate = GregorianCalendar(locale)
-                val currentTime = currentDate.get(Calendar.HOUR_OF_DAY)
+                val currentHour = currentDate.get(Calendar.HOUR_OF_DAY)
+                val minuteCurrent = currentDate.get(Calendar.MINUTE)
                 val currentStartDate = GregorianCalendar(locale)
                 val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
                 currentStartDate.time = sdf.parse(timeWindow?.startTime ?: "" + "00") ?: Date()
                 manualStartTimeProgram =
-                    if (currentTime >= 20 && checkSameDate(currentDate, currentStartDate)) {
+                    if (currentHour >= 20 && checkYesterDay(currentDate, currentStartDate)) {
+                        currentStartDate.set(Calendar.HOUR,currentHour)
+                        currentStartDate.set(Calendar.MINUTE,0)
                         currentStartDate.add(Calendar.HOUR,4)
-                        val minuteCurrent = currentStartDate.get(Calendar.MINUTE)
                         if (minuteCurrent <= 30) {
                             currentStartDate.set(Calendar.MINUTE, 30)
                         } else {
@@ -686,9 +688,9 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         updatedEndTimeCoupon = manualEndTimeProgram
     }
 
-    private fun checkSameDate(calendarToday: Calendar, calendarProgram: Calendar): Boolean {
+    private fun checkYesterDay(calendarToday: Calendar, calendarProgram: Calendar): Boolean {
         return calendarToday.get(Calendar.YEAR) == calendarProgram.get(Calendar.YEAR)
-                && calendarToday.get(Calendar.DAY_OF_YEAR) == calendarProgram.get(Calendar.DAY_OF_YEAR)
+                && calendarToday.get(Calendar.DAY_OF_YEAR) == calendarProgram.get(Calendar.DAY_OF_YEAR) - 1
     }
 
     private fun initTotalTransactionAmount() {
@@ -950,7 +952,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         textFieldProgramEndTime.setFirstIcon(R.drawable.tm_dash_clock)
 
         textFieldProgramStartDate.iconContainer.setOnClickListener {
-            clickDatePicker(textFieldProgramStartDate, 0 , DATE_TITLE , DATE_DESC,manualStartTimeProgram)
+            clickDatePicker(textFieldProgramStartDate, 0 , DATE_TITLE , DATE_DESC)
         }
 
         textFieldProgramStartTime.iconContainer.setOnClickListener {
@@ -958,7 +960,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         }
 
         textFieldProgramEndDate.iconContainer.setOnClickListener {
-            clickDatePicker(textFieldProgramEndDate, 1, DATE_TITLE_END, DATE_DESC_END,manualEndTimeProgram)
+            clickDatePicker(textFieldProgramEndDate, 1, DATE_TITLE_END, DATE_DESC_END)
         }
 
         textFieldProgramEndTime.iconContainer.setOnClickListener {
@@ -996,7 +998,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
 
                 textFieldProgramStartDate.editText.setOnFocusChangeListener { view, b ->
                     if(b)
-                        clickDatePicker(textFieldProgramStartDate, 0, DATE_TITLE , DATE_DESC,manualStartTimeProgram)
+                        clickDatePicker(textFieldProgramStartDate, 0, DATE_TITLE , DATE_DESC)
                 }
                 textFieldProgramStartTime.editText.setOnFocusChangeListener { view, b ->
                     if(b)
@@ -1004,7 +1006,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 }
                 textFieldProgramEndDate.editText.setOnFocusChangeListener { view, b ->
                     if(b)
-                        clickDatePicker(textFieldProgramEndDate, 1, DATE_TITLE_END, DATE_DESC_END,manualEndTimeProgram)
+                        clickDatePicker(textFieldProgramEndDate, 1, DATE_TITLE_END, DATE_DESC_END)
                 }
                 textFieldProgramEndTime.editText.setOnFocusChangeListener { view, b ->
                     if(b)
@@ -1024,7 +1026,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         val dayOfWeekStart = getDayOfWeekID(dayStart)
 
         textFieldProgramStartDate.editText.setText("$dayOfWeekStart, ${setDatePreview(manualStartTimeProgram)}")
-        textFieldProgramStartTime.editText.setText(setTimeStart(manualStartTimeProgram)+" WIB")
+        textFieldProgramStartTime.editText.setText(setTime(manualStartTimeProgram))
 
         val endDate = GregorianCalendar(locale)
         val sde = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
@@ -1033,11 +1035,11 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         val dayOfWeekEnd = getDayOfWeekID(dayEnd)
 
         textFieldProgramEndDate.editText.setText("$dayOfWeekEnd, ${setDatePreview(manualEndTimeProgram)}")
-        textFieldProgramEndTime.editText.setText(setTimeStart(manualEndTimeProgram)+" WIB")
+        textFieldProgramEndTime.editText.setText(setTime(manualEndTimeProgram))
         couponStartDate = manualStartTimeProgram.substringBefore(" ")
-        couponStartTime = setTimeStart(manualStartTimeProgram)
+        couponStartTime = setTime(manualStartTimeProgram).replace(" WIB", "")
         couponEndDate = manualEndTimeProgram.substringBefore(" ")
-        couponEndTime = setTimeStart(manualEndTimeProgram)
+        couponEndTime = setTime(manualEndTimeProgram).replace(" WIB", "")
     }
 
     private fun clickDatePicker(
@@ -1045,7 +1047,6 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         type: Int,
         title: String,
         desc: String,
-        programDate:String
     ) {
         var date = ""
         var month = ""
