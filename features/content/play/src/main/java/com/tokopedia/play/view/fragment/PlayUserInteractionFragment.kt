@@ -22,6 +22,7 @@ import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.utils.ErrorHandler
@@ -1692,12 +1693,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun renderAddressWidget(addressUiState: AddressWidgetUiState){
-        if(addressUiState.shouldShow){
-            chooseAddressView?.show()
-            productFeaturedView?.hide()
-        } else {
-            chooseAddressView?.hide()
-        }
+        chooseAddressView?.rootView?.showWithCondition(addressUiState.shouldShow)
     }
 
     private fun castViewOnStateChanged(
