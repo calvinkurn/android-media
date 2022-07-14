@@ -94,7 +94,7 @@ class UserProfileViewModel @AssistedInject constructor(
     private val _followInfo = MutableStateFlow(FollowInfoUiModel.Empty)
     private val _profileWhitelist = MutableStateFlow(ProfileWhitelistUiModel.Empty)
     private val _profileType = MutableStateFlow(ProfileType.Unknown)
-    private val _shopRecom = MutableStateFlow(listOf<ShopRecomUiModelItem>())
+    private val _shopRecom = MutableStateFlow(emptyList<ShopRecomUiModelItem>())
 
     private val _uiEvent = MutableSharedFlow<UserProfileUiEvent>()
 
