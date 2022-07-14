@@ -300,7 +300,8 @@ class BroadcastViewHolder constructor(
             productBundling, deferredAttachment
         )
         ProductBundlingViewHolderBinder.bindProductBundling(
-            multipleProductBundlingAdapter, productBundling
+            multipleProductBundlingAdapter, productBundling,
+            ProductBundlingCardAttachmentContainer.BundlingSource.BROADCAST_ATTACHMENT_MULTIPLE
         )
         ProductBundlingViewHolderBinder.bindScrollState(
             rvProductBundlingCarousel, productBundlingCarouselListener, this
@@ -316,7 +317,8 @@ class BroadcastViewHolder constructor(
             adapterListener,
             searchListener,
             commonListener,
-            deferredAttachment
+            deferredAttachment,
+            ProductBundlingCardAttachmentContainer.BundlingSource.BROADCAST_ATTACHMENT_SINGLE
         )
     }
 

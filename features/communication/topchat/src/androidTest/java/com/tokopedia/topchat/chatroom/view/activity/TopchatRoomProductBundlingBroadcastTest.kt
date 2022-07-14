@@ -2,11 +2,13 @@ package com.tokopedia.topchat.chatroom.view.activity
 
 import android.app.Activity
 import android.app.Instrumentation
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.base.blockPromo
@@ -14,6 +16,7 @@ import com.tokopedia.topchat.chatroom.view.activity.base.hideBanner
 import com.tokopedia.topchat.chatroom.view.activity.base.setFollowing
 import org.junit.Test
 
+@UiTest
 class TopchatRoomProductBundlingBroadcastTest: TopchatRoomTest()  {
 
     @Test
@@ -30,8 +33,7 @@ class TopchatRoomProductBundlingBroadcastTest: TopchatRoomTest()  {
         )
 
         // Then
-        Espresso.onView(ViewMatchers.withId(R.id.iv_banner))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(withId(R.id.iv_banner)).check(matches(isDisplayed()))
     }
 
     @Test
@@ -49,8 +51,7 @@ class TopchatRoomProductBundlingBroadcastTest: TopchatRoomTest()  {
         )
 
         // Then
-        Espresso.onView(ViewMatchers.withId(R.id.iv_banner))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(withId(R.id.iv_banner)).check(matches(isDisplayed()))
     }
 
     @Test
@@ -68,8 +69,7 @@ class TopchatRoomProductBundlingBroadcastTest: TopchatRoomTest()  {
         )
 
         // Then
-        Espresso.onView(ViewMatchers.withId(R.id.iv_banner))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(withId(R.id.iv_banner)).check(matches(isDisplayed()))
     }
 
     @Test
@@ -87,7 +87,6 @@ class TopchatRoomProductBundlingBroadcastTest: TopchatRoomTest()  {
         )
 
         // Then
-        Espresso.onView(ViewMatchers.withId(R.id.iv_banner))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(withId(R.id.iv_banner)).check(matches(isDisplayed()))
     }
 }

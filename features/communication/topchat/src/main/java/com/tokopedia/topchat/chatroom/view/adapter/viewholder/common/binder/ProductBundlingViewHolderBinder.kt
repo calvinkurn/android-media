@@ -6,6 +6,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.MultipleProductBundlingAdapte
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.product_bundling.ProductBundlingCarouselViewHolder
+import com.tokopedia.topchat.chatroom.view.custom.product_bundling.ProductBundlingCardAttachmentContainer
 import com.tokopedia.topchat.chatroom.view.custom.product_bundling.ProductBundlingRecyclerView
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.MultipleProductBundlingUiModel
 
@@ -47,8 +48,12 @@ object ProductBundlingViewHolderBinder {
 
     fun bindProductBundling(
         recyclerViewAdapter: MultipleProductBundlingAdapter,
-        carouselBundling: MultipleProductBundlingUiModel
+        carouselBundling: MultipleProductBundlingUiModel,
+        source: ProductBundlingCardAttachmentContainer.BundlingSource?= null
     ) {
+        if (source != null) {
+            recyclerViewAdapter.source = source
+        }
         recyclerViewAdapter.carousel = carouselBundling
     }
 

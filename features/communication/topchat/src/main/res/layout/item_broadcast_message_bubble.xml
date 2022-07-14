@@ -85,11 +85,13 @@
         android:id="@+id/product_bundle_card_broadcast"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clipToPadding="false"
-        android:paddingStart="@dimen/dp_topchat_12"
-        android:paddingEnd="@dimen/spacing_lvl3"
-        android:layout_marginBottom="@dimen/spacing_lvl3"
-        android:visibility="gone"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:orientation="vertical"
+        android:visibility="visible"
+        android:layout_gravity="center_horizontal"
         tools:layout_height="50dp" />
 
     <com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer

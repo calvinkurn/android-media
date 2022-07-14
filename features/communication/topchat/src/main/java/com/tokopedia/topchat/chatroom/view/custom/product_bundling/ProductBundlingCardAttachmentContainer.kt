@@ -57,7 +57,9 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
 
     private var recyclerView: RecyclerView? = null
     private val adapter = MultipleBundlingItemAdapter()
-    private val itemDecoration = BundleSpaceItemDecoration(SPACE)
+    private var itemDecorationProductAttachment: BundleSpaceItemDecoration? = null
+    private var itemDecorationBroadcastAttachment: BroadcastBundleSpaceItemDecoration? = null
+    private var source: BundlingSource? = null
 
     private val bgOpposite: Drawable? by lazy(LazyThreadSafetyMode.NONE) {
         ViewUtil.generateBackgroundWithShadow(
@@ -130,7 +132,7 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
         image = findViewById(R.id.iv_single_product_thumbnail)
         label = findViewById(R.id.label_package)
         singleItemBundlingName = findViewById(R.id.tv_product_bundling_name)
-        multipleItemBundlingName = findViewById(R.id.tv_multiple_item_product_bundle_name)
+        multipleItemBundlingName = findViewById(R.id.tv_product_bundle_name)
         originalPrice = findViewById(R.id.tv_original_price)
         totalDiscount = findViewById(R.id.tv_total_discount)
         bundlePrice = findViewById(R.id.tv_bundle_price)
@@ -146,11 +148,12 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
         adapterListener: AdapterListener,
         searchListener: SearchListener,
         commonListener: CommonViewHolderListener,
-        deferredAttachment: DeferredViewHolderAttachment
+        deferredAttachment: DeferredViewHolderAttachment,
+        source: BundlingSource?
     ) {
+        this.source = source
         this.adapterPosition = adapterPosition
         bindListener(listener, adapterListener, searchListener, commonListener, deferredAttachment)
-        bindLayoutGravity(element)
         bindBackground(element)
         bindSyncProductBundling(element)
         bindLoading(element)
@@ -167,13 +170,13 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
         if (isMultipleBundleItem(element)) {
             initRecyclerView(element)
             showRecyclerView()
-            bindMultipleItemBundlingName(element)
         } else {
             bindImage(element.productBundling.bundleItem?.first())
             bindLabel(element.productBundling.bundleItem?.first())
             bindBundlingName(element.productBundling.bundleItem?.first())
             hideRecyclerView()
         }
+        bindItemBundlingName(element)
     }
 
     private fun isMultipleBundleItem(element: ProductBundlingUiModel) : Boolean {
@@ -183,7 +186,6 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
     private fun hideRecyclerView() {
         singleBundlingLayout?.show()
         recyclerView?.hide()
-        multipleItemBundlingName?.hide()
     }
 
     private fun showRecyclerView() {
@@ -191,9 +193,14 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
         recyclerView?.show()
     }
 
-    private fun bindMultipleItemBundlingName(element: ProductBundlingUiModel) {
-        multipleItemBundlingName?.text = element.productBundling.bundleTitle
-        multipleItemBundlingName?.show()
+    private fun bindItemBundlingName(element: ProductBundlingUiModel) {
+        if (source == BundlingSource.BROADCAST_ATTACHMENT_SINGLE ||
+                source == BundlingSource.BROADCAST_ATTACHMENT_MULTIPLE) {
+            multipleItemBundlingName?.text = element.productBundling.bundleTitle
+            multipleItemBundlingName?.show()
+        } else {
+            multipleItemBundlingName?.hide()
+        }
     }
 
     private fun initRecyclerView(element: ProductBundlingUiModel) {
@@ -218,7 +225,31 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
         for (i in 0 until counter) {
             recyclerView?.removeItemDecorationAt(i)
         }
-        recyclerView?.addItemDecoration(itemDecoration)
+        setSpaceItemDecoration()
+    }
+
+    private fun setSpaceItemDecoration() {
+        when (source) {
+            BundlingSource.PRODUCT_ATTACHMENT -> {
+                if (itemDecorationProductAttachment == null) {
+                    itemDecorationProductAttachment = BundleSpaceItemDecoration()
+                }
+                itemDecorationProductAttachment?.let {
+                    recyclerView?.addItemDecoration(it)
+                }
+            }
+            BundlingSource.BROADCAST_ATTACHMENT_SINGLE,
+            BundlingSource.BROADCAST_ATTACHMENT_MULTIPLE -> {
+                if (itemDecorationBroadcastAttachment == null) {
+                    source?.let {
+                        itemDecorationBroadcastAttachment = BroadcastBundleSpaceItemDecoration(it)
+                    }
+                }
+                itemDecorationBroadcastAttachment?.let {
+                    recyclerView?.addItemDecoration(it)
+                }
+            }
+        }
     }
 
     private fun bindListener(
@@ -233,14 +264,6 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
         this.searchListener = searchListener
         this.commonListener = commonListener
         this.deferredAttachment = deferredAttachment
-    }
-
-    private fun bindLayoutGravity(element: ProductBundlingUiModel) {
-        if (element.isSender) {
-            gravityRight()
-        } else {
-            gravityLeft()
-        }
     }
 
     private fun bindLoading(element: ProductBundlingUiModel) {
@@ -372,22 +395,30 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
         }
     }
 
-    private fun gravityRight() {
-        setLayoutGravity(Gravity.END)
-    }
-
-    private fun gravityLeft() {
-        setLayoutGravity(Gravity.START)
-    }
-
     private fun setLayoutGravity(@Slide.GravityFlag gravity: Int) {
         (layoutParams as? LinearLayout.LayoutParams)?.apply {
             this.gravity = gravity
         }
     }
 
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        if (source == BundlingSource.BROADCAST_ATTACHMENT_MULTIPLE) {
+            val newWidth = MeasureSpec.getSize(widthMeasureSpec) * WIDTH_MULTIPLIER
+            val newWidthMeasureSpec = MeasureSpec.makeMeasureSpec(newWidth.toInt(), MeasureSpec.EXACTLY)
+            super.onMeasure(newWidthMeasureSpec, heightMeasureSpec)
+        } else {
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+        }
+    }
+
+    enum class BundlingSource {
+        PRODUCT_ATTACHMENT,
+        BROADCAST_ATTACHMENT_MULTIPLE,
+        BROADCAST_ATTACHMENT_SINGLE
+    }
+
     companion object {
-        private const val SPACE = 6
         private val LAYOUT = R.layout.item_topchat_product_bundling_card
+        private const val WIDTH_MULTIPLIER = 1.25f
     }
 }
