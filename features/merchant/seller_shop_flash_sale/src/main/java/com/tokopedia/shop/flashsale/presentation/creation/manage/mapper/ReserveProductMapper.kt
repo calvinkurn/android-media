@@ -59,7 +59,7 @@ object ReserveProductMapper {
         }
     }
 
-    fun validateSelection(selectedItem: List<SelectedProductModel>): Boolean {
+    fun canReserveProduct(selectedItem: List<SelectedProductModel>): Boolean {
         return selectedItem.filter { !it.hasChild }.run {
             size.isMoreThanZero() && size < ChooseProductConstant.PRODUCT_SELECTION_MAX
         }

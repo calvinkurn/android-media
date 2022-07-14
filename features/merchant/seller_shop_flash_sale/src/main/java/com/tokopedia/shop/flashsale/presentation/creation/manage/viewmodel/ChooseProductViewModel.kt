@@ -38,7 +38,7 @@ class ChooseProductViewModel @Inject constructor(
         get() = _isAddProductSuccess
 
     val isSelectionValid = Transformations.map(selectedItems) {
-        ReserveProductMapper.validateSelection(it)
+        ReserveProductMapper.canReserveProduct(it)
     }
 
     val isSelectionHasVariant = Transformations.map(selectedItems) {
