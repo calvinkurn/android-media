@@ -1169,7 +1169,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
 
                         textFieldProgramEndDate.editText.setText("${TmDateUtil.getDayFromTimeWindow(programData?.timeWindow?.endTime.toString())}, ${TmDateUtil.setDatePreview(programData?.timeWindow?.endTime.toString())}")
 
-                        textFieldProgramStartTime.editText.setText("${todayCalendar.get(Calendar.HOUR_OF_DAY)}:${todayCalendar.get(Calendar.MINUTE)} WIB")
+                        textFieldProgramStartTime.editText.setText(TmDateUtil.setTime(TmDateUtil.convertDateTime(todayCalendar.time)))
                         textFieldProgramEndTime.editText.setText(TmDateUtil.setTime(programData?.timeWindow?.endTime.toString()))
                         tmCouponStartDateUnix = todayCalendar
                         tmCouponStartTimeUnix = todayCalendar
