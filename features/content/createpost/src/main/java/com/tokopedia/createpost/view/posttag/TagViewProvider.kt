@@ -28,12 +28,6 @@ class TagViewProvider {
     var dY = 0f
     var listener: CreateContentPostCommonListener? = null
 
-    companion object {
-        private const val POINTER_HALF_DIMEN = 8
-        private const val POINTER_HEIGHT = 21
-    }
-
-
     fun getTagView(
         context: Context?,
         products: List<RelatedProductItem>,
