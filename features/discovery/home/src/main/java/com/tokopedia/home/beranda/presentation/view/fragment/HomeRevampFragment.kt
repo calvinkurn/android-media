@@ -320,7 +320,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private var questWidgetPosition = -1
-    private var isGopayActivated: Boolean? = null
     private var isNeedToRotateTokopoints: Boolean = true
     private var errorToaster: Snackbar? = null
     override val eggListener: HomeEggListener
@@ -392,23 +391,19 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private var serverOffsetTime: Long = 0L
     private var bottomSheetIsShowing = false
     private var coachMarkIsShowing = false
-    private var gopayCoachmarkIsShowing = false
     private var tokopointsCoachmarkIsShowing = false
     private var subscriptionCoachmarkIsShowing = false
     private var tokonowCoachmarkIsShowing = false
     private var coachmark: CoachMark2? = null
-    private var coachmarkGopay: CoachMark2? = null
     private var coachmarkTokopoint: CoachMark2? = null
     private var coachmarkTokonow: CoachMark2? = null
     private var coachmarkSubscription: CoachMark2? = null
     private var tokonowIconRef: View? = null
     private var tokonowIconParentPosition: Int = -1
-    private val coachMarkItemGopay = ArrayList<CoachMark2Item>()
     private val coachMarkItemTokopoints = ArrayList<CoachMark2Item>()
     private val coachMarkItemSubscription = ArrayList<CoachMark2Item>()
     private val coachMarkItemTokonow = ArrayList<CoachMark2Item>()
     private var scrollPositionY = 0
-    private var positionWidgetGopay = 0
     private var positionWidgetTokopoints = 0
     private var positionWidgetSubscription = 0
     private var positionWidgetTokonow = 0
@@ -630,42 +625,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         return IconList.ID_MESSAGE
     }
 
-    private fun ArrayList<CoachMark2Item>.buildGopayNewCoachmark() {
-        context?.let { currentContext ->
-            isGopayActivated?.let {
-                if (it) {
-                    val ctaButton = getGopayBalanceWidgetView()
-                    ctaButton?.let { gopayWidget ->
-                        if (this.isEmpty()) {
-                            positionWidgetGopay = gopayWidget.getPositionWidgetVertical()
-                            this.add(
-                                CoachMark2Item(
-                                    ctaButton,
-                                    getString(R.string.home_gopay_new_coachmark_title),
-                                    getString(R.string.home_gopay_new_coachmark_description)
-                                )
-                            )
-                        }
-                    }
-                } else {
-                    val gopayWidget = getGopayBalanceWidgetView()
-                    gopayWidget?.let { gopayWidget ->
-                        if (this.isEmpty()) {
-                            positionWidgetGopay = gopayWidget.getPositionWidgetVertical()
-                            this.add(
-                                CoachMark2Item(
-                                    gopayWidget,
-                                    getString(R.string.home_gopay_new_active_cta_coachmark_title),
-                                    getString(R.string.home_gopay_new_active_cta_coachmark_description)
-                                )
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     private fun ArrayList<CoachMark2Item>.buildTokopointNewCoachmark(tokopointsBalanceCoachmark: BalanceCoachmark) {
         context?.let { currentContext ->
             val tokopointWidget = getTokopointsNewBalanceWidgetView()
@@ -728,40 +687,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     ) {
         context?.let { ctx ->
             if (!isNewWalletAppCoachmarkShown(ctx)) {
-//                showGopayEligibleCoachmark(tokopointsBalanceCoachmark)
                 showSubscriptionEligibleCoachmark(subscriptionBalanceCoachMark)
             } else if (isNewWalletAppCoachmarkShown(ctx) && !isNewTokopointCoachmarkShown(ctx) && tokopointsBalanceCoachmark != null) {
                 showTokopointsEligibleCoachmark(tokopointsBalanceCoachmark)
             } else if (isNewWalletAppCoachmarkShown(ctx) && (isNewTokopointCoachmarkShown(ctx) || tokopointsBalanceCoachmark == null)) {
                 showTokonowCoachmark()
-            }
-        }
-    }
-
-    @Suppress("TooGenericExceptionCaught")
-    private fun showGopayEligibleCoachmark(
-        tokopointsBalanceCoachmark: BalanceCoachmark? = null
-    ) {
-        context?.let {
-            coachMarkItemGopay.buildGopayNewCoachmark()
-            coachmarkGopay?.let { gopayCoachmark ->
-                try {
-                    if (coachMarkItemGopay.isNotEmpty() && isValidToShowCoachMark() && !gopayCoachmarkIsShowing) {
-                        gopayCoachmark.onDismissListener = {
-                            if (!isNewTokopointCoachmarkShown(it) && tokopointsBalanceCoachmark != null) {
-                                showTokopointsEligibleCoachmark(tokopointsBalanceCoachmark)
-                            } else {
-                                showTokonowCoachmark()
-                            }
-                            setNewWalletAppCoachmarkShown(it)
-                        }
-                        gopayCoachmark.showCoachMark(step = coachMarkItemGopay, index = COACHMARK_FIRST_INDEX)
-                        gopayCoachmarkIsShowing = true
-                    }
-                } catch (e: Exception) {
-                    gopayCoachmarkIsShowing = false
-                    e.printStackTrace()
-                }
             }
         }
     }
@@ -801,8 +731,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     try {
                         if (coachMarkItemSubscription.isNotEmpty() && isValidToShowCoachMark() && !subscriptionCoachmarkIsShowing) {
                             subscriptionCoachmark.onDismissListener = {
-                                setSubscriptionCoachmarkShown(it)
-                                showSubscriptionEligibleCoachmark(subscriptionBalanceCoachmark)
+                                showTokonowCoachmark()
                             }
                             subscriptionCoachmark.showCoachMark(step = coachMarkItemSubscription, index = COACHMARK_FIRST_INDEX)
                             subscriptionCoachmarkIsShowing = true
@@ -849,12 +778,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 this.title.toString().equals(getString(R.string.onboarding_coachmark_wallet_title), ignoreCase = true) -> {
                     setBalanceWidgetCoachmarkShown(currentContext)
                 }
-                this.title.toString().equals(getString(R.string.home_gopay_coachmark_title), ignoreCase = true) -> {
-                    setWalletAppCoachmarkShown(currentContext)
-                }
-                this.title.toString().equals(getString(R.string.home_gopay2_coachmark_title), ignoreCase = true) -> {
-                    setWalletApp2CoachmarkShown(currentContext)
-                }
             }
         }
     }
@@ -879,16 +802,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         return null
     }
 
-    private fun getGopayBalanceWidgetView(): View? {
-        val view = homeRecyclerView?.findViewHolderForAdapterPosition(HOME_HEADER_POSITION)
-        (view as? HomeHeaderOvoViewHolder)?.let {
-            val gopayView = getBalanceWidgetViewGopayOnly(it.itemView.findViewById(R.id.view_balance_widget))
-            if (it.itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget).isShown && gopayView?.y?:VIEW_DEFAULT_HEIGHT > VIEW_DEFAULT_HEIGHT)
-                return gopayView
-        }
-        return null
-    }
-
     private fun getBalanceWidgetView(): BalanceWidgetView? {
         val view = homeRecyclerView?.findViewHolderForAdapterPosition(HOME_HEADER_POSITION)
         (view as? HomeHeaderOvoViewHolder)?.let { it ->
@@ -896,10 +809,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             balanceWidgetView?.let { balanceWidget -> return balanceWidget }
         }
         return null
-    }
-
-    private fun getBalanceWidgetViewGopayOnly(balanceWidgetView: BalanceWidgetView): View? {
-        return balanceWidgetView.getGopayView()
     }
 
     private fun getBalanceWidgetViewTokoPointsNewOnly(balanceWidgetView: BalanceWidgetView): View? {
@@ -971,18 +880,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         setStatusBarAlpha(STATUS_BAR_DEFAULT_ALPHA)
     }
 
-    private fun evaluateScrollGopayCoachmark() {
-        coachmarkGopay?.let { gopayCoachmark ->
-            context?.let {ctx ->
-                if (scrollPositionY > positionWidgetGopay && gopayCoachmarkIsShowing)
-                    gopayCoachmark.hideCoachMark()
-                else if (!isNewWalletAppCoachmarkShown(ctx)) {
-                    gopayCoachmark.showCoachMark(coachMarkItemGopay)
-                }
-            }
-        }
-    }
-
     private fun evaluateScrollTokopointsCoachmark() {
         coachmarkTokopoint?.let { tokopointsCoachmark ->
             context?.let {ctx ->
@@ -1020,7 +917,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun evaluateShowCoachmark() {
-        evaluateScrollGopayCoachmark()
         evaluateScrollTokopointsCoachmark()
         evaluateScrollTokonowCoachmark()
         evaluateScrollSubscriptionCoachmark()
@@ -1066,7 +962,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun initCoachmark() {
         context?.let {
-            coachmarkGopay = CoachMark2(it)
             coachmarkTokopoint = CoachMark2(it)
             coachmarkTokonow = CoachMark2(it)
             coachmarkSubscription = CoachMark2(it)
@@ -2242,9 +2137,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 if (coachMarkIsShowing) {
                     coachmark?.dismissCoachMark()
                 }
-                if (gopayCoachmarkIsShowing) {
-                    coachmarkGopay?.dismiss()
-                }
                 if (tokopointsCoachmarkIsShowing) {
                     coachmarkTokopoint?.dismiss()
                 }
@@ -2886,7 +2778,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun showBalanceWidgetCoachMark(homeBalanceModel: HomeBalanceModel) {
-        isGopayActivated = homeBalanceModel.isGopayActive()
         showCoachMark(
             homeBalanceModel.getTokopointsBalanceCoachmark(),
             homeBalanceModel.getSubscriptionBalanceCoachmark()

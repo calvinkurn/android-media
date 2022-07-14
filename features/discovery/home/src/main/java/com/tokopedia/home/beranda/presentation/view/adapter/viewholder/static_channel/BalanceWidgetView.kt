@@ -29,12 +29,6 @@ class BalanceWidgetView: FrameLayout {
     private var rvBalance: RecyclerView? = null
     private var layoutManager: LinearLayoutManager? = null
     private var balanceWidgetAdapter: BalanceWidgetAdapter? = null
-    private var viewBalanceCoachmark: LinearLayout? = null
-    private var viewBalanceCoachmarkNew: LinearLayout? = null
-
-    private var tokopointsView: View? = null
-    private var tokopointsViewNew: View? = null
-    private var gopayActivateNewView: View? = null
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -94,14 +88,6 @@ class BalanceWidgetView: FrameLayout {
 
     fun showLoading() {
         balanceWidgetAdapter?.setVisitables(listOf(BalanceShimmerModel()))
-    }
-
-    fun getGopayView(): View? {
-        val firstViewHolder = rvBalance?.findViewHolderForAdapterPosition(0)
-        if (firstViewHolder is BalanceWidgetViewHolder) {
-            return firstViewHolder.getGopayView()
-        }
-        return null
     }
 
     fun getRewardsView(): View? {
