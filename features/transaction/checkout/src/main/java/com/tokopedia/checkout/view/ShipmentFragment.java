@@ -3425,10 +3425,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private void onUploadPrescriptionResult(Intent data){
         if(data != null && data.getExtras() != null && data.getExtras().containsKey(KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA)){
-            // TODO Update UI with image count
             UploadPrescriptionUiModel uploadModel = shipmentPresenter.getUploadPrescriptionUiModel();
+            uploadModel.setUploadImageText(UploadPrescriptionViewHolder.EPharmacyImageUploadedText);
+            uploadModel.setLeftIconUrl(UploadPrescriptionViewHolder.EPharmacyCountImageUrl);
             uploadModel.setPrescriptionIds(data.getExtras().getStringArrayList(KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA));
             uploadPrescriptionUiModel = uploadModel;
+            shipmentAdapter.updateUploadPrescription(uploadPrescriptionUiModel);
         }
     }
 

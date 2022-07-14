@@ -434,6 +434,11 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
+    public void updateUploadPrescription(UploadPrescriptionUiModel uploadPrescriptionUiModel) {
+        this.uploadPrescriptionUiModel = uploadPrescriptionUiModel;
+        notifyItemChanged(getUploadPrescriptionPosition());
+    }
+
     private boolean checkItemUseInsuranceExist() {
         for (Object shipmentData : shipmentDataList) {
             if (shipmentData instanceof ShipmentCartItemModel) {
@@ -991,6 +996,15 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void clearTotalPromoStackAmount() {
         shipmentCostModel.setTotalPromoStackAmount(0);
         shipmentCostModel.setTotalDiscWithoutCashback(0);
+    }
+
+    public int getUploadPrescriptionPosition() {
+        for (int i = 0; i < shipmentDataList.size(); i++) {
+            if (shipmentDataList.get(i) instanceof UploadPrescriptionUiModel) {
+                return i;
+            }
+        }
+        return 0;
     }
 
     public int getShipmentCostPosition() {
