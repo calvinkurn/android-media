@@ -5,6 +5,7 @@ import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
 import com.tokopedia.people.model.*
 import com.tokopedia.people.views.uimodel.MutationUiModel
 import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModel
+import com.tokopedia.feedcomponent.data.pojo.shoprecom.UserShopRecomModel
 
 /**
  * Created By : Jonathan Darwin on June 28, 2022

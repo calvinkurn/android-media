@@ -1,13 +1,13 @@
-package com.tokopedia.people.domains
+package com.tokopedia.feedcomponent.domain.usecase.shoprecom
 
+import com.tokopedia.feedcomponent.data.pojo.shoprecom.UserShopRecomModel
+import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase.Companion.QUERY
+import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase.Companion.QUERY_NAME
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.people.domains.ShopRecomUseCase.Companion.QUERY
-import com.tokopedia.people.domains.ShopRecomUseCase.Companion.QUERY_NAME
-import com.tokopedia.people.model.UserShopRecomModel
 import javax.inject.Inject
 
 @GqlQuery(QUERY_NAME, QUERY)

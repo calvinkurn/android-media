@@ -1,7 +1,6 @@
-package com.tokopedia.people.model
+package com.tokopedia.feedcomponent.data.pojo.shoprecom
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.library.baseadapter.BaseItem
 
 data class UserShopRecomModel(
     @SerializedName("feedXRecomWidget")
