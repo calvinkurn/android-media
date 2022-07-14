@@ -5,6 +5,8 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.feedcomponent.R.string.btn_text_follow
 import com.tokopedia.feedcomponent.R.string.btn_text_following
@@ -19,7 +21,7 @@ import com.tokopedia.unifycomponents.UnifyButton.Variant.GHOST
 /**
  * created by fachrizalmrsln on 07/07/22
  **/
-class ShopRecomView : FrameLayout {
+class ShopRecomView : FrameLayout, LifecycleObserver {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -36,6 +38,10 @@ class ShopRecomView : FrameLayout {
         this,
         true
     )
+
+    init {
+        (context as LifecycleOwner).lifecycle.addObserver(this)
+    }
 
     fun setListener(listener: ShopRecommendationCallback?) {
         mListener = listener
