@@ -3,7 +3,9 @@ package com.tokopedia.tokopedianow.recipedetail.presentation.viewholders
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowRecipeMediaSliderBinding
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.MediaSliderUiModel
+import com.tokopedia.utils.view.binding.viewBinding
 
 class MediaSliderViewHolder(itemView: View): AbstractViewHolder<MediaSliderUiModel>(itemView) {
 
@@ -11,7 +13,9 @@ class MediaSliderViewHolder(itemView: View): AbstractViewHolder<MediaSliderUiMod
         val LAYOUT = R.layout.item_tokopedianow_recipe_media_slider
     }
 
-    override fun bind(media: MediaSliderUiModel) {
+    private var binding: ItemTokopedianowRecipeMediaSliderBinding? by viewBinding()
 
+    override fun bind(media: MediaSliderUiModel) {
+        binding?.mediaSlider?.init(media.items)
     }
 }
