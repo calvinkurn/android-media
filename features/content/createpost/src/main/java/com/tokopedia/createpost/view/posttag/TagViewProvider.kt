@@ -84,6 +84,7 @@ class TagViewProvider {
         return view
     }
 
+    @Suppress("MagicNumber")
     @SuppressLint("ClickableViewAccessibility")
     fun addViewToParent(
         child: View,
@@ -335,10 +336,12 @@ class TagViewProvider {
 
     }
 
+    @Suppress("MagicNumber")
     private fun resetPositionOfNotchToCenter(view: View, parentWidth: Float) {
         view.x = parentWidth/2 - view.width/2
     }
 
+    @Suppress("MagicNumber")
     private fun scaleUp(view: View) {
         val scaleDownX2 = ObjectAnimator.ofFloat(
             view, ConstraintLayout.SCALE_X, 1.05f)
@@ -354,6 +357,7 @@ class TagViewProvider {
 
     }
 
+    @Suppress("MagicNumber")
     private fun scaleDown(view: View) {
         val scaleDownX = ObjectAnimator.ofFloat(view,
             ConstraintLayout.SCALE_X, 1f)
@@ -367,7 +371,7 @@ class TagViewProvider {
         scaleDown.start()
     }
 
-
+    @Suppress("MagicNumber")
     private fun calculateGreyAreaX(parent: ConstraintLayout, bitmap: Bitmap?): Int {
         bitmap?.let {
             return if (bitmap.width > bitmap.height) {
@@ -378,7 +382,7 @@ class TagViewProvider {
         }
         return 0
     }
-
+    @Suppress("MagicNumber")
     private fun calculateGreyAreaY(parent: ConstraintLayout, bitmap: Bitmap?): Int {
         bitmap?.let {
             return if (bitmap.height > bitmap.width) {
