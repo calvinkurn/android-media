@@ -86,8 +86,8 @@ class UserProfileViewModel @AssistedInject constructor(
     val needOnboarding: Boolean
         get() = _profileWhitelist.value.hasAcceptTnc.not()
 
-    val isShopRecomShow: Boolean
-        get() = _shopRecom.value.isNotEmpty()
+    private var _isShopRecomShow: Boolean = false
+    val isShopRecomShow: Boolean get() = _isShopRecomShow
 
     private val _savedReminderData = MutableStateFlow<SavedReminderData>(SavedReminderData.NoData)
     private val _profileInfo = MutableStateFlow(ProfileUiModel.Empty)
@@ -151,12 +151,6 @@ class UserProfileViewModel @AssistedInject constructor(
         }, onError = {
             userPostError.value = it
         })
-    }
-
-    private suspend fun loadShopRecom() {
-        val result = repo.getShopRecom()
-        if (result.isShown) _shopRecom.emit(result.items)
-        else _shopRecom.emit(emptyList())
     }
 
     private fun handleClickFollowButton(isFromLogin: Boolean) {
@@ -299,4 +293,17 @@ class UserProfileViewModel @AssistedInject constructor(
          * */
         userPost.value = isRefresh
     }
+
+    private suspend fun loadShopRecom() {
+        val result = repo.getShopRecom()
+        if (result.isShown) {
+            _isShopRecomShow = true
+            _shopRecom.emit(result.items)
+        }
+        else {
+            _isShopRecomShow = false
+            _shopRecom.emit(emptyList())
+        }
+    }
+
 }
