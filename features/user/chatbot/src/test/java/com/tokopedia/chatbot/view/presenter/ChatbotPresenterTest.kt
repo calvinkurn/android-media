@@ -9,24 +9,52 @@ import com.tokopedia.chatbot.data.imageupload.ChatbotUploadImagePojo
 import com.tokopedia.chatbot.data.newsession.TopBotNewSessionResponse
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.uploadsecure.CheckUploadSecureResponse
+import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
 import com.tokopedia.chatbot.domain.mapper.ChatBotWebSocketMessageMapper
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
-import com.tokopedia.chatbot.domain.subscriber.GetExistingChatSubscriber
 import com.tokopedia.chatbot.domain.subscriber.SendRatingReasonSubscriber
 import com.tokopedia.chatbot.domain.subscriber.SendRatingSubscriber
-import com.tokopedia.chatbot.domain.usecase.*
+import com.tokopedia.chatbot.domain.usecase.ChatBotSecureImageUploadUseCase
+import com.tokopedia.chatbot.domain.usecase.CheckUploadSecureUseCase
+import com.tokopedia.chatbot.domain.usecase.ChipGetChatRatingListUseCase
+import com.tokopedia.chatbot.domain.usecase.ChipSubmitChatCsatUseCase
+import com.tokopedia.chatbot.domain.usecase.ChipSubmitHelpfulQuestionsUseCase
+import com.tokopedia.chatbot.domain.usecase.GetExistingChatUseCase
+import com.tokopedia.chatbot.domain.usecase.GetResolutionLinkUseCase
+import com.tokopedia.chatbot.domain.usecase.GetTickerDataUseCase
+import com.tokopedia.chatbot.domain.usecase.GetTopBotNewSessionUseCase
+import com.tokopedia.chatbot.domain.usecase.LeaveQueueUseCase
+import com.tokopedia.chatbot.domain.usecase.SendChatRatingUseCase
+import com.tokopedia.chatbot.domain.usecase.SendChatbotWebsocketParam
+import com.tokopedia.chatbot.domain.usecase.SendRatingReasonUseCase
+import com.tokopedia.chatbot.domain.usecase.SubmitCsatRatingUseCase
 import com.tokopedia.chatbot.view.listener.ChatbotContract
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
+import com.tokopedia.mediauploader.UploaderUseCase
+import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocket
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.mockkConstructor
+import io.mockk.mockkObject
+import io.mockk.runs
+import io.mockk.spyk
+import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.resetMain
 import org.junit.After
+import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -58,6 +86,7 @@ class ChatbotPresenterTest {
     private lateinit var getTopBotNewSessionUseCase: GetTopBotNewSessionUseCase
     private lateinit var checkUploadSecureUseCase: CheckUploadSecureUseCase
     private lateinit var chatBotSecureImageUploadUseCase: ChatBotSecureImageUploadUseCase
+    private lateinit var uploaderUseCase: UploaderUseCase
 
     private lateinit var presenter: ChatbotPresenter
     private lateinit var view: ChatbotContract.View
@@ -87,6 +116,7 @@ class ChatbotPresenterTest {
         getTopBotNewSessionUseCase = mockk(relaxed = true)
         checkUploadSecureUseCase = mockk(relaxed = true)
         chatBotSecureImageUploadUseCase = mockk(relaxed = true)
+        uploaderUseCase = mockk(relaxed = true)
 
         presenter = spyk(
             ChatbotPresenter(
@@ -107,7 +137,8 @@ class ChatbotPresenterTest {
                 getResolutionLinkUseCase,
                 getTopBotNewSessionUseCase,
                 checkUploadSecureUseCase,
-                chatBotSecureImageUploadUseCase
+                chatBotSecureImageUploadUseCase,
+                uploaderUseCase
             )
         )
 
@@ -539,6 +570,123 @@ class ChatbotPresenterTest {
             )
         }
 
+    }
+
+    @Test
+    fun `sendVideoAttachment message via socket success` () {
+        mockkObject(RxWebSocket)
+        mockkObject(SendChatbotWebsocketParam)
+
+        every {
+            SendChatbotWebsocketParam.generateParamSendVideoAttachment(
+                any(), any(), any()
+            )
+        } returns mockk(relaxed = true)
+
+        every {
+            RxWebSocket.send(
+                SendChatbotWebsocketParam.generateParamSendVideoAttachment(
+                    any(), any(), any()
+                ), any()
+            )
+        } just runs
+
+        presenter.sendVideoAttachment("","","")
+
+        verify {
+            RxWebSocket.send(
+                SendChatbotWebsocketParam.generateParamSendVideoAttachment(
+                    any(), any(), any()
+                ), any()
+            )
+        }
+
+    }
+
+    @Test
+    fun `uploadVideo success when uploaderUseCase returns success`() {
+        val response = mockk<UploadResult.Success>(relaxed = true)
+        var result : String? = null
+
+        coEvery {
+            uploaderUseCase.invoke(any())
+        } returns response
+
+        every {
+            result = response.videoUrl
+        } just runs
+
+        presenter.uploadVideo(
+            VideoUploadUiModel(VideoUploadUiModel.Builder().withVideoUrl("abc")),
+            "",
+            "",
+            "123456"
+        ) { _, _ -> }
+
+        assertNotNull(result)
+
+    }
+
+    @Test
+    fun `uploadVideo failure when uploaderUseCase returns failure` () {
+        val response = mockk<UploadResult.Error>(relaxed = true)
+        var result : String? = null
+
+        coEvery {
+            uploaderUseCase.invoke(any())
+        } returns response
+
+        presenter.uploadVideo(
+            VideoUploadUiModel(VideoUploadUiModel.Builder().withVideoUrl("abc")),
+            "",
+            "",
+            "123456"
+        ) { msg, _ ->
+            result = msg
+        }
+
+        assertNotNull(result)
+    }
+
+    @Test
+    fun `uploadVideo failure` () {
+
+    }
+
+    @Test
+    fun `cancelVideo success` () {
+        presenter.videoUploadJob = GlobalScope.launch {
+            delay(3000L)
+        }
+        coEvery {
+            uploaderUseCase.abortUpload(any(), any())
+        } just runs
+
+        presenter.cancelVideoUpload("abc","") {}
+
+        verify {
+            presenter.videoUploadJob.cancel()
+        }
+
+    }
+
+    @Test
+    fun `cancelVideo failure` () {
+        var result: Throwable? = null
+
+        coEvery {
+            uploaderUseCase.abortUpload(any(), any())
+        } answers {
+            throw mockThrowable
+        }
+
+        presenter.cancelVideoUpload("abc","") {
+            result = it
+        }
+
+       assertNotNull(
+           result
+       )
     }
 
 

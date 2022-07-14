@@ -6,13 +6,17 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.text.TextUtils
 import android.util.Log
+import androidx.annotation.VisibleForTesting
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.chat_common.data.*
+import com.tokopedia.chat_common.data.AttachmentType
+import com.tokopedia.chat_common.data.ChatroomViewModel
+import com.tokopedia.chat_common.data.ImageUploadUiModel
+import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.data.SendableUiModel.Companion.SENDING_TEXT
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_END_TYPING
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_READ_MESSAGE
@@ -71,8 +75,28 @@ import com.tokopedia.chatbot.domain.pojo.livechatdivider.LiveChatDividerAttribut
 import com.tokopedia.chatbot.domain.pojo.quickreply.QuickReplyAttachmentAttributes
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.domain.pojo.submitoption.SubmitOptionInput
-import com.tokopedia.chatbot.domain.subscriber.*
-import com.tokopedia.chatbot.domain.usecase.*
+import com.tokopedia.chatbot.domain.subscriber.ChipSubmitChatCsatSubscriber
+import com.tokopedia.chatbot.domain.subscriber.ChipSubmitHelpfullQuestionsSubscriber
+import com.tokopedia.chatbot.domain.subscriber.GetExistingChatSubscriber
+import com.tokopedia.chatbot.domain.subscriber.LeaveQueueSubscriber
+import com.tokopedia.chatbot.domain.subscriber.SendRatingReasonSubscriber
+import com.tokopedia.chatbot.domain.subscriber.SendRatingSubscriber
+import com.tokopedia.chatbot.domain.subscriber.SubmitCsatRatingSubscriber
+import com.tokopedia.chatbot.domain.subscriber.TickerDataSubscriber
+import com.tokopedia.chatbot.domain.usecase.ChatBotSecureImageUploadUseCase
+import com.tokopedia.chatbot.domain.usecase.CheckUploadSecureUseCase
+import com.tokopedia.chatbot.domain.usecase.ChipGetChatRatingListUseCase
+import com.tokopedia.chatbot.domain.usecase.ChipSubmitChatCsatUseCase
+import com.tokopedia.chatbot.domain.usecase.ChipSubmitHelpfulQuestionsUseCase
+import com.tokopedia.chatbot.domain.usecase.GetExistingChatUseCase
+import com.tokopedia.chatbot.domain.usecase.GetResolutionLinkUseCase
+import com.tokopedia.chatbot.domain.usecase.GetTickerDataUseCase
+import com.tokopedia.chatbot.domain.usecase.GetTopBotNewSessionUseCase
+import com.tokopedia.chatbot.domain.usecase.LeaveQueueUseCase
+import com.tokopedia.chatbot.domain.usecase.SendChatRatingUseCase
+import com.tokopedia.chatbot.domain.usecase.SendChatbotWebsocketParam
+import com.tokopedia.chatbot.domain.usecase.SendRatingReasonUseCase
+import com.tokopedia.chatbot.domain.usecase.SubmitCsatRatingUseCase
 import com.tokopedia.chatbot.view.listener.ChatbotContract
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.CHAT_DIVIDER_DEBUGGING
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.ERROR_CODE
@@ -85,11 +109,11 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.mediauploader.UploaderUseCase
-import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.mediauploader.UploaderUseCase
+import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.url.TokopediaUrl
@@ -97,10 +121,15 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocket
 import com.tokopedia.websocket.WebSocketResponse
 import com.tokopedia.websocket.WebSocketSubscriber
-import kotlinx.coroutines.*
-import okhttp3.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.WebSocket
 import okio.ByteString
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
@@ -108,8 +137,6 @@ import java.io.File
 import java.lang.reflect.Type
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 import kotlin.coroutines.CoroutineContext
 
 
@@ -168,7 +195,8 @@ class ChatbotPresenter @Inject constructor(
     private var isErrorOnLeaveQueue = false
     private lateinit var chatResponse:ChatSocketPojo
     private val job= SupervisorJob()
-    private var videoUploadJob : Job = Job()
+    @VisibleForTesting
+    var videoUploadJob : Job = Job()
 
     init {
         mSubscription = CompositeSubscription()
@@ -825,7 +853,8 @@ class ChatbotPresenter @Inject constructor(
                     sourceId = sourceId
                 )
                 if (videoUploadJob.isActive) {
-                    when (val result = uploaderUseCase.invoke(param)) {
+                    val result = uploaderUseCase.invoke(param)
+                    when (result) {
                         is UploadResult.Success -> {
                             sendVideoAttachment(result.videoUrl, startTime, messageId)
                         }
