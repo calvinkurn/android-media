@@ -1968,19 +1968,19 @@ class PlayViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleClickPartnerName(applink: String) {
-        fun openPage() {
-            viewModelScope.launch {
-                _uiEvent.emit(OpenPageEvent(applink = applink, pipMode = true))
-            }
+    fun openPage(appLink: String) {
+        viewModelScope.launch {
+            _uiEvent.emit(OpenPageEvent(applink = appLink, pipMode = true))
         }
+    }
 
+    private fun handleClickPartnerName(applink: String) {
         val partnerInfo = _partnerInfo.value
         if (partnerInfo.type == PartnerType.Shop) playAnalytic.clickShop(channelId, channelType, partnerInfo.id.toString())
 
         if (partnerInfo.type == PartnerType.Tokonow) needLogin {
-            openPage()
-        } else openPage()
+            openPage(applink)
+        } else openPage(applink)
     }
 
     private fun handleClickRetryInteractive() {

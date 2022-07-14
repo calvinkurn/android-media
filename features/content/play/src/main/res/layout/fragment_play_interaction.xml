@@ -395,7 +395,7 @@
     <include
         android:id="@+id/view_play_widget_address"
         layout="@layout/view_play_widget_address"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/unify_space_12"
