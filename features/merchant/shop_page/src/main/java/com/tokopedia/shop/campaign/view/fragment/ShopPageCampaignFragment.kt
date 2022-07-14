@@ -1,9 +1,7 @@
 package com.tokopedia.shop.campaign.view.fragment
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
@@ -34,10 +32,12 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
+import com.tokopedia.shop.analytic.ShopCampaignTabTracker
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.campaign.view.adapter.ShopCampaignTabAdapter
 import com.tokopedia.shop.campaign.view.adapter.ShopCampaignTabAdapterTypeFactory
+import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignProductBundleParentWidgetViewHolder
 import com.tokopedia.shop.campaign.view.adapter.viewholder.WidgetConfigListener
 import com.tokopedia.shop.common.constant.ShopCommonExtraConstant
 import com.tokopedia.shop.common.data.model.ShopPageWidgetLayoutUiModel
@@ -52,14 +52,7 @@ import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.bottomsheet.ShopHomeFlashSaleTncBottomSheet
 import com.tokopedia.shop.home.view.bottomsheet.ShopHomeNplCampaignTncBottomSheet
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
-import com.tokopedia.shop.home.view.model.BannerType
-import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeFlashSaleUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
-import com.tokopedia.shop.home.view.model.ShopPageHomeWidgetLayoutUiModel
-import com.tokopedia.shop.home.view.model.StatusCampaign
+import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
 import com.tokopedia.shop.pageheader.presentation.fragment.NewShopPageFragment
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
@@ -68,11 +61,9 @@ import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
 import com.tokopedia.shop_widget.thematicwidget.viewholder.ThematicWidgetViewHolder
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
-import java.util.Date
-import com.tokopedia.utils.date.getDayDiffFromToday
-import kotlin.math.absoluteValue
+import javax.inject.Inject
 
-class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener {
+class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, ShopCampaignProductBundleParentWidgetViewHolder.Listener {
 
     companion object {
         private const val KEY_SHOP_ID = "SHOP_ID"
@@ -149,11 +140,15 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener {
             singleProductBundleListener = this,
             thematicWidgetListener = thematicWidgetProductClickListenerImpl(),
             shopHomeProductListSellerEmptyListener = this,
-            widgetConfigListener = this
+            widgetConfigListener = this,
+            bundlingParentListener = this
         )
     }
 
     private var globalErrorShopPage: GlobalError? = null
+
+    @Inject
+    lateinit var shopCampaignTabTracker: ShopCampaignTabTracker
 
     override fun getRecyclerViewResourceId(): Int {
         return R.id.recycler_view
@@ -229,17 +224,50 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener {
 
     // region mvc widget listener
     override fun onVoucherImpression(model: ShopHomeVoucherUiModel, position: Int) {
-        // TODO: 12/07/22 Implement mvc voucher tracker
+        shopCampaignTabTracker.impressionShopBannerWidget(
+            shopId,
+            model.name,
+            model.widgetId,
+            ShopUtil.getActualPositionFromIndex(position),
+            userId
+        )
+    }
+
+    override fun onVoucherTokoMemberInformationImpression(
+        model: ShopHomeVoucherUiModel,
+        position: Int
+    ) {
+        shopCampaignTabTracker.impressionShopBannerWidget(
+            shopId,
+            model.name,
+            model.widgetId,
+            ShopUtil.getActualPositionFromIndex(position),
+            userId
+        )
+        shopCampaignTabTracker.impressionSeeEntryPointMerchantVoucherCouponTokoMemberInformation(
+            shopId
+        )
     }
 
     override fun onVoucherReloaded() {
         getMvcWidgetData()
     }
-
-    override fun onVoucherTokoMemberInformationImpression(model: ShopHomeVoucherUiModel, position: Int) {
-        // TODO: 12/07/22 Implement mvc voucher tracker
-    }
     // endregion
+
+    //region bundling widget
+    override fun onImpressionBundlingWidget(
+        model: ShopHomeProductBundleListUiModel,
+        position: Int
+    ) {
+        shopCampaignTabTracker.impressionShopBannerWidget(
+            shopId,
+            model.name,
+            model.widgetId,
+            ShopUtil.getActualPositionFromIndex(position),
+            userId
+        )
+    }
+    //end region
 
     // region Product bundle multiple widget
     override fun addMultipleBundleToCart(
@@ -423,18 +451,13 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener {
     }
 
     override fun onFlashSaleWidgetImpressed(model: ShopHomeFlashSaleUiModel, position: Int) {
-        model.data?.firstOrNull()?.let { itemFlashSale ->
-            val campaignId = itemFlashSale.campaignId
-            val statusCampaign = itemFlashSale.statusCampaign
-            shopPageHomeTracking.impressionCampaignFlashSaleWidget(
-                campaignId = campaignId,
-                statusCampaign = statusCampaign,
-                shopId = shopId,
-                userId = userId,
-                position = position,
-                isOwner = isOwner
-            )
-        }
+        shopCampaignTabTracker.impressionShopBannerWidget(
+            shopId,
+            model.name,
+            model.widgetId,
+            ShopUtil.getActualPositionFromIndex(position),
+            userId
+        )
     }
 
     override fun onPlaceHolderClickSeeAll(model: ShopHomeFlashSaleUiModel) {
@@ -546,39 +569,33 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener {
         position: Int,
         shopHomeNewProductLaunchCampaignUiModel: ShopHomeNewProductLaunchCampaignUiModel
     ) {
-        shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.let {
-            val statusCampaign = it.statusCampaign
-            val selectedBannerType = when (statusCampaign.toLowerCase()) {
-                StatusCampaign.UPCOMING.statusCampaign.toLowerCase() -> BannerType.UPCOMING.bannerType
-                StatusCampaign.ONGOING.statusCampaign.toLowerCase() -> BannerType.LIVE.bannerType
-                StatusCampaign.FINISHED.statusCampaign.toLowerCase() -> BannerType.FINISHED.bannerType
-                else -> ""
-            }
-            val selectedBanner = it.bannerList.firstOrNull {
-                it.bannerType.toLowerCase() == selectedBannerType.toLowerCase()
-            }
-            val isSeeCampaign =
-                if (statusCampaign.toLowerCase() == StatusCampaign.UPCOMING.statusCampaign.toLowerCase()) {
-                    it.totalNotifyWording.isNotEmpty()
-                } else {
-                    null
+        shopCampaignTabTracker.impressionShopBannerWidget(
+            shopId,
+            shopHomeNewProductLaunchCampaignUiModel.name,
+            shopHomeNewProductLaunchCampaignUiModel.widgetId,
+            ShopUtil.getActualPositionFromIndex(position),
+            userId
+        )
+    }
+
+    override fun onClickCampaignBannerAreaNplWidget(
+        model: ShopHomeNewProductLaunchCampaignUiModel,
+        widgetPosition: Int
+    ) {
+        shopCampaignTabTracker.clickShopBannerWidget(
+            shopId,
+            model.name,
+            model.widgetId,
+            ShopUtil.getActualPositionFromIndex(widgetPosition),
+            userId
+        )
+        model.data?.firstOrNull()?.let {
+            context?.let { context ->
+                val appLink = model.header.ctaLink
+                if (appLink.isNotEmpty()) {
+                    RouteManager.route(context, appLink)
                 }
-            sendShopHomeWidgetImpressionTracker(
-                ShopPageTrackingConstant.VALUE_SHOP_DECOR_CAMPAIGN,
-                shopHomeNewProductLaunchCampaignUiModel.name,
-                shopHomeNewProductLaunchCampaignUiModel.widgetId,
-                ShopUtil.getActualPositionFromIndex(position)
-            )
-            shopPageHomeTracking.impressionCampaignNplWidget(
-                it.statusCampaign,
-                shopId,
-                ShopUtil.getActualPositionFromIndex(position),
-                isSeeCampaign,
-                selectedBanner?.imageId.orEmpty(),
-                selectedBanner?.imageUrl ?: "",
-                customDimensionShopPage,
-                isOwner
-            )
+            }
         }
     }
 
@@ -596,12 +613,12 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener {
     private fun thematicWidgetProductClickListenerImpl(): ThematicWidgetViewHolder.ThematicWidgetListener = object : ThematicWidgetViewHolder.ThematicWidgetListener {
 
         override fun onThematicWidgetImpressListener(model: ThematicWidgetUiModel, position: Int) {
-            shopPageHomeTracking.impressionThematicWidgetCampaign(
-                campaignName = model.name,
-                campaignId = model.campaignId,
-                shopId = shopId,
-                userId = userId,
-                position = position
+            shopCampaignTabTracker.impressionShopBannerWidget(
+                shopId,
+                model.name,
+                model.widgetId,
+                ShopUtil.getActualPositionFromIndex(position),
+                userId
             )
         }
 

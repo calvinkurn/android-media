@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.widget.bundle.adapter.ShopHomeProductBundleWidgetAdapter
 import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleListener
@@ -22,7 +23,8 @@ class ShopCampaignProductBundleParentWidgetViewHolder (
         itemView: View,
         private val multipleProductBundleListener: MultipleProductBundleListener,
         private val singleProductBundleListener: SingleProductBundleListener,
-        private val widgetConfigListener: WidgetConfigListener
+        private val widgetConfigListener: WidgetConfigListener,
+        private val parentBundlingWidgetListener: Listener
 ) : AbstractViewHolder<ShopHomeProductBundleListUiModel>(itemView) {
 
     companion object {
@@ -31,6 +33,10 @@ class ShopCampaignProductBundleParentWidgetViewHolder (
 
         private const val BUNDLE_MULTIPLE_ITEM_SIZE = 2
         private const val BUNDLE_SINGLE_ITEM_SIZE = 1
+    }
+
+    interface Listener{
+        fun onImpressionBundlingWidget(model: ShopHomeProductBundleListUiModel, position: Int)
     }
 
     private val viewBinding: ItemShopCampaignProductBundleParentWidgetBinding? by viewBinding()
@@ -54,9 +60,16 @@ class ShopCampaignProductBundleParentWidgetViewHolder (
         } else {
             GridLayoutManager(itemView.context, BUNDLE_SINGLE_ITEM_SIZE, GridLayoutManager.VERTICAL, false)
         }
+        setWidgetImpressionListener(element)
         initRecyclerView(bundleLayoutManager, element)
         rvBundleAdapter?.updateDataSet(element.productBundleList)
         rvBundleAdapter?.setParentPosition(adapterPosition)
+    }
+
+    private fun setWidgetImpressionListener(element: ShopHomeProductBundleListUiModel) {
+        itemView.addOnImpressionListener(element.impressHolder) {
+            parentBundlingWidgetListener.onImpressionBundlingWidget(element, adapterPosition)
+        }
     }
 
     private fun initView() {

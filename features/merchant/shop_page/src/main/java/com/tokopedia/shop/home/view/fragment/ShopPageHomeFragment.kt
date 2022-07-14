@@ -3093,7 +3093,10 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
         }
     }
 
-    override fun onClickCampaignBannerAreaNplWidget(model: ShopHomeNewProductLaunchCampaignUiModel) {
+    override fun onClickCampaignBannerAreaNplWidget(
+        model: ShopHomeNewProductLaunchCampaignUiModel,
+        widgetPosition: Int
+    ) {
         model.data?.firstOrNull()?.let {
             context?.let { context ->
                 val appLink = model.header.ctaLink

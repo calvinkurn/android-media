@@ -54,7 +54,8 @@ class ShopCampaignTabAdapterTypeFactory(
     private val singleProductBundleListener: SingleProductBundleListener,
     private val thematicWidgetListener: ThematicWidgetViewHolder.ThematicWidgetListener,
     private val shopHomeProductListSellerEmptyListener: ShopHomeProductListSellerEmptyListener,
-    private val widgetConfigListener: WidgetConfigListener
+    private val widgetConfigListener: WidgetConfigListener,
+    private val bundlingParentListener: ShopCampaignProductBundleParentWidgetViewHolder.Listener
 ) : ShopHomeAdapterTypeFactory(
     listener,
     onMerchantVoucherListWidgetListener,
@@ -109,7 +110,8 @@ class ShopCampaignTabAdapterTypeFactory(
                 parent,
                 multipleProductBundleListener,
                 singleProductBundleListener,
-                widgetConfigListener
+                widgetConfigListener,
+                bundlingParentListener
             )
             else -> return super.createViewHolder(parent, type)
         }
