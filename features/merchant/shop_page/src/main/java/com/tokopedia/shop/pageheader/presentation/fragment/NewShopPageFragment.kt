@@ -1,5 +1,6 @@
 package com.tokopedia.shop.pageheader.presentation.fragment
 
+import android.animation.Animator
 import android.app.Activity
 import android.content.ClipData
 import android.content.Context
@@ -2799,7 +2800,7 @@ class NewShopPageFragment :
         shopPageTracking?.clickUniversalSharingPermission(action, label, shopId, userId)
     }
 
-    fun setupShopPageLottieAnimation(lottieUrl: String){
+    fun setupShopPageLottieAnimation(lottieUrl: String) {
         context?.let {
             val lottieCompositionLottieTask = LottieCompositionFactory.fromUrl(it, lottieUrl)
             lottieCompositionLottieTask.addListener { result ->
@@ -2807,6 +2808,16 @@ class NewShopPageFragment :
                     show()
                     setComposition(result)
                     playAnimation()
+                    this.addAnimatorListener(object : Animator.AnimatorListener {
+                        override fun onAnimationStart(p0: Animator?) {}
+
+                        override fun onAnimationEnd(p0: Animator?) {
+                            hide()
+                        }
+
+                        override fun onAnimationCancel(p0: Animator?) {}
+                        override fun onAnimationRepeat(p0: Animator?) {}
+                    })
                 }
             }
         }
