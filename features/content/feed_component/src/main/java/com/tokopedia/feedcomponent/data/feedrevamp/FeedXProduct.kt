@@ -35,13 +35,13 @@ data class FeedXProduct(
         var name: String = "",
         @SuppressLint("Invalid Data Type") @SerializedName("price")
         var price: Int = 0,
-        @SerializedName("priceDiscount")
+        @SuppressLint("Invalid Data Type") @SerializedName("priceDiscount")
         var priceDiscount: Int = 0,
         @SerializedName("priceDiscountFmt")
         var priceDiscountFmt: String = "",
         @SerializedName("priceFmt")
         var priceFmt: String = "",
-        @SerializedName("priceOriginal")
+        @SuppressLint("Invalid Data Type") @SerializedName("priceOriginal")
         var priceOriginal: Int = 0,
         @SerializedName("priceOriginalFmt")
         var priceOriginalFmt: String = "",

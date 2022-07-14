@@ -707,7 +707,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             analytics.eventDetailProductClick(
                     ProductEcommerce(feedDetailViewModel.id,
                             feedDetailViewModel.text,
-                            feedDetailViewModel.price,
+                            feedDetailViewModel.priceDiscount,
                             adapterPosition),
                     userSession.userId?.toIntOrNull() ?: 0,
                     feedDetailViewModel.shopId,
@@ -821,6 +821,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                     postTagItem.name,
                     postTagItem.coverURL,
                     postTagItem.price.toString(),
+                    postTagItem.priceDiscount.toString(),
                     postTagItem.priceFmt,
                     postTagItem.isDiscount,
                     postTagItem.discountFmt,

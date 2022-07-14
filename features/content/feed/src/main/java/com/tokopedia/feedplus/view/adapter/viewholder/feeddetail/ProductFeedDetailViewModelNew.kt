@@ -9,6 +9,7 @@ data class ProductFeedDetailViewModelNew (
         var text: String = "",
         var imgUrl:String = "",
         var price: String = "",
+        var priceDiscount: String = "",
         var priceFmt: String = "",
         var isDiscount:Boolean = false,
         var discountFmt: String = "",

@@ -1319,21 +1319,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 )
             }
 
-        if (products.isNotEmpty()) {
-            imagePostListener.userGridPostImpression(
-                positionInFeed, feedXCard.id,
-                feedXCard.typename,
-                feedXCard.author.id
-            )
-            imagePostListener.userProductImpression(
-                positionInFeed,
-                feedXCard.id,
-                feedXCard.typename,
-                feedXCard.author.id,
-                listOf(products.first())
-            )
-        }
-
         commentButton.invisible()
         seeAllCommentText.hide()
 

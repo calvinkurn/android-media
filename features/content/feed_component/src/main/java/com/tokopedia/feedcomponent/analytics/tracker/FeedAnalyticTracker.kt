@@ -1089,7 +1089,7 @@ class FeedAnalyticTracker
     ) {
         trackEnhancedEcommerceEventNew(
             PRODUCT_VIEW,
-            if (isProductDetailPage) CONTENT_FEED_TIMELINE else CATEGORY_FEED_TIMELINE_BOTTOMSHEET,
+            CATEGORY_FEED_TIMELINE_BOTTOMSHEET,
             String.format(
                 FORMAT_THREE_PARAM,
                 "impression",
@@ -1285,7 +1285,7 @@ class FeedAnalyticTracker
     }
     private fun getSingleProductListASGC(feedXProduct: FeedXProduct, index: Int, type: String, isFollowed: Boolean, mediaType: String = ""): List<Map<String, Any>> {
         val list: MutableList<Map<String, Any>> = mutableListOf()
-        val map = if (type == ASGC) createItemMapASGC(feedXProduct,
+        val map = if (type == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT) createItemMapASGC(feedXProduct,
             index.toString(),type) else createItemMapSGC(feedXProduct, index.toString(), type, isFollowed, mediaType)
             list.add(map)
         return list
@@ -1301,7 +1301,7 @@ class FeedAnalyticTracker
             Product.VARIANT, "",
             Product.PRICE,
             if (feedXProduct.isDiscount) feedXProduct.priceDiscount else feedXProduct.price,
-            "dimension39", "/feed - $type detail"
+            "dimension39", "/feed - asgc detail"
         )
     private fun createItemMapSGC(feedXProduct: FeedXProduct, index: String, type: String, isFollowed: Boolean, mediaType: String=""): Map<String, Any> =
         DataLayer.mapOf(
