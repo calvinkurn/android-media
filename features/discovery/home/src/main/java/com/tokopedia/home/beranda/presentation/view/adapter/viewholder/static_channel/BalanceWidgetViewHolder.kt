@@ -23,6 +23,7 @@ class BalanceWidgetViewHolder(itemView: View, val listener: HomeCategoryListener
     private var binding: LayoutBalanceWidgetBinding? by viewBinding()
     private var balanceAdapter: BalanceAdapter? = null
     private var balanceDividerAdapter: BalanceDividerAdapter? = null
+    private var totalSpan = 2
 
     companion object {
         var LAYOUT = R.layout.layout_balance_widget
@@ -54,16 +55,31 @@ class BalanceWidgetViewHolder(itemView: View, val listener: HomeCategoryListener
                 })
             binding?.rvBalanceWidget?.adapter = balanceAdapter
         }
-        binding?.rvBalanceWidget?.layoutManager = getLayoutManager(totalData)
         try {
             if (binding?.rvBalanceWidget?.itemDecorationCount == FIRST_ITEM_DECORATION) {
-                binding?.rvBalanceWidget?.addItemDecoration(BalanceWidgetItemDecoration(totalData))
+                binding?.rvBalanceWidget?.addItemDecoration(
+                    BalanceWidgetItemDecoration(
+                        totalData
+                    )
+                )
             } else {
                 binding?.rvBalanceWidget?.removeItemDecorationAt(FIRST_ITEM_DECORATION)
-                binding?.rvBalanceWidget?.addItemDecoration(BalanceWidgetItemDecoration(totalData))
+                binding?.rvBalanceWidget?.addItemDecoration(
+                    BalanceWidgetItemDecoration(
+                        totalData
+                    )
+                )
             }
         } catch (e: Exception) {
 
+        }
+        val layoutManager = binding?.rvBalanceWidget?.layoutManager
+        if (layoutManager != null && layoutManager is NpaGridLayoutManager && layoutManager.spanCount != totalData) {
+            binding?.rvBalanceWidget?.layoutManager = getLayoutManager(totalData)
+            totalSpan = totalData
+        } else if (layoutManager == null) {
+            binding?.rvBalanceWidget?.layoutManager = getLayoutManager(totalData)
+            totalSpan = totalData
         }
         balanceAdapter?.setItemList(element)
 
