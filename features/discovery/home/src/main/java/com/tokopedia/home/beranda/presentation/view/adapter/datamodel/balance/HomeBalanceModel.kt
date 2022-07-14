@@ -23,7 +23,7 @@ data class HomeBalanceModel(
     var status: Int = STATUS_LOADING,
     var balancePositionGopay: Int = 0,
     var balancePositionRewards: Int = 0,
-    var balancePositionSubscriptions: Int = 0
+    var balancePositionSubscriptions: Int = -1
 ) : BalanceWidgetVisitable {
     companion object {
         const val ERROR_TITLE = "Gagal Memuat"
@@ -144,7 +144,8 @@ data class HomeBalanceModel(
     }
 
     fun getSubscriptionBalanceCoachmark(): BalanceCoachmark? {
-        if (balanceDrawerItemModels.size > balancePositionSubscriptions) {
+        if (balancePositionSubscriptions != DEFAULT_BALANCE_POSITION &&
+            balanceDrawerItemModels.size > balancePositionSubscriptions) {
             val balanceItem = balanceDrawerItemModels[balancePositionSubscriptions]
             val isContainsGotoPlus = balanceItem.state == STATE_SUCCESS
             if (isContainsGotoPlus) {

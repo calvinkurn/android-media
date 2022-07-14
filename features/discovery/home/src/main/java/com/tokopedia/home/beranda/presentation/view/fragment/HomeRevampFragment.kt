@@ -93,7 +93,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynami
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceCoachmark
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder
@@ -211,7 +210,6 @@ import com.tokopedia.weaver.Weaver
 import com.tokopedia.weaver.Weaver.Companion.executeWeaveCoRoutineWithFirebase
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import dagger.Lazy
-import kotlinx.coroutines.FlowPreview
 import rx.Observable
 import rx.schedulers.Schedulers
 import java.io.UnsupportedEncodingException
@@ -244,7 +242,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     companion object {
         private const val className = "com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment"
-        private const val TOKOPOINTS_NOTIFICATION_TYPE = "drawer"
         private const val REQUEST_CODE_DIGITAL_PRODUCT_DETAIL = 220
         private const val DEFAULT_WALLET_APPLINK_REQUEST_CODE = 111
         private const val REQUEST_CODE_LOGIN_STICKY_LOGIN = 130
@@ -274,10 +271,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val PARAM_APPLINK_AUTOCOMPLETE = "?navsource={source}&hint={hint}&first_install={first_install}"
         private const val HOME_SOURCE = "home"
 
-        private const val BASE_URL = "https://ecs7.tokopedia.net/img/android/"
-        private const val BACKGROUND_LIGHT_1 = BASE_URL + "home/homepage/home_header_light_2.png"
-        private const val BACKGROUND_DARK_1 = BASE_URL + "home/homepage/home_header_dark.png"
-
         private const val DELAY_TOASTER_RESET_PASSWORD = 5000
         private const val ITEM_VIEW_CACHE_SIZE = 20
         private const val EMPTY_TIME_MILLIS = 0L
@@ -286,7 +279,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val PAGE_NAME_FPI_HOME = "home"
         private const val COACHMARK_FIRST_INDEX = 0
         private const val HOME_HEADER_POSITION = 0
-        private const val TOKOPOINTS_ITEM_POSITION = 1
         private const val VIEW_DEFAULT_HEIGHT = 0f
         private const val STATUS_BAR_DEFAULT_ALPHA = 0f
         private const val VERTICAL_SCROLL_FULL_BOTTOM_OFFSET = 0
@@ -389,7 +381,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private var autoRefreshHandler = Handler()
     private var autoRefreshRunnable: TimerRunnable = TimerRunnable(listener = this)
     private var serverOffsetTime: Long = 0L
-    private var bottomSheetIsShowing = false
     private var coachMarkIsShowing = false
     private var subscriptionCoachmarkIsShowing = false
     private var tokonowCoachmarkIsShowing = false
@@ -401,7 +392,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private val coachMarkItemSubscription = ArrayList<CoachMark2Item>()
     private val coachMarkItemTokonow = ArrayList<CoachMark2Item>()
     private var scrollPositionY = 0
-    private var positionWidgetTokopoints = 0
     private var positionWidgetSubscription = 0
     private var positionWidgetTokonow = 0
 
@@ -1200,19 +1190,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeSearchHint()
-    }
-
-    private fun renderTopBackground() {
-        context?.let { currentContext ->
-            //gone hide visibility loader cantik fest
-            val backgroundUrl = if (currentContext.isDarkMode()) {
-                BACKGROUND_DARK_1
-            } else {
-                BACKGROUND_LIGHT_1
-            }
-
-            adjustHomeBackgroundHeight()
-        }
     }
 
     private fun adjustHomeBackgroundHeight() {
@@ -2290,20 +2267,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         return homeSnackbar!!
     }
 
-    fun showNotAllowedGeolocationSnackbar() {
-        getSnackBar(getString(R.string.discovery_home_snackbar_geolocation_declined_permission),
-                Snackbar.LENGTH_LONG)
-                .setAction(getString(R.string.discovery_home_snackbar_geolocation_setting)) {
-                    HomePageTracking.eventClickOnAtur()
-                    goToApplicationDetailActivity()
-                }.show()
-    }
-
-    fun showAllowedGeolocationSnackbar() {
-        getSnackBar(getString(R.string.discovery_home_snackbar_geolocation_granted_permission),
-                Snackbar.LENGTH_LONG).show()
-    }
-
     private fun goToApplicationDetailActivity() {
         val intent = Intent()
         intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
@@ -2672,6 +2635,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun showBalanceWidgetCoachMark(homeBalanceModel: HomeBalanceModel) {
-        showCoachMark(homeBalanceModel.getSubscriptionBalanceCoachmark())
+        val balanceSubscriptionCoachmark = homeBalanceModel.getSubscriptionBalanceCoachmark()
+        if (balanceSubscriptionCoachmark == null && coachmarkSubscription?.isShowing == true)
+            coachmarkSubscription?.hideCoachMark()
+        showCoachMark(balanceSubscriptionCoachmark)
     }
 }
