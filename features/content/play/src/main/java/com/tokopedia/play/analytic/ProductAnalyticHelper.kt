@@ -45,11 +45,6 @@ class ProductAnalyticHelper(
         clearProducts()
     }
 
-    private fun sendImpressedBottomSheetProducts() {
-        analytic.impressBottomSheetProducts(getFinalProducts(), sectionInfo)
-        clearProducts()
-    }
-
     private fun sendImpressedPrivateVoucher() {
         val voucher = impressedVouchers.distinctBy { it.id }.firstOrNull { it.highlighted }
         voucher?.let { analytic.impressionPrivateVoucher(it) }

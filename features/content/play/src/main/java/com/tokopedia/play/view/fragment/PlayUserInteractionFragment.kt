@@ -501,7 +501,8 @@ class PlayUserInteractionFragment @Inject constructor(
 
     override fun onProductFeaturedClicked(view: ProductFeaturedViewComponent, product: PlayProductUiModel.Product, position: Int) {
         viewModel.doInteractionEvent(InteractionEvent.OpenProductDetail(product, ProductSectionUiModel.Section.ConfigUiModel.Empty, position))
-        analytic.clickFeaturedProduct(product, position)
+        if(product.isTokoNow) newAnalytic.clickFeaturedProduct(product, position, playViewModel.channelId, playViewModel.channelType, playViewModel.latestCompleteChannelData.channelDetail.channelInfo.title)
+        else analytic.clickFeaturedProduct(product, position)
     }
 
     /**

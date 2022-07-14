@@ -1,20 +1,31 @@
 package com.tokopedia.play.analytic.tokonow
 
 import com.tokopedia.play.analytic.*
-import com.tokopedia.play.analytic.KEY_TRACK_GROUP_CHAT_ROOM
-import com.tokopedia.play.analytic.KEY_TRACK_VIEW_CONTENT_IRIS
+import com.tokopedia.play.view.type.DiscountedPrice
+import com.tokopedia.play.view.type.OriginalPrice
 import com.tokopedia.play.view.type.PlayChannelType
+import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
+import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
+import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_PRODUCT_ID
 import com.tokopedia.track.TrackApp
+import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.trackingoptimizer.model.EventModel
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**
  * @author by astidhiyaa on 17/06/22
  */
-class PlayTokonowAnalyticImpl @Inject constructor(private val userSession: UserSessionInterface): PlayTokonowAnalytic {
+class PlayTokonowAnalyticImpl @Inject constructor(
+    private val userSession: UserSessionInterface, private val trackingQueue: TrackingQueue,
+) : PlayTokonowAnalytic {
 
     private val userId: String
         get() = userSession.userId
+
+    private val isLoggedIn: Boolean
+        get() = userSession.isLoggedIn
 
     override fun impressAddressWidget(channelId: String, channelType: PlayChannelType) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
@@ -141,6 +152,185 @@ class PlayTokonowAnalyticImpl @Inject constructor(private val userSession: UserS
         )
     }
 
+    override fun clickProductBottomSheet(
+        product: PlayProductUiModel.Product,
+        sectionInfo: ProductSectionUiModel.Section,
+        position: Int,
+        channelId: String,
+        channelType: PlayChannelType,
+    ) {
+        trackingQueue.putEETracking(
+            EventModel(
+                "productClick",
+                KEY_TRACK_GROUP_CHAT_ROOM,
+                "$KEY_TRACK_CLICK - now product bottomsheet",
+                "$channelId - ${product.id} - ${channelType.value}"
+            ),
+            hashMapOf (
+                "ecommerce" to hashMapOf(
+                    "click" to hashMapOf(
+                        "actionField" to hashMapOf( "list" to "/groupchat - bottom sheet now"),
+                        "products" to  listOf(convertProductToHashMapWithList(product, position + 1, "bottom sheet"))
+                    )
+                )
+            ),
+            generateBaseTracking())
+    }
+
+    override fun clickFeaturedProduct(featuredProduct: PlayProductUiModel.Product, position: Int, channelId: String, channelType: PlayChannelType, channelName: String) {
+        trackingQueue.putEETracking(
+            EventModel(
+                "productClick",
+                KEY_TRACK_GROUP_CHAT_ROOM,
+                "$KEY_TRACK_CLICK - now product carousel",
+                "$channelId - ${featuredProduct.id} - ${channelType.value}"
+            ),
+            hashMapOf(
+                "ecommerce" to hashMapOf(
+                    "click" to hashMapOf(
+                        "actionField" to hashMapOf( "list" to "/groupchat - featured product"),
+                        "products" to  listOf(convertProductToHashMapWithList(featuredProduct, position, "featured product"))
+                    )
+                )
+            ),
+            hashMapOf(
+                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                KEY_ITEM_LIST to "/groupchat - featured product",
+                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_USER_ID to userId,
+                KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
+                KEY_PRODUCT_ID to featuredProduct.id,
+                KEY_PRODUCT_NAME to featuredProduct.title,
+                KEY_PRODUCT_URL to featuredProduct.applink.toString(),
+                KEY_CHANNEL to channelName
+            )
+        )
+    }
+
+    override fun impressProductBottomSheet(
+        products: List<Pair<PlayProductUiModel.Product, Int>>,
+        sectionInfo: ProductSectionUiModel.Section,
+        channelId: String,
+        channelType: PlayChannelType,
+    ) {
+        if (products.isEmpty()) return
+
+        trackingQueue.putEETracking(
+            event = EventModel(
+                "productView",
+                KEY_TRACK_GROUP_CHAT_ROOM,
+                "view - now product bottomsheet",
+                "$channelId - ${products.first().first.id} - ${channelType.value}"
+            ),
+            enhanceECommerceMap = hashMapOf(
+                "ecommerce" to hashMapOf(
+                    "currencyCode" to "IDR",
+                    "impressions" to mutableListOf<HashMap<String, Any>>().apply {
+                        products.forEach {
+                            add(convertProductToHashMapWithList(it.first, it.second, "bottom sheet"))
+                        }
+                    }
+                )
+            ),
+            customDimension =
+                hashMapOf(
+                    KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                    KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                    KEY_USER_ID to userId,
+                    KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
+                )
+
+        )
+    }
+
+    override fun impressFeaturedProduct(
+        products: List<Pair<PlayProductUiModel.Product, Int>>,
+        isGeneral: Boolean,
+        channelId: String,
+        channelType: PlayChannelType,
+    ) {
+        if (products.isEmpty()) return
+
+        trackingQueue.putEETracking(
+            EventModel(
+                "productView",
+                KEY_TRACK_GROUP_CHAT_ROOM,
+                "view - now product carousel",
+                "$channelId - ${products.first().first.id} - ${channelType.value}"
+            ),
+            hashMapOf(
+                "ecommerce" to hashMapOf(
+                    "currencyCode" to "IDR",
+                    "impressions" to mutableListOf<HashMap<String, Any>>().apply {
+                        products.forEach {
+                            add(convertProductToHashMapWithList(it.first, it.second + 1, "featured product"))
+                        }
+                    }
+                )
+            ),
+            hashMapOf(
+                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_USER_ID to userId,
+                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
+            )
+        )
+    }
+
+    override fun clickBeli(
+        product: PlayProductUiModel.Product,
+        sectionInfo: ProductSectionUiModel.Section,
+        cartId: String,
+        shopInfo: PlayPartnerInfo,
+        channelId: String,
+        channelType: PlayChannelType,
+    ) {
+        trackingQueue.putEETracking(
+            EventModel(
+                KEY_TRACK_ADD_TO_CART,
+                KEY_TRACK_GROUP_CHAT_ROOM,
+                "$KEY_TRACK_CLICK - buy now product",
+                "$channelId - ${product.id} - ${channelType.value}"
+            ),
+            hashMapOf(
+                "ecommerce" to hashMapOf(
+                    "currencyCode" to "IDR",
+                    "add" to hashMapOf(
+                        "products" to listOf(convertProductAndShopToHashMapWithList(product, shopInfo, "/groupchat - bottom sheet"))
+                    )
+                )
+            ),
+            generateBaseTracking()
+        )
+    }
+
+    override fun clickAtc(
+        product: PlayProductUiModel.Product,
+        sectionInfo: ProductSectionUiModel.Section,
+        cartId: String,
+        shopInfo: PlayPartnerInfo,
+        channelId: String,
+        channelType: PlayChannelType,
+    ) {
+        trackingQueue.putEETracking(
+            EventModel(
+                KEY_TRACK_ADD_TO_CART,
+                KEY_TRACK_GROUP_CHAT_ROOM,
+                "$KEY_TRACK_CLICK - atc now product", "$channelId - ${product.id} - ${channelType.value}"
+            ),
+            hashMapOf(
+                "ecommerce" to hashMapOf(
+                    "currencyCode" to "IDR",
+                    "add" to hashMapOf(
+                        "products" to listOf(convertProductAndShopToHashMapWithList(product, shopInfo, "/groupchat - bottom sheet"))
+                    )
+                )
+            ),
+            generateBaseTracking()
+        )
+    }
+
     override fun impressGlobalToaster(channelId: String, channelType: PlayChannelType) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
@@ -152,5 +342,57 @@ class PlayTokonowAnalyticImpl @Inject constructor(private val userSession: UserS
                 KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
             )
         )
+    }
+
+    private fun generateBaseTracking(): HashMap<String, Any>{
+        return hashMapOf(
+            KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+            KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+            KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+            KEY_USER_ID to userId,
+        )
+    }
+
+    private fun convertProductToHashMapWithList(product: PlayProductUiModel.Product, position: Int, sourceFrom: String): HashMap<String, Any> {
+        return hashMapOf(
+            "name" to product.title,
+            "id" to product.id,
+            "price" to when(product.price) {
+                is DiscountedPrice -> product.price.discountedPriceNumber
+                is OriginalPrice -> product.price.priceNumber
+            },
+            "brand" to "",
+            "category" to "",
+            "variant" to "",
+            "list" to "/groupchat - $sourceFrom",
+            "position" to position
+        )
+    }
+
+    private fun convertProductAndShopToHashMapWithList(product: PlayProductUiModel.Product, shopInfo: PlayPartnerInfo, dimension39: String = ""): HashMap<String, Any> {
+        return hashMapOf(
+            "name" to product.title,
+            "id" to product.id,
+            "price" to when(product.price) {
+                is DiscountedPrice -> product.price.discountedPriceNumber
+                is OriginalPrice -> product.price.priceNumber
+            },
+            "brand" to "",
+            "category" to "",
+            "variant" to "",
+            "dimension39" to dimension39,
+            "category_id" to "",
+            "quantity" to product.minQty,
+            "shop_id" to shopInfo.id,
+            "shop_name" to shopInfo.name,
+            "shop_type" to shopInfo.type.value
+        )
+    }
+
+    companion object {
+        private const val KEY_PRODUCT_NAME = "productName"
+        private const val KEY_PRODUCT_URL = "productUrl"
+        private const val KEY_ITEM_LIST = "item_list"
+        private const val KEY_TRACK_ADD_TO_CART = "addToCart"
     }
 }

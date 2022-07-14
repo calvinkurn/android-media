@@ -191,7 +191,10 @@ class PlayBottomSheetFragment @Inject constructor(
         products: List<Pair<PlayProductUiModel.Product, Int>>,
         sectionInfo: ProductSectionUiModel.Section
     ) {
-        if(playViewModel.bottomInsets.isProductSheetsShown) analytic.impressBottomSheetProducts(products, sectionInfo)
+        if(playViewModel.bottomInsets.isProductSheetsShown) {
+            if(sectionInfo.config.type == ProductSectionType.Tokonow) newAnalytic.impressProductBottomSheet(products, sectionInfo, playViewModel.channelId, playViewModel.channelType)
+            else analytic.impressBottomSheetProducts(products, sectionInfo)
+        }
     }
 
     override fun onProductCountChanged(view: ProductSheetViewComponent) {
@@ -391,7 +394,9 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private fun doOpenProductDetail(product: PlayProductUiModel.Product, configUiModel: ProductSectionUiModel.Section, position: Int) {
         if (product.applink != null && product.applink.isNotEmpty()) {
-            analytic.clickProduct(product, configUiModel, position)
+            if(configUiModel.config.type == ProductSectionType.Tokonow)
+                newAnalytic.clickProductBottomSheet(product, configUiModel, position, channelId = playViewModel.channelId, channelType = playViewModel.channelType)
+            else analytic.clickProduct(product, configUiModel, position)
             openPageByApplink(product.applink, pipMode = true)
         }
     }
@@ -527,13 +532,21 @@ class PlayBottomSheetFragment @Inject constructor(
                             } else BottomInsetsType.ProductSheet //TEMPORARY
 
                             RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
-                            analytic.clickProductAction(
-                                product = event.product,
-                                cartId = event.cartId,
-                                productAction = ProductAction.Buy,
-                                bottomInsetsType = bottomInsetsType,
-                                shopInfo = playViewModel.latestCompleteChannelData.partnerInfo,
-                                sectionInfo = event.sectionInfo ?: ProductSectionUiModel.Section.Empty,
+                            if(event.sectionInfo.config.type == ProductSectionType.Tokonow)
+                                newAnalytic.clickBeli(product = event.product,
+                                    cartId = event.cartId,
+                                    shopInfo = playViewModel.latestCompleteChannelData.partnerInfo,
+                                    sectionInfo = event.sectionInfo,
+                                    channelType = playViewModel.channelType,
+                                    channelId = playViewModel.channelId)
+                            else
+                                analytic.clickProductAction(
+                                    product = event.product,
+                                    cartId = event.cartId,
+                                    productAction = ProductAction.Buy,
+                                    bottomInsetsType = bottomInsetsType,
+                                    shopInfo = playViewModel.latestCompleteChannelData.partnerInfo,
+                                    sectionInfo = event.sectionInfo,
                             )
                         }
                         is ShowInfoEvent -> {
@@ -593,7 +606,15 @@ class PlayBottomSheetFragment @Inject constructor(
 
                             if (event.isVariant) closeVariantSheet()
 
-                            analytic.clickProductAction(
+                            if(event.sectionInfo.config.type == ProductSectionType.Tokonow)
+                                newAnalytic.clickAtc(product = event.product,
+                                    cartId = event.cartId,
+                                    shopInfo = playViewModel.latestCompleteChannelData.partnerInfo,
+                                    sectionInfo = event.sectionInfo,
+                                    channelType = playViewModel.channelType,
+                                    channelId = playViewModel.channelId)
+                            else
+                                analytic.clickProductAction(
                                 product = event.product,
                                 cartId = event.cartId,
                                 productAction = ProductAction.AddToCart,
