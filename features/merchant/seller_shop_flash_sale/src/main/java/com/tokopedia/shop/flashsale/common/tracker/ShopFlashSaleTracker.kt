@@ -61,7 +61,7 @@ class ShopFlashSaleTracker @Inject constructor(private val userSession : UserSes
             .build()
             .send()
     }
-    //end region
+    //endregion
 
     //region Manage Highlighted Product Page Tracker
     fun sendClickButtonProceedOnManageHighlightPageEvent() {
