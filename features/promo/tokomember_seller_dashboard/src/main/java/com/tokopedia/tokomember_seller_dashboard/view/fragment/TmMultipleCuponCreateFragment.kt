@@ -703,6 +703,8 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 manualEndTimeProgram = TmDateUtil.addDuration(timeWindow?.endTime ?: "", periodMonth)
                 val maxProgramEndDate = GregorianCalendar(locale)
                 maxProgramEndDate.add(Calendar.YEAR, 1)
+                maxProgramEndDate.set(Calendar.HOUR_OF_DAY,23)
+                maxProgramEndDate.set(Calendar.MINUTE,59)
                 val endDate = GregorianCalendar(locale)
                 val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
                 endDate.time = sdf.parse(manualEndTimeProgram + "00") ?: Date()
