@@ -34,7 +34,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class ShopHomeCarousellProductViewHolder(
     itemView: View,
     val shopHomeCarouselProductListener: ShopHomeCarouselProductListener,
-    val shopHomeListener: ShopHomeListener
+    private val shopHomeListener: ShopHomeListener
 ) : AbstractViewHolder<ShopHomeCarousellProductUiModel>(itemView) {
 
     companion object {
@@ -111,6 +111,7 @@ class ShopHomeCarousellProductViewHolder(
                         val shopProductViewModel = shopHomeProductViewModelList.getOrNull(carouselProductCardPosition)
                                 ?: return
                         if (shopProductViewModel.isEnableDirectPurchase) {
+                            saveScrollPosition()
                             shopHomeCarouselProductListener.onProductAtcDefaultClick(
                                 shopProductViewModel,
                                 shopProductViewModel.minimumOrder,
@@ -163,6 +164,7 @@ class ShopHomeCarousellProductViewHolder(
                         carouselProductCardPosition: Int,
                         quantity: Int
                     ) {
+                        saveScrollPosition()
                         val shopProductViewModel = shopHomeProductViewModelList.getOrNull(carouselProductCardPosition)
                             ?: return
                         shopHomeCarouselProductListener.onProductAtcNonVariantQuantityEditorChanged(
@@ -177,6 +179,7 @@ class ShopHomeCarousellProductViewHolder(
                         productCardModel: ProductCardModel,
                         carouselProductCardPosition: Int
                     ) {
+                        saveScrollPosition()
                         val shopProductViewModel = shopHomeProductViewModelList.getOrNull(carouselProductCardPosition)
                             ?: return
                         shopHomeCarouselProductListener.onProductAtcVariantClick(shopProductViewModel)
