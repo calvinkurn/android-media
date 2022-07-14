@@ -195,16 +195,6 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-//    private fun getBalanceWidgetLoadingState() {
-//        if (!userSession.get().isLoggedIn) return
-//        findWidget<HomeHeaderDataModel> { headerModel, index ->
-//            launch {
-//                val visitable = updateHeaderData(homeBalanceWidgetUseCase.get().onGetBalanceWidgetLoadingState(headerModel))
-//                visitable?.let { updateWidget(visitable, index) }
-//            }
-//        }
-//    }
-
     fun getBalanceWidgetData() {
         if (!userSession.get().isLoggedIn) return
         findWidget<HomeHeaderDataModel> { headerModel, index ->
@@ -270,7 +260,7 @@ open class HomeRevampViewModel @Inject constructor(
         if (getHomeDataJob?.isActive == true) { return }
         homeRateLimit.shouldFetch(HOME_LIMITER_KEY)
         onRefreshState = true
-//        getBalanceWidgetLoadingState()
+        getBalanceWidgetData()
 
         if (homeFlowDataCancelled || !homeFlowStarted) {
             initFlow()
