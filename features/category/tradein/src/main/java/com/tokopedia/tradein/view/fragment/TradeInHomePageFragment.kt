@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -228,6 +229,7 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
     }
 
     private fun setErrorLaku6(it: Throwable?) {
+        view?.findViewById<NestedScrollView>(R.id.scroll_parent)?.hide()
         view?.findViewById<GlobalError>(R.id.home_global_error)?.run {
             //LAKU6 errors
             setType(GlobalError.SERVER_ERROR)
@@ -252,6 +254,7 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
     private fun setErrorTokopedia(it: Throwable?, isFraud : Boolean = false,
                                   errTitle : String = getString(com.tokopedia.tradein.R.string.tradein_cant_continue), errorCode : String) {
         tradeInAnalytics.errorScreen(errorCode)
+        view?.findViewById<NestedScrollView>(R.id.scroll_parent)?.hide()
         view?.findViewById<GlobalError>(R.id.home_global_error)?.run {
             //Tokopedia Backend errors
             when (it) {
@@ -282,10 +285,10 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
             view?.findViewById<View>(R.id.tradein_error_layout)?.show()
             setActionClickListener {
                 view?.findViewById<View>(R.id.tradein_error_layout)?.hide()
-                refreshPage()
                 if(isFraud)
                     setUpEducationalFragment()
-
+                else
+                    refreshPage()
             }
         }
     }
@@ -300,6 +303,7 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
     }
 
     private fun onTradeInDetailSuccess(tradeInDetailModel: TradeInDetailModel) {
+        view?.findViewById<NestedScrollView>(R.id.scroll_parent)?.show()
         tradeInDetailModel.getTradeInDetail.let { tradeInDetail ->
             setUpLogisticOptions(tradeInDetail.logisticOptions, tradeInDetail.logisticMessage)
             view?.apply {
