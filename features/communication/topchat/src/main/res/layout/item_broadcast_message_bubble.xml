@@ -67,6 +67,31 @@
         tools:listitem="@layout/item_topchat_product_carousel_attachment"
         tools:visibility="visible" />
 
+    <com.tokopedia.topchat.chatroom.view.custom.product_bundling.ProductBundlingRecyclerView
+        android:id="@+id/rv_product_bundle_card_broadcast"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:paddingStart="@dimen/dp_topchat_12"
+        android:paddingEnd="@dimen/spacing_lvl3"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:visibility="gone"
+        tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:orientation="horizontal"
+        tools:layout_height="50dp"
+        tools:listitem="@layout/item_topchat_product_bundling" />
+
+    <com.tokopedia.topchat.chatroom.view.custom.product_bundling.ProductBundlingCardAttachmentContainer
+        android:id="@+id/product_bundle_card_broadcast"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:paddingStart="@dimen/dp_topchat_12"
+        android:paddingEnd="@dimen/spacing_lvl3"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:visibility="gone"
+        tools:layout_height="50dp" />
+
     <com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
         android:id="@+id/broadcast_product"
         android:layout_width="match_parent"

@@ -9,6 +9,7 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.MultipleProductBundlingAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.*
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ProductBundlingViewHolderBinder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.ProductBundlingListener
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.MultipleProductBundlingUiModel
 import com.tokopedia.topchat.databinding.ItemTopchatMultipleProductBundlingAttachmentBinding
@@ -40,17 +41,13 @@ class ProductBundlingCarouselViewHolder constructor(
     }
 
     private fun initRecyclerView() {
-        binding?.rvProductBundleCard?.apply {
-            setRecycledViewPool(adapterListener.getCarouselViewPool())
-            adapter = multipleProductBundlingAdapter
-            addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        saveProductCarouselState(adapterPosition, productBundlingCarouselListener)
-                    }
-                }
-            })
-        }
+        ProductBundlingViewHolderBinder.initRecyclerView(
+            binding?.rvProductBundleCard,
+            adapterListener,
+            multipleProductBundlingAdapter,
+            productBundlingCarouselListener,
+            this
+        )
     }
 
     override fun bind(carouselBundling: MultipleProductBundlingUiModel, payloads: MutableList<Any>) {
@@ -66,8 +63,14 @@ class ProductBundlingCarouselViewHolder constructor(
     override fun bind(carouselBundling: MultipleProductBundlingUiModel) {
         super.bind(carouselBundling)
         syncCarouselProductBundling(carouselBundling)
-        multipleProductBundlingAdapter.carousel = carouselBundling
-        binding?.rvProductBundleCard?.restoreSavedCarouselState(adapterPosition, productBundlingCarouselListener)
+        ProductBundlingViewHolderBinder.bindProductBundling(
+            multipleProductBundlingAdapter, carouselBundling
+        )
+        ProductBundlingViewHolderBinder.bindScrollState(
+            binding?.rvProductBundleCard,
+            productBundlingCarouselListener,
+            this
+        )
     }
 
     /**
@@ -75,14 +78,7 @@ class ProductBundlingCarouselViewHolder constructor(
      * When this view has not been rendered but the adapter has been updated
      */
     private fun syncCarouselProductBundling(element: MultipleProductBundlingUiModel) {
-        if (!element.isLoading) return
-        val chatAttachments = deferredAttachment.getLoadedChatAttachments()
-        val attachment = chatAttachments[element.attachmentId] ?: return
-        if (attachment is ErrorAttachment) {
-            element.syncError()
-        } else {
-            element.updateData(attachment.parsedAttributes)
-        }
+        ProductBundlingViewHolderBinder.bindDeferredAttachment(element, deferredAttachment)
     }
 
     companion object {

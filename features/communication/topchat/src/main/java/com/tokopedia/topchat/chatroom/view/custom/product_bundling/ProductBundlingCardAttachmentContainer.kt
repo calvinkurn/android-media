@@ -40,7 +40,8 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
     private var singleBundlingLayout: ConstraintLayout? = null
     private var image: ImageUnify? = null
     private var label: Label? = null
-    private var bundlingName: Typography? = null
+    private var singleItemBundlingName: Typography? = null
+    private var multipleItemBundlingName: Typography? = null
     private var originalPrice: Typography? = null
     private var totalDiscount: Typography? = null
     private var bundlePrice: Typography? = null
@@ -128,7 +129,8 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
         singleBundlingLayout = findViewById(R.id.single_bundling_layout)
         image = findViewById(R.id.iv_single_product_thumbnail)
         label = findViewById(R.id.label_package)
-        bundlingName = findViewById(R.id.tv_product_bundling_name)
+        singleItemBundlingName = findViewById(R.id.tv_product_bundling_name)
+        multipleItemBundlingName = findViewById(R.id.tv_multiple_item_product_bundle_name)
         originalPrice = findViewById(R.id.tv_original_price)
         totalDiscount = findViewById(R.id.tv_total_discount)
         bundlePrice = findViewById(R.id.tv_bundle_price)
@@ -165,6 +167,7 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
         if (isMultipleBundleItem(element)) {
             initRecyclerView(element)
             showRecyclerView()
+            bindMultipleItemBundlingName(element)
         } else {
             bindImage(element.productBundling.bundleItem?.first())
             bindLabel(element.productBundling.bundleItem?.first())
@@ -180,11 +183,17 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
     private fun hideRecyclerView() {
         singleBundlingLayout?.show()
         recyclerView?.hide()
+        multipleItemBundlingName?.hide()
     }
 
     private fun showRecyclerView() {
         singleBundlingLayout?.hide()
         recyclerView?.show()
+    }
+
+    private fun bindMultipleItemBundlingName(element: ProductBundlingUiModel) {
+        multipleItemBundlingName?.text = element.productBundling.bundleTitle
+        multipleItemBundlingName?.show()
     }
 
     private fun initRecyclerView(element: ProductBundlingUiModel) {
@@ -270,7 +279,7 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
                 }
             }
         }
-        bundlingName?.text = spanText
+        singleItemBundlingName?.text = spanText
     }
 
     private fun bindPrice(element: ProductBundlingUiModel) {

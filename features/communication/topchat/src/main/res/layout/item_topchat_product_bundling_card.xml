@@ -23,7 +23,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             android:visibility="gone"
-            tools:visibility="visible">
+            tools:visibility="gone">
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/iv_single_product_thumbnail"
@@ -61,11 +61,26 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_multiple_item_product_bundle_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="@id/rv_product_bundle"
+            app:layout_constraintRight_toRightOf="@id/rv_product_bundle"
+            app:layout_constraintBottom_toTopOf="@id/rv_product_bundle"
+            android:layout_marginTop="12dp"
+            app:typographyType="display_2"
+            app:typographyWeight="bold"
+            android:visibility="gone"
+            tools:text="Home Care Ramadhan"
+            tools:visibility="visible"/>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_product_bundle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_multiple_item_product_bundle_name"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             android:layout_marginTop="12dp"
@@ -75,7 +90,7 @@
             tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_topchat_list_product_bundling"
             tools:itemCount="3"
-            tools:visibility="gone"/>
+            tools:visibility="visible"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

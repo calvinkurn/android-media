@@ -30,6 +30,8 @@ class GetChatUseCaseStub @Inject constructor(
         "success_get_chat_first_page_as_seller.json"
     private val chatWithBuyerPath =
         "success_get_chat_first_page_as_buyer.json"
+    private val chatBroadcastWithBuyerPath =
+        "success_get_chat_broadcast.json"
     private val bannedProductChatWithBuyerPath =
         "success_get_chat_first_page_with_banned_products.json"
     private val sellerSrwPromptPath =
@@ -52,6 +54,10 @@ class GetChatUseCaseStub @Inject constructor(
         "product_bundling/success_get_chat_product_bundling_single.json"
     private val productBundlingOOS =
         "product_bundling/success_get_chat_product_bundling_oos.json"
+    private val productBundlingBroadcastMultiple =
+        "product_bundling/success_get_chat_broadcast_product_bundling_multiple.json"
+    private val productBundlingBroadcastSingle =
+        "product_bundling/success_get_chat_broadcast_product_bundling.json"
 
     var response: GetExistingChatPojo = GetExistingChatPojo()
         set(value) {
@@ -67,6 +73,10 @@ class GetChatUseCaseStub @Inject constructor(
             field = value
         }
 
+    /**
+     * <!--- Start Default Chat Response  --->
+     */
+
     val defaultChatWithSellerResponse: GetExistingChatPojo
         get() = alterResponseOf(chatWithSellerPath) { response ->
             alterDateToToday(response)
@@ -76,6 +86,57 @@ class GetChatUseCaseStub @Inject constructor(
         get() = alterResponseOf(chatWithBuyerPath) { response ->
             alterDateToToday(response)
         }
+
+    /**
+     * <!--- End Default Chat Response  --->
+     */
+
+    /**
+     * <!--- Start Chat Response with BroadCast --->
+     */
+
+    val defaultBroadCastChatWithBuyerResponse: GetExistingChatPojo
+        get() = alterResponseOf(chatBroadcastWithBuyerPath) { response ->
+            alterDateToToday(response)
+        }
+
+    val broadCastChatWithProductBundlingResponse: GetExistingChatPojo
+        get() = alterResponseOf(productBundlingBroadcastMultiple) { response ->
+            alterDateToToday(response)
+        }
+
+    val broadCastChatWithSingleProductBundlingSingleItemResponse: GetExistingChatPojo
+        get() = alterResponseOf(productBundlingBroadcastSingle) { response ->
+            alterDateToToday(response)
+        }
+
+    val broadCastChatWithSingleProductBundlingMultipleItemResponse: GetExistingChatPojo
+        get() = alterResponseOf(productBundlingBroadcastSingle) { response ->
+            alterRepliesAttribute(
+                listPosition = 0, chatsPosition = 0, responseObj = response,
+                altercation = { replies ->
+                    replies[1].asJsonObject.addProperty(attachmentIds, "1507930100")
+                    replies[1].asJsonObject[attachment].asJsonObject.addProperty(
+                        id, "1507930100")
+                }
+            )
+        }
+
+    val broadCastChatWithSingleProductBundlingOutOfStockResponse: GetExistingChatPojo
+        get() = alterResponseOf(productBundlingBroadcastSingle) { response ->
+            alterRepliesAttribute(
+                listPosition = 0, chatsPosition = 0, responseObj = response,
+                altercation = { replies ->
+                    replies[1].asJsonObject.addProperty(attachmentIds, "1507930101")
+                    replies[1].asJsonObject[attachment].asJsonObject.addProperty(
+                        id, "1507930101")
+                }
+            )
+        }
+
+    /**
+     * <!--- End Chat Response with BroadCast --->
+     */
 
     val bannedProductChatWithBuyerResponse: GetExistingChatPojo
         get() = alterResponseOf(bannedProductChatWithBuyerPath) { response ->
@@ -413,6 +474,8 @@ class GetChatUseCaseStub @Inject constructor(
     private val date = "date"
     private val isExpired = "isExpired"
     private val parentReply = "parentReply"
+    private val id = "id"
+    private val attachmentIds = "attachmentID"
 
     private fun alterDateToToday(response: JsonObject) {
         val list = response.getAsJsonObject(chatReplies)
