@@ -260,7 +260,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     BenefitSummaryInfoUiModel benefitSummaryInfoUiModel;
     ShipmentButtonPaymentModel savedShipmentButtonPaymentModel;
     LastApplyUiModel savedLastApplyData;
-    UploadPrescriptionUiModel uploadPrescriptionUiModel;
 
     private boolean hasClearPromoBeforeCheckout = false;
     private boolean hasRunningApiCall = false;
@@ -3429,8 +3428,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             uploadModel.setUploadImageText(UploadPrescriptionViewHolder.EPharmacyImageUploadedText);
             uploadModel.setLeftIconUrl(UploadPrescriptionViewHolder.EPharmacyCountImageUrl);
             uploadModel.setPrescriptionIds(data.getExtras().getStringArrayList(KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA));
-            uploadPrescriptionUiModel = uploadModel;
-            shipmentAdapter.updateUploadPrescription(uploadPrescriptionUiModel);
+            uploadModel.setUploadedImageCount(data.getExtras().getStringArrayList(KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA).size());
+            shipmentAdapter.updateUploadPrescription(uploadModel);
         }
     }
 
