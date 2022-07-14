@@ -8,8 +8,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayout
-import com.google.gson.Gson
-import com.google.gson.JsonParser
+import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -111,8 +110,8 @@ internal class ShopPageFragmentPagerAdapter(
 
     private fun getIconUrlFromJsonString(iconDataJsonString: String): String {
         return try {
-            Gson().fromJson(
-                JsonParser.parseString(iconDataJsonString),
+            CommonUtil.fromJson<ShopTabIconUrlModel>(
+                iconDataJsonString,
                 ShopTabIconUrlModel::class.java
             ).run {
                 if (ctx?.isDarkMode() == true) {
