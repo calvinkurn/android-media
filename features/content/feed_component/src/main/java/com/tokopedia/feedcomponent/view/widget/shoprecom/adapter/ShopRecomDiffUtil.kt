@@ -21,7 +21,7 @@ class ShopRecomDiffUtil(
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition].isFollow == newList[newItemPosition].isFollow
+        return oldList[oldItemPosition] == newList[newItemPosition]
     }
 
 }

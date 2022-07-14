@@ -86,6 +86,9 @@ class UserProfileViewModel @AssistedInject constructor(
     val needOnboarding: Boolean
         get() = _profileWhitelist.value.hasAcceptTnc.not()
 
+    val isShopRecomShow: Boolean
+        get() = _shopRecom.value.isNotEmpty()
+
     private val _savedReminderData = MutableStateFlow<SavedReminderData>(SavedReminderData.NoData)
     private val _profileInfo = MutableStateFlow(ProfileUiModel.Empty)
     private val _followInfo = MutableStateFlow(FollowInfoUiModel.Empty)
@@ -123,7 +126,7 @@ class UserProfileViewModel @AssistedInject constructor(
             is UserProfileAction.SaveReminderActivityResult -> handleSaveReminderActivityResult(action.channelId, action.position, action.isActive)
             is UserProfileAction.RemoveReminderActivityResult -> handleRemoveReminderActivityResult()
             is UserProfileAction.ClickFollowButtonShopRecom -> handleClickFollowButtonShopRecom(action.itemID)
-            is UserProfileAction.RemoveShopRecomItem -> handleremoveShopRecomItem(action.itemID)
+            is UserProfileAction.RemoveShopRecomItem -> handleRemoveShopRecomItem(action.itemID)
         }
     }
 
@@ -252,7 +255,7 @@ class UserProfileViewModel @AssistedInject constructor(
         })
     }
 
-    private fun handleremoveShopRecomItem(itemID: Long) {
+    private fun handleRemoveShopRecomItem(itemID: Long) {
         _shopRecom.update { _shopRecom.value.filterNot { it.id == itemID } }
     }
 

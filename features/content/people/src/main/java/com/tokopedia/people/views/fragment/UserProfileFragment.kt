@@ -162,6 +162,7 @@ class UserProfileFragment @Inject constructor(
         }
 
         mainBinding.swipeRefreshLayout.setOnRefreshListener {
+            if (viewModel.isShopRecomShow) showLoadingShopRecom()
             refreshLandingPageData(true)
         }
 
@@ -269,7 +270,7 @@ class UserProfileFragment @Inject constructor(
     private fun initShopRecommendation() = with(mainBinding.shopRecommendation.rvShopRecom) {
         layoutManager = linearLayoutManager
         adapter = mAdapterShopRecom
-        if (itemDecorationCount == 0) addItemDecoration(ShopRecomItemDecoration())
+        if (itemDecorationCount == 0) addItemDecoration(ShopRecomItemDecoration(requireContext()))
     }
 
     private fun initUserPost(userId: String) {
@@ -521,8 +522,26 @@ class UserProfileFragment @Inject constructor(
 
         mAdapterShopRecom.updateData(value.shopRecom)
 
-        if (value.shopRecom.isEmpty()) mainBinding.shopRecommendation.root.hide()
-        else mainBinding.shopRecommendation.root.show()
+        if (value.shopRecom.isEmpty()) showEmptyShopRecom()
+        else showContentShopRecom()
+    }
+
+    private fun showLoadingShopRecom() = with(mainBinding.shopRecommendation) {
+        txtWordingFollow.hide()
+        rvShopRecom.hide()
+        shimmerShopRecom.root.show()
+    }
+
+    private fun showContentShopRecom() = with(mainBinding.shopRecommendation) {
+        txtWordingFollow.show()
+        rvShopRecom.show()
+        shimmerShopRecom.root.hide()
+    }
+
+    private fun showEmptyShopRecom() = with(mainBinding.shopRecommendation) {
+        txtWordingFollow.hide()
+        rvShopRecom.hide()
+        shimmerShopRecom.root.hide()
     }
 
     private fun buttonActionUIFollow() = with(mainBinding.btnAction) {
