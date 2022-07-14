@@ -394,6 +394,7 @@ object ShopPageTrackingConstant {
     const val SRP_SHOPNAME = "srp-%s"
     const val VERTICAL_POSITION = "p%1d"
     const val HOME_TAB = "home"
+    const val CAMPAIGN_TAB = "campaign"
     const val HOME_FEATURED_PRODUCT = "featured product"
     const val ETALASE_WIDGET = "etalase widget"
     const val ALL_PRODUCT = "all product"

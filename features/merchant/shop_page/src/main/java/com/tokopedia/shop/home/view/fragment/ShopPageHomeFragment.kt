@@ -71,6 +71,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.HOME_TAB
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.LABEL_GROUP_POSITION_FULFILLMENT
 import com.tokopedia.shop.analytic.ShopPlayWidgetAnalyticListener
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
@@ -1898,7 +1899,7 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
         }
     }
 
-    private fun sendShopHomeWidgetClickedTracker(
+    fun sendShopHomeWidgetClickedTracker(
         segmentName: String,
         widgetName: String,
         widgetId: String,
@@ -2670,7 +2671,7 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
         }
     }
 
-    private fun goToPDP(productId: String) {
+    fun goToPDP(productId: String) {
         context?.let {
             val intent = RouteManager.getIntent(
                 context,
@@ -2920,7 +2921,8 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
                 ShopUtil.getActualPositionFromIndex(parentPosition),
                 itemPosition,
                 isLogin,
-                customDimensionShopPage
+                customDimensionShopPage,
+                HOME_TAB
             )
         }
         shopHomeProductViewModel?.let {
@@ -2945,7 +2947,8 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
                 ShopUtil.getActualPositionFromIndex(parentPosition),
                 itemPosition,
                 isLogin,
-                customDimensionShopPage
+                customDimensionShopPage,
+                HOME_TAB
             )
         }
     }
