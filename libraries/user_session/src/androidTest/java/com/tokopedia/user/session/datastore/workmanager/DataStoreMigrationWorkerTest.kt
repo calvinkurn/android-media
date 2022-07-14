@@ -7,6 +7,7 @@ import androidx.work.ListenableWorker.Result
 import androidx.work.testing.TestListenableWorkerBuilder
 import androidx.work.workDataOf
 import com.tokopedia.di.FakeComponentFactory
+import com.tokopedia.encryption.security.AeadEncryptorImpl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.datastore.DataStorePreference
 import com.tokopedia.user.session.datastore.UserSessionAbTestPlatform
@@ -103,5 +104,20 @@ class DataStoreMigrationWorkerTest {
             val dataStore = UserSessionDataStoreClient.getInstance(context)
             assertThat(dataStore.getName().first(), equalTo(newName))
         }
+    }
+
+    @Test
+    fun test_encrypt_decrypt_tink_repeatedly() {
+        repeat(10) {
+            val aead = AeadEncryptorImpl(context)
+
+            val msg = "secret message #$it"
+            val start = System.currentTimeMillis()
+            val cipher = aead.encrypt(msg)
+            val decrypted = aead.decrypt(cipher)
+            assertThat(msg, `is`(decrypted))
+            println("The process took ${System.currentTimeMillis() - start} ms")
+        }
+
     }
 }
