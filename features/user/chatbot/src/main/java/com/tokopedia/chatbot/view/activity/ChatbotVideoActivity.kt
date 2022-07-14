@@ -2,7 +2,7 @@ package com.tokopedia.chatbot.view.activity
 
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -20,6 +20,8 @@ class ChatbotVideoActivity : BaseChatToolbarActivity() {
         return ChatbotVideoFragment.getInstance(extras)
     }
 
+    override fun getChatHeaderLayout() :Int = R.layout.chatbot_header_layout
+
     override fun setupToolbar() {
         super.setupToolbar()
         supportActionBar?.run {
@@ -27,18 +29,13 @@ class ChatbotVideoActivity : BaseChatToolbarActivity() {
             val upArrow = MethodChecker.getDrawable(applicationContext, com.tokopedia.abstraction.R.drawable.ic_action_back)
             this.setHomeAsUpIndicator(upArrow)
         }
-//        (findViewById<TextView>(R.id.title)).text = getString(R.string.chatbot_video_title)
-//        val textView = findViewById<Typography>(R.id.title)
-//        textView.text = getString(R.string.chatbot_video_title)
-//        textView.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
 
         (findViewById<TextView>(R.id.title)).apply {
             text = getString(R.string.chatbot_video_title)
             setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
         }
 
-        val avatarContainer =  findViewById<FrameLayout>(R.id.flPhotoContainer)
-        avatarContainer.gone()
+        findViewById<ImageView>(R.id.user_avatar).gone()
     }
 
     companion object {
