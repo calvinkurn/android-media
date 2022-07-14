@@ -689,8 +689,8 @@ class UserProfileFragment @Inject constructor(
         if (mAdapterShopRecom.itemCount == 0) mainBinding.shopRecommendation.root.hide()
     }
 
-    override fun onShopRecomFollowClicked(itemID: Long, encryptedID: String, isFollow: Boolean) {
-        submitAction(UserProfileAction.ClickFollowButtonShopRecom(itemID, encryptedID, isFollow))
+    override fun onShopRecomFollowClicked(itemID: Long) {
+        submitAction(UserProfileAction.ClickFollowButtonShopRecom(itemID))
     }
 
     override fun onShopRecomItemClicked(appLink: String) {

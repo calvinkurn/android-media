@@ -122,9 +122,7 @@ class UserProfileViewModel @AssistedInject constructor(
             is UserProfileAction.ClickUpdateReminder -> handleClickUpdateReminder(action.isFromLogin)
             is UserProfileAction.SaveReminderActivityResult -> handleSaveReminderActivityResult(action.channelId, action.position, action.isActive)
             is UserProfileAction.RemoveReminderActivityResult -> handleRemoveReminderActivityResult()
-            is UserProfileAction.ClickFollowButtonShopRecom -> handleClickFollowButtonShopRecom(
-                action.itemID, action.encryptedID, action.isFollow
-            )
+            is UserProfileAction.ClickFollowButtonShopRecom -> handleClickFollowButtonShopRecom(action.itemID)
             is UserProfileAction.RemoveShopRecomItem -> handleremoveShopRecomItem(action.itemID)
         }
     }
@@ -225,20 +223,21 @@ class UserProfileViewModel @AssistedInject constructor(
         _savedReminderData.update { SavedReminderData.NoData }
     }
 
-    private fun handleClickFollowButtonShopRecom(itemID: Long, encryptedID: String, isFollow: Boolean) {
+    private fun handleClickFollowButtonShopRecom(itemID: Long) {
         viewModelScope.launchCatchError(block = {
 
             val followInfo = _followInfo.value
+            val currItem = _shopRecomContent.value.find { it.id == itemID } ?: return@launchCatchError
 
-            val result = if (isFollow) repo.unFollowProfile(encryptedID)
-            else repo.followProfile(encryptedID)
+            val result = if (currItem.isFollow) repo.unFollowProfile(currItem.encryptedID)
+            else repo.followProfile(currItem.encryptedID)
 
             when (result) {
                 is MutationUiModel.Success -> {
                     _profileInfo.update { repo.getProfile(followInfo.userID) }
                     _shopRecomContent.update {
                         _shopRecomContent.value.map {
-                            if (itemID == it.id) it.copy(isFollow = !isFollow)
+                            if (itemID == it.id) it.copy(isFollow = !it.isFollow)
                             else it
                         }
                     }

@@ -5,6 +5,6 @@ package com.tokopedia.feedcomponent.view.widget.shoprecom.listener
  **/
 interface ShopRecommendationCallback {
     fun onShopRecomCloseClicked(itemID: Long)
-    fun onShopRecomFollowClicked(itemID: Long, encryptedID: String, isFollow: Boolean)
+    fun onShopRecomFollowClicked(itemID: Long)
     fun onShopRecomItemClicked(appLink: String)
 }
