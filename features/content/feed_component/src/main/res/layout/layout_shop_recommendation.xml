@@ -25,6 +25,6 @@
         android:layout_marginTop="@dimen/unify_space_8"
         android:paddingBottom="@dimen/unify_space_8"
         app:layout_constraintTop_toBottomOf="@id/txt_wording_follow"
-        tools:listitem="@layout/shop_recommendation" />
+        tools:listitem="@layout/layout_shop_recommendation" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

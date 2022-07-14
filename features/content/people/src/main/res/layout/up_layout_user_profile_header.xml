@@ -309,7 +309,7 @@
 
                     <include
                         android:id="@+id/shop_recommendation"
-                        layout="@layout/shop_recommendation"
+                        layout="@layout/layout_shop_recommendation"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:visibility="gone"
