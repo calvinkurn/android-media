@@ -28,10 +28,12 @@ import com.tokopedia.media.editor.ui.component.RemoveBackgroundToolUiComponent
 import com.tokopedia.media.editor.ui.component.WatermarkToolUiComponent
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.utils.getDestinationUri
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.media.loader.loadImageWithTarget
 import com.tokopedia.media.loader.utils.MediaTarget
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.types.EditorToolType
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
 import java.io.ByteArrayOutputStream
 import java.io.FileOutputStream
@@ -232,8 +234,9 @@ class DetailEditorFragment @Inject constructor(
             )
 
             watermarkComponent.getButtonRef().apply {
-                this.first.setImageBitmap(resultBitmap1)
-                this.second.setImageBitmap(resultBitmap2)
+                val roundedCorner = context?.resources?.getDimension(R.dimen.editor_watermark_rounded) ?: 0f
+                this.first.loadImageRounded(resultBitmap1, roundedCorner)
+                this.second.loadImageRounded(resultBitmap2, roundedCorner)
             }
         }
     }

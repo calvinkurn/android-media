@@ -7,4 +7,7 @@
     <dimen name="editor_thumbnail_selected_padding">2dp</dimen>
 
     <dimen name="media_editor_slider_height">10dp</dimen>
+    
+    <dimen name="editor_watermark_rounded">30dp</dimen>
+    <dimen name="editor_watermark_selected_padding">2dp</dimen>
 </resources>
