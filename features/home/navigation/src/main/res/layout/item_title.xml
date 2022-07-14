@@ -9,4 +9,4 @@
     tools:text="Test title"
     android:padding="10dp"
     app:typographyWeight="bold"
-    app:typographyType="body_1" />
+    app:typographyType="display_1" />

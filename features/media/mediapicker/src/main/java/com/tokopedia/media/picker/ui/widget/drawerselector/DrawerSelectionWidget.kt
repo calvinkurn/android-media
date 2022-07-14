@@ -13,7 +13,7 @@ import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.media.databinding.WidgetSelectionBottomNavBinding
 import com.tokopedia.media.picker.ui.widget.drawerselector.adapter.DrawerSelectionAdapter
 import com.tokopedia.media.picker.ui.widget.drawerselector.viewholder.ThumbnailViewHolder
-import com.tokopedia.picker.common.utils.Unify_N0
+import com.tokopedia.picker.common.mapper.Unify_N0
 
 class DrawerSelectionWidget : FrameLayout {
 

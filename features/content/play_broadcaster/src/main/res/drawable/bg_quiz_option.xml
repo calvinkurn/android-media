@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape android:shape="rectangle" xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/Unify_NN0" />
+    <corners android:radius="@dimen/play_bro_quiz_option_radius" />
+    <stroke android:width="@dimen/play_bro_quiz_option_border_width"
+        android:color="@color/Unify_NN300" />
+</shape>

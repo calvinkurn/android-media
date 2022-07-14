@@ -263,10 +263,6 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
             val tabLayout = binding?.tabsUnify?.getUnifyTabLayout()
             val tab = tabLayout?.getTabAt(tabPosition)
             tab?.select()
-
-            if (tabPosition == SECOND_TAB) {
-                listener?.onCampaignCancelled()
-            }
         }
     }
 
@@ -299,7 +295,6 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
     }
 
     interface ActiveCampaignListListener {
-        fun onCampaignCancelled()
         fun onSaveDraftSuccess()
     }
 
@@ -322,6 +317,6 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
         if (!isAdded) return
         val encodedUrl = FEATURE_INTRODUCTION_URL.encodeToUtf8()
         val route = String.format("%s?url=%s", ApplinkConst.WEBVIEW, encodedUrl)
-        RouteManager.route(requireActivity(), route)
+        RouteManager.route(activity ?: return, route)
     }
 }

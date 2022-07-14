@@ -108,7 +108,8 @@ class CampaignAdapter(
         private fun handleCampaignStatusIndicator(campaign: CampaignUiModel) {
             when {
                 campaign.status.isUpcoming() -> {
-                    binding.tpgCampaignStatus.setStatus(R.string.sfs_upcoming)
+                    val statusTextResourceId = if (campaign.thematicParticipation) R.string.sfs_selection else R.string.sfs_upcoming
+                    binding.tpgCampaignStatus.setStatus(statusTextResourceId)
                     binding.tpgCampaignStatus.textColor(Unify_YN400)
                     binding.imgCampaignStatusIndicator.setImageResource(R.drawable.ic_sfs_campaign_indicator_upcoming)
                     startTimer(campaign)

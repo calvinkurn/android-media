@@ -11,19 +11,24 @@ import com.tokopedia.hotel.booking.data.model.HotelCheckoutParam
 import com.tokopedia.hotel.booking.data.model.HotelCheckoutResponse
 import com.tokopedia.hotel.booking.data.model.TokopointsSumCoupon
 import com.tokopedia.hotel.booking.presentation.viewmodel.HotelBookingViewModel
+import com.tokopedia.hotel.roomlist.util.HotelUtil
 import com.tokopedia.promocheckout.common.domain.model.FlightCancelVoucher
 import com.tokopedia.promocheckout.common.view.model.PromoData
+import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.travel.passenger.data.entity.TravelContactListModel
 import com.tokopedia.travel.passenger.data.entity.TravelUpsertContactModel
 import com.tokopedia.travel.passenger.domain.GetContactListUseCase
 import com.tokopedia.travel.passenger.domain.UpsertContactListUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
+import io.mockk.mockkObject
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -56,6 +61,7 @@ class HotelBookingViewModelTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
+        mockkObject(HotelUtil.Companion)
         hotelBookingViewModel = HotelBookingViewModel(graphqlRepository, getContactListUseCase, upsertContactListUseCase,
                 travelTickerCoroutineUseCase, dispatcher)
     }
@@ -153,6 +159,54 @@ class HotelBookingViewModelTest {
     }
 
     @Test
+    fun checkoutCartWithTokenNotEmpty_shouldBeSuccess() {
+        //given
+        val checkoutResponse = HotelCheckoutResponse.Response(HotelCheckoutResponse(redirectUrl = "www.tokopedia.com"))
+        val graphqlSuccessResponse = GraphqlResponse(
+            mapOf<Type, Any>(HotelCheckoutResponse.Response::class.java to checkoutResponse),
+            mapOf<Type, List<GraphqlError>>(),
+            false)
+        coEvery {
+            graphqlRepository.response(any(), any())
+        } returns graphqlSuccessResponse
+
+        every {
+            HotelUtil.md5(any())
+        } returns "2022"
+
+        //when
+        hotelBookingViewModel.checkoutCart("", HotelCheckoutParam())
+
+        //then
+        assert(hotelBookingViewModel.hotelCheckoutResult.value is Success)
+        assert((hotelBookingViewModel.hotelCheckoutResult.value as Success<HotelCheckoutResponse>).data.redirectUrl == "www.tokopedia.com")
+    }
+
+    @Test
+    fun checkoutCartWithTokenEmpty_shouldBeSuccess() {
+        //given
+        val checkoutResponse = HotelCheckoutResponse.Response(HotelCheckoutResponse(redirectUrl = "www.tokopedia.com"))
+        val graphqlSuccessResponse = GraphqlResponse(
+            mapOf<Type, Any>(HotelCheckoutResponse.Response::class.java to checkoutResponse),
+            mapOf<Type, List<GraphqlError>>(),
+            false)
+        coEvery {
+            graphqlRepository.response(any(), any())
+        } returns graphqlSuccessResponse
+
+        every {
+            HotelUtil.md5(any())
+        } returns ""
+
+        //when
+        hotelBookingViewModel.checkoutCart("", HotelCheckoutParam())
+
+        //then
+        assert(hotelBookingViewModel.hotelCheckoutResult.value is Success)
+        assert((hotelBookingViewModel.hotelCheckoutResult.value as Success<HotelCheckoutResponse>).data.redirectUrl == "www.tokopedia.com")
+    }
+
+    @Test
     fun checkOutCart_shouldBeFail() {
         //given
         val graphqlErrorResponse = GraphqlResponse(
@@ -170,34 +224,69 @@ class HotelBookingViewModelTest {
         assert(hotelBookingViewModel.hotelCheckoutResult.value is Fail)
     }
 
+
     @Test
-    fun onCancelAppliedVoucher_shouldBeSuccess() {
+    fun onCancelAppliedVoucherWithAttributesTrue_shouldBeSuccess() {
         //given
+        val expected = PromoData(state = TickerCheckoutView.State.ACTIVE)
+        val flightCancelResponse = FlightCancelVoucher(attributes = FlightCancelVoucher.Attributes(success = true))
         val graphqlSuccessResponse = GraphqlResponse(
-                mapOf<Type, Any>(FlightCancelVoucher::class.java to FlightCancelVoucher()),
-                mapOf<Type, List<GraphqlError>>(),
-                false)
+            mapOf<Type, Any>(FlightCancelVoucher.Response::class.java to FlightCancelVoucher.Response(flightCancelResponse)),
+            mapOf<Type, List<GraphqlError>>(),
+            false)
+
         coEvery {
             graphqlRepository.response(any(), any())
         } returns graphqlSuccessResponse
 
         //when
+        hotelBookingViewModel.applyPromoData(expected)
         hotelBookingViewModel.onCancelAppliedVoucher("")
+
+        //then
+        hotelBookingViewModel.promoData.verifyValueEquals(expected)
+    }
+
+    @Test
+    fun onCancelAppliedVoucherWithAttributesFalse_shouldBeError() {
+        //given
+        val expected = PromoData(state = TickerCheckoutView.State.FAILED)
+        val flightCancelResponse = FlightCancelVoucher(attributes = FlightCancelVoucher.Attributes(success = false))
+        val graphqlSuccessResponse = GraphqlResponse(
+                mapOf<Type, Any>(FlightCancelVoucher.Response::class.java to FlightCancelVoucher.Response(flightCancelResponse)),
+                mapOf<Type, List<GraphqlError>>(),
+                false)
+
+        coEvery {
+            graphqlRepository.response(any(), any())
+        } returns graphqlSuccessResponse
+
+        //when
+        hotelBookingViewModel.applyPromoData(expected)
+        hotelBookingViewModel.onCancelAppliedVoucher("")
+
+        //then
+        hotelBookingViewModel.promoData.verifyValueEquals(expected)
     }
 
     @Test
     fun onCancelAppliedVoucher_shouldBeError() {
         //given
+        val expected = PromoData(state = TickerCheckoutView.State.FAILED)
         val graphqlErrorResponse = GraphqlResponse(
                 mapOf<Type, Any>(),
-                mapOf<Type, List<GraphqlError>>(FlightCancelVoucher::class.java to listOf(GraphqlError())),
+                mapOf<Type, List<GraphqlError>>(FlightCancelVoucher.Response::class.java to listOf(GraphqlError())),
                 false)
         coEvery {
             graphqlRepository.response(any(), any())
         } returns graphqlErrorResponse
 
         //when
+        hotelBookingViewModel.applyPromoData(expected)
         hotelBookingViewModel.onCancelAppliedVoucher("")
+
+        //then
+        hotelBookingViewModel.promoData.verifyValueEquals(expected)
     }
 
     @Test

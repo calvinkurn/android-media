@@ -7,5 +7,5 @@ sealed class CancelCampaignActionResult {
         val campaign: CampaignUiModel,
     ) : CancelCampaignActionResult()
 
-    object RegisteredEventCampaign : CancelCampaignActionResult()
+    data class RegisteredEventCampaign(val campaign: CampaignUiModel) : CancelCampaignActionResult()
 }

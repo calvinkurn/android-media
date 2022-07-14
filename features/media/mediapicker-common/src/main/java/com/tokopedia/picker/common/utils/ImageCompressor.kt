@@ -10,7 +10,6 @@ import androidx.exifinterface.media.ExifInterface
 import com.tokopedia.utils.image.ImageProcessingUtil.getCompressFormat
 import com.tokopedia.utils.image.ImageProcessingUtil.writeImageToTkpdPath
 import java.io.File
-import java.io.InputStream
 import kotlin.math.max
 import kotlin.math.min
 
@@ -21,6 +20,10 @@ object ImageCompressor {
 
     private const val MIN_WIDTH = 300
     private const val MIN_HEIGHT = 300
+
+    private const val DEGREE_90 = 90f
+    private const val DEGREE_180 = 180f
+    private const val DEGREE_270 = 270f
 
     private const val QUALITY = 80 // in percent
 
@@ -167,15 +170,9 @@ object ImageCompressor {
         )
 
         when (orientation) {
-            ExifInterface.ORIENTATION_ROTATE_90 -> matrix.postRotate(
-                90f
-            )
-            ExifInterface.ORIENTATION_ROTATE_180 -> matrix.postRotate(
-                180f
-            )
-            ExifInterface.ORIENTATION_ROTATE_270 -> matrix.postRotate(
-                270f
-            )
+            ExifInterface.ORIENTATION_ROTATE_90 -> matrix.postRotate(DEGREE_90)
+            ExifInterface.ORIENTATION_ROTATE_180 -> matrix.postRotate(DEGREE_180)
+            ExifInterface.ORIENTATION_ROTATE_270 -> matrix.postRotate(DEGREE_270)
         }
 
         val remainingScaleFactor = scaleFactor / bmOptions.inSampleSize.toFloat()

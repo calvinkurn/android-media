@@ -250,7 +250,6 @@ open class RecommendationPageViewModel @Inject constructor(
                 productId = productId,
                 queryParam = queryParam
             )
-            it.printStackTrace()
         }
     }
 
@@ -374,7 +373,6 @@ open class RecommendationPageViewModel @Inject constructor(
                         }
 
                         override fun onError(e: Throwable) {
-                            e.printStackTrace()
                             _addToCartLiveData.postValue(Response.error(e))
                         }
 
@@ -409,7 +407,6 @@ open class RecommendationPageViewModel @Inject constructor(
                         override fun onCompleted() {}
 
                         override fun onError(e: Throwable) {
-                            e.printStackTrace()
                             _buyNowLiveData.postValue(Response.error(e))
                         }
 

@@ -3,6 +3,9 @@ package com.tokopedia.tokopedianow.common.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_15M
+import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_20M
+import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_2H
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
 import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
@@ -24,6 +27,8 @@ class SetUserPreferenceUseCase @Inject constructor(graphqlRepository: GraphqlRep
 
     suspend fun execute(localCacheModel: LocalCacheModel, serviceType: String): SetUserPreferenceData {
         graphql.apply {
+            val serviceTypeParam = if (serviceType == NOW_20M) NOW_15M else serviceType
+
             val warehouses = localCacheModel.warehouses.map {
                 WarehouseData(
                     it.warehouse_id.toString(),
@@ -32,13 +37,13 @@ class SetUserPreferenceUseCase @Inject constructor(graphqlRepository: GraphqlRep
             }
 
             val shopId = localCacheModel.shop_id
-            val warehouse = warehouses.firstOrNull { it.serviceType == serviceType }
+            val warehouse = warehouses.firstOrNull { it.serviceType == serviceTypeParam }
             val warehouseId = warehouse?.warehouseId?.getOrDefaultZeroString()
 
             val requestParams = RequestParams().apply {
                 putString(PARAM_SHOP_ID, shopId)
                 putString(PARAM_WAREHOUSE_ID, warehouseId)
-                putString(PARAM_SERVICE_TYPE, serviceType)
+                putString(PARAM_SERVICE_TYPE, serviceTypeParam)
                 putObject(PARAM_WAREHOUSES, warehouses)
             }.parameters
 

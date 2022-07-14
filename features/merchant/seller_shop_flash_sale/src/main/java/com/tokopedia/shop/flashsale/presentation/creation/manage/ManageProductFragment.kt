@@ -15,8 +15,10 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.loaderdialog.LoaderDialog
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentManageProductBinding
 import com.tokopedia.shop.flashsale.common.extension.*
@@ -72,7 +74,6 @@ class ManageProductFragment : BaseDaggerFragment() {
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ManageProductViewModel::class.java) }
-    private val loaderDialog by lazy { context?.let { LoaderDialog(it) } }
     private val campaignId by lazy { arguments?.getLong(BUNDLE_KEY_CAMPAIGN_ID).orZero() }
     private val manageProductListAdapter by lazy {
         ManageProductListAdapter(
@@ -203,7 +204,6 @@ class ManageProductFragment : BaseDaggerFragment() {
     private fun observeRemoveProductsStatus() {
         viewModel.removeProductsStatus.observe(viewLifecycleOwner) {
             doOnDelayFinished(DELAY) {
-                loaderDialog?.dialog?.dismiss()
                 if (it is Success) {
                     viewModel.getProducts(campaignId, LIST_TYPE)
                     showSuccessDeleteProductToaster()
@@ -428,7 +428,6 @@ class ManageProductFragment : BaseDaggerFragment() {
     private fun deleteProduct(product: SellerCampaignProductList.Product) {
         ProductDeleteDialog().apply {
             setOnPrimaryActionClick {
-                loaderDialog?.show()
                 viewModel.removeProducts(campaignId, listOf(product))
             }
             show(context ?: return)

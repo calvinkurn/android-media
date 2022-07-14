@@ -135,7 +135,9 @@ open class UserPostBaseAdapter(
         totalView: String?,
         isReminderSet: Boolean?,
     ) {
-        val selectedData = items.firstOrNull { it.id == channelId } ?: return
+        val selectedData = items
+            .filterIsInstance<PlayPostContentItem>()
+            .firstOrNull { it.id == channelId } ?: return
 
         val currTotalView = selectedData.stats.view.formatted
         val currIsReminderSet = selectedData.configurations.reminder.isSet
@@ -175,15 +177,6 @@ open class UserPostBaseAdapter(
             reminderType.reminded
         )
     }
-
-    override fun onLabelPromoClicked(view: View, item: PlayWidgetChannelUiModel) {
-       //add tracker later
-    }
-
-    override fun onLabelPromoImpressed(view: View, item: PlayWidgetChannelUiModel) {
-        //add tracker later
-    }
-
 
     interface PlayWidgetCallback {
         fun updatePostReminderStatus(channelId: String, isActive: Boolean, pos: Int)

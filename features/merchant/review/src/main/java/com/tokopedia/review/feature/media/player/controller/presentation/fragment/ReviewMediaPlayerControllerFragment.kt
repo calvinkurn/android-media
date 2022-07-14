@@ -9,8 +9,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.review.R
 import com.tokopedia.review.common.extension.collectLatestWhenResumed
@@ -104,7 +102,6 @@ class ReviewMediaPlayerControllerFragment : BaseDaggerFragment(), CoroutineScope
 
     private fun setupLayout() {
         binding?.run {
-            setupCounter()
             setupVideoPlayer()
             setupVideoPlayerController()
         }
@@ -164,10 +161,6 @@ class ReviewMediaPlayerControllerFragment : BaseDaggerFragment(), CoroutineScope
         playerControlViewReviewMediaGallery.hide()
     }
 
-    private fun FragmentReviewMediaPlayerControllerBinding.setupCounter() {
-        layoutReviewMediaGalleryItemCounter.setBackgroundResource(R.drawable.bg_review_media_gallery_item_counter)
-    }
-
     private fun FragmentReviewMediaPlayerControllerBinding.setupVideoPlayer() {
         videoPlayer.setPlayerController(playerControlViewReviewMediaGallery)
     }
@@ -180,16 +173,6 @@ class ReviewMediaPlayerControllerFragment : BaseDaggerFragment(), CoroutineScope
             dividerReviewMediaGalleryBottomController.gone()
             playerControlViewReviewMediaGallery.hide()
         }
-        tvReviewMediaGalleryItemCounter.run {
-            text = buildString {
-                append(uiState.currentGalleryPosition)
-                append("/")
-                append(uiState.totalMedia)
-            }
-            if (uiState.shouldShowMediaCounter) show() else hide()
-        }
-        loaderReviewMediaGalleryItemCounter.showWithCondition(uiState.shouldShowMediaCounterLoader)
-        layoutReviewMediaGalleryItemCounter.showWithCondition(uiState.shouldShowMediaCounter || uiState.shouldShowMediaCounterLoader)
         view?.findViewById<IconUnify>(R.id.review_media_gallery_maximize_control)?.showWithCondition(uiState.orientationUiState.isPortrait())
         view?.findViewById<IconUnify>(R.id.review_media_gallery_minimize_control)?.showWithCondition(uiState.orientationUiState.isLandscape())
         view?.findViewById<IconUnify>(R.id.review_media_gallery_volume_muted_control)?.showWithCondition(uiState.muted)

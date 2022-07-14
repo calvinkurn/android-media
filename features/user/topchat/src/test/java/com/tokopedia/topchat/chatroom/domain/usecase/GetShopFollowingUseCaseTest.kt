@@ -25,7 +25,7 @@ class GetShopFollowingUseCaseTest {
     private val dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider
 
     private lateinit var useCase: GetShopFollowingUseCase
-    private val testShopId: Long = 123
+    private val testShopId: String = "123"
 
     @Before
     fun before() {

@@ -14,7 +14,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration
@@ -54,7 +53,11 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    lateinit var destinationViewModel: HotelDestinationViewModel
+
+    private val destinationViewModel: HotelDestinationViewModel by lazy(LazyThreadSafetyMode.NONE){
+        ViewModelProvider(this, viewModelFactory)[HotelDestinationViewModel::class.java]
+    }
+
     private var binding by autoClearedNullable<FragmentHotelRecommendationBinding>()
 
     lateinit var currentLocationTextView: TextView
@@ -79,9 +82,6 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.run {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-            destinationViewModel = viewModelProvider.get(HotelDestinationViewModel::class.java)
-
             fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         }
 

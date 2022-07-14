@@ -7,7 +7,6 @@ import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.BaseShopScoreTest
 import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.SectionShopFeatureRecommendationViewHolder
 import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMUiModel
-import com.tokopedia.shop.score.performance.presentation.model.ItemStatusRMUiModel
 import com.tokopedia.shop.score.performance.presentation.model.PeriodDetailPerformanceUiModel
 import com.tokopedia.shop.score.performance.presentation.model.SectionFaqUiModel
 import com.tokopedia.shop.score.performance.presentation.model.SectionShopRecommendationUiModel
@@ -34,8 +33,6 @@ open class ShopScoreCassavaTest : BaseShopScoreTest() {
             "tracker/merchant/shop_score/performance/sp_click_merchant_tools_recommandation.json"
         const val CLICK_POWER_MERCHANT_SECTION_PATH =
             "tracker/merchant/shop_score/performance/sp_click_power_merchant_section.json"
-        const val CLICK_REGULAR_MERCHANT_SECTION_PATH =
-            "tracker/merchant/shop_score/performance/sp_click_regular_merchant_section.json"
         const val CLICK_TICKER_PENALTY_PATH =
             "tracker/merchant/shop_score/performance/sp_click_ticker_penalty.json"
     }

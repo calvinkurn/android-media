@@ -227,7 +227,7 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
         )
 
         val timePickerHandler = TimePickerHandler(param)
-        timePickerHandler.show(requireActivity(), childFragmentManager, onTimePicked)
+        timePickerHandler.show(activity ?: return, childFragmentManager, onTimePicked)
     }
 
     private fun doOnDelayFinished(block: () -> Unit) {
