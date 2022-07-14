@@ -50,7 +50,7 @@ class TagViewProvider {
         var productTagViewDelete: IconUnify = view.findViewById(R.id.product_tag_clear)
         var productTagViewDeleteRight: IconUnify = view.findViewById(R.id.product_tag_clear_right)
 
-        val productItem = products[index]
+        val productItem = if (products.size > index) products[index] else return null
         this.listener = listener
         productName.text = productItem.name
         productViewPrice.text = productItem.price
