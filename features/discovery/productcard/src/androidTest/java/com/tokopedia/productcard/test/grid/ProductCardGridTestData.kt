@@ -428,7 +428,7 @@ private fun testShopLocationReposition(): ProductCardModelMatcher {
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
         R.id.imageShopBadge to isDisplayed(),
         R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
-        R.id.imageSalesRatingFloat to isDisplayed(),
+        R.id.productCardImageSalesRatingFloat to isDisplayed(),
         R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
         R.id.imageFreeOngkirPromo to isDisplayed(),
     )
