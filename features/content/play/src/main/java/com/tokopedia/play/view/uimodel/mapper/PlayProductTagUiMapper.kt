@@ -19,13 +19,6 @@ class PlayProductTagUiMapper @Inject constructor() {
         productList = input.listOfProducts.map {
             mapProduct(it, ProductSectionType.getSectionValue(sectionType = input.sectionType))
         },
-//        productList = input.listOfProducts.mapIndexed { index, product ->
-//            mapProduct(
-//                product,
-//                ProductSectionType.getSectionValue(sectionType = input.sectionType),
-//                index == 1
-//            )
-//        },
         config = mapConfig(input),
         id = input.id,
     )

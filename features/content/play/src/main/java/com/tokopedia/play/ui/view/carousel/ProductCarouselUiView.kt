@@ -23,6 +23,8 @@ class ProductCarouselUiView(
 
     private val context = binding.root.context
 
+    private val impressionSet = mutableSetOf<String>()
+
     private val adapter = ProductCarouselAdapter(
         listener = object : ProductBasicViewHolder.Listener {
             override fun onClickProductCard(product: PlayProductUiModel.Product, position: Int) {
@@ -57,14 +59,6 @@ class ProductCarouselUiView(
         }
     )
 
-//    private val adapter = ProductFeaturedAdapter(
-//        productFeaturedListener = object : ProductBasicViewHolder.Listener {
-//            override fun onClickProductCard(product: PlayProductUiModel.Product, position: Int) {
-//                listener.onProductClicked(this@ProductCarouselUiView, product, position)
-//            }
-//        }
-//    )
-
     private val scrollListener = object: RecyclerView.OnScrollListener(){
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             if (newState == RecyclerView.SCROLL_STATE_IDLE) sendImpression()
@@ -74,13 +68,11 @@ class ProductCarouselUiView(
     private val layoutManager = object : LinearLayoutManager(context, RecyclerView.HORIZONTAL, false) {
         override fun onLayoutCompleted(state: RecyclerView.State?) {
             super.onLayoutCompleted(state)
-            listener.onProductImpressed(this@ProductCarouselUiView, getVisibleProducts())
+            sendImpression()
         }
     }
 
     private val defaultItemDecoration = ProductFeaturedItemDecoration(context)
-
-    private var isProductsInitialized = false
 
     init {
         binding.rvProductFeatured.itemAnimator = null
@@ -91,19 +83,13 @@ class ProductCarouselUiView(
         binding.rvProductFeatured.addOnScrollListener(scrollListener)
     }
 
-    fun setProducts(products: List<ProductSectionUiModel>, maxProducts: Int) {
-        if (products != adapter.getItems()) invalidateItemDecorations()
-
-        val featuredItems = getFinalFeaturedItems(products, maxProducts)
-        adapter.setItemsAndAnimateChanges(featuredItems)
-
-        sendImpression()
-    }
-
     fun setProducts(products: List<PlayProductUiModel.Product>) {
-        if (products != adapter.getItems()) invalidateItemDecorations()
-        adapter.setItemsAndAnimateChanges(products)
+        if (products == adapter.getItems()) return
 
+        invalidateItemDecorations()
+        impressionSet.clear()
+
+        adapter.setItemsAndAnimateChanges(products)
         sendImpression()
     }
 
@@ -136,13 +122,6 @@ class ProductCarouselUiView(
 
     private fun getPlaceholder() = List(3) { PlayProductUiModel.Placeholder }
 
-    private fun getFinalFeaturedItems(products: List<ProductSectionUiModel>, maxProducts: Int): List<PlayProductUiModel> {
-        return products
-            .filterIsInstance<ProductSectionUiModel.Section>()
-            .flatMap { it.productList }
-            .take(maxProducts)
-    }
-
     private fun invalidateItemDecorations() {
         try {
             binding.rvProductFeatured.post {
@@ -151,10 +130,15 @@ class ProductCarouselUiView(
         } catch (ignored: IllegalStateException) {}
     }
 
-    private fun sendImpression() {
-        if (isProductsInitialized) {
-            listener.onProductImpressed(this@ProductCarouselUiView, getVisibleProducts())
-        } else isProductsInitialized = true
+    private fun sendImpression() = synchronized(impressionSet) {
+        val products = getVisibleProducts()
+        val productsToBeImpressed = products.filter {
+            !impressionSet.contains(it.first.id)
+        }
+        listener.onProductImpressed(this, productsToBeImpressed)
+        productsToBeImpressed.forEach {
+            impressionSet.add(it.first.id)
+        }
     }
 
     /**

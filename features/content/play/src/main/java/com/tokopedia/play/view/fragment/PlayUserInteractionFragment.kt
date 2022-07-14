@@ -34,6 +34,7 @@ import com.tokopedia.play.animation.PlayDelayFadeOutAnimation
 import com.tokopedia.play.animation.PlayFadeInAnimation
 import com.tokopedia.play.animation.PlayFadeInFadeOutAnimation
 import com.tokopedia.play.animation.PlayFadeOutAnimation
+import com.tokopedia.play.channel.analytic.PlayChannelAnalyticManager
 import com.tokopedia.play.channel.ui.component.ProductCarouselUiComponent
 import com.tokopedia.play.databinding.FragmentPlayInteractionBinding
 import com.tokopedia.play.extensions.*
@@ -110,6 +111,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val multipleLikesIconCacheStorage: MultipleLikesIconCacheStorage,
     private val castAnalyticHelper: CastAnalyticHelper,
     private val performanceClassConfig: PerformanceClassConfig,
+    analyticManagerFactory: PlayChannelAnalyticManager.Factory,
 ) :
         TkpdBaseV4Fragment(),
         PlayMoreActionBottomSheet.Listener,
@@ -231,7 +233,11 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private lateinit var onStatsInfoGlobalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener
 
-    private lateinit var productAnalyticHelper: ProductAnalyticHelper
+    private val productAnalyticHelper = ProductAnalyticHelper(analytic)
+
+    private val analyticManager = analyticManagerFactory.create(
+        productAnalyticHelper = productAnalyticHelper,
+    )
 
     /**
      * Animation
@@ -272,7 +278,6 @@ class PlayUserInteractionFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initAnalytic()
         setupView(view)
         setupInsets(view)
         setupObserve()
@@ -290,6 +295,7 @@ class PlayUserInteractionFragment @Inject constructor(
         isOpened = false
         productAnalyticHelper.sendImpressedFeaturedProducts()
         analytic.getTrackingQueue().sendAll()
+        analyticManager.sendPendingTrackers()
     }
 
     override fun onWatchModeClicked(bottomSheet: PlayMoreActionBottomSheet) {
@@ -512,7 +518,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     override fun onProductFeaturedClicked(view: ProductFeaturedViewComponent, product: PlayProductUiModel.Product, position: Int) {
         viewModel.doInteractionEvent(InteractionEvent.OpenProductDetail(product, ProductSectionUiModel.Section.ConfigUiModel.Empty, position))
-        analytic.clickFeaturedProduct(product, position)
+//        analytic.clickFeaturedProduct(product, position)
     }
 
     /**
@@ -574,10 +580,6 @@ class PlayUserInteractionFragment @Inject constructor(
         } else {
             chatListView?.setMask(MASK_NO_CUT_HEIGHT, false)
         }
-    }
-
-    private fun initAnalytic() {
-        productAnalyticHelper = ProductAnalyticHelper(analytic)
     }
 
     private fun setupView(view: View) {
@@ -696,6 +698,8 @@ class PlayUserInteractionFragment @Inject constructor(
 
         observeLoggedInInteractionEvent()
         observeCastState()
+
+        observeAnalytic()
     }
 
     private fun invalidateSystemUiVisibility() {
@@ -985,6 +989,14 @@ class PlayUserInteractionFragment @Inject constructor(
             pipViewOnStateChanged()
             sendCastAnalytic(it)
         }
+    }
+
+    private fun observeAnalytic() {
+        analyticManager.observe(
+            viewLifecycleOwner.lifecycleScope,
+            eventBus,
+            viewLifecycleOwner.lifecycle,
+        )
     }
     //endregion
 
@@ -1840,7 +1852,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 )
             }
             is ProductCarouselUiComponent.Event.OnImpressed -> {
-                //TODO()
+
             }
         }
     }
