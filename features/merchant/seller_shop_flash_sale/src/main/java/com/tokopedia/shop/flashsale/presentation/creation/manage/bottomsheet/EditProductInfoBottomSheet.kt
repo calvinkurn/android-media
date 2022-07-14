@@ -266,7 +266,7 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
 
     private fun loadNextData() {
         val product = productList?.getOrNull(productIndex)
-        binding?.switchPrice?.isSelected = false
+        resetInputData()
         viewModel.setProduct(product ?: return)
     }
 
@@ -398,6 +398,7 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
 
         binding?.apply {
             tfCampaignPrice.text = discountedPrice
+            tfCampaignPricePercent.text = PERCENT_INITIAL_VALUE
             tfStock.editText.setText(customStock)
             tfMaxSold.editText.setText(maxOrder)
         }
