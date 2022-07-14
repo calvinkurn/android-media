@@ -803,17 +803,24 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         tvTermsAndCondition.movementMethod = LinkMovementMethod.getInstance()
         tvTermsAndCondition.highlightColor = Color.TRANSPARENT
         btnContinue.setOnClickListener {
-            if(arguments?.getInt(BUNDLE_CREATE_SCREEN_TYPE) == CreateScreenType.COUPON_MULTIPLE_BUAT) {
-                tmTracker?.clickCouponCreationFromProgramList(arguments?.getInt(BUNDLE_SHOP_ID).toString())
+            if (getTimeInMillis(couponStartDate) > getTimeInMillis(couponEndDate)) {
+                view?.let { it1 -> Toaster.build(it1,"Pengaturan tidak disimpan. Pastikan tanggal berakhir tidak mendahului tanggal mulai.",Toaster.LENGTH_LONG,Toaster.TYPE_ERROR).show() }
+            } else {
+                if (arguments?.getInt(BUNDLE_CREATE_SCREEN_TYPE) == CreateScreenType.COUPON_MULTIPLE_BUAT) {
+                    tmTracker?.clickCouponCreationFromProgramList(
+                        arguments?.getInt(BUNDLE_SHOP_ID).toString()
+                    )
+                } else {
+                    tmTracker?.clickCouponCreationButton(
+                        arguments?.getInt(BUNDLE_SHOP_ID).toString()
+                    )
+                }
+                it.isEnabled = false
+                it.isClickable = false
+                couponPremiumData = tmPremiumCoupon?.getSingleCouponData()
+                couponVip = tmVipCoupon?.getSingleCouponData()
+                preValidateCouponPremium(couponPremiumData)
             }
-            else {
-                tmTracker?.clickCouponCreationButton(arguments?.getInt(BUNDLE_SHOP_ID).toString())
-            }
-            it.isEnabled = false
-            it.isClickable = false
-            couponPremiumData = tmPremiumCoupon?.getSingleCouponData()
-            couponVip = tmVipCoupon?.getSingleCouponData()
-            preValidateCouponPremium(couponPremiumData)
         }
     }
 

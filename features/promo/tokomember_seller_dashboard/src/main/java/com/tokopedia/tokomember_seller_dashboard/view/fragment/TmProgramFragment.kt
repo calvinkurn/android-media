@@ -42,6 +42,7 @@ import com.tokopedia.tokomember_seller_dashboard.view.customview.BottomSheetClic
 import com.tokopedia.tokomember_seller_dashboard.view.customview.TokomemberBottomsheet
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmDashCreateViewModel
 import com.tokopedia.unifycomponents.ProgressBarUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.text.currency.NumberTextWatcher
@@ -151,6 +152,9 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                         CODE_SUCCESS -> {
                             programCreationId = it?.data.membershipCreateEditProgram.programSeller?.id?:0
                             onProgramUpdateSuccess()
+                        }
+                        CODE_INVALID ->{
+                            view?.let { it1 -> Toaster.build(it1,"Silakan Masukkan masukan yang benar",Toaster.LENGTH_LONG,Toaster.TYPE_ERROR).show() }
                         }
                         else -> {
                             errorCodeProgramCreation = it.data?.membershipCreateEditProgram?.resultStatus?.code?:""
@@ -586,6 +590,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         const val HEADER_TITLE_EXTEND_DESC = "Langkah 1 dari 3"
         const val HEADER_TITLE_EDIT =  "Ubah Program"
         const val CODE_SUCCESS = "200"
+        const val CODE_INVALID = "41002"
         const val CODE_ERROR = "50001"
 
         const val SHIMMER = 0
