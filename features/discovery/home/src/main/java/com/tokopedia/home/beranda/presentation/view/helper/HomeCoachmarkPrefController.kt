@@ -101,6 +101,12 @@ fun isNewWalletAppCoachmarkShown(context: Context): Boolean {
     return sharedPrefs.getBoolean(PREF_KEY_NEW_WALLETAPP_COACHMARK_BALANCE, false)
 }
 
+fun isSubscriptionCoachmarkShown(context: Context): Boolean {
+    val sharedPrefs: SharedPreferences = context.getSharedPreferences(
+        PREF_KEY_HOME_COACHMARK, Context.MODE_PRIVATE)
+    return sharedPrefs.getBoolean(PREF_KEY_SUBSCRIPTION_COACHMARK_BALANCE, false)
+}
+
 fun isNewTokopointCoachmarkShown(context: Context): Boolean {
     val sharedPrefs: SharedPreferences = context.getSharedPreferences(
         PREF_KEY_HOME_COACHMARK, Context.MODE_PRIVATE)

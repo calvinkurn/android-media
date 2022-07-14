@@ -391,16 +391,13 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private var serverOffsetTime: Long = 0L
     private var bottomSheetIsShowing = false
     private var coachMarkIsShowing = false
-    private var tokopointsCoachmarkIsShowing = false
     private var subscriptionCoachmarkIsShowing = false
     private var tokonowCoachmarkIsShowing = false
     private var coachmark: CoachMark2? = null
-    private var coachmarkTokopoint: CoachMark2? = null
     private var coachmarkTokonow: CoachMark2? = null
     private var coachmarkSubscription: CoachMark2? = null
     private var tokonowIconRef: View? = null
     private var tokonowIconParentPosition: Int = -1
-    private val coachMarkItemTokopoints = ArrayList<CoachMark2Item>()
     private val coachMarkItemSubscription = ArrayList<CoachMark2Item>()
     private val coachMarkItemTokonow = ArrayList<CoachMark2Item>()
     private var scrollPositionY = 0
@@ -625,24 +622,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         return IconList.ID_MESSAGE
     }
 
-    private fun ArrayList<CoachMark2Item>.buildTokopointNewCoachmark(tokopointsBalanceCoachmark: BalanceCoachmark) {
-        context?.let { currentContext ->
-            val tokopointWidget = getTokopointsNewBalanceWidgetView()
-            tokopointWidget?.let {
-                if (this.isEmpty()) {
-                    positionWidgetTokopoints = it.getPositionWidgetVertical()
-                    this.add(
-                        CoachMark2Item(
-                            tokopointWidget,
-                            tokopointsBalanceCoachmark.title,
-                            tokopointsBalanceCoachmark.description
-                        )
-                    )
-                }
-            }
-        }
-    }
-
     private fun ArrayList<CoachMark2Item>.buildSubscriptionCoachMark(subscriptionBalanceCoachMark: BalanceCoachmark) {
         context?.let { currentContext ->
             val subscriptionWidget = getSubscriptionBalanceWidgetView()
@@ -682,41 +661,13 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun showCoachMark(
-        tokopointsBalanceCoachmark: BalanceCoachmark? = null,
         subscriptionBalanceCoachMark: BalanceCoachmark? = null
     ) {
         context?.let { ctx ->
-            if (!isNewWalletAppCoachmarkShown(ctx)) {
+            if (!isSubscriptionCoachmarkShown(ctx) && subscriptionBalanceCoachMark != null) {
                 showSubscriptionEligibleCoachmark(subscriptionBalanceCoachMark)
-            } else if (isNewWalletAppCoachmarkShown(ctx) && !isNewTokopointCoachmarkShown(ctx) && tokopointsBalanceCoachmark != null) {
-                showTokopointsEligibleCoachmark(tokopointsBalanceCoachmark)
-            } else if (isNewWalletAppCoachmarkShown(ctx) && (isNewTokopointCoachmarkShown(ctx) || tokopointsBalanceCoachmark == null)) {
+            }  else if (!isHomeTokonowCoachmarkShown(ctx)) {
                 showTokonowCoachmark()
-            }
-        }
-    }
-
-    @Suppress("TooGenericExceptionCaught")
-    private fun showTokopointsEligibleCoachmark(
-        tokopointsBalanceCoachmark: BalanceCoachmark? = null) {
-        context?.let {
-            tokopointsBalanceCoachmark?.let { tokopointsBalanceCoachmark ->
-                coachMarkItemTokopoints.buildTokopointNewCoachmark(tokopointsBalanceCoachmark)
-                coachmarkTokopoint?.let { tokopointCoachmark ->
-                    try {
-                        if (coachMarkItemTokopoints.isNotEmpty() && isValidToShowCoachMark() && !tokopointsCoachmarkIsShowing) {
-                            tokopointCoachmark?.onDismissListener = {
-                                setNewTokopointCoachmarkShown(it)
-                                showTokonowCoachmark()
-                            }
-                            tokopointCoachmark.showCoachMark(step = coachMarkItemTokopoints, index = COACHMARK_FIRST_INDEX)
-                            tokopointsCoachmarkIsShowing = true
-                        }
-                    } catch (e: Exception) {
-                        tokopointsCoachmarkIsShowing = false
-                        e.printStackTrace()
-                    }
-                }
             }
         }
     }
@@ -731,6 +682,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     try {
                         if (coachMarkItemSubscription.isNotEmpty() && isValidToShowCoachMark() && !subscriptionCoachmarkIsShowing) {
                             subscriptionCoachmark.onDismissListener = {
+                                setSubscriptionCoachmarkShown(it)
                                 showTokonowCoachmark()
                             }
                             subscriptionCoachmark.showCoachMark(step = coachMarkItemSubscription, index = COACHMARK_FIRST_INDEX)
@@ -769,35 +721,14 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
 
-    private fun CoachMark2Item.setCoachmarkShownPref() {
-        context?.let { currentContext ->
-            when {
-                this.title.toString().equals(getString(com.tokopedia.localizationchooseaddress.R.string.coachmark_title), ignoreCase = true) -> {
-                    setChooseAddressCoachmarkShown(currentContext)
-                }
-                this.title.toString().equals(getString(R.string.onboarding_coachmark_wallet_title), ignoreCase = true) -> {
-                    setBalanceWidgetCoachmarkShown(currentContext)
-                }
-            }
-        }
-    }
-
-    private fun getTokopointsNewBalanceWidgetView(): View? {
-        val view = homeRecyclerView?.findViewHolderForAdapterPosition(HOME_HEADER_POSITION)
-        (view as? HomeHeaderOvoViewHolder)?.let {
-            val balanceWidgetTokopointsNewView = getBalanceWidgetViewTokoPointsNewOnly(it.itemView.findViewById(R.id.view_balance_widget))
-            if (it.itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget).isShown && balanceWidgetTokopointsNewView?.y?:VIEW_DEFAULT_HEIGHT > VIEW_DEFAULT_HEIGHT)
-                return balanceWidgetTokopointsNewView
-        }
-        return null
-    }
-
     private fun getSubscriptionBalanceWidgetView(): View? {
         val view = homeRecyclerView?.findViewHolderForAdapterPosition(HOME_HEADER_POSITION)
         (view as? HomeHeaderOvoViewHolder)?.let {
-            val balanceWidgetTokopointsNewView = getBalanceWidgetViewSubscriptionOnly(it.itemView.findViewById(R.id.view_balance_widget))
-            if (it.itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget).isShown && balanceWidgetTokopointsNewView?.y?:VIEW_DEFAULT_HEIGHT > VIEW_DEFAULT_HEIGHT)
-                return balanceWidgetTokopointsNewView
+            val balanceWidgetSubscriptionView = getBalanceWidgetViewSubscriptionOnly(it.itemView.findViewById(R.id.view_balance_widget))
+            if (it.itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget).isShown && ((balanceWidgetSubscriptionView?.y
+                    ?: VIEW_DEFAULT_HEIGHT) > VIEW_DEFAULT_HEIGHT)
+            )
+                return balanceWidgetSubscriptionView
         }
         return null
     }
@@ -880,24 +811,12 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         setStatusBarAlpha(STATUS_BAR_DEFAULT_ALPHA)
     }
 
-    private fun evaluateScrollTokopointsCoachmark() {
-        coachmarkTokopoint?.let { tokopointsCoachmark ->
-            context?.let {ctx ->
-                if (scrollPositionY > positionWidgetTokopoints && tokopointsCoachmarkIsShowing)
-                    tokopointsCoachmark.hideCoachMark()
-                else if (isNewWalletAppCoachmarkShown(ctx) && !isNewTokopointCoachmarkShown(ctx) && coachMarkItemTokopoints.isNotEmpty()) {
-                    tokopointsCoachmark.showCoachMark(coachMarkItemTokopoints)
-                }
-            }
-        }
-    }
-
     private fun evaluateScrollSubscriptionCoachmark() {
         coachmarkSubscription?.let { subscriptionCoachmark ->
             context?.let {ctx ->
                 if (scrollPositionY > positionWidgetSubscription && subscriptionCoachmarkIsShowing)
                     subscriptionCoachmark.hideCoachMark()
-                else  {
+                else if (isSubscriptionCoachmarkShown(ctx)) {
                     subscriptionCoachmark.showCoachMark(coachMarkItemSubscription)
                 }
             }
@@ -909,7 +828,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             context?.let {ctx ->
                 if (scrollPositionY > positionWidgetTokonow && tokonowCoachmarkIsShowing)
                     tokonowCoachmark.hideCoachMark()
-                else if (isNewWalletAppCoachmarkShown(ctx) && (isNewTokopointCoachmarkShown(ctx) || coachMarkItemTokopoints.isEmpty())) {
+                else if (isHomeTokonowCoachmarkShown(ctx)) {
                     tokonowCoachmark.showCoachMark(coachMarkItemTokonow)
                 }
             }
@@ -917,7 +836,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun evaluateShowCoachmark() {
-        evaluateScrollTokopointsCoachmark()
         evaluateScrollTokonowCoachmark()
         evaluateScrollSubscriptionCoachmark()
     }
@@ -962,7 +880,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun initCoachmark() {
         context?.let {
-            coachmarkTokopoint = CoachMark2(it)
             coachmarkTokonow = CoachMark2(it)
             coachmarkSubscription = CoachMark2(it)
         }
@@ -2137,9 +2054,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 if (coachMarkIsShowing) {
                     coachmark?.dismissCoachMark()
                 }
-                if (tokopointsCoachmarkIsShowing) {
-                    coachmarkTokopoint?.dismiss()
-                }
                 if (tokonowCoachmarkIsShowing) {
                     coachmarkTokonow?.dismissCoachMark()
                 }
@@ -2778,9 +2692,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun showBalanceWidgetCoachMark(homeBalanceModel: HomeBalanceModel) {
-        showCoachMark(
-            homeBalanceModel.getTokopointsBalanceCoachmark(),
-            homeBalanceModel.getSubscriptionBalanceCoachmark()
-        )
+        showCoachMark(homeBalanceModel.getSubscriptionBalanceCoachmark())
     }
 }
