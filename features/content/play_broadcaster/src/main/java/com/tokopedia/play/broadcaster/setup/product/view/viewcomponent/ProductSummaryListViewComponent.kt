@@ -20,6 +20,10 @@ internal class ProductSummaryListViewComponent(
         override fun onProductDeleteClicked(product: ProductUiModel) {
             listener.onProductDeleteClicked(product)
         }
+
+        override fun onPinProductClicked(product: ProductUiModel) {
+            TODO("Not yet implemented")
+        }
     })
 
     init {

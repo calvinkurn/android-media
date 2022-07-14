@@ -13,9 +13,10 @@ sealed interface PinUiModel : Parcelable
 data class PinProductUiModel(
     val pinStatus: PinStatus,
     val canPin: Boolean,
+    val isLoading: Boolean = false,
 ): PinUiModel {
     companion object {
-        val Empty = PinProductUiModel(pinStatus = PinStatus.Unpin, canPin = false)
+        val Empty = PinProductUiModel(pinStatus = PinStatus.Unpin, canPin = false, isLoading = false)
     }
 }
 

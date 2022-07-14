@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ItemProductSummaryBodyListBinding
 import com.tokopedia.play.broadcaster.databinding.ItemProductSummaryHeaderListBinding
@@ -116,6 +117,8 @@ internal class ProductSummaryViewHolder private constructor() {
             binding.icProductSummaryDelete.setOnClickListener {
                 listener.onProductDeleteClicked(item.product)
             }
+            binding.viewPinProduct.root.showWithCondition(item.product.pinStatus.canPin)
+            binding.viewPinProduct.ivLoaderPin.showWithCondition(item.product.pinStatus.isLoading)
         }
 
         companion object {
@@ -131,6 +134,7 @@ internal class ProductSummaryViewHolder private constructor() {
 
         interface Listener {
             fun onProductDeleteClicked(product: ProductUiModel)
+            fun onPinProductClicked(product: ProductUiModel)
         }
     }
 }

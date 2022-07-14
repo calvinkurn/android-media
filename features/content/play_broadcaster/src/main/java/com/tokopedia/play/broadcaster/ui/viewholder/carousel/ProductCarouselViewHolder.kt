@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ItemPlayBroPlaceholderCarouselBinding
 import com.tokopedia.play.broadcaster.databinding.ItemPlayBroProductCarouselBinding
@@ -68,6 +69,9 @@ internal class ProductCarouselViewHolder private constructor() {
                     )
                 }
             }
+
+            binding.viewPinProduct.root.showWithCondition(item.pinStatus.canPin)
+            binding.viewPinProduct.ivLoaderPin.showWithCondition(item.pinStatus.isLoading)
         }
 
         companion object {
