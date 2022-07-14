@@ -288,7 +288,7 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     private fun initLastFilterListenerDelegate() {
-        lastFilterListener = LastFilterListenerDelegate(iris)
+        lastFilterListener = LastFilterListenerDelegate(iris, this)
     }
     //endregion
 
