@@ -71,8 +71,7 @@ class HomeBalanceWidgetUseCase @Inject constructor(
                 headerDataModel = currentHeaderDataModel.headerDataModel?.copy(
                     homeBalanceModel = homeBalanceModel.copy(status = HomeBalanceModel.STATUS_SUCCESS),
                     isUserLogin = userSession.isLoggedIn
-                ),
-                needToShowUserWallet = homeFlagRepository.getCachedData().homeFlag.getFlag(HomeFlag.TYPE.HAS_TOKOPOINTS)
+                )
             )
         } catch (e: Exception) {
             currentHeaderDataModel.headerDataModel?.homeBalanceModel?.status = HomeBalanceModel.STATUS_ERROR
@@ -86,9 +85,6 @@ class HomeBalanceWidgetUseCase @Inject constructor(
             val currentHomeBalanceModel = currentHeaderDataModel.headerDataModel?.homeBalanceModel
                     ?: HomeBalanceModel()
             balanceDrawerItemModels = currentHomeBalanceModel.balanceDrawerItemModels
-//            positionToReset.forEach {
-//                resetDrawerItem(it)
-//            }
         }
     }
 
@@ -105,8 +101,7 @@ class HomeBalanceWidgetUseCase @Inject constructor(
                 headerDataModel = currentHeaderDataModel.headerDataModel?.copy(
                         homeBalanceModel = homeBalanceModel.copy(status = HomeBalanceModel.STATUS_SUCCESS),
                         isUserLogin = userSession.isLoggedIn
-                ),
-                needToShowUserWallet = homeFlagRepository.getCachedData().homeFlag.getFlag(HomeFlag.TYPE.HAS_TOKOPOINTS)?: false
+                )
         )
     }
 
@@ -123,21 +118,16 @@ class HomeBalanceWidgetUseCase @Inject constructor(
             headerDataModel = currentHeaderDataModel.headerDataModel?.copy(
                 homeBalanceModel = homeBalanceModel.copy(status = HomeBalanceModel.STATUS_SUCCESS),
                 isUserLogin = userSession.isLoggedIn
-            ),
-            needToShowUserWallet = homeFlagRepository.getCachedData().homeFlag.getFlag(HomeFlag.TYPE.HAS_TOKOPOINTS)?: false
+            )
         )
     }
 
-    suspend fun onGetBalanceWidgetLoadingState(currentHeaderDataModel: HomeHeaderDataModel): HomeHeaderDataModel {
+    fun onGetBalanceWidgetLoadingState(currentHeaderDataModel: HomeHeaderDataModel): HomeHeaderDataModel {
         if (!userSession.isLoggedIn) return currentHeaderDataModel
-
         try {
-            val homeBalanceModel = getHomeBalanceModel(currentHeaderDataModel).apply { initBalanceModelByType() }
             return currentHeaderDataModel.copy(headerDataModel = currentHeaderDataModel.headerDataModel?.copy(
-                homeBalanceModel = homeBalanceModel,
                 isUserLogin = userSession.isLoggedIn
-            ),
-                needToShowUserWallet = homeFlagRepository.getCachedData().homeFlag.getFlag(HomeFlag.TYPE.HAS_TOKOPOINTS)?: false
+                )
             )
         } catch (e: Exception) {
             return currentHeaderDataModel

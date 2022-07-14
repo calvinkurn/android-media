@@ -195,23 +195,22 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    private fun getBalanceWidgetLoadingState() {
-        if (!userSession.get().isLoggedIn) return
-        findWidget<HomeHeaderDataModel> { headerModel, index ->
-            launch {
-                val visitable = updateHeaderData(homeBalanceWidgetUseCase.get().onGetBalanceWidgetLoadingState(headerModel))
-                visitable?.let { updateWidget(visitable, index) }
-            }
-        }
-    }
+//    private fun getBalanceWidgetLoadingState() {
+//        if (!userSession.get().isLoggedIn) return
+//        findWidget<HomeHeaderDataModel> { headerModel, index ->
+//            launch {
+//                val visitable = updateHeaderData(homeBalanceWidgetUseCase.get().onGetBalanceWidgetLoadingState(headerModel))
+//                visitable?.let { updateWidget(visitable, index) }
+//            }
+//        }
+//    }
 
-    private fun getBalanceWidgetData() {
+    fun getBalanceWidgetData() {
         if (!userSession.get().isLoggedIn) return
         findWidget<HomeHeaderDataModel> { headerModel, index ->
             launch {
                 val homeBalanceModel = headerModel.headerDataModel?.homeBalanceModel.apply {
                     this?.status = HomeBalanceModel.STATUS_LOADING
-                    this?.initBalanceModelByType()
                 } ?: HomeBalanceModel()
                 val headerDataModel = headerModel.headerDataModel?.copy(
                         homeBalanceModel = homeBalanceModel
@@ -271,7 +270,7 @@ open class HomeRevampViewModel @Inject constructor(
         if (getHomeDataJob?.isActive == true) { return }
         homeRateLimit.shouldFetch(HOME_LIMITER_KEY)
         onRefreshState = true
-        getBalanceWidgetLoadingState()
+//        getBalanceWidgetLoadingState()
 
         if (homeFlowDataCancelled || !homeFlowStarted) {
             initFlow()
@@ -303,14 +302,8 @@ open class HomeRevampViewModel @Inject constructor(
         if ((forceRefresh && getHomeDataJob?.isActive == false) || (!fetchFirstData && homeRateLimit.shouldFetch(HOME_LIMITER_KEY))) {
             refreshHomeData()
             _isNeedRefresh.value = Event(true)
-        } else {
-            getBalanceWidgetData()
         }
         getSearchHint(isFirstInstall)
-    }
-
-    fun refreshBalanceWidget() {
-        getBalanceWidgetData()
     }
 
     fun removeViewHolderAtPosition(position: Int) {

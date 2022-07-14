@@ -37,8 +37,7 @@ class HomeHeaderOvoViewHolder(itemView: View,
         element.headerDataModel?.let {
             renderBalanceLayout(
                 it.homeBalanceModel,
-                element.headerDataModel?.isUserLogin ?: false,
-                element.needToShowUserWallet
+                element.headerDataModel?.isUserLogin ?: false
             )
         }
 
@@ -69,7 +68,7 @@ class HomeHeaderOvoViewHolder(itemView: View,
         emptySpace.invalidate()
     }
 
-    private fun renderBalanceLayout(data: HomeBalanceModel?, isUserLogin: Boolean, needToShowUserWallet: Boolean) {
+    private fun renderBalanceLayout(data: HomeBalanceModel?, isUserLogin: Boolean) {
         val balanceWidgetView = itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget)
         data?.let {
             if (isUserLogin) {

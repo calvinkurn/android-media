@@ -61,15 +61,6 @@ data class HomeBalanceModel(
         return result
     }
 
-    //call to init balance widget data
-    fun initBalanceModelByType() {
-//        balanceDrawerItemModels.remove(BALANCE_POSITION_THIRD)
-//        balanceDrawerItemModels.remove(BALANCE_POSITION_FOURTH)
-
-//        balanceDrawerItemModels[BALANCE_POSITION_FIRST] = resetDrawerItem(BALANCE_POSITION_FIRST)
-//        balanceDrawerItemModels[BALANCE_POSITION_SECOND] = resetDrawerItem(BALANCE_POSITION_SECOND)
-    }
-
     fun resetDrawerItem(position: Int): BalanceDrawerItemModel {
         val balance =  balanceDrawerItemModels.getOrElse(
             position

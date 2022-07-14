@@ -927,8 +927,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     override fun onResume() {
         if(getHomeViewModel().isFirstLoad) {
             getPageLoadTimeCallback()?.startCustomMetric(HomePerformanceConstant.KEY_PERFORMANCE_ON_RESUME_HOME)
+        } else if (!getHomeViewModel().isFirstLoad) {
+            getHomeViewModel().getBalanceWidgetData()
         }
-        startTokopointRotation()
         playWidgetOnVisibilityChanged(isViewResumed = true)
         super.onResume()
         createAndCallSendScreen()
@@ -956,21 +957,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun refreshQuestWidget() {
-
         if(questWidgetPosition != -1 && adapter?.currentList?.any { it is QuestWidgetModel} == true) {
             adapter?.notifyItemChanged(questWidgetPosition)
-        }
-
-    }
-
-    private fun startTokopointRotation(rotateNow: Boolean = false) {
-        isNeedToRotateTokopoints = true
-        if (rotateNow) {
-            val view = homeRecyclerView?.findViewHolderForAdapterPosition(HOME_HEADER_POSITION)
-            (view as? HomeHeaderOvoViewHolder)?.let {
-                val balanceWidgetView = getBalanceWidgetView()
-                balanceWidgetView?.startRotationForPosition(TOKOPOINTS_ITEM_POSITION)
-            }
         }
     }
 
@@ -982,7 +970,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
-    @FlowPreview
     private fun conditionalViewModelRefresh() {
         if (!validateChooseAddressWidget()) {
             getHomeViewModel().refreshWithThreeMinsRules(isFirstInstall = isFirstInstall())
@@ -2039,12 +2026,14 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             resetAutoPlay(isVisibleToUser)
             trackScreen(isVisibleToUser)
             conditionalViewModelRefresh()
+            if (isVisibleToUser) {
+                getHomeViewModel().getBalanceWidgetData()
+            }
             playWidgetOnVisibilityChanged(
                 isUserVisibleHint = isVisibleToUser
             )
             adapter?.onResumeSpecialRelease()
             manageCoachmarkOnFragmentVisible(isVisibleToUser)
-            startTokopointRotation(rotateNow = true)
         }
     }
 

@@ -163,7 +163,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
                     /**
                      * Get header data
                      */
-                    val homeHeaderData = HomeHeaderDataModel()
                     val currentHeaderDataModel = homeBalanceWidgetUseCase.onGetBalanceWidgetData(HomeHeaderDataModel())
                     updateHeaderData(currentHeaderDataModel, dynamicChannelPlainResponse)
 
