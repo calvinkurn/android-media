@@ -24,6 +24,10 @@ class ProductDataResponse(
         val categoryId: String = "",
         @SerializedName("category")
         val category: String = "",
+        @SerializedName("last_level_category")
+        val lastLevelCategory: String = "",
+        @SerializedName("category_identifier")
+        val categoryIdentifier: String = "",
         @SerializedName("wholesale_price")
         val wholesalePrice: List<WholesalePrice> = ArrayList(),
         @SerializedName("product_weight")
