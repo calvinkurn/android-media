@@ -58,4 +58,9 @@
     <string name="collection_coachmark_create_collection">Baru! Pakai fitur “Koleksi”, buat mengelompokkan barang di Wishlist sesuai keinginanmu.</string>
     <string name="collection_coachmark_try_create_wishlist">Coba</string>
     <string name="collection_coachmark_back">Balik</string>
+    <string name="update_collection_bottomsheet_title">Ubah nama Koleksi</string>
+    <string name="update_collection_bottomsheet_button">Simpan Perubahan</string>
+
+    <string name="wishlist_collection_detail_delete_confirmation_title">Hapus Koleksi \"%s\"</string>
+
 </resources>

@@ -13,13 +13,14 @@ import com.tokopedia.wishlist.R
 import com.tokopedia.wishlistcollection.data.params.AddWishlistCollectionsHostBottomSheetParams
 import com.tokopedia.wishlistcollection.data.response.AddWishlistCollectionItemsResponse
 import com.tokopedia.wishlistcollection.view.adapter.BottomSheetCollectionWishlistAdapter
+import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerFromPdp
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetAddCollectionWishlist
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetCreateNewCollectionWishlist
 
 class WishlistCollectionHostBottomSheetFragment: Fragment(),
     BottomSheetCollectionWishlistAdapter.ActionListener,
     BottomSheetAddCollectionWishlist.ActionListener,
-    BottomSheetCreateNewCollectionWishlist.ActionListener{
+    ActionListenerFromPdp {
 
     private var productId = ""
     private var src = ""

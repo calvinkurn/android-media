@@ -27,25 +27,20 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wishlist.R
 import com.tokopedia.wishlist.databinding.BottomsheetCreateNewWishlistCollectionBinding
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionNamesResponse
-import com.tokopedia.wishlistcollection.di.BottomSheetCreateWishlistCollectionComponent
-import com.tokopedia.wishlistcollection.di.BottomSheetCreateWishlistCollectionModule
-import com.tokopedia.wishlistcollection.di.DaggerBottomSheetCreateWishlistCollectionComponent
-import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerFromCollectionPage
-import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerFromPdp
+import com.tokopedia.wishlistcollection.di.*
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionFragment
-import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionHostBottomSheetFragment
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OK
-import com.tokopedia.wishlistcollection.view.viewmodel.BottomSheetCreateNewCollectionViewModel
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.PRODUCT_IDs
+import com.tokopedia.wishlistcollection.view.viewmodel.BottomSheetUpdateWishlistCollectionNameViewModel
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.COLLECTION_ID
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.COLLECTION_NAME
 import javax.inject.Inject
 
-class BottomSheetCreateNewCollectionWishlist: BottomSheetUnify(), HasComponent<BottomSheetCreateWishlistCollectionComponent> {
+class BottomSheetUpdateWishlistCollectionName: BottomSheetUnify(), HasComponent<BottomSheetUpdateWishlistCollectionNameComponent> {
     private var binding by autoClearedNullable<BottomsheetCreateNewWishlistCollectionBinding>()
     private val userSession: UserSessionInterface by lazy { UserSession(activity) }
     private var listCollections: List<GetWishlistCollectionNamesResponse.Data.GetWishlistCollectionNames.DataItem> = emptyList()
     private var newCollectionName = ""
-    private var actionListenerFromPdp: ActionListenerFromPdp? = null
-    private var actionListenerFromCollectionPage: ActionListenerFromCollectionPage? = null
+    private var actionListener: ActionListener? = null
     private val handler = Handler(Looper.getMainLooper())
     private val checkNameRunnable = Runnable {
         checkIsCollectionNameExists(newCollectionName)
@@ -54,8 +49,8 @@ class BottomSheetCreateNewCollectionWishlist: BottomSheetUnify(), HasComponent<B
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private val createNewCollectionViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[BottomSheetCreateNewCollectionViewModel::class.java]
+    private val updateCollectionViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory)[BottomSheetUpdateWishlistCollectionNameViewModel::class.java]
     }
 
     companion object {
@@ -64,21 +59,22 @@ class BottomSheetCreateNewCollectionWishlist: BottomSheetUnify(), HasComponent<B
         private const val DELAY_CHECK_NAME = 500L
 
         @JvmStatic
-        fun newInstance(productId: String): BottomSheetCreateNewCollectionWishlist {
-            return BottomSheetCreateNewCollectionWishlist().apply {
+        fun newInstance(collectionId: String, collectionName: String): BottomSheetUpdateWishlistCollectionName {
+            return BottomSheetUpdateWishlistCollectionName().apply {
                 val bundle = Bundle()
-                bundle.putString(PRODUCT_IDs, productId)
+                bundle.putString(COLLECTION_ID, collectionId)
+                bundle.putString(COLLECTION_NAME, collectionName)
                 arguments = bundle
             }
         }
     }
 
-    fun setListener(fragment: WishlistCollectionHostBottomSheetFragment) {
-        this.actionListenerFromPdp = fragment
+    interface ActionListener {
+        fun onSuccessUpdateCollectionName(message: String)
     }
 
     fun setListener(fragment: WishlistCollectionFragment) {
-        this.actionListenerFromCollectionPage = fragment
+        this.actionListener = fragment
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -97,8 +93,10 @@ class BottomSheetCreateNewCollectionWishlist: BottomSheetUnify(), HasComponent<B
     }
 
     private fun setupBottomSheet() {
+        val collectionName = arguments?.getString(COLLECTION_NAME) ?: ""
         binding = BottomsheetCreateNewWishlistCollectionBinding.inflate(LayoutInflater.from(context), null, false)
         binding?.run {
+            collectionCreateNameInputTextField.editText.setText(collectionName)
             collectionCreateNameInputTextField.editText.addTextChangedListener(object: TextWatcher{
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
@@ -112,52 +110,42 @@ class BottomSheetCreateNewCollectionWishlist: BottomSheetUnify(), HasComponent<B
                 }
 
             })
-            collectionCreateButton.isEnabled = false
+            collectionCreateButton.apply {
+                isEnabled = false
+                text = getString(R.string.update_collection_bottomsheet_button)
+            }
         }
         showCloseIcon = true
         showHeader = true
         isFullpage = false
         isKeyboardOverlap = false
         setChild(binding?.root)
-        setTitle(getString(R.string.collection_create_bottomsheet_title))
+        setTitle(getString(R.string.update_collection_bottomsheet_title))
     }
 
     private fun enableSaveButton() {
-        val productIds = arguments?.getString(PRODUCT_IDs)
-        val arrayProductIds = arrayListOf<String>()
-        if (productIds != null && productIds.isNotEmpty()) {
-            arrayProductIds.add(productIds)
-            binding?.run {
-                collectionCreateButton.apply {
-                    isEnabled = true
-                    setOnClickListener { saveNewCollection(newCollectionName, arrayProductIds) }
-                }
-            }
-        } else {
-            binding?.run {
-                collectionCreateButton.apply {
-                    isEnabled = true
-                    setOnClickListener { createNewCollection(newCollectionName)  }
-                }
+        binding?.run {
+            collectionCreateButton.apply {
+                text = getString(R.string.update_collection_bottomsheet_button)
+                isEnabled = true
+                setOnClickListener { doUpdateWishlistCollectionName() }
             }
         }
+    }
+
+    private fun doUpdateWishlistCollectionName() {
+        val collectionId = arguments?.getString(COLLECTION_ID) ?: ""
+        updateCollectionViewModel.updateWishlistCollectionName(collectionId, newCollectionName)
     }
 
     private fun disableSaveButton() {
         binding?.run {
             collectionCreateButton.apply {
+                text = getString(R.string.update_collection_bottomsheet_button)
                 isEnabled = false
                 setOnClickListener {  }
             }
         }
-    }
-
-    private fun createNewCollection(collectionName: String) {
-        createNewCollectionViewModel.createNewWishlistCollection(collectionName)
-    }
-
-    private fun saveNewCollection(collectionName: String, productIds: List<String>) {
-        createNewCollectionViewModel.saveNewWishlistCollection(collectionName, productIds)
     }
 
     private fun checkIsCollectionNameExists(checkName: String) {
@@ -210,17 +198,16 @@ class BottomSheetCreateNewCollectionWishlist: BottomSheetUnify(), HasComponent<B
     }
 
     private fun getWishlistCollectionNames() {
-        createNewCollectionViewModel.getWishlistCollectionNames()
+        updateCollectionViewModel.getWishlistCollectionNames()
     }
 
     private fun initObserver() {
         observeCollectionNames()
-        observeAddCollectionItem()
-        observeCreateCollection()
+        observeUpdateCollectionName()
     }
 
     private fun observeCollectionNames() {
-        createNewCollectionViewModel.collectionNames.observe(viewLifecycleOwner) { result ->
+        updateCollectionViewModel.collectionNames.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
                     if (result.data.status == OK) {
@@ -239,35 +226,12 @@ class BottomSheetCreateNewCollectionWishlist: BottomSheetUnify(), HasComponent<B
         }
     }
 
-    private fun observeAddCollectionItem() {
-        createNewCollectionViewModel.addWishlistCollectionItem.observe(viewLifecycleOwner) { result ->
+    private fun observeUpdateCollectionName() {
+        updateCollectionViewModel.updateWishlistCollectionNameResult.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
-                    if (result.data.status == OK) {
-                        actionListenerFromPdp?.onSuccessSaveToNewCollection(result.data.dataItem.message)
-                        dismiss()
-                    } else {
-                        val errorMessage = result.data.errorMessage.first().ifEmpty { context?.getString(
-                            R.string.wishlist_common_error_msg) }
-                        actionListenerFromPdp?.onFailedSaveToNewCollection(errorMessage)
-                        dismiss()
-                    }
-                }
-                is Fail -> {
-                    val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
-                    actionListenerFromPdp?.onFailedSaveToNewCollection(errorMessage)
-                    dismiss()
-                }
-            }
-        }
-    }
-
-    private fun observeCreateCollection() {
-        createNewCollectionViewModel.createWishlistCollectionResult.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Success -> {
-                    if (result.data.status == OK && result.data.dataCreate.success) {
-                        actionListenerFromCollectionPage?.onSuccessCreateNewCollection(result.data.dataCreate.message)
+                    if (result.data.status == OK && result.data.data.success) {
+                        actionListener?.onSuccessUpdateCollectionName(result.data.data.message)
                         dismiss()
                     } else {
                         val errorMessage = result.data.errorMessage.first().ifEmpty { context?.getString(
@@ -306,10 +270,10 @@ class BottomSheetCreateNewCollectionWishlist: BottomSheetUnify(), HasComponent<B
         show(fm, TAG)
     }
 
-    override fun getComponent(): BottomSheetCreateWishlistCollectionComponent {
-        return DaggerBottomSheetCreateWishlistCollectionComponent.builder()
+    override fun getComponent(): BottomSheetUpdateWishlistCollectionNameComponent {
+        return DaggerBottomSheetUpdateWishlistCollectionNameComponent.builder()
             .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
-            .bottomSheetCreateWishlistCollectionModule(BottomSheetCreateWishlistCollectionModule())
+            .bottomSheetUpdateWishlistCollectionNameModule(BottomSheetUpdateWishlistCollectionNameModule())
             .build()
     }
 

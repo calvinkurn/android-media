@@ -78,6 +78,7 @@ import com.tokopedia.wishlist.data.model.response.DeleteWishlistProgressV2Respon
 import com.tokopedia.wishlist.data.model.response.WishlistV2Response
 import com.tokopedia.wishlist.databinding.FragmentWishlistCollectionDetailBinding
 import com.tokopedia.wishlist.util.WishlistV2Analytics
+import com.tokopedia.wishlist.util.WishlistV2Consts.EXTRA_TOASTER_WISHLIST_COLLECTION_DETAIL
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_GRID
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_GRID_INT
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_LIST
@@ -113,6 +114,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     private var currRecommendationListPage = 1
     private var searchQuery = ""
     private var activityWishlistV2 = ""
+    private var toasterMessageInitial = ""
     private var isBulkDeleteShow = false
     private var listBulkDelete = arrayListOf<String>()
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
@@ -168,6 +170,10 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                         ApplinkConstInternalPurchasePlatform.PATH_COLLECTION_ID, this.getString(
                             ApplinkConstInternalPurchasePlatform.PATH_COLLECTION_ID
                         ))
+                    putString(
+                        EXTRA_TOASTER_WISHLIST_COLLECTION_DETAIL, this.getString(
+                            EXTRA_TOASTER_WISHLIST_COLLECTION_DETAIL
+                        ))
                 }
             }
         }
@@ -193,6 +199,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         private const val SOURCE_AUTOMATIC_DELETION = "wishlist_automatic_delete"
         private const val OK = "OK"
         private const val DELAY_REFETCH_PROGRESS_DELETION = 5000L
+        const val DEFAULT_TITLE = "Wishlist Collection Detail"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -261,6 +268,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 is Success -> {
                     finishRefresh()
                     result.data.let { collectionDetail ->
+                        updateToolbarTitle(collectionDetail.headerTitle)
                         rvScrollListener.setHasNextPage(collectionDetail.hasNextPage)
 
                         if (collectionDetail.showDeleteProgress) {
@@ -492,9 +500,11 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         context?.let {
             activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         }
+        setToolbarTitle(DEFAULT_TITLE)
         setSwipeRefreshLayout()
         binding?.run {
             activityWishlistV2 = arguments?.getString(PARAM_ACTIVITY_WISHLIST_V2, "") as String
+            toasterMessageInitial = arguments?.getString(EXTRA_TOASTER_WISHLIST_COLLECTION_DETAIL, "") as String
 
             viewLifecycleOwner.lifecycle.addObserver(wishlistCollectionDetailNavtoolbar)
             wishlistCollectionDetailNavtoolbar.setupSearchbar(searchbarType = NavToolbar.Companion.SearchBarType.TYPE_EDITABLE, hints = arrayListOf(
@@ -544,6 +554,27 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             setActionListener(this@WishlistCollectionDetailFragment)
         }
         addEndlessScrollListener()
+
+        if (toasterMessageInitial.isNotEmpty()) {
+            showToasterInitial(toasterMessageInitial)
+        }
+    }
+
+    private fun showToasterInitial(toasterMessageInitial: String) {
+        showToaster(toasterMessageInitial, "", Toaster.TYPE_NORMAL)
+    }
+
+    private fun setToolbarTitle(title: String) {
+        binding?.run {
+            wishlistCollectionDetailNavtoolbar.setToolbarContentType(NavToolbar.Companion.ContentType.TOOLBAR_TYPE_TITLE)
+            wishlistCollectionDetailNavtoolbar.setToolbarTitle(title)
+        }
+    }
+
+    private fun updateToolbarTitle(title: String) {
+        binding?.run {
+            wishlistCollectionDetailNavtoolbar.setToolbarTitle(title)
+        }
     }
 
     private fun setSwipeRefreshLayout() {
@@ -702,93 +733,6 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         rvScrollListener.resetState()
     }
 
-    /*private fun observingDeleteWishlistV2() {
-        wishlistCollectionDetailViewModel.deleteWishlistV2Result.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Success -> {
-                    result.data.let { wishlistRemoveV2 ->
-                        context?.let { context ->
-                            view?.let { v ->
-                                AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(wishlistRemoveV2, context, v)
-                            }
-                            setRefreshing()
-                        }
-                    }
-                }
-                is Fail -> {
-                    val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
-                    showToaster(errorMessage, "", Toaster.TYPE_ERROR)
-
-                    val labelError = String.format(
-                            getString(Rv2.string.on_error_observing_delete_wishlist_v2_string_builder),
-                            userSession.userId ?: "",
-                            errorMessage,
-                            result.throwable.message ?: "")
-                    // log error type to newrelic
-                    ServerLogger.log(Priority.P2, "WISHLIST_V2_ERROR", mapOf("type" to labelError))
-                    // log to crashlytics
-                    logToCrashlytics(labelError, result.throwable)
-                }
-            }
-        }
-    }*/
-
-    /*private fun observingBulkDeleteWishlistV2() {
-        wishlistCollectionDetailViewModel.bulkDeleteWishlistV2Result.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Success -> {
-                    result.data.let { bulkDeleteWishlistV2 ->
-                        if (bulkDeleteWishlistV2.success) {
-                            if (bulkDeleteMode == 0) {
-                                // normal bulk delete
-                                val listId = bulkDeleteWishlistV2.id.replace("[", "").replace("]", "").split(",").toList()
-                                var msg = getString(Rv2.string.wishlist_v2_bulk_delete_msg_toaster, listId.size)
-                                if (bulkDeleteWishlistV2.message.isNotEmpty()) {
-                                    msg = bulkDeleteWishlistV2.message
-                                }
-
-                                var btnText = getString(Rv2.string.wishlist_oke_label)
-                                if (bulkDeleteWishlistV2.button.text.isNotEmpty()) {
-                                    btnText = bulkDeleteWishlistV2.button.text
-                                }
-
-                                showToaster(msg, btnText, Toaster.TYPE_NORMAL)
-                                setRefreshing()
-                            } else {
-                                // bulkDeleteMode == 1 (manual choose via cleaner bottomsheet)
-                                // bulkDeleteMode == 2 (choose automatic deletion)
-                                turnOffBulkDeleteCleanMode()
-                                hideTotalLabel()
-                                binding?.run { rvWishlistCollectionDetail.scrollToPosition(0) }
-                            }
-                            setSwipeRefreshLayout()
-
-                        } else {
-                            var errorMessage = context?.getString(Rv2.string.wishlist_v2_common_error_msg)
-                            if (bulkDeleteWishlistV2.message.isNotEmpty()) errorMessage = bulkDeleteWishlistV2.message
-                            errorMessage?.let { showToaster(it, "", Toaster.TYPE_ERROR) }
-                        }
-                    }
-                }
-                is Fail -> {
-                    finishDeletionWidget(DeleteWishlistProgressV2Response.Data.DeleteWishlistProgress.DataDeleteWishlistProgress())
-                    val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
-                    showToaster(errorMessage, "", Toaster.TYPE_ERROR)
-
-                    val labelError = String.format(
-                            getString(Rv2.string.on_error_observing_bulk_delete_wishlist_v2_string_builder),
-                            userSession.userId ?: "",
-                            errorMessage,
-                            result.throwable.message ?: "")
-                    // log error type to newrelic
-                    ServerLogger.log(Priority.P2, "WISHLIST_V2_ERROR", mapOf("type" to labelError))
-                    // log to crashlytics
-                    logToCrashlytics(labelError, result.throwable)
-                }
-            }
-        }
-    }*/
-
     private fun getCountDeletionProgress() {
         // wishlistCollectionDetailViewModel.getCountDeletionWishlistV2()
     }
@@ -812,38 +756,6 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     private fun stopProgressDeletionHandler() {
         handler.removeCallbacks(progressDeletionRunnable)
     }
-
-    /*private fun observingCountDeletion() {
-        if (wishlistCollectionDetailAdapter.getCountData() > 0) {
-            wishlistCollectionDetailViewModel.countDeletionWishlistV2.observe(viewLifecycleOwner) { result ->
-                when (result) {
-                    is Success -> {
-                        if (result.data.status == OK) {
-                            val data = result.data.data
-                            if (data.success) {
-                                if (data.successfullyRemovedItems >= data.totalItems) {
-                                    finishDeletionWidget(data)
-                                } else {
-                                    updateDeletionWidget(data)
-                                    handler.postDelayed(progressDeletionRunnable, DELAY_REFETCH_PROGRESS_DELETION)
-                                }
-                            } else {
-                                stopDeletionAndShowToasterError(data.toasterMessage)
-                            }
-                        } else {
-                            if (result.data.errorMessage.isNotEmpty()) {
-                                stopDeletionAndShowToasterError(result.data.errorMessage[0])
-                            }
-                        }
-                    }
-                    is Fail -> {
-                        val errorMessage = getString(Rv2.string.wishlist_v2_common_error_msg)
-                        stopDeletionAndShowToasterError(errorMessage)
-                    }
-                }
-            }
-        }
-    }*/
 
     private fun stopDeletionAndShowToasterError(message: String) {
         showToaster(message, "", Toaster.TYPE_ERROR)
@@ -886,53 +798,6 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             wishlistCollectionDetailStickyCountManageLabel.wishlistCollectionDetailLabelProgressBar.text = "${progressData.successfullyRemovedItems}/${progressData.totalItems}"
         }
     }
-
-    /*private fun observingAtc() {
-        wishlistCollectionDetailViewModel.atcResult.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> {
-                    hideLoadingDialog()
-                    if (it.data.isStatusError()) {
-                        val atcErrorMessage = it.data.getAtcErrorMessage()
-                        if (atcErrorMessage != null) {
-                            showToaster(atcErrorMessage, "", Toaster.TYPE_ERROR)
-                        } else {
-                            context?.getString(Rv2.string.wishlist_v2_common_error_msg)?.let { errorDefaultMsg -> showToaster(errorDefaultMsg, "", Toaster.TYPE_ERROR) }
-                        }
-                    } else {
-                        val successMsg = StringUtils.convertListToStringDelimiter(it.data.data.message, ",")
-                        showToasterAtc(successMsg, Toaster.TYPE_NORMAL)
-                        WishlistV2Analytics.clickAtcOnWishlist(wishlistItemOnAtc, userSession.userId, indexOnAtc, it.data.data.cartId)
-                    }
-                }
-                is Fail -> {
-                    hideLoadingDialog()
-                    context?.also { ctx ->
-                        val throwable = it.throwable
-                        var errorMessage = if (throwable is ResponseErrorException) {
-                            throwable.message ?: ""
-                        } else {
-                            ErrorHandler.getErrorMessage(ctx, throwable, ErrorHandler.Builder().withErrorCode(false))
-                        }
-                        if (errorMessage.isBlank()) {
-                            errorMessage = ctx.getString(Rv2.string.wishlist_v2_common_error_msg)
-                        }
-                        showToaster(errorMessage, "", Toaster.TYPE_ERROR)
-
-                        val labelError = String.format(
-                                getString(Rv2.string.on_error_observing_atc_string_builder),
-                                userSession.userId ?: "",
-                                errorMessage,
-                                throwable.message ?: "")
-                        // log error type to newrelic
-                        ServerLogger.log(Priority.P2, "WISHLIST_V2_ERROR", mapOf("type" to labelError))
-                        // log to crashlytics
-                        logToCrashlytics(labelError, throwable)
-                    }
-                }
-            }
-        }
-    }*/
 
     private fun updateTotalLabel(totalData: Int) {
         binding?.run {
