@@ -236,8 +236,9 @@ class RechargeCCFragment :
                 setLoading(false)
                 val clientNumber = getInputNumber()
                 if (clientNumber.length in DEFAULT_MIN_CC_LENGTH..DEFAULT_MAX_CC_LENGTH) {
-                    if (isValid) {
-                        if (!clientNumber.isMasked() && !RechargeCCUtil.isCreditCardValid(clientNumber)) {
+                    if (isValid && rechargeCCViewModel.creditCardSelected.value?.operatorId?.isEmpty() == false) {
+                        if (!clientNumber.isMasked() &&
+                            !RechargeCCUtil.isCreditCardValid(clientNumber)) {
                             setErrorInputField(getString(R.string.cc_error_invalid_number))
                         } else {
                             clearErrorState()
@@ -343,7 +344,11 @@ class RechargeCCFragment :
                         validateCCNumber(clientNumber)
                     }
                 } else {
-                    cc_widget_client_number.clearErrorState()
+                    cc_widget_client_number.run {
+                        clearErrorState()
+                        setLoading(false)
+                        hideOperatorIcon()
+                    }
                 }
             }
         }
