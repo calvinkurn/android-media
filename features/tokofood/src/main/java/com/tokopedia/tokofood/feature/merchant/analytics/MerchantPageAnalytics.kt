@@ -309,8 +309,8 @@ class MerchantPageAnalytics @Inject constructor(private val userSession: UserSes
                 productList.map { getMiniCartItemsBundle(it, merchantId, merchantName) }
             )
 
-        val cartIds = productList.joinToString { it.cartId }
-        val productIds = productList.joinToString { it.productId }
+        val cartIds = productList.joinToString(separator = COMMA_SEPARATOR) { it.cartId }
+        val productIds = productList.joinToString(separator = COMMA_SEPARATOR) { it.productId }
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT, TokoFoodAnalytics.EVENT_BEGIN_CHECKOUT)
             putString(TrackAppUtils.EVENT_ACTION, TokoFoodAnalyticsConstants.CLICK_ON_CHECKOUT_MINICART)
@@ -410,7 +410,7 @@ class MerchantPageAnalytics @Inject constructor(private val userSession: UserSes
             )
             putString(
                 AddToCartExternalAnalytics.EE_PARAM_ITEM_VARIANT,
-                foodItem.customListItems.joinToString(separator = ",") { it.addOnUiModel?.name.orEmpty() }
+                foodItem.customListItems.joinToString(separator = COMMA_SEPARATOR) { it.addOnUiModel?.name.orEmpty() }
             )
             putInt(AddToCartExternalAnalytics.EE_PARAM_PRICE, foodItem.price.toInt())
         }
@@ -447,7 +447,7 @@ class MerchantPageAnalytics @Inject constructor(private val userSession: UserSes
             )
             putString(
                 AddToCartExternalAnalytics.EE_PARAM_ITEM_VARIANT,
-                foodItem.customListItems.joinToString(separator = ",") { it.addOnUiModel?.name.orEmpty() }
+                foodItem.customListItems.joinToString(separator = COMMA_SEPARATOR) { it.addOnUiModel?.name.orEmpty() }
             )
             putString(AddToCartExternalAnalytics.EE_PARAM_PRICE, foodItem.price.toString())
             putString(AddToCartExternalAnalytics.EE_PARAM_QUANTITY, quantity)
@@ -474,7 +474,7 @@ class MerchantPageAnalytics @Inject constructor(private val userSession: UserSes
             putString(AddToCartExternalAnalytics.EE_PARAM_ITEM_NAME, product.productName)
             putString(
                 AddToCartExternalAnalytics.EE_PARAM_ITEM_VARIANT,
-                selectedOptions.joinToString()
+                selectedOptions.joinToString(separator = COMMA_SEPARATOR)
             )
             putString(AddToCartExternalAnalytics.EE_PARAM_PRICE, product.price.toString())
             putString(AddToCartExternalAnalytics.EE_PARAM_QUANTITY, product.quantity.toString())
@@ -486,6 +486,8 @@ class MerchantPageAnalytics @Inject constructor(private val userSession: UserSes
 
     companion object {
         private const val MINICART_TRACKER_ID = "31320"
+
+        private const val COMMA_SEPARATOR = ","
     }
 
 }
