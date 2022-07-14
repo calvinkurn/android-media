@@ -703,6 +703,8 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 manualEndTimeProgram = TmDateUtil.addDuration(timeWindow?.endTime ?: "", periodMonth)
                 val maxProgramEndDate = GregorianCalendar(locale)
                 maxProgramEndDate.add(Calendar.YEAR, 1)
+                maxProgramEndDate.set(Calendar.HOUR_OF_DAY,23)
+                maxProgramEndDate.set(Calendar.MINUTE,59)
                 val endDate = GregorianCalendar(locale)
                 val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
                 endDate.time = sdf.parse(manualEndTimeProgram + "00") ?: Date()
@@ -857,7 +859,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         tvTermsAndCondition.movementMethod = LinkMovementMethod.getInstance()
         tvTermsAndCondition.highlightColor = Color.TRANSPARENT
         btnContinue.setOnClickListener {
-            if (getTimeInMillis(couponStartDate) > getTimeInMillis(couponEndDate)) {
+            if (getTimeInMillis(updatedStartTimeCoupon) > getTimeInMillis(updatedEndTimeCoupon)) {
                 view?.let { it1 -> Toaster.build(it1,"Pengaturan tidak disimpan. Pastikan tanggal berakhir tidak mendahului tanggal mulai.",Toaster.LENGTH_LONG,Toaster.TYPE_ERROR).show() }
             } else {
                 if (arguments?.getInt(BUNDLE_CREATE_SCREEN_TYPE) == CreateScreenType.COUPON_MULTIPLE_BUAT) {
