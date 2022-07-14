@@ -55,10 +55,10 @@ class PlaySocketToModelMapper @Inject constructor(
         return PlayQuickReplyInfoUiModel(input.data)
     }
 
-    fun mapProductSection(input: ProductSection): Triple<List<ProductSectionUiModel>, Pair<Int, Boolean>, String> {
+    fun mapProductSection(input: ProductSection): Triple<List<ProductSectionUiModel>, Int, String> {
         return Triple(
             input.sectionList.map(productTagMapper::mapSection),
-            Pair(input.config.peekProductCount, input.config.showProductTag),
+            input.config.peekProductCount,
             input.config.bottomSheetTitle
         )
     }
