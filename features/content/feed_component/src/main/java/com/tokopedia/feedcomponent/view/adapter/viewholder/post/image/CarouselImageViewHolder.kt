@@ -229,6 +229,7 @@ internal class CarouselImageViewHolder(
         if (!card.isAsgcColorChangedAsPerWidgetColor) changeTopAdsColorToWhite(card)
         else changeCTABtnColorAsPerWidget(card, shouldNotify = false)
     }
+
     private fun getCTAButtonText(card: FeedXCard) =
          if (card.isTypeProductHighlight && !card.isASGCDiscountToko && card.totalProducts > 1)
             itemView.context.getString(R.string.feeds_check_x_products, card.totalProducts)
@@ -238,10 +239,12 @@ internal class CarouselImageViewHolder(
                 card.totalProducts,
                 card.maximumDisPercentFmt
             )
+        else if (card.isASGCDiscountToko && card.totalProducts == 1)
+             itemView.context.getString(
+                 R.string.feeds_asgc_disc_one_products,
+                 card.maximumDisPercentFmt
+             )
         else itemView.context.getString(R.string.feeds_cek_sekarang)
-
-
-
 
     private fun changeTopAdsColorToGreen(card: FeedXCard, shouldNotify: Boolean = true) {
         changeTopAdsColor(
