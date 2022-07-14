@@ -1258,14 +1258,14 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
             }
             val calendarMax = GregorianCalendar(LocaleUtils.getCurrentLocale(it))
             calendarMax.time = defaultCalendar.time
-            if(tmCouponStartDateUnix != null && type == 0){
+            if(tmCouponStartDateUnix != null){
                 defaultCalendar.time = tmCouponStartDateUnix?.time
                 calendarMax.time = defaultCalendar.time
             }
-            if(tmCouponEndTimeUnix != null && type == 1){
-                defaultCalendar.time = tmCouponEndTimeUnix?.time
-                calendarMax.time = defaultCalendar.time
-            }
+//            if(tmCouponEndTimeUnix != null && type == 1){
+//                defaultCalendar.time = tmCouponEndTimeUnix?.time
+//                calendarMax.time = defaultCalendar.time
+//            }
             calendarMax.add(Calendar.YEAR, 1)
 
 //            if(calendarMax.time > sdf.parse(programData?.timeWindow?.endTime + "00") ?: Date()){
