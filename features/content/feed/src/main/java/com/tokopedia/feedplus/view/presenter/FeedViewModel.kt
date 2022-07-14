@@ -19,8 +19,10 @@ import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.AtcViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FavoriteShopViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.TrackAffiliateViewModel
+import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel
 import com.tokopedia.feedplus.view.constants.Constants.FeedConstants.NON_LOGIN_USER_ID
+import com.tokopedia.feedplus.view.util.CustomUiMessageThrowable
 import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
 import com.tokopedia.interest_pick_common.data.DataItem
@@ -89,7 +91,6 @@ class FeedViewModel @Inject constructor(
 
     companion object {
         private const val ERROR_UNFOLLOW_MESSAGE = "Oops, gagal meng-unfollow."
-        private const val ERROR_UNFOLLOW_ON_TOGGLE_MESSAGE = "Oops, tidak bisa unfollow toko."
         private const val ERROR_FOLLOW_MESSAGE = "“Oops, gagal mem-follow."
         const val PARAM_SOURCE_RECOM_PROFILE_CLICK = "click_recom_profile"
         const val PARAM_SOURCE_SEE_ALL_CLICK = "click_see_all"
@@ -384,7 +385,7 @@ class FeedViewModel @Inject constructor(
             toggleFavoriteShopResp.value = Success(results)
         }) {
             if (follow)
-                toggleFavoriteShopResp.value = Fail(Exception(ERROR_UNFOLLOW_ON_TOGGLE_MESSAGE))
+                toggleFavoriteShopResp.value = Fail(CustomUiMessageThrowable(R.string.feed_unfollow_error_message))
             else
                 toggleFavoriteShopResp.value = Fail(Exception(ERROR_FOLLOW_MESSAGE))
 

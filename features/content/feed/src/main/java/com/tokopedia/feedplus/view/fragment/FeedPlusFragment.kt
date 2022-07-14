@@ -156,6 +156,7 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
+import com.tokopedia.feedplus.view.util.CustomUiMessageThrowable
 
 /**
  * @author by nisie on 5/15/17.
@@ -601,9 +602,17 @@ class FeedPlusFragment : BaseDaggerFragment(),
                                 }
                             }
                             else -> {
-                                val message = it.throwable.message
-                                    ?: getString(R.string.default_request_error_unknown)
-                                showToast(message, Toaster.TYPE_ERROR)
+                                it.throwable.let { throwable ->
+                                    val message = if (throwable is CustomUiMessageThrowable) {
+                                        context?.getString(throwable.errorMessageId)
+                                    } else {
+                                        it.throwable.message
+                                            ?: getString(R.string.default_request_error_unknown)
+                                    }
+                                    message?.let { errormessage ->
+                                        showToast(errormessage, Toaster.TYPE_ERROR)
+                                    }
+                                }
                             }
                         }
 

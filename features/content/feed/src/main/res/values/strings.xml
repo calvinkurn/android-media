@@ -109,6 +109,8 @@ dari Feed.</string>
 
     <!-- Like -->
     <string name="feed_like_error_message">Oops, tidak bisa memberi suka.</string>
+    <!-- Unfollow -->
+    <string name="feed_unfollow_error_message">Oops, tidak bisa unfollow toko</string>
 
     <!--Toaster -->
     <string name="feed_go_to_cart">Lihat Keranjang</string>
