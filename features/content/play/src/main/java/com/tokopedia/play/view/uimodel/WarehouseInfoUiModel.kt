@@ -12,7 +12,7 @@ data class WarehouseInfoUiModel(
         val Empty: WarehouseInfoUiModel
             get() = WarehouseInfoUiModel(
                 warehouseId = "0",
-                isOOC = true,
+                isOOC = false,
             )
     }
 }
