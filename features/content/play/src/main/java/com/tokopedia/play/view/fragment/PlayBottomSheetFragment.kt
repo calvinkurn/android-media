@@ -35,7 +35,15 @@ import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
-import com.tokopedia.play.view.uimodel.action.*
+import com.tokopedia.play.view.uimodel.action.AtcProductAction
+import com.tokopedia.play.view.uimodel.action.AtcProductVariantAction
+import com.tokopedia.play.view.uimodel.action.BuyProductAction
+import com.tokopedia.play.view.uimodel.action.BuyProductVariantAction
+import com.tokopedia.play.view.uimodel.action.ClickCloseLeaderboardSheetAction
+import com.tokopedia.play.view.uimodel.action.RefreshLeaderboard
+import com.tokopedia.play.view.uimodel.action.SelectVariantOptionAction
+import com.tokopedia.play.view.uimodel.action.SendUpcomingReminder
+import com.tokopedia.play.view.uimodel.action.RetryGetTagItemsAction
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.uimodel.recom.PlayEmptyBottomSheetInfoUiModel
 import com.tokopedia.play.view.uimodel.event.*
@@ -551,7 +559,7 @@ class PlayBottomSheetFragment @Inject constructor(
                                 newAnalytic.impressNowToaster(channelId = playViewModel.channelId, channelType = playViewModel.channelType)
                                 Triple(
                                     getString(R.string.play_add_to_cart_message_success_mixed),
-                                    getString(R.string.play_tokonow_minicart_applink),
+                                    ApplinkConstInternalTokopediaNow.INTERNAL_TOKOPEDIA_NOW + getString(R.string.play_tokonow_minicart_applink),
                                     getString(R.string.play_toaster_tokonow_wording)
                                 )
                             } else if (event.product.isTokoNow && !partnerTokoNow) Triple(getString(R.string.play_add_to_cart_message_success_tokonow), ApplinkConstInternalMarketplace.CART, getString(R.string.play_toaster_tokonow_wording))

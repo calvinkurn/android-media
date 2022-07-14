@@ -4,7 +4,6 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.LayoutRes
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
@@ -57,10 +56,6 @@ class ProductSectionViewHolder(
         override fun onClickProductCard(product: PlayProductUiModel.Product, position: Int) {
             listener.onClickProductCard(product, sectionInfo, position)
         }
-    }
-
-    init {
-        rvProducts.layoutManager = LinearLayoutManager(rvProducts.context, RecyclerView.VERTICAL, false)
     }
 
     fun bind(item: ProductSectionUiModel.Section) {

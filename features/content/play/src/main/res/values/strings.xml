@@ -105,9 +105,9 @@
 
     <!--Tokonow-->
     <string name="play_address_widget_info">Lokasimu belum tersedia di NOW! <![CDATA[<strong><span style="color:#03AC0E">Cek Jangkauan</span></strong>]]></string>
-    <string name="play_tokonow_info_weblink">https://www.tokopedia.com/help/article/apa-itu-tokopedia-now</string>
+    <string name="play_tokonow_info_weblink">help/article/apa-itu-tokopedia-now</string>
     <string name="play_toaster_global_wording">Lihat Keranjang</string>
     <string name="play_toaster_tokonow_wording">Lihat</string>
-    <string name="play_tokonow_minicart_applink">tokopedia://now?isMiniCartOpen=true</string>
+    <string name="play_tokonow_minicart_applink">\?isMiniCartOpen=true</string>
     <string name="tokopedia_now">Tokopedia NOW!</string>
 </resources>

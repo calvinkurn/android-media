@@ -87,6 +87,7 @@ import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.model.ShareModel
+import com.tokopedia.url.TokopediaUrl
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -1812,7 +1813,9 @@ class PlayUserInteractionFragment @Inject constructor(
 
     override fun onInfoClicked(view: ChooseAddressViewComponent) {
         newAnalytic.clickInfoAddressWidget(channelId, channelType = playViewModel.channelType)
-        playViewModel.submitAction(OpenFooterUserReport(getString(R.string.play_tokonow_info_weblink)))
+        playViewModel.submitAction(OpenFooterUserReport(
+            TokopediaUrl.getInstance().WEB +
+                getString(R.string.play_tokonow_info_weblink)))
     }
 
     override fun onImpressedAddressWidget(view: ChooseAddressViewComponent) {
