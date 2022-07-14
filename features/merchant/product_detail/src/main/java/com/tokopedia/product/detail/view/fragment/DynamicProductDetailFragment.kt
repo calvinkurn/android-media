@@ -5043,8 +5043,7 @@ open class DynamicProductDetailFragment :
 
     override fun onImpressPageNotFound() {
         PageErrorTracking.impressPageNotFound(
-            generatePageErrorTrackerData(),
-            trackingQueue
+            generatePageErrorTrackerData()
         )
     }
 
