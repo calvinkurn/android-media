@@ -26,7 +26,7 @@ class GoCicilInstallmentRequest(
             addProperty(ORDER_METADATA_DEST_ADDRESS_ADDRESS, address.addressStreet)
             addProperty(ORDER_METADATA_DEST_ADDRESS_STATE, address.addressStreet)
             addProperty(ORDER_METADATA_DEST_ADDRESS_CITY, address.cityName)
-            addProperty(ORDER_METADATA_DEST_ADDRESS_COUNTRY, "") // TODO: change country value 
+            addProperty(ORDER_METADATA_DEST_ADDRESS_COUNTRY, address.country)
             addProperty(ORDER_METADATA_DEST_ADDRESS_POSTAL_CODE, address.postalCode)
         }
 
@@ -39,8 +39,8 @@ class GoCicilInstallmentRequest(
                     addProperty(ORDER_METADATA_PRODUCT_DATA_QUANTITY, product.orderQuantity)
                     add(ORDER_METADATA_PRODUCT_DATA_CATEGORY, JsonObject().apply {
                         addProperty(ORDER_METADATA_PRODUCT_CATEGORY_ID, product.categoryId)
-                        addProperty(ORDER_METADATA_PRODUCT_CATEGORY_NAME, product.category) // TODO: Change to lvl 3 new field 
-                        addProperty(ORDER_METADATA_PRODUCT_CATEGORY_IDENTIFIER, "") // TODO: Adjust when identifier field is ready 
+                        addProperty(ORDER_METADATA_PRODUCT_CATEGORY_NAME, product.lastLevelCategory)
+                        addProperty(ORDER_METADATA_PRODUCT_CATEGORY_IDENTIFIER, product.categoryIdentifier)
                     })
                 })
             }
