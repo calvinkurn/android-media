@@ -22,11 +22,27 @@
         app:toolbarInvertSearchBarColor="true"
         app:toolbarAlwaysShowShadow="false" />
 
+    <com.tokopedia.unifycomponents.SearchBarUnify
+        android:id="@+id/wishlist_collection_detail_searchbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginBottom="@dimen/spacing_lvl2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/wishlist_collection_detail_navtoolbar"
+        app:search_bar_clearable="true"
+        app:search_bar_enable="true"
+        app:search_bar_placeholder="Cari barang atau toko"
+        app:search_bar_show_icon="false" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_wishlist_collection_detail_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/wishlist_collection_detail_navtoolbar"
+        app:layout_constraintTop_toBottomOf="@id/wishlist_collection_detail_searchbar"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginBottom="16dp">
 

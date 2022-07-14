@@ -1,13 +1,17 @@
 package com.tokopedia.wishlistcollection.view.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.annotation.Keep
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
@@ -518,6 +522,37 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                         triggerSearch()
                     }
             )
+
+            wishlistCollectionDetailSearchbar.searchBarTextField.addTextChangedListener(object :
+                TextWatcher {
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+                override fun afterTextChanged(s: Editable?) {
+                    s?.toString()?.let { query ->
+                        searchQuery = query
+                        if (query.isNotEmpty()) {
+                            WishlistV2Analytics.submitSearchFromCariProduk(query)
+                        }
+                        wishlistCollectionDetailSearchbar.searchBarTextField.clearFocus()
+                        val `in` =
+                            context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                        `in`.hideSoftInputFromWindow(
+                            wishlistCollectionDetailSearchbar.searchBarTextField.windowToken,
+                            0
+                        )
+                        triggerSearch()
+                    }
+                }
+            })
+
             val pageSource: String
             val icons: IconBuilder
             if(activityWishlistV2 != PARAM_HOME) {
