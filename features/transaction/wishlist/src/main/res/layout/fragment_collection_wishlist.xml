@@ -23,42 +23,6 @@
         app:toolbarInvertSearchBarColor="true"
         app:toolbarAlwaysShowShadow="false" />
 
-    <!--<include
-        android:id="@+id/test_card_image_loader"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/wishlist_collection_navtoolbar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        layout="@layout/collection_wishlist_v2_loader_image_card_item"/>
-
-    <include
-        android:id="@+id/test_card_image"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/test_card_image_loader"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        layout="@layout/collection_wishlist_v2_image_card_item"/>
-
-    <include
-        android:id="@+id/test_card_new_collection"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/test_card_image"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        layout="@layout/collection_wishlist_v2_create_item"/>
-
-    <include
-        android:id="@+id/test_ticker_collection"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/test_card_new_collection"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        layout="@layout/collection_wishlist_v2_ticker_item"/>-->
-
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
