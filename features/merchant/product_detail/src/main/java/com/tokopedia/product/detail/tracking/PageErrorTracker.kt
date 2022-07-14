@@ -1,5 +1,7 @@
 package com.tokopedia.product.detail.tracking
 
+import com.tokopedia.kotlin.extensions.view.toZeroStringIfNull
+
 class PageErrorTracker(
     productId: String?,
     isFromDeeplink: Boolean,
@@ -8,7 +10,7 @@ class PageErrorTracker(
     productKey: String
 ) {
 
-    val deeplink = if(isFromDeeplink)
+    val deeplink = if (isFromDeeplink)
         "$shopDomain/$productKey"
     else deeplinkUrl
 
