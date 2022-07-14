@@ -296,14 +296,9 @@ class UserProfileViewModel @AssistedInject constructor(
 
     private suspend fun loadShopRecom() {
         val result = repo.getShopRecom()
-        if (result.isShown) {
-            _isShopRecomShow = true
-            _shopRecom.emit(result.items)
-        }
-        else {
-            _isShopRecomShow = false
-            _shopRecom.emit(emptyList())
-        }
+        _isShopRecomShow = result.isShown
+        if (result.isShown) _shopRecom.emit(result.items)
+        else _shopRecom.emit(emptyList())
     }
 
 }
