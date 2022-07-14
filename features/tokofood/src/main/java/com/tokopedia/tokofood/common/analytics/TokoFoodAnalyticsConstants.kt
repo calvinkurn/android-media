@@ -43,6 +43,7 @@ object TokoFoodAnalyticsConstants {
     const val CLICK_ON_PESAN_PRODUCT_CARD = "click on pesan - product card"
     const val CLICK_ON_PESAN_PRODUCT_BOTTOM_SHEET = "click on pesan - product bottom sheet"
     const val CLICK_ON_PESAN_VARIANT_PAGE = "click on pesan - variant page"
+    const val CLICK_ON_CHECKOUT_BUTTON_ON_MINICART = "click on checkout button on minicart"
     const val CLOSED = "closed"
     const val OPEN = "open"
 
