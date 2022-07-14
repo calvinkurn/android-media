@@ -14,8 +14,6 @@ class ShopSuggestionProcessing {
     var renderedShopAdsId = ""
         private set
 
-    private var excludedOrganicShopId: String = ""
-
     fun processData(headlineAdsIdList: HeadlineAdsIdList, suggestionItemIdList: SuggestionItemIdList) {
         val mainHeadlineAdsId = headlineAdsIdList.list.firstOrNull()
         val subHeadlineAdsId = headlineAdsIdList.list.secondOrNull()
@@ -23,18 +21,15 @@ class ShopSuggestionProcessing {
 
         if (mainHeadlineAdsId == null) return
 
-        when (nonEmptySuggestionItemIdList.take(FILTER_SHOP_COUNT).indexOf(mainHeadlineAdsId)) {
-            NOT_CONTAINS -> renderedShopAdsId = mainHeadlineAdsId
-            CONTAINS_AT_FIRST_INDEX -> renderedShopAdsId = subHeadlineAdsId ?: ""
-            else -> {
-                renderedShopAdsId = mainHeadlineAdsId
-                excludedOrganicShopId = mainHeadlineAdsId
-            }
+        renderedShopAdsId = when (nonEmptySuggestionItemIdList.take(FILTER_SHOP_COUNT).indexOf(mainHeadlineAdsId)) {
+            NOT_CONTAINS -> mainHeadlineAdsId
+            CONTAINS_AT_FIRST_INDEX -> subHeadlineAdsId ?: ""
+            else -> mainHeadlineAdsId
         }
     }
 
     fun shouldSkipSuggestionItem(item: SuggestionItem): Boolean {
-        return item.hasSuggestionId() && item.suggestionId == excludedOrganicShopId
+        return item.hasSuggestionId() && item.suggestionId == renderedShopAdsId
     }
 
     @Suppress("MagicNumber")

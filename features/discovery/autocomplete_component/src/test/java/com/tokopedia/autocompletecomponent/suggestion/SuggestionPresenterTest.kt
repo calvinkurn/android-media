@@ -43,6 +43,7 @@ private const val suggestionMultipleShopAdsNoMatchResponse = "autocomplete/sugge
 private const val suggestionMultipleShopAdsMatchFirstResponse = "autocomplete/suggestion/shopads/suggestion-multiple-shop-ads-match-first.json"
 private const val suggestionSingleShopAdsMatchFirstResponse = "autocomplete/suggestion/shopads/suggestion-single-shop-ads-match-first.json"
 private const val suggestionMultipleShopAdsMatchSecondResponse = "autocomplete/suggestion/shopads/suggestion-multiple-shop-ads-match-second.json"
+private const val suggestionMultipleShopAdsMatchBothResponse = "autocomplete/suggestion/shopads/suggestion-multiple-shop-ads-match-both.json"
 
 internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
 
@@ -470,5 +471,18 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
             }
 
         isExcludedApplinkExists shouldBe false
+    }
+
+    @Test
+    fun `Suggestion will not show any organic shop`() {
+        val suggestionUniverse = suggestionMultipleShopAdsMatchBothResponse.jsonToObject<SuggestionUniverse>()
+        val expectedSize = 2
+
+        `Given Suggestion API will return SuggestionUniverse`(suggestionUniverse, requestParamsSlot)
+
+        `when presenter get suggestion data`()
+        `then verify suggestion view will call showSuggestionResult`()
+        `Then verify shop ads shown is sub ads`(suggestionUniverse)
+        `Then verify shops visitable list size`(expectedSize)
     }
 }
