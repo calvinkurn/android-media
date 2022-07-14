@@ -282,10 +282,10 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
             view?.findViewById<View>(R.id.tradein_error_layout)?.show()
             setActionClickListener {
                 view?.findViewById<View>(R.id.tradein_error_layout)?.hide()
+                refreshPage()
                 if(isFraud)
                     setUpEducationalFragment()
-                else
-                    refreshPage()
+
             }
         }
     }
