@@ -1068,6 +1068,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     fun updateFeedVisibilityVariable(isFeedShown: Boolean) {
         this.isFeedPageShown = isFeedShown
+        resetVODWhenFeedTabChanged()
     }
 
     override fun onPause() {
@@ -1101,6 +1102,21 @@ class FeedPlusFragment : BaseDaggerFragment(),
             }
         }
     }
+    private fun resetVODWhenFeedTabChanged() {
+        val layoutManager = recyclerView.layoutManager as LinearLayoutManager?
+        val firstPosition = layoutManager?.findFirstVisibleItemPosition() ?: 0
+        val lastPosition = layoutManager?.findLastVisibleItemPosition() ?: 0
+        for (i in firstPosition..lastPosition) {
+            val item = getCardViewModel(adapter.getList(), i)
+            if (isVOD(adapter.getList(), i)) {
+                if (item != null) {
+                  val viewHolder = recyclerView.findViewHolderForAdapterPosition(i)
+                    if (viewHolder is DynamicPostNewViewHolder)
+                        (viewHolder as DynamicPostNewViewHolder).setPostDynamicView(if (!isFeedPageShown) BROADCAST_VISIBLITY else "")
+                }
+            }
+        }
+    }
 
     private fun getCardViewModel(list: List<Visitable<*>>, position: Int): FeedXMedia? {
         try {
@@ -1118,6 +1134,13 @@ class FeedPlusFragment : BaseDaggerFragment(),
             return (item.typename == TYPE_FEED_X_CARD_POST
                     && (item.media.isNotEmpty()
                     && (item.media.find { it.type == TYPE_IMAGE } != null)))
+        }
+        return false
+    }
+    private fun isVOD(list: List<Visitable<*>>, position: Int): Boolean {
+        if (position >= 0 && list.size > position && list[position] is DynamicPostUiModel) {
+            val item = (list[position] as DynamicPostUiModel).feedXCard
+            return (item.typename == TYPE_FEED_X_CARD_PLAY)
         }
         return false
     }
