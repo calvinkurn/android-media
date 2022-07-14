@@ -1,28 +1,17 @@
 package com.tokopedia.shop.campaign.view.fragment
 
-import android.app.Activity
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalMechant
-import com.tokopedia.atc_common.domain.model.response.AddToCartBundleModel
-import com.tokopedia.cachemanager.PersistentCacheManager
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
@@ -34,32 +23,29 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopCampaignTabTracker
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CAMPAIGN_TAB
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.campaign.view.adapter.ShopCampaignTabAdapter
 import com.tokopedia.shop.campaign.view.adapter.ShopCampaignTabAdapterTypeFactory
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignProductBundleParentWidgetViewHolder
 import com.tokopedia.shop.campaign.view.adapter.viewholder.WidgetConfigListener
-import com.tokopedia.shop.common.constant.ShopCommonExtraConstant
 import com.tokopedia.shop.common.data.model.ShopPageWidgetLayoutUiModel
 import com.tokopedia.shop.common.util.ShopUtil
-import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
-import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
-import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
-import com.tokopedia.shop.common.widget.model.ShopHomeWidgetLayout
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
-import com.tokopedia.shop.home.view.bottomsheet.ShopHomeFlashSaleTncBottomSheet
-import com.tokopedia.shop.home.view.bottomsheet.ShopHomeNplCampaignTncBottomSheet
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
-import com.tokopedia.shop.home.view.model.*
-import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
+import com.tokopedia.shop.home.view.model.ShopHomeFlashSaleUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeProductBundleListUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
+import com.tokopedia.shop.home.view.model.ShopPageHomeWidgetLayoutUiModel
 import com.tokopedia.shop.pageheader.presentation.fragment.NewShopPageFragment
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
 import com.tokopedia.shop_widget.thematicwidget.viewholder.ThematicWidgetViewHolder
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
 
@@ -72,14 +58,8 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
         private const val KEY_SHOP_NAME = "SHOP_NAME"
         private const val KEY_SHOP_ATTRIBUTION = "SHOP_ATTRIBUTION"
         private const val KEY_SHOP_REF = "SHOP_REF"
-        private const val REQUEST_CODE_USER_LOGIN = 101
-        private const val REGISTER_VALUE = "REGISTER"
-        private const val UNREGISTER_VALUE = "UNREGISTER"
-        private const val NPL_REMIND_ME_CAMPAIGN_ID = "NPL_REMIND_ME_CAMPAIGN_ID"
-        private const val FLASH_SALE_REMIND_ME_CAMPAIGN_ID = "FLASH_SALE_REMIND_ME_CAMPAIGN_ID"
         private const val LOAD_WIDGET_ITEM_PER_PAGE = 3
         private const val LIST_WIDGET_LAYOUT_START_INDEX = 0
-        private const val MIN_BUNDLE_SIZE = 1
         private const val CONFETTI_URL = "https://assets.tokopedia.net/asts/android/shop_page/shop_campaign_tab_confetti.json"
 
         fun createInstance(
@@ -254,7 +234,7 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
     }
     // endregion
 
-    //region bundling widget
+    //region Parent Bundling Widget
     override fun onImpressionBundlingWidget(
         model: ShopHomeProductBundleListUiModel,
         position: Int
@@ -267,189 +247,9 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
             userId
         )
     }
-    //end region
-
-    // region Product bundle multiple widget
-    override fun addMultipleBundleToCart(
-        selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
-        bundleListSize: Int,
-        productDetails: List<ShopHomeBundleProductUiModel>,
-        bundleName: String,
-        widgetLayout: ShopHomeWidgetLayout
-    ) {
-        if (isOwner) {
-            // disable owner add their own bundle to cart
-            showErrorToast(getString(R.string.shop_page_product_bundle_failed_atc_text_for_shop_owner))
-        } else {
-            if (selectedMultipleBundle.isProductsHaveVariant) {
-                // go to bundling selection page
-                goToBundlingSelectionPage(selectedMultipleBundle.bundleId)
-            } else {
-                // atc bundle directly from shop page home
-                val widgetLayoutParams = ShopPageWidgetLayoutUiModel(
-                    widgetId = widgetLayout.widgetId,
-                    widgetMasterId = widgetLayout.widgetMasterId,
-                    widgetType = widgetLayout.widgetType,
-                    widgetName = widgetLayout.widgetName
-                )
-                viewModel?.addBundleToCart(
-                    shopId = shopId,
-                    userId = userId,
-                    bundleId = selectedMultipleBundle.bundleId,
-                    productDetails = productDetails,
-                    onFinishAddToCart = { handleOnFinishAtcBundle(it, bundleListSize, widgetLayoutParams) },
-                    onErrorAddBundleToCart = { handleOnErrorAtcBundle(it) },
-                    productQuantity = selectedMultipleBundle.minOrder
-                )
-            }
-        }
-        // TODO: 12/07/22 Implement atc tracker bundle multiple
-
-    }
-
-    override fun impressionProductBundleMultiple(
-        selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
-        bundleName: String,
-        bundlePosition: Int
-    ) {
-        // TODO: 12/07/22 Implement multiple bundle impression tracker
-    }
-
-    override fun onMultipleBundleProductClicked(
-        selectedProduct: ShopHomeBundleProductUiModel,
-        selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
-        bundleName: String,
-        bundlePosition: Int
-    ) {
-        // TODO: 12/07/22 Implement multiple bundle tracker
-
-        goToPDP(selectedProduct.productId)
-    }
-    // endregion
-
-    // region Product bundle single widget
-    override fun onSingleBundleProductClicked(
-        selectedProduct: ShopHomeBundleProductUiModel,
-        selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
-        bundleName: String,
-        bundlePosition: Int
-    ) {
-        // TODO: 12/07/22 Implement single bundle product clicked tracker
-
-        goToPDP(selectedProduct.productId)
-    }
-
-    override fun addSingleBundleToCart(
-        selectedBundle: ShopHomeProductBundleDetailUiModel,
-        bundleListSize: Int,
-        bundleProducts: ShopHomeBundleProductUiModel,
-        bundleName: String,
-        widgetLayout: ShopHomeWidgetLayout
-    ) {
-        if (isOwner) {
-            // disable owner add their own bundle to cart
-            showErrorToast(getString(R.string.shop_page_product_bundle_failed_atc_text_for_shop_owner))
-        } else {
-            if (selectedBundle.isProductsHaveVariant) {
-                // go to bundling selection page
-                goToBundlingSelectionPage(selectedBundle.bundleId)
-            } else {
-                // atc bundle directly from shop page home
-                val widgetLayoutParams = ShopPageWidgetLayoutUiModel(
-                    widgetId = widgetLayout.widgetId,
-                    widgetMasterId = widgetLayout.widgetMasterId,
-                    widgetType = widgetLayout.widgetType,
-                    widgetName = widgetLayout.widgetName
-                )
-                viewModel?.addBundleToCart(
-                    shopId = shopId,
-                    userId = userId,
-                    bundleId = selectedBundle.bundleId,
-                    productDetails = listOf(bundleProducts),
-                    onFinishAddToCart = { handleOnFinishAtcBundle(it, bundleListSize, widgetLayoutParams) },
-                    onErrorAddBundleToCart = { handleOnErrorAtcBundle(it) },
-                    productQuantity = selectedBundle.minOrder
-                )
-            }
-        }
-
-        // TODO: 12/07/22 Implement atc bundle single tracker
-    }
-
-    override fun onTrackSingleVariantChange(selectedProduct: ShopHomeBundleProductUiModel, selectedSingleBundle: ShopHomeProductBundleDetailUiModel, bundleName: String) {
-        // TODO: 12/07/22 Implement variant change single bundle tracker
-    }
-
-    override fun impressionProductBundleSingle(
-        selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
-        selectedProduct: ShopHomeBundleProductUiModel,
-        bundleName: String,
-        bundlePosition: Int
-    ) {
-        // TODO: 12/07/22 Implement impression product bundle single
-    }
-    // endregion
+    //endregion
 
     // region flash sale toko widget
-    override fun onClickTncFlashSaleWidget(model: ShopHomeFlashSaleUiModel) {
-        model.data?.firstOrNull()?.let {
-            shopPageHomeTracking.onClickTnCButtonFlashSaleWidget(
-                campaignId = it.campaignId,
-                shopId = shopId,
-                userId = userId,
-                isOwner = isOwner
-            )
-            showFlashTncSaleBottomSheet(it.campaignId)
-        }
-    }
-
-    override fun onClickSeeAllFlashSaleWidget(model: ShopHomeFlashSaleUiModel) {
-        context?.run {
-            if (shopId.isNotBlank() && model.header.ctaLink.isNotBlank()) {
-                model.data?.firstOrNull()?.let { flashSaleItem ->
-                    shopPageHomeTracking.onClickSeeAllButtonFlashSaleWidget(
-                        statusCampaign = flashSaleItem.statusCampaign,
-                        shopId = shopId,
-                        userId = userId,
-                        isOwner = isOwner
-                    )
-                }
-                RouteManager.route(this, model.header.ctaLink)
-            }
-        }
-    }
-
-    override fun onClickFlashSaleReminder(model: ShopHomeFlashSaleUiModel) {
-        viewModel?.let {
-            val campaignId = model.data?.firstOrNull()?.campaignId.orEmpty()
-            if (it.isLogin) {
-                handleFlashSaleClickReminder(model)
-            } else {
-                setFlashSaleRemindMeClickedCampaignId(campaignId)
-                redirectToLoginPage()
-            }
-            shopPageHomeTracking.onClickReminderButtonFlashSaleWidget(
-                campaignId = campaignId,
-                shopId = shopId,
-                userId = userId,
-                isOwner = isOwner
-            )
-        }
-    }
-
-    override fun onTimerFinished(model: ShopHomeFlashSaleUiModel) {
-        shopCampaignTabAdapter.removeWidget(model)
-        endlessRecyclerViewScrollListener.resetState()
-        shopCampaignTabAdapter.removeProductList()
-        shopCampaignTabAdapter.showLoading()
-        viewModel?.getShopPageHomeWidgetLayoutData(shopId, extParam)
-        scrollToTop()
-    }
-
-    override fun onFlashSaleProductClicked(model: ShopHomeProductUiModel) {
-        goToPDP(model.id ?: "")
-    }
-
     override fun onFlashSaleWidgetImpressed(model: ShopHomeFlashSaleUiModel, position: Int) {
         shopCampaignTabTracker.impressionShopBannerWidget(
             shopId,
@@ -458,14 +258,6 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
             ShopUtil.getActualPositionFromIndex(position),
             userId
         )
-    }
-
-    override fun onPlaceHolderClickSeeAll(model: ShopHomeFlashSaleUiModel) {
-        context?.run {
-            if (shopId.isNotBlank() && model.header.ctaLink.isNotBlank()) {
-                RouteManager.route(this, model.header.ctaLink)
-            }
-        }
     }
     // endregion
 
@@ -493,7 +285,8 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
                 ShopUtil.getActualPositionFromIndex(parentPosition),
                 itemPosition,
                 isLogin,
-                customDimensionShopPage
+                customDimensionShopPage,
+                CAMPAIGN_TAB
             )
         }
         shopHomeProductViewModel?.let {
@@ -518,50 +311,9 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
                 ShopUtil.getActualPositionFromIndex(parentPosition),
                 itemPosition,
                 isLogin,
-                customDimensionShopPage
+                customDimensionShopPage,
+                CAMPAIGN_TAB
             )
-        }
-    }
-
-    override fun onClickTncCampaignNplWidget(model: ShopHomeNewProductLaunchCampaignUiModel) {
-        model.data?.firstOrNull()?.let {
-            shopPageHomeTracking.clickTncButton(isOwner, it.statusCampaign, customDimensionShopPage)
-            showNplCampaignTncBottomSheet(
-                it.campaignId,
-                it.statusCampaign,
-                it.dynamicRule.dynamicRoleData.ruleID
-            )
-        }
-    }
-
-    override fun onClickRemindMe(model: ShopHomeNewProductLaunchCampaignUiModel) {
-        viewModel?.let {
-            val campaignId = model.data?.firstOrNull()?.campaignId.orEmpty()
-            if (it.isLogin) {
-                shopCampaignTabAdapter.showNplRemindMeLoading(campaignId)
-                handleClickRemindMe(model)
-            } else {
-                setNplRemindMeClickedCampaignId(campaignId)
-                redirectToLoginPage()
-            }
-        }
-    }
-
-    override fun onClickCtaCampaignNplWidget(model: ShopHomeNewProductLaunchCampaignUiModel) {
-        model.data?.firstOrNull()?.let {
-            shopPageHomeTracking.clickCtaCampaignNplWidget(
-                isOwner,
-                it.statusCampaign,
-                customDimensionShopPage
-            )
-            context?.let { context ->
-                // expected ctaLink produce ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT_LIST
-                val showcaseIntent = RouteManager.getIntent(context, model.header.ctaLink).apply {
-                    // set isNeedToReload data to true for sync shop info data in product result fragment
-                    putExtra(ShopCommonExtraConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, true)
-                }
-                startActivity(showcaseIntent)
-            }
         }
     }
 
@@ -597,15 +349,6 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
                 }
             }
         }
-    }
-
-    override fun onTimerFinished(model: ShopHomeNewProductLaunchCampaignUiModel) {
-        shopCampaignTabAdapter.removeWidget(model)
-        endlessRecyclerViewScrollListener.resetState()
-        shopCampaignTabAdapter.removeProductList()
-        shopCampaignTabAdapter.showLoading()
-        viewModel?.getShopPageHomeWidgetLayoutData(shopId, extParam)
-        scrollToTop()
     }
     // endregion
 
@@ -850,241 +593,6 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
     }
 
     override fun loadData(page: Int) {}
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when (requestCode) {
-            REQUEST_CODE_USER_LOGIN -> {
-                if (resultCode == Activity.RESULT_OK)
-                    (parentFragment as? InterfaceShopPageHeader)?.refreshData()
-            }
-            else -> {
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data)
-    }
-
-    private fun handleOnFinishAtcBundle(
-            atcBundleModel: AddToCartBundleModel,
-            bundleListSize: Int,
-            widgetLayout: ShopPageWidgetLayoutUiModel
-    ) {
-        atcBundleModel.validateResponse(
-                onSuccess = {
-                    showToastSuccess(
-                            getString(R.string.shop_page_product_bundle_success_atc_text),
-                            getString(R.string.see_label)
-                    ) {
-                        goToCart()
-                    }
-                },
-                onFailedWithMessages = {
-                    val errorDialogCtaText: String
-                    val errorMessageDescription = if (bundleListSize > MIN_BUNDLE_SIZE) {
-                        errorDialogCtaText = getString(R.string.shop_page_product_bundle_failed_oos_cta_text_with_alt)
-                        getString(R.string.shop_page_product_bundle_failed_oos_dialog_desc_with_alt)
-                    } else {
-                        errorDialogCtaText = getString(R.string.shop_page_product_bundle_failed_oos_cta_text)
-                        getString(R.string.shop_page_product_bundle_failed_oos_dialog_desc_no_alt)
-                    }
-                    showErrorDialogAtcBundle(
-                            errorTitle = getString(R.string.shop_page_product_bundle_failed_oos_dialog_title),
-                            errorDescription = errorMessageDescription,
-                            ctaText = errorDialogCtaText,
-                            widgetLayoutParams = widgetLayout
-                    )
-                },
-                onFailedWithException = {
-                    showErrorToast(it.message.orEmpty())
-                }
-        )
-    }
-
-    private fun handleOnErrorAtcBundle(throwable: Throwable) {
-        showErrorToast(throwable.message.orEmpty())
-    }
-
-    private fun goToBundlingSelectionPage(bundleId: String) {
-        val bundlingSelectionPageAppLink = UriUtil.buildUri(
-                ApplinkConstInternalMechant.MERCHANT_PRODUCT_BUNDLE,
-                ShopHomeProductBundleItemUiModel.DEFAULT_BUNDLE_PRODUCT_PARENT_ID
-        )
-        val bundleAppLinkWithParams = Uri.parse(bundlingSelectionPageAppLink).buildUpon()
-                .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_BUNDLE_ID, bundleId)
-                .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_PAGE_SOURCE, ApplinkConstInternalMechant.SOURCE_SHOP_PAGE)
-                .build()
-                .toString()
-        context?.let {
-            val bspIntent = RouteManager.getIntent(it, bundleAppLinkWithParams)
-            startActivity(bspIntent)
-        }
-    }
-
-    private fun showErrorDialogAtcBundle(
-            errorTitle: String,
-            errorDescription: String,
-            ctaText: String,
-            widgetLayoutParams: ShopPageWidgetLayoutUiModel
-    ) {
-        context?.let {
-            DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
-                setTitle(errorTitle)
-                setDescription(errorDescription)
-                setPrimaryCTAText(ctaText)
-                setPrimaryCTAClickListener {
-                    dismiss()
-                    getWidgetContentData(mutableListOf(widgetLayoutParams))
-                }
-            }.show()
-        }
-    }
-
-    private fun sendShopHomeWidgetImpressionTracker(
-        segmentName: String,
-        widgetName: String,
-        widgetId: String,
-        position: Int
-    ) {
-        if (!isOwner) {
-            shopPageHomeTracking.onImpressionShopHomeWidget(
-                segmentName,
-                widgetName,
-                widgetId,
-                position,
-                shopId,
-                userId
-            )
-        }
-    }
-
-    private fun sendShopHomeWidgetClickedTracker(
-        segmentName: String,
-        widgetName: String,
-        widgetId: String,
-        position: Int
-    ) {
-        if (!isOwner) {
-            shopPageHomeTracking.onClickedShopHomeWidget(
-                segmentName,
-                widgetName,
-                widgetId,
-                position,
-                shopId,
-                userId
-            )
-        }
-    }
-
-    override fun onCtaClicked(shopHomeCarouselProductUiModel: ShopHomeCarousellProductUiModel?) {
-        context?.let {
-            RouteManager.route(it, shopHomeCarouselProductUiModel?.header?.ctaLink)
-        }
-    }
-
-    private fun goToCart() {
-        RouteManager.route(context, ApplinkConst.CART)
-    }
-
-    private fun goToPDP(productId: String) {
-        context?.let {
-            val intent = RouteManager.getIntent(
-                context,
-                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                productId
-            )
-            startActivity(intent)
-        }
-    }
-
-    private fun redirectToLoginPage(requestCode: Int = REQUEST_CODE_USER_LOGIN) {
-        context?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
-            startActivityForResult(intent, requestCode)
-        }
-    }
-
-    private fun showToastSuccess(
-        message: String,
-        ctaText: String = "",
-        ctaAction: View.OnClickListener? = null
-    ) {
-        activity?.run {
-            view?.let {
-                ctaAction?.let { ctaClickListener ->
-                    Toaster.build(
-                        it,
-                        message,
-                        Snackbar.LENGTH_LONG,
-                        Toaster.TYPE_NORMAL,
-                        ctaText,
-                        ctaClickListener
-                    ).show()
-                } ?: Toaster.build(
-                    it,
-                    message,
-                    Snackbar.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL,
-                    ctaText
-                ).show()
-            }
-        }
-    }
-
-    private fun showErrorToast(message: String) {
-        activity?.run {
-            view?.let { Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show() }
-        }
-    }
-
-    private fun showNplCampaignTncBottomSheet(
-        campaignId: String,
-        statusCampaign: String,
-        ruleID: String
-    ) {
-        val bottomSheet = ShopHomeNplCampaignTncBottomSheet.createInstance(
-            campaignId,
-            statusCampaign,
-            shopId,
-            isOfficialStore,
-            isGoldMerchant,
-            ruleID
-        )
-        bottomSheet.show(childFragmentManager, "")
-    }
-
-    private fun showFlashTncSaleBottomSheet(campaignId: String) {
-        val bottomSheet = ShopHomeFlashSaleTncBottomSheet.createInstance(campaignId)
-        bottomSheet.show(childFragmentManager, "")
-    }
-
-    private fun handleClickRemindMe(model: ShopHomeNewProductLaunchCampaignUiModel) {
-        val isRemindMe = model.data?.firstOrNull()?.isRemindMe ?: false
-        val action = if (isRemindMe) {
-            UNREGISTER_VALUE
-        } else {
-            REGISTER_VALUE
-        }
-        val campaignId = model.data?.firstOrNull()?.campaignId ?: ""
-        viewModel?.clickRemindMe(campaignId, action)
-    }
-
-    private fun handleFlashSaleClickReminder(model: ShopHomeFlashSaleUiModel) {
-        val isRemindMe = model.data?.firstOrNull()?.isRemindMe ?: false
-        val action = if (isRemindMe) {
-            UNREGISTER_VALUE
-        } else {
-            REGISTER_VALUE
-        }
-        val campaignId = model.data?.firstOrNull()?.campaignId ?: ""
-        viewModel?.clickFlashSaleReminder(campaignId, action)
-    }
-
-    private fun setNplRemindMeClickedCampaignId(campaignId: String) {
-        PersistentCacheManager.instance.put(NPL_REMIND_ME_CAMPAIGN_ID, campaignId)
-    }
-
-    private fun setFlashSaleRemindMeClickedCampaignId(campaignId: String) {
-        PersistentCacheManager.instance.put(FLASH_SALE_REMIND_ME_CAMPAIGN_ID, campaignId)
-    }
 
     override fun scrollToTop() {
         isClickToScrollToTop = true
