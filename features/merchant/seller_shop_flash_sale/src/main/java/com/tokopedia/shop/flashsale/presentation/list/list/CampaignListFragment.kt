@@ -371,7 +371,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         this.onNavigateToActiveCampaignTab = onNavigateToActiveCampaignTab
     }
 
-    private val onCampaignClicked: (CampaignUiModel, Int) -> Unit = { campaign, position ->
+    private val onCampaignClicked: (CampaignUiModel, Int) -> Unit = { campaign, _ ->
         viewModel.setSelectedCampaignId(campaign.campaignId)
         handleViewCampaignDetail(campaign)
     }
@@ -572,7 +572,10 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
     private fun displayMoreMenuBottomSheet(campaign: CampaignUiModel) {
         val bottomSheet = MoreMenuBottomSheet.newInstance(campaign.campaignName, campaign.status)
-        bottomSheet.setOnViewCampaignMenuSelected { handleViewCampaignDetail(campaign) }
+        bottomSheet.setOnViewCampaignMenuSelected {
+            viewModel.onMoreMenuViewCampaignDetailClicked()
+            handleViewCampaignDetail(campaign)
+        }
         bottomSheet.setOnCancelCampaignMenuSelected { handleCancelCampaign(campaign) }
         bottomSheet.setOnStopCampaignMenuSelected { handleStopCampaign(campaign) }
         bottomSheet.setOnShareCampaignMenuSelected { handleShareCampaign(campaign) }
@@ -652,6 +655,11 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         loaderDialog.dialog.dismiss()
     }
 
+    private fun handleCancelCampaign(campaign: CampaignUiModel) {
+        viewModel.onMoreMenuCancelClicked(campaign)
+        cancelCampaign(campaign)
+    }
+
     private fun cancelCampaign(campaign: CampaignUiModel) {
         if (!campaign.isCancellable) {
             val errorWording = findCancelCampaignErrorWording(campaign.status)
@@ -660,11 +668,6 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         }
 
         showCancelCampaignBottomSheet(campaign)
-    }
-
-    private fun handleCancelCampaign(campaign: CampaignUiModel) {
-        viewModel.onMoreMenuCancelClicked(campaign)
-        cancelCampaign(campaign)
     }
 
     private fun handleStopCampaign(campaign: CampaignUiModel) {
