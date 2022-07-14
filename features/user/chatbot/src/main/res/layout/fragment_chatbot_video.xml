@@ -6,8 +6,8 @@
     android:background="@color/chatbot_dms_video_fragment_bg">
 
     <com.tokopedia.unifycomponents.LoaderUnify
-        android:layout_width="42dp"
-        android:layout_height="42dp"
+        android:layout_width="@dimen/dp_chatbot_42"
+        android:layout_height="@dimen/dp_chatbot_42"
         android:id="@+id/loader"
         android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"
@@ -20,7 +20,7 @@
 
     <com.google.android.exoplayer2.ui.PlayerView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="@dimen/unify_space_0"
         android:id="@+id/video_player"
         app:use_controller="false"
         app:layout_constraintDimensionRatio="1:1"

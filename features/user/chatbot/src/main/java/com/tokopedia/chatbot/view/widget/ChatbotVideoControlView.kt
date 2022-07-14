@@ -88,7 +88,6 @@ class ChatbotVideoControlView(context: Context, attributeSet: AttributeSet) :
         fun onScrubStart()
         fun onScrubStop()
         fun onScrubMove(position: Long)
-        fun toggleVolume()
     }
 
 }

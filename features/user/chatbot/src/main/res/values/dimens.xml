@@ -15,8 +15,10 @@
     <dimen name="dp_chatbot_19">19dp</dimen>
     <dimen name="dp_chatbot_28">28dp</dimen>
     <dimen name="dp_chatbot_36">36dp</dimen>
+    <dimen name="dp_chatbot_42">42dp</dimen>
     <dimen name="dp_chatbot_50">50dp</dimen>
     <dimen name="dp_chatbot_60">60dp</dimen>
+    <dimen name="dp_chatbot_62">62dp</dimen>
     <dimen name="dp_chatbot_87">87dp</dimen>
     <dimen name="dp_chatbot_110">110dp</dimen>
     <dimen name="dp_chatbot_240">240dp</dimen>

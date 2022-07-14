@@ -30,7 +30,7 @@ class ChatbotExoPlayer(val context : Context, var videoControl: ChatbotVideoCont
 
     init {
 
-        exoPlayer.volume = MUTE_VOLUME
+        exoPlayer.volume = UNMUTE_VOLUME
         exoPlayer.videoScalingMode = C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
         videoControl?.player = exoPlayer
         videoControl?.listener = this
@@ -141,15 +141,6 @@ class ChatbotExoPlayer(val context : Context, var videoControl: ChatbotVideoCont
 
     override fun onScrubMove(position: Long) {
         exoPlayer.seekTo(position)
-    }
-
-    override fun toggleVolume() {
-        val currentVolume = exoPlayer.volume
-        if (currentVolume == MUTE_VOLUME){
-            exoPlayer.volume = UNMUTE_VOLUME
-        }else {
-            exoPlayer.volume = MUTE_VOLUME
-        }
     }
 
     interface ChatbotVideoStateListener {
