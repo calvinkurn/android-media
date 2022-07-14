@@ -3,6 +3,7 @@ package com.tokopedia.media.editor.ui.fragment
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -91,8 +92,10 @@ class DetailEditorFragment @Inject constructor(
     }
 
     override fun onRemoveBackgroundClicked() {
-        data.removeBackgroundUrl?.let {
-            viewModel.setRemoveBackground(it)
+        saveImage()
+        data.resultUrl?.let {
+            val uri = Uri.parse(it)
+            uri.path?.let { it1 -> viewModel.setRemoveBackground(it1) }
         }
     }
 
@@ -132,6 +135,7 @@ class DetailEditorFragment @Inject constructor(
 
     private fun observeRemoveBackground() {
         viewModel.removeBackground.observe(viewLifecycleOwner) {
+            data.removeBackgroundUrl = it?.path
             viewBinding?.imgPreview?.let { imgPreview ->
                 Glide
                     .with(requireContext())
@@ -147,7 +151,7 @@ class DetailEditorFragment @Inject constructor(
             // make this ui model as global variable
             data = it
 
-            renderImagePreview(it.originalUrl)
+            renderImagePreview(it.removeBackgroundUrl ?: it.originalUrl)
             renderUiComponent(it.editorToolType)
         }
     }
@@ -254,6 +258,9 @@ class DetailEditorFragment @Inject constructor(
 
     private fun editingSave() {
         val intent = Intent()
+
+        if(data.editorToolType == EditorToolType.REMOVE_BACKGROUND) data.clearValue()
+
         intent.putExtra(DetailEditorActivity.EDITOR_RESULT_PARAM, data)
         activity?.setResult(DetailEditorActivity.EDITOR_RESULT_CODE, intent)
         activity?.finish()

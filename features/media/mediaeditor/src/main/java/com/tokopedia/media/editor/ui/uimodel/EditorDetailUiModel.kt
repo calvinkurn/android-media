@@ -59,6 +59,14 @@ data class EditorDetailUiModel(
         }
     }
 
+    // used only for remove background
+    fun clearValue(){
+        brightnessValue = null
+        contrastValue = null
+        watermarkMode = null
+        rotateValue = null
+    }
+
     companion object : Parceler<EditorDetailUiModel> {
         override fun create(parcel: Parcel): EditorDetailUiModel {
             return EditorDetailUiModel(parcel)

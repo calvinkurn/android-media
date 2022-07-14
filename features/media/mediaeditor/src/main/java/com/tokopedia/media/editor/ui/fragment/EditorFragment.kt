@@ -108,10 +108,23 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
                     editorToolType = type
                 )
 
+                // limit state according to undo
+                val stateLimit = (editorUiModel.editList.size - 1) - editorUiModel.backValue
+
+                // limit for remove background
+                val isBackgroundRemoveIncluded = stateLimit > editorUiModel.removeBackgroundStartState
+
                 editorUiModel.editList.forEachIndexed { index, item ->
-                    if (index > ((editorUiModel.editList.size - 1) - editorUiModel.backValue)) {
+                    // if index is more than undo/redo state and not remove background skip
+                    if (index > stateLimit && !isBackgroundRemoveIncluded) {
                         return@forEachIndexed
                     }
+
+                    // if item is removed background and index is less than remove background start state
+                    if ( index < editorUiModel.removeBackgroundStartState && isBackgroundRemoveIncluded ) {
+                        return@forEachIndexed
+                    }
+
                     paramData.brightnessValue = item.brightnessValue
                     paramData.contrastValue = item.contrastValue
                     paramData.watermarkMode = item.watermarkMode
@@ -153,7 +166,8 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
 
     private fun observeUpdateIndex() {
         viewModel.updatedIndexItem.observe(viewLifecycleOwner) {
-            thumbnailDrawerComponent.refreshItem(it, viewModel.editStateList.values.toList())
+            val x =  viewModel.editStateList.values.toList()
+            thumbnailDrawerComponent.refreshItem(it, x)
 
             val editorUiModel = viewModel.getEditState(activeImageUrl)
             if (editorUiModel != null) {

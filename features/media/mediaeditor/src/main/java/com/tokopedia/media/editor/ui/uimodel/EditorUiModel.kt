@@ -7,6 +7,7 @@ class EditorUiModel(
     val editList = mutableListOf<EditorDetailUiModel>()
 
     var backValue = 0
+    var removeBackgroundStartState = 0
 
     fun getImageUrl(): String {
         return if (editList.isNotEmpty()) {

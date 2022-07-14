@@ -17,7 +17,7 @@ class BitmapConverterRepositoryImpl @Inject constructor(
     override fun uriToBitmap(uri: Uri): Bitmap? {
         return Glide.with(context)
             .asBitmap()
-            .load(uri)
+            .load(uri.path)
             .submit()
             .get()
     }

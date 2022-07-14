@@ -38,14 +38,20 @@ class EditorViewModel : ViewModel() {
             // if state not last edit (user did undo and do edit again) then we will remove last state until current redo state)
             if (editorDetailUiModel.backValue != 0) {
                 for (i in 0 until editorDetailUiModel.backValue) {
+                    if(editorDetailUiModel.editList.last().removeBackgroundUrl != null) {
+                        editorDetailUiModel.removedBackgroundUrl = null
+                        editorDetailUiModel.removeBackgroundStartState = 0
+                    }
                     editorDetailUiModel.editList.removeLast()
                 }
                 editorDetailUiModel.backValue = 0
             }
 
-            if (newValue.removeBackgroundUrl != null) {
+            if(newValue.removeBackgroundUrl != null) {
                 editorDetailUiModel.removedBackgroundUrl = newValue.removeBackgroundUrl
+                editorDetailUiModel.removeBackgroundStartState = editorDetailUiModel.editList.size
             }
+
             editorDetailUiModel.editList.add(newValue)
         }
 
