@@ -55,7 +55,6 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
     private var binding by autoClearedNullable<SsfsBottomsheetEditProductInfoBinding>()
     private var warehouseBottomSheet: WarehouseBottomSheet? = null
     private var productInput = EditProductInputModel()
-    private var stockTotal = Int.ZERO.toLong()
     private var productIndex = Int.ZERO
     private var isDataFirstLoaded = true
     private var shouldLoadNextData = false
@@ -128,7 +127,6 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
 
     private fun setupProductObserver() {
         viewModel.product.observe(viewLifecycleOwner) {
-            stockTotal = it.productMapData.originalStock.toLong()
             binding?.apply {
                 ivProduct.loadImage(it.imageUrl.img200)
                 typographyProductName.text = it.productName
@@ -183,9 +181,10 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
     private fun setupWarehouseListObserver() {
         viewModel.warehouseList.observe(viewLifecycleOwner) { warehouseList ->
             warehouseList.firstOrNull { it.isSelected }?.let { selectedWarehouse ->
-                stockTotal = selectedWarehouse.stock
+                productInput.warehouseId = selectedWarehouse.id
+                productInput.originalStock = selectedWarehouse.stock
                 binding?.spinnerShopLocation?.text = selectedWarehouse.name
-                binding?.tfStock?.setMessage(getString(R.string.editproduct_stock_total_text, stockTotal))
+                binding?.tfStock?.setMessage(getString(R.string.editproduct_stock_total_text, productInput.originalStock))
             }
 
             warehouseBottomSheet = WarehouseBottomSheet.newInstance(warehouseList).apply {
@@ -387,7 +386,7 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
             tfStock.isInputError = false
             tfMaxSold.isInputError = false
             tfCampaignPrice.textField?.setMessage("")
-            tfStock.setMessage(getString(R.string.editproduct_stock_total_text, stockTotal))
+            tfStock.setMessage(getString(R.string.editproduct_stock_total_text, productInput.originalStock))
             tfMaxSold.setMessage(getString(R.string.editproduct_input_max_transaction_message))
         }
     }

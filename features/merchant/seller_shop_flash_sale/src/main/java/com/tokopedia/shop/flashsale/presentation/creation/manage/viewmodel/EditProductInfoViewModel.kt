@@ -86,7 +86,7 @@ class EditProductInfoViewModel @Inject constructor(
                 val result = doSellerCampaignProductSubmissionUseCase.execute(
                     campaignId,
                     ProductionSubmissionAction.SUBMIT,
-                    EditProductMapper.map(productInputData.value, warehouseList.value)
+                    EditProductMapper.map(productInputData.value)
                 )
                 _editProductResult.postValue(result)
                 _isLoading.postValue(false)
