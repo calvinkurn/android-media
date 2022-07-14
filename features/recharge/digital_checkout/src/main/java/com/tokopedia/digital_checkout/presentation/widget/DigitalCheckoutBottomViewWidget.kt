@@ -83,7 +83,7 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(@NotNull context
     var isCheckoutButtonEnabled: Boolean = true
         set(isEnabled) {
             field = isEnabled
-            btnCheckout.isEnabled = isEnabled
+            btnCheckout.isEnabled = view_consent_goto_plus.isChecked() || isEnabled
         }
 
     private var onClickConsentListener: (() -> Unit)? = null

@@ -59,6 +59,8 @@ class DigitalConsentWidget @JvmOverloads constructor(
         binding.tvContentConsentWidget.clickableLink(*links)
     }
 
+    fun isChecked(): Boolean = binding.cbConsentWidget.isChecked
+
     private fun Typography.clickableLink(vararg links: Pair<String, (View) -> Unit>) {
         val spannableString = SpannableString(this.text)
         var startIndexOfLink = START_INDEX_LINK
