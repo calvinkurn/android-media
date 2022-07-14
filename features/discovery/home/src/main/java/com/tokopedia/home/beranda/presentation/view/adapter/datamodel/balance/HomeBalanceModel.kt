@@ -135,33 +135,12 @@ data class HomeBalanceModel(
         )
     }
 
-    fun isGopayActive(): Boolean {
-        val isGopayActive =
-            if (balanceDrawerItemModels.size > balancePositionGopay)
-                    (balanceDrawerItemModels[balancePositionGopay].drawerItemType == TYPE_WALLET_APP_LINKED &&
-                    balanceDrawerItemModels[balancePositionGopay].state == STATE_SUCCESS)
+    fun containsSubscription(): Boolean {
+        val isContainsSubscription = if (balanceDrawerItemModels.size > balancePositionSubscriptions)
+            (balanceDrawerItemModels[balancePositionSubscriptions].drawerItemType == TYPE_SUBSCRIPTION &&
+                    balanceDrawerItemModels[balancePositionSubscriptions].state == STATE_SUCCESS)
             else false
-        return isGopayActive
-    }
-
-    fun containsGopay(): Boolean {
-        val isContainsNewGopay = if (balanceDrawerItemModels.size > balancePositionGopay)
-            (balanceDrawerItemModels[balancePositionGopay].drawerItemType == TYPE_WALLET_APP_LINKED
-                    || balanceDrawerItemModels[balancePositionGopay].drawerItemType == TYPE_WALLET_APP_NOT_LINKED) &&
-                    balanceDrawerItemModels[balancePositionGopay].state == STATE_SUCCESS
-            else false
-        return isContainsNewGopay
-    }
-
-    fun getTokopointsBalanceCoachmark(): BalanceCoachmark? {
-        if (balanceDrawerItemModels.size > balancePositionRewards) {
-            val balanceItem = balanceDrawerItemModels[balancePositionRewards]
-            val isContainsNewTokopoint = balanceItem.state == STATE_SUCCESS
-            if (isContainsNewTokopoint) {
-                return balanceItem.balanceCoachmark
-            }
-        }
-        return null
+        return isContainsSubscription
     }
 
     fun getSubscriptionBalanceCoachmark(): BalanceCoachmark? {

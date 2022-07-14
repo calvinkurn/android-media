@@ -21,7 +21,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 /**
  * Created by yfsx on 3/1/21.
  */
-class BalanceWidgetView: FrameLayout {
+class BalanceWidgetView : FrameLayout {
 
     private var itemView: View
     private val itemContext: Context
@@ -32,14 +32,19 @@ class BalanceWidgetView: FrameLayout {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    )
 
     companion object {
         var disableAnimation: Boolean = false
     }
 
     init {
-        val view = LayoutInflater.from(context).inflate(R.layout.layout_item_widget_balance_widget, this)
+        val view =
+            LayoutInflater.from(context).inflate(R.layout.layout_item_widget_balance_widget, this)
         rvBalance = view.findViewById(R.id.rv_balance_widget)
         this.itemView = view
         this.itemContext = view.context
@@ -76,32 +81,16 @@ class BalanceWidgetView: FrameLayout {
         }
     }
 
-    fun startRotationForPosition(position: Int) {
-        if (!disableAnimation) {
-            val viewholder = rvBalance?.findViewHolderForAdapterPosition(position)
-            viewholder?.let {
-                (it as? BalanceViewHolder)?.let {
-                }
-            }
-        }
-    }
-
     fun showLoading() {
         balanceWidgetAdapter?.setVisitables(listOf(BalanceShimmerModel()))
     }
 
-    fun getRewardsView(): View? {
-        val firstViewHolder = rvBalance?.findViewHolderForAdapterPosition(0)
-        if (firstViewHolder is BalanceWidgetViewHolder) {
-            return firstViewHolder.getRewardsView()
-        }
-        return null
-    }
-
     fun getSubscriptionView(): View? {
         val firstViewHolder = rvBalance?.findViewHolderForAdapterPosition(0)
-        if (firstViewHolder is BalanceWidgetViewHolder) {
-            return firstViewHolder.getSubscriptionView()
+        firstViewHolder?.let {
+            if (it is BalanceWidgetViewHolder) {
+                return it.getSubscriptionView()
+            }
         }
         return null
     }

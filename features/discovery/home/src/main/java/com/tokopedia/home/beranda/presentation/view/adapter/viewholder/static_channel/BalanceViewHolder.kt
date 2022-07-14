@@ -28,8 +28,6 @@ class BalanceViewHolder(v: View) : RecyclerView.ViewHolder(v) {
 
     private val binding: ItemBalanceWidgetNewBinding? by viewBinding()
     private var listener: HomeCategoryListener? = null
-    var gopayViewCoachMark : View? = null
-    var rewardsViewCoachMark: View? = null
     var subscriptionViewCoachMark: View? = null
 
     fun bind(
@@ -92,16 +90,8 @@ class BalanceViewHolder(v: View) : RecyclerView.ViewHolder(v) {
                             com.tokopedia.unifyprinciples.R.color.Unify_NN600
                         )
                     )
-                    when (element.drawerItemType) {
-                        TYPE_WALLET_APP_LINKED, TYPE_WALLET_APP_NOT_LINKED -> {
-                            gopayViewCoachMark = binding?.homeTvReserveBalance
-                        }
-                        TYPE_REWARDS -> {
-                            rewardsViewCoachMark = binding?.homeTvReserveBalance
-                        }
-                        TYPE_SUBSCRIPTION -> {
-                            subscriptionViewCoachMark = binding?.homeTvReserveBalance
-                        }
+                    if (element.drawerItemType == TYPE_SUBSCRIPTION) {
+                        subscriptionViewCoachMark = binding?.homeTvReserveBalance
                     }
                 }
 

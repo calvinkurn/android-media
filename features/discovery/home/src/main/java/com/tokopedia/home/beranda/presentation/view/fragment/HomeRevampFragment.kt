@@ -541,11 +541,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         } else null
     }
 
-    fun setCoachmarkSharedPrefValue(context: Context, key: String, value: Boolean) {
-        val sharedPrefs = context.getSharedPreferences(PREF_KEY_HOME_COACHMARK, Context.MODE_PRIVATE)
-        sharedPrefs.edit().putBoolean(key, value).apply()
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         BenchmarkHelper.beginSystraceSection(TRACE_INFLATE_HOME_FRAGMENT)
         val view = inflater.inflate(R.layout.fragment_home_revamp, container, false)
@@ -666,7 +661,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         context?.let { ctx ->
             if (!isSubscriptionCoachmarkShown(ctx) && subscriptionBalanceCoachMark != null) {
                 showSubscriptionEligibleCoachmark(subscriptionBalanceCoachMark)
-            }  else if (!isHomeTokonowCoachmarkShown(ctx)) {
+            } else if (!isHomeTokonowCoachmarkShown(ctx)) {
                 showTokonowCoachmark()
             }
         }
@@ -742,10 +737,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         return null
     }
 
-    private fun getBalanceWidgetViewTokoPointsNewOnly(balanceWidgetView: BalanceWidgetView): View? {
-        return balanceWidgetView.getRewardsView()
-    }
-
     private fun getBalanceWidgetViewSubscriptionOnly(balanceWidgetView: BalanceWidgetView): View? {
         return balanceWidgetView.getSubscriptionView()
     }
@@ -816,7 +807,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             context?.let {ctx ->
                 if (scrollPositionY > positionWidgetSubscription && subscriptionCoachmarkIsShowing)
                     subscriptionCoachmark.hideCoachMark()
-                else if (isSubscriptionCoachmarkShown(ctx)) {
+                else if (!isSubscriptionCoachmarkShown(ctx)) {
                     subscriptionCoachmark.showCoachMark(coachMarkItemSubscription)
                 }
             }
@@ -828,7 +819,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             context?.let {ctx ->
                 if (scrollPositionY > positionWidgetTokonow && tokonowCoachmarkIsShowing)
                     tokonowCoachmark.hideCoachMark()
-                else if (isHomeTokonowCoachmarkShown(ctx)) {
+                else if (!isHomeTokonowCoachmarkShown(ctx)) {
                     tokonowCoachmark.showCoachMark(coachMarkItemTokonow)
                 }
             }

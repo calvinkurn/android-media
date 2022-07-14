@@ -17,29 +17,28 @@ import com.tokopedia.home.util.HomeServerLogger.TYPE_ERROR_SUBMIT_WALLET
 /**
  * Created by yfsx on 3/1/21.
  */
-
 class BalanceAdapter(
     val listener: HomeCategoryListener?,
     diffUtil: DiffUtil.ItemCallback<BalanceDrawerItemModel>
 ): ListAdapter<BalanceDrawerItemModel, BalanceViewHolder>(diffUtil) {
 
     var attachedRecyclerView: RecyclerView? = null
-    private var itemMap: HomeBalanceModel = HomeBalanceModel()
+    private var itemList: HomeBalanceModel = HomeBalanceModel()
 
     companion object {
         var disableAnimation: Boolean = false
     }
 
     @Suppress("TooGenericExceptionCaught")
-    fun setItemMap(itemMap: HomeBalanceModel) {
-        this.itemMap = itemMap
+    fun setItemList(itemList: HomeBalanceModel) {
+        this.itemList = itemList
 
         val balanceModelList = mutableListOf<BalanceDrawerItemModel>()
         try {
-            itemMap.balanceDrawerItemModels.forEach {
+            itemList.balanceDrawerItemModels.forEach {
                 balanceModelList.add(it)
             }
-            submitList(balanceModelList.toMutableList())
+            submitList(balanceModelList)
         } catch (e: Exception) {
             HomeServerLogger.logWarning(
                 type = TYPE_ERROR_SUBMIT_WALLET,
@@ -50,8 +49,8 @@ class BalanceAdapter(
         }
     }
 
-    fun getItemMap():  HomeBalanceModel {
-        return itemMap
+    fun getItemList():  HomeBalanceModel {
+        return itemList
     }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
@@ -64,28 +63,22 @@ class BalanceAdapter(
     }
 
     override fun getItemCount(): Int {
-        return itemMap.balanceDrawerItemModels.size
+        return itemList.balanceDrawerItemModels.size
     }
 
     override fun onBindViewHolder(holder: BalanceViewHolder, position: Int) {
         holder.bind(
-            itemMap.balanceDrawerItemModels[position],
+            itemList.balanceDrawerItemModels[position],
             listener
         )
     }
 
-    fun getGopayView() : View? {
-        val viewHolder = attachedRecyclerView?.findViewHolderForAdapterPosition(itemMap.balancePositionGopay) as BalanceViewHolder
-        return viewHolder.gopayViewCoachMark
-    }
-
-    fun getRewardsView() : View? {
-        val viewHolder = attachedRecyclerView?.findViewHolderForAdapterPosition(itemMap.balancePositionRewards) as BalanceViewHolder
-        return viewHolder.rewardsViewCoachMark
-    }
-
     fun getSubscriptionView() : View? {
-        val viewHolder = attachedRecyclerView?.findViewHolderForAdapterPosition(itemMap.balancePositionSubscriptions) as BalanceViewHolder
-        return viewHolder.subscriptionViewCoachMark
+        val viewHolder = attachedRecyclerView?.findViewHolderForAdapterPosition(itemList.balancePositionSubscriptions)
+        viewHolder?.let {
+            if (it is BalanceViewHolder)
+                return it.subscriptionViewCoachMark
+        }
+        return null
     }
 }

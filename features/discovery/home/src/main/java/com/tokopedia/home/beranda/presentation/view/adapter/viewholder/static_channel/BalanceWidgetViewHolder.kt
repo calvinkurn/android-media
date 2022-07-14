@@ -26,6 +26,7 @@ class BalanceWidgetViewHolder(itemView: View, val listener: HomeCategoryListener
 
     companion object {
         var LAYOUT = R.layout.layout_balance_widget
+        private const val FIRST_ITEM_DECORATION = 0
     }
 
     override fun bind(element: HomeBalanceModel) {
@@ -50,15 +51,21 @@ class BalanceWidgetViewHolder(itemView: View, val listener: HomeCategoryListener
                     ): Boolean {
                         return oldItem == newItem
                     }
-
                 })
-            binding?.rvBalanceWidget?.layoutManager = getLayoutManager(totalData)
             binding?.rvBalanceWidget?.adapter = balanceAdapter
-            if (binding?.rvBalanceWidget?.itemDecorationCount == 0) {
+        }
+        binding?.rvBalanceWidget?.layoutManager = getLayoutManager(totalData)
+        try {
+            if (binding?.rvBalanceWidget?.itemDecorationCount == FIRST_ITEM_DECORATION) {
+                binding?.rvBalanceWidget?.addItemDecoration(BalanceWidgetItemDecoration(totalData))
+            } else {
+                binding?.rvBalanceWidget?.removeItemDecorationAt(FIRST_ITEM_DECORATION)
                 binding?.rvBalanceWidget?.addItemDecoration(BalanceWidgetItemDecoration(totalData))
             }
+        } catch (e: Exception) {
+
         }
-        balanceAdapter?.setItemMap(element)
+        balanceAdapter?.setItemList(element)
 
         //divider
         if (binding?.rvBalanceDivider?.adapter == null) {
@@ -79,27 +86,13 @@ class BalanceWidgetViewHolder(itemView: View, val listener: HomeCategoryListener
                     }
                 })
             binding?.rvBalanceDivider?.adapter = balanceDividerAdapter
-            binding?.rvBalanceDivider?.layoutManager = getLayoutManager(totalData)
         }
+        binding?.rvBalanceDivider?.layoutManager = getLayoutManager(totalData)
         balanceDividerAdapter?.addDivider(totalData)
     }
 
-    fun getGopayView(): View? {
-        if (balanceAdapter?.getItemMap()?.containsGopay() == true) {
-            return balanceAdapter?.getGopayView()
-        }
-        return null
-    }
-
-    fun getRewardsView(): View? {
-        if (balanceAdapter?.getItemMap()?.containsGopay() == true) {
-            return balanceAdapter?.getRewardsView()
-        }
-        return null
-    }
-
     fun getSubscriptionView(): View? {
-        if (balanceAdapter?.getItemMap()?.containsGopay() == true) {
+        if (balanceAdapter?.getItemList()?.containsSubscription() == true) {
             return balanceAdapter?.getSubscriptionView()
         }
         return null
