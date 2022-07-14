@@ -381,6 +381,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
                 pageSource: String,
                 tokopediaPlusDataModel: TokopediaPlusDataModel
             ) {
+                TrackingProfileSection.onClickTokopediaPlus(tokopediaPlusDataModel.isSubscriber)
             }
 
             override fun onRetry() {
