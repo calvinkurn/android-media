@@ -18,18 +18,22 @@ class WishlistCollectionItemViewHolder(
     private val binding: CollectionWishlistItemBinding,
     private val actionListener: WishlistCollectionAdapter.ActionListener?
 ) : RecyclerView.ViewHolder(binding.root) {
-    fun bind(item: WishlistCollectionTypeLayoutData) {
-        if (item.dataObject is CollectionWishlistResponse.Data.GetWishlistCollections.WishlistCollectionResponseData.CollectionsItem) {
-            binding.root.setOnClickListener {
-                actionListener?.onCollectionItemClicked(item.dataObject.id)
-            }
-            binding.cardCollectionItem.setOnClickListener {
-                actionListener?.onCollectionItemClicked(item.dataObject.id)
-            }
-            binding.cardCollectionItem.cardType = CardUnify2.TYPE_SHADOW
-            binding.collectionTitle.text = item.dataObject.name
-            binding.collectionDesc.text = "${item.dataObject.totalItem} ${item.dataObject.itemText}"
-            if (item.dataObject.name == SEMUA_WISHLIST) binding.collectionKebabMenu.gone()
+    var isAllWishlist = false
+        fun bind(item: WishlistCollectionTypeLayoutData) {
+            if (item.dataObject is CollectionWishlistResponse.Data.GetWishlistCollections.WishlistCollectionResponseData.CollectionsItem) {
+                binding.root.setOnClickListener {
+                    actionListener?.onCollectionItemClicked(item.dataObject.id)
+                }
+                binding.cardCollectionItem.setOnClickListener {
+                    actionListener?.onCollectionItemClicked(item.dataObject.id)
+                }
+                binding.cardCollectionItem.cardType = CardUnify2.TYPE_SHADOW
+                binding.collectionTitle.text = item.dataObject.name
+                binding.collectionDesc.text = "${item.dataObject.totalItem} ${item.dataObject.itemText}"
+                if (item.dataObject.name == SEMUA_WISHLIST) {
+                    isAllWishlist = true
+                    binding.collectionKebabMenu.gone()
+                }
             else {
                 binding.collectionKebabMenu.visible()
                 binding.collectionKebabMenu.setOnClickListener {

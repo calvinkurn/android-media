@@ -15,6 +15,9 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.network.utils.ErrorHandler
@@ -51,6 +54,7 @@ import javax.inject.Inject
 class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapter.ActionListener,
     BottomSheetKebabMenuWishlistCollectionItem.ActionListener, ActionListenerFromCollectionPage,
     BottomSheetUpdateWishlistCollectionName.ActionListener {
+    private var onlyAllCollection: Boolean = false
     private var binding by autoClearedNullable<FragmentCollectionWishlistBinding>()
     private lateinit var collectionAdapter: WishlistCollectionAdapter
     private var activityWishlistCollection = ""
@@ -61,6 +65,9 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
         ViewModelProvider(this, viewModelFactory)[WishlistCollectionViewModel::class.java]
     }
     private val userSession: UserSessionInterface by lazy { UserSession(activity) }
+
+    private val coachMarkItem = ArrayList<CoachMark2Item>()
+    private var coachMark: CoachMark2? = null
 
     override fun getScreenName(): String = ""
 
@@ -88,6 +95,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
         const val OK = "OK"
         private const val PARAM_ACTIVITY_WISHLIST_COLLECTION = "activity_wishlist_collection"
         const val PARAM_HOME = "home"
+        private const val COACHMARK_WISHLIST = "coachmark-wishlist"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -212,6 +220,9 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
                 is Success -> {
                     finishRefresh()
                     if (result.data.status == OK) {
+                        if (result.data.data.collections.size == 1) {
+                            onlyAllCollection = true
+                        }
                         collectionAdapter.addList(mapCollection(result.data.data))
                     } else {
                         // TODO: show global error page?
@@ -343,6 +354,51 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
         val intentCollectionDetail = RouteManager.getIntent(context, detailCollection)
         intentCollectionDetail.putExtra(EXTRA_TOASTER_WISHLIST_COLLECTION_DETAIL, message)
         startActivity(intentCollectionDetail)
+    }
+
+    override fun onCreateCollectionItemBind(allCollectionView: View, createCollectionView: View) {
+        if (!CoachMarkPreference.hasShown(requireContext(), COACHMARK_WISHLIST)
+            && onlyAllCollection
+        ) {
+            showWishlistCollectionCoachMark(allCollectionView, createCollectionView)
+        }
+    }
+
+    private fun showWishlistCollectionCoachMark(view1: View, view2: View) {
+        if (coachMarkItem.isEmpty()) {
+            coachMarkItem.add(
+                CoachMark2Item(
+                    view1,
+                    "",
+                    getString(R.string.collection_coachmark_see_all_wishlist),
+                    CoachMark2.POSITION_BOTTOM
+                )
+            )
+            coachMarkItem.add(
+                CoachMark2Item(
+                    view2,
+                    "",
+                    getString(R.string.collection_coachmark_create_collection),
+                    CoachMark2.POSITION_BOTTOM
+                )
+            )
+        }
+        if (coachMark == null)
+            coachMark = CoachMark2(requireContext())
+
+        coachMark?.let {
+            it.onFinishListener = {
+                showBottomSheetCreateNewCollection(childFragmentManager)
+            }
+            it.stepButtonTextLastChild =
+                getString(R.string.collection_coachmark_try_create_wishlist)
+            it.stepPrev?.text = getString(R.string.collection_coachmark_back)
+
+            if (!it.isShowing) {
+                it.showCoachMark(coachMarkItem, null)
+            }
+            CoachMarkPreference.setShown(requireContext(), COACHMARK_WISHLIST, true)
+        }
     }
 
     private fun showDialogDeleteCollection(collectionId: String, collectionName: String) {

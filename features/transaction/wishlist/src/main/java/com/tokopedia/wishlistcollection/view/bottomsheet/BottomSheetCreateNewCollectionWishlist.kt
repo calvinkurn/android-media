@@ -182,6 +182,9 @@ class BottomSheetCreateNewCollectionWishlist: BottomSheetUnify(), HasComponent<B
                     }
                 }
             }
+        } else {
+            if (checkName.isNotEmpty()) enableSaveButton()
+            else disableSaveButton()
         }
     }
 
