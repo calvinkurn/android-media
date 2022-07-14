@@ -59,6 +59,8 @@ object DataFavoriteMapper {
                 shopItem.isPowerMerchant = topAdsShopItem.isPowerMerchant
                 shopItem.imageShop = topAdsShopItem.imageShop
                 shopItem.layout = topAdsShopItem.layout
+                shopItem.applink = topAdsShopItem.applink
+                shopItem.isFollowed = topAdsShopItem.isFollowed
                 viewModelTopAdsShopItemList.add(shopItem)
             }
         }

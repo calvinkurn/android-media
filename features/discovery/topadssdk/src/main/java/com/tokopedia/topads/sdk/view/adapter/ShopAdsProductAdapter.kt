@@ -60,21 +60,25 @@ class ShopAdsProductAdapter(
             }
 
             shopProductRoot.setOnClickListener { shopAdsProductListener.onItemClicked(shopProductModelItem.position) }
-            setFollowButton(shopProductModelItem.isFollowed, shopProductModelItem.layoutType, shopProductModelItem)
+            setFollowButton(shopProductModelItem.layoutType, shopProductModelItem)
 
         }
 
         private fun setFollowButton(
-            followed: Boolean,
             layoutType: Int?,
-            shopProductModelItem: ShopProductModelItem) {
+            shopProductModelItem: ShopProductModelItem
+        ) {
             if (layoutType == LAYOUT_5) buttonFollow.hide()
-            else{
-                buttonFollow.show()
-                buttonFollow.setOnClickListener {
-                    shopProductModelItem.isFollowed = true
-                    followButtonClickListener?.onItemClicked(shopProductModelItem)
+            else {
+                if (!shopProductModelItem.isFollowed) {
+                    buttonFollow.setOnClickListener {
+                        buttonFollow.buttonVariant = UnifyButton.Variant.FILLED
+                        buttonFollow.text = "Followed"
+                        shopProductModelItem.isFollowed = true
+                        followButtonClickListener?.onItemClicked(shopProductModelItem)
+                    }
                 }
+                buttonFollow.show()
             }
 
         }

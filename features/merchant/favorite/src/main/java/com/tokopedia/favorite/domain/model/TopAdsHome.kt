@@ -57,6 +57,9 @@ class TopAdsHome {
         @SerializedName("layout")
         var layout: Int? = null
 
+        @SerializedName("applinks")
+        var applink: String? = null
+
         @SerializedName("badges")
         var badges: List<*>? = null
 
@@ -110,26 +113,8 @@ class TopAdsHome {
         @SerializedName("product")
         var product: List<Product>? = null
 
-//        class ImageShop {
-//            @SerializedName("cover")
-//            var cover: String? = null
-//
-//            @SerializedName("s_url")
-//            private val sUrl: String? = null
-//
-//            @SerializedName("xs_url")
-//            val xsUrl: String? = null
-//
-//            @SerializedName("cover_ecs")
-//            val coverEcs: String? = null
-//
-//            @SerializedName("s_ecs")
-//            val sEcs: String? = null
-//
-//            @SerializedName("xs_ecs")
-//            private val xsEcs: String? = null
-//
-//        }
+        @SerializedName("is_followed")
+        var is_followed: Boolean = false
 
         class Product {
             @SerializedName("id")

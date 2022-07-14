@@ -29,4 +29,6 @@ data class TopAdsShopItem (
         var isPowerMerchant: Boolean = false,
         var imageShop: ImageShop?  = null,
         var layout: Int?  = null,
+        var applink: String?  = "",
+        var isFollowed: Boolean  = false,
 )

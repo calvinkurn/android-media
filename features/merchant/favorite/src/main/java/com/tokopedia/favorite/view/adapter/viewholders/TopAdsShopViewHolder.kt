@@ -7,6 +7,7 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.favorite.R
 import com.tokopedia.favorite.view.adapter.TopAdsShopAdapter
 import com.tokopedia.favorite.view.viewlistener.FavoriteClickListener
@@ -79,19 +80,14 @@ class TopAdsShopViewHolder(
                     }
 
                     override fun onItemClicked(position: Int) {
-                        val item = element.adsShopItems?.getOrNull(position)
-                        topAdsUrlHitter.hitClickUrl(
-                            this.javaClass.name,
-                            item?.shopClickUrl,
-                            item?.shopId,
-                            item?.shopName,
-                            item?.shopImageUrl
-                        )
+                        RouteManager.route(context, element.adsShopItems?.getOrNull(position)?.applink)
+                        recordCLick(element.adsShopItems?.getOrNull(position))
                     }
 
                 },
                 object : FollowButtonClickListener {
                     override fun onItemClicked(shopProductModelItem: ShopProductModel.ShopProductModelItem) {
+                        recordCLick(element.adsShopItems?.getOrNull(shopProductModelItem.position))
                         favoriteClickListener.onFavoriteShopClicked(
                             null,
                             getShopItem(shopProductModelItem)
@@ -103,6 +99,16 @@ class TopAdsShopViewHolder(
             recShopRecyclerViewContainer.hide()
             shopAdsProductView.show()
         }
+    }
+
+    private fun recordCLick(item: TopAdsShopItem?) {
+        topAdsUrlHitter.hitClickUrl(
+            this.javaClass.name,
+            item?.shopClickUrl,
+            item?.shopId,
+            item?.shopName,
+            item?.shopImageUrl
+        )
     }
 
     private fun getShopItem(shopProductModelItem: ShopProductModel.ShopProductModelItem): TopAdsShopItem {
@@ -130,7 +136,8 @@ class TopAdsShopViewHolder(
                 location = it.shopLocation ?: "",
                 position = index,
                 layoutType = it.layout,
-                shopId = it.shopId ?: ""
+                shopId = it.shopId ?: "",
+                isFollowed = it.isFollowed
             )
             list.add(item)
         }

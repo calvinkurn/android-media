@@ -5,8 +5,7 @@
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingBottom="@dimen/padding_small">
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/rec_shop_content"
