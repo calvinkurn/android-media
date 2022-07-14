@@ -398,7 +398,8 @@ class UserProfileFragment @Inject constructor(
                 userPostContainer.displayedChild = PAGE_ERROR
 
                 globalErrorPost.refreshBtn?.setOnClickListener {
-                    refreshLandingPageData(true)
+                    userPostContainer.displayedChild = PAGE_LOADING
+                    initUserPost(viewModel.profileUserID)
                 }
             }
         }
@@ -519,7 +520,9 @@ class UserProfileFragment @Inject constructor(
         if (prev?.shopRecom == value.shopRecom) return
 
         mAdapterShopRecom.updateData(value.shopRecom)
-        mainBinding.shopRecommendation.root.show()
+
+        if (value.shopRecom.isEmpty()) mainBinding.shopRecommendation.root.hide()
+        else mainBinding.shopRecommendation.root.show()
     }
 
     private fun buttonActionUIFollow() = with(mainBinding.btnAction) {
@@ -686,7 +689,6 @@ class UserProfileFragment @Inject constructor(
 
     override fun onShopRecomCloseClicked(itemID: Long) {
         submitAction(UserProfileAction.RemoveShopRecomItem(itemID))
-        if (mAdapterShopRecom.itemCount == 0) mainBinding.shopRecommendation.root.hide()
     }
 
     override fun onShopRecomFollowClicked(itemID: Long) {
