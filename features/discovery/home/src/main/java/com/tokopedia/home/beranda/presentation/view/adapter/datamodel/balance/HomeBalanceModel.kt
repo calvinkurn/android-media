@@ -208,8 +208,7 @@ data class HomeBalanceModel(
                 state = STATE_SUCCESS,
                 headerTitle = headerTitle,
                 isSubscriber = subscriptionData.isSubscriber,
-                drawerItemType = TYPE_SUBSCRIPTION,
-                )
+                drawerItemType = TYPE_SUBSCRIPTION)
             val coachMarkData =
                 if (subscriptionData.subscriptionsCoachMarkList.isNotEmpty() && subscriptionData.subscriptionsCoachMarkList[FIRST_DATA_POSITION].coachMark.isNotEmpty()) {
                     val subscriptionCoachmarkData =
@@ -269,19 +268,22 @@ data class HomeBalanceModel(
         itemTypeCondition(
             itemType,
             typeWalletCondition = { action.invoke() },
-            typeRewardsCondition = { action.invoke() }
+            typeRewardsCondition = { action.invoke() },
+            typeSubscriptionCondition = { action.invoke() }
         )
     }
 
     private fun itemTypeCondition(
         type: Int,
         typeWalletCondition: () -> Unit = {},
-        typeRewardsCondition: () -> Unit = {}
+        typeRewardsCondition: () -> Unit = {},
+        typeSubscriptionCondition: () -> Unit = {}
     ) {
         when (type) {
             TYPE_WALLET_APP_LINKED,
             TYPE_WALLET_APP_NOT_LINKED -> typeWalletCondition.invoke()
             TYPE_REWARDS -> typeRewardsCondition.invoke()
+            TYPE_SUBSCRIPTION -> typeSubscriptionCondition.invoke()
         }
     }
 }

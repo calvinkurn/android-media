@@ -1,5 +1,6 @@
 package com.tokopedia.home.analytics.v2
 
+import android.os.Bundle
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.track.TrackApp
 
@@ -17,73 +18,18 @@ object OvoWidgetTracking: BaseTracking() {
 
     private const val ACTION_CLICK_ON_TOPUP_OVO = "click on top up ovo"
     private const val FIELD_BALANCE_POINTS = "balancePoints"
-
-    fun eventTopUpOvo(userId: String?) {
-        getTracker().sendGeneralEvent( DataLayer.mapOf(
-                Event.KEY, Event.CLICK_HOMEPAGE,
-                Category.KEY, Category.HOMEPAGE,
-                Action.KEY, ACTION_CLICK_ON_TOPUP_OVO,
-                Label.KEY, Label.NONE,
-                Screen.KEY, Screen.DEFAULT,
-                CurrentSite.KEY, CurrentSite.DEFAULT,
-                BusinessUnit.KEY, BusinessUnit.DEFAULT,
-                UserId.KEY, userId)
-        )
-    }
-
-    fun sendClickOnCouponBalanceWidgetTracker(userId: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(DataLayer.mapOf(
-                Event.KEY, Event.CLICK_HOMEPAGE,
-                Category.KEY, Category.HOMEPAGE_TOKOPOINTS,
-                Action.KEY, ACTION_CLICK_ON_COUPON,
-                Label.KEY, Label.NONE,
-                CurrentSite.KEY, CurrentSite.DEFAULT,
-                BusinessUnit.KEY, BusinessUnit.DEFAULT,
-                UserId.KEY, userId
-        ))
-    }
+    private const val ACTION_CLICK_SUBSCRIPTION = "click on gotoplus section - subscription status"
+    private const val CATEGORY_BALANCE_WIDGET = "homepage-tokopoints"
+    private const val SUBSCRIBER = "subscriber"
+    private const val NON_SUBSCRIBER = "non subs"
+    private const val TRACKER_ID = "trackerId"
+    private const val TRACKER_ID_CLICK_SUBSCRIPTION = "33767"
 
     fun sendClickOnRewardsBalanceWidgetTracker(userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(DataLayer.mapOf(
                 Event.KEY, Event.CLICK_HOMEPAGE,
                 Category.KEY, Category.HOMEPAGE_TOKOPOINTS,
                 Action.KEY, ACTION_CLICK_ON_REWARDS,
-                Label.KEY, Label.NONE,
-                CurrentSite.KEY, CurrentSite.DEFAULT,
-                BusinessUnit.KEY, BusinessUnit.DEFAULT,
-                UserId.KEY, userId
-        ))
-    }
-
-    fun sendClickOnOVOBalanceWidgetTracker(userId: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(DataLayer.mapOf(
-                Event.KEY, Event.CLICK_HOMEPAGE,
-                Category.KEY, Category.HOMEPAGE_TOKOPOINTS,
-                Action.KEY, ACTION_CLICK_ON_OVO,
-                Label.KEY, Label.NONE,
-                CurrentSite.KEY, CurrentSite.DEFAULT,
-                BusinessUnit.KEY, BusinessUnit.DEFAULT,
-                UserId.KEY, userId
-        ))
-    }
-
-    fun sendClickOnTokopointsBalanceWidgetTracker(userId: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(DataLayer.mapOf(
-                Event.KEY, Event.CLICK_HOMEPAGE,
-                Category.KEY, Category.HOMEPAGE_TOKOPOINTS,
-                Action.KEY, ACTION_CLICK_ON_TOKOPOINTS,
-                Label.KEY, Label.NONE,
-                CurrentSite.KEY, CurrentSite.DEFAULT,
-                BusinessUnit.KEY, BusinessUnit.DEFAULT,
-                UserId.KEY, userId
-        ))
-    }
-
-    fun sendClickOnBBOBalanceWidgetTracker(userId: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(DataLayer.mapOf(
-                Event.KEY, Event.CLICK_HOMEPAGE,
-                Category.KEY, Category.HOMEPAGE_TOKOPOINTS,
-                Action.KEY, ACTION_CLICK_ON_BBO,
                 Label.KEY, Label.NONE,
                 CurrentSite.KEY, CurrentSite.DEFAULT,
                 BusinessUnit.KEY, BusinessUnit.DEFAULT,
@@ -102,5 +48,25 @@ object OvoWidgetTracking: BaseTracking() {
             UserId.KEY, userId,
             FIELD_BALANCE_POINTS, subtitle
         ))
+    }
+
+    fun sendClickOnSubscriptionBalanceWidgetTracker(subtitle: String, userId: String) {
+
+    }
+
+
+    fun sendClickOnGoToPlusSectionSubscriptionStatusEvent (isSubscriber: Boolean, userId: String) {
+
+        val bundle = Bundle()
+        bundle.putString(Event.KEY, Event.CLICK_HOMEPAGE)
+        bundle.putString(Action.KEY, ACTION_CLICK_SUBSCRIPTION)
+        bundle.putString(Category.KEY, CATEGORY_BALANCE_WIDGET)
+        bundle.putString(Label.KEY, if (isSubscriber) SUBSCRIBER else NON_SUBSCRIBER)
+        bundle.putString(TRACKER_ID, TRACKER_ID_CLICK_SUBSCRIPTION)
+        bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
+        bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
+        bundle.putString(UserId.KEY, userId)
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Event.CLICK_HOMEPAGE, bundle)
     }
 }
