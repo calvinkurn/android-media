@@ -45,6 +45,7 @@ class BottomSheetKebabMenuWishlistCollectionItem: BottomSheetUnify() {
         binding = BottomsheetKebabMenuWishlistCollectionItemBinding.inflate(LayoutInflater.from(context), null, false)
         binding?.run {
             llKebabMenu1.setOnClickListener {
+                dismiss()
                 actionListener?.onChangeCollectionName(collectionId, collectionName)
             }
             llKebabMenu2.setOnClickListener {

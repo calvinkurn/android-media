@@ -135,8 +135,7 @@ class BottomSheetUpdateWishlistCollectionName: BottomSheetUnify(), HasComponent<
 
     private fun doUpdateWishlistCollectionName() {
         val collectionId = arguments?.getString(COLLECTION_ID) ?: ""
-        val collectionName = arguments?.getString(COLLECTION_NAME) ?: ""
-        updateCollectionViewModel.updateWishlistCollectionName(collectionId, collectionName)
+        updateCollectionViewModel.updateWishlistCollectionName(collectionId, newCollectionName)
     }
 
     private fun disableSaveButton() {
