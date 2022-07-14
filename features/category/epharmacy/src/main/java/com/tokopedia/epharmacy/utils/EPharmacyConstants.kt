@@ -35,10 +35,7 @@ enum class EPharmacyPrescriptionStatus(val status : String){
     SELECTED("SELECTED")
 }
 
-const val EPharmacyImageQuality = 100
-const val EPharmacyMinImageQuality = 85
-const val EPharmacyImageQualityDecreaseFactor = 0.85
+const val EPharmacyImageQuality = 60
 
 const val FIRST_INDEX = 0
-const val UPLOAD_MAX_BYTES = 6_000_000L
 const val MAX_MEDIA_SIZE_PICKER = 4_000_000L

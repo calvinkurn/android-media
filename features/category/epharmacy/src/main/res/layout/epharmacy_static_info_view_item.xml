@@ -28,7 +28,7 @@
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         app:layout_constraintTop_toBottomOf="@id/ketentuan_title_text"
-        app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/epharmacy_upload_prescription_sample_image.png"
+        app:completeUrl="https://images.tokopedia.net/img/TXXXxB/2022/7/14/0c4e3e54-1d7a-4720-9f81-d0927b1d43a8.png"
         app:imageDpiSupportType="singleDpi"
         />
 
