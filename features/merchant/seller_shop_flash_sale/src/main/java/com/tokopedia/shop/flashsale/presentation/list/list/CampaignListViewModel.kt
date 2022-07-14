@@ -183,6 +183,10 @@ class CampaignListViewModel @Inject constructor(
         return thumbnailImageUrl
     }
 
+    fun onMoreMenuViewCampaignDetailClicked() {
+        tracker.sendClickViewCampaignDetailPopUpEvent()
+    }
+
     fun onMoreMenuCancelClicked(campaign: CampaignUiModel) {
         tracker.sendClickCancelPopupEvent(campaign)
     }

@@ -6,13 +6,15 @@ import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.shop.flashsale.common.tracker.ShopFlashSaleTracker
 import com.tokopedia.shop.flashsale.common.util.ProductErrorStatusHandler
 import com.tokopedia.shop.flashsale.data.request.GetSellerCampaignProductListRequest
-import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType
-import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType.*
-import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductErrorType.*
+import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType.EMPTY_BANNER
+import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType.ERROR_BANNER
+import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType.HIDE_BANNER
+import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductErrorType.NOT_ERROR
 import com.tokopedia.shop.flashsale.domain.entity.enums.ProductionSubmissionAction
 import com.tokopedia.shop.flashsale.domain.usecase.DoSellerCampaignProductSubmissionUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignDetailUseCase
@@ -29,7 +31,8 @@ class ManageProductViewModel @Inject constructor(
     private val getSellerCampaignProductListUseCase: GetSellerCampaignProductListUseCase,
     private val doSellerCampaignProductSubmissionUseCase: DoSellerCampaignProductSubmissionUseCase,
     private val getSellerCampaignDetailUseCase: GetSellerCampaignDetailUseCase,
-    private val productErrorStatusHandler: ProductErrorStatusHandler
+    private val productErrorStatusHandler: ProductErrorStatusHandler,
+    private val tracker: ShopFlashSaleTracker
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
@@ -155,5 +158,9 @@ class ManageProductViewModel @Inject constructor(
                 _removeProductsStatus.postValue(Fail(error))
             }
         )
+    }
+
+    fun onButtonProceedTapped() {
+        tracker.sendClickButtonProceedOnManageProductPage()
     }
 }
