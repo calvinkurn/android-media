@@ -37,7 +37,6 @@
         android:visibility="gone"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/unify_space_16"
-        android:text="@string/pdp_fintech_lihat_semu"
         android:textColor="@color/Unify_GN500"
         app:typographyWeight="bold"
         app:layout_constraintBottom_toBottomOf="@id/quickText"

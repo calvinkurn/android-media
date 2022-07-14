@@ -7,10 +7,12 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.pdp.fintech.adapter.FintechWidgetAdapter.MyViewHolder
 import com.tokopedia.pdp.fintech.domain.datamodel.ChipsData
 import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
+import com.tokopedia.pdp.fintech.helper.Utils.returnRouteObject
+import com.tokopedia.pdp.fintech.helper.Utils.safeLet
+import com.tokopedia.pdp.fintech.helper.Utils.setListOfData
 import com.tokopedia.pdp.fintech.listner.WidgetClickListner
 import com.tokopedia.pdp_fintech.R
 import com.tokopedia.unifycomponents.ImageUnify
@@ -161,40 +163,18 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
 
 
         private fun clickedWidgetData() {
-          val listOfAllChecker   = listOf( chipsData[adapterPosition].cta?.androidUrl,chipsData[adapterPosition].cta?.type, chipsData[adapterPosition].tenure,  chipsData[adapterPosition].productCode, chipsData[adapterPosition].cta?.bottomsheet, chipsData[adapterPosition].gatewayId, chipsData[adapterPosition].userStatus,chipsData[adapterPosition].name,  chipsData[adapterPosition].linkingStatus,chipsData[adapterPosition].installmentAmount)
+          val listOfAllChecker   = setListOfData(chipsData[adapterPosition])
            if(safeLet(listOfAllChecker) == true)
              {
                 widgetClickListner.clickedWidget(
-                    FintechRedirectionWidgetDataClass(
-                        cta = chipsData[adapterPosition].cta?.type!!,
-                        redirectionUrl = chipsData[adapterPosition].cta?.androidUrl,
-                        tenure =  chipsData[adapterPosition].tenure!!,
-                        gatewayId = chipsData[adapterPosition].gatewayId!!,
-                        gatewayCode =  chipsData[adapterPosition].productCode,
-                        widgetBottomSheet = chipsData[adapterPosition].cta?.bottomsheet,
-                        userStatus =  chipsData[adapterPosition].userStatus,
-                        linkingStatus = chipsData[adapterPosition].linkingStatus,
-                        gatewayPartnerName =  chipsData[adapterPosition].name,
-                        installmentAmout = chipsData[adapterPosition].installmentAmount
-                    )
+                    returnRouteObject(chipsData[adapterPosition])
                 )
             }
         }
 
     }
 
-      fun safeLet(listOfAllChecker: List<Any?>): Any {
-        var counter = 0
-        for(i in listOfAllChecker.indices)
-        {
-            if(listOfAllChecker[i] == null) {
-                counter = -1
-                break;
-            }
-        }
-        return counter != -1
 
-    }
     companion object {
         // Do not inflate if gatway id is 0
         const val GATEWAY_ID_SEE_MORE = 0
