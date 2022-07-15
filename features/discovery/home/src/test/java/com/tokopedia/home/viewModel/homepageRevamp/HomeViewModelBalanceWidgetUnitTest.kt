@@ -7,6 +7,7 @@ import com.tokopedia.home.beranda.domain.interactor.usecase.HomeSearchUseCase
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_COUPON
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_SUBSCRIPTION
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_APP_LINKED
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
@@ -37,73 +38,65 @@ class HomeViewModelBalanceWidgetUnitTest{
     private val mockForceRefresh = false
     private val mockInitialHomeHeaderDataModel = HomeHeaderDataModel()
     private val mockSuccessHomeHeaderDataModel = HomeHeaderDataModel(
-        //TODO Fix this
-            headerDataModel = HeaderDataModel(
-//                    homeBalanceModel = HomeBalanceModel(
-//                            balanceType = 2,
-//                            balanceDrawerItemModels = mutableMapOf(
-//                                    Pair(0, BalanceDrawerItemModel(
-//                                            drawerItemType = TYPE_WALLET_APP_LINKED
-//                                    )),
-//                                    Pair(1, BalanceDrawerItemModel(
-//                                            drawerItemType = TYPE_COUPON
-//                                    ))
-//                            )
-//                    )
+        headerDataModel = HeaderDataModel(
+            homeBalanceModel = HomeBalanceModel(
+                balanceDrawerItemModels = mutableListOf(
+                    BalanceDrawerItemModel(drawerItemType = TYPE_WALLET_APP_LINKED),
+                    BalanceDrawerItemModel(drawerItemType = TYPE_COUPON),
+                    BalanceDrawerItemModel(drawerItemType = TYPE_SUBSCRIPTION)
+                )
             )
+        )
     )
 
     @ExperimentalCoroutinesApi
     @Test
     fun `When getBalanceWidgetData is not empty on refresh with force refresh true then homeDataModel contains balance item data`() {
-        //TODO Fix this
-//        every { userSessionInterface.isLoggedIn } returns true
-//
-//        getHomeUseCase.givenGetHomeDataReturn(
-//                HomeDynamicChannelModel(list = listOf(mockSuccessHomeHeaderDataModel))
-//        )
-//        getHomeBalanceWidgetUseCase.givenGetHomeBalanceWidgetReturn(
-//                homeHeaderDataModel = mockSuccessHomeHeaderDataModel
-//        )
-//        homeViewModel = createHomeViewModel(
-//                userSessionInterface = userSessionInterface,
-//                getHomeUseCase = getHomeUseCase,
-//                homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase
-//        )
-//        homeViewModel.homeRateLimit.shouldFetch(HomeRevampViewModel.HOME_LIMITER_KEY)
-//        //On refresh
-//        homeViewModel.refreshWithThreeMinsRules(true)
-//        homeViewModel.refreshWithThreeMinsRules(true)
-//
-//        val list = homeViewModel.homeLiveDynamicChannel.value?.list
-//        val homeHeaderDataModel = list?.filterIsInstance<HomeHeaderDataModel>()?.get(0)
-//        val homeBalanceModel = homeHeaderDataModel?.headerDataModel?.homeBalanceModel
-//        Assert.assertTrue(homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty() == true)
+        every { userSessionInterface.isLoggedIn } returns true
+
+        getHomeUseCase.givenGetHomeDataReturn(
+                HomeDynamicChannelModel(list = listOf(mockSuccessHomeHeaderDataModel))
+        )
+        getHomeBalanceWidgetUseCase.givenGetHomeBalanceWidgetReturn(
+                homeHeaderDataModel = mockSuccessHomeHeaderDataModel
+        )
+        homeViewModel = createHomeViewModel(
+                userSessionInterface = userSessionInterface,
+                getHomeUseCase = getHomeUseCase,
+                homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase
+        )
+        homeViewModel.homeRateLimit.shouldFetch(HomeRevampViewModel.HOME_LIMITER_KEY)
+        //On refresh
+        homeViewModel.refreshWithThreeMinsRules(true)
+
+        val list = homeViewModel.homeLiveDynamicChannel.value?.list
+        val homeHeaderDataModel = list?.filterIsInstance<HomeHeaderDataModel>()?.get(0)
+        val homeBalanceModel = homeHeaderDataModel?.headerDataModel?.homeBalanceModel
+        Assert.assertTrue(homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty() == true)
     }
 
     @ExperimentalCoroutinesApi
     @Test
     fun `When getBalanceWidgetData is not empty on refresh with force refresh false then homeDataModel contains balance item data`() {
-        //TODO Fix this
-//        every { userSessionInterface.isLoggedIn } returns true
-//
-//        getHomeUseCase.givenGetHomeDataReturn(
-//                HomeDynamicChannelModel(list = listOf(mockInitialHomeHeaderDataModel))
-//        )
-//        getHomeBalanceWidgetUseCase.givenGetHomeBalanceWidgetReturn(
-//                homeHeaderDataModel = mockSuccessHomeHeaderDataModel
-//        )
-//        homeViewModel = createHomeViewModel(
-//                userSessionInterface = userSessionInterface,
-//                getHomeUseCase = getHomeUseCase,
-//                homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase
-//        )
-//        //On refresh
-//        homeViewModel.homeRateLimit.shouldFetch(HomeRevampViewModel.HOME_LIMITER_KEY)
-//        homeViewModel.refreshWithThreeMinsRules(false)
-//        val homeBalanceModel = getHomeBalanceModel()
-//        Assert.assertTrue(homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty() == true)
-//        Assert.assertNotNull(homeViewModel.searchHint.value)
+        every { userSessionInterface.isLoggedIn } returns true
+
+        getHomeUseCase.givenGetHomeDataReturn(
+                HomeDynamicChannelModel(list = listOf(mockInitialHomeHeaderDataModel))
+        )
+        getHomeBalanceWidgetUseCase.givenGetHomeBalanceWidgetReturn(
+                homeHeaderDataModel = mockSuccessHomeHeaderDataModel
+        )
+        homeViewModel = createHomeViewModel(
+                userSessionInterface = userSessionInterface,
+                getHomeUseCase = getHomeUseCase,
+                homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase
+        )
+        homeViewModel.getBalanceWidgetData()
+        //On refresh
+        homeViewModel.homeRateLimit.shouldFetch(HomeRevampViewModel.HOME_LIMITER_KEY)
+        homeViewModel.refreshWithThreeMinsRules(false)
+        val homeBalanceModel = getHomeBalanceModel()
+        Assert.assertTrue(homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty() == true)
     }
 
     @ExperimentalCoroutinesApi
@@ -258,8 +251,8 @@ class HomeViewModelBalanceWidgetUnitTest{
     @ExperimentalCoroutinesApi
     private fun getHomeBalanceModel(): HomeBalanceModel? {
         val list = homeViewModel.homeLiveDynamicChannel.value?.list
-        val homeHeaderDataModel = list?.filterIsInstance<HomeHeaderDataModel>()?.get(0)
-        val homeBalanceModel = homeHeaderDataModel?.headerDataModel?.homeBalanceModel
+        val homeHeaderDataModel = list?.find { it is HomeHeaderDataModel } as HomeHeaderDataModel
+        val homeBalanceModel = homeHeaderDataModel.headerDataModel?.homeBalanceModel
         return homeBalanceModel
     }
 }

@@ -19,7 +19,6 @@ import com.tokopedia.network.exception.MessageErrorException
 
 data class HomeBalanceModel(
     var balanceDrawerItemModels: MutableList<BalanceDrawerItemModel> = mutableListOf(),
-    var isTokopointsOrOvoFailed: Boolean = false,
     var status: Int = STATUS_LOADING,
     var balancePositionSubscriptions: Int = DEFAULT_BALANCE_POSITION
 ) : BalanceWidgetVisitable {

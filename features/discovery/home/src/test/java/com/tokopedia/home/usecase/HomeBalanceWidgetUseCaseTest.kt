@@ -12,7 +12,9 @@ import com.tokopedia.navigation_common.usecase.pojo.walletapp.WalletappGetBalanc
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
-import org.junit.*
+import org.junit.Assert
+import org.junit.Rule
+import org.junit.Test
 
 /**
  * Created by devarafikry on 25/01/22.
@@ -148,22 +150,18 @@ class HomeBalanceWidgetUseCaseTest {
     }
 
     private fun checkHeaderContainsPemudaPointsReserveBalance(data: HomeHeaderDataModel): Boolean {
-        //TODO Fix this
-//        if (data.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.isEmpty() == true) return false
-//        return data.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.filter {
-//            it.value.drawerItemType == BalanceDrawerItemModel.TYPE_WALLET_APP_NOT_LINKED &&
-//                    it.value.reserveBalance.isNotEmpty()
-//        } != null
-        return true
+        if (data.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.isEmpty() == true) return false
+        return data.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.filter {
+            it.drawerItemType == BalanceDrawerItemModel.TYPE_WALLET_APP_NOT_LINKED &&
+                    it.reserveBalance.isNotEmpty()
+        } != null
     }
 
     private fun checkHeaderNotContainsPemudaPointsReserveBalance(data: HomeHeaderDataModel): Boolean {
-        //TODO Fix this
-//        if (data.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.isEmpty() == true) return false
-//        return data.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.filter {
-//            it.value.drawerItemType == BalanceDrawerItemModel.TYPE_WALLET_APP_NOT_LINKED &&
-//                    it.value.reserveBalance.isNotEmpty()
-//        }?.isEmpty()?:false
-        return true
+        if (data.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.isEmpty() == true) return false
+        return data.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.filter {
+            it.drawerItemType == BalanceDrawerItemModel.TYPE_WALLET_APP_NOT_LINKED &&
+                    it.reserveBalance.isNotEmpty()
+        }?.isEmpty()?:false
     }
 }

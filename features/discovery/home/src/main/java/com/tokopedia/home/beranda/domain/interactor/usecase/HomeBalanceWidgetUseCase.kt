@@ -143,7 +143,6 @@ class HomeBalanceWidgetUseCase @Inject constructor(
                 position = position
             )
         } catch (e: Exception) {
-            homeBalanceModel.isTokopointsOrOvoFailed = true
             homeBalanceModel.mapErrorTokopoints(headerTitle, position)
         }
         return homeBalanceModel
@@ -187,7 +186,6 @@ class HomeBalanceWidgetUseCase @Inject constructor(
                 }
             }
         } catch (e: Exception) {
-            homeBalanceModel.isTokopointsOrOvoFailed = true
             homeBalanceModel.mapErrorWallet(headerTitle, position)
         }
         return homeBalanceModel
