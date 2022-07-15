@@ -245,8 +245,8 @@ class PlayVideoFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         initView(view)
         setupView()
-        setupObserve()
         initAnalytic()
+        setupObserve()
     }
 
     override fun onDestroyView() {
