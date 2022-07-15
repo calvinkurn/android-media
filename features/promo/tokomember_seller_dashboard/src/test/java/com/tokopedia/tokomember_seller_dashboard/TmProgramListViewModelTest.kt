@@ -61,7 +61,7 @@ class TmProgramListViewModelTest {
         }
         viewModel.getProgramList(0,0,0,0,0)
         Assert.assertEquals(
-            (viewModel.tokomemberProgramListResultLiveData.value as Fail).throwable,
+            (viewModel.tokomemberProgramListResultLiveData.value as TokoLiveDataResult).error,
             mockThrowable
         )
     }

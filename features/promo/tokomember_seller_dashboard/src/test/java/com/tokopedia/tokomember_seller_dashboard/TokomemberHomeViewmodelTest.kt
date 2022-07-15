@@ -3,6 +3,7 @@ package com.tokopedia.tokomember_seller_dashboard
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashHomeUsecase
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramList
+import com.tokopedia.tokomember_seller_dashboard.model.TmDashHomeResponse
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashHomeViewmodel
 import com.tokopedia.usecase.coroutines.Fail
@@ -36,11 +37,11 @@ class TokomemberHomeViewmodelTest {
 
     @Test
     fun successHomeData() {
-        val data = mockk<ProgramList>(relaxed = true)
+        val data = mockk<TmDashHomeResponse>(relaxed = true)
         coEvery {
             tokomemberDashHomeUsecase.getHomeData(any(), any(), 0)
         } coAnswers {
-            firstArg<(ProgramList) -> Unit>().invoke(data)
+            firstArg<(TmDashHomeResponse) -> Unit>().invoke(data)
         }
         viewModel.getHomePageData(0)
 
@@ -59,7 +60,7 @@ class TokomemberHomeViewmodelTest {
         }
         viewModel.getHomePageData(0)
         Assert.assertEquals(
-            (viewModel.tokomemberHomeResultLiveData.value as Fail).throwable,
+            (viewModel.tokomemberHomeResultLiveData.value as TokoLiveDataResult).error,
             mockThrowable
         )
     }
