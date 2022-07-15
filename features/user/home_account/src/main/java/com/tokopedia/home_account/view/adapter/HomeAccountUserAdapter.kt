@@ -8,6 +8,7 @@ import com.tokopedia.home_account.view.adapter.viewholder.ProfileViewHolder
 import com.tokopedia.home_account.view.delegate.HomeAccountTdnBannerDelegate
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
 import com.tokopedia.topads.sdk.domain.model.CpmModel
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusCons
 import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusListener
@@ -28,6 +29,7 @@ class HomeAccountUserAdapter(
 ): BaseCommonAdapter() {
 
     private var tokopediaPlusWidget: TokopediaPlusWidget? = null
+    private var memberTitle: Typography? = null
 
     init {
         delegatesManager.addDelegate(HomeAccountUserAdapterDelegate(listener, balanceAndPointAdapter, memberAdapter))
@@ -43,16 +45,23 @@ class HomeAccountUserAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is ProfileViewHolder) {
             tokopediaPlusWidget = holder.itemView.findViewById(R.id.tokopediaPlusWidget)
+            memberTitle = holder.itemView.findViewById(R.id.home_account_member_layout_title)
         }
 
         super.onBindViewHolder(holder, position)
-
     }
 
-    fun setTokopediaPlusContent(tokopediaPlusDataModel: TokopediaPlusDataModel, tokopediaPlusListener: TokopediaPlusListener) {
+    fun setDefaultMemberTitle(title: String) {
+        memberTitle?.text = title
+    }
+
+    fun setTokopediaPlusListener(tokopediaPlusListener: TokopediaPlusListener) {
+        tokopediaPlusWidget?.listener = tokopediaPlusListener
+    }
+
+    fun setTokopediaPlusContent(tokopediaPlusDataModel: TokopediaPlusDataModel) {
         tokopediaPlusWidget?.setContent(
-            TokopediaPlusParam(TokopediaPlusCons.SOURCE_ACCOUNT_PAGE, tokopediaPlusDataModel),
-            tokopediaPlusListener
+            TokopediaPlusParam(TokopediaPlusCons.SOURCE_ACCOUNT_PAGE, tokopediaPlusDataModel)
         )
     }
 

@@ -700,15 +700,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     }
 
     private fun onSuccessLoadTokpediaPlusWidget(data: TokopediaPlusDataModel) {
-        adapter?.setTokopediaPlusContent(data, object : TokopediaPlusListener {
-            override fun onClick(pageSource: String, tokopediaPlusDataModel: TokopediaPlusDataModel) {
-
-            }
-
-            override fun onRetry() {
-
-            }
-        })
+        adapter?.setTokopediaPlusContent(data)
     }
 
     fun onSuccessGetFingerprintStatus(checkFingerprintResponse: CheckFingerprintResult) {
@@ -771,7 +763,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                 )
             }
         }
-//        adapter?.notifyItemChanged(0)
         getBalanceAndPoints(centralizedUserAssetConfig)
     }
 
@@ -795,12 +786,12 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                 balanceAndPoint
             )
         )
-//        adapter?.notifyItemChanged(0)
+        adapter?.notifyItemChanged(0)
     }
 
     private fun onFailedGetBalanceAndPoint(walletId: String) {
         balanceAndPointAdapter?.changeItemToFailedById(walletId)
-//        adapter?.notifyItemChanged(0)
+        adapter?.notifyItemChanged(0)
     }
 
     private fun onSuccessGetShortcutGroup(shortcutResponse: ShortcutResponse) {
@@ -809,7 +800,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             if(isFirstItemIsProfile()) {
                 (getItem(0) as ProfileDataView).memberStatus =
                     shortcutResponse.tokopointsStatusFiltered.statusFilteredData.tier
-//                notifyDataSetChanged()
                 notifyItemChanged(0)
             }
         }
@@ -827,8 +817,8 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     }
 
     private fun setDefaultMemberTitle() {
-        memberTitle?.text = getString(R.string.default_member_title)
-//        adapter?.notifyItemChanged(0)
+        adapter?.setDefaultMemberTitle(getString(R.string.default_member_title))
+        adapter?.notifyItemChanged(0)
     }
 
     private fun onFailedGetBuyerAccount() {
@@ -968,8 +958,29 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     }
 
     private fun loadTokopediaPlus() {
-        adapter?.showLoadingTokoPediaPlus(true)
         viewModel.getTokopediaWidgetContent()
+        adapter?.setTokopediaPlusListener(object : TokopediaPlusListener {
+            override fun isShown(
+                isShown: Boolean,
+                pageSource: String,
+                tokopediaPlusDataModel: TokopediaPlusDataModel
+            ) {
+
+            }
+
+            override fun onClick(
+                pageSource: String,
+                tokopediaPlusDataModel: TokopediaPlusDataModel
+            ) {
+                val intent = RouteManager.getIntent(context, tokopediaPlusDataModel.applink)
+                startActivity(intent)
+            }
+
+            override fun onRetry() {
+                viewModel.getTokopediaWidgetContent()
+            }
+
+        })
     }
 
     private fun getWallet() {
@@ -1049,7 +1060,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         addItem(SettingDataView("", arrayListOf(
                 CommonDataView(id = AccountConstants.SettingCode.SETTING_OUT_ID, title = getString(R.string.menu_account_title_sign_out), body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = IconUnify.SIGN_OUT, endText = "Versi ${GlobalConfig.VERSION_NAME}")
         ), isExpanded = true), addSeparator = true)
-//        adapter?.notifyDataSetChanged()
     }
 
     private fun addItem(item: Any, addSeparator: Boolean, position: Int = -1) {
@@ -1068,7 +1078,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                 }
             }
 
-//        adapter?.notifyDataSetChanged()
             adapter?.notifyItemInserted(adapter?.itemCount.orZero())
         } catch (e: Exception) {
             e.message
@@ -1352,15 +1361,15 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     private fun updateLocationSwitch(isEnable: Boolean) {
         commonAdapter?.list?.find { it.id == AccountConstants.SettingCode.SETTING_GEOLOCATION_ID }?.isChecked =
             isEnable
-        commonAdapter?.notifyDataSetChanged()
-        adapter?.notifyDataSetChanged()
+        commonAdapter?.notifyItemChanged(1)
+//        adapter?.notifyDataSetChanged()
     }
 
     private fun updateSafeModeSwitch(isEnable: Boolean) {
         commonAdapter?.list?.find { it.id == AccountConstants.SettingCode.SETTING_SAFE_SEARCH_ID }?.isChecked =
             isEnable
-        commonAdapter?.notifyDataSetChanged()
-        adapter?.notifyDataSetChanged()
+        commonAdapter?.notifyItemChanged(2)
+//        adapter?.notifyDataSetChanged()
     }
 
     private fun goToApplicationDetailActivity() {
