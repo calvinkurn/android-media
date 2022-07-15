@@ -27,7 +27,6 @@ data class BalanceDrawerItemModel(
     companion object {
         const val TYPE_COUPON = 3
         const val TYPE_REWARDS = 4
-        const val TYPE_WALLET_OTHER = 7
 
         //is not linked for any type of wallet
         const val TYPE_WALLET_APP_LINKED = 9

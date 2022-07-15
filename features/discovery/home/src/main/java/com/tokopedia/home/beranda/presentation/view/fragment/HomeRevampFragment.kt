@@ -2645,7 +2645,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun refreshBalanceWidget() {
-        getHomeViewModel().refreshBalanceWidget()
+        getHomeViewModel().getBalanceWidgetData()
     }
 
     override fun showBalanceWidgetCoachMark(homeBalanceModel: HomeBalanceModel) {

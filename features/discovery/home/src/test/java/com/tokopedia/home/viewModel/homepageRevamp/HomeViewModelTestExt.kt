@@ -1,5 +1,6 @@
 package com.tokopedia.home.viewModel.homepageRevamp
 
+import android.accounts.NetworkErrorException
 import android.content.Context
 import android.util.Log
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -305,6 +306,10 @@ fun HomeBalanceWidgetUseCase.givenGetTokopointDataReturn(homeHeaderDataModel: Ho
 
 fun HomeBalanceWidgetUseCase.givenGetBalanceWidgetDataReturn(homeHeaderDataModel: HomeHeaderDataModel) {
     coEvery { onGetWalletAppData(any(), any(), any()) } returns homeHeaderDataModel
+}
+
+fun HomeBalanceWidgetUseCase.givenGetBalanceWidgetFailed(homeHeaderDataModel: HomeHeaderDataModel) {
+    coEvery { onGetBalanceWidgetData(homeHeaderDataModel) } throws NetworkErrorException()
 }
 
 fun HomeDynamicChannelUseCase.givenGetHomeDataReturn(homeDynamicChannelModel: HomeDynamicChannelModel, newHomeDynamicChannelModel: HomeDynamicChannelModel) {
