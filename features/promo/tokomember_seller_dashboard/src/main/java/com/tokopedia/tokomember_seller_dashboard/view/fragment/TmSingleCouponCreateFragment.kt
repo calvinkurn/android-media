@@ -1159,8 +1159,12 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                         val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, com.tokopedia.tokomember_seller_dashboard.util.locale)
                         endDate.time = sdf.parse(programData?.timeWindow?.endTime + "00") ?: Date()
                         if (endDate > maxProgramEndDate) {
-                            tmCouponEndTimeUnix?.time = TmDateUtil.convertDateTimeRemoveTimeDiff(maxProgramEndDate.time).toDate(SIMPLE_DATE_FORMAT)
-                            tmCouponEndDateUnix?.time = TmDateUtil.convertDateTimeRemoveTimeDiff(maxProgramEndDate.time).toDate(SIMPLE_DATE_FORMAT)
+                            tmCouponEndTimeUnix = GregorianCalendar(com.tokopedia.tokomember_seller_dashboard.util.locale)
+                            tmCouponEndDateUnix = GregorianCalendar(com.tokopedia.tokomember_seller_dashboard.util.locale)
+                            tmCouponEndTimeUnix?.time = maxProgramEndDate.time
+                            tmCouponEndDateUnix?.time = maxProgramEndDate.time
+//                            tmCouponEndTimeUnix?.time = TmDateUtil.convertDateTimeRemoveTimeDiff(maxProgramEndDate.time).toDate(SIMPLE_DATE_FORMAT)
+//                            tmCouponEndDateUnix?.time = TmDateUtil.convertDateTimeRemoveTimeDiff(maxProgramEndDate.time).toDate(SIMPLE_DATE_FORMAT)
 
                             textFieldProgramEndDate.editText.setText("${tmCouponEndDateUnix?.get(Calendar.DAY_OF_WEEK)?.let {
                                 getDayOfWeekID(it)
@@ -1177,7 +1181,8 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                                 )
                             })
 
-                        } else {
+                        }
+                        else {
                             val cal = GregorianCalendar(context?.let { LocaleUtils.getCurrentLocale(it) })
                             cal.time = programData?.timeWindow?.endTime.toString().toDate(SIMPLE_DATE_FORMAT)
                             tmCouponEndTimeUnix = cal
@@ -1190,10 +1195,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                         val day = getDayOfWeekID(todayCalendar.get(Calendar.DAY_OF_WEEK))
                         textFieldProgramStartDate.editText.setText("$day, $todayDate")
 
-                        textFieldProgramEndDate.editText.setText("${TmDateUtil.getDayFromTimeWindow(programData?.timeWindow?.endTime.toString())}, ${TmDateUtil.setDatePreview(programData?.timeWindow?.endTime.toString())}")
-
                         textFieldProgramStartTime.editText.setText(TmDateUtil.setTime(TmDateUtil.convertDateTime(todayCalendar.time)))
-                        textFieldProgramEndTime.editText.setText(TmDateUtil.setTime(programData?.timeWindow?.endTime.toString()))
                         tmCouponStartDateUnix = todayCalendar
                         tmCouponStartTimeUnix = todayCalendar
                     }
