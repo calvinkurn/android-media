@@ -29,6 +29,8 @@ private const val TAB_START_PADDING = 20
 private const val DELAY_400 : Long = 400
 private const val SHOULD_HIDE_L1 = false
 private const val SOURCE = "best-seller"
+const val CLICK_UNIFY_TAB = "click section tab"
+const val CLICK_MEGA_TAB = "click mega tab"
 
 class TabsViewHolder(itemView: View, private val fragment: Fragment) :
         AbstractViewHolder(itemView, fragment.viewLifecycleOwner),
@@ -37,6 +39,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
     private val tabsHolder: TabsUnify = itemView.findViewById(R.id.discovery_tabs_holder)
     private lateinit var tabsViewModel: TabsViewModel
     private var selectedTab: TabLayout.Tab? = null
+    private var isParentUnifyTab : Boolean = true
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         tabsViewModel = discoveryBaseViewModel as TabsViewModel
@@ -51,6 +54,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
             openCategoryBottomSheet()
         }
         tabsViewModel.getUnifyTabLiveData().observe(fragment.viewLifecycleOwner, {
+            isParentUnifyTab = true
             tabsHolder.hasRightArrow = tabsViewModel.getArrowVisibilityStatus()
             tabsHolder.tabLayout.removeAllTabs()
             if((fragment.activity as DiscoveryActivity).isFromCategory())
@@ -84,6 +88,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
         })
 
         tabsViewModel.getColorTabComponentLiveData().observe(fragment.viewLifecycleOwner, Observer {
+            isParentUnifyTab = false
             tabsHolder.tabLayout.apply {
                 layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
                 layoutParams.height = tabsHolder.context.resources.getDimensionPixelSize(R.dimen.dp_55)
@@ -188,7 +193,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
                         ?.trackTabsClick(tabsViewModel.components.id,
                                 tabsViewModel.position,
                                 it[tab.position],
-                                tab.position)
+                                tab.position,if(isParentUnifyTab)CLICK_MEGA_TAB else CLICK_UNIFY_TAB)
         }
     }
 
