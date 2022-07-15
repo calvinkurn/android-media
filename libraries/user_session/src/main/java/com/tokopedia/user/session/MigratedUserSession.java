@@ -34,13 +34,13 @@ public class MigratedUserSession {
     final private DataStorePreference abTestPlatform;
 
     public MigratedUserSession(Context context) {
-        this(context, new DataStorePreference(context));
+        this(context, new DataStorePreference(context), new AeadEncryptorImpl(context));
     }
 
-    public MigratedUserSession(Context context, DataStorePreference abTestPlatform) {
+    public MigratedUserSession(Context context, DataStorePreference abTestPlatform, AeadEncryptor encryptor) {
         this.context = context.getApplicationContext();
         this.abTestPlatform = abTestPlatform;
-        this.aead = new AeadEncryptorImpl(context);
+        this.aead = encryptor;
     }
 
     private Boolean isEnableDataStore() {
