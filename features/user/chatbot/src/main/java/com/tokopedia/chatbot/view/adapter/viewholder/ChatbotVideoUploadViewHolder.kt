@@ -2,6 +2,7 @@ package com.tokopedia.chatbot.view.adapter.viewholder
 
 import android.net.Uri
 import android.text.TextUtils
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
@@ -23,6 +24,7 @@ import com.tokopedia.chatbot.view.adapter.viewholder.listener.VideoUploadListene
 import com.tokopedia.chatbot.view.widget.ChatbotExoPlayer
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifyprinciples.Typography
@@ -73,6 +75,8 @@ class ChatbotVideoUploadViewHolder(
     override fun bind(element: VideoUploadUiModel) {
         if (element == null) return
         super.bind(element)
+        Log.d("FATAL", "Bind: ${System.currentTimeMillis()} , {$adapterPosition}")
+
         prerequisiteUISetup()
         setupChatBubbleAlignment(chatBalloon, element)
         setDefaultVideoDuration()
@@ -98,8 +102,9 @@ class ChatbotVideoUploadViewHolder(
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                 super.onPlayerStateChanged(playWhenReady, playbackState)
                 if (playbackState == Player.STATE_READY) {
-                    var duration = chatbotExoPlayer.getExoPlayer().duration
+                    var duration = chatbotExoPlayer.getExoPlayer().duration.orZero()
                     setTimeData(duration)
+                    Log.d("FATAL", "onPlayerStateChanged: $duration")
                 }
             }
         })

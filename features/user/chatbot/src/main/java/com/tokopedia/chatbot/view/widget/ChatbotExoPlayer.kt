@@ -15,11 +15,20 @@ import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 
 class ChatbotExoPlayer(val context : Context, var videoControl: ChatbotVideoControlView? = null) : ChatbotVideoControlView.Listener{
 
-    private var loadControl: LoadControl = DefaultLoadControl()
+    private var loadControl: LoadControl = DefaultLoadControl.Builder()
+        .setBufferDurationsMs(
+            50,
+            50,
+            50,
+            50
+        )
+        .createDefaultLoadControl()
+
 
     var videoStateListener: ChatbotVideoStateListener? = null
 
@@ -106,11 +115,17 @@ class ChatbotExoPlayer(val context : Context, var videoControl: ChatbotVideoCont
     fun getMediaSourceBySource(context: Context, uri: Uri): MediaSource {
         val mDataSourceFactory =
             DefaultDataSourceFactory(context, Util.getUserAgent(context, "Tokopedia Android"))
+
+        val dataSourceFactory = CacheDataSourceFactory(
+            MediaPlayerCache.getInstance(context),
+            mDataSourceFactory
+        )
+
         val mediaSource = when (val type = Util.inferContentType(uri)) {
-            C.TYPE_SS -> SsMediaSource.Factory(mDataSourceFactory)
-            C.TYPE_DASH -> DashMediaSource.Factory(mDataSourceFactory)
-            C.TYPE_HLS -> HlsMediaSource.Factory(mDataSourceFactory)
-            C.TYPE_OTHER -> ProgressiveMediaSource.Factory(mDataSourceFactory)
+            C.TYPE_SS -> SsMediaSource.Factory(dataSourceFactory)
+            C.TYPE_DASH -> DashMediaSource.Factory(dataSourceFactory)
+            C.TYPE_HLS -> HlsMediaSource.Factory(dataSourceFactory)
+            C.TYPE_OTHER -> ProgressiveMediaSource.Factory(dataSourceFactory)
             else -> throw IllegalStateException("Unsupported type: $type")
         }
         return mediaSource.createMediaSource(uri)

@@ -1284,7 +1284,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun onClickAttachVideo(menu: AttachmentMenu) {
         super.onClickAttachVideo(menu)
-        pickVideoFromDevice()
+
         chatbotAnalytics?.get().eventOnVideoPick()
     }
 
