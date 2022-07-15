@@ -83,8 +83,6 @@ import com.tokopedia.tokomember_seller_dashboard.util.MAX_GRATIS_LABEL
 import com.tokopedia.tokomember_seller_dashboard.util.PREMIUM
 import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_CTA
 import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_VALIDATION_CTA_TEXT
-import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_VALIDATION_ERROR_DESC
-import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_VALIDATION_ERROR_TITLE
 import com.tokopedia.tokomember_seller_dashboard.util.RETRY
 import com.tokopedia.tokomember_seller_dashboard.util.SIMPLE_DATE_FORMAT
 import com.tokopedia.tokomember_seller_dashboard.util.TERMS
@@ -364,16 +362,8 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                         tokomemberDashCreateViewModel.validateProgram(prefManager?.shopId.toString(), startTime, endTime,"")
                     }
                     else {
-                        view?.let { v ->
-                            Toaster.build(
-                                v,
-                                "Cek dan pastikan semua informasi yang kamu isi sudah benar, ya.",
-                                Toaster.LENGTH_LONG,
-                                Toaster.TYPE_ERROR
-                            ).show()
-                        }
                         closeLoadingDialog()
-                        handleProgramValidateError(it.data?.voucherValidationPartial?.data?.validationError, PREMIUM)
+                        handlePreValidateCouponError(it.data?.voucherValidationPartial?.data?.validationError, PREMIUM)
                         setButtonState()
                     }
                 }
@@ -398,20 +388,34 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                         setButtonState()
                         if (it.data?.membershipValidateBenefit?.resultStatus?.code == "42050") {
                             //No Active program available
-                            handleProgramPreValidateError(
+                            handleProgramValidateError(
                                 it.data.membershipValidateBenefit.resultStatus.message?.getOrNull(0),
                                 it?.data.membershipValidateBenefit.resultStatus.message?.getOrNull(1),
                                 true
                             )
                         }
-                        if (it.data?.membershipValidateBenefit?.resultStatus?.code == "42049") {
+                        else if (it.data?.membershipValidateBenefit?.resultStatus?.code == "42049") {
                             //Coupon active date outside program time window
-                            handleProgramPreValidateError(
+                            handleProgramValidateError(
                                 it.data.membershipValidateBenefit.resultStatus.message?.getOrNull(0),
                                 it?.data.membershipValidateBenefit.resultStatus.message?.getOrNull(1),
                                 false
                             )
                         }
+                        else if (it.data?.membershipValidateBenefit?.resultStatus?.code == "42039") {
+                            handleProgramValidateError(
+                                it.data.membershipValidateBenefit.resultStatus.message?.getOrNull(0),
+                                it?.data.membershipValidateBenefit.resultStatus.message?.getOrNull(1),
+                                false
+                            )
+                        }
+                        else{
+                            handleProgramValidateError("",
+                                "",
+                                false
+                            )
+                        }
+
                     }
                 }
                 TokoLiveDataResult.STATUS.ERROR-> {
@@ -835,7 +839,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun handleProgramValidateError(validationError: ValidationError?, couponType: String) {
+    private fun handlePreValidateCouponError(validationError: ValidationError?, couponType: String) {
         view?.let { v ->
             Toaster.build(
                 v,
@@ -861,50 +865,72 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun handleProgramPreValidateError(reason: String?, message: String?, openProgramCreation: Boolean = false){
+    private fun handleProgramValidateError(reason: String?, message: String?, openProgramCreation: Boolean = false){
         setButtonState()
         val title = if(reason.isNullOrEmpty()) {
-            PROGRAM_VALIDATION_ERROR_TITLE
+            ERROR_CREATING_TITLE
         }
         else{
             reason
         }
         val desc = if(message.isNullOrEmpty()) {
-            PROGRAM_VALIDATION_ERROR_DESC
+            ERROR_CREATING_DESC
         }
         else{
             message
         }
-        val cta = if(openProgramCreation){
+        var cta = if(openProgramCreation){
             PROGRAM_CTA
         }
         else{
             PROGRAM_VALIDATION_CTA_TEXT
+        }
+        if(retryCount==1){
+            cta = ERROR_CREATING_CTA_RETRY
         }
         val bundle = Bundle()
         val tmIntroBottomSheetModel = TmIntroBottomsheetModel(
             title,
             desc ,
             TM_ERROR_PROGRAM,
-            cta
+            cta,
+            errorCount = retryCount
         )
         bundle.putString(TokomemberBottomsheet.ARG_BOTTOMSHEET, Gson().toJson(tmIntroBottomSheetModel))
         val bottomSheet = TokomemberBottomsheet.createInstance(bundle)
         bottomSheet.setUpBottomSheetListener(object : BottomSheetClickListener {
             override fun onButtonClick(errorCount: Int) {
-                val cardId = prefManager?.cardId
-                prefManager?.shopId?.let { shopId ->
-                    if (cardId != null && openProgramCreation) {
-                        TmDashCreateActivity.openActivity(shopId, activity, CreateScreenType.PROGRAM, ProgramActionType.CREATE_FROM_COUPON, null, null, cardId = cardId)
-                        bottomSheet.dismiss()
+                when(errorCount){
+                    0 ->{
+                        if(openProgramCreation) {
+                            val cardId = prefManager?.cardId
+                            prefManager?.shopId?.let { shopId ->
+                                cardId?.let{
+                                    TmDashCreateActivity.openActivity(
+                                        shopId,
+                                        activity,
+                                        CreateScreenType.PROGRAM,
+                                        ProgramActionType.CREATE_FROM_COUPON,
+                                        null,
+                                        null,
+                                        cardId = cardId
+                                    )
+                                    bottomSheet.dismiss()
+                                    activity?.finish()
+                                }
+                            }
+                        }
+                        else{
+                            bottomSheet.dismiss()
+                        }
+                    }
+                    1 ->{
                         activity?.finish()
                     }
                 }
-                if(!openProgramCreation){
-                    bottomSheet.dismiss()
-                }
             }
         })
+        retryCount++
         bottomSheet.show(childFragmentManager,"")
     }
 
