@@ -168,6 +168,8 @@ import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.imagepreview.view.activity.ImagePreviewPdpActivity
 import com.tokopedia.product.detail.tracking.ContentWidgetTracker
 import com.tokopedia.product.detail.tracking.ContentWidgetTracking
+import com.tokopedia.product.detail.tracking.PageErrorTracker
+import com.tokopedia.product.detail.tracking.PageErrorTracking
 import com.tokopedia.product.detail.tracking.ProductDetailNavigationTracker
 import com.tokopedia.product.detail.tracking.ProductDetailNavigationTracking
 import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
@@ -1455,6 +1457,7 @@ open class DynamicProductDetailFragment :
     }
 
     override fun goToHomePageClicked() {
+        PageErrorTracking.clickBackToHomepage(generatePageErrorTrackerData())
         (activity as? ProductDetailActivity)?.goToHomePageClicked()
     }
 
@@ -5038,4 +5041,17 @@ open class DynamicProductDetailFragment :
                 )
     }
 
+    override fun onImpressPageNotFound() {
+        PageErrorTracking.impressPageNotFound(
+            generatePageErrorTrackerData()
+        )
+    }
+
+    private fun generatePageErrorTrackerData() = PageErrorTracker(
+        productId,
+        isFromDeeplink,
+        deeplinkUrl,
+        shopDomain.orEmpty(),
+        productKey.orEmpty()
+    )
 }
