@@ -77,7 +77,7 @@ class ChooseAddressViewComponent(
         }
     }
 
-    private fun hideBottomSheet() {
+    fun hideBottomSheet() {
         if (getBottomSheet().isAdded) getBottomSheet().dismiss()
     }
 

@@ -308,6 +308,11 @@ class PlayUserInteractionFragment @Inject constructor(
             )
             super.onActivityResult(requestCode, resultCode, data)
         }
+
+        if(requestCode == REQUEST_CODE_ADDRESS_LIST && resultCode == Activity.RESULT_OK) {
+            chooseAddressView?.hideBottomSheet()
+            initAddress()
+        }
     }
 
     override fun onRequestPermissionsResult(
@@ -1840,6 +1845,7 @@ class PlayUserInteractionFragment @Inject constructor(
         private const val INTERACTION_TOUCH_CLICK_TOLERANCE = 25
 
         private const val REQUEST_CODE_LOGIN = 192
+        private const val REQUEST_CODE_ADDRESS_LIST = 399
 
         private const val PERCENT_BOTTOMSHEET_HEIGHT = 0.6
 
