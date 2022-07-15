@@ -62,7 +62,7 @@ class AdChooserViewModel @Inject constructor(private val context: Context,
                     SOURCE
             ))
             val data = withContext(dispatcher.io) {
-                val request = RequestHelper.getGraphQlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.query_ads_create_post_autoads),
+                val request = RequestHelper.getGraphQlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.topads_common_query_post_autoads),
                         TopAdsAutoAdsCreate.Response::class.java, getParams(param).parameters)
                 val cacheStrategy = RequestHelper.getCacheStrategy()
                 repository.response(listOf(request), cacheStrategy)

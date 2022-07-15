@@ -26,7 +26,7 @@ class AutoAdsQueryModule(val context: Context) {
     @IntoMap
     @StringKey(RawQueryKeyObject.QUERY_POST_AUTO_ADS)
     fun queryPostAutoAds(@ActivityContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.query_post_autoads)
+            GraphqlHelper.loadRawString(context.resources, R.raw.topads_common_query_post_autoads)
 
     @Provides
     @IntoMap
