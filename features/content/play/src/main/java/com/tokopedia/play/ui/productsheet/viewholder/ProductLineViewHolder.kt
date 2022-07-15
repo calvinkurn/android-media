@@ -53,6 +53,7 @@ class ProductLineViewHolder(
     private val lblOutOfStock: Label = itemView.findViewById(R.id.label_out_of_stock)
     private val shadowOutOfStock: View = itemView.findViewById(R.id.shadow_out_of_stock)
     private val llInfo: LinearLayout = itemView.findViewById(R.id.ll_info)
+    private val iconPinned: IconUnify = itemView.findViewById(R.id.icon_pinned)
     private val tvInfo: TextView = itemView.findViewById(R.id.tv_info)
 
     private val imageRadius = itemView.resources.getDimensionPixelSize(R.dimen.play_product_image_radius).toFloat()
@@ -75,6 +76,7 @@ class ProductLineViewHolder(
             shouldShow = item.isPinned ||
                     (item.stock is StockAvailable && item.stock.stock <= MIN_STOCK)
         )
+        iconPinned.showWithCondition(item.isPinned)
         tvInfo.text = getInfo(item)
 
         when (item.price) {
@@ -131,16 +133,20 @@ class ProductLineViewHolder(
 
     private fun getInfo(item: PlayProductUiModel.Product): CharSequence {
         return buildSpannedString {
-            append(getString(R.string.play_product_pinned))
+            if (item.isPinned) {
+                append(getString(R.string.play_product_pinned))
+                append(' ')
+            }
 
             if (item.stock !is StockAvailable ||
                 item.stock.stock > MIN_STOCK) return@buildSpannedString
 
-            append(' ')
-            val separator = getString(R.string.play_product_pinned_info_separator)
-            append(separator, separatorSpan, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+            if (item.isPinned) {
+                val separator = getString(R.string.play_product_pinned_info_separator)
+                append(separator, separatorSpan, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+                append(' ')
+            }
 
-            append(' ')
             val stockText = getString(R.string.play_product_item_stock, item.stock.stock)
             append(stockText, stockSpan, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
         }

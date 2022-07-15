@@ -32,6 +32,7 @@
         >
 
         <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/icon_pinned"
             android:layout_width="@dimen/play_product_carousel_pinned_icon_size"
             android:layout_height="@dimen/play_product_carousel_pinned_icon_size"
             app:icon_name="PUSH_PIN_FILLED"
