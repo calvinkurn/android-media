@@ -156,7 +156,8 @@
             android:name=".privacy_account.view.PrivacyAccountActivity"
             android:label="@string/title_privacy_account"
             android:theme="@style/Theme.WhiteUnify"
-            android:exported="false">
+            android:exported="false"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
