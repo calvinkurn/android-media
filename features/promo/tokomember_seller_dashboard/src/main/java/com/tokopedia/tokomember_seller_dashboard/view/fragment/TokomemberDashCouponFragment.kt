@@ -428,17 +428,20 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
         }
     }
 
-    override fun refreshCouponList(editCoupon: Boolean) {
+    override fun refreshCouponList() {
         if(selectedType.toInt() == 0){
             tmCouponViewModel.getCouponList(voucherStatus, null)
         }
         else {
             tmCouponViewModel.getCouponList(voucherStatus, selectedType.toInt())
         }
-        if(editCoupon){
-            view?.let { it1 ->
-                Toaster.build(it1, "Yay, kupon TokoMember berhasil diubah!", Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
-            }
+        view?.let { it1 ->
+            Toaster.build(
+                it1,
+                "Yay, kupon TokoMember berhasil diubah!",
+                Toaster.LENGTH_SHORT,
+                Toaster.TYPE_NORMAL
+            ).show()
         }
     }
 
