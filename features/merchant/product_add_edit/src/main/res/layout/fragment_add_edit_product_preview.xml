@@ -44,7 +44,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl4"
-                android:layout_marginTop="@dimen/dp_35"
+                android:layout_marginTop="35dp"
                 android:text="@string/product_subtitle_product_information"
                 android:textColor="@color/Unify_N700"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -153,8 +153,8 @@
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/loader"
-            android:layout_width="@dimen/dp_50"
-            android:layout_height="@dimen/dp_50"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
