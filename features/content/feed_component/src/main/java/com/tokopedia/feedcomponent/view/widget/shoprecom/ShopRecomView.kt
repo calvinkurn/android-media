@@ -40,7 +40,7 @@ class ShopRecomView : FrameLayout, LifecycleObserver {
     )
 
     init {
-        (context as LifecycleOwner).lifecycle.addObserver(this)
+        if (context is LifecycleOwner) (context as LifecycleOwner).lifecycle.addObserver(this)
     }
 
     fun setListener(listener: ShopRecommendationCallback?) {
