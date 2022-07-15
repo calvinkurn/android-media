@@ -377,6 +377,14 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     private fun initAdapter() {
         val mainNavFactory = MainNavTypeFactoryImpl(this, getUserSession(), object : TokopediaPlusListener {
+            override fun isShown(
+                isShown: Boolean,
+                pageSource: String,
+                tokopediaPlusDataModel: TokopediaPlusDataModel
+            ) {
+
+            }
+
             override fun onClick(
                 pageSource: String,
                 tokopediaPlusDataModel: TokopediaPlusDataModel
