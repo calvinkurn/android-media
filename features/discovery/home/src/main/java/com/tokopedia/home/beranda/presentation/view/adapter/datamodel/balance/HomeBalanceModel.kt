@@ -135,8 +135,8 @@ data class HomeBalanceModel(
         if (balancePositionSubscriptions != DEFAULT_BALANCE_POSITION &&
             balanceDrawerItemModels.size > balancePositionSubscriptions) {
             val balanceItem = balanceDrawerItemModels[balancePositionSubscriptions]
-            val isContainsGotoPlus = balanceItem.state == STATE_SUCCESS
-            if (isContainsGotoPlus) {
+            val isShowCoachMark = balanceItem.state == STATE_SUCCESS && balanceItem.balanceCoachmark?.isShown == true
+            if (isShowCoachMark) {
                 return balanceItem.balanceCoachmark
             }
         }
