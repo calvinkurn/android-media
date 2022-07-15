@@ -33,6 +33,8 @@ import com.tokopedia.play.broadcaster.ui.model.game.quiz.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.*
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
+import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinStatus
+import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
@@ -1549,6 +1551,23 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     fun getShopIconUrl(): String = userSession.shopAvatar
 
     fun getShopName(): String = userSession.shopName
+
+    fun setPinned(product: ProductUiModel) {
+        viewModelScope.launch {
+            val result = repo.setPinProduct(channelId, product.id)
+            _productSectionList.update { sectionList ->
+                sectionList.map { sectionUiModel ->
+                    sectionUiModel.copy(campaignStatus = sectionUiModel.campaignStatus, products =
+                    sectionUiModel.products.map { product ->
+                        if(product.id == product.id)
+                            product.copy(pinStatus = product.pinStatus.copy(pinStatus = PinStatus.Pinned))
+                        else
+                            product
+                    })
+                }
+            }
+        }
+    }
 
     companion object {
 
