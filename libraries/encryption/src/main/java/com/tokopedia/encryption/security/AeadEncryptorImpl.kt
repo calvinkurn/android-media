@@ -30,7 +30,6 @@ class AeadEncryptorImpl(val context: Context) : AeadEncryptor {
         aeadInstance = AndroidKeysetManager.Builder()
             .withSharedPref(context.applicationContext, KEYSET_NAME, PREFERENCE_FILE)
             .withKeyTemplate(KeyTemplates.get("AES256_GCM"))
-            .withMasterKeyUri(MASTER_KEY_URI)
             .build()
             .keysetHandle
             .getPrimitive(Aead::class.java)
