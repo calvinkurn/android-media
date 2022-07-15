@@ -221,6 +221,7 @@ class FeedAnalyticTracker
         const val SHOP_ID = "shop_id"
         const val CATEGORY_ID = "category_id"
         const val DIMENSION_40 = "dimension40"
+        const val DIMENSION_39 = "dimension39"
         const val SHOP_NAME = "shop_name"
         const val SHOP_TYPE = "shop_type"
         const val MEDIA_PREVIEW = "/feed media preview - {role} post"
@@ -1168,6 +1169,7 @@ class FeedAnalyticTracker
                     shopId,
                     products[position - 1].id
             )
+        val postType = getPostType(type, isFollowed, mediaType)
 
         trackEnhancedEcommerceEventNew(
             PRODUCT_CLICK,
@@ -1176,12 +1178,12 @@ class FeedAnalyticTracker
                 FORMAT_THREE_PARAM,
                 CLICK,
                 "product",
-                getPostType(type, isFollowed, mediaType)
+                 postType
             ),
             finalLabel,
             DataLayer.mapOf(CLICK, mapOf(
                 "actionField" to mapOf(
-                    "list" to "/feed - ${getPostType(type, isFollowed, mediaType)}"
+                    "list" to "/feed - ${if( postType == ASGC || postType == ASGC_RECOM) "$postType detail" else postType}"
                 ),
                 "products" to getSingleProductListASGC(products[position - 1], position, type, isFollowed, mediaType)
             )
@@ -2861,7 +2863,7 @@ class FeedAnalyticTracker
             Product.VARIANT, "",
             Product.BRAND, "",
             Product.CATEGORY, "",
-            Product.DIMENSION_40, "/feed - ${getPostType(type, isFollowed, mediaType)}"
+            Product.DIMENSION_39, "/feed - ${getPostType(type, isFollowed, mediaType)}"
     )
 
     fun getEcommerceView(listProduct: List<ProductItem>): Map<String, Any> {
