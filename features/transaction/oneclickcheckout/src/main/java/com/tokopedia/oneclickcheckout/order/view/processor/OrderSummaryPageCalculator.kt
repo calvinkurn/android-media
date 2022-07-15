@@ -221,13 +221,16 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
             val (cost, _) = calculateOrderCostWithoutPaymentFee(orderCart, shipping, validateUsePromoRevampUiModel, orderPayment)
             var subtotal = cost.totalPrice
             var payment = orderPayment
+            val totalPaymentFee = payment.getTotalPaymentFee()
             if (!orderPayment.creditCard.isAfpb) {
-                payment = calculateInstallmentDetails(payment, cost.totalPriceWithoutDiscountsAndPaymentFees, if (orderCart.shop.isOfficial == 1) cost.totalPriceWithoutPaymentFees else 0.0, cost.totalDiscounts)
+                val subTotalWithPaymentFees = cost.totalPriceWithoutDiscountsAndPaymentFees + totalPaymentFee
+                val subsidizeWithPaymentFees = (if (orderCart.shop.isOfficial == 1) cost.totalPriceWithoutPaymentFees else 0.0) + totalPaymentFee
+                payment = calculateInstallmentDetails(payment, subTotalWithPaymentFees, subsidizeWithPaymentFees, cost.totalDiscounts)
             }
             val fee = payment.getRealFee()
             subtotal += fee
             if (payment.isInstallment()) {
-                subtotal += payment.getTotalPaymentFee()
+                subtotal += totalPaymentFee
             }
             var installmentData: OrderCostInstallmentData? = null
             val selectedTerm = orderPayment.walletData.goCicilData.selectedTerm
