@@ -55,7 +55,7 @@ class ProductSummaryBottomSheet @Inject constructor(
     }
 
     override fun onPinProductClicked(product: ProductUiModel) {
-        //TODO("Not yet implemented")
+        viewModel.setPinned(product)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

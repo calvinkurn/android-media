@@ -163,7 +163,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             }
 
             override fun onPinProductClicked(product: ProductUiModel) {
-                //TODO("Not yet implemented")
+                parentViewModel.setPinned(product)
             }
         })
     }
