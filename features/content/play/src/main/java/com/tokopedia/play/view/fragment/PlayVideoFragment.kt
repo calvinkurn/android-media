@@ -312,7 +312,7 @@ class PlayVideoFragment @Inject constructor(
     }
 
     private fun initAnalytic() {
-        videoAnalyticHelper = VideoAnalyticHelper(requireContext(), analytic, playLog, playViewModel.latestCompleteChannelData)
+        videoAnalyticHelper = VideoAnalyticHelper(requireContext(), analytic, playLog)
     }
 
     private fun initView(view: View) {
@@ -361,6 +361,8 @@ class PlayVideoFragment @Inject constructor(
 
             videoViewOnStateChanged(videoPlayer = meta.videoPlayer)
             videoLoadingViewOnStateChanged(videoPlayer = meta.videoPlayer)
+
+            videoAnalyticHelper.setVideoData(playViewModel.channelId, meta.videoPlayer)
         }
     }
 
