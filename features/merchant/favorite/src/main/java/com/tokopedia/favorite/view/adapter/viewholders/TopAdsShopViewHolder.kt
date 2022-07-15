@@ -13,6 +13,8 @@ import com.tokopedia.favorite.view.adapter.TopAdsShopAdapter
 import com.tokopedia.favorite.view.viewlistener.FavoriteClickListener
 import com.tokopedia.favorite.view.viewmodel.TopAdsShopItem
 import com.tokopedia.favorite.view.viewmodel.TopAdsShopUiModel
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_13
@@ -131,7 +133,7 @@ class TopAdsShopViewHolder(
                 shopName = it.shopName ?: "",
                 isOfficial = it.shopIsOfficial,
                 isPMPro = it.isPMPro,
-                goldShop = if (it.isPowerMerchant) 1 else 0,
+                goldShop = if (it.isPowerMerchant) Int.ONE else Int.ZERO,
                 impressHolder = it.imageShop,
                 location = it.shopLocation ?: "",
                 position = index,

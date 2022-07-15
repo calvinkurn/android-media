@@ -11,7 +11,6 @@
     app:cardUseCompatPadding="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/shopProductRoot"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingBottom="@dimen/unify_space_16">
@@ -221,7 +220,7 @@
             android:layout_marginLeft="@dimen/unify_space_8"
             android:layout_marginTop="@dimen/unify_space_8"
             android:layout_marginRight="@dimen/unify_space_8"
-            android:text="Follow"
+            android:text="@string/topads_follow"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
