@@ -103,7 +103,7 @@
     <string name="play_sharing_refresh">Refresh</string>
     <string name="play_change_address_widget_wording">Ganti Alamat</string>
 
-    <!--Tokonow-->
+    <!--TokoNow-->
     <string name="play_address_widget_info">Lokasimu belum tersedia di NOW! <![CDATA[<strong><span style="color:#03AC0E">Cek Jangkauan</span></strong>]]></string>
     <string name="play_tokonow_info_weblink">help/article/apa-itu-tokopedia-now</string>
     <string name="play_toaster_global_wording">Lihat Keranjang</string>

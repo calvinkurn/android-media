@@ -36,7 +36,7 @@ class PlayTokonowTest {
     private val partnerInfoModelBuilder = PlayPartnerInfoModelBuilder()
     private val mockChannelTokonow = channelDataBuilder.buildChannelData(
         partnerInfo = partnerInfoModelBuilder.buildPlayPartnerInfo(
-            type = PartnerType.Tokonow
+            type = PartnerType.TokoNow
         )
     )
     private val mockChannelTkpd = channelDataBuilder.buildChannelData(

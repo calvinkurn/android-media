@@ -94,7 +94,7 @@ class ProductSectionViewHolder(
                 timerSection.hide()
                 btnInfo.hide()
             }
-            ProductSectionType.Tokonow -> {
+            ProductSectionType.TokoNow -> {
                 btnInfo.showWithCondition(item.config.title.isNotEmpty())
                 if(btnInfo.isVisible) listener.onInformationImpressed()
                 tvTimerInfo.hide()

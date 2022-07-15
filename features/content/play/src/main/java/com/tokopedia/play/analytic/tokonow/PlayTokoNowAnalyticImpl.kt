@@ -17,9 +17,9 @@ import javax.inject.Inject
 /**
  * @author by astidhiyaa on 17/06/22
  */
-class PlayTokonowAnalyticImpl @Inject constructor(
+class PlayTokoNowAnalyticImpl @Inject constructor(
     private val userSession: UserSessionInterface, private val trackingQueue: TrackingQueue,
-) : PlayTokonowAnalytic {
+) : PlayTokoNowAnalytic {
 
     private val userId: String
         get() = userSession.userId

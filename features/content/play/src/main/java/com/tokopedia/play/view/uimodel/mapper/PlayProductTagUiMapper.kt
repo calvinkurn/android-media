@@ -62,7 +62,7 @@ class PlayProductTagUiMapper @Inject constructor() {
                 minQty = input.minimumQuantity,
                 isFreeShipping = input.isFreeShipping,
                 applink = input.appLink,
-                isTokoNow = input.isTokonow,
+                isTokoNow = input.isTokoNow,
         )
     }
 }

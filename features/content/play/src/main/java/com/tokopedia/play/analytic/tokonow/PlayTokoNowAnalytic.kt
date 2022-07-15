@@ -8,7 +8,7 @@ import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 /**
  * @author by astidhiyaa on 17/06/22
  */
-interface PlayTokonowAnalytic {
+interface PlayTokoNowAnalytic {
     fun sendData(channelId: String, channelType: PlayChannelType, channelName: String)
     fun impressAddressWidget()
     fun impressChooseAddress()

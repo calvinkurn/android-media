@@ -254,7 +254,7 @@ class PlayViewModel @AssistedInject constructor(
     private val _addressUiState = combine(_partnerInfo, _warehouseInfo){ partnerInfo, warehouseInfo ->
         AddressWidgetUiState(
             warehouseInfo = warehouseInfo,
-            shouldShow = partnerInfo.type == PartnerType.Tokonow && warehouseInfo.isOOC && (channelType.isLive || channelType.isVod) && !isFreezeOrBanned
+            shouldShow = partnerInfo.type == PartnerType.TokoNow && warehouseInfo.isOOC && (channelType.isLive || channelType.isVod) && !isFreezeOrBanned
         )
     }
 
@@ -1977,7 +1977,7 @@ class PlayViewModel @AssistedInject constructor(
         val partnerInfo = _partnerInfo.value
         if (partnerInfo.type == PartnerType.Shop) playAnalytic.clickShop(channelId, channelType, partnerInfo.id.toString())
 
-        if (partnerInfo.type == PartnerType.Tokonow) needLogin {
+        if (partnerInfo.type == PartnerType.TokoNow) needLogin {
             openPage(applink)
         } else openPage(applink)
     }
