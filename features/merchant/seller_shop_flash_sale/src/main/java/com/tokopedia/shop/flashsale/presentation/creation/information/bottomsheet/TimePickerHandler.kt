@@ -79,8 +79,8 @@ class TimePickerHandler @Inject constructor(private val param: Param) {
     private fun buildMinTime(): GregorianCalendar {
         return if (param.mode == TimePickerSelectionMode.START_TIME) {
             GregorianCalendar(LocaleConstant.INDONESIA).apply {
-                set(Calendar.HOUR_OF_DAY, Constant.ZERO)
-                set(Calendar.MINUTE, Constant.ZERO)
+                set(Calendar.HOUR_OF_DAY, param.minimumDate.extractHour())
+                set(Calendar.MINUTE, param.minimumDate.extractMinute())
             }
         } else {
             findCampaignMaxEndDateByRule(param)
