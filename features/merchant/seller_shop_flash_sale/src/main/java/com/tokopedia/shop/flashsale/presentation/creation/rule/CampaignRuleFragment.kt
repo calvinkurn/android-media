@@ -31,6 +31,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignRuleBinding
+import com.tokopedia.shop.flashsale.common.constant.BundleConstant
 import com.tokopedia.shop.flashsale.common.extension.disable
 import com.tokopedia.shop.flashsale.common.extension.enable
 import com.tokopedia.shop.flashsale.common.extension.setFragmentToUnifyBgColor
@@ -72,17 +73,15 @@ class CampaignRuleFragment : BaseDaggerFragment(),
     CreateCampaignConfirmationDialog.CreateCampaignConfirmationListener {
 
     companion object {
-        private const val BUNDLE_KEY_CAMPAIGN_ID = "campaign_id"
         private const val FOURTH_STEP = 4
         private const val RELATED_CAMPAIGN_OFFSET_DP = 8
-        private const val BUNDLE_KEY_PAGE_MODE = "page_mode"
 
         @JvmStatic
         fun newInstance(campaignId: Long, pageMode: PageMode): CampaignRuleFragment {
             return CampaignRuleFragment().apply {
                 arguments = Bundle().apply {
-                    putLong(BUNDLE_KEY_CAMPAIGN_ID, campaignId)
-                    putParcelable(BUNDLE_KEY_PAGE_MODE, pageMode)
+                    putLong(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID, campaignId)
+                    putParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE, pageMode)
                 }
             }
         }
@@ -91,8 +90,8 @@ class CampaignRuleFragment : BaseDaggerFragment(),
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private val campaignId by lazy { arguments?.getLong(BUNDLE_KEY_CAMPAIGN_ID) }
-    private val pageMode by lazy { arguments?.getParcelable(BUNDLE_KEY_PAGE_MODE) ?: PageMode.CREATE }
+    private val campaignId by lazy { arguments?.getLong(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID) }
+    private val pageMode by lazy { arguments?.getParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE) ?: PageMode.CREATE }
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(CampaignRuleViewModel::class.java) }
 

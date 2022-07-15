@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.FragmentSsfsManageHighlightedProductBinding
+import com.tokopedia.shop.flashsale.common.constant.BundleConstant
 import com.tokopedia.shop.flashsale.common.extension.doOnDelayFinished
 import com.tokopedia.shop.flashsale.common.extension.setFragmentToUnifyBgColor
 import com.tokopedia.shop.flashsale.common.extension.showError
@@ -55,14 +56,13 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
         private const val MAX_PRODUCT_SELECTION = 5
         private const val BUNDLE_KEY_CAMPAIGN_ID = "campaign_id"
         private const val SCROLL_DISTANCE_DELAY_IN_MILLIS: Long = 100
-        private const val BUNDLE_KEY_PAGE_MODE = "page_mode"
 
         @JvmStatic
         fun newInstance(campaignId: Long, pageMode: PageMode): ManageHighlightedProductFragment {
             val fragment = ManageHighlightedProductFragment()
             fragment.arguments = Bundle().apply {
-                putLong(BUNDLE_KEY_CAMPAIGN_ID, campaignId)
-                putParcelable(BUNDLE_KEY_PAGE_MODE, pageMode)
+                putLong(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID, campaignId)
+                putParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE, pageMode)
             }
             return fragment
         }
@@ -82,7 +82,7 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
     }
 
     private val pageMode by lazy {
-        arguments?.getParcelable(BUNDLE_KEY_PAGE_MODE) ?: PageMode.CREATE
+        arguments?.getParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE) ?: PageMode.CREATE
     }
 
     private var isFirstLoad = true
