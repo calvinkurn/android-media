@@ -30,7 +30,6 @@ class ExternalRegisterViewModel @Inject constructor(
         private val externalRegisterUseCase: ExternalRegisterUseCase,
         private val externalRegisterPreference: ExternalRegisterPreference,
         private val getProfileUseCase: GetProfileUseCase,
-        @Named(SessionModule.SESSION_MODULE)
         private val userSession: UserSessionInterface,
         private val dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.main) {

@@ -6,6 +6,7 @@ import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.Filter
@@ -50,6 +51,7 @@ import com.tokopedia.tokopedianow.common.util.StringUtil.getOrDefaultZeroString
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_LIST_OOC
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_TOPADS
+import com.tokopedia.tokopedianow.searchcategory.data.model.QuerySafeModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.view.BaseSearchCategoryFragment
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_DIRECTORY
@@ -70,6 +72,8 @@ class TokoNowCategoryFragment:
         PermissionListener {
 
     companion object {
+        private const val AR_ORIGIN_TOKONOW_CATEGORY = 5
+
         const val PAGE_SHARE_NAME = "Tokonow"
         const val SHARE = "share"
         const val PAGE_TYPE_CATEGORY = "cat%s"
@@ -226,7 +230,7 @@ class TokoNowCategoryFragment:
     override fun screenShotTaken() {
         updateShareHomeData(
             isScreenShot = true,
-            thumbNailTitle = resources.getString(R.string.tokopedianow_home_share_thumbnail_title_ss)
+            thumbNailTitle = context?.resources?.getString(R.string.tokopedianow_home_share_thumbnail_title_ss).orEmpty()
         )
 
         showUniversalShareBottomSheet(shareCategoryTokonow)
@@ -273,9 +277,9 @@ class TokoNowCategoryFragment:
             id = model.deeplinkParam
             sharingUrl = model.url
             pageIdConstituents = model.utmCampaignList
-            sharingText = resources.getString(R.string.tokopedianow_category_share_main_text, model.title)
-            specificPageName = resources.getString(R.string.tokopedianow_category_share_title, model.title)
-            specificPageDescription = resources.getString(R.string.tokopedianow_category_share_desc, model.title)
+            sharingText = context?.resources?.getString(R.string.tokopedianow_category_share_main_text, model.title).orEmpty()
+            specificPageName = context?.resources?.getString(R.string.tokopedianow_category_share_title, model.title).orEmpty()
+            specificPageDescription = context?.resources?.getString(R.string.tokopedianow_category_share_desc, model.title).orEmpty()
         }
     }
 
@@ -314,7 +318,7 @@ class TokoNowCategoryFragment:
     override fun onNavToolbarShareClicked() {
         updateShareHomeData(
             isScreenShot = false,
-            thumbNailTitle = resources.getString(R.string.tokopedianow_home_share_thumbnail_title)
+            thumbNailTitle = context?.resources?.getString(R.string.tokopedianow_home_share_thumbnail_title).orEmpty()
         )
 
         CategoryTracking.trackClickShareButtonTopNav(
@@ -600,5 +604,11 @@ class TokoNowCategoryFragment:
             categoryIdLvl2 = categoryIdLvl2,
             categoryIdLvl3 = categoryIdLvl3
         )
+    }
+
+    override fun showDialogAgeRestriction(querySafeModel: QuerySafeModel) {
+        if (!querySafeModel.isQuerySafe) {
+            AdultManager.showAdultPopUp(this, AR_ORIGIN_TOKONOW_CATEGORY, "${querySafeModel.warehouseId} - ${tokoNowCategoryViewModel.categoryL1.getOrDefaultZeroString()} - ${categoryIdLvl2.getOrDefaultZeroString()} - ${categoryIdLvl3.getOrDefaultZeroString()}")
+        }
     }
 }
