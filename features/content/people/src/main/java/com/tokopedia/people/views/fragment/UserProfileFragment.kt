@@ -249,6 +249,7 @@ class UserProfileFragment @Inject constructor(
             }
 
             fabUserProfile.setOnClickListener {
+                UserProfileTracker().clickCreatePost(viewModel.profileUserID)
                 if(viewModel.needOnboarding) {
                     val bundle = Bundle().apply {
                         putString(FeedUGCOnboardingParentFragment.KEY_USERNAME, viewModel.profileUsername)
