@@ -1,6 +1,5 @@
 package com.tokopedia.home.beranda.domain.interactor.usecase
 
-import android.util.Log
 import com.google.gson.Gson
 import com.tokopedia.home.beranda.data.model.SubscriptionsData
 import com.tokopedia.home.beranda.domain.interactor.InjectCouponTimeBasedUseCase
@@ -70,7 +69,7 @@ class HomeBalanceWidgetUseCase @Inject constructor(
                 )
             )
         } catch (e: Exception) {
-            Log.d("dhabalog", "${e.localizedMessage} ${e.printStackTrace()}")
+            println( "dhabalog ${e.localizedMessage} ${e.printStackTrace()}")
             currentHeaderDataModel.headerDataModel?.homeBalanceModel?.status = HomeBalanceModel.STATUS_ERROR
             currentHeaderDataModel.headerDataModel?.isUserLogin = userSession.isLoggedIn
             return currentHeaderDataModel
