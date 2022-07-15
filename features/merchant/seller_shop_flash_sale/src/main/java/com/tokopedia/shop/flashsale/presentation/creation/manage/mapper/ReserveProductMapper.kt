@@ -1,6 +1,8 @@
 package com.tokopedia.shop.flashsale.presentation.creation.manage.mapper
 
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.shop.flashsale.common.constant.ChooseProductConstant
 import com.tokopedia.shop.flashsale.data.request.DoSellerCampaignProductSubmissionRequest
 import com.tokopedia.shop.flashsale.data.response.GetSellerCampaignValidatedProductListResponse
 import com.tokopedia.shop.flashsale.presentation.creation.manage.enums.ShopStatus
@@ -55,5 +57,15 @@ object ReserveProductMapper {
             ShopStatus.CLOSED.type -> ShopStatus.CLOSED
             else -> ShopStatus.OTHER
         }
+    }
+
+    fun canReserveProduct(selectedItem: List<SelectedProductModel>): Boolean {
+        return selectedItem.filter { !it.hasChild }.run {
+            size.isMoreThanZero() && size < ChooseProductConstant.PRODUCT_SELECTION_MAX
+        }
+    }
+
+    fun hasVariant(selectedItem: List<SelectedProductModel>): Boolean {
+        return selectedItem.any { it.parentProductId != null }
     }
 }

@@ -3,6 +3,7 @@ package com.tokopedia.shop.flashsale.common.util
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.shop.flashsale.common.extension.convertRupiah
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
@@ -78,7 +79,7 @@ class ProductErrorStatusHandler @Inject constructor(@ApplicationContext private 
 
     fun getErrorInputType(productInput: EditProductInputModel): ProductInputValidationResult {
         val originalPrice = productInput.productMapData.originalPrice
-        val originalStock = productInput.productMapData.originalStock
+        val originalStock = productInput.originalStock
         val maxDiscountedPrice = getProductMaxDiscountedPrice(originalPrice)
         var minDiscountedPrice = getProductMinDiscountedPrice(originalPrice)
         val result: MutableList<ManageProductErrorType> = mutableListOf()
@@ -99,7 +100,7 @@ class ProductErrorStatusHandler @Inject constructor(@ApplicationContext private 
 
             maxOrder?.let {
                 if (it < MIN_CAMPAIGN_ORDER) result.add(MIN_ORDER)
-                if (it > stock ?: originalStock.toLong()) result.add(MAX_ORDER)
+                if (it > stock ?: originalStock) result.add(MAX_ORDER)
             }
         }
 
@@ -107,10 +108,10 @@ class ProductErrorStatusHandler @Inject constructor(@ApplicationContext private 
             errorList = result,
             maxPrice = maxDiscountedPrice,
             minPrice = minDiscountedPrice,
-            maxStock = productInput.productMapData.originalStock,
+            maxStock = originalStock,
             minStock = MIN_CAMPAIGN_STOCK,
             minOrder = MIN_CAMPAIGN_ORDER,
-            maxOrder = productInput.productMapData.customStock,
+            maxOrder = productInput.stock.orZero(),
             minPricePercent = DiscountUtil.getPercentLong(MIN_CAMPAIGN_DISCOUNT_PERCENTAGE),
             maxPricePercent = DiscountUtil.getPercentLong(MAX_CAMPAIGN_DISCOUNT_PERCENTAGE)
         )

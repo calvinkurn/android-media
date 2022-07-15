@@ -68,13 +68,10 @@ class EditProductInfoViewModel @Inject constructor(
 
     fun setProduct(product: SellerCampaignProductList.Product) {
         val warehouseList = warehouseUiModelMapper.map(product.warehouseList)
-        val productMapData = product.productMapData
+        val inputData = EditProductMapper.mapInputData(product, warehouseList)
         _product.postValue(product)
         _warehouseList.postValue(warehouseList)
-        _productInputData.postValue(EditProductInputModel(
-            productId = product.productId,
-            productMapData = productMapData
-        ))
+        _productInputData.postValue(inputData)
     }
 
     fun setProductInput(input: EditProductInputModel) {
@@ -89,7 +86,7 @@ class EditProductInfoViewModel @Inject constructor(
                 val result = doSellerCampaignProductSubmissionUseCase.execute(
                     campaignId,
                     ProductionSubmissionAction.SUBMIT,
-                    EditProductMapper.map(productInputData.value, warehouseList.value)
+                    EditProductMapper.map(productInputData.value)
                 )
                 _editProductResult.postValue(result)
                 _isLoading.postValue(false)
