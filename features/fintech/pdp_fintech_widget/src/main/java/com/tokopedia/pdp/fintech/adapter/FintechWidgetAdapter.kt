@@ -90,7 +90,7 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
                         com.tokopedia.unifyprinciples.R.color.Unify_GN500
                     )
                 )
-                holder.subheaderPartner.fontType = Typography.BOLD
+                holder.subheaderPartner.weightType = Typography.BOLD
             }
             else -> {
                 holder.subheaderPartner.setTextColor(
@@ -99,7 +99,7 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
                         com.tokopedia.unifyprinciples.R.color.Unify_N700_68
                     )
                 )
-                holder.subheaderPartner.fontType = Typography.REGULAR
+                holder.subheaderPartner.weightType = Typography.REGULAR
             }
         }
     }
