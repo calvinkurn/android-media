@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.setup.product.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -406,6 +407,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
 
     fun setPinned(product: ProductUiModel) {
         viewModelScope.launch {
+            Log.d("sukses", channelId + product.id)
             val result = repo.setPinProduct(channelId, product.id)
             _productTagSectionList.update { sectionList ->
                 sectionList.map { sectionUiModel ->

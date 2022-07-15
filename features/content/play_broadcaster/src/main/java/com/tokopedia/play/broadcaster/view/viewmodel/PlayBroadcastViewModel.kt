@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 
 import android.content.Context
 import android.os.Handler
+import android.util.Log
 import androidx.lifecycle.*
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -1554,6 +1555,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     fun setPinned(product: ProductUiModel) {
         viewModelScope.launch {
+            Log.d("sukses", channelId + product.id)
             val result = repo.setPinProduct(channelId, product.id)
             _productSectionList.update { sectionList ->
                 sectionList.map { sectionUiModel ->
