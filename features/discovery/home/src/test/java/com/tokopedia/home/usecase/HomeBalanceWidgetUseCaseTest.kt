@@ -34,30 +34,32 @@ class HomeBalanceWidgetUseCaseTest {
 
     @Test
     fun `given WalletAppRepository returns reserve balance above 10000 and not linked when onGetBalanceWidgetData then reserve_balance in homeHeaderDataModel should not be empty`() {
-        //TODO fix this
-//        val homeWalletAppRepository = mockk<HomeWalletAppRepository>(relaxed = true)
-//        val homeBalanceWidgetUseCase = createBalanceWidgetUseCase(
-//            homeWalletAppRepository = homeWalletAppRepository
-//        )
-//        `given test WalletAppRepository returns reserve balance above 10000 and not linked`(homeWalletAppRepository)
-//        runBlocking {
-//            val result = `when onGetBalanceWidgetData`(homeBalanceWidgetUseCase)
-//            `then reserve_balance in homeHeaderDataModel should not be empty`(result)
-//        }
+        val homeWalletAppRepository = mockk<HomeWalletAppRepository>(relaxed = true)
+        val getHomeBalanceWidgetRepository = mockk<GetHomeBalanceWidgetRepository>(relaxed = true)
+        val homeBalanceWidgetUseCase = createBalanceWidgetUseCase(
+            homeWalletAppRepository = homeWalletAppRepository,
+            getHomeBalanceWidgetRepository = getHomeBalanceWidgetRepository
+        )
+        `given test WalletAppRepository returns reserve balance above 10000 and not linked`(homeWalletAppRepository, getHomeBalanceWidgetRepository)
+        runBlocking {
+            val result = `when onGetBalanceWidgetData`(homeBalanceWidgetUseCase)
+            `then reserve_balance in homeHeaderDataModel should not be empty`(result)
+        }
     }
 
     @Test
     fun `given WalletAppRepository returns reserve balance below 10000 and not linked when onGetBalanceWidgetData then reserve_balance in homeHeaderDataModel should not be empty`() {
-        //TODO fix this
-//        val homeWalletAppRepository = mockk<HomeWalletAppRepository>(relaxed = true)
-//        val homeBalanceWidgetUseCase = createBalanceWidgetUseCase(
-//            homeWalletAppRepository = homeWalletAppRepository
-//        )
-//        `given test WalletAppRepository returns reserve balance below 10000 and not linked`(homeWalletAppRepository)
-//        runBlocking {
-//            val result = `when onGetBalanceWidgetData`(homeBalanceWidgetUseCase)
-//            `then reserve_balance in homeHeaderDataModel should be empty`(result)
-//        }
+        val homeWalletAppRepository = mockk<HomeWalletAppRepository>(relaxed = true)
+        val getHomeBalanceWidgetRepository = mockk<GetHomeBalanceWidgetRepository>(relaxed = true)
+        val homeBalanceWidgetUseCase = createBalanceWidgetUseCase(
+            homeWalletAppRepository = homeWalletAppRepository,
+            getHomeBalanceWidgetRepository = getHomeBalanceWidgetRepository
+        )
+        `given test WalletAppRepository returns reserve balance below 10000 and not linked`(homeWalletAppRepository, getHomeBalanceWidgetRepository)
+        runBlocking {
+            val result = `when onGetBalanceWidgetData`(homeBalanceWidgetUseCase)
+            `then reserve_balance in homeHeaderDataModel should be empty`(result)
+        }
     }
 
     @ExperimentalCoroutinesApi
@@ -93,7 +95,7 @@ class HomeBalanceWidgetUseCaseTest {
         )
     }
 
-    fun `given test WalletAppRepository returns reserve balance above 10000 and not linked`(homeWalletAppRepository: HomeWalletAppRepository) {
+    fun `given test WalletAppRepository returns reserve balance above 10000 and not linked`(homeWalletAppRepository: HomeWalletAppRepository, getHomeBalanceWidgetRepository: GetHomeBalanceWidgetRepository) {
         val mockWalletAppData = WalletAppData(
             walletappGetBalance = WalletappGetBalance(
                 listOf(
@@ -111,11 +113,16 @@ class HomeBalanceWidgetUseCaseTest {
                 )
             )
         )
-
+        val mockBalanceWidgetData = GetHomeBalanceWidgetData(
+            getHomeBalanceList = GetHomeBalanceList(
+                balancesList = mutableListOf(GetHomeBalanceItem(title = "Gopay", type = "gopay"))
+            )
+        )
+        coEvery { getHomeBalanceWidgetRepository.getRemoteData(any()) } returns mockBalanceWidgetData
         coEvery { homeWalletAppRepository.getRemoteData() } returns mockWalletAppData
     }
 
-    fun `given test WalletAppRepository returns reserve balance below 10000 and not linked`(homeWalletAppRepository: HomeWalletAppRepository) {
+    fun `given test WalletAppRepository returns reserve balance below 10000 and not linked`(homeWalletAppRepository: HomeWalletAppRepository, getHomeBalanceWidgetRepository: GetHomeBalanceWidgetRepository) {
         val mockWalletAppData = WalletAppData(
             walletappGetBalance = WalletappGetBalance(
                 listOf(
@@ -133,7 +140,12 @@ class HomeBalanceWidgetUseCaseTest {
                 )
             )
         )
-
+        val mockBalanceWidgetData = GetHomeBalanceWidgetData(
+            getHomeBalanceList = GetHomeBalanceList(
+                balancesList = mutableListOf(GetHomeBalanceItem(title = "Gopay", type = "gopay"))
+            )
+        )
+        coEvery { getHomeBalanceWidgetRepository.getRemoteData(any()) } returns mockBalanceWidgetData
         coEvery { homeWalletAppRepository.getRemoteData() } returns mockWalletAppData
     }
 
