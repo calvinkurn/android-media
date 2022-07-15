@@ -305,7 +305,7 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     private fun initAnalytic() {
-        productAnalyticHelper = ProductAnalyticHelper(analytic)
+        productAnalyticHelper = ProductAnalyticHelper(analytic, newAnalytic)
     }
 
     private fun closeProductSheet() {
