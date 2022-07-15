@@ -61,6 +61,10 @@ data class FeedXCard(
     var appLink: String = "",
     @SerializedName("webLink")
     var webLink: String = "",
+    @SerializedName("appLinkProductList")
+    var appLinkProductList: String = "",
+    @SerializedName("webLinkProductList")
+    var webLinkProductList: String = "",
     @SerializedName("actionButtonLabel")
     var actionButtonLabel: String = "",
     @SerializedName("actionButtonOperationWeb")
@@ -99,6 +103,16 @@ data class FeedXCard(
 
 
 ) : ImpressHolder() {
+
+    val isTypeProductHighlight: Boolean
+        get() = typename == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT
+
+    val isTypeVOD: Boolean
+        get() = typename == TYPE_FEED_X_CARD_VOD
+
+    val useASGCNewDesign: Boolean
+        get() = mods.contains(USE_ASGC_NEW_DESIGN)
+
     fun copyPostData(): FeedXCard {
         return FeedXCard(
             typename = typename,
@@ -115,6 +129,8 @@ data class FeedXCard(
             deletable = deletable,
             appLink = appLink,
             webLink = webLink,
+            webLinkProductList = webLinkProductList,
+            appLinkProductList = appLinkProductList,
             actionButtonLabel = actionButtonLabel,
             actionButtonOperationApp = actionButtonOperationApp,
             actionButtonOperationWeb = actionButtonOperationWeb,
@@ -136,5 +152,12 @@ data class FeedXCard(
             cpmData = cpmData,
             listProduct = listProduct
         )
+    }
+
+    companion object {
+        private const val TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT = "FeedXCardProductsHighlight"
+        private const val TYPE_FEED_X_CARD_VOD = "FeedXCardPlay"
+
+        private const val USE_ASGC_NEW_DESIGN: String = "use_new_design"
     }
 }

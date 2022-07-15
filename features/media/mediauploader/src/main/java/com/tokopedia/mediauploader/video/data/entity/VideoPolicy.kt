@@ -15,19 +15,28 @@ data class VideoPolicy(
 ) {
 
     fun thresholdSizeOfVideo(): Int {
-        return thresholdSize?: 10
+        return thresholdSize?: THRESHOLD_VIDEO_FILE_SIZE
     }
 
     fun chunkSizePerFileInBytes(): Int {
-        return (largeChunkSize?: 5).mbToBytes()
+        return (largeChunkSize?: THRESHOLD_LARGE_CHUNK_SIZE).mbToBytes()
     }
 
     fun timeOutOfTranscode(): Int {
-        return timeOutTranscode?: 600
+        return timeOutTranscode?: TIME_OUT_TRANSCODE
     }
 
     fun retryIntervalInSec(): Long {
-        return (retryInterval?: 5) * 1000.toLong()
+        return (retryInterval?: THRESHOLD_RETRY_INTERVAL) * RETRY_INTERVAL_TO_SEC.toLong()
+    }
+
+    companion object {
+        private const val THRESHOLD_VIDEO_FILE_SIZE = 10
+        private const val THRESHOLD_LARGE_CHUNK_SIZE = 5
+        private const val THRESHOLD_RETRY_INTERVAL = 5
+
+        private const val RETRY_INTERVAL_TO_SEC = 1000
+        private const val TIME_OUT_TRANSCODE = 600
     }
 
 }

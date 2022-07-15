@@ -17,8 +17,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.R
 import com.tokopedia.media.databinding.FragmentPermissionBinding
 import com.tokopedia.media.picker.di.DaggerPickerComponent
-import com.tokopedia.media.picker.ui.fragment.permission.recyclers.adapter.PermissionAdapter
-import com.tokopedia.media.picker.ui.fragment.permission.recyclers.utils.ItemDividerDecoration
+import com.tokopedia.media.picker.ui.adapter.PermissionAdapter
+import com.tokopedia.media.picker.ui.adapter.decoration.ItemDividerDecoration
 import com.tokopedia.media.picker.ui.uimodel.PermissionUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
@@ -42,6 +42,8 @@ open class PermissionFragment : BaseDaggerFragment() {
 
     private var isPermissionDialogShown = false
     private var isPermissionRationale = false
+    private var isPermissionGranted = false
+
     private var mTitle = ""
     private var mMessage = ""
 
@@ -89,9 +91,6 @@ open class PermissionFragment : BaseDaggerFragment() {
 
         viewModel.permissionCodeName.observe(viewLifecycleOwner) {
             onPrepareShowPermissionDialog(it)
-
-            // we only need to call once, so remove the observers after get the data
-            viewModel.permissionCodeName.removeObservers(this)
         }
     }
 
@@ -104,6 +103,8 @@ open class PermissionFragment : BaseDaggerFragment() {
     }
 
     private fun onPrepareShowPermissionDialog(permissionCodeNameList: List<String>) {
+        if (isPermissionGranted) return
+
         var permissionGrantedAmount = 0
 
         for (permission in permissionCodeNameList) {
@@ -115,6 +116,7 @@ open class PermissionFragment : BaseDaggerFragment() {
 
         if (permissionCodeNameList.size == permissionGrantedAmount) {
             listener?.onPermissionGranted()
+            isPermissionGranted = true
         } else {
             onShowDialog(permissionCodeNameList, mTitle, mMessage)
             isPermissionDialogShown = true
@@ -171,9 +173,12 @@ open class PermissionFragment : BaseDaggerFragment() {
                 && deniedNeedToShowRationalePermissions.isEmpty()
             ) {
                 listener?.onPermissionGranted()
-            } else {
+                isPermissionGranted = true
+            } else if (deniedPermissions.size > 1 && deniedPermissions.size > deniedNeedToShowRationalePermissions.size) {
                 binding?.permissionPage?.show()
                 isPermissionRationale = true
+            } else {
+                binding?.permissionPage?.show()
             }
         }
     }

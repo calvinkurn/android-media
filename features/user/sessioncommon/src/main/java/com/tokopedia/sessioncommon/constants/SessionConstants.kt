@@ -10,8 +10,18 @@ object SessionConstants {
         const val CONFIG_SILENT_VERIFICATION = "android_user_silent_verification"
     }
 
+    enum class CheckPinType(val value: String) {
+        USER_ID("userid"),
+        PHONE("phone"),
+        EMAIL("email")
+    }
+
     enum class GenerateKeyModule(val value: String) {
         PIN_V2("pinv2"),
         PASSWORD("pwd")
+    }
+
+    fun cleanPublicKey(key: String): String {
+        return key.replace("=", "")
     }
 }

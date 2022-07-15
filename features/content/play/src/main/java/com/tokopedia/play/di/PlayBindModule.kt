@@ -2,8 +2,6 @@ package com.tokopedia.play.di
 
 import com.tokopedia.play.analytic.campaign.PlayCampaignAnalytic
 import com.tokopedia.play.analytic.campaign.PlayCampaignAnalyticImpl
-import com.tokopedia.play.analytic.interactive.PlayInteractiveAnalytic
-import com.tokopedia.play.analytic.interactive.PlayInteractiveAnalyticImpl
 import com.tokopedia.play.analytic.like.PlayLikeAnalytic
 import com.tokopedia.play.analytic.like.PlayLikeAnalyticImpl
 import com.tokopedia.play.analytic.partner.PlayPartnerAnalytic
@@ -16,6 +14,8 @@ import com.tokopedia.play.analytic.tagitem.PlayTagItemsAnalytic
 import com.tokopedia.play.analytic.tagitem.PlayTagItemsAnalyticImpl
 import com.tokopedia.play.analytic.upcoming.PlayUpcomingAnalytic
 import com.tokopedia.play.analytic.upcoming.PlayUpcomingAnalyticImpl
+import com.tokopedia.play.util.logger.PlayLog
+import com.tokopedia.play.util.logger.PlayLogImpl
 import com.tokopedia.play.util.timer.PlayTimerFactory
 import com.tokopedia.play.util.timer.TimerFactory
 import dagger.Binds
@@ -33,10 +33,6 @@ abstract class PlayBindModule {
     @Binds
     @PlayScope
     abstract fun bindPartnerAnalytic(analytic: PlayPartnerAnalyticImpl): PlayPartnerAnalytic
-
-    @Binds
-    @PlayScope
-    abstract fun bindInteractiveAnalytic(analytic: PlayInteractiveAnalyticImpl): PlayInteractiveAnalytic
 
     @Binds
     @PlayScope
@@ -68,4 +64,8 @@ abstract class PlayBindModule {
     @Binds
     @PlayScope
     abstract fun bindTimerFactory(timerFactory: PlayTimerFactory): TimerFactory
+
+    @Binds
+    @PlayScope
+    abstract fun bindPlayLog(log: PlayLogImpl): PlayLog
 }

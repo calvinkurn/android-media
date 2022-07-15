@@ -57,6 +57,8 @@ data class SearchProductModel(
 
     fun getTopAdsImageViewModelList(): List<TopAdsImageViewModel> = topAdsImageViewModelList
 
+    fun getProductListType(): String = searchProduct.header.meta.productListType
+
     data class SearchProduct (
             @SerializedName("header")
             @Expose
@@ -103,6 +105,15 @@ data class SearchProductModel(
             @SerializedName("componentId")
             @Expose
             val componentId: String = "",
+
+            @SerializedName("meta")
+            @Expose
+            val meta: SearchProductHeaderMeta = SearchProductHeaderMeta()
+    )
+
+    data class SearchProductHeaderMeta(
+        @SerializedName("productListType")
+        val productListType: String = "",
     )
 
     data class SearchProductData(
@@ -162,6 +173,7 @@ data class SearchProductModel(
             @Expose
             val query: String = "",
 
+            @SuppressLint("Invalid Data Type")
             @SerializedName("typeId")
             @Expose
             val typeId: Int = 0,
@@ -344,6 +356,14 @@ data class SearchProductModel(
             @SerializedName("imageUrl")
             @Expose
             val imageUrl: String = "",
+
+            @SerializedName("componentId")
+            @Expose
+            val componentId: String = "",
+
+            @SerializedName("trackingOption")
+            @Expose
+            val trackingOption: Int = 0,
     )
 
     data class Product(
@@ -384,6 +404,7 @@ data class SearchProductModel(
             @Expose
             val price: String = "",
 
+            @SuppressLint("Invalid Data Type")
             @SerializedName("priceInt")
             @Expose
             val priceInt: Int = 0,
@@ -396,6 +417,7 @@ data class SearchProductModel(
             @Expose
             val categoryBreadcrumb: String = "",
 
+            @SuppressLint("Invalid Data Type")
             @SerializedName("categoryId")
             @Expose
             val categoryId: Int = 0,
@@ -615,9 +637,21 @@ data class SearchProductModel(
             @Expose
             val isShowTopAds: Boolean = false,
 
+            @SerializedName("component_id")
+            @Expose
+            val componentId: String = "",
+
+            @SerializedName("tracking_option")
+            @Expose
+            val trackingOption: String = "0",
+
             @SerializedName("list")
             @Expose
-            val globalNavItems: List<GlobalNavItem> = ArrayList()
+            val globalNavItems: List<GlobalNavItem> = ArrayList(),
+
+            @SerializedName("info")
+            @Expose
+            val info: String = "",
     )
 
     data class GlobalNavItem(
@@ -659,7 +693,11 @@ data class SearchProductModel(
 
             @SerializedName("logo_url")
             @Expose
-            val logoUrl: String = ""
+            val logoUrl: String = "",
+
+            @SerializedName("component_id")
+            @Expose
+            val componentId: String = "",
     )
 
     data class SearchInspirationCarousel(
@@ -699,6 +737,10 @@ data class SearchProductModel(
             @Expose
             val title: String = "",
 
+            @SerializedName("subtitle")
+            @Expose
+            val subtitle: String = "",
+
             @SerializedName("url")
             @Expose
             val url: String = "",
@@ -734,6 +776,10 @@ data class SearchProductModel(
             @SerializedName("product")
             @Expose
             val inspirationCarouselProducts: List<InspirationCarouselProduct> = listOf(),
+
+            @SerializedName("card_button")
+            @Expose
+            val cardButton: InspirationCarouselCardButton = InspirationCarouselCardButton(),
     )
 
     data class InspirationCarouselProduct (
@@ -856,6 +902,16 @@ data class SearchProductModel(
         @SerializedName("image_url")
         @Expose
         val imageUrl: String = ""
+    )
+
+    data class InspirationCarouselCardButton(
+        @SerializedName("title")
+        @Expose
+        val title: String = "",
+
+        @SerializedName("applink")
+        @Expose
+        val applink: String = "",
     )
 
     data class SearchInspirationWidget(

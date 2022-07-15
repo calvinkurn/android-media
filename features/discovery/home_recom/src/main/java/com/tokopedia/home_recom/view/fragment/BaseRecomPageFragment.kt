@@ -35,6 +35,7 @@ import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -91,6 +92,8 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
     protected abstract fun setMiniCartWidgetListener(): MiniCartWidgetListener
 
     protected abstract fun setMiniCartPageName(): MiniCartAnalytics.Page
+
+    protected abstract fun setMiniCartSource(): MiniCartSource
 
     companion object {
         private const val ERROR_COBA_LAGI = "Coba Lagi"
@@ -269,6 +272,7 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
             if (miniCartSimplifiedData.miniCartItems.isEmpty()) {
                 it.gone()
             } else {
+                initMiniCartWidget()
                 it.updateData(miniCartSimplifiedData)
                 it.show()
             }
@@ -389,7 +393,8 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
                     fragment = setImplementingFragment(),
                     listener = setMiniCartWidgetListener(),
                     autoInitializeData = false,
-                    pageName = setMiniCartPageName()
+                    pageName = setMiniCartPageName(),
+                    source = setMiniCartSource()
             )
         }
     }

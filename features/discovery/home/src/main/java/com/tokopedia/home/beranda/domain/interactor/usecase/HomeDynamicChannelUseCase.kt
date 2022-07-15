@@ -20,6 +20,7 @@ import com.tokopedia.home.beranda.domain.model.HomeFlag
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.home.beranda.domain.model.salam_widget.SalamWidget
+import com.tokopedia.home.beranda.helper.MissionWidgetHelper
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
@@ -29,14 +30,16 @@ import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.usecase.featuredshop.DisplayHeadlineAdsEntity
 import com.tokopedia.home_component.usecase.featuredshop.mappingTopAdsHeaderToChannelGrid
+import com.tokopedia.home_component.usecase.missionwidget.GetMissionWidget
+import com.tokopedia.home_component.usecase.missionwidget.HomeMissionWidgetData
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
+import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.ui.PlayWidgetState
-import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
@@ -75,7 +78,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
         private val homeSalamWidgetRepository: HomeSalamWidgetRepository,
         private val homeRecommendationFeedTabRepository: HomeRecommendationFeedTabRepository,
         private val homeChooseAddressRepository: HomeChooseAddressRepository,
-        private val userSessionInterface: UserSessionInterface
+        private val userSessionInterface: UserSessionInterface,
+        private val homeMissionWidgetRepository: HomeMissionWidgetRepository
 ) {
 
     private var CHANNEL_LIMIT_FOR_PAGINATION = 1
@@ -210,6 +214,31 @@ class HomeDynamicChannelUseCase @Inject constructor(
                             isErrorLoad = false
                         )
                     }
+
+                    dynamicChannelPlainResponse.getWidgetDataIfExistHandleError<
+                            MissionWidgetListDataModel,
+                            HomeMissionWidgetData.HomeMissionWidget>(
+                        widgetRepository = homeMissionWidgetRepository,
+                        bundleParam = {
+                            Bundle().apply {
+                                putString(
+                                    GetMissionWidget.BANNER_LOCATION_PARAM,
+                                    homeChooseAddressRepository.getRemoteData()?.convertToLocationParams()
+                                )
+                            }
+                        },
+                        handleOnFailed = { visitableFound ->
+                            visitableFound.copy(status = MissionWidgetListDataModel.STATUS_ERROR)
+                        },
+                        mapToWidgetData = { visitableFound, data, _ ->
+                            val resultList =
+                                MissionWidgetHelper.convertMissionWidgetDataList(data.getHomeMissionWidget.missions)
+                            visitableFound.copy(
+                                missionWidgetList = resultList,
+                                status = MissionWidgetListDataModel.STATUS_SUCCESS
+                            )
+                        }
+                    )
 
                     dynamicChannelPlainResponse.getWidgetDataIfExist<
                             FeaturedShopDataModel,
@@ -437,7 +466,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                 val recomWidget = recomData.first().copy(
                         recommendationFilterChips = recomFilterList
                 )
-                val dataModel = bestSellerMapper.mappingRecommendationWidget(recomWidget)
+                val dataModel = bestSellerMapper.mappingRecommendationWidget(recomWidget, cardInteraction = true)
 
                 homeDataModel.updateWidgetModel(
                         visitable = dataModel.copy(
@@ -529,6 +558,58 @@ class HomeDynamicChannelUseCase @Inject constructor(
                 ) {}
             }
             HomeServerLogger.warning_home_repository_error(e, T::class.java.simpleName, K::class.java.simpleName)
+        }
+        return this
+    }
+
+    private suspend inline fun <reified T: Visitable<*>, reified K> HomeDynamicChannelModel.getWidgetDataIfExistHandleError(
+            bundleParam: (T) -> Bundle = { Bundle() },
+            widgetRepository: HomeRepository<K>,
+            predicate: (T?) -> Boolean = {true},
+            deleteWidgetWhen:(K?) -> Boolean = {false},
+            onWidgetExist: (Int) -> Unit = {},
+            mapToWidgetData: (T, K, Int) -> T,
+            handleOnFailed: (T) -> T
+    ): HomeDynamicChannelModel {
+        findWidgetList<T>(this, predicate) { indexedValueList ->
+            onWidgetExist.invoke(indexedValueList.size)
+            indexedValueList.forEach {
+                val visitableFound = it.value
+                val visitablePosition = it.index
+                try {
+                    val data = widgetRepository.getRemoteData(bundleParam.invoke(visitableFound))
+                    if (!deleteWidgetWhen.invoke(data)) {
+                        this.updateWidgetModel(
+                            visitable = mapToWidgetData.invoke(
+                                visitableFound,
+                                data,
+                                visitablePosition
+                            ),
+                            visitableToChange = visitableFound,
+                            position = visitablePosition
+                        ) {
+                            //no-op
+                        }
+                    } else {
+                        this.deleteWidgetModel(
+                            visitable = visitableFound,
+                            position = visitablePosition
+                        ) {
+                            //no-op
+                        }
+                    }
+                } catch (e: Exception) {
+                    this.updateWidgetModel(
+                        visitable = handleOnFailed.invoke(
+                            visitableFound
+                        ),
+                        visitableToChange = visitableFound,
+                        position = visitablePosition
+                    ) {
+                        //no-op
+                    }
+                }
+            }
         }
         return this
     }
@@ -639,7 +720,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
              */
             try {
                 launch {
-                    val homeFlagResponse = homeFlagRepository.getRemoteData()
+                    val homeFlagResponse = homeFlagRepository.getCachedData()
                     homeFlagResponse.homeFlag.let {
                         homeData.homeFlag = homeFlagResponse.homeFlag
                     }

@@ -62,7 +62,7 @@ public class KolSendCommentMapper
     }
 
     private SendKolCommentDomain convertToDomain(SendCommentKolData data) {
-        return new SendKolCommentDomain(data.getId() == null ? "0" : data.getId().toString(),
+        return new SendKolCommentDomain(data.getId() == null ? "0" : data.getId(),
                 data.getComment() == null ? "" : data.getComment(),
                 TimeConverter.generateTime(context, data.getCreateTime() == null ? "" : data
                         .getCreateTime()),
@@ -72,7 +72,7 @@ public class KolSendCommentMapper
 
 
     private KolCommentUserDomain createDomainUser(SendCommentKolUser user) {
-        return new KolCommentUserDomain(user.getId() == null ? 0 : user.getId(),
+        return new KolCommentUserDomain(user.getId() == null ? "0" : user.getId(),
                 user.getIskol() == null ? false : user.getIskol(),
                 user.getName() == null ? "" : user.getName(),
                 user.getPhoto() == null ? "" : user.getPhoto());

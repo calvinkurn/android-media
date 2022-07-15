@@ -1,6 +1,5 @@
 package com.tokopedia.profilecompletion.settingprofile.data
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -9,22 +8,22 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class ProfileCompletionData(
-    @Expose @SerializedName("isActive") var isActive: Boolean = false,
-    @Expose @SerializedName("fullName") var fullName: String = "",
-    @Expose @SerializedName("birthDate") var birthDate: String = "",
-    @Expose @SerializedName("birthDay") var birthDay: String = "",
-    @Expose @SerializedName("birthMonth") var birthMonth: String = "",
-    @Expose @SerializedName("birthYear") var birthYear: String = "",
-    @Expose @SerializedName("gender") var gender: Int = 0,
-    @Expose @SerializedName("email") var email: String = "",
-    @Expose @SerializedName("msisdn") var msisdn: String = "",
-    @Expose @SerializedName("isMsisdnVerified") var isMsisdnVerified: Boolean = false,
-    @Expose @SerializedName("isCreatedPassword") var isCreatedPassword: Boolean = false,
-    @Expose @SerializedName("isBiodataDone") var isBiodataDone: Boolean = false,
-    @Expose @SerializedName("isEmailDone") var isEmailDone: Boolean = false,
-    @Expose @SerializedName("isPasswordDone") var isPasswordDone: Boolean = false,
-    @Expose @SerializedName("isMsisdnDone") var isMsisdnDone: Boolean = false,
-    @Expose @SerializedName("completionDone") var completionDone: Boolean = false,
-    @Expose @SerializedName("completionScore") var completionScore: Int = 0,
+    @SerializedName("isActive") var isActive: Boolean = false,
+    @SerializedName("fullName") var fullName: String = "",
+    @SerializedName("birthDate") var birthDate: String = "",
+    @SerializedName("birthDay") var birthDay: String = "",
+    @SerializedName("birthMonth") var birthMonth: String = "",
+    @SerializedName("birthYear") var birthYear: String = "",
+    @SerializedName("gender") var gender: Int = 0,
+    @SerializedName("email") var email: String = "",
+    @SerializedName("msisdn") var msisdn: String = "",
+    @SerializedName("isMsisdnVerified") var isMsisdnVerified: Boolean = false,
+    @SerializedName("isCreatedPassword") var isCreatedPassword: Boolean = false,
+    @SerializedName("isBiodataDone") var isBiodataDone: Boolean = false,
+    @SerializedName("isEmailDone") var isEmailDone: Boolean = false,
+    @SerializedName("isPasswordDone") var isPasswordDone: Boolean = false,
+    @SerializedName("isMsisdnDone") var isMsisdnDone: Boolean = false,
+    @SerializedName("completionDone") var completionDone: Boolean = false,
+    @SerializedName("completionScore") var completionScore: Int = 0,
     var profilePicture: String = ""
 )

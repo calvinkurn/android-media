@@ -10,7 +10,7 @@ import android.os.Parcelable
 data class ClashingVoucherOrderUiModel(
         var code: String = "",
         var uniqueId: String = "",
-        var cartId: Int = 0,
+        var cartId: String = "",
         var promoName: String = "",
         var potentialBenefit: Int = 0,
         var shopName: String = ""
@@ -18,14 +18,14 @@ data class ClashingVoucherOrderUiModel(
     constructor(parcel: Parcel) : this(
             parcel.readString() ?: "",
             parcel.readString() ?: "",
-            parcel.readInt(),
+            parcel.readString() ?: "",
             parcel.readString() ?: "",
             parcel.readInt())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(code)
         parcel.writeString(uniqueId)
-        parcel.writeInt(cartId)
+        parcel.writeString(cartId)
         parcel.writeString(promoName)
         parcel.writeInt(potentialBenefit)
     }

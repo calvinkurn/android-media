@@ -1,5 +1,6 @@
 package com.tokopedia.shop_showcase.shop_showcase_product_add.data.model
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -42,6 +43,7 @@ data class Product(
         @SerializedName("minimum_order") val productMinimumOrder : Int = 0,
         @Expose
         @SerializedName("stats") val productStatistic: Statistic = Statistic(),
+        @SuppressLint("Invalid Data Type")
         @Expose
         @SerializedName("price") val productPrice : Price = Price(),
         @Expose
@@ -61,7 +63,7 @@ data class Links (
 
 data class Price (
         @Expose
-        @SerializedName("currency_id") val currencyId : Int = 0,
+        @SerializedName("currency_id") val currencyId : String = "0",
         @Expose
         @SerializedName("currency_text") val currencyText : String = "",
         @Expose

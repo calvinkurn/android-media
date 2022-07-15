@@ -318,6 +318,8 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
         subTitle
         text
         appLink
+        appLinkProductList
+        webLinkProductList
         totalProducts
         products {
           id

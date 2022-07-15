@@ -51,9 +51,11 @@ import com.tokopedia.play.view.viewmodel.PlayBottomSheetViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
+import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.result.ResultState
-import com.tokopedia.play_common.model.ui.PlayLeaderboardWrapperUiModel
+import com.tokopedia.play_common.model.ui.LeadeboardType
+import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
 import com.tokopedia.play_common.ui.leaderboard.PlayInteractiveLeaderboardViewComponent
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.viewcomponent.viewComponent
@@ -90,7 +92,7 @@ class PlayBottomSheetFragment @Inject constructor(
     private val leaderboardSheetView by viewComponent { PlayInteractiveLeaderboardViewComponent(it, this) }
     private val couponSheetView by viewComponent { ShopCouponSheetViewComponent(it, this) }
 
-    private val offset16 by lazy { resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4) }
+    private val offset16 by lazy { context?.resources?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4) ?: 0 }
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayBottomSheetViewModel
@@ -239,6 +241,19 @@ class PlayBottomSheetFragment @Inject constructor(
 
     override fun onRefreshButtonClicked(view: PlayInteractiveLeaderboardViewComponent) {
         playViewModel.submitAction(RefreshLeaderboard)
+        analytic.clickRefreshLeaderBoard(interactiveId = playViewModel.interactiveData.id, shopId = playViewModel.partnerId.toString())
+    }
+
+    override fun onRefreshButtonImpressed(view: PlayInteractiveLeaderboardViewComponent) {
+        analytic.impressRefreshLeaderBoard(shopId = playViewModel.partnerId.toString(), interactiveId = playViewModel.interactiveData.id)
+    }
+
+    override fun onLeaderBoardImpressed(
+        view: PlayInteractiveLeaderboardViewComponent,
+        leaderboard: PlayLeaderboardUiModel
+    ) {
+        if (leaderboard.leaderBoardType != LeadeboardType.Quiz) return
+        analytic.impressLeaderBoard(shopId = playViewModel.partnerId.toString(), interactiveId = leaderboard.id)
     }
 
     /**
@@ -466,14 +481,15 @@ class PlayBottomSheetFragment @Inject constructor(
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             playViewModel.uiState.withCache().collectLatest { (prevState, state) ->
-                when(state.winnerBadge.leaderboards) {
-                    is PlayLeaderboardWrapperUiModel.Success ->
-                        leaderboardSheetView.setData(state.winnerBadge.leaderboards.data.leaderboardWinners)
-                    PlayLeaderboardWrapperUiModel.Error ->
+                when(state.winnerBadge.leaderboards.state) {
+                    ResultState.Success ->
+                        leaderboardSheetView.setData(
+                            state.winnerBadge.leaderboards.data.leaderboardWinners
+                        )
+                    is ResultState.Fail ->
                         leaderboardSheetView.setError()
-                    PlayLeaderboardWrapperUiModel.Loading ->
+                    ResultState.Loading ->
                         leaderboardSheetView.setLoading()
-                    PlayLeaderboardWrapperUiModel.Unknown -> {}
                 }
 
                 if (state.status.channelStatus.statusType.isFreeze ||

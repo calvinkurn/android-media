@@ -27,7 +27,7 @@ open class UserPostBaseAdapter(
     val userProfileTracker: UserProfileTracker?,
     val profileUserId: String,
     val userId: String,
-    val reminderCallback: ReminderCallback
+    val playWidgetCallback: PlayWidgetCallback,
 ) : BaseAdapter<PlayPostContentItem>(callback), PlayWidgetCardLargeChannelView.Listener {
 
     var activityId = ""
@@ -107,7 +107,7 @@ open class UserPostBaseAdapter(
         isActive: Boolean
     ) {
         val pos = getItemPosition(channelId)
-        reminderCallback.updatePostReminderStatus(channelId, isActive, pos)
+        playWidgetCallback.updatePostReminderStatus(channelId, isActive, pos)
         items[pos].configurations.reminder.isSet = isActive
     }
 
@@ -130,6 +130,32 @@ open class UserPostBaseAdapter(
         }
     }
 
+    fun updatePlayWidgetLatestData(
+        channelId: String,
+        totalView: String?,
+        isReminderSet: Boolean?,
+    ) {
+        val selectedData = items
+            .filterIsInstance<PlayPostContentItem>()
+            .firstOrNull { it.id == channelId } ?: return
+
+        val currTotalView = selectedData.stats.view.formatted
+        val currIsReminderSet = selectedData.configurations.reminder.isSet
+
+        if(totalView != null && totalView != currTotalView) {
+            selectedData.stats.view.formatted = totalView
+            selectedData.stats.view.value = totalView
+        }
+        else if(isReminderSet != null && isReminderSet != currIsReminderSet) {
+            selectedData.configurations.reminder.isSet = isReminderSet
+        }
+        else return
+
+        val position = items.indexOf(selectedData)
+
+        notifyItemChanged(position)
+    }
+
     companion object {
         const val COMING_SOON = "COMING_SOON"
         const val UPCOMING = "UPCOMING"
@@ -139,7 +165,7 @@ open class UserPostBaseAdapter(
     }
 
     override fun onChannelClicked(view: View, item: PlayWidgetChannelUiModel) {
-        RouteManager.route(view.context, item.appLink)
+        playWidgetCallback.onPlayWidgetLargeClick(item.appLink)
     }
 
     override fun onToggleReminderChannelClicked(
@@ -152,16 +178,8 @@ open class UserPostBaseAdapter(
         )
     }
 
-    override fun onLabelPromoClicked(view: View, item: PlayWidgetChannelUiModel) {
-       //add tracker later
+    interface PlayWidgetCallback {
+        fun updatePostReminderStatus(channelId: String, isActive: Boolean, pos: Int)
+        fun onPlayWidgetLargeClick(appLink: String)
     }
-
-    override fun onLabelPromoImpressed(view: View, item: PlayWidgetChannelUiModel) {
-        //add tracker later
-    }
-
-}
-
-interface ReminderCallback{
-    fun updatePostReminderStatus(channelId: String, isActive: Boolean, pos: Int)
 }

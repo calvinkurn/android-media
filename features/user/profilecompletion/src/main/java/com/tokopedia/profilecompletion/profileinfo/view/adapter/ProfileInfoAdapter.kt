@@ -9,8 +9,8 @@ class ProfileInfoAdapter(
 ) : BaseListAdapter<Visitable<*>, ProfileInfoListTypeFactory>(profileInfoListTypeFactory) {
 
     fun setProfileInfoItem(profileInfoItemUiList: List<BaseProfileInfoUiModel>) {
-	visitables?.clear()
-	visitables.addAll(profileInfoItemUiList)
-	notifyDataSetChanged()
+        visitables?.clear()
+        visitables.addAll(profileInfoItemUiList)
+        notifyDataSetChanged()
     }
 }

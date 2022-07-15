@@ -10,6 +10,7 @@ object ApplinkConstInternalMechant {
     // Product Bundle Query Params
     const val QUERY_PARAM_BUNDLE_ID = "bundleId"
     const val QUERY_PARAM_PAGE_SOURCE = "source"
+    const val QUERY_PARAM_WAREHOUSE_ID = "warehouseId"
     const val SOURCE_PDP = "pdp"
     const val SOURCE_SHOP_PAGE = "shop-page"
 

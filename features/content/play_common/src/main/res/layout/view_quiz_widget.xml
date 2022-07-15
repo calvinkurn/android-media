@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+    <com.tokopedia.play_common.view.game.GameHeaderView
+        android:id="@+id/quiz_header"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0"
+        app:layout_constraintWidth_percent="0.6"
+        tools:layout_constraintWidth_percent="0.6" />
+
+    <com.tokopedia.play_common.view.RoundedLinearLayout
+        android:id="@+id/ll_quiz_content"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/Unify_Background"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="@+id/quiz_header"
+        app:layout_constraintStart_toStartOf="@+id/quiz_header"
+        app:layout_constraintTop_toBottomOf="@+id/quiz_header"
+        app:layout_constraintWidth_percent="0.6"
+        app:rll_bottomLeftRadius="@dimen/play_dp_12"
+        app:rll_bottomRightRadius="@dimen/play_dp_12">
+
+        <include
+            android:id="@+id/layout_timer"
+            layout="@layout/view_middle_timer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/spacing_lvl2"
+            app:timer_unify_single_type="minute_digit"
+            app:timer_unify_single_variant="main"
+            tools:timer_unify_single_remainingMinutes="10" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_quiz_question"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/spacing_lvl4"
+            android:visibility="visible"
+            tools:itemCount="3"
+            tools:listitem="@layout/item_quiz_option" />
+
+    </com.tokopedia.play_common.view.RoundedLinearLayout>
+
+    <include
+        android:id="@+id/view_quiz_reward"
+        layout="@layout/view_quiz_reward"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/play_dp_12"
+        android:layout_marginTop="@dimen/play_dp_12"
+        android:layout_marginEnd="@dimen/play_dp_12"
+        android:visibility="gone"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ll_quiz_content"
+        tools:visibility="visible" />
+
+</merge>

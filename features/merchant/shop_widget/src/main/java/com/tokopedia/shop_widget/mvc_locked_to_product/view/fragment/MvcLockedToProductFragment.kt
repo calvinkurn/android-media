@@ -21,11 +21,16 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.simplified.MiniCartSimplifiedWidget
 import com.tokopedia.minicart.common.simplified.MiniCartSimplifiedWidgetListener
 import com.tokopedia.network.utils.ErrorHandler
@@ -80,6 +85,8 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
         private const val GRID_SPAN_COUNT = 2
         private const val START_PAGE = 1
         private const val PER_PAGE = 10
+        private const val SEGMENT_SHOP_ID_INDEX = 4
+        private const val SEGMENT_PROMO_ID_INDEX = 5
         private const val PAGE_SOURCE_KEY = "page_source"
         private const val REQUEST_CODE_USER_LOGIN = 101
         private const val REQUEST_CODE_REDIRECT_TO_CART_FROM_MINI_CART = 102
@@ -130,14 +137,14 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
 
     private fun getIntentData() {
         activity?.intent?.data?.let {
-            val shopIdSegmentData = it.pathSegments.getOrNull(4).orEmpty()
+            val shopIdSegmentData = it.pathSegments.getOrNull(SEGMENT_SHOP_ID_INDEX).orEmpty()
             if (shopIdSegmentData.toIntOrNull() != null) {
                 shopId = shopIdSegmentData
             }
             previousPage = it.getQueryParameter(PAGE_SOURCE_KEY)?.takeIf { queryParamValue ->
                 queryParamValue.isNotEmpty()
             } ?: previousPage
-            promoId = it.pathSegments.getOrNull(5).orEmpty()
+            promoId = it.pathSegments.getOrNull(SEGMENT_PROMO_ID_INDEX).orEmpty()
         }
     }
 
@@ -338,7 +345,8 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
                 promoCode = voucherUiModel?.baseCode.orEmpty(),
                 businessUnit = MvcLockedToProductTrackingConstant.Value.PHYSICAL_GOODS,
                 currentSite = MvcLockedToProductTrackingConstant.Value.TOKOPEDIA_MARKETPLACE,
-                pageSource = MiniCartAnalytics.Page.MVC_PAGE
+                pageSource = MiniCartAnalytics.Page.MVC_PAGE,
+                source = MiniCartSource.MVC
             )
             updateMiniCartWidget()
         }

@@ -21,11 +21,9 @@
 
     <style name="PlayPlaceholder">
         <item name="android:background">@drawable/bg_play_placeholder</item>
-        <item name="android:elevation">@dimen/play_placeholder_elevation</item>
     </style>
 
     <style name="PlayCirclePlaceholder">
         <item name="android:background">@drawable/bg_play_circle_placeholder</item>
-        <item name="android:elevation">@dimen/play_placeholder_elevation</item>
     </style>
 </resources>

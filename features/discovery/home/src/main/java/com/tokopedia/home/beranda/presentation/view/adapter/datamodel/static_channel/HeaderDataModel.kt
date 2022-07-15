@@ -1,12 +1,9 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel
 
-import android.os.Bundle
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData
 import com.tokopedia.home.beranda.data.model.TokopointsDrawer
-import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
-import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
 
 /**
@@ -24,57 +21,7 @@ data class HeaderDataModel(
       val isTokoPointDataError: Boolean = false,
       var isUserLogin: Boolean = false,
       var homeBalanceModel: HomeBalanceModel = HomeBalanceModel()
-) : HomeVisitable {
-
-    fun setCache(cache: Boolean) {
-        isCache = cache
-    }
-
-    override fun type(typeFactory: HomeTypeFactory): Int {
-        return typeFactory.type(this)
-    }
-
-
-    override fun setTrackingData(trackingData: Map<String, Any>) {
-
-    }
-
-    override fun getTrackingData(): Map<String, Any>? {
-        return null
-    }
-
-    override fun getTrackingDataForCombination(): List<Any>? {
-        return null
-    }
-
-    override fun setTrackingDataForCombination(`object`: List<Any>) {
-
-    }
-
-    override fun isTrackingCombined(): Boolean {
-        return false
-    }
-
-    override fun setTrackingCombined(isCombined: Boolean) {
-
-    }
-
-    override fun isCache(): Boolean {
-        return false
-    }
-
-    override fun visitableId(): String {
-        return "ovoSection"
-    }
-
-    override fun equalsWith(b: Any?): Boolean {
-        return equals(b)
-    }
-
-    override fun getChangePayloadFrom(b: Any?): Bundle? {
-        return null
-    }
-
+) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -93,9 +40,5 @@ data class HeaderDataModel(
         if (homeBalanceModel != other.homeBalanceModel) return false
 
         return true
-    }
-
-    companion object {
-        private const val HASH_CODE = 31
     }
 }

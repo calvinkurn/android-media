@@ -6,17 +6,17 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_notif_sample"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"/>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
+        app:typographyType="body_2"
         android:id="@+id/txtMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:lineSpacingExtra="@dimen/sp_6"
         android:layout_margin="16dp"
         android:text="@string/notif_bottomsheet_info"
         android:textColor="@color/Unify_N700_68"

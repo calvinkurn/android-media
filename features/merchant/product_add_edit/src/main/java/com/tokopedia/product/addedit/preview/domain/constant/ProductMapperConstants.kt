@@ -15,7 +15,7 @@ object ProductMapperConstants {
     const val UNIT_WEEK_STRING = "WEEK"
     const val UNIT_MONTH_STRING = "MONTH"
     const val UNIT_GRAM_STRING = "GR"
-    const val UNIT_KILOGRAM_SRING = "KG"
+    const val UNIT_KILOGRAM_STRING = "KG"
     const val YOUTUBE_URL_DELIMITER = "/watch?v="
     const val YOUTUBE_URL_DELIMITER_SHORT = "/"
     const val YOUTUBE_URL = "youtube.com"
@@ -36,9 +36,15 @@ object ProductMapperConstants {
         }
 
     fun getTimeUnitString(timeUnit: Int) = when (timeUnit) {
-        UNIT_DAY -> UNIT_WEEK_STRING
+        UNIT_DAY -> UNIT_DAY_STRING
         UNIT_WEEK -> UNIT_WEEK_STRING
         else -> UNIT_MONTH_STRING
+    }
+
+    fun getWeightUnitString(weightUnit: Int) = when (weightUnit) {
+        UNIT_GRAM -> UNIT_GRAM_STRING
+        UNIT_KILOGRAM -> UNIT_KILOGRAM_STRING
+        else -> UNIT_GRAM_STRING
     }
 
     fun getYoutubeDelimiter(source: String) =

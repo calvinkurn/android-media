@@ -10,7 +10,6 @@ import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.view.listener.FeedPlusDetailListener
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import kotlinx.android.synthetic.main.list_feed_detail.view.*
 
 /**
@@ -49,7 +48,7 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
             }
 
             rating.text = String.format("%.1f", productFeedDetailViewModelNew.rating.toDouble() / RATING_FORMAT)
-            val soldInfoText = getString(com.tokopedia.feedcomponent.R.string.feed_common_terjual) + " " + productFeedDetailViewModelNew.totalSold.productThousandFormatted()
+            val soldInfoText = getString(com.tokopedia.feedcomponent.R.string.feed_common_terjual) + " " + productFeedDetailViewModelNew.totalSold.productThousandFormatted(formatLimit = 1000, isASGCDetailPage = true)
 
             soldInfo.text = soldInfoText
             star.showWithCondition(productFeedDetailViewModelNew.rating != 0)

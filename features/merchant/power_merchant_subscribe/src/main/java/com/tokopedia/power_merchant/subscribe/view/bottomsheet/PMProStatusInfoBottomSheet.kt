@@ -32,7 +32,9 @@ class PMProStatusInfoBottomSheet : BaseBottomSheet<BottomSheetPmProStatusInfoBin
 
     override fun getChildResLayout(): Int = R.layout.bottom_sheet_pm_pro_status_info
 
-    override fun setupView() = binding?.run {}
+    override fun setupView() = binding?.run {
+        setTitle(getString(R.string.pm_pro_checking_status_on))
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -52,7 +54,7 @@ class PMProStatusInfoBottomSheet : BaseBottomSheet<BottomSheetPmProStatusInfoBin
                 it.pmActiveShopScoreThreshold.toString()
             ).parseAsHtml()
             tvPmProNextUpdateInfo.text =
-                root.context.getString(R.string.pm_status_info_next_update, it.autoExtendDateFmt)
+                root.context.getString(R.string.pm_status_info_next_update, it.nextMonthlyRefreshDate)
                     .parseAsHtml()
             tvPmProActiveInfo.text = root.context.getString(
                 R.string.pm_pro_status_info_description,

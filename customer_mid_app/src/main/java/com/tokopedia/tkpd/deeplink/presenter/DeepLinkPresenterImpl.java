@@ -202,10 +202,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openSimilarProduct(linkSegment, uriData, defaultBundle);
                     screenName = AppScreen.SCREEN_SIMILAR_PRODUCT;
                     break;
-                case DeepLinkChecker.OTHER:
-                    prepareOpenWebView(uriData);
-                    screenName = AppScreen.SCREEN_DEEP_LINK;
-                    break;
                 case DeepLinkChecker.INVOICE:
                     openInvoice(uriData);
                     screenName = AppScreen.SCREEN_DOWNLOAD_INVOICE;
@@ -255,10 +251,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openOrderList(uriData);
                     screenName = "";
                     break;
-                case DeepLinkChecker.DEALS:
-                    prepareOpenWebView(uriData);
-                    screenName = AppScreen.DEALS_PAGE;
-                    break;
                 case DeepLinkChecker.TRAVEL_HOMEPAGE:
                     openTravelHomepage(linkSegment, uriData, defaultBundle);
                     screenName = "";
@@ -279,6 +271,12 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openPowerMechant(uriData);
                     screenName = "";
                     break;
+                case DeepLinkChecker.TOKOFOOD:
+                    openTokoFood(uriData);
+                    screenName = "";
+                    break;
+                case DeepLinkChecker.DEALS:
+                case DeepLinkChecker.OTHER:
                 default:
                     prepareOpenWebView(uriData);
                     screenName = uriData.getPath();
@@ -464,6 +462,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void openPowerMechant(Uri uriData) {
         Intent intent = RouteManager.getIntent(context, ApplinkConst.POWER_MERCHANT_SUBSCRIBE);
+        viewListener.goToPage(intent);
+    }
+
+    private void openTokoFood(Uri uriData) {
+        Intent intent = RouteManager.getIntent(context, ApplinkConst.TokoFood.HOME);
         viewListener.goToPage(intent);
     }
 

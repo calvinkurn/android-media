@@ -271,6 +271,7 @@ public class RemoteConfigKey {
     public static final String ENABLE_QUEST_WIDGET = "android_enable_quest_widget";
 
     public static final String ENABLE_WISHLIST_REVAMP_v2 = "android_revamp_wishlist_v2";
+    public static final String ENABLE_ADD_REMOVE_WISHLIST_V2 = "android_enable_add_remove_wishlist_v2";
 
     public static final String ENABLE_MPC_LIFECYCLE_OBSERVER = "android_mainapp_enable_mpc_lifecycle_observer";
     public static final String ENABLE_MPC_VIDEO_AUTOPLAY ="android_mainapp_enable_mpc_video_autoplay";
@@ -280,6 +281,7 @@ public class RemoteConfigKey {
     public static final String ANDROID_EMBRACE_CONFIG = "android_customerapp_embrace_config";
 
     public static final String ENABLE_MVC_PRODUCT = "android_enable_mvc_product";
+    public static final String ENABLE_SLASH_PRICE = "android_enable_slash_price";
 
     public static final String ENABLE_THEMATIC_WIDGET_SHOP = "android_enable_thematic_widget_shop";
 
@@ -287,5 +289,15 @@ public class RemoteConfigKey {
 
     public static final String DISCOVERY_DISABLE_SINGLE_PROD_CARD = "android_discovery_single_product_disable";
 
+    public static final String PRODUCT_CARD_ENABLE_INTERACTION = "android_product_card_enable_interaction";
+
     public static final String ENABLE_PRODUCT_CARD_VIEWSTUB = "android_mainapp_enable_product_card_viewstub";
+
+    public static final String ENABLE_OLD_BUNDLE_SELECTION_PAGE = "android_enable_old_bundle_selection_page";
+
+    public static final String ENABLE_INIT_NR_IN_ACTIVITY = "android_mainapp_init_nr_in_activity";
+
+    public static final String ENABLE_SHOP_DISCOUNT = "android_enable_shop_discount";
+
+    public static final String ENABLE_SHOP_DYNAMIC_TAB = "android_enable_shop_dynamic_tab";
 }

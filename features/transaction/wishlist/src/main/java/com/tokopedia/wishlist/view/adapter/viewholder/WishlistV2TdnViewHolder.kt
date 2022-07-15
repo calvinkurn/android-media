@@ -12,16 +12,20 @@ import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
 import com.tokopedia.wishlist.databinding.WishlistV2TdnItemBinding
 import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.wishlist.util.WishlistV2Consts
 
 class WishlistV2TdnViewHolder(private val binding: WishlistV2TdnItemBinding, private val actionListener: WishlistV2Adapter.ActionListener?) :
     RecyclerView.ViewHolder(binding.root) {
 
     private companion object {
-        private const val PADDING_TOPADS = 18
         private const val RADIUS_TOPADS = 24
     }
 
-    fun bind(item: WishlistV2TypeLayoutData, adapterPosition: Int, isShowCheckbox: Boolean) {
+    fun bind(
+        item: WishlistV2TypeLayoutData,
+        adapterPosition: Int,
+        isShowCheckbox: Boolean) {
         if (isShowCheckbox) {
             binding.root.gone()
             val params = (binding.root.layoutParams as StaggeredGridLayoutManager.LayoutParams).apply {

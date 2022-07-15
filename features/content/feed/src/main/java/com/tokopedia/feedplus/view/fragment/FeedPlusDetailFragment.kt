@@ -56,10 +56,16 @@ import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
+import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
+import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import kotlinx.android.synthetic.main.feed_detail_header.view.*
 import timber.log.Timber
 import javax.inject.Inject
@@ -546,16 +552,33 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 ""
         )
 
-        feedViewModel.addWishlist(
-                postId,
-                productId,
-                shopId,
-                0,
-                type,
-                isFollowed,
-                ::onWishListFail,
-                ::onWishListSuccess
-        )
+        context?.let {
+            if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) {
+                feedViewModel.addWishlistV2(
+                    postId,
+                    productId,
+                    shopId,
+                    0,
+                    type,
+                    isFollowed,
+                    ::onWishListFail,
+                    ::onWishListSuccessV2,
+                    it
+                )
+            } else {
+                feedViewModel.addWishlist(
+                    postId,
+                    productId,
+                    shopId,
+                    0,
+                    type,
+                    isFollowed,
+                    ::onWishListFail,
+                    ::onWishListSuccess,
+                    it
+                )
+            }
+        }
     }
 
     private fun onWishListFail(s: String) {
@@ -563,22 +586,38 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     }
 
     private fun onWishListSuccess(
+        activityId: String,
+        shopId: String,
+        type: String,
+        isFollowed: Boolean
+    ) {
+        Toaster.build(
+            requireView(),
+            getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg),
+            Toaster.LENGTH_LONG,
+            Toaster.TYPE_NORMAL,
+            getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
+            View.OnClickListener {
+                feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed, shopId)
+                RouteManager.route(context, ApplinkConst.WISHLIST)
+            }).show()
+    }
+
+    private fun onWishListSuccessV2(
             activityId: String,
             shopId: String,
             type: String,
-            isFollowed: Boolean
+            isFollowed: Boolean,
+            result: AddToWishlistV2Response.Data.WishlistAddV2
     ) {
-        Toaster.build(
-                requireView(),
-                getString(R.string.feed_added_to_wishlist),
-                Toaster.LENGTH_LONG,
-                Toaster.TYPE_NORMAL,
-                getString(R.string.feed_go_to_wishlist),
-                View.OnClickListener {
-                    feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed, shopId)
-                    RouteManager.route(context, ApplinkConst.WISHLIST)
-                }).show()
+        context?.let { context ->
+            view?.let { v ->
+                AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
+            }
+        }
+        feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed, shopId)
     }
+
      private fun onGoToLogin() {
         if (activity != null) {
             val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
@@ -813,5 +852,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         return itemList
     }
 
-
+    override fun onDestroyView() {
+        Toaster.onCTAClick = View.OnClickListener { }
+        super.onDestroyView()
+    }
 }

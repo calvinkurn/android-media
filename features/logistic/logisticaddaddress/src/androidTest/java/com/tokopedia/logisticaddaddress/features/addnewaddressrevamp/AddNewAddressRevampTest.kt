@@ -10,7 +10,9 @@ import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressTest
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.search.SearchPageActivity
 import com.tokopedia.logisticaddaddress.test.R
+import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig.Companion.FIND_BY_CONTAINS
+import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.Before
@@ -39,6 +41,7 @@ class AddNewAddressRevampTest {
         setupGraphqlMockResponse {
             addMockResponse(AUTOCOMPLETE_KEY, getRawString(context, R.raw.autocomplete_tokopedia_tower), FIND_BY_CONTAINS)
             addMockResponse(GET_DISTRICT_KEY, getRawString(context, R.raw.get_district_tokopedia_tower), FIND_BY_CONTAINS)
+            addMockResponse(ADD_ADDRESS_KEY, InstrumentationMockHelper.getRawString(context, R.raw.save_address_success), MockModelConfig.FIND_BY_CONTAINS)
         }
     }
 
@@ -102,5 +105,6 @@ class AddNewAddressRevampTest {
 
         const val AUTOCOMPLETE_KEY = "KeroMapsAutoComplete"
         const val GET_DISTRICT_KEY = "KeroPlacesGetDistrict"
+        const val ADD_ADDRESS_KEY = "kero_add_address"
     }
 }

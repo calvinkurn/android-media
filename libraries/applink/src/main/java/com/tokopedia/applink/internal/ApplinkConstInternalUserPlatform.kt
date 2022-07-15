@@ -1,7 +1,6 @@
 package com.tokopedia.applink.internal
 
 import com.tokopedia.applink.constant.DeeplinkConstant
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_IS_RETURN_HOME
 
 object ApplinkConstInternalUserPlatform {
 

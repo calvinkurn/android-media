@@ -1,14 +1,15 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/noReviewFoundView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:visibility="visible"
     android:paddingTop="@dimen/dp_20"
     android:paddingBottom="@dimen/spacing_lvl5"
-    app:layout_constraintTop_toBottomOf="@+id/rvRatingDetail">
+    android:visibility="visible"
+    app:layout_constraintTop_toBottomOf="@+id/rvRatingDetail"
+    tools:viewBindingIgnore="true">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/noReviewsYetDetail"

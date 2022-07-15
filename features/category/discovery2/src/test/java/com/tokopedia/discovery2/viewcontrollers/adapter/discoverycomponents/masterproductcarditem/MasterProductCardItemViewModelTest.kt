@@ -4,12 +4,17 @@ import android.app.Application
 import android.content.Context
 import android.content.res.Resources
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.discovery.common.utils.URLParser
+import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant.ProductTemplate.GRID
 import com.tokopedia.discovery2.Constant.ProductTemplate.LIST
 import com.tokopedia.discovery2.StockWording
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.Properties
+import com.tokopedia.discovery2.data.campaignnotifymeresponse.CampaignNotifyMeResponse
+import com.tokopedia.discovery2.datamapper.getComponent
+import com.tokopedia.discovery2.usecase.campaignusecase.CampaignNotifyUserCase
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardItemUseCase
 import com.tokopedia.discovery2.usecase.topAdsUseCase.TopAdsTrackingUseCase
 import com.tokopedia.user.session.UserSession
@@ -40,19 +45,29 @@ class MasterProductCardItemViewModelTest {
         mockk()
     }
 
+    private val campaignNotifyUserCase: CampaignNotifyUserCase by lazy {
+        mockk()
+    }
+
     @Before
     fun setup() {
         MockKAnnotations.init(this)
         Dispatchers.setMain(TestCoroutineDispatcher())
 
+        mockkStatic(::getComponent)
         mockkConstructor(UserSession::class)
+        mockkConstructor(URLParser::class)
+        every { anyConstructed<URLParser>().paramKeyValueMapDecoded } returns HashMap()
         every { application.applicationContext } returns context
+
     }
 
     @After
     fun shutDown() {
         Dispatchers.resetMain()
         unmockkConstructor(UserSession::class)
+        unmockkConstructor(URLParser::class)
+        unmockkStatic(::getComponent)
     }
 
     @Test
@@ -370,5 +385,142 @@ class MasterProductCardItemViewModelTest {
         val tempViewModel: MasterProductCardItemViewModel = spyk(MasterProductCardItemViewModel(application, componentsItem, 99))
 
         TestCase.assertEquals(tempViewModel.getTemplateType(), GRID)
+    }
+
+    fun initLoggedInCallback(){
+        viewModel.campaignNotifyUserCase = campaignNotifyUserCase
+        viewModel.productCardItemUseCase = productCardItemUseCase
+        val resource: Resources = mockk(relaxed = true)
+        every { application.resources } returns resource
+        every { application.applicationContext.resources } returns resource
+    }
+
+    /**************************** test for loggedInCallback() *******************************************/
+    @Test
+    fun `test for loggedInCallback when campaignResponse success is true`() {
+        initLoggedInCallback()
+        val list = ArrayList<DataItem>()
+        val item = DataItem(notifyMe = true)
+        list.add(item)
+        every { componentsItem.data } returns list
+        every { constructedWith<UserSession>(OfTypeMatcher<Context>(Context::class)).isLoggedIn } returns true
+        val checkCampaignNotifyMeResponse = CampaignNotifyMeResponse.CheckCampaignNotifyMeResponse(success = true)
+        val campaignNotifyMeResponse = CampaignNotifyMeResponse(checkCampaignNotifyMeResponse = checkCampaignNotifyMeResponse)
+        coEvery {
+            campaignNotifyUserCase.subscribeToCampaignNotifyMe(any())
+        } returns campaignNotifyMeResponse
+        coEvery {
+            productCardItemUseCase.notifyProductComponentUpdate(any(),any())
+        } returns true
+
+        viewModel.onAttachToViewHolder()
+        viewModel.loggedInCallback()
+
+        assert(viewModel.showNotifyToastMessage().value?.first == false)
+    }
+
+    @Test
+    fun `test for loggedInCallback when campaignResponse success is false`() {
+        initLoggedInCallback()
+        val list = ArrayList<DataItem>()
+        val item = DataItem(notifyMe = true)
+        list.add(item)
+        every { componentsItem.data } returns list
+        every { constructedWith<UserSession>(OfTypeMatcher<Context>(Context::class)).isLoggedIn } returns true
+        val checkCampaignNotifyMeResponse = CampaignNotifyMeResponse.CheckCampaignNotifyMeResponse(success = false)
+        val campaignNotifyMeResponse = CampaignNotifyMeResponse(checkCampaignNotifyMeResponse = checkCampaignNotifyMeResponse)
+        coEvery {
+            campaignNotifyUserCase.subscribeToCampaignNotifyMe(any())
+        } returns campaignNotifyMeResponse
+        coEvery {
+            productCardItemUseCase.notifyProductComponentUpdate(any(),any())
+        } returns true
+
+        viewModel.onAttachToViewHolder()
+        viewModel.loggedInCallback()
+
+        assert(viewModel.showNotifyToastMessage().value?.first == true)
+    }
+
+    @Test
+    fun `test for loggedInCallback when dataItem's notifyMe is false`() {
+        initLoggedInCallback()
+        val list = ArrayList<DataItem>()
+        val item = DataItem(notifyMe = false)
+        list.add(item)
+        every { componentsItem.data } returns list
+        every { constructedWith<UserSession>(OfTypeMatcher<Context>(Context::class)).isLoggedIn } returns true
+        val checkCampaignNotifyMeResponse = CampaignNotifyMeResponse.CheckCampaignNotifyMeResponse(success = true)
+        val campaignNotifyMeResponse = CampaignNotifyMeResponse(checkCampaignNotifyMeResponse = checkCampaignNotifyMeResponse)
+        coEvery {
+            campaignNotifyUserCase.subscribeToCampaignNotifyMe(any())
+        } returns campaignNotifyMeResponse
+        coEvery {
+            productCardItemUseCase.notifyProductComponentUpdate(any(),any())
+        } returns true
+
+        viewModel.onAttachToViewHolder()
+        viewModel.loggedInCallback()
+
+        assert(viewModel.notifyMeCurrentStatus().value == true)
+    }
+
+    @Test
+    fun `test for loggedInCallback when isLoggedIn is false`() {
+        initLoggedInCallback()
+        val list = ArrayList<DataItem>()
+        val item = DataItem(notifyMe = true)
+        list.add(item)
+        every { componentsItem.data } returns list
+        every { constructedWith<UserSession>(OfTypeMatcher<Context>(Context::class)).isLoggedIn } returns false
+
+        viewModel.onAttachToViewHolder()
+        viewModel.loggedInCallback()
+
+        assert(viewModel.getShowLoginData().value == true)
+    }
+
+    /**************************** test for getParentPositionForCarousel() *******************************************/
+    @Test
+    fun `test for getParentPositionForCarousel when ComponentNames is ProductCardSprintSaleCarouselItem`() {
+        val tempComponentsItem: ComponentsItem = spyk(ComponentsItem(position = 3))
+        every { componentsItem.name } returns ComponentNames.ProductCardSprintSaleCarouselItem.componentName
+        every { getComponent(componentsItem.id, componentsItem.pageEndPoint) } returns tempComponentsItem
+
+        viewModel.getParentPositionForCarousel()
+
+        TestCase.assertEquals(viewModel.getParentPositionForCarousel(), tempComponentsItem.position)
+    }
+
+    @Test
+    fun `test for getParentPositionForCarousel when ComponentNames is ProductCardCarouselItem`() {
+        val tempComponentsItem: ComponentsItem = spyk(ComponentsItem(position = 3))
+        every { componentsItem.name } returns ComponentNames.ProductCardCarouselItem.componentName
+        every { getComponent(componentsItem.id, componentsItem.pageEndPoint) } returns tempComponentsItem
+
+        viewModel.getParentPositionForCarousel()
+
+        TestCase.assertEquals(viewModel.getParentPositionForCarousel(), tempComponentsItem.position)
+    }
+
+    @Test
+    fun `test for getParentPositionForCarousel when getComponent is null`() {
+        every { componentsItem.name } returns ComponentNames.ProductCardCarouselItem.componentName
+        every { getComponent(componentsItem.id, componentsItem.pageEndPoint) } returns null
+
+        viewModel.getParentPositionForCarousel()
+
+        TestCase.assertEquals(viewModel.getParentPositionForCarousel(), -1)
+    }
+
+    @Test
+    fun `test for getParentPositionForCarousel when ComponentNames is ShopCardItem`() {
+        val tempComponentsItem: ComponentsItem = spyk(ComponentsItem(position = 3))
+        every { componentsItem.name } returns ComponentNames.AnchorTabsItem.componentName
+        every { getComponent(componentsItem.id, componentsItem.pageEndPoint) } returns tempComponentsItem
+
+        viewModel.getParentPositionForCarousel()
+
+        TestCase.assertEquals(viewModel.getParentPositionForCarousel(), -1)
     }
 }

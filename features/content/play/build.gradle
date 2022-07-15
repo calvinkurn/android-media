@@ -15,6 +15,16 @@ buildscript {
 }
 
 android {
+    sourceSets {
+        String sharedTestDir = 'src/sharedTest/java'
+        test {
+            java.srcDir sharedTestDir
+        }
+        androidTest {
+            java.srcDir sharedTestDir
+        }
+    }
+
     kotlinOptions {
         jvmTarget = "1.8"
     }
@@ -29,6 +39,7 @@ android {
     }
 
     buildFeatures {
+        viewBinding true
         buildConfig true
     }
 }
@@ -64,6 +75,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
+    implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor

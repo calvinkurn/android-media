@@ -11,7 +11,7 @@ data class OfficialTopAdsHeadlineDataModel(
 
     override fun visitableId(): String = this::class.java.name
 
-    override fun equalsWith(b: Any?): Boolean = b is OfficialLoadingMoreDataModel
+    override fun equalsWith(b: Any?): Boolean = b is OfficialTopAdsHeadlineDataModel
 
     override fun getChangePayloadFrom(b: Any?): Bundle? = null
 

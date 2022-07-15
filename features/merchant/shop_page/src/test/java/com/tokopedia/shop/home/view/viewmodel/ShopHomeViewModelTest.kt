@@ -50,8 +50,8 @@ import com.tokopedia.shop.home.domain.GetCampaignNotifyMeUseCase
 import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutV2UseCase
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.*
-import com.tokopedia.shop.pageheader.data.model.ShopPageGetHomeType
-import com.tokopedia.shop.pageheader.domain.interactor.GqlShopPageGetHomeType
+import com.tokopedia.shop.common.data.model.ShopPageGetHomeType
+import com.tokopedia.shop.common.domain.interactor.GqlShopPageGetHomeType
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper

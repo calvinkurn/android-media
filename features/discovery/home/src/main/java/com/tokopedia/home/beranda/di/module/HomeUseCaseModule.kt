@@ -3,8 +3,6 @@ package com.tokopedia.home.beranda.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.common_wallet.balance.data.entity.WalletBalanceResponse
 import com.tokopedia.common_wallet.pendingcashback.data.ResponsePendingCashback
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -21,7 +19,6 @@ import com.tokopedia.home.beranda.di.module.query.HomeFeedQuery
 import com.tokopedia.home.beranda.di.module.query.SuggestedReviewQuery
 import com.tokopedia.home.beranda.di.module.query.DismissSuggestedQuery
 import com.tokopedia.home.beranda.di.module.query.TokopoinstListQuery
-import com.tokopedia.home.beranda.di.module.query.WalletBalanceQuery
 import com.tokopedia.home.beranda.di.module.query.PendingCashbackQuery
 import com.tokopedia.home.beranda.di.module.query.BusinessWidgetQuery
 import com.tokopedia.home.beranda.di.module.query.BusinessUnitDataQuery
@@ -105,7 +102,8 @@ class HomeUseCaseModule {
             homeBalanceWidgetUseCase: HomeBalanceWidgetUseCase,
             homeChooseAddressRepository: HomeChooseAddressRepository,
             homeRecommendationFeedTabRepository: HomeRecommendationFeedTabRepository,
-            userSession: UserSessionInterface
+            userSession: UserSessionInterface,
+            homeMissionWidgetRepository: HomeMissionWidgetRepository
     ) = HomeDynamicChannelUseCase(
             homeDataMapper = homeDataMapper,
             homeDynamicChannelsRepository = homeDynamicChannelsRepository,
@@ -133,9 +131,9 @@ class HomeUseCaseModule {
             homeBalanceWidgetUseCase = homeBalanceWidgetUseCase,
             homeChooseAddressRepository = homeChooseAddressRepository,
             homeRecommendationFeedTabRepository = homeRecommendationFeedTabRepository,
-            userSessionInterface = userSession
+            userSessionInterface = userSession,
+            homeMissionWidgetRepository = homeMissionWidgetRepository
     )
-
 
     @Provides
     fun provideGetHomeRecommendationUseCase(
@@ -182,14 +180,6 @@ class HomeUseCaseModule {
     @Provides
     fun getKeywordSearchUseCase(graphqlRepository: GraphqlRepository): HomeKeywordSearchRepository {
         return HomeKeywordSearchRepository(com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase(graphqlRepository))
-    }
-
-    @HomeScope
-    @Provides
-    fun getCoroutineWalletBalanceUseCase(graphqlRepository: GraphqlRepository, userSession: UserSessionInterface, remoteConfig: RemoteConfig, localCacheHandler: LocalCacheHandler): GetCoroutineWalletBalanceUseCase {
-        val usecase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<WalletBalanceResponse>(graphqlRepository)
-        usecase.setGraphqlQuery(WalletBalanceQuery())
-        return GetCoroutineWalletBalanceUseCase(usecase, remoteConfig, userSession, localCacheHandler)
     }
 
     @HomeScope

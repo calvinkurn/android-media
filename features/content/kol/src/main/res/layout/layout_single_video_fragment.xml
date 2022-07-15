@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black">
+    android:background="@color/Unify_N700">
     
     <LinearLayout
         android:id="@+id/topLayout"
@@ -19,7 +19,7 @@
             app:srcCompat="@drawable/ic_close_white_24"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="16dp"
-            />
+            android:contentDescription="@string/kol_close_btn_content_desc" />
     </LinearLayout>
 
 
@@ -57,9 +57,10 @@
             app:layout_constraintTop_toTopOf="@+id/authorTitle"
             app:layout_constraintBottom_toBottomOf="@+id/authorTitle"
             tools:src="@tools:sample/avatars"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            android:contentDescription="@string/kol_badge_content_desc" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/authorTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -70,12 +71,11 @@
             android:ellipsize="end"
             android:fontFamily="sans-serif"
             android:lines="1"
-            android:textColor="@color/white"
-            android:textSize="@dimen/sp_12"
+            android:textColor="@color/Unify_N0"
+            app:typographyType="display_3"
             android:textStyle="bold"
             android:visibility="visible"
             app:layout_constraintBottom_toTopOf="@+id/authorSubtitile"
-            app:layout_constraintEnd_toStartOf="@+id/headerAction"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/authorBadge"
             app:layout_constraintTop_toTopOf="parent"
@@ -83,7 +83,7 @@
             tools:text="Febrian Putra Muhammad Ilham Jamaludin Andhika Kuma Djaffri Febby Mulia"
             tools:visibility="visible" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/authorSubtitile"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -94,12 +94,11 @@
             android:ellipsize="end"
             android:fontFamily="sans-serif"
             android:lines="1"
-            android:textColor="@color/white"
-            android:textSize="@dimen/sp_10"
+            android:textColor="@color/Unify_N0"
+            app:typographyType="small"
             android:textStyle="normal"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/headerAction"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/authorImage"
             app:layout_constraintTop_toBottomOf="@+id/authorTitle"
@@ -115,7 +114,7 @@
         android:layout_height="72dp"
         android:layout_below="@+id/headerLayout">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/caption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -123,8 +122,8 @@
             android:lineSpacingExtra="5sp"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
-            android:textColor="@color/white"
-            android:textSize="@dimen/sp_12"
+            android:textColor="@color/Unify_N0"
+            app:typographyType="display_3"
             android:textStyle="normal"
             android:maxLines="2"
             android:ellipsize="end"
@@ -180,7 +179,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:visibility="visible" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/likeText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -190,8 +189,8 @@
                 android:paddingEnd="16dp"
                 android:paddingRight="16dp"
                 android:text="@string/kol_action_like"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp_12"
+                android:textColor="@color/Unify_N0"
+                app:typographyType="display_3"
                 android:textStyle="normal"
                 android:visibility="visible"
                 tools:ignore="RtlSymmetry"
@@ -204,12 +203,12 @@
                 android:contentDescription="@string/kol_action_comment"
                 android:scaleType="fitCenter"
                 app:srcCompat="@drawable/kol_ic_comment"
-                android:tint="@color/white"
+                android:tint="@color/Unify_N0"
                 android:visibility="visible"
                 tools:ignore="RtlSymmetry"
                 tools:visibility="visible" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/commentText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -219,8 +218,8 @@
                 android:paddingEnd="16dp"
                 android:paddingRight="16dp"
                 android:text="@string/kol_action_comment"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp_12"
+                android:textColor="@color/Unify_N0"
+                app:typographyType="display_3"
                 android:textStyle="normal"
                 android:visibility="visible"
                 tools:ignore="RtlSymmetry"
@@ -240,12 +239,12 @@
                 android:layout_height="@dimen/dp_18"
                 android:contentDescription="@string/kol_action_share"
                 android:scaleType="fitCenter"
-                android:tint="@color/white"
+                android:tint="@color/Unify_N0"
                 app:srcCompat="@drawable/ic_share_grey_profile"
                 android:visibility="visible"
                 tools:visibility="visible" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/shareText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -253,8 +252,8 @@
                 android:paddingStart="4dp"
                 android:paddingLeft="4dp"
                 android:text="@string/kol_action_share"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp_12"
+                android:textColor="@color/Unify_N0"
+                app:typographyType="display_3"
                 android:textStyle="normal"
                 android:visibility="visible"
                 tools:ignore="RtlSymmetry"

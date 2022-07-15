@@ -12,6 +12,8 @@ import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -31,19 +33,26 @@ internal class ProductCardOptionsViewModelFactoryModule(
     fun provideProductCardOptionsViewModelFactory(
             addWishListUseCase: AddWishListUseCase,
             removeWishListUseCase: RemoveWishListUseCase,
+            addToWishlistV2UseCase: AddToWishlistV2UseCase,
+            deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
             topAdsWishlistUseCase: UseCase<Boolean>,
             addToCartUseCase: AddToCartUseCase,
             userSession: UserSessionInterface,
-            coroutineDispatchers: CoroutineDispatchers
+            coroutineDispatchers: CoroutineDispatchers,
+            @Named(FLAG_IS_USING_ADD_REMOVE_WISHLIST_V2)
+            isUsingWishlistV2: Boolean
     ): ViewModelProvider.Factory {
         return ProductCardOptionsViewModelFactory(
                 coroutineDispatchers,
                 productCardOptionsModel,
                 addWishListUseCase,
                 removeWishListUseCase,
+                addToWishlistV2UseCase,
+                deleteWishlistV2UseCase,
                 topAdsWishlistUseCase,
                 addToCartUseCase,
-                userSession
+                userSession,
+                isUsingWishlistV2
         )
     }
 }

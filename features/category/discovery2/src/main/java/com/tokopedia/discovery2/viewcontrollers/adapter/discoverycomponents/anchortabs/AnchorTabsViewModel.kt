@@ -3,16 +3,20 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.anc
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.discovery2.ComponentNames
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.usecase.AnchorTabsUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -40,38 +44,44 @@ class AnchorTabsViewModel(
     @Inject
     lateinit var anchorTabsUseCase: AnchorTabsUseCase
 
+    @Inject
+    lateinit var coroutineDispatchers: CoroutineDispatchers
+
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
         mapToComponents()
-        setupData()
-    }
-
-    private fun setupData() {
-        carouselList.value = components.getComponentsItem()
     }
 
     private fun mapToComponents() {
-        if (components.noOfPagesLoaded != 1) {
-            components.noOfPagesLoaded = 1
-            components.data?.let {
-                sectionPositionMap.clear()
-                val compList = DiscoveryDataMapper.discoveryDataMapper.mapAnchorListToComponentList(
-                    itemList = it,
-                    subComponentName = ComponentNames.AnchorTabsItem.componentName,
-                    parentComponentName = ComponentNames.AnchorTabs.componentName,
-                    position = position,
-                    compId = components.id,
-                    anchorMap = sectionPositionMap
-                )
-                if(selectedSectionId.isNotEmpty() && anchorTabsUseCase.selectedId.isEmpty()){
-                    anchorTabsUseCase.selectedId = selectedSectionId
+        launchCatchError(block = {
+            if (components.noOfPagesLoaded != 1) {
+                components.noOfPagesLoaded = 1
+                components.data?.let {
+                    sectionPositionMap.clear()
+                    val compList = withContext(coroutineDispatchers.default) {
+                        DiscoveryDataMapper.discoveryDataMapper.mapAnchorListToComponentList(
+                            itemList = it,
+                            subComponentName = ComponentNames.AnchorTabsItem.componentName,
+                            parentComponentName = ComponentNames.AnchorTabs.componentName,
+                            position = position,
+                            compId = components.id,
+                            anchorMap = sectionPositionMap
+                        )
+                    }
+                    if (selectedSectionId.isNotEmpty() && anchorTabsUseCase.selectedId.isEmpty()) {
+                        anchorTabsUseCase.selectedId = selectedSectionId
+                    }
+                    components.setComponentsItem(compList)
+                    carouselList.value = compList
                 }
-                components.setComponentsItem(compList)
             }
+        }, onError = {
+            Utils.logException(it)
         }
+        )
     }
 
     private fun getPositionForSectionID(id: String): Int? {
@@ -108,6 +118,9 @@ class AnchorTabsViewModel(
                 components.data?.forEach { dataItem ->
                     if (sectionID == dataItem.targetSectionID) {
                         if (sectionID == anchorTabsUseCase.selectedId) {
+                            selectedSectionPos = Integer.MAX_VALUE
+                            selectedSectionId = ""
+                            anchorTabsUseCase.selectedId = ""
                             this.pauseDispatchChanges = false
                             _showMissingSectionToaster.value = true
                         }
@@ -122,7 +135,6 @@ class AnchorTabsViewModel(
                 components.noOfPagesLoaded = 0
                 sectionDeleted = true
                 mapToComponents()
-                setupData()
             }
         }
     }

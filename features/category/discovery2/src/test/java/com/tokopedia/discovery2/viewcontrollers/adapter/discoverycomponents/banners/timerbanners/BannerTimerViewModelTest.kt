@@ -136,16 +136,40 @@ class BannerTimerViewModelTest {
     @Test
     fun `checkTimerEnd when timeDiff is 1`() {
         val timeDiff: Long = 1
+        every { Utils.isFutureSaleOngoing(any(),any(), Utils.TIMER_DATE_FORMAT) } returns true
+
+        viewModel.checkTimerEnd()
+
+        assertEquals(viewModel.syncData.value, true)
+    }
+
+    @Test
+    fun `checkTimerEnd when timeDiff is 1 and isFutureSaleOngoing is false`() {
+        val timeDiff: Long = 1
+        every { Utils.isFutureSaleOngoing(any(),any(), Utils.TIMER_DATE_FORMAT) } returns false
         every { Utils.getElapsedTime(any()) } returns timeDiff
+
         viewModel.checkTimerEnd()
 
         assertEquals(viewModel.syncData.value, null)
     }
 
     @Test
+    fun `checkTimerEnd when timeDiff is 0 and isFutureSaleOngoing is false`() {
+        val timeDiff: Long = 0
+        every { Utils.isFutureSaleOngoing(any(),any(), Utils.TIMER_DATE_FORMAT) } returns false
+        every { Utils.getElapsedTime(any()) } returns timeDiff
+
+        viewModel.checkTimerEnd()
+
+        assertEquals(viewModel.syncData.value, true)
+    }
+
+    @Test
     fun `checkTimerEnd when timeDiff is 0`() {
         val timeDiff: Long = 0
         every { Utils.getElapsedTime(any()) } returns timeDiff
+
         viewModel.checkTimerEnd()
 
         assertEquals(viewModel.syncData.value, true)

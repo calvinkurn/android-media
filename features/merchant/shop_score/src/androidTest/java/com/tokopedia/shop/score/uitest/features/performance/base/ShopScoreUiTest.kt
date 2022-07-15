@@ -542,12 +542,7 @@ abstract class ShopScoreUiTest: BaseShopScoreTest() {
             .isViewDisplayed()
             .withTextStr(context.getString(R.string.title_pm_value))
         onIdView(R.id.tv_desc_content_pm_section).isViewDisplayed()
-            .withTextStr(
-                getTextHtml(
-                    context,
-                    context.getString(R.string.desc_content_pm_not_eligible_pm_pro)
-                ).toString()
-            )
+            .withTextStr(context.getString(R.string.description_content_pm_section))
         onIdView(R.id.potentialPowerMerchantWidget).isViewDisplayed().onClick()
     }
 

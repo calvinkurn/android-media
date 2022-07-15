@@ -10,11 +10,16 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import kotlinx.coroutines.CoroutineDispatcher
 import rx.Subscriber
 import javax.inject.Inject
@@ -23,6 +28,8 @@ import javax.inject.Named
 class PdpDialogViewModel @Inject constructor(private val recommendationProductUseCase: GamingRecommendationProductUseCase,
                                              private val addWishListUseCase: AddWishListUseCase,
                                              private val removeWishListUseCase: RemoveWishListUseCase,
+                                             private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
+                                             private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
                                              private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
                                              val userSession: UserSessionInterface,
                                              @Named(DispatcherModule.IO) val workerDispatcher: CoroutineDispatcher) : BaseViewModel(workerDispatcher) {
@@ -48,14 +55,33 @@ class PdpDialogViewModel @Inject constructor(private val recommendationProductUs
         })
     }
 
-    fun addToWishlist(model: RecommendationItem, callback: ((Boolean, Throwable?) -> Unit)) {
+    fun addToWishlist(
+        model: RecommendationItem,
+        callback: (Boolean, Throwable?) -> Unit
+    ) {
         if (model.isTopAds) {
             val params = RequestParams.create()
             params.putString(TopAdsWishlishedUseCase.WISHSLIST_URL, model.wishlistUrl)
             topAdsWishlishedUseCase.execute(params, getSubscriber(callback))
         } else {
-            addWishListUseCase.createObservable(model.productId.toString(), userSession.userId, getWishListActionListener(callback))
+            doAddWishlist(model, callback)
         }
+    }
+
+    fun addToWishlistV2(
+        model: RecommendationItem,
+        actionListener: WishlistV2ActionListener
+    ) {
+        addToWishlistV2UseCase.setParams(model.productId.toString(), userSession.userId)
+        addToWishlistV2UseCase.execute(
+            onSuccess = { result ->
+                if (result is Success) actionListener.onSuccessAddWishlist(result.data, model.productId.toString())},
+            onError = {
+                actionListener.onErrorAddWishList(it, model.productId.toString())})
+    }
+
+    private fun doAddWishlist(model: RecommendationItem, callback: ((Boolean, Throwable?) -> Unit)) {
+        addWishListUseCase.createObservable(model.productId.toString(), userSession.userId, getWishListActionListener(callback))
     }
 
     fun getWishListActionListener(callback: ((Boolean, Throwable?) -> Unit)): WishListActionListener {
@@ -95,9 +121,21 @@ class PdpDialogViewModel @Inject constructor(private val recommendationProductUs
         }
     }
 
+    fun getSubscriberV2(actionListener: WishlistV2ActionListener, productId: String): Subscriber<WishlistModel> {
+        return object : Subscriber<WishlistModel>() {
+            override fun onCompleted() {
+            }
 
-    fun removeFromWishlist(model: RecommendationItem, wishlistCallback: (((Boolean, Throwable?) -> Unit))) {
-        removeWishListUseCase.createObservable(model.productId.toString(), userSession.userId, getWishListActionListenerForRemoveFromWishList(wishlistCallback))
+            override fun onError(e: Throwable) {
+                actionListener.onErrorAddWishList(e, productId)
+            }
+
+            override fun onNext(wishlistModel: WishlistModel) {
+                if (wishlistModel.data != null) {
+                    actionListener.onSuccessAddWishlist(AddToWishlistV2Response.Data.WishlistAddV2(success = true), productId)
+                }
+            }
+        }
     }
 
     fun getWishListActionListenerForRemoveFromWishList(wishlistCallback: (((Boolean, Throwable?) -> Unit))):WishListActionListener{
@@ -120,9 +158,24 @@ class PdpDialogViewModel @Inject constructor(private val recommendationProductUs
         }
     }
 
+    fun removeFromWishlist(model: RecommendationItem, wishlistCallback: (((Boolean, Throwable?) -> Unit))) {
+        removeWishListUseCase.createObservable(model.productId.toString(), userSession.userId, getWishListActionListenerForRemoveFromWishList(wishlistCallback))
+    }
+
+    fun removeFromWishlistV2(model: RecommendationItem, actionListener: WishlistV2ActionListener) {
+        deleteWishlistV2UseCase.setParams(model.productId.toString(), userSession.userId)
+        deleteWishlistV2UseCase.execute(
+            onSuccess = { result ->
+                if (result is Success) {
+                    actionListener.onSuccessRemoveWishlist(result.data, model.productId.toString())
+                } },
+            onError = { actionListener.onErrorRemoveWishlist(it, model.productId.toString()) })
+    }
 
     override fun onCleared() {
         super.onCleared()
         recommendationProductUseCase.unsubscribe()
+        addToWishlistV2UseCase.cancelJobs()
+        deleteWishlistV2UseCase.cancelJobs()
     }
 }

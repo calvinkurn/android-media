@@ -62,16 +62,16 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     private var searchLoading: Typography? = null
     private var manualAdTxt: Typography? = null
     private var manualAd: Typography? = null
-    private var keyword_list: RecyclerView? = null
+    private var keywordList: RecyclerView? = null
     private var searchList: RecyclerView? = null
-    private var tip_btn: FloatingButtonUnify? = null
-    private var btn_next: UnifyButton? = null
-    private var selected_info: Typography? = null
+    private var fabTip: FloatingButtonUnify? = null
+    private var btnNext: UnifyButton? = null
+    private var selectedInfo: Typography? = null
     private var emptyImage: DeferredImageView? = null
-    private var title_empty: Typography? = null
-    private var desc_empty: Typography? = null
+    private var titleEmpty: Typography? = null
+    private var descEmpty: Typography? = null
     private var emptyLayout: CardView? = null
-    private var ic_tip: ImageUnify? = null
+    private var imageTip: ImageUnify? = null
     private var imageView2: ImageUnify? = null
     private var imageView3: ImageUnify? = null
     private var imageView4: ImageUnify? = null
@@ -88,7 +88,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     private var stepModel: CreateManualAdsStepperModel? = null
 
     companion object {
-
+        private const val KEYWORD_SELECTION_LIMIT = 50
         fun createInstance(extras: Bundle?): Fragment {
             val fragment = KeywordAdsListFragment()
             fragment.arguments = extras
@@ -166,12 +166,15 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
 
     private fun showSelectMessage() {
         val count = keywordListAdapter.getSelectedItems().count()
-        selected_info?.text =
-            MethodChecker.fromHtml(String.format(getString(R.string.topads_common_kata_kunci_lihat),
-                count))
+        selectedInfo?.text =
+            MethodChecker.fromHtml(String.format(
+                getString(com.tokopedia.topads.common.R.string.topads_common_kata_kunci_lihat),
+                count
+            ))
         if (count == 0)
-            selected_info?.text = getString(R.string.topads_common_kata_kunci_dipilih_no_keyword)
-        btn_next?.isEnabled = count < 50
+            selectedInfo?.text =
+                getString(com.tokopedia.topads.common.R.string.topads_common_kata_kunci_dipilih_no_keyword)
+        btnNext?.isEnabled = count < KEYWORD_SELECTION_LIMIT
     }
 
     private fun onSuccessSuggestion(keywords: List<KeywordData>) {
@@ -196,7 +199,10 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
 
     private fun onEmptySuggestion() {
         startLoading(false)
-        setEmptyView()
+        if (stepModel?.selectedKeywordStage?.isNullOrEmpty() == true)
+            setEmptyView()
+        else
+            getAlreadySelected()
         showSelectMessage()
     }
 
@@ -235,16 +241,16 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
         searchLoading = view.findViewById(R.id.searchLoading)
         manualAdTxt = view.findViewById(R.id.manualAdTxt)
         manualAd = view.findViewById(R.id.manualAd)
-        keyword_list = view.findViewById(R.id.keyword_list)
+        keywordList = view.findViewById(R.id.keyword_list)
         searchList = view.findViewById(R.id.searchList)
-        tip_btn = view.findViewById(R.id.tip_btn)
-        btn_next = view.findViewById(R.id.btn_next)
-        selected_info = view.findViewById(R.id.selected_info)
+        fabTip = view.findViewById(R.id.tip_btn)
+        btnNext = view.findViewById(R.id.btn_next)
+        selectedInfo = view.findViewById(R.id.selected_info)
         emptyImage = view.findViewById(R.id.emptyImage)
-        title_empty = view.findViewById(R.id.title_empty)
-        desc_empty = view.findViewById(R.id.desc_empty)
+        titleEmpty = view.findViewById(R.id.title_empty)
+        descEmpty = view.findViewById(R.id.desc_empty)
         emptyLayout = view.findViewById(R.id.emptyLayout)
-        ic_tip = emptyLayout?.findViewById(R.id.ic_tip)
+        imageTip = emptyLayout?.findViewById(R.id.ic_tip)
         imageView2 = emptyLayout?.findViewById(R.id.imageView2)
         imageView3 = emptyLayout?.findViewById(R.id.imageView3)
         imageView4 = emptyLayout?.findViewById(R.id.imageView4)
@@ -258,10 +264,10 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
         startLoading(true)
         setTipLayout()
         setEmptyLayout()
-        btn_next?.setOnClickListener {
+        btnNext?.setOnClickListener {
             gotoNextPage()
         }
-        selected_info?.setOnClickListener {
+        selectedInfo?.setOnClickListener {
             goToFinalStage()
         }
         setSearchAction()
@@ -270,7 +276,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     private fun setSearchAction() {
         view?.let {
             val searchBar = it.findViewById<SearchBarUnify>(R.id.searchBar)
-            searchBar?.searchBarTextField?.setOnFocusChangeListener { v, hasFocus ->
+            searchBar?.searchBarTextField?.setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
                     val eventLabel = "$shopID - $EVENT_CLICK_ON_SEARCH"
                     TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_ON_SEARCH,
@@ -284,7 +290,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     }
 
     private fun setEmptyLayout() {
-        ic_tip?.setImageDrawable(view?.context?.getResDrawable(com.tokopedia.topads.common.R.drawable.ic_bulp_fill))
+        imageTip?.setImageDrawable(view?.context?.getResDrawable(com.tokopedia.topads.common.R.drawable.ic_bulp_fill))
         imageView2?.setImageDrawable(view?.context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
         imageView3?.setImageDrawable(view?.context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
         imageView4?.setImageDrawable(view?.context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
@@ -300,8 +306,8 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
                     imgTooltipIcon = this.findViewById(R.id.tooltip_icon)
                     imgTooltipIcon?.setImageDrawable(view?.context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_tips))
                 }
-        tip_btn?.addItem(tooltipView)
-        tip_btn?.setOnClickListener {
+        fabTip?.addItem(tooltipView)
+        fabTip?.setOnClickListener {
             KeyTipsSheet().show(childFragmentManager, KeywordAdsListFragment::class.java.name)
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIPS_KEYWORD,
                 shopID,
@@ -310,16 +316,15 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     }
 
     private fun goToFinalStage() {
-        keyword_list?.visible()
+        keywordList?.visible()
         searchList?.gone()
         sortFinalList()
     }
 
     private fun sortFinalList() {
-        keywordListAdapter.items.sortWith(Comparator
-        { lhs, rhs ->
+        keywordListAdapter.items.sortWith { lhs, rhs ->
             (lhs.onChecked.compareTo(rhs.onChecked))
-        })
+        }
         keywordListAdapter.items.reverse()
         keywordListAdapter.notifyDataSetChanged()
     }
@@ -329,9 +334,10 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
             manualAd?.visible()
             manualAdTxt?.visible()
             dividerManual?.visible()
-            manualAdTxt?.text =
-                MethodChecker.fromHtml(String.format(getString(R.string.topads_common_new_manual_key),
-                    searchBar?.searchBarTextField?.text.toString()))
+            manualAdTxt?.text = MethodChecker.fromHtml(String.format(
+                getString(com.tokopedia.topads.common.R.string.topads_common_new_manual_key),
+                    searchBar?.searchBarTextField?.text.toString()
+            ))
             manualAd?.setOnClickListener {
                 addManualKeyword()
                 searchBar?.searchBarTextField?.text?.clear()
@@ -369,8 +375,8 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     }
 
     private fun setAdapters() {
-        keyword_list?.adapter = keywordListAdapter
-        keyword_list?.layoutManager = LinearLayoutManager(context)
+        keywordList?.adapter = keywordListAdapter
+        keywordList?.layoutManager = LinearLayoutManager(context)
         searchList?.adapter = keywordSearchAdapter
         searchList?.layoutManager = LinearLayoutManager(context)
     }
@@ -394,7 +400,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
 
     private fun setSearchLayout() {
         startLoading(true, search = true)
-        keyword_list?.gone()
+        keywordList?.gone()
         searchList?.visible()
     }
 
@@ -419,13 +425,13 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     private fun setEmpty(setEmpty: Boolean) {
         if (setEmpty) {
             emptyImage?.visible()
-            title_empty?.visible()
-            desc_empty?.visible()
+            titleEmpty?.visible()
+            descEmpty?.visible()
             headlineList?.gone()
         } else {
             emptyImage?.gone()
-            title_empty?.gone()
-            desc_empty?.gone()
+            titleEmpty?.gone()
+            descEmpty?.gone()
             headlineList?.visible()
             emptyLayout?.gone()
         }

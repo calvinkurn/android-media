@@ -26,6 +26,7 @@ public class Cpm implements Parcelable {
     private static final String KEY_LAYOUT = "layout";
     private static final String KEY_POSITION = "position";
     private static final String KEY_WIDGET_TITLE = "widget_title";
+    private static final String KEY_WIDGET_IMAGE_URL = "widget_image_url";
 
     @SerializedName(KEY_TEMPLATE_ID)
     private int templateId;
@@ -51,6 +52,8 @@ public class Cpm implements Parcelable {
     private int position = 0;
     @SerializedName(KEY_WIDGET_TITLE)
     private String widgetTitle = "";
+    @SerializedName(KEY_WIDGET_IMAGE_URL)
+    private String widgetImageUrl  = "";
 
     public Cpm() {
     }
@@ -106,6 +109,7 @@ public class Cpm implements Parcelable {
         uri = in.readString();
         decription = in.readString();
         widgetTitle = in.readString();
+        widgetImageUrl = in.readString();
         cpmShop = in.readParcelable(CpmShop.class.getClassLoader());
         cta = in.readString();
         layout = in.readInt();
@@ -122,6 +126,7 @@ public class Cpm implements Parcelable {
         dest.writeString(uri);
         dest.writeString(decription);
         dest.writeString(widgetTitle);
+        dest.writeString(widgetImageUrl);
         dest.writeParcelable(cpmShop, flags);
         dest.writeString(cta);
         dest.writeInt(layout);
@@ -240,4 +245,13 @@ public class Cpm implements Parcelable {
     public void setWidgetTitle(String widgetTitle) {
         this.widgetTitle = widgetTitle;
     }
+
+    public String getWidgetImageUrl() {
+        return widgetImageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.widgetImageUrl = imageUrl;
+    }
+
 }

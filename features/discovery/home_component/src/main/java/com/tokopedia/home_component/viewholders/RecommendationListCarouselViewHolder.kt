@@ -1,5 +1,6 @@
 package com.tokopedia.home_component.viewholders
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
@@ -27,6 +28,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardListView
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
@@ -36,7 +38,9 @@ import kotlinx.coroutines.SupervisorJob
 
 class RecommendationListCarouselViewHolder(itemView: View,
                                            private val listCarouselListener: RecommendationListCarouselListener?,
-                                           private val parentRecycledViewPool: RecyclerView.RecycledViewPool?): AbstractViewHolder<RecommendationListCarouselDataModel>(itemView), CoroutineScope {
+                                           private val parentRecycledViewPool: RecyclerView.RecycledViewPool?,
+                                           private val cardInteraction: Boolean = false
+): AbstractViewHolder<RecommendationListCarouselDataModel>(itemView), CoroutineScope {
     private var binding: HomeComponentRecommendationListCarouselBinding? by viewBinding()
     private val masterJob = SupervisorJob()
 
@@ -48,6 +52,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
         bind(element)
     }
 
+    @SuppressLint("ResourcePackage")
     override fun bind(element: RecommendationListCarouselDataModel) {
         isCacheData = element.isCache
         val listCarouselTitle = itemView.findViewById<Typography>(R.id.list_carousel_title)
@@ -143,7 +148,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
                     )
                 }.toMutableList()
                 if(channel.channelGrids.size > 1 && channel.channelHeader.applink.isNotEmpty()) newList.add(HomeRecommendationListSeeMoreData(channel, listCarouselListener, adapterPosition))
-                adapter = RecommendationListAdapter(newList, listCarouselListener, isCacheData)
+                adapter = RecommendationListAdapter(newList, listCarouselListener, isCacheData, cardInteraction)
                 setRecycledViewPool(parentRecycledViewPool)
                 clearItemRecyclerViewDecoration(this)
                 if (channel.channelGrids.size > 1) {
@@ -174,7 +179,8 @@ class RecommendationListCarouselViewHolder(itemView: View,
                 shopLocation = grid.shop.shopLocation,
                 shopBadgeList = grid.badges.map {
                     ProductCardModel.ShopBadge(imageUrl = it.imageUrl)
-                }
+                },
+                cardInteraction = cardInteraction,
         )
     }
 
@@ -206,6 +212,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
             itemView: View,
             val listCarouselListener: RecommendationListCarouselListener?,
             val isCacheData: Boolean,
+            private val cardInteraction: Boolean = false
     ): RecommendationListCarouselItem(itemView) {
         private val recommendationCard = itemView.findViewById<ProductCardListView>(R.id.productCardView)
 
@@ -224,23 +231,24 @@ class RecommendationListCarouselViewHolder(itemView: View,
                     }
             }
                 recommendationCard.setProductModel(
-                        ProductCardModel(
-                                productImageUrl = recommendation.recommendationImageUrl,
-                                productName = recommendation.recommendationTitle,
-                                discountPercentage = recommendation.recommendationDiscountLabel,
-                                slashedPrice = recommendation.recommendationSlashedPrice,
-                                formattedPrice = recommendation.recommendationPrice,
-                                hasAddToCartButton = recommendation.grid.hasBuyButton,
-                                isTopAds = recommendation.isTopAds,
-                                isOutOfStock = recommendation.grid.isOutOfStock,
-                                ratingCount = recommendation.grid.rating,
-                                reviewCount = recommendation.grid.countReview,
-                                countSoldRating = recommendation.grid.ratingFloat,
-                                shopLocation = recommendation.grid.shop.shopLocation,
-                                shopBadgeList = recommendation.grid.badges.map {
-                                    ProductCardModel.ShopBadge(imageUrl = it.imageUrl)
-                                }
-                        )
+                    ProductCardModel(
+                        productImageUrl = recommendation.recommendationImageUrl,
+                        productName = recommendation.recommendationTitle,
+                        discountPercentage = recommendation.recommendationDiscountLabel,
+                        slashedPrice = recommendation.recommendationSlashedPrice,
+                        formattedPrice = recommendation.recommendationPrice,
+                        hasAddToCartButton = recommendation.grid.hasBuyButton,
+                        isTopAds = recommendation.isTopAds,
+                        isOutOfStock = recommendation.grid.isOutOfStock,
+                        ratingCount = recommendation.grid.rating,
+                        reviewCount = recommendation.grid.countReview,
+                        countSoldRating = recommendation.grid.ratingFloat,
+                        shopLocation = recommendation.grid.shop.shopLocation,
+                        shopBadgeList = recommendation.grid.badges.map {
+                            ProductCardModel.ShopBadge(imageUrl = it.imageUrl)
+                        },
+                        cardInteraction = cardInteraction
+                    )
                 )
                 val addToCartButton = recommendationCard.findViewById<UnifyButton>(R.id.buttonAddToCart)
                 addToCartButton.text = itemView.context.getString(R.string.home_global_component_buy_again)
@@ -261,12 +269,18 @@ class RecommendationListCarouselViewHolder(itemView: View,
     }
 
     class HomeRecommendationSeeMoreViewHolder(
-            itemView: View
+            itemView: View,
+            private val cardInteraction: Boolean = false
     ): RecommendationListCarouselItem(itemView){
-        private val container: View by lazy { itemView.findViewById<View>(R.id.container_banner_mix_more) }
+        private val card: CardUnify2 by lazy {
+            itemView.findViewById<CardUnify2?>(R.id.card_see_more_banner_mix).apply {
+                animateOnPress = if(cardInteraction) CardUnify2.ANIMATE_OVERLAY_BOUNCE else CardUnify2.ANIMATE_OVERLAY
+            }
+        }
+
         override fun bind(homeRecommendationListData: HomeRecommendationListCarousel) {
             if(homeRecommendationListData is HomeRecommendationListSeeMoreData) {
-                container.setOnClickListener {
+                card.setOnClickListener {
                     homeRecommendationListData.listener?.onRecommendationSeeMoreCardClick(
                             applink = homeRecommendationListData.channel.channelHeader.applink,
                             channelModel = homeRecommendationListData.channel
@@ -304,7 +318,9 @@ class RecommendationListCarouselViewHolder(itemView: View,
     class RecommendationListAdapter(
             private val recommendationList: List<HomeRecommendationListCarousel>,
             private val listener: RecommendationListCarouselListener?,
-            private val isCacheData: Boolean): RecyclerView.Adapter<RecommendationListCarouselItem>() {
+            private val isCacheData: Boolean,
+            private val cardInteraction: Boolean = false
+    ): RecyclerView.Adapter<RecommendationListCarouselItem>() {
         companion object{
             private const val LAYOUT_TYPE_CAROUSEL = 87
             private const val LAYOUT_TYPE_NON_CAROUSEL = 90
@@ -314,9 +330,9 @@ class RecommendationListCarouselViewHolder(itemView: View,
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecommendationListCarouselItem {
             val inflater = LayoutInflater.from(parent.context)
             return when (viewType) {
-                LAYOUT_TYPE_CAROUSEL -> HomeRecommendationListViewHolder(inflater.inflate(R.layout.layout_dynamic_recommendation_list_card_carousel, parent, false), listener, isCacheData)
-                LAYOUT_SEE_ALL_BUTTON -> HomeRecommendationSeeMoreViewHolder(inflater.inflate(R.layout.layout_dynamic_recommendation_list_see_more, parent, false))
-                else -> HomeRecommendationListViewHolder(inflater.inflate(R.layout.layout_dynamic_recommendation_list_card, parent, false), listener, isCacheData)
+                LAYOUT_TYPE_CAROUSEL -> HomeRecommendationListViewHolder(inflater.inflate(R.layout.layout_dynamic_recommendation_list_card_carousel, parent, false), listener, isCacheData, cardInteraction)
+                LAYOUT_SEE_ALL_BUTTON -> HomeRecommendationSeeMoreViewHolder(inflater.inflate(R.layout.layout_dynamic_recommendation_list_see_more, parent, false), cardInteraction)
+                else -> HomeRecommendationListViewHolder(inflater.inflate(R.layout.layout_dynamic_recommendation_list_card, parent, false), listener, isCacheData, cardInteraction)
             }
         }
 

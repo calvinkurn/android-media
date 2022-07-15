@@ -1,6 +1,7 @@
 package com.tokopedia.oneclickcheckout.common
 
 const val STATUS_OK = "OK"
+const val STATUS_CODE_200 = "200"
 
 const val DEFAULT_ERROR_MESSAGE = "Terjadi kesalahan pada server. Ulangi beberapa saat lagi"
 
