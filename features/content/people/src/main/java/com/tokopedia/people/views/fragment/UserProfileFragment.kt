@@ -263,6 +263,7 @@ class UserProfileFragment @Inject constructor(
             }
 
             mainBinding.cardUserReminder.btnCompleteProfile.setOnClickListener {
+                UserProfileTracker().clickProfileCompletionPrompt(viewModel.profileUserID)
                 navigateToEditProfile()
             }
         }
