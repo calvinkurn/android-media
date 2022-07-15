@@ -71,9 +71,10 @@ class ChooseAddressViewComponent(
     }
 
     private fun openBottomSheet() {
-        if (!getBottomSheet().isAdded) {
+        val addressSheet = getBottomSheet()
+        if (!addressSheet.isAdded) {
             listener.onBtnChooseClicked(this@ChooseAddressViewComponent)
-            getBottomSheet().showNow(fragmentManager, PLAY_CHOOSE_ADDRESS_TAG)
+            addressSheet.showNow(fragmentManager, PLAY_CHOOSE_ADDRESS_TAG)
         }
     }
 
