@@ -70,7 +70,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
     private var tmTracker: TmTracker? = null
     private var programCreationId = 0
     private var loaderDialog: LoaderDialog?=null
-    private var errorCodeProgramCreation = "42039"
+    private var errorCodeProgramCreation = ""
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -156,11 +156,11 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                         CODE_INVALID ->{
                             view?.let { it1 -> Toaster.build(it1,"Cek dan pastikan semua informasi yang kamu isi sudah benar, ya.",Toaster.LENGTH_LONG,Toaster.TYPE_ERROR).show() }
                         }
-                        CODE_OUTSIDE_WINDOW -> {
+                        CODE_OUTSIDE_WINDOW , CODE_PROGRAM_OUTSIDE_V2 -> {
+                            errorCodeProgramCreation = CODE_OUTSIDE_WINDOW
                             handleErrorOnUpdate(it.data.membershipCreateEditProgram.resultStatus.message , ERROR_CREATING_CTA)
                         }
                         else -> {
-                            errorCodeProgramCreation = it.data?.membershipCreateEditProgram?.resultStatus?.code?:""
                             handleErrorOnUpdate(null)
                         }
                     }
@@ -599,6 +599,8 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         const val CODE_SUCCESS = "200"
         const val CODE_INVALID = "41002"
         const val CODE_OUTSIDE_WINDOW = "42039"
+        const val CODE_PROGRAM_OUTSIDE_V2  = "42049"
+
         const val CODE_ERROR = "50001"
 
         const val SHIMMER = 0
@@ -614,6 +616,8 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
     }
 
     override fun onButtonClick(errorCount: Int) {
+        if (errorCodeProgramCreation == CODE_OUTSIDE_WINDOW){
+        }else {
             if (errorCount == 0) {
                 tmDashCreateViewModel.updateProgram(programUpdateResponse)
             } else {
@@ -632,6 +636,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                     activity?.finish()
                 }
             }
+        }
     }
 
     private fun openLoadingDialog(){

@@ -346,7 +346,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                             view?.let { v ->
                                 Toaster.build(
                                     v,
-                                    "Silakan Masukkan masukan yang benar",
+                                    "Cek dan pastikan semua informasi yang kamu isi sudah benar, ya.",
                                     Toaster.LENGTH_LONG,
                                     Toaster.TYPE_ERROR
                                     ).show()
@@ -378,7 +378,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                             errorState.isValidateCouponError = false
                             uploadImageVip()
                         }
-                        CODE_PROGRAM_OUTSIDE -> {
+                        CODE_PROGRAM_OUTSIDE,CODE_PROGRAM_OUTSIDE_V2  -> {
                             closeLoadingDialog()
                             setButtonState()
                             handleProgramPreValidateError(it.data?.membershipValidateBenefit?.resultStatus?.message?.getOrNull(0), it.data?.membershipValidateBenefit?.resultStatus?.message?.getOrNull(1) , PROGRAM_VALIDATION_CTA_TEXT)
@@ -1288,6 +1288,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         const val ERROR = 2
         const val CODE_SUCCESS= "200"
         const val CODE_PROGRAM_OUTSIDE  = "42039"
+        const val CODE_PROGRAM_OUTSIDE_V2  = "42049"
 
         fun newInstance(bundle: Bundle): TmMultipleCuponCreateFragment {
             return TmMultipleCuponCreateFragment().apply {
