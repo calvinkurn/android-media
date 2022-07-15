@@ -1228,6 +1228,13 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                             textFieldProgramStartDate.editText.setText("${TmDateUtil.getDayFromTimeWindow(programData?.timeWindow?.startTime.toString())}, ${TmDateUtil.setDatePreview(TmDateUtil.convertDateTimeRemoveTimeDiff(currentDate.time))}")
                             textFieldProgramStartTime.editText.setText("00:00 WIB")
                         }
+//                        else if(currentHour >= 20 && checkForTomorrow(currentDate, currentStartDate)){
+//                            calStart.time = programData?.timeWindow?.startTime.toString().toDate(SIMPLE_DATE_FORMAT)
+//                            tmCouponStartDateUnix = calStart
+//                            tmCouponStartTimeUnix = calStart
+//                            textFieldProgramStartDate.editText.setText("${TmDateUtil.getDayFromTimeWindow(programData?.timeWindow?.startTime.toString())}, ${TmDateUtil.setDatePreview(programData?.timeWindow?.startTime.toString())}")
+//                            textFieldProgramStartTime.editText.setText("00:00 WIB")
+//                        }
                         else {
                             calStart.time = programData?.timeWindow?.startTime.toString().toDate(SIMPLE_DATE_FORMAT)
                             tmCouponStartDateUnix = calStart
@@ -1235,12 +1242,52 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                             textFieldProgramStartDate.editText.setText("${TmDateUtil.getDayFromTimeWindow(programData?.timeWindow?.startTime.toString())}, ${TmDateUtil.setDatePreview(programData?.timeWindow?.startTime.toString())}")
                             textFieldProgramStartTime.editText.setText("00:00 WIB")
                         }
-                        calEnd.time = programData?.timeWindow?.endTime.toString().toDate(SIMPLE_DATE_FORMAT)
 
-                        tmCouponEndDateUnix = calEnd
-                        tmCouponEndTimeUnix = calEnd
-                        textFieldProgramEndDate.editText.setText("${TmDateUtil.getDayFromTimeWindow(programData?.timeWindow?.endTime.toString())}, ${TmDateUtil.setDatePreview(programData?.timeWindow?.endTime.toString())}")
-                        textFieldProgramEndTime.editText.setText(TmDateUtil.setTime(programData?.timeWindow?.endTime.toString()))
+                        val maxProgramEndDate = GregorianCalendar(context?.let {
+                            LocaleUtils.getCurrentLocale(
+                                it
+                            )
+                        })
+                        maxProgramEndDate.add(Calendar.YEAR, 1)
+                        val endDate = GregorianCalendar(com.tokopedia.tokomember_seller_dashboard.util.locale)
+                        endDate.time = sdf.parse(programData?.timeWindow?.endTime + "00") ?: Date()
+                        if (endDate > maxProgramEndDate) {
+                            tmCouponEndTimeUnix =
+                                GregorianCalendar(com.tokopedia.tokomember_seller_dashboard.util.locale)
+                            tmCouponEndDateUnix =
+                                GregorianCalendar(com.tokopedia.tokomember_seller_dashboard.util.locale)
+                            tmCouponEndTimeUnix?.time = maxProgramEndDate.time
+                            tmCouponEndDateUnix?.time = maxProgramEndDate.time
+
+                            textFieldProgramEndDate.editText.setText("${tmCouponEndDateUnix?.get(Calendar.DAY_OF_WEEK)?.let {
+                                getDayOfWeekID(it)
+                            }}, ${
+                                tmCouponEndDateUnix?.let {
+                                    TmDateUtil.getDateFromUnix(
+                                        it
+                                    )
+                                }?.let { TmDateUtil.setDatePreview(it, DATE_FORMAT) }
+                            }")
+                            textFieldProgramEndTime.editText.setText(tmCouponEndDateUnix?.time?.let { TmDateUtil.convertDateTime(it) }?.let {
+                                TmDateUtil.setTime(
+                                    it
+                                )
+                            })
+                        }
+                        else {
+                            calEnd.time = programData?.timeWindow?.endTime.toString().toDate(SIMPLE_DATE_FORMAT)
+
+                            tmCouponEndDateUnix = calEnd
+                            tmCouponEndTimeUnix = calEnd
+                            textFieldProgramEndDate.editText.setText(
+                                "${
+                                    TmDateUtil.getDayFromTimeWindow(
+                                        programData?.timeWindow?.endTime.toString()
+                                    )
+                                }, ${TmDateUtil.setDatePreview(programData?.timeWindow?.endTime.toString())}"
+                            )
+                            textFieldProgramEndTime.editText.setText(TmDateUtil.setTime(programData?.timeWindow?.endTime.toString()))
+                        }
                     }
                 }
                 textFieldProgramStartDate.isEnabled = false
@@ -1291,6 +1338,12 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
     private fun checkYesterday(calendarToday: Calendar, calendarProgram: Calendar): Boolean {
         return calendarToday.get(Calendar.YEAR) == calendarProgram.get(Calendar.YEAR)
                 && calendarToday.get(Calendar.DAY_OF_YEAR) == calendarProgram.get(Calendar.DAY_OF_YEAR) - 1
+    }
+
+    private fun checkForTomorrow(calendarToday: Calendar, calendarProgram: Calendar): Boolean {
+        return (calendarToday.get(Calendar.YEAR) == calendarProgram.get(Calendar.YEAR)
+                && calendarToday < calendarProgram
+                && calendarToday.get(Calendar.DAY_OF_YEAR) != calendarProgram.get(Calendar.DAY_OF_YEAR) - 1)
     }
 
     private fun renderSingleCoupon() {
