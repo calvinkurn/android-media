@@ -354,7 +354,7 @@ class ProductListPresenter @Inject constructor(
                 totalData,
                 ::loadMoreData
             ) {
-                getViewToProcessEmptyResultDuringLoadMore(searchProductModel.searchProduct)
+                getViewToProcessEmptyResultDuringLoadMore()
             }
         } else {
             postProcessingFilter.resetCount()
