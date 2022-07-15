@@ -86,6 +86,9 @@ class ShipmentPresenterChangeShippingAddressTest {
     @MockK
     private lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
 
+    @MockK
+    private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
+
     @MockK(relaxed = true)
     private lateinit var view: ShipmentContract.View
 
@@ -107,7 +110,7 @@ class ShipmentPresenterChangeShippingAddressTest {
                 getRatesUseCase, getRatesApiUseCase, clearCacheAutoApplyStackUseCase,
                 ratesStatesConverter, shippingCourierConverter,
                 shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
-                checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase,
+                checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
                 validateUsePromoRevampUseCase, gson, TestSchedulers, eligibleForAddressUseCase)
         presenter.attachView(view)
     }
