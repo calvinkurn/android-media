@@ -97,6 +97,7 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                                  checkoutAnalytics: CheckoutAnalyticsCourierSelection,
                                  shipmentDataConverter: ShipmentDataConverter,
                                  releaseBookingUseCase: ReleaseBookingUseCase,
+                                 prescriptionIdsUseCase: GetPrescriptionIdsUseCase,
                                  validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase,
                                  gson: Gson,
                                  executorSchedulers: ExecutorSchedulers,
@@ -109,7 +110,8 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                 clearCacheAutoApplyStackUseCase,
                 stateConverter, shippingCourierConverter, shipmentFragment, userSessionInterface,
                 analyticsPurchaseProtection, checkoutAnalytics,
-                shipmentDataConverter, releaseBookingUseCase, validateUsePromoRevampUseCase, gson,
+                shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
+                validateUsePromoRevampUseCase, gson,
                 executorSchedulers, eligibleForAddressUseCase)
     }
 

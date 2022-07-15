@@ -9,6 +9,8 @@ import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException;
 import com.tokopedia.analyticconstant.DataLayer;
+import com.tokopedia.checkout.data.model.response.prescription.GetPrescriptionIdsResponse;
+import com.tokopedia.checkout.domain.usecase.GetPrescriptionIdsUseCase;
 import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
@@ -178,6 +180,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final UserSessionInterface userSessionInterface;
     private final ShipmentDataConverter shipmentDataConverter;
     private final ReleaseBookingUseCase releaseBookingUseCase;
+    private final GetPrescriptionIdsUseCase prescriptionIdsUseCase;
     private final OldValidateUsePromoRevampUseCase validateUsePromoRevampUseCase;
     private final EligibleForAddressUseCase eligibleForAddressUseCase;
     private final ExecutorSchedulers executorSchedulers;
@@ -232,6 +235,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              CheckoutAnalyticsCourierSelection checkoutAnalytics,
                              ShipmentDataConverter shipmentDataConverter,
                              ReleaseBookingUseCase releaseBookingUseCase,
+                             GetPrescriptionIdsUseCase prescriptionIdsUseCase,
                              OldValidateUsePromoRevampUseCase validateUsePromoRevampUseCase,
                              Gson gson,
                              ExecutorSchedulers executorSchedulers,
@@ -253,6 +257,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.mTrackerShipment = checkoutAnalytics;
         this.shipmentDataConverter = shipmentDataConverter;
         this.releaseBookingUseCase = releaseBookingUseCase;
+        this.prescriptionIdsUseCase = prescriptionIdsUseCase;
         this.validateUsePromoRevampUseCase = validateUsePromoRevampUseCase;
         this.gson = gson;
         this.executorSchedulers = executorSchedulers;
@@ -744,7 +749,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     cartShipmentAddressFormData.getUploadPrescText(),
                     cartShipmentAddressFormData.getRightIconUrl(),
                     cartShipmentAddressFormData.getLeftIconUrl(),
-                    new ArrayList<>(),0
+                    new ArrayList<>(),0,""
                     ));
         }
     }
@@ -2219,6 +2224,34 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             compositeSubscription.add(releaseBookingUseCase
                     .execute(productId)
                     .subscribe(new ReleaseBookingStockSubscriber()));
+        }
+    }
+
+    @Override
+    public void prescriptionIds() {
+        // TODO Get checkout id from BE
+        String checkoutId = "";
+        if(!checkoutId.isEmpty()){
+            compositeSubscription.add(prescriptionIdsUseCase
+                    .execute(checkoutId)
+                    .subscribe(new Subscriber<GetPrescriptionIdsResponse>(){
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onNext(GetPrescriptionIdsResponse getPrescriptionIdsResponse) {
+                            if(getPrescriptionIdsResponse.getPrescriptions() != null){
+                                getView().updatePrescriptionIds(getPrescriptionIdsResponse.getPrescriptions());
+                            }
+                        }
+                    }));
         }
     }
 

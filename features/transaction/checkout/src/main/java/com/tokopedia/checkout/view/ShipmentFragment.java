@@ -41,6 +41,7 @@ import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.checkout.analytics.CheckoutEgoldAnalytics;
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics;
 import com.tokopedia.checkout.analytics.CornerAnalytics;
+import com.tokopedia.checkout.data.model.response.prescription.GetPrescriptionIdsResponse;
 import com.tokopedia.checkout.domain.mapper.ShipmentAddOnMapper;
 import com.tokopedia.checkout.view.viewholder.UploadPrescriptionViewHolder;
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData;
@@ -1235,7 +1236,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         } else if (requestCode == REQUEST_ADD_ON_ORDER_LEVEL_BOTTOMSHEET) {
             onUpdateResultAddOnOrderLevelBottomSheet(data);
         }else if (requestCode == REQUEST_CODE_UPLOAD_PRESCRIPTION) {
-            onUploadPrescriptionResult(data);
+            onUploadPrescriptionResult(data,false);
         }
     }
 
@@ -3422,13 +3423,21 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         startActivityForResult(uploadPrescriptionIntent,REQUEST_CODE_UPLOAD_PRESCRIPTION);
     }
 
-    private void onUploadPrescriptionResult(Intent data){
-        if(data != null && data.getExtras() != null && data.getExtras().containsKey(KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA)){
+    private void onUploadPrescriptionResult(Intent data, boolean isApi){
+        if(data != null && data.getExtras() != null &&
+                data.getExtras().containsKey(KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA) && getActivity() != null){
             UploadPrescriptionUiModel uploadModel = shipmentPresenter.getUploadPrescriptionUiModel();
-            uploadModel.setUploadImageText(UploadPrescriptionViewHolder.EPharmacyImageUploadedText);
-            uploadModel.setLeftIconUrl(UploadPrescriptionViewHolder.EPharmacyCountImageUrl);
-            uploadModel.setPrescriptionIds(data.getExtras().getStringArrayList(KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA));
-            uploadModel.setUploadedImageCount(data.getExtras().getStringArrayList(KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA).size());
+            if(!isApi){
+                uploadModel.setUploadImageText(getActivity().getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_success_title_text));
+                uploadModel.setLeftIconUrl(UploadPrescriptionViewHolder.EPharmacyCountImageUrl);
+            }
+            ArrayList<String> prescriptions = data.getExtras().getStringArrayList(KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA);
+            if(prescriptions != null){
+                uploadModel.setPrescriptionIds(prescriptions);
+                uploadModel.setUploadedImageCount(prescriptions.size());
+                uploadModel.setDescriptionText(getActivity().getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_count_text,
+                            prescriptions.size()));
+            }
             shipmentAdapter.updateUploadPrescription(uploadModel);
         }
     }
@@ -3498,5 +3507,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
         shipmentAdapter.updateShipmentCostModel();
         onNeedUpdateViewItem(shipmentAdapter.getShipmentCostPosition());
+    }
+
+    @Override
+    public void updatePrescriptionIds(List<GetPrescriptionIdsResponse.Prescription> prescriptions) {
+        ArrayList<String> prescriptionsIds = new ArrayList<>();
+        for(int i = 0 ; i<prescriptions.size() ; i++){
+            prescriptionsIds.add(prescriptions.get(i).getPrescriptionId());
+        }
+        Intent intent = new Intent();
+        intent.putStringArrayListExtra(KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA,prescriptionsIds);
+        onUploadPrescriptionResult(intent,true);
     }
 }
