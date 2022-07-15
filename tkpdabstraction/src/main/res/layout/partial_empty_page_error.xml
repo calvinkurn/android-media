@@ -32,7 +32,8 @@
         android:text="@string/msg_network_error_1"
         android:textColor="@color/Unify_N700"
         android:textStyle="bold"
-        app:typographyType="heading_2"/>
+        app:typographyType="body_1"
+        app:typographyWeight="reguler"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/sub_message_retry"
@@ -41,9 +42,9 @@
         android:layout_margin="5dp"
         android:gravity="center"
         android:text="@string/msg_network_error_2"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_N150"
         android:textStyle="bold"
-        app:typographyType="body_2"
+        app:typographyType="body_3"
         app:typographyWeight="reguler"/>
 
     <com.tokopedia.unifycomponents.UnifyButton

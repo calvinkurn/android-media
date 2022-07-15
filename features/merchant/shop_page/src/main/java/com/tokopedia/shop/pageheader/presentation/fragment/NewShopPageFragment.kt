@@ -266,8 +266,8 @@ class NewShopPageFragment :
     private var stickyLoginView: StickyLoginView? = null
     private var shopPageFragmentHeaderViewHolder: NewShopPageFragmentHeaderViewHolder? = null
     private var viewPagerAdapter: ShopPageFragmentPagerAdapter? = null
-    private var errorTextView: TextView? = null
-    private var subErrorTextView: TextView? = null
+    private var errorTextView: Typography? = null
+    private var subErrorTextView: Typography? = null
     private var errorButton: View? = null
     private var shopPageFab: FloatingButtonUnify? = null
     private var isForceNotShowingTab: Boolean = false
@@ -1906,8 +1906,18 @@ class NewShopPageFragment :
     private fun onErrorGetShopPageTabData() {
         context?.run {
             setViewState(VIEW_ERROR)
-            errorTextView?.text = getString(R.string.shop_page_error_title_get_p1)
-            subErrorTextView?.text = getString(R.string.shop_page_error_sub_title_get_p1)
+            errorTextView?.apply {
+                setType(Typography.HEADING_2)
+                text = getString(R.string.shop_page_error_title_get_p1)
+            }
+            subErrorTextView?.apply {
+                setType(Typography.DISPLAY_2)
+                setTextColor(MethodChecker.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                ))
+                text = getString(R.string.shop_page_error_sub_title_get_p1)
+            }
             errorButton?.setOnClickListener {
                 isRefresh = true
                 getInitialData()
