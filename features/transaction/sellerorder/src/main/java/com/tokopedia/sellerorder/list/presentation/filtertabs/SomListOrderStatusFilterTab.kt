@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.list.presentation.models.SomListFilterUiModel
 import com.tokopedia.unifycomponents.TabsUnify
+import com.tokopedia.unifycomponents.setCustomText
 
 class SomListOrderStatusFilterTab(
     private val tabs: TabsUnify,
@@ -18,7 +19,6 @@ class SomListOrderStatusFilterTab(
     private var somListFilterUiModel: SomListFilterUiModel? = null
     private var selectedTab: SomListFilterUiModel.Status? = null
     private var filterTabs: ArrayList<TabLayout.Tab> = arrayListOf()
-    private var appliedFromAdvancedFilter: Boolean = false
 
     private fun updateTabs(statusList: List<SomListFilterUiModel.Status>) {
         tabs.getUnifyTabLayout().removeOnTabSelectedListener(tabSelectedListener)
@@ -42,7 +42,7 @@ class SomListOrderStatusFilterTab(
     private fun updateTabsCounter(statusList: List<SomListFilterUiModel.Status>) {
         statusList.forEachIndexed { index, status ->
             val filterTab = filterTabs[index]
-            filterTab.text = createNewTabs(status)
+            filterTab.setCustomText(createNewTabs(status))
             if (status.isChecked) filterTab.select()
         }
     }
@@ -53,7 +53,7 @@ class SomListOrderStatusFilterTab(
         statusList.forEach {
             val filterTabText = createNewTabs(it)
             val filterTab = tabs.addNewTab(filterTabText)
-            filterTab.text = filterTabText
+            filterTab.setCustomText(filterTabText)
             if (it.isChecked) filterTab.select()
             filterTabs.add(filterTab)
         }
@@ -78,12 +78,6 @@ class SomListOrderStatusFilterTab(
         somListFilterUiModel = newSomListFilterUiModel
         updateTabs(newSomListFilterUiModel.statusList)
         tabs.show()
-    }
-
-    fun selectTab(statusFilter: SomListFilterUiModel.Status) {
-        filterTabs.find { it.text?.contains(statusFilter.status).orFalse() }?.apply {
-            tabs.getUnifyTabLayout().selectTab(this)
-        }
     }
 
     fun shouldShowBulkAction() = (selectedTab?.key == SomConsts.STATUS_NEW_ORDER || selectedTab?.key == SomConsts.KEY_CONFIRM_SHIPPING) && GlobalConfig.isSellerApp()
