@@ -20,6 +20,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
 import com.tokopedia.tokomember_seller_dashboard.util.REFRESH
 import com.tokopedia.tokomember_seller_dashboard.util.REQUEST_CODE_REFRESH
+import com.tokopedia.tokomember_seller_dashboard.util.TmPrefManager
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashHomeMainFragment
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashHomeMainFragment.Companion.TAG_HOME
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashProgramDetailFragment
@@ -118,5 +119,10 @@ class TokomemberDashHomeActivity : AppCompatActivity(), TmProgramDetailCallback 
                 }
             }
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        TmPrefManager(this).clearPref()
     }
 }

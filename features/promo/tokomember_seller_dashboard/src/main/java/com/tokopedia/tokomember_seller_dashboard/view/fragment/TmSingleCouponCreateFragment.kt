@@ -412,7 +412,8 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                         else{
                             handleProgramValidateError("",
                                 "",
-                                false
+                                false,
+                                true
                             )
                         }
 
@@ -561,7 +562,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                         closeLoadingDialog()
                         setButtonState()
                         activity?.finish()
-                        tmCouponListRefreshCallback?.refreshCouponList(true)
+                        tmCouponListRefreshCallback?.refreshCouponList()
                     }
                     else{
                         closeLoadingDialog()
@@ -865,7 +866,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun handleProgramValidateError(reason: String?, message: String?, openProgramCreation: Boolean = false){
+    private fun handleProgramValidateError(reason: String?, message: String?, openProgramCreation: Boolean = false, retryFlow: Boolean = false){
         setButtonState()
         val title = if(reason.isNullOrEmpty()) {
             ERROR_CREATING_TITLE
@@ -921,7 +922,22 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                             }
                         }
                         else{
-                            bottomSheet.dismiss()
+                            if(retryFlow){
+                                val startTime = if(tmCouponStartTimeUnix != null){
+                                    tmCouponStartTimeUnix?.timeInMillis?.div(1000).toString()
+                                } else{
+                                    TmDateUtil.getTimeMillisForCouponValidate(programData?.timeWindow?.startTime.toString())
+                                }
+                                val endTime = if(tmCouponEndTimeUnix != null){
+                                    tmCouponEndTimeUnix?.timeInMillis?.div(1000).toString()
+                                } else{
+                                    TmDateUtil.getTimeMillisForCouponValidateEnd(programData?.timeWindow?.endTime.toString())
+                                }
+                                tokomemberDashCreateViewModel.validateProgram(prefManager?.shopId.toString(), startTime, endTime,"")
+                            }
+                            else {
+                                bottomSheet.dismiss()
+                            }
                         }
                     }
                     1 ->{
@@ -930,7 +946,9 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                 }
             }
         })
-        retryCount++
+        if(retryFlow) {
+            retryCount++
+        }
         bottomSheet.show(childFragmentManager,"")
     }
 

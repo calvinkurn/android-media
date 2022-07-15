@@ -102,11 +102,6 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
         }
     }
 
-    override fun onStop() {
-        super.onStop()
-        prefManager?.clearPref()
-    }
-
     private fun observeViewModel() {
 
         tokomemberDashHomeViewmodel.tokomemberHomeResultLiveData.observe(viewLifecycleOwner, {
