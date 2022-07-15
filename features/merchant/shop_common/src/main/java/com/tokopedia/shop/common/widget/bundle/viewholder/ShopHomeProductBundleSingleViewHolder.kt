@@ -82,7 +82,7 @@ class ShopHomeProductBundleSingleViewHolder(
         )
     }
 
-    fun bind(bundle: ShopHomeProductBundleItemUiModel) {
+    fun bind(bundle: ShopHomeProductBundleItemUiModel, widgetTitle: String, widgetName: String) {
         parentSingleBundle = bundle
         singleBundleProduct = parentSingleBundle.bundleProducts.firstOrNull() ?: ShopHomeBundleProductUiModel()
         selectedSingleBundle = parentSingleBundle.bundleDetails.firstOrNull() ?: ShopHomeProductBundleDetailUiModel()
@@ -128,7 +128,9 @@ class ShopHomeProductBundleSingleViewHolder(
                     selectedSingleBundle,
                     singleBundleProduct,
                     bundle.bundleName,
-                    adapterPosition
+                    adapterPosition,
+                    widgetTitle,
+                    widgetName
             )
         }
 
@@ -205,5 +207,7 @@ interface SingleProductBundleListener {
             selectedProduct: ShopHomeBundleProductUiModel,
             bundleName: String,
             bundlePosition: Int,
+            widgetTitle: String,
+            widgetName: String
     )
 }

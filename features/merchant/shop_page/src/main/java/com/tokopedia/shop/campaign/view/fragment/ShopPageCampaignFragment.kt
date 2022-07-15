@@ -24,6 +24,8 @@ import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopCampaignTabTracker
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CAMPAIGN_TAB
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_MULTIPLE_BUNDLING
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_SINGLE_BUNDLING
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.campaign.view.adapter.ShopCampaignTabAdapter
 import com.tokopedia.shop.campaign.view.adapter.ShopCampaignTabAdapterTypeFactory
@@ -31,6 +33,8 @@ import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignProductBu
 import com.tokopedia.shop.campaign.view.adapter.viewholder.WidgetConfigListener
 import com.tokopedia.shop.common.data.model.ShopPageWidgetLayoutUiModel
 import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
+import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
@@ -234,7 +238,7 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
     }
     // endregion
 
-    //region Parent Bundling Widget
+    //region Bundling Widget
     override fun onImpressionBundlingWidget(
         model: ShopHomeProductBundleListUiModel,
         position: Int
@@ -247,6 +251,49 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
             userId
         )
     }
+
+    override fun impressionProductItemBundleMultiple(
+        selectedProduct: ShopHomeBundleProductUiModel,
+        selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
+        bundleName: String,
+        bundlePosition: Int,
+        widgetTitle: String,
+        widgetName: String,
+        productItemPosition: Int
+    ) {
+        shopCampaignTabTracker.impressionCampaignTabProduct(
+            selectedProduct.productId,
+            selectedProduct.productName,
+            widgetName,
+            shopId,
+            userId,
+            widgetTitle,
+            ShopUtil.getActualPositionFromIndex(productItemPosition),
+            VALUE_MULTIPLE_BUNDLING,
+            selectedMultipleBundle.bundleId
+        )
+    }
+
+    override fun impressionProductBundleSingle(
+        selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
+        selectedProduct: ShopHomeBundleProductUiModel,
+        bundleName: String,
+        bundlePosition: Int,
+        widgetTitle: String,
+        widgetName: String
+    ) {
+        shopCampaignTabTracker.impressionCampaignTabProduct(
+            selectedProduct.productId,
+            selectedProduct.productName,
+            widgetName,
+            shopId,
+            userId,
+            widgetTitle,
+            ShopUtil.getActualPositionFromIndex(bundlePosition),
+            VALUE_SINGLE_BUNDLING,
+            selectedSingleBundle.bundleId
+        )
+    }
     //endregion
 
     // region flash sale toko widget
@@ -257,6 +304,22 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
             model.widgetId,
             ShopUtil.getActualPositionFromIndex(position),
             userId
+        )
+    }
+
+    override fun onFlashSaleProductImpression(
+        shopHomeProductUiModel: ShopHomeProductUiModel,
+        flashSaleUiModel: ShopHomeFlashSaleUiModel?,
+        position: Int
+    ) {
+        shopCampaignTabTracker.impressionCampaignTabProduct(
+            shopHomeProductUiModel.id.orEmpty(),
+            shopHomeProductUiModel.name.orEmpty(),
+            flashSaleUiModel?.name.orEmpty(),
+            shopId,
+            userId,
+            flashSaleUiModel?.header?.title.orEmpty(),
+            ShopUtil.getActualPositionFromIndex(position)
         )
     }
     // endregion
@@ -301,18 +364,14 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
         shopHomeProductViewModel: ShopHomeProductUiModel?
     ) {
         shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.let {
-            shopPageHomeTracking.impressionCampaignNplProduct(
-                isOwner,
-                it.statusCampaign,
-                shopHomeProductViewModel?.name ?: "",
-                shopHomeProductViewModel?.id ?: "",
-                shopHomeProductViewModel?.displayedPrice ?: "",
-                shopName,
-                ShopUtil.getActualPositionFromIndex(parentPosition),
-                itemPosition,
-                isLogin,
-                customDimensionShopPage,
-                CAMPAIGN_TAB
+            shopCampaignTabTracker.impressionCampaignTabProduct(
+                shopHomeProductViewModel?.id.orEmpty(),
+                shopHomeProductViewModel?.name.orEmpty(),
+                shopHomeNewProductLaunchCampaignUiModel.name,
+                shopId,
+                userId,
+                shopHomeNewProductLaunchCampaignUiModel.header.title,
+                ShopUtil.getActualPositionFromIndex(itemPosition)
             )
         }
     }
@@ -369,15 +428,20 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
             products: List<ProductCardUiModel>,
             position: Int,
             campaignId: String,
-            campaignName: String
+            campaignName: String,
+            campaignTitle: String
         ) {
-            shopPageHomeTracking.impressionProductCardThematicWidgetCampaign(
-                campaignName = campaignName,
-                campaignId =campaignId,
-                shopId = shopId,
-                userId = userId,
-                products = products,
-            )
+            products.firstOrNull()?.let {
+                shopCampaignTabTracker.impressionCampaignTabProduct(
+                    it.id.orEmpty(),
+                    it.name.orEmpty(),
+                    campaignName,
+                    shopId,
+                    userId,
+                    campaignTitle,
+                    ShopUtil.getActualPositionFromIndex(position)
+                )
+            }
         }
 
         override fun onProductCardThematicWidgetClickListener(
