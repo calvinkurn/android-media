@@ -124,7 +124,6 @@ class AddEditProductEditingAnalyticTest {
     fun testEditProductJourney2() {
         testEditPhoto()
         testEditVariant()
-        testEditPromotion()
         testEditProductStatus()
 
         //stepper
@@ -177,12 +176,6 @@ class AddEditProductEditingAnalyticTest {
         performPressBack()
         performDialogSecondaryClick()
         Thread.sleep(500)
-    }
-
-    private fun testEditPromotion() {
-        performScrollAndClick(R.id.tv_edit_product_promotion)
-        performClick(com.tokopedia.product.manage.R.id.submitCashbackButton)
-        performPressBack()
     }
 
     private fun testEditProductStatus() {
