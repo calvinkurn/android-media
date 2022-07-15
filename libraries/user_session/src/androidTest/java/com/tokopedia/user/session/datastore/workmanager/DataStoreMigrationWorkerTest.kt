@@ -50,7 +50,7 @@ class DataStoreMigrationWorkerTest {
         val sample = SampleUserModel(
             true, "fakeId", "Foo Name", "fooToken", "barToken"
         )
-        with(UserSession(context, spykedPref, AeadEncryptorImpl(context))) {
+        with(UserSession(context, spykedPref, AeadEncryptorImpl(context).getAead())) {
             setSample(sample)
         }
 
@@ -69,7 +69,7 @@ class DataStoreMigrationWorkerTest {
         val sample = SampleUserModel(
             true, "fakeId", "Foo Name", "fooToken", "barToken"
         )
-        with(UserSession(context, spykedPref, AeadEncryptorImpl(context))) {
+        with(UserSession(context, spykedPref, AeadEncryptorImpl(context).getAead())) {
             setSample(sample)
         }
 
@@ -91,7 +91,7 @@ class DataStoreMigrationWorkerTest {
         val sample = SampleUserModel(
             true, "fakeId", "Foo Name", "fooToken", "barToken"
         )
-        val userSession = UserSession(context, spykedPref, AeadEncryptorImpl(context)).apply {
+        val userSession = UserSession(context, spykedPref, AeadEncryptorImpl(context).getAead()).apply {
             setSample(sample)
         }
 

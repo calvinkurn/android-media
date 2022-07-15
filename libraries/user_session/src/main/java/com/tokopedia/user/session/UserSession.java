@@ -54,6 +54,7 @@ import android.content.SharedPreferences;
 import android.provider.Settings;
 import android.text.TextUtils;
 
+import com.google.crypto.tink.Aead;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.encryption.security.AeadEncryptor;
 import com.tokopedia.user.session.datastore.DataStorePreference;
@@ -81,7 +82,7 @@ public class UserSession extends MigratedUserSession implements UserSessionInter
         super(context);
     }
 
-    public UserSession(Context context, DataStorePreference dataStorePreference, AeadEncryptor encryptor) {
+    public UserSession(Context context, DataStorePreference dataStorePreference, Aead encryptor) {
         super(context, dataStorePreference, encryptor);
     }
 

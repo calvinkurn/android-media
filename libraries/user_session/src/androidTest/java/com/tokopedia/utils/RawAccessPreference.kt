@@ -10,4 +10,8 @@ class RawAccessPreference(context: Context, name: String) {
         return sharedPref.all[key]
     }
 
+    fun clearPiiBackup(name: String) {
+        sharedPref.edit().remove("${name}_PII_BACKUP").apply()
+    }
+
 }
