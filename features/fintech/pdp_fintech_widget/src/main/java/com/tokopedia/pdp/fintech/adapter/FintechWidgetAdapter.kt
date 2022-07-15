@@ -152,7 +152,7 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
         val headerPartner = itemView.findViewById<Typography>(R.id.chipHeader)
         val subheaderPartner = itemView.findViewById<Typography>(R.id.chipSubHeader)
         val dummyView = itemView.findViewById<View>(R.id.dummyViewForMargin)
-        val cardContainer = itemView.findViewById<View>(R.id.card_container)
+        val cardContainer = itemView.findViewById<View>(R.id.pdp_fintech_card_container)
 
         init {
 
