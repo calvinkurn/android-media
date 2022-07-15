@@ -5,7 +5,7 @@ import android.annotation.SuppressLint
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
-
+@SuppressLint("Invalid Data Type")
 @Parcelize
 data class FeedXProduct(
         @SerializedName("appLink")
@@ -33,15 +33,15 @@ data class FeedXProduct(
         var mods: List<String> = emptyList(),
         @SerializedName("name")
         var name: String = "",
-        @SuppressLint("Invalid Data Type") @SerializedName("price")
+        @SerializedName("price")
         var price: Int = 0,
-        @SuppressLint("Invalid Data Type") @SerializedName("priceDiscount")
+        @SerializedName("priceDiscount")
         var priceDiscount: Int = 0,
         @SerializedName("priceDiscountFmt")
         var priceDiscountFmt: String = "",
         @SerializedName("priceFmt")
         var priceFmt: String = "",
-        @SuppressLint("Invalid Data Type") @SerializedName("priceOriginal")
+        @SerializedName("priceOriginal")
         var priceOriginal: Int = 0,
         @SerializedName("priceOriginalFmt")
         var priceOriginalFmt: String = "",

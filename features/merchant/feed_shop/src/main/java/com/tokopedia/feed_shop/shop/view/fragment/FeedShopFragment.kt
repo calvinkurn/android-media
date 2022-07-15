@@ -1062,7 +1062,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         view?.let {
             Toaster.make(it, getString(com.tokopedia.feedcomponent.R.string.feed_content_reported),
                     Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL,
-                    getString(R.string.label_close), View.OnClickListener { })
+                    getString(com.tokopedia.universal_sharing.R.string.label_close), View.OnClickListener { })
         }
     }
 
@@ -1070,7 +1070,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         view?.let {
             Toaster.make(it, errorMessage,
                     Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
-                    getString(R.string.label_close), View.OnClickListener { })
+                    getString(com.tokopedia.universal_sharing.R.string.label_close), View.OnClickListener { })
         }
     }
 
