@@ -52,6 +52,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/tvKuponType"
         app:layout_constraintTop_toBottomOf="@+id/chipGroupCashbackType"
+        app:unify_text_field_append_text="%    "
         app:unify_text_field_clearable="false"
         app:unify_text_field_input_type="number"
         app:unify_text_field_label="Persentase Cashback"

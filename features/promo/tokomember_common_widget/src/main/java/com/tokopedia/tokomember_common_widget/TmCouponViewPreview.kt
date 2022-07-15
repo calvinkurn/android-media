@@ -64,14 +64,9 @@ class TmCouponViewPreview @JvmOverloads constructor(
             return floor((couponValue.toInt()/1000.0)).toString()
         }
         else {
-            val dotRemoveValue =
-                couponValue.replaceRange(couponValue.indexOf("."), couponValue.length, "")
-                    .toIntOrNull()
-            dotRemoveValue?.let {
-                result = floor((it / 1000.0)).toString()
-            }
+            result = floor((couponValue.toDouble().toInt() / 1000.0)).toString()
+        }
             return result.replaceRange(result.indexOf("."), result.length, "")
         }
-    }
 
 }
