@@ -715,6 +715,10 @@ class UserProfileFragment @Inject constructor(
     }
 
     override fun onShopRecomFollowClicked(itemID: Long) {
+        UserProfileTracker().clickFollowProfileRecommendation(
+            viewModel.profileUserID,
+            itemID.toString()
+        )
         submitAction(UserProfileAction.ClickFollowButtonShopRecom(itemID))
     }
 
