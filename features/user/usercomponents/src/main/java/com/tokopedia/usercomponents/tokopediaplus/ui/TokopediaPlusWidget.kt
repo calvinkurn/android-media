@@ -58,7 +58,7 @@ class TokopediaPlusWidget @JvmOverloads constructor(
         renderView(param.tokopediaPlusDataModel)
     }
 
-    fun onError(throwable: Throwable) {
+    fun onError(throwable: Throwable? = null) {
         viewBinding.apply {
             tokopediaPlusComponent.root.hide()
             tokopediaPlusLoader.root.hide()
@@ -80,26 +80,30 @@ class TokopediaPlusWidget @JvmOverloads constructor(
 
     private fun renderView(tokopediaPlusDataModel: TokopediaPlusDataModel?) {
         tokopediaPlusDataModel?.let { tokopediaPlusData ->
-            icon = tokopediaPlusData.iconImageURL
-            title = tokopediaPlusData.title
-            subtitle = tokopediaPlusData.subtitle
+            if (tokopediaPlusData.title.isNotEmpty() && tokopediaPlusData.iconImageURL.isNotEmpty()) {
+                icon = tokopediaPlusData.iconImageURL
+                title = tokopediaPlusData.title
+                subtitle = tokopediaPlusData.subtitle
 
-            listener?.isShown(tokopediaPlusData.isShown, pageSource, tokopediaPlusDataModel)
-            viewBinding.apply {
-                root.visibility = if (!tokopediaPlusData.isShown) GONE else VISIBLE
+                listener?.isShown(tokopediaPlusData.isShown, pageSource, tokopediaPlusDataModel)
+                viewBinding.apply {
+                    root.visibility = if (!tokopediaPlusData.isShown) GONE else VISIBLE
 
-                tokopediaPlusComponent.apply {
-                    descriptionTokopediaPlus.visibility = if (
-                        tokopediaPlusData.isSubscriber && tokopediaPlusData.subtitle.isEmpty()
-                    ) GONE else VISIBLE
+                    tokopediaPlusComponent.apply {
+                        descriptionTokopediaPlus.visibility = if (
+                            tokopediaPlusData.isSubscriber && tokopediaPlusData.subtitle.isEmpty()
+                        ) GONE else VISIBLE
 
-                    setOnClickListener {
-                        listener?.onClick(pageSource, tokopediaPlusData)
+                        setOnClickListener {
+                            listener?.onClick(pageSource, tokopediaPlusData)
 
-                        val intent = RouteManager.getIntent(context, tokopediaPlusData.applink)
-                        context.startActivity(intent)
+                            val intent = RouteManager.getIntent(context, tokopediaPlusData.applink)
+                            context.startActivity(intent)
+                        }
                     }
                 }
+            } else {
+                viewBinding.root.hide()
             }
         }
     }
