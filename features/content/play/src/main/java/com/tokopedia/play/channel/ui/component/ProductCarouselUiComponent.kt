@@ -15,11 +15,9 @@ import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
+import com.tokopedia.play_common.delegate.safeOverridingJob
 import com.tokopedia.play_common.eventbus.EventBus
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -68,7 +66,7 @@ class ProductCarouselUiComponent(
         }
     )
 
-    private var setProductsJob: Job? = null
+    private var setProductsJob by safeOverridingJob()
 
     init {
         scope.launch {
@@ -93,11 +91,10 @@ class ProductCarouselUiComponent(
 
         val tagItems = state.value.tagItems
 
-        setProductsJob?.cancel()
-        setProductsJob = scope.launch(dispatchers.immediate) {
-            if (tagItems.resultState.isLoading && tagItems.product.productSectionList.isEmpty()) {
-                uiView.setLoading()
-            } else if (state.isChanged { it.tagItems.product.productSectionList }) {
+        if (tagItems.resultState.isLoading && tagItems.product.productSectionList.isEmpty()) {
+            setProductsJob = scope.launch { uiView.setLoading() }
+        } else if (state.isChanged { it.tagItems.product.productSectionList }) {
+            setProductsJob = scope.launch {
                 uiView.setProducts(getFeaturedProducts(state.value.tagItems))
             }
         }
