@@ -256,10 +256,6 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
                 it.show()
                 it.loadRemoteImageDrawable("", LAKU6_ERROR_IMAGE)
             }
-            setActionClickListener {
-                view?.findViewById<View>(R.id.tradein_error_layout)?.hide()
-                setUpEducationalFragment()
-            }
         }
     }
 
@@ -268,6 +264,8 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
         tradeInAnalytics.errorScreen(errorCode)
         view?.findViewById<NestedScrollView>(R.id.scroll_parent)?.hide()
         view?.findViewById<GlobalError>(R.id.home_global_error)?.run {
+
+            errorAction.hide()
             //Tokopedia Backend errors
             when (it) {
                 is UnknownHostException, is SocketTimeoutException -> {
@@ -283,7 +281,6 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
                 }
             }
             if (isFraud) {
-                errorAction.hide()
                 errorDescription.text = getString(R.string.tradein_fraud_description)
                 errorIllustration.hide()
                 view?.findViewById<DeferredImageView>(R.id.error_image_view)?.let {
@@ -295,13 +292,7 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
                 view?.findViewById<View>(R.id.error_image_view)?.hide()
             }
             view?.findViewById<View>(R.id.tradein_error_layout)?.show()
-            setActionClickListener {
-                view?.findViewById<View>(R.id.tradein_error_layout)?.hide()
-                if (isFraud)
-                    setUpEducationalFragment()
-                else
-                    refreshPage()
-            }
+            errorAction.hide()
         }
     }
 
