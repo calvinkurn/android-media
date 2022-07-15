@@ -2644,6 +2644,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         getHomeViewModel().deletePayLaterWidget()
     }
 
+    override fun refreshBalanceWidget() {
+        getHomeViewModel().refreshBalanceWidget()
+    }
+
     override fun showBalanceWidgetCoachMark(homeBalanceModel: HomeBalanceModel) {
         val balanceSubscriptionCoachmark = homeBalanceModel.getSubscriptionBalanceCoachmark()
         if (balanceSubscriptionCoachmark == null && coachmarkSubscription?.isShowing == true)

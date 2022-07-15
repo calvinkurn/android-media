@@ -23,6 +23,7 @@ class BalanceWidgetFailedViewHolder (itemView: View, val listener: HomeCategoryL
     override fun bind(element: BalanceWidgetFailedModel) {
         binding?.localloadErrorBalanceWidget?.refreshBtn?.setOnClickListener {
             binding?.localloadErrorBalanceWidget?.progressState = START_PROGRESS_STATE
+            listener?.refreshBalanceWidget()
         }
     }
 }

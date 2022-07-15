@@ -214,6 +214,10 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    fun refreshBalanceWidget() {
+        getBalanceWidgetData()
+    }
+
     fun getBalanceWidgetData() {
         if (!userSession.get().isLoggedIn) return
         findWidget<HomeHeaderDataModel> { headerModel, index ->
