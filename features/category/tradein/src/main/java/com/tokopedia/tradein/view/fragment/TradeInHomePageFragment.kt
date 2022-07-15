@@ -196,7 +196,7 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
         viewModel.tradeInDetailLiveData.observe(viewLifecycleOwner, Observer {
             if(it.getTradeInDetail.errMessage.isNotEmpty()){
                 if(it.getTradeInDetail.isFraud){
-                    setErrorTokopedia(Throwable(it.getTradeInDetail.errMessage), true, it.getTradeInDetail.errTitle, it.getTradeInDetail.errCode.toString())
+                    setErrorTokopedia(Throwable(it.getTradeInDetail.errMessage), true, it.getTradeInDetail.errTitle, it.getTradeInDetail.errMessage)
                 } else {
                     onTradeInDetailSuccess(it)
                     showToast(it.getTradeInDetail.errMessage, getString(R.string.tradein_ok), {
@@ -208,7 +208,7 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
             }
         })
         tradeInHomePageVM.getWarningMessage().observe(viewLifecycleOwner, Observer {
-            setErrorTokopedia(Throwable(it), errorCode = it)
+            setErrorTokopedia(Throwable(it), errorMessage = it)
         })
         viewModel.getProgBarVisibility().observe(viewLifecycleOwner, Observer {
             if (it)
@@ -220,7 +220,7 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
             setErrorLaku6(it)
         })
         viewModel.getErrorMessage().observe(viewLifecycleOwner, Observer {
-            setErrorTokopedia(it, errorCode = it.localizedMessage ?: "")
+            setErrorTokopedia(it, errorMessage = it.localizedMessage ?: "")
         })
     }
 
@@ -246,8 +246,8 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
     }
 
     private fun setErrorTokopedia(it: Throwable?, isFraud : Boolean = false,
-                                  errTitle : String = getString(com.tokopedia.tradein.R.string.tradein_cant_continue), errorCode : String) {
-        tradeInAnalytics.errorScreen(errorCode)
+                                  errTitle : String = getString(com.tokopedia.tradein.R.string.tradein_cant_continue), errorMessage : String){
+        tradeInAnalytics.errorScreen(errorMessage, viewModel.tradeInDetailLiveData.value?.getTradeInDetail?.deviceAttribute)
         view?.findViewById<GlobalError>(R.id.home_global_error)?.run {
             //Tokopedia Backend errors
             when (it) {
