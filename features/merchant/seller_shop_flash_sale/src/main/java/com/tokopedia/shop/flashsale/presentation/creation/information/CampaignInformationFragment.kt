@@ -564,7 +564,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
     private fun displayStartDatePicker() {
         val selectedDate = viewModel.getSelectedStartDate()
-        val minimumDate = dateManager.getCurrentDate().advanceHourBy(TWO_HOURS)
+        val minimumDate = dateManager.getCurrentDate().decreaseHourBy(TWO_HOURS)
         val maximumEndDate = dateManager.getCurrentDate().advanceMonthBy(THREE_MONTH)
 
         val bottomSheet = CampaignDatePickerBottomSheet.newInstance(
