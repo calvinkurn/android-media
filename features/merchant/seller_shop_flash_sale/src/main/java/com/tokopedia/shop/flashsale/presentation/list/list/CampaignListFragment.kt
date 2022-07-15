@@ -762,6 +762,10 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         showSaveDraftSuccessMessage()
     }
 
+    override fun onEditCampaignSuccess() {
+        binding?.cardView showToaster getString(R.string.sfs_edit_campaign_success)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 

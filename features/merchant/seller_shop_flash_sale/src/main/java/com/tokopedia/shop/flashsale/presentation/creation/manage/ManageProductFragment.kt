@@ -459,7 +459,7 @@ class ManageProductFragment : BaseDaggerFragment() {
 
     private fun routeToCampaignListPage() {
         val context = context ?: return
-        CampaignListActivity.start(context, isSaveDraft = true)
+        CampaignListActivity.start(context, isSaveDraft = true, previousPageMode = pageMode)
     }
 
     private fun handleScrollDownEvent() {
