@@ -20,8 +20,8 @@ class TokopediaPlusWidget @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ): ConstraintLayout(context, attributeSet, defStyleAttr) {
 
-    private var listener: TokopediaPlusListener? = null
     private var pageSource: String = ""
+    var listener: TokopediaPlusListener? = null
 
     private var viewBinding: UiTokopediaPlusBinding =
         UiTokopediaPlusBinding.inflate(
@@ -50,11 +50,9 @@ class TokopediaPlusWidget @JvmOverloads constructor(
         }
 
     fun setContent(
-        param: TokopediaPlusParam,
-        listener: TokopediaPlusListener
+        param: TokopediaPlusParam
     ) {
         pageSource = param.pageSource
-        this.listener = listener
 
         hideLoading()
         renderView(param.tokopediaPlusDataModel)
@@ -86,21 +84,20 @@ class TokopediaPlusWidget @JvmOverloads constructor(
             title = tokopediaPlusData.title
             subtitle = tokopediaPlusData.subtitle
 
+            listener?.isShown(tokopediaPlusData.isShown, pageSource, tokopediaPlusDataModel)
             viewBinding.apply {
-                if (!tokopediaPlusData.isShown) {
-                    root.hide()
-                } else {
-                    tokopediaPlusComponent.apply {
-                        descriptionTokopediaPlus.visibility =
-                            if (tokopediaPlusData.isSubscriber) GONE
-                            else VISIBLE
+                root.visibility = if (!tokopediaPlusData.isShown) GONE else VISIBLE
 
-                        iconDirectionTokopediaPlusPage.setOnClickListener {
-                            listener?.onClick(pageSource, tokopediaPlusData)
+                tokopediaPlusComponent.apply {
+                    descriptionTokopediaPlus.visibility = if (
+                        tokopediaPlusData.isSubscriber && tokopediaPlusData.subtitle.isEmpty()
+                    ) GONE else VISIBLE
 
-                            val intent = RouteManager.getIntent(context, tokopediaPlusData.applink)
-                            context.startActivity(intent)
-                        }
+                    iconDirectionTokopediaPlusPage.setOnClickListener {
+                        listener?.onClick(pageSource, tokopediaPlusData)
+
+                        val intent = RouteManager.getIntent(context, tokopediaPlusData.applink)
+                        context.startActivity(intent)
                     }
                 }
             }
