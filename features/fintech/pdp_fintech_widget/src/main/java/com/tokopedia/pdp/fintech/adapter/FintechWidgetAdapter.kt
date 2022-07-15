@@ -87,7 +87,7 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
                 holder.subheaderPartner.setTextColor(
                     ContextCompat.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_G500
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
                     )
                 )
                 holder.subheaderPartner.fontType = Typography.BOLD
