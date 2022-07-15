@@ -1,5 +1,6 @@
 package com.tokopedia.people.analytic
 
+import com.tokopedia.track.TrackApp
 import javax.inject.Inject
 
 class UserProfileTracker @Inject constructor() {
@@ -483,6 +484,7 @@ class UserProfileTracker @Inject constructor() {
         map[UserProfileAnalytics.Constants.USER_ID] = userId
         map[UserProfileAnalytics.Constants.BUSINESS_UNIT] = UserProfileAnalytics.Constants.CONTENT
         map[UserProfileAnalytics.Constants.CURRENT_SITE] = UserProfileAnalytics.Constants.TOKOPEDIA_MARKETPLACE
+        map[UserProfileAnalytics.Constants.SESSION_IRIS] = TrackApp.getInstance().gtm.irisSessionId
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
@@ -496,6 +498,7 @@ class UserProfileTracker @Inject constructor() {
         map[UserProfileAnalytics.Constants.USER_ID] = userId
         map[UserProfileAnalytics.Constants.BUSINESS_UNIT] = UserProfileAnalytics.Constants.CONTENT
         map[UserProfileAnalytics.Constants.CURRENT_SITE] = UserProfileAnalytics.Constants.TOKOPEDIA_MARKETPLACE
+        map[UserProfileAnalytics.Constants.SESSION_IRIS] = TrackApp.getInstance().gtm.irisSessionId
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
@@ -515,6 +518,7 @@ class UserProfileTracker @Inject constructor() {
         promoMap[UserProfileAnalytics.Constants.ITEM_ID] = shopId
         promoMap[UserProfileAnalytics.Constants.ITEM_NAME] = UserProfileAnalytics.ScreenName.FEED_USER_PROFILE_PROFILE_RECOMMENDATION_CAROUSEL
         map[UserProfileAnalytics.Constants.PROMOTIONS] = listOf(promoMap, promoMap)
+        map[UserProfileAnalytics.Constants.SESSION_IRIS] = TrackApp.getInstance().gtm.irisSessionId
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
@@ -528,6 +532,7 @@ class UserProfileTracker @Inject constructor() {
         map[UserProfileAnalytics.Constants.USER_ID] = userId
         map[UserProfileAnalytics.Constants.BUSINESS_UNIT] = UserProfileAnalytics.Constants.CONTENT
         map[UserProfileAnalytics.Constants.CURRENT_SITE] = UserProfileAnalytics.Constants.TOKOPEDIA_MARKETPLACE
+        map[UserProfileAnalytics.Constants.SESSION_IRIS] = TrackApp.getInstance().gtm.irisSessionId
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
@@ -541,6 +546,7 @@ class UserProfileTracker @Inject constructor() {
         map[UserProfileAnalytics.Constants.USER_ID] = userId
         map[UserProfileAnalytics.Constants.BUSINESS_UNIT] = UserProfileAnalytics.Constants.CONTENT
         map[UserProfileAnalytics.Constants.CURRENT_SITE] = UserProfileAnalytics.Constants.TOKOPEDIA_MARKETPLACE
+        map[UserProfileAnalytics.Constants.SESSION_IRIS] = TrackApp.getInstance().gtm.irisSessionId
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
@@ -554,6 +560,7 @@ class UserProfileTracker @Inject constructor() {
         map[UserProfileAnalytics.Constants.USER_ID] = userId
         map[UserProfileAnalytics.Constants.BUSINESS_UNIT] = UserProfileAnalytics.Constants.CONTENT
         map[UserProfileAnalytics.Constants.CURRENT_SITE] = UserProfileAnalytics.Constants.TOKOPEDIA_MARKETPLACE
+        map[UserProfileAnalytics.Constants.SESSION_IRIS] = TrackApp.getInstance().gtm.irisSessionId
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
@@ -619,6 +626,7 @@ class UserProfileTracker @Inject constructor() {
         map[UserProfileAnalytics.Constants.USER_ID] = userId
         map[UserProfileAnalytics.Constants.BUSINESS_UNIT] = UserProfileAnalytics.Constants.CONTENT
         map[UserProfileAnalytics.Constants.CURRENT_SITE] = UserProfileAnalytics.Constants.TOKOPEDIA_MARKETPLACE
+        map[UserProfileAnalytics.Constants.SESSION_IRIS] = TrackApp.getInstance().gtm.irisSessionId
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
