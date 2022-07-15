@@ -14,5 +14,5 @@ class PageErrorTracker(
         "$shopDomain/$productKey"
     else deeplinkUrl
 
-    val finalProductId = productId ?: "0"
+    val finalProductId = productId.toZeroStringIfNull()
 }

@@ -5051,7 +5051,7 @@ open class DynamicProductDetailFragment :
         productId,
         isFromDeeplink,
         deeplinkUrl,
-        shopDomain ?: "",
-        productKey ?: ""
+        shopDomain.orEmpty(),
+        productKey.orEmpty()
     )
 }
