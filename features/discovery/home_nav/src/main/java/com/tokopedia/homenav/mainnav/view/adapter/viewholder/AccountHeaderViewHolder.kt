@@ -354,12 +354,13 @@ class AccountHeaderViewHolder(itemView: View,
     }
 
     private fun setTokopediaPlus(tokopediaPlusDataModel: TokopediaPlusDataModel){
+        tokopediaPlusWidget.listener = tokopediaPlusListener
         tokopediaPlusDataModel.let {
             if(it.isGetTokopediaPlusLoading){
                 tokopediaPlusWidget.showLoading()
             }
             it.tokopediaPlusParam?.let { param ->
-                tokopediaPlusWidget.setContent(param, tokopediaPlusListener)
+                tokopediaPlusWidget.setContent(param)
             }
             it.tokopediaPlusError?.let { error ->
                 tokopediaPlusWidget.onError(error)
