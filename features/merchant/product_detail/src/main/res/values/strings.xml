@@ -136,6 +136,7 @@
     <string name="product_shop_rating">rating toko</string>
     <string name="product_shop_total_product">total produk</string>
     <string name="product_shop_process_product">pesanan diproses</string>
+    <string name="product_shop_finish_rate_product">pesanan selesai</string>
     <string name="product_shop_chat_reply">balas chat &amp; diskusi</string>
     <string name="product_shop_start_sell">mulai jualan</string>
 

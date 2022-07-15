@@ -87,4 +87,10 @@ object ApplinkConstInternalUserPlatform {
      **/
     const val EXPLICIT_PROFILE = "${NEW_INTERNAL_USER}/explicit-profile"
 
+    /**
+    * PrivacyAccountActivity
+    * @Applink : tokopedia-android-internal://user/privacy-account
+    **/
+    const val PRIVACY_ACCOUNT = "${NEW_INTERNAL_USER}/privacy-account"
+
 }
