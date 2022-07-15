@@ -1,6 +1,5 @@
 package com.tokopedia.tokopedianow.data
 
-import com.tokopedia.play.widget.ui.mapper.PlayWidgetUiMock
 import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelTypeTransition
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
@@ -33,7 +32,7 @@ fun createPlayWidgetChannel(channelId: String, totalView: String): PlayWidgetCha
             isShow = true
         ),
         performanceSummaryLink = "tokopedia://webview?url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fshop%2Fituajakak%2Fstatistic%2F10734",
-        hasGiveaway = true,
+        hasGame = true,
         poolType = "",
         recommendationType = "",
         channelTypeTransition = PlayWidgetChannelTypeTransition(null, PlayWidgetChannelType.Live),
