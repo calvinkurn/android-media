@@ -9,6 +9,10 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.shop.common.util.ShopUtil.isUrlPng
+import com.tokopedia.shop.databinding.ShopPageDynamicTabViewBinding
 import com.tokopedia.shop.databinding.ShopPageTabViewBinding
 import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
 import java.lang.ref.WeakReference
@@ -41,6 +45,18 @@ internal class ShopPageFragmentPagerAdapter(
         }
     }
 
+    fun getDynamicTabView(position: Int, selectedPosition: Int): View = ShopPageDynamicTabViewBinding.inflate(LayoutInflater.from(ctxRef.get())).apply {
+        setDynamicTabIcon(this, position, position == selectedPosition)
+    }.root
+
+    fun handleSelectedDynamicTab(tab: TabLayout.Tab, isActive: Boolean) {
+        tab.customView?.let {
+            ShopPageDynamicTabViewBinding.bind(it).apply {
+                setDynamicTabIcon(this, tab.position, isActive)
+            }
+        }
+    }
+
     private fun getTabIconDrawable(position: Int, isActive: Boolean): Int? = ctxRef.get()?.run {
         return if (isActive) {
             listShopPageTabModel[position].tabIconActive
@@ -62,6 +78,27 @@ internal class ShopPageFragmentPagerAdapter(
                     val iconColor = ContextCompat.getColor(it, ICON_COLOR_LIGHT)
                     setImage(newIconId = iconId, newLightEnable = iconColor)
                 }
+            }
+        }
+    }
+
+    private fun setDynamicTabIcon(binding: ShopPageDynamicTabViewBinding, position: Int, isActive: Boolean) {
+        binding.shopPageDynamicTabViewIcon.hide()
+        ctx?.let {
+            val iconUrl: String = if (isActive) {
+                listShopPageTabModel.getOrNull(position)?.iconActiveUrl.orEmpty()
+            } else {
+                listShopPageTabModel.getOrNull(position)?.iconUrl.orEmpty()
+            }
+            when {
+                iconUrl.isUrlPng() -> {
+                    binding.shopPageDynamicTabViewIcon.apply {
+                        show()
+                        setImageUrl(iconUrl)
+                        isEnabled = true
+                    }
+                }
+                else -> {}
             }
         }
     }
