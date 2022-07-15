@@ -522,7 +522,7 @@ class UserProfileTracker @Inject constructor() {
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    fun clickProfileRecommendation(userId: String, shopId: String){
+    fun clickProfileRecommendation(userId: String, shopId: String, imageUrl: String, postPosition: Int){
         val map = mutableMapOf<String, Any>()
         map[UserProfileAnalytics.Constants.EVENT] = UserProfileAnalytics.Event.EVENT_SELECT_CONTENT
         map[UserProfileAnalytics.Constants.EVENT_ACTION] = UserProfileAnalytics.Action.CLICK_PROFILE_RECOMMENDATION
@@ -532,6 +532,12 @@ class UserProfileTracker @Inject constructor() {
         map[UserProfileAnalytics.Constants.USER_ID] = userId
         map[UserProfileAnalytics.Constants.BUSINESS_UNIT] = UserProfileAnalytics.Constants.CONTENT
         map[UserProfileAnalytics.Constants.CURRENT_SITE] = UserProfileAnalytics.Constants.TOKOPEDIA_MARKETPLACE
+        val promoMap = mutableMapOf<String, Any>()
+        promoMap[UserProfileAnalytics.Constants.CREATIVE_NAME] = imageUrl
+        promoMap[UserProfileAnalytics.Constants.CREATIVE_SLOT] = postPosition
+        promoMap[UserProfileAnalytics.Constants.ITEM_ID] = shopId
+        promoMap[UserProfileAnalytics.Constants.ITEM_NAME] = UserProfileAnalytics.ScreenName.FEED_USER_PROFILE_PROFILE_RECOMMENDATION_CAROUSEL
+        map[UserProfileAnalytics.Constants.PROMOTIONS] = listOf(promoMap, promoMap)
         map[UserProfileAnalytics.Constants.SESSION_IRIS] = TrackApp.getInstance().gtm.irisSessionId
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
