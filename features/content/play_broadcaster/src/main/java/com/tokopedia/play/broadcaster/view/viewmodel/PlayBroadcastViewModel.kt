@@ -1555,16 +1555,15 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     fun setPinned(product: ProductUiModel) {
         viewModelScope.launch {
-            Log.d("sukses", channelId + product.id)
             val result = repo.setPinProduct(channelId, product.id)
             _productSectionList.update { sectionList ->
                 sectionList.map { sectionUiModel ->
                     sectionUiModel.copy(campaignStatus = sectionUiModel.campaignStatus, products =
-                    sectionUiModel.products.map { product ->
-                        if(product.id == product.id)
-                            product.copy(pinStatus = product.pinStatus.copy(pinStatus = PinStatus.Pinned))
+                    sectionUiModel.products.map { prod ->
+                        if(prod.id == product.id)
+                            prod.copy(pinStatus = prod.pinStatus.copy(pinStatus = PinStatus.Pinned))
                         else
-                            product
+                            prod
                     })
                 }
             }
