@@ -1,0 +1,20 @@
+[
+  {
+    "data": {
+      "getHomeBalanceWidget": {
+        "balances": [
+          {
+            "title": "GoPay",
+            "type": "gopay",
+            "data": ""
+          },
+          {
+            "title": "Rewards",
+            "type": "rewards",
+            "data": ""
+          }
+        ]
+      }
+    }
+  }
+]
