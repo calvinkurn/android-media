@@ -2125,6 +2125,7 @@ open class ProductManageFragment :
 
 
     override fun onClickCampaignInfo(campaignTypeList: List<ProductCampaignType>) {
+        if (!isAdded) return
         showOngoingPromotionBottomSheet(campaignTypeList)
     }
 

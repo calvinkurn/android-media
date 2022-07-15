@@ -20,7 +20,7 @@ object MediaLoaderTarget {
 
     private val bitmap by lazy { BitmapFactory() }
 
-    fun <T: View> loadImage(context: Context, properties: Properties, target: MediaTarget<T>) {
+    fun <T : View> loadImage(context: Context, properties: Properties, target: MediaTarget<T>) {
         if (target is ImageView && properties.data == null) {
             // if the data source is null, the image will be render the error drawable
             target.setImageDrawable(AppCompatResources.getDrawable(context, properties.error))
@@ -45,37 +45,44 @@ object MediaLoaderTarget {
         isSecure: Boolean = false
     ): GlideRequest<Bitmap>? {
         if (properties.data.toString().isEmpty()) return null
+
         if (properties.data !is String) return null
 
         GlideApp.with(context).asBitmap().also {
-            // url builder
-            val source = Loader.urlBuilder(properties.data.toString())
-            return when(properties.data) {
+
+            return when (properties.data) {
                 is String -> {
-                    val url = GlideUrl(source, LazyHeaders.Builder()
-                        .apply {
-                            if (isSecure) {
-                                headers(
-                                    accessToken = properties.accessToken,
-                                    userId = properties.userId
-                                )
-                            }
-                        }
-                        .build()
-                    )
+                    val source = Loader.urlBuilder(properties.data.toString())
+
                     properties.setUrlHasQuality(source)
+
                     bitmap.build(
                         context = context,
                         properties = properties,
                         request = it
-                    ).load(url)
+                    ).load(
+                        if (!isSecure) source
+                        else {
+                            GlideUrl(source, LazyHeaders.Builder()
+                                .apply {
+                                    if (isSecure) {
+                                        headers(
+                                            accessToken = properties.accessToken,
+                                            userId = properties.userId
+                                        )
+                                    }
+                                }
+                                .build()
+                            )
+                        }
+                    )
                 }
                 else -> {
                     bitmap.build(
                         context = context,
                         properties = properties,
                         request = it
-                    ).load(source)
+                    ).load(properties.data)
                 }
             }
         }
