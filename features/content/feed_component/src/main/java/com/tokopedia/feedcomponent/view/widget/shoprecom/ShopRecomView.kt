@@ -40,7 +40,7 @@ class ShopRecomView : FrameLayout, LifecycleObserver {
     )
 
     init {
-        (context as LifecycleOwner).lifecycle.addObserver(this)
+        if (context is LifecycleOwner) (context as LifecycleOwner).lifecycle.addObserver(this)
     }
 
     fun setListener(listener: ShopRecommendationCallback?) {
@@ -66,7 +66,12 @@ class ShopRecomView : FrameLayout, LifecycleObserver {
     }
 
     private fun onClickListener(data: ShopRecomUiModelItem) = with(binding) {
-        clItemShopContainer.setOnClickListener { mListener?.onShopRecomItemClicked(data.applink) }
+        clItemShopContainer.setOnClickListener {
+            mListener?.onShopRecomItemClicked(
+                data.id,
+                data.applink
+            )
+        }
         imgItemShopClose.setOnClickListener { mListener?.onShopRecomCloseClicked(data.id) }
         btnItemShop.setOnClickListener { mListener?.onShopRecomFollowClicked(data.id) }
     }
