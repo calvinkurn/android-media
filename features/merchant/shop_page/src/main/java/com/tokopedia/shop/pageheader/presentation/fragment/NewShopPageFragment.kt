@@ -267,6 +267,7 @@ class NewShopPageFragment :
     private var shopPageFragmentHeaderViewHolder: NewShopPageFragmentHeaderViewHolder? = null
     private var viewPagerAdapter: ShopPageFragmentPagerAdapter? = null
     private var errorTextView: TextView? = null
+    private var subErrorTextView: TextView? = null
     private var errorButton: View? = null
     private var shopPageFab: FloatingButtonUnify? = null
     private var isForceNotShowingTab: Boolean = false
@@ -419,6 +420,7 @@ class NewShopPageFragment :
         scrollToTopButton = viewBindingShopContentLayout?.buttonScrollToTop
         //    we can't use viewbinding for the code below, since the layout from abstraction hasn't implement viewbinding
         errorTextView = shopPageErrorState?.findViewById(com.tokopedia.abstraction.R.id.message_retry)
+        subErrorTextView = shopPageErrorState?.findViewById(com.tokopedia.abstraction.R.id.sub_message_retry)
         errorButton = shopPageErrorState?.findViewById(com.tokopedia.abstraction.R.id.button_retry)
         setupBottomSheetSellerMigration(view)
         shopPageFragmentHeaderViewHolder = NewShopPageFragmentHeaderViewHolder(
@@ -557,7 +559,7 @@ class NewShopPageFragment :
                                 errType = SHOP_PAGE_HEADER_BUYER_FLOW_TAG
                         )
                     }
-                    onErrorGetShopPageTabData(throwable)
+                    onErrorGetShopPageTabData()
                 }
             }
             stopMonitoringPltCustomMetric(SHOP_TRACE_HEADER_SHOP_NAME_AND_PICTURE_RENDER)
@@ -618,7 +620,7 @@ class NewShopPageFragment :
                                 errType = SHOP_PAGE_HEADER_BUYER_FLOW_TAG
                         )
                     }
-                    onErrorGetShopPageTabData(throwable)
+                    onErrorGetShopPageTabData()
                 }
             }
         })
@@ -1901,10 +1903,11 @@ class NewShopPageFragment :
         }
     }
 
-    private fun onErrorGetShopPageTabData(e: Throwable?) {
+    private fun onErrorGetShopPageTabData() {
         context?.run {
             setViewState(VIEW_ERROR)
-            errorTextView?.text = ErrorHandler.getErrorMessage(this, e)
+            errorTextView?.text = getString(R.string.shop_page_error_title_get_p1)
+            subErrorTextView?.text = getString(R.string.shop_page_error_sub_title_get_p1)
             errorButton?.setOnClickListener {
                 isRefresh = true
                 getInitialData()
