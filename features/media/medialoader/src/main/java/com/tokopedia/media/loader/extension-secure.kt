@@ -3,8 +3,8 @@ package com.tokopedia.media.loader
 import android.content.Context
 import android.graphics.Bitmap
 import android.widget.ImageView
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.media.loader.common.Properties
+import com.tokopedia.media.loader.data.ERROR_RES_UNIFY
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.media.loader.tracker.MediaLoaderTracker
 import com.tokopedia.user.session.UserSessionInterface
@@ -15,9 +15,11 @@ inline fun ImageView.loadSecureImage(
     userSession: UserSessionInterface,
     crossinline properties: Properties.() -> Unit = {}
 ) {
-    if (userSession.accessToken.isEmpty() && GlobalConfig.isAllowDebuggingTools()) {
+    if (userSession.accessToken.isEmpty() || url.isNullOrEmpty()) {
         Timber.e("MediaLoader: Access token not found")
         MediaLoaderTracker.simpleTrack(context, url.toString())
+
+        loadImage(ERROR_RES_UNIFY)
         return
     }
 
@@ -39,7 +41,12 @@ fun loadSecureImageWithEmptyTarget(
     properties: Properties.() -> Unit = {},
     mediaTarget: MediaBitmapEmptyTarget<Bitmap>
 ) {
-    if (userSession.accessToken.isEmpty() || url.isNullOrEmpty()) return
+    if (userSession.accessToken.isEmpty() || url.isNullOrEmpty()) {
+        Timber.e("MediaLoader: Access token not found")
+        MediaLoaderTracker.simpleTrack(context, url.toString())
+        return
+    }
+
     MediaLoaderTarget.loadImage(
         context,
         Properties()

@@ -26,6 +26,9 @@ internal object QueryRechargeBuWidget {
             "                    action\n" +
             "                    data\n" +
             "                  }\n" +
+            "                  tracking_data{\n"+
+            "                    user_type\n"+
+            "                  }\n"+
             "                  items {\n" +
             "                    id\n" +
             "                    title\n" +
@@ -47,6 +50,7 @@ internal object QueryRechargeBuWidget {
             "                    tracking_data{\n" +
             "                      product_id\n" +
             "                      operator_id\n" +
+            "                      channel_id\n"+
             "                      business_unit\n" +
             "                      item_type\n" +
             "                      item_label\n" +
