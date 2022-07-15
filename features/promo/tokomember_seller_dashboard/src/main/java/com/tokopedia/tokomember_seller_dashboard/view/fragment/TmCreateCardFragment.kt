@@ -56,6 +56,7 @@ import com.tokopedia.tokomember_seller_dashboard.view.customview.BottomSheetClic
 import com.tokopedia.tokomember_seller_dashboard.view.customview.TokomemberBottomsheet
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmDashCreateViewModel
 import com.tokopedia.unifycomponents.ProgressBarUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -189,7 +190,7 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
                 }
                  TokoLiveDataResult.STATUS.ERROR -> {
                      closeLoadingDialog()
-                     handleErrorUiOnUpdate()
+                     view?.let { it1 -> Toaster.build(it1,"Coba Lagi", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show() }
                 }
             }
         })
@@ -208,7 +209,7 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
             else -> ERROR_CREATING_TITLE_RETRY
         }
         val cta = when(retryCount){
-            0-> ERROR_CREATING_CTA
+            0-> RETRY
             else -> ERROR_CREATING_CTA_RETRY
         }
         val bundle = Bundle()

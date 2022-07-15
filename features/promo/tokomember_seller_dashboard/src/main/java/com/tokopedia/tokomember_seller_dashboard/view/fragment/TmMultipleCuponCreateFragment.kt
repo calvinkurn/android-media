@@ -76,8 +76,6 @@ import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_EXTEND_CTA
 import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_TYPE_AUTO
 import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_TYPE_MANUAL
 import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_VALIDATION_CTA_TEXT
-import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_VALIDATION_ERROR_DESC
-import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_VALIDATION_ERROR_TITLE
 import com.tokopedia.tokomember_seller_dashboard.util.RETRY
 import com.tokopedia.tokomember_seller_dashboard.util.SIMPLE_DATE_FORMAT
 import com.tokopedia.tokomember_seller_dashboard.util.SOURCE_MULTIPLE_COUPON_CREATE
@@ -367,6 +365,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                         handleProgramValidateNetworkError()
                     }
                     else -> {
+                        handleServerError()
                     }
                 }
             })
@@ -374,22 +373,31 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         tmDashCreateViewModel.tmProgramValidateLiveData.observe(viewLifecycleOwner, {
             when (it.status) {
                 TokoLiveDataResult.STATUS.SUCCESS -> {
-                    if (it.data?.membershipValidateBenefit?.resultStatus?.code == "200") {
-                        errorState.isValidateCouponError = false
-                        uploadImageVip()
-                    } else {
-                        closeLoadingDialog()
-                        setButtonState()
-                        handleProgramPreValidateError(it.data?.membershipValidateBenefit?.resultStatus?.message?.getOrNull(0), it.data?.membershipValidateBenefit?.resultStatus?.message?.getOrNull(1))
+                    when (it.data?.membershipValidateBenefit?.resultStatus?.code) {
+                        CODE_SUCCESS -> {
+                            errorState.isValidateCouponError = false
+                            uploadImageVip()
+                        }
+                        CODE_PROGRAM_OUTSIDE -> {
+                            closeLoadingDialog()
+                            setButtonState()
+                            handleProgramPreValidateError(it.data?.membershipValidateBenefit?.resultStatus?.message?.getOrNull(0), it.data?.membershipValidateBenefit?.resultStatus?.message?.getOrNull(1) , PROGRAM_VALIDATION_CTA_TEXT)
+                        }
+                        else -> {
+                            closeLoadingDialog()
+                            setButtonState()
+                            handleProgramValidateServerError(it.data?.membershipValidateBenefit?.resultStatus?.message?.getOrNull(0), it.data?.membershipValidateBenefit?.resultStatus?.message?.getOrNull(1))
+                        }
                     }
                 }
                 TokoLiveDataResult.STATUS.ERROR -> {
                     errorState.isValidateCouponError = false
                     setButtonState()
                     closeLoadingDialog()
-                    handleProgramValidateServerError()
+                    handleProgramValidateServerError("","")
                 }
                 else -> {
+                    handleServerError()
                 }
             }
         })
@@ -419,18 +427,10 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 }
                 TokoLiveDataResult.STATUS.ERROR -> {
                     errorState.isUploadPremium = true
-                    setButtonState()
-                    closeLoadingDialog()
-                    view?.let { v ->
-                        Toaster.build(
-                            v,
-                            RETRY,
-                            Toaster.LENGTH_LONG,
-                            Toaster.TYPE_ERROR,
-                            ).show()
-                    }
+                    handleServerError()
                 }
                 else -> {
+                    handleServerError()
                 }
             }
         })
@@ -460,21 +460,26 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 }
                 TokoLiveDataResult.STATUS.ERROR -> {
                     errorState.isUploadVipError = true
-                    setButtonState()
-                    closeLoadingDialog()
-                    view?.let { v ->
-                        Toaster.build(
-                            v,
-                            RETRY,
-                            Toaster.LENGTH_LONG,
-                            Toaster.TYPE_ERROR
-                        ).show()
-                    }
+                    handleServerError()
                 }
                 else -> {
+                    handleServerError()
                 }
             }
         })
+    }
+
+    private fun handleServerError(){
+        setButtonState()
+        closeLoadingDialog()
+        view?.let { v ->
+            Toaster.build(
+                v,
+                RETRY,
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR
+            ).show()
+        }
     }
 
     private fun openLoadingDialog() {
@@ -548,26 +553,41 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun handleProgramPreValidateError(reason: String?, message: String?) {
-        setButtonState()
+    private fun handleProgramPreValidateError(reason: String?, message: String? ,ctaError:String ="") {
         val bundle = Bundle()
+
         val title = if(reason.isNullOrEmpty()) {
-            PROGRAM_VALIDATION_ERROR_TITLE
+            when (retryCount) {
+                0 -> ERROR_CREATING_TITLE
+                else -> ERROR_CREATING_TITLE_RETRY
+            }
         }
         else{
             reason
         }
-        val desc = if(message.isNullOrEmpty()) {
-            PROGRAM_VALIDATION_ERROR_DESC
+        var desc = ERROR_CREATING_DESC
+        if(!message.isNullOrEmpty()){
+            desc = message
         }
-        else{
-            message
-        }
+
+        val image: String
+        val cta =
+            if (ctaError.isEmpty()) {
+                image = ""
+                when (retryCount) {
+                    0 -> RETRY
+                    else -> ERROR_CREATING_CTA_RETRY
+                }
+            } else {
+                image = TM_ERROR_PROGRAM
+                ctaError
+            }
+
         val tmIntroBottomSheetModel = TmIntroBottomsheetModel(
             title,
             desc,
-            TM_ERROR_PROGRAM,
-            PROGRAM_VALIDATION_CTA_TEXT
+            image,
+            cta
         )
         bundle.putString(
             TokomemberBottomsheet.ARG_BOTTOMSHEET,
@@ -582,20 +602,28 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         bottomSheet.show(childFragmentManager, "")
     }
 
-    private fun handleProgramValidateServerError() {
+    private fun handleProgramValidateServerError(titleError: String?, messageError: String?) {
 
-        val title = when (retryCount) {
-            0 -> ERROR_CREATING_TITLE
-            else -> ERROR_CREATING_TITLE_RETRY
+        val title =  if (titleError.isNullOrEmpty()) {
+            when (retryCount) {
+                0 -> ERROR_CREATING_TITLE
+                else -> ERROR_CREATING_TITLE_RETRY
+            }
+        } else{
+            titleError
         }
         val cta = when (retryCount) {
-            0 -> ERROR_CREATING_CTA
+            0 -> RETRY
             else -> ERROR_CREATING_CTA_RETRY
+        }
+        var desc = ERROR_CREATING_DESC
+        if(!messageError.isNullOrEmpty()){
+            desc = messageError
         }
         val bundle = Bundle()
         val tmIntroBottomSheetModel = TmIntroBottomsheetModel(
             title,
-            ERROR_CREATING_DESC,
+            desc,
             "",
             cta,
             errorCount = retryCount
@@ -721,19 +749,21 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 val currentStartDate = GregorianCalendar(locale)
                 val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
                 currentStartDate.time = sdf.parse(timeWindow?.startTime ?: "" + "00") ?: Date()
+                //currentDate 14 july time jo bhi hoga
+                //currentStartDate 15 july 00:00
                 manualStartTimeProgram =
                     if (currentHour >= 20 && checkYesterDay(currentDate, currentStartDate)) {
-                        currentStartDate.set(Calendar.HOUR,currentHour)
-                        currentStartDate.set(Calendar.MINUTE,0)
-                        currentStartDate.add(Calendar.HOUR,4)
+                        currentDate.set(Calendar.HOUR_OF_DAY,currentHour)
+                        currentDate.set(Calendar.MINUTE,0)
+                        currentDate.add(Calendar.HOUR,4)
                         if (minuteCurrent <= 30) {
-                            currentStartDate.set(Calendar.MINUTE, 30)
+                            currentDate.set(Calendar.MINUTE, 30)
                         } else {
-                            currentStartDate.add(Calendar.HOUR_OF_DAY, 1)
-                            currentStartDate.set(Calendar.MINUTE, 0)
+                            currentDate.add(Calendar.HOUR_OF_DAY, 1)
+                            currentDate.set(Calendar.MINUTE, 0)
                         }
-                        currentStartDate.set(Calendar.SECOND,0)
-                        convertDateTimeRemoveTimeDiff(currentStartDate.time)
+                        currentDate.set(Calendar.SECOND,0)
+                        convertDateTimeRemoveTimeDiff(currentDate.time)
                     }else {
                         timeWindow?.startTime ?: ""
                     }
@@ -1256,6 +1286,8 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         const val DATA = 1
         const val SHIMMER = 0
         const val ERROR = 2
+        const val CODE_SUCCESS= "200"
+        const val CODE_PROGRAM_OUTSIDE  = "42039"
 
         fun newInstance(bundle: Bundle): TmMultipleCuponCreateFragment {
             return TmMultipleCuponCreateFragment().apply {

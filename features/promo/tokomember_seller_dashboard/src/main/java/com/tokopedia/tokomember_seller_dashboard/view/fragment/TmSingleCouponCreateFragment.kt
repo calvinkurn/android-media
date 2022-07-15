@@ -1187,20 +1187,20 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                         )
                         currentStartDate.time = sdf.parse(programData?.timeWindow?.startTime ?: "" + "00") ?: Date()
                         if (currentHour >= 20 && checkYesterday(currentDate, currentStartDate)) {
-                            currentStartDate.set(Calendar.HOUR,currentHour)
-                            currentStartDate.set(Calendar.MINUTE,0)
-                            currentStartDate.add(Calendar.HOUR,4)
+                            currentDate.set(Calendar.HOUR,currentHour)
+                            currentDate.set(Calendar.MINUTE,0)
+                            currentDate.add(Calendar.HOUR,4)
                             if (minuteCurrent <= 30) {
-                                currentStartDate.set(Calendar.MINUTE, 30)
+                                currentDate.set(Calendar.MINUTE, 30)
                             }
                             else {
-                                currentStartDate.add(Calendar.HOUR_OF_DAY, 1)
-                                currentStartDate.set(Calendar.MINUTE, 0)
+                                currentDate.add(Calendar.HOUR_OF_DAY, 1)
+                                currentDate.set(Calendar.MINUTE, 0)
                             }
-                            currentStartDate.set(Calendar.SECOND,0)
-                            tmCouponStartDateUnix = currentStartDate
-                            tmCouponStartTimeUnix = currentStartDate
-                            textFieldProgramStartDate.editText.setText("${TmDateUtil.getDayFromTimeWindow(programData?.timeWindow?.startTime.toString())}, ${TmDateUtil.setDatePreview(TmDateUtil.convertDateTimeRemoveTimeDiff(currentStartDate.time))}")
+                            currentDate.set(Calendar.SECOND,0)
+                            tmCouponStartDateUnix = currentDate
+                            tmCouponStartTimeUnix = currentDate
+                            textFieldProgramStartDate.editText.setText("${TmDateUtil.getDayFromTimeWindow(programData?.timeWindow?.startTime.toString())}, ${TmDateUtil.setDatePreview(TmDateUtil.convertDateTimeRemoveTimeDiff(currentDate.time))}")
                             textFieldProgramStartTime.editText.setText("00:00 WIB")
                         }
                         else {

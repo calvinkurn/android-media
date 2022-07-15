@@ -31,39 +31,11 @@ import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetProgramForm
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramThreshold
 import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
 import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
-import com.tokopedia.tokomember_seller_dashboard.util.ACTION_CREATE
-import com.tokopedia.tokomember_seller_dashboard.util.ACTION_DETAIL
-import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EDIT
-import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EXTEND
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID_IN_TOOLS
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_EDIT_PROGRAM
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_DURATION
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID_IN_TOOLS
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_TYPE
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_AVATAR
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_NAME
-import com.tokopedia.tokomember_seller_dashboard.util.DATE_DESC
-import com.tokopedia.tokomember_seller_dashboard.util.DATE_TITLE
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA_RETRY
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_DESC
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_RETRY
-import com.tokopedia.tokomember_seller_dashboard.util.LOADING_TEXT
-import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_CTA
-import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_CTA_EDIT
-import com.tokopedia.tokomember_seller_dashboard.util.REFRESH
-import com.tokopedia.tokomember_seller_dashboard.util.RETRY
-import com.tokopedia.tokomember_seller_dashboard.util.SIMPLE_DATE_FORMAT
-import com.tokopedia.tokomember_seller_dashboard.util.TM_PROGRAM_MIN_PURCHASE_ERROR
+import com.tokopedia.tokomember_seller_dashboard.util.*
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.convertDateTime
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.getDayFromTimeWindow
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.getDayOfWeekID
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDatePreview
-import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.mapper.ProgramUpdateMapper
 import com.tokopedia.tokomember_seller_dashboard.view.customview.BottomSheetClickListener
@@ -184,18 +156,18 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                         CODE_INVALID ->{
                             view?.let { it1 -> Toaster.build(it1,"Cek dan pastikan semua informasi yang kamu isi sudah benar, ya.",Toaster.LENGTH_LONG,Toaster.TYPE_ERROR).show() }
                         }
+                        CODE_OUTSIDE_WINDOW -> {
+                            handleErrorOnUpdate(it.data.membershipCreateEditProgram.resultStatus.message , ERROR_CREATING_CTA)
+                        }
                         else -> {
                             errorCodeProgramCreation = it.data?.membershipCreateEditProgram?.resultStatus?.code?:""
-                            handleErrorOnUpdate(it.data?.membershipCreateEditProgram?.resultStatus?.reason, it.data?.membershipCreateEditProgram?.resultStatus?.message?.firstOrNull())
+                            handleErrorOnUpdate(null)
                         }
                     }
                 }
                 TokoLiveDataResult.STATUS.ERROR ->{
                     closeLoadingDialog()
-                    handleErrorOnUpdate(
-                        it.data?.membershipCreateEditProgram?.resultStatus?.reason,
-                        it.data?.membershipCreateEditProgram?.resultStatus?.message?.firstOrNull()
-                    )
+                    view?.let { it1 -> Toaster.build(it1, RETRY,Toaster.LENGTH_LONG,Toaster.TYPE_ERROR).show() }
                 }
             }
         })
@@ -208,30 +180,37 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         }
     }
 
-    private fun handleErrorOnUpdate(reason: String?, message: String?) {
+    private fun handleErrorOnUpdate (message: List<String?>? , ctaError:String = "") {
         closeLoadingDialog()
-        val title = if(reason.isNullOrEmpty()) {
+        val title = if(message.isNullOrEmpty()) {
             when (errorCount) {
                 0 -> ERROR_CREATING_TITLE
                 else -> ERROR_CREATING_TITLE_RETRY
             }
         }
         else{
-            reason
+            message.getOrNull(0)?:""
         }
         var desc = ERROR_CREATING_DESC
         if(!message.isNullOrEmpty()){
-            desc = message
+            desc = message.getOrNull(1)?:""
         }
-        var cta = when(errorCount){
-            0-> RETRY
-            else -> ERROR_CREATING_CTA_RETRY
-        }
-        if (errorCodeProgramCreation == "42039"){
-            cta = ERROR_CREATING_CTA
-        }
+
+        val image: String
+        val cta =
+            if (ctaError.isEmpty()) {
+                image = ""
+                when (errorCount) {
+                    0 -> RETRY
+                    else -> ERROR_CREATING_CTA_RETRY
+                }
+            } else {
+                image = TM_ERROR_PROGRAM
+                ctaError
+            }
+
         val bundle = Bundle()
-        val tmIntroBottomSheetModel = TmIntroBottomsheetModel(title, desc , "", cta , errorCount = errorCount)
+        val tmIntroBottomSheetModel = TmIntroBottomsheetModel(title, desc , image , cta , errorCount = errorCount)
         bundle.putString(TokomemberBottomsheet.ARG_BOTTOMSHEET, Gson().toJson(tmIntroBottomSheetModel))
         val bottomSheet = TokomemberBottomsheet.createInstance(bundle)
         bottomSheet.setUpBottomSheetListener(this)
@@ -619,6 +598,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         const val HEADER_TITLE_EDIT =  "Ubah Program"
         const val CODE_SUCCESS = "200"
         const val CODE_INVALID = "41002"
+        const val CODE_OUTSIDE_WINDOW = "42039"
         const val CODE_ERROR = "50001"
 
         const val SHIMMER = 0
@@ -634,8 +614,6 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
     }
 
     override fun onButtonClick(errorCount: Int) {
-        if (errorCodeProgramCreation == "42039") {
-        } else {
             if (errorCount == 0) {
                 tmDashCreateViewModel.updateProgram(programUpdateResponse)
             } else {
@@ -654,7 +632,6 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                     activity?.finish()
                 }
             }
-        }
     }
 
     private fun openLoadingDialog(){

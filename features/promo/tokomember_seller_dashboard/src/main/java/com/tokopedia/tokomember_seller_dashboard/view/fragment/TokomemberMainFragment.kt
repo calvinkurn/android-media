@@ -69,6 +69,7 @@ class TokomemberMainFragment : BaseDaggerFragment() {
                     tmEligibilityViewModel.getOnboardingInfo(shopId)
                 }
                 is Fail -> {
+                    viewFlipperIntro.displayedChild = 2
                 }
             }
         })
