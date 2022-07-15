@@ -479,7 +479,7 @@ class UserProfileTracker @Inject constructor() {
         map[UserProfileAnalytics.Constants.EVENT_ACTION] = UserProfileAnalytics.Action.IMPRESSION_PROFILE_COMPLETION_PROMPT
         map[UserProfileAnalytics.Constants.EVENT_CATEGORY] = UserProfileAnalytics.Category.FEED_USER_PROFILE
         map[UserProfileAnalytics.Constants.EVENT_LABEL] = userId
-        
+
         map[UserProfileAnalytics.Constants.USER_ID] = userId
         map[UserProfileAnalytics.Constants.BUSINESS_UNIT] = UserProfileAnalytics.Constants.CONTENT
         map[UserProfileAnalytics.Constants.CURRENT_SITE] = UserProfileAnalytics.Constants.TOKOPEDIA_MARKETPLACE
@@ -492,7 +492,7 @@ class UserProfileTracker @Inject constructor() {
         map[UserProfileAnalytics.Constants.EVENT_ACTION] = UserProfileAnalytics.Action.CLICK_PROFILE_COMPLETION_PROMPT
         map[UserProfileAnalytics.Constants.EVENT_CATEGORY] = UserProfileAnalytics.Category.FEED_USER_PROFILE
         map[UserProfileAnalytics.Constants.EVENT_LABEL] = userId
-        
+
         map[UserProfileAnalytics.Constants.USER_ID] = userId
         map[UserProfileAnalytics.Constants.BUSINESS_UNIT] = UserProfileAnalytics.Constants.CONTENT
         map[UserProfileAnalytics.Constants.CURRENT_SITE] = UserProfileAnalytics.Constants.TOKOPEDIA_MARKETPLACE
@@ -505,7 +505,7 @@ class UserProfileTracker @Inject constructor() {
         map[UserProfileAnalytics.Constants.EVENT_ACTION] = UserProfileAnalytics.Action.IMPRESSION_PROFILE_RECOMMENDATION
         map[UserProfileAnalytics.Constants.EVENT_CATEGORY] = UserProfileAnalytics.Category.FEED_USER_PROFILE
         map[UserProfileAnalytics.Constants.EVENT_LABEL] = "$userId - $shopId"
-        
+
         map[UserProfileAnalytics.Constants.USER_ID] = userId
         map[UserProfileAnalytics.Constants.BUSINESS_UNIT] = UserProfileAnalytics.Constants.CONTENT
         map[UserProfileAnalytics.Constants.CURRENT_SITE] = UserProfileAnalytics.Constants.TOKOPEDIA_MARKETPLACE
@@ -524,7 +524,7 @@ class UserProfileTracker @Inject constructor() {
         map[UserProfileAnalytics.Constants.EVENT_ACTION] = UserProfileAnalytics.Action.CLICK_PROFILE_RECOMMENDATION
         map[UserProfileAnalytics.Constants.EVENT_CATEGORY] = UserProfileAnalytics.Category.FEED_USER_PROFILE
         map[UserProfileAnalytics.Constants.EVENT_LABEL] = "$userId - $shopId"
-        
+
         map[UserProfileAnalytics.Constants.USER_ID] = userId
         map[UserProfileAnalytics.Constants.BUSINESS_UNIT] = UserProfileAnalytics.Constants.CONTENT
         map[UserProfileAnalytics.Constants.CURRENT_SITE] = UserProfileAnalytics.Constants.TOKOPEDIA_MARKETPLACE
@@ -603,6 +603,19 @@ class UserProfileTracker @Inject constructor() {
         map[UserProfileAnalytics.Constants.EVENT_CATEGORY] = UserProfileAnalytics.Category.FEED_USER_PROFILE_ONBOARDING_BOTTOMSHEET
         map[UserProfileAnalytics.Constants.EVENT_LABEL] = userId
         
+        map[UserProfileAnalytics.Constants.USER_ID] = userId
+        map[UserProfileAnalytics.Constants.BUSINESS_UNIT] = UserProfileAnalytics.Constants.CONTENT
+        map[UserProfileAnalytics.Constants.CURRENT_SITE] = UserProfileAnalytics.Constants.TOKOPEDIA_MARKETPLACE
+        UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
+    }
+
+    fun clickEditProfileButtonInOwnProfile(userId: String) {
+        val map = mutableMapOf<String, Any>()
+        map[UserProfileAnalytics.Constants.EVENT] = UserProfileAnalytics.Event.EVENT_VIEW_HOME_PAGE
+        map[UserProfileAnalytics.Constants.EVENT_ACTION] = UserProfileAnalytics.Action.CLICK_EDIT_PROFILE_BUTTON_IN_OWN_PROFILE
+        map[UserProfileAnalytics.Constants.EVENT_CATEGORY] = UserProfileAnalytics.Category.FEED_USER_PROFILE
+        map[UserProfileAnalytics.Constants.EVENT_LABEL] = userId
+
         map[UserProfileAnalytics.Constants.USER_ID] = userId
         map[UserProfileAnalytics.Constants.BUSINESS_UNIT] = UserProfileAnalytics.Constants.CONTENT
         map[UserProfileAnalytics.Constants.CURRENT_SITE] = UserProfileAnalytics.Constants.TOKOPEDIA_MARKETPLACE

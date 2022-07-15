@@ -235,6 +235,7 @@ class UserProfileFragment @Inject constructor(
 
             btnAction.setOnClickListener {
                 if (viewModel.isSelfProfile) {
+                    UserProfileTracker().clickEditProfileButtonInOwnProfile(viewModel.profileUserID)
                     navigateToEditProfile()
                     return@setOnClickListener
                 }
