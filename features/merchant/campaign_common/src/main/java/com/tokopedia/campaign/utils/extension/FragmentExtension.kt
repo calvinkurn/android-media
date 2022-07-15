@@ -13,3 +13,10 @@ fun Fragment.doOnDelayFinished(delay : Long, block: () -> Unit) {
         block()
     }
 }
+
+fun Fragment.routeToUrl(url : String) {
+    if (!isAdded) return
+    val encodedUrl = url.encodeToUtf8()
+    val route = String.format("%s?url=%s", ApplinkConst.WEBVIEW, encodedUrl)
+    RouteManager.route(activity ?: return, route)
+}
