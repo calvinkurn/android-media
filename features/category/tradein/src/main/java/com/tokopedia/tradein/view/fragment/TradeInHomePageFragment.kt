@@ -208,14 +208,22 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
             }
         })
         viewModel.tradeInDetailLiveData.observe(viewLifecycleOwner, Observer {
-            if(it.getTradeInDetail.errMessage.isNotEmpty() && it.getTradeInDetail.errTitle.isNotEmpty() ){
+            if(it.getTradeInDetail.errMessage.isNotEmpty()){
                 isFraud = it.getTradeInDetail.isFraud
-                setErrorTokopedia(
-                    Throwable(it.getTradeInDetail.errMessage),
-                    it.getTradeInDetail.isFraud,
-                    it.getTradeInDetail.errTitle,
-                    it.getTradeInDetail.errCode.toString()
-                )
+
+                if(it.getTradeInDetail.errTitle.isNotEmpty()){
+                    setErrorTokopedia(
+                        Throwable(it.getTradeInDetail.errMessage),
+                        isFraud,
+                        it.getTradeInDetail.errTitle,
+                        it.getTradeInDetail.errCode.toString()
+                    )
+                } else {
+                    onTradeInDetailSuccess(it)
+                    showToast(it.getTradeInDetail.errMessage, getString(R.string.tradein_ok), {
+                        activity?.finish()
+                    })
+                }
             } else {
                 onTradeInDetailSuccess(it)
             }
