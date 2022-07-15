@@ -75,7 +75,7 @@ class ProductCarouselViewHolder private constructor() {
                 }
             }
 
-//            binding.viewPinProduct.root.showWithCondition(item.pinStatus.canPin)
+            binding.viewPinProduct.root.showWithCondition(item.pinStatus.canPin)
             binding.viewPinProduct.ivLoaderPin.showWithCondition(item.pinStatus.isLoading)
             binding.viewPinProduct.root.setOnClickListener {
                 listener.onPinProductClicked(item)
