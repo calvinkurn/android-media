@@ -17,15 +17,6 @@
         android:layout_marginTop="@dimen/home_account_dp_54"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.tokopedia.usercomponents.tokopediaplus.ui.TokopediaPlusWidget
-        android:id="@+id/tokopediaPlusWidget"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        app:layout_constraintTop_toBottomOf="@id/home_account_profile_section"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
     <include
         android:id="@+id/home_account_profile_balance_and_point_section"
         layout="@layout/home_account_balance_and_point"
@@ -34,7 +25,7 @@
         android:layout_marginTop="@dimen/spacing_lvl4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tokopediaPlusWidget" />
+        app:layout_constraintTop_toBottomOf="@id/home_account_profile_section" />
 
     <include
         android:id="@+id/home_account_profile_member_section"
