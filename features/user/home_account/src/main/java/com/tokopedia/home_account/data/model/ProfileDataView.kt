@@ -15,5 +15,6 @@ data class ProfileDataView(
         var isLinked: Boolean = false,
         var isShowLinkStatus: Boolean = false,
         var memberStatus: TierData = TierData(),
+        var isSuccessGetTokopediaPlusData: Boolean = false,
         var tokopediaPlusWidget: TokopediaPlusDataModel = TokopediaPlusDataModel()
 )

@@ -57,6 +57,7 @@ import com.tokopedia.home_account.PermissionChecker
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.ResultBalanceAndPoint
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
+import com.tokopedia.home_account.analytics.TokopediaPlusAnalytics
 import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.databinding.HomeAccountUserFragmentBinding
 import com.tokopedia.home_account.di.HomeAccountUserComponents
@@ -130,7 +131,7 @@ import javax.inject.Inject
  */
 
 open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener,
-    BalanceAndPointListener {
+    BalanceAndPointListener, TokopediaPlusListener {
 
     @Inject
     lateinit var mapper: DataViewMapper
@@ -143,6 +144,9 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     @Inject
     lateinit var homeAccountAnalytic: HomeAccountAnalytics
+
+    @Inject
+    lateinit var tokopediaAnalytics: TokopediaPlusAnalytics
 
     @Inject
     lateinit var biometricTracker: BiometricTracker
@@ -187,8 +191,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     var memberLocalLoad: LocalLoad? = null
     var balanceAndPointCardView: CardUnify? = null
     var memberCardView: CardUnify? = null
-    var memberTitle: Typography? = null
-    var memberIcon: ImageUnify? = null
 
     override fun getScreenName(): String = "homeAccountUserFragment"
 
@@ -266,6 +268,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         memberAdapter = HomeAccountMemberAdapter(this)
 
         adapter = HomeAccountUserAdapter(this,
+            this,
             balanceAndPointAdapter,
             memberAdapter,
             userSession,
@@ -581,7 +584,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                     balanceAndPointUiModel
                 )
             )
-//            adapter?.notifyItemChanged(0)
             viewModel.getBalanceAndPoint(balanceAndPointUiModel.id, balanceAndPointUiModel.hideTitle)
         } else if (!balanceAndPointUiModel.applink.isEmpty()) {
             goToApplink(balanceAndPointUiModel.applink)
@@ -686,8 +688,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         })
 
         viewModel.tokopediaPlusData.observe(viewLifecycleOwner) {
-            adapter?.showLoadingTokoPediaPlus(false)
-
             when (it) {
                 is Success -> {
                     onSuccessLoadTokpediaPlusWidget(it.data)
@@ -841,7 +841,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                     avatar = userSession.profilePicture
                 )
             )
-//            notifyDataSetChanged()
             notifyItemChanged(0)
         }
         hideLoading()
@@ -865,7 +864,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                 removeItemAt(0)
             }
             addItem(0, mapper.mapToProfileDataView(buyerAccount, isEnableLinkAccount = isEnableLinkAccount()))
-//            notifyDataSetChanged()
             notifyItemChanged(0)
         }
         hideLoading()
@@ -879,7 +877,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         widgetTitle = recommendation.title
         addItem(RecommendationTitleView(widgetTitle), addSeparator = false)
         addTopAdsHeadLine()
-//        adapter?.notifyDataSetChanged()
         addRecommendationItem(recommendation.recommendationItemList, tdnBanner)
     }
 
@@ -898,7 +895,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             adapter?.addItem(recommendationItem)
             adapter?.notifyItemChanged(index)
         }
-//        adapter?.notifyDataSetChanged()
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
     }
 
@@ -953,34 +949,12 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     private fun getProfileData() {
         getWallet()
-        viewModel.getShortcutData()
         loadTokopediaPlus()
+        viewModel.getShortcutData()
     }
 
     private fun loadTokopediaPlus() {
         viewModel.getTokopediaWidgetContent()
-        adapter?.setTokopediaPlusListener(object : TokopediaPlusListener {
-            override fun isShown(
-                isShown: Boolean,
-                pageSource: String,
-                tokopediaPlusDataModel: TokopediaPlusDataModel
-            ) {
-
-            }
-
-            override fun onClick(
-                pageSource: String,
-                tokopediaPlusDataModel: TokopediaPlusDataModel
-            ) {
-                val intent = RouteManager.getIntent(context, tokopediaPlusDataModel.applink)
-                startActivity(intent)
-            }
-
-            override fun onRetry() {
-                viewModel.getTokopediaWidgetContent()
-            }
-
-        })
     }
 
     private fun getWallet() {
@@ -1362,14 +1336,14 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         commonAdapter?.list?.find { it.id == AccountConstants.SettingCode.SETTING_GEOLOCATION_ID }?.isChecked =
             isEnable
         commonAdapter?.notifyItemChanged(1)
-//        adapter?.notifyDataSetChanged()
+        adapter?.notifyItemChanged(3)
     }
 
     private fun updateSafeModeSwitch(isEnable: Boolean) {
         commonAdapter?.list?.find { it.id == AccountConstants.SettingCode.SETTING_SAFE_SEARCH_ID }?.isChecked =
             isEnable
         commonAdapter?.notifyItemChanged(2)
-//        adapter?.notifyDataSetChanged()
+        adapter?.notifyItemChanged(3)
     }
 
     private fun goToApplicationDetailActivity() {
@@ -1698,6 +1672,22 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                 Toaster.TYPE_ERROR
             )
         }
+    }
+
+    override fun isShown(isShown: Boolean, pageSource: String, tokopediaPlusDataModel: TokopediaPlusDataModel) { }
+
+    override fun onClick(
+        pageSource: String,
+        tokopediaPlusDataModel: TokopediaPlusDataModel
+    ) {
+        tokopediaAnalytics.sendClickOnTokopediaPlusButtonEvent(tokopediaPlusDataModel.isSubscriber)
+
+        val intent = RouteManager.getIntent(context, tokopediaPlusDataModel.applink)
+        startActivity(intent)
+    }
+
+    override fun onRetry() {
+        viewModel.getTokopediaWidgetContent()
     }
 
     override fun onDestroyView() {
