@@ -69,6 +69,7 @@ class ManageProductViewModel @Inject constructor(
     }
     
     var campaignName = ""
+    var autoShowEditProduct = true
 
     fun getProducts(
         campaignId: Long,

@@ -79,7 +79,6 @@ class ManageProductFragment : BaseDaggerFragment() {
         )
     }
     private var binding by autoClearedNullable<SsfsFragmentManageProductBinding>()
-    private var autoShowEditProduct = true
 
     override fun getScreenName(): String = ManageProductFragment::class.java.canonicalName.orEmpty()
 
@@ -178,9 +177,9 @@ class ManageProductFragment : BaseDaggerFragment() {
 
     private fun observeIncompleteProducts() {
         viewModel.incompleteProducts.observe(viewLifecycleOwner) {
-            if (autoShowEditProduct) {
+            if (viewModel.autoShowEditProduct) {
                 showEditProductBottomSheet(it)
-                autoShowEditProduct = false
+                viewModel.autoShowEditProduct = false
             }
         }
     }
@@ -489,7 +488,7 @@ class ManageProductFragment : BaseDaggerFragment() {
         super.onActivityResult(requestCode, resultCode, data)
         when (resultCode) {
             Activity.RESULT_OK -> {
-                autoShowEditProduct = true
+                viewModel.autoShowEditProduct = true
                 showLoader()
                 doOnDelayFinished(DELAY) {
                     viewModel.getProducts(campaignId, LIST_TYPE)
