@@ -31,6 +31,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -843,15 +844,32 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     }
 
     private fun showHighlightCategory(uiModel: HighlightCategoryUiModel) {
+        setHeightSpace(isLowHeight = false)
         highlight_category.showHighlightCategory()
         highlight_category.renderHighlightCategory(this, uiModel)
     }
 
     private fun hideHighlightCategory() {
+        setHeightSpace(isLowHeight = true)
         highlight_category.hideHighlightCategory()
     }
 
+    private fun setHeightSpace(isLowHeight: Boolean) {
+        val resource = if (isLowHeight) {
+            com.tokopedia.unifyprinciples.R.dimen.layout_lvl7
+        } else {
+            R.dimen.smart_bills_view_separator
+        }
+        val params: ViewGroup.LayoutParams = view_spacer_sbm.layoutParams
+        params.width = ViewGroup.LayoutParams.MATCH_PARENT
+        params.height = context?.resources?.getDimensionPixelSize(
+            resource
+        ).orZero()
+        view_spacer_sbm.layoutParams = params
+    }
+
     override fun onClickCloseHighlightCategoryWidget(uiModel: HighlightCategoryUiModel) {
+        setHeightSpace(true)
         viewModel.closeHighlight(
             viewModel.createParamCloseRecom(
                 uiModel.uuId,
