@@ -510,10 +510,10 @@ class UserProfileTracker @Inject constructor() {
         map[UserProfileAnalytics.Constants.BUSINESS_UNIT] = UserProfileAnalytics.Constants.CONTENT
         map[UserProfileAnalytics.Constants.CURRENT_SITE] = UserProfileAnalytics.Constants.TOKOPEDIA_MARKETPLACE
         val promoMap = mutableMapOf<String, Any>()
-        promoMap["creative_name"] = imageUrl
-        promoMap["creative_slot"] = postPosition
-        promoMap["item_id"] = shopId
-        promoMap["item_name"] = "feed user profile - profile recommendations carousel"
+        promoMap[UserProfileAnalytics.Constants.CREATIVE_NAME] = imageUrl
+        promoMap[UserProfileAnalytics.Constants.CREATIVE_SLOT] = postPosition
+        promoMap[UserProfileAnalytics.Constants.ITEM_ID] = shopId
+        promoMap[UserProfileAnalytics.Constants.ITEM_NAME] = UserProfileAnalytics.ScreenName.FEED_USER_PROFILE_PROFILE_RECOMMENDATION_CAROUSEL
         map[UserProfileAnalytics.Constants.PROMOTIONS] = listOf(promoMap, promoMap)
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
