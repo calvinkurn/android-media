@@ -163,7 +163,8 @@ class PlayBroProductUiMapper @Inject constructor() {
                                 discountedPrice = product.priceFmt,
                                 discountedPriceNumber = product.price,
                             )
-                        }
+                        },
+                        pinStatus = getPinStatus(isPinned = product.isPinned, canPin = product.isPinnable)
                     )
                 }
             )
