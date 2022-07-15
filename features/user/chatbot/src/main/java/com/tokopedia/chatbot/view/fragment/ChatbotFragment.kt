@@ -624,9 +624,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     private fun pickVideoFromDevice(){
 
-//        val intent = Intent(activity, ChatbotVideoActivity::class.java)
-//        intent.putExtra(VIDEO_URL,"https://vod-staging.tokopedia.com/view/adaptive.m3u8?id=1ddff7546032491c884bb4d33d4afab0")
-//        startActivity(intent)
         activity?.let {
             val intent = context?.let { context ->
                 MediaPicker.intentWithGalleryFirst(context) {
@@ -1284,7 +1281,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun onClickAttachVideo(menu: AttachmentMenu) {
         super.onClickAttachVideo(menu)
-
+        pickVideoFromDevice()
         chatbotAnalytics?.get().eventOnVideoPick()
     }
 
