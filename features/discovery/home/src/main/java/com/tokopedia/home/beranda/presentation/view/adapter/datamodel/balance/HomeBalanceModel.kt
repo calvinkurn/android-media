@@ -21,9 +21,7 @@ data class HomeBalanceModel(
     var balanceDrawerItemModels: MutableList<BalanceDrawerItemModel> = mutableListOf(),
     var isTokopointsOrOvoFailed: Boolean = false,
     var status: Int = STATUS_LOADING,
-    var balancePositionGopay: Int = 0,
-    var balancePositionRewards: Int = 0,
-    var balancePositionSubscriptions: Int = -1
+    var balancePositionSubscriptions: Int = DEFAULT_BALANCE_POSITION
 ) : BalanceWidgetVisitable {
     companion object {
         const val ERROR_TITLE = "Gagal Memuat"
@@ -57,16 +55,7 @@ data class HomeBalanceModel(
     }
 
     override fun hashCode(): Int {
-        var result = balanceDrawerItemModels?.hashCode() ?: 0
-        return result
-    }
-
-    fun resetDrawerItem(position: Int): BalanceDrawerItemModel {
-        val balance =  balanceDrawerItemModels.getOrElse(
-            position
-        ) { BalanceDrawerItemModel() }.copy()
-        balance.state = STATE_LOADING
-        return balance
+        return balanceDrawerItemModels.hashCode()
     }
 
     fun mapBalanceData(

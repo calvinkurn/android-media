@@ -53,11 +53,9 @@ class HomeBalanceWidgetUseCase @Inject constructor(
                 when (it.type) {
                     BALANCE_TYPE_GOPAY -> {
                         homeBalanceModel = getDataUsingWalletApp(homeBalanceModel, it.title)
-                        homeBalanceModel.balancePositionGopay = counter
                     }
                     BALANCE_TYPE_REWARDS -> {
                         homeBalanceModel = getTokopointData(homeBalanceModel, it.title)
-                        homeBalanceModel.balancePositionRewards = counter
                     }
                     BALANCE_TYPE_SUBSCRIPTIONS -> {
                         homeBalanceModel = getSubscriptionsData(homeBalanceModel, it.title, it.data)

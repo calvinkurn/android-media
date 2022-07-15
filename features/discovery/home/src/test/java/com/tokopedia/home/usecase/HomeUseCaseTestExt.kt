@@ -1,6 +1,7 @@
 package com.tokopedia.home.usecase
 
 import com.tokopedia.home.beranda.domain.interactor.InjectCouponTimeBasedUseCase
+import com.tokopedia.home.beranda.domain.interactor.repository.GetHomeBalanceWidgetRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeFlagRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeTokopointsListRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeWalletAppRepository
@@ -14,14 +15,16 @@ fun createBalanceWidgetUseCase(
     homeTokopointsListRepository: HomeTokopointsListRepository = mockk(relaxed = true),
     homeFlagRepository: HomeFlagRepository = mockk(relaxed = true),
     userSessionInterface: UserSessionInterface = createDefaultLoggedInUserSession(),
-    injectCouponTimeBasedUseCase: InjectCouponTimeBasedUseCase = mockk(relaxed = true)
+    injectCouponTimeBasedUseCase: InjectCouponTimeBasedUseCase = mockk(relaxed = true),
+    getHomeBalanceWidgetRepository: GetHomeBalanceWidgetRepository = mockk(relaxed = true)
     ): HomeBalanceWidgetUseCase {
     return HomeBalanceWidgetUseCase(
         homeWalletAppRepository = homeWalletAppRepository,
         homeTokopointsListRepository = homeTokopointsListRepository,
         homeFlagRepository = homeFlagRepository,
         userSession = userSessionInterface,
-        injectCouponTimeBasedUseCase = injectCouponTimeBasedUseCase
+        injectCouponTimeBasedUseCase = injectCouponTimeBasedUseCase,
+        getHomeBalanceWidgetRepository = getHomeBalanceWidgetRepository
     )
 }
 
