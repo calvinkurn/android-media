@@ -727,7 +727,8 @@ class UserProfileFragment @Inject constructor(
         )
     }
 
-    override fun onShopRecomItemClicked(appLink: String) {
+    override fun onShopRecomItemClicked(itemID: Long, appLink: String) {
+        UserProfileTracker().clickProfileRecommendation(viewModel.profileUserID, itemID.toString())
         RouteManager.route(requireContext(), appLink)
     }
 
