@@ -160,8 +160,7 @@ class HomeBalanceWidgetUseCaseTest {
                 balancesList = mutableListOf(GetHomeBalanceItem(title = "Gopay", type = "gopay"))
             )
         )
-
-        coEvery { getHomeBalanceWidgetRepository.getRemoteData() } returns mockBalanceWidgetData
+        coEvery { getHomeBalanceWidgetRepository.getRemoteData(any()) } returns mockBalanceWidgetData
         coEvery { homeWalletAppRepository.getRemoteData() } returns mockWalletAppData
     }
 

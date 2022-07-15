@@ -1,8 +1,5 @@
 package com.tokopedia.home.usecase
 
-import com.tokopedia.home.beranda.data.model.GetHomeBalanceItem
-import com.tokopedia.home.beranda.data.model.GetHomeBalanceList
-import com.tokopedia.home.beranda.data.model.GetHomeBalanceWidgetData
 import com.tokopedia.home.beranda.domain.interactor.InjectCouponTimeBasedUseCase
 import com.tokopedia.home.beranda.domain.interactor.repository.GetHomeBalanceWidgetRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeTokopointsListRepository
@@ -24,7 +21,7 @@ fun createBalanceWidgetUseCase(
         homeTokopointsListRepository = homeTokopointsListRepository,
         userSession = userSessionInterface,
         injectCouponTimeBasedUseCase = injectCouponTimeBasedUseCase,
-        getHomeBalanceWidgetRepository = createDummyGetHomeBalanceWidgetRepository()
+        getHomeBalanceWidgetRepository = getHomeBalanceWidgetRepository
     )
 }
 
@@ -34,15 +31,4 @@ fun createDefaultLoggedInUserSession(): UserSessionInterface {
         mockUserSession.isLoggedIn
     } returns true
     return mockUserSession
-}
-
-fun createDummyGetHomeBalanceWidgetRepository(): GetHomeBalanceWidgetRepository {
-    val getHomeBalanceWidgetRepository: GetHomeBalanceWidgetRepository = mockk(relaxUnitFun = true)
-    val mockBalanceWidgetData = GetHomeBalanceWidgetData(
-            getHomeBalanceList = GetHomeBalanceList(
-                balancesList = mutableListOf(GetHomeBalanceItem(title = "Gopay", type = "gopay"))
-            )
-        )
-    coEvery { getHomeBalanceWidgetRepository.getRemoteData() } returns mockBalanceWidgetData
-    return getHomeBalanceWidgetRepository
 }
