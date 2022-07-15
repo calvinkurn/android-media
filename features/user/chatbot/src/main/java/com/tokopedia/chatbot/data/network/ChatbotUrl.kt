@@ -8,7 +8,7 @@ import com.tokopedia.url.TokopediaUrl
 class ChatbotUrl {
     companion object {
         fun getPathWebsocket(deviceId: String?, userId: String?): String {
-            return String.format("%s%s?os_type=1&device_id=%s&user_id=%s",
+            return String.format("%s%s?os_type=1&device_id=%s&user_id=%s&source=chatbot",
                     WEBSOCKET_URL,
                     CONNECT_WEBSOCKET,
                     deviceId,
