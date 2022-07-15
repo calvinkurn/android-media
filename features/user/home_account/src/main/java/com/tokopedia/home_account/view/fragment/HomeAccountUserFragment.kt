@@ -60,8 +60,8 @@ import com.tokopedia.home_account.analytics.HomeAccountAnalytics
 import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.databinding.HomeAccountUserFragmentBinding
 import com.tokopedia.home_account.di.HomeAccountUserComponents
-import com.tokopedia.home_account.linkaccount.view.LinkAccountWebViewActivity
-import com.tokopedia.home_account.linkaccount.view.LinkAccountWebviewFragment
+import com.tokopedia.home_account.privacy_account.view.LinkAccountWebViewActivity
+import com.tokopedia.home_account.privacy_account.view.LinkAccountWebviewFragment
 import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.home_account.view.HomeAccountUserViewModel
 import com.tokopedia.home_account.view.activity.HomeAccountUserActivity
@@ -193,8 +193,8 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         getComponent(HomeAccountUserComponents::class.java).inject(this)
     }
 
-    private fun isEnableLinkAccount(): Boolean  {
-        return getRemoteConfig().getBoolean(REMOTE_CONFIG_KEY_ACCOUNT_LINKING, true)
+    private fun isEnablePrivacyAccount(): Boolean  {
+        return getRemoteConfig().getBoolean(REMOTE_CONFIG_KEY_PRIVACY_ACCOUNT, false)
     }
 
     private fun isEnableExplicitProfileMenu(): Boolean {
@@ -840,7 +840,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             if (isFirstItemIsProfile()) {
                 removeItemAt(0)
             }
-            addItem(0, mapper.mapToProfileDataView(buyerAccount, isEnableLinkAccount = isEnableLinkAccount()))
+            addItem(0, mapper.mapToProfileDataView(buyerAccount))
             notifyDataSetChanged()
         }
         hideLoading()
@@ -988,12 +988,25 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     private fun setupSettingList() {
         val userSettingsMenu = menuGenerator.generateUserSettingMenu()
 
-        userSettingsMenu.items.forEach {
-            if(it.id == AccountConstants.SettingCode.SETTING_LINK_ACCOUNT && !isEnableLinkAccount()) {
-                userSettingsMenu.items.remove(it)
-            } else if (it.id == AccountConstants.SettingCode.SETTING_EXPLICIT_PROFILE && !isEnableExplicitProfileMenu()) {
-                userSettingsMenu.items.remove(it)
-            }
+        val settingsMenuIterator = userSettingsMenu.items.listIterator()
+
+        while (settingsMenuIterator.hasNext()) {
+            val value = settingsMenuIterator.next()
+
+            settingsMenuIterator.shouldRemove(
+                when(value.id) {
+                    AccountConstants.SettingCode.SETTING_LINK_ACCOUNT -> {
+                        isEnablePrivacyAccount()
+                    }
+                    AccountConstants.SettingCode.SETTING_PRIVACY_ACCOUNT -> {
+                        !isEnablePrivacyAccount()
+                    }
+                    AccountConstants.SettingCode.SETTING_EXPLICIT_PROFILE -> {
+                        !isEnableExplicitProfileMenu()
+                    }
+                    else -> false
+                }
+            )
         }
         addItem(userSettingsMenu, addSeparator = true)
         addItem(menuGenerator.generateApplicationSettingMenu(
@@ -1008,6 +1021,10 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                 CommonDataView(id = AccountConstants.SettingCode.SETTING_OUT_ID, title = getString(R.string.menu_account_title_sign_out), body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = IconUnify.SIGN_OUT, endText = "Versi ${GlobalConfig.VERSION_NAME}")
         ), isExpanded = true), addSeparator = true)
         adapter?.notifyDataSetChanged()
+    }
+
+    private fun MutableListIterator<CommonDataView>.shouldRemove(shouldRemove: Boolean){
+        if (shouldRemove) this.remove()
     }
 
     private fun addItem(item: Any, addSeparator: Boolean, position: Int = -1) {
@@ -1670,7 +1687,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             "android_user_home_account_tokopoints"
         private const val USER_CENTRALIZED_ASSET_CONFIG_USER_PAGE = "user_page"
 
-        private const val REMOTE_CONFIG_KEY_ACCOUNT_LINKING = "android_user_link_account_entry_point"
+        private const val REMOTE_CONFIG_KEY_PRIVACY_ACCOUNT = "android_user_privacy_account_enabled"
         private const val EXPLICIT_PROFILE_MENU_ROLLOUT = "explicit_android"
         private const val CLICK_TYPE_WISHLIST = "&click_type=wishlist"
 
