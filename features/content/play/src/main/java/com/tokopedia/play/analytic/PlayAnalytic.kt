@@ -390,7 +390,7 @@ class PlayAnalytic(
         )
     }
 
-    fun impressFeaturedProducts(products: List<Pair<PlayProductUiModel.Product, Int>>, isGeneral: Boolean = true) {
+    fun impressFeaturedProducts(products: List<Pair<PlayProductUiModel.Product, Int>>) {
         if (products.isEmpty()) return
 
         trackingQueue.putEETracking(

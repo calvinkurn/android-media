@@ -41,7 +41,7 @@ class ProductAnalyticHelper(
      */
     fun sendImpressedFeaturedProducts(partner: PartnerType) {
         analytic.impressFeaturedProducts(getFinalProducts())
-        if(partner == PartnerType.TokoNow) analytic.impressFeaturedProducts(getFinalProducts(), isGeneral = false)
+        if(partner == PartnerType.TokoNow) analytic.impressFeaturedProducts(getFinalProducts())
         clearProducts()
     }
 
