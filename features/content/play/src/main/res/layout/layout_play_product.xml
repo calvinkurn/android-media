@@ -194,7 +194,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl2"
-        android:text="@string/tokopedia_now"
+        android:text="@string/play_tokopedia_now_wording"
         android:textColor="@color/Unify_NN600"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/iv_now"
