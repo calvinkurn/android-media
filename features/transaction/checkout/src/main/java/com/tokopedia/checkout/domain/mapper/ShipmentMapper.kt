@@ -98,10 +98,10 @@ class ShipmentMapper @Inject constructor() {
                     DISABLED_CROSS_SELL -> isDisableCrossSell = true
                 }
             }
-            showImageUpload = shipmentAddressFormDataResponse.imageUpload.showImageUpload
-            uploadPrescText = shipmentAddressFormDataResponse.imageUpload.text
-            leftIconUrl = shipmentAddressFormDataResponse.imageUpload.leftIconUrl
-            rightIconUrl = shipmentAddressFormDataResponse.imageUpload.rightIconUrl
+            prescriptionShowImageUpload = shipmentAddressFormDataResponse.imageUpload.showImageUpload
+            prescriptionUploadText = shipmentAddressFormDataResponse.imageUpload.text
+            prescriptionLeftIconUrl = shipmentAddressFormDataResponse.imageUpload.leftIconUrl
+            prescriptionCheckoutId = shipmentAddressFormDataResponse.imageUpload.checkoutId
             keroDiscomToken = shipmentAddressFormDataResponse.keroDiscomToken
             keroToken = shipmentAddressFormDataResponse.keroToken
             keroUnixTime = shipmentAddressFormDataResponse.keroUnixTime

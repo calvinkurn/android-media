@@ -9,6 +9,6 @@ data class ImageUpload (
     var text: String = "",
     @SerializedName("left_icon_url")
     var leftIconUrl: String = "",
-    @SerializedName("right_icon_url")
-    var rightIconUrl: String = "",
+    @SerializedName("checkout_id")
+    var checkoutId: String = "",
 )

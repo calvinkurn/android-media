@@ -743,12 +743,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         isShowOnboarding = cartShipmentAddressFormData.isShowOnboarding();
         isIneligiblePromoDialogEnabled = cartShipmentAddressFormData.isIneligiblePromoDialogEnabled();
 
-        if(cartShipmentAddressFormData.getShowImageUpload()){
+        if(cartShipmentAddressFormData.getPrescriptionShowImageUpload()){
             setUploadPrescriptionData(new UploadPrescriptionUiModel(
-                    cartShipmentAddressFormData.getShowImageUpload(),
-                    cartShipmentAddressFormData.getUploadPrescText(),
-                    cartShipmentAddressFormData.getRightIconUrl(),
-                    cartShipmentAddressFormData.getLeftIconUrl(),
+                    cartShipmentAddressFormData.getPrescriptionShowImageUpload(),
+                    cartShipmentAddressFormData.getPrescriptionUploadText(),
+                    cartShipmentAddressFormData.getPrescriptionLeftIconUrl(),
+                    cartShipmentAddressFormData.getPrescriptionCheckoutId(),
                     new ArrayList<>(),0,""
                     ));
         }
@@ -2228,22 +2228,16 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void prescriptionIds() {
-        // TODO Get checkout id from BE
-        String checkoutId = "";
+    public void prescriptionIds(String checkoutId) {
         if(!checkoutId.isEmpty()){
             compositeSubscription.add(prescriptionIdsUseCase
                     .execute(checkoutId)
                     .subscribe(new Subscriber<GetPrescriptionIdsResponse>(){
                         @Override
-                        public void onCompleted() {
-
-                        }
+                        public void onCompleted() { }
 
                         @Override
-                        public void onError(Throwable e) {
-
-                        }
+                        public void onError(Throwable e) { }
 
                         @Override
                         public void onNext(GetPrescriptionIdsResponse getPrescriptionIdsResponse) {
