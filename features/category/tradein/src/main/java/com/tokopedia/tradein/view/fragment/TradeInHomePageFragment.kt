@@ -41,6 +41,7 @@ import com.tokopedia.tradein.di.DaggerTradeInComponent
 import com.tokopedia.tradein.di.TradeInComponent
 import com.tokopedia.tradein.model.Laku6DeviceModel
 import com.tokopedia.tradein.model.TradeInDetailModel
+import com.tokopedia.tradein.view.activity.TradeInHomePageActivity
 import com.tokopedia.tradein.view.activity.TradeInPromoActivity
 import com.tokopedia.tradein.view.bottomsheet.*
 import com.tokopedia.tradein.viewmodel.TradeInHomePageFragmentVM
@@ -74,6 +75,7 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
     private var chooseAddressWidget: ChooseAddressWidget? = null
     private var userAddressData: LocalCacheModel? = null
     private var isAnyLogisticAvailable = false
+    private var isFraud = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -147,13 +149,21 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
 
     override fun onClick() {
         tradeInAnalytics.clickEducationalPage()
-        view?.findViewById<View>(R.id.educational_frame_content_layout)?.hide()
-        view?.findViewById<View>(R.id.initial_price_navToolbar)?.show()
+        if (isFraud) {
+            (activity as? TradeInHomePageActivity)?.onClick()
+        } else {
+            view?.findViewById<View>(R.id.educational_frame_content_layout)?.hide()
+            view?.findViewById<View>(R.id.initial_price_navToolbar)?.show()
+        }
     }
 
     override fun onBackClick() {
-        view?.findViewById<View>(R.id.educational_frame_content_layout)?.hide()
-        view?.findViewById<View>(R.id.initial_price_navToolbar)?.show()
+        if (isFraud) {
+            (activity as? TradeInHomePageActivity)?.onBackClick()
+        } else {
+            view?.findViewById<View>(R.id.educational_frame_content_layout)?.hide()
+            view?.findViewById<View>(R.id.initial_price_navToolbar)?.show()
+        }
     }
 
 
@@ -199,6 +209,7 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
         })
         viewModel.tradeInDetailLiveData.observe(viewLifecycleOwner, Observer {
             if(it.getTradeInDetail.errMessage.isNotEmpty()){
+                isFraud = it.getTradeInDetail.isFraud
                 if(it.getTradeInDetail.isFraud){
                     setErrorTokopedia(Throwable(it.getTradeInDetail.errMessage), true, it.getTradeInDetail.errTitle, it.getTradeInDetail.errCode.toString())
                 } else {
@@ -270,7 +281,7 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
                     errorTitle.text = errTitle
                 }
             }
-            if(isFraud){
+            if (isFraud) {
                 errorAction.text = getString(R.string.tradein_pelajari_selengkapnya)
                 errorDescription.text = getString(R.string.tradein_fraud_description)
                 errorIllustration.hide()
@@ -285,7 +296,7 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
             view?.findViewById<View>(R.id.tradein_error_layout)?.show()
             setActionClickListener {
                 view?.findViewById<View>(R.id.tradein_error_layout)?.hide()
-                if(isFraud)
+                if (isFraud)
                     setUpEducationalFragment()
                 else
                     refreshPage()
