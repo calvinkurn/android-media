@@ -46,6 +46,11 @@ class FeatureIntroductionDialog {
             dialog.dismiss()
         }
 
+        val btnLater = view.findViewById<UnifyButton>(R.id.btnLater)
+        btnLater?.setOnClickListener {
+            dialog.dismiss()
+        }
+
         val tpgSecondaryDescription = view.findViewById<Typography>(R.id.tpgSecondaryDescription)
         tpgSecondaryDescription.applySpannable(onHyperlinkClick = {
             onHyperlinkClick()
