@@ -1,12 +1,11 @@
-package com.tokopedia.user.session.datastore
+package com.tokopedia.user.session
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.google.crypto.tink.shaded.protobuf.InvalidProtocolBufferException
 import com.tokopedia.encryption.security.AeadEncryptor
 import com.tokopedia.encryption.security.AeadEncryptorImpl
-import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionMap
+import com.tokopedia.user.session.datastore.DataStorePreference
 import com.tokopedia.utils.GoogleTinkExplorerLab
 import com.tokopedia.utils.RawAccessPreference
 import io.mockk.every
