@@ -15,14 +15,29 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.observeOnce
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentManageProductBinding
-import com.tokopedia.shop.flashsale.common.extension.*
+import com.tokopedia.shop.flashsale.common.constant.BundleConstant
+import com.tokopedia.shop.flashsale.common.extension.disable
+import com.tokopedia.shop.flashsale.common.extension.doOnDelayFinished
+import com.tokopedia.shop.flashsale.common.extension.enable
+import com.tokopedia.shop.flashsale.common.extension.setFragmentToUnifyBgColor
+import com.tokopedia.shop.flashsale.common.extension.showError
+import com.tokopedia.shop.flashsale.common.extension.showToaster
+import com.tokopedia.shop.flashsale.common.extension.slideDown
+import com.tokopedia.shop.flashsale.common.extension.slideUp
 import com.tokopedia.shop.flashsale.common.preference.SharedPreferenceDataStore
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
-import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType.*
+import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType.EMPTY_BANNER
+import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType.ERROR_BANNER
+import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType.HIDE_BANNER
+import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
 import com.tokopedia.shop.flashsale.presentation.creation.highlight.ManageHighlightedProductActivity
 import com.tokopedia.shop.flashsale.presentation.creation.manage.adapter.ManageProductListAdapter
 import com.tokopedia.shop.flashsale.presentation.creation.manage.bottomsheet.EditProductInfoBottomSheet
@@ -40,7 +55,6 @@ import javax.inject.Inject
 class ManageProductFragment : BaseDaggerFragment() {
 
     companion object {
-        private const val BUNDLE_KEY_CAMPAIGN_ID = "campaignId"
         private const val SECOND_STEP = 2
         private const val PAGE_SIZE = 50
         private const val LIST_TYPE = 0
@@ -54,10 +68,11 @@ class ManageProductFragment : BaseDaggerFragment() {
         private const val SCROLL_ANIMATION_DELAY = 500L
 
         @JvmStatic
-        fun newInstance(campaignId: Long): ManageProductFragment {
+        fun newInstance(campaignId: Long, pageMode: PageMode): ManageProductFragment {
             return ManageProductFragment().apply {
                 arguments = Bundle().apply {
-                    putLong(ManageProductActivity.BUNDLE_KEY_CAMPAIGN_ID, campaignId)
+                    putLong(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID, campaignId)
+                    putParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE, pageMode)
                 }
             }
         }
@@ -71,7 +86,9 @@ class ManageProductFragment : BaseDaggerFragment() {
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ManageProductViewModel::class.java) }
-    private val campaignId by lazy { arguments?.getLong(BUNDLE_KEY_CAMPAIGN_ID).orZero() }
+    private val campaignId by lazy { arguments?.getLong(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID).orZero() }
+    private val pageMode by lazy { arguments?.getParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE) ?: PageMode.CREATE }
+
     private val manageProductListAdapter by lazy {
         ManageProductListAdapter(
             onEditClicked = ::editProduct,
@@ -102,6 +119,7 @@ class ManageProductFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         setFragmentToUnifyBgColor()
         setupView()
+        handlePageMode()
         observeShopStatus()
         observeProductList()
         observeIncompleteProducts()
@@ -139,10 +157,18 @@ class ManageProductFragment : BaseDaggerFragment() {
             }
             btnContinue.setOnClickListener {
                 viewModel.onButtonProceedTapped()
-                context?.let { it1 -> ManageHighlightedProductActivity.start(it1, campaignId) }
+                context?.let { context ->
+                    ManageHighlightedProductActivity.start(context, campaignId, pageMode)
+                }
             }
         }
         setupScrollListener()
+    }
+
+    private fun handlePageMode() {
+        if (pageMode == PageMode.UPDATE) {
+            binding?.btnSaveDraft?.text = getString(R.string.sfs_save)
+        }
     }
 
     private fun handleCoachMark() {
@@ -413,7 +439,7 @@ class ManageProductFragment : BaseDaggerFragment() {
     private fun showChooseProductPage() {
         val context = context ?: return
         val intent = Intent(context, ChooseProductActivity::class.java).apply {
-            putExtra(ChooseProductActivity.BUNDLE_KEY_CAMPAIGN_ID, campaignId.toString())
+            putExtra(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID, campaignId.toString())
         }
         startActivityForResult(intent, REQUEST_CODE)
     }

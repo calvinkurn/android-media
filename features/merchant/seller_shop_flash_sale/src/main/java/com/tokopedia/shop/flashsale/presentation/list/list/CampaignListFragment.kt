@@ -27,6 +27,7 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignListBinding
+import com.tokopedia.shop.flashsale.common.constant.BundleConstant
 import com.tokopedia.shop.flashsale.common.constant.Constant.FIRST_PAGE
 import com.tokopedia.shop.flashsale.common.constant.Constant.ZERO
 import com.tokopedia.shop.flashsale.common.customcomponent.BaseSimpleListFragment
@@ -809,7 +810,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         val starter = Intent(activity, CampaignInformationActivity::class.java)
 
         val bundle = Bundle()
-        bundle.putParcelable(CampaignInformationActivity.BUNDLE_KEY_PAGE_MODE, PageMode.CREATE)
+        bundle.putParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE, PageMode.CREATE)
         starter.putExtras(bundle)
 
         startActivityForResult(starter, REQUEST_CODE_CREATE_CAMPAIGN_INFO)
@@ -819,8 +820,8 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         val starter = Intent(activity, CampaignInformationActivity::class.java)
 
         val bundle = Bundle()
-        bundle.putParcelable(CampaignInformationActivity.BUNDLE_KEY_PAGE_MODE, PageMode.UPDATE)
-        bundle.putLong(CampaignInformationActivity.BUNDLE_KEY_CAMPAIGN_ID, campaignId)
+        bundle.putParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE, PageMode.UPDATE)
+        bundle.putLong(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID, campaignId)
         starter.putExtras(bundle)
 
         startActivityForResult(starter, REQUEST_CODE_CREATE_CAMPAIGN_INFO)

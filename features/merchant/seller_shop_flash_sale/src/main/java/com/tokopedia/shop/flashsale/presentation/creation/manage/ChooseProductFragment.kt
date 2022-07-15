@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentChooseProductBinding
+import com.tokopedia.shop.flashsale.common.constant.BundleConstant
 import com.tokopedia.shop.flashsale.common.constant.ChooseProductConstant.PRODUCT_LIST_SIZE
 import com.tokopedia.shop.flashsale.common.customcomponent.BaseSimpleListFragment
 import com.tokopedia.shop.flashsale.common.extension.*
@@ -37,7 +38,7 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
         fun newInstance(campaignId: String): ChooseProductFragment {
             val fragment = ChooseProductFragment()
             val bundle = Bundle()
-            bundle.putString(ChooseProductActivity.BUNDLE_KEY_CAMPAIGN_ID, campaignId)
+            bundle.putString(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID, campaignId)
             fragment.arguments = bundle
             return fragment
         }
@@ -49,7 +50,7 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
     private var guidelineMargin = GUIDELINE_MARGIN_MIN
     private var guidelineMarginMax = GUIDELINE_MARGIN_MIN
     private val campaignId by lazy {
-        arguments?.getString(ChooseProductActivity.BUNDLE_KEY_CAMPAIGN_ID).orEmpty()
+        arguments?.getString(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID).orEmpty()
     }
     private val animateScrollDebounce: (Int) -> Unit by lazy {
         debounce(GUIDELINE_ANIMATION_DELAY, GlobalScope) {

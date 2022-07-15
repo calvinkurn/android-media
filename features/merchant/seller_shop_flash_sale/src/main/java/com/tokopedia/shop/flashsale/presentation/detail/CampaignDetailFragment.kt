@@ -28,6 +28,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsCampaignDetailPerformanceLayoutBinding
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignDetailBinding
+import com.tokopedia.shop.flashsale.common.constant.BundleConstant
 import com.tokopedia.shop.flashsale.common.constant.DateConstant
 import com.tokopedia.shop.flashsale.common.extension.convertRupiah
 import com.tokopedia.shop.flashsale.common.extension.formatTo
@@ -67,7 +68,6 @@ class CampaignDetailFragment : BaseDaggerFragment(),
     CampaignDetailMoreMenuClickListener {
 
     companion object {
-        private const val BUNDLE_KEY_CAMPAIGN_ID = "campaign_id"
         private const val BUNDLE_KEY_CAMPAIGN_NAME = "campaign_name"
         private const val CAMPAIGN_ENDED_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/flash-sale-toko/ic_campaign_detail_ended.png"
@@ -76,7 +76,7 @@ class CampaignDetailFragment : BaseDaggerFragment(),
         fun newInstance(campaignId: Long, campaignName: String?): CampaignDetailFragment {
             return CampaignDetailFragment().apply {
                 arguments = Bundle().apply {
-                    putLong(BUNDLE_KEY_CAMPAIGN_ID, campaignId)
+                    putLong(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID, campaignId)
                     putString(BUNDLE_KEY_CAMPAIGN_NAME, campaignName)
                 }
             }
@@ -89,7 +89,7 @@ class CampaignDetailFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
-    private val campaignId by lazy { arguments?.getLong(BUNDLE_KEY_CAMPAIGN_ID) }
+    private val campaignId by lazy { arguments?.getLong(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID) }
     private val campaignName by lazy {
         arguments?.getString(BUNDLE_KEY_CAMPAIGN_NAME) ?: getString(R.string.campaign_detail)
     }
