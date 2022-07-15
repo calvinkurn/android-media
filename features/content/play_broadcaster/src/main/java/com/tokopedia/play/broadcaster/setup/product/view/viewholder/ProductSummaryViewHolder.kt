@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.unifyprinciples.R as unifyR
 import com.tokopedia.play.broadcaster.databinding.ItemProductSummaryBodyListBinding
 import com.tokopedia.play.broadcaster.databinding.ItemProductSummaryHeaderListBinding
 import com.tokopedia.play.broadcaster.setup.product.view.adapter.ProductSummaryAdapter
@@ -132,14 +133,14 @@ internal class ProductSummaryViewHolder private constructor() {
 
             when(item.product.pinStatus.pinStatus) {
                 PinStatus.Pinned -> {
-                    binding.viewPinProduct.ivPin.setImage(newIconId = IconUnify.PUSH_PIN, newDarkEnable = com.tokopedia.unifyprinciples.R.color.Unify_RN400, newLightEnable = com.tokopedia.unifyprinciples.R.color.Unify_RN400)
+                    binding.viewPinProduct.ivPin.setImage(newIconId = IconUnify.PUSH_PIN, newDarkEnable = unifyR.color.Unify_RN400, newLightEnable = unifyR.color.Unify_RN400)
                     binding.viewPinProduct.tvPin.text = context.resources.getString(R.string.play_bro_unpin)
-                    binding.viewPinProduct.tvPin.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_RN400))
+                    binding.viewPinProduct.tvPin.setTextColor(MethodChecker.getColor(context, unifyR.color.Unify_RN400))
                 }
                 PinStatus.Unpin -> {
-                    binding.viewPinProduct.ivPin.setImage(newIconId = IconUnify.PUSH_PIN, newDarkEnable = com.tokopedia.unifyprinciples.R.color.Unify_Static_White, newLightEnable = com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+                    binding.viewPinProduct.ivPin.setImage(newIconId = IconUnify.PUSH_PIN, newDarkEnable = unifyR.color.Unify_Static_White, newLightEnable = unifyR.color.Unify_Static_White)
                     binding.viewPinProduct.tvPin.text = context.resources.getString(R.string.play_bro_pin)
-                    binding.viewPinProduct.tvPin.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
+                    binding.viewPinProduct.tvPin.setTextColor(MethodChecker.getColor(context, unifyR.color.Unify_Static_White))
                 }
             }
         }
