@@ -47,7 +47,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     protected var opponentId = ""
     protected var opponentName = ""
     protected var opponentRole = ""
-    protected var shopId: Long = 0L
+    protected var shopId: String = "0"
     protected var toShopId = "0"
     protected var toUserId = "0"
     protected var source = ""
@@ -184,11 +184,12 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         val ROLE_SHOP = "shop"
 
         if (!GlobalConfig.isSellerApp() || opponentRole != ROLE_SHOP) {
-            activity?.run {
-                RouteManager.route(this, ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                        element.productId.toString())
+            context?.let {
+                if (element.androidUrl.isNotEmpty()) {
+                    val intent = RouteManager.getIntent(it, element.androidUrl)
+                    startActivity(intent)
+                }
             }
-
         } else {
             //Necessary to do it this way to prevent PDP opened in seller app
             //otherwise someone other than the owner can access PDP with topads promote page

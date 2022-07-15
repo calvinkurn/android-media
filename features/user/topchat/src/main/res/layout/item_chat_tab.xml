@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -14,9 +15,10 @@
         android:layout_marginRight="@dimen/spacing_lvl3"
         android:src="@drawable/circle_red"
         android:visibility="visible"
-        tools:src="@drawable/ic_chat_icon_account" />
+        tools:src="@drawable/ic_chat_icon_account"
+        android:contentDescription="icon" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -24,8 +26,8 @@
         android:lineSpacingExtra="@dimen/sp_topchat_4"
         android:maxLines="1"
         android:textColor="@color/Unify_N300"
-        android:textSize="@dimen/fontSize_lvl3"
-        android:textStyle="bold"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
         tools:text="Update (99+)" />
 
     <ImageView
@@ -36,6 +38,7 @@
         android:layout_marginLeft="@dimen/spacing_lvl2"
         android:src="@drawable/circle_red"
         android:visibility="gone"
-        tools:visibility="visible" />
+        tools:visibility="visible"
+        android:contentDescription="circle" />
 
 </LinearLayout>

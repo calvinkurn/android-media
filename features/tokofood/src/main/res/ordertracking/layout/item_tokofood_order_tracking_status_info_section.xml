@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.ContainerUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/containerStatusInfo"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    app:container_color="GREEN"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.tokofood.feature.ordertracking.presentation.partialview.OrderTrackingStatusInfoWidget
+        android:id="@+id/orderStatusInfoWidget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.tokopedia.tokofood.feature.ordertracking.presentation.partialview.StepperStatusListView
+        android:id="@+id/orderStatusStepperListView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:listitem="@layout/item_tokofood_order_tracking_stepper_status"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"/>
+
+
+</com.tokopedia.unifycomponents.ContainerUnify>

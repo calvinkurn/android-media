@@ -27,6 +27,9 @@ data class ShopInfoResultModel(
 
 data class StatusInfoTickerModel(
     @Expose
+    @SerializedName("shopStatus")
+    val shopStatus: Int = 0,
+    @Expose
     @SerializedName("statusTitle")
     val title: String = "",
     @Expose

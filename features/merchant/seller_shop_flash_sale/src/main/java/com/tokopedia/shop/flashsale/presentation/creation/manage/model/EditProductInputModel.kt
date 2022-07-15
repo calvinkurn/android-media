@@ -8,5 +8,6 @@ data class EditProductInputModel (
     var maxOrder: Int? = null,
     var price: Long? = null,
     var warehouseId: String = "",
+    var originalStock: Long = 0,
     var productMapData: SellerCampaignProductList.ProductMapData = SellerCampaignProductList.ProductMapData()
 )

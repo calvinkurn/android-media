@@ -9,6 +9,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsItemReserveProductBinding
 import com.tokopedia.shop.flashsale.presentation.creation.manage.model.ReserveProductModel
+import com.tokopedia.shop.flashsale.presentation.creation.manage.model.SelectedProductModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ReserveProductViewHolder(
@@ -39,12 +40,16 @@ class ReserveProductViewHolder(
         }
     }
 
-    fun bind(item: ReserveProductModel, inputEnabled: Boolean) {
+    fun bind(
+        item: ReserveProductModel,
+        selectedProducts: MutableList<SelectedProductModel>,
+        inputEnabled: Boolean
+    ) {
         val context = itemView.context
         val skuValue = if (item.sku.isNotEmpty()) item.sku else DEFAULT_EMPTY_PLACEHOLDER_TEXT
         val skuText = context.getString(R.string.chooseproduct_sku_text, skuValue)
         val stockText = context.getString(R.string.chooseproduct_stock_total_text, item.stock)
-        val variantText = context.getString(R.string.chooseproduct_variant_text, item.variant.size)
+        val variantText = context.getString(R.string.chooseproduct_variant_text, item.variant.size.dec())
 
         binding?.apply {
             tvProductName.text = item.productName
@@ -54,15 +59,15 @@ class ReserveProductViewHolder(
             tvProductPrice.text = item.price.getCurrencyFormatted()
             labelVariantCount.text = variantText
             labelVariantCount.isVisible = item.variant.size.isMoreThanZero()
-            checkboxItem.isChecked = item.isSelected
+            checkboxItem.isChecked = selectedProducts.any { it.productId == item.productId }
             tvDisabledReason.setTextAndCheckShow(item.disabledReason)
         }
 
-        // set from item disability
-        setListEnable(!item.disabled)
-
-        // set from adapter input enabled
-        if (!item.isSelected) {
+        if (item.disabled) {
+            // set from item disability
+            setListEnable(false)
+        } else if (!item.isSelected) {
+            // set from adapter input enabled
             setListEnable(inputEnabled)
         }
     }

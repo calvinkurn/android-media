@@ -297,10 +297,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         } else if (contactEmail.isEmpty()) {
             isValid = false
             _errorToastMessageData.value = R.string.flight_booking_contact_email_empty_error
-        } else if (!isValidEmail(contactEmail)) {
-            isValid = false
-            _errorToastMessageData.value = R.string.flight_booking_contact_email_invalid_error
-        } else if (!isEmailWithoutProhibitSymbol(contactEmail)) {
+        } else if (!isValidEmail(contactEmail) || !isEmailWithoutProhibitSymbol(contactEmail)) {
             isValid = false
             _errorToastMessageData.value = R.string.flight_booking_contact_email_invalid_error
         } else if (contactPhone.isEmpty()) {

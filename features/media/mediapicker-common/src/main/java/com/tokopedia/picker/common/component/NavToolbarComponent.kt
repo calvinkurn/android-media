@@ -8,9 +8,9 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.picker.common.R
 import com.tokopedia.picker.common.basecomponent.UiComponent
-import com.tokopedia.picker.common.utils.Unify_G500
-import com.tokopedia.picker.common.utils.Unify_N700_96
-import com.tokopedia.picker.common.utils.Unify_Static_White
+import com.tokopedia.picker.common.mapper.Unify_G500
+import com.tokopedia.picker.common.mapper.Unify_N700_96
+import com.tokopedia.picker.common.mapper.Unify_Static_White
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
@@ -127,13 +127,19 @@ class NavToolbarComponent(
     }
 
     private fun colorForSolidMode()
-        = ContextCompat.getColor(context, Unify_N700_96)
+        = ContextCompat.getColor(context,
+        Unify_N700_96
+    )
 
     private fun colorForTransparentMode()
-        = ContextCompat.getColor(context, Unify_Static_White)
+        = ContextCompat.getColor(context,
+        Unify_Static_White
+    )
 
     private fun colorActionSolidMode()
-        = ContextCompat.getColor(context, Unify_G500)
+        = ContextCompat.getColor(context,
+        Unify_G500
+    )
 
     override fun release() {}
 

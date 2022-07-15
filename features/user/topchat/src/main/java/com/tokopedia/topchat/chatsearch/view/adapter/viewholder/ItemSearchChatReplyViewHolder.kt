@@ -8,7 +8,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatlist.adapter.viewholder.ChatItemListViewHolder
+import com.tokopedia.topchat.chatlist.view.adapter.viewholder.ChatItemListViewHolder
 import com.tokopedia.topchat.chatsearch.view.uimodel.ChatReplyUiModel
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography

@@ -40,7 +40,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".chatlist.activity.ChatListActivity"
+            android:name=".chatlist.view.activity.ChatListActivity"
             android:label="@string/title_inbox_chat"
             android:screenOrientation="portrait"
             android:exported="false"

@@ -36,8 +36,8 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
         private const val PRODUCT_REMAINING_VISIBILITY_THRESHOLD = 1
         private const val MAX_LENGTH_NUMBER_INPUT = 11
         private const val MAX_LENGTH_PERCENT_INPUT = 2
-        private const val NUMBER_INITIAL_VALUE = ""
-        private const val PERCENT_INITIAL_VALUE = "-"
+        private const val EMPTY_INITIAL_VALUE = ""
+        private const val STRIPED_INITIAL_VALUE = "-"
 
         fun newInstance(productList: List<SellerCampaignProductList.Product>): EditProductInfoBottomSheet {
             val fragment = EditProductInfoBottomSheet()
@@ -140,7 +140,6 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
     private fun setupProductMapDataObserver() {
         viewModel.productInputData.observe(viewLifecycleOwner) {
             productInput = it
-            resetInputData()
         }
     }
 
@@ -151,6 +150,7 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
             if (isDataFirstLoaded) {
                 // do not display validation on first loading product data
                 isDataFirstLoaded = false
+                resetInputData()
             } else {
                 displayValidationResult(validationResult)
                 if (isSuccess) {
@@ -180,8 +180,13 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
 
     private fun setupWarehouseListObserver() {
         viewModel.warehouseList.observe(viewLifecycleOwner) { warehouseList ->
-            val selectedWarehouse = warehouseList.firstOrNull { it.isSelected }
-            binding?.spinnerShopLocation?.text = selectedWarehouse?.name.orEmpty()
+            warehouseList.firstOrNull { it.isSelected }?.let { selectedWarehouse ->
+                productInput.warehouseId = selectedWarehouse.id
+                productInput.originalStock = selectedWarehouse.stock
+                binding?.spinnerShopLocation?.text = selectedWarehouse.name
+                binding?.tfStock?.setMessage(getString(R.string.editproduct_stock_total_text, productInput.originalStock))
+            }
+
             warehouseBottomSheet = WarehouseBottomSheet.newInstance(warehouseList).apply {
                 setOnSubmitListener(::onSubmitWarehouse)
             }
@@ -226,12 +231,12 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
             }
             tfCampaignPrice.textField?.editText?.afterTextChanged {
                 if (switchPrice.isChecked) return@afterTextChanged
-                if (it.isEmpty()) tfCampaignPricePercent.text = PERCENT_INITIAL_VALUE
+                if (it.isEmpty()) tfCampaignPricePercent.text = STRIPED_INITIAL_VALUE
                 else viewModel.setCampaignPrice(it.filterDigit().toLongOrZero())
             }
             tfCampaignPricePercent.textField?.editText?.afterTextChanged {
                 if (!switchPrice.isChecked) return@afterTextChanged
-                if (it.isEmpty()) tfCampaignPrice.text = PERCENT_INITIAL_VALUE
+                if (it.isEmpty()) tfCampaignPrice.text = STRIPED_INITIAL_VALUE
                 else viewModel.setCampaignPricePercent(it.filterDigit().toLongOrZero())
             }
         }
@@ -261,7 +266,7 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
 
     private fun loadNextData() {
         val product = productList?.getOrNull(productIndex)
-        binding?.switchPrice?.isSelected = false
+        resetInputData()
         viewModel.setProduct(product ?: return)
     }
 
@@ -366,9 +371,6 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
         stockField?.isInputError = true
 
         when {
-            stockField?.editText?.text?.toString().orEmpty().isEmpty() -> {
-                stockField?.setMessage(getString(R.string.editproduct_required_text))
-            }
             isMaxError -> {
                 stockField?.setMessage(getString(R.string.editproduct_max_prefix) + validationResult.maxStock)
             }
@@ -384,21 +386,33 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
             tfStock.isInputError = false
             tfMaxSold.isInputError = false
             tfCampaignPrice.textField?.setMessage("")
-            tfStock.setMessage(getString(R.string.editproduct_stock_total_text, productInput.productMapData.originalStock))
+            tfStock.setMessage(getString(R.string.editproduct_stock_total_text, productInput.originalStock))
             tfMaxSold.setMessage(getString(R.string.editproduct_input_max_transaction_message))
         }
     }
 
-    private fun resetInputData() {
-        val discountedPrice = productInput.price.orZero().toStringOrInitialValue(NUMBER_INITIAL_VALUE)
-        val customStock = productInput.stock.orZero().toStringOrInitialValue(NUMBER_INITIAL_VALUE)
-        val maxOrder = productInput.maxOrder.orZero().toLong().toStringOrInitialValue(NUMBER_INITIAL_VALUE)
+    private fun clearPriceInput() {
+        binding?.apply {
+            if (switchPrice.isChecked) {
+                tfCampaignPrice.text = STRIPED_INITIAL_VALUE
+                tfCampaignPricePercent.text = EMPTY_INITIAL_VALUE
+            } else {
+                tfCampaignPricePercent.text = EMPTY_INITIAL_VALUE
+                tfCampaignPricePercent.text = STRIPED_INITIAL_VALUE
+            }
+        }
+    }
 
+    private fun resetInputData() {
+        val discountedPrice = productInput.price.orZero().toStringOrInitialValue(EMPTY_INITIAL_VALUE)
+        val customStock = productInput.stock.orZero().toStringOrInitialValue(EMPTY_INITIAL_VALUE)
+        val maxOrder = productInput.maxOrder.orZero().toLong().toStringOrInitialValue(EMPTY_INITIAL_VALUE)
+
+        clearPriceInput()
         binding?.apply {
             tfCampaignPrice.text = discountedPrice
             tfStock.editText.setText(customStock)
             tfMaxSold.editText.setText(maxOrder)
-            tfStock.setMessage(getString(R.string.editproduct_stock_total_text, productInput.productMapData.originalStock))
         }
     }
 

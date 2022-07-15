@@ -104,7 +104,6 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
     private var adCurrentState = 0
     private var datePickerSheet: DatePickerSheet? = null
     private var currentDateText: String = ""
-    private var isAutoBidToggleEnabled: Boolean = false
     private var isDeletedTabEnabled: Boolean = false
 
     override fun getLayoutId(): Int {
@@ -268,7 +267,6 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
     private fun onSuccessWhiteListing(response: WhiteListUserResponse.TopAdsGetShopWhitelistedFeature) {
         response.data.forEach {
             when(it.featureId) {
-                TopAdsFeature.AUTO_BID_TOGGLE_ID -> isAutoBidToggleEnabled = true
                 TopAdsFeature.DELETED_TAB_PRODUCT_HEADLINE -> isDeletedTabEnabled = true
             }
         }
@@ -292,7 +290,6 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
 
     private fun prepareBundle(): Bundle {
         val bundle = Bundle()
-        bundle.putBoolean(ParamObject.IS_AUTO_BID_TOGGLE_ENABLED, isAutoBidToggleEnabled)
         bundle.putString(KEY_AD_TYPE, AD_TYPE_PRODUCT_ADS)
         return bundle
     }

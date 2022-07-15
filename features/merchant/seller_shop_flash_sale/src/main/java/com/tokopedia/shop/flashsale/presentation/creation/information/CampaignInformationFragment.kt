@@ -36,6 +36,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignInformationBinding
+import com.tokopedia.shop.flashsale.common.constant.BundleConstant
 import com.tokopedia.shop.flashsale.common.constant.Constant
 import com.tokopedia.shop.flashsale.common.constant.DateConstant
 import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant
@@ -93,8 +94,6 @@ import javax.inject.Inject
 class CampaignInformationFragment : BaseDaggerFragment() {
 
     companion object {
-        private const val BUNDLE_KEY_PAGE_MODE = "page_mode"
-        private const val BUNDLE_KEY_CAMPAIGN_ID = "campaign_id"
         private const val FIRST_STEP = 1
         private const val SINGLE_LINE = 1
         private const val SPAN_COUNT = 6
@@ -114,8 +113,8 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         fun newInstance(pageMode: PageMode, campaignId: Long): CampaignInformationFragment {
             val fragment = CampaignInformationFragment()
             val bundle = Bundle()
-            bundle.putParcelable(BUNDLE_KEY_PAGE_MODE, pageMode)
-            bundle.putLong(BUNDLE_KEY_CAMPAIGN_ID, campaignId)
+            bundle.putParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE, pageMode)
+            bundle.putLong(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID, campaignId)
             fragment.arguments = bundle
             return fragment
         }
@@ -123,8 +122,8 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     }
 
     private var binding by autoClearedNullable<SsfsFragmentCampaignInformationBinding>()
-    private val pageMode by lazy { arguments?.getParcelable(BUNDLE_KEY_PAGE_MODE) ?: PageMode.CREATE }
-    private val campaignId by lazy { arguments?.getLong(BUNDLE_KEY_CAMPAIGN_ID).orZero() }
+    private val pageMode by lazy { arguments?.getParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE) ?: PageMode.CREATE }
+    private val campaignId by lazy { arguments?.getLong(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID).orZero() }
     private val adapter = GradientColorAdapter()
 
     @Inject
@@ -415,6 +414,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             binding?.loader?.visible()
             binding?.groupContent?.gone()
             viewModel.getCampaignDetail(campaignId)
+            binding?.btnDraft?.text = getString(R.string.sfs_save)
         }
     }
 
@@ -564,7 +564,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
     private fun displayStartDatePicker() {
         val selectedDate = viewModel.getSelectedStartDate()
-        val minimumDate = dateManager.getCurrentDate().advanceHourBy(TWO_HOURS)
+        val minimumDate = dateManager.getCurrentDate().decreaseHourBy(TWO_HOURS)
         val maximumEndDate = dateManager.getCurrentDate().advanceMonthBy(THREE_MONTH)
 
         val bottomSheet = CampaignDatePickerBottomSheet.newInstance(
@@ -852,7 +852,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
     private fun handleFirstStepOfCampaignCreationSuccess(result: CampaignCreationResult) {
         if (result.isSuccess) {
-            ManageProductActivity.start(activity ?: return, result.campaignId)
+            ManageProductActivity.start(activity ?: return, result.campaignId, pageMode)
         } else {
             handleCreateCampaignError(result)
         }

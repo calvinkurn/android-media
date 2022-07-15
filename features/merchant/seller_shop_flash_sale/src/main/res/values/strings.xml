@@ -257,7 +257,7 @@
     <string name="chooseproduct_save_button_text_empty">Tambah Produk</string>
     <string name="chooseproduct_sku_text">SKU: %s</string>
     <string name="chooseproduct_stock_total_text">Total stok: %d</string>
-    <string name="chooseproduct_variant_text">%d Variant Produk</string>
+    <string name="chooseproduct_variant_text">+ %d Varian lain</string>
 
     <!--Manage Product-->
     <string name="manage_product_complete_product_info_warning_label">Klik <b>Ubah</b> untuk melengkapi informasi produk ini, ya.</string>
@@ -308,8 +308,8 @@
     <string name="editproduct_required_text">Wajib diisi</string>
     <string name="editproduct_max_prefix">Maks. </string>
     <string name="editproduct_min_prefix">Min. </string>
-    <string name="editproduct_max_percent_text">Maks. %d\%</string>
-    <string name="editproduct_min_percent_text">Min. %d\%</string>
+    <string name="editproduct_max_percent_text">Maks. %d%%</string>
+    <string name="editproduct_min_percent_text">Min. %d%%</string>
     <string name="editproduct_order_exceed_stock_error">Tidak boleh melebihi stok utama</string>
     <string name="editproduct_bs_warehouse_title">Pilih lokasi</string>
     <string name="editproduct_warehouse_title_default">Lokasi Seller</string>

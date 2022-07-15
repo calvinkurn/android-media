@@ -14,6 +14,6 @@ data class ProfileInfoItemUiModel(
     var action: () -> Unit = {},
 ) : BaseProfileInfoUiModel {
     override fun type(typeFactory: ProfileInfoListTypeFactory): Int {
-	return typeFactory.type(this)
+        return typeFactory.type(this)
     }
 }

@@ -288,7 +288,8 @@ class DiscoveryDataMapper {
                 hasButtonThreeDotsWishlist = dataItem.hasThreeDotsWishlist,
                 hasAddToCartWishlist = dataItem.hasATCWishlist,
                 variant = variantProductCard(dataItem),
-                nonVariant = nonVariantProductCard(dataItem)
+                nonVariant = nonVariantProductCard(dataItem),
+                cardInteraction = true
         )
     }
 
