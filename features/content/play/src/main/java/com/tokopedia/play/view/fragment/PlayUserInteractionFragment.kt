@@ -572,7 +572,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun initAnalytic() {
-        productAnalyticHelper = ProductAnalyticHelper(analytic)
+        productAnalyticHelper = ProductAnalyticHelper(analytic, newAnalytic)
     }
 
     private fun setupView(view: View) {
