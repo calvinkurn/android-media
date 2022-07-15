@@ -422,7 +422,6 @@ object ShopPageTrackingConstant {
 
     const val SHOP_PAGE_SHARE_BOTTOM_SHEET_PAGE_NAME = "Shop"
     const val SHOP_PAGE_SHARE_BOTTOM_SHEET_FEATURE_NAME = "share"
-    const val TRACKER_ID = "trackerId"
 
     object TrackerId {
         const val IMPRESSION_SHOP_BANNER = "33827"
