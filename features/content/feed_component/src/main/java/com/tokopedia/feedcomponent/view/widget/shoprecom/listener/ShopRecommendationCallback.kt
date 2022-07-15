@@ -7,4 +7,6 @@ interface ShopRecommendationCallback {
     fun onShopRecomCloseClicked(itemID: Long)
     fun onShopRecomFollowClicked(itemID: Long)
     fun onShopRecomItemClicked(itemID: Long, appLink: String)
+
+    fun onShopRecomImpression(itemID: Long, imageUrl: String, postPosition: Int)
 }

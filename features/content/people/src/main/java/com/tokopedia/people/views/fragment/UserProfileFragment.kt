@@ -718,6 +718,15 @@ class UserProfileFragment @Inject constructor(
         submitAction(UserProfileAction.ClickFollowButtonShopRecom(itemID))
     }
 
+    override fun onShopRecomImpression(itemID: Long, imageUrl: String, postPosition: Int) {
+        UserProfileTracker().impressionProfileRecommendation(
+            viewModel.profileUserID,
+            itemID.toString(),
+            imageUrl,
+            postPosition
+        )
+    }
+
     override fun onShopRecomItemClicked(appLink: String) {
         RouteManager.route(requireContext(), appLink)
     }
