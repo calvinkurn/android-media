@@ -812,9 +812,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 }
             }
         })
-        parentFragment?.let { parentFrag ->
-            feedFloatingButtonManager.setInitialData(parentFrag)
-        }
+
+        feedFloatingButtonManager.setInitialData(parentFragment)
     }
 
     private fun sendNewFeedClickEvent() {
