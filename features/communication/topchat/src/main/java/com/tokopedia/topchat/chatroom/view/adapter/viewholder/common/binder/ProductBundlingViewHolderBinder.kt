@@ -6,11 +6,14 @@ import com.tokopedia.topchat.chatroom.view.adapter.MultipleProductBundlingAdapte
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.product_bundling.ProductBundlingCarouselViewHolder
+import com.tokopedia.topchat.chatroom.view.custom.product_bundling.BundleSpaceItemDecoration
 import com.tokopedia.topchat.chatroom.view.custom.product_bundling.ProductBundlingCardAttachmentContainer
 import com.tokopedia.topchat.chatroom.view.custom.product_bundling.ProductBundlingRecyclerView
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.MultipleProductBundlingUiModel
 
 object ProductBundlingViewHolderBinder {
+
+    private const val SPACE_DECORATION = 3
 
     fun initRecyclerView(
         recyclerView: ProductBundlingRecyclerView?,
@@ -22,6 +25,7 @@ object ProductBundlingViewHolderBinder {
         recyclerView?.apply {
             setRecycledViewPool(adapterListener.getCarouselViewPool())
             adapter = recyclerViewAdapter
+            addItemDecoration(BundleSpaceItemDecoration(SPACE_DECORATION))
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {

@@ -34,13 +34,13 @@ class BroadcastBundleSpaceItemDecoration(
             ProductBundlingCardAttachmentContainer
                 .BundlingSource.BROADCAST_ATTACHMENT_SINGLE -> SPACE_SINGLE_MARGIN
             ProductBundlingCardAttachmentContainer.BundlingSource
-                .BROADCAST_ATTACHMENT_MULTIPLE -> SPACE_BC
+                .BROADCAST_ATTACHMENT_MULTIPLE -> SPACE_BC / 2
             else -> 0
         }
     }
 
     companion object {
-        private const val SPACE_BC = 14
+        private const val SPACE_BC = 6
         private const val SPACE_SINGLE_BUNDLING = 18
         private const val SPACE_SINGLE_MARGIN = 24
     }

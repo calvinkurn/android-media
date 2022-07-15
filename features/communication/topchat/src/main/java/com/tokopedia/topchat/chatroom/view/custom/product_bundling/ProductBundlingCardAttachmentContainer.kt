@@ -15,7 +15,6 @@ import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.transition.Slide
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
@@ -395,22 +394,6 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
         }
     }
 
-    private fun setLayoutGravity(@Slide.GravityFlag gravity: Int) {
-        (layoutParams as? LinearLayout.LayoutParams)?.apply {
-            this.gravity = gravity
-        }
-    }
-
-    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        if (source == BundlingSource.BROADCAST_ATTACHMENT_MULTIPLE) {
-            val newWidth = MeasureSpec.getSize(widthMeasureSpec) * WIDTH_MULTIPLIER
-            val newWidthMeasureSpec = MeasureSpec.makeMeasureSpec(newWidth.toInt(), MeasureSpec.EXACTLY)
-            super.onMeasure(newWidthMeasureSpec, heightMeasureSpec)
-        } else {
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        }
-    }
-
     enum class BundlingSource {
         PRODUCT_ATTACHMENT,
         BROADCAST_ATTACHMENT_MULTIPLE,
@@ -419,6 +402,5 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
 
     companion object {
         private val LAYOUT = R.layout.item_topchat_product_bundling_card
-        private const val WIDTH_MULTIPLIER = 1.25f
     }
 }

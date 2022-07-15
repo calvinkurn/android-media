@@ -5,7 +5,9 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.unifycomponents.toPx
 
-open class BundleSpaceItemDecoration : RecyclerView.ItemDecoration() {
+open class BundleSpaceItemDecoration(
+    private val space: Int = SPACE
+) : RecyclerView.ItemDecoration() {
 
     override fun getItemOffsets(
         outRect: Rect, view: View, parent: RecyclerView,
@@ -30,18 +32,18 @@ open class BundleSpaceItemDecoration : RecyclerView.ItemDecoration() {
     }
 
     protected open fun setupLeftItem(outRect: Rect) {
-        outRect.set(0, 0, SPACE.toPx(), 0)
+        outRect.set(0, 0, space.toPx(), 0)
     }
 
     protected open fun setupRightItem(outRect: Rect) {
-        outRect.set(SPACE.toPx(), 0, 0, 0)
+        outRect.set(space.toPx(), 0, 0, 0)
     }
 
     protected open fun setupItem(outRect: Rect) {
-        outRect.set(SPACE.toPx(), 0, SPACE.toPx(), 0)
+        outRect.set(space.toPx(), 0, space.toPx(), 0)
     }
 
     companion object {
-        const val SPACE = 6
+        private const val SPACE = 6
     }
 }
