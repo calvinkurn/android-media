@@ -420,7 +420,11 @@ class ProductListPresenter @Inject constructor(
             searchProductModel: SearchProductModel,
             searchParameter: Map<String, Any>,
     ): List<Visitable<*>> {
-        val list = createProductItemVisitableList(productDataView, searchParameter).toMutableList()
+        val list = createProductItemVisitableList(
+            productDataView,
+            searchParameter,
+            searchProductModel.getProductListType()
+        ).toMutableList()
         productList.addAll(list)
 
         processHeadlineAdsLoadMore(searchProductModel, list)
@@ -440,6 +444,7 @@ class ProductListPresenter @Inject constructor(
     private fun createProductItemVisitableList(
         productDataView: ProductDataView,
         searchParameter: Map<String, Any>,
+        productListType: String,
     ): List<Visitable<*>> {
         return if (isHideProductAds(productDataView))
             productDataView.productList
@@ -449,6 +454,7 @@ class ProductListPresenter @Inject constructor(
                 productDataView.adsModel,
                 searchParameter,
                 dimension90,
+                productListType,
             )
     }
 
@@ -966,7 +972,11 @@ class ProductListPresenter @Inject constructor(
         }
 
         adsInjector.resetTopAdsPosition()
-        productList = createProductItemVisitableList(productDataView, searchParameter).toMutableList()
+        productList = createProductItemVisitableList(
+            productDataView,
+            searchParameter,
+            searchProductModel.getProductListType(),
+        ).toMutableList()
         list.addAll(productList)
 
         runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_HEADLINE_ADS) {

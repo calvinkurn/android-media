@@ -57,6 +57,8 @@ data class SearchProductModel(
 
     fun getTopAdsImageViewModelList(): List<TopAdsImageViewModel> = topAdsImageViewModelList
 
+    fun getProductListType(): String = searchProduct.header.meta.productListType
+
     data class SearchProduct (
             @SerializedName("header")
             @Expose
@@ -103,6 +105,15 @@ data class SearchProductModel(
             @SerializedName("componentId")
             @Expose
             val componentId: String = "",
+
+            @SerializedName("meta")
+            @Expose
+            val meta: SearchProductHeaderMeta = SearchProductHeaderMeta()
+    )
+
+    data class SearchProductHeaderMeta(
+        @SerializedName("productListType")
+        val productListType: String = "",
     )
 
     data class SearchProductData(

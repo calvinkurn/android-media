@@ -652,4 +652,18 @@ open class ShopHomeAdapter(
             nplItemCampaignId == campaignId && dynamicRuleDescription.isNotEmpty()
         }
     }
+
+    fun getLastVisibleShopWidgetPosition(lastVisibleItemPosition: Int): Int {
+        return when (visitables.getOrNull(lastVisibleItemPosition)) {
+            is BaseShopHomeWidgetUiModel, is ThematicWidgetUiModel -> {
+                lastVisibleItemPosition
+            }
+            else -> {
+                val lastShopWidgetUiModel = visitables.lastOrNull {
+                    it is BaseShopHomeWidgetUiModel || it is ThematicWidgetUiModel
+                }
+                visitables.lastIndexOf(lastShopWidgetUiModel)
+            }
+        }
+    }
 }

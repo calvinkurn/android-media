@@ -285,7 +285,7 @@ ext {
             settingbank                     : ":features:user:settingbank",
             settingnotif                    : ":features:user:settingnotif",
             usercomponents                  : ":features:user:usercomponents",
-            topchat                         : ":features:user:topchat",
+            topchat                         : ":features:communication:topchat",
             updateinactivephone             : ":features:user:updateinactivephone",
             userIdentification              : ":features:user:user_identification",
             userIdentificationCommon        : ":features:user:user_identification_common",
