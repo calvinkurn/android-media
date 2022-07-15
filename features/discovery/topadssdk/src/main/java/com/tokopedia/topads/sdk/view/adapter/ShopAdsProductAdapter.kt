@@ -79,6 +79,9 @@ class ShopAdsProductAdapter(
                         shopProductModelItem.isFollowed = true
                         followButtonClickListener?.onItemClicked(shopProductModelItem)
                     }
+                }else{
+                    buttonFollow.buttonVariant = UnifyButton.Variant.FILLED
+                    buttonFollow.text = "Followed"
                 }
                 buttonFollow.show()
             }
