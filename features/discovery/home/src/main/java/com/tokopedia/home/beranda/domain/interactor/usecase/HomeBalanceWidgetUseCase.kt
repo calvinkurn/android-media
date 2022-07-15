@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.domain.interactor.usecase
 
+import android.util.Log
 import com.google.gson.Gson
 import com.tokopedia.home.beranda.data.model.SubscriptionsData
 import com.tokopedia.home.beranda.domain.interactor.InjectCouponTimeBasedUseCase
@@ -47,21 +48,19 @@ class HomeBalanceWidgetUseCase @Inject constructor(
             val getHomeBalanceWidget = getHomeBalanceWidgetRepository.getRemoteData()
             currentHeaderDataModel.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.clear()
             var homeBalanceModel = getHomeBalanceModel(currentHeaderDataModel)
-            var counter = 0
-            getHomeBalanceWidget.getHomeBalanceList.balancesList.forEach {
-                when (it.type) {
+            getHomeBalanceWidget.getHomeBalanceList.balancesList.forEachIndexed { index, getHomeBalanceItem ->
+                when (getHomeBalanceItem.type) {
                     BALANCE_TYPE_GOPAY -> {
-                        homeBalanceModel = getDataUsingWalletApp(homeBalanceModel, it.title)
+                        homeBalanceModel = getDataUsingWalletApp(homeBalanceModel, getHomeBalanceItem.title)
                     }
                     BALANCE_TYPE_REWARDS -> {
-                        homeBalanceModel = getTokopointData(homeBalanceModel, it.title)
+                        homeBalanceModel = getTokopointData(homeBalanceModel, getHomeBalanceItem.title)
                     }
                     BALANCE_TYPE_SUBSCRIPTIONS -> {
-                        homeBalanceModel = getSubscriptionsData(homeBalanceModel, it.title, it.data)
-                        homeBalanceModel.balancePositionSubscriptions = counter
+                        homeBalanceModel = getSubscriptionsData(homeBalanceModel, getHomeBalanceItem.title, getHomeBalanceItem.data)
+                        homeBalanceModel.balancePositionSubscriptions = index
                     }
                 }
-                counter++
             }
 
             return currentHeaderDataModel.copy(
@@ -71,6 +70,7 @@ class HomeBalanceWidgetUseCase @Inject constructor(
                 )
             )
         } catch (e: Exception) {
+            Log.d("dhabalog", "${e.localizedMessage} ${e.printStackTrace()}")
             currentHeaderDataModel.headerDataModel?.homeBalanceModel?.status = HomeBalanceModel.STATUS_ERROR
             currentHeaderDataModel.headerDataModel?.isUserLogin = userSession.isLoggedIn
             return currentHeaderDataModel
