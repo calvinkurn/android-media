@@ -31,9 +31,12 @@ val GQL_Affiliate_Search: String = """query searchAffiliate(${"$"}filter: [Strin
         id
         hasMore
         title
+        pageType
+        itemID
         items {
           productID
           title
+          titleEmblem
           image {
             DesktopURL
             MobileURL

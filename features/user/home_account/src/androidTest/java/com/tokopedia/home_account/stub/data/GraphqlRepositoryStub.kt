@@ -6,7 +6,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.home_account.common.AndroidFileUtil
 import com.tokopedia.home_account.data.model.*
-import com.tokopedia.home_account.linkaccount.data.LinkStatusResponse
+import com.tokopedia.home_account.privacy_account.data.LinkStatusResponse
 import com.tokopedia.home_account.test.R
 
 class GraphqlRepositoryStub : GraphqlRepository {
