@@ -46,6 +46,7 @@ class UserProfileAnalytics {
 
     object ScreenName {
         const val FEED_USER_PROFILE = "Feed User Profile"
+        const val FEED_USER_PROFILE_PROFILE_RECOMMENDATION_CAROUSEL = "feed user profile - profile recommendations carousel"
         const val FOLLOWER_FOLLOWING_LIST = "Feed User Profile - Follower/Following List"
         const val SHARE_BUTTON_UFP = "Share button on User Feed page"
         const val SCREENSHOT_SHARE_BUTTON_UFP = "Screenshot share bottom sheet on User Feed page"
