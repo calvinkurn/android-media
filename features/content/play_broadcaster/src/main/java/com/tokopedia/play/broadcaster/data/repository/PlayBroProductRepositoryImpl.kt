@@ -114,7 +114,7 @@ class PlayBroProductRepositoryImpl @Inject constructor(
 
     override suspend fun setPinProduct(channelId: String, productId: String): Boolean = withContext(dispatchers.io){
         return@withContext setPinnedProductUseCase.apply {
-            createParam(channelId, productId)
+            setRequestParams(createParam(channelId, productId))
         }.executeOnBackground().success
     }
 
