@@ -55,8 +55,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:ellipsize="end"
-            android:maxLines="1"
             android:visibility="invisible"
             app:layout_constraintEnd_toStartOf="@+id/pdp_arrow_right"
             app:layout_constraintStart_toEndOf="@+id/pdp_icon"
