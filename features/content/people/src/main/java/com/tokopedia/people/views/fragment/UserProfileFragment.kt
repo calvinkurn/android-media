@@ -505,6 +505,8 @@ class UserProfileFragment @Inject constructor(
             prev.profileType == value.profileType
         ) return
 
+        UserProfileTracker().impressionProfileCompletionPrompt(viewModel.profileUserID)
+
         val usernameEmpty = value.profileInfo.username.isBlank()
         val biographyEmpty = value.profileInfo.biography.isBlank()
 
