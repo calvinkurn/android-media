@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.base.BaseEditorFragment
 import com.tokopedia.media.editor.databinding.FragmentMainEditorBinding
@@ -66,8 +67,8 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
                 this.centerCrop()
             }
 
-            viewBinding?.btnUndo?.text = renderUndoText(it)
-            viewBinding?.btnRedo?.text = renderRedoText(it)
+            renderUndoText(it)
+            renderRedoText(it)
         }
     }
 
@@ -81,17 +82,18 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
                 this.centerCrop()
             }
 
-            viewBinding?.btnUndo?.text = renderUndoText(it)
-            viewBinding?.btnRedo?.text = renderRedoText(it)
+            renderUndoText(it)
+            renderRedoText(it)
         }
     }
 
-    private fun renderUndoText(editList: EditorUiModel): String {
-        return if (editList.editList.isNotEmpty()) "Undo (${editList.editList.size - editList.backValue})" else "-"
+    private fun renderUndoText(editList: EditorUiModel) {
+        viewBinding?.btnUndo?.showWithCondition(editList.editList.isNotEmpty()
+                && editList.editList.size > editList.backValue)
     }
 
-    private fun renderRedoText(editList: EditorUiModel): String {
-        return if (editList.backValue != 0) "Redo (${editList.backValue})" else "-"
+    private fun renderRedoText(editList: EditorUiModel) {
+        viewBinding?.btnRedo?.showWithCondition(editList.backValue != 0)
     }
 
     override fun initObserver() {
@@ -150,9 +152,9 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
         activeImageUrl = originalUrl
 
         val editList = viewModel.getEditState(originalUrl)
-        viewBinding?.btnUndo?.text = renderUndoText(editList!!)
+        renderUndoText(editList!!)
 
-        viewBinding?.imgMainPreview?.loadImage(editList.getImageUrl()) {
+        viewBinding?.imgMainPreview?.loadImage(editList?.getImageUrl()) {
             centerCrop()
         }
     }
@@ -171,8 +173,8 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
 
             val editorUiModel = viewModel.getEditState(activeImageUrl)
             if (editorUiModel != null) {
-                viewBinding?.btnUndo?.text = renderUndoText(editorUiModel)
-                viewBinding?.btnRedo?.text = renderRedoText(editorUiModel)
+                renderUndoText(editorUiModel)
+                renderRedoText(editorUiModel)
             }
         }
     }

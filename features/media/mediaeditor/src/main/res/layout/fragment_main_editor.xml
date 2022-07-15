@@ -6,23 +6,35 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <Button
+    <com.tokopedia.iconunify.IconUnify
+        android:layout_margin="8dp"
+        android:padding="8dp"
+        android:background="@drawable/editor_round_undo_shadow"
+        app:icon_name="UNDO"
+        app:icon_color_light_enable="@color/Unify_Static_White"
         android:elevation="2dp"
         android:id="@+id/btn_undo"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:text="-"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        app:layout_constraintRight_toLeftOf="@id/btn_redo"
+        app:layout_constraintBottom_toBottomOf="@id/img_main_preview"
+        android:visibility="gone"
+        android:layout_width="32dp"
+        android:layout_height="32dp"/>
 
-    <Button
+    <com.tokopedia.iconunify.IconUnify
+        android:visibility="gone"
+        android:layout_margin="8dp"
+        android:padding="8dp"
+        app:icon_name="REDO"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        android:background="@drawable/editor_round_undo_shadow"
         android:elevation="2dp"
         android:id="@+id/btn_redo"
         app:layout_constraintLeft_toRightOf="@id/btn_undo"
-        app:layout_constraintTop_toTopOf="parent"
-        android:text="-"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/img_main_preview"
+        android:layout_width="32dp"
+        android:layout_height="32dp"/>
 
     <ImageView
         android:elevation="1dp"
