@@ -47,6 +47,7 @@ object CustomOrderDetailsMapper {
                     name = option.name,
                     price = option.price,
                     priceFmt = formattedPrice,
+                    status = option.status,
                     selectionControlType = mapSelectionRulesToSelectionControlType(variant.rules.selectionRules)
                 )
             }
