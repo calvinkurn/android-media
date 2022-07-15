@@ -32,6 +32,7 @@ import com.tokopedia.shop.flashsale.common.preference.SharedPreferenceDataStore
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.HighlightableProduct
 import com.tokopedia.shop.flashsale.domain.entity.ProductSubmissionResult
+import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
 import com.tokopedia.shop.flashsale.presentation.creation.highlight.adapter.HighlightedProductAdapter
 import com.tokopedia.shop.flashsale.presentation.creation.highlight.bottomsheet.ManageHighlightedProductInfoBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.highlight.decoration.ProductListItemDecoration
@@ -54,12 +55,14 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
         private const val MAX_PRODUCT_SELECTION = 5
         private const val BUNDLE_KEY_CAMPAIGN_ID = "campaign_id"
         private const val SCROLL_DISTANCE_DELAY_IN_MILLIS: Long = 100
+        private const val BUNDLE_KEY_PAGE_MODE = "page_mode"
 
         @JvmStatic
-        fun newInstance(campaignId: Long): ManageHighlightedProductFragment {
+        fun newInstance(campaignId: Long, pageMode: PageMode): ManageHighlightedProductFragment {
             val fragment = ManageHighlightedProductFragment()
             fragment.arguments = Bundle().apply {
                 putLong(BUNDLE_KEY_CAMPAIGN_ID, campaignId)
+                putParcelable(BUNDLE_KEY_PAGE_MODE, pageMode)
             }
             return fragment
         }
@@ -76,6 +79,10 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
 
     private val campaignId by lazy {
         arguments?.getLong(BUNDLE_KEY_CAMPAIGN_ID).orZero()
+    }
+
+    private val pageMode by lazy {
+        arguments?.getParcelable(BUNDLE_KEY_PAGE_MODE) ?: PageMode.CREATE
     }
 
     private var isFirstLoad = true
@@ -108,6 +115,7 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
+        handlePageMode()
         setFragmentToUnifyBgColor()
         observeProducts()
         observeSubmitHighlightedProducts()
@@ -146,6 +154,12 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
 
         val shouldShowCoachMark = !preferenceDataStore.isHighlightCampaignProductDismissed()
         productAdapter.shouldDisplayCoachMark(shouldShowCoachMark)
+    }
+
+    private fun handlePageMode() {
+        if (pageMode == PageMode.UPDATE) {
+            binding?.btnDraft?.text = getString(R.string.sfs_save)
+        }
     }
 
     private fun setupSearchBar() {
@@ -408,7 +422,7 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
     private fun handleProductSubmissionResult(result: ProductSubmissionResult) {
         val isSuccess = result.isSuccess
         if (isSuccess) {
-            CampaignRuleActivity.start(activity ?: return, campaignId)
+            CampaignRuleActivity.start(activity ?: return, campaignId, pageMode)
         } else {
             displayError(result)
         }

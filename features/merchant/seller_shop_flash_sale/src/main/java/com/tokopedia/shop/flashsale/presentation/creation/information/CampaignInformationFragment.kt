@@ -415,6 +415,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             binding?.loader?.visible()
             binding?.groupContent?.gone()
             viewModel.getCampaignDetail(campaignId)
+            binding?.btnDraft?.text = getString(R.string.sfs_save)
         }
     }
 
@@ -852,7 +853,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
     private fun handleFirstStepOfCampaignCreationSuccess(result: CampaignCreationResult) {
         if (result.isSuccess) {
-            ManageProductActivity.start(activity ?: return, result.campaignId)
+            ManageProductActivity.start(activity ?: return, result.campaignId, pageMode)
         } else {
             handleCreateCampaignError(result)
         }

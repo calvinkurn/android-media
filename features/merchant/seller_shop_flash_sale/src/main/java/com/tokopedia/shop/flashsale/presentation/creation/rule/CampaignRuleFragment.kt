@@ -31,11 +31,18 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignRuleBinding
-import com.tokopedia.shop.flashsale.common.extension.*
+import com.tokopedia.shop.flashsale.common.extension.disable
+import com.tokopedia.shop.flashsale.common.extension.enable
+import com.tokopedia.shop.flashsale.common.extension.setFragmentToUnifyBgColor
+import com.tokopedia.shop.flashsale.common.extension.showError
+import com.tokopedia.shop.flashsale.common.extension.showLoading
+import com.tokopedia.shop.flashsale.common.extension.stopLoading
+import com.tokopedia.shop.flashsale.common.extension.toBulletSpan
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.MerchantCampaignTNC
 import com.tokopedia.shop.flashsale.domain.entity.RelatedCampaign
+import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
 import com.tokopedia.shop.flashsale.domain.entity.enums.PaymentType
 import com.tokopedia.shop.flashsale.domain.entity.enums.isDraft
 import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationActivity
@@ -68,12 +75,14 @@ class CampaignRuleFragment : BaseDaggerFragment(),
         private const val BUNDLE_KEY_CAMPAIGN_ID = "campaign_id"
         private const val FOURTH_STEP = 4
         private const val RELATED_CAMPAIGN_OFFSET_DP = 8
+        private const val BUNDLE_KEY_PAGE_MODE = "page_mode"
 
         @JvmStatic
-        fun newInstance(campaignId: Long): CampaignRuleFragment {
+        fun newInstance(campaignId: Long, pageMode: PageMode): CampaignRuleFragment {
             return CampaignRuleFragment().apply {
                 arguments = Bundle().apply {
                     putLong(BUNDLE_KEY_CAMPAIGN_ID, campaignId)
+                    putParcelable(BUNDLE_KEY_PAGE_MODE, pageMode)
                 }
             }
         }
@@ -83,7 +92,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
     lateinit var viewModelFactory: ViewModelFactory
 
     private val campaignId by lazy { arguments?.getLong(BUNDLE_KEY_CAMPAIGN_ID) }
-
+    private val pageMode by lazy { arguments?.getParcelable(BUNDLE_KEY_PAGE_MODE) ?: PageMode.CREATE }
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(CampaignRuleViewModel::class.java) }
 
@@ -134,6 +143,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
     }
 
     private fun setUpView() {
+        handlePageMode()
         setUpToolbar()
         setUpClickListeners()
         setUpUniqueAccountTips()
@@ -226,6 +236,13 @@ class CampaignRuleFragment : BaseDaggerFragment(),
                 }
             }
         }, false)
+    }
+
+
+    private fun handlePageMode() {
+        if (pageMode == PageMode.UPDATE) {
+            binding?.btnSaveDraft?.text = getString(R.string.sfs_save)
+        }
     }
 
     private fun getTNCText(): SpannableString? {
