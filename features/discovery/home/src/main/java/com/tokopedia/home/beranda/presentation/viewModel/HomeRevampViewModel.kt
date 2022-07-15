@@ -1,7 +1,6 @@
 package com.tokopedia.home.beranda.presentation.viewModel
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -101,10 +100,6 @@ open class HomeRevampViewModel @Inject constructor(
         const val GRID = "grid"
         const val POSITION = "position"
     }
-
-    val beautyFestLiveData: LiveData<Int>
-        get() = _beautyFestLiveData
-    private val _beautyFestLiveData : MutableLiveData<Int> = MutableLiveData()
 
     val homeLiveDynamicChannel: LiveData<HomeDynamicChannelModel>
         get() = _homeLiveDynamicChannel
@@ -261,11 +256,9 @@ open class HomeRevampViewModel @Inject constructor(
                         HomeServerLogger.warning_empty_channel_update(homeNewDataModel)
                     }
                     updateHomeData(homeNewDataModel)
-                    Log.d("DevaraFikryTest", "[Non Cache] Captured list:"+homeNewDataModel.list.size)
                     _trackingLiveData.postValue(Event(homeNewDataModel.list.filterIsInstance<HomeVisitable>()))
                 } else if (homeNewDataModel?.list?.size?:0 > 0) {
                     homeNewDataModel?.let { updateHomeData(it)
-                        Log.d("DevaraFikryTest", "[Cache] Captured list:"+homeNewDataModel.list.size)
                     }
                 }
             }

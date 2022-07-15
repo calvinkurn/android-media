@@ -2,7 +2,6 @@ package com.tokopedia.home.usecase
 
 import com.tokopedia.home.beranda.domain.interactor.InjectCouponTimeBasedUseCase
 import com.tokopedia.home.beranda.domain.interactor.repository.GetHomeBalanceWidgetRepository
-import com.tokopedia.home.beranda.domain.interactor.repository.HomeFlagRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeTokopointsListRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeWalletAppRepository
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetUseCase
