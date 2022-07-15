@@ -714,7 +714,7 @@ class UserProfileFragment @Inject constructor(
         submitAction(UserProfileAction.ClickFollowButtonShopRecom(itemID))
     }
 
-    override fun onShopRecomItemClicked(appLink: String) {
+    override fun onShopRecomItemClicked(itemID: Long, appLink: String) {
         RouteManager.route(requireContext(), appLink)
     }
 
