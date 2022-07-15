@@ -286,11 +286,6 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                             }
                         }
                         if(startTime.isNullOrEmpty()) {
-//                            if (TmDateUtil.getTimeInMillis(
-//                                    it.data?.membershipGetProgramList?.programSellerList?.firstOrNull()?.timeWindow?.startTime,
-//                                    "yyyy-MM-dd HH:mm:ss"
-//                                ).toLong() < DateUtil.getCurrentDate().time.div(1000)
-//                            ) {
                                 startTime =
                                     it.data?.membershipGetProgramList?.programSellerList?.firstOrNull()?.timeWindow?.startTime
                                 endTime =
@@ -299,10 +294,6 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                                 programData?.apply {
                                     timeWindow = TimeWindow(startTime = startTime, endTime = endTime)
                                 }
-//                            }
-//                            else{
-//                                view?.let { it1 -> Toaster.build(it1, "Select proper start time", Toaster.TYPE_ERROR, Toaster.LENGTH_LONG).show() }
-//                            }
                         }
                         if(!fromEdit) {
                             renderProgram()
@@ -525,12 +516,6 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         tokomemberDashCreateViewModel.tmCouponDetaillLiveData.observe(viewLifecycleOwner, {
             when(it.status){
                 TokoLiveDataResult.STATUS.SUCCESS ->{
-//                    programData = ProgramUpdateDataInput()
-//                    programData?.apply {
-//                        val startTime = it.data?.merchantPromotionGetMVDataByID?.data?.voucherStartTime
-//                        val endTime = it.data?.merchantPromotionGetMVDataByID?.data?.voucherFinishTime
-//                        timeWindow = TimeWindow(startTime = startTime, endTime = endTime)
-//                    }
                     tmCouponDetail = it.data?.merchantPromotionGetMVDataByID?.data
                     renderUIForEdit(it.data?.merchantPromotionGetMVDataByID?.data)
                     renderProgram()
@@ -562,7 +547,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                         closeLoadingDialog()
                         setButtonState()
                         activity?.finish()
-                        tmCouponListRefreshCallback?.refreshCouponList()
+                        tmCouponListRefreshCallback?.refreshCouponList(true)
                     }
                     else{
                         closeLoadingDialog()
@@ -592,7 +577,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                         //Open Dashboard
                         closeLoadingDialog()
                         activity?.finish()
-                        tmCouponListRefreshCallback?.refreshCouponList()
+                        tmCouponListRefreshCallback?.refreshCouponList(true)
                     }
                     else{
                         closeLoadingDialog()
@@ -601,7 +586,6 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                             Toaster.build(it1,
                                 it2, Toaster.LENGTH_LONG , Toaster.TYPE_ERROR ).show()
                         } }
-//                        handleProgramPreValidateError(it.data.merchantPromotionCreateMV?.message, it.data.merchantPromotionCreateMV?.message)
                     }
                 }
                 is Fail -> {
@@ -694,7 +678,6 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
             couponName = tmCouponDetail?.voucherName,
             token = token,
             benefitType = benefitType,
-//            benefitIdr = CurrencyFormatHelper.convertRupiahToInt(tmSingleCouponData.maxCashback) * tmSingleCouponData.quota.toInt(),
             benefitIdr = tmCouponDetail?.voucherDiscountAmtMax,
             imagePortrait = tmCouponDetail?.voucherImagePortrait,
             quota = tmSingleCouponData.quota.toInt(),
@@ -712,9 +695,6 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
 
     private fun renderUIForEdit(data: TmCouponDetailData?) {
 
-//        tvLevelMember.show()
-//        chipGroupLevel.show()
-
         chipGroupLevel.setCallback(object : ChipGroupCallback {
             override fun chipSelected(position: Int) {
                 selectedChipPositionLevel = position
@@ -727,7 +707,6 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
             selectedChipPositionLevel = 0
         }
         chipGroupLevel.setDefaultSelection(selectedChipPositionLevel)
-//        chipGroupLevel.addChips(arrayListOf("Premium", "VIP"))
 
         chipGroupKuponType.setCallback(object : ChipGroupCallback {
             override fun chipSelected(position: Int) {
@@ -1180,8 +1159,12 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                         val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, com.tokopedia.tokomember_seller_dashboard.util.locale)
                         endDate.time = sdf.parse(programData?.timeWindow?.endTime + "00") ?: Date()
                         if (endDate > maxProgramEndDate) {
-                            tmCouponEndTimeUnix?.time = TmDateUtil.convertDateTimeRemoveTimeDiff(maxProgramEndDate.time).toDate(SIMPLE_DATE_FORMAT)
-                            tmCouponEndDateUnix?.time = TmDateUtil.convertDateTimeRemoveTimeDiff(maxProgramEndDate.time).toDate(SIMPLE_DATE_FORMAT)
+                            tmCouponEndTimeUnix = GregorianCalendar(com.tokopedia.tokomember_seller_dashboard.util.locale)
+                            tmCouponEndDateUnix = GregorianCalendar(com.tokopedia.tokomember_seller_dashboard.util.locale)
+                            tmCouponEndTimeUnix?.time = maxProgramEndDate.time
+                            tmCouponEndDateUnix?.time = maxProgramEndDate.time
+//                            tmCouponEndTimeUnix?.time = TmDateUtil.convertDateTimeRemoveTimeDiff(maxProgramEndDate.time).toDate(SIMPLE_DATE_FORMAT)
+//                            tmCouponEndDateUnix?.time = TmDateUtil.convertDateTimeRemoveTimeDiff(maxProgramEndDate.time).toDate(SIMPLE_DATE_FORMAT)
 
                             textFieldProgramEndDate.editText.setText("${tmCouponEndDateUnix?.get(Calendar.DAY_OF_WEEK)?.let {
                                 getDayOfWeekID(it)
@@ -1198,7 +1181,8 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                                 )
                             })
 
-                        } else {
+                        }
+                        else {
                             val cal = GregorianCalendar(context?.let { LocaleUtils.getCurrentLocale(it) })
                             cal.time = programData?.timeWindow?.endTime.toString().toDate(SIMPLE_DATE_FORMAT)
                             tmCouponEndTimeUnix = cal
@@ -1211,10 +1195,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                         val day = getDayOfWeekID(todayCalendar.get(Calendar.DAY_OF_WEEK))
                         textFieldProgramStartDate.editText.setText("$day, $todayDate")
 
-                        textFieldProgramEndDate.editText.setText("${TmDateUtil.getDayFromTimeWindow(programData?.timeWindow?.endTime.toString())}, ${TmDateUtil.setDatePreview(programData?.timeWindow?.endTime.toString())}")
-
                         textFieldProgramStartTime.editText.setText(TmDateUtil.setTime(TmDateUtil.convertDateTime(todayCalendar.time)))
-                        textFieldProgramEndTime.editText.setText(TmDateUtil.setTime(programData?.timeWindow?.endTime.toString()))
                         tmCouponStartDateUnix = todayCalendar
                         tmCouponStartTimeUnix = todayCalendar
                     }
@@ -1351,9 +1332,6 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         context?.let{
             val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, com.tokopedia.tokomember_seller_dashboard.util.locale)
             val defaultCalendar = GregorianCalendar(LocaleUtils.getCurrentLocale(it))
-//            programData?.timeWindow?.startTime?.let {
-//                currentDate.time = sdf.parse(programData?.timeWindow?.startTime + "00") ?: Date()
-//            }
 
             // if active program
             // then default selection is today
@@ -1372,15 +1350,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                 defaultCalendar.time = tmCouponStartDateUnix?.time
                 calendarMax.time = defaultCalendar.time
             }
-//            if(tmCouponEndTimeUnix != null && type == 1){
-//                defaultCalendar.time = tmCouponEndTimeUnix?.time
-//                calendarMax.time = defaultCalendar.time
-//            }
             calendarMax.add(Calendar.YEAR, 1)
-
-//            if(calendarMax.time > sdf.parse(programData?.timeWindow?.endTime + "00") ?: Date()){
-//                calendarMax.time = sdf.parse(programData?.timeWindow?.endTime + "00") ?: Date()
-//            }
 
             val datepickerObject = DateTimePickerUnify(it, defaultCalendar, defaultCalendar, calendarMax).apply {
                 when (type) {
@@ -1442,30 +1412,6 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                 set(Calendar.HOUR_OF_DAY, 0)
                 set(Calendar.MINUTE, 0)
             }
-//            if(type == 0){
-//                if(programStatus == ACTIVE) {
-//                    val minTimeStart = GregorianCalendar(context?.let {
-//                        LocaleUtils.getCurrentLocale(
-//                            it
-//                        )
-//                    })
-//                    minTimeStart.apply {
-//                        add(Calendar.HOUR_OF_DAY, 4)
-//                        set(Calendar.MINUTE, 30)
-//                        set(Calendar.SECOND, 0)
-//                    }
-//                    val minuteCurrent = minTimeStart.get(Calendar.MINUTE)
-//                    if (minuteCurrent > 30) {
-//                        minTimeStart.add(Calendar.MINUTE, 30)
-//                    }
-//                    minTime = minTimeStart
-//                }
-//            }
-//            else{
-//                val minTimeEnd = GregorianCalendar(LocaleUtils.getCurrentLocale(ctx))
-//                minTimeEnd.time = sdf.parse(programData?.timeWindow?.endTime) ?: Date()
-//                minTime = minTimeEnd
-//            }
             val maxTime = GregorianCalendar( LocaleUtils.getCurrentLocale(ctx)).apply {
                     set(Calendar.HOUR_OF_DAY, 23)
                     set(Calendar.MINUTE, 59)

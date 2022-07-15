@@ -99,7 +99,6 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
                 }
             }
             val cs: CharSequence = "0"
-//            if(selectedStatus.contains(cs.toString(), false)){
             if(voucherStatus.contains("1,2,3,4")){
                 options[0].inputState = "true"
             }
@@ -114,30 +113,14 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
                         optionList?.forEachIndexed { index, option ->
                             if(option.inputState == "true"){
                                 val cs: CharSequence = option.value
-//                                if(!selectedStatus.contains(cs.toString(), false)){
                                 if(!selectedStatusList.contains(option.value)){
-//                                    selectedStatus.append(option.value + ",")
                                     selectedStatusList.add(option.value)
-                                }
-                                else{
-//                                    selectedStatus = selectedStatus.removeRange(index-1, index+1) as StringBuilder
-//                                    selectedStatusList.remove(option.value)
                                 }
                             }
                             else{
                                 selectedStatusList.remove(option.value)
                             }
-//                            if(option.inputState == "false"){
-//                                selectedStatus.removeRange(index, index+2)
-//                            }
                         }
-//                        selectedStatus = selectedStatus.removeRange(selectedStatus.length - 1, selectedStatus.length) as StringBuilder
-//                        if(selectedStatusList.isNullOrEmpty()){
-//                            filterStatus.type = ChipsUnify.TYPE_NORMAL
-//                        }
-//                        else{
-//                            filterStatus.type = ChipsUnify.TYPE_SELECTED
-//                        }
                         voucherStatus = selectedStatusList.toString().replace("[", "")
                         voucherStatus = voucherStatus.replace("]", "")
                         voucherStatus = voucherStatus.replace(" ", "")
@@ -156,12 +139,6 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
                     }
                 }
             )
-//            filterStatus.type = if(filterStatus.type == ChipsUnify.TYPE_NORMAL) {
-//                ChipsUnify.TYPE_SELECTED
-//            } else {
-//                ChipsUnify.TYPE_NORMAL
-//            }
-//            filterStatus.selectedItem = arrayListOf("Semua Status", "Aktif", "Belum Aktif", "Sudah Berakhir")
         }
         filterStatus?.let {
             filterData.add(it)
@@ -175,12 +152,6 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
             options.add(Option(name = "Semua Tipe", key = "Semua Tipe", value = "0", inputType = Option.INPUT_TYPE_RADIO, inputState = "true"))
             options.add(Option(name = "Cashback", key = "Cashback", value = "3", inputType = Option.INPUT_TYPE_RADIO))
             options.add(Option(name = "Gratis Ongkir", key = "Gratis Ongkir", value = "1", inputType = Option.INPUT_TYPE_RADIO))
-//            filterList.add(Filter(title = "Status Kupon", options = options))
-//            filterList.add(Filter(title = "Status Type", options = options))
-//            val data = DataValue(filterList, sort = arrayListOf())
-//            val dynamicFilterModel = DynamicFilterModel(data)
-//            val sortFilterBottomSheet = SortFilterBottomSheet()
-//            sortFilterBottomSheet.show(childFragmentManager, mapOf(), dynamicFilterModel = dynamicFilterModel, callback = this)
             options.forEach {
                 if(it.value == selectedType){
                     it.inputState = "true"
@@ -227,12 +198,6 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
                     }
                 },
             )
-//            filterType.type = if(filterType.type == ChipsUnify.TYPE_NORMAL) {
-//                ChipsUnify.TYPE_SELECTED
-//            } else {
-//                ChipsUnify.TYPE_NORMAL
-//            }
-//            filterType.selectedItem = arrayListOf("Semua Type", "Cashback", "Gratis Ongkir")
         }
         filterType?.let { filterData.add(it) }
         filter.addItem(filterData)
@@ -428,20 +393,17 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
         }
     }
 
-    override fun refreshCouponList() {
+    override fun refreshCouponList(fromCreateEdit: Boolean) {
         if(selectedType.toInt() == 0){
             tmCouponViewModel.getCouponList(voucherStatus, null)
         }
         else {
             tmCouponViewModel.getCouponList(voucherStatus, selectedType.toInt())
         }
-        view?.let { it1 ->
-            Toaster.build(
-                it1,
-                "Yay, kupon TokoMember berhasil diubah!",
-                Toaster.LENGTH_SHORT,
-                Toaster.TYPE_NORMAL
-            ).show()
+        if(fromCreateEdit){
+            view?.let { it1 ->
+                Toaster.build(it1, "Yay, kupon TokoMember berhasil diubah!", Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
+            }
         }
     }
 
