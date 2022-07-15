@@ -27,7 +27,17 @@ class PlayTokonowAnalyticImpl @Inject constructor(
     private val isLoggedIn: Boolean
         get() = userSession.isLoggedIn
 
-    override fun impressAddressWidget(channelId: String, channelType: PlayChannelType) {
+    private var channelId: String = ""
+    private var channelType: PlayChannelType = PlayChannelType.Unknown
+    private var channelName = ""
+
+    override fun sendData(channelId: String, channelType: PlayChannelType, channelName: String) {
+        this.channelId = channelId
+        this.channelType = channelType
+        this.channelName = channelName
+    }
+
+    override fun impressAddressWidget() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
                 KEY_EVENT to KEY_TRACK_VIEW_CONTENT_IRIS,
@@ -44,7 +54,7 @@ class PlayTokonowAnalyticImpl @Inject constructor(
     /**
      * Button Ganti Alamat
      */
-    override fun impressChooseAddress(channelId: String, channelType: PlayChannelType) {
+    override fun impressChooseAddress() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
                 KEY_EVENT to KEY_TRACK_VIEW_CONTENT_IRIS,
@@ -57,7 +67,7 @@ class PlayTokonowAnalyticImpl @Inject constructor(
         )
     }
 
-    override fun clickChooseAddress(channelId: String, channelType: PlayChannelType) {
+    override fun clickChooseAddress() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
                 KEY_EVENT to KEY_TRACK_CLICK_CONTENT,
@@ -73,7 +83,7 @@ class PlayTokonowAnalyticImpl @Inject constructor(
     /**
      * Click cek jangkauan
      */
-    override fun clickInfoAddressWidget(channelId: String, channelType: PlayChannelType) {
+    override fun clickInfoAddressWidget() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
                 KEY_EVENT to KEY_TRACK_CLICK_CONTENT,
@@ -87,7 +97,7 @@ class PlayTokonowAnalyticImpl @Inject constructor(
         )
     }
 
-    override fun impressInfoNow(channelId: String, channelType: PlayChannelType) {
+    override fun impressInfoNow() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
                 KEY_EVENT to KEY_TRACK_VIEW_CONTENT_IRIS,
@@ -100,7 +110,7 @@ class PlayTokonowAnalyticImpl @Inject constructor(
         )
     }
 
-    override fun clickInfoNow(channelId: String, channelType: PlayChannelType) {
+    override fun clickInfoNow() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
                 KEY_EVENT to KEY_TRACK_CLICK_CONTENT,
@@ -113,7 +123,7 @@ class PlayTokonowAnalyticImpl @Inject constructor(
         )
     }
 
-    override fun impressNowToaster(channelId: String, channelType: PlayChannelType) {
+    override fun impressNowToaster() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
                 KEY_EVENT to KEY_TRACK_VIEW_CONTENT_IRIS,
@@ -126,7 +136,7 @@ class PlayTokonowAnalyticImpl @Inject constructor(
         )
     }
 
-    override fun clickLihatNowToaster(channelId: String, channelType: PlayChannelType) {
+    override fun clickLihatNowToaster() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
                 KEY_EVENT to KEY_TRACK_CLICK_CONTENT,
@@ -139,7 +149,7 @@ class PlayTokonowAnalyticImpl @Inject constructor(
         )
     }
 
-    override fun clickGlobalToaster(channelId: String, channelType: PlayChannelType) {
+    override fun clickGlobalToaster() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
                 KEY_EVENT to KEY_TRACK_CLICK_CONTENT,
@@ -156,8 +166,6 @@ class PlayTokonowAnalyticImpl @Inject constructor(
         product: PlayProductUiModel.Product,
         sectionInfo: ProductSectionUiModel.Section,
         position: Int,
-        channelId: String,
-        channelType: PlayChannelType,
     ) {
         trackingQueue.putEETracking(
             EventModel(
@@ -177,7 +185,7 @@ class PlayTokonowAnalyticImpl @Inject constructor(
             generateBaseTracking())
     }
 
-    override fun clickFeaturedProduct(featuredProduct: PlayProductUiModel.Product, position: Int, channelId: String, channelType: PlayChannelType, channelName: String) {
+    override fun clickFeaturedProduct(featuredProduct: PlayProductUiModel.Product, position: Int) {
         trackingQueue.putEETracking(
             EventModel(
                 "productClick",
@@ -211,8 +219,6 @@ class PlayTokonowAnalyticImpl @Inject constructor(
     override fun impressProductBottomSheet(
         products: List<Pair<PlayProductUiModel.Product, Int>>,
         sectionInfo: ProductSectionUiModel.Section,
-        channelId: String,
-        channelType: PlayChannelType,
     ) {
         if (products.isEmpty()) return
 
@@ -246,9 +252,6 @@ class PlayTokonowAnalyticImpl @Inject constructor(
 
     override fun impressFeaturedProduct(
         products: List<Pair<PlayProductUiModel.Product, Int>>,
-        isGeneral: Boolean,
-        channelId: String,
-        channelType: PlayChannelType,
     ) {
         if (products.isEmpty()) return
 
@@ -283,8 +286,6 @@ class PlayTokonowAnalyticImpl @Inject constructor(
         sectionInfo: ProductSectionUiModel.Section,
         cartId: String,
         shopInfo: PlayPartnerInfo,
-        channelId: String,
-        channelType: PlayChannelType,
     ) {
         trackingQueue.putEETracking(
             EventModel(
@@ -310,8 +311,6 @@ class PlayTokonowAnalyticImpl @Inject constructor(
         sectionInfo: ProductSectionUiModel.Section,
         cartId: String,
         shopInfo: PlayPartnerInfo,
-        channelId: String,
-        channelType: PlayChannelType,
     ) {
         trackingQueue.putEETracking(
             EventModel(
@@ -331,7 +330,7 @@ class PlayTokonowAnalyticImpl @Inject constructor(
         )
     }
 
-    override fun impressGlobalToaster(channelId: String, channelType: PlayChannelType) {
+    override fun impressGlobalToaster() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
                 KEY_EVENT to KEY_TRACK_VIEW_CONTENT_IRIS,

@@ -501,7 +501,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     override fun onProductFeaturedClicked(view: ProductFeaturedViewComponent, product: PlayProductUiModel.Product, position: Int) {
         viewModel.doInteractionEvent(InteractionEvent.OpenProductDetail(product, ProductSectionUiModel.Section.ConfigUiModel.Empty, position))
-        if(product.isTokoNow) newAnalytic.clickFeaturedProduct(product, position, playViewModel.channelId, playViewModel.channelType, playViewModel.latestCompleteChannelData.channelDetail.channelInfo.title)
+        if(product.isTokoNow) newAnalytic.clickFeaturedProduct(product, position)
         else analytic.clickFeaturedProduct(product, position)
     }
 
@@ -1809,22 +1809,22 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     override fun onInfoClicked(view: ChooseAddressViewComponent) {
-        newAnalytic.clickInfoAddressWidget(channelId, channelType = playViewModel.channelType)
+        newAnalytic.clickInfoAddressWidget()
         playViewModel.submitAction(OpenFooterUserReport(
             TokopediaUrl.getInstance().WEB +
                 getString(R.string.play_tokonow_info_weblink)))
     }
 
     override fun onImpressedAddressWidget(view: ChooseAddressViewComponent) {
-        newAnalytic.impressAddressWidget(channelId, channelType = playViewModel.channelType)
+        newAnalytic.impressAddressWidget()
     }
 
     override fun onImpressedBtnChoose(view: ChooseAddressViewComponent) {
-        newAnalytic.impressChooseAddress(channelId, channelType = playViewModel.channelType)
+        newAnalytic.impressChooseAddress()
     }
 
     override fun onBtnChooseClicked(view: ChooseAddressViewComponent) {
-        newAnalytic.clickChooseAddress(channelId, channelType = playViewModel.channelType)
+        newAnalytic.clickChooseAddress()
     }
 
     override fun onGameResultClicked(view: InteractiveGameResultViewComponent) {

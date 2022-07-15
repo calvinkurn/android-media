@@ -192,7 +192,7 @@ class PlayBottomSheetFragment @Inject constructor(
         sectionInfo: ProductSectionUiModel.Section
     ) {
         if(playViewModel.bottomInsets.isProductSheetsShown) {
-            if(sectionInfo.config.type == ProductSectionType.Tokonow) newAnalytic.impressProductBottomSheet(products, sectionInfo, playViewModel.channelId, playViewModel.channelType)
+            if(sectionInfo.config.type == ProductSectionType.Tokonow) newAnalytic.impressProductBottomSheet(products, sectionInfo)
             else analytic.impressBottomSheetProducts(products, sectionInfo)
         }
     }
@@ -395,7 +395,7 @@ class PlayBottomSheetFragment @Inject constructor(
     private fun doOpenProductDetail(product: PlayProductUiModel.Product, configUiModel: ProductSectionUiModel.Section, position: Int) {
         if (product.applink != null && product.applink.isNotEmpty()) {
             if(configUiModel.config.type == ProductSectionType.Tokonow)
-                newAnalytic.clickProductBottomSheet(product, configUiModel, position, channelId = playViewModel.channelId, channelType = playViewModel.channelType)
+                newAnalytic.clickProductBottomSheet(product, configUiModel, position)
             else analytic.clickProduct(product, configUiModel, position)
             openPageByApplink(product.applink, pipMode = true)
         }
@@ -536,9 +536,7 @@ class PlayBottomSheetFragment @Inject constructor(
                                 newAnalytic.clickBeli(product = event.product,
                                     cartId = event.cartId,
                                     shopInfo = playViewModel.latestCompleteChannelData.partnerInfo,
-                                    sectionInfo = event.sectionInfo,
-                                    channelType = playViewModel.channelType,
-                                    channelId = playViewModel.channelId)
+                                    sectionInfo = event.sectionInfo)
                             else
                                 analytic.clickProductAction(
                                     product = event.product,
@@ -569,7 +567,7 @@ class PlayBottomSheetFragment @Inject constructor(
 
                             val partnerTokoNow = playViewModel.latestCompleteChannelData.partnerInfo.type == PartnerType.Tokonow
                             val (wording, route, toaster) = if(event.product.isTokoNow && partnerTokoNow) {
-                                newAnalytic.impressNowToaster(channelId = playViewModel.channelId, channelType = playViewModel.channelType)
+                                newAnalytic.impressNowToaster()
                                 Triple(
                                     getString(R.string.play_add_to_cart_message_success_mixed),
                                     ApplinkConst.TokopediaNow.HOME +getString(R.string.play_tokonow_minicart_applink),
@@ -577,7 +575,7 @@ class PlayBottomSheetFragment @Inject constructor(
                                 )
                             } else if (event.product.isTokoNow && !partnerTokoNow) Triple(getString(R.string.play_add_to_cart_message_success_tokonow), ApplinkConstInternalMarketplace.CART, getString(R.string.play_toaster_tokonow_wording))
                             else {
-                                newAnalytic.impressGlobalToaster(channelId = playViewModel.channelId, channelType = playViewModel.channelType)
+                                newAnalytic.impressGlobalToaster()
                                 Triple(
                                     getString(R.string.play_add_to_cart_message_success_tokonow),
                                     ApplinkConstInternalMarketplace.CART,
@@ -593,13 +591,10 @@ class PlayBottomSheetFragment @Inject constructor(
                                 actionClickListener = {
                                     RouteManager.route(requireContext(), route)
                                     if (event.product.isTokoNow && partnerTokoNow) {
-                                        newAnalytic.clickLihatNowToaster(
-                                            channelType = playViewModel.channelType,
-                                            channelId = playViewModel.channelId
-                                        )
+                                        newAnalytic.clickLihatNowToaster()
                                         analytic.clickSeeToasterAfterAtc()
                                     }
-                                    else if(!event.product.isTokoNow) newAnalytic.clickGlobalToaster(channelType = playViewModel.channelType, channelId = playViewModel.channelId)
+                                    else if(!event.product.isTokoNow) newAnalytic.clickGlobalToaster()
                                     else analytic.clickSeeToasterAfterAtc()
                                 }
                             )
@@ -610,9 +605,7 @@ class PlayBottomSheetFragment @Inject constructor(
                                 newAnalytic.clickAtc(product = event.product,
                                     cartId = event.cartId,
                                     shopInfo = playViewModel.latestCompleteChannelData.partnerInfo,
-                                    sectionInfo = event.sectionInfo,
-                                    channelType = playViewModel.channelType,
-                                    channelId = playViewModel.channelId)
+                                    sectionInfo = event.sectionInfo)
                             else
                                 analytic.clickProductAction(
                                 product = event.product,
@@ -650,13 +643,13 @@ class PlayBottomSheetFragment @Inject constructor(
     override fun onInformationClicked(
         view: ProductSheetViewComponent
     ) {
-        newAnalytic.clickInfoNow(channelId = playViewModel.channelId, channelType = playViewModel.channelType)
+        newAnalytic.clickInfoNow()
         val appLink = "${ApplinkConstInternalTokopediaNow.EDUCATIONAL_INFO}?source=play&channel_id=${playViewModel.channelId}&state=${playViewModel.channelType}"
         openPageByApplink(appLink , pipMode = false)
     }
 
     override fun onInformationImpressed(view: ProductSheetViewComponent) {
-        newAnalytic.impressInfoNow(channelId = playViewModel.channelId, channelType = playViewModel.channelType)
+        newAnalytic.impressInfoNow()
     }
 
     /**
