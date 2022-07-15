@@ -568,7 +568,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     }
 
     override fun onCommonAdapterReady(position: Int, commonAdapter: HomeAccountUserCommonAdapter) {
-        if (position == 2)
+        if (position == POSITION_2)
             this.commonAdapter = commonAdapter
     }
 
@@ -1334,15 +1334,15 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     private fun updateLocationSwitch(isEnable: Boolean) {
         commonAdapter?.list?.find { it.id == AccountConstants.SettingCode.SETTING_GEOLOCATION_ID }?.isChecked =
             isEnable
-        commonAdapter?.notifyItemChanged(1)
-        adapter?.notifyItemChanged(3)
+        commonAdapter?.notifyItemChanged(POSITION_1)
+        adapter?.notifyItemChanged(POSITION_3)
     }
 
     private fun updateSafeModeSwitch(isEnable: Boolean) {
         commonAdapter?.list?.find { it.id == AccountConstants.SettingCode.SETTING_SAFE_SEARCH_ID }?.isChecked =
             isEnable
-        commonAdapter?.notifyItemChanged(2)
-        adapter?.notifyItemChanged(3)
+        commonAdapter?.notifyItemChanged(POSITION_2)
+        adapter?.notifyItemChanged(POSITION_3)
     }
 
     private fun goToApplicationDetailActivity() {
