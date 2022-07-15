@@ -13,7 +13,6 @@ import io.mockk.mockk
 fun createBalanceWidgetUseCase(
     homeWalletAppRepository: HomeWalletAppRepository = mockk(relaxed = true),
     homeTokopointsListRepository: HomeTokopointsListRepository = mockk(relaxed = true),
-    homeFlagRepository: HomeFlagRepository = mockk(relaxed = true),
     userSessionInterface: UserSessionInterface = createDefaultLoggedInUserSession(),
     injectCouponTimeBasedUseCase: InjectCouponTimeBasedUseCase = mockk(relaxed = true),
     getHomeBalanceWidgetRepository: GetHomeBalanceWidgetRepository = mockk(relaxed = true)
@@ -21,7 +20,6 @@ fun createBalanceWidgetUseCase(
     return HomeBalanceWidgetUseCase(
         homeWalletAppRepository = homeWalletAppRepository,
         homeTokopointsListRepository = homeTokopointsListRepository,
-        homeFlagRepository = homeFlagRepository,
         userSession = userSessionInterface,
         injectCouponTimeBasedUseCase = injectCouponTimeBasedUseCase,
         getHomeBalanceWidgetRepository = getHomeBalanceWidgetRepository
