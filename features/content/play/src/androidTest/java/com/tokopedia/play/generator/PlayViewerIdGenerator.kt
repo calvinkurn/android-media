@@ -17,6 +17,7 @@ import com.tokopedia.play.di.PlayInjector
 import com.tokopedia.play.di.PlayTestModule
 import com.tokopedia.play.di.PlayTestRepositoryModule
 import com.tokopedia.play.domain.repository.PlayViewerRepository
+import com.tokopedia.play.model.UiModelBuilder
 import com.tokopedia.play.test.espresso.delay
 import com.tokopedia.play.test.factory.TestFragmentFactory
 import com.tokopedia.play.test.factory.TestViewModelFactory
@@ -77,6 +78,8 @@ class PlayViewerIdGenerator {
     private val repo: PlayViewerRepository = mockk(relaxed = true)
 
     private val decodeHtml = DefaultHtmlTextTransformer()
+
+    private val uiModelBuilder = UiModelBuilder.get()
 
     private val mapper = PlayUiModelMapper(
         productTagMapper = PlayProductTagUiMapper(),
@@ -148,12 +151,14 @@ class PlayViewerIdGenerator {
                     multipleLikesIconCacheStorage = mockk(relaxed = true),
                     castAnalyticHelper = mockk(relaxed = true),
                     performanceClassConfig = mockk(relaxed = true),
+                    analyticManagerFactory = mockk(relaxed = true),
                 )
             },
             PlayBottomSheetFragment::class.java to {
                 PlayBottomSheetFragment(
                     viewModelFactory = mockViewModelFactory,
                     analytic = mockk(relaxed = true),
+                    dispatchers = CoroutineDispatchersProvider,
                 )
             },
             PlayVideoFragment::class.java to {
@@ -172,7 +177,10 @@ class PlayViewerIdGenerator {
             val parent = (view.parent as? ViewGroup) ?: return@PrintCondition true
             val packageName = parent::class.java.`package`?.name.orEmpty()
             val className = parent::class.java.name
-            !packageName.startsWith("com.tokopedia") || !className.contains("unify", ignoreCase = true)
+            !packageName.startsWith("com.tokopedia") || !className.contains(
+                "unify",
+                ignoreCase = true
+            )
         },
         PrintCondition { view ->
             view.id != View.NO_ID || view is ViewGroup
@@ -199,54 +207,30 @@ class PlayViewerIdGenerator {
 
     @Test
     fun inhousePlayer() {
-        val tagItem = TagItemUiModel(
-            product = ProductUiModel(
-                productSectionList = listOf(
-                    ProductSectionUiModel.Section(
+        val tagItem = uiModelBuilder.buildTagItem(
+            product = uiModelBuilder.buildProductModel(
+                productList = listOf(
+                    uiModelBuilder.buildProductSection(
                         productList = listOf(
-                            PlayProductUiModel.Product(
+                            uiModelBuilder.buildProduct(
                                 id = "1",
                                 shopId = "2",
-                                imageUrl = "",
                                 title = "Barang 1",
                                 stock = StockAvailable(1),
-                                isVariantAvailable = false,
-                                price = OriginalPrice("0", 0.0),
-                                minQty = 1,
-                                isFreeShipping = false,
-                                applink = "",
-                            )
+                            ),
                         ),
-                        config = ProductSectionUiModel.Section.ConfigUiModel(
+                        config = uiModelBuilder.buildSectionConfig(
                             type = ProductSectionType.Other,
                             title = "Section 1",
-                            startTime = "",
-                            timerInfo = "",
-                            serverTime = "",
-                            background = ProductSectionUiModel.Section.BackgroundUiModel(
-                                gradients = emptyList(), imageUrl = ""
-                            ),
-                            endTime = "",
-                            reminder = PlayUpcomingBellStatus.Unknown,
                         ),
                         id = "1"
                     )
                 ),
                 canShow = true,
             ),
-            voucher = VoucherUiModel(
+            voucher = uiModelBuilder.buildVoucherModel(
                 voucherList = listOf(
-                    MerchantVoucherUiModel(
-                        id = "",
-                        type = MerchantVoucherType.Private,
-                        title = "",
-                        description = "",
-                        code = "",
-                        copyable = false,
-                        highlighted = false,
-                        voucherStock = 1,
-                        expiredDate = "",
-                    )
+                    uiModelBuilder.buildMerchantVoucher()
                 )
             ),
             maxFeatured = 1,
@@ -300,7 +284,7 @@ class PlayViewerIdGenerator {
         val scenario = ActivityScenario.launch<PlayActivity>(intent)
         scenario.moveToState(Lifecycle.State.RESUMED)
 
-        delay(1000)
+        delay(100000)
 
         scenario.onActivity {
             val parent = parentViewPrinter.printAsCSV(

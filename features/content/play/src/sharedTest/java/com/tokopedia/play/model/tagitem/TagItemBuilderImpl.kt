@@ -49,7 +49,8 @@ class TagItemBuilderImpl : TagItemBuilder {
         price: ProductPrice,
         minQty: Int,
         isFreeShipping: Boolean,
-        appLink: String
+        appLink: String,
+        isPinned: Boolean,
     ) = PlayProductUiModel.Product(
         id = id,
         shopId = shopId,
@@ -61,6 +62,7 @@ class TagItemBuilderImpl : TagItemBuilder {
         minQty = minQty,
         isFreeShipping = isFreeShipping,
         applink = appLink,
+        isPinned = isPinned,
     )
 
     override fun buildMerchantVoucher(
