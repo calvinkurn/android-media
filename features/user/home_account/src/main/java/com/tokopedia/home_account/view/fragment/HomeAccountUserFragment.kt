@@ -406,7 +406,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         grantResults: IntArray
     ) {
         when (requestCode) {
-            888 -> {
+            REQUEST_CODE_ASK_PERMISSION_LOCATION -> {
                 if (grantResults.isNotEmpty() &&
                     grantResults[0] == PackageManager.PERMISSION_GRANTED
                 ) {
@@ -428,7 +428,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     override fun onItemViewBinded(position: Int, itemView: View, data: Any) {
         initCoachMark(position, itemView, data)
-        if (position == 0) {
+        if (position == POSITION_0) {
             initMemberLocalLoad(itemView)
             initBalanceAndPointLocalLoad(itemView)
         }
@@ -786,21 +786,21 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                 balanceAndPoint
             )
         )
-        adapter?.notifyItemChanged(0)
+        adapter?.notifyItemChanged(POSITION_0)
     }
 
     private fun onFailedGetBalanceAndPoint(walletId: String) {
         balanceAndPointAdapter?.changeItemToFailedById(walletId)
-        adapter?.notifyItemChanged(0)
+        adapter?.notifyItemChanged(POSITION_0)
     }
 
     private fun onSuccessGetShortcutGroup(shortcutResponse: ShortcutResponse) {
         displayMemberLocalLoad(false)
         adapter?.run {
             if(isFirstItemIsProfile()) {
-                (getItem(0) as ProfileDataView).memberStatus =
+                (getItem(POSITION_0) as ProfileDataView).memberStatus =
                     shortcutResponse.tokopointsStatusFiltered.statusFilteredData.tier
-                notifyItemChanged(0)
+                notifyItemChanged(POSITION_0)
             }
         }
         val mappedMember = mapper.mapMemberItemDataView(shortcutResponse)
@@ -818,7 +818,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     private fun setDefaultMemberTitle() {
         adapter?.setDefaultMemberTitle(getString(R.string.default_member_title))
-        adapter?.notifyItemChanged(0)
+        adapter?.notifyItemChanged(POSITION_0)
     }
 
     private fun onFailedGetBuyerAccount() {
@@ -831,17 +831,16 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     private fun onFailGetData() {
         adapter?.run {
             if (isFirstItemIsProfile()) {
-                removeItemAt(0)
+                removeItemAt(POSITION_0)
             }
-            addItem(
-                0, ProfileDataView(
+            addItem(POSITION_0, ProfileDataView(
                     name = userSession.name,
                     phone = userSession.phoneNumber,
                     email = userSession.email,
                     avatar = userSession.profilePicture
                 )
             )
-            notifyItemChanged(0)
+            notifyItemChanged(POSITION_0)
         }
         hideLoading()
         fpmBuyer?.run { stopTrace() }
@@ -854,17 +853,17 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     }
 
     private fun isFirstItemIsProfile(): Boolean =
-        adapter?.getItem(0) is ProfileDataView
+        adapter?.getItem(POSITION_0) is ProfileDataView
 
     private fun onSuccessGetBuyerAccount(buyerAccount: UserAccountDataModel) {
         displayMemberLocalLoad(false)
         displayBalanceAndPointLocalLoad(false)
         adapter?.run {
             if (isFirstItemIsProfile()) {
-                removeItemAt(0)
+                removeItemAt(POSITION_0)
             }
-            addItem(0, mapper.mapToProfileDataView(buyerAccount, isEnableLinkAccount = isEnableLinkAccount()))
-            notifyItemChanged(0)
+            addItem(POSITION_0, mapper.mapToProfileDataView(buyerAccount, isEnableLinkAccount = isEnableLinkAccount()))
+            notifyItemChanged(POSITION_0)
         }
         hideLoading()
         fpmBuyer?.run { stopTrace() }
@@ -967,7 +966,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     }
 
     private fun getData() {
-        binding?.homeAccountUserFragmentRv?.scrollToPosition(0)
+        binding?.homeAccountUserFragmentRv?.scrollToPosition(POSITION_0)
         endlessRecyclerViewScrollListener?.resetState()
         viewModel.getBuyerData()
         setupSettingList()
@@ -1328,7 +1327,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION
             ),
-            888
+            REQUEST_CODE_ASK_PERMISSION_LOCATION
         )
     }
 
@@ -1387,8 +1386,8 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     private fun initCoachMark(position: Int, itemView: View, data: Any) {
         if (accountPref.isShowCoachmark()) {
             if (!isProfileSectionBinded) {
-                if (coachMarkItem.count() < 3) {
-                    if (position == 0 && data is ProfileDataView) {
+                if (coachMarkItem.count() < COACHMARK_SIZE_3) {
+                    if (position == POSITION_0 && data is ProfileDataView) {
                         coachMarkItem.add(
                             CoachMark2Item(
                                 itemView.findViewById(R.id.account_user_item_profile_email),
@@ -1702,6 +1701,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         private const val REQUEST_CODE_LINK_ACCOUNT = 302
         private const val REQUEST_CODE_REGISTER_BIOMETRIC = 303
         private const val REQUEST_CODE_EXPLICIT_PROFILE = 304
+        private const val REQUEST_CODE_ASK_PERMISSION_LOCATION = 888
 
         private const val START_TRANSITION_PIXEL = 200
         private const val TOOLBAR_TRANSITION_RANNGE_PIXEL = 50
@@ -1721,6 +1721,12 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         private const val REMOTE_CONFIG_KEY_ACCOUNT_LINKING = "android_user_link_account_entry_point"
         private const val EXPLICIT_PROFILE_MENU_ROLLOUT = "explicit_android"
         private const val CLICK_TYPE_WISHLIST = "&click_type=wishlist"
+
+        private const val COACHMARK_SIZE_3 = 3
+        private const val POSITION_0 = 0
+        private const val POSITION_1 = 1
+        private const val POSITION_2 = 2
+        private const val POSITION_3 = 3
 
         fun newInstance(bundle: Bundle?): Fragment {
             return HomeAccountUserFragment().apply {
