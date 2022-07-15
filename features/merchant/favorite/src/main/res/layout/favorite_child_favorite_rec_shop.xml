@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:background="@color/Unify_N0">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingBottom="@dimen/padding_vs"

@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.topads.sdk.R
+import com.tokopedia.topads.sdk.TopAdsConstants.CONST_5
 import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_5
 import com.tokopedia.topads.sdk.domain.model.ShopProductModel.ShopProductModelItem
 import com.tokopedia.topads.sdk.listener.FollowButtonClickListener
@@ -95,8 +96,8 @@ class ShopAdsProductAdapter(
 
         private fun setRating(rating: String, countReview: String) {
             val ratingData = rating.toFloatOrZero().toInt()
-            if (ratingData in 1..5) {
-                for (r in 0 until ratingData) {
+            if (ratingData in Int.ONE..CONST_5) {
+                for (r in Int.ZERO until ratingData) {
                     shopProductReviews.show()
                     (shopProductReviews.getChildAt(r) as ImageView).setImageResource(R.drawable.product_card_ic_rating_active)
                 }
