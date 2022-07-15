@@ -41,22 +41,14 @@ class SomListOrderStatusFilterTab(
 
     private fun updateTabsCounter(statusList: List<SomListFilterUiModel.Status>) {
         statusList.forEachIndexed { index, status ->
-            val filterTab = filterTabs[index]
-            filterTab.setCustomText(createNewTabs(status))
-            if (status.isChecked) filterTab.select()
+            filterTabs[index].setCustomText(createNewTabs(status))
         }
     }
 
     private fun recreateTabs(statusList: List<SomListFilterUiModel.Status>) {
         tabs.getUnifyTabLayout().removeAllTabs()
         filterTabs.clear()
-        statusList.forEach {
-            val filterTabText = createNewTabs(it)
-            val filterTab = tabs.addNewTab(filterTabText)
-            filterTab.setCustomText(filterTabText)
-            if (it.isChecked) filterTab.select()
-            filterTabs.add(filterTab)
-        }
+        statusList.forEach { filterTabs.add(tabs.addNewTab(createNewTabs(it), it.isChecked)) }
     }
 
     private fun createNewTabs(statusFilter: SomListFilterUiModel.Status): String {
