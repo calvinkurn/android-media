@@ -215,14 +215,13 @@
             app:layout_constraintTop_toBottomOf="@id/productShopName" />
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/duplicateButtonFollow"
+            android:id="@+id/buttonFollow"
             android:layout_width="match_parent"
             android:layout_height="@dimen/unify_space_32"
             android:layout_marginLeft="@dimen/unify_space_8"
             android:layout_marginTop="@dimen/unify_space_8"
             android:layout_marginRight="@dimen/unify_space_8"
             android:text="Follow"
-            android:clickable="false"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -235,19 +234,4 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/buttonFollow"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/unify_space_32"
-        android:layout_marginLeft="@dimen/unify_space_8"
-        android:layout_marginTop="@dimen/unify_space_8"
-        android:layout_marginRight="@dimen/unify_space_8"
-        android:layout_marginBottom="@dimen/unify_space_16"
-        android:text="Follow"
-        android:visibility="gone"
-        app:unifyButtonSize="medium"
-        app:unifyButtonType="main"
-        app:unifyButtonVariant="ghost"
-        android:layout_gravity="bottom"
-        tools:visibility="visible"/>
 </androidx.cardview.widget.CardView>

@@ -44,7 +44,6 @@ class ShopAdsProductAdapter(
         private val locationIcon = itemView.findViewById<ImageView>(R.id.locationIcon)
         private val locationName = itemView.findViewById<Typography>(R.id.locationName)
         private val buttonFollow = itemView.findViewById<UnifyButton>(R.id.buttonFollow)
-        private val duplicateButtonFollow = itemView.findViewById<UnifyButton>(R.id.duplicateButtonFollow)
 
 
         fun bind(shopProductModelItem: ShopProductModelItem) {
@@ -60,7 +59,7 @@ class ShopAdsProductAdapter(
                 }
             }
 
-            shopProductRoot.setOnClickListener { shopAdsProductListener.onItemClicked(shopProductModelItem.position) }
+            itemView.setOnClickListener { shopAdsProductListener.onItemClicked(shopProductModelItem.position) }
             setFollowButton(shopProductModelItem.layoutType, shopProductModelItem)
 
         }
@@ -71,7 +70,6 @@ class ShopAdsProductAdapter(
         ) {
             if (layoutType == LAYOUT_5) {
                 buttonFollow.hide()
-                duplicateButtonFollow.hide()
             }
             else {
                 if (!shopProductModelItem.isFollowed) {
@@ -83,7 +81,6 @@ class ShopAdsProductAdapter(
                     }
                 }
                 buttonFollow.show()
-                duplicateButtonFollow.invisible()
             }
 
         }
