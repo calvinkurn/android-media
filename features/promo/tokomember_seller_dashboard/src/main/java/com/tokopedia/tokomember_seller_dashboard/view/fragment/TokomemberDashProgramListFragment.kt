@@ -229,8 +229,6 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
         bundle.putInt(BUNDLE_PROGRAM_ID, programId)
         when {
             type.equals(EXTEND) -> {
-//                bundle.putInt(BUNDLE_PROGRAM_TYPE, ProgramType.EXTEND)
-//                (activity as TokomemberDashHomeActivity).addFragment(TmProgramFragment.newInstance(bundle), TAG_HOME)
                 TmDashCreateActivity.openActivity(shopId, activity, CreateScreenType.PROGRAM, ProgramActionType.EXTEND, null, programId)
 
             }
@@ -250,7 +248,6 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
                 dialog?.show()
             }
             type.equals(EDIT) -> {
-//                bundle.putInt(BUNDLE_PROGRAM_TYPE, ProgramType.EDIT)
                 TmDashCreateActivity.openActivity(
                     shopId,
                     activity,
@@ -259,7 +256,6 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
                     REQUEST_CODE_REFRESH,
                     programId
                 )
-//                (activity as TokomemberDashHomeActivity).addFragment(TmProgramFragment.newInstance(bundle), TAG_HOME)
             }
         }
     }

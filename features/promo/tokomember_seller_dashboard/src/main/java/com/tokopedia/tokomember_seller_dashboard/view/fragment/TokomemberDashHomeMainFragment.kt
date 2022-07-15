@@ -22,7 +22,6 @@ import com.tokopedia.tokomember_seller_dashboard.callbacks.TmProgramDetailCallba
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ACTION
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberDashHomeViewpagerAdapter
-import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashHomeViewmodel
 import com.tokopedia.unifycomponents.TabsUnify
 import javax.inject.Inject
 
@@ -36,10 +35,6 @@ class TokomemberDashHomeMainFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
-    private val tokomemberDashHomeViewmodel: TokomemberDashHomeViewmodel by lazy(LazyThreadSafetyMode.NONE) {
-        val viewModelProvider = ViewModelProvider(this, viewModelFactory.get())
-        viewModelProvider.get(TokomemberDashHomeViewmodel::class.java)
-    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
