@@ -18,4 +18,10 @@ interface ShopHomeFlashSaleWidgetListener {
     fun onFlashSaleWidgetImpressed(model : ShopHomeFlashSaleUiModel, position: Int)
 
     fun onPlaceHolderClickSeeAll(model: ShopHomeFlashSaleUiModel)
+
+    fun onFlashSaleProductImpression(
+        shopHomeProductUiModel: ShopHomeProductUiModel,
+        flashSaleUiModel: ShopHomeFlashSaleUiModel?,
+        position: Int
+    )
 }

@@ -1494,6 +1494,16 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
         )
     }
 
+    override fun impressionProductItemBundleMultiple(
+        selectedProduct: ShopHomeBundleProductUiModel,
+        selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
+        bundleName: String,
+        bundlePosition: Int,
+        widgetTitle: String,
+        widgetName: String,
+        productItemPosition: Int
+    ) {}
+
     override fun onMultipleBundleProductClicked(
             selectedProduct: ShopHomeBundleProductUiModel,
             selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
@@ -1529,7 +1539,9 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
             selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
             selectedProduct: ShopHomeBundleProductUiModel,
             bundleName: String,
-            bundlePosition: Int
+            bundlePosition: Int,
+            widgetTitle: String,
+            widgetName: String
     ) {
         shopPageHomeTracking.impressionSingleBundleWidget(
                 shopId = shopId,
@@ -3057,6 +3069,12 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
         goToPDP(model.id ?: "")
     }
 
+    override fun onFlashSaleProductImpression(
+        shopHomeProductUiModel: ShopHomeProductUiModel,
+        flashSaleUiModel: ShopHomeFlashSaleUiModel?,
+        position: Int
+    ) {}
+
     override fun onPlaceHolderClickSeeAll(model: ShopHomeFlashSaleUiModel) {
         context?.run {
             if (shopId.isNotBlank() && model.header.ctaLink.isNotBlank()) {
@@ -3675,7 +3693,8 @@ shopHomeAdapter.itemCount
             products: List<ProductCardUiModel>,
             position: Int,
             campaignId: String,
-            campaignName: String
+            campaignName: String,
+            campaignTitle: String
         ) {
             shopPageHomeTracking.impressionProductCardThematicWidgetCampaign(
                 campaignName = campaignName,

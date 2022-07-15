@@ -62,6 +62,8 @@ class ShopCampaignProductBundleParentWidgetViewHolder (
         }
         setWidgetImpressionListener(element)
         initRecyclerView(bundleLayoutManager, element)
+        rvBundleAdapter?.setWidgetTitle(element.header.title)
+        rvBundleAdapter?.setWidgetName(element.name)
         rvBundleAdapter?.updateDataSet(element.productBundleList)
         rvBundleAdapter?.setParentPosition(adapterPosition)
     }

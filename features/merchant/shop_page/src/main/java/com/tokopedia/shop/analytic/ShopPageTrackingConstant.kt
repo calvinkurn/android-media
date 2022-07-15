@@ -159,6 +159,7 @@ object ShopPageTrackingConstant {
     const val BUNDLE_ADD_TO_CART = "add to cart"
     const val IMPRESSION_SHOP_BANNER = "impression shop banner"
     const val CLICK_SHOP_BANNER = "click shop banner"
+    const val CAMPAIGN_TAB_PRODUCT_IMPRESSION_EVENT_ACTION = "product impression"
 
     //label
     const val CLICK_SHARE = "click share"

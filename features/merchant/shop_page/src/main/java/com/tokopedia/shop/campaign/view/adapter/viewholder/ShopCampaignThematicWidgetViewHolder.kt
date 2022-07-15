@@ -204,8 +204,13 @@ class ShopCampaignThematicWidgetViewHolder (
         }
 
         override fun onProductCardImpressListener(product: ProductCardUiModel) {
-            trackerProductsModel.add(product)
-            listener.onProductCardThematicWidgetImpressListener(trackerProductsModel, adapterPosition, uiModel?.campaignId.orEmpty(), uiModel?.name.orEmpty())
+            listener.onProductCardThematicWidgetImpressListener(
+                listOf(product),
+                adapterPosition,
+                uiModel?.campaignId.orEmpty(),
+                uiModel?.name.orEmpty(),
+                uiModel?.header?.title.orEmpty()
+            )
         }
     }
 

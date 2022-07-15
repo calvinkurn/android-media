@@ -2,29 +2,44 @@ package com.tokopedia.shop.analytic
 
 import android.os.Bundle
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.BUSINESS_UNIT
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CAMPAIGN_TAB
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CAMPAIGN_TAB_PRODUCT_IMPRESSION_EVENT_ACTION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOP_BANNER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOP_BANNER_LABEL
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CREATIVE_NAME
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CREATIVE_SLOT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CURRENT_SITE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_117
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_118
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_40
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_ACTION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_CATEGORY
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_LABEL
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_SHOP_BANNER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_SHOP_BANNER_LABEL
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.INDEX
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEMS
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_BRAND
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_CATEGORY
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_NAME
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_VARIANT
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.LABEL_IMPRESSION_PRODUCT_LIST
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PHYSICAL_GOODS
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMOTIONS
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SELECT_CONTENT
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOPPAGE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_CAMPAIGN_TAB_EVENT_CATEGORY
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_ID
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_BUYER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TRACKER_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.USER_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VIEW_ITEM
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VIEW_ITEM_LIST
 import com.tokopedia.track.TrackApp
 import javax.inject.Inject
 
@@ -129,4 +144,65 @@ class ShopCampaignTabTracker @Inject constructor() {
         TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
     }
 
+    fun impressionCampaignTabProduct(
+        productId: String,
+        productName:  String,
+        widgetName: String,
+        shopId: String,
+        userId: String,
+        widgetTitle: String,
+        itemPosition: Int,
+        bundlingType: String = "",
+        bundlingId: String = ""
+    ) {
+        val eventLabel = String.format(LABEL_IMPRESSION_PRODUCT_LIST, CAMPAIGN_TAB, widgetTitle)
+        val eventBundle = Bundle().apply {
+            putString(EVENT, VIEW_ITEM_LIST)
+            putString(EVENT_ACTION, CAMPAIGN_TAB_PRODUCT_IMPRESSION_EVENT_ACTION)
+            putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
+            putString(EVENT_LABEL, eventLabel)
+            putString(BUSINESS_UNIT, PHYSICAL_GOODS)
+            putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+            putString(PRODUCT_ID, productId)
+            putString(SHOP_ID, shopId)
+            putString(USER_ID, userId)
+            putParcelableArrayList(
+                ITEMS,
+                arrayListOf(
+                    createProductCampaignItems(
+                        itemPosition,
+                        productId,
+                        productName,
+                        widgetName,
+                        bundlingType,
+                        bundlingId,
+                    )
+                )
+            )
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM_LIST, eventBundle)
+    }
+
+    private fun createProductCampaignItems(
+        position: Int,
+        productId: String,
+        productName: String,
+        widgetName: String,
+        bundlingType: String,
+        bundlingId: String
+    ): Bundle {
+        return Bundle().apply {
+            if(bundlingType.isNotEmpty())
+                putString(DIMENSION_117, bundlingType)
+            if(bundlingId.isNotEmpty())
+                putString(DIMENSION_118, bundlingId)
+            putString(DIMENSION_40, "$SHOPPAGE  - $widgetName")
+            putInt(INDEX, position)
+            putString(ITEM_BRAND, "")
+            putString(ITEM_CATEGORY, "")
+            putString(ITEM_ID, productId)
+            putString(ITEM_NAME, productName)
+            putString(ITEM_VARIANT, CAMPAIGN_TAB)
+        }
+    }
 }
