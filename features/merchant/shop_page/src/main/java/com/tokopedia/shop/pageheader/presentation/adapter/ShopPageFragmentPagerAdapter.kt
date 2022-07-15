@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayout
+import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -15,6 +16,9 @@ import com.tokopedia.shop.common.util.ShopUtil.isUrlPng
 import com.tokopedia.shop.databinding.ShopPageDynamicTabViewBinding
 import com.tokopedia.shop.databinding.ShopPageTabViewBinding
 import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
+import com.tokopedia.shop.pageheader.data.model.ShopTabIconUrlModel
+import com.tokopedia.utils.resources.isDarkMode
+import java.lang.Exception
 import java.lang.ref.WeakReference
 
 internal class ShopPageFragmentPagerAdapter(
@@ -85,11 +89,12 @@ internal class ShopPageFragmentPagerAdapter(
     private fun setDynamicTabIcon(binding: ShopPageDynamicTabViewBinding, position: Int, isActive: Boolean) {
         binding.shopPageDynamicTabViewIcon.hide()
         ctx?.let {
-            val iconUrl: String = if (isActive) {
+            val iconDataJsonString: String = if (isActive) {
                 listShopPageTabModel.getOrNull(position)?.iconActiveUrl.orEmpty()
             } else {
                 listShopPageTabModel.getOrNull(position)?.iconUrl.orEmpty()
             }
+            val iconUrl = getIconUrlFromJsonString(iconDataJsonString)
             when {
                 iconUrl.isUrlPng() -> {
                     binding.shopPageDynamicTabViewIcon.apply {
@@ -100,6 +105,23 @@ internal class ShopPageFragmentPagerAdapter(
                 }
                 else -> {}
             }
+        }
+    }
+
+    private fun getIconUrlFromJsonString(iconDataJsonString: String): String {
+        return try {
+            CommonUtil.fromJson<ShopTabIconUrlModel>(
+                iconDataJsonString,
+                ShopTabIconUrlModel::class.java
+            ).run {
+                if (ctx?.isDarkMode() == true) {
+                    darkModeUrl
+                } else {
+                    lightModeUrl
+                }
+            }
+        } catch (e: Exception) {
+            ""
         }
     }
 
