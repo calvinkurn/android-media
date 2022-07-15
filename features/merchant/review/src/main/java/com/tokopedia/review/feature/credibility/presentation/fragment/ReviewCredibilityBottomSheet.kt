@@ -11,7 +11,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.review.common.extension.collectLatestWhenResumed
 import com.tokopedia.review.databinding.BottomsheetReviewCredibilityBinding
@@ -22,6 +21,7 @@ import com.tokopedia.review.feature.credibility.presentation.uistate.ReviewCredi
 import com.tokopedia.review.feature.credibility.presentation.viewmodel.ReviewCredibilityViewModel
 import com.tokopedia.review.feature.credibility.presentation.widget.ReviewCredibilityAchievementBoxWidget
 import com.tokopedia.review.feature.credibility.presentation.widget.ReviewCredibilityFooterWidget
+import com.tokopedia.review.feature.credibility.presentation.widget.ReviewCredibilityGlobalErrorWidget
 import com.tokopedia.review.feature.credibility.presentation.widget.ReviewCredibilityHeaderWidget
 import com.tokopedia.review.feature.credibility.presentation.widget.ReviewCredibilityStatisticBoxWidget
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -30,7 +30,7 @@ import javax.inject.Inject
 
 class ReviewCredibilityBottomSheet : BottomSheetUnify(), ReviewCredibilityFooterWidget.Listener,
     ReviewCredibilityHeaderWidget.Listener, ReviewCredibilityAchievementBoxWidget.Listener,
-    ReviewCredibilityStatisticBoxWidget.Listener {
+    ReviewCredibilityStatisticBoxWidget.Listener, ReviewCredibilityGlobalErrorWidget.Listener {
 
     companion object {
         private const val LOGIN_REQUEST_CODE = 200
@@ -167,6 +167,14 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), ReviewCredibilityFooter
         viewModel.onFooterStopTransitioning()
     }
 
+    override fun onMainCTAClicked() {
+        viewModel.loadReviewCredibilityData()
+    }
+
+    override fun onGlobalErrorTransitionEnd() {
+        viewModel.onGlobalErrorStopTransitioning()
+    }
+
     @Suppress("UNCHECKED_CAST")
     private fun initInjector() {
         (activity as? HasComponent<ReviewCredibilityComponent>)?.component?.inject(this)
@@ -212,9 +220,7 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), ReviewCredibilityFooter
 
     private fun initGlobalErrorUiStateCollector() {
         collectLatestWhenResumed(viewModel.reviewCredibilityGlobalErrorUiState) {
-            binding?.globalErrorReviewCredibility?.showWithCondition(
-                it is ReviewCredibilityGlobalErrorUiState.Showed
-            )
+            binding?.globalErrorReviewCredibility?.updateUiState(it)
             toggleKnobVisibility(it is ReviewCredibilityGlobalErrorUiState.Hidden)
         }
     }
@@ -224,14 +230,7 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), ReviewCredibilityFooter
         binding?.widgetReviewCredibilityAchievementBox?.setListener(this)
         binding?.widgetReviewCredibilityStatisticBox?.setListener(this)
         binding?.widgetReviewCredibilityFooter?.setListener(this)
-        binding?.globalErrorReviewCredibility?.apply {
-            setActionClickListener {
-                viewModel.loadReviewCredibilityData()
-            }
-            setSecondaryActionClickListener {
-                RouteManager.route(context, ApplinkConstInternalGlobal.GENERAL_SETTING)
-            }
-        }
+        binding?.globalErrorReviewCredibility?.setListener(this)
     }
 
     private fun initData(savedInstanceState: Bundle?) {

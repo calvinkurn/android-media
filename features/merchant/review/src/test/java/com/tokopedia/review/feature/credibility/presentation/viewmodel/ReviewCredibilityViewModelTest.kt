@@ -29,14 +29,12 @@ class ReviewCredibilityViewModelTest : ReviewCredibilityViewModelTestFixture() {
 
     @Test
     fun `loadReviewCredibilityData should not trigger getReviewCredibility when header UI have not finish transitioning`() {
-        rule.runBlockingTest {
-            finishAllTransition()
-            viewModel.loadReviewCredibilityData()
-            viewModel.onAchievementBoxStopTransitioning()
-            viewModel.onStatisticBoxStopTransitioning()
-            viewModel.onFooterStopTransitioning()
-        }
-        rule.dispatchers.coroutineDispatcher.advanceUntilIdle()
+        finishAllTransition()
+        viewModel.loadReviewCredibilityData()
+        viewModel.onAchievementBoxStopTransitioning()
+        viewModel.onStatisticBoxStopTransitioning()
+        viewModel.onFooterStopTransitioning()
+        viewModel.onGlobalErrorStopTransitioning()
         coVerify(inverse = true) { getReviewerCredibilityUseCase.executeOnBackground() }
     }
 
@@ -44,89 +42,80 @@ class ReviewCredibilityViewModelTest : ReviewCredibilityViewModelTestFixture() {
     fun `loadReviewCredibilityData should not trigger getReviewCredibility when achievement box UI have not finish transitioning`() {
         // need to enter to showed state first because achievement box only have hidden and showed state
         `reviewCredibilityAchievementBoxUiState should equal to ReviewCredibilityAchievementBoxUiState#Showed when getReviewCredibilityResult is RequestState#Success and achievements not empty`()
-        rule.runBlockingTest {
-            viewModel.loadReviewCredibilityData()
-            viewModel.onHeaderStopTransitioning()
-            viewModel.onStatisticBoxStopTransitioning()
-            viewModel.onFooterStopTransitioning()
-        }
-        rule.dispatchers.coroutineDispatcher.advanceUntilIdle()
+        viewModel.loadReviewCredibilityData()
+        viewModel.onHeaderStopTransitioning()
+        viewModel.onStatisticBoxStopTransitioning()
+        viewModel.onFooterStopTransitioning()
+        viewModel.onGlobalErrorStopTransitioning()
         coVerify(exactly = 1) { getReviewerCredibilityUseCase.executeOnBackground() }
     }
 
     @Test
     fun `loadReviewCredibilityData should not trigger getReviewCredibility when statistic box UI have not finish transitioning`() {
-        rule.runBlockingTest {
-            finishAllTransition()
-            viewModel.loadReviewCredibilityData()
-            viewModel.onHeaderStopTransitioning()
-            viewModel.onAchievementBoxStopTransitioning()
-            viewModel.onFooterStopTransitioning()
-        }
-        rule.dispatchers.coroutineDispatcher.advanceUntilIdle()
+        finishAllTransition()
+        viewModel.loadReviewCredibilityData()
+        viewModel.onHeaderStopTransitioning()
+        viewModel.onAchievementBoxStopTransitioning()
+        viewModel.onFooterStopTransitioning()
+        viewModel.onGlobalErrorStopTransitioning()
         coVerify(inverse = true) { getReviewerCredibilityUseCase.executeOnBackground() }
     }
 
     @Test
     fun `loadReviewCredibilityData should not trigger getReviewCredibility when footer UI have not finish transitioning`() {
-        rule.runBlockingTest {
-            finishAllTransition()
-            viewModel.loadReviewCredibilityData()
-            viewModel.onHeaderStopTransitioning()
-            viewModel.onAchievementBoxStopTransitioning()
-            viewModel.onStatisticBoxStopTransitioning()
-        }
-        rule.dispatchers.coroutineDispatcher.advanceUntilIdle()
+        finishAllTransition()
+        viewModel.loadReviewCredibilityData()
+        viewModel.onHeaderStopTransitioning()
+        viewModel.onAchievementBoxStopTransitioning()
+        viewModel.onStatisticBoxStopTransitioning()
+        viewModel.onGlobalErrorStopTransitioning()
         coVerify(inverse = true) { getReviewerCredibilityUseCase.executeOnBackground() }
     }
 
     @Test
+    fun `loadReviewCredibilityData should not trigger getReviewCredibility when global error UI have not finish transitioning`() {
+        // need to enter to showed state first because achievement box only have hidden and showed state
+        `reviewCredibilityGlobalErrorUiState should equal to ReviewCredibilityGlobalErrorUiState#Showed when getReviewCredibilityResult is RequestState#Error`()
+        viewModel.loadReviewCredibilityData()
+        viewModel.onHeaderStopTransitioning()
+        viewModel.onAchievementBoxStopTransitioning()
+        viewModel.onStatisticBoxStopTransitioning()
+        viewModel.onFooterStopTransitioning()
+        coVerify(exactly = 1) { getReviewerCredibilityUseCase.executeOnBackground() }
+    }
+
+    @Test
     fun `reviewCredibilityHeaderUiState should equal to ReviewCredibilityHeaderUiState#Loading when shouldLoadReviewCredibilityData is true`() {
-        rule.runBlockingTest {
-            finishAllTransition()
-            viewModel.loadReviewCredibilityData()
-        }
-        rule.dispatchers.coroutineDispatcher.advanceUntilIdle()
+        finishAllTransition()
+        viewModel.loadReviewCredibilityData()
         assertInstanceOf<ReviewCredibilityHeaderUiState.Loading>(viewModel.reviewCredibilityHeaderUiState.value)
     }
 
     @Test
     fun `reviewCredibilityAchievementBoxUiState should equal to ReviewCredibilityAchievementBoxUiState#Hidden when shouldLoadReviewCredibilityData is true`() {
-        rule.runBlockingTest {
-            finishAllTransition()
-            viewModel.loadReviewCredibilityData()
-        }
-        rule.dispatchers.coroutineDispatcher.advanceUntilIdle()
+        finishAllTransition()
+        viewModel.loadReviewCredibilityData()
         assertInstanceOf<ReviewCredibilityAchievementBoxUiState.Hidden>(viewModel.reviewCredibilityAchievementBoxUiState.value)
     }
 
     @Test
     fun `reviewCredibilityStatisticBoxUiState should equal to ReviewCredibilityStatisticBoxUiState#Loading when shouldLoadReviewCredibilityData is true`() {
-        rule.runBlockingTest {
-            finishAllTransition()
-            viewModel.loadReviewCredibilityData()
-        }
-        rule.dispatchers.coroutineDispatcher.advanceUntilIdle()
+        finishAllTransition()
+        viewModel.loadReviewCredibilityData()
         assertInstanceOf<ReviewCredibilityStatisticBoxUiState.Loading>(viewModel.reviewCredibilityStatisticBoxUiState.value)
     }
 
     @Test
     fun `reviewCredibilityFooterUiState should equal to ReviewCredibilityFooterUiState#Loading when shouldLoadReviewCredibilityData is true`() {
-        rule.runBlockingTest {
-            finishAllTransition()
-            viewModel.loadReviewCredibilityData()
-        }
-        rule.dispatchers.coroutineDispatcher.advanceUntilIdle()
+        finishAllTransition()
+        viewModel.loadReviewCredibilityData()
         assertInstanceOf<ReviewCredibilityFooterUiState.Loading>(viewModel.reviewCredibilityFooterUiState.value)
     }
 
     @Test
     fun `reviewCredibilityGlobalErrorUiState should equal to ReviewCredibilityGlobalErrorUiState#Hidden when shouldLoadReviewCredibilityData is true`() {
-        rule.runBlockingTest {
-            finishAllTransition()
-            viewModel.loadReviewCredibilityData()
-        }
-        rule.dispatchers.coroutineDispatcher.advanceUntilIdle()
+        finishAllTransition()
+        viewModel.loadReviewCredibilityData()
         assertInstanceOf<ReviewCredibilityGlobalErrorUiState.Hidden>(viewModel.reviewCredibilityGlobalErrorUiState.value)
     }
 
@@ -373,10 +362,7 @@ class ReviewCredibilityViewModelTest : ReviewCredibilityViewModelTestFixture() {
                 getSavedState("savedStateKeyShouldLoadReviewCredibilityData", false)
             } returns latestShouldLoadReviewCredibilityData
         }
-        rule.runBlockingTest {
-            viewModel.restoreUiState(savedInstanceState)
-        }
-        rule.dispatchers.coroutineDispatcher.advanceUntilIdle()
+        viewModel.restoreUiState(savedInstanceState)
         assertInstanceOf<ReviewCredibilityHeaderUiState.Loading>(viewModel.reviewCredibilityHeaderUiState.value)
         assertInstanceOf<ReviewCredibilityAchievementBoxUiState.Hidden>(viewModel.reviewCredibilityAchievementBoxUiState.value)
         assertInstanceOf<ReviewCredibilityStatisticBoxUiState.Loading>(viewModel.reviewCredibilityStatisticBoxUiState.value)
@@ -389,13 +375,10 @@ class ReviewCredibilityViewModelTest : ReviewCredibilityViewModelTestFixture() {
     }
 
     private fun doGetReviewerCredibility() {
-        rule.runBlockingTest {
-            finishAllTransition() // finish first transition to initial state
-            viewModel.loadReviewCredibilityData()
-            finishAllTransition() // finish first transition to allow UseCase to execute
-            finishAllTransition() // finish last transition to success/error state
-        }
-        rule.dispatchers.coroutineDispatcher.advanceUntilIdle()
+        finishAllTransition() // finish first transition to initial state
+        viewModel.loadReviewCredibilityData()
+        finishAllTransition() // finish first transition to allow UseCase to execute
+        finishAllTransition() // finish last transition to success/error state
         coVerify { getReviewerCredibilityUseCase.executeOnBackground() }
     }
 
@@ -404,5 +387,6 @@ class ReviewCredibilityViewModelTest : ReviewCredibilityViewModelTestFixture() {
         viewModel.onAchievementBoxStopTransitioning()
         viewModel.onStatisticBoxStopTransitioning()
         viewModel.onFooterStopTransitioning()
+        viewModel.onGlobalErrorStopTransitioning()
     }
 }

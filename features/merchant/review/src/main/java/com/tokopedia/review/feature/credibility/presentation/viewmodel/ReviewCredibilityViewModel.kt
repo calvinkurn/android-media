@@ -10,6 +10,7 @@ import com.tokopedia.review.feature.createreputation.domain.RequestState
 import com.tokopedia.review.feature.credibility.data.ReviewerCredibilityStatsWrapper
 import com.tokopedia.review.feature.credibility.domain.GetReviewerCredibilityUseCase
 import com.tokopedia.review.feature.credibility.presentation.mapper.ReviewCredibilityResponseMapper
+import com.tokopedia.review.feature.credibility.presentation.uimodel.ReviewCredibilityGlobalErrorUiModel
 import com.tokopedia.review.feature.credibility.presentation.uistate.ReviewCredibilityAchievementBoxUiState
 import com.tokopedia.review.feature.credibility.presentation.uistate.ReviewCredibilityFooterUiState
 import com.tokopedia.review.feature.credibility.presentation.uistate.ReviewCredibilityGlobalErrorUiState
@@ -50,6 +51,7 @@ class ReviewCredibilityViewModel @Inject constructor(
     private val reviewCredibilityAchievementBoxTransitioning = MutableStateFlow(true)
     private val reviewCredibilityStatisticBoxTransitioning = MutableStateFlow(true)
     private val reviewCredibilityFooterTransitioning = MutableStateFlow(true)
+    private val reviewCredibilityGlobalErrorTransitioning = MutableStateFlow(true)
     val reviewCredibilityHeaderUiState = combine(
         shouldLoadReviewCredibilityData,
         getReviewCredibilityResult,
@@ -113,19 +115,22 @@ class ReviewCredibilityViewModel @Inject constructor(
                 reviewCredibilityAchievementBoxTransitioning,
                 reviewCredibilityStatisticBoxTransitioning,
                 reviewCredibilityFooterTransitioning,
+                reviewCredibilityGlobalErrorTransitioning,
                 reviewCredibilityHeaderUiState,
                 reviewCredibilityAchievementBoxUiState,
                 reviewCredibilityStatisticBoxUiState,
-                reviewCredibilityFooterUiState
+                reviewCredibilityFooterUiState,
+                reviewCredibilityGlobalErrorUiState
             ) { loadCredibilityData, headerTransitioning, achievementBoxTransitioning,
-                statisticBoxTransitioning, footerTransitioning, headerUiState,
-                achievementBoxUiState, statisticBoxUiState, footerUiState ->
+                statisticBoxTransitioning, footerTransitioning, globalErrorTransitioning,
+                headerUiState, achievementBoxUiState, statisticBoxUiState, footerUiState, globalErrorUiState ->
                 loadCredibilityData && headerUiState is ReviewCredibilityHeaderUiState.Loading &&
                         achievementBoxUiState is ReviewCredibilityAchievementBoxUiState.Hidden &&
                         statisticBoxUiState is ReviewCredibilityStatisticBoxUiState.Loading &&
                         footerUiState is ReviewCredibilityFooterUiState.Loading &&
+                        globalErrorUiState is ReviewCredibilityGlobalErrorUiState.Hidden &&
                         !headerTransitioning && !achievementBoxTransitioning &&
-                        !statisticBoxTransitioning && !footerTransitioning
+                        !statisticBoxTransitioning && !footerTransitioning && !globalErrorTransitioning
             }.collect { if (it) getReviewCredibility() }
         }
     }
@@ -248,18 +253,25 @@ class ReviewCredibilityViewModel @Inject constructor(
     private fun mapReviewCredibilityGlobalErrorUiState(
         shouldLoadCredibilityData: Boolean, requestState: GetReviewCredibilityRequestState
     ): ReviewCredibilityGlobalErrorUiState {
-        return if (shouldLoadCredibilityData) {
+        val currentUiState = reviewCredibilityGlobalErrorUiState.value
+        val newUiState = if (shouldLoadCredibilityData) {
             ReviewCredibilityGlobalErrorUiState.Hidden
         } else {
             when (requestState) {
                 is RequestState.Error -> {
-                    ReviewCredibilityGlobalErrorUiState.Showed
+                    ReviewCredibilityGlobalErrorUiState.Showed(
+                        ReviewCredibilityGlobalErrorUiModel(requestState.throwable)
+                    )
                 }
                 else -> {
                     ReviewCredibilityGlobalErrorUiState.Hidden
                 }
             }
         }
+        if (currentUiState != newUiState) {
+            reviewCredibilityGlobalErrorTransitioning.value = true
+        }
+        return newUiState
     }
 
     private fun getReviewCredibility() {
@@ -330,6 +342,10 @@ class ReviewCredibilityViewModel @Inject constructor(
 
     fun onFooterStopTransitioning() {
         reviewCredibilityFooterTransitioning.value = false
+    }
+
+    fun onGlobalErrorStopTransitioning() {
+        reviewCredibilityGlobalErrorTransitioning.value = false
     }
 
     fun saveUiState(outState: Bundle) {

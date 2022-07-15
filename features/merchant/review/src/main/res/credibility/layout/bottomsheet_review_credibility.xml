@@ -45,11 +45,10 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/widget_review_credibility_statistic_box" />
 
-        <com.tokopedia.globalerror.GlobalError
+        <com.tokopedia.review.feature.credibility.presentation.widget.ReviewCredibilityGlobalErrorWidget
             android:id="@+id/global_error_review_credibility"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
