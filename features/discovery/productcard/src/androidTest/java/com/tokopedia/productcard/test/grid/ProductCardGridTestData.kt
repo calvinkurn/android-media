@@ -70,7 +70,7 @@ private fun testSimilarProductButton(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.productCardImage] = isDisplayed()
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
         it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
@@ -121,7 +121,7 @@ private fun testMixedVariant(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textTopAds to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
@@ -172,7 +172,7 @@ private fun testMixedVariantWithLabelPrice(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
         R.id.labelVariantContainer to isDisplayed(),
@@ -217,7 +217,7 @@ private fun testMixedVariantReposition(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
         R.id.labelColorVariantReposition to isDisplayed(),
@@ -254,7 +254,7 @@ private fun testSizeVariantWithLabelPriceReposition(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
         R.id.labelSizeVariantReposition to isDisplayed(),
@@ -303,7 +303,7 @@ private fun testMixedVariantWithLabelPriceReposition(): ProductCardModelMatcher 
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
         R.id.labelColorVariantReposition to isDisplayed(),
@@ -353,7 +353,7 @@ private fun testMixedVariantWithLabelPriceAndSlashPriceReposition(): ProductCard
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
         R.id.labelDiscount to isDisplayedWithText(productCardModel.discountPercentage),
@@ -375,7 +375,7 @@ private fun testLabelGimmickReposition(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.labelReposition to isDisplayedWithText(labelGimmick.title),
         R.id.labelRepositionBackground to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
@@ -398,7 +398,7 @@ private fun testLabelGimmickAndBestSellerReposition(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.labelReposition to isDisplayedWithText(labelBestSeller.title),
         R.id.labelRepositionBackground to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
@@ -423,12 +423,12 @@ private fun testShopLocationReposition(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
         R.id.imageShopBadge to isDisplayed(),
         R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
-        R.id.imageSalesRatingFloat to isDisplayed(),
+        R.id.productCardImageSalesRatingFloat to isDisplayed(),
         R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
         R.id.imageFreeOngkirPromo to isDisplayed(),
     )
@@ -459,7 +459,7 @@ private fun testContentReposition(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
         R.id.imageShopBadge to isDisplayed(),
@@ -489,8 +489,8 @@ private fun testLongImage(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
-        R.id.imageProduct to withDimensionRatio(LONG_IMAGE_RATIO),
+        R.id.productCardImage to isDisplayed(),
+        R.id.productCardImage to withDimensionRatio(LONG_IMAGE_RATIO),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
     )
