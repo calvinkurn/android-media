@@ -28,3 +28,5 @@ enum class PinStatus(val status: Boolean){
         fun getPinStatus(status: Boolean): PinStatus = if (status) Pinned else Unpin
     }
 }
+
+fun PinStatus.switch() : PinStatus = if (this == PinStatus.Pinned) PinStatus.Unpin else PinStatus.Pinned

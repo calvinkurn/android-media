@@ -35,6 +35,7 @@ import com.tokopedia.play.broadcaster.ui.model.interactive.*
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinStatus
+import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.switch
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
@@ -1556,16 +1557,20 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     fun setPinned(product: ProductUiModel) {
         viewModelScope.launch {
             val result = repo.setPinProduct(channelId, product.id)
-            _productSectionList.update { sectionList ->
-                sectionList.map { sectionUiModel ->
-                    sectionUiModel.copy(campaignStatus = sectionUiModel.campaignStatus, products =
-                    sectionUiModel.products.map { prod ->
-                        if(prod.id == product.id)
-                            prod.copy(pinStatus = prod.pinStatus.copy(pinStatus = PinStatus.Pinned))
-                        else
-                            prod
-                    })
-                }
+            if(result) updatePinProduct(product)
+        }
+    }
+
+    private fun updatePinProduct(product: ProductUiModel) {
+        _productSectionList.update { sectionList ->
+            sectionList.map { sectionUiModel ->
+                sectionUiModel.copy(campaignStatus = sectionUiModel.campaignStatus, products =
+                sectionUiModel.products.map { prod ->
+                    if(prod.id == product.id)
+                        prod.copy(pinStatus = prod.pinStatus.copy(pinStatus = prod.pinStatus.pinStatus.switch()))
+                    else
+                        prod
+                })
             }
         }
     }
