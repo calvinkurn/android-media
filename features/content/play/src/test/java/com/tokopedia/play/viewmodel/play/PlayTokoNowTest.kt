@@ -23,7 +23,7 @@ import org.junit.Test
  * @author by astidhiyaa on 28/06/22
  */
 @ExperimentalCoroutinesApi
-class PlayTokonowTest {
+class PlayTokoNowTest {
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 

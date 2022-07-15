@@ -22,17 +22,17 @@ class PlayProductTagsModelBuilder {
     )
 
     fun buildProductLine(
-            id: String = "1",
-            shopId: String = "123",
-            imageUrl: String = "https://www.tokopedia.com",
-            title: String = "Barang Murah",
-            stock: ProductStock = OutOfStock,
-            isVariantAvailable: Boolean = false,
-            price: ProductPrice = buildOriginalProductPrice(),
-            minQty: Int = 1,
-            isFreeShipping: Boolean = false,
-            applink: String? = null,
-            isTokonow: Boolean = false,
+        id: String = "1",
+        shopId: String = "123",
+        imageUrl: String = "https://www.tokopedia.com",
+        title: String = "Barang Murah",
+        stock: ProductStock = OutOfStock,
+        isVariantAvailable: Boolean = false,
+        price: ProductPrice = buildOriginalProductPrice(),
+        minQty: Int = 1,
+        isFreeShipping: Boolean = false,
+        applink: String? = null,
+        isTokoNow: Boolean = false,
     ) = PlayProductUiModel.Product(
             id = id,
             shopId = shopId,
@@ -44,7 +44,7 @@ class PlayProductTagsModelBuilder {
             minQty = minQty,
             isFreeShipping = isFreeShipping,
             applink = applink,
-            isTokoNow = isTokonow,
+            isTokoNow = isTokoNow,
     )
 
     fun buildMerchantVoucher(
