@@ -1,11 +1,11 @@
 package com.tokopedia.home.beranda.domain.interactor.usecase
 
-import android.util.Log
 import com.google.gson.Gson
 import com.tokopedia.home.beranda.data.model.SubscriptionsData
 import com.tokopedia.home.beranda.domain.interactor.InjectCouponTimeBasedUseCase
-import com.tokopedia.home.beranda.domain.interactor.repository.*
-import com.tokopedia.home.beranda.domain.model.HomeFlag
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeWalletAppRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeTokopointsListRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.GetHomeBalanceWidgetRepository
 import com.tokopedia.home.beranda.domain.model.InjectCouponTimeBased
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
@@ -19,7 +19,6 @@ import javax.inject.Inject
 class HomeBalanceWidgetUseCase @Inject constructor(
         private val homeWalletAppRepository: HomeWalletAppRepository,
         private val homeTokopointsListRepository: HomeTokopointsListRepository,
-        private val homeFlagRepository: HomeFlagRepository,
         private val userSession: UserSessionInterface,
         private val injectCouponTimeBasedUseCase: InjectCouponTimeBasedUseCase,
         private val getHomeBalanceWidgetRepository: GetHomeBalanceWidgetRepository
