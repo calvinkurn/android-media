@@ -70,15 +70,16 @@ class ShopAdsProductAdapter(
                 buttonFollow.hide()
             } else {
                 if (!shopProductModelItem.isFollowed) {
-                    buttonFollow.setOnClickListener {
-                        buttonFollow.buttonVariant = UnifyButton.Variant.FILLED
-                        buttonFollow.text = itemView.context.getString(R.string.topads_followed)
-                        shopProductModelItem.isFollowed = true
-                        followButtonClickListener?.onItemClicked(shopProductModelItem)
-                    }
+                    buttonFollow.buttonVariant = UnifyButton.Variant.GHOST
+                    buttonFollow.text = itemView.context.getString(R.string.topads_follow)
                 } else {
                     buttonFollow.buttonVariant = UnifyButton.Variant.FILLED
                     buttonFollow.text = itemView.context.getString(R.string.topads_followed)
+                }
+                buttonFollow.setOnClickListener {
+                    buttonFollow.buttonVariant = UnifyButton.Variant.FILLED
+                    buttonFollow.text = itemView.context.getString(R.string.topads_followed)
+                    followButtonClickListener?.onItemClicked(shopProductModelItem)
                 }
                 buttonFollow.show()
             }

@@ -23,6 +23,7 @@ import com.tokopedia.topads.sdk.listener.FollowButtonClickListener
 import com.tokopedia.topads.sdk.listener.ShopAdsProductListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.widget.ShopAdsWithOneProductView
+import com.tokopedia.unifycomponents.Toaster
 
 /**
  * @author kulomady on 1/24/17.
@@ -90,10 +91,21 @@ class TopAdsShopViewHolder(
                 object : FollowButtonClickListener {
                     override fun onItemClicked(shopProductModelItem: ShopProductModel.ShopProductModelItem) {
                         recordCLick(element.adsShopItems?.getOrNull(shopProductModelItem.position))
-                        favoriteClickListener.onFavoriteShopClicked(
-                            null,
-                            getShopItem(shopProductModelItem)
-                        )
+                        if (shopProductModelItem.isFollowed) {
+                            Toaster.build(
+                                itemView,
+                                context.getString(R.string.favorite_error_text_for_followed),
+                                Toaster.LENGTH_SHORT,
+                                Toaster.TYPE_ERROR
+                            ) { }.show()
+                        } else {
+                            shopProductModelItem.isFollowed = true
+                            favoriteClickListener.onFavoriteShopClicked(
+                                null,
+                                getShopItem(shopProductModelItem)
+                            )
+                        }
+
                     }
 
                 }
