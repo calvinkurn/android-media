@@ -93,7 +93,7 @@ class TokopediaPlusWidget @JvmOverloads constructor(
                         tokopediaPlusData.isSubscriber && tokopediaPlusData.subtitle.isEmpty()
                     ) GONE else VISIBLE
 
-                    iconDirectionTokopediaPlusPage.setOnClickListener {
+                    setOnClickListener {
                         listener?.onClick(pageSource, tokopediaPlusData)
 
                         val intent = RouteManager.getIntent(context, tokopediaPlusData.applink)
