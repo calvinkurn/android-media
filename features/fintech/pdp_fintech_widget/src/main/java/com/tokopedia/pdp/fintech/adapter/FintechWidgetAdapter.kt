@@ -137,7 +137,8 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
     }
 
     override fun getItemCount(): Int {
-        return chipsData.size
+        // since the last element of the list is Lihat semu which no needed to inflate
+        return chipsData.size-1
     }
 
     fun setData(chips: ArrayList<ChipsData>) {
