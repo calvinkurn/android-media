@@ -25,7 +25,8 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.domain.usecase.ReplyChatGQLUseCase
-import com.tokopedia.topchat.common.analytics.TopChatAnalytics
+import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt.PUSH_NOTIF
+import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt.eventClickReplyChatFromNotif
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.withContext
@@ -42,9 +43,6 @@ class NotificationChatService : JobIntentService(), CoroutineScope {
 
     @Inject
     lateinit var replyChatGQLUseCase: ReplyChatGQLUseCase
-
-    @Inject
-    lateinit var analytics: TopChatAnalytics
 
     @Inject
     lateinit var dispatcher: CoroutineDispatchers
@@ -109,10 +107,10 @@ class NotificationChatService : JobIntentService(), CoroutineScope {
                 val param = ReplyChatGQLUseCase.Param(
                     msgId = messageId,
                     msg = message,
-                    source = TopChatAnalytics.SELLERAPP_PUSH_NOTIF
+                    source = PUSH_NOTIF
                 )
                 replyChatGQLUseCase(param)
-                analytics.eventClickReplyChatFromNotif(if (userId.isNullOrBlank()) "0" else userId)
+                eventClickReplyChatFromNotif()
                 clearNotification(notificationId)
                 if (isJobIdRunning(JOB_ID_RETRY)) {
                     jobScheduler?.cancel(JOB_ID_RETRY)
