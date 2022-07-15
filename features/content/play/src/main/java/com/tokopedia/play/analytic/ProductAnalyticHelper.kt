@@ -10,7 +10,8 @@ import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
  * Created by mzennis on 20/04/21.
  */
 class ProductAnalyticHelper(
-        private val analytic: PlayAnalytic
+        private val analytic: PlayAnalytic,
+        private val newAnalytic: PlayNewAnalytic,
 ) {
 
     @TrackingField
@@ -41,7 +42,7 @@ class ProductAnalyticHelper(
      */
     fun sendImpressedFeaturedProducts(partner: PartnerType) {
         analytic.impressFeaturedProducts(getFinalProducts())
-        if(partner == PartnerType.TokoNow) analytic.impressFeaturedProducts(getFinalProducts())
+        if(partner == PartnerType.TokoNow) newAnalytic.impressFeaturedProduct(getFinalProducts())
         clearProducts()
     }
 

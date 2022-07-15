@@ -79,7 +79,8 @@ class ChooseAddressViewComponent(
     }
 
     fun hideBottomSheet() {
-        if (getBottomSheet().isVisible) getBottomSheet().dismiss()
+        val addressSheet = getBottomSheet()
+        if (addressSheet.isVisible) addressSheet.dismiss()
     }
 
     private fun getBottomSheet() : ChooseAddressBottomSheet {
