@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.media.loader.loadImage
@@ -20,6 +22,7 @@ import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashInt
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmEligibilityViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.tm_dash_intro_new.*
 import kotlinx.android.synthetic.main.tm_layout_no_access.*
 import javax.inject.Inject
