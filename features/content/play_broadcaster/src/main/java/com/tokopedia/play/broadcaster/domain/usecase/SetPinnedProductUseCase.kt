@@ -28,7 +28,7 @@ class SetPinnedProductUseCase @Inject constructor(
     }
 
     override suspend fun executeOnBackground(): SetPinnedProduct = withContext(dispatchers.io) {
-        executeOnBackground()
+        super.executeOnBackground()
     }
 
     fun createParam(channelId: String, productId: String): Map<String, Any> {
@@ -43,11 +43,13 @@ class SetPinnedProductUseCase @Inject constructor(
         private const val PARAM_PRODUCT_ID = "productID"
         const val QUERY_NAME = "SetPinnedProductUseCaseQuery"
         const val QUERY = """
-            broadcasterSetPinnedProductTag(
-⠀⠀                  (${"$${PARAM_CHANNEL_ID}"}: Int64!,
-⠀⠀                  (${"$${PARAM_PRODUCT_ID}"}: Int64
-            ){
-⠀⠀              success
+            mutation broPinProduct(${"$${PARAM_CHANNEL_ID}"}: Int64!, ${"$${PARAM_PRODUCT_ID}"}: Int64) {
+                broadcasterSetPinnedProductTag(
+                $PARAM_CHANNEL_ID: ${"$${PARAM_CHANNEL_ID}"},
+                $PARAM_PRODUCT_ID: ${"$${PARAM_PRODUCT_ID}"}
+                ){
+                  success
+                }
             }
             """
     }
