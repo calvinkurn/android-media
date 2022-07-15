@@ -20,12 +20,13 @@ object ProductBundlingViewHolderBinder {
         adapterListener: AdapterListener,
         recyclerViewAdapter: MultipleProductBundlingAdapter,
         productBundlingCarouselListener: ProductBundlingCarouselViewHolder.Listener,
-        viewHolder: RecyclerView.ViewHolder
+        viewHolder: RecyclerView.ViewHolder,
+        source: ProductBundlingCardAttachmentContainer.BundlingSource
     ) {
         recyclerView?.apply {
             setRecycledViewPool(adapterListener.getCarouselViewPool())
             adapter = recyclerViewAdapter
-            addItemDecoration(BundleSpaceItemDecoration(SPACE_DECORATION))
+            addBundleItemDecoration(this, source)
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
@@ -34,6 +35,28 @@ object ProductBundlingViewHolderBinder {
                 }
             })
         }
+    }
+
+    private fun addBundleItemDecoration(
+        recyclerView: ProductBundlingRecyclerView?,
+        source: ProductBundlingCardAttachmentContainer.BundlingSource
+    ) {
+        val counter = recyclerView?.itemDecorationCount ?: 0
+        for (i in 0 until counter) {
+            recyclerView?.removeItemDecorationAt(i)
+        }
+        if (isProductBundlingBroadcast(source)) {
+            recyclerView?.addItemDecoration(BundleSpaceItemDecoration(SPACE_DECORATION))
+        }
+    }
+
+    private fun isProductBundlingBroadcast(
+        source: ProductBundlingCardAttachmentContainer.BundlingSource
+    ): Boolean {
+        return source ==
+                ProductBundlingCardAttachmentContainer
+                    .BundlingSource
+                    .BROADCAST_ATTACHMENT_MULTIPLE
     }
 
     fun bindDeferredAttachment(
@@ -55,9 +78,7 @@ object ProductBundlingViewHolderBinder {
         carouselBundling: MultipleProductBundlingUiModel,
         source: ProductBundlingCardAttachmentContainer.BundlingSource?= null
     ) {
-        if (source != null) {
-            recyclerViewAdapter.source = source
-        }
+        recyclerViewAdapter.source = source
         recyclerViewAdapter.carousel = carouselBundling
     }
 

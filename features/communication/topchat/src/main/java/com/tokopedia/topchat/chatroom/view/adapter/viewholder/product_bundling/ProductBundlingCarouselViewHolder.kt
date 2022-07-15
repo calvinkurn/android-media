@@ -11,6 +11,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.MultipleProductBundlingAdapte
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.*
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ProductBundlingViewHolderBinder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.ProductBundlingListener
+import com.tokopedia.topchat.chatroom.view.custom.product_bundling.ProductBundlingCardAttachmentContainer
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.MultipleProductBundlingUiModel
 import com.tokopedia.topchat.databinding.ItemTopchatMultipleProductBundlingAttachmentBinding
 import com.tokopedia.utils.view.binding.viewBinding
@@ -46,7 +47,8 @@ class ProductBundlingCarouselViewHolder constructor(
             adapterListener,
             multipleProductBundlingAdapter,
             productBundlingCarouselListener,
-            this
+            this,
+            ProductBundlingCardAttachmentContainer.BundlingSource.PRODUCT_ATTACHMENT
         )
     }
 
@@ -64,7 +66,8 @@ class ProductBundlingCarouselViewHolder constructor(
         super.bind(carouselBundling)
         syncCarouselProductBundling(carouselBundling)
         ProductBundlingViewHolderBinder.bindProductBundling(
-            multipleProductBundlingAdapter, carouselBundling
+            multipleProductBundlingAdapter, carouselBundling,
+            ProductBundlingCardAttachmentContainer.BundlingSource.PRODUCT_ATTACHMENT
         )
         ProductBundlingViewHolderBinder.bindScrollState(
             binding?.rvProductBundleCard,

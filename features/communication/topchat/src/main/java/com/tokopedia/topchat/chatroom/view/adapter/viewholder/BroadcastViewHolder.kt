@@ -116,7 +116,8 @@ class BroadcastViewHolder constructor(
             adapterListener,
             multipleProductBundlingAdapter,
             productBundlingCarouselListener,
-            this
+            this,
+            ProductBundlingCardAttachmentContainer.BundlingSource.BROADCAST_ATTACHMENT_MULTIPLE
         )
     }
 
