@@ -243,10 +243,10 @@ class PlayVideoFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initAnalytic()
         initView(view)
         setupView()
         setupObserve()
+        initAnalytic()
     }
 
     override fun onDestroyView() {
