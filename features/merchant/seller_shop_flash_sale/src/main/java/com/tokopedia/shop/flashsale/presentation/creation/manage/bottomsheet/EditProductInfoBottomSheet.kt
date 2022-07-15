@@ -36,8 +36,8 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
         private const val PRODUCT_REMAINING_VISIBILITY_THRESHOLD = 1
         private const val MAX_LENGTH_NUMBER_INPUT = 11
         private const val MAX_LENGTH_PERCENT_INPUT = 2
-        private const val NUMBER_INITIAL_VALUE = ""
-        private const val PERCENT_INITIAL_VALUE = "-"
+        private const val EMPTY_INITIAL_VALUE = ""
+        private const val STRIPED_INITIAL_VALUE = "-"
 
         fun newInstance(productList: List<SellerCampaignProductList.Product>): EditProductInfoBottomSheet {
             val fragment = EditProductInfoBottomSheet()
@@ -231,12 +231,12 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
             }
             tfCampaignPrice.textField?.editText?.afterTextChanged {
                 if (switchPrice.isChecked) return@afterTextChanged
-                if (it.isEmpty()) tfCampaignPricePercent.text = PERCENT_INITIAL_VALUE
+                if (it.isEmpty()) tfCampaignPricePercent.text = STRIPED_INITIAL_VALUE
                 else viewModel.setCampaignPrice(it.filterDigit().toLongOrZero())
             }
             tfCampaignPricePercent.textField?.editText?.afterTextChanged {
                 if (!switchPrice.isChecked) return@afterTextChanged
-                if (it.isEmpty()) tfCampaignPrice.text = PERCENT_INITIAL_VALUE
+                if (it.isEmpty()) tfCampaignPrice.text = STRIPED_INITIAL_VALUE
                 else viewModel.setCampaignPricePercent(it.filterDigit().toLongOrZero())
             }
         }
@@ -391,14 +391,26 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
         }
     }
 
-    private fun resetInputData() {
-        val discountedPrice = productInput.price.orZero().toStringOrInitialValue(NUMBER_INITIAL_VALUE)
-        val customStock = productInput.stock.orZero().toStringOrInitialValue(NUMBER_INITIAL_VALUE)
-        val maxOrder = productInput.maxOrder.orZero().toLong().toStringOrInitialValue(NUMBER_INITIAL_VALUE)
+    private fun clearPriceInput() {
+        binding?.apply {
+            if (switchPrice.isChecked) {
+                tfCampaignPrice.text = STRIPED_INITIAL_VALUE
+                tfCampaignPricePercent.text = EMPTY_INITIAL_VALUE
+            } else {
+                tfCampaignPricePercent.text = EMPTY_INITIAL_VALUE
+                tfCampaignPricePercent.text = STRIPED_INITIAL_VALUE
+            }
+        }
+    }
 
+    private fun resetInputData() {
+        val discountedPrice = productInput.price.orZero().toStringOrInitialValue(EMPTY_INITIAL_VALUE)
+        val customStock = productInput.stock.orZero().toStringOrInitialValue(EMPTY_INITIAL_VALUE)
+        val maxOrder = productInput.maxOrder.orZero().toLong().toStringOrInitialValue(EMPTY_INITIAL_VALUE)
+
+        clearPriceInput()
         binding?.apply {
             tfCampaignPrice.text = discountedPrice
-            tfCampaignPricePercent.text = PERCENT_INITIAL_VALUE
             tfStock.editText.setText(customStock)
             tfMaxSold.editText.setText(maxOrder)
         }
