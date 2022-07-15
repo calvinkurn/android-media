@@ -16,13 +16,13 @@ class BalanceWidgetFailedViewHolder (itemView: View, val listener: HomeCategoryL
     private var binding: LayoutBalanceWidgetFailedBinding? by viewBinding()
 
     companion object {
-        var LAYOUT = R.layout.layout_balance_widget_failed
+        val LAYOUT = R.layout.layout_balance_widget_failed
+        private const val START_PROGRESS_STATE = true
     }
 
     override fun bind(element: BalanceWidgetFailedModel) {
         binding?.localloadErrorBalanceWidget?.refreshBtn?.setOnClickListener {
-            binding?.localloadErrorBalanceWidget?.progressState = true
-            val x = 1
+            binding?.localloadErrorBalanceWidget?.progressState = START_PROGRESS_STATE
         }
     }
 }

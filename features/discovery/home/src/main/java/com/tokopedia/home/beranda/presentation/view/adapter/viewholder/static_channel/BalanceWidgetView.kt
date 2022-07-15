@@ -5,7 +5,6 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
-import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home.R
@@ -37,10 +36,6 @@ class BalanceWidgetView : FrameLayout {
         attrs,
         defStyleAttr
     )
-
-    companion object {
-        var disableAnimation: Boolean = false
-    }
 
     init {
         val view =

@@ -25,10 +25,6 @@ class BalanceAdapter(
     var attachedRecyclerView: RecyclerView? = null
     private var itemList: HomeBalanceModel = HomeBalanceModel()
 
-    companion object {
-        var disableAnimation: Boolean = false
-    }
-
     @Suppress("TooGenericExceptionCaught")
     fun setItemList(itemList: HomeBalanceModel) {
         this.itemList = itemList
