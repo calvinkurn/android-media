@@ -223,7 +223,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
     private fun openMediaPicker(withMaxMediaItems: Int) {
         context?.let { safeContext ->
             val intent = MediaPicker.intent(safeContext) {
-                pageSource(PageSource.EPharmacy)
+                pageSource(PageSource.Epharmacy)
                 modeType(ModeType.IMAGE_ONLY)
                 multipleSelectionMode()
                 maxMediaItem(withMaxMediaItems - 2)
