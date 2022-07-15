@@ -23,10 +23,8 @@ class CampaignListActivity : BaseSimpleActivity() {
             previousPageMode: PageMode
         ) {
             val starter = Intent(context, CampaignListActivity::class.java).apply {
-                if (isSaveDraft) {
-                    addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                    addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                }
+                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                if (isSaveDraft) addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                 putExtras(buildBundle(isSaveDraft, previousPageMode))
             }
             context.startActivity(starter)
