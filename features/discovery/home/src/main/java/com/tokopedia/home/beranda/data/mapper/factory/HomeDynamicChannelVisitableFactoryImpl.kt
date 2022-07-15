@@ -210,6 +210,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_VPS_WIDGET -> {
                     createVpsWidget(channel, position)
                 }
+                DynamicHomeChannel.Channels.LAYOUT_MISSION_WIDGET -> {
+                    createMissionWidgetChannel(channel, position)
+                }
             }
         }
         if (addLoadingMore) {
@@ -632,6 +635,21 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 verticalPosition
             ),
             isCache = isCache
+        )
+    }
+
+    private fun createMissionWidgetChannel(
+        channel: DynamicHomeChannel.Channels,
+        verticalPosition: Int
+    ) {
+        if (!isCache) visitableList.add(
+            MissionWidgetListDataModel(
+                channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
+                    channel,
+                    verticalPosition
+                ),
+                status = MissionWidgetListDataModel.STATUS_LOADING
+            )
         )
     }
 
