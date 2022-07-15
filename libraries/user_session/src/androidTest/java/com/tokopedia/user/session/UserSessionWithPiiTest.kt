@@ -52,8 +52,8 @@ class UserSessionWithPiiTest {
         verify { aead.encrypt(name, null) }
 
         every { aead.getAead() } throws InvalidProtocolBufferException("test")
-        UserSessionMap.map.clear()
 
+        UserSessionMap.map.clear()
         val actual = userSession.name
 
         assertThat(actual, `is`(name))
@@ -67,8 +67,8 @@ class UserSessionWithPiiTest {
         GoogleTinkExplorerLab.delete(context)
 
         userSession.name = name
-        UserSessionMap.map.clear()
 
+        UserSessionMap.map.clear()
         val actual = userSession.name
 
         assertThat(actual, `is`(name))
