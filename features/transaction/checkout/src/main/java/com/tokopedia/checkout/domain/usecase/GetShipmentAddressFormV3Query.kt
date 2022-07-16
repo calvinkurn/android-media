@@ -339,6 +339,11 @@ const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
                       product_alert_message
                       product_information
                       campaign_id
+                      ethical_drug {
+                        need_prescription
+                        icon_url
+                        text
+                      }
                     }
                   }
                   warehouse {
