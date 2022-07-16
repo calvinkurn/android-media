@@ -302,19 +302,7 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
                 }
                 TokoLiveDataResult.STATUS.SUCCESS ->{
                     if(it.data?.data?.status == 200) {
-                        when(voucherStatusToUpdate){
-                            DELETE ->{
-                                view?.let { it1 ->
-                                    Toaster.build(it1, "Kupon sudah dihapus.", Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
-                                }
-                            }
-                            STOP ->{
-                                view?.let { it1 ->
-                                    Toaster.build(it1, "Kupon sudah dihentikan.", Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
-                                }
-                            }
-                        }
-                        refreshCouponList()
+                        refreshCouponList(voucherStatusToUpdate)
                     }
                     else{
                         view?.let { it1 -> it.data?.data?.message?.let { it2 ->
@@ -411,7 +399,13 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
                 message = "Yay, kupon TokoMember berhasil dibuat!"
             }
             ADD_QUOTA ->{
-                message = "Yay, kuota kupon berhasil ditambahkan! "
+                message = "Yay, kuota kupon berhasil ditambahkan!"
+            }
+            DELETE ->{
+                message = "Kupon sudah dihapus."
+            }
+            STOP ->{
+                message = "Kupon sudah dihentikan."
             }
         }
         view?.let { it1 ->
