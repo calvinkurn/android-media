@@ -41,19 +41,4 @@ class UserSessionWithPiiTest {
         assertThat(actual, `is`(name))
     }
 
-//    @Test
-//    fun test_key_corrupted_still_got_backup() {
-//        val name = "Pak Edi"
-//
-//        userSession.name = name
-//        verify { aead.encrypt(any(), null) }
-//
-//        every { aead } throws InvalidProtocolBufferException("test")
-//
-//        UserSessionMap.map.clear()
-//        val actual = userSession.name
-//
-//        assertThat(actual, `is`(name))
-//    }
-
 }

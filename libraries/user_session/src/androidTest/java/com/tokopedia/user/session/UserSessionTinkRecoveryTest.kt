@@ -14,7 +14,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
-class UserSessionTinkMigrationTest {
+class UserSessionTinkRecoveryTest {
 
     private lateinit var context: Context
 
@@ -54,7 +54,7 @@ class UserSessionTinkMigrationTest {
     }
 
     @Test
-    fun test_android_keystore_to_cleartext_migration_decrypt_unset_value() {
+    fun test_android_keystore_to_cleartext_migration_buggy_current_condition() {
         val name = "Pak Toko"
 
         val keystoreAead = GoogleTinkExplorerLab.generateKey(
