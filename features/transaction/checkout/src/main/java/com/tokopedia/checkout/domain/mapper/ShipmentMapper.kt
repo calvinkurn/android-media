@@ -1,30 +1,12 @@
 package com.tokopedia.checkout.domain.mapper
 
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.AddOnWording
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.CampaignTimer
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.Cod
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellBottomSheet
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellInfoData
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellOrderSummary
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.FreeShipping
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAddressFormDataResponse
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentInformation
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.*
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.Shop
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.TradeInInfo
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.UserAddress
-import com.tokopedia.checkout.domain.model.cartshipmentform.AddressData
-import com.tokopedia.checkout.domain.model.cartshipmentform.AddressesData
-import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
-import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
-import com.tokopedia.checkout.domain.model.cartshipmentform.CourierSelectionErrorData
+import com.tokopedia.checkout.domain.model.cartshipmentform.*
 import com.tokopedia.checkout.domain.model.cartshipmentform.Donation
-import com.tokopedia.checkout.domain.model.cartshipmentform.FreeShippingData
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
-import com.tokopedia.checkout.domain.model.cartshipmentform.PreorderData
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product
-import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentInformationData
-import com.tokopedia.checkout.domain.model.cartshipmentform.TradeInInfoData
 import com.tokopedia.checkout.view.uimodel.CrossSellBottomSheetModel
 import com.tokopedia.checkout.view.uimodel.CrossSellInfoModel
 import com.tokopedia.checkout.view.uimodel.CrossSellModel
@@ -38,6 +20,7 @@ import com.tokopedia.logisticcart.shipping.model.ShipProd
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.logisticcart.shipping.model.ShopTypeInfoData
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.EthicalDrugDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnBottomSheetModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnButtonModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel
@@ -98,10 +81,10 @@ class ShipmentMapper @Inject constructor() {
                     DISABLED_CROSS_SELL -> isDisableCrossSell = true
                 }
             }
-            showImageUpload = shipmentAddressFormDataResponse.imageUpload.showImageUpload
-            uploadPrescText = shipmentAddressFormDataResponse.imageUpload.text
-            leftIconUrl = shipmentAddressFormDataResponse.imageUpload.leftIconUrl
-            rightIconUrl = shipmentAddressFormDataResponse.imageUpload.rightIconUrl
+            prescriptionShowImageUpload = shipmentAddressFormDataResponse.imageUpload.showImageUpload
+            prescriptionUploadText = shipmentAddressFormDataResponse.imageUpload.text
+            prescriptionLeftIconUrl = shipmentAddressFormDataResponse.imageUpload.leftIconUrl
+            prescriptionCheckoutId = shipmentAddressFormDataResponse.imageUpload.checkoutId
             keroDiscomToken = shipmentAddressFormDataResponse.keroDiscomToken
             keroToken = shipmentAddressFormDataResponse.keroToken
             keroUnixTime = shipmentAddressFormDataResponse.keroUnixTime
@@ -319,6 +302,7 @@ class ShipmentMapper @Inject constructor() {
                         bundleId = "0"
                     }
                     addOnProduct = mapAddOnsData(product.addOns)
+                    ethicalDrugs = mapEthicalDrugData(product.ethicalDrugResponse)
                 }
                 productListResult.add(productResult)
             }
@@ -439,6 +423,14 @@ class ShipmentMapper @Inject constructor() {
             addOnsButtonModel = mapAddOnButton(addOns.addOnButton)
             addOnsBottomSheetModel = mapAddOnBottomSheet(addOns.addOnBottomsheet)
             addOnsDataItemModelList = mapAddOnListData(addOns.addOnData)
+        }
+    }
+
+    private fun mapEthicalDrugData(addOns: EthicalDrugResponse): EthicalDrugDataModel {
+        return EthicalDrugDataModel().apply {
+            needPrescription = addOns.needPrescription
+            text = addOns.text
+            iconUrl = addOns.iconUrl
         }
     }
 

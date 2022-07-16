@@ -23,7 +23,7 @@ class UploadPrescriptionViewHolder(val view: View, private val actionListener: S
         @SuppressLint("ResourcePackage")
         @JvmStatic
         val ITEM_VIEW_UPLOAD = R.layout.item_upload_prescription
-        const val EPHARMACY_APPLINK = "tokopedia://epharmacy/"
+        const val EPharmacyAppLink = "tokopedia://epharmacy/"
         const val EPharmacyCountImageUrl = "https://images.tokopedia.net/img/android/res/singleDpi/epharmacy_uploaded_images_count.png"
     }
 
@@ -38,6 +38,10 @@ class UploadPrescriptionViewHolder(val view: View, private val actionListener: S
         }
         uploadPrescriptionLayout.setOnClickListener {
             actionListener.uploadPrescriptionAction(uploadPrescriptionUiModel)
+        }
+
+        if(uploadPrescriptionUiModel.prescriptionIds?.isEmpty() == true){
+            actionListener.fetchPrescriptionIds(uploadPrescriptionUiModel.checkoutId)
         }
     }
 }

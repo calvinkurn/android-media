@@ -42,10 +42,10 @@ data class CartShipmentAddressFormData(
         var isEligibleNewShippingExperience: Boolean = false,
         var popUpMessage: String = "",
         var errorTicker: String = "",
-        var showImageUpload: Boolean = false,
-        var uploadPrescText: String = "",
-        var leftIconUrl: String = "",
-        var rightIconUrl: String = ""
+        var prescriptionShowImageUpload: Boolean = false,
+        var prescriptionUploadText: String = "",
+        var prescriptionLeftIconUrl: String = "",
+        var prescriptionCheckoutId: String = ""
 ) : Parcelable {
 
     val getAvailablePurchaseProtection: ArrayList<String>
