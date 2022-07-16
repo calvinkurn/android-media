@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponListRefreshCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
+import com.tokopedia.tokomember_seller_dashboard.util.ADD_QUOTA
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_VOUCHER_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_VOUCHER_MAX_CASHBACK
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_VOUCHER_QUOTA
@@ -109,7 +110,7 @@ class TmAddQuotaBottomsheet: BottomSheetUnify() {
             when(it.status){
                 TokoLiveDataResult.STATUS.SUCCESS ->{
                     if(it.data?.merchantPromotionUpdateMVQuota?.status == 200) {
-                        tmCouponListRefreshCallback.refreshCouponList()
+                        tmCouponListRefreshCallback.refreshCouponList(ADD_QUOTA)
                         dismiss()
                     }
                     else{

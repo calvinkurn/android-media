@@ -26,6 +26,8 @@ import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponListRefreshCa
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmFilterCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.model.VouchersItem
+import com.tokopedia.tokomember_seller_dashboard.util.ACTION_CREATE
+import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EDIT
 import com.tokopedia.tokomember_seller_dashboard.util.ADD_QUOTA
 import com.tokopedia.tokomember_seller_dashboard.util.DELETE
 import com.tokopedia.tokomember_seller_dashboard.util.EDIT
@@ -393,17 +395,27 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
         }
     }
 
-    override fun refreshCouponList(fromCreateEdit: Boolean) {
+    override fun refreshCouponList(action: String) {
         if(selectedType.toInt() == 0){
             tmCouponViewModel.getCouponList(voucherStatus, null)
         }
         else {
             tmCouponViewModel.getCouponList(voucherStatus, selectedType.toInt())
         }
-        if(fromCreateEdit){
-            view?.let { it1 ->
-                Toaster.build(it1, "Yay, kupon TokoMember berhasil diubah!", Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
+        var message = ""
+        when(action){
+            ACTION_EDIT -> {
+                message = "Yay, kupon TokoMember berhasil dibuah!"
             }
+            ACTION_CREATE ->{
+                message = "Yay, kupon TokoMember berhasil dibuat!"
+            }
+            ADD_QUOTA ->{
+                message = "Yay, kuota kupon berhasil ditambahkan! "
+            }
+        }
+        view?.let { it1 ->
+            Toaster.build(it1, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
         }
     }
 

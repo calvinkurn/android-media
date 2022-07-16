@@ -45,6 +45,7 @@ import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
 import com.tokopedia.tokomember_seller_dashboard.model.TmSingleCouponData
 import com.tokopedia.tokomember_seller_dashboard.model.ValidationError
 import com.tokopedia.tokomember_seller_dashboard.model.mapper.TmCouponCreateMapper
+import com.tokopedia.tokomember_seller_dashboard.util.ACTION_CREATE
 import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EDIT
 import com.tokopedia.tokomember_seller_dashboard.util.ACTIVE
 import com.tokopedia.tokomember_seller_dashboard.util.ACTIVE_OLDER
@@ -547,7 +548,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                         closeLoadingDialog()
                         setButtonState()
                         activity?.finish()
-                        tmCouponListRefreshCallback?.refreshCouponList(true)
+                        tmCouponListRefreshCallback?.refreshCouponList(ACTION_EDIT)
                     }
                     else{
                         closeLoadingDialog()
@@ -577,7 +578,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                         //Open Dashboard
                         closeLoadingDialog()
                         activity?.finish()
-                        tmCouponListRefreshCallback?.refreshCouponList(true)
+                        tmCouponListRefreshCallback?.refreshCouponList(ACTION_CREATE)
                     }
                     else{
                         closeLoadingDialog()
@@ -1175,11 +1176,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                                     )
                                 }?.let { TmDateUtil.setDatePreview(it, DATE_FORMAT) }
                             }")
-                            textFieldProgramEndTime.editText.setText(tmCouponEndDateUnix?.time?.let { TmDateUtil.convertDateTime(it) }?.let {
-                                TmDateUtil.setTime(
-                                    it
-                                )
-                            })
+                            textFieldProgramEndTime.editText.setText("23:59 WIB")
 
                         }
                         else {
