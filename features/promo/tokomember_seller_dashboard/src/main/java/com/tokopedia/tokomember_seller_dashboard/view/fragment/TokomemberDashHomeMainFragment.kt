@@ -95,6 +95,7 @@ class TokomemberDashHomeMainFragment : BaseDaggerFragment() {
         adapter.addFragment(TokomemberDashCouponFragment.newInstance(arguments), "Kupon Tokomember")
 
         homeViewPager.adapter = adapter
+        homeViewPager.offscreenPageLimit = 3
 
         homeTabs.getUnifyTabLayout().removeAllTabs()
         homeTabs.customTabMode = TabLayout.MODE_SCROLLABLE

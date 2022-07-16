@@ -1228,13 +1228,6 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                             textFieldProgramStartDate.editText.setText("${TmDateUtil.getDayFromTimeWindow(programData?.timeWindow?.startTime.toString())}, ${TmDateUtil.setDatePreview(TmDateUtil.convertDateTimeRemoveTimeDiff(currentDate.time))}")
                             textFieldProgramStartTime.editText.setText("00:00 WIB")
                         }
-//                        else if(currentHour >= 20 && checkForTomorrow(currentDate, currentStartDate)){
-//                            calStart.time = programData?.timeWindow?.startTime.toString().toDate(SIMPLE_DATE_FORMAT)
-//                            tmCouponStartDateUnix = calStart
-//                            tmCouponStartTimeUnix = calStart
-//                            textFieldProgramStartDate.editText.setText("${TmDateUtil.getDayFromTimeWindow(programData?.timeWindow?.startTime.toString())}, ${TmDateUtil.setDatePreview(programData?.timeWindow?.startTime.toString())}")
-//                            textFieldProgramStartTime.editText.setText("00:00 WIB")
-//                        }
                         else {
                             calStart.time = programData?.timeWindow?.startTime.toString().toDate(SIMPLE_DATE_FORMAT)
                             tmCouponStartDateUnix = calStart
@@ -1338,12 +1331,6 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
     private fun checkYesterday(calendarToday: Calendar, calendarProgram: Calendar): Boolean {
         return calendarToday.get(Calendar.YEAR) == calendarProgram.get(Calendar.YEAR)
                 && calendarToday.get(Calendar.DAY_OF_YEAR) == calendarProgram.get(Calendar.DAY_OF_YEAR) - 1
-    }
-
-    private fun checkForTomorrow(calendarToday: Calendar, calendarProgram: Calendar): Boolean {
-        return (calendarToday.get(Calendar.YEAR) == calendarProgram.get(Calendar.YEAR)
-                && calendarToday < calendarProgram
-                && calendarToday.get(Calendar.DAY_OF_YEAR) != calendarProgram.get(Calendar.DAY_OF_YEAR) - 1)
     }
 
     private fun renderSingleCoupon() {
