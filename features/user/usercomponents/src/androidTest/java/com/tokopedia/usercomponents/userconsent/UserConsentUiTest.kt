@@ -2,32 +2,34 @@ package com.tokopedia.usercomponents.userconsent
 
 import android.app.Activity
 import android.app.Instrumentation
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.gson.Gson
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
-import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.test.application.annotations.CassavaTest
+import com.tokopedia.usercomponents.common.stub.di.FakeAppModule
 import com.tokopedia.usercomponents.userconsent.common.UserConsentCollectionDataModel
-import com.tokopedia.usercomponents.userconsent.common.UserConsentInterceptor
-import com.tokopedia.usercomponents.userconsent.common.UserConsentUiTestCons.TNC_MULTIPLE_SOME_ARE_OPTIONAL
-import com.tokopedia.usercomponents.userconsent.common.UserConsentUiTestCons.TNC_POLICY_MULTIPLE_SOME_ARE_OPTIONAL
-import com.tokopedia.usercomponents.userconsent.common.UserConsentUiTestCons.TNC_POLICY_SINGLE_MANDATORY
-import com.tokopedia.usercomponents.userconsent.common.UserConsentUiTestCons.TNC_POLICY_SINGLE_OPTIONAL
-import com.tokopedia.usercomponents.userconsent.common.UserConsentUiTestCons.TNC_SINGLE_MANDATORY
-import com.tokopedia.usercomponents.userconsent.common.UserConsentUiTestCons.TNC_SINGLE_OPTIONAL
-import com.tokopedia.usercomponents.userconsent.fakes.FakeGetCollectionResponseDataModel
+import com.tokopedia.usercomponents.userconsent.domain.ConsentCollectionResponse
 import com.tokopedia.usercomponents.userconsent.fakes.GET_COLLECTION_JSON
+import com.tokopedia.usercomponents.userconsent.fakes.UserConsentRepositoryStub
+import com.tokopedia.usercomponents.userconsent.fakes.UserConsentUiTestType.*
+import com.tokopedia.usercomponents.userconsent.fakes.di.DaggerFakeUserConsentComponent
+import com.tokopedia.usercomponents.userconsent.fakes.di.FakeUserConsentModule
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
 
 @CassavaTest
+@RunWith(AndroidJUnit4::class)
 class UserConsentUiTest {
 
     @get:Rule
@@ -38,14 +40,24 @@ class UserConsentUiTest {
     @get:Rule
     var cassavaRule = CassavaTestRule(isFromNetwork = true, sendValidationResult = true)
 
-    private val context = InstrumentationRegistry.getInstrumentation().targetContext
+    private var repositoryStub: UserConsentRepositoryStub? = null
+    private val applicationContext = InstrumentationRegistry
+        .getInstrumentation()
+        .context
+        .applicationContext
 
     @Before
     fun setup() {
-        GraphqlClient.reInitRetrofitWithInterceptors(
-            listOf(UserConsentInterceptor()),
-            context
-        )
+        val fakeBaseComponent = DaggerFakeUserConsentComponent.builder()
+            .fakeAppModule(FakeAppModule(applicationContext))
+            .fakeUserConsentModule(FakeUserConsentModule())
+            .build()
+
+        ApplicationProvider
+            .getApplicationContext<BaseMainApplication>()
+            .setComponent(fakeBaseComponent)
+
+        repositoryStub = fakeBaseComponent.repo() as UserConsentRepositoryStub
     }
 
     @After
@@ -55,10 +67,11 @@ class UserConsentUiTest {
 
     @Test
     fun loadConsentTnCAllMandatory() {
+        repositoryStub?.setTestType(TNC_SINGLE_MANDATORY)
         activityRule.launchActivity(null)
 
         userUserConsentDebugViewRobot {
-            loadConsentCollection(TNC_SINGLE_MANDATORY)
+            loadConsentCollection(TNC_SINGLE_MANDATORY.name)
         }
 
         intending(anyIntent()).respondWith(
@@ -82,10 +95,11 @@ class UserConsentUiTest {
 
     @Test
     fun loadConsentTnCAllOptional() {
+        repositoryStub?.setTestType(TNC_SINGLE_OPTIONAL)
         activityRule.launchActivity(null)
 
         userUserConsentDebugViewRobot {
-            loadConsentCollection(TNC_SINGLE_OPTIONAL)
+            loadConsentCollection(TNC_SINGLE_OPTIONAL.name)
         }
 
         intending(anyIntent()).respondWith(
@@ -108,10 +122,11 @@ class UserConsentUiTest {
 
     @Test
     fun loadConsentTnCPolicyAllMandatory() {
+        repositoryStub?.setTestType(TNC_POLICY_SINGLE_MANDATORY)
         activityRule.launchActivity(null)
 
         userUserConsentDebugViewRobot {
-            loadConsentCollection(TNC_POLICY_SINGLE_MANDATORY)
+            loadConsentCollection(TNC_POLICY_SINGLE_MANDATORY.name)
         }
 
         intending(anyIntent()).respondWith(
@@ -136,10 +151,11 @@ class UserConsentUiTest {
 
     @Test
     fun loadConsentTnCPolicyAllOptional() {
+        repositoryStub?.setTestType(TNC_POLICY_SINGLE_OPTIONAL)
         activityRule.launchActivity(null)
 
         userUserConsentDebugViewRobot {
-            loadConsentCollection(TNC_POLICY_SINGLE_OPTIONAL)
+            loadConsentCollection(TNC_POLICY_SINGLE_OPTIONAL.name)
         }
 
         intending(anyIntent()).respondWith(
@@ -163,10 +179,11 @@ class UserConsentUiTest {
 
     @Test
     fun loadConsentTnCMultipleOptional() {
+        repositoryStub?.setTestType(TNC_MULTIPLE_SOME_ARE_OPTIONAL)
         activityRule.launchActivity(null)
 
         userUserConsentDebugViewRobot {
-            loadConsentCollection(TNC_MULTIPLE_SOME_ARE_OPTIONAL)
+            loadConsentCollection(TNC_MULTIPLE_SOME_ARE_OPTIONAL.name)
         }
 
         intending(anyIntent()).respondWith(
@@ -192,10 +209,11 @@ class UserConsentUiTest {
 
     @Test
     fun loadConsentTnCPolicyMultipleOptional() {
+        repositoryStub?.setTestType(TNC_POLICY_MULTIPLE_SOME_ARE_OPTIONAL)
         activityRule.launchActivity(null)
 
         userUserConsentDebugViewRobot {
-            loadConsentCollection(TNC_POLICY_MULTIPLE_SOME_ARE_OPTIONAL)
+            loadConsentCollection(TNC_POLICY_MULTIPLE_SOME_ARE_OPTIONAL.name)
         }
 
         intending(anyIntent()).respondWith(
@@ -221,9 +239,8 @@ class UserConsentUiTest {
     }
 
     private fun getFakeResponsePurposesData(): MutableList<UserConsentCollectionDataModel.CollectionPointDataModel.PurposeDataModel> {
-        return Gson().fromJson(
-            GET_COLLECTION_JSON,
-            FakeGetCollectionResponseDataModel::class.java
-        ).data.data.collectionPoints.first().purposes
+        return Gson()
+            .fromJson(GET_COLLECTION_JSON, ConsentCollectionResponse::class.java)
+            .data.collectionPoints.first().purposes
     }
 }

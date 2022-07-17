@@ -1,26 +1,18 @@
 package com.tokopedia.usercomponents.userconsent
 
-import com.tokopedia.usercomponents.R
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.*
-import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+import com.tokopedia.usercomponents.R
 import com.tokopedia.usercomponents.common.utils.clickChildViewWithId
 import com.tokopedia.usercomponents.common.utils.clickClickableSpanOnTypographyUnify
-import com.tokopedia.usercomponents.common.utils.setTextOnTextFieldUnify2
 import com.tokopedia.usercomponents.common.utils.waitOnView
-import com.tokopedia.usercomponents.userconsent.analytics.UserConsentAnalytics
 import com.tokopedia.usercomponents.userconsent.common.UserConsentCollectionDataModel
 import com.tokopedia.usercomponents.userconsent.ui.adapter.UserConsentPurposeViewHolder
-import org.hamcrest.CoreMatchers
 import org.hamcrest.Matchers.allOf
-import org.hamcrest.Matchers.containsString
 
 fun userConsentRobot(action: UserConsentRobot.() -> Unit): UserConsentRobot {
     return UserConsentRobot().apply(action)
@@ -33,12 +25,12 @@ infix fun UserConsentRobot.validateComponent(action: UserConsentResult.() -> Uni
 
 class UserConsentRobot {
     fun clickCheckBoxSingleView() {
-        onView(allOf(withId(R.id.checkboxPurposes), isDisplayed()))
+        waitOnView(allOf(withId(R.id.checkboxPurposes), isDisplayed()))
             .perform(click())
     }
 
     fun clickCheckBoxMultipleView(position: Int) {
-        onView(withId(R.id.recyclerPurposes))
+        waitOnView(withId(R.id.recyclerPurposes))
             .perform(RecyclerViewActions.actionOnItemAtPosition<UserConsentPurposeViewHolder>(
                 position,
                 clickChildViewWithId<CheckboxUnify>(R.id.checkboxPurposes)
@@ -51,22 +43,22 @@ class UserConsentRobot {
     }
 
     fun clickPolicyHyperlink() {
-        onView(allOf(withId(R.id.descriptionPurposes), isDisplayed()))
+        waitOnView(allOf(withId(R.id.descriptionPurposes), isDisplayed()))
             .perform(clickClickableSpanOnTypographyUnify("Kebijakan Privasi"))
     }
 
     fun clickTncHyperlinkOnMultipleOptional() {
-        onView(allOf(withId(R.id.textMainDescription), isDisplayed()))
+        waitOnView(allOf(withId(R.id.textMainDescription), isDisplayed()))
             .perform(clickClickableSpanOnTypographyUnify("Syarat & Ketentuan"))
     }
 
     fun clickPolicyHyperlinkOnMultipleOptional() {
-        onView(allOf(withId(R.id.textMainDescription), isDisplayed()))
+        waitOnView(allOf(withId(R.id.textMainDescription), isDisplayed()))
             .perform(clickClickableSpanOnTypographyUnify("Kebijakan Privasi"))
     }
 
     fun clickActionButton() {
-        onView(allOf(withId(R.id.buttonAction), isDisplayed()))
+        waitOnView(allOf(withId(R.id.buttonAction), isDisplayed()))
             .perform(click())
     }
 }

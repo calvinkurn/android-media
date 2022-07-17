@@ -8,6 +8,8 @@
         android:label="User Components"
         tools:replace="android:label"
         android:theme="@style/Theme.AppCompat.NoActionBar">
+
         <activity android:name=".userconsent.fakes.FakeUserConsentDebugActivity"/>
+        <activity android:name=".explicit.fake_view.ExplicitDebugActivity"/>
     </application>
 </manifest>
