@@ -16,6 +16,7 @@ import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetUse
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
+import com.tokopedia.navigation_common.usecase.pojo.walletapp.Balance
 import com.tokopedia.navigation_common.usecase.pojo.walletapp.Balances
 import com.tokopedia.navigation_common.usecase.pojo.walletapp.ReserveBalance
 import com.tokopedia.navigation_common.usecase.pojo.walletapp.WalletAppData
@@ -68,17 +69,21 @@ class HomeBalanceWidgetUseCaseTest {
             )
         )
     )
+    private val mockTitleGopay = "Rp10.000"
+    private val mockSubtitleGopay = "10.000 Coins"
     private val mockWalletAppData = WalletAppData(
             walletappGetBalance = WalletappGetBalance(
                 listOf(
                     Balances(
-                        isLinked = false,
-                        reserveBalance = listOf(
-                            ReserveBalance(
-                                walletCode = "PEMUDAPOINTS",
-                                walletCodeFmt = "PEMUDAPOINTS",
-                                amount = 11000,
-                                amountFmt = "Rp11.000"
+                        isLinked = true,
+                        balance = listOf(
+                            Balance(
+                                amountFmt = mockTitleGopay,
+                                walletCode = "PEMUDA"
+                            ),
+                            Balance(
+                                amountFmt = mockSubtitleGopay,
+                                walletCode = "PEMUDAPOINTS"
                             )
                         )
                     )
@@ -137,6 +142,22 @@ class HomeBalanceWidgetUseCaseTest {
                 mockValueSuccessHomeBalanceWidget.getHomeBalanceList.balancesList.size,
                 headerDataModel.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.size
             )
+            Assert.assertEquals(
+                mockTierRewards,
+                headerDataModel.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.get(1)?.balanceTitleTextAttribute?.text
+            )
+            Assert.assertEquals(
+                mockNewCoupon,
+                headerDataModel.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.get(1)?.balanceSubTitleTextAttribute?.text
+            )
+            Assert.assertEquals(
+                mockTitleGopay,
+                headerDataModel.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.get(0)?.balanceTitleTextAttribute?.text
+            )
+            Assert.assertEquals(
+                mockSubtitleGopay,
+                headerDataModel.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.get(0)?.balanceSubTitleTextAttribute?.text
+            )
         }
     }
 
@@ -161,17 +182,17 @@ class HomeBalanceWidgetUseCaseTest {
         }
     }
 
-    fun `given walletapprepository tokopointsrepository and balance widget use case`(
+    private fun `given walletapprepository tokopointsrepository and balance widget use case`(
         homeWalletAppRepository: HomeWalletAppRepository,
         getHomeBalanceWidgetRepository: GetHomeBalanceWidgetRepository,
         homeTokopointsListRepository: HomeTokopointsListRepository
     ) {
-        coEvery { homeWalletAppRepository.getRemoteData() } returns mockWalletAppData
+        coEvery { homeWalletAppRepository.getRemoteData(any()) } returns mockWalletAppData
         coEvery { getHomeBalanceWidgetRepository.getRemoteData(any()) } returns mockValueSuccessHomeBalanceWidget
-        coEvery { homeTokopointsListRepository.getRemoteData() } returns mockTokopointsDrawerData
+        coEvery { homeTokopointsListRepository.getRemoteData(any()) } returns mockTokopointsDrawerData
     }
 
-    fun `given walletapprepository tokopointsrepository and balance widget error data subscription use case`(
+    private fun `given walletapprepository tokopointsrepository and balance widget error data subscription use case`(
         homeWalletAppRepository: HomeWalletAppRepository,
         getHomeBalanceWidgetRepository: GetHomeBalanceWidgetRepository,
         homeTokopointsListRepository: HomeTokopointsListRepository
