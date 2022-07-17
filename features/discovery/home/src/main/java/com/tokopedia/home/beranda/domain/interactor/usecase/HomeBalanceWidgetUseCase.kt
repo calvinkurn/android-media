@@ -26,6 +26,8 @@ class HomeBalanceWidgetUseCase @Inject constructor(
 
     companion object {
         const val error_unable_to_parse_wallet = "Unable to parse wallet, wallet app list is empty"
+        const val ERROR_UNABLE_TO_PARSE_BALANCE_WIDGET = "Unable to parse balance widget"
+        const val ERROR_UNABLE_TO_PARSE_BALANCE_WIDGET_SUBSCRIPTION = "Unable to parse balance widget subscription data"
         private const val BALANCE_TYPE_GOPAY = "gopay"
         private const val BALANCE_TYPE_REWARDS = "rewards"
         private const val BALANCE_TYPE_SUBSCRIPTIONS = "subscription"
@@ -45,30 +47,45 @@ class HomeBalanceWidgetUseCase @Inject constructor(
 
         try {
             val getHomeBalanceWidget = getHomeBalanceWidgetRepository.getRemoteData()
-            currentHeaderDataModel.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.clear()
-            var homeBalanceModel = getHomeBalanceModel(currentHeaderDataModel)
-            getHomeBalanceWidget.getHomeBalanceList.balancesList.forEachIndexed { index, getHomeBalanceItem ->
-                when (getHomeBalanceItem.type) {
-                    BALANCE_TYPE_GOPAY -> {
-                        homeBalanceModel = getDataUsingWalletApp(homeBalanceModel, getHomeBalanceItem.title)
-                    }
-                    BALANCE_TYPE_REWARDS -> {
-                        homeBalanceModel = getTokopointData(homeBalanceModel, getHomeBalanceItem.title)
-                    }
-                    BALANCE_TYPE_SUBSCRIPTIONS -> {
-                        homeBalanceModel = getSubscriptionsData(homeBalanceModel, getHomeBalanceItem.title, getHomeBalanceItem.data)
-                        homeBalanceModel.balancePositionSubscriptions = index
+            if (getHomeBalanceWidget.getHomeBalanceList.error.isNotBlank()) {
+                throw Exception(getHomeBalanceWidget.getHomeBalanceList.error)
+            } else {
+                currentHeaderDataModel.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.clear()
+                var homeBalanceModel = getHomeBalanceModel(currentHeaderDataModel)
+                getHomeBalanceWidget.getHomeBalanceList.balancesList.forEachIndexed { index, getHomeBalanceItem ->
+                    when (getHomeBalanceItem.type) {
+                        BALANCE_TYPE_GOPAY -> {
+                            homeBalanceModel =
+                                getDataUsingWalletApp(homeBalanceModel, getHomeBalanceItem.title)
+                        }
+                        BALANCE_TYPE_REWARDS -> {
+                            homeBalanceModel =
+                                getTokopointData(homeBalanceModel, getHomeBalanceItem.title)
+                        }
+                        BALANCE_TYPE_SUBSCRIPTIONS -> {
+                            homeBalanceModel = getSubscriptionsData(
+                                homeBalanceModel,
+                                getHomeBalanceItem.title,
+                                getHomeBalanceItem.data
+                            )
+                            homeBalanceModel.balancePositionSubscriptions = index
+                        }
                     }
                 }
-            }
 
-            return currentHeaderDataModel.copy(
-                headerDataModel = currentHeaderDataModel.headerDataModel?.copy(
-                    homeBalanceModel = homeBalanceModel.copy(status = HomeBalanceModel.STATUS_SUCCESS),
-                    isUserLogin = userSession.isLoggedIn
+                return currentHeaderDataModel.copy(
+                    headerDataModel = currentHeaderDataModel.headerDataModel?.copy(
+                        homeBalanceModel = homeBalanceModel.copy(status = HomeBalanceModel.STATUS_SUCCESS),
+                        isUserLogin = userSession.isLoggedIn
+                    )
                 )
-            )
+            }
         } catch (e: Exception) {
+            HomeServerLogger.logWarning(
+                type = HomeServerLogger.TYPE_BALANCE_WIDGET_ERROR,
+                throwable = MessageErrorException(e.localizedMessage),
+                reason = ERROR_UNABLE_TO_PARSE_BALANCE_WIDGET
+            )
             currentHeaderDataModel.headerDataModel?.homeBalanceModel?.status = HomeBalanceModel.STATUS_ERROR
             currentHeaderDataModel.headerDataModel?.isUserLogin = userSession.isLoggedIn
             return currentHeaderDataModel
@@ -152,7 +169,12 @@ class HomeBalanceWidgetUseCase @Inject constructor(
             val subscriptionsData = Gson().fromJson(subscriptions, SubscriptionsData::class.java)
             homeBalanceModel.mapBalanceData(subscriptionsData = subscriptionsData, headerTitle = headerTitle)
         } catch (e: Exception) {
-            homeBalanceModel.mapErrorTokopoints(headerTitle)
+            HomeServerLogger.logWarning(
+                type = HomeServerLogger.TYPE_SUBSCRIPTION_ERROR,
+                throwable = MessageErrorException(e.localizedMessage),
+                reason = ERROR_UNABLE_TO_PARSE_BALANCE_WIDGET_SUBSCRIPTION
+            )
+            throw Exception(e)
         }
         return homeBalanceModel
     }
