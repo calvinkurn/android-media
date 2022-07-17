@@ -7,13 +7,13 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_balance_divider"
-        app:layout_constraintBottom_toBottomOf="@id/rv_balance_widget"
-        app:layout_constraintTop_toTopOf="@id/rv_balance_widget"
+        app:layout_constraintBottom_toBottomOf="@id/rv_balance_widget_data"
+        app:layout_constraintTop_toTopOf="@id/rv_balance_widget_data"
         android:layout_width="match_parent"
         android:layout_height="0dp" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_balance_widget"
+        android:id="@+id/rv_balance_widget_data"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

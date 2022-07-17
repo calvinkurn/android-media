@@ -58,6 +58,7 @@ const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_CUE_WIDGET_CATEGORY = "tracker/home
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_CAMPAIGN_WIDGET = "tracker/home/campaign_widget.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_VPS_WIDGET = "tracker/home/vps_widget.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MISSION_WIDGET = "tracker/home/mission_widget.json"
+const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BALANCE_WIDGET = "tracker/home/balance_widget.json"
 
 private const val CHOOSE_ADDRESS_PREFERENCE_NAME = "coahmark_choose_address"
 private const val CHOOSE_ADDRESS_EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK"
@@ -507,6 +508,10 @@ private fun clickReminderWidgetRecharge(i:Int){
     } catch (e: PerformException) {
         e.printStackTrace()
     }
+}
+
+fun actionOnBalanceWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
+    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_balance_widget_data, 0)
 }
 
 //==================================== end of item action ======================================
