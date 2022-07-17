@@ -32,7 +32,7 @@
         app:layout_constraintEnd_toStartOf="@id/btnCheckout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/digitalPromoBtnView"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         app:layout_goneMarginTop="@dimen/spacing_lvl4" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -45,7 +45,7 @@
         app:layout_constraintEnd_toEndOf="@id/tvTotalPaymentLabel"
         app:layout_constraintStart_toStartOf="@id/tvTotalPaymentLabel"
         app:layout_constraintTop_toBottomOf="@id/tvTotalPaymentLabel"
-        app:typographyType="body_2"
+        app:typographyType="display_2"
         app:typographyWeight="bold"
         tools:text="Rp.102.500" />
 

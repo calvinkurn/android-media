@@ -51,9 +51,9 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.play.widget.analytic.list.DefaultPlayWidgetInListAnalyticListener
 import com.tokopedia.play.widget.const.PlayWidgetConst
 import com.tokopedia.play.widget.extension.stepScrollToPositionWithDelay
+import com.tokopedia.play.widget.analytic.global.model.PlayWidgetShopAnalyticModel
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
@@ -80,6 +80,7 @@ import com.tokopedia.shop.common.constant.ShopPageConstant.VALUE_INT_ONE
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
+import com.tokopedia.shop.common.data.model.HomeLayoutData
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
 import com.tokopedia.shop.common.util.*
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.ERROR_WHEN_GET_YOUTUBE_DATA
@@ -139,8 +140,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OPEN_WISHLIST
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -1291,13 +1290,16 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         lastVisibleItemPosition: Int,
         firstVisibleItemPosition: Int
     ) {
+        val lastVisibleShopWidgetPosition = shopHomeAdapter.getLastVisibleShopWidgetPosition(
+            lastVisibleItemPosition
+        )
         val shouldLoadLastVisibleItem =
-            shopHomeAdapter.isLoadNextHomeWidgetData(lastVisibleItemPosition)
+            shopHomeAdapter.isLoadNextHomeWidgetData(lastVisibleShopWidgetPosition)
         val shouldLoadFirstVisibleItem =
             shopHomeAdapter.isLoadNextHomeWidgetData(firstVisibleItemPosition)
         if (shouldLoadLastVisibleItem || shouldLoadFirstVisibleItem) {
             val position = if (shouldLoadLastVisibleItem)
-                lastVisibleItemPosition
+                lastVisibleShopWidgetPosition
             else
                 firstVisibleItemPosition
             val listWidgetLayoutToLoad = getListWidgetLayoutToLoad(position)
@@ -1590,15 +1592,18 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                         productQuantity = selectedMultipleBundle.minOrder
                 )
             }
+            shopPageHomeTracking.clickAtcProductBundleMultiple(
+                    shopId = shopId,
+                    userId = userId,
+                    bundleId = selectedMultipleBundle.bundleId,
+                    bundleName = bundleName,
+                    bundlePriceCut = selectedMultipleBundle.discountPercentage.toString(),
+                    bundlePrice = selectedMultipleBundle.displayPriceRaw,
+                    quantity = selectedMultipleBundle.minOrder.toString(),
+                    shopName = shopName,
+                    shopType = customDimensionShopPage.shopType.orEmpty()
+            )
         }
-        shopPageHomeTracking.clickAtcProductBundleMultiple(
-                shopId = shopId,
-                userId = userId,
-                bundleId = selectedMultipleBundle.bundleId,
-                bundleName = bundleName,
-                bundlePriceCut = selectedMultipleBundle.discountPercentage.toString(),
-                bundlePrice = selectedMultipleBundle.displayPriceRaw
-        )
     }
 
     override fun addSingleBundleToCart(
@@ -1633,17 +1638,20 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                         productQuantity = selectedBundle.minOrder
                 )
             }
+            shopPageHomeTracking.clickAtcProductBundleSingle(
+                    shopId = shopId,
+                    userId = userId,
+                    bundleId = selectedBundle.bundleId,
+                    bundleName = bundleName,
+                    bundlePriceCut = selectedBundle.discountPercentage.toString(),
+                    bundlePrice = selectedBundle.displayPriceRaw,
+                    selectedPackage = selectedBundle.minOrderWording,
+                    productId = bundleProducts.productId,
+                    quantity = selectedBundle.minOrder.toString(),
+                    shopName = shopName,
+                    shopType = customDimensionShopPage.shopType.orEmpty()
+            )
         }
-        shopPageHomeTracking.clickAtcProductBundleSingle(
-                shopId = shopId,
-                userId = userId,
-                bundleId = selectedBundle.bundleId,
-                bundleName = bundleName,
-                bundlePriceCut = selectedBundle.discountPercentage.toString(),
-                bundlePrice = selectedBundle.displayPriceRaw,
-                selectedPackage = selectedBundle.minOrderWording,
-                productId = bundleProducts.productId
-        )
     }
 
     private fun handleOnFinishAtcBundle(
@@ -3286,7 +3294,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         this.initialProductListData = productListData
     }
 
-    fun setListWidgetLayoutData(homeLayoutData: ShopPageGetHomeType.HomeLayoutData) {
+    fun setListWidgetLayoutData(homeLayoutData: HomeLayoutData) {
         this.shopPageHomeLayoutUiModel =
             ShopPageHomeMapper.mapToShopHomeWidgetLayoutData(homeLayoutData)
     }
@@ -3362,7 +3370,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun setupPlayWidget() {
-        playWidgetCoordinator = PlayWidgetCoordinator().apply {
+        playWidgetCoordinator = PlayWidgetCoordinator(this, autoHandleLifecycleMethod = false).apply {
             setListener(this@ShopPageHomeFragment)
         }
     }
@@ -3370,7 +3378,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private fun setupPlayWidgetAnalyticListener() {
         playWidgetCoordinator.apply {
             shopPlayWidgetAnalytic.shopId = shopId
-            setAnalyticListener(DefaultPlayWidgetInListAnalyticListener(shopPlayWidgetAnalytic))
+            setAnalyticModel(
+                PlayWidgetShopAnalyticModel(
+                    isOwnShop = shopId == viewModel?.userSessionShopId
+                )
+            )
         }
     }
 

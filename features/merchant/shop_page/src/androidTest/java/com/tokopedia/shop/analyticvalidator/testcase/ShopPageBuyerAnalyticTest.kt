@@ -239,6 +239,8 @@ class ShopPageBuyerAnalyticTest {
                 .perform(clickTabLayoutPosition(2))
         Espresso.onView(firstView(withId(R.id.tabLayout)))
                 .perform(clickTabLayoutPosition(3))
+        Espresso.onView(firstView(withId(R.id.tabLayout)))
+            .perform(clickTabLayoutPosition(4))
     }
 
     private fun testSelectSortOption() {
