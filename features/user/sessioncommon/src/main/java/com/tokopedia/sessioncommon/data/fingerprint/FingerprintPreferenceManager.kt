@@ -3,13 +3,22 @@ package com.tokopedia.sessioncommon.data.fingerprint
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.device.info.DeviceInfo
 import javax.inject.Inject
 
-class FingerprintPreferenceManager @Inject constructor(val context: Context): FingerprintPreference {
+class FingerprintPreferenceManager @Inject constructor(@ApplicationContext val context: Context): FingerprintPreference {
 
     val name = "android_user_biometric"
     val preference: SharedPreferences = context.getSharedPreferences(name, MODE_PRIVATE)
+
+    private fun removeOldId() {
+        val oldKey = "uniqueIdBiometric"
+        val hasOldId = preference.contains(oldKey)
+        if(hasOldId) {
+            preference.edit().remove(oldKey).apply()
+        }
+    }
 
     override fun saveUniqueIdIfEmpty(id: String) {
         if(isUniqueIdEmpty()) {
@@ -24,8 +33,10 @@ class FingerprintPreferenceManager @Inject constructor(val context: Context): Fi
         }
     }
 
-    override fun getUniqueId(): String =
-        preference.getString(PARAM_UNIQUE_ID_BIOMETRIC, "") ?: ""
+    override fun getUniqueId(): String {
+        removeOldId()
+        return preference.getString(PARAM_UNIQUE_ID_BIOMETRIC, "") ?: ""
+    }
 
     override fun removeUniqueId() {
         saveUniqueId("")
@@ -46,7 +57,7 @@ class FingerprintPreferenceManager @Inject constructor(val context: Context): Fi
     }
 
     companion object {
-        const val PARAM_UNIQUE_ID_BIOMETRIC = "uniqueIdBiometric"
+        const val PARAM_UNIQUE_ID_BIOMETRIC = "biometric_id_v2"
     }
 
 }

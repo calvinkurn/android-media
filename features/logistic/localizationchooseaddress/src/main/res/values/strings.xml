@@ -22,4 +22,5 @@
     <string name="toaster_success_chosen_address">Alamat berhasil dipilih. Nikmati pengalaman belanja yang sesuai dengan alamatmu!</string>
     <string name="bottomsheet_choose_address_title">Mau kirim belanjaan ke mana?</string>
     <string name="txt_district_choose_address_list">%s, %s</string>
+    <string name="tokonow_available">Tersedia Tokopedia NOW!</string>
 </resources>

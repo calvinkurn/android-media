@@ -90,9 +90,7 @@ class TokopediaPlusWidget @JvmOverloads constructor(
                     root.visibility = if (!tokopediaPlusData.isShown) GONE else VISIBLE
 
                     tokopediaPlusComponent.apply {
-                        descriptionTokopediaPlus.visibility = if (
-                            tokopediaPlusData.isSubscriber && tokopediaPlusData.subtitle.isEmpty()
-                        ) GONE else VISIBLE
+                        descriptionTokopediaPlus.visibility = if (tokopediaPlusData.isSubscriber) GONE else VISIBLE
 
                         setOnClickListener {
                             listener?.onClick(pageSource, tokopediaPlusData)

@@ -60,6 +60,8 @@ data class SearchProductModel(
 
     fun getTopAdsImageViewModelList(): List<TopAdsImageViewModel> = topAdsImageViewModelList
 
+    fun getProductListType(): String = searchProduct.header.meta.productListType
+
     data class SearchProduct (
             @SerializedName("header")
             @Expose
@@ -109,10 +111,13 @@ data class SearchProductModel(
 
             @SerializedName("meta")
             @Expose
-            val meta: SearchProductHeaderMeta = SearchProductHeaderMeta(),
+            val meta: SearchProductHeaderMeta = SearchProductHeaderMeta()
     )
 
     data class SearchProductHeaderMeta(
+        @SerializedName("productListType")
+        val productListType: String = "",
+
         @SerializedName("isPostProcessing")
         val isPostProcessing: Boolean = false,
     )
@@ -357,6 +362,14 @@ data class SearchProductModel(
             @SerializedName("imageUrl")
             @Expose
             val imageUrl: String = "",
+
+            @SerializedName("componentId")
+            @Expose
+            val componentId: String = "",
+
+            @SerializedName("trackingOption")
+            @Expose
+            val trackingOption: Int = 0,
     )
 
     data class Product(
@@ -730,6 +743,10 @@ data class SearchProductModel(
             @Expose
             val title: String = "",
 
+            @SerializedName("subtitle")
+            @Expose
+            val subtitle: String = "",
+
             @SerializedName("url")
             @Expose
             val url: String = "",
@@ -765,6 +782,10 @@ data class SearchProductModel(
             @SerializedName("product")
             @Expose
             val inspirationCarouselProducts: List<InspirationCarouselProduct> = listOf(),
+
+            @SerializedName("card_button")
+            @Expose
+            val cardButton: InspirationCarouselCardButton = InspirationCarouselCardButton(),
     )
 
     data class InspirationCarouselProduct (
@@ -887,6 +908,16 @@ data class SearchProductModel(
         @SerializedName("image_url")
         @Expose
         val imageUrl: String = ""
+    )
+
+    data class InspirationCarouselCardButton(
+        @SerializedName("title")
+        @Expose
+        val title: String = "",
+
+        @SerializedName("applink")
+        @Expose
+        val applink: String = "",
     )
 
     data class SearchInspirationWidget(

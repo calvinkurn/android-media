@@ -8,6 +8,7 @@ import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener
 import com.tokopedia.search.result.product.ProductListParameterListener
+import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.utils.addFilterOrigin
 import com.tokopedia.search.utils.applinkopener.ApplinkOpener
 import com.tokopedia.search.utils.applinkopener.ApplinkOpenerDelegate
@@ -16,15 +17,16 @@ import com.tokopedia.search.utils.contextprovider.WeakReferenceContextProvider
 
 class EmptyStateListenerDelegate(
     context: Context?,
+    queryKeyProvider: QueryKeyProvider,
     private val filterController: FilterController,
     private val redirectionListener: RedirectionListener?,
     private val parameterListener: ProductListParameterListener,
 ): EmptyStateListener,
+    QueryKeyProvider by queryKeyProvider,
     ContextProvider by WeakReferenceContextProvider(context),
     ApplinkOpener by ApplinkOpenerDelegate {
 
     override fun onEmptyButtonClicked() {
-        val queryKey = parameterListener.queryKey
         EmptyStateTracking.eventUserClickNewSearchOnEmptySearchProduct(queryKey)
 
         redirectionListener?.showSearchInputView()

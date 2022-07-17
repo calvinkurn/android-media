@@ -16,14 +16,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/specification_barrier"
-        app:typographyType="body_2"
+        app:typographyType="display_2"
         tools:text="RAM" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/value_specification"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:typographyType="body_2"
+        app:typographyType="display_2"
         android:lineSpacingExtra="8dp"
         android:maxLines="2"
         android:ellipsize="end"

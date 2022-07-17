@@ -40,7 +40,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="heading_5" />
+                app:typographyType="display_2"
+                app:typographyWeight="bold"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tp_counter"
@@ -51,7 +52,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/iu_gift"
                 app:layout_constraintStart_toEndOf="@+id/iu_gift"
                 app:layout_constraintTop_toTopOf="@+id/iu_gift"
-                app:typographyType="body_3"
+                app:typographyType="display_3"
                 app:typographyWeight="bold" />
 
             <com.tokopedia.iconunify.IconUnify

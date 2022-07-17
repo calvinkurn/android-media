@@ -406,7 +406,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         grantResults: IntArray
     ) {
         when (requestCode) {
-            REQUEST_CODE_ASK_PERMISSION_LOCATION -> {
+            AccountConstants.REQUEST.REQUEST_LOCATION_PERMISSION -> {
                 if (grantResults.isNotEmpty() &&
                     grantResults[0] == PackageManager.PERMISSION_GRANTED
                 ) {
@@ -599,7 +599,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     }
 
     private fun isEnableBiometricOffering(): Boolean {
-        return getRemoteConfig().getBoolean(REMOTE_CONFIG_KEY_HOME_ACCOUNT_BIOMETRIC_OFFERING, false)
+        return getAbTestPlatform().getString(AccountConstants.RollenceKey.BIOMETRIC_ENTRY_POINT).isNotEmpty()
     }
 
     private fun setupObserver() {
@@ -1327,7 +1327,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION
             ),
-            REQUEST_CODE_ASK_PERMISSION_LOCATION
+            AccountConstants.REQUEST.REQUEST_LOCATION_PERMISSION
         )
     }
 
@@ -1386,8 +1386,8 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     private fun initCoachMark(position: Int, itemView: View, data: Any) {
         if (accountPref.isShowCoachmark()) {
             if (!isProfileSectionBinded) {
-                if (coachMarkItem.count() < COACHMARK_SIZE_3) {
-                    if (position == POSITION_0 && data is ProfileDataView) {
+                if (coachMarkItem.count() < COACHMARK_SIZE) {
+                    if (position == 0 && data is ProfileDataView) {
                         coachMarkItem.add(
                             CoachMark2Item(
                                 itemView.findViewById(R.id.account_user_item_profile_email),
@@ -1701,7 +1701,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         private const val REQUEST_CODE_LINK_ACCOUNT = 302
         private const val REQUEST_CODE_REGISTER_BIOMETRIC = 303
         private const val REQUEST_CODE_EXPLICIT_PROFILE = 304
-        private const val REQUEST_CODE_ASK_PERMISSION_LOCATION = 888
 
         private const val START_TRANSITION_PIXEL = 200
         private const val TOOLBAR_TRANSITION_RANNGE_PIXEL = 50
@@ -1717,13 +1716,13 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             "android_user_home_account_tokopoints"
         private const val USER_CENTRALIZED_ASSET_CONFIG_USER_PAGE = "user_page"
 
-        private const val REMOTE_CONFIG_KEY_HOME_ACCOUNT_BIOMETRIC_OFFERING = "android_user_home_account_biometric_offering"
         private const val REMOTE_CONFIG_KEY_ACCOUNT_LINKING = "android_user_link_account_entry_point"
         private const val EXPLICIT_PROFILE_MENU_ROLLOUT = "explicit_android"
         private const val CLICK_TYPE_WISHLIST = "&click_type=wishlist"
 
-        private const val COACHMARK_SIZE_3 = 3
-        private const val POSITION_0 = 0
+        private const val COACHMARK_SIZE = 3
+        private const val FIRST_INDEX = 0
+
         private const val POSITION_1 = 1
         private const val POSITION_2 = 2
         private const val POSITION_3 = 3
