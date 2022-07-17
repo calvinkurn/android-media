@@ -393,7 +393,7 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
         var message = ""
         when(action){
             ACTION_EDIT -> {
-                message = "Yay, kupon TokoMember berhasil dibuah!"
+                message = "Yay, kupon TokoMember berhasil diubah!"
             }
             ACTION_CREATE ->{
                 message = "Yay, kupon TokoMember berhasil dibuat!"
