@@ -52,6 +52,7 @@ object DataFavoriteMapper {
                 shopItem.shopImageUrl = topAdsShopItem.shopImageUrl
                 shopItem.shopImageEcs = topAdsShopItem.shopImageEcs
                 shopItem.shopLocation = topAdsShopItem.shopLocation
+                shopItem.isFav = topAdsShopItem.isSelected
                 shopItem.imageUrl = topAdsShopItem.imageUrl
                 shopItem.fullEcs = topAdsShopItem.fullEcs
                 shopItem.shopIsOfficial = topAdsShopItem.shopIsOfficial
