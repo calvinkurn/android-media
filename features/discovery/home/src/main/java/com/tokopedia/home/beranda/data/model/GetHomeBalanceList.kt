@@ -9,5 +9,8 @@ import com.google.gson.annotations.SerializedName
 data class GetHomeBalanceList(
     @Expose
     @SerializedName("balances")
-    val balancesList: List<GetHomeBalanceItem> = mutableListOf()
+    val balancesList: List<GetHomeBalanceItem> = mutableListOf(),
+    @Expose
+    @SerializedName("error")
+    val error: String = ""
 )

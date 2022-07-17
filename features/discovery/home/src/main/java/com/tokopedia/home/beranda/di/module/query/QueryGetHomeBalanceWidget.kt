@@ -14,6 +14,7 @@ internal object QueryGetHomeBalanceWidget {
             "query getHomeBalanceWidget()\n" +
             "        {\n" +
             "           getHomeBalanceWidget{\n" +
+            "               error" +
             "               balances{\n" +
             "                  title\n" +
             "                  type\n" +

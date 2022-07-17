@@ -107,6 +107,16 @@ data class HomeBalanceModel(
         )
     }
 
+    private fun getDefaultSubscriptionErrorState(headerTitle: String): BalanceDrawerItemModel {
+        return BalanceDrawerItemModel(
+            drawerItemType = TYPE_SUBSCRIPTION,
+            balanceTitleTextAttribute = getDefaultErrorTitleTextAttribute(),
+            balanceSubTitleTextAttribute = getDefaultErrorSubTItleTextAttribute(),
+            state = STATE_ERROR,
+            headerTitle = headerTitle
+        )
+    }
+
     private fun getDefaultErrorTitleTextAttribute(): BalanceTextAttribute {
         return BalanceTextAttribute(
             text = ERROR_TITLE,
