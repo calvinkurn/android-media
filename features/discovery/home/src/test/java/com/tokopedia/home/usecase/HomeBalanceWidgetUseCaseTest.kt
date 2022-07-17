@@ -8,6 +8,7 @@ import com.tokopedia.home.beranda.domain.interactor.repository.GetHomeBalanceWid
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeWalletAppRepository
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetUseCase
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.navigation_common.usecase.pojo.walletapp.Balances
 import com.tokopedia.navigation_common.usecase.pojo.walletapp.ReserveBalance
@@ -31,6 +32,24 @@ class HomeBalanceWidgetUseCaseTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
     private val userSessionInterface = mockk<UserSessionInterface>(relaxed = true)
+    private val mockValueErrorHomeBalanceWidget = GetHomeBalanceWidgetData(
+        getHomeBalanceList = GetHomeBalanceList(error = "Data Error From Backend",
+        balancesList = listOf(GetHomeBalanceItem("Gopay", "gopay")))
+    )
+
+
+    @Test
+    fun `given value error balance widget when get header data then show error`() {
+        val getHomeBalanceWidgetRepository = mockk<GetHomeBalanceWidgetRepository>(relaxed = true)
+        val homeBalanceWidgetUseCase = createBalanceWidgetUseCase(
+            getHomeBalanceWidgetRepository = getHomeBalanceWidgetRepository
+        )
+        coEvery { getHomeBalanceWidgetRepository.getRemoteData(any()) } returns mockValueErrorHomeBalanceWidget
+        runBlocking {
+            val headerDataModel = homeBalanceWidgetUseCase.onGetBalanceWidgetData(HomeHeaderDataModel())
+            Assert.assertEquals(HomeBalanceModel.STATUS_ERROR, headerDataModel.headerDataModel?.homeBalanceModel?.status)
+        }
+    }
 
     @Test
     fun `given WalletAppRepository returns reserve balance above 10000 and not linked when onGetBalanceWidgetData then reserve_balance in homeHeaderDataModel should not be empty`() {
