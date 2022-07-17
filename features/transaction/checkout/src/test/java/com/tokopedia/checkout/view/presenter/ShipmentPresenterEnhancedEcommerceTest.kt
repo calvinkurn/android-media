@@ -224,7 +224,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
         productData?.apply {
             clear()
             add(ProductDataCheckoutRequest().apply {
-                isFreeShipping = true
+                freeShippingName = VALUE_BEBAS_ONGKIR
             })
         }
         dataCheckoutRequest.shopProducts?.firstOrNull()?.productData = productData
@@ -252,7 +252,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
         productData?.apply {
             clear()
             add(ProductDataCheckoutRequest().apply {
-                isFreeShippingExtra = true
+                freeShippingName = VALUE_BEBAS_ONGKIR_EXTRA
             })
         }
         dataCheckoutRequest.shopProducts?.firstOrNull()?.productData = productData
