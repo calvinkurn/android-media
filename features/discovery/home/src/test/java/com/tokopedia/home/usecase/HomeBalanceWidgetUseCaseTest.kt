@@ -4,7 +4,13 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.home.beranda.data.model.GetHomeBalanceItem
 import com.tokopedia.home.beranda.data.model.GetHomeBalanceList
 import com.tokopedia.home.beranda.data.model.GetHomeBalanceWidgetData
+import com.tokopedia.home.beranda.data.model.SectionContentItem
+import com.tokopedia.home.beranda.data.model.TextAttributes
+import com.tokopedia.home.beranda.data.model.TokopointsDrawer
+import com.tokopedia.home.beranda.data.model.TokopointsDrawerList
+import com.tokopedia.home.beranda.data.model.TokopointsDrawerListHomeData
 import com.tokopedia.home.beranda.domain.interactor.repository.GetHomeBalanceWidgetRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeTokopointsListRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeWalletAppRepository
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetUseCase
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
@@ -36,7 +42,52 @@ class HomeBalanceWidgetUseCaseTest {
         getHomeBalanceList = GetHomeBalanceList(error = "Data Error From Backend",
         balancesList = listOf(GetHomeBalanceItem("Gopay", "gopay")))
     )
-
+    private val mockValueSuccessHomeBalanceWidget = GetHomeBalanceWidgetData(
+        getHomeBalanceList = GetHomeBalanceList(
+            balancesList = listOf(
+                GetHomeBalanceItem("Gopay", "gopay"),
+                GetHomeBalanceItem("Rewards", "rewards"), GetHomeBalanceItem
+                    (
+                    "Langganan",
+                    "subscription",
+                    "{\"ResultStatus\":{\"Code\":\"200\",\"Message\":[\"Success\"],\"Reason\":\"OK\"},\"DrawerList\":[{\"IconImageURL\":\"https://ecs7.tokopedia.net/img/tokopoints/benefit/BebasOngkir.png\",\"RedirectURL\":\"https://www.tokopedia.com/rewards\",\"RedirectAppLink\":\"tokopedia://rewards\",\"SectionContent\":[{\"Type\":\"text\",\"TextAttributes\":{\"Text\":\"GoToPlus\",\"Color\":\"#31353B\",\"IsBold\":true},\"TagAttributes\":{}},{\"Type\":\"text\",\"TextAttributes\":{\"Text\":\"Subscribe Now\",\"Color\":\"#03ac0e\"},\"TagAttributes\":{}}]}],\"CoachMarkList\":[{\"Type\":\"not_subscriber\",\"CoachMark\":[{\"IsShown\":true,\"Title\":\"Your loyalty levels have been maximized!\",\"Content\":\"Awesome! You leveled up to Juragan on GoClub because you're Platinum\",\"CTA\":{}}]}],\"IsShown\":true,\"IsSubscriber\": false}"
+                )
+            )
+        )
+    )
+    private val mockWalletAppData = WalletAppData(
+            walletappGetBalance = WalletappGetBalance(
+                listOf(
+                    Balances(
+                        isLinked = false,
+                        reserveBalance = listOf(
+                            ReserveBalance(
+                                walletCode = "PEMUDAPOINTS",
+                                walletCodeFmt = "PEMUDAPOINTS",
+                                amount = 11000,
+                                amountFmt = "Rp11.000"
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    private val mockTierRewards = "Platinum"
+    private val mockNewCoupon = "10 Kupon Baru"
+    private val mockTokopointsDrawerData = TokopointsDrawerListHomeData(TokopointsDrawerList(
+        drawerList = listOf(
+            TokopointsDrawer(
+                sectionContent = listOf(
+                    SectionContentItem(
+                        TextAttributes(text = mockTierRewards)
+                    ),
+                    SectionContentItem(
+                        TextAttributes(text = mockNewCoupon)
+                    )
+                )
+            )
+        )
+    ))
 
     @Test
     fun `given value error balance widget when get header data then show error`() {
@@ -49,6 +100,37 @@ class HomeBalanceWidgetUseCaseTest {
             val headerDataModel = homeBalanceWidgetUseCase.onGetBalanceWidgetData(HomeHeaderDataModel())
             Assert.assertEquals(HomeBalanceModel.STATUS_ERROR, headerDataModel.headerDataModel?.homeBalanceModel?.status)
         }
+    }
+
+    @Test
+    fun `given balance widget contains subscription when get balance widget then success get data subscription`() {
+        val getHomeBalanceWidgetRepository = mockk<GetHomeBalanceWidgetRepository>(relaxed = true)
+        val homeWalletAppRepository = mockk<HomeWalletAppRepository>(relaxed = true)
+        val homeTokopointsListRepository = mockk<HomeTokopointsListRepository>(relaxed = true)
+        val homeBalanceWidgetUseCase = createBalanceWidgetUseCase(
+            homeTokopointsListRepository = homeTokopointsListRepository,
+            homeWalletAppRepository = homeWalletAppRepository,
+            getHomeBalanceWidgetRepository = getHomeBalanceWidgetRepository
+        )
+        `given walletapprepository, tokopointsrepository and balance widget use case`(
+            homeWalletAppRepository,
+            getHomeBalanceWidgetRepository,
+            homeTokopointsListRepository
+        )
+        runBlocking {
+            val headerDataModel = homeBalanceWidgetUseCase.onGetBalanceWidgetData(HomeHeaderDataModel())
+            Assert.assertEquals(HomeBalanceModel.STATUS_SUCCESS, headerDataModel.headerDataModel?.homeBalanceModel?.status)
+        }
+    }
+
+    fun `given walletapprepository, tokopointsrepository and balance widget use case`(
+        homeWalletAppRepository: HomeWalletAppRepository,
+        getHomeBalanceWidgetRepository: GetHomeBalanceWidgetRepository,
+        homeTokopointsListRepository: HomeTokopointsListRepository
+    ) {
+        coEvery { homeWalletAppRepository.getRemoteData() } returns mockWalletAppData
+        coEvery { getHomeBalanceWidgetRepository.getRemoteData(any()) } returns mockValueSuccessHomeBalanceWidget
+        coEvery { homeTokopointsListRepository.getRemoteData() } returns mockTokopointsDrawerData
     }
 
     @Test
