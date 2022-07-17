@@ -33,22 +33,10 @@ class HomeHeaderOvoViewHolder(itemView: View,
         BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_HEADER_OVO)
         renderEmptySpace()
         element.headerDataModel?.let {
-            resetView()
-            when(it.homeBalanceModel.balanceType) {
-                HomeBalanceModel.TYPE_STATE_2 -> {
-                    renderBalanceLayout(
-                        it.homeBalanceModel,
-                        element.headerDataModel?.isUserLogin?: false,
-                        element.needToShowUserWallet)
-                }
-                HomeBalanceModel.TYPE_STATE_3 -> {
-                    renderBalanceLayout(
-                            it.homeBalanceModel,
-                            element.headerDataModel?.isUserLogin?: false,
-                            element.needToShowUserWallet)
-                }
-                else -> resetView()
-            }
+            renderBalanceLayout(
+                it.homeBalanceModel,
+                element.headerDataModel?.isUserLogin ?: false
+            )
         }
 
         renderChooseAddress(element.needToShowChooseAddress)
@@ -57,10 +45,6 @@ class HomeHeaderOvoViewHolder(itemView: View,
 
     override fun bind(element: HomeHeaderDataModel, payloads: MutableList<Any>) {
         bind(element)
-    }
-
-    private fun resetView() {
-        itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget).gone()
     }
 
     private fun renderChooseAddress(needToShowChooseAddress: Boolean) {
@@ -82,10 +66,10 @@ class HomeHeaderOvoViewHolder(itemView: View,
         emptySpace.invalidate()
     }
 
-    private fun renderBalanceLayout(data: HomeBalanceModel?, isUserLogin: Boolean, needToShowUserWallet: Boolean) {
+    private fun renderBalanceLayout(data: HomeBalanceModel?, isUserLogin: Boolean) {
         val balanceWidgetView = itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget)
         data?.let {
-            if (isUserLogin && needToShowUserWallet) {
+            if (isUserLogin) {
                 balanceWidgetView.visible()
                 balanceWidgetView.bind(it, listener)
             } else {

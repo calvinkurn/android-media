@@ -43,6 +43,7 @@ internal open class HomeMockResponseConfig : MockModelConfig() {
         const val KEY_CONTAINS_CM_HOME_WIDGET = "notifier_getHtdw"
         const val KEY_CONTAINS_PAYLATER_WIDGET = "paylater_getHomeWidget"
         const val KEY_CONTAINS_MISSION_WIDGET = "getHomeMissionWidget"
+        const val KEY_CONTAINS_HOME_BALANCE_WIDGET = "getHomeBalanceWidget"
     }
 
     override fun createMockModel(context: Context): MockModelConfig {
@@ -247,6 +248,11 @@ internal open class HomeMockResponseConfig : MockModelConfig() {
         addMockResponse(
             KEY_CONTAINS_MISSION_WIDGET,
             getRawString(context, R.raw.response_mock_data_mission_widget),
+            FIND_BY_CONTAINS
+        )
+        addMockResponse(
+            KEY_CONTAINS_HOME_BALANCE_WIDGET,
+            getRawString(context, R.raw.response_mock_data_home_balance_widget),
             FIND_BY_CONTAINS
         )
         updateMock(context)
