@@ -1721,8 +1721,8 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         private const val CLICK_TYPE_WISHLIST = "&click_type=wishlist"
 
         private const val COACHMARK_SIZE = 3
-        private const val FIRST_INDEX = 0
 
+        private const val POSITION_0 = 0
         private const val POSITION_1 = 1
         private const val POSITION_2 = 2
         private const val POSITION_3 = 3
