@@ -69,7 +69,6 @@ class HomeBalanceWidgetUseCase @Inject constructor(
                 )
             )
         } catch (e: Exception) {
-            println( "dhabalog ${e.localizedMessage} ${e.printStackTrace()}")
             currentHeaderDataModel.headerDataModel?.homeBalanceModel?.status = HomeBalanceModel.STATUS_ERROR
             currentHeaderDataModel.headerDataModel?.isUserLogin = userSession.isLoggedIn
             return currentHeaderDataModel
@@ -120,14 +119,11 @@ class HomeBalanceWidgetUseCase @Inject constructor(
 
     fun onGetBalanceWidgetLoadingState(currentHeaderDataModel: HomeHeaderDataModel): HomeHeaderDataModel {
         if (!userSession.isLoggedIn) return currentHeaderDataModel
-        try {
-            return currentHeaderDataModel.copy(headerDataModel = currentHeaderDataModel.headerDataModel?.copy(
+        return currentHeaderDataModel.copy(
+            headerDataModel = currentHeaderDataModel.headerDataModel?.copy(
                 isUserLogin = userSession.isLoggedIn
-                )
             )
-        } catch (e: Exception) {
-            return currentHeaderDataModel
-        }
+        )
     }
 
     private suspend fun getTokopointData(

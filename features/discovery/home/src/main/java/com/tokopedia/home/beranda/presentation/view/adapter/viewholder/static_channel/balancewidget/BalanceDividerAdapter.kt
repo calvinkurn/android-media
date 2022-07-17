@@ -34,7 +34,7 @@ class BalanceDividerAdapter (
 
     fun addDivider(totalDivider: Int) {
         listDivider.clear()
-        for (i in 0 until totalDivider) {
+        repeat(totalDivider) {
             listDivider.add(BalanceDividerModel())
         }
         super.submitList(listDivider)
