@@ -137,7 +137,12 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
             .forEachIndexed { index, productItemDataView ->
             val productItem = searchProductModel.searchProduct.data.productList[index]
 
-            productItemDataView.assertOrganicProduct(productItem, index + 1)
+            productItemDataView.assertOrganicProduct(
+                productItem,
+                index + 1,
+                "",
+                searchProductModel.getProductListType()
+            )
         }
     }
 

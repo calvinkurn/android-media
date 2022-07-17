@@ -5,7 +5,10 @@
     android:id="@+id/ent_grid_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/dimen_dp_14">
+    android:paddingTop="@dimen/spacing_lvl3"
+    android:paddingBottom="@dimen/dimen_dp_14"
+    android:paddingStart="@dimen/dimen_dp_14"
+    android:paddingEnd="@dimen/dimen_dp_14">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/ent_title_card"
@@ -26,7 +29,7 @@
         android:id="@+id/ent_recycle_view_grid"
         android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ent_title_card"
@@ -43,7 +46,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl1"
         android:layout_marginLeft="@dimen/spacing_lvl1"
-        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginEnd="@dimen/spacing_lvl1"
         android:layout_marginRight="@dimen/spacing_lvl1"
         android:layout_marginBottom="@dimen/spacing_lvl1"
