@@ -12,8 +12,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_APP_LINKED
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_APP_NOT_LINKED
 import com.tokopedia.home.databinding.ItemBalanceWidgetNewBinding
-import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
@@ -44,19 +42,9 @@ class BalanceViewHolder(v: View) : RecyclerView.ViewHolder(v) {
     }
 
     private fun renderDrawerItem(element: BalanceDrawerItemModel?) {
-        /**
-         * Initial state
-         */
-
         when (element?.state) {
-            BalanceDrawerItemModel.STATE_LOADING -> {
-                binding?.homeIvLogoBalance?.invisible()
-                binding?.homeTvBalance?.invisible()
-
-            }
             BalanceDrawerItemModel.STATE_SUCCESS -> {
                 //load image
-                binding?.homeIvLogoBalance?.show()
                 element.defaultIconRes?.let {
                     binding?.homeIvLogoBalance?.setImageDrawable(itemView.context.getDrawable(it))
                 }
@@ -73,7 +61,7 @@ class BalanceViewHolder(v: View) : RecyclerView.ViewHolder(v) {
                 //load reserve balance
                 val reserveBalance = element.balanceSubTitleTextAttribute?.text ?: ""
                 binding?.homeTvReserveBalance?.text = reserveBalance
-                if (element.drawerItemType == TYPE_SUBSCRIPTION && !element.isSubscriberGoToPlus) {
+                if ((element.drawerItemType == TYPE_SUBSCRIPTION && !element.isSubscriberGoToPlus) || element.drawerItemType == TYPE_WALLET_APP_NOT_LINKED) {
                     binding?.homeTvReserveBalance?.setWeight(Typography.BOLD)
                     binding?.homeTvReserveBalance?.setTextColor(
                         ContextCompat.getColor(
@@ -94,44 +82,7 @@ class BalanceViewHolder(v: View) : RecyclerView.ViewHolder(v) {
                         subscriptionViewCoachMark = binding?.homeTvReserveBalance
                     }
                 }
-
-                binding?.homeContainerBalance?.handleItemClickType(
-                    element = element,
-                    rewardsAction = {
-                        //handle click for type rewards
-                        listener?.actionTokoPointClicked(
-                            element.applinkContainer,
-                            element.redirectUrl,
-                            if (element.mainPageTitle.isEmpty())
-                                TITLE_HEADER_WEBSITE
-                            else
-                                element.mainPageTitle
-                        )
-                        BalanceWidgetTracking.sendClickOnRewardsBalanceWidgetTracker(
-                            listener?.userId ?: ""
-                        )
-                    },
-                    walletAppAction = { isLinked ->
-                        if (isLinked) {
-                            BalanceWidgetTracking.sendClickGopayLinkedWidgetTracker(
-                                balancePoints = reserveBalance,
-                                userId = listener?.userId ?: ""
-                            )
-                        } else {
-                            BalanceWidgetTracking.sendClickGopayNotLinkedWidgetTracker(
-                                userId = listener?.userId ?: ""
-                            )
-                        }
-                        listener?.onSectionItemClicked(element.redirectUrl)
-                    },
-                    subscriptionAction = { isSubscriber ->
-                        BalanceWidgetTracking.sendClickOnGoToPlusSectionSubscriptionStatusEvent(
-                            isSubscriber = isSubscriber,
-                            userId = listener?.userId ?: ""
-                        )
-                        listener?.onSectionItemClicked(element.redirectUrl)
-                    }
-                )
+                handleClickSuccess(element, reserveBalance)
             }
             BalanceDrawerItemModel.STATE_ERROR -> {
                 binding?.homeIvLogoBalance?.setImageDrawable(
@@ -159,6 +110,46 @@ class BalanceViewHolder(v: View) : RecyclerView.ViewHolder(v) {
                 )
             }
         }
+    }
+
+    private fun handleClickSuccess(element: BalanceDrawerItemModel, reserveBalance: String) {
+        binding?.homeContainerBalance?.handleItemClickType(
+            element = element,
+            rewardsAction = {
+                //handle click for type rewards
+                listener?.actionTokoPointClicked(
+                    element.applinkContainer,
+                    element.redirectUrl,
+                    if (element.mainPageTitle.isEmpty())
+                        TITLE_HEADER_WEBSITE
+                    else
+                        element.mainPageTitle
+                )
+                BalanceWidgetTracking.sendClickOnRewardsBalanceWidgetTracker(
+                    listener?.userId ?: ""
+                )
+            },
+            walletAppAction = { isLinked ->
+                if (isLinked) {
+                    BalanceWidgetTracking.sendClickGopayLinkedWidgetTracker(
+                        balancePoints = reserveBalance,
+                        userId = listener?.userId ?: ""
+                    )
+                } else {
+                    BalanceWidgetTracking.sendClickGopayNotLinkedWidgetTracker(
+                        userId = listener?.userId ?: ""
+                    )
+                }
+                listener?.onSectionItemClicked(element.redirectUrl)
+            },
+            subscriptionAction = { isSubscriber ->
+                BalanceWidgetTracking.sendClickOnGoToPlusSectionSubscriptionStatusEvent(
+                    isSubscriber = isSubscriber,
+                    userId = listener?.userId ?: ""
+                )
+                listener?.onSectionItemClicked(element.redirectUrl)
+            }
+        )
     }
 
     private fun View.handleItemClickType(
