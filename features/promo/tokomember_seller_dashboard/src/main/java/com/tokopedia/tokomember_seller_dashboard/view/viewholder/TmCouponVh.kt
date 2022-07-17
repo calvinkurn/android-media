@@ -150,6 +150,7 @@ class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) :
                 )
             }
             COUPON_NOT_STARTED -> {
+                ivCoupon.loadImage(R.drawable.tm_ic_member_grey)
                 optionMenu.show()
                 optionMenu.setOnClickListener {
                     item.voucherId?.let { it1 ->

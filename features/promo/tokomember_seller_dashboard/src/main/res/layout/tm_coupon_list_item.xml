@@ -44,7 +44,6 @@
             android:id="@+id/iv_coupon"
             android:layout_width="44dp"
             android:layout_height="44dp"
-            android:src="@drawable/tm_ic_member_grey"
             android:layout_marginTop="12dp"
             app:layout_constraintStart_toStartOf="@id/tv_coupon_state"
             app:layout_constraintTop_toBottomOf="@id/tv_coupon_state" />
