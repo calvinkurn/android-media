@@ -17,6 +17,7 @@ object HomeCategoryMapper {
     private const val THRESHOLD_CATEGORY_ITEM_COUNT = 6
     private const val GRID_SPAN_COUNT_MORE_THAN_THRESHOLD = 2
     private const val GRID_SPAN_COUNT_DEFAULT = 1
+    private const val NOT_ADULT_CATEGORY = 0
 
     fun mapToCategoryLayout(response: HomeLayoutResponse, state: HomeLayoutItemState): HomeLayoutItemUiModel {
         val categoryGridUiModel = TokoNowCategoryGridUiModel(
@@ -45,7 +46,9 @@ object HomeCategoryMapper {
 
         // Map response category items to ui model and add all of them
         newCategoryList.addAll(
-            responseCategoryList.map {
+            responseCategoryList.filter {
+                it.isAdult == NOT_ADULT_CATEGORY
+            }.map {
                 TokoNowCategoryItemUiModel(
                     id = it.id,
                     title = it.name,
