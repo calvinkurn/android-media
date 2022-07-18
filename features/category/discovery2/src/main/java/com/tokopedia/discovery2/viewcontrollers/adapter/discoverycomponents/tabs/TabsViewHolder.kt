@@ -193,7 +193,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
                         ?.trackTabsClick(tabsViewModel.components.id,
                                 tabsViewModel.position,
                                 it[tab.position],
-                                tab.position,if(isParentUnifyTab)CLICK_MEGA_TAB else CLICK_UNIFY_TAB)
+                                tab.position,if(isParentUnifyTab) CLICK_UNIFY_TAB else CLICK_MEGA_TAB)
         }
     }
 
