@@ -89,14 +89,37 @@
         tools:listitem="@layout/item_grid"
         tools:spanCount="@integer/int_3" />
 
-    <com.tokopedia.carousel.CarouselUnify
-        android:id="@+id/feed_carousel"
+    <com.tokopedia.feedcomponent.util.NestedScrollableHost
+        android:id="@+id/scroll_host_carousel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/gridList"
+        app:lockScroll="true"
+        >
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_carousel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_post_video_new"
+            />
+
+    </com.tokopedia.feedcomponent.util.NestedScrollableHost>
+
+    <com.tokopedia.feedcomponent.view.widget.FeedVODViewHolder
+        android:id="@+id/feed_vod_viewholder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_12"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/gridList" />
+        app:layout_constraintTop_toBottomOf="@id/scroll_host_carousel" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/like_button"
@@ -106,7 +129,7 @@
         android:layout_marginTop="@dimen/unify_space_12"
         app:icon_name="THUMB"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/feed_carousel" />
+        app:layout_constraintTop_toBottomOf="@id/feed_vod_viewholder" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/comment_button"
@@ -121,7 +144,7 @@
     <com.tokopedia.unifycomponents.PageControl
         android:id="@+id/page_indicator"
         android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
         android:gravity="center"
         app:indicator_type="CIRCLE"
         app:layout_constraintBottom_toBottomOf="@id/comment_button"

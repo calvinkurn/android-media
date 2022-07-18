@@ -38,7 +38,8 @@ interface TagItemBuilder {
         price: ProductPrice = OriginalPrice("0", 0.0),
         minQty: Int = 1,
         isFreeShipping: Boolean = false,
-        appLink: String = ""
+        appLink: String = "",
+        isTokoNow: Boolean = false,
     ): PlayProductUiModel.Product
 
     fun buildMerchantVoucher(
@@ -59,7 +60,7 @@ interface TagItemBuilder {
             type = ProductSectionType.Unknown,
             title = "", timerInfo = "", serverTime = "", startTime = "", endTime = "",
             background = ProductSectionUiModel.Section.BackgroundUiModel(gradients = emptyList(), imageUrl = ""),
-            reminder = PlayUpcomingBellStatus.On(3L)
+            reminder = PlayUpcomingBellStatus.On(DEFAULT_CAMPAIGN_ID)
         ),
         id: String = "",
     ): ProductSectionUiModel.Section
@@ -71,4 +72,8 @@ interface TagItemBuilder {
                                ProductSectionUiModel.Section.BackgroundUiModel(gradients = emptyList(), imageUrl = ""),
                            reminderStatus: PlayUpcomingBellStatus
     ): ProductSectionUiModel.Section.ConfigUiModel
+
+    companion object {
+        private const val DEFAULT_CAMPAIGN_ID = 3L
+    }
 }
