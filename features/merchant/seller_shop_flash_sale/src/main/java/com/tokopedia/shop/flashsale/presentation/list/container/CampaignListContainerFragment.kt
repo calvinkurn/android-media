@@ -20,7 +20,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignListContainerBinding
-import com.tokopedia.shop.flashsale.common.constant.Constant
 import com.tokopedia.shop.flashsale.common.extension.doOnDelayFinished
 import com.tokopedia.shop.flashsale.common.extension.showError
 import com.tokopedia.shop.flashsale.common.extension.slideDown
@@ -147,7 +146,7 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
             viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
-                    handleSelectedTabAppearance(position)
+                    displayTabs()
                 }
             })
         }
@@ -266,17 +265,9 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun handleSelectedTabAppearance(position: Int) {
-        try {
-            val tabs = viewModel.getStoredTabsMetadata()
-            val selectedTab = tabs[position]
-            if (selectedTab.totalCampaign == Constant.ZERO) {
-                binding?.tabsUnify?.getUnifyTabLayout().slideUp()
-                alignRecyclerViewToTabsBottom()
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+    private fun displayTabs() {
+        binding?.tabsUnify?.getUnifyTabLayout().slideUp()
+        alignRecyclerViewToTabsBottom()
     }
 
     private fun handleAutoRedirectionToSpecificTab(currentPosition: Int) {
