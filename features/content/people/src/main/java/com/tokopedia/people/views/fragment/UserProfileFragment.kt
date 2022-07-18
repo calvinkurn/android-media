@@ -788,7 +788,7 @@ class UserProfileFragment @Inject constructor(
             )
             setOgImageUrl(viewModel.profileCover)
         }
-        universalShareBottomSheet?.show(fragmentManager, this, screenShotDetector)
+        universalShareBottomSheet?.show(childFragmentManager, this, screenShotDetector)
     }
 
     companion object {
