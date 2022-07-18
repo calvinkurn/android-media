@@ -459,7 +459,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     fun testComponentBalanceWidget() {
         HomeDCCassavaTest {
             initTest()
-            login()
+            login2()
             doActivityTestByModelClass(dataModelClass = HomeHeaderDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
                 actionOnBalanceWidget(viewHolder)
             }
@@ -553,6 +553,11 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
 
     private fun login() {
         InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
+        InstrumentationAuthHelper.loginToAnUser(activityRule.activity.application)
+    }
+
+    private fun login2() {
+        InstrumentationAuthHelper.loginInstrumentationTestUser1()
         InstrumentationAuthHelper.loginToAnUser(activityRule.activity.application)
     }
 
