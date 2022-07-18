@@ -30,8 +30,6 @@ class SmartBillsHighlightCategoryWidget @JvmOverloads constructor(@NotNull conte
             }
 
             root.setOnClickListener {
-                hideHighlightCategory()
-                listener.onClickCloseHighlightCategoryWidget(uiModel)
                 listener.onClickHighlightCategoryWidget(uiModel)
             }
         }
