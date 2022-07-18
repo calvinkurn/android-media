@@ -882,7 +882,7 @@ class UserProfileFragment @Inject constructor(
                 override fun urlCreated(linkerShareData: LinkerShareResult?) {
                     context?.let {
 
-                        var shareString = desc + "\n" + linkerShareData?.shareUri
+                        val shareString = desc + "\n" + linkerShareData?.shareUri
                         SharingUtil.executeShareIntent(
                             shareModel,
                             linkerShareData,
