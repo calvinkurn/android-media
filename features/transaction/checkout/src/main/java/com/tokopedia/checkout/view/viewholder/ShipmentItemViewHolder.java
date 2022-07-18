@@ -729,8 +729,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     @SuppressLint("SetTextI18n")
     private void renderProductProperties(CartItemModel cartItemModel) {
         List<String> productInformationList = cartItemModel.getProductInformation();
+        layoutProductInfo.removeAllViews();
         if (productInformationList != null && !productInformationList.isEmpty()) {
-            layoutProductInfo.removeAllViews();
             for (int i = 0; i < productInformationList.size(); i++) {
                 Typography productInfo = new Typography(itemView.getContext());
                 productInfo.setTextColor(ContextCompat.getColor(itemView.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
@@ -743,10 +743,14 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 layoutProductInfo.addView(productInfo);
             }
             layoutProductInfo.setVisibility(View.VISIBLE);
+            renderEthicalDrugsProperty(cartItemModel);
         } else {
             layoutProductInfo.setVisibility(View.GONE);
         }
+        renderEthicalDrugsProperty(cartItemModel);
+    }
 
+    private void renderEthicalDrugsProperty(CartItemModel cartItemModel) {
         if(cartItemModel.getEthicalDrugDataModel().getNeedPrescription()){
             View ethicalDrugView = createProductInfoTextWithIcon(cartItemModel);
             if(layoutProductInfo.getChildCount() > 0){
