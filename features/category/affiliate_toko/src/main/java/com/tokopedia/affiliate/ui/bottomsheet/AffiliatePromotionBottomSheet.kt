@@ -82,9 +82,9 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
 
     companion object {
 
-        enum class SheetType(type: Int) {
-            LINK_GENERATION(1),
-            ADD_SOCIAL(2)
+        enum class SheetType {
+            LINK_GENERATION,
+            ADD_SOCIAL
         }
 
         private const val COPY_LABEL = "Tokopedia"
