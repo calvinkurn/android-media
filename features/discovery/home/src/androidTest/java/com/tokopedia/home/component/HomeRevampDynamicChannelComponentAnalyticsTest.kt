@@ -94,19 +94,19 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         IdlingRegistry.getInstance().unregister(homeRecyclerViewIdlingResource)
     }
 
-    @Test
-    fun testWidgetBalance() {
-        HomeDCCassavaTest {
-            login()
-            waitForData()
-            doActivityTestByModelClass(dataModelClass = HomeHeaderDataModel::class) { viewHolder: RecyclerView.ViewHolder, _: Int ->
-                actionOnBalanceWidget(viewHolder)
-            }
-        } validateAnalytics {
-            addDebugEnd()
-            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BALANCE_WIDGET)
-        }
-    }
+//    @Test
+//    fun testWidgetBalance() {
+//        HomeDCCassavaTest {
+//            login()
+//            waitForData()
+//            doActivityTestByModelClass(dataModelClass = HomeHeaderDataModel::class) { viewHolder: RecyclerView.ViewHolder, _: Int ->
+//                actionOnBalanceWidget(viewHolder)
+//            }
+//        } validateAnalytics {
+//            addDebugEnd()
+//            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BALANCE_WIDGET)
+//        }
+//    }
 
     @Test
     fun testComponentProductHighlight() {
