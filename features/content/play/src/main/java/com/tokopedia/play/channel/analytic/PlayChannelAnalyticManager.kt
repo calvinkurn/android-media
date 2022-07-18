@@ -38,7 +38,8 @@ class PlayChannelAnalyticManager @AssistedInject constructor(
             event.subscribe().collect {
                 when (it) {
                     is ProductCarouselUiComponent.Event.OnClicked -> {
-                        analytic.clickFeaturedProduct(it.product, it.position)
+                        if(it.isTokoNow) newAnalytic.clickFeaturedProduct(it.product, it.position)
+                        else analytic.clickFeaturedProduct(it.product, it.position)
                     }
                     is ProductCarouselUiComponent.Event.OnImpressed -> {
                         if (!lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED) ||

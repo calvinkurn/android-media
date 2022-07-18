@@ -1,5 +1,7 @@
 package com.tokopedia.recharge_component.listener
 
+import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
+
 interface ClientNumberAutoCompleteListener {
-    fun onClickAutoComplete(isFavoriteContact: Boolean)
+    fun onClickAutoComplete(favorite: TopupBillsAutoCompleteContactModel)
 }

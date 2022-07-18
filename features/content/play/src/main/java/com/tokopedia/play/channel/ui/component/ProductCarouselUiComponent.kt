@@ -87,7 +87,8 @@ class ProductCarouselUiComponent(
                 { it.tagItems },
                 { it.bottomInsets },
                 { it.tagItems },
-                { it.status.channelStatus.statusType })) return
+                { it.status.channelStatus.statusType },
+                { it.address.shouldShow })) return
 
         val tagItems = state.value.tagItems
 
@@ -105,7 +106,8 @@ class ProductCarouselUiComponent(
             !state.value.bottomInsets.isAnyShown &&
             !tagItems.resultState.isFail &&
             state.value.status.channelStatus.statusType.isActive &&
-            tagItems.product.productSectionList.isNotEmpty()
+            tagItems.product.productSectionList.isNotEmpty() &&
+            !state.value.address.shouldShow
         ) uiView.show()
         else uiView.hide()
     }

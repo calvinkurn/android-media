@@ -18,6 +18,7 @@ sealed class PlayProductUiModel {
         val minQty: Int,
         val isFreeShipping: Boolean,
         val applink: String?,
+        val isTokoNow: Boolean,
         val isPinned: Boolean,
     ) : PlayProductUiModel() {
         companion object {
@@ -33,6 +34,7 @@ sealed class PlayProductUiModel {
                     minQty = 0,
                     isFreeShipping = false,
                     applink = null,
+                    isTokoNow = false,
                     isPinned = false,
                 )
         }

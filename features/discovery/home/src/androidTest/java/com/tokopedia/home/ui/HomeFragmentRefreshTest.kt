@@ -57,7 +57,7 @@ class HomeFragmentRefreshTest {
         private const val BELOW_THREE_MINUTES_ELAPSED_TIME = 5000L
         private const val ABOVE_THREE_MINUTES_ELAPSED_TIME = 180001L
         private const val DELAY_TRANSITION = 500L
-        private const val DELAY_PROCESS = 2000L
+        private const val DELAY_PROCESS = 5000L
 
         private const val ADDRESS_1_ID = "0"
         private const val ADDRESS_1_CITY_ID = "228"
@@ -128,6 +128,7 @@ class HomeFragmentRefreshTest {
          */
         val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
         recyclerView.adapter?.registerAdapterDataObserver(changeCountDetector())
+        Thread.sleep(DELAY_PROCESS)
 
         goToOtherPage()
         Thread.sleep(BELOW_THREE_MINUTES_ELAPSED_TIME)
