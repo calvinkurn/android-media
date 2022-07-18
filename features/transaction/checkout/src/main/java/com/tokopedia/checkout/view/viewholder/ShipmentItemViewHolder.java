@@ -15,6 +15,7 @@ import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.CycleInterpolator;
@@ -745,6 +746,30 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         } else {
             layoutProductInfo.setVisibility(View.GONE);
         }
+
+        if(cartItemModel.getEthicalDrugDataModel().getNeedPrescription()){
+            View ethicalDrugView = createProductInfoTextWithIcon(cartItemModel);
+            if(layoutProductInfo.getChildCount() > 0){
+                ethicalDrugView.setPadding(itemView.getResources().getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_4),0,0,0);
+            }
+            layoutProductInfo.addView(ethicalDrugView);
+            layoutProductInfo.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private LinearLayout createProductInfoTextWithIcon(CartItemModel cartItemModel )  {
+        LinearLayout propertyLayoutWithIcon = new LinearLayout(itemView.getContext());
+        propertyLayoutWithIcon.setOrientation(LinearLayout.HORIZONTAL);
+        View propertiesBinding = LayoutInflater.from(itemView.getContext()).inflate(R.layout.item_addon_checkout_identifier,null);
+        ImageUnify propertyIcon = propertiesBinding.findViewById(R.id.checkout_iv_identifier);
+        if(propertyIcon != null && !TextUtils.isEmpty(cartItemModel.getEthicalDrugDataModel().getIconUrl())){
+            ImageHandler.loadImageWithoutPlaceholderAndError(propertyIcon, cartItemModel.getEthicalDrugDataModel().getIconUrl());
+        }
+        Typography propertyText = propertiesBinding.findViewById(R.id.checkout_label_identifier);
+        if(propertyText != null && !TextUtils.isEmpty(cartItemModel.getEthicalDrugDataModel().getText())){
+            propertyText.setText(cartItemModel.getEthicalDrugDataModel().getText());
+        }
+        return propertyLayoutWithIcon;
     }
 
     private void renderProductPrice(CartItemModel cartItemModel) {

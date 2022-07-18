@@ -2,7 +2,6 @@ package com.tokopedia.checkout.view.viewholder
 
 import android.graphics.Paint
 import android.text.TextUtils
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
 import android.widget.*
@@ -15,7 +14,10 @@ import com.tokopedia.checkout.R
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.utils.WeightFormatterUtil
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel
 import com.tokopedia.purchase_platform.common.feature.gifting.view.ButtonGiftingAddOnView
@@ -102,27 +104,6 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
             mLayoutProductInfo.visibility = View.VISIBLE
         } else {
             mLayoutProductInfo.visibility = View.GONE
-        }
-
-        if(cartItemModel.ethicalDrugDataModel.needPrescription){
-            val ethicalDrugView = createProductInfoTextWithIcon(cartItemModel)
-            if(mLayoutProductInfo.childCount > 0){
-                ethicalDrugView.setPadding(itemView.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_4),0,0,0)
-            }
-            mLayoutProductInfo.addView(ethicalDrugView)
-            mLayoutProductInfo.visibility = View.VISIBLE
-        }
-    }
-
-    private fun createProductInfoTextWithIcon(cartItemModel: CartItemModel): LinearLayout {
-        return LinearLayout(itemView.context).apply {
-            orientation = LinearLayout.HORIZONTAL
-            val identifierBinding = LayoutInflater.from(itemView.context).inflate(R.layout.item_addon_checkout_identifier,null)
-            identifierBinding.run {
-                findViewById<ImageUnify>(R.id.checkout_iv_identifier).loadImage(cartItemModel.ethicalDrugDataModel.iconUrl)
-                findViewById<Typography>(R.id.checkout_label_identifier).text = cartItemModel.ethicalDrugDataModel.text
-            }
-            this.addView(identifierBinding.rootView)
         }
     }
 
