@@ -35,6 +35,16 @@ class GoogleTinkTest {
         encryptDecryptTest(recoverAead)
     }
 
+    @Test
+    fun change_keyset_name_wont_crash_test() {
+        val aead = GoogleTinkExplorerLab.generateKey(context, withKeystore = true)
+
+        encryptDecryptTest(aead)
+
+        val recoverAead = GoogleTinkExplorerLab.generateKey(context, "newName", withKeystore = false)
+        encryptDecryptTest(recoverAead)
+    }
+
     private fun encryptDecryptTest(aead: Aead, secret: String = "top-secret") {
         with(aead) {
             val cipher = encrypt(secret.toByteArray(), null)
