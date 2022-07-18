@@ -636,11 +636,10 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     private fun onDeleteDraftSuccess() {
         binding?.cardView showToaster getString(R.string.sfs_draft_deleted)
 
-        // add delay to wait until server done to saving data,
-        // with this delay we can get more actual draft data
-        view?.postDelayed( {
+        //Add some spare time caused by Backend write operation delay
+        doOnDelayFinished(DRAFT_SERVER_SAVING_DURATION) {
             viewModel.getCampaignPrerequisiteData()
-        }, DRAFT_SERVER_SAVING_DURATION)
+        }
     }
 
     private fun onDraftClicked(draft: DraftItemModel) {
