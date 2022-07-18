@@ -2,9 +2,6 @@ package com.tokopedia.applink
 
 import android.content.Context
 import android.net.Uri
-import com.tokopedia.applink.ApplinkConst.ADMIN_ACCEPTED
-import com.tokopedia.applink.ApplinkConst.ADMIN_INVITATION
-import com.tokopedia.applink.ApplinkConst.ADMIN_REDIRECTION
 import com.tokopedia.applink.Hotlist.DeeplinkMapperHotlist.getRegisteredHotlist
 import com.tokopedia.applink.account.DeeplinkMapperAccount
 import com.tokopedia.applink.category.DeeplinkMapperCategory.getRegisteredCategoryNavigation
