@@ -54,7 +54,6 @@ class ProductLineViewHolder(
     private val btnProductAtc: UnifyButton = itemView.findViewById(R.id.btn_product_atc)
     private val lblOutOfStock: Label = itemView.findViewById(R.id.label_out_of_stock)
     private val shadowOutOfStock: View = itemView.findViewById(R.id.shadow_out_of_stock)
-    private val tvOutOfStock: TextView = itemView.findViewById(R.id.tv_product_out_of_stock)
     private val ivNow: IconUnify = itemView.findViewById(R.id.iv_now)
     private val tvNow: TextView = itemView.findViewById(R.id.tv_now)
     private val llInfo: LinearLayout = itemView.findViewById(R.id.ll_info)

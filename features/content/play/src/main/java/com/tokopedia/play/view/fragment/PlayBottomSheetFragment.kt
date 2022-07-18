@@ -541,11 +541,15 @@ class PlayBottomSheetFragment @Inject constructor(
                             } else BottomInsetsType.ProductSheet //TEMPORARY
 
                             RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
-                            if(event.sectionInfo.config.type == ProductSectionType.TokoNow)
-                                newAnalytic.clickBeli(product = event.product,
+                            val sectionInfo = event.sectionInfo ?: ProductSectionUiModel.Section.Empty
+
+                            if(sectionInfo.config.type == ProductSectionType.TokoNow)
+                                newAnalytic.clickBeli(
+                                    product = event.product,
                                     cartId = event.cartId,
                                     shopInfo = playViewModel.latestCompleteChannelData.partnerInfo,
-                                    sectionInfo = event.sectionInfo)
+                                    sectionInfo = sectionInfo,
+                                )
                             else
                                 analytic.clickProductAction(
                                     product = event.product,
@@ -553,7 +557,7 @@ class PlayBottomSheetFragment @Inject constructor(
                                     productAction = ProductAction.Buy,
                                     bottomInsetsType = bottomInsetsType,
                                     shopInfo = playViewModel.latestCompleteChannelData.partnerInfo,
-                                    sectionInfo = event.sectionInfo,
+                                    sectionInfo = sectionInfo,
                             )
                         }
                         is ShowInfoEvent -> {
@@ -610,11 +614,15 @@ class PlayBottomSheetFragment @Inject constructor(
 
                             if (event.isVariant) closeVariantSheet()
 
-                            if(event.sectionInfo.config.type == ProductSectionType.TokoNow)
-                                newAnalytic.clickAtc(product = event.product,
+                            val sectionInfo = event.sectionInfo ?: ProductSectionUiModel.Section.Empty
+
+                            if(sectionInfo.config.type == ProductSectionType.TokoNow)
+                                newAnalytic.clickAtc(
+                                    product = event.product,
                                     cartId = event.cartId,
                                     shopInfo = playViewModel.latestCompleteChannelData.partnerInfo,
-                                    sectionInfo = event.sectionInfo)
+                                    sectionInfo = sectionInfo,
+                                )
                             else
                                 analytic.clickProductAction(
                                 product = event.product,
@@ -622,7 +630,7 @@ class PlayBottomSheetFragment @Inject constructor(
                                 productAction = ProductAction.AddToCart,
                                 bottomInsetsType = bottomInsetsType,
                                 shopInfo = playViewModel.latestCompleteChannelData.partnerInfo,
-                                sectionInfo = event.sectionInfo,
+                                sectionInfo = sectionInfo,
                             )
                         }
                         else -> {}
