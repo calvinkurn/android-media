@@ -49,6 +49,7 @@ object ShopInfoByIdQuery: GqlQueryInterface {
                     statusTitle
                     statusMessage
                     tickerType
+                    shopStatus
                   }                  
                 }
               }

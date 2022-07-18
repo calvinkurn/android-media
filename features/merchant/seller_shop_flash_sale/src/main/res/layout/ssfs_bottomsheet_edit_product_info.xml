@@ -59,7 +59,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="21dp"
-            android:text="Harga Campaign"
+            android:text="@string/editproduct_campaign_price_title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ivProduct"
             app:typographyType="paragraph_2"
@@ -69,8 +69,8 @@
             android:id="@+id/switchPrice"
             android:layout_width="80dp"
             android:layout_height="32dp"
-            android:textOff="Rp"
-            android:textOn="%"
+            android:textOff="@string/editproduct_switch_text_currency"
+            android:textOn="@string/editproduct_switch_text_percent"
             app:layout_constraintBottom_toBottomOf="@+id/typographyPriceMode"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/typographyPriceMode" />
@@ -90,8 +90,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginEnd="4dp"
-                app:tfl_placeholder_text="Harga campaign"
-                app:tfl_prepend_text="Rp" />
+                app:tfl_placeholder_text="@string/editproduct_input_price_placeholder"
+                app:tfl_prepend_text="@string/editproduct_switch_text_currency" />
 
             <com.tokopedia.shop.flashsale.common.customcomponent.TextFieldLabelView
                 android:id="@+id/tfCampaignPricePercent"
@@ -99,9 +99,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginStart="4dp"
-                app:tfl_append_text="%"
+                app:tfl_append_text="@string/editproduct_switch_text_percent"
                 app:tfl_enable_editing="false"
-                app:tfl_placeholder_text="Potongan" />
+                app:tfl_placeholder_text="@string/editproduct_input_price_percent_placeholder" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -117,9 +117,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            app:spinner_placeholder_text="Pilih lokasi"
-            app:spinner_title_text="Pilih lokasi"
-            app:spinner_message="Hanya bisa pilih satu lokasi"
+            app:spinner_placeholder_text="@string/editproduct_input_shoploc_placeholder"
+            app:spinner_title_text="@string/editproduct_input_shoploc_placeholder"
+            app:spinner_message="@string/editproduct_input_shoploc_message"
             app:layout_constraintTop_toBottomOf="@+id/divCampaignPrice" />
 
         <com.tokopedia.unifycomponents.TextFieldUnify2
@@ -131,8 +131,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/spinnerShopLocation"
             app:unify_text_field_input_type="number"
-            app:unify_text_field_label="Stok Campaign"
-            app:unify_text_field_message="Total Stok: 999" />
+            app:unify_text_field_label="@string/editproduct_input_stock_placeholder"
+            app:unify_text_field_message="" />
 
         <com.tokopedia.unifycomponents.TextFieldUnify2
             android:id="@+id/tfMaxSold"
@@ -143,8 +143,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/spinnerShopLocation"
             app:unify_text_field_input_type="number"
-            app:unify_text_field_label="Max Transaksi"
-            app:unify_text_field_message="Batas maks. pembelian produk"  />
+            app:unify_text_field_label="@string/editproduct_input_max_transaction_placeholder"
+            app:unify_text_field_message="@string/editproduct_input_max_transaction_message"  />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -154,7 +154,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="4dp"
         android:layout_marginTop="30dp"
-        android:text="Simpan"
+        android:text="@string/editproduct_button_save_text"
         app:unifyButtonSize="medium"
         app:unifyButtonType="alternate"
         app:unifyButtonVariant="ghost"
@@ -167,7 +167,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:text="Simpan dan Lanjut"
+        android:text="@string/editproduct_button_save_and_next_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/layoutInput"
         app:layout_constraintWidth_percent="0.6"

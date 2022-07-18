@@ -64,7 +64,7 @@ class PlayWidgetMediumViewHolder private constructor() {
 
     class Banner private constructor(
         itemView: View,
-        listener: Listener,
+        private val listener: Listener,
     ) : RecyclerView.ViewHolder(itemView) {
 
         private val bannerView = itemView as PlayWidgetCardMediumBannerView
@@ -79,6 +79,9 @@ class PlayWidgetMediumViewHolder private constructor() {
         }
 
         fun bind(data: PlayWidgetBannerUiModel) {
+            itemView.addOnImpressionListener(data.impressHolder) {
+                listener.onBannerImpressed(itemView, data, adapterPosition)
+            }
             bannerView.setData(data)
         }
 
@@ -93,6 +96,12 @@ class PlayWidgetMediumViewHolder private constructor() {
         }
 
         interface Listener {
+
+            fun onBannerImpressed(
+                view: View,
+                item: PlayWidgetBannerUiModel,
+                position: Int,
+            )
 
             fun onBannerClicked(
                 view: View,
@@ -120,18 +129,6 @@ class PlayWidgetMediumViewHolder private constructor() {
 
             override fun onMenuActionButtonClicked(view: View, item: PlayWidgetChannelUiModel) {
                 listener.onMenuActionButtonClicked(view, item, adapterPosition)
-            }
-
-            override fun onLabelPromoClicked(view: View, item: PlayWidgetChannelUiModel) {
-                if ((item.promoType is PlayWidgetPromoType.Default && item.promoType.isRilisanSpesial)
-                    || (item.promoType is PlayWidgetPromoType.LiveOnly && item.promoType.isRilisanSpesial))
-                listener.onLabelPromoChannelClicked(item, adapterPosition)
-            }
-
-            override fun onLabelPromoImpressed(view: View, item: PlayWidgetChannelUiModel) {
-                if ((item.promoType is PlayWidgetPromoType.Default && item.promoType.isRilisanSpesial)
-                    || (item.promoType is PlayWidgetPromoType.LiveOnly && item.promoType.isRilisanSpesial))
-                listener.onLabelPromoChannelImpressed(item, adapterPosition)
             }
         }
 
@@ -178,16 +175,6 @@ class PlayWidgetMediumViewHolder private constructor() {
 
             fun onMenuActionButtonClicked(
                 view: View,
-                item: PlayWidgetChannelUiModel,
-                position: Int
-            )
-
-            fun onLabelPromoChannelClicked(
-                item: PlayWidgetChannelUiModel,
-                position: Int
-            )
-
-            fun onLabelPromoChannelImpressed(
                 item: PlayWidgetChannelUiModel,
                 position: Int
             )

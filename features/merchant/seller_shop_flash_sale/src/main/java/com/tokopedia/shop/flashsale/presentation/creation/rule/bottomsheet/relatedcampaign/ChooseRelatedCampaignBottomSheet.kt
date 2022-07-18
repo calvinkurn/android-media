@@ -30,11 +30,14 @@ import javax.inject.Inject
 class ChooseRelatedCampaignBottomSheet : BottomSheetUnify(),
     ChooseRelatedCampaignListener {
     companion object {
+        private const val DEFAULT_CAMPAIGN_ID = -1L
         private const val TAG = "RelatedCampaignBottomSheet"
         private const val KEY_RELATED_CAMPAIGNS_SELECTED = "KEY_RELATED_CAMPAIGNS_SELECTED"
+        private const val KEY_CAMPAIGN_ID = "KEY_CAMPAIGN_ID"
 
         @JvmStatic
         fun createInstance(
+            campaignId: Long,
             relatedCampaigns: List<RelatedCampaign>,
         ): ChooseRelatedCampaignBottomSheet {
             return ChooseRelatedCampaignBottomSheet().apply {
@@ -42,6 +45,7 @@ class ChooseRelatedCampaignBottomSheet : BottomSheetUnify(),
                     val relatedCampaignIds = relatedCampaigns.map {
                         RelatedCampaignItem(it.id, it.name, true)
                     }.toTypedArray()
+                    putLong(KEY_CAMPAIGN_ID, campaignId)
                     putParcelableArray(KEY_RELATED_CAMPAIGNS_SELECTED, relatedCampaignIds)
                 }
             }
@@ -62,6 +66,10 @@ class ChooseRelatedCampaignBottomSheet : BottomSheetUnify(),
     private val selectedRelatedCampaigns: List<RelatedCampaignItem> by lazy {
         (arguments?.getParcelableArray(KEY_RELATED_CAMPAIGNS_SELECTED) as? Array<RelatedCampaignItem>)?.toList()
             ?: emptyList()
+    }
+
+    private val campaignId by lazy {
+        arguments?.getLong(KEY_CAMPAIGN_ID) ?: DEFAULT_CAMPAIGN_ID
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -95,6 +103,7 @@ class ChooseRelatedCampaignBottomSheet : BottomSheetUnify(),
         setTitle(getString(R.string.choose_related_campaign_title))
         setUpRecyclerView()
         setUpClickListeners()
+        viewModel.setCampaignId(campaignId)
         viewModel.setSelectedCampaigns(selectedRelatedCampaigns)
         getInitialRelatedCampaigns()
         observePreviousCampaigns()

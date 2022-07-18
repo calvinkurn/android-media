@@ -85,11 +85,15 @@ class TradeInHomePageVM @Inject constructor(
     }
 
     fun getDeviceModel() {
-        val deviceModel =
-            Gson().fromJson(laku6TradeIn?.deviceModel.toString(), Laku6DeviceModel::class.java)
-        deviceModel.modelInfoBase64 = Base64.getEncoder().encodeToString(laku6TradeIn?.deviceModel.toString().toByteArray())
-        tradeInUniqueCode = deviceModel?.uniqueCode ?: ""
-        laku6DeviceModel.value = deviceModel
+        try{
+            val deviceModel =
+                Gson().fromJson(laku6TradeIn?.deviceModel.toString(), Laku6DeviceModel::class.java)
+            deviceModel.modelInfoBase64 = Base64.getEncoder().encodeToString(laku6TradeIn?.deviceModel.toString().toByteArray())
+            tradeInUniqueCode = deviceModel?.uniqueCode ?: ""
+            laku6DeviceModel.value = deviceModel
+        } catch (e: Exception){
+           e.printStackTrace()
+        }
     }
 
     fun getDiagnosticData(intent: Intent): DeviceDiagnostics {

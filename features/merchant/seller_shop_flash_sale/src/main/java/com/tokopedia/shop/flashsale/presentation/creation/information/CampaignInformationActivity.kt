@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.seller_shop_flash_sale.R
+import com.tokopedia.shop.flashsale.common.constant.BundleConstant
 import com.tokopedia.shop.flashsale.common.constant.Constant.CAMPAIGN_NOT_CREATED_ID
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
@@ -14,7 +15,6 @@ import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
 class CampaignInformationActivity : BaseSimpleActivity() {
 
     companion object {
-        const val BUNDLE_KEY_PAGE_MODE = "page_mode"
         const val BUNDLE_KEY_CAMPAIGN_ID = "campaign_id"
         const val REQUEST_CODE_CREATE_CAMPAIGN_INFO = 100
 
@@ -26,8 +26,8 @@ class CampaignInformationActivity : BaseSimpleActivity() {
             }
 
             val bundle = Bundle()
-            bundle.putParcelable(BUNDLE_KEY_PAGE_MODE, PageMode.UPDATE)
-            bundle.putLong(BUNDLE_KEY_CAMPAIGN_ID, campaignId)
+            bundle.putParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE, PageMode.UPDATE)
+            bundle.putLong(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID, campaignId)
             starter.putExtras(bundle)
 
             context.startActivity(starter)
@@ -35,7 +35,7 @@ class CampaignInformationActivity : BaseSimpleActivity() {
     }
 
     private val pageMode by lazy {
-        intent?.extras?.getParcelable(BUNDLE_KEY_PAGE_MODE) ?: PageMode.CREATE
+        intent?.extras?.getParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE) ?: PageMode.CREATE
     }
 
     private val campaignId by lazy {

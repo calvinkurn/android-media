@@ -14,6 +14,7 @@
     <string name="sfs_save_as_draft">Simpan Sebagai Draft</string>
     <string name="sfs_ok">Oke</string>
     <string name="sfs_saved_as_draft">Campaign berhasil disimpan sebagai draft.</string>
+    <string name="sfs_edit_campaign_success">Campaign berhasil disimpan.</string>
     <string name="sfs_placeholder_percent">%d\%%</string>
     <string name="sfs_save_changes">Simpan Perubahan</string>
     <string name="sfs_save">Simpan</string>
@@ -71,7 +72,9 @@
     <string name="sfs_fst_introduction_description">Flash Sale yang berhasil dibuat akan tampil di halaman Home tokomu sesuai dengan waktu yang sudah diatur.</string>
     <string name="sfs_start_create_flash_sale">Mulai Buat Flash Sale</string>
     <string name="sfs_later">Nanti saja</string>
-
+    <string name="sfs_forbidden_access_title">Yah, kamu belum bisa akses ke Flash Sale Toko</string>
+    <string name="sfs_forbidden_access_description">Pelajari dulu agar tokomu bisa pakai Flash Sale Toko, yuk!</string>
+    <string name="sfs_forbidden_access_learn_more">Pelajari Flash Sale Toko</string>
 
     <!--Share Component-->
     <string name="sfs_share_description_upcoming">Segera hadir, Flash Sale dari %s di \@Tokopedia. Mulai %s pukul %s</string>
@@ -180,7 +183,6 @@
     <string name="draftlist_description_full">Klik salah satu draft untuk melanjutkan campaign atau hapus untuk membuat campaign baru.</string>
     <string name="draftlist_description_available">Klik salah satu draft untuk melanjutkan campaign.</string>
     <string name="draftlist_date_delimiter">﹣</string>
-    <string name="action_yes_stop">Ya, Hentikan</string>
     <string name="draftdelete_title">Yakin hapus draft campaign?</string>
     <string name="draftdelete_desc">Detail campaign “%s” yang sudah diatur akan dihapus permanen.</string>
     <string name="draftdelete_question_title">Kenapa kamu ingin membatalkan campaign ini?</string>
@@ -197,6 +199,8 @@
     <string name="cancelcampaign_title_question">Kenapa kamu ingin membatalkan campaign ini?</string>
     <string name="cancelcampaign_title_stop_question">Kenapa kamu ingin menghentikan campaign ini?</string>
     <string name="cancelcampaign_message_success">%s berhasil dihentikan.</string>
+    <string name="cancelcampaign_action_yes_stop">Ya, Hentikan</string>
+    <string name="cancelcampaign_action_yes_cancel">Ya, Batalkan</string>
 
     <!--Campaign Rule -->
     <string name="campaign_rule">Pengaturan Campaign</string>
@@ -254,7 +258,7 @@
     <string name="chooseproduct_save_button_text_empty">Tambah Produk</string>
     <string name="chooseproduct_sku_text">SKU: %s</string>
     <string name="chooseproduct_stock_total_text">Total stok: %d</string>
-    <string name="chooseproduct_variant_text">%d Variant Produk</string>
+    <string name="chooseproduct_variant_text">+ %d Varian lain</string>
 
     <!--Manage Product-->
     <string name="manage_product_complete_product_info_warning_label">Klik <b>Ubah</b> untuk melengkapi informasi produk ini, ya.</string>
@@ -302,18 +306,29 @@
     <string name="editproduct_counter_text">Produk dengan info belum lengkap: %d</string>
     <string name="editproduct_stock_total_text">Total stok %d</string>
     <string name="editproduct_stock_text">Stok %d</string>
-    <string name="editproduct_max_transaction_text">Batas maks. pembelian produk</string>
     <string name="editproduct_required_text">Wajib diisi</string>
     <string name="editproduct_max_prefix">Maks. </string>
     <string name="editproduct_min_prefix">Min. </string>
-    <string name="editproduct_max_percent_text">Maks. %d</string>
-    <string name="editproduct_min_percent_text">Min. %d</string>
+    <string name="editproduct_max_percent_text">Maks. %d%%</string>
+    <string name="editproduct_min_percent_text">Min. %d%%</string>
     <string name="editproduct_order_exceed_stock_error">Tidak boleh melebihi stok utama</string>
     <string name="editproduct_bs_warehouse_title">Pilih lokasi</string>
     <string name="editproduct_warehouse_title_default">Lokasi Seller</string>
     <string name="editproduct_first_coachmark_content">Tentukan potongan harga berdasarkan rupiah atau persentase dengan besaran antara 1-99%.</string>
     <string name="editproduct_second_coachmark_content">Stok campaign akan diambil dari stok utama produk. Produk dapat dibeli di luar jadwal campaign selama stok utama masih tersedia, ya.</string>
     <string name="editproduct_third_coachmark_content">Klik di sini untuk menyimpan pengaturan produkmu dan lanjut untuk mengatur produk berikutnya.</string>
+    <string name="editproduct_campaign_price_title">Harga Campaign</string>
+    <string name="editproduct_switch_text_currency">Rp</string>
+    <string name="editproduct_switch_text_percent">%</string>
+    <string name="editproduct_input_price_placeholder">Harga campaign</string>
+    <string name="editproduct_input_price_percent_placeholder">Potongan</string>
+    <string name="editproduct_input_shoploc_placeholder">Pilih lokasi</string>
+    <string name="editproduct_input_shoploc_message">Hanya bisa pilih satu lokasi</string>
+    <string name="editproduct_input_stock_placeholder">Stok Campaign</string>
+    <string name="editproduct_input_max_transaction_placeholder">Maks. Pembelian</string>
+    <string name="editproduct_input_max_transaction_message">Batas maks. pembelian produk</string>
+    <string name="editproduct_button_save_text">Simpan</string>
+    <string name="editproduct_button_save_and_next_text">Simpan dan Lanjut</string>
 
     <!-- Campaign Detail -->
     <string name="campaign_detail">Detail Campaign</string>
@@ -328,8 +343,6 @@
     <string name="campaign_detail_start_date_label">Tanggal dimulai</string>
     <string name="campaign_detail_end_date_label">Tanggal berakhir</string>
     <string name="campaign_detail_edit_campaign_label">Ubah Campaign</string>
-    <string name="campaign_detail_edit_registered_event_campaign_message">Campaign yang masuk ke partisipasi event hanya bisa diedit di versi desktop.</string>
-    <string name="campaign_detail_cancel_registered_event_campaign_message">Campaign yang masuk ke partisipasi event tidak dapat dihentikan.</string>
     <string name="campaign_detail_campaign_cancelled_message">Campaign %s berhasil dibatalkan.</string>
     <string name="campaign_detail_campaign_stopped_message">Campaign %s berhasil dihentikan.</string>
     <string name="campaign_detail_see_terms_and_condition_label">Lihat S&amp;K Pembelian</string>

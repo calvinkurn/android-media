@@ -3,13 +3,16 @@ package com.tokopedia.shop.flashsale.common.util
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.shop.flashsale.common.extension.convertRupiah
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductErrorType
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductErrorType.*
 import com.tokopedia.shop.flashsale.domain.entity.enums.ProductInputValidationResult
+import com.tokopedia.shop.flashsale.presentation.creation.manage.model.EditProductInputModel
 import javax.inject.Inject
+import kotlin.math.ceil
 
 class ProductErrorStatusHandler @Inject constructor(@ApplicationContext private val context: Context) {
 
@@ -18,6 +21,7 @@ class ProductErrorStatusHandler @Inject constructor(@ApplicationContext private 
         private const val MIN_CAMPAIGN_ORDER = 1L
         private const val MAX_CAMPAIGN_DISCOUNT_PERCENTAGE = 0.99
         private const val MIN_CAMPAIGN_DISCOUNT_PERCENTAGE = 0.01
+        private const val MIN_PRODUCT_PRICE = 100
     }
 
     fun getErrorType(productMapData: SellerCampaignProductList.ProductMapData): ManageProductErrorType {
@@ -73,26 +77,41 @@ class ProductErrorStatusHandler @Inject constructor(@ApplicationContext private 
         }
     }
 
-    fun getErrorInputType(productMapData: SellerCampaignProductList.ProductMapData): ProductInputValidationResult {
-        val maxDiscountedPrice = getProductMaxDiscountedPrice(productMapData.originalPrice)
-        val minDiscountedPrice = getProductMinDiscountedPrice(productMapData.originalPrice)
+    fun getErrorInputType(productInput: EditProductInputModel): ProductInputValidationResult {
+        val originalPrice = productInput.productMapData.originalPrice
+        val originalStock = productInput.originalStock
+        val maxDiscountedPrice = getProductMaxDiscountedPrice(originalPrice)
+        var minDiscountedPrice = getProductMinDiscountedPrice(originalPrice)
         val result: MutableList<ManageProductErrorType> = mutableListOf()
 
-        if (productMapData.discountedPrice >= productMapData.originalPrice) result.add(MAX_DISCOUNT_PRICE)
-        if (productMapData.customStock > productMapData.originalStock) result.add(MAX_STOCK)
-        if (productMapData.discountedPrice < minDiscountedPrice) result.add(MIN_DISCOUNT_PRICE)
-        if (productMapData.customStock < MIN_CAMPAIGN_STOCK) result.add(MIN_STOCK)
-        if (productMapData.maxOrder > productMapData.customStock) result.add(MAX_ORDER)
-        if (productMapData.maxOrder < MIN_CAMPAIGN_ORDER) result.add(MIN_ORDER)
+        // threshold discounted value not to less than Rp100
+        if (minDiscountedPrice < MIN_PRODUCT_PRICE) minDiscountedPrice = MIN_PRODUCT_PRICE
+
+        with(productInput) {
+            price?.let {
+                if (it > maxDiscountedPrice) result.add(MAX_DISCOUNT_PRICE)
+                if (it < minDiscountedPrice) result.add(MIN_DISCOUNT_PRICE)
+            } ?: result.add(EMPTY_PRICE)
+
+            stock?.let {
+                if (it > originalStock) result.add(MAX_STOCK)
+                if (it < MIN_CAMPAIGN_STOCK) result.add(MIN_STOCK)
+            }
+
+            maxOrder?.let {
+                if (it < MIN_CAMPAIGN_ORDER) result.add(MIN_ORDER)
+                if (it > stock ?: originalStock) result.add(MAX_ORDER)
+            }
+        }
 
         return ProductInputValidationResult(
             errorList = result,
             maxPrice = maxDiscountedPrice,
             minPrice = minDiscountedPrice,
-            maxStock = productMapData.originalStock,
+            maxStock = originalStock,
             minStock = MIN_CAMPAIGN_STOCK,
             minOrder = MIN_CAMPAIGN_ORDER,
-            maxOrder = productMapData.customStock,
+            maxOrder = productInput.stock.orZero(),
             minPricePercent = DiscountUtil.getPercentLong(MIN_CAMPAIGN_DISCOUNT_PERCENTAGE),
             maxPricePercent = DiscountUtil.getPercentLong(MAX_CAMPAIGN_DISCOUNT_PERCENTAGE)
         )
@@ -160,10 +179,10 @@ class ProductErrorStatusHandler @Inject constructor(@ApplicationContext private 
     }
 
     private fun getProductMaxDiscountedPrice(originalPrice: Long): Int {
-        return (originalPrice * MAX_CAMPAIGN_DISCOUNT_PERCENTAGE).toInt()
+        return ceil(originalPrice * MAX_CAMPAIGN_DISCOUNT_PERCENTAGE).toInt()
     }
 
     private fun getProductMinDiscountedPrice(originalPrice: Long): Int {
-        return (originalPrice * MIN_CAMPAIGN_DISCOUNT_PERCENTAGE).toInt()
+        return ceil(originalPrice * MIN_CAMPAIGN_DISCOUNT_PERCENTAGE).toInt()
     }
 }

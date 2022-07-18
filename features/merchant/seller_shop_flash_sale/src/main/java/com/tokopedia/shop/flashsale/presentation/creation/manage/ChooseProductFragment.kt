@@ -9,18 +9,15 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentChooseProductBinding
+import com.tokopedia.shop.flashsale.common.constant.BundleConstant
 import com.tokopedia.shop.flashsale.common.constant.ChooseProductConstant.PRODUCT_LIST_SIZE
 import com.tokopedia.shop.flashsale.common.customcomponent.BaseSimpleListFragment
 import com.tokopedia.shop.flashsale.common.extension.*
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.presentation.creation.manage.adapter.ReserveProductAdapter
-import com.tokopedia.shop.flashsale.presentation.creation.manage.dialog.ShopClosedDialog
-import com.tokopedia.shop.flashsale.presentation.creation.manage.enums.ShopStatus
 import com.tokopedia.shop.flashsale.presentation.creation.manage.model.ReserveProductModel
 import com.tokopedia.shop.flashsale.presentation.creation.manage.model.SelectedProductModel
 import com.tokopedia.shop.flashsale.presentation.creation.manage.viewmodel.ChooseProductViewModel
@@ -41,7 +38,7 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
         fun newInstance(campaignId: String): ChooseProductFragment {
             val fragment = ChooseProductFragment()
             val bundle = Bundle()
-            bundle.putString(ChooseProductActivity.BUNDLE_KEY_CAMPAIGN_ID, campaignId)
+            bundle.putString(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID, campaignId)
             fragment.arguments = bundle
             return fragment
         }
@@ -53,7 +50,7 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
     private var guidelineMargin = GUIDELINE_MARGIN_MIN
     private var guidelineMarginMax = GUIDELINE_MARGIN_MIN
     private val campaignId by lazy {
-        arguments?.getString(ChooseProductActivity.BUNDLE_KEY_CAMPAIGN_ID).orEmpty()
+        arguments?.getString(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID).orEmpty()
     }
     private val animateScrollDebounce: (Int) -> Unit by lazy {
         debounce(GUIDELINE_ANIMATION_DELAY, GlobalScope) {
@@ -87,7 +84,6 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
         setupSearchBar()
         guidelineMarginMax = binding?.guidelineFooter?.getGuidelineEnd().orZero()
         guidelineMargin = guidelineMarginMax
-        viewModel.getShopInfo()
     }
 
     override fun createAdapter() = ReserveProductAdapter(::onSelectedItemChanges)
@@ -156,7 +152,6 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
         setupIsSelectionValidObserver()
         setupIsSelectionHasVariantObserver()
         setupIsAddProductSuccessObserver()
-        setupShopInfoObserver()
     }
 
     private fun setupIsAddProductSuccessObserver() {
@@ -184,22 +179,23 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
 
     private fun setupSelectionItemsObserver() {
         viewModel.selectedItems.observe(viewLifecycleOwner) { selectedItems ->
-            val selectedCount = selectedItems.filter { !it.isProductPreviouslySubmitted }.size
+            val selectedCount = selectedItems.filter { !it.hasChild }.size
             binding?.tvSelectedProduct?.text =
                 getString(R.string.chooseproduct_selected_product_suffix, selectedCount)
-            setupButtonSave(selectedItems)
+            setupButtonSave(selectedCount)
         }
     }
 
     private fun setupIsSelectionValidObserver() {
         viewModel.isSelectionValid.observe(viewLifecycleOwner) {
-            binding?.btnSave?.isEnabled = it
             adapter?.run {
                 if (getSelectedProduct().size.isMoreThanZero()) {
                     setInputEnabled(it)
+                    binding?.btnSave?.isEnabled = true
                 } else {
                     // always enabled when there is no selected products
                     setInputEnabled(true)
+                    binding?.btnSave?.isEnabled = false
                 }
             }
         }
@@ -208,12 +204,6 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
     private fun setupIsSelectionHasVariantObserver() {
         viewModel.isSelectionHasVariant.observe(viewLifecycleOwner) {
             binding?.tvSelectedProductVariant?.isVisible = it
-        }
-    }
-
-    private fun setupShopInfoObserver() {
-        viewModel.shopStatus.observe(viewLifecycleOwner) {
-            if (it == ShopStatus.CLOSED) showShopClosedDialog()
         }
     }
 
@@ -228,29 +218,17 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
         }
     }
 
-    private fun setupButtonSave(selectedProduct: List<SelectedProductModel>) {
-        if (selectedProduct.isEmpty()) {
+    private fun setupButtonSave(selectedCount: Int) {
+        if (selectedCount.isZero()) {
             binding?.btnSave?.text = getString(R.string.chooseproduct_save_button_text_empty)
         } else {
-            binding?.btnSave?.text = getString(R.string.chooseproduct_save_button_text, selectedProduct.size)
+            binding?.btnSave?.text = getString(R.string.chooseproduct_save_button_text, selectedCount)
         }
 
         binding?.btnSave?.setOnClickListener {
             viewModel.addProduct(campaignId)
             binding?.btnSave?.isLoading = true
         }
-    }
-
-    private fun showShopClosedDialog() {
-        val dialog = ShopClosedDialog(primaryCTAAction = ::goToShopSettings)
-        dialog.setOnDismissListener {
-            activity?.finish()
-        }
-        dialog.show(childFragmentManager)
-    }
-
-    private fun goToShopSettings() {
-        RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_SETTINGS_OPERATIONAL_HOURS)
     }
 
     private fun animateScroll(scrollingAmount: Int) {

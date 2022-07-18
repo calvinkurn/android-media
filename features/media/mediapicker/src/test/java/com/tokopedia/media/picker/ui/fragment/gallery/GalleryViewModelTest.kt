@@ -11,6 +11,7 @@ import com.tokopedia.media.picker.ui.observer.stateOnRemovePublished
 import com.tokopedia.picker.common.observer.EventFlowFactory
 import com.tokopedia.picker.common.observer.EventState
 import com.tokopedia.picker.common.uimodel.MediaUiModel
+import com.tokopedia.picker.common.utils.wrapper.PickerFile
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.every
@@ -116,15 +117,15 @@ class GalleryViewModelTest {
 
     companion object {
         val mockMediaModel = listOf(
-            Media(12, "media sample 1", "sdcard/images/sample_1.png"),
-            Media(13, "media sample 2", "sdcard/images/sample_2.png"),
-            Media(14, "media sample 3", "sdcard/images/sample_3.png")
+            Media(12, PickerFile("sdcard/images/sample_1.png")),
+            Media(13, PickerFile("sdcard/images/sample_2.png")),
+            Media(14, PickerFile("sdcard/images/sample_3.png"))
         )
 
         val mockMediaUiModel = listOf(
-            MediaUiModel(12, "media sample 1", "sdcard/images/sample_1.png"),
-            MediaUiModel(13, "media sample 2", "sdcard/images/sample_2.png"),
-            MediaUiModel(14, "media sample 3", "sdcard/images/sample_3.png"),
+            MediaUiModel(12, PickerFile("sdcard/images/sample_1.png")),
+            MediaUiModel(13, PickerFile("sdcard/images/sample_2.png")),
+            MediaUiModel(14, PickerFile("sdcard/images/sample_3.png")),
         )
     }
 

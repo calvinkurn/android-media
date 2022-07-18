@@ -1,8 +1,13 @@
 package com.tokopedia.shop.flashsale.common.tracker
 
+import com.tokopedia.shop.flashsale.common.constant.DateConstant
+import com.tokopedia.shop.flashsale.common.extension.formatTo
+import com.tokopedia.shop.flashsale.common.extension.removeTimeZone
+import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignStatus
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
+import java.util.TimeZone
 import javax.inject.Inject
 
 class ShopFlashSaleTracker @Inject constructor(private val userSession : UserSessionInterface) {
@@ -38,6 +43,21 @@ class ShopFlashSaleTracker @Inject constructor(private val userSession : UserSes
             .setEvent(EVENT)
             .setEventAction("click lanjut")
             .setEventLabel("")
+            .build()
+            .send()
+    }
+    //endregion
+
+    //region Manage Product Page Tracker
+    fun sendClickButtonProceedOnManageProductPage() {
+        Tracker.Builder()
+            .setEvent(EVENT)
+            .setEventAction("click lanjut")
+            .setEventCategory("fs toko - kelola produk")
+            .setEventLabel("")
+            .setBusinessUnit(BUSINESS_UNIT)
+            .setCurrentSite(CURRENT_SITE)
+            .setShopId(userSession.shopId.toString())
             .build()
             .send()
     }
@@ -121,6 +141,117 @@ class ShopFlashSaleTracker @Inject constructor(private val userSession : UserSes
             .setEventLabel("$campaignId - $campaignName - ${campaignStatus.id}")
             .build()
             .send()
+    }
+
+    fun sendClickStopCampaignEvent(campaign: CampaignUiModel) {
+        val campaignPeriod = buildCampaignPeriod(campaign)
+        val eventLabel = "${campaign.campaignId} - ${campaign.campaignName} - $campaignPeriod"
+
+        Tracker.Builder()
+            .setEvent(EVENT)
+            .setEventAction("click yes - hentikan campaign - pop up")
+            .setEventCategory("fs toko - campaign detail")
+            .setEventLabel(eventLabel)
+            .setBusinessUnit(BUSINESS_UNIT)
+            .setCurrentSite(CURRENT_SITE)
+            .setShopId(userSession.shopId.toString())
+            .build()
+            .send()
+    }
+
+
+    fun sendClickCancelCampaignEvent(campaign: CampaignUiModel) {
+        val campaignPeriod = buildCampaignPeriod(campaign)
+        val eventLabel = "${campaign.campaignId} - ${campaign.campaignName} - $campaignPeriod"
+
+        Tracker.Builder()
+            .setEvent(EVENT)
+            .setEventAction("click yes - batalkan campaign - pop up")
+            .setEventCategory("fs toko - campaign detail")
+            .setEventLabel(eventLabel)
+            .setBusinessUnit(BUSINESS_UNIT)
+            .setCurrentSite(CURRENT_SITE)
+            .setShopId(userSession.shopId.toString())
+            .build()
+            .send()
+    }
+    //endregion
+
+    //region campaign list bottom sheet
+    fun sendClickShareCampaignPopupEvent(campaign: CampaignUiModel) {
+        val eventLabel = "${campaign.campaignId} - ${campaign.campaignName} - ${campaign.status.id}"
+        Tracker.Builder()
+            .setEvent(EVENT)
+            .setEventAction("click share campaign - popup")
+            .setEventCategory("fs toko - campaign aktif")
+            .setEventLabel(eventLabel)
+            .setBusinessUnit(BUSINESS_UNIT)
+            .setCurrentSite(CURRENT_SITE)
+            .setShopId(userSession.shopId.toString())
+            .build()
+            .send()
+    }
+
+    fun sendClickCancelPopupEvent(campaign: CampaignUiModel) {
+        val eventLabel = "${campaign.campaignId} - ${campaign.campaignName} - ${campaign.status.id}"
+        Tracker.Builder()
+            .setEvent(EVENT)
+            .setEventAction("click batalkan - popup")
+            .setEventCategory("fs toko - campaign aktif")
+            .setEventLabel(eventLabel)
+            .setBusinessUnit(BUSINESS_UNIT)
+            .setCurrentSite(CURRENT_SITE)
+            .setShopId(userSession.shopId.toString())
+            .build()
+            .send()
+    }
+
+    fun sendClickStopPopupEvent(campaign: CampaignUiModel) {
+        val eventLabel = "${campaign.campaignId} - ${campaign.campaignName} - ${campaign.status.id}"
+        Tracker.Builder()
+            .setEvent(EVENT)
+            .setEventAction("click hentikan - popup")
+            .setEventCategory("fs toko - campaign aktif")
+            .setEventLabel(eventLabel)
+            .setBusinessUnit(BUSINESS_UNIT)
+            .setCurrentSite(CURRENT_SITE)
+            .setShopId(userSession.shopId.toString())
+            .build()
+            .send()
+    }
+
+    fun sendClickEditPopupEvent(campaign: CampaignUiModel) {
+        val eventLabel = "${campaign.campaignId} - ${campaign.campaignName} - ${campaign.status.id}"
+        Tracker.Builder()
+            .setEvent(EVENT)
+            .setEventAction("click edit - popup")
+            .setEventCategory("fs toko - campaign aktif")
+            .setEventLabel(eventLabel)
+            .setBusinessUnit(BUSINESS_UNIT)
+            .setCurrentSite(CURRENT_SITE)
+            .setShopId(userSession.shopId.toString())
+            .build()
+            .send()
+    }
+
+
+    fun sendClickViewCampaignDetailPopUpEvent() {
+        Tracker.Builder()
+            .setEvent(EVENT)
+            .setEventAction("click lihat detail - pop up")
+            .setEventCategory("fs toko - campaign aktif")
+            .setEventLabel("")
+            .setBusinessUnit(BUSINESS_UNIT)
+            .setCurrentSite(CURRENT_SITE)
+            .setShopId(userSession.shopId.toString())
+            .build()
+            .send()
+    }
+
+    private fun buildCampaignPeriod(campaign: CampaignUiModel): String {
+        return campaign.startDate
+            .removeTimeZone()
+            .formatTo(DateConstant.DATE_TIME_TRACKER_FORMAT, timeZone = TimeZone.getTimeZone("UTC"))
     }
     //endregion
 }

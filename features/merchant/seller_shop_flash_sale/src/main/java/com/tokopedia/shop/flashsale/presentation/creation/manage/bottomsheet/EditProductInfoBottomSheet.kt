@@ -1,6 +1,5 @@
 package com.tokopedia.shop.flashsale.presentation.creation.manage.bottomsheet
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -21,6 +20,7 @@ import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductErrorType
 import com.tokopedia.shop.flashsale.domain.entity.enums.ProductInputValidationResult
+import com.tokopedia.shop.flashsale.presentation.creation.manage.model.EditProductInputModel
 import com.tokopedia.shop.flashsale.presentation.creation.manage.model.WarehouseUiModel
 import com.tokopedia.shop.flashsale.presentation.creation.manage.viewmodel.EditProductInfoViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -35,9 +35,9 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
         private const val TAG = "EditProductInfoBottomSheet"
         private const val PRODUCT_REMAINING_VISIBILITY_THRESHOLD = 1
         private const val MAX_LENGTH_NUMBER_INPUT = 11
-        private const val MAX_LENGTH_PERCENT_INPUT = 3
-        private const val NUMBER_INITIAL_VALUE = ""
-        private const val PERCENT_INITIAL_VALUE = "-"
+        private const val MAX_LENGTH_PERCENT_INPUT = 2
+        private const val EMPTY_INITIAL_VALUE = ""
+        private const val STRIPED_INITIAL_VALUE = "-"
 
         fun newInstance(productList: List<SellerCampaignProductList.Product>): EditProductInfoBottomSheet {
             val fragment = EditProductInfoBottomSheet()
@@ -54,7 +54,7 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
     lateinit var sharedPreference: SharedPreferenceDataStore
     private var binding by autoClearedNullable<SsfsBottomsheetEditProductInfoBinding>()
     private var warehouseBottomSheet: WarehouseBottomSheet? = null
-    private var productInput = SellerCampaignProductList.ProductMapData()
+    private var productInput = EditProductInputModel()
     private var productIndex = Int.ZERO
     private var isDataFirstLoaded = true
     private var shouldLoadNextData = false
@@ -138,9 +138,8 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
     }
 
     private fun setupProductMapDataObserver() {
-        viewModel.productMapData.observe(viewLifecycleOwner) {
+        viewModel.productInputData.observe(viewLifecycleOwner) {
             productInput = it
-            resetInputData()
         }
     }
 
@@ -151,11 +150,12 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
             if (isDataFirstLoaded) {
                 // do not display validation on first loading product data
                 isDataFirstLoaded = false
+                resetInputData()
             } else {
                 displayValidationResult(validationResult)
                 if (isSuccess) {
                     productIndex++
-                    viewModel.editProduct(productInput.campaignId)
+                    viewModel.editProduct(productInput.productMapData.campaignId)
                 }
             }
         }
@@ -180,8 +180,13 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
 
     private fun setupWarehouseListObserver() {
         viewModel.warehouseList.observe(viewLifecycleOwner) { warehouseList ->
-            val selectedWarehouse = warehouseList.firstOrNull { it.isSelected }
-            binding?.spinnerShopLocation?.text = selectedWarehouse?.name.orEmpty()
+            warehouseList.firstOrNull { it.isSelected }?.let { selectedWarehouse ->
+                productInput.warehouseId = selectedWarehouse.id
+                productInput.originalStock = selectedWarehouse.stock
+                binding?.spinnerShopLocation?.text = selectedWarehouse.name
+                binding?.tfStock?.setMessage(getString(R.string.editproduct_stock_total_text, productInput.originalStock))
+            }
+
             warehouseBottomSheet = WarehouseBottomSheet.newInstance(warehouseList).apply {
                 setOnSubmitListener(::onSubmitWarehouse)
             }
@@ -226,12 +231,13 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
             }
             tfCampaignPrice.textField?.editText?.afterTextChanged {
                 if (switchPrice.isChecked) return@afterTextChanged
-                if (it.isEmpty()) tfCampaignPricePercent.text = PERCENT_INITIAL_VALUE
+                if (it.isEmpty()) tfCampaignPricePercent.text = STRIPED_INITIAL_VALUE
                 else viewModel.setCampaignPrice(it.filterDigit().toLongOrZero())
             }
             tfCampaignPricePercent.textField?.editText?.afterTextChanged {
                 if (!switchPrice.isChecked) return@afterTextChanged
-                viewModel.setCampaignPricePercent(it.filterDigit().toLongOrZero())
+                if (it.isEmpty()) tfCampaignPrice.text = STRIPED_INITIAL_VALUE
+                else viewModel.setCampaignPricePercent(it.filterDigit().toLongOrZero())
             }
         }
     }
@@ -251,21 +257,25 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
     private fun submitInput(shouldLoadNextData: Boolean) {
         this.shouldLoadNextData = shouldLoadNextData
         binding?.run {
-            productInput.customStock = tfStock.getTextLong()
+            productInput.stock = tfStock.getTextLong()
             productInput.maxOrder = tfMaxSold.getTextInt()
-            productInput.discountedPrice = tfCampaignPrice.textField.getTextLong()
+            productInput.price = tfCampaignPrice.textField.getTextLong()
             viewModel.setProductInput(productInput)
         }
     }
 
     private fun loadNextData() {
         val product = productList?.getOrNull(productIndex)
+        resetInputData()
         viewModel.setProduct(product ?: return)
     }
 
     private fun displayValidationResult(validationResult: ProductInputValidationResult) {
         validationResult.errorList.forEach { errorType ->
             when(errorType) {
+                ManageProductErrorType.EMPTY_PRICE -> {
+                    displayPriceEmpty()
+                }
                 ManageProductErrorType.MAX_DISCOUNT_PRICE -> {
                     displayValidationPrice(validationResult, isMaxError = true)
                 }
@@ -289,6 +299,19 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
         }
     }
 
+    private fun displayPriceEmpty() {
+        binding?.apply {
+            val usingPercentInput = switchPrice.isChecked.orFalse()
+            val priceField = if (usingPercentInput) {
+                tfCampaignPricePercent.textField
+            } else {
+                tfCampaignPrice.textField
+            }
+            priceField?.isInputError = true
+            priceField?.setMessage(getString(R.string.editproduct_required_text))
+        }
+    }
+
     private fun displayValidationOrder(
         validationResult: ProductInputValidationResult,
         isMinError: Boolean = false,
@@ -298,9 +321,6 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
         orderField?.isInputError = true
 
         when {
-            orderField?.editText?.text?.toString().orEmpty().isEmpty() -> {
-                orderField?.setMessage(getString(R.string.editproduct_required_text))
-            }
             isMaxError -> {
                 orderField?.setMessage(getString(R.string.editproduct_order_exceed_stock_error))
             }
@@ -333,9 +353,6 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
         priceField?.isInputError = true
 
         when {
-            priceField?.editText?.text?.toString().orEmpty().isEmpty() -> {
-                priceField?.setMessage(getString(R.string.editproduct_required_text))
-            }
             isMaxError -> {
                 priceField?.setMessage(maxErrorValue)
             }
@@ -354,9 +371,6 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
         stockField?.isInputError = true
 
         when {
-            stockField?.editText?.text?.toString().orEmpty().isEmpty() -> {
-                stockField?.setMessage(getString(R.string.editproduct_required_text))
-            }
             isMaxError -> {
                 stockField?.setMessage(getString(R.string.editproduct_max_prefix) + validationResult.maxStock)
             }
@@ -373,20 +387,32 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
             tfMaxSold.isInputError = false
             tfCampaignPrice.textField?.setMessage("")
             tfStock.setMessage(getString(R.string.editproduct_stock_total_text, productInput.originalStock))
-            tfMaxSold.setMessage(getString(R.string.editproduct_max_transaction_text))
+            tfMaxSold.setMessage(getString(R.string.editproduct_input_max_transaction_message))
+        }
+    }
+
+    private fun clearPriceInput() {
+        binding?.apply {
+            if (switchPrice.isChecked) {
+                tfCampaignPrice.text = STRIPED_INITIAL_VALUE
+                tfCampaignPricePercent.text = EMPTY_INITIAL_VALUE
+            } else {
+                tfCampaignPricePercent.text = EMPTY_INITIAL_VALUE
+                tfCampaignPricePercent.text = STRIPED_INITIAL_VALUE
+            }
         }
     }
 
     private fun resetInputData() {
-        val discountedPrice = productInput.discountedPrice.toStringOrInitialValue(NUMBER_INITIAL_VALUE)
-        val customStock = productInput.customStock.toStringOrInitialValue(NUMBER_INITIAL_VALUE)
-        val maxOrder = productInput.maxOrder.toLong().toStringOrInitialValue(NUMBER_INITIAL_VALUE)
+        val discountedPrice = productInput.price.orZero().toStringOrInitialValue(EMPTY_INITIAL_VALUE)
+        val customStock = productInput.stock.orZero().toStringOrInitialValue(EMPTY_INITIAL_VALUE)
+        val maxOrder = productInput.maxOrder.orZero().toLong().toStringOrInitialValue(EMPTY_INITIAL_VALUE)
 
+        clearPriceInput()
         binding?.apply {
             tfCampaignPrice.text = discountedPrice
             tfStock.editText.setText(customStock)
             tfMaxSold.editText.setText(maxOrder)
-            tfStock.setMessage(getString(R.string.editproduct_stock_total_text, productInput.originalStock))
         }
     }
 

@@ -31,8 +31,11 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignRuleBinding
+import com.tokopedia.shop.flashsale.common.constant.BundleConstant
 import com.tokopedia.shop.flashsale.common.extension.disable
+import com.tokopedia.shop.flashsale.common.extension.doOnDelayFinished
 import com.tokopedia.shop.flashsale.common.extension.enable
+import com.tokopedia.shop.flashsale.common.extension.setFragmentToUnifyBgColor
 import com.tokopedia.shop.flashsale.common.extension.showError
 import com.tokopedia.shop.flashsale.common.extension.showLoading
 import com.tokopedia.shop.flashsale.common.extension.stopLoading
@@ -41,6 +44,7 @@ import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.MerchantCampaignTNC
 import com.tokopedia.shop.flashsale.domain.entity.RelatedCampaign
+import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
 import com.tokopedia.shop.flashsale.domain.entity.enums.PaymentType
 import com.tokopedia.shop.flashsale.domain.entity.enums.isDraft
 import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationActivity
@@ -70,15 +74,16 @@ class CampaignRuleFragment : BaseDaggerFragment(),
     CreateCampaignConfirmationDialog.CreateCampaignConfirmationListener {
 
     companion object {
-        private const val BUNDLE_KEY_CAMPAIGN_ID = "campaign_id"
         private const val FOURTH_STEP = 4
         private const val RELATED_CAMPAIGN_OFFSET_DP = 8
+        private const val REDIRECTION_TO_CAMPAIGN_LIST_PAGE_DELAY : Long = 1000
 
         @JvmStatic
-        fun newInstance(campaignId: Long): CampaignRuleFragment {
+        fun newInstance(campaignId: Long, pageMode: PageMode): CampaignRuleFragment {
             return CampaignRuleFragment().apply {
                 arguments = Bundle().apply {
-                    putLong(BUNDLE_KEY_CAMPAIGN_ID, campaignId)
+                    putLong(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID, campaignId)
+                    putParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE, pageMode)
                 }
             }
         }
@@ -87,8 +92,8 @@ class CampaignRuleFragment : BaseDaggerFragment(),
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private val campaignId by lazy { arguments?.getLong(BUNDLE_KEY_CAMPAIGN_ID) }
-
+    private val campaignId by lazy { arguments?.getLong(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID) }
+    private val pageMode by lazy { arguments?.getParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE) ?: PageMode.CREATE }
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(CampaignRuleViewModel::class.java) }
 
@@ -127,6 +132,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setFragmentToUnifyBgColor()
         initCampaignDetail()
         setUpView()
     }
@@ -138,6 +144,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
     }
 
     private fun setUpView() {
+        handlePageMode()
         setUpToolbar()
         setUpClickListeners()
         setUpUniqueAccountTips()
@@ -152,6 +159,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
         observeTNCClickEvent()
         observeTNCConfirmationClick()
         observeCampaignCreationAllowed()
+        observeAddRelatedCampaignButtonEvent()
         observeSaveDraftState()
         observeCreateCampaignState()
     }
@@ -209,7 +217,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
         }
 
         binding.btnChoosePreviousCampaign.setOnClickListener {
-            showChooseRelatedCampaignBottomSheet()
+            viewModel.onAddRelatedCampaignButtonClicked()
         }
 
         childFragmentManager.registerFragmentLifecycleCallbacks(object :
@@ -229,6 +237,13 @@ class CampaignRuleFragment : BaseDaggerFragment(),
                 }
             }
         }, false)
+    }
+
+
+    private fun handlePageMode() {
+        if (pageMode == PageMode.UPDATE) {
+            binding?.btnSaveDraft?.text = getString(R.string.sfs_save)
+        }
     }
 
     private fun getTNCText(): SpannableString? {
@@ -554,7 +569,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
                     hideSaveDraftButtonLoading()
                     showValidationErrorMessage(it.result)
                 }
-                is CampaignRuleActionResult.Success -> routeToCampaignListPage()
+                is CampaignRuleActionResult.Success -> routeToCampaignListPage(isSaveDraft = true)
                 is CampaignRuleActionResult.Fail -> {
                     showActionErrorMessage(it.error)
                     hideSaveDraftButtonLoading()
@@ -692,14 +707,27 @@ class CampaignRuleFragment : BaseDaggerFragment(),
         binding?.btnCreateCampaign.stopLoading()
     }
 
-    private fun routeToCampaignListPage() {
+    private fun routeToCampaignListPage(isSaveDraft: Boolean = false) {
         val context = context ?: return
-        CampaignListActivity.start(context, isClearTop = true)
+
+        //Add some spare time caused by Backend write operation delay
+        doOnDelayFinished(REDIRECTION_TO_CAMPAIGN_LIST_PAGE_DELAY) {
+            CampaignListActivity.start(
+                context,
+                isSaveDraft = isSaveDraft,
+                pageMode
+            )
+        }
     }
 
-    private fun showChooseRelatedCampaignBottomSheet() {
-        val selectedRelatedCampaign = viewModel.relatedCampaigns.value ?: emptyList()
-        ChooseRelatedCampaignBottomSheet.createInstance(selectedRelatedCampaign)
+    private fun observeAddRelatedCampaignButtonEvent() {
+        viewModel.addRelatedCampaignButtonEvent.observe(viewLifecycleOwner) {
+            showChooseRelatedCampaignBottomSheet(it)
+        }
+    }
+
+    private fun showChooseRelatedCampaignBottomSheet(request: AddRelatedCampaignRequest) {
+        ChooseRelatedCampaignBottomSheet.createInstance(request.campaignId, request.selectedRelatedCampaign)
             .show(childFragmentManager)
     }
 

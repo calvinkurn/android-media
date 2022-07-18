@@ -36,13 +36,13 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignInformationBinding
+import com.tokopedia.shop.flashsale.common.constant.BundleConstant
 import com.tokopedia.shop.flashsale.common.constant.Constant
 import com.tokopedia.shop.flashsale.common.constant.DateConstant
 import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant
 import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant.CAMPAIGN_TEASER_MULTIPLIED_STEP_SIZE
 import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant.CAMPAIGN_TEASER_NORMAL_STEP_SIZE
 import com.tokopedia.shop.flashsale.common.extension.advanceDayBy
-import com.tokopedia.shop.flashsale.common.extension.advanceHourBy
 import com.tokopedia.shop.flashsale.common.extension.advanceMinuteBy
 import com.tokopedia.shop.flashsale.common.extension.advanceMonthBy
 import com.tokopedia.shop.flashsale.common.extension.decreaseHourBy
@@ -81,6 +81,7 @@ import com.tokopedia.shop.flashsale.presentation.creation.information.bottomshee
 import com.tokopedia.shop.flashsale.presentation.creation.information.dialog.CancelCreateCampaignConfirmationDialog
 import com.tokopedia.shop.flashsale.presentation.creation.information.dialog.CancelEditCampaignConfirmationDialog
 import com.tokopedia.shop.flashsale.presentation.creation.manage.ManageProductActivity
+import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListActivity
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -92,8 +93,6 @@ import javax.inject.Inject
 class CampaignInformationFragment : BaseDaggerFragment() {
 
     companion object {
-        private const val BUNDLE_KEY_PAGE_MODE = "page_mode"
-        private const val BUNDLE_KEY_CAMPAIGN_ID = "campaign_id"
         private const val FIRST_STEP = 1
         private const val SINGLE_LINE = 1
         private const val SPAN_COUNT = 6
@@ -113,8 +112,8 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         fun newInstance(pageMode: PageMode, campaignId: Long): CampaignInformationFragment {
             val fragment = CampaignInformationFragment()
             val bundle = Bundle()
-            bundle.putParcelable(BUNDLE_KEY_PAGE_MODE, pageMode)
-            bundle.putLong(BUNDLE_KEY_CAMPAIGN_ID, campaignId)
+            bundle.putParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE, pageMode)
+            bundle.putLong(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID, campaignId)
             fragment.arguments = bundle
             return fragment
         }
@@ -122,8 +121,8 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     }
 
     private var binding by autoClearedNullable<SsfsFragmentCampaignInformationBinding>()
-    private val pageMode by lazy { arguments?.getParcelable(BUNDLE_KEY_PAGE_MODE) ?: PageMode.CREATE }
-    private val campaignId by lazy { arguments?.getLong(BUNDLE_KEY_CAMPAIGN_ID).orZero() }
+    private val pageMode by lazy { arguments?.getParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE) ?: PageMode.CREATE }
+    private val campaignId by lazy { arguments?.getLong(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID).orZero() }
     private val adapter = GradientColorAdapter()
 
     @Inject
@@ -169,7 +168,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
                 handleBackConfirmation()
             }
         }
-        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
+        activity?.onBackPressedDispatcher?.addCallback(this, callback)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -313,7 +312,8 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     }
 
     private fun setupRecyclerView() {
-        binding?.recyclerView?.layoutManager = GridLayoutManager(requireActivity(), SPAN_COUNT)
+        binding?.recyclerView?.itemAnimator = null
+        binding?.recyclerView?.layoutManager = GridLayoutManager(activity ?: return, SPAN_COUNT)
         binding?.recyclerView?.adapter = adapter
         adapter.submit(campaignGradientColors)
         adapter.setOnGradientClicked { selectedGradient -> handleSelectedColor(selectedGradient) }
@@ -413,6 +413,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             binding?.loader?.visible()
             binding?.groupContent?.gone()
             viewModel.getCampaignDetail(campaignId)
+            binding?.btnDraft?.text = getString(R.string.sfs_save)
         }
     }
 
@@ -562,7 +563,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
     private fun displayStartDatePicker() {
         val selectedDate = viewModel.getSelectedStartDate()
-        val minimumDate = dateManager.getCurrentDate().advanceHourBy(TWO_HOURS)
+        val minimumDate = dateManager.getCurrentDate().decreaseHourBy(TWO_HOURS)
         val maximumEndDate = dateManager.getCurrentDate().advanceMonthBy(THREE_MONTH)
 
         val bottomSheet = CampaignDatePickerBottomSheet.newInstance(
@@ -620,11 +621,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         val startDate = viewModel.getSelectedStartDate()
         val endDate = viewModel.getSelectedEndDate()
         val showTeaser = binding?.switchTeaser?.isChecked.orFalse()
-        val decreaseByHour = if (showTeaser) {
-            binding?.quantityEditor?.editText?.text.toString().trim().toIntOrZero()
-        } else {
-            Constant.ZERO
-        }
+        val decreaseByHour = binding?.quantityEditor?.editText?.text.toString().trim().toIntOrZero()
         val teaserDate = startDate.decreaseHourBy(decreaseByHour)
         val firstColor = viewModel.getColor().first
         val secondColor = viewModel.getColor().second
@@ -795,7 +792,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
         val isDataChanged = viewModel.isDataChanged(updatedDefaultSelection, getCurrentSelection())
         if (!isDataChanged) {
-            requireActivity().finish()
+            activity?.finish()
             return
         }
 
@@ -807,22 +804,22 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     }
 
     private fun showCancelCreateCampaignConfirmationDialog() {
-        val dialog = CancelCreateCampaignConfirmationDialog(requireActivity())
-        dialog.setOnPrimaryActionClick { requireActivity().finish() }
+        val dialog = CancelCreateCampaignConfirmationDialog(activity ?: return)
+        dialog.setOnPrimaryActionClick { activity?.finish() }
         dialog.setOnThirdActionClick { validateDraft() }
         dialog.show()
     }
 
     private fun showCancelEditCampaignConfirmationDialog() {
-        val dialog = CancelEditCampaignConfirmationDialog(requireActivity())
-        dialog.setOnPrimaryActionClick { requireActivity().finish() }
+        val dialog = CancelEditCampaignConfirmationDialog(activity ?: return)
+        dialog.setOnPrimaryActionClick { activity?.finish() }
         dialog.setOnSecondaryActionClick { validateDraft() }
         dialog.show()
     }
 
 
     private fun showCoachMark() {
-        val coachMark = CoachMark2(requireActivity())
+        val coachMark = CoachMark2(activity ?: return)
         coachMark.showCoachMark(populateCoachMarkItems(), null)
         coachMark.onFinishListener = {
             sharedPreference.markCampaignInfoCoachMarkComplete()
@@ -854,7 +851,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
     private fun handleFirstStepOfCampaignCreationSuccess(result: CampaignCreationResult) {
         if (result.isSuccess) {
-            ManageProductActivity.start(requireActivity(), result.campaignId)
+            ManageProductActivity.start(activity ?: return, result.campaignId, pageMode)
         } else {
             handleCreateCampaignError(result)
         }
@@ -867,8 +864,17 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
             if (result.isSuccess) {
                 activity?.apply {
-                    setResult(Activity.RESULT_OK)
-                    finish()
+                    // handle campaign save draft is not opened from campaign list case
+                    if (pageMode == PageMode.UPDATE) {
+                        CampaignListActivity.start(
+                            this,
+                            isSaveDraft = true,
+                            previousPageMode = pageMode
+                        )
+                    } else {
+                        setResult(Activity.RESULT_OK)
+                        finish()
+                    }
                 }
             } else {
                 handleCreateCampaignError(result)

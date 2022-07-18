@@ -17,16 +17,28 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.encodeToUtf8
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignListBinding
-import com.tokopedia.shop.flashsale.common.constant.Constant.EMPTY_STRING
+import com.tokopedia.shop.flashsale.common.constant.BundleConstant
 import com.tokopedia.shop.flashsale.common.constant.Constant.FIRST_PAGE
 import com.tokopedia.shop.flashsale.common.constant.Constant.ZERO
 import com.tokopedia.shop.flashsale.common.customcomponent.BaseSimpleListFragment
-import com.tokopedia.shop.flashsale.common.extension.*
+import com.tokopedia.shop.flashsale.common.extension.doOnDelayFinished
+import com.tokopedia.shop.flashsale.common.extension.setFragmentToUnifyBgColor
+import com.tokopedia.shop.flashsale.common.extension.showError
+import com.tokopedia.shop.flashsale.common.extension.showLoading
+import com.tokopedia.shop.flashsale.common.extension.showToaster
+import com.tokopedia.shop.flashsale.common.extension.slideDown
+import com.tokopedia.shop.flashsale.common.extension.slideUp
+import com.tokopedia.shop.flashsale.common.extension.stopLoading
 import com.tokopedia.shop.flashsale.common.share_component.ShareComponentInstanceBuilder
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.CampaignMeta
@@ -53,11 +65,10 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import java.net.URLEncoder
 import javax.inject.Inject
 
 class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiModel>(),
-    CampaignListContainerFragment.CancelCampaignListener {
+    CampaignListContainerFragment.ActiveCampaignListListener {
 
     companion object {
         private const val BUNDLE_KEY_TAB_POSITION = "tab_position"
@@ -139,7 +150,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        (parentFragment as? CampaignListContainerFragment)?.setCancelCampaignListener(this)
+        (parentFragment as? CampaignListContainerFragment)?.setActiveCampaignListListener(this)
     }
 
     override fun onCreateView(
@@ -233,7 +244,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
             PAGE_SIZE,
             FIRST_PAGE,
             campaignStatusIds?.toList().orEmpty(),
-            EMPTY_STRING
+            ""
         )
     }
 
@@ -361,7 +372,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         this.onNavigateToActiveCampaignTab = onNavigateToActiveCampaignTab
     }
 
-    private val onCampaignClicked: (CampaignUiModel, Int) -> Unit = { campaign, position ->
+    private val onCampaignClicked: (CampaignUiModel, Int) -> Unit = { campaign, _ ->
         viewModel.setSelectedCampaignId(campaign.campaignId)
         handleViewCampaignDetail(campaign)
     }
@@ -548,7 +559,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         val drafts = viewModel.getCampaignDrafts()
 
         if (!data.isEligible) {
-            showIneligibleAccess(requireActivity())
+            showIneligibleAccess(activity ?: return)
             return
         }
 
@@ -562,19 +573,20 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
     private fun displayMoreMenuBottomSheet(campaign: CampaignUiModel) {
         val bottomSheet = MoreMenuBottomSheet.newInstance(campaign.campaignName, campaign.status)
-        bottomSheet.setOnViewCampaignMenuSelected { handleViewCampaignDetail(campaign) }
-        bottomSheet.setOnCancelCampaignMenuSelected { handleCancelCampaign(campaign) }
-        bottomSheet.setOnShareCampaignMenuSelected {
-            showLoaderDialog()
-            viewModel.getShareComponentThumbnailImageUrl(campaign.campaignId)
+        bottomSheet.setOnViewCampaignMenuSelected {
+            viewModel.onMoreMenuViewCampaignDetailClicked()
+            handleViewCampaignDetail(campaign)
         }
+        bottomSheet.setOnCancelCampaignMenuSelected { handleCancelCampaign(campaign) }
+        bottomSheet.setOnStopCampaignMenuSelected { handleStopCampaign(campaign) }
+        bottomSheet.setOnShareCampaignMenuSelected { handleShareCampaign(campaign) }
         bottomSheet.setOnEditCampaignMenuSelected { handleEditCampaign(campaign) }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
     private fun handleViewCampaignDetail(campaign: CampaignUiModel) {
         val intent = CampaignDetailActivity.buildIntent(
-            requireActivity(),
+            activity ?: return,
             campaign.campaignId,
             campaign.campaignName
         )
@@ -614,7 +626,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         SharingUtil.executeShareIntent(
             shareModel,
             linkerShareResult,
-            requireActivity(),
+            activity ?: return,
             view ?: return,
             outgoingText
         )
@@ -645,7 +657,12 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     }
 
     private fun handleCancelCampaign(campaign: CampaignUiModel) {
-        if (campaign.thematicParticipation) {
+        viewModel.onMoreMenuCancelClicked(campaign)
+        cancelCampaign(campaign)
+    }
+
+    private fun cancelCampaign(campaign: CampaignUiModel) {
+        if (!campaign.isCancellable) {
             val errorWording = findCancelCampaignErrorWording(campaign.status)
             binding?.cardView showError errorWording
             return
@@ -654,7 +671,18 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         showCancelCampaignBottomSheet(campaign)
     }
 
+    private fun handleStopCampaign(campaign: CampaignUiModel) {
+        viewModel.onMoreMenuStopClicked(campaign)
+        cancelCampaign(campaign)
+    }
+
+    private fun handleShareCampaign(campaign: CampaignUiModel) {
+        showLoaderDialog()
+        viewModel.onMoreMenuShareClicked(campaign)
+    }
+
     private fun handleEditCampaign(campaign: CampaignUiModel) {
+        viewModel.onMoreMenuEditClicked(campaign)
         if (campaign.thematicParticipation) {
             binding?.cardView showError getString(R.string.sfs_cannot_edit_campaign)
             return
@@ -729,15 +757,20 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         this.onCancelCampaignSuccess = onCancelCampaignSuccess
     }
 
-    override fun onCampaignCancelled() {
-        getCampaigns(FIRST_PAGE)
+
+    override fun onSaveDraftSuccess() {
+        showSaveDraftSuccessMessage()
+    }
+
+    override fun onEditCampaignSuccess() {
+        binding?.cardView showToaster getString(R.string.sfs_edit_campaign_success)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == REQUEST_CODE_CREATE_CAMPAIGN_INFO && resultCode == Activity.RESULT_OK) {
-            binding?.cardView showToaster getString(R.string.sfs_saved_as_draft)
+            showSaveDraftSuccessMessage()
         } else if(requestCode == CampaignDetailActivity.REQUEST_CODE_CAMPAIGN_DETAIL
             && resultCode == Activity.RESULT_OK
             && data != null) {
@@ -750,6 +783,10 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
             val toasterMessage = data.getStringExtra(CampaignDetailActivity.BUNDLE_KEY_CAMPAIGN_CANCELLATION_MESSAGE) ?: return
             showCancellationMessageThenUpdateData(toasterMessage)
         }
+    }
+
+    private fun showSaveDraftSuccessMessage() {
+        binding?.cardView showToaster getString(R.string.sfs_saved_as_draft)
     }
 
     private fun showCancellationMessageThenUpdateData(toasterMessage: String) {
@@ -766,16 +803,18 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
     private fun showFeatureIntroductionDialog() {
         val dialog = FeatureIntroductionDialog()
-        dialog.setOnPrimaryActionClick { launchCampaignInformationPage() }
+        dialog.setOnPrimaryActionClick {
+            viewModel.validateCampaignCreationEligibility()
+        }
         dialog.setOnHyperlinkClick { routeToShopDecorationArticle() }
-        dialog.show(requireActivity())
+        dialog.show(activity ?: return)
     }
 
     private fun launchCampaignInformationPage() {
         val starter = Intent(activity, CampaignInformationActivity::class.java)
 
         val bundle = Bundle()
-        bundle.putParcelable(CampaignInformationActivity.BUNDLE_KEY_PAGE_MODE, PageMode.CREATE)
+        bundle.putParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE, PageMode.CREATE)
         starter.putExtras(bundle)
 
         startActivityForResult(starter, REQUEST_CODE_CREATE_CAMPAIGN_INFO)
@@ -785,8 +824,8 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         val starter = Intent(activity, CampaignInformationActivity::class.java)
 
         val bundle = Bundle()
-        bundle.putParcelable(CampaignInformationActivity.BUNDLE_KEY_PAGE_MODE, PageMode.UPDATE)
-        bundle.putLong(CampaignInformationActivity.BUNDLE_KEY_CAMPAIGN_ID, campaignId)
+        bundle.putParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE, PageMode.UPDATE)
+        bundle.putLong(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID, campaignId)
         starter.putExtras(bundle)
 
         startActivityForResult(starter, REQUEST_CODE_CREATE_CAMPAIGN_INFO)
@@ -794,8 +833,8 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
     private fun routeToShopDecorationArticle() {
         if (!isAdded) return
-        val encodedUrl = URLEncoder.encode(SHOP_DECORATION_ARTICLE_URL, "utf-8")
+        val encodedUrl = SHOP_DECORATION_ARTICLE_URL.encodeToUtf8()
         val route = String.format("%s?url=%s", ApplinkConst.WEBVIEW, encodedUrl)
-        RouteManager.route(requireActivity(), route)
+        RouteManager.route(activity ?: return, route)
     }
 }

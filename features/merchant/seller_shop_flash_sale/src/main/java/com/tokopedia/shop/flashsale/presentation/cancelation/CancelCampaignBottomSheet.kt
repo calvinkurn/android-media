@@ -24,10 +24,12 @@ class CancelCampaignBottomSheet(
             setTitle(getString(R.string.cancelcampaign_stop_title))
             typographyDraftDeleteDesc?.text = getString(R.string.cancelcampaign_stop_desc, campaignName)
             typographyQuestionTitle?.text = getString(R.string.cancelcampaign_title_stop_question)
+            btnStop?.text = getString(R.string.cancelcampaign_action_yes_stop)
         } else {
             setTitle(getString(R.string.cancelcampaign_title))
             typographyDraftDeleteDesc?.text = getString(R.string.cancelcampaign_desc, campaignName)
             typographyQuestionTitle?.text = getString(R.string.cancelcampaign_title_question)
+            btnStop?.text = getString(R.string.cancelcampaign_action_yes_cancel)
         }
     }
 

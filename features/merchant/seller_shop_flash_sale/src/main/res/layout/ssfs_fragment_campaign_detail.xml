@@ -313,6 +313,13 @@
                 tools:descriptionText="@string/campaign_detail_ticker_event_participation_message"
                 tools:visibility="visible" />
 
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier_campaign_information"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="ticker_campaign_event_participation, divider_campaign_ended_performance, divider_campaign_info, divider_campaign_status"/>
+
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tg_campaign_performance_title"
                 android:layout_width="0dp"
@@ -322,7 +329,7 @@
                 android:text="@string/campaign_detail_campaign_performance_title"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ticker_campaign_event_participation"
+                app:layout_constraintTop_toBottomOf="@+id/barrier_campaign_information"
                 app:typographyType="display_2"
                 app:typographyWeight="bold" />
 
@@ -334,11 +341,15 @@
                 android:layout="@layout/ssfs_campaign_detail_performance_layout"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tg_campaign_total_performance_label">
+                app:layout_constraintTop_toBottomOf="@+id/tg_campaign_performance_title">
                 <ViewStub
                     android:id="@+id/vs_campaign_performance"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/unify_space_16"
+                    android:layout_marginTop="@dimen/unify_space_12"
+                    android:layout_marginEnd="@dimen/unify_space_16"
+                    android:layout_marginBottom="@dimen/unify_space_4"
                     android:inflatedId="@+id/card_campaign_performance"
                     android:layout="@layout/ssfs_campaign_detail_performance_layout" />
             </FrameLayout>
@@ -360,7 +371,7 @@
                 tools:visibility="visible" />
 
             <androidx.constraintlayout.widget.Barrier
-                android:id="@+id/barrier_campaign_information"
+                android:id="@+id/barrier_campaign_performance"
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
                 app:barrierDirection="bottom"
@@ -374,7 +385,7 @@
                 android:layout_marginTop="@dimen/unify_space_16"
                 android:text="@string/campaign_detail_product_list_title"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/barrier_campaign_information"
+                app:layout_constraintTop_toBottomOf="@+id/barrier_campaign_performance"
                 app:typographyType="display_1"
                 app:typographyWeight="bold" />
 

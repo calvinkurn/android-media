@@ -108,6 +108,10 @@ class CampaignRuleViewModel @Inject constructor(
     val createCampaignActionState: LiveData<CampaignRuleActionResult>
         get() = _createCampaignActionState
 
+    private val _addRelatedCampaignButtonEvent = SingleLiveEvent<AddRelatedCampaignRequest>()
+    val addRelatedCampaignButtonEvent: LiveData<AddRelatedCampaignRequest>
+        get() = _addRelatedCampaignButtonEvent
+
     private var initialPaymentType: PaymentType? = null
     private var initialUniqueBuyer: Boolean? = null
     private var initialCampaignRelation: Boolean? = null
@@ -156,8 +160,12 @@ class CampaignRuleViewModel @Inject constructor(
                     if (!campaign.isUniqueBuyer) {
                         _isCampaignRelation.postValue(campaign.isCampaignRelation)
                         initialCampaignRelation = campaign.isCampaignRelation
-                        _relatedCampaigns.postValue(campaign.relatedCampaigns)
-                        initialCampaignRelations = campaign.relatedCampaigns
+                        // remove this campaign id from campaign relation data
+                        val filteredRelatedCampaigns = campaign.relatedCampaigns.filter {
+                            it.id != campaignId
+                        }
+                        _relatedCampaigns.postValue(filteredRelatedCampaigns)
+                        initialCampaignRelations = filteredRelatedCampaigns
                     }
                 }
                 _isTNCConfirmed.postValue(campaign.isCampaignRuleSubmit)
@@ -502,9 +510,19 @@ class CampaignRuleViewModel @Inject constructor(
         return when {
             isUniqueBuyer.value == true -> emptyList()
             isCampaignRelation.value == false -> {
-                relatedCampaigns.value?.map { it.id } ?: emptyList()
+                // get selected campaign relations, and then add this campaign id
+                relatedCampaigns.value?.map { it.id }?.plus(campaignId) ?: emptyList()
             }
             else -> listOf(campaignId)
         }
+    }
+
+    fun onAddRelatedCampaignButtonClicked() {
+        _addRelatedCampaignButtonEvent.postValue(
+            AddRelatedCampaignRequest(
+                campaignId,
+                relatedCampaigns.value ?: emptyList()
+            )
+        )
     }
 }

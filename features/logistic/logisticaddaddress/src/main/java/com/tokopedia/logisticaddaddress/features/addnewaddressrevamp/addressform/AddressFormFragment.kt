@@ -454,7 +454,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     }
 
     private fun setupLabelChips(currentLabel: String) {
-        labelAlamatList = resources.getStringArray(R.array.labelAlamatList).map { Pair(it, it.equals(currentLabel, ignoreCase = true)) }.toTypedArray()
+        labelAlamatList =  context?.resources?.getStringArray(R.array.labelAlamatList)?.map { Pair(it, it.equals(currentLabel, ignoreCase = true)) }?.toTypedArray() ?: emptyArray()
         labelAlamatChipsAdapter = LabelAlamatChipsAdapter(this)
         labelAlamatChipsLayoutManager = ChipsLayoutManager.newBuilder(view?.context)
             .setOrientation(ChipsLayoutManager.HORIZONTAL)
@@ -587,7 +587,13 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             }
         }
 
-        LogisticUserConsentHelper.displayUserConsent(activity as Context, userSession.userId, binding?.userConsent, getString(R.string.btn_simpan), EditAddressRevampAnalytics.CATEGORY_EDIT_ADDRESS_PAGE)
+        LogisticUserConsentHelper.displayUserConsent(
+            activity as Context,
+            userSession.userId,
+            binding?.userConsent,
+            getString(R.string.btn_simpan),
+            EditAddressRevampAnalytics.CATEGORY_EDIT_ADDRESS_PAGE
+        )
 
         binding?.btnSaveAddressNew?.setOnClickListener {
             if (validateForm()) {
@@ -633,7 +639,8 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     private fun setupBottomShetInfoPenerima(viewBinding: BottomsheetLocationUnmatchedBinding) {
         viewBinding.run {
             tvLocationUnmatched.text = getString(R.string.tv_title_nama_penerima_bottomsheet)
-            tvLocationUnmatchedDetail.text = context?.let { HtmlLinkHelper(it, getString(R.string.tv_desc_nama_penerima_bottomsheet)).spannedString }
+            tvLocationUnmatchedDetail.text =
+                context?.let { HtmlLinkHelper(it, getString(R.string.tv_desc_nama_penerima_bottomsheet)).spannedString }
             btnClose.setOnClickListener {
                 bottomSheetInfoPenerima?.dismiss()
             }
@@ -686,7 +693,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 validated = false
             }
         }
-        
+
         if (!isEdit) {
             if (!validated && isPositiveFlow) {
                 AddNewAddressRevampAnalytics.onClickSimpanErrorPositive(userSession.userId, field.joinToString ("," ))
@@ -848,6 +855,18 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         } else {
             wrapper.setErrorEnabled(true)
             wrapper.error = s
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        dismissDistrictRecommendationBottomSheet()
+    }
+
+    private fun dismissDistrictRecommendationBottomSheet(){
+        if (districtBottomSheet != null) {
+            districtBottomSheet?.dismiss()
+            districtBottomSheet = null
         }
     }
 
@@ -1175,7 +1194,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 }
                 saveDataModel?.addressName =  formAddressNegative.etLabel.textFieldInput.text.toString()
                 saveDataModel?.isAnaPositive = PARAM_ANA_NEGATIVE
-            }   
+            }
         }
 
 

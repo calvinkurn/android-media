@@ -139,69 +139,52 @@ class ShopGradeWidget(
     }
 
     private fun showTopedIllustration(element: WidgetShopGradeUiModel) {
-        val isPmActive = element.pmStatus == PMStatusConst.ACTIVE
-        val isPmPro = element.pmTierType == PMConstant.PMTierType.POWER_MERCHANT_PRO
-        val imgUrl: Triple<Int, Int, String> =
-            if (element.isNewSeller) {
-                when {
-                    isPmPro && isPmActive -> {
-                        Triple(
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_128dp,
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_134dp,
-                            PMConstant.Images.IMG_TOPED_NEW_SELLER_PM_PRO_ACTIVE
-                        )
-                    }
-                    isPmPro && !isPmActive -> {
-                        Triple(
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_136dp,
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_132dp,
-                            PMConstant.Images.IMG_TOPED_NEW_SELLER_PM_PRO_INACTIVE
-                        )
-                    }
-                    !isPmPro && isPmActive -> {
-                        Triple(
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_112dp,
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_122dp,
-                            PMConstant.Images.IMG_TOPED_NEW_SELLER_PM_INACTIVE
-                        )
-                    }
-                    else -> {
-                        Triple(
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_112dp,
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_114dp,
-                            PMConstant.Images.IMG_TOPED_NEW_SELLER_PM_ACTIVE
-                        )
-                    }
-                }
-            } else {
-                when {
-                    isPmPro && isPmActive -> {
-                        Triple(
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_128dp,
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_134dp,
-                            PMConstant.Images.IMG_TOPED_PM_PRO_ACTIVE
-                        )
-                    }
-                    !isPmPro && isPmActive -> {
-                        Triple(
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_112dp,
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_122dp,
-                            PMConstant.Images.IMG_TOPED_PM_ACTIVE
-                        )
-                    }
-                    else -> {
-                        Triple(
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_112dp,
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_114dp,
-                            PMConstant.Images.IMG_TOPED_PM_INACTIVE
-                        )
-                    }
-                }
-            }
+        val imgUrl: Triple<Int, Int, String> = getIllustrationUrl(element)
         binding?.imgPmShopGradeIllustration?.loadImageWithoutPlaceholder(imgUrl.third)
         setTopedImageSize(Pair(imgUrl.first, imgUrl.second))
     }
 
+    private fun getIllustrationUrl(element: WidgetShopGradeUiModel): Triple<Int, Int, String> {
+        val isPmActive = element.pmStatus == PMStatusConst.ACTIVE
+        val isPmPro = element.pmTierType == PMConstant.PMTierType.POWER_MERCHANT_PRO
+        return when {
+            isPmPro && isPmActive && element.isNewSeller -> {
+                Triple(
+                    com.tokopedia.gm.common.R.dimen.gmc_dimen_128dp,
+                    com.tokopedia.gm.common.R.dimen.gmc_dimen_134dp,
+                    PMConstant.Images.IMG_TOPED_NEW_SELLER_PM_PRO_ACTIVE
+                )
+            }
+            !isPmPro && isPmActive && element.isNewSeller -> {
+                Triple(
+                    com.tokopedia.gm.common.R.dimen.gmc_dimen_112dp,
+                    com.tokopedia.gm.common.R.dimen.gmc_dimen_122dp,
+                    PMConstant.Images.IMG_TOPED_NEW_SELLER_PM_ACTIVE
+                )
+            }
+            isPmPro && isPmActive && !element.isNewSeller -> {
+                Triple(
+                    com.tokopedia.gm.common.R.dimen.gmc_dimen_128dp,
+                    com.tokopedia.gm.common.R.dimen.gmc_dimen_134dp,
+                    PMConstant.Images.IMG_TOPED_PM_PRO_ACTIVE
+                )
+            }
+            !isPmPro && isPmActive && !element.isNewSeller -> {
+                Triple(
+                    com.tokopedia.gm.common.R.dimen.gmc_dimen_112dp,
+                    com.tokopedia.gm.common.R.dimen.gmc_dimen_122dp,
+                    PMConstant.Images.IMG_TOPED_PM_ACTIVE
+                )
+            }
+            else -> {
+                Triple(
+                    com.tokopedia.gm.common.R.dimen.gmc_dimen_112dp,
+                    com.tokopedia.gm.common.R.dimen.gmc_dimen_114dp,
+                    PMConstant.Images.IMG_TOPED_PM_INACTIVE
+                )
+            }
+        }
+    }
 
     private fun setTopedImageSize(illustrationSize: Pair<Int, Int>) =
         binding?.imgPmShopGradeIllustration?.run {

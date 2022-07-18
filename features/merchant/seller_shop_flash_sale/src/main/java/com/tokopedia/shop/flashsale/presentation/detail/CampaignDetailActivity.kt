@@ -5,11 +5,11 @@ import android.content.Intent
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.seller_shop_flash_sale.R
+import com.tokopedia.shop.flashsale.common.constant.BundleConstant
 
 class CampaignDetailActivity : BaseSimpleActivity() {
 
     companion object {
-        private const val BUNDLE_KEY_CAMPAIGN_ID = "campaign_id"
         private const val BUNDLE_KEY_CAMPAIGN_NAME = "campaign_name"
         private const val INVALID_CAMPAIGN_ID = -1L
 
@@ -19,14 +19,14 @@ class CampaignDetailActivity : BaseSimpleActivity() {
         @JvmStatic
         fun buildIntent(context: Context, campaignId: Long, campaignName: String) :Intent {
             return Intent(context, CampaignDetailActivity::class.java).apply {
-                putExtra(BUNDLE_KEY_CAMPAIGN_ID, campaignId)
+                putExtra(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID, campaignId)
                 putExtra(BUNDLE_KEY_CAMPAIGN_NAME, campaignName)
             }
         }
     }
 
     private val campaignId by lazy {
-        intent?.getLongExtra(BUNDLE_KEY_CAMPAIGN_ID, INVALID_CAMPAIGN_ID) ?: INVALID_CAMPAIGN_ID
+        intent?.getLongExtra(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID, INVALID_CAMPAIGN_ID) ?: INVALID_CAMPAIGN_ID
     }
     private val campaignName by lazy {
         intent?.getStringExtra(BUNDLE_KEY_CAMPAIGN_NAME)

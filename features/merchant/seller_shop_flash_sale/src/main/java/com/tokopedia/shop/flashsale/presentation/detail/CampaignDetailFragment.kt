@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,9 +28,11 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsCampaignDetailPerformanceLayoutBinding
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignDetailBinding
+import com.tokopedia.shop.flashsale.common.constant.BundleConstant
 import com.tokopedia.shop.flashsale.common.constant.DateConstant
 import com.tokopedia.shop.flashsale.common.extension.convertRupiah
 import com.tokopedia.shop.flashsale.common.extension.formatTo
+import com.tokopedia.shop.flashsale.common.extension.setFragmentToUnifyBgColor
 import com.tokopedia.shop.flashsale.common.extension.showError
 import com.tokopedia.shop.flashsale.common.share_component.ShareComponentInstanceBuilder
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
@@ -40,7 +41,7 @@ import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.MerchantCampaignTNC
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.ShareComponent
-import com.tokopedia.shop.flashsale.domain.entity.aggregate.ShareComponentMetadata
+import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignStatus
 import com.tokopedia.shop.flashsale.domain.entity.enums.isActive
 import com.tokopedia.shop.flashsale.domain.entity.enums.isAvailable
 import com.tokopedia.shop.flashsale.domain.entity.enums.isCancelled
@@ -67,7 +68,6 @@ class CampaignDetailFragment : BaseDaggerFragment(),
     CampaignDetailMoreMenuClickListener {
 
     companion object {
-        private const val BUNDLE_KEY_CAMPAIGN_ID = "campaign_id"
         private const val BUNDLE_KEY_CAMPAIGN_NAME = "campaign_name"
         private const val CAMPAIGN_ENDED_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/flash-sale-toko/ic_campaign_detail_ended.png"
@@ -76,7 +76,7 @@ class CampaignDetailFragment : BaseDaggerFragment(),
         fun newInstance(campaignId: Long, campaignName: String?): CampaignDetailFragment {
             return CampaignDetailFragment().apply {
                 arguments = Bundle().apply {
-                    putLong(BUNDLE_KEY_CAMPAIGN_ID, campaignId)
+                    putLong(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID, campaignId)
                     putString(BUNDLE_KEY_CAMPAIGN_NAME, campaignName)
                 }
             }
@@ -89,7 +89,7 @@ class CampaignDetailFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
-    private val campaignId by lazy { arguments?.getLong(BUNDLE_KEY_CAMPAIGN_ID) }
+    private val campaignId by lazy { arguments?.getLong(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID) }
     private val campaignName by lazy {
         arguments?.getString(BUNDLE_KEY_CAMPAIGN_NAME) ?: getString(R.string.campaign_detail)
     }
@@ -130,6 +130,7 @@ class CampaignDetailFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setFragmentToUnifyBgColor()
         initCampaignDetail()
         setUpView()
     }
@@ -241,7 +242,7 @@ class CampaignDetailFragment : BaseDaggerFragment(),
         SharingUtil.executeShareIntent(
             shareModel,
             linkerShareResult,
-            requireActivity(),
+            activity ?: return,
             view ?: return,
             outgoingText
         )
@@ -261,12 +262,11 @@ class CampaignDetailFragment : BaseDaggerFragment(),
         viewModel.cancelCampaignActionResult.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is CancelCampaignActionResult.ActionAllowed -> showCancelCampaignDialog(result.campaign)
-                is CancelCampaignActionResult.RegisteredEventCampaign -> showRegisteredEventCampaignCancelErrorMessage()
+                is CancelCampaignActionResult.RegisteredEventCampaign -> showRegisteredEventCampaignCancelErrorMessage(result.campaign)
             }
         }
     }
 
-    @SuppressLint("ResourcePackage")
     private fun showCancelCampaignDialog(campaign: CampaignUiModel) {
         val bottomSheet = CancelCampaignBottomSheet(
             campaign.campaignId,
@@ -300,12 +300,9 @@ class CampaignDetailFragment : BaseDaggerFragment(),
 
     }
 
-    @SuppressLint("ResourcePackage")
-    private fun showRegisteredEventCampaignCancelErrorMessage() {
+    private fun showRegisteredEventCampaignCancelErrorMessage(campaign: CampaignUiModel) {
         val binding = binding ?: return
-        val errorMessage = getString(
-            R.string.campaign_detail_cancel_registered_event_campaign_message
-        )
+        val errorMessage = findCancelCampaignErrorWording(campaign.status)
         val toaster = Toaster.build(
             binding.root,
             errorMessage,
@@ -328,11 +325,9 @@ class CampaignDetailFragment : BaseDaggerFragment(),
         CampaignInformationActivity.startUpdateMode(context, campaignId)
     }
 
-    @SuppressLint("ResourcePackage")
     private fun showRegisteredEventCampaignEditErrorMessage() {
         val binding = binding ?: return
-        val errorMessage =
-            getString(R.string.campaign_detail_edit_registered_event_campaign_message)
+        val errorMessage = getString(R.string.sfs_cannot_edit_campaign)
         val toaster = Toaster.build(
             binding.root,
             errorMessage,
@@ -344,7 +339,6 @@ class CampaignDetailFragment : BaseDaggerFragment(),
         }
         toaster.show()
     }
-
 
     private fun observeCampaign() {
         viewModel.campaign.observe(viewLifecycleOwner) { result ->
@@ -373,7 +367,6 @@ class CampaignDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    @SuppressLint("ResourcePackage")
     private fun displayCampaignDetailInformation(data: CampaignDetailMeta) {
         val campaign = data.campaign
         handleCampaignToolbar(campaign)
@@ -586,5 +579,13 @@ class CampaignDetailFragment : BaseDaggerFragment(),
 
     private fun dismissLoaderDialog() {
         loaderDialog.dialog.dismiss()
+    }
+
+    private fun findCancelCampaignErrorWording(campaignStatus: CampaignStatus): String {
+        return if (campaignStatus.isOngoing()) {
+            getString(R.string.sfs_cannot_stop_campaign)
+        } else {
+            getString(R.string.sfs_cannot_cancel_campaign)
+        }
     }
 }

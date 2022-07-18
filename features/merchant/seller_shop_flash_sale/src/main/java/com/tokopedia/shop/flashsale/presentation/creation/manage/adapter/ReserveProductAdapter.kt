@@ -2,6 +2,7 @@ package com.tokopedia.shop.flashsale.presentation.creation.manage.adapter
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.shop.flashsale.presentation.creation.manage.model.ReserveProductModel
 import com.tokopedia.shop.flashsale.presentation.creation.manage.model.SelectedProductModel
 
@@ -19,7 +20,7 @@ class ReserveProductAdapter(
     }
 
     override fun onBindViewHolder(holder: ReserveProductViewHolder, position: Int) {
-        holder.bind(items[position], inputEnabled)
+        holder.bind(items[position], selectedProduct, inputEnabled)
     }
 
     override fun getItemCount() = items.size
@@ -58,7 +59,8 @@ class ReserveProductAdapter(
         }
 
         selectedProduct.add(
-            SelectedProductModel(selectedItem.productId, parentProductId = null, isProductPreviouslySubmitted)
+            SelectedProductModel(selectedItem.productId, parentProductId = null,
+                isProductPreviouslySubmitted, hasChild = selectedItem.variant.isNotEmpty())
         )
     }
 
@@ -69,17 +71,11 @@ class ReserveProductAdapter(
         onSelectedItemChanges(selectedProduct)
     }
 
-    private fun notifyUnselectedItems() {
-        items.forEachIndexed { index, item ->
-            if (!item.isSelected) notifyItemChanged(index)
-        }
-    }
-
     fun setInputEnabled(enabled: Boolean) {
         val dataChanged = inputEnabled != enabled
         inputEnabled = enabled
 
-        if (dataChanged) notifyUnselectedItems()
+        if (dataChanged) notifyItemRangeChanged(Int.ZERO, itemCount)
     }
 
     fun addItems(newItems: List<ReserveProductModel>) {
@@ -92,7 +88,9 @@ class ReserveProductAdapter(
     }
 
     fun clearData() {
+        val count = itemCount
         items.clear()
+        notifyItemRangeRemoved(Int.ZERO, count)
     }
 
     fun getSelectedProduct(): List<SelectedProductModel> {

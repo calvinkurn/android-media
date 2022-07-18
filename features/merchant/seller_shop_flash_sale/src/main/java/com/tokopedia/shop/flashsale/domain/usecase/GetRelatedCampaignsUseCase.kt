@@ -28,6 +28,7 @@ class GetRelatedCampaignsUseCase @Inject constructor(
 
     suspend fun execute(
         keyword: String,
+        currentCampaignId: Long,
     ): List<CampaignUiModel> {
         return coroutineScope {
             val campaignList = getSellerCampaignListUseCase.execute(
@@ -36,7 +37,10 @@ class GetRelatedCampaignsUseCase @Inject constructor(
                 statusId = previousCampaignStatusIds,
                 campaignName = keyword,
             )
-            campaignList.campaigns
+            campaignList.campaigns.filter {
+                // remove current campaign id from result
+                it.campaignId != currentCampaignId
+            }
         }
     }
 }

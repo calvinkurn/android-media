@@ -13,6 +13,7 @@ import com.tokopedia.shop.flashsale.domain.entity.enums.ProductionSubmissionActi
 import com.tokopedia.shop.flashsale.domain.usecase.DoSellerCampaignProductSubmissionUseCase
 import com.tokopedia.shop.flashsale.presentation.creation.manage.mapper.EditProductMapper
 import com.tokopedia.shop.flashsale.presentation.creation.manage.mapper.WarehouseUiModelMapper
+import com.tokopedia.shop.flashsale.presentation.creation.manage.model.EditProductInputModel
 import com.tokopedia.shop.flashsale.presentation.creation.manage.model.WarehouseUiModel
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import javax.inject.Inject
@@ -32,17 +33,17 @@ class EditProductInfoViewModel @Inject constructor(
     val warehouseList: LiveData<List<WarehouseUiModel>>
         get() = _warehouseList
 
-    private var _productMapData = MutableLiveData<SellerCampaignProductList.ProductMapData>()
-    val productMapData: LiveData<SellerCampaignProductList.ProductMapData>
-        get() = _productMapData
+    private var _productInputData = MutableLiveData<EditProductInputModel>()
+    val productInputData: LiveData<EditProductInputModel>
+        get() = _productInputData
 
     private var _campaignPrice = MutableLiveData<Long>()
     private var _campaignPricePercent = MutableLiveData<Long>()
     val campaignPrice = Transformations.map(_campaignPricePercent) {
-        DiscountUtil.getDiscountPrice(it, productMapData.value?.originalPrice)
+        DiscountUtil.getDiscountPrice(it, product.value?.price)
     }
     val campaignPricePercent = Transformations.map(_campaignPrice) {
-        DiscountUtil.getDiscountPercent(it, productMapData.value?.originalPrice)
+        DiscountUtil.getDiscountPercentThresholded(it, product.value?.price)
     }
 
     private var _editProductResult = MutableLiveData<ProductSubmissionResult>()
@@ -61,20 +62,20 @@ class EditProductInfoViewModel @Inject constructor(
         warehouseUiModelMapper.isShopMultiloc(it)
     }
 
-    val validationResult = Transformations.map(productMapData) {
+    val validationResult = Transformations.map(productInputData) {
         productErrorStatusHandler.getErrorInputType(it)
     }
 
     fun setProduct(product: SellerCampaignProductList.Product) {
         val warehouseList = warehouseUiModelMapper.map(product.warehouseList)
-        val productMapData = product.productMapData
+        val inputData = EditProductMapper.mapInputData(product, warehouseList)
         _product.postValue(product)
         _warehouseList.postValue(warehouseList)
-        _productMapData.postValue(productMapData)
+        _productInputData.postValue(inputData)
     }
 
-    fun setProductInput(input: SellerCampaignProductList.ProductMapData) {
-        _productMapData.postValue(input)
+    fun setProductInput(input: EditProductInputModel) {
+        _productInputData.postValue(input)
     }
 
     fun editProduct(campaignId: String) {
@@ -85,7 +86,7 @@ class EditProductInfoViewModel @Inject constructor(
                 val result = doSellerCampaignProductSubmissionUseCase.execute(
                     campaignId,
                     ProductionSubmissionAction.SUBMIT,
-                    EditProductMapper.map(product.value, productMapData.value, warehouseList.value)
+                    EditProductMapper.map(productInputData.value)
                 )
                 _editProductResult.postValue(result)
                 _isLoading.postValue(false)

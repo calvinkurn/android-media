@@ -1,5 +1,6 @@
 package com.tokopedia.loginregister.login.domain
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.loginregister.login.di.LoginQueryConstant.PARAM_ID
@@ -12,8 +13,8 @@ import javax.inject.Inject
  * ade.hadian@tokopedia.com
  */
 
-open class RegisterCheckUseCase @Inject constructor(
-        graphqlRepository: GraphqlRepository
+class RegisterCheckUseCase @Inject constructor(
+    @ApplicationContext graphqlRepository: GraphqlRepository
 ): GraphqlUseCase<RegisterCheckPojo>(graphqlRepository){
 
     init {
