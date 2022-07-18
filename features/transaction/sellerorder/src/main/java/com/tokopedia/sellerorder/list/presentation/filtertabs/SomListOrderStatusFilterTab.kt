@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.list.presentation.models.SomListFilterUiModel
 import com.tokopedia.unifycomponents.TabsUnify
+import com.tokopedia.unifycomponents.getCustomText
 import com.tokopedia.unifycomponents.setCustomText
 
 class SomListOrderStatusFilterTab(
@@ -33,7 +34,7 @@ class SomListOrderStatusFilterTab(
 
     private fun filterTabsChanged(statusList: List<SomListFilterUiModel.Status>): Boolean {
         statusList.forEachIndexed { index, status ->
-            val filterTabTheSame = filterTabs.getOrNull(index)?.text?.contains(status.status).orFalse()
+            val filterTabTheSame = filterTabs.getOrNull(index)?.getCustomText()?.contains(status.status).orFalse()
             if (!filterTabTheSame) return true
         }
         return false
