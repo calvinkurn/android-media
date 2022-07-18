@@ -29,7 +29,11 @@ import com.tokopedia.logisticorder.adapter.TrackingHistoryAdapter
 import com.tokopedia.logisticorder.databinding.FragmentTrackingPageBinding
 import com.tokopedia.logisticorder.di.DaggerTrackingPageComponent
 import com.tokopedia.logisticorder.di.TrackingPageComponent
-import com.tokopedia.logisticorder.uimodel.*
+import com.tokopedia.logisticorder.uimodel.EtaModel
+import com.tokopedia.logisticorder.uimodel.LastDriverModel
+import com.tokopedia.logisticorder.uimodel.PageModel
+import com.tokopedia.logisticorder.uimodel.TrackOrderModel
+import com.tokopedia.logisticorder.uimodel.TrackingDataModel
 import com.tokopedia.logisticorder.utils.TippingConstant.OPEN
 import com.tokopedia.logisticorder.utils.TippingConstant.REFUND_TIP
 import com.tokopedia.logisticorder.utils.TippingConstant.SUCCESS_PAYMENT
@@ -42,7 +46,11 @@ import com.tokopedia.logisticorder.view.bottomsheet.DriverTippingBottomSheet
 import com.tokopedia.logisticorder.view.livetracking.LiveTrackingActivity
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.ticker.*
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -559,7 +567,7 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
 
         if (referenceNumber.isHypen()) {
             binding?.referenceNumberCopy?.visibility = View.GONE
-        }else{
+        } else {
             binding?.maskTriggerReferenceNumber?.setOnClickListener {
                 onTextCopied(getString(R.string.label_copy_reference_number), referenceNumber)
             }
