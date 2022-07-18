@@ -7,7 +7,7 @@ import kotlin.reflect.KProperty
 /**
  * Created by kenny.hadisaputra on 15/07/22
  */
-fun safeOverridingJob() = SafeCoroutineJobDelegate()
+fun reusableJob() = SafeCoroutineJobDelegate()
 
 class SafeCoroutineJobDelegate : ReadWriteProperty<Any, Job?> {
 

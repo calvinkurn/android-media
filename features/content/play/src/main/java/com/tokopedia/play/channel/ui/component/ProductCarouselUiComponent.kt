@@ -15,7 +15,7 @@ import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
-import com.tokopedia.play_common.delegate.safeOverridingJob
+import com.tokopedia.play_common.delegate.reusableJob
 import com.tokopedia.play_common.eventbus.EventBus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
@@ -66,7 +66,7 @@ class ProductCarouselUiComponent(
         }
     )
 
-    private var setProductsJob by safeOverridingJob()
+    private var setProductsJob by reusableJob()
 
     init {
         scope.launch {
