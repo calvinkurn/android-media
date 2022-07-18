@@ -624,7 +624,7 @@ class UserProfileTracker @Inject constructor() {
 
     fun clickEditProfileButtonInOwnProfile(userId: String) {
         val map = mutableMapOf<String, Any>()
-        map[UserProfileAnalytics.Constants.EVENT] = UserProfileAnalytics.Event.EVENT_VIEW_HOME_PAGE
+        map[UserProfileAnalytics.Constants.EVENT] = UserProfileAnalytics.Event.EVENT_CLICK_HOME_PAGE
         map[UserProfileAnalytics.Constants.EVENT_ACTION] = UserProfileAnalytics.Action.CLICK_EDIT_PROFILE_BUTTON_IN_OWN_PROFILE
         map[UserProfileAnalytics.Constants.EVENT_CATEGORY] = UserProfileAnalytics.Category.FEED_USER_PROFILE
         map[UserProfileAnalytics.Constants.EVENT_LABEL] = userId

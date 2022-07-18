@@ -398,7 +398,6 @@
       "eventAction": "click - ubah profile",
       "eventCategory": "feed user profile",
       "eventLabel": ".*",
-      "trackerId": "33771",
       "businessUnit": ".*",
       "currentSite": ".*",
       "sessionIris": ".*",
