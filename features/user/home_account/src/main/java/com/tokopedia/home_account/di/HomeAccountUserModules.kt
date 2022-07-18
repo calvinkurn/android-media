@@ -10,6 +10,7 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.home_account.PermissionChecker
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
+import com.tokopedia.home_account.analytics.TokopediaPlusAnalytics
 import com.tokopedia.home_account.view.helper.StaticMenuGenerator
 import com.tokopedia.home_account.view.mapper.DataViewMapper
 import com.tokopedia.loginfingerprint.tracker.BiometricTracker
@@ -93,4 +94,10 @@ class HomeAccountUserModules(val context: Context) {
     @Provides
     @ActivityScope
     fun provideBiometricTracker(): BiometricTracker = BiometricTracker()
+
+    @Provides
+    @ActivityScope
+    fun provideTokopediaPlusAnalytics(): TokopediaPlusAnalytics {
+        return TokopediaPlusAnalytics()
+    }
 }

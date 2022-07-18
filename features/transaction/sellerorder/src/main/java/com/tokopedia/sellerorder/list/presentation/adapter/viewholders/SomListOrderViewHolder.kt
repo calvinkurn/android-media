@@ -2,9 +2,6 @@ package com.tokopedia.sellerorder.list.presentation.adapter.viewholders
 
 import android.animation.LayoutTransition.CHANGING
 import android.annotation.SuppressLint
-import android.graphics.Color
-import android.graphics.ColorFilter
-import android.graphics.LightingColorFilter
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Spannable
@@ -12,11 +9,15 @@ import android.text.SpannableStringBuilder
 import android.text.style.StyleSpan
 import android.view.MotionEvent
 import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.loadImageRounded
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_ACCEPT_ORDER
@@ -44,6 +45,13 @@ open class SomListOrderViewHolder(
         val LAYOUT = R.layout.item_som_list_order
 
         const val TOGGLE_SELECTION = "toggle_selection"
+        const val CARD_MARGIN_TOP_ORDER_REGULAR = 0
+        const val CARD_MARGIN_TOP_ORDER_PLUS = 13
+        const val CARD_ALPHA_SELECTABLE = 1f
+        const val CARD_ALPHA_NOT_SELECTABLE = 0.5f
+        const val LAYOUT_DEADLINE_PADDING_START = 4
+        const val LAYOUT_DEADLINE_PADDING_END = 8
+        const val LAYOUT_DEADLINE_PADDING_VERTICAL = 2
 
         private val completedOrderStatusCodes = intArrayOf(690, 691, 695, 698, 699, 700, 701)
         private val cancelledOrderStatusCodes = intArrayOf(0, 4, 6, 10, 11, 15)
@@ -54,6 +62,7 @@ open class SomListOrderViewHolder(
 
     override fun bind(element: SomListOrderUiModel?) {
         if (element != null) {
+            setupOrderPlusRibbon(element)
             setupOrderCard(element)
             // header
             setupStatusIndicator(element)
@@ -92,6 +101,7 @@ open class SomListOrderViewHolder(
                 val oldItem = it.first
                 val newItem = it.second
                 if (oldItem is SomListOrderUiModel && newItem is SomListOrderUiModel) {
+                    setupOrderPlusRibbon(newItem)
                     setupOrderCard(newItem)
                     val oldIsEnded = oldItem.orderStatusId in endedOrderStatusCode
                     val newIsEnded = newItem.orderStatusId in endedOrderStatusCode
@@ -234,33 +244,28 @@ open class SomListOrderViewHolder(
             val deadlineText = element.deadlineText
             val deadlineColor = element.deadlineColor
             if (deadlineText.isNotBlank() && deadlineColor.isNotBlank()) {
-                val filter: ColorFilter = LightingColorFilter(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_G900), Color.parseColor(deadlineColor))
-                val textBackgroundDrawable = MethodChecker.getDrawable(root.context, R.drawable.bg_due_response_text).apply {
-                    colorFilter = filter
-                }
-                val iconBackgroundDrawable = MethodChecker.getDrawable(root.context, R.drawable.bg_due_response_icon).apply {
-                    colorFilter = filter
-                }
-                tvSomListDeadline.apply {
-                    text = deadlineText
-                    background = textBackgroundDrawable
-                    val padding = getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
-                    setPadding(padding, padding, padding, padding)
-                }
-                icDeadline.apply {
-                    background = iconBackgroundDrawable
-                    colorFilter = LightingColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G900), ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-                    val padding = getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
-                    setPadding(padding, padding, 0, padding)
-                }
+                tvSomListDeadline.text = deadlineText
                 tvSomListResponseLabel.text = composeDeadlineLabel(element.preOrderType != 0)
+                layoutSomListDeadline.apply {
+                    setBackgroundResource(
+                        if (element.orderPlusData != null) {
+                            R.drawable.bg_due_response_order_plus
+                        } else {
+                            R.drawable.bg_due_response_order_regular
+                        }
+                    )
+                    setPadding(
+                        LAYOUT_DEADLINE_PADDING_START.toPx(),
+                        LAYOUT_DEADLINE_PADDING_VERTICAL.toPx(),
+                        LAYOUT_DEADLINE_PADDING_END.toPx(),
+                        LAYOUT_DEADLINE_PADDING_VERTICAL.toPx(),
+                    )
+                }
                 tvSomListResponseLabel.show()
-                tvSomListDeadline.show()
-                icDeadline.show()
+                layoutSomListDeadline.show()
             } else {
                 tvSomListResponseLabel.gone()
-                tvSomListDeadline.gone()
-                icDeadline.gone()
+                layoutSomListDeadline.gone()
             }
         }
     }
@@ -347,11 +352,7 @@ open class SomListOrderViewHolder(
 
     protected open fun onBindFinished(element: SomListOrderUiModel) {
         binding?.btnQuickAction?.let { btnQuickAction ->
-            if (element.orderStatusId == SomConsts.STATUS_CODE_ORDER_CREATED &&
-                    element.buttons.firstOrNull()?.key == KEY_ACCEPT_ORDER &&
-                    btnQuickAction.isVisible) {
-                listener.onFinishBindNewOrder(btnQuickAction, adapterPosition.takeIf { it != RecyclerView.NO_POSITION }.orZero())
-            }
+            listener.onFinishBindOrder(btnQuickAction, adapterPosition.takeIf { it != RecyclerView.NO_POSITION }.orZero())
         }
     }
 
@@ -367,12 +368,44 @@ open class SomListOrderViewHolder(
         }
     }
 
+    private fun setupOrderPlusRibbon(element: SomListOrderUiModel) {
+        val showOrderPlusRibbon = element.orderPlusData?.logoUrl.isNullOrBlank().not()
+        binding?.containerSomListOrderPlusRibbon?.run {
+            setBackgroundResource(R.drawable.ic_som_list_order_plus_ribbon)
+            showWithCondition(showOrderPlusRibbon)
+        }
+        binding?.loaderIcSomListOrderPlusRibbon?.showWithCondition(showOrderPlusRibbon)
+        binding?.icSomListOrderPlusRibbon?.run {
+            onUrlLoaded = {
+                binding?.loaderIcSomListOrderPlusRibbon?.gone()
+                Unit
+            }
+            showWithCondition(showOrderPlusRibbon)
+            urlSrc = element.orderPlusData?.logoUrl.orEmpty()
+        }
+    }
+
     protected open fun setupOrderCard(element: SomListOrderUiModel) {
-        binding?.cardSomOrder?.alpha = if (listener.isMultiSelectEnabled() && hasActiveRequestCancellation(element)) 0.5f else 1f
+        binding?.cardSomOrder?.alpha =
+            if (listener.isMultiSelectEnabled() && hasActiveRequestCancellation(element)) {
+                CARD_ALPHA_NOT_SELECTABLE
+            } else {
+                CARD_ALPHA_SELECTABLE
+            }
         binding?.root?.setOnClickListener {
             if (listener.isMultiSelectEnabled()) touchCheckBox(element)
             else listener.onOrderClicked(element)
         }
+        binding?.cardSomOrder?.setMargin(
+            Int.ZERO,
+            if (element.orderPlusData != null) {
+                CARD_MARGIN_TOP_ORDER_PLUS.toPx()
+            } else {
+                CARD_MARGIN_TOP_ORDER_REGULAR.toPx()
+            },
+            Int.ZERO,
+            Int.ZERO
+        )
     }
 
     private fun hasActiveRequestCancellation(element: SomListOrderUiModel): Boolean {
@@ -395,7 +428,7 @@ open class SomListOrderViewHolder(
         fun onViewComplaintButtonClicked(order: SomListOrderUiModel)
         fun onEditAwbButtonClicked(orderId: String)
         fun onChangeCourierClicked(orderId: String)
-        fun onFinishBindNewOrder(view: View, itemIndex: Int)
+        fun onFinishBindOrder(view: View, itemIndex: Int)
         fun isMultiSelectEnabled(): Boolean
     }
 }

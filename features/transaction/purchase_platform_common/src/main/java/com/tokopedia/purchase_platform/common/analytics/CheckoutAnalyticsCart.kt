@@ -971,4 +971,17 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
         gtmData[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
         sendGeneralEvent(gtmData)
     }
+
+    fun eventViewGotoplusTicker() {
+        val gtmData = getGtmData(
+                ConstantTransactionAnalytics.EventName.VIEW_PP_IRIS,
+                ConstantTransactionAnalytics.EventCategory.CART,
+                ConstantTransactionAnalytics.EventAction.VIEW_GOTOPLUS_TICKER,
+                ""
+        )
+        gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        gtmData[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.TRACKER_ID] = ConstantTransactionAnalytics.TrackerId.VIEW_GOTOPLUS_TICKER_CART
+        sendGeneralEvent(gtmData)
+    }
 }

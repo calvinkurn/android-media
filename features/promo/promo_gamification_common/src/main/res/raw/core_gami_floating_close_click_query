@@ -1,0 +1,9 @@
+query gamiFloatingClick($floatingID: Int!) {
+  gamiFloatingClick(floatingID: $floatingID) {
+    resultStatus {
+      code
+      message
+      reason
+    }
+  }
+}
