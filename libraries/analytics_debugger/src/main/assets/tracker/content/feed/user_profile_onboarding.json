@@ -319,14 +319,14 @@
       "event": "select_content",
       "eventAction": "click - profile recommendations icon",
       "eventCategory": "feed user profile",
-      "eventLabel": ".* - \\d+",
+      "eventLabel": ".* - .*",
       "businessUnit": "content",
       "currentSite": "tokopediamarketplace",
       "promotions": [
         {
           "creative_name": ".*",
           "creative_slot": "\\d+",
-          "item_id": "\\d+",
+          "item_id": ".*",
           "item_name": "/feed user profile - profile recommendations carousel"
         }
       ],
