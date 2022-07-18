@@ -505,7 +505,7 @@ class UserProfileTracker @Inject constructor() {
     fun impressionProfileRecommendation(userId: String, shopId: String, imageUrl: String, postPosition: Int){
         val map = mutableMapOf<String, Any>()
         map[UserProfileAnalytics.Constants.EVENT] = UserProfileAnalytics.Event.EVENT_VIEW_ITEM
-        map[UserProfileAnalytics.Constants.EVENT_ACTION] = UserProfileAnalytics.Action.IMPRESSION_PROFILE_RECOMMENDATION
+        map[UserProfileAnalytics.Constants.EVENT_ACTION] = UserProfileAnalytics.Action.IMPRESSION_PROFILE_RECOMMENDATIONS_CAROUSEL
         map[UserProfileAnalytics.Constants.EVENT_CATEGORY] = UserProfileAnalytics.Category.FEED_USER_PROFILE
         map[UserProfileAnalytics.Constants.EVENT_LABEL] = "$userId - $shopId"
 
