@@ -298,11 +298,9 @@ class SmartBillsViewModel @Inject constructor(
     }
 
     fun isHighlightNotEmpty(highlight: HighlightCategoryUiModel): Boolean {
-        return highlight.imageUrl.isNotEmpty()
-                || highlight.contentId.isNotEmpty()
-                || highlight.uuId.isNotEmpty()
-                || highlight.applink.isNotEmpty()
-                || highlight.date.isNotEmpty()
+        return highlight.contentId.isNotEmpty()
+                && highlight.uuId.isNotEmpty()
+                && highlight.applink.isNotEmpty()
     }
 
     private fun mapperHighlightUiModel(uuid: String, rechargeRecommendations: List<RechargeRecommendationData>): HighlightCategoryUiModel {
