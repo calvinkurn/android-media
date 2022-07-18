@@ -60,7 +60,7 @@
     <string name="sfs_no_campaign_history_title">Belum ada riwayat campaign</string>
     <string name="sfs_no_campaign_history_description">Pantau campaign yang tersedia, sedang berlangsung, dan mendatang di campaign aktif ya.</string>
 
-    <string name="sfs_placeholder_remaining_quota">Sisa Kuota Bulan ini : %s</string>
+    <string name="sfs_placeholder_remaining_quota">Sisa kuota bulan ini: %s</string>
     <string name="sfs_placeholder_active_campaign">Aktif (%s)</string>
     <string name="sfs_placeholder_finished_campaign">Riwayat Campaign (%s)</string>
     <string name="sfs_placeholder_draft">Draft (%s)</string>

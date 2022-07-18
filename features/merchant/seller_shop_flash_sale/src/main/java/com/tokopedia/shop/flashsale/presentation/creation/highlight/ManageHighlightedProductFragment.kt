@@ -464,8 +464,7 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
 
             coachMark = CoachMark2(firstProductSwitch?.context ?: return@post)
             coachMark?.onFinishListener = { preferenceDataStore.markHighlightCampaignProductComplete() }
-            coachMark?.onDismissListener =
-                { preferenceDataStore.markHighlightCampaignProductComplete() }
+            coachMark?.onDismissListener = { preferenceDataStore.markHighlightCampaignProductComplete() }
             coachMark?.showCoachMark(populateCoachMarkItems(firstProductSwitch), null)
         }
     }
