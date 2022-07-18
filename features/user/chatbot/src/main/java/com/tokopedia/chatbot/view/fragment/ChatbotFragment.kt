@@ -996,9 +996,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         paths.originalPaths.forEach { path ->
             processVideoPathToUpload(path)?.let { videoUploadUiModel ->
                 getViewState()?.onVideoUpload(videoUploadUiModel)
-
                 sendAnalyticsForVideoUpload(path)
-
                 presenter.uploadVideo(
                     videoUploadUiModel,
                     SOURCE_ID_FOR_VIDEO_UPLOAD,
@@ -1006,12 +1004,11 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                     messageId,
                     onErrorVideoUpload()
                 )
-
             }
         }
     }
 
-    //TODO clear doubts here
+    //TODO clear doubts here - do we need to release it
     private fun sendAnalyticsForVideoUpload(videoFilePath : String) {
         val videoFile = File(videoFilePath)
         val extension = VideoUtil.findVideoExtension(videoFile)
@@ -1343,69 +1340,77 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         createRetryMediaUploadBottomSheet(element)
     }
 
-    private fun onBottomSheetItemClicked(element: SendableUiModel, bottomSheetPage: BottomSheetUnify): (Int) -> Unit {
+    private fun onBottomSheetItemClicked(
+        element: SendableUiModel,
+        bottomSheetPage: BottomSheetUnify
+    ): (Int) -> Unit {
         return {
             if (element is ImageUploadUiModel) {
                 when (it) {
-                    RESEND -> {
-                        removeDummy(element)
-                        getViewState()?.onImageUpload(element)
-                        presenter.uploadImages(element, messageId, opponentId, onErrorImageUpload())
-                        bottomSheetPage.dismiss()
-                    }
-                    DELETE -> {
-                        removeDummy(element)
-                        bottomSheetPage.dismiss()
-                        view?.let {
-                            Toaster.make(
-                                it,
-                                context?.getString(R.string.chatbot_your_picture_has_been_deleted)
-                                    ?: "",
-                                Toaster.LENGTH_LONG,
-                                Toaster.TYPE_NORMAL
-                            )
-                        }
-                    }
+                    RESEND -> handleImageResendBottomSheet(element, bottomSheetPage)
+                    DELETE -> handleImageDeleteBottomSheet(element, bottomSheetPage)
                 }
-            }else{
-                if (element is VideoUploadUiModel){
-                    when (it) {
-                        RESEND -> {
-                            removeDummy(element)
-                            bottomSheetPage.dismiss()
-                            element.isRetry = false
-                            getViewState()?.onVideoUpload(element)
-                            presenter.uploadVideo(element, SOURCE_ID_FOR_VIDEO_UPLOAD, SendableUiModel.generateStartTime(), messageId, onErrorVideoUpload())
-                        }
-                        DELETE -> {
-                            removeDummy(element)
-                            bottomSheetPage.dismiss()
-                            view?.let {
-                                Toaster.make(
-                                    it,
-                                    context?.getString(R.string.chatbot_your_video_has_been_deleted)
-                                        ?: "",
-                                    Toaster.LENGTH_LONG,
-                                    Toaster.TYPE_NORMAL
-                                )
-                            }
-                        }
-                    }
+            } else if (element is VideoUploadUiModel) {
+                when (it) {
+                    RESEND -> handleVideoResendBottomSheet(element, bottomSheetPage)
+                    DELETE -> handleVideoDeleteBottomSheet(element, bottomSheetPage)
                 }
             }
         }
     }
+    
+    private fun handleImageResendBottomSheet(element: ImageUploadUiModel,bottomSheetPage: BottomSheetUnify) {
+        removeDummy(element)
+        getViewState()?.onImageUpload(element)
+        presenter.uploadImages(element, messageId, opponentId, onErrorImageUpload())
+        bottomSheetPage.dismiss()
+    }
+    
+    private fun handleImageDeleteBottomSheet(element: ImageUploadUiModel,bottomSheetPage: BottomSheetUnify) {
+        removeDummy(element)
+        bottomSheetPage.dismiss()
+        view?.let {
+            Toaster.make(
+                it,
+                context?.getString(R.string.chatbot_your_picture_has_been_deleted)
+                    ?: "",
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_NORMAL
+            )
+        }
+    }
 
+    private fun handleVideoResendBottomSheet(element: VideoUploadUiModel,bottomSheetPage: BottomSheetUnify) {
+        removeDummy(element)
+        bottomSheetPage.dismiss()
+        element.isRetry = false
+        getViewState()?.onVideoUpload(element)
+        presenter.uploadVideo(element, SOURCE_ID_FOR_VIDEO_UPLOAD, SendableUiModel.generateStartTime(), messageId, onErrorVideoUpload())
+    }
+
+    private fun handleVideoDeleteBottomSheet(element: VideoUploadUiModel,bottomSheetPage: BottomSheetUnify) {
+        removeDummy(element)
+        bottomSheetPage.dismiss()
+        view?.let {
+            Toaster.make(
+                it,
+                context?.getString(R.string.chatbot_your_video_has_been_deleted)
+                    ?: "",
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_NORMAL
+            )
+        }
+    }
+    
     private fun onErrorVideoUpload(): (String,VideoUploadUiModel) -> Unit {
         return { errorMsg,video ->
             if (view != null) {
-                Toaster.showError(view!!,errorMsg,Snackbar.LENGTH_LONG)
+                Toaster.build(view!!, errorMsg, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
                 getViewState()?.showRetryUploadVideos(video)
             }
         }
     }
-
-
+    
     override fun removeDummy(visitable: Visitable<*>) {
         getViewState()?.removeDummy(visitable)
     }
@@ -1476,7 +1481,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun onVideoUploadCancelClicked(video: VideoUploadUiModel) {
         presenter.cancelVideoUpload(video.videoUrl!!,SOURCE_ID_FOR_VIDEO_UPLOAD, onError())
-        //UI changes - what to do when the user cancels the video upload with progress bar clicked
         getViewState()?.showRetryUploadVideos(video)
     }
 
@@ -1493,19 +1497,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         val bottomSheetPage = BottomSheetUnify()
         val viewBottomSheetPage =
             View.inflate(context, R.layout.retry_upload_media_bottom_sheet_layout, null).apply {
-                val rvPages = findViewById<RecyclerView>(R.id.rv_image_upload_option)
-                rvPages.layoutManager =
-                    LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-                val adapter =
-                    MediaRetryBottomSheetAdapter(onBottomSheetItemClicked(element, bottomSheetPage))
-                rvPages.adapter = adapter
-                adapter.setList(
-                    listOf<String>(
-                        context?.getString(R.string.chatbot_delete)
-                            ?: "", context?.getString(R.string.chatbot_resend) ?: ""
-                    )
-                )
-
+                setUpMediaRetryBottomSheet(this, element, bottomSheetPage)
             }
 
         bottomSheetPage.apply {
@@ -1527,7 +1519,22 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             bottomSheetPage.show(it, "retry media bottom sheet")
         }
     }
-
+    
+    private fun setUpMediaRetryBottomSheet(view: View, element: SendableUiModel, bottomSheetPage: BottomSheetUnify) {
+        val rvPages = view.findViewById<RecyclerView>(R.id.rv_image_upload_option)
+        rvPages.layoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        val adapter =
+            MediaRetryBottomSheetAdapter(onBottomSheetItemClicked(element, bottomSheetPage))
+        rvPages.adapter = adapter
+        adapter.setList(
+            listOf<String>(
+                context?.getString(R.string.chatbot_delete)
+                    ?: "", context?.getString(R.string.chatbot_resend) ?: ""
+            )
+        )
+    }
+    
     override fun sessionChangeStateHandler(state: Boolean) {
         isConnectedToAgent = state
         createAttachmentMenus()
