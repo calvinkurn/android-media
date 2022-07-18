@@ -103,7 +103,9 @@ import com.tokopedia.wishlistcollection.di.WishlistCollectionDetailModule
 import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionDetailViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import timber.log.Timber
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -147,6 +149,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         getCountDeletionProgress()
     }
     private var collectionId = ""
+    private var detectTextChangeJob: Job? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -209,7 +212,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         private const val SOURCE_AUTOMATIC_DELETION = "wishlist_automatic_delete"
         private const val OK = "OK"
         private const val DELAY_REFETCH_PROGRESS_DELETION = 5000L
-        private const val DEBOUNCE_SEARCH_TIME = 500L
+        private const val DEBOUNCE_SEARCH_TIME = 800L
         const val DEFAULT_TITLE = "Wishlist Collection Detail"
     }
 
@@ -544,31 +547,22 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
                 override fun afterTextChanged(s: Editable?) {
-                    val searchText = s.toString().trim()
+                    detectTextChangeJob?.cancel()
+                    val searchText = s?.toString()?:"".trim()
                     if (searchText == searchFor)
                         return
 
-                    searchFor = searchText
-                    launchCatchError(coroutineContext, {
+                    detectTextChangeJob = launchCatchError(block = {
                         delay(DEBOUNCE_SEARCH_TIME)
-                        if (searchText != searchFor)
-                            return@launchCatchError
-                        s?.toString()?.trim()?.let { query ->
-                            searchQuery = query
-                            if (query.isNotEmpty()) {
-                                WishlistV2Analytics.submitSearchFromCariProduk(query)
-                            }
-                            wishlistCollectionDetailSearchbar.searchBarTextField.clearFocus()
-                            val `in` =
-                                context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                            `in`.hideSoftInputFromWindow(
-                                wishlistCollectionDetailSearchbar.searchBarTextField.windowToken,
-                                0
-                            )
-                            triggerSearch()
+                        searchFor = searchText
+                        searchQuery = searchText
+                        if (searchText.isNotEmpty()) {
+                            WishlistV2Analytics.submitSearchFromCariProduk(searchText)
                         }
-                    }, {
-
+                        hideKeyboardFromSearchBar()
+                        triggerSearch()
+                    }, onError = {
+                        Timber.d(it)
                     })
                 }
             })
@@ -612,6 +606,18 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
         if (toasterMessageInitial.isNotEmpty()) {
             showToasterInitial(toasterMessageInitial)
+        }
+    }
+
+    private fun hideKeyboardFromSearchBar() {
+        binding?.run {
+            wishlistCollectionDetailSearchbar.searchBarTextField.clearFocus()
+            val `in` =
+                context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            `in`.hideSoftInputFromWindow(
+                wishlistCollectionDetailSearchbar.searchBarTextField.windowToken,
+                0
+            )
         }
     }
 
