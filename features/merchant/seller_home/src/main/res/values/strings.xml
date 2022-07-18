@@ -94,6 +94,9 @@
     <string name="centralized_promo_promo_creation_tokopedia_play_description">Tingkatkan penjualanmu sambil berinteraksi langsung dengan banyak penonton</string>
     <string name="centralized_promo_promo_creation_slash_price_title">Diskon Toko</string>
     <string name="centralized_promo_promo_creation_slash_price_description">Tarik banyak pembeli dengan pasang diskon menarik. </string>
+    <string name="centralized_promo_promo_creation_tokomember_title">TokoMember</string>
+    <string name="centralized_promo_promo_creation_tokomember_description">Tingkatin pendapatan toko dengan beri keanggotaan eksklusif ke pembeli setia.</string>
+    <string name="centralized_promo_promo_creation_tokomember_tag_label">Baru</string>
 
     <!-- First merchant voucher -->
     <string name="centralized_promo_first_voucher_label">First Voucher</string>

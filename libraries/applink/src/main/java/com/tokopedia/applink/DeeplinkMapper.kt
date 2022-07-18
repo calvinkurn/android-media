@@ -639,6 +639,7 @@ object DeeplinkMapper {
             ApplinkConst.SellerApp.REVIEW_REMINDER -> ApplinkConstInternalSellerapp.REVIEW_REMINDER
             ApplinkConst.SellerApp.STATISTIC_DASHBOARD -> DeepLinkMapperStatistic.getStatisticAppLink(uri)
             ApplinkConst.SellerApp.SHOP_SCORE_DETAIL -> ShopScoreDeepLinkMapper.getInternalAppLinkShopScore(uri)
+            ApplinkConst.SellerApp.TOKOMEMBER -> ApplinkConstInternalSellerapp.TOKOMEMBER
             ApplinkConst.SellerApp.ADMIN_INVITATION -> ApplinkConstInternalMarketplace.ADMIN_INVITATION
             ApplinkConst.SellerApp.ADMIN_ACCEPTED -> ShopAdminDeepLinkMapper.getInternalAppLinkAdminAccepted(uri)
             ApplinkConst.SellerApp.ADMIN_REDIRECTION -> ApplinkConstInternalMarketplace.ADMIN_REDIRECTION
