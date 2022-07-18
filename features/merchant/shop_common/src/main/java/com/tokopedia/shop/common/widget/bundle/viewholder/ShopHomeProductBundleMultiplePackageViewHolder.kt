@@ -62,10 +62,13 @@ class ShopHomeProductBundleMultiplePackageViewHolder(
         }
         itemView.setOnClickListener {
             itemListener.onMultipleBundleProductClicked(
-                    bundleProductItem,
-                    bundleDetail,
-                    bundleParent.bundleName,
-                    bundlePosition,
+                bundleProductItem,
+                bundleDetail,
+                bundleParent.bundleName,
+                bundlePosition,
+                widgetTitle,
+                widgetName,
+                adapterPosition
             )
         }
     }
@@ -77,6 +80,9 @@ interface MultipleProductBundleListener {
             selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
             bundleName: String,
             bundlePosition: Int,
+            widgetTitle: String,
+            widgetName: String,
+            productItemPosition: Int
     )
     fun addMultipleBundleToCart(
             selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,

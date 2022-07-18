@@ -59,7 +59,15 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
 
     private fun setupClickListener(listener: ShopHomeFlashSaleWidgetListener) {
         productCardBigGrid?.setOnClickListener {
-            uiModel?.run { listener.onFlashSaleProductClicked(this) }
+            uiModel?.let { productModel ->
+                fsUiModel?.let { widgetModel ->
+                    listener.onFlashSaleProductClicked(
+                        model = productModel,
+                        widgetModel = widgetModel,
+                        position = adapterPosition
+                    )
+                }
+            }
         }
     }
 

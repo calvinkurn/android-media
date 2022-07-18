@@ -103,19 +103,25 @@ class ShopHomeProductBundleSingleViewHolder(
         imageBundleProduct?.loadImage(singleBundleProduct.productImageUrl)
         imageBundleProduct?.setOnClickListener {
             singleProductBundleListener.onSingleBundleProductClicked(
-                    singleBundleProduct,
-                    selectedSingleBundle,
-                    parentSingleBundle.bundleName,
-                    parentSingleBundle.bundleProducts.indexOf(singleBundleProduct)
+                singleBundleProduct,
+                selectedSingleBundle,
+                parentSingleBundle.bundleName,
+                parentSingleBundle.bundleProducts.indexOf(singleBundleProduct),
+                widgetTitle,
+                widgetName,
+                adapterPosition
             )
         }
         typographyBundleProductName?.text = singleBundleProduct.productName
         typographyBundleProductName?.setOnClickListener {
             singleProductBundleListener.onSingleBundleProductClicked(
-                    singleBundleProduct,
-                    selectedSingleBundle,
-                    parentSingleBundle.bundleName,
-                    parentSingleBundle.bundleProducts.indexOf(singleBundleProduct)
+                singleBundleProduct,
+                selectedSingleBundle,
+                parentSingleBundle.bundleName,
+                parentSingleBundle.bundleProducts.indexOf(singleBundleProduct),
+                widgetTitle,
+                widgetName,
+                adapterPosition
             )
         }
 
@@ -188,7 +194,10 @@ interface SingleProductBundleListener {
             selectedProduct: ShopHomeBundleProductUiModel,
             selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
             bundleName: String,
-            bundlePosition: Int
+            bundlePosition: Int,
+            widgetTitle: String,
+            widgetName: String,
+            productItemPosition: Int
     )
     fun addSingleBundleToCart(
             selectedBundle: ShopHomeProductBundleDetailUiModel,

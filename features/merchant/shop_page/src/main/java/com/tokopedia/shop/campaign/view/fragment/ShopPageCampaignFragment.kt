@@ -23,7 +23,6 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopCampaignTabTracker
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CAMPAIGN_TAB
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_MULTIPLE_BUNDLING
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_SINGLE_BUNDLING
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
@@ -252,6 +251,52 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
         )
     }
 
+    override fun onMultipleBundleProductClicked(
+        selectedProduct: ShopHomeBundleProductUiModel,
+        selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
+        bundleName: String,
+        bundlePosition: Int,
+        widgetTitle: String,
+        widgetName: String,
+        productItemPosition: Int
+    ) {
+        shopCampaignTabTracker.clickCampaignTabProduct(
+            selectedProduct.productId,
+            selectedProduct.productName,
+            widgetName,
+            shopId,
+            userId,
+            widgetTitle,
+            ShopUtil.getActualPositionFromIndex(productItemPosition),
+            VALUE_MULTIPLE_BUNDLING,
+            selectedMultipleBundle.bundleId
+        )
+        goToPDP(selectedProduct.productId)
+    }
+
+    override fun onSingleBundleProductClicked(
+        selectedProduct: ShopHomeBundleProductUiModel,
+        selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
+        bundleName: String,
+        bundlePosition: Int,
+        widgetName: String,
+        widgetTitle: String,
+        productItemPosition: Int
+    ) {
+        shopCampaignTabTracker.clickCampaignTabProduct(
+            selectedProduct.productId,
+            selectedProduct.productName,
+            widgetName,
+            shopId,
+            userId,
+            widgetTitle,
+            ShopUtil.getActualPositionFromIndex(productItemPosition),
+            VALUE_SINGLE_BUNDLING,
+            selectedSingleBundle.bundleId
+        )
+        goToPDP(selectedProduct.productId)
+    }
+
     override fun impressionProductItemBundleMultiple(
         selectedProduct: ShopHomeBundleProductUiModel,
         selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
@@ -307,6 +352,19 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
         )
     }
 
+    override fun onFlashSaleProductClicked(model: ShopHomeProductUiModel, widgetModel: ShopHomeFlashSaleUiModel, position: Int) {
+        shopCampaignTabTracker.clickCampaignTabProduct(
+            model.id.orEmpty(),
+            model.name.orEmpty(),
+            widgetModel.name,
+            shopId,
+            userId,
+            widgetModel.header.title,
+            ShopUtil.getActualPositionFromIndex(position)
+        )
+        goToPDP(model.id ?: "")
+    }
+
     override fun onFlashSaleProductImpression(
         shopHomeProductUiModel: ShopHomeProductUiModel,
         flashSaleUiModel: ShopHomeFlashSaleUiModel?,
@@ -338,18 +396,14 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
             ShopUtil.getActualPositionFromIndex(parentPosition)
         )
         shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.let {
-            shopPageHomeTracking.clickCampaignNplProduct(
-                isOwner,
-                it.statusCampaign,
-                shopHomeProductViewModel?.name ?: "",
-                shopHomeProductViewModel?.id ?: "",
-                shopHomeProductViewModel?.displayedPrice ?: "",
-                shopName,
-                ShopUtil.getActualPositionFromIndex(parentPosition),
-                itemPosition,
-                isLogin,
-                customDimensionShopPage,
-                CAMPAIGN_TAB
+            shopCampaignTabTracker.clickCampaignTabProduct(
+                shopHomeProductViewModel?.id.orEmpty(),
+                shopHomeProductViewModel?.name.orEmpty(),
+                it.name,
+                shopId,
+                userId,
+                shopHomeNewProductLaunchCampaignUiModel.header.title,
+                ShopUtil.getActualPositionFromIndex(itemPosition)
             )
         }
         shopHomeProductViewModel?.let {
@@ -448,15 +502,17 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
             product: ProductCardUiModel,
             campaignId: String,
             campaignName: String,
-            position: Int
+            position: Int,
+            campaignTitle: String
         ) {
-            shopPageHomeTracking.clickProductCardThematicWidgetCampaign(
-                campaignName = campaignName,
-                campaignId = campaignId,
-                shopId = shopId,
-                userId = userId,
-                product = product,
-                position = position
+            shopCampaignTabTracker.clickCampaignTabProduct(
+                product.id.orEmpty(),
+                product.name.orEmpty(),
+                campaignName,
+                shopId,
+                userId,
+                campaignTitle,
+                ShopUtil.getActualPositionFromIndex(position)
             )
             RouteManager.route(context, product.productUrl)
         }

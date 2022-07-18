@@ -227,7 +227,7 @@ class ThematicWidgetViewHolder (
     interface ThematicWidgetListener {
         fun onThematicWidgetImpressListener(model: ThematicWidgetUiModel, position: Int)
         fun onProductCardThematicWidgetImpressListener(products: List<ProductCardUiModel>, position: Int, campaignId: String, campaignName: String, campaignTitle: String = "")
-        fun onProductCardThematicWidgetClickListener(product: ProductCardUiModel, campaignId: String, campaignName: String, position: Int)
+        fun onProductCardThematicWidgetClickListener(product: ProductCardUiModel, campaignId: String, campaignName: String, position: Int, campaignTitle: String = "")
         fun onProductCardSeeAllThematicWidgetClickListener(appLink: String, campaignId: String, campaignName: String)
         fun onSeeAllThematicWidgetClickListener(appLink: String, campaignId: String, campaignName: String)
         fun onThematicWidgetTimerFinishListener(model: ThematicWidgetUiModel?)

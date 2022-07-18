@@ -48,7 +48,15 @@ class ShopHomeFlashSaleProductListViewHolder(
 
     private fun setupClickListener(listener: ShopHomeFlashSaleWidgetListener) {
         productCardList?.setOnClickListener {
-            uiModel?.run { listener.onFlashSaleProductClicked(this) }
+            uiModel?.let { productModel ->
+                fsUiModel?.let { widgetModel ->
+                    listener.onFlashSaleProductClicked(
+                        model = productModel,
+                        widgetModel = widgetModel,
+                        position = adapterPosition
+                    )
+                }
+            }
         }
     }
 }

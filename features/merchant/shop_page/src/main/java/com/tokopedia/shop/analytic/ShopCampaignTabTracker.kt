@@ -3,6 +3,7 @@ package com.tokopedia.shop.analytic
 import android.os.Bundle
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.BUSINESS_UNIT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CAMPAIGN_TAB
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CAMPAIGN_TAB_PRODUCT_CLICK_EVENT_ACTION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CAMPAIGN_TAB_PRODUCT_IMPRESSION_EVENT_ACTION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOP_BANNER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOP_BANNER_LABEL
@@ -25,6 +26,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_CATEGORY
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_NAME
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_VARIANT
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.LABEL_CLICK_PRODUCT_LIST
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.LABEL_IMPRESSION_PRODUCT_LIST
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PHYSICAL_GOODS
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_ID
@@ -142,6 +144,44 @@ class ShopCampaignTabTracker @Inject constructor() {
             CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
+    }
+
+    fun clickCampaignTabProduct(
+        productId: String,
+        productName:  String,
+        widgetName: String,
+        shopId: String,
+        userId: String,
+        widgetTitle: String,
+        itemPosition: Int,
+        bundlingType: String = "",
+        bundlingId: String = ""
+    ) {
+        val eventBundle = Bundle().apply {
+            putString(EVENT, SELECT_CONTENT)
+            putString(EVENT_ACTION, CAMPAIGN_TAB_PRODUCT_CLICK_EVENT_ACTION)
+            putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
+            putString(EVENT_LABEL, String.format(LABEL_CLICK_PRODUCT_LIST, CAMPAIGN_TAB, widgetTitle))
+            putString(BUSINESS_UNIT, PHYSICAL_GOODS)
+            putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+            putString(PRODUCT_ID, productId)
+            putString(SHOP_ID, shopId)
+            putString(USER_ID, userId)
+            putParcelableArrayList(
+                ITEMS,
+                arrayListOf(
+                    createProductCampaignItems(
+                        itemPosition,
+                        productId,
+                        productName,
+                        widgetName,
+                        bundlingType,
+                        bundlingId,
+                    )
+                )
+            )
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventBundle)
     }
 
     fun impressionCampaignTabProduct(
