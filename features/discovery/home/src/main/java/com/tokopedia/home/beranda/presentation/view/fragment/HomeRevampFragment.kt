@@ -1706,9 +1706,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun onPageLoadTimeEnd() {
         stickyLoginView?.loadContent()
-        adapter?.currentList?.let {
-//            showCoachmarkWithDataValidation(it)
-        }
         pageLoadTimeCallback?.invalidate()
         loadEggData(isPageRefresh)
     }
@@ -2020,12 +2017,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             false -> {
                 if (coachMarkIsShowing) {
                     coachmark?.dismissCoachMark()
-                }
-                if (tokonowCoachmarkIsShowing) {
-                    coachmarkTokonow?.dismissCoachMark()
-                }
-                if (subscriptionCoachmarkIsShowing) {
-                    coachmarkSubscription?.dismissCoachMark()
                 }
             }
         }
