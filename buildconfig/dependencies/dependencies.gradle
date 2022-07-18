@@ -91,6 +91,7 @@ ext {
     newRelicVersion = '6.2.1'
     windowVersion = '1.0.0-alpha07'
     localBroadcastManagerVersion = '1.0.0'
+    gojekSSOVersion = '1.0.1-62-5bc7af1'
 
     benchmarkTestVersion = '1.0.0'
     testCore = '1.2.0'
@@ -307,8 +308,8 @@ ext {
             startupRuntime        : "androidx.startup:startup-runtime:$startupRuntimeVersion",
             jjwtApi               : "io.jsonwebtoken:jjwt-api:0.11.2",
             jjwtImpl              : "io.jsonwebtoken:jjwt-impl:0.11.2",
-            jjwtJson              : "io.jsonwebtoken:jjwt-orgjson:0.11.2"
-
+            jjwtJson              : "io.jsonwebtoken:jjwt-orgjson:0.11.2",
+            gojekSSO              : "com.gojek.android:icp-identity-login-sso:$gojekSSOVersion"
     ]
 
     testDependencies = [
