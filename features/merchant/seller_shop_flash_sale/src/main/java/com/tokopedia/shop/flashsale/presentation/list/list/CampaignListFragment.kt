@@ -181,21 +181,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
 
     private fun setupView() {
-        binding?.btnCreateCampaign?.setOnClickListener {
-            viewModel.getShopDecorStatus()
-            binding?.btnCreateCampaign.showLoading()
-        }
-
-        binding?.btnDraft?.setOnClickListener {
-            showDraftListBottomSheet(viewModel.getCampaignDrafts())
-        }
-        binding?.btnCreateCampaignEmptyState?.setOnClickListener {
-            viewModel.getShopDecorStatus()
-            binding?.btnCreateCampaignEmptyState.showLoading()
-        }
-        binding?.btnNavigateToFirstActiveCampaign?.setOnClickListener {
-            onNavigateToActiveCampaignTab()
-        }
+        setupClickListener()
         setupSearchBar()
         setupScrollListener()
     }
@@ -213,6 +199,29 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
                 return@setOnEditorActionListener false
             }
             searchBar.clearListener = { clearSearchBar() }
+        }
+    }
+
+    private fun setupClickListener() {
+        binding?.run {
+
+            btnCreateCampaign.setOnClickListener {
+                viewModel.getShopDecorStatus()
+                binding?.btnCreateCampaign.showLoading()
+            }
+
+            btnDraft.setOnClickListener {
+                showDraftListBottomSheet(viewModel.getCampaignDrafts())
+            }
+
+            btnCreateCampaignEmptyState.setOnClickListener {
+                viewModel.getShopDecorStatus()
+                binding?.btnCreateCampaignEmptyState.showLoading()
+            }
+
+            btnNavigateToFirstActiveCampaign.setOnClickListener {
+                onNavigateToActiveCampaignTab()
+            }
         }
     }
 
