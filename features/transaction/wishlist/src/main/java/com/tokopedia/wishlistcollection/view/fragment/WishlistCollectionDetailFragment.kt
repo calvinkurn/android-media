@@ -520,19 +520,6 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             activityWishlistV2 = arguments?.getString(PARAM_ACTIVITY_WISHLIST_V2, "") as String
             toasterMessageInitial = arguments?.getString(EXTRA_TOASTER_WISHLIST_COLLECTION_DETAIL, "") as String
 
-            viewLifecycleOwner.lifecycle.addObserver(wishlistCollectionDetailNavtoolbar)
-            wishlistCollectionDetailNavtoolbar.setupSearchbar(searchbarType = NavToolbar.Companion.SearchBarType.TYPE_EDITABLE, hints = arrayListOf(
-                    HintData(getString(Rv2.string.hint_cari_wishlist) )),
-                    editorActionCallback = { query ->
-                        searchQuery = query
-                        if (query.isNotEmpty()) {
-                            WishlistV2Analytics.submitSearchFromCariProduk(query)
-                        }
-                        wishlistCollectionDetailNavtoolbar.hideKeyboard()
-                        triggerSearch()
-                    }
-            )
-
             wishlistCollectionDetailSearchbar.searchBarTextField.addTextChangedListener(object :
                 TextWatcher {
                 var searchFor = ""
