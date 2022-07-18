@@ -11,9 +11,14 @@ import com.tokopedia.minicart.cartlist.MiniCartListActionListener
 import com.tokopedia.minicart.cartlist.uimodel.*
 import com.tokopedia.minicart.cartlist.viewholder.*
 import com.tokopedia.minicart.databinding.*
+import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleListener
+import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleListener
 
-class MiniCartListAdapterTypeFactory(private val listener: MiniCartListActionListener)
-    : BaseAdapterTypeFactory(), MiniCartListTypeFactory {
+class MiniCartListAdapterTypeFactory(
+    private val listener: MiniCartListActionListener,
+    private val multipleProductBundleListener: MultipleProductBundleListener? = null,
+    private val singleProductBundleListener: SingleProductBundleListener? = null
+) : BaseAdapterTypeFactory(), MiniCartListTypeFactory {
 
     override fun type(uiModel: MiniCartAccordionUiModel): Int {
         return MiniCartAccordionViewHolder.LAYOUT
@@ -45,6 +50,10 @@ class MiniCartListAdapterTypeFactory(private val listener: MiniCartListActionLis
 
     override fun type(uiModel: MiniCartUnavailableReasonUiModel): Int {
         return MiniCartUnavailableReasonViewHolder.LAYOUT
+    }
+
+    override fun type(uiModel: MiniCartProductBundleRecomUiModel): Int {
+        return MiniCartProductBundleViewHolder.LAYOUT
     }
 
     override fun type(uiModel: LoadingModel): Int {
@@ -88,6 +97,10 @@ class MiniCartListAdapterTypeFactory(private val listener: MiniCartListActionLis
             MiniCartLoadingViewHolder.LAYOUT -> {
                 val viewBinding = ItemMiniCartLoadingBinding.inflate(LayoutInflater.from(view.context), view as ViewGroup, false)
                 MiniCartLoadingViewHolder(viewBinding)
+            }
+            MiniCartProductBundleViewHolder.LAYOUT -> {
+                val viewBinding = ItemMiniCartProductBundleBinding.inflate(LayoutInflater.from(view.context), view as ViewGroup, false)
+                MiniCartProductBundleViewHolder(viewBinding, multipleProductBundleListener, singleProductBundleListener)
             }
             else -> super.createViewHolder(view, viewType)
         }

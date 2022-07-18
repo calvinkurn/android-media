@@ -37,6 +37,11 @@ import com.tokopedia.minicart.databinding.LayoutBottomsheetMiniCartListBinding
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
+import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
+import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleListener
+import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleListener
+import com.tokopedia.shop.common.widget.model.ShopHomeWidgetLayout
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -194,7 +199,71 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
     }
 
     private fun initializeRecyclerView(viewBinding: LayoutBottomsheetMiniCartListBinding) {
-        val adapterTypeFactory = MiniCartListAdapterTypeFactory(this)
+        val adapterTypeFactory = MiniCartListAdapterTypeFactory(this, object : MultipleProductBundleListener {
+            override fun onMultipleBundleProductClicked(
+                selectedProduct: ShopHomeBundleProductUiModel,
+                selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
+                bundleName: String,
+                bundlePosition: Int
+            ) {
+
+            }
+
+            override fun addMultipleBundleToCart(
+                selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
+                bundleListSize: Int,
+                productDetails: List<ShopHomeBundleProductUiModel>,
+                bundleName: String,
+                widgetLayout: ShopHomeWidgetLayout
+            ) {
+
+            }
+
+            override fun impressionProductBundleMultiple(
+                selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
+                bundleName: String,
+                bundlePosition: Int
+            ) {
+
+            }
+
+        }, object : SingleProductBundleListener {
+            override fun onSingleBundleProductClicked(
+                selectedProduct: ShopHomeBundleProductUiModel,
+                selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
+                bundleName: String,
+                bundlePosition: Int
+            ) {
+
+            }
+
+            override fun addSingleBundleToCart(
+                selectedBundle: ShopHomeProductBundleDetailUiModel,
+                bundleListSize: Int,
+                bundleProducts: ShopHomeBundleProductUiModel,
+                bundleName: String,
+                widgetLayout: ShopHomeWidgetLayout
+            ) {
+                viewModel?.updateProductBundle(bundleName)
+            }
+
+            override fun onTrackSingleVariantChange(
+                selectedProduct: ShopHomeBundleProductUiModel,
+                selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
+                bundleName: String
+            ) {
+
+            }
+
+            override fun impressionProductBundleSingle(
+                selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
+                selectedProduct: ShopHomeBundleProductUiModel,
+                bundleName: String,
+                bundlePosition: Int
+            ) {
+
+            }
+        })
         adapter = MiniCartListAdapter(adapterTypeFactory)
         viewBinding.rvMiniCartList.adapter = adapter
         viewBinding.rvMiniCartList.layoutManager = LinearLayoutManager(viewBinding.root.context, LinearLayoutManager.VERTICAL, false)
