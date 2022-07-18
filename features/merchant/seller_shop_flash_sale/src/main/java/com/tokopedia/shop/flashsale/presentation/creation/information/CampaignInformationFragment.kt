@@ -43,6 +43,7 @@ import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant
 import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant.CAMPAIGN_TEASER_MULTIPLIED_STEP_SIZE
 import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant.CAMPAIGN_TEASER_NORMAL_STEP_SIZE
 import com.tokopedia.shop.flashsale.common.extension.advanceDayBy
+import com.tokopedia.shop.flashsale.common.extension.advanceHourBy
 import com.tokopedia.shop.flashsale.common.extension.advanceMinuteBy
 import com.tokopedia.shop.flashsale.common.extension.advanceMonthBy
 import com.tokopedia.shop.flashsale.common.extension.decreaseHourBy
@@ -197,7 +198,6 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         observeCampaignQuota()
         observeSaveDraft()
         handlePageMode()
-        handleCoachMark()
         viewModel.getCurrentMonthRemainingQuota()
     }
 
@@ -215,6 +215,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
                     binding?.groupContent?.visible()
                     val remainingQuota = result.data
                     viewModel.setRemainingQuota(remainingQuota)
+                    handleCoachMark()
                 }
                 is Fail -> {
                     binding?.groupContent?.gone()
@@ -563,7 +564,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
     private fun displayStartDatePicker() {
         val selectedDate = viewModel.getSelectedStartDate()
-        val minimumDate = dateManager.getCurrentDate().decreaseHourBy(TWO_HOURS)
+        val minimumDate = dateManager.getCurrentDate().advanceHourBy(TWO_HOURS)
         val maximumEndDate = dateManager.getCurrentDate().advanceMonthBy(THREE_MONTH)
 
         val bottomSheet = CampaignDatePickerBottomSheet.newInstance(

@@ -1,12 +1,9 @@
 package com.tokopedia.shop.flashsale.presentation.creation.highlight.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.coachmark.CoachMark2
-import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -33,8 +30,6 @@ class HighlightedProductAdapter(
 
     private var products: MutableList<HighlightableProduct> = mutableListOf()
     private var isLoading = false
-    private var onCoachMarkDisplayed : () -> Unit = {}
-    private var shouldShowCoachMark = false
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -106,13 +101,6 @@ class HighlightedProductAdapter(
             handleSwitchAppearance(product, onProductSelectionChange)
             handleCardSelectable(product.disabled)
             handleProductOrderNumber(product)
-            handleCoachMark(binding.switchUnify)
-        }
-
-        private fun handleCoachMark(anchorView: View) {
-            if (shouldShowCoachMark && itemCount.isMoreThanZero() && adapterPosition == 0) {
-                showCoachMark(anchorView)
-            }
         }
 
         private fun handleDisplayErrorMessage(product: HighlightableProduct) {
@@ -177,32 +165,6 @@ class HighlightedProductAdapter(
             return this.disabledReason == HighlightableProduct.DisabledReason.OTHER_PRODUCT_WITH_SAME_PARENT_ID_ALREADY_SELECTED
         }
 
-        private fun showCoachMark(anchorView: View) {
-            val coachMark = CoachMark2(anchorView.context)
-            coachMark.showCoachMark(populateCoachMarkItems(anchorView), null)
-            coachMark.onFinishListener = { onCoachMarkDisplayed() }
-            coachMark.onDismissListener = { onCoachMarkDisplayed() }
-        }
-
-        private fun populateCoachMarkItems(anchorView : View): ArrayList<CoachMark2Item> {
-            return arrayListOf(
-                CoachMark2Item(
-                    anchorView,
-                    anchorView.context.getString(R.string.sfs_highlight_product_first_coachmark),
-                    "",
-                    CoachMark2.POSITION_BOTTOM
-                )
-            )
-        }
-
-    }
-
-    fun setOnCoachMarkDisplayed(onCoachMarkDisplayed: () -> Unit) {
-        this.onCoachMarkDisplayed = onCoachMarkDisplayed
-    }
-
-    fun shouldDisplayCoachMark(shouldShowCoachMark : Boolean) {
-        this.shouldShowCoachMark = shouldShowCoachMark
     }
 
     inner class DiffCallback(

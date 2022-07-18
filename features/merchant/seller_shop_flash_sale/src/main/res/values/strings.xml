@@ -61,7 +61,7 @@
     <string name="sfs_no_campaign_history_title">Belum ada riwayat campaign</string>
     <string name="sfs_no_campaign_history_description">Pantau campaign yang tersedia, sedang berlangsung, dan mendatang di campaign aktif ya.</string>
 
-    <string name="sfs_placeholder_remaining_quota">Sisa Kuota Bulan ini : %s</string>
+    <string name="sfs_placeholder_remaining_quota">Sisa kuota bulan ini: %s</string>
     <string name="sfs_placeholder_active_campaign">Aktif (%s)</string>
     <string name="sfs_placeholder_finished_campaign">Riwayat Campaign (%s)</string>
     <string name="sfs_placeholder_draft">Draft (%s)</string>
@@ -71,7 +71,7 @@
     <string name="sfs_fst_introduction_title">Fitur Flash Sale ini akan tampil di halaman Home</string>
     <string name="sfs_fst_introduction_description">Flash Sale yang berhasil dibuat akan tampil di halaman Home tokomu sesuai dengan waktu yang sudah diatur.</string>
     <string name="sfs_start_create_flash_sale">Mulai Buat Flash Sale</string>
-    <string name="sfs_later">Nanti saja</string>
+    <string name="sfs_later">Nanti Saja</string>
     <string name="sfs_forbidden_access_title">Yah, kamu belum bisa akses ke Flash Sale Toko</string>
     <string name="sfs_forbidden_access_description">Pelajari dulu agar tokomu bisa pakai Flash Sale Toko, yuk!</string>
     <string name="sfs_forbidden_access_learn_more">Pelajari Flash Sale Toko</string>
