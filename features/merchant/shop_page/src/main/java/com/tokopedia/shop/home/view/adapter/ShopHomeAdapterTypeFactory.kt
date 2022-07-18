@@ -87,7 +87,7 @@ import com.tokopedia.shop_widget.thematicwidget.typefactory.ThematicWidgetTypeFa
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
 import com.tokopedia.shop_widget.thematicwidget.viewholder.ThematicWidgetLoadingStateViewHolder
 
-class ShopHomeAdapterTypeFactory(
+open class ShopHomeAdapterTypeFactory(
         private val listener: ShopHomeDisplayWidgetListener,
         private val onMerchantVoucherListWidgetListener: ShopHomeVoucherViewHolder.ShopHomeVoucherViewHolderListener,
         private val shopHomeEndlessProductListener: ShopHomeEndlessProductListener,
@@ -144,7 +144,7 @@ class ShopHomeAdapterTypeFactory(
         }
     }
 
-    private fun getShopHomeNplCampaignViewHolder(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
+    open fun getShopHomeNplCampaignViewHolder(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
         return if(isShowHomeWidgetPlaceHolder(baseShopHomeWidgetUiModel))
             ShopHomeNplCampaignPlaceholderViewHolder.LAYOUT
         else
@@ -186,11 +186,11 @@ class ShopHomeAdapterTypeFactory(
             ShopHomeMultipleImageColumnViewHolder.LAYOUT_RES
     }
 
-    private fun isShowHomeWidgetPlaceHolder(model: BaseShopHomeWidgetUiModel): Boolean {
+    fun isShowHomeWidgetPlaceHolder(model: BaseShopHomeWidgetUiModel): Boolean {
         return model.widgetState == WidgetState.PLACEHOLDER || model.widgetState == WidgetState.LOADING
     }
 
-    private fun isShowThematicWidgetPlaceHolder(model: ThematicWidgetUiModel): Boolean {
+    fun isShowThematicWidgetPlaceHolder(model: ThematicWidgetUiModel): Boolean {
         return model.widgetState == WidgetState.PLACEHOLDER || model.widgetState == WidgetState.LOADING
     }
 
