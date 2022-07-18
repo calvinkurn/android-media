@@ -81,7 +81,7 @@ class PlayPinnedProductUiTest {
     }
 
     @Test
-    fun pinnedProduct_noPinned() {
+    fun pinnedProduct_productCarouselView_noPinned() {
         val tagItem = buildTagItemWithPinned(hasPinned = false)
 
         coEvery { repo.getTagItem(any()) } returns tagItem
@@ -91,13 +91,37 @@ class PlayPinnedProductUiTest {
     }
 
     @Test
-    fun pinnedProduct_hasPinned() {
+    fun pinnedProduct_productCarouselView_hasPinned() {
         val tagItem = buildTagItemWithPinned(hasPinned = true)
 
         coEvery { repo.getTagItem(any()) } returns tagItem
 
         val robot = PlayActivityRobot(channelId)
         robot.assertHasPinnedItemInCarousel(true)
+    }
+
+    @Test
+    fun pinnedProduct_productBottomSheet_noPinned() {
+        val tagItem = buildTagItemWithPinned(hasPinned = false)
+
+        coEvery { repo.getTagItem(any()) } returns tagItem
+
+        val robot = PlayActivityRobot(channelId)
+        robot
+            .openProductBottomSheet()
+            .assertHasPinnedItemInProductBottomSheet(false)
+    }
+
+    @Test
+    fun pinnedProduct_productBottomSheet_hasPinned() {
+        val tagItem = buildTagItemWithPinned(hasPinned = true)
+
+        coEvery { repo.getTagItem(any()) } returns tagItem
+
+        val robot = PlayActivityRobot(channelId)
+        robot
+            .openProductBottomSheet()
+            .assertHasPinnedItemInProductBottomSheet(true)
     }
 
     private fun buildTagItemWithPinned(hasPinned: Boolean): TagItemUiModel {

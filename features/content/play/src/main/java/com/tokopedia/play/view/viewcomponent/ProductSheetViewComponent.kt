@@ -27,6 +27,7 @@ import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayEmptyBottomSheetInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
+import com.tokopedia.play_common.delegate.safeOverridingJob
 import com.tokopedia.play_common.util.scroll.StopFlingScrollListener
 import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
@@ -65,7 +66,7 @@ class ProductSheetViewComponent(
     private val tvBodyProductEmpty: TextView = findViewById(R.id.tv_desc_product_empty)
     private val ivProductEmpty: AppCompatImageView = findViewById(R.id.iv_img_illustration)
 
-    private var setProductsJob: Job? = null
+    private var setProductsJob by safeOverridingJob()
 
     private val productSectionAdapter = ProductSectionAdapter(object : ProductSectionViewHolder.Listener{
         override fun onBuyProduct(
@@ -164,7 +165,6 @@ class ProductSheetViewComponent(
         showContent(true)
         tvSheetTitle.text = title
 
-        setProductsJob?.cancel()
         setProductsJob = scope.launch {
             val sortedSectionList = withContext(dispatcher.computation) {
                  sectionList.map {
@@ -199,7 +199,6 @@ class ProductSheetViewComponent(
     fun showPlaceholder() {
         showContent(true)
 
-        setProductsJob?.cancel()
         setProductsJob = scope.launch {
             productSectionAdapter.setItemsAndAnimateChanges(
                 List(PLACEHOLDER_COUNT) { ProductSectionUiModel.Placeholder }
