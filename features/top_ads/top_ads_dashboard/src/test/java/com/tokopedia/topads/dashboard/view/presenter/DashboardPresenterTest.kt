@@ -441,20 +441,7 @@ class DashboardPresenterTest {
         Assert.assertTrue(!successCalled)
     }
 
-    @Test
-    fun `get expiry date success`() {
-        val expected = "iot"
 
-        every {
-            getExpiryDateUseCase.execute(captureLambda())
-        } answers {
-            firstArg<(ExpiryDateResponse.TopAdsGetFreeDeposit) -> Unit>().invoke(ExpiryDateResponse(ExpiryDateResponse.TopAdsGetFreeDeposit(
-                expected)))
-        }
-
-        presenter.getExpiryDate(res)
-        Assert.assertEquals(presenter.expiryDateHiddenTrial.value, expected)
-    }
 
     @Test
     fun `getShopListHiddenTrial should invoke true if hiddenTrial feature id present`() {
