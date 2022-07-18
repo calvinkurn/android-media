@@ -50,7 +50,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
     private val imgOperatorResult: ImageView
     private val layoutResult: ConstraintLayout
     private var favoriteNumbers: List<TopupBillsSeamlessFavNumberItem> = listOf()
-    private var textFieldStaticLabel: String = context.getString(R.string.digital_client_label)
+    private var textFieldStaticLabel: String = context.getString(R.string.digital_client_label_telco)
     protected val view: View
 
     private lateinit var listener: ActionListener
@@ -207,6 +207,12 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         return R.layout.view_telco_input_number
     }
 
+    fun setIconOperator(url: String) {
+        ImageHandler.LoadImage(imgOperator, url)
+        ImageHandler.LoadImage(imgOperatorResult, url)
+        imgOperator.visibility = View.VISIBLE
+    }
+
     fun setListener(listener: ActionListener) {
         this.listener = listener
     }
@@ -256,12 +262,6 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         inputNumberField.textInputLayout.hint = validatedLabel
     }
 
-    fun setIconOperator(url: String) {
-        ImageHandler.LoadImage(imgOperator, url)
-        ImageHandler.LoadImage(imgOperatorResult, url)
-        imgOperator.visibility = View.VISIBLE
-    }
-
     fun setVisibleResultNumber(show: Boolean) {
         inputNumberResult.text = getInputNumber()
         if (show && getInputNumber().isNotEmpty()) {
@@ -281,6 +281,15 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
             if (!shouldHideChip) sortFilterChip.show()
             sortFilterChipShimmer.hide()
         }
+    }
+
+    fun hideContactIcon() {
+        inputNumberField.icon1.hide()
+    }
+
+    fun setTextFieldStaticLabel(label: String) {
+        textFieldStaticLabel = label
+        inputNumberField.textInputLayout.hint = textFieldStaticLabel
     }
 
     private fun initClientNumberAutoComplete(context: Context) {
@@ -309,7 +318,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
                 contactName
             }
         } else {
-            context.getString(R.string.digital_client_label)
+            textFieldStaticLabel
         }
     }
 

@@ -13,64 +13,55 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
-import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.common.topupbills.data.TelcoEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
-import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
-import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.data.constant.TelcoComponentName
 import com.tokopedia.common.topupbills.data.prefix_select.RechargePrefix
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
-import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment.InputNumberActionType
+import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topupbills.R
-import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity.Companion.RECHARGE_PRODUCT_EXTRA
 import com.tokopedia.topupbills.telco.common.adapter.TelcoTabAdapter
 import com.tokopedia.topupbills.telco.common.fragment.DigitalBaseTelcoFragment
 import com.tokopedia.topupbills.telco.common.model.TelcoTabItem
 import com.tokopedia.topupbills.telco.common.viewmodel.TelcoTabViewModel
-import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
+import com.tokopedia.topupbills.telco.common.widget.DigitalClientNumberWidget
 import com.tokopedia.topupbills.telco.postpaid.listener.ClientNumberPostpaidListener
 import com.tokopedia.topupbills.telco.postpaid.viewmodel.DigitalTelcoEnquiryViewModel
 import com.tokopedia.topupbills.telco.postpaid.widget.DigitalPostpaidClientNumberWidget
-import com.tokopedia.topupbills.telco.common.widget.DigitalClientNumberWidget
 import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_digital_telco_postpaid.telco_buy_widget
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /**
- * Created by nabillasabbaha on 06/05/19.
- */
-class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
+ * Created by misael on 14/07/22
+ * Use the same template as telco postpaid and copied from on [DigitalTelcoPostpaidFragment] (urgent).
+ * */
+class DigitalSignalFragment: DigitalBaseTelcoFragment() {
 
     private lateinit var postpaidClientNumberWidget: DigitalPostpaidClientNumberWidget
     private lateinit var buyWidget: TopupBillsCheckoutWidget
     private lateinit var mainContainer: CoordinatorLayout
     private lateinit var enquiryViewModel: DigitalTelcoEnquiryViewModel
     private lateinit var telcoTabViewModel: TelcoTabViewModel
-    private lateinit var performanceMonitoring: PerformanceMonitoring
     private lateinit var loadingShimmering: ConstraintLayout
     private lateinit var viewPager: ViewPager2
     private lateinit var tabLayout: TabsUnify
     private lateinit var separator: View
-    private var rechargeProductFromSlice: String = ""
-    private var traceStop = false
+    private lateinit var appBarSpacer: View
     private var operatorSelected: RechargePrefix? = null
         set(value) {
             field = value
@@ -79,20 +70,15 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
             }
         }
 
-    private val favNumberList = mutableListOf<TopupBillsFavNumberItem>()
-    private val seamlessFavNumberList = mutableListOf<TopupBillsSeamlessFavNumberItem>()
-
-    override var menuId = TelcoComponentType.TELCO_POSTPAID
-    override var categoryId = TelcoCategoryType.CATEGORY_PASCABAYAR
-    private var inputNumberActionType = InputNumberActionType.MANUAL
-
+    private var inputNumberActionType = TopupBillsSearchNumberFragment.InputNumberActionType.MANUAL
     private val viewModelFragmentProvider by lazy { ViewModelProvider(this, viewModelFactory) }
+
+    override var menuId = 0
+    override var categoryId = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.let {
-            performanceMonitoring = PerformanceMonitoring.start(DG_TELCO_POSTPAID_TRACE)
-
             val viewModelProvider = ViewModelProvider(it, viewModelFactory)
             enquiryViewModel = viewModelProvider.get(DigitalTelcoEnquiryViewModel::class.java)
             telcoTabViewModel = viewModelProvider.get(TelcoTabViewModel::class.java)
@@ -120,21 +106,28 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         viewPager = view.findViewById(R.id.telco_view_pager)
         tabLayout = view.findViewById(R.id.telco_tab_layout)
         separator = view.findViewById(R.id.separator)
+        appBarSpacer = view.findViewById(R.id.telco_appbar_spacer)
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        renderClientNumber()
+        getDataFromBundle(savedInstanceState)
         initViewPager()
         getPrefixOperatorData()
-        renderClientNumber()
         getCatalogMenuDetail()
-        getDataFromBundle(savedInstanceState)
-        if (rechargeProductFromSlice.isNotEmpty()) {
-            rechargeAnalytics.onClickSliceRecharge(userSession.userId, rechargeProductFromSlice)
-            rechargeAnalytics.onOpenPageFromSlice(TITLE_PAGE)
+        initSignalPage()
+    }
+
+    private fun initSignalPage() {
+        postpaidClientNumberWidget.run {
+            hideContactIcon()
+            setTextFieldStaticLabel(context.getString(R.string.digital_client_label_signal))
         }
+        appBarSpacer.hide()
+
     }
 
     override fun getClientInputNumber(): DigitalClientNumberWidget = postpaidClientNumberWidget
@@ -243,12 +236,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     }
 
     private fun getCatalogMenuDetail() {
-        postpaidClientNumberWidget.setFilterChipShimmer(true)
-        getMenuDetail(TelcoComponentType.TELCO_POSTPAID)
-        getFavoriteNumber(
-            categoryIds = listOf(TelcoComponentType.FAV_NUMBER_POSTPAID.toString()),
-            oldCategoryId = TelcoComponentType.FAV_NUMBER_POSTPAID
-        )
+        getMenuDetail(menuId)
     }
 
     private fun getDataFromBundle(savedInstanceState: Bundle?) {
@@ -264,7 +252,6 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                 if (digitalTelcoExtraParam.categoryId.isNotEmpty()) {
                     categoryId = digitalTelcoExtraParam.categoryId.toInt()
                 }
-                rechargeProductFromSlice = this.getString(RECHARGE_PRODUCT_EXTRA, "")
             }
         } else {
             clientNumber = savedInstanceState.getString(CACHE_CLIENT_NUMBER, "")
@@ -279,7 +266,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     }
 
     override fun getCheckoutView(): TopupBillsCheckoutWidget? {
-        return telco_buy_widget
+        return buyWidget
     }
 
     override fun initAddToCartViewModel() {
@@ -290,12 +277,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         postpaidClientNumberWidget.resetClientNumberPostpaid()
         postpaidClientNumberWidget.setListener(object : DigitalClientNumberWidget.ActionListener {
             override fun onNavigateToContact(isSwitchChecked: Boolean) {
-                val clientNumber = postpaidClientNumberWidget.getInputNumber()
-                navigateContact(
-                    clientNumber, favNumberList,
-                    arrayListOf(categoryId.toString()), topupAnalytics.getCategoryName(categoryId),
-                    isSwitchChecked
-                )
+                // do nothing
             }
 
             override fun onRenderOperator(isDelayed: Boolean) {
@@ -312,23 +294,14 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                 renderPromoAndRecommendation()
 
                 postpaidClientNumberWidget.resetClientNumberPostpaid()
-                buyWidget.setVisibilityLayout(false)
             }
 
             override fun onShowFilterChip(isLabeled: Boolean) {
-                if (isLabeled) {
-                    topupAnalytics.impressionFavoriteContactChips(categoryId, userSession.userId)
-                } else {
-                    topupAnalytics.impressionFavoriteNumberChips(categoryId, userSession.userId)
-                }
+                // do nothing
             }
 
             override fun onClickFilterChip(isLabeled: Boolean) {
-                if (isLabeled) {
-                    topupAnalytics.clickFavoriteContactChips(categoryId, userSession.userId)
-                } else {
-                    topupAnalytics.clickFavoriteNumberChips(categoryId, userSession.userId)
-                }
+                // do nothing
             }
 
             override fun onClickClearInput() {
@@ -336,22 +309,13 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
             }
 
             override fun onUserManualType() {
-                if (inputNumberActionType != InputNumberActionType.MANUAL) {
-                    inputNumberActionType = InputNumberActionType.MANUAL
+                if (inputNumberActionType != TopupBillsSearchNumberFragment.InputNumberActionType.MANUAL) {
+                    inputNumberActionType = TopupBillsSearchNumberFragment.InputNumberActionType.MANUAL
                 }
             }
 
             override fun onClickAutoComplete(isFavoriteContact: Boolean) {
-                inputNumberActionType = InputNumberActionType.AUTOCOMPLETE
-                if (isFavoriteContact) {
-                    topupAnalytics.clickFavoriteContactAutoComplete(
-                        categoryId, operatorName, userSession.userId
-                    )
-                } else {
-                    topupAnalytics.clickFavoriteNumberAutoComplete(
-                        categoryId, operatorName, userSession.userId
-                    )
-                }
+                // do nothing
             }
         })
 
@@ -383,7 +347,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
             postpaidClientNumberWidget.setLoadingButtonEnquiry(true)
             enquiryViewModel.getEnquiry(
                 CommonTopupBillsGqlQuery.rechargeInquiry,
-                selectedOperator.operator.attributes.defaultProductId.toString(),
+                selectedOperator.operator.attributes.defaultProductId,
                 postpaidClientNumberWidget.getInputNumber()
             )
         }
@@ -395,11 +359,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         separator.hide()
         viewPager.hide()
         setCheckoutPassData(enquiryData)
-        postpaidClientNumberWidget.showEnquiryResultPostpaid(enquiryData)
-
         price = enquiryData.enquiry.attributes.pricePlain
-        buyWidget.setTotalPrice(enquiryData.enquiry.attributes.price)
-        buyWidget.setVisibilityLayout(true)
     }
 
     private fun enquiryFailed(throwable: Throwable) {
@@ -431,14 +391,8 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         }
     }
 
-    private fun onInputNewNumberUpdateLayout() {
-        viewPager.show()
-        buyWidget.setVisibilityLayout(false)
-        postpaidClientNumberWidget.resetEnquiryResult()
-    }
-
-    private fun setCheckoutPassData(telcoEnquiryData: TelcoEnquiryData) {
-        telcoEnquiryData?.run {
+    private fun setCheckoutPassData(enquiryData: TelcoEnquiryData) {
+        enquiryData.run {
             operatorSelected?.run {
                 checkoutPassData = getDefaultCheckoutPassDataBuilder()
                     .categoryId(categoryId.toString())
@@ -466,21 +420,24 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
                     if (isInputvalid) {
                         hitTrackingForInputNumber()
+                        viewPager.show()
                         postpaidClientNumberWidget.clearErrorState()
-                    }
-                    postpaidClientNumberWidget.setIconOperator(operator.attributes.imageUrl)
-
-                    if (postpaidClientNumberWidget.getInputNumber().length in VALID_MIN_INPUT_NUMBER..VALID_MAX_INPUT_NUMBER) {
-                        onInputNewNumberUpdateLayout()
                         postpaidClientNumberWidget.setButtonEnquiry(true)
+                        postpaidClientNumberWidget.showPrefixAsEnquiryResult(
+                            "Wilayah" to operatorName
+                        )
                     } else {
                         postpaidClientNumberWidget.setButtonEnquiry(false)
                     }
                 }
+            } else {
+                postpaidClientNumberWidget.resetClientNumberPostpaid()
+                operatorName = ""
+                productName = ""
             }
         } catch (exception: NoSuchElementException) {
             postpaidClientNumberWidget.setErrorInputNumber(
-                getString(R.string.telco_number_error_prefix_not_found)
+                getString(R.string.signal_number_error_prefix_not_found)
             )
         }
     }
@@ -490,16 +447,16 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         actionTypeTrackingJob = lifecycleScope.launch {
             delay(INPUT_ACTION_TYPE_TRACKING_DELAY)
             when (inputNumberActionType) {
-                InputNumberActionType.MANUAL -> {
+                TopupBillsSearchNumberFragment.InputNumberActionType.MANUAL -> {
                     topupAnalytics.eventInputNumberManual(categoryId, operatorName)
                 }
-                InputNumberActionType.CONTACT -> {
+                TopupBillsSearchNumberFragment.InputNumberActionType.CONTACT -> {
                     topupAnalytics.eventInputNumberContactPicker(categoryId, operatorName)
                 }
-                InputNumberActionType.FAVORITE -> {
+                TopupBillsSearchNumberFragment.InputNumberActionType.FAVORITE -> {
                     topupAnalytics.eventInputNumberFavorites(categoryId, operatorName)
                 }
-                InputNumberActionType.CONTACT_HOMEPAGE -> {
+                TopupBillsSearchNumberFragment.InputNumberActionType.CONTACT_HOMEPAGE -> {
                     topupAnalytics.eventInputNumberContactPicker(categoryId, operatorName)
                 }
             }
@@ -517,24 +474,23 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     }
 
     override fun onLoadingAtc(showLoading: Boolean) {
-        buyWidget.onBuyButtonLoading(showLoading)
+        // do nothing
     }
 
     override fun onCollapseAppBar() {
-        //do nothing
+        // do nothing
     }
 
     override fun onExpandAppBar() {
-        //do nothing
+        // do nothing
     }
 
     override fun setInputNumberFromContact(contactNumber: String) {
-        postpaidClientNumberWidget.setInputNumber(contactNumber)
-        inputNumberActionType = InputNumberActionType.CONTACT_HOMEPAGE
+        // do nothing
     }
 
     override fun setContactNameFromContact(contactName: String) {
-        postpaidClientNumberWidget.setContactName(contactName)
+        // do nothing
     }
 
     override fun handleCallbackAnySearchNumber(
@@ -544,72 +500,34 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         categoryId: String,
         inputNumberActionTypeIndex: Int
     ) {
-        if (!inputNumberActionTypeIndex.isLessThanZero()) {
-            inputNumberActionType = InputNumberActionType.values()[inputNumberActionTypeIndex]
-        }
-        postpaidClientNumberWidget.run {
-            setContactName(clientName)
-            setInputNumber(clientNumber)
-            clearFocusAutoComplete()
-        }
+        // do nothing
     }
 
     override fun handleCallbackAnySearchNumberCancel() {
-        postpaidClientNumberWidget.clearFocusAutoComplete()
+        // do nothing
     }
 
     override fun onClickItemRecentNumber(topupBillsRecommendation: TopupBillsRecommendation) {
-        postpaidClientNumberWidget.setInputNumber(topupBillsRecommendation.clientNumber)
-        inputNumberActionType = InputNumberActionType.LATEST_TRANSACTION
-
-        if (operatorName.isNotEmpty()) {
-            topupAnalytics.clickEnhanceCommerceRecentTransaction(
-                topupBillsRecommendation,
-                operatorName, topupBillsRecommendation.position
-            )
-        }
+        // do nothing
     }
 
     override fun setFavNumbers(data: TopupBillsFavNumber) {
-        performanceMonitoringStopTrace()
-        favNumberList.addAll(data.favNumberList)
+        // do nothing
     }
 
     override fun errorSetFavNumbers() {
-        performanceMonitoringStopTrace()
-        postpaidClientNumberWidget.setFilterChipShimmer(false, true)
+        // do nothing
     }
 
     override fun setSeamlessFavNumbers(
         data: TopupBillsSeamlessFavNumber,
         shouldRefreshInputNumber: Boolean
     ) {
-        performanceMonitoringStopTrace()
-        if (data.favoriteNumbers.isNotEmpty() && shouldRefreshInputNumber) {
-            postpaidClientNumberWidget.run {
-                setInputNumber(data.favoriteNumbers[0].clientNumber)
-                setContactName(data.favoriteNumbers[0].clientName)
-            }
-        }
-        seamlessFavNumberList.addAll(data.favoriteNumbers)
-        postpaidClientNumberWidget.setFilterChipShimmer(false, data.favoriteNumbers.isEmpty())
-        postpaidClientNumberWidget.setFavoriteNumber(data.favoriteNumbers)
-        postpaidClientNumberWidget.setAutoCompleteList(data.favoriteNumbers)
+        // do nothing
     }
 
     override fun reloadSortFilterChip() {
-        getFavoriteNumber(
-            categoryIds = listOf(TelcoComponentType.FAV_NUMBER_POSTPAID.toString()),
-            oldCategoryId = TelcoComponentType.FAV_NUMBER_POSTPAID,
-            false
-        )
-    }
-
-    private fun performanceMonitoringStopTrace() {
-        if (!traceStop) {
-            performanceMonitoring.stopTrace()
-            traceStop = true
-        }
+        // do nothing
     }
 
     override fun showErrorCartDigital(message: String) {
@@ -636,24 +554,17 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
         private const val CACHE_CLIENT_NUMBER = "cache_client_number"
         private const val EXTRA_PARAM = "extra_param"
-        private const val DG_TELCO_POSTPAID_TRACE = "dg_telco_postpaid_pdp"
-        private const val TITLE_PAGE = "telco post paid"
 
-        private const val MINIMUM_OPERATOR_PREFIX = 4
-
-        private const val VALID_MIN_INPUT_NUMBER = 10
-        private const val VALID_MAX_INPUT_NUMBER = 14
+        private const val MINIMUM_OPERATOR_PREFIX = 2
 
         private const val INPUT_ACTION_TYPE_TRACKING_DELAY = 1000L
 
         fun newInstance(
-            telcoExtraParam: TopupBillsExtraParam,
-            rechargeProductFromSlice: String = ""
+            telcoExtraParam: TopupBillsExtraParam
         ): Fragment {
-            val fragment = DigitalTelcoPostpaidFragment()
+            val fragment = DigitalSignalFragment()
             val bundle = Bundle()
             bundle.putParcelable(EXTRA_PARAM, telcoExtraParam)
-            bundle.putString(RECHARGE_PRODUCT_EXTRA, rechargeProductFromSlice)
             fragment.arguments = bundle
             return fragment
         }

@@ -1,12 +1,14 @@
 <resources>
     <string name="app_name">digital_topup_bills</string>
-    <string name="digital_title_postpaid_page">Pascabayar</string>
+    <string name="c">Pascabayar</string>
     <string name="digital_title_fav_number">Nomor Favorit</string>
     <string name="error_message_contact_not_found">Aplikasi kontak tidak ditemukan</string>
     <string name="digital_btn_check_bill">Cek Tagihan</string>
     <string name="digital_title_details_bills">Detail Tagihan</string>
     <string name="telco_number_invalid_empty_string">Oops, yang ini belum diisi.</string>
     <string name="telco_content_desc_content_book">contact book</string>
-    <string name="digital_client_label">Nama Kontak atau Nomor HP</string>
+    <string name="digital_client_label_telco">Nama Kontak atau Nomor HP</string>
+    <string name="digital_client_label_signal">Kode Bayar</string>
     <string name="telco_number_error_prefix_not_found">Hmm, nggak ketemu provider-nya. Cek lagi, ya.</string>
+    <string name="signal_number_error_prefix_not_found">Hmm, pastikan nomornya benar. Cek lagi, ya.</string>
 </resources>
