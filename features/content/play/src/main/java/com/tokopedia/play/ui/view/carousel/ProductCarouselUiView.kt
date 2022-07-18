@@ -25,7 +25,14 @@ class ProductCarouselUiView(
 
     private val impressionSet = mutableSetOf<String>()
 
+    private var mPinnedPredicate: (PlayProductUiModel.Product) -> Boolean = { false }
+
     private val adapter = ProductCarouselAdapter(
+        dataSource = object : ProductCarouselAdapter.DataSource {
+            override fun isPinned(product: PlayProductUiModel.Product): Boolean {
+                return mPinnedPredicate(product)
+            }
+        },
         listener = object : ProductBasicViewHolder.Listener {
             override fun onClickProductCard(product: PlayProductUiModel.Product, position: Int) {
                 listener.onProductClicked(this@ProductCarouselUiView, product, position)
@@ -83,7 +90,18 @@ class ProductCarouselUiView(
         binding.rvProductFeatured.addOnScrollListener(scrollListener)
     }
 
-    fun setProducts(products: List<PlayProductUiModel.Product>) {
+    fun setPinnedPredicate(
+        pinnedPredicate: (PlayProductUiModel.Product) -> Boolean,
+    ) {
+        if (pinnedPredicate == mPinnedPredicate) return
+        mPinnedPredicate = pinnedPredicate
+
+        adapter.notifyItemRangeChanged(0, adapter.itemCount)
+    }
+
+    fun setProducts(
+        products: List<PlayProductUiModel.Product>,
+    ) {
         if (products == adapter.getItems()) return
 
         invalidateItemDecorations()

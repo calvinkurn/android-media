@@ -6,14 +6,17 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.databinding.ViewProductFeaturedBinding
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.ui.component.UiComponent
+import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.ui.view.carousel.ProductCarouselUiView
 import com.tokopedia.play.util.CachedState
+import com.tokopedia.play.util.isAnyChanged
 import com.tokopedia.play.util.isChanged
 import com.tokopedia.play.util.isNotChanged
 import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
+import com.tokopedia.play.view.uimodel.state.AddressWidgetUiState
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
 import com.tokopedia.play_common.delegate.reusableJob
 import com.tokopedia.play_common.eventbus.EventBus
@@ -88,15 +91,27 @@ class ProductCarouselUiComponent(
                 { it.bottomInsets },
                 { it.tagItems },
                 { it.status.channelStatus.statusType },
-                { it.address.shouldShow })) return
+                { it.partner.type },
+                { it.address })) return
 
         val tagItems = state.value.tagItems
 
         if (tagItems.resultState.isLoading && tagItems.product.productSectionList.isEmpty()) {
             setProductsJob = scope.launch { uiView.setLoading() }
-        } else if (state.isChanged { it.tagItems.product.productSectionList }) {
+        } else if (state.isAnyChanged(
+                { it.tagItems.product.productSectionList },
+                { it.address },
+                { it.partner.type })
+        ) {
             setProductsJob = scope.launch {
-                uiView.setProducts(getFeaturedProducts(state.value.tagItems))
+                val pinnedPredicate = getPinnedPredicate(
+                    state.value.address,
+                    state.value.partner.type,
+                )
+                uiView.setProducts(
+                    getFeaturedProducts(state.value.tagItems, pinnedPredicate),
+                )
+                uiView.setPinnedPredicate(pinnedPredicate)
             }
         }
 
@@ -112,11 +127,25 @@ class ProductCarouselUiComponent(
         else uiView.hide()
     }
 
+    private fun getPinnedPredicate(
+        address: AddressWidgetUiState,
+        partnerType: PartnerType,
+    ): (PlayProductUiModel.Product) -> Boolean {
+        return { product ->
+            product.isPinned &&
+                    !(product.isTokoNow &&
+                            address.warehouseInfo.isOOC &&
+                            partnerType == PartnerType.Tokopedia)
+        }
+    }
+
     private suspend fun getFeaturedProducts(
         tagItems: TagItemUiModel,
+        pinnedPredicate: (PlayProductUiModel.Product) -> Boolean,
     ): List<PlayProductUiModel.Product> = withContext(dispatchers.computation) {
         val pinnedProductSection = tagItems.product.productSectionList.firstOrNull {
-            it is ProductSectionUiModel.Section && it.productList.any { product -> product.isPinned }
+            it is ProductSectionUiModel.Section &&
+                    it.productList.any(pinnedPredicate)
         }
         val pinnedProduct = (pinnedProductSection as? ProductSectionUiModel.Section)?.productList
             ?.first { it.isPinned }
@@ -125,7 +154,7 @@ class ProductCarouselUiComponent(
             .filterIsInstance<ProductSectionUiModel.Section>()
             .flatMap { it.productList }
             .take(tagItems.maxFeatured)
-            .filter { !it.isPinned }
+            .filterNot(pinnedPredicate)
 
         return@withContext if (pinnedProduct != null) listOf(pinnedProduct) + featuredProducts
         else featuredProducts
