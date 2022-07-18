@@ -201,9 +201,9 @@ class ShopReviewFragment : ReadReviewFragment() {
 
                 val canScrollVertically = recyclerView.canScrollVertically(RecyclerView.NO_POSITION)
                 if (canScrollVertically && newState == RecyclerView.SCROLL_STATE_SETTLING) {
-                    reviewHeader?.reviewRatingContainer?.gone()
+                    reviewHeader?.getReviewRatingContainer()?.gone()
                 } else if (!canScrollVertically){
-                    reviewHeader?.reviewRatingContainer?.visible()
+                    reviewHeader?.getReviewRatingContainer()?.visible()
                 }
             }
         }

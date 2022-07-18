@@ -157,6 +157,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
                 }
             }
             tabsViewModel.onTabClick()
+            (fragment as DiscoveryFragment).currentTabPosition = tab.position + 1
             trackTabsGTMStatus(tab)
         }
         if (tab.customView != null && tab.customView is CustomViewCreator) {

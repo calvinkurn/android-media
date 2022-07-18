@@ -1,17 +1,20 @@
 package com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.viewholder
 
 import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.core.view.children
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodSummaryItemDetailInfo
 import com.tokopedia.tokofood.databinding.ItemPurchaseSummaryTransactionBinding
 import com.tokopedia.tokofood.databinding.SubItemPurchaseSummaryTransactionBinding
+import com.tokopedia.tokofood.feature.purchase.goneAllChildren
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseActionListener
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel
+import com.tokopedia.tokofood.feature.purchase.visibleAllChildren
 import com.tokopedia.unifycomponents.ImageUnify
 
 class TokoFoodPurchaseSummaryTransactionViewHolder(private val viewBinding: ItemPurchaseSummaryTransactionBinding,
@@ -25,10 +28,14 @@ class TokoFoodPurchaseSummaryTransactionViewHolder(private val viewBinding: Item
     override fun bind(element: TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel) {
         with(viewBinding) {
             if (element.isLoading) {
-                constraintTransactionLoading.visible()
+                constraintTransactionLoading.children.forEach {
+                    (it as? ViewGroup)?.visibleAllChildren()
+                }
                 containerTransactionItem.gone()
             } else {
-                constraintTransactionLoading.gone()
+                constraintTransactionLoading.children.forEach {
+                    (it as? ViewGroup)?.goneAllChildren()
+                }
                 containerTransactionItem.removeAllViews()
                 element.transactionList.forEach {
                     val summaryTransactionItem = SubItemPurchaseSummaryTransactionBinding.inflate(
