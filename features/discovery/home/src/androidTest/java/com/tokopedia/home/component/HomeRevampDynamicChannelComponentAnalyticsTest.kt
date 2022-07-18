@@ -456,7 +456,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     }
 
     @Test
-    fun testComponentBalanceWidget() {
+    fun testComponentWidgetBalance() {
         HomeDCCassavaTest {
             initTest()
             login2()
