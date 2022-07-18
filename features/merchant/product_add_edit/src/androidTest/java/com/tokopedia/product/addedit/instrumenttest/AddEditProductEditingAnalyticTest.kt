@@ -54,11 +54,7 @@ class AddEditProductEditingAnalyticTest {
         private const val PRODUCT_PREVIEW_PAGE_CLICK_BACK = "tracker/merchant/product_add_edit/edit/product_preview_page_click_back.json"
         private const val PRODUCT_PREVIEW_PAGE_CLICK_CHANGE_IMAGE = "tracker/merchant/product_add_edit/edit/product_preview_page_click_change_image.json"
         private const val PRODUCT_PREVIEW_PAGE_CLICK_CHANGE_VARIANT = "tracker/merchant/product_add_edit/edit/product_preview_page_click_change_variant.json"
-        private const val PRODUCT_PREVIEW_PAGE_CLICK_CHANGE_PROMOTION = "tracker/merchant/product_add_edit/edit/product_preview_page_click_change_promotion.json"
         private const val PRODUCT_PREVIEW_PAGE_CLICK_CHANGE_STATUS = "tracker/merchant/product_add_edit/edit/product_preview_page_click_change_status.json"
-
-        private const val PRODUCT_PROMOTION_PAGE_CLICK_BACK = "tracker/merchant/product_add_edit/edit/product_promotion_page_click_back.json"
-        private const val PRODUCT_PROMOTION_PAGE_CLICK_SAVE = "tracker/merchant/product_add_edit/edit/product_promotion_page_click_save.json"
     }
 
     @get:Rule
@@ -130,12 +126,7 @@ class AddEditProductEditingAnalyticTest {
         doAnalyticDebuggerTest(PRODUCT_PREVIEW_PAGE_CLICK_BACK)
         doAnalyticDebuggerTest(PRODUCT_PREVIEW_PAGE_CLICK_CHANGE_IMAGE)
         doAnalyticDebuggerTest(PRODUCT_PREVIEW_PAGE_CLICK_CHANGE_VARIANT)
-        doAnalyticDebuggerTest(PRODUCT_PREVIEW_PAGE_CLICK_CHANGE_PROMOTION)
         doAnalyticDebuggerTest(PRODUCT_PREVIEW_PAGE_CLICK_CHANGE_STATUS)
-
-        //promotion
-        doAnalyticDebuggerTest(PRODUCT_PROMOTION_PAGE_CLICK_BACK)
-        doAnalyticDebuggerTest(PRODUCT_PROMOTION_PAGE_CLICK_SAVE)
 
         activityRule.activity.finish()
     }
