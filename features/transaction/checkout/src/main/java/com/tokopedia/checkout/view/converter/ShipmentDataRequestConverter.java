@@ -155,6 +155,8 @@ public class ShipmentDataRequestConverter {
                     shopProductCheckout.setGiftingAddOnOrderLevel(convertGiftingAddOnModelRequest(shipmentCartItemModel.getAddOnsOrderLevelModel()));
                 }
 
+                shopProductCheckout.setFreeShippingMetadata(courierItemData.getFreeShippingMetadata());
+
                 return shopProductCheckout;
             }
             return null;

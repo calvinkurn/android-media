@@ -173,11 +173,11 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         assertEquals(ValidateUsePromoRequest(isSuggested = 0, skipApply = 0, cartType = "occmulti", state = "checkout",
-                orders = listOf(OrdersItem(shippingId = helper.logisticPromo.shipperId, spId = helper.logisticPromo.shipperProductId,
+                orders = listOf(OrdersItem(shippingId = helper.logisticPromo.shipperId, spId = helper.logisticPromo.shipperProductId, freeShippingMetadata = helper.logisticPromo.freeShippingMetadata,
                         codes = mutableListOf(helper.logisticPromo.promoCode),
                         shopId = helper.orderData.cart.shop.shopId, productDetails = listOf(ProductDetailsItem(helper.product.orderQuantity, helper.product.productId))))), validateUsePromoRequest)
         assertEquals(PromoRequest(cartType = "occmulti", state = "checkout",
-                orders = listOf(Order(isChecked = true, shippingId = helper.logisticPromo.shipperId, spId = helper.logisticPromo.shipperProductId,
+                orders = listOf(Order(isChecked = true, shippingId = helper.logisticPromo.shipperId, spId = helper.logisticPromo.shipperProductId, freeShippingMetadata = helper.logisticPromo.freeShippingMetadata,
                         codes = mutableListOf(helper.logisticPromo.promoCode),
                         shopId = helper.orderData.cart.shop.shopId, product_details = listOf(ProductDetail(helper.product.productId, helper.product.orderQuantity))))), promoRequest)
         assertEquals(1, bboCodes.size)

@@ -92,6 +92,11 @@ class GetRatesEstimateUseCase @Inject constructor(private val graphqlRepository:
                               title
                               desc
                               raw_shipping_rate
+                              free_shipping_bottomsheet{
+                                shipping_price
+                                eta_text
+                                raw_shipping_rate
+                              }
                               is_quota_empty
                           }
                           address {
@@ -153,6 +158,7 @@ class GetRatesEstimateUseCase @Inject constructor(private val graphqlRepository:
                                       recommend
                                       checksum
                                       ut
+                                      ui_rates_hidden
                                       price {
                                           price
                                           formatted_price
