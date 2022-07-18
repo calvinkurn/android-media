@@ -37,7 +37,7 @@ class BalanceWidgetViewHolder(itemView: View, val listener: HomeCategoryListener
 
     private fun setLayout(element: HomeBalanceModel) {
         val totalData = element.balanceDrawerItemModels.size
-        if (totalData <= THRESHOLD_MAX_BALANCE_WIDGET_ITEM) {
+        if (totalData in 1..THRESHOLD_MAX_BALANCE_WIDGET_ITEM) {
             if (binding?.rvBalanceWidgetData?.adapter == null) {
                 balanceAdapter =
                     BalanceAdapter(

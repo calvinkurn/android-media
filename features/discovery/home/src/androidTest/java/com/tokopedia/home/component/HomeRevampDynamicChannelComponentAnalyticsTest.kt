@@ -95,9 +95,8 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     }
 
     @Test
-    fun testBalanceWidget() {
+    fun testWidgetBalance() {
         HomeDCCassavaTest {
-            initTest()
             login()
             waitForData()
             doActivityTestByModelClass(dataModelClass = HomeHeaderDataModel::class) { viewHolder: RecyclerView.ViewHolder, _: Int ->

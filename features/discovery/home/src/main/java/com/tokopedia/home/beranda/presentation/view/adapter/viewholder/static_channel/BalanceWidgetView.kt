@@ -68,9 +68,13 @@ class BalanceWidgetView : FrameLayout {
                 balanceWidgetAdapter?.setVisitables(listOf(BalanceWidgetFailedModel()))
             }
             else -> {
-                balanceWidgetAdapter?.setVisitables(listOf(element))
-                rvBalance?.post {
-                    listener?.showBalanceWidgetCoachMark(element)
+                if (element.balanceDrawerItemModels.isNotEmpty()) {
+                    balanceWidgetAdapter?.setVisitables(listOf(element))
+                    rvBalance?.post {
+                        listener?.showBalanceWidgetCoachMark(element)
+                    }
+                } else {
+                    balanceWidgetAdapter?.setVisitables(listOf(BalanceShimmerModel()))
                 }
             }
         }
