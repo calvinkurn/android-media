@@ -28,6 +28,7 @@ class BalanceWidgetViewHolder(itemView: View, val listener: HomeCategoryListener
     companion object {
         var LAYOUT = R.layout.layout_balance_widget
         private const val FIRST_ITEM_DECORATION = 0
+        private const val THRESHOLD_MAX_BALANCE_WIDGET_ITEM = 3
     }
 
     override fun bind(element: HomeBalanceModel) {
@@ -36,71 +37,75 @@ class BalanceWidgetViewHolder(itemView: View, val listener: HomeCategoryListener
 
     private fun setLayout(element: HomeBalanceModel) {
         val totalData = element.balanceDrawerItemModels.size
-        if (binding?.rvBalanceWidget?.adapter == null) {
-            balanceAdapter =
-                BalanceAdapter(listener, object : DiffUtil.ItemCallback<BalanceDrawerItemModel>() {
-                    override fun areItemsTheSame(
-                        oldItem: BalanceDrawerItemModel,
-                        newItem: BalanceDrawerItemModel
-                    ): Boolean {
-                        return oldItem.state == newItem.state
-                    }
+        if (totalData in 1..THRESHOLD_MAX_BALANCE_WIDGET_ITEM) {
+            if (binding?.rvBalanceWidgetData?.adapter == null) {
+                balanceAdapter =
+                    BalanceAdapter(
+                        listener,
+                        object : DiffUtil.ItemCallback<BalanceDrawerItemModel>() {
+                            override fun areItemsTheSame(
+                                oldItem: BalanceDrawerItemModel,
+                                newItem: BalanceDrawerItemModel
+                            ): Boolean {
+                                return oldItem.state == newItem.state
+                            }
 
-                    override fun areContentsTheSame(
-                        oldItem: BalanceDrawerItemModel,
-                        newItem: BalanceDrawerItemModel
-                    ): Boolean {
-                        return oldItem == newItem
-                    }
-                })
-            binding?.rvBalanceWidget?.adapter = balanceAdapter
-        }
-        if (binding?.rvBalanceWidget?.itemDecorationCount == FIRST_ITEM_DECORATION) {
-            binding?.rvBalanceWidget?.addItemDecoration(
-                BalanceWidgetItemDecoration(
-                    totalData
+                            override fun areContentsTheSame(
+                                oldItem: BalanceDrawerItemModel,
+                                newItem: BalanceDrawerItemModel
+                            ): Boolean {
+                                return oldItem == newItem
+                            }
+                        })
+                binding?.rvBalanceWidgetData?.adapter = balanceAdapter
+            }
+            if (binding?.rvBalanceWidgetData?.itemDecorationCount == FIRST_ITEM_DECORATION) {
+                binding?.rvBalanceWidgetData?.addItemDecoration(
+                    BalanceWidgetItemDecoration(
+                        totalData
+                    )
                 )
-            )
-        } else {
-            binding?.rvBalanceWidget?.removeItemDecorationAt(FIRST_ITEM_DECORATION)
-            binding?.rvBalanceWidget?.addItemDecoration(
-                BalanceWidgetItemDecoration(
-                    totalData
+            } else {
+                binding?.rvBalanceWidgetData?.removeItemDecorationAt(FIRST_ITEM_DECORATION)
+                binding?.rvBalanceWidgetData?.addItemDecoration(
+                    BalanceWidgetItemDecoration(
+                        totalData
+                    )
                 )
-            )
-        }
-        val layoutManager = binding?.rvBalanceWidget?.layoutManager
-        if (layoutManager != null && layoutManager is NpaGridLayoutManager && layoutManager.spanCount != totalData) {
-            binding?.rvBalanceWidget?.layoutManager = getLayoutManager(totalData)
-            totalSpan = totalData
-        } else if (layoutManager == null) {
-            binding?.rvBalanceWidget?.layoutManager = getLayoutManager(totalData)
-            totalSpan = totalData
-        }
-        balanceAdapter?.setItemList(element)
+            }
+            val layoutManager = binding?.rvBalanceWidgetData?.layoutManager
+            if (layoutManager != null && layoutManager is NpaGridLayoutManager && layoutManager.spanCount != totalData) {
+                binding?.rvBalanceWidgetData?.layoutManager = getLayoutManager(totalData)
+                totalSpan = totalData
+            } else if (layoutManager == null) {
+                binding?.rvBalanceWidgetData?.layoutManager = getLayoutManager(totalData)
+                totalSpan = totalData
+            }
+            balanceAdapter?.setItemList(element)
 
-        //divider
-        if (binding?.rvBalanceDivider?.adapter == null) {
-            balanceDividerAdapter =
-                BalanceDividerAdapter(object : DiffUtil.ItemCallback<BalanceDividerModel>() {
-                    override fun areItemsTheSame(
-                        oldItem: BalanceDividerModel,
-                        newItem: BalanceDividerModel
-                    ): Boolean {
-                        return oldItem == newItem
-                    }
+            //divider
+            if (binding?.rvBalanceDivider?.adapter == null) {
+                balanceDividerAdapter =
+                    BalanceDividerAdapter(object : DiffUtil.ItemCallback<BalanceDividerModel>() {
+                        override fun areItemsTheSame(
+                            oldItem: BalanceDividerModel,
+                            newItem: BalanceDividerModel
+                        ): Boolean {
+                            return oldItem == newItem
+                        }
 
-                    override fun areContentsTheSame(
-                        oldItem: BalanceDividerModel,
-                        newItem: BalanceDividerModel
-                    ): Boolean {
-                        return oldItem.equals(newItem)
-                    }
-                })
-            binding?.rvBalanceDivider?.adapter = balanceDividerAdapter
+                        override fun areContentsTheSame(
+                            oldItem: BalanceDividerModel,
+                            newItem: BalanceDividerModel
+                        ): Boolean {
+                            return oldItem.equals(newItem)
+                        }
+                    })
+                binding?.rvBalanceDivider?.adapter = balanceDividerAdapter
+            }
+            binding?.rvBalanceDivider?.layoutManager = getLayoutManager(totalData)
+            balanceDividerAdapter?.addDivider(totalData)
         }
-        binding?.rvBalanceDivider?.layoutManager = getLayoutManager(totalData)
-        balanceDividerAdapter?.addDivider(totalData)
     }
 
     fun getSubscriptionView(): View? {

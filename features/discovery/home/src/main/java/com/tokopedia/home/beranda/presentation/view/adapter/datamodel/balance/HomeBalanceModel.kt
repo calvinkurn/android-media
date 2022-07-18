@@ -1,12 +1,10 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance
 
 import com.tokopedia.home.R
-import com.tokopedia.home.beranda.data.model.SubscriptionsCoachMarkData
 import com.tokopedia.home.beranda.data.model.SubscriptionsData
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerListHomeData
 import com.tokopedia.navigation_common.usecase.pojo.walletapp.WalletAppData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_ERROR
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_LOADING
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_SUCCESS
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_REWARDS
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_SUBSCRIPTION
@@ -107,16 +105,6 @@ data class HomeBalanceModel(
         )
     }
 
-    private fun getDefaultSubscriptionErrorState(headerTitle: String): BalanceDrawerItemModel {
-        return BalanceDrawerItemModel(
-            drawerItemType = TYPE_SUBSCRIPTION,
-            balanceTitleTextAttribute = getDefaultErrorTitleTextAttribute(),
-            balanceSubTitleTextAttribute = getDefaultErrorSubTItleTextAttribute(),
-            state = STATE_ERROR,
-            headerTitle = headerTitle
-        )
-    }
-
     private fun getDefaultErrorTitleTextAttribute(): BalanceTextAttribute {
         return BalanceTextAttribute(
             text = ERROR_TITLE,
@@ -182,10 +170,12 @@ data class HomeBalanceModel(
             flagStateCondition(
                     itemType = tokopointAnimDrawerContent.drawerItemType,
                     action = {
-                        if (position == DEFAULT_BALANCE_POSITION) {
+                        if (position == DEFAULT_BALANCE_POSITION &&
+                                balanceDrawerItemModels.none { it.drawerItemType == TYPE_REWARDS }) {
                             balanceDrawerItemModels.add(tokopointAnimDrawerContent)
                         }
-                        else if (balanceDrawerItemModels.size > position) {
+                        else if (balanceDrawerItemModels.size > position &&
+                            balanceDrawerItemModels[position].drawerItemType == TYPE_REWARDS) {
                             balanceDrawerItemModels[position] = tokopointAnimDrawerContent
                         }
                     }
@@ -202,23 +192,28 @@ data class HomeBalanceModel(
 
     private fun mapSubscriptions(subscriptionData: SubscriptionsData, headerTitle: String) {
         subscriptionData.drawerList.map {
-            val drawerSubscription = it.mapToHomeBalanceItemModel(
-                state = STATE_SUCCESS,
-                headerTitle = headerTitle,
-                isSubscriber = subscriptionData.isSubscriber,
-                drawerItemType = TYPE_SUBSCRIPTION)
-            val coachMarkData =
-                if (subscriptionData.subscriptionsCoachMarkList.isNotEmpty() && subscriptionData.subscriptionsCoachMarkList[FIRST_DATA_POSITION].coachMark.isNotEmpty()) {
-                    val subscriptionCoachmarkData =
-                        subscriptionData.subscriptionsCoachMarkList[FIRST_DATA_POSITION].coachMark[FIRST_DATA_POSITION]
-                    BalanceCoachmark(
-                        description = subscriptionCoachmarkData.content,
-                        title = subscriptionCoachmarkData.title,
-                        isShown = subscriptionCoachmarkData.isShown
-                    )
-                } else BalanceCoachmark()
-            drawerSubscription.balanceCoachmark = coachMarkData
-            balanceDrawerItemModels.add(drawerSubscription)
+            if (subscriptionData.isShown) {
+                val drawerSubscription = it.mapToHomeBalanceItemModel(
+                    state = STATE_SUCCESS,
+                    headerTitle = headerTitle,
+                    isSubscriber = subscriptionData.isSubscriber,
+                    drawerItemType = TYPE_SUBSCRIPTION
+                )
+                val coachMarkData =
+                    if (subscriptionData.subscriptionsCoachMarkList.isNotEmpty() && subscriptionData.subscriptionsCoachMarkList[FIRST_DATA_POSITION].coachMark.isNotEmpty()) {
+                        val subscriptionCoachmarkData =
+                            subscriptionData.subscriptionsCoachMarkList[FIRST_DATA_POSITION].coachMark[FIRST_DATA_POSITION]
+                        BalanceCoachmark(
+                            description = subscriptionCoachmarkData.content,
+                            title = subscriptionCoachmarkData.title,
+                            isShown = subscriptionCoachmarkData.isShown
+                        )
+                    } else BalanceCoachmark()
+                drawerSubscription.balanceCoachmark = coachMarkData
+                if (balanceDrawerItemModels.none { drawer -> drawer.drawerItemType == TYPE_SUBSCRIPTION }) {
+                    balanceDrawerItemModels.add(drawerSubscription)
+                }
+            }
         }
     }
 
@@ -240,9 +235,13 @@ data class HomeBalanceModel(
                     flagStateCondition(
                         itemType = balance.drawerItemType,
                         action = {
-                            if (position == DEFAULT_BALANCE_POSITION) {
+                            if (position == DEFAULT_BALANCE_POSITION &&
+                                balanceDrawerItemModels.none { it.drawerItemType == TYPE_WALLET_APP_LINKED
+                                        || it.drawerItemType == TYPE_WALLET_APP_NOT_LINKED }) {
                                 balanceDrawerItemModels.add(balance)
-                            } else if (balanceDrawerItemModels.size > position) {
+                            } else if (balanceDrawerItemModels.size > position &&
+                                (balanceDrawerItemModels[position].drawerItemType == TYPE_WALLET_APP_LINKED ||
+                                        balanceDrawerItemModels[position].drawerItemType == TYPE_WALLET_APP_NOT_LINKED)) {
                                 balanceDrawerItemModels[position] = balance
                             }
                         }

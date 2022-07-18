@@ -27,17 +27,6 @@
     },
     {
       "event": "clickHomepage",
-      "eventAction": "click on gopay section - sambungkan",
-      "eventCategory": "homepage-tokopoints",
-      "eventLabel": "",
-      "businessUnit": "home & browse",
-      "currentSite": "tokopediamarketplace",
-      "userId": ".*",
-      "sessionIris": ".*",
-      "clientId": ".*"
-    },
-    {
-      "event": "clickHomepage",
       "eventAction": "click on gopay section - gopaypoints",
       "eventCategory": "homepage-tokopoints",
       "eventLabel": "",

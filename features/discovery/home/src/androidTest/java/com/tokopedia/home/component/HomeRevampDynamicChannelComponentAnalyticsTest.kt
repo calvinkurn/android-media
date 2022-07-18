@@ -22,6 +22,7 @@ import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
@@ -92,6 +93,20 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         }
         IdlingRegistry.getInstance().unregister(homeRecyclerViewIdlingResource)
     }
+
+//    @Test
+//    fun testWidgetBalance() {
+//        HomeDCCassavaTest {
+//            login()
+//            waitForData()
+//            doActivityTestByModelClass(dataModelClass = HomeHeaderDataModel::class) { viewHolder: RecyclerView.ViewHolder, _: Int ->
+//                actionOnBalanceWidget(viewHolder)
+//            }
+//        } validateAnalytics {
+//            addDebugEnd()
+//            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BALANCE_WIDGET)
+//        }
+//    }
 
     @Test
     fun testComponentProductHighlight() {

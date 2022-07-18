@@ -66,7 +66,7 @@ class BalanceViewHolder(v: View) : RecyclerView.ViewHolder(v) {
                     binding?.homeTvReserveBalance?.setTextColor(
                         ContextCompat.getColor(
                             itemView.context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_GN400
+                            com.tokopedia.unifyprinciples.R.color.Unify_GN500
                         )
                     )
                     subscriptionViewCoachMark = binding?.homeTvReserveBalance
@@ -97,7 +97,7 @@ class BalanceViewHolder(v: View) : RecyclerView.ViewHolder(v) {
                 binding?.homeTvReserveBalance?.setTextColor(
                     ContextCompat.getColor(
                         itemView.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_GN400
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
                     )
                 )
                 binding?.homeTvReserveBalance?.setWeight(Typography.BOLD)
