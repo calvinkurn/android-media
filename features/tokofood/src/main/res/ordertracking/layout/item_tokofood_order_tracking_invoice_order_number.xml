@@ -24,13 +24,21 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="@id/tvInvoiceNumberLabel"
         app:layout_constraintBottom_toBottomOf="@id/tvInvoiceNumberLabel"
+        app:layout_constraintStart_toEndOf="@id/guidelineInvoiceNumber"
         app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="end"
         app:typographyType="display_3"
         app:typographyWeight="bold"
         android:textColor="@color/Unify_GN500"
-        android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         tools:text="INV/20181011/XVI/X/55069657"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineInvoiceNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.2"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvOrderNumberLabel"
