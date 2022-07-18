@@ -14,6 +14,7 @@
     <string name="sfs_save_as_draft">Simpan Sebagai Draft</string>
     <string name="sfs_ok">Oke</string>
     <string name="sfs_saved_as_draft">Campaign berhasil disimpan sebagai draft.</string>
+    <string name="sfs_edit_campaign_success">Campaign berhasil disimpan.</string>
     <string name="sfs_placeholder_percent">%d\%%</string>
     <string name="sfs_save_changes">Simpan Perubahan</string>
     <string name="sfs_save">Simpan</string>

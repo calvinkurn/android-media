@@ -294,8 +294,13 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
         listener?.onSaveDraftSuccess()
     }
 
+    fun showEditCampaignSuccessInActiveTab() {
+        listener?.onEditCampaignSuccess()
+    }
+
     interface ActiveCampaignListListener {
         fun onSaveDraftSuccess()
+        fun onEditCampaignSuccess()
     }
 
     private fun handleSellerEligibility(isEligible: Boolean) {

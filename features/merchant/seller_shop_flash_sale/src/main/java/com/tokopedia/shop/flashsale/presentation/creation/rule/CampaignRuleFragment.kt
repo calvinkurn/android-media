@@ -33,6 +33,7 @@ import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignRuleBinding
 import com.tokopedia.shop.flashsale.common.constant.BundleConstant
 import com.tokopedia.shop.flashsale.common.extension.disable
+import com.tokopedia.shop.flashsale.common.extension.doOnDelayFinished
 import com.tokopedia.shop.flashsale.common.extension.enable
 import com.tokopedia.shop.flashsale.common.extension.setFragmentToUnifyBgColor
 import com.tokopedia.shop.flashsale.common.extension.showError
@@ -75,6 +76,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
     companion object {
         private const val FOURTH_STEP = 4
         private const val RELATED_CAMPAIGN_OFFSET_DP = 8
+        private const val REDIRECTION_TO_CAMPAIGN_LIST_PAGE_DELAY : Long = 1000
 
         @JvmStatic
         fun newInstance(campaignId: Long, pageMode: PageMode): CampaignRuleFragment {
@@ -707,7 +709,15 @@ class CampaignRuleFragment : BaseDaggerFragment(),
 
     private fun routeToCampaignListPage(isSaveDraft: Boolean = false) {
         val context = context ?: return
-        CampaignListActivity.start(context, isSaveDraft = isSaveDraft, isClearTop = true)
+
+        //Add some spare time caused by Backend write operation delay
+        doOnDelayFinished(REDIRECTION_TO_CAMPAIGN_LIST_PAGE_DELAY) {
+            CampaignListActivity.start(
+                context,
+                isSaveDraft = isSaveDraft,
+                pageMode
+            )
+        }
     }
 
     private fun observeAddRelatedCampaignButtonEvent() {

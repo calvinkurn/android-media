@@ -43,7 +43,6 @@ import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant
 import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant.CAMPAIGN_TEASER_MULTIPLIED_STEP_SIZE
 import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant.CAMPAIGN_TEASER_NORMAL_STEP_SIZE
 import com.tokopedia.shop.flashsale.common.extension.advanceDayBy
-import com.tokopedia.shop.flashsale.common.extension.advanceHourBy
 import com.tokopedia.shop.flashsale.common.extension.advanceMinuteBy
 import com.tokopedia.shop.flashsale.common.extension.advanceMonthBy
 import com.tokopedia.shop.flashsale.common.extension.decreaseHourBy
@@ -867,7 +866,11 @@ class CampaignInformationFragment : BaseDaggerFragment() {
                 activity?.apply {
                     // handle campaign save draft is not opened from campaign list case
                     if (pageMode == PageMode.UPDATE) {
-                        CampaignListActivity.start(this, isSaveDraft = true)
+                        CampaignListActivity.start(
+                            this,
+                            isSaveDraft = true,
+                            previousPageMode = pageMode
+                        )
                     } else {
                         setResult(Activity.RESULT_OK)
                         finish()
