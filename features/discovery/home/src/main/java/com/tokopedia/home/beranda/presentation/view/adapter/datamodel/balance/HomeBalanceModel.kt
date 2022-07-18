@@ -190,23 +190,26 @@ data class HomeBalanceModel(
 
     private fun mapSubscriptions(subscriptionData: SubscriptionsData, headerTitle: String) {
         subscriptionData.drawerList.map {
-            val drawerSubscription = it.mapToHomeBalanceItemModel(
-                state = STATE_SUCCESS,
-                headerTitle = headerTitle,
-                isSubscriber = subscriptionData.isSubscriber,
-                drawerItemType = TYPE_SUBSCRIPTION)
-            val coachMarkData =
-                if (subscriptionData.subscriptionsCoachMarkList.isNotEmpty() && subscriptionData.subscriptionsCoachMarkList[FIRST_DATA_POSITION].coachMark.isNotEmpty()) {
-                    val subscriptionCoachmarkData =
-                        subscriptionData.subscriptionsCoachMarkList[FIRST_DATA_POSITION].coachMark[FIRST_DATA_POSITION]
-                    BalanceCoachmark(
-                        description = subscriptionCoachmarkData.content,
-                        title = subscriptionCoachmarkData.title,
-                        isShown = subscriptionCoachmarkData.isShown
-                    )
-                } else BalanceCoachmark()
-            drawerSubscription.balanceCoachmark = coachMarkData
-            balanceDrawerItemModels.add(drawerSubscription)
+            if (subscriptionData.isShown) {
+                val drawerSubscription = it.mapToHomeBalanceItemModel(
+                    state = STATE_SUCCESS,
+                    headerTitle = headerTitle,
+                    isSubscriber = subscriptionData.isSubscriber,
+                    drawerItemType = TYPE_SUBSCRIPTION
+                )
+                val coachMarkData =
+                    if (subscriptionData.subscriptionsCoachMarkList.isNotEmpty() && subscriptionData.subscriptionsCoachMarkList[FIRST_DATA_POSITION].coachMark.isNotEmpty()) {
+                        val subscriptionCoachmarkData =
+                            subscriptionData.subscriptionsCoachMarkList[FIRST_DATA_POSITION].coachMark[FIRST_DATA_POSITION]
+                        BalanceCoachmark(
+                            description = subscriptionCoachmarkData.content,
+                            title = subscriptionCoachmarkData.title,
+                            isShown = subscriptionCoachmarkData.isShown
+                        )
+                    } else BalanceCoachmark()
+                drawerSubscription.balanceCoachmark = coachMarkData
+                balanceDrawerItemModels.add(drawerSubscription)
+            }
         }
     }
 
