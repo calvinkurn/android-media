@@ -219,6 +219,7 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
                         it.getTradeInDetail.errCode.toString()
                     )
                 } else {
+                    tradeInAnalytics.errorScreen(it.getTradeInDetail.errMessage, viewModel.tradeInDetailLiveData.value?.getTradeInDetail?.deviceAttribute)
                     onTradeInDetailSuccess(it)
                     showToast(it.getTradeInDetail.errMessage, getString(R.string.tradein_ok), {
                         activity?.finish()
