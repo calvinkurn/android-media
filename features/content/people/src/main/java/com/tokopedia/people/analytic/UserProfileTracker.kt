@@ -585,8 +585,8 @@ class UserProfileTracker @Inject constructor() {
 
     fun clickLanjutOnBoardingBottomSheetWithUsername(userId: String){
         val map = mutableMapOf<String, Any>()
-        map[UserProfileAnalytics.Constants.EVENT] = UserProfileAnalytics.Event.EVENT_VIEW_HOME_PAGE
-        map[UserProfileAnalytics.Constants.EVENT_ACTION] = UserProfileAnalytics.Action.IMPRESSION_ONBOARDING_BOTTOMSHEET_WITH_USERNAME
+        map[UserProfileAnalytics.Constants.EVENT] = UserProfileAnalytics.Event.EVENT_CLICK_HOME_PAGE
+        map[UserProfileAnalytics.Constants.EVENT_ACTION] = UserProfileAnalytics.Action.CLICK_LANJUT_ONBOARDING_BOTTOMSHEET_WITH_USERNAME
         map[UserProfileAnalytics.Constants.EVENT_CATEGORY] = UserProfileAnalytics.Category.FEED_USER_PROFILE_ONBOARDING_BOTTOMSHEET
         map[UserProfileAnalytics.Constants.EVENT_LABEL] = userId
         
@@ -611,8 +611,8 @@ class UserProfileTracker @Inject constructor() {
 
     fun clickLanjutOnBoardingBottomSheetWithoutUsername(userId: String){
         val map = mutableMapOf<String, Any>()
-        map[UserProfileAnalytics.Constants.EVENT] = UserProfileAnalytics.Event.EVENT_VIEW_HOME_PAGE
-        map[UserProfileAnalytics.Constants.EVENT_ACTION] = UserProfileAnalytics.Action.IMPRESSION_ONBOARDING_BOTTOMSHEET_WITHOUT_USERNAME
+        map[UserProfileAnalytics.Constants.EVENT] = UserProfileAnalytics.Event.EVENT_CLICK_HOME_PAGE
+        map[UserProfileAnalytics.Constants.EVENT_ACTION] = UserProfileAnalytics.Action.CLICK_LANJUT_ONBOARDING_BOTTOMSHEET_WITHOUT_USERNAME
         map[UserProfileAnalytics.Constants.EVENT_CATEGORY] = UserProfileAnalytics.Category.FEED_USER_PROFILE_ONBOARDING_BOTTOMSHEET
         map[UserProfileAnalytics.Constants.EVENT_LABEL] = userId
         

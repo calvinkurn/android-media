@@ -76,19 +76,29 @@ class FeedUGCOnboardingParentFragment @Inject constructor(
                     override fun onSuccess() {
                         mListener?.onSuccess()
                     }
+
+                    override fun clickNextWithUsername() {
+                        mListener?.clickNextWithUsername()
+                    }
+
+                    override fun clickNextWithoutUsername() {
+                        mListener?.clickNextWithoutUsername()
+                    }
                 })
             }
         }
     }
 
     private fun showBottomSheet() {
-        if(usernameArg.isEmpty()) {
+        if(usernameArg.isNotEmpty()) {
+            mListener?.impressOnboardingWithoutUsername()
             FeedUserCompleteOnboardingBottomSheet.getFragment(
                 childFragmentManager,
                 requireContext().classLoader
             ).showNow(childFragmentManager)
         }
         else {
+            mListener?.impressOnboardingWithUsername()
             FeedUserTnCOnboardingBottomSheet.getFragment(
                 childFragmentManager,
                 requireContext().classLoader
@@ -102,6 +112,10 @@ class FeedUGCOnboardingParentFragment @Inject constructor(
 
     interface Listener {
         fun onSuccess()
+        fun impressOnboardingWithUsername()
+        fun impressOnboardingWithoutUsername()
+        fun clickNextWithUsername()
+        fun clickNextWithoutUsername()
     }
 
     companion object {

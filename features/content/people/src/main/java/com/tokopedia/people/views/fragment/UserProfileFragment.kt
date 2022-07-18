@@ -215,6 +215,30 @@ class UserProfileFragment @Inject constructor(
                         submitAction(UserProfileAction.LoadProfile())
                         goToCreatePostPage()
                     }
+
+                    override fun impressOnboardingWithUsername() {
+                        UserProfileTracker().impressionOnBoardingBottomSheetWithUsername(
+                            viewModel.profileUserID
+                        )
+                    }
+
+                    override fun impressOnboardingWithoutUsername() {
+                        UserProfileTracker().impressionOnBoardingBottomSheetWithoutUsername(
+                            viewModel.profileUserID
+                        )
+                    }
+
+                    override fun clickNextWithUsername() {
+                        UserProfileTracker().clickLanjutOnBoardingBottomSheetWithUsername(
+                            viewModel.profileUserID
+                        )
+                    }
+
+                    override fun clickNextWithoutUsername() {
+                        UserProfileTracker().clickLanjutOnBoardingBottomSheetWithoutUsername(
+                            viewModel.profileUserID
+                        )
+                    }
                 })
             }
         }
