@@ -4,13 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
+import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.people.Resources
 import com.tokopedia.people.Success
-import com.tokopedia.people.model.UserPostModel
-import kotlinx.coroutines.Dispatchers
-import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.people.domains.repository.UserProfileRepository
+import com.tokopedia.people.model.UserPostModel
 import com.tokopedia.people.views.uimodel.MutationUiModel
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
@@ -21,7 +21,12 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.update
 
 class UserProfileViewModel @AssistedInject constructor(
     @Assisted private val username: String,
@@ -85,11 +90,15 @@ class UserProfileViewModel @AssistedInject constructor(
     val needOnboarding: Boolean
         get() = _profileWhitelist.value.hasAcceptTnc.not()
 
+    private var _isShopRecomShow: Boolean = false
+    val isShopRecomShow: Boolean get() = _isShopRecomShow
+
     private val _savedReminderData = MutableStateFlow<SavedReminderData>(SavedReminderData.NoData)
     private val _profileInfo = MutableStateFlow(ProfileUiModel.Empty)
     private val _followInfo = MutableStateFlow(FollowInfoUiModel.Empty)
     private val _profileWhitelist = MutableStateFlow(ProfileWhitelistUiModel.Empty)
     private val _profileType = MutableStateFlow(ProfileType.Unknown)
+    private val _shopRecom = MutableStateFlow(emptyList<ShopRecomUiModelItem>())
 
     private val _uiEvent = MutableSharedFlow<UserProfileUiEvent>()
 
@@ -101,23 +110,27 @@ class UserProfileViewModel @AssistedInject constructor(
         _followInfo,
         _profileType,
         _profileWhitelist,
-    ) { profileInfo, followInfo, profileType, profileWhitelist ->
+        _shopRecom,
+    ) { profileInfo, followInfo, profileType, profileWhitelist, shopRecom ->
         UserProfileUiState(
             profileInfo = profileInfo,
             followInfo = followInfo,
             profileType = profileType,
             profileWhitelist = profileWhitelist,
+            shopRecom = shopRecom
         )
     }
 
     fun submitAction(action: UserProfileAction) {
-        when(action) {
+        when (action) {
             is UserProfileAction.LoadProfile -> handleLoadProfile(action.isRefresh)
             is UserProfileAction.LoadPlayVideo -> handleLoadPlayVideo(action.cursor)
             is UserProfileAction.ClickFollowButton -> handleClickFollowButton(action.isFromLogin)
             is UserProfileAction.ClickUpdateReminder -> handleClickUpdateReminder(action.isFromLogin)
             is UserProfileAction.SaveReminderActivityResult -> handleSaveReminderActivityResult(action.channelId, action.position, action.isActive)
             is UserProfileAction.RemoveReminderActivityResult -> handleRemoveReminderActivityResult()
+            is UserProfileAction.ClickFollowButtonShopRecom -> handleClickFollowButtonShopRecom(action.itemID)
+            is UserProfileAction.RemoveShopRecomItem -> handleRemoveShopRecomItem(action.itemID)
         }
     }
 
@@ -137,9 +150,8 @@ class UserProfileViewModel @AssistedInject constructor(
     private fun handleLoadPlayVideo(cursor: String) {
         viewModelScope.launchCatchError(block = {
             val data = repo.getPlayVideo(profileUserID, cursor)
-            if (data != null) {
-                playPostContent.value = Success(data)
-            } else throw NullPointerException("data is null")
+            if (data != null) playPostContent.value = Success(data)
+            else throw NullPointerException("data is null")
         }, onError = {
             userPostError.value = it
         })
@@ -147,9 +159,7 @@ class UserProfileViewModel @AssistedInject constructor(
 
     private fun handleClickFollowButton(isFromLogin: Boolean) {
         viewModelScope.launchCatchError(block = {
-            if(isFromLogin) {
-                loadProfileInfo(false)
-            }
+            if (isFromLogin) loadProfileInfo(false)
 
             val followInfo = _followInfo.value
 
@@ -175,9 +185,7 @@ class UserProfileViewModel @AssistedInject constructor(
 
     private fun handleClickUpdateReminder(isFromLogin: Boolean) {
         viewModelScope.launchCatchError(block = {
-            if(isFromLogin) {
-                loadProfileInfo(false)
-            }
+            if (isFromLogin) loadProfileInfo(false)
 
             val data = _savedReminderData.value
 
@@ -217,6 +225,38 @@ class UserProfileViewModel @AssistedInject constructor(
         _savedReminderData.update { SavedReminderData.NoData }
     }
 
+    private fun handleClickFollowButtonShopRecom(itemID: Long) {
+        viewModelScope.launchCatchError(block = {
+
+            val followInfo = _followInfo.value
+            val currItem = _shopRecom.value.find { it.id == itemID } ?: return@launchCatchError
+
+            val result = if (currItem.isFollow) repo.unFollowProfile(currItem.encryptedID)
+            else repo.followProfile(currItem.encryptedID)
+
+            when (result) {
+                is MutationUiModel.Success -> {
+                    _profileInfo.update { repo.getProfile(followInfo.userID) }
+                    _shopRecom.update {
+                        _shopRecom.value.map {
+                            if (itemID == it.id) it.copy(isFollow = !it.isFollow)
+                            else it
+                        }
+                    }
+                }
+                is MutationUiModel.Error -> {
+                    _uiEvent.emit(UserProfileUiEvent.ErrorFollowUnfollow(result.message))
+                }
+            }
+        }, onError = {
+            _uiEvent.emit(UserProfileUiEvent.ErrorFollowUnfollow(""))
+        })
+    }
+
+    private fun handleRemoveShopRecomItem(itemID: Long) {
+        _shopRecom.update { _shopRecom.value.filterNot { it.id == itemID } }
+    }
+
     /** Helper */
     private suspend fun loadProfileInfo(isRefresh: Boolean) {
         val deferredProfileInfo = viewModelScope.asyncCatchError(block = {
@@ -246,8 +286,9 @@ class UserProfileViewModel @AssistedInject constructor(
         _followInfo.update { followInfo }
         _profileType.update { profileType }
 
-        if(profileType == ProfileType.Self) {
-            _profileWhitelist.update {  repo.getWhitelist() }
+        if (profileType == ProfileType.Self) {
+            _profileWhitelist.update { repo.getWhitelist() }
+            loadShopRecom()
         }
 
         /**
@@ -256,4 +297,12 @@ class UserProfileViewModel @AssistedInject constructor(
          * */
         userPost.value = isRefresh
     }
+
+    private suspend fun loadShopRecom() {
+        val result = repo.getShopRecom()
+        _isShopRecomShow = result.isShown
+        if (result.isShown) _shopRecom.emit(result.items)
+        else _shopRecom.emit(emptyList())
+    }
+
 }

@@ -12,13 +12,18 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.feedcomponent.onboarding.view.fragment.FeedUGCOnboardingParentFragment
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
+import com.tokopedia.feedcomponent.view.widget.shoprecom.adapter.ShopRecomAdapter
+import com.tokopedia.feedcomponent.view.widget.shoprecom.decor.ShopRecomItemDecoration
+import com.tokopedia.feedcomponent.view.widget.shoprecom.listener.ShopRecommendationCallback
 import com.tokopedia.globalerror.GlobalError.Companion.NO_CONNECTION
 import com.tokopedia.globalerror.GlobalError.Companion.PAGE_FULL
 import com.tokopedia.globalerror.GlobalError.Companion.PAGE_NOT_FOUND
@@ -26,7 +31,12 @@ import com.tokopedia.globalerror.GlobalError.Companion.SERVER_ERROR
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.clearImage
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
@@ -35,12 +45,29 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.linker.share.DataMapper
-import com.tokopedia.people.*
+import com.tokopedia.people.ErrorMessage
+import com.tokopedia.people.Loading
 import com.tokopedia.people.R
-import com.tokopedia.people.views.itemdecoration.GridSpacingItemDecoration
+import com.tokopedia.people.Success
+import com.tokopedia.people.analytic.UserProfileTracker
+import com.tokopedia.people.databinding.UpFragmentUserProfileBinding
+import com.tokopedia.people.databinding.UpLayoutUserProfileHeaderBinding
+import com.tokopedia.people.utils.showErrorToast
+import com.tokopedia.people.utils.showToast
+import com.tokopedia.people.utils.withCache
 import com.tokopedia.people.viewmodels.UserProfileViewModel
+import com.tokopedia.people.viewmodels.factory.UserProfileViewModelFactory
+import com.tokopedia.people.views.activity.FollowerFollowingListingActivity
 import com.tokopedia.people.views.activity.UserProfileActivity.Companion.EXTRA_USERNAME
-import com.tokopedia.unifycomponents.*
+import com.tokopedia.people.views.adapter.UserPostBaseAdapter
+import com.tokopedia.people.views.itemdecoration.GridSpacingItemDecoration
+import com.tokopedia.people.views.uimodel.action.UserProfileAction
+import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
+import com.tokopedia.people.views.uimodel.profile.ProfileType
+import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
+import com.tokopedia.people.views.uimodel.state.UserProfileUiState
+import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
@@ -49,28 +76,13 @@ import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListe
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
-import com.tokopedia.people.views.activity.FollowerFollowingListingActivity
-import com.tokopedia.people.views.adapter.UserPostBaseAdapter
-import com.tokopedia.people.analytic.UserProfileTracker
-import com.tokopedia.people.databinding.UpFragmentUserProfileBinding
-import com.tokopedia.people.databinding.UpLayoutUserProfileHeaderBinding
-import com.tokopedia.people.utils.showErrorToast
-import com.tokopedia.people.utils.showToast
-import com.tokopedia.people.utils.withCache
-import com.tokopedia.people.viewmodels.factory.UserProfileViewModelFactory
-import com.tokopedia.people.views.uimodel.action.UserProfileAction
-import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
-import com.tokopedia.people.views.uimodel.profile.ProfileType
-import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
-import com.tokopedia.people.views.uimodel.state.UserProfileUiState
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
-import com.tokopedia.unifyprinciples.R as unifyR
 import com.tokopedia.feedcomponent.R as feedComponentR
-import com.tokopedia.feedcomponent.onboarding.view.fragment.FeedUGCOnboardingParentFragment
+import com.tokopedia.unifyprinciples.R as unifyR
 
 class UserProfileFragment @Inject constructor(
     private val viewModelFactoryCreator: UserProfileViewModelFactory.Creator,
@@ -83,7 +95,12 @@ class UserProfileFragment @Inject constructor(
     ScreenShotListener,
     PermissionListener,
     UserPostBaseAdapter.PlayWidgetCallback,
+    ShopRecommendationCallback,
     FeedPlusContainerListener {
+
+    private val linearLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
+        LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+    }
 
     private val gridLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
         GridLayoutManager(activity, 2)
@@ -105,7 +122,11 @@ class UserProfileFragment @Inject constructor(
 
     private lateinit var viewModel: UserProfileViewModel
 
-    private val mAdapter: UserPostBaseAdapter by lazy {
+    private val mAdapterShopRecom: ShopRecomAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        ShopRecomAdapter(this)
+    }
+
+    private val mAdapter: UserPostBaseAdapter by lazy(LazyThreadSafetyMode.NONE) {
         UserPostBaseAdapter(this, this) { cursor ->
             submitAction(UserProfileAction.LoadPlayVideo(cursor))
         }
@@ -137,6 +158,7 @@ class UserProfileFragment @Inject constructor(
 
         initObserver()
         initListener()
+        initShopRecommendation()
         setHeader()
 
         if (arguments == null || requireArguments().getString(EXTRA_USERNAME).isNullOrBlank()) {
@@ -145,6 +167,7 @@ class UserProfileFragment @Inject constructor(
         }
 
         mainBinding.swipeRefreshLayout.setOnRefreshListener {
+            if (viewModel.isShopRecomShow) showLoadingShopRecom()
             refreshLandingPageData(true)
         }
 
@@ -249,6 +272,12 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
+    private fun initShopRecommendation() = with(mainBinding.shopRecommendation.rvShopRecom) {
+        layoutManager = linearLayoutManager
+        adapter = mAdapterShopRecom
+        if (itemDecorationCount == 0) addItemDecoration(ShopRecomItemDecoration(requireContext()))
+    }
+
     private fun initUserPost(userId: String) {
         gridLayoutManager.spanSizeLookup = getSpanSizeLookUp()
 
@@ -291,6 +320,7 @@ class UserProfileFragment @Inject constructor(
                 renderButtonAction(it.prevValue, it.value)
                 renderCreatePostButton(it.prevValue, it.value)
                 renderProfileReminder(it.prevValue, it.value)
+                renderShopRecom(it.prevValue, it.value)
             }
         }
     }
@@ -489,6 +519,36 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
+    private fun renderShopRecom(
+        prev: UserProfileUiState?,
+        value: UserProfileUiState
+    ) {
+        if (prev?.shopRecom == value.shopRecom) return
+
+        mAdapterShopRecom.updateData(value.shopRecom)
+
+        if (value.shopRecom.isEmpty()) showEmptyShopRecom()
+        else showContentShopRecom()
+    }
+
+    private fun showLoadingShopRecom() = with(mainBinding.shopRecommendation) {
+        txtWordingFollow.hide()
+        rvShopRecom.hide()
+        shimmerShopRecom.root.show()
+    }
+
+    private fun showContentShopRecom() = with(mainBinding.shopRecommendation) {
+        txtWordingFollow.show()
+        rvShopRecom.show()
+        shimmerShopRecom.root.hide()
+    }
+
+    private fun showEmptyShopRecom() = with(mainBinding.shopRecommendation) {
+        txtWordingFollow.hide()
+        rvShopRecom.hide()
+        shimmerShopRecom.root.hide()
+    }
+
     private fun buttonActionUIFollow() = with(mainBinding.btnAction) {
         text = getString(R.string.up_btn_text_following)
         buttonVariant = UnifyButton.Variant.GHOST
@@ -651,6 +711,18 @@ class UserProfileFragment @Inject constructor(
         return bundle
     }
 
+    override fun onShopRecomCloseClicked(itemID: Long) {
+        submitAction(UserProfileAction.RemoveShopRecomItem(itemID))
+    }
+
+    override fun onShopRecomFollowClicked(itemID: Long) {
+        submitAction(UserProfileAction.ClickFollowButtonShopRecom(itemID))
+    }
+
+    override fun onShopRecomItemClicked(itemID: Long, appLink: String) {
+        RouteManager.route(requireContext(), appLink)
+    }
+
     override fun onRetryPageLoad(pageNumber: Int) {
 
     }
@@ -716,7 +788,7 @@ class UserProfileFragment @Inject constructor(
             )
             setOgImageUrl(viewModel.profileCover)
         }
-        universalShareBottomSheet?.show(fragmentManager, this, screenShotDetector)
+        universalShareBottomSheet?.show(childFragmentManager, this, screenShotDetector)
     }
 
     companion object {
@@ -810,7 +882,7 @@ class UserProfileFragment @Inject constructor(
                 override fun urlCreated(linkerShareData: LinkerShareResult?) {
                     context?.let {
 
-                        var shareString = desc + "\n" + linkerShareData?.shareUri
+                        val shareString = desc + "\n" + linkerShareData?.shareUri
                         SharingUtil.executeShareIntent(
                             shareModel,
                             linkerShareData,

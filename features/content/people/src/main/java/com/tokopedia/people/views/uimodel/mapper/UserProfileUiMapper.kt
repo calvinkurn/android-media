@@ -2,8 +2,14 @@ package com.tokopedia.people.views.uimodel.mapper
 
 import com.tokopedia.people.views.uimodel.profile.*
 import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
-import com.tokopedia.people.model.*
 import com.tokopedia.people.views.uimodel.MutationUiModel
+import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModel
+import com.tokopedia.feedcomponent.data.pojo.shoprecom.UserShopRecomModel
+import com.tokopedia.people.model.ProfileHeaderBase
+import com.tokopedia.people.model.UserProfileIsFollow
+import com.tokopedia.people.model.ProfileDoFollowModelBase
+import com.tokopedia.people.model.ProfileDoUnFollowModelBase
+import com.tokopedia.people.model.VideoPostReimderModel
 
 /**
  * Created By : Jonathan Darwin on June 28, 2022
@@ -20,4 +26,6 @@ interface UserProfileUiMapper {
     fun mapUnfollow(response: ProfileDoUnFollowModelBase): MutationUiModel
 
     fun mapUpdateReminder(response: VideoPostReimderModel): MutationUiModel
+
+    fun mapShopRecom(response: UserShopRecomModel): ShopRecomUiModel
 }

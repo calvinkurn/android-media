@@ -1,5 +1,6 @@
 package com.tokopedia.people.views.uimodel.state
 
+import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
 import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileType
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
@@ -13,4 +14,5 @@ data class UserProfileUiState(
     val followInfo: FollowInfoUiModel,
     val profileType: ProfileType,
     val profileWhitelist: ProfileWhitelistUiModel,
+    val shopRecom: List<ShopRecomUiModelItem>,
 )

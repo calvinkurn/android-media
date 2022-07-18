@@ -1,10 +1,17 @@
 package com.tokopedia.people.data
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.people.domains.*
-import com.tokopedia.people.domains.repository.UserProfileRepository
+import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModel
 import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistNewUseCase
 import com.tokopedia.feedcomponent.domain.usecase.WHITELIST_ENTRY_POINT
+import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase
+import com.tokopedia.people.domains.UserDetailsUseCase
+import com.tokopedia.people.domains.PlayPostContentUseCase
+import com.tokopedia.people.domains.ProfileFollowUseCase
+import com.tokopedia.people.domains.ProfileUnfollowedUseCase
+import com.tokopedia.people.domains.ProfileTheyFollowedUseCase
+import com.tokopedia.people.domains.VideoPostReminderUseCase
+import com.tokopedia.people.domains.repository.UserProfileRepository
 import com.tokopedia.people.model.ProfileHeaderBase
 import com.tokopedia.people.model.UserPostModel
 import com.tokopedia.people.views.uimodel.MutationUiModel
@@ -28,6 +35,7 @@ class UserProfileRepositoryImpl @Inject constructor(
     private val profileIsFollowing: ProfileTheyFollowedUseCase,
     private val videoPostReminderUseCase: VideoPostReminderUseCase,
     private val getWhitelistNewUseCase: GetWhitelistNewUseCase,
+    private val shopRecomUseCase: ShopRecomUseCase
 ) : UserProfileRepository {
 
     override suspend fun getProfile(username: String): ProfileUiModel {
@@ -70,7 +78,7 @@ class UserProfileRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateReminder(channelId: String, isActive: Boolean) : MutationUiModel {
+    override suspend fun updateReminder(channelId: String, isActive: Boolean): MutationUiModel {
         return withContext(dispatcher.io) {
             val result = videoPostReminderUseCase.updateReminder(channelId, isActive)
 
@@ -84,6 +92,13 @@ class UserProfileRepositoryImpl @Inject constructor(
 
             data
         }
+    }
+
+    override suspend fun getShopRecom(): ShopRecomUiModel = withContext(dispatcher.io) {
+        val result = shopRecomUseCase.apply {
+            setRequestParams(ShopRecomUseCase.createParam())
+        }.executeOnBackground()
+        return@withContext mapper.mapShopRecom(result)
     }
 
     companion object {

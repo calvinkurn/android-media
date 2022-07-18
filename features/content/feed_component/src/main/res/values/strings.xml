@@ -225,4 +225,11 @@
     <string name="feed_ugc_onboarding_privacy_policy_link">https://www.tokopedia.com/privacy</string>
     <string name="feed_ugc_onboarding_tnc_link">https://www.tokopedia.com/help/article/syarat-dan-ketentuan-feed-user-profil</string>
     <string name="feed_ugc_onboarding_unknown_error">Terjadi kesalahan. Ulangi beberapa saat lagi</string>
+
+    <!-- Shop Recommendation -->
+    <string name="follow_account">Follow akun</string>
+    <string name="btn_text_follow">Follow</string>
+    <string name="btn_text_following">Following</string>
+    <string name="empty_page_title">Belum ada postingan</string>
+    <string name="empty_page_desc">Ayo buat postingan dulu, siapa tahu nanti banyak yang suka!</string>
 </resources>
