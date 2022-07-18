@@ -14,10 +14,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
@@ -263,6 +260,7 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
         shopCampaignTabTracker.clickCampaignTabProduct(
             selectedProduct.productId,
             selectedProduct.productName,
+            selectedMultipleBundle.displayPriceRaw,
             widgetName,
             shopId,
             userId,
@@ -286,6 +284,7 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
         shopCampaignTabTracker.clickCampaignTabProduct(
             selectedProduct.productId,
             selectedProduct.productName,
+            selectedSingleBundle.displayPriceRaw,
             widgetName,
             shopId,
             userId,
@@ -309,6 +308,7 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
         shopCampaignTabTracker.impressionCampaignTabProduct(
             selectedProduct.productId,
             selectedProduct.productName,
+            selectedMultipleBundle.displayPriceRaw,
             widgetName,
             shopId,
             userId,
@@ -330,6 +330,7 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
         shopCampaignTabTracker.impressionCampaignTabProduct(
             selectedProduct.productId,
             selectedProduct.productName,
+            selectedSingleBundle.displayPriceRaw,
             widgetName,
             shopId,
             userId,
@@ -356,6 +357,7 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
         shopCampaignTabTracker.clickCampaignTabProduct(
             model.id.orEmpty(),
             model.name.orEmpty(),
+            model.displayedPrice.toLongOrZero(),
             widgetModel.name,
             shopId,
             userId,
@@ -373,6 +375,7 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
         shopCampaignTabTracker.impressionCampaignTabProduct(
             shopHomeProductUiModel.id.orEmpty(),
             shopHomeProductUiModel.name.orEmpty(),
+            shopHomeProductUiModel.displayedPrice.toLongOrZero(),
             flashSaleUiModel?.name.orEmpty(),
             shopId,
             userId,
@@ -399,6 +402,7 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
             shopCampaignTabTracker.clickCampaignTabProduct(
                 shopHomeProductViewModel?.id.orEmpty(),
                 shopHomeProductViewModel?.name.orEmpty(),
+                shopHomeProductViewModel?.displayedPrice.toLongOrZero(),
                 it.name,
                 shopId,
                 userId,
@@ -421,6 +425,7 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
             shopCampaignTabTracker.impressionCampaignTabProduct(
                 shopHomeProductViewModel?.id.orEmpty(),
                 shopHomeProductViewModel?.name.orEmpty(),
+                shopHomeProductViewModel?.displayedPrice.toLongOrZero(),
                 shopHomeNewProductLaunchCampaignUiModel.name,
                 shopId,
                 userId,
@@ -489,6 +494,7 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
                 shopCampaignTabTracker.impressionCampaignTabProduct(
                     it.id.orEmpty(),
                     it.name.orEmpty(),
+                    it.displayedPrice.toLongOrZero(),
                     campaignName,
                     shopId,
                     userId,
@@ -508,6 +514,7 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
             shopCampaignTabTracker.clickCampaignTabProduct(
                 product.id.orEmpty(),
                 product.name.orEmpty(),
+                product.displayedPrice.toLongOrZero(),
                 campaignName,
                 shopId,
                 userId,

@@ -24,11 +24,13 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEMS
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_BRAND
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_CATEGORY
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_ID
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_LIST
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_NAME
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_VARIANT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.LABEL_CLICK_PRODUCT_LIST
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.LABEL_IMPRESSION_PRODUCT_LIST
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PHYSICAL_GOODS
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRICE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMOTIONS
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SELECT_CONTENT
@@ -137,7 +139,7 @@ class ShopCampaignTabTracker @Inject constructor() {
     ) {
         val eventMap: MutableMap<String, Any> = mutableMapOf(
             EVENT to ShopPageTrackingConstant.VIEW_SHOP_PAGE_IRIS,
-            EVENT_CATEGORY to ShopPageTrackingConstant.SHOP_PAGE_BUYER,
+            EVENT_CATEGORY to SHOP_PAGE_BUYER,
             EVENT_ACTION to ShopPageTrackingConstant.VIEW_COUPON_TOKO_MEMBER,
             EVENT_LABEL to ShopPageTrackingConstant.SHOP_PAGE_LABEL + shopId,
             BUSINESS_UNIT to PHYSICAL_GOODS,
@@ -148,7 +150,8 @@ class ShopCampaignTabTracker @Inject constructor() {
 
     fun clickCampaignTabProduct(
         productId: String,
-        productName:  String,
+        productName: String,
+        productPrice: Long,
         widgetName: String,
         shopId: String,
         userId: String,
@@ -167,6 +170,7 @@ class ShopCampaignTabTracker @Inject constructor() {
             putString(PRODUCT_ID, productId)
             putString(SHOP_ID, shopId)
             putString(USER_ID, userId)
+            putString(ITEM_LIST, "$SHOPPAGE - $widgetName")
             putParcelableArrayList(
                 ITEMS,
                 arrayListOf(
@@ -174,6 +178,7 @@ class ShopCampaignTabTracker @Inject constructor() {
                         itemPosition,
                         productId,
                         productName,
+                        productPrice,
                         widgetName,
                         bundlingType,
                         bundlingId,
@@ -186,7 +191,8 @@ class ShopCampaignTabTracker @Inject constructor() {
 
     fun impressionCampaignTabProduct(
         productId: String,
-        productName:  String,
+        productName: String,
+        productPrice: Long,
         widgetName: String,
         shopId: String,
         userId: String,
@@ -213,6 +219,7 @@ class ShopCampaignTabTracker @Inject constructor() {
                         itemPosition,
                         productId,
                         productName,
+                        productPrice,
                         widgetName,
                         bundlingType,
                         bundlingId,
@@ -227,6 +234,7 @@ class ShopCampaignTabTracker @Inject constructor() {
         position: Int,
         productId: String,
         productName: String,
+        productPrice: Long,
         widgetName: String,
         bundlingType: String,
         bundlingId: String
@@ -236,13 +244,14 @@ class ShopCampaignTabTracker @Inject constructor() {
                 putString(DIMENSION_117, bundlingType)
             if(bundlingId.isNotEmpty())
                 putString(DIMENSION_118, bundlingId)
-            putString(DIMENSION_40, "$SHOPPAGE  - $widgetName")
+            putString(DIMENSION_40, "$SHOPPAGE - $widgetName")
             putInt(INDEX, position)
             putString(ITEM_BRAND, "")
             putString(ITEM_CATEGORY, "")
             putString(ITEM_ID, productId)
             putString(ITEM_NAME, productName)
             putString(ITEM_VARIANT, CAMPAIGN_TAB)
+            putLong(PRICE, productPrice)
         }
     }
 }
