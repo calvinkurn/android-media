@@ -48,11 +48,13 @@
             android:id="@+id/loader"
             android:layout_width="@dimen/unify_space_48"
             android:layout_height="@dimen/unify_space_48"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:loader_type="circular_white" />
+            app:loader_type="circular_white"
+            />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -78,9 +80,20 @@
             app:surface_type="texture_view"
             app:use_controller="false"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+        <View
+            android:id="@+id/separator"
+            android:layout_width="0dp"
+            android:layout_height="0.1px"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layout_video"
+            tools:ignore="PxUsage"
+            />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.tokopedia.unifyprinciples.Typography
@@ -107,35 +120,47 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_play_button" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/video_lihat_product"
-        android:layout_width="@dimen/layout_lvl4"
+    <LinearLayout
+        android:id="@+id/ll_lihat_product"
+        android:layout_width="wrap_content"
         android:layout_height="@dimen/layout_lvl4"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginBottom="@dimen/unify_space_16"
         android:background="@drawable/feed_bg_lihat_produk_large"
-        android:drawablePadding="@dimen/unify_space_8"
-        android:drawableTint="@color/feed_dms_produk_tag_heading_color"
-        android:gravity="center_vertical|start"
-        android:ellipsize="end"
-        android:minWidth="@dimen/unify_space_32"
-        android:paddingStart="@dimen/feed_component_dp_7"
-        android:paddingEnd="@dimen/unify_space_2"
-        android:paddingTop="@dimen/unify_space_2"
-        android:paddingBottom="@dimen/unify_space_2"
-        android:singleLine="true"
-        android:text="@string/feed_post_tag_text"
-        android:textColor="@color/feed_dms_produk_tag_heading_color"
-        android:alpha="0.9"
-        app:drawableLeftCompat="@drawable/feed_ic_product_large"
+        android:elevation="@dimen/unify_space_16"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="@id/layout_main"
         app:layout_constraintStart_toStartOf="@id/layout_main"
-        app:typographyType="body_2"
-        app:typographyWeight="bold" />
+        >
 
+        <com.tokopedia.iconunify.IconUnify
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            android:layout_marginStart="@dimen/unify_space_4"
+            android:layout_marginEnd="@dimen/unify_space_4"
+            app:icon_color_light_enable="@color/Unify_Static_White"
+            app:icon_color_night_enable="@color/Unify_Static_White"
+            app:icon_name="PRODUCT"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_lihat_product"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/unify_space_8"
+            android:text="@string/feed_post_tag_text"
+            android:textColor="@color/Unify_Static_White"
+            android:visibility="gone"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            tools:visibility="visible"
+            />
+
+    </LinearLayout>
 
     <ImageView
-        android:id="@+id/volumeIcon"
+        android:id="@+id/volume_icon"
         android:layout_width="@dimen/layout_lvl4"
         android:layout_height="@dimen/layout_lvl4"
         android:layout_marginEnd="@dimen/unify_space_16"
