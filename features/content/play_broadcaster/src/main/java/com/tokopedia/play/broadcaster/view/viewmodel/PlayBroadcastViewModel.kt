@@ -707,6 +707,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _interactive.value = giveaway
         when (giveaway.status) {
             InteractiveUiModel.Giveaway.Status.Finished -> displayGameResultWidgetIfHasLeaderBoard()
+            InteractiveUiModel.Giveaway.Status.Unknown -> stopInteractive()
         }
     }
 
@@ -714,7 +715,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _interactive.value = quiz
         when (quiz.status) {
             InteractiveUiModel.Quiz.Status.Finished -> displayGameResultWidgetIfHasLeaderBoard()
-            InteractiveUiModel.Quiz.Status.Unknown -> stopQuiz()
+            InteractiveUiModel.Quiz.Status.Unknown -> stopInteractive()
         }
     }
 
@@ -769,15 +770,11 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private fun connectWebSocket(
-        channelId: String,
-        socketCredential: GetSocketCredentialResponse.SocketCredential
-    ) {
-        playBroadcastWebSocket.connect(
-            channelId,
-            socketCredential.gcToken,
-            WEB_SOCKET_SOURCE_PLAY_BROADCASTER
-        )
+    /**
+     * In bro, warehouse Id is always 0 (OOC) dunno later
+     */
+    private fun connectWebSocket(channelId: String, socketCredential: GetSocketCredentialResponse.SocketCredential) {
+        playBroadcastWebSocket.connect(channelId, "0", socketCredential.gcToken, WEB_SOCKET_SOURCE_PLAY_BROADCASTER)
     }
 
     private fun closeWebSocket() {
@@ -1320,7 +1317,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private fun stopQuiz(){
+    private fun stopInteractive(){
         setActiveInteractiveTitle("")
         setInteractiveId("")
         displayGameResultWidgetIfHasLeaderBoard()

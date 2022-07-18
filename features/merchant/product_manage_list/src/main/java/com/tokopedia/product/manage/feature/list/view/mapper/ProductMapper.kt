@@ -60,7 +60,10 @@ object ProductMapper {
                 isCampaign = it.isCampaign,
                 campaignTypeList = it.campaignTypeList,
                 isProductBundling = it.getIsProductBundling(),
-                suspendLevel = it.suspendLevel
+                suspendLevel = it.suspendLevel,
+                hasStockAlert = it.hasStockAlert,
+                stockAlertActive = it.stockAlertActive,
+                stockAlertCount = it.stockAlertCount
             )
         } ?: emptyList()
     }

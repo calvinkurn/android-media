@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.di.DaggerLoginRegisterComponent
+import com.tokopedia.loginregister.login.di.ActivityComponentFactory
 import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.view.fragment.RegisterEmailFragment
@@ -18,11 +19,11 @@ import com.tokopedia.loginregister.registerinitial.view.fragment.RegisterEmailFr
 /**
  * @author by nisie on 10/25/18.
  */
-open class RegisterEmailActivity : BaseSimpleActivity(), HasComponent<RegisterInitialComponent> {
+class RegisterEmailActivity : BaseSimpleActivity(), HasComponent<RegisterInitialComponent> {
 
     private var registerInitialComponent: RegisterInitialComponent? = null
 
-    override fun getNewFragment(): Fragment? {
+    override fun getNewFragment(): Fragment {
         val bundle = Bundle()
         if (intent.extras != null) {
             bundle.putAll(intent.extras)
@@ -34,14 +35,10 @@ open class RegisterEmailActivity : BaseSimpleActivity(), HasComponent<RegisterIn
         return registerInitialComponent ?: initializeRegisterInitialComponent()
     }
 
-    protected open fun initializeRegisterInitialComponent(): RegisterInitialComponent {
-        val loginRegisterComponent =  DaggerLoginRegisterComponent.builder()
-            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .build()
-        return DaggerRegisterInitialComponent
-            .builder()
-            .loginRegisterComponent(loginRegisterComponent)
-            .build().also {
+    private fun initializeRegisterInitialComponent(): RegisterInitialComponent {
+        return ActivityComponentFactory.instance
+            .createRegisterComponent(application)
+            .also {
                 registerInitialComponent = it
             }
     }

@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.bannercarousel
 
 import android.app.Application
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.ComponentNames
@@ -10,6 +11,7 @@ import com.tokopedia.discovery2.usecase.bannerusecase.BannerUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -22,6 +24,7 @@ class BannerCarouselViewModel(val application: Application, val component: Compo
     private val bannerCarouselList: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
     private val title: MutableLiveData<String> = MutableLiveData()
     private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
+    private var isDarkMode: Boolean = false
 
     @Inject
     lateinit var bannerUseCase: BannerUseCase
@@ -56,7 +59,7 @@ class BannerCarouselViewModel(val application: Application, val component: Compo
     private fun fetchBannerData() {
         if (component.properties?.dynamic == true) {
             launchCatchError(block = {
-                if (bannerUseCase.loadFirstPageComponents(component.id, component.pageEndPoint,application.applicationContext)) {
+                if (bannerUseCase.loadFirstPageComponents(component.id, component.pageEndPoint,isDarkMode)) {
                     if (!component.data.isNullOrEmpty()) {
                         bannerCarouselList.value = DiscoveryDataMapper.mapListToComponentList(component.data!!, ComponentNames.BannerCarouselItemView.componentName,
                                 component.name, position, component.properties?.design
@@ -99,5 +102,11 @@ class BannerCarouselViewModel(val application: Application, val component: Compo
     fun reload() {
         component.noOfPagesLoaded = 0
         fetchBannerData()
+    }
+
+    fun checkForDarkMode(context: Context?){
+        if(context != null) {
+            isDarkMode = context.isDarkMode()
+        }
     }
 }

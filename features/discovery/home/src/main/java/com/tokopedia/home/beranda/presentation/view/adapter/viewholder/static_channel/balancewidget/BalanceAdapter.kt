@@ -49,7 +49,11 @@ import com.tokopedia.searchbar.helper.Ease
 import com.tokopedia.searchbar.helper.EasingInterpolator
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.Job
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -126,9 +130,9 @@ class BalanceAdapter(
         private var home_container_balance: ConstraintLayout? = itemView.findViewById(R.id.home_container_balance)
         private var home_iv_logo_shimmering: LoaderUnify? = itemView.findViewById(R.id.home_iv_logo_shimmering)
         private var home_progress_bar_balance_layout: ConstraintLayout? = itemView.findViewById(R.id.home_progress_bar_balance_layout)
-        private var home_tv_btn_action_balance: TextView = itemView.findViewById(R.id.home_tv_btn_action_balance)
+        private var home_tv_btn_action_balance: Typography = itemView.findViewById(R.id.home_tv_btn_action_balance)
         private var home_iv_logo_balance: ImageView? = itemView.findViewById<ImageView>(R.id.home_iv_logo_balance)
-        private var home_tv_balance: TextView = itemView.findViewById(R.id.home_tv_balance)
+        private var home_tv_balance: Typography = itemView.findViewById(R.id.home_tv_balance)
         private var home_container_action_balance: ConstraintLayout? = itemView.findViewById(R.id.home_container_action_balance)
         private var home_tv_reserve_balance: Typography? = itemView.findViewById(R.id.home_tv_reserve_balance)
 
@@ -511,12 +515,9 @@ class BalanceAdapter(
             )
         }
 
-        private fun renderBalanceText(textAttr: BalanceTextAttribute?, tagAttr: BalanceTagAttribute?, textView: TextView, textSize: Int = R.dimen.home_balance_default_text_size) {
-            textView.setTypeface(null, Typeface.NORMAL)
-
+        private fun renderBalanceText(textAttr: BalanceTextAttribute?, tagAttr: BalanceTagAttribute?, textView: Typography) {
             textView.background = null
             textView.text = null
-            textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, itemView.context.resources.getDimension(textSize))
             if (tagAttr != null && tagAttr.text.isNotEmpty()) {
                 renderTagAttribute(tagAttr, textView)
             } else if (textAttr != null && textAttr.text.isNotEmpty()) {
@@ -526,15 +527,15 @@ class BalanceAdapter(
             }
         }
 
-        private fun renderTagAttribute(tagAttr: BalanceTagAttribute, textView: TextView) {
+        private fun renderTagAttribute(tagAttr: BalanceTagAttribute, textView: Typography) {
             if (tagAttr.backgroundColour.isNotEmpty() && tagAttr.backgroundColour.isHexColor()) {
                 val drawable = ContextCompat.getDrawable(itemView.context, R.drawable.bg_tokopoints_rounded)
                 (drawable as GradientDrawable?)?.let {
                     it.setColorFilter(Color.parseColor(tagAttr.backgroundColour), PorterDuff.Mode.SRC_ATOP)
                     textView.background = it
                     val horizontalPadding = 2f.toDpInt()
-                    textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, 8f.toSp())
-                    textView.setTypeface(null, Typeface.NORMAL)
+                    textView.setType(Typography.SMALL)
+                    textView.setWeight(Typography.REGULAR)
                     textView.setPadding(horizontalPadding, 0, horizontalPadding, 0)
                 }
                 textView.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
@@ -546,7 +547,7 @@ class BalanceAdapter(
             }
         }
 
-        private fun renderTextAttribute(textAttr: BalanceTextAttribute, textView: TextView) {
+        private fun renderTextAttribute(textAttr: BalanceTextAttribute, textView: Typography) {
             if (textAttr.colour.isNotEmpty() && textAttr.colour.isHexColor()) {
                 textView.setTextColor(Color.parseColor(textAttr.colour).invertIfDarkMode(itemView.context))
             } else if (textAttr.colourRef != null) {
@@ -555,9 +556,9 @@ class BalanceAdapter(
                 textView.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
             }
             if (textAttr.isBold) {
-                textView.setTypeface(textView.typeface, Typeface.BOLD)
+                textView.setWeight(Typography.BOLD)
             } else {
-                textView.setTypeface(textView.typeface, Typeface.NORMAL)
+                textView.setWeight(Typography.REGULAR)
             }
             if (textAttr.text.isNotEmpty()) {
                 textView.text = textAttr.text
