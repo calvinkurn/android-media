@@ -126,11 +126,11 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
         } to 0.0
     }
 
-    private fun generateShipmentDetailData(
+    fun generateShippingBottomsheetParam(
         orderCart: OrderCart,
         orderProfile: OrderProfile,
         orderCost: OrderCost
-    ): ShipmentDetailData {
+    ): Pair<ShipmentDetailData, ArrayList<Product>> {
         val address = orderProfile.address
         val orderShop = orderCart.shop
         val orderProducts = orderCart.products
@@ -141,6 +141,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
         var productFInsurance = 0
         var preOrder = false
         var productPreOrderDuration = 0
+        val productList: ArrayList<Product> = ArrayList()
         val categoryList: ArrayList<String> = ArrayList()
         orderProducts.forEach {
             if (!it.isError) {
@@ -156,6 +157,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                 preOrder = it.isPreOrder != 0
                 productPreOrderDuration = it.preOrderDuration
                 categoryList.add(it.categoryId)
+                productList.add(Product(it.productId, it.isFreeOngkir, it.isFreeOngkirExtra))
             }
         }
 //        if (orderShop.shouldValidateWeight() && totalWeight > orderShop.maximumWeight) {
@@ -188,7 +190,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                 destinationLatitude = address.latitude,
                 destinationLongitude = address.longitude,
             )
-        }
+        } to productList
     }
 
     private fun mapShippingRecommendationData(shippingRecommendationData: ShippingRecommendationData, orderShipment: OrderShipment, listShopShipment: List<ShopShipment>, shipmentProfile: OrderProfileShipment): ShippingRecommendationData {
