@@ -21,3 +21,9 @@ fun <T> LifecycleOwner.observe(liveData: LiveData<T>, block: (T) -> Unit) {
 fun <T> LifecycleOwner.removeObservers(liveData: LiveData<T>) {
     liveData.removeObservers(this)
 }
+
+fun <T> LifecycleOwner.removeObservers(vararg liveData: LiveData<T>) {
+    liveData.forEach {
+        it.removeObservers(this)
+    }
+}

@@ -99,7 +99,6 @@ import com.tokopedia.feedplus.view.adapter.viewholder.productcard.RetryViewHolde
 import com.tokopedia.feedplus.view.analytics.FeedAnalytics
 import com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking
 import com.tokopedia.feedplus.view.analytics.FeedTrackingEventLabel
-import com.tokopedia.feedplus.view.analytics.widget.FeedPlayWidgetAnalyticListener
 import com.tokopedia.feedplus.view.constants.Constants.FeedConstants.KEY_FEED
 import com.tokopedia.feedplus.view.constants.Constants.FeedConstants.KEY_FEED_FIRST_PAGE_CURSOR
 import com.tokopedia.feedplus.view.constants.Constants.FeedConstants.KEY_FEED_FIRST_PAGE_LAST_CURSOR
@@ -129,7 +128,7 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.analytic.impression.DefaultImpressionValidator
 import com.tokopedia.play.widget.analytic.impression.ImpressionHelper
-import com.tokopedia.play.widget.analytic.list.DefaultPlayWidgetInListAnalyticListener
+import com.tokopedia.play.widget.analytic.global.model.PlayWidgetFeedsAnalyticModel
 import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
@@ -146,7 +145,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import kotlinx.android.synthetic.main.fragment_feed_plus.*
 import kotlinx.coroutines.*
@@ -237,9 +235,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     @Inject
     internal lateinit var feedAnalytics: FeedAnalyticTracker
-
-    @Inject
-    lateinit var feedPlayWidgetAnalytic: FeedPlayWidgetAnalyticListener
 
     @Inject
     lateinit var playWidgetImpressionValidator: DefaultImpressionValidator
@@ -677,9 +672,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun initVar() {
-        playWidgetCoordinator = PlayWidgetCoordinator().apply {
+        playWidgetCoordinator = PlayWidgetCoordinator(this, autoHandleLifecycleMethod = false).apply {
             setListener(this@FeedPlusFragment)
-            setAnalyticListener(DefaultPlayWidgetInListAnalyticListener(feedPlayWidgetAnalytic))
+            setAnalyticModel(PlayWidgetFeedsAnalyticModel())
             setImpressionHelper(ImpressionHelper(validator = playWidgetImpressionValidator))
         }
         val typeFactory = FeedPlusTypeFactoryImpl(this, userSession, this, playWidgetCoordinator)
@@ -1073,6 +1068,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     fun updateFeedVisibilityVariable(isFeedShown: Boolean) {
         this.isFeedPageShown = isFeedShown
+        resetVODWhenFeedTabChanged()
     }
 
     override fun onPause() {
@@ -1106,6 +1102,21 @@ class FeedPlusFragment : BaseDaggerFragment(),
             }
         }
     }
+    private fun resetVODWhenFeedTabChanged() {
+        val layoutManager = recyclerView.layoutManager as LinearLayoutManager?
+        val firstPosition = layoutManager?.findFirstVisibleItemPosition() ?: 0
+        val lastPosition = layoutManager?.findLastVisibleItemPosition() ?: 0
+        for (i in firstPosition..lastPosition) {
+            val item = getCardViewModel(adapter.getList(), i)
+            if (isVOD(adapter.getList(), i)) {
+                if (item != null) {
+                  val viewHolder = recyclerView.findViewHolderForAdapterPosition(i)
+                    if (viewHolder is DynamicPostNewViewHolder)
+                        (viewHolder as DynamicPostNewViewHolder).setPostDynamicView(if (!isFeedPageShown) BROADCAST_VISIBLITY else "")
+                }
+            }
+        }
+    }
 
     private fun getCardViewModel(list: List<Visitable<*>>, position: Int): FeedXMedia? {
         try {
@@ -1123,6 +1134,13 @@ class FeedPlusFragment : BaseDaggerFragment(),
             return (item.typename == TYPE_FEED_X_CARD_POST
                     && (item.media.isNotEmpty()
                     && (item.media.find { it.type == TYPE_IMAGE } != null)))
+        }
+        return false
+    }
+    private fun isVOD(list: List<Visitable<*>>, position: Int): Boolean {
+        if (position >= 0 && list.size > position && list[position] is DynamicPostUiModel) {
+            val item = (list[position] as DynamicPostUiModel).feedXCard
+            return (item.typename == TYPE_FEED_X_CARD_PLAY)
         }
         return false
     }

@@ -17,13 +17,10 @@ import javax.inject.Inject
 
 private const val ACTION_IMRESSION_QUICK_REPLIES = "impression quick reply"
 class QuickReplyAdapter(private var quickReplyList: List<QuickReplyViewModel>,
-                        private val listener: QuickReplyListener) : RecyclerView.Adapter<QuickReplyAdapter.Holder>() {
+                        private val listener: QuickReplyListener,
+                        val sendAnalyticsFromAdapter:( impressionType:String)->Unit) : RecyclerView.Adapter<QuickReplyAdapter.Holder>() {
 
     private val END_CHAT = "end chat"
-
-    @Inject
-    lateinit var chatbotAnalytics: dagger.Lazy<ChatbotAnalytics>
-
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): Holder {
         return Holder(LayoutInflater.from(viewGroup.context)
@@ -51,7 +48,7 @@ class QuickReplyAdapter(private var quickReplyList: List<QuickReplyViewModel>,
         this.quickReplyList = quickReplylist
         notifyDataSetChanged()
         if (quickReplylist.isNotEmpty()){
-            chatbotAnalytics.get().eventShowView(ACTION_IMRESSION_QUICK_REPLIES)
+            sendAnalyticsFromAdapter(ACTION_IMRESSION_QUICK_REPLIES)
         }
     }
 

@@ -32,4 +32,7 @@ class TokoNowHomeStartupBenchmark(startupMode: StartupMode): BaseStartupBenchmar
                 MacroIntent.TokopediaNow.RV_RESOURCE_ID,
         )
     }
+
+    override fun traceName() = "mp_tokonow_home"
+
 }

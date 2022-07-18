@@ -17,6 +17,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.imagepicker.common.*
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.report.R
@@ -92,7 +93,7 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
                         binding.loadingView.visible()
                         viewModel.submitReport(
                             productId.toLongOrZero(),
-                            reasonItem.categoryId,
+                            reasonItem.categoryId.toIntOrZero(),
                             adapter.inputs
                         )
                     })

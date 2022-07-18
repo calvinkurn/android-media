@@ -313,9 +313,12 @@ interface ViewHintListener {
 }
 
 fun View.addOneTimeGlobalLayoutListener(onGlobalLayout: () -> Unit) {
-    viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+    val vto = viewTreeObserver
+    vto.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
         override fun onGlobalLayout() {
             onGlobalLayout()
+
+            if (vto.isAlive) vto.removeOnGlobalLayoutListener(this)
             viewTreeObserver.removeOnGlobalLayoutListener(this)
         }
     })
