@@ -517,7 +517,7 @@ class UserProfileTracker @Inject constructor() {
         promoMap[UserProfileAnalytics.Constants.CREATIVE_SLOT] = postPosition
         promoMap[UserProfileAnalytics.Constants.ITEM_ID] = shopId
         promoMap[UserProfileAnalytics.Constants.ITEM_NAME] = UserProfileAnalytics.ScreenName.FEED_USER_PROFILE_PROFILE_RECOMMENDATION_CAROUSEL
-        map[UserProfileAnalytics.Constants.PROMOTIONS] = listOf(promoMap, promoMap)
+        map[UserProfileAnalytics.Constants.PROMOTIONS] = listOf(promoMap)
         map[UserProfileAnalytics.Constants.SESSION_IRIS] = TrackApp.getInstance().gtm.irisSessionId
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
@@ -537,7 +537,7 @@ class UserProfileTracker @Inject constructor() {
         promoMap[UserProfileAnalytics.Constants.CREATIVE_SLOT] = postPosition
         promoMap[UserProfileAnalytics.Constants.ITEM_ID] = shopId
         promoMap[UserProfileAnalytics.Constants.ITEM_NAME] = UserProfileAnalytics.ScreenName.FEED_USER_PROFILE_PROFILE_RECOMMENDATION_CAROUSEL
-        map[UserProfileAnalytics.Constants.PROMOTIONS] = listOf(promoMap, promoMap)
+        map[UserProfileAnalytics.Constants.PROMOTIONS] = listOf(promoMap)
         map[UserProfileAnalytics.Constants.SESSION_IRIS] = TrackApp.getInstance().gtm.irisSessionId
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
