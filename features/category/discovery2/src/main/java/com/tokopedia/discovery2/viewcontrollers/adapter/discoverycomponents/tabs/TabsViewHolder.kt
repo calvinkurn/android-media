@@ -54,7 +54,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
             openCategoryBottomSheet()
         }
         tabsViewModel.getUnifyTabLiveData().observe(fragment.viewLifecycleOwner, {
-            isParentUnifyTab = true
+            isParentUnifyTab = false
             tabsHolder.hasRightArrow = tabsViewModel.getArrowVisibilityStatus()
             tabsHolder.tabLayout.removeAllTabs()
             if((fragment.activity as DiscoveryActivity).isFromCategory())
@@ -88,7 +88,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
         })
 
         tabsViewModel.getColorTabComponentLiveData().observe(fragment.viewLifecycleOwner, Observer {
-            isParentUnifyTab = false
+            isParentUnifyTab = true
             tabsHolder.tabLayout.apply {
                 layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
                 layoutParams.height = tabsHolder.context.resources.getDimensionPixelSize(R.dimen.dp_55)
@@ -187,13 +187,22 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
     }
 
     private fun sendTabTrackingData(tab: TabLayout.Tab) {
-        tabsViewModel.components.data?.let {
+        tabsViewModel.components.data?.let { it ->
             if (it.size >= tab.position)
                 (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
-                        ?.trackTabsClick(tabsViewModel.components.id,
-                                tabsViewModel.position,
-                                it[tab.position],
-                                tab.position,if(isParentUnifyTab) CLICK_UNIFY_TAB else CLICK_MEGA_TAB)
+                        ?.let { discoAnalytics ->
+                            if(isParentUnifyTab) {
+                                discoAnalytics.trackTabsClick(tabsViewModel.components.id,
+                                        tabsViewModel.position,
+                                        it[tab.position],
+                                        tab.position, CLICK_MEGA_TAB)
+                            }else{
+                                discoAnalytics.trackUnifyTabsClick(tabsViewModel.components.id,
+                                        tabsViewModel.position,
+                                        it[tab.position],
+                                        tab.position, CLICK_UNIFY_TAB)
+                            }
+                        }
         }
     }
 
