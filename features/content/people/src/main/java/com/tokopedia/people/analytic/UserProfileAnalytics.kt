@@ -87,6 +87,7 @@ class UserProfileAnalytics {
         const val IMPRESSION_ONBOARDING_BOTTOMSHEET_WITH_USERNAME = "impression - onboarding bottomsheet with username"
         const val CLICK_LANJUT_ONBOARDING_BOTTOMSHEET_WITH_USERNAME = "click - lanjut on onboarding bottomsheet with username"
         const val IMPRESSION_ONBOARDING_BOTTOMSHEET_WITHOUT_USERNAME = "impression - onboarding bottomsheet without username"
+        const val IMPRESSION_PROFILE_RECOMMENDATIONS_CAROUSEL = "impression - profile recommendations carousel"
         const val CLICK_LANJUT_ONBOARDING_BOTTOMSHEET_WITHOUT_USERNAME = "click - lanjut on onboarding bottomsheet without username"
         const val CLICK_EDIT_PROFILE_BUTTON_IN_OWN_PROFILE = "click - ubah profile"
         const val CLICK_USER = "click - user"
