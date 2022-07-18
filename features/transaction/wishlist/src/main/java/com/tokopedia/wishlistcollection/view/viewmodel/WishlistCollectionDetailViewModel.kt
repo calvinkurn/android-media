@@ -32,7 +32,8 @@ class WishlistCollectionDetailViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatchers,
     private val getWishlistCollectionItemsUseCase: GetWishlistCollectionItemsUseCase,
     private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
-    private val singleRecommendationUseCase: GetSingleRecommendationUseCase
+    private val singleRecommendationUseCase: GetSingleRecommendationUseCase,
+    private val deleteWishlistV2UseCase: com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 ) : BaseViewModel(dispatcher.main) {
 
     private val _collectionItems =
@@ -43,6 +44,11 @@ class WishlistCollectionDetailViewModel @Inject constructor(
     private val _collectionData = MutableLiveData<Result<List<WishlistV2TypeLayoutData>>>()
     val collectionData: LiveData<Result<List<WishlistV2TypeLayoutData>>>
         get() = _collectionData
+
+    private val _deleteWishlistV2Result =
+        MutableLiveData<Result<com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response.Data.WishlistRemoveV2>>()
+    val deleteWishlistV2Result: LiveData<Result<com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response.Data.WishlistRemoveV2>>
+        get() = _deleteWishlistV2Result
 
     fun getWishlistCollectionItems(
         params: GetWishlistCollectionItemsParams,
@@ -122,5 +128,13 @@ class WishlistCollectionDetailViewModel @Inject constructor(
             WISHLIST_TOPADS_SOURCE, "",
             WISHLIST_TOPADS_ADS_COUNT,
             WISHLIST_TOPADS_DIMENS, "")).firstOrNull()
+    }
+
+    fun deleteWishlistV2(productId: String, userId: String) {
+        launch {
+            deleteWishlistV2UseCase.setParams(productId, userId)
+            _deleteWishlistV2Result.value =
+                deleteWishlistV2UseCase.executeOnBackground()
+        }
     }
 }
