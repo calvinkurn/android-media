@@ -510,7 +510,7 @@ private fun clickReminderWidgetRecharge(i:Int){
     }
 }
 
-fun actionOnBalanceWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
+fun actionOnBalanceWidget(viewHolder: RecyclerView.ViewHolder) {
     clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_balance_widget_data, 0)
 }
 

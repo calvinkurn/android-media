@@ -461,7 +461,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
             initTest()
             login()
             doActivityTestByModelClass(dataModelClass = HomeHeaderDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-                actionOnBalanceWidget(viewHolder, i)
+                actionOnBalanceWidget(viewHolder)
             }
         } validateAnalytics {
             addDebugEnd()
