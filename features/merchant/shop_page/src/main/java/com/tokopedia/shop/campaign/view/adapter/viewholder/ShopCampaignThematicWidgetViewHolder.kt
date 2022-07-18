@@ -206,7 +206,8 @@ class ShopCampaignThematicWidgetViewHolder (
                 product = product,
                 campaignId = uiModel?.campaignId.orEmpty(),
                 campaignName = uiModel?.name.orEmpty(),
-                position = adapterPosition
+                position = adapterPosition,
+                campaignTitle = uiModel?.header?.title.orEmpty()
             )
         }
 

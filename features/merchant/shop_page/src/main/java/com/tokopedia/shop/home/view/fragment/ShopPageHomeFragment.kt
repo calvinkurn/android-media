@@ -1508,7 +1508,10 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
             selectedProduct: ShopHomeBundleProductUiModel,
             selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
             bundleName: String,
-            bundlePosition: Int
+            bundlePosition: Int,
+            widgetTitle: String,
+            widgetName: String,
+            productItemPosition: Int
     ) {
         shopPageHomeTracking.clickOnMultipleBundleProduct(
                 shopId = shopId,
@@ -1559,7 +1562,10 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
             selectedProduct: ShopHomeBundleProductUiModel,
             selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
             bundleName: String,
-            bundlePosition: Int
+            bundlePosition: Int,
+            widgetName: String,
+            widgetTitle: String,
+            productItemPosition: Int
     ) {
         shopPageHomeTracking.clickOnSingleBundleProduct(
                 shopId = shopId,
@@ -3065,7 +3071,7 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
         }
     }
 
-    override fun onFlashSaleProductClicked(model: ShopHomeProductUiModel) {
+    override fun onFlashSaleProductClicked(model: ShopHomeProductUiModel, widgetModel: ShopHomeFlashSaleUiModel, position: Int) {
         goToPDP(model.id ?: "")
     }
 
@@ -3709,7 +3715,8 @@ shopHomeAdapter.itemCount
             product: ProductCardUiModel,
             campaignId: String,
             campaignName: String,
-            position: Int
+            position: Int,
+            campaignTitle: String
         ) {
             shopPageHomeTracking.clickProductCardThematicWidgetCampaign(
                 campaignName = campaignName,

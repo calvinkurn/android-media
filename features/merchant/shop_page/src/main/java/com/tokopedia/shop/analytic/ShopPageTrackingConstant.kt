@@ -160,6 +160,7 @@ object ShopPageTrackingConstant {
     const val IMPRESSION_SHOP_BANNER = "impression shop banner"
     const val CLICK_SHOP_BANNER = "click shop banner"
     const val CAMPAIGN_TAB_PRODUCT_IMPRESSION_EVENT_ACTION = "product impression"
+    const val CAMPAIGN_TAB_PRODUCT_CLICK_EVENT_ACTION = "click product card"
 
     //label
     const val CLICK_SHARE = "click share"
@@ -259,6 +260,7 @@ object ShopPageTrackingConstant {
     const val LABEL_CLICK_GLOBAL_HEADER_CART_BUTTON = "click - global header -cart"
     const val LABEL_CLICK_GLOBAL_HEADER_SHOP_NOTES = "click - global header - shop info - catatan toko"
     const val LABEL_IMPRESSION_PRODUCT_LIST = "impression - product list - %1s Tab - %2s"
+    const val LABEL_CLICK_PRODUCT_LIST = "click - product card - %1s Tab - %2s"
     const val LABEL_IMPRESSION_SHOP_ALL_SHOWCASE_LIST = "impression - etalase toko - %1s - %2s"
     const val LABEL_CLICK_SHOP_SHOWCASE_LIST = "click etalase toko - %1s - %2s"
     const val LABEL_APPLY_SHOP_MEMBER = "apply as shop member"
