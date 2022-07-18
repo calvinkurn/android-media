@@ -66,7 +66,7 @@ class ShopRecomView : FrameLayout, LifecycleObserver {
     }
 
     private fun onClickListener(data: ShopRecomUiModelItem, position: Int) = with(binding) {
-        clItemShopContainer.setOnClickListener {
+        imgItemShopImage.setOnClickListener {
             mListener?.onShopRecomItemClicked(
                 data.id,
                 data.applink,
