@@ -57,7 +57,7 @@ import com.tokopedia.shop.flashsale.presentation.draft.uimodel.DraftItemModel
 import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListContainerFragment
 import com.tokopedia.shop.flashsale.presentation.list.list.adapter.CampaignAdapter
 import com.tokopedia.shop.flashsale.presentation.list.list.bottomsheet.MoreMenuBottomSheet
-import com.tokopedia.shop.flashsale.presentation.list.list.dialog.FeatureIntroductionDialog
+import com.tokopedia.shop.flashsale.presentation.list.list.dialog.ShopDecorationDialog
 import com.tokopedia.shop.flashsale.presentation.list.list.listener.RecyclerViewScrollListener
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
@@ -811,7 +811,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
 
     private fun showFeatureIntroductionDialog() {
-        val dialog = FeatureIntroductionDialog()
+        val dialog = ShopDecorationDialog()
         dialog.setOnPrimaryActionClick {
             viewModel.validateCampaignCreationEligibility()
         }
