@@ -198,7 +198,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
                 }
                 return@setOnEditorActionListener false
             }
-            searchBar.clearListener = { clearSearchBar() }
+            searchBar.clearListener = { refreshCampaigns() }
         }
     }
 
@@ -246,7 +246,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         }
     }
 
-    private fun clearSearchBar() {
+    private fun refreshCampaigns() {
         clearAllData()
         binding?.loader?.visible()
         viewModel.getCampaigns(
@@ -772,6 +772,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
     override fun onEditCampaignSuccess() {
         binding?.cardView showToaster getString(R.string.sfs_edit_campaign_success)
+        refreshCampaigns()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
