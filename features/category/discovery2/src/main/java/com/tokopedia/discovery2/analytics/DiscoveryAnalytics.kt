@@ -1118,7 +1118,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
     }
 
     override fun trackTabsClick(id: String, parentPosition: Int, dataItem: DataItem, tabPosition1: Int,eventAction: String) {
-        val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK, eventAction = eventAction, eventLabel = dataItem.name
+        val map = createGeneralEvent(eventName = EVENT_CLICK_DISCOVERY, eventAction = eventAction, eventLabel = dataItem.name
                 ?: "")
         val list = ArrayList<Map<String, Any>>()
         list.add(mapOf(
@@ -1133,6 +1133,8 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         map[PAGE_TYPE] = pageType
         map[PAGE_PATH] = removedDashPageIdentifier
         map[KEY_E_COMMERCE] = eCommerce
+        map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+        map[BUSINESS_UNIT] = HOME_BROWSE
         getTracker().sendEnhanceEcommerceEvent(map)
     }
 
