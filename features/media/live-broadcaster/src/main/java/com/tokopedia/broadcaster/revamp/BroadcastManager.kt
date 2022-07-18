@@ -181,8 +181,9 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
         // verify video resolution support by encoder
         val supportedSize = BroadcasterUtil.verifyResolution(videoConfig.type, videoConfig.videoSize)
         if (!videoConfig.videoSize.equals(supportedSize)) {
-            // !videoConfig.videoSize.equals(supportedSize)
-            videoConfig.videoSize = supportedSize
+            // do not modify videoSize itself because Android camera is always landscape
+            // noinspection SuspiciousNameCombination
+            videoConfig.videoSize = Streamer.Size(supportedSize.height, supportedSize.width)
         }
 
         builder.setVideoConfig(videoConfig)
