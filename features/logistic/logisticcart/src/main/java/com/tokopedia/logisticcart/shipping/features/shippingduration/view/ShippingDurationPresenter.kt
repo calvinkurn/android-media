@@ -35,16 +35,17 @@ class ShippingDurationPresenter @Inject constructor(private val ratesUseCase: Ge
     /**
      * Calls rates
      */
-    override fun loadCourierRecommendation(shipmentDetailData: ShipmentDetailData,
-                                           selectedServiceId: Int,
-                                           shopShipmentList: List<ShopShipment>,
-                                           codHistory: Int, isCorner: Boolean,
-                                           isLeasing: Boolean, pslCode: String,
-                                           products: List<Product>, cartString: String,
-                                           isTradeInDropOff: Boolean,
-                                           recipientAddressModel: RecipientAddressModel,
-                                           isFulfillment: Boolean, preOrderTime: Int,
-                                           mvc: String) {
+    override fun loadCourierRecommendation(
+        shipmentDetailData: ShipmentDetailData,
+        selectedServiceId: Int,
+        shopShipmentList: List<ShopShipment>,
+        codHistory: Int, isCorner: Boolean,
+        isLeasing: Boolean, pslCode: String,
+        products: List<Product>, cartString: String,
+        isTradeInDropOff: Boolean,
+        recipientAddressModel: RecipientAddressModel?,
+        isFulfillment: Boolean, preOrderTime: Int,
+        mvc: String) {
         if (view != null) {
             view!!.showLoading()
             val shippingParam = getShippingParam(shipmentDetailData, products, cartString,
@@ -124,7 +125,7 @@ class ShippingDurationPresenter @Inject constructor(private val ratesUseCase: Ge
                                  products: List<Product>,
                                  cartString: String,
                                  isTradeInDropOff: Boolean,
-                                 recipientAddressModel: RecipientAddressModel): ShippingParam {
+                                 recipientAddressModel: RecipientAddressModel?): ShippingParam {
         val shippingParam = ShippingParam()
         shippingParam.originDistrictId = shipmentDetailData.shipmentCartData!!.originDistrictId
         shippingParam.originPostalCode = shipmentDetailData.shipmentCartData!!.originPostalCode
@@ -150,7 +151,7 @@ class ShippingDurationPresenter @Inject constructor(private val ratesUseCase: Ge
         shippingParam.preOrderDuration = shipmentDetailData.shipmentCartData!!.preOrderDuration
         shippingParam.isFulfillment = shipmentDetailData.shipmentCartData!!.isFulfillment
         shippingParam.boMetadata = shipmentDetailData.shipmentCartData!!.boMetadata
-        if (isTradeInDropOff && recipientAddressModel.locationDataModel != null) {
+        if (isTradeInDropOff && recipientAddressModel?.locationDataModel != null) {
             shippingParam.destinationDistrictId = recipientAddressModel.locationDataModel.district
             shippingParam.destinationPostalCode = recipientAddressModel.locationDataModel.postalCode
             shippingParam.destinationLatitude = recipientAddressModel.locationDataModel.latitude
