@@ -10,14 +10,18 @@ import com.tokopedia.play.broadcaster.model.UiModelBuilder
 import com.tokopedia.play.broadcaster.model.interactive.InteractiveUiModelBuilder
 import com.tokopedia.play.broadcaster.model.websocket.WebSocketUiModelBuilder
 import com.tokopedia.play.broadcaster.robot.PlayBroadcastViewModelRobot
+import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
-import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveState
+import com.tokopedia.play.broadcaster.ui.model.game.GameType
 import com.tokopedia.play.broadcaster.util.assertEqualTo
 import com.tokopedia.play.broadcaster.util.assertFalse
 import com.tokopedia.play.broadcaster.util.assertTrue
+import com.tokopedia.play.broadcaster.util.assertType
 import com.tokopedia.play.broadcaster.util.getOrAwaitValue
 import com.tokopedia.play.broadcaster.util.logger.PlayLogger
+import com.tokopedia.play.broadcaster.util.millisFromNow
 import com.tokopedia.play.broadcaster.view.state.PlayLiveTimerState
+import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.unit.test.rule.CoroutineTestRule
@@ -25,6 +29,12 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.verify
 import io.mockk.verifySequence
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.yield
+import okhttp3.internal.wait
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -265,46 +275,27 @@ class PlayBroWebSocketViewModelTest {
 
     @Test
     fun `when user received new channel interactive scheduled event, it should emit scheduled interactive`() {
-        val mockTitle = "Giveaway Test"
-        val mockTimeToStart = 0L
-        val mockInteractiveDurationInMs = 0L
         val mockInteractiveConfigResponse = interactiveUiModelBuilder.buildInteractiveConfigModel()
-        val mockCurrentInteractive = interactiveUiModelBuilder.buildCurrentInteractiveModel(
-            title = mockTitle,
-            timeStatus = PlayInteractiveTimeStatus.Scheduled(
-                timeToStartInMs = mockTimeToStart,
-                interactiveDurationInMs = mockInteractiveDurationInMs,
-            )
-        )
 
         coEvery { mockRepo.getInteractiveConfig() } returns mockInteractiveConfigResponse
-        coEvery { mockRepo.getCurrentInteractive(any()) } returns mockCurrentInteractive
 
         val mockChannelInteractiveString = webSocketUiModelBuilder.buildChannelInteractiveString()
-        val mockChannelInteractive = webSocketUiModelBuilder.buildChannelInteractiveModel()
-
-        val mockTimeStatusScheduled = mockChannelInteractive.timeStatus as PlayInteractiveTimeStatus.Scheduled
-        val mockExpectedState = BroadcastInteractiveState.Allowed.Schedule(
-            timeToStartInMs = mockTimeStatusScheduled.timeToStartInMs,
-            durationInMs = mockTimeStatusScheduled.interactiveDurationInMs,
-            title = mockChannelInteractive.title,
-        )
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
             channelRepo = mockRepo,
             logger = mockLogger,
-            productMapper = PlayBroProductUiMapper(),
             playBroadcastWebSocket = fakePlayWebSocket,
         )
 
         robot.use {
-            robot.executeViewModelPrivateFunction("startWebSocket")
-            fakePlayWebSocket.fakeEmitMessage(mockChannelInteractiveString)
+            val state = it.recordState {
+                getConfig()
 
-            //TODO() = please check
-            //val stateResult = robot.getViewModel().observableInteractiveState.getOrAwaitValue()
-            //stateResult.assertEqualTo(mockExpectedState)
+                //TODO() = please check
+                //val stateResult = robot.getViewModel().observableInteractiveState.getOrAwaitValue()
+                //stateResult.assertEqualTo(mockExpectedState)
+            }
         }
     }
 

@@ -257,8 +257,8 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
             val operatorClusters = viewModel.operatorCluster.value
             if (operatorClusters is Success) {
                 rechargeGeneralAnalytics.eventClickRecentIcon(it, categoryName, it.position)
-                operatorId = it.operatorId
-                productId = it.productId
+                operatorId = it.operatorId.toIntOrZero()
+                productId = it.productId.toIntOrZero()
                 inputData[PARAM_CLIENT_NUMBER] = it.clientNumber
                 renderInitialData()
                 // Enquire & navigate to checkout
@@ -715,8 +715,8 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
 
     private fun setupAutoFillData(data: TopupBillsRecommendation) {
         with(data) {
-            this@RechargeGeneralFragment.operatorId = operatorId
-            this@RechargeGeneralFragment.productId = productId
+            this@RechargeGeneralFragment.operatorId = operatorId.toIntOrZero()
+            this@RechargeGeneralFragment.productId = productId.toIntOrZero()
             if (clientNumber.isNotEmpty()) {
                 inputData[PARAM_CLIENT_NUMBER] = clientNumber
             }

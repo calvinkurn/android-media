@@ -17,13 +17,13 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
-import com.tokopedia.topads.common.data.internal.ParamObject.ISWHITELISTEDUSER
 import com.tokopedia.topads.common.data.model.GroupListDataItem
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_DELETE
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_MOVE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_0
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_2
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_3
@@ -84,7 +84,6 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
     private var totalPage = 0
     private var currentPageNum = 1
     private var adIds: MutableList<String> = mutableListOf()
-    private var isWhiteListedUser: Boolean = false
 
     @Inject
     lateinit var topAdsDashboardPresenter: TopAdsDashboardPresenter
@@ -120,7 +119,7 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
     ): View? {
         val view =
-            inflater.inflate(resources.getLayout(R.layout.topads_dash_fragment_non_group_list),
+            inflater.inflate(context?.resources?.getLayout(R.layout.topads_dash_fragment_non_group_list),
                 container, false)
         recyclerView = view.findViewById(R.id.non_group_list)
         loader = view.findViewById(R.id.loader)
@@ -224,12 +223,10 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        isWhiteListedUser = arguments?.getBoolean(ISWHITELISTEDUSER) ?: false
         fetchData()
         btnFilter?.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupEvent(CLICK_FILTER, "")
             groupFilterSheet.show(childFragmentManager, "")
-            groupFilterSheet.showAdplacementFilter(isWhiteListedUser)
             groupFilterSheet.onSubmitClick = {
                 fetchData()
             }
@@ -290,8 +287,11 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
         if (list.isEmpty()) {
             movetoGroupSheet.setButtonDisable()
             groupList.add(MovetoGroupEmptyModel())
-        } else
-            topAdsDashboardPresenter.getCountProductKeyword(resources, groupIds, ::onSuccessCount)
+        } else {
+            val resources = context?.resources
+            if(resources != null)
+                topAdsDashboardPresenter.getCountProductKeyword(resources, groupIds, ::onSuccessCount)
+        }
 
         movetoGroupSheet.updateData(groupList)
     }
@@ -342,6 +342,11 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
                     setSelectMode(false)
                 }
             }
+        } else if(actionActivate == ACTION_MOVE) {
+            topAdsDashboardPresenter.setProductActionMoveGroup(
+                selectedFilter ?: "",
+                adapter.getSelectedItemsProductId(), ::onSuccessAction
+            )
         } else {
             topAdsDashboardPresenter.setProductAction(::onSuccessAction,
                 actionActivate, getAdIds(), selectedFilter)
@@ -391,7 +396,8 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
             adIds.add(it.adId)
             adapter.items.add(NonGroupItemsItemModel(it))
         }
-        if (adIds.isNotEmpty()) {
+        val resources = context?.resources
+        if (adIds.isNotEmpty() && resources != null) {
             val startDate =
                 Utils.format.format((parentFragment as TopAdsProductIklanFragment).startDate)
             val endDate =
@@ -432,10 +438,7 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
             groupFilterSheet.getSelectedAdPlacementType(), ::onSuccessResult, ::onEmptyResult)
 
 
-        nonGroupTiker?.visibility = when (isWhiteListedUser) {
-            true -> View.VISIBLE
-            false -> View.GONE
-        }
+        nonGroupTiker?.visibility = View.VISIBLE
         when (groupFilterSheet.getSelectedAdPlacementType()) {
             CONST_0 -> {
                 nonGroupTiker?.tickerTitle =

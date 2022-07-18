@@ -1,6 +1,7 @@
 package com.tokopedia.updateinactivephone.common
 
 import android.content.Context
+import android.content.ContextWrapper
 import com.tokopedia.updateinactivephone.common.cameraview.CameraViewMode
 import java.io.File
 
@@ -40,17 +41,29 @@ object InactivePhoneConstant {
     const val OTP_TYPE_INACTIVE_PHONE_PIN = 161
     const val OTP_TYPE_INACTIVE_PHONE_SMS = 162
 
+    const val MINIMUM_PHONE_NUMBER = 9
+
     const val IS_USE_REGULAR_FLOW = "isUseRegularFlow"
 
     fun filePath(context: Context, fileType: Int): String {
         return when (fileType) {
             CameraViewMode.ID_CARD.id -> {
-                File(context.externalCacheDir, "$TAG-$ID_CARD.jpg").absolutePath
+                File(getInternalDirectory(context), "$TAG-$ID_CARD.jpg").absolutePath
             }
             CameraViewMode.SELFIE.id -> {
-                File(context.externalCacheDir, "$TAG-$SELFIE.jpg").absolutePath
+                File(getInternalDirectory(context), "$TAG-$SELFIE.jpg").absolutePath
             }
             else -> ""
         }
+    }
+
+    fun getInternalDirectory(context: Context): String {
+        val contextWrapper = ContextWrapper(context.applicationContext)
+        val dir = File(contextWrapper.cacheDir, TAG)
+        if (!dir.exists()) {
+            dir.mkdirs()
+        }
+
+        return dir.absolutePath
     }
 }

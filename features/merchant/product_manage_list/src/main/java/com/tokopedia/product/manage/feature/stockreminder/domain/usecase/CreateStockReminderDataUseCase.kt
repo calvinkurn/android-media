@@ -22,12 +22,7 @@ class CreateStockReminderDataUseCase @Inject constructor(
         setTypeClass(CreateStockReminderResponse::class.java)
     }
 
-    fun setParams(shopId: String, productId: String, warehouseId: String, threshold: String) {
-
-        val productWarehouseParam = ProductWarehouseParam(productId, warehouseId, threshold)
-        val listProductWarehouseParam = ArrayList<ProductWarehouseParam>()
-
-        listProductWarehouseParam.add(productWarehouseParam)
+    fun setParams(shopId: String,listProductWarehouseParam : ArrayList<ProductWarehouseParam>) {
 
         val createStockReminderParam = CreateUpdateStockReminderParam(shopId, true, listProductWarehouseParam)
         val params: Map<String, Any?> = mutableMapOf(

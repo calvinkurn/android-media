@@ -315,10 +315,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
             shopId = shop.shopId
             shopName = shop.shopName
             shopType = shop.shopTypeInfo.titleFmt
-            freeShippingType =
-                    if (shipmentInformation.freeShippingExtra.eligible) "bebas ongkir extra"
-                    else if (shipmentInformation.freeShipping.eligible) "bebas ongkir"
-                    else ""
+            freeShippingType = product.freeShippingGeneral.boName
             errorType = unavailableReason
             if (isDisabled) {
                 selectedUnavailableActionId = unavailableActionId
@@ -471,12 +468,12 @@ class MiniCartListUiModelMapper @Inject constructor() {
                 }
 
                 if (visitable.isBundlingItem) {
-                    val bundleKey = MiniCartItemKey(visitable.bundleId, type = MiniCartItemType.BUNDLE)
+                    val bundleKey = MiniCartItemKey(visitable.bundleGroupId, type = MiniCartItemType.BUNDLE)
                     if (!miniCartItems.contains(bundleKey)) {
                         if (miniCartItem.isError) {
                             unavailableItemCount++
                         }
-                        miniCartItems[bundleKey] = MiniCartItem.MiniCartItemBundle(
+                        miniCartItems[bundleKey] = MiniCartItem.MiniCartItemBundleGroup(
                                 isError = miniCartItem.isError,
                                 bundleId = visitable.bundleId,
                                 bundleGroupId = visitable.bundleGroupId,
@@ -490,7 +487,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
                                 products = hashMapOf(key to miniCartItem)
                         )
                     } else {
-                        val currentBundleItem = miniCartItems[bundleKey] as MiniCartItem.MiniCartItemBundle
+                        val currentBundleItem = miniCartItems[bundleKey] as MiniCartItem.MiniCartItemBundleGroup
                         val products = HashMap(currentBundleItem.products)
                         products[key] = miniCartItem
                         miniCartItems[bundleKey] = currentBundleItem.copy(products = products)

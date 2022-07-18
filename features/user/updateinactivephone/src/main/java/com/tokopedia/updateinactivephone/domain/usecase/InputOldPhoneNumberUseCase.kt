@@ -7,7 +7,7 @@ import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.updateinactivephone.domain.data.RegisterCheckModel
 import javax.inject.Inject
 
-class InputOldPhoneNumberUseCase @Inject constructor(
+open class InputOldPhoneNumberUseCase @Inject constructor(
     private val graphqlRepository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
 ) : CoroutineUseCase<String, RegisterCheckModel>(dispatcher.io) {

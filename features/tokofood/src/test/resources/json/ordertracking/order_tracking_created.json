@@ -1,0 +1,24 @@
+{
+  "tokofoodOrderDetail": {
+    "orderStatus": {
+      "status": "CREATED",
+      "title": "Lagi memproses pesanan",
+      "subtitle": "Kami segera sampaikan ke resto",
+      "iconName": "cook"
+    },
+    "eta": null,
+    "additionalTickerInfo": [
+      {
+        "level": "info",
+        "appText": "This will be text for cancelation reason <a href='tokopedia://order/123'>This will be link/action</a>"
+      }
+    ],
+    "invoice": {
+      "invoiceNumber": "INV/20181011/XVI/X/55069657",
+      "gofoodOrderNumber": null
+    },
+    "payment": {
+      "paymentDate": "19 Maret 2022, 20:04"
+    }
+  }
+}

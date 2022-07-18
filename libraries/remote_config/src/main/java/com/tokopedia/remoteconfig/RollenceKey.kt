@@ -20,8 +20,6 @@ object RollenceKey {
     const val BALANCE_VARIANT_OLD = "Existing Balance Widget"
     const val BALANCE_VARIANT_NEW = "New Balance Widget"
 
-    const val HOME_BEAUTY_FEST = "home_cantik"
-
     //home component rollence section
     const val HOME_COMPONENT_LEGO24BANNER_EXP = "lego24_new"
     const val HOME_COMPONENT_LEGO24BANNER_OLD = "lego24_old"
@@ -40,7 +38,6 @@ object RollenceKey {
     // end of Recommendation page section
 
     //User
-    const val USER_DARK_MODE_TOGGLE = "dark_mode_nakama_v2"
     const val EXPERIMENT_NAME_REVIEW_CREDIBILITY = "review_credibility"
     const val VARIANT_REVIEW_CREDIBILITY_WITHOUT_BOTTOM_SHEET = "without_bottomsheet"
     const val VARIANT_REVIEW_CREDIBILITY_WITH_BOTTOM_SHEET = "with_bottomsheet"
@@ -60,13 +57,6 @@ object RollenceKey {
     const val WISHLIST_V2_VARIANT = "experiment_variant"
     const val ADD_REMOVE_WISHLIST_V2 = "addremove_wishlistv2"
 
-    // advanced search negative keywords
-    const val SEARCH_ADVANCED_KEYWORD_ADV_NEG = "keyword_adv_neg"
-    const val SEARCH_ADVANCED_NEGATIVE_NO_ADS = "negative_no_ads"
-
-    // Fulfillment Rebranding
-    const val FULFILLMENT_REBRANDING = "fulfill_rebranding"
-
     // Logistic
     const val LCA_REFRESH = "android_lca_refresh"
 
@@ -84,4 +74,12 @@ object RollenceKey {
 
     // Review
     const val CREATE_REVIEW_MEDIA_PICKER_EXPERIMENT_NAME = "review_video"
+
+    // Food
+    const val KEY_ROLLENCE_FOOD = "m1_gofood"
+
+    // PDP
+    const val PDP_CAROUSEL_ANDROID = "pdp_carousel_android"
+    const val PDP_SHOW_THUMBNAIL = "pdp_show_thumbnail"
+    const val PDP_HIDE_THUMBNAIL = "pdp_hide_thumbnail"
 }

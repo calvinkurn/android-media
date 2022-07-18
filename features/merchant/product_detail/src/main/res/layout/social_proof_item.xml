@@ -10,6 +10,6 @@
     android:drawablePadding="4dp"
     android:paddingEnd="8dp"
     android:paddingStart="@dimen/layout_lvl2"
-    app:typographyType="body_3"
+    app:typographyType="display_3"
     tools:ignore="RtlSymmetry"
     tools:text="Dilihat 200" />

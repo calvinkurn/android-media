@@ -27,7 +27,6 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.data.SavedOption
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_SOURCE
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -45,7 +44,6 @@ import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper
 import com.tokopedia.search.result.presentation.mapper.RecommendationViewModelMapper
 import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchDataView
 import com.tokopedia.search.result.presentation.model.BannedProductsTickerDataView
-import com.tokopedia.search.result.presentation.model.BannerDataView
 import com.tokopedia.search.result.presentation.model.BroadMatch
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
@@ -67,10 +65,13 @@ import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDa
 import com.tokopedia.search.result.presentation.model.SeparatorDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
+import com.tokopedia.search.result.product.banner.BannerPresenterDelegate
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
 import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetVisitable
+import com.tokopedia.search.result.product.pagination.Pagination
+import com.tokopedia.search.result.product.pagination.PaginationImpl
 import com.tokopedia.search.result.product.performancemonitoring.PerformanceMonitoringProvider
 import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC
 import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_BROADMATCH
@@ -138,9 +139,12 @@ class ProductListPresenter @Inject constructor(
     private val topAdsHeadlineHelper : TopAdsHeadlineHelper,
     performanceMonitoringProvider: PerformanceMonitoringProvider,
     private val chooseAddressDelegate: ChooseAddressPresenterDelegate,
+    private val bannerDelegate: BannerPresenterDelegate,
     private val requestParamsGenerator: RequestParamsGenerator,
+    private val paginationImpl: PaginationImpl,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
-    ProductListSectionContract.Presenter {
+    ProductListSectionContract.Presenter,
+    Pagination by paginationImpl {
 
     companion object {
         private val showBroadMatchResponseCodeList = listOf("0", "4", "5")
@@ -174,11 +178,8 @@ class ProductListPresenter @Inject constructor(
 
     private var enableGlobalNavWidget = true
     private var additionalParams = ""
-    override var startFrom = 0
-        private set
     override var isBottomSheetFilterEnabled = true
         private set
-    private var totalData = 0
     private var hasLoadData = false
     private var responseCode = ""
     private var navSource = ""
@@ -196,12 +197,11 @@ class ProductListPresenter @Inject constructor(
     private var topAdsImageViewModelList = mutableListOf<TopAdsImageViewModel>()
     private var suggestionDataView: SuggestionDataView? = null
     private var relatedDataView: RelatedDataView? = null
-    override val quickFilterOptionList = mutableListOf<Option>()
+    override val quickFilterList = mutableListOf<Filter>()
     override var dynamicFilterModel: DynamicFilterModel? = null
         private set
     private var threeDotsProductItem: ProductItemDataView? = null
     private var firstProductPositionWithBOELabel = -1
-    private var bannerDataView: BannerDataView? = null
     private var categoryIdL2 = ""
     private var suggestionKeyword = ""
     private var relatedKeyword = ""
@@ -217,22 +217,6 @@ class ProductListPresenter @Inject constructor(
     }
 
     //region AB Test booleans
-    private val isABTestNegativeNoAds : Boolean  by lazy {
-        getABTestNegativeNoAds()
-    }
-
-    private fun getABTestNegativeNoAds() :Boolean {
-        return try {
-            val abTestKeywordAdvNeg = view.abTestRemoteConfig?.getString(
-                RollenceKey.SEARCH_ADVANCED_KEYWORD_ADV_NEG,
-                ""
-            )
-            RollenceKey.SEARCH_ADVANCED_NEGATIVE_NO_ADS == abTestKeywordAdvNeg
-        } catch (e: Exception) {
-            false
-        }
-    }
-
     private val isABTestVideoWidget: Boolean by lazy {
         getABTestVideoWidget()
     }
@@ -256,9 +240,6 @@ class ProductListPresenter @Inject constructor(
     override val isUserLoggedIn: Boolean
         get() = userSession.isLoggedIn
 
-    override val deviceId: String
-        get() = userSession.deviceId
-
     //region Ticker
     override var isTickerHasDismissed = false
         private set
@@ -269,15 +250,6 @@ class ProductListPresenter @Inject constructor(
     //endregion
 
     //region Load Data / Load More / Recommendations
-    override fun hasNextPage(): Boolean {
-        return productList.size < totalData
-    }
-
-    override fun clearData() {
-        startFrom = 0
-        totalData = 0
-    }
-
     override fun onViewCreated() {
         val isFirstActiveTab = view.isFirstActiveTab
 
@@ -303,6 +275,8 @@ class ProductListPresenter @Inject constructor(
     }
 
     override fun loadMoreData(searchParameter: Map<String, Any>) {
+        if (!hasNextPage()) return
+
         if (isShowLocalSearchRecommendation()) getLocalSearchRecommendation()
         else searchProductLoadMore(searchParameter)
     }
@@ -312,7 +286,6 @@ class ProductListPresenter @Inject constructor(
 
         val requestParams = requestParamsGenerator.createInitializeSearchParam(
             searchParameter,
-            startFrom,
             chooseAddressDelegate.getChooseAddressParams(),
         )
         requestParamsGenerator.enrichWithRelatedSearchParam(requestParams)
@@ -330,8 +303,6 @@ class ProductListPresenter @Inject constructor(
         searchProductLoadMoreUseCase.unsubscribe()
         searchProductLoadMoreUseCase.execute(useCaseRequestParams, getLoadMoreDataSubscriber(requestParams.parameters))
     }
-
-    private fun getSearchRows() = SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS
 
     private fun enrichWithAdditionalParams(requestParams: RequestParams) {
         val additionalParams = UrlParamUtils.getParamMap(additionalParams)
@@ -363,7 +334,7 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun incrementStart() {
-        startFrom += SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS.toInt()
+        paginationImpl.incrementStart()
     }
 
     private fun loadMoreDataSubscriberOnNext(
@@ -377,25 +348,24 @@ class ProductListPresenter @Inject constructor(
         additionalParams = productDataView.additionalParams
 
         if (productDataView.productList.isEmpty()) {
-            postProcessingFilter.checkPostProcessingFilter(searchParameter, totalData, ::loadMoreData) {
-                getViewToProcessEmptyResultDuringLoadMore(searchProductModel.searchProduct)
+            postProcessingFilter.checkPostProcessingFilter(
+                searchProductModel.isPostProcessing,
+                searchParameter,
+                totalData,
+                ::loadMoreData
+            ) {
+                getViewToProcessEmptyResultDuringLoadMore()
             }
-        }
-        else {
+        } else {
             postProcessingFilter.resetCount()
             getViewToShowMoreData(searchParameter, searchProductModel, productDataView)
         }
 
-        totalData = productDataView.totalData
-    }
-
-    private fun isDisableAdsNegativeKeywords(productDataView: ProductDataView) :Boolean {
-        return isABTestNegativeNoAds && productDataView.isAdvancedNegativeKeywordSearch()
+        paginationImpl.totalData = productDataView.totalData
     }
 
     private fun createProductDataView(
         searchProductModel: SearchProductModel,
-        pageTitleEventLabel: String = "",
     ): ProductDataView {
         val lastProductItemPosition = view.lastProductItemPositionFromCache
         val keyword = view.queryKey
@@ -403,10 +373,11 @@ class ProductListPresenter @Inject constructor(
         val productDataView = ProductViewModelMapper().convertToProductViewModel(
             lastProductItemPosition,
             searchProductModel,
-            pageTitleEventLabel,
+            pageTitle,
             isLocalSearch(),
             dimension90,
             keyword,
+            isShowLocalSearchRecommendation(),
         )
 
         saveLastProductItemPositionToCache(lastProductItemPosition, productDataView.productList)
@@ -424,11 +395,11 @@ class ProductListPresenter @Inject constructor(
         view.saveLastProductItemPositionToCache(newLastProductPosition)
     }
 
-    private fun getViewToProcessEmptyResultDuringLoadMore(searchProduct: SearchProductModel.SearchProduct) {
+    private fun getViewToProcessEmptyResultDuringLoadMore() {
         val list = mutableListOf<Visitable<*>>()
 
-        processBroadMatch(searchProduct, list)
-        addSearchInTokopedia(searchProduct, list)
+        processBroadMatch(list)
+        addSearchInTokopedia(list)
 
         view.removeLoading()
         view.addProductList(list)
@@ -444,7 +415,7 @@ class ProductListPresenter @Inject constructor(
 
         view.removeLoading()
         view.addProductList(loadMoreVisitableList)
-        view.addLoading()
+        if (hasNextPage()) view.addLoading()
         view.updateScrollListener()
     }
 
@@ -453,19 +424,23 @@ class ProductListPresenter @Inject constructor(
             searchProductModel: SearchProductModel,
             searchParameter: Map<String, Any>,
     ): List<Visitable<*>> {
-        val list = createProductItemVisitableList(productDataView, searchParameter).toMutableList()
+        val list = createProductItemVisitableList(
+            productDataView,
+            searchParameter,
+            searchProductModel.getProductListType()
+        ).toMutableList()
         productList.addAll(list)
-
-        val searchProduct = searchProductModel.searchProduct
 
         processHeadlineAdsLoadMore(searchProductModel, list)
         processTopAdsImageViewModel(searchParameter, list)
         processInspirationWidgetPosition(searchParameter, list)
         processInspirationCarouselPosition(searchParameter, list)
-        processBannerAndBroadmatchInSamePosition(searchProduct, list)
-        processBanner(searchProduct, list)
-        processBroadMatch(searchProduct, list)
-        addSearchInTokopedia(searchProduct, list)
+        processBannerAndBroadmatchInSamePosition(list)
+        bannerDelegate.processBanner(list, productList) { index, banner ->
+            list.add(index, banner)
+        }
+        processBroadMatch(list)
+        addSearchInTokopedia(list)
 
         return list
     }
@@ -473,6 +448,7 @@ class ProductListPresenter @Inject constructor(
     private fun createProductItemVisitableList(
         productDataView: ProductDataView,
         searchParameter: Map<String, Any>,
+        productListType: String,
     ): List<Visitable<*>> {
         return if (isHideProductAds(productDataView))
             productDataView.productList
@@ -482,11 +458,12 @@ class ProductListPresenter @Inject constructor(
                 productDataView.adsModel,
                 searchParameter,
                 dimension90,
+                productListType,
             )
     }
 
     private fun isHideProductAds(productDataView: ProductDataView) : Boolean {
-        return isLocalSearch() || isDisableAdsNegativeKeywords(productDataView)
+        return isLocalSearch() || productDataView.isAdvancedNegativeKeywordSearch()
     }
 
     private fun isLocalSearch() = navSource.isNotEmpty() && pageId.isNotEmpty()
@@ -516,12 +493,12 @@ class ProductListPresenter @Inject constructor(
 
         view.removeLoading()
         view.hideRefreshLayout()
-        view.showNetworkError(startFrom, error)
+        view.showNetworkError(error)
         view.logWarning(UrlParamUtils.generateUrlParamString(searchParameter as Map<String?, Any>), error)
     }
 
     private fun decrementStart() {
-        startFrom -= SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS.toInt()
+        paginationImpl.decrementStart()
     }
 
     override fun loadData(searchParameter: Map<String, Any>) {
@@ -536,7 +513,6 @@ class ProductListPresenter @Inject constructor(
 
         val requestParams = requestParamsGenerator.createInitializeSearchParam(
             searchParameter,
-            startFrom,
             chooseAddressDelegate.getChooseAddressParams(),
         )
         requestParamsGenerator.enrichWithRelatedSearchParam(requestParams)
@@ -599,7 +575,7 @@ class ProductListPresenter @Inject constructor(
 
         decrementStart()
         view.removeLoading()
-        view.showNetworkError(0, throwable)
+        view.showNetworkError(throwable)
         view.hideRefreshLayout()
         view.logWarning(UrlParamUtils.generateUrlParamString(searchParameter as Map<String?, Any>), throwable)
     }
@@ -652,9 +628,9 @@ class ProductListPresenter @Inject constructor(
         responseCode = productDataView.responseCode ?: ""
         suggestionDataView = productDataView.suggestionModel
         relatedDataView = productDataView.relatedDataView
-        bannerDataView = productDataView.bannerDataView
+        bannerDelegate.setBannerData(productDataView.bannerDataView)
         autoCompleteApplink = productDataView.autocompleteApplink ?: ""
-        totalData = productDataView.totalData
+        paginationImpl.totalData = productDataView.totalData
         categoryIdL2 = productDataView.categoryIdL2
         relatedKeyword = searchProductModel.searchProduct.data.related.relatedKeyword
         suggestionKeyword = searchProductModel.searchProduct.data.suggestion.suggestion
@@ -664,7 +640,12 @@ class ProductListPresenter @Inject constructor(
         view.setDefaultLayoutType(productDataView.defaultView)
 
         if (productDataView.productList.isEmpty()) {
-            postProcessingFilter.checkPostProcessingFilter(searchParameter, totalData, ::loadData) {
+            postProcessingFilter.checkPostProcessingFilter(
+                searchProductModel.isPostProcessing,
+                searchParameter,
+                totalData,
+                ::loadData
+            ) {
                 getViewToHandleEmptyProductList(
                     searchProductModel.searchProduct,
                     productDataView,
@@ -865,7 +846,6 @@ class ProductListPresenter @Inject constructor(
             navSource,
             pageTitle,
             pageId,
-            startFrom.toString()
         )
 
         getLocalSearchRecommendationUseCase.get().execute(
@@ -895,7 +875,7 @@ class ProductListPresenter @Inject constructor(
         val productDataView = createProductViewModelMapperLocalSearchRecommendation(searchProductModel)
 
         val visitableList = mutableListOf<Visitable<*>>()
-        if (startFrom == 0) {
+        if (isFirstPage()) {
             visitableList.add(SearchProductTitleDataView(pageTitle, isRecommendationTitle = true))
             productList.clear()
         }
@@ -904,7 +884,7 @@ class ProductListPresenter @Inject constructor(
         visitableList.addAll(productDataView.productList)
 
         incrementStart()
-        totalData = searchProductModel.searchProduct.header.totalData
+        paginationImpl.totalData = searchProductModel.searchProduct.header.totalData
 
         view.removeLoading()
         view.addLocalSearchRecommendation(visitableList)
@@ -913,9 +893,9 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun createProductViewModelMapperLocalSearchRecommendation(searchProductModel: SearchProductModel): ProductDataView {
-        if (startFrom == 0) view.clearLastProductItemPositionFromCache()
+        if (isFirstPage()) view.clearLastProductItemPositionFromCache()
 
-        return createProductDataView(searchProductModel, pageTitle)
+        return createProductDataView(searchProductModel)
     }
 
     private fun getGlobalSearchRecommendation() {
@@ -1001,7 +981,11 @@ class ProductListPresenter @Inject constructor(
         }
 
         adsInjector.resetTopAdsPosition()
-        productList = createProductItemVisitableList(productDataView, searchParameter).toMutableList()
+        productList = createProductItemVisitableList(
+            productDataView,
+            searchParameter,
+            searchProductModel.getProductListType(),
+        ).toMutableList()
         list.addAll(productList)
 
         runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_HEADLINE_ADS) {
@@ -1020,11 +1004,13 @@ class ProductListPresenter @Inject constructor(
             processInspirationWidgetPosition(searchParameter, list)
         }
 
-        processBannerAndBroadmatchInSamePosition(searchProduct, list)
-        processBanner(searchProduct, list)
+        processBannerAndBroadmatchInSamePosition(list)
+        bannerDelegate.processBanner(list, productList) { index, banner ->
+            list.add(index, banner)
+        }
 
         runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_BROADMATCH) {
-            processBroadMatch(searchProduct, list)
+            processBroadMatch(list)
         }
 
         runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_TDN) {
@@ -1034,13 +1020,13 @@ class ProductListPresenter @Inject constructor(
             processTopAdsImageViewModel(searchParameter, list)
         }
 
-        addSearchInTokopedia(searchProduct, list)
+        addSearchInTokopedia(list)
         firstProductPositionWithBOELabel = getFirstProductPositionWithBOELabel(list)
 
         view.removeLoading()
         view.setProductList(list)
         view.backToTop()
-        if (productDataView.totalData > getSearchRows().toIntOrZero())
+        if (hasNextPage())
             view.addLoading()
     }
 
@@ -1079,8 +1065,8 @@ class ProductListPresenter @Inject constructor(
                 && !view.isAnySortActive
     }
 
-    private fun addSearchInTokopedia(searchProduct: SearchProductModel.SearchProduct, list: MutableList<Visitable<*>>) {
-        if (isLastPage(searchProduct) && isLocalSearch()) {
+    private fun addSearchInTokopedia(list: MutableList<Visitable<*>>) {
+        if (isLastPage() && isLocalSearch()) {
             val globalSearchApplink = constructGlobalSearchApplink()
             val searchInTokopediaDataView = SearchInTokopediaDataView(globalSearchApplink)
             list.add(searchInTokopediaDataView)
@@ -1313,6 +1299,7 @@ class ProductListPresenter @Inject constructor(
         return map { option ->
             BroadMatchDataView(
                 keyword = option.title,
+                subtitle = option.subtitle,
                 applink = option.applink,
                 carouselOptionType = determineCarouselOptionType(type, option),
                 broadMatchItemDataViewList = option.product.mapIndexed { index, product ->
@@ -1342,8 +1329,14 @@ class ProductListPresenter @Inject constructor(
                         topAdsClickUrl = product.topAdsClickUrl,
                         topAdsWishlistUrl = product.topAdsWishlistUrl,
                         componentId = product.componentId,
+                        originalPrice = product.originalPrice,
+                        discountPercentage = product.discountPercentage,
                     )
-                }
+                },
+                cardButton = BroadMatchDataView.CardButton(
+                    option.cardButton.title,
+                    option.cardButton.applink,
+                ),
             )
         }
     }
@@ -1367,72 +1360,31 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun processBannerAndBroadmatchInSamePosition(
-            searchProduct: SearchProductModel.SearchProduct,
-            list: MutableList<Visitable<*>>,
+        list: MutableList<Visitable<*>>,
     ) {
-        val bannerDataView = bannerDataView ?: return
         val relatedDataView = relatedDataView ?: return
 
-        if (isShowBanner() && isShowBroadMatch()) {
-            if (bannerDataView.position == -1 && relatedDataView.position == 0) {
-                processBroadMatchAtBottom(searchProduct, list)
-                processBannerAtBottom(searchProduct, list)
-            } else if (bannerDataView.position == 0 && relatedDataView.position == 1) {
+        if (bannerDelegate.isShowBanner() && isShowBroadMatch()) {
+            if (bannerDelegate.isLastPositionBanner && relatedDataView.position == 0) {
+                processBroadMatchAtBottom(list)
+                bannerDelegate.processBannerAtBottom(list) { _, banner ->
+                    list.add(banner)
+                }
+            } else if (bannerDelegate.isFirstPositionBanner && relatedDataView.position == 1) {
                 processBroadMatchAtTop(list)
-                processBannerAtTop(list)
+                bannerDelegate.processBannerAtTop(list, productList) { index, banner ->
+                    list.add(index, banner)
+                }
             }
         }
     }
 
-    private fun isShowBanner() = bannerDataView?.imageUrl?.isNotEmpty() == true
-
-    private fun processBannerAtBottom(searchProduct: SearchProductModel.SearchProduct, list: MutableList<Visitable<*>>) {
-        if (!isLastPage(searchProduct)) return
-
-        bannerDataView?.let {
-            list.add(it)
-            bannerDataView = null
-        }
-    }
-
-    private fun processBannerAtTop(list: MutableList<Visitable<*>>) {
-        bannerDataView?.let {
-            list.add(list.indexOf(productList[0]), it)
-            bannerDataView = null
-        }
-    }
-
-    private fun processBanner(searchProduct: SearchProductModel.SearchProduct, list: MutableList<Visitable<*>>) {
-        try {
-            if (!isShowBanner()) return
-            val bannerDataView = bannerDataView ?: return
-
-            if (bannerDataView.position == -1) processBannerAtBottom(searchProduct, list)
-            else if (bannerDataView.position == 0) processBannerAtTop(list)
-            else processBannerAtPosition(list)
-        } catch (throwable: Throwable) {
-            Timber.w(throwable)
-        }
-    }
-
-    private fun processBannerAtPosition(list: MutableList<Visitable<*>>) {
-        val bannerDataView = bannerDataView ?: return
-        if (productList.size < bannerDataView.position) return
-
-        val productItemVisitableIndex = bannerDataView.position - 1
-        val productItemVisitable = productList[productItemVisitableIndex]
-        val bannerVisitableIndex = list.indexOf(productItemVisitable) + 1
-
-        list.add(bannerVisitableIndex, bannerDataView)
-        this.bannerDataView = null
-    }
-
-    private fun processBroadMatch(searchProduct: SearchProductModel.SearchProduct, list: MutableList<Visitable<*>>) {
+    private fun processBroadMatch(list: MutableList<Visitable<*>>) {
         try {
             if (!isShowBroadMatch()) return
 
             val broadMatchPosition = relatedDataView?.position ?: -1
-            if (broadMatchPosition == 0) processBroadMatchAtBottom(searchProduct, list)
+            if (broadMatchPosition == 0) processBroadMatchAtBottom(list)
             else if (broadMatchPosition == 1) processBroadMatchAtTop(list)
             else if (broadMatchPosition > 1) processBroadMatchAtPosition(list, broadMatchPosition)
         } catch (exception: Throwable) {
@@ -1440,16 +1392,11 @@ class ProductListPresenter @Inject constructor(
         }
     }
 
-    private fun processBroadMatchAtBottom(searchProduct: SearchProductModel.SearchProduct, list: MutableList<Visitable<*>>) {
-        if (isLastPage(searchProduct)) {
+    private fun processBroadMatchAtBottom(list: MutableList<Visitable<*>>) {
+        if (isLastPage()) {
             list.add(SeparatorDataView())
             addBroadMatchToVisitableList(list)
         }
-    }
-
-    private fun isLastPage(searchProduct: SearchProductModel.SearchProduct): Boolean {
-        val hasNextPage = startFrom < searchProduct.header.totalData
-        return !hasNextPage
     }
 
     private fun processBroadMatchAtTop(list: MutableList<Visitable<*>>) {
@@ -1559,38 +1506,73 @@ class ProductListPresenter @Inject constructor(
 
     private fun processQuickFilter(quickFilterData: DataValue) {
         val sortFilterItems = mutableListOf<SortFilterItem>()
-        quickFilterOptionList.clear()
+        quickFilterList.clear()
+        quickFilterList.addAll(quickFilterData.filter)
 
         quickFilterData.filter.forEach { filter ->
             val options = filter.options
-            quickFilterOptionList.addAll(options)
-            sortFilterItems.addAll(convertToSortFilterItem(filter, options))
+            sortFilterItems.add(createSortFilterItem(filter, options))
         }
 
         if (sortFilterItems.isNotEmpty())
             view.setQuickFilter(sortFilterItems)
     }
 
-    private fun convertToSortFilterItem(filter: Filter, options: List<Option>) =
-        options.map { option ->
-            createSortFilterItem(filter, option)
-        }
+    private fun createSortFilterItem(filter: Filter, options: List<Option>): SortFilterItem {
+        val isChipSelected = options.any { view.isFilterSelected(it) }
+        val selectedOptionsOnCurrentFilter = options.filter { view.isFilterSelected(it) }
+        val item = SortFilterItem(createSortFilterTitle(filter, selectedOptionsOnCurrentFilter))
 
-    private fun createSortFilterItem(filter: Filter, option: Option): SortFilterItem {
-        val item = SortFilterItem(filter.title) {
-            view.onQuickFilterSelected(filter, option)
-        }
-
-        setSortFilterItemState(item, option)
+        setSortFilterItemListener(item, filter, options)
+        setSortFilterItemState(item, isChipSelected)
 
         return item
     }
 
-    private fun setSortFilterItemState(item: SortFilterItem, option: Option) {
-        if (view.isFilterSelected(option)) {
+    @Suppress("MagicNumber")
+    private fun createSortFilterTitle(filter: Filter, activeOptions: List<Option>): String {
+        val optionSize = activeOptions.size
+
+        return when {
+            optionSize == 1 -> activeOptions.first().name
+            optionSize > 1 -> "$optionSize ${filter.title}"
+            else -> filter.title
+        }
+    }
+
+    private fun setSortFilterItemState(item: SortFilterItem, isChipSelected: Boolean) {
+        if (isChipSelected) {
             item.type = ChipsUnify.TYPE_SELECTED
             item.typeUpdated = false
+        } else {
+            item.type = ChipsUnify.TYPE_NORMAL
         }
+    }
+
+    @Suppress("MagicNumber")
+    private fun setSortFilterItemListener(item: SortFilterItem, filter: Filter, options: List<Option>) {
+        if (options.size == 1) {
+            item.listener = {
+                view.onQuickFilterSelected(filter, options.first())
+            }
+        } else {
+            item.listener = {
+                onDropDownQuickFilterClick(filter)
+            }
+            item.chevronListener = {
+                onDropDownQuickFilterClick(filter)
+            }
+        }
+    }
+
+    private fun onDropDownQuickFilterClick(filter: Filter) {
+        view.openBottomsheetMultipleOptionsQuickFilter(filter)
+        view.trackEventClickDropdownQuickFilter(filter.title)
+    }
+
+    override fun onApplyDropdownQuickFilter(optionList: List<Option>?) {
+        view.applyDropdownQuickFilter(optionList)
+        view.trackEventApplyDropdownQuickFilter(optionList)
     }
 
     private fun getViewToSendTrackingSearchAttempt(productDataView: ProductDataView) {
@@ -2000,7 +1982,6 @@ class ProductListPresenter @Inject constructor(
 
         val getProductCountRequestParams = requestParamsGenerator.createGetProductCountRequestParams(
             mapParameter,
-            startFrom,
             chooseAddressDelegate.getChooseAddressParams(),
         )
         val getProductCountSubscriber = createGetProductCountSubscriber()
@@ -2159,7 +2140,27 @@ class ProductListPresenter @Inject constructor(
 
     override fun onBroadMatchSeeMoreClick(broadMatchDataView: BroadMatchDataView) {
         if (isViewNotAttached) return
+        trackBroadMatchSeeMoreClick(broadMatchDataView)
 
+        val applink = getModifiedApplinkToSearchResultIfNeeded(broadMatchDataView.applink)
+        view.redirectionStartActivity(applink, broadMatchDataView.url)
+    }
+
+    override fun onBroadMatchViewAllCardClicked(broadMatchDataView: BroadMatchDataView) {
+        if (isViewNotAttached) return
+        trackBroadMatchSeeMoreClick(broadMatchDataView)
+
+        val applink = getModifiedApplinkToSearchResultIfNeeded(broadMatchDataView.cardButton.applink)
+        view.redirectionStartActivity(applink, null)
+    }
+
+    private fun getModifiedApplinkToSearchResultIfNeeded(applink: String): String {
+        return if (applink.startsWith(ApplinkConst.DISCOVERY_SEARCH))
+            view.modifyApplinkToSearchResult(applink)
+        else applink
+    }
+
+    private fun trackBroadMatchSeeMoreClick(broadMatchDataView: BroadMatchDataView) {
         when(val carouselOptionType = broadMatchDataView.carouselOptionType) {
             is BroadMatch -> view.trackEventClickSeeMoreBroadMatch(broadMatchDataView)
             is DynamicCarouselOption -> view.trackEventClickSeeMoreDynamicProductCarousel(
@@ -2168,12 +2169,6 @@ class ProductListPresenter @Inject constructor(
                 carouselOptionType.option,
             )
         }
-
-        val applink = if (broadMatchDataView.applink.startsWith(ApplinkConst.DISCOVERY_SEARCH))
-            view.modifyApplinkToSearchResult(broadMatchDataView.applink)
-        else broadMatchDataView.applink
-
-        view.redirectionStartActivity(applink, broadMatchDataView.url)
     }
     //endregion
 
@@ -2320,7 +2315,6 @@ class ProductListPresenter @Inject constructor(
         val requestParams = requestParamsGenerator.createGetInspirationCarouselChipProductsRequestParams(
             clickedInspirationCarouselOption,
             searchParameter,
-            startFrom,
             chooseAddressDelegate.getChooseAddressParams(),
         )
 
@@ -2401,7 +2395,6 @@ class ProductListPresenter @Inject constructor(
     ) {
         val searchParams = requestParamsGenerator.createInitializeSearchParam(
             searchParameter,
-            startFrom,
             chooseAddressDelegate.getChooseAddressParams(),
         )
         val saveLastFilterInput = SaveLastFilterInput(

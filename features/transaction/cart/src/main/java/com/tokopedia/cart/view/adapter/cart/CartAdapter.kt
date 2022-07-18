@@ -840,7 +840,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         }
     }
 
-    fun getCartItemByBundleId(bundleId: String): List<CartItemHolderData> {
+    fun getCartItemByBundleGroupId(bundleId: String, bundleGroupId: String): List<CartItemHolderData> {
         val cartItemHolderDataList = mutableListOf<CartItemHolderData>()
         loop@ for (data in cartDataList) {
             if (cartItemHolderDataList.isNotEmpty()) {
@@ -849,7 +849,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             when (data) {
                 is CartShopHolderData -> {
                     data.productUiModelList.forEach { cartItemHolderData ->
-                        if (cartItemHolderData.isBundlingItem && cartItemHolderData.bundleId == bundleId) {
+                        if (cartItemHolderData.isBundlingItem && cartItemHolderData.bundleId == bundleId && cartItemHolderData.bundleGroupId == bundleGroupId) {
                             cartItemHolderDataList.add(cartItemHolderData)
                         }
                     }

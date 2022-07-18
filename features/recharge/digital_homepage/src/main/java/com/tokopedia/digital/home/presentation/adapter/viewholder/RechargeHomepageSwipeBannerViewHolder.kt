@@ -1,6 +1,12 @@
 package com.tokopedia.digital.home.presentation.adapter.viewholder
 
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.os.Build
+import android.util.DisplayMetrics
 import android.view.View
+import android.view.WindowInsets
+import android.view.WindowMetrics
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.R
@@ -15,9 +21,10 @@ import com.tokopedia.unifycomponents.toPx
 /**
  * @author: astidhiyaa on 01/11/21.
  */
-class RechargeHomepageSwipeBannerViewHolder(itemView: View,
-                                            val listener: RechargeHomepageItemListener)
-    : AbstractViewHolder<RechargeHomepageSwipeBannerModel>(itemView){
+class RechargeHomepageSwipeBannerViewHolder(
+    itemView: View,
+    val listener: RechargeHomepageItemListener
+) : AbstractViewHolder<RechargeHomepageSwipeBannerModel>(itemView) {
 
     private lateinit var slidesList: List<RechargeHomepageSections.Item>
 
@@ -25,20 +32,20 @@ class RechargeHomepageSwipeBannerViewHolder(itemView: View,
         val bind = ViewRechargeHomeSwipeBannerBinding.bind(itemView)
         slidesList = element.section.items
         try {
-            if (slidesList.isNotEmpty()){
+            if (slidesList.isNotEmpty()) {
                 initBanner(bind)
-                bind.root.addOnImpressionListener(element.section){
+                bind.root.addOnImpressionListener(element.section) {
                     listener.onRechargeSectionItemImpression(element.section)
                 }
-            }else{
+            } else {
                 listener.loadRechargeSectionData(element.visitableId())
             }
-        }catch (exception: Exception){
+        } catch (exception: Exception) {
             exception.printStackTrace()
         }
     }
 
-    private fun initBanner(bind: ViewRechargeHomeSwipeBannerBinding){
+    private fun initBanner(bind: ViewRechargeHomeSwipeBannerBinding) {
         bind.rechargeHomeSwipeBanner.apply {
             val urlArr = slidesList.map {
                 it.mediaUrl
@@ -55,10 +62,25 @@ class RechargeHomepageSwipeBannerViewHolder(itemView: View,
                 bannerSeeAll.gone()
             }
 
-            customWidth = SWIPE_BANNER_WIDTH.toPx()
-            customHeight = SWIPE_BANNER_HEIGHT.toPx()
+            val bannerWidth = getScreenWidth(context as Activity) - BANNER_WIDTH_SPACE.toPx()
+            customWidth = bannerWidth
+            customHeight = bannerWidth / BANNER_HEIGHT_RATIO
 
             buildView()
+        }
+    }
+
+    @SuppressLint("DeprecatedMethod")
+    fun getScreenWidth(activity: Activity): Int {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val windowMetrics: WindowMetrics = activity.windowManager.currentWindowMetrics
+            val insets = windowMetrics.windowInsets
+                .getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
+            windowMetrics.bounds.width() - insets.left - insets.right
+        } else {
+            val displayMetrics = DisplayMetrics()
+            activity.windowManager.defaultDisplay.getMetrics(displayMetrics)
+            displayMetrics.widthPixels
         }
     }
 
@@ -66,7 +88,7 @@ class RechargeHomepageSwipeBannerViewHolder(itemView: View,
         @LayoutRes
         val LAYOUT = R.layout.view_recharge_home_swipe_banner
 
-        private const val SWIPE_BANNER_WIDTH = 328
-        private const val SWIPE_BANNER_HEIGHT = 109
+        private const val BANNER_WIDTH_SPACE = 32
+        private const val BANNER_HEIGHT_RATIO = 3
     }
 }

@@ -18,6 +18,11 @@ internal open class MainNavMockResponseConfig : MockModelConfig() {
         const val KEY_CONTAINS_MAINNAV_WALLET_ELIGIBILITY = "walletappGetWalletEligible"
         const val KEY_CONTAINS_MAINNAV_BU_LIST = "businessUnitList"
         const val KEY_CONTAINS_MAINNAV_SHOP_INFO = "getShopInfo"
+        const val KEY_CONTAINS_MAINNAV_GET_WISHLIST = "GetWishlist"
+        const val KEY_CONTAINS_MAINNAV_GET_USER_SHOP_FOLLOW = "GetUserShopFollow"
+        const val KEY_CONTAINS_MAINNAV_PRODUCT_REV_WAIT_FOR_FEEDBACK = "productrevWaitForFeedback"
+        const val KEY_CONTAINS_MAINNAV_PRODUCT_REV_AFFILIATE = "affiliateUserDetail"
+        const val KEY_CONTAINS_MAINNAV_TOKOPEDIA_PLUS = "tokopediaPlusWidget"
     }
 
     override fun createMockModel(context: Context): MockModelConfig {
@@ -29,13 +34,13 @@ internal open class MainNavMockResponseConfig : MockModelConfig() {
 
         addMockResponse(
             KEY_CONTAINS_MAINNAV_ORDER_LIST,
-            getRawString(context, R.raw.response_success_mock_mainnav_orderlist_list),
+            getRawString(context, R.raw.response_success_mock_mainnav_get_order_history),
             FIND_BY_CONTAINS
         )
 
         addMockResponse(
             KEY_CONTAINS_MAINNAV_PAYMENT_LIST,
-            getRawString(context, R.raw.response_success_mock_mainnav_payment_list),
+            getRawString(context, R.raw.response_success_mock_mainnav_payment_query),
             FIND_BY_CONTAINS
         )
 
@@ -84,6 +89,36 @@ internal open class MainNavMockResponseConfig : MockModelConfig() {
         addMockResponse(
             KEY_CONTAINS_MAINNAV_SHOP_INFO,
             getRawString(context, R.raw.response_success_mock_mainnav_shopinfo),
+            FIND_BY_CONTAINS
+        )
+
+        addMockResponse(
+            KEY_CONTAINS_MAINNAV_GET_WISHLIST,
+            getRawString(context, R.raw.response_success_mock_mainnav_get_wishlist),
+            FIND_BY_CONTAINS
+        )
+
+        addMockResponse(
+            KEY_CONTAINS_MAINNAV_GET_USER_SHOP_FOLLOW,
+            getRawString(context, R.raw.response_success_mock_mainnav_get_user_shop_follow),
+            FIND_BY_CONTAINS
+        )
+
+        addMockResponse(
+            KEY_CONTAINS_MAINNAV_PRODUCT_REV_WAIT_FOR_FEEDBACK,
+            getRawString(context, R.raw.response_success_mock_mainnav_review_order),
+            FIND_BY_CONTAINS
+        )
+
+        addMockResponse(
+            KEY_CONTAINS_MAINNAV_PRODUCT_REV_AFFILIATE,
+            getRawString(context, R.raw.response_success_mock_mainnav_affiliate_user_detail),
+            FIND_BY_CONTAINS
+        )
+
+        addMockResponse(
+            KEY_CONTAINS_MAINNAV_TOKOPEDIA_PLUS,
+            getRawString(context, R.raw.response_success_mock_mainnav_tokopedia_plus),
             FIND_BY_CONTAINS
         )
 

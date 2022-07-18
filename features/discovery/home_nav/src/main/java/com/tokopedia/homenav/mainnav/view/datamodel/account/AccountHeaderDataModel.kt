@@ -4,6 +4,7 @@ import com.tokopedia.homenav.mainnav.view.adapter.typefactory.MainNavTypeFactory
 import com.tokopedia.homenav.mainnav.view.datamodel.MainNavVisitable
 import com.tokopedia.navigation_common.usecase.pojo.walletapp.WalletAppData
 import com.tokopedia.topads.sdk.domain.model.ImpressHolder
+import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusParam
 
 data class AccountHeaderDataModel(
     /**
@@ -22,7 +23,8 @@ data class AccountHeaderDataModel(
     var profileSaldoDataModel: ProfileSaldoDataModel = ProfileSaldoDataModel(),
     var profileSellerDataModel: ProfileSellerDataModel = ProfileSellerDataModel(),
     var profileAffiliateDataModel: ProfileAffiliateDataModel = ProfileAffiliateDataModel(),
-    var profileWalletAppDataModel: ProfileWalletAppDataModel = ProfileWalletAppDataModel()
+    var profileWalletAppDataModel: ProfileWalletAppDataModel = ProfileWalletAppDataModel(),
+    var tokopediaPlusDataModel: TokopediaPlusDataModel = TokopediaPlusDataModel()
 ) : MainNavVisitable, ImpressHolder() {
     override fun id(): Any = id
 
@@ -56,6 +58,8 @@ data class AccountHeaderDataModel(
         const val NAV_PROFILE_STATE_LOADING = 98
         const val NAV_PROFILE_STATE_SUCCESS = 97
         const val NAV_PROFILE_STATE_FAILED = 96
+
+        const val PAYLOAD_TOKOPEDIA_PLUS = "payloadTokopediaPlus"
     }
 
     fun setProfileData(userName: String, userImage: String, loginState: Int, isGetUserNameError: Boolean) {
@@ -133,5 +137,15 @@ data class AccountHeaderDataModel(
         }
         this.profileWalletAppDataModel.walletAppActivationCta = selectedBalance?.globalMenuText?.id ?: ""
         this.profileWalletAppDataModel.isWalletAppLinked = selectedBalance?.isLinked ?: false
+    }
+
+    fun setTokopediaPlus(
+        tokopediaPlusParam: TokopediaPlusParam?,
+        isLoading: Boolean,
+        error: Throwable?
+    ){
+        this.tokopediaPlusDataModel.tokopediaPlusParam = tokopediaPlusParam
+        this.tokopediaPlusDataModel.isGetTokopediaPlusLoading = isLoading
+        this.tokopediaPlusDataModel.tokopediaPlusError = error
     }
 }

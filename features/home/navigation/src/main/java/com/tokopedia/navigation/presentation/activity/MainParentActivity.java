@@ -319,6 +319,7 @@ public class MainParentActivity extends BaseActivity implements
         moduleNameList.add(DeeplinkDFMapper.DF_TRAVEL);
         moduleNameList.add(DeeplinkDFMapper.DF_ENTERTAINMENT);
         moduleNameList.add(DeeplinkDFMapper.DF_TOKOPEDIA_NOW);
+        moduleNameList.add(DeeplinkDFMapper.DF_TOKOFOOD);
         moduleNameList.add(DeeplinkDFMapper.DF_MERCHANT_NONLOGIN);
         if (BuildConfig.VERSION_NAME.endsWith(SUFFIX_ALPHA) && remoteConfig.get().getBoolean(RemoteConfigKey.ENABLE_APLHA_OBSERVER, true)) {
             moduleNameList.add(DeeplinkDFMapper.DF_ALPHA_TESTING);
@@ -621,7 +622,7 @@ public class MainParentActivity extends BaseActivity implements
             if (frag.getClass().getName().equalsIgnoreCase(fragment.getClass().getName())) {
                 ft.show(frag); // only show fragment what you want to show
                 FragmentLifecycleObserver.INSTANCE.onFragmentSelected(frag);
-                frag.setUserVisibleHint(true);
+//                frag.setUserVisibleHint(true);
             } else {
                 ft.hide(frag); // hide all fragment
                 FragmentLifecycleObserver.INSTANCE.onFragmentUnSelected(frag);

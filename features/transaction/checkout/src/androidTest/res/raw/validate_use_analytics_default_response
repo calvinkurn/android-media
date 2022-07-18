@@ -28,9 +28,9 @@
           "is_tokopedia_gerai": false,
           "voucher_orders": [
             {
-              "code": "WANTER",
+              "code": "WCEPAT",
               "success": true,
-              "unique_id": "2661965-0-7377294-123297113",
+              "unique_id": "2538088-0-2051993-125529137",
               "cart_id": 0,
               "order_id": 0,
               "shop_id": 2661965,
@@ -50,7 +50,7 @@
               },
               "benefit_details": [
                 {
-                  "code": "WANTER",
+                  "code": "WCEPAT",
                   "type": "",
                   "order_id": 1,
                   "unique_id": "2661965-0-7377294-123297113",
@@ -116,7 +116,7 @@
           "tracking_details": [
             {
               "product_id": 1000611087,
-              "promo_codes_tracking": "WANTER",
+              "promo_codes_tracking": "WCEPAT",
               "promo_details_tracking": "L:3:20000:green"
             }
           ],

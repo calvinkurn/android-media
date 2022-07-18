@@ -46,6 +46,8 @@ android {
             ext.enableCrashlytics = false
         }
         release {
+            minifyEnabled true
+            buildConfigField "boolean", "ENABLE_DISTRIBUTION", "false"
             signingConfig signingConfigs.debug
         }
     }
@@ -101,6 +103,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
+    implementation rootProject.ext.miscDependencies.autopatchbase
 
     implementation rootProject.ext.playServicesDependencies.base
 

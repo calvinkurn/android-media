@@ -134,7 +134,9 @@ data class CustomDataOther(
     @SerializedName("delay_duration")
     val delayDuration: String?,
     @SerializedName("tracking_data")
-    val trackingData: String?
+    val trackingData: String?,
+    @SerializedName("is_enjoy_plus_benefit")
+    val isEnjoyPLus:String?
 ): Parcelable
 
 @Parcelize
@@ -254,6 +256,8 @@ data class ShopOrder(
         val storeName: String?,
         @SerializedName("item_list")
         val purchaseItemList: ArrayList<PurchaseItem>,
+        @SerializedName("add_ons_section_description")
+        val addOnSectionDescription: String?,
         @SerializedName("addon_item")
         val addOnItemList : ArrayList<AddOnItem>,
         @SerializedName("bundle_group_data")

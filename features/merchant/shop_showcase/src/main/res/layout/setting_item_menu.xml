@@ -15,6 +15,7 @@
         android:layout_height="wrap_content">
         <ImageView
             android:id="@+id/img_ubah"
+            android:contentDescription="@string/shop_page_showcase_bottomsheet_item_menu_edit"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginEnd="16dp"
@@ -23,10 +24,10 @@
             android:layout_marginLeft="16dp"
             android:visibility="visible"
             app:srcCompat="@drawable/ic_item_edit" />
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:lineSpacingExtra="@dimen/sp_6"
+            android:lineSpacingExtra="6sp"
             android:layout_gravity="center_vertical"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
@@ -44,6 +45,7 @@
         android:layout_height="wrap_content">
         <ImageView
             android:id="@+id/img_hapus"
+            android:contentDescription="@string/shop_page_showcase_bottomsheet_item_menu_delete"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginEnd="16dp"
@@ -52,10 +54,10 @@
             android:layout_marginLeft="16dp"
             android:visibility="visible"
             app:srcCompat="@drawable/ic_item_delete" />
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:lineSpacingExtra="@dimen/sp_6"
+            android:lineSpacingExtra="6sp"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
             android:layout_gravity="center_vertical"

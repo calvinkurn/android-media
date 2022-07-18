@@ -1,7 +1,7 @@
 package com.tokopedia.chatbot.attachinvoice.domain.mapper
 
-import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkAttributePojo
-import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
+import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkAttributePojo
+import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.attachinvoice.view.resultmodel.SelectedInvoice
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleViewModel
 
@@ -46,7 +46,7 @@ internal constructor() {
 
             val invoiceLinkPojo = InvoiceLinkPojo()
             invoiceLinkPojo.type = selectedInvoice.typeString
-            invoiceLinkPojo.typeId = selectedInvoice.type
+            invoiceLinkPojo.typeId = selectedInvoice.type.toLong()
             invoiceLinkPojo.attributes = invoiceLinkAttributePojo
             return invoiceLinkPojo
         }
@@ -57,7 +57,7 @@ internal constructor() {
             invoiceLinkAttributePojo.createTime = selectedInvoice.date.toString()
             invoiceLinkAttributePojo.description = selectedInvoice.description.toString()
             invoiceLinkAttributePojo.hrefUrl = selectedInvoice.invoiceUrl.toString()
-            invoiceLinkAttributePojo.id = selectedInvoice.invoiceId!!
+            invoiceLinkAttributePojo.id = selectedInvoice.invoiceId ?: 0
             invoiceLinkAttributePojo.imageUrl = selectedInvoice.topProductImage.toString()
             invoiceLinkAttributePojo.status = selectedInvoice.status.toString()
             invoiceLinkAttributePojo.statusId = selectedInvoice.statusId
@@ -66,7 +66,7 @@ internal constructor() {
 
             val invoiceLinkPojo = InvoiceLinkPojo()
             invoiceLinkPojo.type = selectedInvoice.invoiceTypeStr
-            invoiceLinkPojo.typeId = selectedInvoice.invoiceType!!
+            invoiceLinkPojo.typeId = selectedInvoice.invoiceType?.toLong() ?: 0
             invoiceLinkPojo.attributes = invoiceLinkAttributePojo
             return invoiceLinkPojo
         }

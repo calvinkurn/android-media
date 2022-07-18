@@ -2595,8 +2595,7 @@ private fun testAddToCartButtonWishlist(useViewStub: Boolean): ProductCardModelM
         R.id.imageButtonThreeDotsWishlist to isDisplayed(),
     )
 
-    if (useViewStub) productCardMatcher[R.id.buttonAddToCartStub] = isEnabled()
-    else productCardMatcher[R.id.buttonAddToCart] = isNotDisplayed()
+    if (!useViewStub) productCardMatcher[R.id.buttonAddToCart] = isNotDisplayed()
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -2642,10 +2641,7 @@ private fun testSeeSimilarProductButtonWishlist(useViewStub: Boolean): ProductCa
         R.id.imageButtonThreeDotsWishlist to isDisplayed(),
     )
 
-    if (useViewStub) {
-        productCardMatcher[R.id.buttonAddToCartStub] = isEnabled()
-    }
-    else {
+    if (!useViewStub) {
         productCardMatcher[R.id.buttonAddToCart] = isNotDisplayed()
         productCardMatcher[R.id.buttonAddToCartWishlist] = isNotDisplayed()
     }

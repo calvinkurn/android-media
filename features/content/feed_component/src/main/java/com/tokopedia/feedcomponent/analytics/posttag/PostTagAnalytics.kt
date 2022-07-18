@@ -33,6 +33,7 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
         private const val FORMAT_FEED_EVENT_ACTION = "%s - %s - %s"
         private const val FORMAT_2_VALUE = "%s - %s";
         private const val FORMAT_3_VALUE = "%s - %s - %s";
+        private const val USER_ID_MOD_50 = 50
 
         private const val EVENT_NAME = "event"
         private const val EVENT_CATEGORY = "eventCategory"
@@ -259,7 +260,7 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
                 EVENT_ACTION, action,
                 EVENT_LABEL, label,
                 KEY_USER_ID, userId,
-                KEY_USER_ID_MOD, userId % 50,
+                KEY_USER_ID_MOD, userId % USER_ID_MOD_50,
                 EVENT_ECOMMERCE, PostTagEnhancedTracking.Ecommerce.getEcommerceView(products)
         )
     }
@@ -278,7 +279,7 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
                 EVENT_ACTION, action,
                 EVENT_LABEL, label,
                 KEY_USER_ID, userId,
-                KEY_USER_ID_MOD, userId % 50,
+                KEY_USER_ID_MOD, userId % USER_ID_MOD_50,
                 EVENT_ECOMMERCE, PostTagEnhancedTracking.Ecommerce.getEcommerceClick(products, listSource)
         )
     }
@@ -298,7 +299,7 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
                 EVENT_ACTION, action,
                 EVENT_LABEL, productId,
                 KEY_USER_ID, userId,
-                KEY_USER_ID_MOD, userId % 50,
+                KEY_USER_ID_MOD, userId % USER_ID_MOD_50,
                 EVENT_ECOMMERCE, PostTagEnhancedTracking.Ecommerce.getEcommerceClick(products, listSource)
         )
     }
@@ -323,7 +324,7 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
     // row 28
     // docs - https://docs.google.com/spreadsheets/d/1pnZfjiNKbAk8LR37DhNGSwm2jvM3wKqNJc2lfWLejXA/edit#gid=1781959013
     fun trackViewPostTagFeedShop(
-            postId: Int,
+            postId: String,
             postTagItemList: List<PostTagItem>,
             author: String,
             trackingModel: TrackingPostModel) {
@@ -355,7 +356,7 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
     }
 
     fun trackViewPostTagProfileSelf(
-            postId: Int,
+            postId: String,
             postTagItemList: List<PostTagItem>,
             trackingModel: TrackingPostModel) {
         getBasicViewPostTagEvent(
@@ -368,14 +369,14 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
     }
 
     fun trackClickPostTagProfileSelf(
-            postId: Int,
+            postId: String,
             postTag: PostTagItem,
             postTagPosition: Int,
             trackingModel: TrackingPostModel) {
         getBasicClickPostTagEvent(
                 Screen.MY_PROFILE,
                 Category.MY_PROFILE_SOCIALCOMMERCE,
-                postId.toString(),
+                postId,
                 postTag,
                 postTagPosition,
                 trackingModel,
@@ -383,27 +384,27 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
     }
 
     fun trackViewPostTagProfileOther(
-            postId: Int,
+            postId: String,
             postTagItemList: List<PostTagItem>,
             trackingModel: TrackingPostModel) {
         getBasicViewPostTagEvent(
                 Screen.PROFILE,
                 Category.USER_PROFILE_SOCIALCOMMERCE,
-                postId.toString(),
+                postId,
                 postTagItemList,
                 trackingModel,
                 ListSource.USER_PROFILE_PAGE)
     }
 
     fun trackClickPostTagProfileOther(
-            postId: Int,
+            postId: String,
             postTag: PostTagItem,
             postTagPosition: Int,
             trackingModel: TrackingPostModel) {
         getBasicClickPostTagEvent(
                 Screen.PROFILE,
                 Category.USER_PROFILE_SOCIALCOMMERCE,
-                postId.toString(),
+                postId,
                 postTag,
                 postTagPosition,
                 trackingModel,

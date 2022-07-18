@@ -57,10 +57,13 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generat
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateUserLocationRequest
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkLastAction
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADD_WISHLIST
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADS_COUNT
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_PRICE_MINIMUM_SHIPPING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DIMEN_ID
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PAGE_SOURCE
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.WISHLIST_ERROR_TYPE
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.WISHLIST_STATUS_KEY
 import com.tokopedia.product.detail.data.util.roundToIntOrZero
 import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger
@@ -159,9 +162,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     companion object {
         private const val TEXT_ERROR = "ERROR"
         private const val ATC_ERROR_TYPE = "error_atc"
-        private const val WISHLIST_ERROR_TYPE = "error_wishlist"
-        private const val WISHLIST_STATUS_KEY = "wishlist_status"
-        private const val ADD_WISHLIST = "true"
         private const val REMOVE_WISHLIST = "false"
         private const val P2_LOGIN_ERROR_TYPE = "error_p2_login"
         private const val P2_DATA_ERROR_TYPE = "error_p2_data"
@@ -446,6 +446,13 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         return image
     }
 
+    fun getBebasOngkirCampaignIDsByProductId(): String {
+        val productId = getDynamicProductInfoP1?.basic?.productID ?: ""
+        return p2Data.value?.bebasOngkir?.boProduct?.firstOrNull {
+            it.productId == productId
+        }?.boCampaignIDs ?: ""
+    }
+
     /**
      * If variant change, make sure this function is called after update product Id
      */
@@ -691,8 +698,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             if (result is Success) {
                 listener.onSuccessRemoveWishlist(result.data, productId)
             } else if (result is Fail) {
-                val extras = mapOf(WISHLIST_STATUS_KEY to REMOVE_WISHLIST).toString()
-                ProductDetailLogger.logThrowable(result.throwable, WISHLIST_ERROR_TYPE, productId, deviceId, extras)
                 listener.onErrorRemoveWishlist(result.throwable, productId)
             }
         }
@@ -728,12 +733,11 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     fun addWishListV2(productId: String, listener: WishlistV2ActionListener) {
         launch(dispatcher.main) {
             addToWishlistV2UseCase.get().setParams(productId, userSessionInterface.userId)
-            val result = withContext(dispatcher.io) { addToWishlistV2UseCase.get().executeOnBackground() }
+            val result =
+                withContext(dispatcher.io) { addToWishlistV2UseCase.get().executeOnBackground() }
             if (result is Success) {
                 listener.onSuccessAddWishlist(result.data, productId)
             } else if (result is Fail) {
-                val extras = mapOf(WISHLIST_STATUS_KEY to ADD_WISHLIST).toString()
-                ProductDetailLogger.logThrowable(result.throwable, WISHLIST_ERROR_TYPE, productId, deviceId, extras)
                 listener.onErrorAddWishList(result.throwable, productId)
             }
         }
