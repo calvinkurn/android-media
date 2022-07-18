@@ -250,7 +250,7 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
         )
     }
 
-    override fun impressFeaturedProduct(
+    override fun impressFeaturedProductNow(
         products: List<Pair<PlayProductUiModel.Product, Int>>,
     ) {
         if (products.isEmpty()) return

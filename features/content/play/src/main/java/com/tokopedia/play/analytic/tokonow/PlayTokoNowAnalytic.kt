@@ -33,7 +33,7 @@ interface PlayTokoNowAnalytic {
         sectionInfo: ProductSectionUiModel.Section,
     )
 
-    fun impressFeaturedProduct(
+    fun impressFeaturedProductNow(
         products: List<Pair<PlayProductUiModel.Product, Int>>,
     )
 
