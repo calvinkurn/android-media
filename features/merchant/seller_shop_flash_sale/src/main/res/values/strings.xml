@@ -268,7 +268,8 @@
     <string name="manage_product_incomplete_product_info_label">Beberapa produk memiliki info yang belum lengkap. Lengkapi dulu, ya!</string>
     <string name="manage_product_placeholder_product_count">(%s Produk)</string>
     <string name="manage_product_add_product_label">Tambah Produk</string>
-    <string name="manage_product_item_stock_at_seller_location_label">Stok: &lt;b>%d&lt;/b></string>
+    <string name="manage_product_item_stock_at_single_location_label">Stok: &lt;b>%d&lt;/b></string>
+    <string name="manage_product_item_stock_at_seller_location_label">Stok: &lt;b>%d&lt;/b> di %s</string>
     <string name="manage_product_item_campaign_stock_label">Stok campaign: &lt;b>%d&lt;/b></string>
     <string name="manage_product_item_max_buy_label">Maks. Pembelian: &lt;b>%d&lt;/b></string>
     <string name="manage_product_continue_label">Lanjut</string>

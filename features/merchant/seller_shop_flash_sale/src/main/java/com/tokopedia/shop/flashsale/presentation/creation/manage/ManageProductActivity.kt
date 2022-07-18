@@ -42,7 +42,7 @@ class ManageProductActivity : BaseSimpleActivity() {
 
     override fun getParentViewResourceID() = R.id.container
 
-    override fun getNewFragment(): Fragment = ManageProductFragment.newInstance(campaignId)
+    override fun getNewFragment(): Fragment = ManageProductFragment.newInstance(campaignId, pageMode)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
