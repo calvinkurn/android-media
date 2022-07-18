@@ -49,9 +49,6 @@ import io.mockk.spyk
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.resetMain
 import org.junit.After
 import org.junit.Assert.assertNotNull
@@ -617,7 +614,7 @@ class ChatbotPresenterTest {
         } just runs
 
         presenter.uploadVideo(
-            VideoUploadUiModel(VideoUploadUiModel.Builder().withVideoUrl("abc")),
+            VideoUploadUiModel(VideoUploadUiModel.Builder().withVideoUrl("https://vod-tokopedia.com/abc")),
             "",
             "",
             "123456"
@@ -630,63 +627,46 @@ class ChatbotPresenterTest {
     @Test
     fun `uploadVideo failure when uploaderUseCase returns failure` () {
         val response = mockk<UploadResult.Error>(relaxed = true)
-        var result : String? = null
+        var message : String? = null
 
         coEvery {
             uploaderUseCase.invoke(any())
         } returns response
 
+        every {
+            message = response.message
+        } just runs
+
         presenter.uploadVideo(
-            VideoUploadUiModel(VideoUploadUiModel.Builder().withVideoUrl("abc")),
+            VideoUploadUiModel(VideoUploadUiModel.Builder().withVideoUrl("https://vod-tokopedia.com/abc")),
             "",
             "",
             "123456"
-        ) { msg, _ ->
-            result = msg
-        }
+        ) { _, _ -> }
 
-        assertNotNull(result)
+        assertNotNull(message)
     }
 
     @Test
     fun `uploadVideo failure` () {
 
-    }
-
-    @Test
-    fun `cancelVideo success` () {
-        presenter.videoUploadJob = GlobalScope.launch {
-            delay(3000L)
-        }
-        coEvery {
-            uploaderUseCase.abortUpload(any(), any())
-        } just runs
-
-        presenter.cancelVideoUpload("abc","") {}
-
-        verify {
-            presenter.videoUploadJob.cancel()
-        }
-
-    }
-
-    @Test
-    fun `cancelVideo failure` () {
-        var result: Throwable? = null
+        var exception : String? = null
 
         coEvery {
-            uploaderUseCase.abortUpload(any(), any())
+            uploaderUseCase.invoke(any())
         } answers {
             throw mockThrowable
         }
 
-        presenter.cancelVideoUpload("abc","") {
-            result = it
-        }
+        presenter.uploadVideo(
+            VideoUploadUiModel(VideoUploadUiModel.Builder().withVideoUrl("https://vod-tokopedia.com/abc")),
+            "",
+            "",
+            "123456"
+        ) { e, _ -> exception = e }
 
-       assertNotNull(
-           result
-       )
+        assertNotNull(exception)
+
     }
 
 
