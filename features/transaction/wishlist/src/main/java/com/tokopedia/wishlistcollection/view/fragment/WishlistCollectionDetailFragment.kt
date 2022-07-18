@@ -73,6 +73,7 @@ import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomshee
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -100,14 +101,19 @@ import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionItems
 import com.tokopedia.wishlistcollection.di.DaggerWishlistCollectionDetailComponent
 import com.tokopedia.wishlistcollection.di.WishlistCollectionDetailModule
 import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionDetailViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 import kotlin.math.roundToInt
 import com.tokopedia.wishlist.R as Rv2
 
 @Keep
-class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListener {
+class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListener,
+    CoroutineScope {
     private var binding by autoClearedNullable<FragmentWishlistCollectionDetailBinding>()
     private lateinit var collectionItemsAdapter: WishlistV2Adapter
     private lateinit var rvScrollListener: EndlessRecyclerViewScrollListener
@@ -203,6 +209,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         private const val SOURCE_AUTOMATIC_DELETION = "wishlist_automatic_delete"
         private const val OK = "OK"
         private const val DELAY_REFETCH_PROGRESS_DELETION = 5000L
+        private const val DEBOUNCE_SEARCH_TIME = 500L
         const val DEFAULT_TITLE = "Wishlist Collection Detail"
     }
 
@@ -525,6 +532,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
             wishlistCollectionDetailSearchbar.searchBarTextField.addTextChangedListener(object :
                 TextWatcher {
+                var searchFor = ""
                 override fun beforeTextChanged(
                     s: CharSequence?,
                     start: Int,
@@ -536,20 +544,32 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
                 override fun afterTextChanged(s: Editable?) {
-                    s?.toString()?.let { query ->
-                        searchQuery = query
-                        if (query.isNotEmpty()) {
-                            WishlistV2Analytics.submitSearchFromCariProduk(query)
+                    val searchText = s.toString().trim()
+                    if (searchText == searchFor)
+                        return
+
+                    searchFor = searchText
+                    launchCatchError(coroutineContext, {
+                        delay(DEBOUNCE_SEARCH_TIME)
+                        if (searchText != searchFor)
+                            return@launchCatchError
+                        s?.toString()?.trim()?.let { query ->
+                            searchQuery = query
+                            if (query.isNotEmpty()) {
+                                WishlistV2Analytics.submitSearchFromCariProduk(query)
+                            }
+                            wishlistCollectionDetailSearchbar.searchBarTextField.clearFocus()
+                            val `in` =
+                                context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                            `in`.hideSoftInputFromWindow(
+                                wishlistCollectionDetailSearchbar.searchBarTextField.windowToken,
+                                0
+                            )
+                            triggerSearch()
                         }
-                        wishlistCollectionDetailSearchbar.searchBarTextField.clearFocus()
-                        val `in` =
-                            context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                        `in`.hideSoftInputFromWindow(
-                            wishlistCollectionDetailSearchbar.searchBarTextField.windowToken,
-                            0
-                        )
-                        triggerSearch()
-                    }
+                    }, {
+
+                    })
                 }
             })
 
@@ -1639,4 +1659,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             throwable.printStackTrace()
         }
     }
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main
 }
