@@ -84,7 +84,7 @@ dependencies {
 //    implementation projectOrAar(rootProject.ext.features.report)
 //    implementation projectOrAar(rootProject.ext.features.shopOpen)
     implementation projectOrAar(rootProject.ext.features.productDetail)
-    implementation projectOrAar(rootProject.ext.features.productDetailIntegration)
+    implementation projectOrAar(rootProject.ext.features.productDetailAdditionalInfo)
     implementation projectOrAar(rootProject.ext.features.review)
 
     //User
@@ -123,6 +123,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.sellerMenu)
     implementation projectOrAar(rootProject.ext.features.snapshot)
     implementation projectOrAar(rootProject.ext.features.atcVariant)
+    implementation projectOrAar(rootProject.ext.features.shopAdmin)
 
     // Order Management
     implementation projectOrAar(rootProject.ext.features.ordermanagementhistory)

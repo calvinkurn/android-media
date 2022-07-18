@@ -91,17 +91,19 @@ object AddOnUiModelMapper {
                 initialAddOnNote = addonSavedStateData?.addOnMetadata?.addOnNote?.notes ?: ""
                 addOnNote = initialAddOnNote
             }
-            if (addOnNote.isBlank()) {
-                initialAddOnNote = addOn?.basicInfo?.metadata?.notesTemplate ?: ""
-                addOnNote = initialAddOnNote
-            }
-            if (addOnNoteFrom.isBlank()) {
-                initialAddOnNoteFrom = addOnProductData.availableBottomSheetData.defaultFrom
-                addOnNoteFrom = initialAddOnNoteFrom
-            }
-            if (addOnNoteTo.isBlank()) {
-                initialAddOnNoteTo = addOnProductData.availableBottomSheetData.defaultTo
-                addOnNoteTo = initialAddOnNoteTo
+            if (addOnSavedStateResponse?.let { isAddOnEdited(it) } != true) {
+                if (addOnNote.isBlank()) {
+                    initialAddOnNote = addOn?.basicInfo?.metadata?.notesTemplate ?: ""
+                    addOnNote = initialAddOnNote
+                }
+                if (addOnNoteFrom.isBlank()) {
+                    initialAddOnNoteFrom = addOnProductData.availableBottomSheetData.defaultFrom
+                    addOnNoteFrom = initialAddOnNoteFrom
+                }
+                if (addOnNoteTo.isBlank()) {
+                    initialAddOnNoteTo = addOnProductData.availableBottomSheetData.defaultTo
+                    addOnNoteTo = initialAddOnNoteTo
+                }
             }
             isCustomNote = addOn?.basicInfo?.rules?.customNote ?: false
             onlyGreetingCardInfo = addOnProductData.availableBottomSheetData.addOnInfoWording.onlyGreetingCard
@@ -123,6 +125,10 @@ object AddOnUiModelMapper {
                 ""
             }
         }
+    }
+
+    private fun isAddOnEdited(addOnSavedStateResponse: GetAddOnSavedStateResponse): Boolean {
+        return addOnSavedStateResponse.getAddOns.data.addOns.isNotEmpty()
     }
 
     private fun getAddOnSavedStateById(addOnId: String, addOnSavedStateResponse: GetAddOnSavedStateResponse): AddOnDataResponse? {

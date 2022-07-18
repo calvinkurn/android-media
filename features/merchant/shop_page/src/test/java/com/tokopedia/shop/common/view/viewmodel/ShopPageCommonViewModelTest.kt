@@ -139,7 +139,9 @@ class ShopPageCommonViewModelTest {
 
     @Test
     fun `Setup shop page fab should be success`() {
-        shopPageFeedTabSharedViewModel.setupShopPageFab(ShopPageFabConfig())
+        val mockShopPageFabConfig = ShopPageFabConfig()
+        shopPageFeedTabSharedViewModel.setupShopPageFab(mockShopPageFabConfig)
+        assert(shopPageFeedTabSharedViewModel.shopPageFabConfig == mockShopPageFabConfig)
         shopPageFeedTabSharedViewModel.shopPageFab.observeAwaitValue()
         shopPageFeedTabSharedViewModel.shopPageFab.value?.let {
             verifySuccessResult(ShopPageFeedTabSharedViewModel.FAB_ACTION_SETUP, it)
@@ -162,6 +164,13 @@ class ShopPageCommonViewModelTest {
         shopPageFeedTabSharedViewModel.shopPageFab.value?.let {
             verifySuccessResult(ShopPageFeedTabSharedViewModel.FAB_ACTION_HIDE, it)
         }
+    }
+
+    @Test
+    fun `When assign shopPageFabConfig, then get shopPageFabConfig should return mocked data`() {
+        val mockShopPageFabConfig = ShopPageFabConfig()
+        shopPageFeedTabSharedViewModel.shopPageFabConfig = mockShopPageFabConfig
+        assert(shopPageFeedTabSharedViewModel.shopPageFabConfig == mockShopPageFabConfig)
     }
 
     private fun verifySuccessResult(prevData: Any?, currentData: Any) {
