@@ -769,6 +769,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         if(propertyText != null && !TextUtils.isEmpty(cartItemModel.getEthicalDrugDataModel().getText())){
             propertyText.setText(cartItemModel.getEthicalDrugDataModel().getText());
         }
+        propertyLayoutWithIcon.addView(propertiesBinding);
         return propertyLayoutWithIcon;
     }
 
