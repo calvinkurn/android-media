@@ -9,7 +9,6 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.kyc_centralized.test.R
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActivity
 
 class KycRobot {
@@ -32,22 +31,22 @@ class KycRobot {
     }
 
     fun atCameraClickNext() {
-        Thread.sleep(1000)
+        Thread.sleep(1_000)
         onView(withId(R.id.next_button)).perform(click())
     }
 
     fun atFaceIntroClickNext() {
-        Thread.sleep(1_000)
+        Thread.sleep(3_000)
         onView(withId(R.id.button)).perform(click())
     }
 
     fun atFinalPressCta() {
-        Thread.sleep(2_500)
+        Thread.sleep(3_000)
         onView(withId(R.id.upload_button)).perform(click())
     }
 
     fun atFinalPressErrorButton() {
-        Thread.sleep(2000)
+        Thread.sleep(2_000)
         onView(withId(R.id.kyc_upload_error_button)).perform(click())
     }
 
@@ -64,7 +63,7 @@ class KycResultRobot {
     }
 
     fun hasLivenessIntent(count: Int = 1) {
-        intended(hasData(ApplinkConstInternalGlobal.LIVENESS_DETECTION), times(count))
+        intended(hasData(ApplinkConstInternalGlobal.LIVENESS_DETECTION.replace("{projectId}", "-1")), times(count))
     }
 
 }

@@ -25,6 +25,7 @@ class InspirationCarouselDataView(
     @Suppress("LongParameterList")
     class Option(
             val title: String = "",
+            val subtitle: String = "",
             val url: String = "",
             val applink: String = "",
             val bannerImageUrl: String = "",
@@ -43,6 +44,7 @@ class InspirationCarouselDataView(
             val componentId: String = "",
             val trackingOption: Int = 0,
             val dimension90: String = "",
+            val cardButton: CardButton = CardButton(),
     ): Visitable<InspirationCarouselOptionTypeFactory>{
 
         override fun type(typeFactory: InspirationCarouselOptionTypeFactory): Int {
@@ -189,6 +191,8 @@ class InspirationCarouselDataView(
             }
         }
     }
+
+    data class CardButton(val title: String = "", val applink: String = "")
 }
 
 

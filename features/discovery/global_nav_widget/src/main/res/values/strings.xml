@@ -11,6 +11,6 @@
     <string name="content_desc_globalNavCardItemBackground">global nav card background</string>
     <string name="content_desc_globalNavCardItemLogo">global nav card logo</string>
 
-    <string name="catalog_global_nav_view_all_title">Cari tahu lebih lanjut tentang barang ini!</string>
+    <string name="catalog_global_nav_view_all_title">Cari tahu lebih lanjut tentang produk ini!</string>
     <string name="catalog_global_nav_view_all_cta">Lihat Katalog</string>
 </resources>

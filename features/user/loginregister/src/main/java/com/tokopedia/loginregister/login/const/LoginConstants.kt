@@ -58,6 +58,10 @@ object LoginConstants {
         const val GPLUS = "gplus"
     }
 
+    object RollenceKey {
+        const val LOGIN_PAGE_BIOMETRIC = "and_biom_entry_point"
+    }
+
     object AutoLogin {
         const val AUTO_LOGIN_EMAIL = "email"
         const val AUTO_LOGIN_PASS = "pw"

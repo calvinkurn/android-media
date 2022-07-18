@@ -274,6 +274,36 @@ class HotelDestinationViewModelTest {
     }
 
     @Test
+    fun onGetLocation_successToGetLocation_LatLongShouldBeSuccessWithZeroLatitude() {
+        // given
+        val deviceLocation = DeviceLocation(0.0, 2.54321, 0)
+
+        // when
+        val onGetLocationFun = hotelDestinationViewModel.onGetLocation()
+        onGetLocationFun(deviceLocation)
+
+        // then
+        assert(hotelDestinationViewModel.longLat.value is Success)
+        assert((hotelDestinationViewModel.longLat.value as Success).data.first == deviceLocation.longitude)
+        assert((hotelDestinationViewModel.longLat.value as Success).data.second == deviceLocation.latitude)
+    }
+
+    @Test
+    fun onGetLocation_successToGetLocation_LatLongShouldBeSuccessWithZeroLongitude() {
+        // given
+        val deviceLocation = DeviceLocation(1.123450, 0.0, 0)
+
+        // when
+        val onGetLocationFun = hotelDestinationViewModel.onGetLocation()
+        onGetLocationFun(deviceLocation)
+
+        // then
+        assert(hotelDestinationViewModel.longLat.value is Success)
+        assert((hotelDestinationViewModel.longLat.value as Success).data.first == deviceLocation.longitude)
+        assert((hotelDestinationViewModel.longLat.value as Success).data.second == deviceLocation.latitude)
+    }
+
+    @Test
     fun onGetLocation_successToGetLocation_LatLongShouldBeSuccessAndContainsLatLong() {
         // given
         val deviceLocation = DeviceLocation(1.12345, 2.54321, 0)

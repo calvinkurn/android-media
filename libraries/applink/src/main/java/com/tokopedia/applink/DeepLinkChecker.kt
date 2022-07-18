@@ -62,7 +62,8 @@ object DeepLinkChecker {
     const val POWER_MERCHANT = 40
     const val SALDO_DEPOSIT = 41
     const val SNAPSHOT = 42
-    const val TOP_ADS_CLICK_LINK = 43
+    const val TOKOFOOD = 43
+    const val TOP_ADS_CLICK_LINK = 44
 
     private val deeplinkMatcher: DeeplinkMatcher by lazy { DeeplinkMatcher() }
 

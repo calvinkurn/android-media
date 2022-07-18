@@ -5,7 +5,7 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.view.View
 import com.tokopedia.otp.R
-import com.tokopedia.otp.verification.domain.data.OtpConstant
+import com.tokopedia.otp.verification.data.OtpConstant
 
 open class GoogleAuthVerificationFragment : VerificationFragment() {
 

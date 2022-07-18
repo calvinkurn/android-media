@@ -277,6 +277,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openPowerMechant(uriData);
                     screenName = "";
                     break;
+                case DeepLinkChecker.TOKOFOOD:
+                    openTokoFood(uriData);
+                    screenName = "";
+                    break;
                 case DeepLinkChecker.TOP_ADS_CLICK_LINK:
                      doTopAdsOperation(uriData);
                      screenName = "";
@@ -491,6 +495,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void openPowerMechant(Uri uriData) {
         Intent intent = RouteManager.getIntent(context, ApplinkConst.POWER_MERCHANT_SUBSCRIBE);
+        viewListener.goToPage(intent);
+    }
+
+    private void openTokoFood(Uri uriData) {
+        Intent intent = RouteManager.getIntent(context, ApplinkConst.TokoFood.HOME);
         viewListener.goToPage(intent);
     }
 

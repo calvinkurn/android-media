@@ -56,10 +56,13 @@ interface InteractiveBuilder {
     ): PlayWinnerUiModel
 
     fun buildQuizChoices(
+        index: Int = 0,
         id: String = "",
         text: String = "",
         type: PlayQuizOptionState = PlayQuizOptionState.Unknown,
         isLoading: Boolean = false,
+        interactiveId: String = "",
+        interactiveTitle: String = "",
     ): QuizChoicesUiModel
 
     fun buildGiveaway(

@@ -86,15 +86,21 @@ class InteractiveBuilderImpl : InteractiveBuilder {
     )
 
     override fun buildQuizChoices(
+        index: Int,
         id: String,
         text: String,
         type: PlayQuizOptionState,
         isLoading: Boolean,
+        interactiveId: String,
+        interactiveTitle: String,
     ) = QuizChoicesUiModel(
+        index = index,
         id = id,
         text = text,
         type = type,
         isLoading = isLoading,
+        interactiveId = interactiveId,
+        interactiveTitle = interactiveTitle,
     )
 
     override fun buildGiveaway(
