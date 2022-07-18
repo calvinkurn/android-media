@@ -183,6 +183,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
             ProductSetupAction.SaveProducts -> handleSaveProducts()
             ProductSetupAction.RetryFetchProducts -> handleRetryFetchProducts()
             is ProductSetupAction.DeleteSelectedProduct -> handleDeleteProduct(action.product)
+            is ProductSetupAction.ClickPinProduct -> handleClickPin(action.product)
         }
     }
 
@@ -406,10 +407,12 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         return savedStateHandle.contains(KEY_PRODUCT_SECTIONS)
     }
 
-    fun setPinned(product: ProductUiModel) {
-        viewModelScope.launch {
+    private fun handleClickPin(product: ProductUiModel){
+        viewModelScope.launchCatchError(block = {
             val result = repo.setPinProduct(channelId, product.id)
             if(result) updatePinProduct(product)
+        }){
+
         }
     }
 

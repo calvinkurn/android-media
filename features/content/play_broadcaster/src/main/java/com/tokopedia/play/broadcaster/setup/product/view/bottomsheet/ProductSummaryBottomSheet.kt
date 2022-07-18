@@ -55,7 +55,7 @@ class ProductSummaryBottomSheet @Inject constructor(
     }
 
     override fun onPinProductClicked(product: ProductUiModel) {
-        viewModel.setPinned(product)
+        viewModel.submitAction(ProductSetupAction.ClickPinProduct(product))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

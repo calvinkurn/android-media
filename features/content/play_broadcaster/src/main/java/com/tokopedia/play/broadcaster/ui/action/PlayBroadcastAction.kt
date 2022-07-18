@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.ui.action
 
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
+import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import java.util.*
 import com.tokopedia.play.broadcaster.ui.model.game.GameType
@@ -56,4 +57,7 @@ sealed interface PlayBroadcastAction {
     object LoadMoreCurrentChoiceParticipant : PlayBroadcastAction
     object ClickGameResultWidget : PlayBroadcastAction
     object Ignore : PlayBroadcastAction
+
+    /** Pin Product*/
+    data class ClickPinProduct(val product: ProductUiModel) : PlayBroadcastAction
 }

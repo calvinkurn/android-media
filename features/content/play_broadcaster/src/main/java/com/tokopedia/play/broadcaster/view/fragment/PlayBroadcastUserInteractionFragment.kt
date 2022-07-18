@@ -163,7 +163,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             }
 
             override fun onPinProductClicked(product: ProductUiModel) {
-                parentViewModel.setPinned(product)
+                parentViewModel.submitAction(PlayBroadcastAction.ClickPinProduct(product))
             }
         })
     }

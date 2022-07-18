@@ -34,6 +34,7 @@ import com.tokopedia.play.broadcaster.ui.model.game.quiz.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.*
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
+import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.switch
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
@@ -413,6 +414,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             PlayBroadcastAction.DismissQuizDetailBottomSheet -> handleCloseQuizDetailBottomSheet()
             PlayBroadcastAction.ClickRefreshQuizDetailBottomSheet -> handleRefreshQuizDetail()
             PlayBroadcastAction.ClickRefreshQuizOption -> handleRefreshQuizOptionDetail()
+            is PlayBroadcastAction.ClickPinProduct -> handleClickPin(event.product)
         }
     }
 
@@ -1554,10 +1556,13 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     fun getShopName(): String = userSession.shopName
 
-    fun setPinned(product: ProductUiModel) {
-        viewModelScope.launch {
+
+    private fun handleClickPin(product: ProductUiModel){
+        viewModelScope.launchCatchError(block = {
             val result = repo.setPinProduct(channelId, product.id)
             if(result) updatePinProduct(product)
+        }){
+
         }
     }
 
