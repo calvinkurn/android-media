@@ -22,7 +22,7 @@ class UserSessionWithPiiTest {
     @Before
     fun setup() {
         context = ApplicationProvider.getApplicationContext()
-        aead = spyk(GoogleTinkExplorerLab.generateKey(context))
+        aead = GoogleTinkExplorerLab.generateKey(context)
         userSession = UserSession(context, DataStorePreference(context), aead)
     }
 
@@ -34,7 +34,6 @@ class UserSessionWithPiiTest {
         val raw = RawAccessPreference(context, "LOGIN_SESSION_v2")
         assertThat(raw.getRawValue("FULL_NAME_v2"), instanceOf(String::class.java))
         assertThat(raw.getRawValue("FULL_NAME_v2"), `is`(not(equalTo(name))))
-        verify { aead.encrypt(any(), null) }
 
         val actual = userSession.name
 
