@@ -170,10 +170,12 @@ data class HomeBalanceModel(
             flagStateCondition(
                     itemType = tokopointAnimDrawerContent.drawerItemType,
                     action = {
-                        if (position == DEFAULT_BALANCE_POSITION) {
+                        if (position == DEFAULT_BALANCE_POSITION &&
+                                balanceDrawerItemModels.none { it.drawerItemType == TYPE_REWARDS }) {
                             balanceDrawerItemModels.add(tokopointAnimDrawerContent)
                         }
-                        else if (balanceDrawerItemModels.size > position) {
+                        else if (balanceDrawerItemModels.size > position &&
+                            balanceDrawerItemModels[position].drawerItemType == TYPE_REWARDS) {
                             balanceDrawerItemModels[position] = tokopointAnimDrawerContent
                         }
                     }
@@ -208,7 +210,9 @@ data class HomeBalanceModel(
                         )
                     } else BalanceCoachmark()
                 drawerSubscription.balanceCoachmark = coachMarkData
-                balanceDrawerItemModels.add(drawerSubscription)
+                if (balanceDrawerItemModels.none { drawer -> drawer.drawerItemType == TYPE_SUBSCRIPTION }) {
+                    balanceDrawerItemModels.add(drawerSubscription)
+                }
             }
         }
     }
@@ -231,9 +235,13 @@ data class HomeBalanceModel(
                     flagStateCondition(
                         itemType = balance.drawerItemType,
                         action = {
-                            if (position == DEFAULT_BALANCE_POSITION) {
+                            if (position == DEFAULT_BALANCE_POSITION &&
+                                balanceDrawerItemModels.none { it.drawerItemType == TYPE_WALLET_APP_LINKED
+                                        || it.drawerItemType == TYPE_WALLET_APP_NOT_LINKED }) {
                                 balanceDrawerItemModels.add(balance)
-                            } else if (balanceDrawerItemModels.size > position) {
+                            } else if (balanceDrawerItemModels.size > position &&
+                                (balanceDrawerItemModels[position].drawerItemType == TYPE_WALLET_APP_LINKED ||
+                                        balanceDrawerItemModels[position].drawerItemType == TYPE_WALLET_APP_NOT_LINKED)) {
                                 balanceDrawerItemModels[position] = balance
                             }
                         }
