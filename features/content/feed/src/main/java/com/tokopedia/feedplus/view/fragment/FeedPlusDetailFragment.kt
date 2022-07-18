@@ -705,19 +705,21 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         if (activity != null && activity?.applicationContext != null && arguments != null) {
 
             analytics.eventDetailProductClick(
-                    ProductEcommerce(feedDetailViewModel.id,
-                            feedDetailViewModel.text,
-                            feedDetailViewModel.priceDiscount,
-                            adapterPosition),
-                    userSession.userId?.toIntOrNull() ?: 0,
-                    feedDetailViewModel.shopId,
-                    feedDetailViewModel.postId.toString(),
-                    feedDetailViewModel.postType,
-                    feedDetailViewModel.isFollowed
+                ProductEcommerce(
+                    feedDetailViewModel.id,
+                    feedDetailViewModel.text,
+                    if (feedDetailViewModel.isDiscount) feedDetailViewModel.priceDiscount else feedDetailViewModel.price,
+                    adapterPosition
+                ),
+                userSession.userId?.toIntOrNull() ?: 0,
+                feedDetailViewModel.shopId,
+                feedDetailViewModel.postId.toString(),
+                feedDetailViewModel.postType,
+                feedDetailViewModel.isFollowed
             )
             activity?.startActivityForResult(
-                    getProductIntent(feedDetailViewModel.id),
-                    REQUEST_OPEN_PDP
+                getProductIntent(feedDetailViewModel.id),
+                REQUEST_OPEN_PDP
             )
         }
     }
