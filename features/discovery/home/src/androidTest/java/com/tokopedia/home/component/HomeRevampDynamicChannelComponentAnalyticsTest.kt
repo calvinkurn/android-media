@@ -95,6 +95,21 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     }
 
     @Test
+    fun testBalanceWidget() {
+        HomeDCCassavaTest {
+            initTest()
+            login()
+            waitForData()
+            doActivityTestByModelClass(dataModelClass = HomeHeaderDataModel::class) { viewHolder: RecyclerView.ViewHolder, _: Int ->
+                actionOnBalanceWidget(viewHolder)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BALANCE_WIDGET)
+        }
+    }
+
+    @Test
     fun testComponentProductHighlight() {
         HomeDCCassavaTest {
             initTest()
@@ -455,20 +470,6 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         }
     }
 
-    @Test
-    fun testComponentWidgetBalance() {
-        HomeDCCassavaTest {
-            initTest()
-            login2()
-            doActivityTestByModelClass(dataModelClass = HomeHeaderDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-                actionOnBalanceWidget(viewHolder)
-            }
-        } validateAnalytics {
-            addDebugEnd()
-            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BALANCE_WIDGET)
-        }
-    }
-
     private fun initTest() {
         InstrumentationAuthHelper.clearUserSession()
         waitForData()
@@ -553,11 +554,6 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
 
     private fun login() {
         InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
-        InstrumentationAuthHelper.loginToAnUser(activityRule.activity.application)
-    }
-
-    private fun login2() {
-        InstrumentationAuthHelper.loginInstrumentationTestUser1()
         InstrumentationAuthHelper.loginToAnUser(activityRule.activity.application)
     }
 
