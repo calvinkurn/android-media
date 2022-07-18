@@ -11,6 +11,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -40,6 +42,7 @@ import com.tokopedia.shop.flashsale.presentation.creation.highlight.decoration.P
 import com.tokopedia.shop.flashsale.presentation.creation.rule.CampaignRuleActivity
 import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListActivity
 import com.tokopedia.shop.flashsale.presentation.list.list.listener.RecyclerViewScrollListener
+import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -53,8 +56,8 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
         private const val ONE_PRODUCT = 1
         private const val FIRST_PAGE = 1
         private const val THIRD_STEP = 3
+        private const val FIRST_PRODUCT = 0
         private const val MAX_PRODUCT_SELECTION = 5
-        private const val BUNDLE_KEY_CAMPAIGN_ID = "campaign_id"
         private const val SCROLL_DISTANCE_DELAY_IN_MILLIS: Long = 100
 
         @JvmStatic
@@ -78,7 +81,7 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
     lateinit var preferenceDataStore: SharedPreferenceDataStore
 
     private val campaignId by lazy {
-        arguments?.getLong(BUNDLE_KEY_CAMPAIGN_ID).orZero()
+        arguments?.getLong(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID).orZero()
     }
 
     private val pageMode by lazy {
@@ -89,6 +92,7 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ManageHighlightedProductViewModel::class.java) }
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
+    private var coachMark : CoachMark2? = null
 
     private val productAdapter by lazy {
         HighlightedProductAdapter(onProductSelectionChange)
@@ -147,13 +151,6 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
             }
             addOnScrollListener(endlessRecyclerViewScrollListener ?: return)
         }
-
-        productAdapter.setOnCoachMarkDisplayed {
-            preferenceDataStore.markHighlightCampaignProductComplete()
-        }
-
-        val shouldShowCoachMark = !preferenceDataStore.isHighlightCampaignProductDismissed()
-        productAdapter.shouldDisplayCoachMark(shouldShowCoachMark)
     }
 
     private fun handlePageMode() {
@@ -228,6 +225,7 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
 
             when (result) {
                 is Success -> {
+                    handleCoachMark(result.data)
                     isFirstLoad = false
                     showContent()
                     handleProducts(result.data)
@@ -291,6 +289,7 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
 
     private val onProductSelectionChange: (HighlightableProduct, Boolean) -> Unit =
         { selectedProduct, isSelected ->
+            coachMark?.dismissCoachMark()
             val currentSelectedProductCount = viewModel.getSelectedProductIds().size
             handleAddProductToSelection(currentSelectedProductCount, selectedProduct, isSelected)
         }
@@ -447,5 +446,37 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
         val errorMessage = firstErrorMessage?.message.orEmpty()
         val updatedErrorMessage = errorMessage.ifEmpty { result.errorMessage }
         binding?.cardView showError updatedErrorMessage
+    }
+
+    private fun handleCoachMark(products : List<HighlightableProduct>) {
+        val hasProducts = products.isNotEmpty()
+        val shouldShowCoachMark = !preferenceDataStore.isHighlightCampaignProductDismissed()
+
+        if (isFirstLoad && hasProducts && shouldShowCoachMark) {
+            showCoachMark()
+        }
+    }
+
+    private fun showCoachMark() {
+        binding?.recyclerView?.post {
+            val firstProductView = binding?.recyclerView?.findViewHolderForAdapterPosition(0)?.itemView
+            val firstProductSwitch = firstProductView?.findViewById<SwitchUnify>(R.id.switchUnify)
+
+            coachMark = CoachMark2(firstProductSwitch?.context ?: return@post)
+            coachMark?.onFinishListener = { preferenceDataStore.markHighlightCampaignProductComplete() }
+            coachMark?.onDismissListener = { preferenceDataStore.markHighlightCampaignProductComplete() }
+            coachMark?.showCoachMark(populateCoachMarkItems(firstProductSwitch), null)
+        }
+    }
+
+    private fun populateCoachMarkItems(anchorView : View): ArrayList<CoachMark2Item> {
+        return arrayListOf(
+            CoachMark2Item(
+                anchorView,
+                anchorView.context.getString(R.string.sfs_highlight_product_first_coachmark),
+                "",
+                CoachMark2.POSITION_BOTTOM
+            )
+        )
     }
 }

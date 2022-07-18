@@ -57,7 +57,7 @@ import com.tokopedia.shop.flashsale.presentation.draft.uimodel.DraftItemModel
 import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListContainerFragment
 import com.tokopedia.shop.flashsale.presentation.list.list.adapter.CampaignAdapter
 import com.tokopedia.shop.flashsale.presentation.list.list.bottomsheet.MoreMenuBottomSheet
-import com.tokopedia.shop.flashsale.presentation.list.list.dialog.FeatureIntroductionDialog
+import com.tokopedia.shop.flashsale.presentation.list.list.dialog.ShopDecorationDialog
 import com.tokopedia.shop.flashsale.presentation.list.list.listener.RecyclerViewScrollListener
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
@@ -181,21 +181,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
 
     private fun setupView() {
-        binding?.btnCreateCampaign?.setOnClickListener {
-            viewModel.getShopDecorStatus()
-            binding?.btnCreateCampaign.showLoading()
-        }
-
-        binding?.btnDraft?.setOnClickListener {
-            showDraftListBottomSheet(viewModel.getCampaignDrafts())
-        }
-        binding?.btnCreateCampaignEmptyState?.setOnClickListener {
-            viewModel.getShopDecorStatus()
-            binding?.btnCreateCampaignEmptyState.showLoading()
-        }
-        binding?.btnNavigateToFirstActiveCampaign?.setOnClickListener {
-            onNavigateToActiveCampaignTab()
-        }
+        setupClickListener()
         setupSearchBar()
         setupScrollListener()
     }
@@ -212,7 +198,30 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
                 }
                 return@setOnEditorActionListener false
             }
-            searchBar.clearListener = { clearSearchBar() }
+            searchBar.clearListener = { refreshCampaigns() }
+        }
+    }
+
+    private fun setupClickListener() {
+        binding?.run {
+
+            btnCreateCampaign.setOnClickListener {
+                viewModel.getShopDecorStatus()
+                binding?.btnCreateCampaign.showLoading()
+            }
+
+            btnDraft.setOnClickListener {
+                showDraftListBottomSheet(viewModel.getCampaignDrafts())
+            }
+
+            btnCreateCampaignEmptyState.setOnClickListener {
+                viewModel.getShopDecorStatus()
+                binding?.btnCreateCampaignEmptyState.showLoading()
+            }
+
+            btnNavigateToFirstActiveCampaign.setOnClickListener {
+                onNavigateToActiveCampaignTab()
+            }
         }
     }
 
@@ -237,7 +246,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         }
     }
 
-    private fun clearSearchBar() {
+    private fun refreshCampaigns() {
         clearAllData()
         binding?.loader?.visible()
         viewModel.getCampaigns(
@@ -636,11 +645,10 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     private fun onDeleteDraftSuccess() {
         binding?.cardView showToaster getString(R.string.sfs_draft_deleted)
 
-        // add delay to wait until server done to saving data,
-        // with this delay we can get more actual draft data
-        view?.postDelayed( {
+        //Add some spare time caused by Backend write operation delay
+        doOnDelayFinished(DRAFT_SERVER_SAVING_DURATION) {
             viewModel.getCampaignPrerequisiteData()
-        }, DRAFT_SERVER_SAVING_DURATION)
+        }
     }
 
     private fun onDraftClicked(draft: DraftItemModel) {
@@ -764,6 +772,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
     override fun onEditCampaignSuccess() {
         binding?.cardView showToaster getString(R.string.sfs_edit_campaign_success)
+        refreshCampaigns()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -802,7 +811,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
 
     private fun showFeatureIntroductionDialog() {
-        val dialog = FeatureIntroductionDialog()
+        val dialog = ShopDecorationDialog()
         dialog.setOnPrimaryActionClick {
             viewModel.validateCampaignCreationEligibility()
         }

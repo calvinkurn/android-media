@@ -15,7 +15,6 @@ import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
 class CampaignInformationActivity : BaseSimpleActivity() {
 
     companion object {
-        const val BUNDLE_KEY_CAMPAIGN_ID = "campaign_id"
         const val REQUEST_CODE_CREATE_CAMPAIGN_INFO = 100
 
         @JvmStatic
@@ -39,7 +38,7 @@ class CampaignInformationActivity : BaseSimpleActivity() {
     }
 
     private val campaignId by lazy {
-        intent?.extras?.getLong(BUNDLE_KEY_CAMPAIGN_ID, CAMPAIGN_NOT_CREATED_ID).orZero()
+        intent?.extras?.getLong(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID, CAMPAIGN_NOT_CREATED_ID).orZero()
     }
 
     override fun getLayoutRes() = R.layout.ssfs_activity_campaign_information
