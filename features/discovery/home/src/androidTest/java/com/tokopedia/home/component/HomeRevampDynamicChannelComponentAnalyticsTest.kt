@@ -94,19 +94,20 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         IdlingRegistry.getInstance().unregister(homeRecyclerViewIdlingResource)
     }
 
-//    @Test
-//    fun testWidgetBalance() {
-//        HomeDCCassavaTest {
-//            login()
-//            waitForData()
-//            doActivityTestByModelClass(dataModelClass = HomeHeaderDataModel::class) { viewHolder: RecyclerView.ViewHolder, _: Int ->
-//                actionOnBalanceWidget(viewHolder)
-//            }
-//        } validateAnalytics {
-//            addDebugEnd()
-//            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BALANCE_WIDGET)
-//        }
-//    }
+    @Test
+    fun testBalanceWidgetLogin() {
+        onView(withId(R.id.home_fragment_recycler_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        HomeDCCassavaTest {
+            initTest()
+            login()
+            doActivityTestByModelClass(dataModelClass = HomeHeaderDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                actionOnBalanceWidget(viewHolder)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BALANCE_WIDGET)
+        }
+    }
 
     @Test
     fun testComponentProductHighlight() {

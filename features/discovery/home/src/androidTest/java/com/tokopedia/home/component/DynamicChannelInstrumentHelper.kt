@@ -77,6 +77,7 @@ fun disableCoachMark(context: Context){
     setCoachmarkSharedPrefValue(context, PREF_KEY_NEW_TOKOPOINT_COACHMARK_BALANCE, true)
     setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_TOKONOW_COACHMARK, true)
     setCoachmarkSharedPrefValue(context, PREF_KEY_SUBSCRIPTION_COACHMARK_BALANCE, true)
+    setHomeTokonowCoachmarkSharedPrefValue(context, true)
 }
 
 fun enableCoachMark(context: Context){
