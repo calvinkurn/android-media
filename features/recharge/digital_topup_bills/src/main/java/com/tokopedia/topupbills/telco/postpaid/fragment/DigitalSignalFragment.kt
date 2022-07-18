@@ -48,7 +48,7 @@ import kotlinx.coroutines.launch
 
 /**
  * Created by misael on 14/07/22
- * Use the same template as telco postpaid and copied from on [DigitalTelcoPostpaidFragment] (urgent).
+ * Use the same template as telco postpaid and copied from on [DigitalTelcoPostpaidFragment].
  * */
 class DigitalSignalFragment: DigitalBaseTelcoFragment() {
 

@@ -207,12 +207,6 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         return R.layout.view_telco_input_number
     }
 
-    fun setIconOperator(url: String) {
-        ImageHandler.LoadImage(imgOperator, url)
-        ImageHandler.LoadImage(imgOperatorResult, url)
-        imgOperator.visibility = View.VISIBLE
-    }
-
     fun setListener(listener: ActionListener) {
         this.listener = listener
     }
@@ -260,6 +254,12 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
     fun setContactName(contactName: String) {
         val validatedLabel = validateContactName(contactName)
         inputNumberField.textInputLayout.hint = validatedLabel
+    }
+
+    fun setIconOperator(url: String) {
+        ImageHandler.LoadImage(imgOperator, url)
+        ImageHandler.LoadImage(imgOperatorResult, url)
+        imgOperator.visibility = View.VISIBLE
     }
 
     fun setVisibleResultNumber(show: Boolean) {

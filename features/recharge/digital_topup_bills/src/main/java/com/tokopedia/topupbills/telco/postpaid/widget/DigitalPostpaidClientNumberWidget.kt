@@ -101,11 +101,6 @@ class DigitalPostpaidClientNumberWidget : DigitalClientNumberWidget {
         enquiryResult.show()
     }
 
-//    override fun setIconOperator(url: String) {
-//        inputNumberField.icon2.loadImage(url)
-//        inputNumberField.icon2.show()
-//    }
-
     fun setPostpaidListener(listener: ClientNumberPostpaidListener) {
         this.postpaidListener = listener
     }

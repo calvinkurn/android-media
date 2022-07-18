@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">digital_topup_bills</string>
-    <string name="c">Pascabayar</string>
+    <string name="digital_title_postpaid_page">Pascabayar</string>
     <string name="digital_title_fav_number">Nomor Favorit</string>
     <string name="error_message_contact_not_found">Aplikasi kontak tidak ditemukan</string>
     <string name="digital_btn_check_bill">Cek Tagihan</string>
