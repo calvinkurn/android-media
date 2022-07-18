@@ -255,6 +255,48 @@ class DealDetailsPresenterTest {
     }
 
     @Test
+    fun `getLikes (private) onNext non-empty response`() {
+        val tokenDealDetails = object : TypeToken<DataResponse<DealsDetailsResponse?>?>() {}.type
+        val restResponseDealDetails = RestResponse(
+            DataResponse<DealsDetailsResponse>().apply {
+                data = DealsDetailsResponse()
+            },
+            200,
+            false
+        )
+
+        val tokenDealLikes = object : TypeToken<DataResponse<ArrayList<GetLikesResponse>?>?>() {}.type
+        val restResponseDealLikes = RestResponse(
+            DataResponse<ArrayList<GetLikesResponse>>().apply {
+                data = arrayListOf(GetLikesResponse())
+            },
+            200,
+            false
+        )
+
+        every {
+            getDealDetailsUseCase.execute(any())
+        } answers {
+            (firstArg() as Subscriber<Map<Type, RestResponse>>).onNext(
+                mapOf(tokenDealDetails to restResponseDealDetails)
+            )
+        }
+
+        every {
+            getDealLikesUseCase.execute(any())
+        } answers {
+            (firstArg() as Subscriber<Map<Type, RestResponse>>).onNext(
+                mapOf(tokenDealLikes to restResponseDealLikes)
+            )
+        }
+        every { view.isEnableLikeFromArguments } answers { true }
+
+        presenter.getDealDetails()
+
+        verify(exactly = 1) { view.setLikes(any(), any()) }
+    }
+
+    @Test
     fun `getLikes (private) onNext empty response`() {
         val tokenDealDetails = object : TypeToken<DataResponse<DealsDetailsResponse?>?>() {}.type
         val restResponseDealDetails = RestResponse(
@@ -294,6 +336,57 @@ class DealDetailsPresenterTest {
         presenter.getDealDetails()
 
         verify(exactly = 0) { view.setLikes(any(), any()) }
+    }
+
+    @Test
+    fun `getRecommendation (private) onNext with salam_indicator`() {
+        val tokenDealDetails = object : TypeToken<DataResponse<DealsDetailsResponse?>?>() {}.type
+        val restResponseDealDetails = RestResponse(
+            DataResponse<DealsDetailsResponse>().apply {
+                data = DealsDetailsResponse().apply {
+                    customText1 = 1
+                }
+            },
+            200,
+            false
+        )
+
+        val tokenSearchNext = object : TypeToken<DataResponse<SearchResponse?>?>() {}.type
+        val restResponseSearchNext = RestResponse(
+            DataResponse<SearchResponse>().apply {
+                data = SearchResponse().apply {
+                    page = Page().apply {
+                        uriNext = "dummy"
+                    }
+                }
+            },
+            200,
+            false
+        )
+
+        every {
+            getDealDetailsUseCase.execute(any())
+        } answers {
+            (firstArg() as Subscriber<Map<Type, RestResponse>>).onNext(
+                mapOf(tokenDealDetails to restResponseDealDetails)
+            )
+        }
+
+        every {
+            getSearchNextUseCase.execute(any())
+        } answers {
+            (firstArg() as Subscriber<Map<Type, RestResponse>>).onNext(
+                mapOf(tokenSearchNext to restResponseSearchNext)
+            )
+        }
+
+        every { view.isRecommendationEnableFromArguments } answers { true }
+        every { presenter["checkIfToLoad"](any() as LinearLayoutManager) } returns Unit
+
+        presenter.getDealDetails()
+
+        verify { view.removeFooter() }
+        verify { view.addDealsToCards(any()) }
     }
 
     @Test
@@ -524,6 +617,32 @@ class DealDetailsPresenterTest {
 
         verify(exactly = 0) { Log.d(any(), any()) }
         verify(exactly = 0) { NetworkErrorHelper.showEmptyState(any(), any(), any()) }
+    }
+
+    @Test
+    fun `getEventContent should call use case`() {
+
+        val tokenDealDetails = object : TypeToken<DataResponse<DealsDetailsResponse?>?>() {}.type
+        val restResponseDealDetails = RestResponse(
+            DataResponse<DealsDetailsResponse>().apply {
+                data = DealsDetailsResponse()
+            },
+            200,
+            false
+        )
+
+        every {
+            getDealDetailsUseCase.execute(any())
+        } answers {
+            (firstArg() as Subscriber<Map<Type, RestResponse>>).onNext(
+                mapOf(tokenDealDetails to restResponseDealDetails)
+            )
+        }
+
+        presenter.getDealDetails()
+        presenter.getEventContent({}, {})
+
+        verify { getEventContentUseCase.getEventContent(any(), any(), any(), any()) }
     }
 
 }
