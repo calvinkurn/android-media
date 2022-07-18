@@ -216,7 +216,7 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
                         Throwable(it.getTradeInDetail.errMessage),
                         isFraud,
                         it.getTradeInDetail.errTitle,
-                        it.getTradeInDetail.errCode.toString()
+                        it.getTradeInDetail.errMessage.toString()
                     )
                 } else {
                     tradeInAnalytics.errorScreen(it.getTradeInDetail.errMessage, viewModel.tradeInDetailLiveData.value?.getTradeInDetail?.deviceAttribute)
