@@ -82,7 +82,11 @@ import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
 import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.discover.pojo.DiscoverData
 import com.tokopedia.loginregister.discover.pojo.ProviderData
+import com.tokopedia.loginregister.goto_seamless.GotoSeamlessHelper
+import com.tokopedia.loginregister.goto_seamless.GotoSeamlessLoginFragment
+import com.tokopedia.loginregister.goto_seamless.worker.TemporaryTokenWorker
 import com.tokopedia.loginregister.login.const.LoginConstants
+import com.tokopedia.loginregister.login.const.LoginConstants.Request.REQUEST_GOTO_SEAMLESS
 import com.tokopedia.loginregister.login.const.LoginConstants.TopAdsClickUrlTrackerConstant.RESPONSE_HEADER_KEY
 import com.tokopedia.loginregister.login.const.LoginConstants.TopAdsClickUrlTrackerConstant.TOP_ADS_SHARED_PREF_KEY
 import com.tokopedia.loginregister.login.di.LoginComponent
@@ -90,6 +94,7 @@ import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckFingerprintResult
 import com.tokopedia.loginregister.login.router.LoginRouter
 import com.tokopedia.loginregister.login.service.GetDefaultChosenAddressService
+import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.loginregister.login.view.activity.LoginActivity.Companion.PARAM_EMAIL
 import com.tokopedia.loginregister.login.view.activity.LoginActivity.Companion.PARAM_LOGIN_METHOD
 import com.tokopedia.loginregister.login.view.activity.LoginActivity.Companion.PARAM_PHONE
@@ -164,6 +169,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     lateinit var needHelpAnalytics: NeedHelpAnalytics
 
     @Inject
+    lateinit var gotoSeamlessHelper: GotoSeamlessHelper
+
+    @Inject
     lateinit var userSession: UserSessionInterface
 
     @Inject
@@ -190,6 +198,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private var socmedButtonsContainer: LinearLayout? = null
     private var socmedBottomSheet: SocmedBottomSheet? = null
     private var socmedButton: UnifyButton? = null
+    private var loadingOverlay: View? = null
 
     private var currentEmail = ""
     private var tempValidateToken = ""
@@ -205,6 +214,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private var needHelpBottomSheetUnify: NeedHelpBottomSheet? = null
     private var isUsingRollenceNeedHelp = false
     private var passOnStop = false
+    private var isEnableSeamlessLogin = false
 
     override fun getScreenName(): String {
         return LoginRegisterAnalytics.SCREEN_LOGIN
@@ -293,8 +303,14 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         return super.onOptionsItemSelected(item)
     }
 
+    private fun routeToGojekSeamlessPage() {
+        val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalUserPlatform.GOTO_SEAMLESS_LOGIN)
+        startActivityForResult(intent, REQUEST_GOTO_SEAMLESS)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setupBackgroundColor()
         activity?.let {
             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -310,6 +326,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         source = getParamString(ApplinkConstInternalGlobal.PARAM_SOURCE, arguments, savedInstanceState, "")
         isAutoLogin = getParamBoolean(LoginConstants.AutoLogin.IS_AUTO_LOGIN, arguments, savedInstanceState, false)
         isUsingRollenceNeedHelp = isUsingRollenceNeedHelp()
+        isEnableSeamlessLogin = isEnableSeamlessGoto()
         isEnableFingerprint = abTestPlatform.getString(LoginConstants.RollenceKey.LOGIN_PAGE_BIOMETRIC, "").isNotEmpty()
         refreshRolloutVariant()
     }
@@ -336,6 +353,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         bannerLogin = view.findViewById(R.id.banner_login)
         callTokopediaCare = view.findViewById(R.id.to_tokopedia_care)
         socmedButton = view.findViewById(R.id.socmed_btn)
+        loadingOverlay = view.findViewById(R.id.login_loading_overlay)
         return view
     }
 
@@ -355,10 +373,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         if(savedInstanceState == null) {
             clearData()
         }
-        initObserver()
         prepareView()
-        prepareArgData()
+        setupToolbar()
+        checkSeamless()
 
+        prepareArgData()
+        initObserver()
         if (!GlobalConfig.isSellerApp()) {
             if (isShowBanner) {
                 viewModel.getDynamicBannerData(DynamicBannerConstant.Page.LOGIN)
@@ -373,8 +393,25 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         partialRegisterInputView?.initKeyboardListener(view)
 
         autoFillWithDataFromLatestLoggedIn()
+    }
 
-        setupToolbar()
+    private fun checkSeamless() {
+        if(isEnableSeamlessLogin) {
+            showLoadingSeamless()
+            viewModel.checkSeamlessEligiblity()
+        } else {
+            hideLoadingSeamless()
+        }
+    }
+
+    private fun showLoadingSeamless() {
+        loadingOverlay?.show()
+        (activity as? LoginActivity)?.supportActionBar?.hide()
+    }
+
+    private fun hideLoadingSeamless() {
+        loadingOverlay?.hide()
+        (activity as? LoginActivity)?.supportActionBar?.show()
     }
 
     private fun prepareArgData() {
@@ -411,6 +448,14 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun initObserver() {
+        viewModel.navigateToGojekSeamless.observe(viewLifecycleOwner) {
+            if(it) {
+                routeToGojekSeamlessPage()
+            } else {
+                hideLoadingSeamless()
+            }
+        }
+
         viewModel.registerCheckResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> onSuccessRegisterCheck().invoke(it.data)
@@ -524,7 +569,17 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         viewModel.goToSecurityQuestionAfterRelogin.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             onGoToSecurityQuestionAfterRelogin().invoke()
         })
+
+        viewModel.getTemporaryKeyResponse.observe(viewLifecycleOwner) {
+            if(it) {
+                context?.run {
+                    TemporaryTokenWorker.scheduleWorker(applicationContext)
+                }
+            }
+            onSuccessLogin()
+        }
     }
+
 
     private fun onSuccessRegisterCheckFingerprint(data: RegisterCheckFingerprintResult) {
         activity?.let {
@@ -851,6 +906,14 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             ""
         )
         return newInactivePhoneNumberAbTestKey.isNotEmpty()
+    }
+
+    private fun isEnableSeamlessGoto(): Boolean {
+        val rollence = abTestPlatform.getString(
+            ROLLENCE_KEY_GOTO_SEAMLESS,
+            ""
+        )
+        return rollence.isNotEmpty()
     }
 
     private fun showNeedHelpBottomSheet(){
@@ -1327,7 +1390,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         if (profilePojo.profileInfo.fullName.contains(CHARACTER_NOT_ALLOWED)) {
             onGoToChangeName()
         } else {
-            onSuccessLogin()
+            viewModel.getTemporaryKeyForSDK(profilePojo)
         }
         getDefaultChosenAddress()
     }
@@ -1543,7 +1606,23 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 } else {
                     onErrorVerifyFingerprint()
                 }
-            } else {
+            } else if(requestCode == REQUEST_GOTO_SEAMLESS) {
+                when (resultCode) {
+                    Activity.RESULT_OK -> {
+                        viewModel.getUserInfo()
+                    }
+                    Activity.RESULT_CANCELED -> {
+                        activity?.finish()
+                    }
+                    GotoSeamlessLoginFragment.RESULT_OTHER_ACCS -> {
+                        hideLoadingSeamless()
+                    }
+                    else -> {
+                        activity?.finish()
+                    }
+                }
+            }
+            else {
                 dismissLoadingLogin()
                 super.onActivityResult(requestCode, resultCode, data)
             }
@@ -1894,6 +1973,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     companion object {
 
         const val ROLLENCE_KEY_INACTIVE_PHONE_NUMBER = "inactivephone_login"
+        const val ROLLENCE_KEY_GOTO_SEAMLESS = "goto_seamless_login"
 
         private const val TAG_NEED_HELP_BOTTOM_SHEET = "NEED HELP BOTTOM SHEET"
 
