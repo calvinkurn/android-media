@@ -134,11 +134,7 @@ class ManageProductFragment : BaseDaggerFragment() {
         observeIncompleteProducts()
         observeRemoveProductsStatus()
         observeBannerType()
-
-        guidelineMarginHeaderMax = binding?.guidelineHeader?.getGuidelineBegin().orZero()
-        guidelineMarginFooterMax = binding?.guidelineFooter?.getGuidelineEnd().orZero()
-        guidelineMarginHeader = guidelineMarginHeaderMax
-        guidelineMarginFooter = guidelineMarginFooterMax
+        viewModel.getShopStatus()
     }
 
     private fun setupView() {
@@ -296,30 +292,31 @@ class ManageProductFragment : BaseDaggerFragment() {
 
     private fun setupScrollListener() {
         binding?.apply {
+            guidelineMarginHeaderMax = guidelineHeader.getGuidelineBegin().orZero()
+            guidelineMarginFooterMax = guidelineFooter.getGuidelineEnd().orZero()
+            guidelineMarginHeader = guidelineMarginHeaderMax
+            guidelineMarginFooter = guidelineMarginFooterMax
+
             recyclerViewProduct.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
                     guidelineMarginHeader -= dy
                     guidelineMarginFooter -= dy
-                    if (guidelineMarginHeader < GUIDELINE_MARGIN_HEADER_MIN) {
+                    if (guidelineMarginHeader < GUIDELINE_MARGIN_HEADER_MIN)
                         guidelineMarginHeader = GUIDELINE_MARGIN_HEADER_MIN
-                    }
-                    if (guidelineMarginHeader > guidelineMarginHeaderMax) {
+                    if (guidelineMarginHeader > guidelineMarginHeaderMax)
                         guidelineMarginHeader = guidelineMarginHeaderMax
-                    }
-                    if (guidelineMarginFooter < GUIDELINE_MARGIN_FOOTER_MIN) {
+                    if (guidelineMarginFooter < GUIDELINE_MARGIN_FOOTER_MIN)
                         guidelineMarginFooter = GUIDELINE_MARGIN_FOOTER_MIN
-                    }
-                    if (guidelineMarginFooter > guidelineMarginFooterMax) {
+                    if (guidelineMarginFooter > guidelineMarginFooterMax)
                         guidelineMarginFooter = guidelineMarginFooterMax
-                    }
 
                     if (viewModel.bannerType.value == HIDE_BANNER) {
                         binding?.guidelineHeader?.setGuidelineBegin(GUIDELINE_MARGIN_HEADER_MIN)
                     } else {
                         binding?.guidelineHeader?.setGuidelineBegin(guidelineMarginHeader)
                     }
-                    binding?.guidelineFooter?.setGuidelineEnd(guidelineMarginFooter)
+                    guidelineFooter.setGuidelineEnd(guidelineMarginFooter)
                     animateScrollDebounce.invoke(dy)
                 }
             })

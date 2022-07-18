@@ -135,7 +135,7 @@ class ManageProductListAdapter(
                     this.text = HtmlCompat.fromHtml(
                         context.getString(
                             R.string.manage_product_item_stock_at_seller_location_label,
-                            warehouse.originalCustomStock,
+                            warehouse.stock,
                             warehouse.warehouseName
                         ),
                         HtmlCompat.FROM_HTML_MODE_COMPACT
