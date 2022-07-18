@@ -295,7 +295,7 @@
       "event": "view_item",
       "eventAction": "impression - profile recommendations carousel",
       "eventCategory": "feed user profile",
-      "eventLabel": ".* - \\d+",
+      "eventLabel": ".* - .*",
       "businessUnit": "content",
       "currentSite": "tokopediamarketplace",
       "promotions": [
