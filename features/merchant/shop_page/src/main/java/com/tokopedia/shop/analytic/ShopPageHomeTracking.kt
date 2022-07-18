@@ -1493,9 +1493,10 @@ class ShopPageHomeTracking(
             verticalPosition: Int,
             horizontalPosition: Int,
             isLogin: Boolean,
-            customDimensionShopPage: CustomDimensionShopPage
+            customDimensionShopPage: CustomDimensionShopPage,
+            tabSource: String
     ) {
-        val eventAction = joinDash(PRODUCT_LIST_IMPRESSION, HOME_TAB, getCampaignNplTrackerCampaignType(statusCampaign))
+        val eventAction = joinDash(PRODUCT_LIST_IMPRESSION, tabSource, getCampaignNplTrackerCampaignType(statusCampaign))
         val eventMap = createMap(
                 PRODUCT_VIEW,
                 getShopPageCategory(isOwner),
@@ -1567,9 +1568,10 @@ class ShopPageHomeTracking(
                                 verticalPosition: Int,
                                 horizontalPosition: Int,
                                 isLogin: Boolean,
-                                customDimensionShopPage: CustomDimensionShopPage
+                                customDimensionShopPage: CustomDimensionShopPage,
+                                tabSource: String
     ){
-        val eventAction = joinDash(CLICK_PRODUCT, HOME_TAB, getCampaignNplTrackerCampaignType(statusCampaign))
+        val eventAction = joinDash(CLICK_PRODUCT, tabSource, getCampaignNplTrackerCampaignType(statusCampaign))
         val eventMap = createMap(
                 PRODUCT_CLICK,
                 getShopPageCategory(isOwner),

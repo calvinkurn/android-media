@@ -22,6 +22,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 open class ShopHomeCampaignCarouselClickableBannerAreaViewHolder(
         itemView: View,
+        private val parentPosition: Int,
         private val shopHomeNewProductLaunchCampaignUiModel: ShopHomeNewProductLaunchCampaignUiModel,
         private val shopHomeCampaignNplWidgetListener: ShopHomeCampaignNplWidgetListener
 ) : AbstractViewHolder<ShopHomeCampaignCarouselClickableBannerAreaUiModel>(itemView) {
@@ -38,7 +39,10 @@ open class ShopHomeCampaignCarouselClickableBannerAreaViewHolder(
         viewClickableArea?.apply {
             layoutParams.width = model.width
             setOnClickListener {
-                shopHomeCampaignNplWidgetListener.onClickCampaignBannerAreaNplWidget(shopHomeNewProductLaunchCampaignUiModel)
+                shopHomeCampaignNplWidgetListener.onClickCampaignBannerAreaNplWidget(
+                    shopHomeNewProductLaunchCampaignUiModel,
+                    parentPosition
+                )
             }
         }
     }

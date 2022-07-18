@@ -27,11 +27,23 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
     }
 
     private var uiModel: ShopHomeProductUiModel? = null
+    private var fsUiModel: ShopHomeFlashSaleUiModel? = null
     private var productCardBigGrid: ProductCardGridView? = itemView.findViewById(R.id.fs_product_card_big_grid)
-    private var flashSaleWidgetUiModel: ShopHomeFlashSaleUiModel? = null
 
     init {
         adjustProductCardWidth(false)
+        setupClickListener(listener)
+        setupImpressionListener(listener)
+    }
+
+    private fun setupImpressionListener(listener: ShopHomeFlashSaleWidgetListener) {
+        uiModel?.let {
+            productCardBigGrid?.setImageProductViewHintListener(it, object : ViewHintListener {
+                override fun onViewHint() {
+                    listener.onFlashSaleProductImpression(it, fsUiModel, adapterPosition)
+                }
+            })
+        }
     }
 
     private fun setupAddToCartListener(listener: ShopHomeFlashSaleWidgetListener) {
@@ -41,7 +53,7 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
                     listener.onProductAtcNonVariantQuantityEditorChanged(
                         shopHomeProductUiModel,
                         quantity,
-                        flashSaleWidgetUiModel?.name.orEmpty()
+                        fsUiModel?.name.orEmpty()
                     )
                 }
             })
@@ -54,7 +66,7 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
                 listener.onProductAtcDefaultClick(
                     shopHomeProductUiModel,
                     shopHomeProductUiModel.minimumOrder,
-                    flashSaleWidgetUiModel?.name.orEmpty()
+                    fsUiModel?.name.orEmpty()
                 )
             }
         }
@@ -62,7 +74,7 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
 
     fun bindData(uiModel: ShopHomeProductUiModel, fsUiModel: ShopHomeFlashSaleUiModel?) {
         this.uiModel = uiModel
-        this.flashSaleWidgetUiModel = fsUiModel
+        this.fsUiModel = fsUiModel
         productCardBigGrid?.applyCarousel()
         productCardBigGrid?.layoutParams?.height = ViewGroup.LayoutParams.MATCH_PARENT
         val productCardModel = ShopPageHomeMapper.mapToProductCardCampaignModel(
@@ -73,7 +85,6 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
             statusCampaign = fsUiModel?.data?.firstOrNull()?.statusCampaign.orEmpty()
         )
         productCardBigGrid?.setProductModel(productCardModel)
-        setupClickListener(listener)
         setupAddToCartListener(listener)
         setProductImpressionListener(productCardModel, listener)
     }
@@ -91,7 +102,7 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
                             listener.onImpressionProductAtc(
                                 productUiModel,
                                 adapterPosition,
-                                flashSaleWidgetUiModel?.name.orEmpty()
+                                fsUiModel?.name.orEmpty()
                             )
                         }
                     }
@@ -101,7 +112,15 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
 
     private fun setupClickListener(listener: ShopHomeFlashSaleWidgetListener) {
         productCardBigGrid?.setOnClickListener {
-            uiModel?.run { listener.onFlashSaleProductClicked(this) }
+            uiModel?.let { productModel ->
+                fsUiModel?.let { widgetModel ->
+                    listener.onFlashSaleProductClicked(
+                        model = productModel,
+                        widgetModel = widgetModel,
+                        position = adapterPosition
+                    )
+                }
+            }
         }
     }
 

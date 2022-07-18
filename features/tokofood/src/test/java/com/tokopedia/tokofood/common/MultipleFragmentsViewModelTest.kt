@@ -576,7 +576,7 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
         runBlocking {
             collectFromSharedFlow(
                 whenAction = {
-                    viewModel.clickMiniCart()
+                    viewModel.clickMiniCart(SOURCE)
                 },
                 then = {
                     val expectedUiEventState = UiEvent.EVENT_SUCCESS_VALIDATE_CHECKOUT
