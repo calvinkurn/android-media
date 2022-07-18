@@ -1807,6 +1807,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     protected fun loadFilters(showShimmer: Boolean = true, loadOrders: Boolean) {
         if (showShimmer) {
             somListBinding?.run {
+                somListTabFilter.invisible()
                 sortFilterSomList.invisible()
                 shimmerViews.show()
             }

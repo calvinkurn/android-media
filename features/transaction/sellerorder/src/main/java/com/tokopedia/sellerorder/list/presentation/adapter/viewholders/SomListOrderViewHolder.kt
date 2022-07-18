@@ -2,7 +2,6 @@ package com.tokopedia.sellerorder.list.presentation.adapter.viewholders
 
 import android.animation.LayoutTransition.CHANGING
 import android.annotation.SuppressLint
-import android.graphics.LightingColorFilter
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Spannable
@@ -10,10 +9,8 @@ import android.text.SpannableStringBuilder
 import android.text.style.StyleSpan
 import android.view.MotionEvent
 import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
@@ -52,6 +49,9 @@ open class SomListOrderViewHolder(
         const val CARD_MARGIN_TOP_ORDER_PLUS = 13
         const val CARD_ALPHA_SELECTABLE = 1f
         const val CARD_ALPHA_NOT_SELECTABLE = 0.5f
+        const val LAYOUT_DEADLINE_PADDING_START = 4
+        const val LAYOUT_DEADLINE_PADDING_END = 8
+        const val LAYOUT_DEADLINE_PADDING_VERTICAL = 2
 
         private val completedOrderStatusCodes = intArrayOf(690, 691, 695, 698, 699, 700, 701)
         private val cancelledOrderStatusCodes = intArrayOf(0, 4, 6, 10, 11, 15)
@@ -244,34 +244,28 @@ open class SomListOrderViewHolder(
             val deadlineText = element.deadlineText
             val deadlineColor = element.deadlineColor
             if (deadlineText.isNotBlank() && deadlineColor.isNotBlank()) {
-                val textBackgroundDrawable = if (element.orderPlusData != null) {
-                    MethodChecker.getDrawable(root.context, R.drawable.bg_due_response_text_order_plus)
-                } else {
-                    MethodChecker.getDrawable(root.context, R.drawable.bg_due_response_text_order_regular)
-                }
-                val iconBackgroundDrawable = if (element.orderPlusData != null) {
-                    MethodChecker.getDrawable(root.context, R.drawable.bg_due_response_icon_order_plus)
-                } else {
-                    MethodChecker.getDrawable(root.context, R.drawable.bg_due_response_icon_order_regular)
-                }
-                tvSomListDeadline.apply {
-                    text = deadlineText
-                    background = textBackgroundDrawable
-                    setPadding(4.toPx(), 4.toPx(), 8.toPx(), 4.toPx())
-                }
-                icDeadline.apply {
-                    background = iconBackgroundDrawable
-                    colorFilter = LightingColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G900), ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-                    setPadding(4.toPx(), 4.toPx(), 0, 4.toPx())
-                }
+                tvSomListDeadline.text = deadlineText
                 tvSomListResponseLabel.text = composeDeadlineLabel(element.preOrderType != 0)
+                layoutSomListDeadline.apply {
+                    setBackgroundResource(
+                        if (element.orderPlusData != null) {
+                            R.drawable.bg_due_response_order_plus
+                        } else {
+                            R.drawable.bg_due_response_order_regular
+                        }
+                    )
+                    setPadding(
+                        LAYOUT_DEADLINE_PADDING_START.toPx(),
+                        LAYOUT_DEADLINE_PADDING_VERTICAL.toPx(),
+                        LAYOUT_DEADLINE_PADDING_END.toPx(),
+                        LAYOUT_DEADLINE_PADDING_VERTICAL.toPx(),
+                    )
+                }
                 tvSomListResponseLabel.show()
-                tvSomListDeadline.show()
-                icDeadline.show()
+                layoutSomListDeadline.show()
             } else {
                 tvSomListResponseLabel.gone()
-                tvSomListDeadline.gone()
-                icDeadline.gone()
+                layoutSomListDeadline.gone()
             }
         }
     }

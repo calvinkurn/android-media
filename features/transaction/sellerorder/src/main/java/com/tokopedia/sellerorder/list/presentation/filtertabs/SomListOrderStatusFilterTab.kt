@@ -8,6 +8,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.list.presentation.models.SomListFilterUiModel
 import com.tokopedia.unifycomponents.TabsUnify
+import com.tokopedia.unifycomponents.getCustomText
+import com.tokopedia.unifycomponents.setCustomText
 
 class SomListOrderStatusFilterTab(
     private val tabs: TabsUnify,
@@ -18,7 +20,6 @@ class SomListOrderStatusFilterTab(
     private var somListFilterUiModel: SomListFilterUiModel? = null
     private var selectedTab: SomListFilterUiModel.Status? = null
     private var filterTabs: ArrayList<TabLayout.Tab> = arrayListOf()
-    private var appliedFromAdvancedFilter: Boolean = false
 
     private fun updateTabs(statusList: List<SomListFilterUiModel.Status>) {
         tabs.getUnifyTabLayout().removeOnTabSelectedListener(tabSelectedListener)
@@ -33,7 +34,7 @@ class SomListOrderStatusFilterTab(
 
     private fun filterTabsChanged(statusList: List<SomListFilterUiModel.Status>): Boolean {
         statusList.forEachIndexed { index, status ->
-            val filterTabTheSame = filterTabs.getOrNull(index)?.text?.contains(status.status).orFalse()
+            val filterTabTheSame = filterTabs.getOrNull(index)?.getCustomText()?.contains(status.status).orFalse()
             if (!filterTabTheSame) return true
         }
         return false
@@ -41,22 +42,14 @@ class SomListOrderStatusFilterTab(
 
     private fun updateTabsCounter(statusList: List<SomListFilterUiModel.Status>) {
         statusList.forEachIndexed { index, status ->
-            val filterTab = filterTabs[index]
-            filterTab.text = createNewTabs(status)
-            if (status.isChecked) filterTab.select()
+            filterTabs[index].setCustomText(createNewTabs(status))
         }
     }
 
     private fun recreateTabs(statusList: List<SomListFilterUiModel.Status>) {
         tabs.getUnifyTabLayout().removeAllTabs()
         filterTabs.clear()
-        statusList.forEach {
-            val filterTabText = createNewTabs(it)
-            val filterTab = tabs.addNewTab(filterTabText)
-            filterTab.text = filterTabText
-            if (it.isChecked) filterTab.select()
-            filterTabs.add(filterTab)
-        }
+        statusList.forEach { filterTabs.add(tabs.addNewTab(createNewTabs(it), it.isChecked)) }
     }
 
     private fun createNewTabs(statusFilter: SomListFilterUiModel.Status): String {
@@ -78,12 +71,6 @@ class SomListOrderStatusFilterTab(
         somListFilterUiModel = newSomListFilterUiModel
         updateTabs(newSomListFilterUiModel.statusList)
         tabs.show()
-    }
-
-    fun selectTab(statusFilter: SomListFilterUiModel.Status) {
-        filterTabs.find { it.text?.contains(statusFilter.status).orFalse() }?.apply {
-            tabs.getUnifyTabLayout().selectTab(this)
-        }
     }
 
     fun shouldShowBulkAction() = (selectedTab?.key == SomConsts.STATUS_NEW_ORDER || selectedTab?.key == SomConsts.KEY_CONFIRM_SHIPPING) && GlobalConfig.isSellerApp()
