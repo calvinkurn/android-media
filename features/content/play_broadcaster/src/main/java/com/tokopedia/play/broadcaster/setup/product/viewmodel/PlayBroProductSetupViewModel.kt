@@ -409,20 +409,23 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
 
     private fun handleClickPin(product: ProductUiModel){
         viewModelScope.launchCatchError(block = {
+            updatePinProduct(isLoading = true, product = product)
             val result = repo.setPinProduct(channelId, product.id)
-            if(result) updatePinProduct(product)
+            if(result) {
+                updatePinProduct(product = product)
+            }
         }){
-
+            updatePinProduct(product = product)
         }
     }
 
-    private fun updatePinProduct(product: ProductUiModel) {
+    private fun updatePinProduct(product: ProductUiModel, isLoading: Boolean = false) {
         _productTagSectionList.update { sectionList ->
             sectionList.map { sectionUiModel ->
                 sectionUiModel.copy(campaignStatus = sectionUiModel.campaignStatus, products =
                 sectionUiModel.products.map { prod ->
                     if(prod.id == product.id)
-                        prod.copy(pinStatus = prod.pinStatus.copy(pinStatus = prod.pinStatus.pinStatus.switch()))
+                        prod.copy(pinStatus = prod.pinStatus.copy(pinStatus = if(isLoading) prod.pinStatus.pinStatus else prod.pinStatus.pinStatus.switch(), isLoading = isLoading))
                     else
                         prod
                 })
