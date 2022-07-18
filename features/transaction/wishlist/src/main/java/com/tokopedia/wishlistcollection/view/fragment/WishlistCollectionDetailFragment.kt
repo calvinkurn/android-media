@@ -1,13 +1,17 @@
 package com.tokopedia.wishlistcollection.view.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.annotation.Keep
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
@@ -69,6 +73,7 @@ import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomshee
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -96,14 +101,21 @@ import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionItems
 import com.tokopedia.wishlistcollection.di.DaggerWishlistCollectionDetailComponent
 import com.tokopedia.wishlistcollection.di.WishlistCollectionDetailModule
 import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionDetailViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import timber.log.Timber
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 import kotlin.math.roundToInt
 import com.tokopedia.wishlist.R as Rv2
 
 @Keep
-class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListener {
+class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListener,
+    CoroutineScope {
     private var binding by autoClearedNullable<FragmentWishlistCollectionDetailBinding>()
     private lateinit var collectionItemsAdapter: WishlistV2Adapter
     private lateinit var rvScrollListener: EndlessRecyclerViewScrollListener
@@ -137,6 +149,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         getCountDeletionProgress()
     }
     private var collectionId = ""
+    private var detectTextChangeJob: Job? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -199,6 +212,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         private const val SOURCE_AUTOMATIC_DELETION = "wishlist_automatic_delete"
         private const val OK = "OK"
         private const val DELAY_REFETCH_PROGRESS_DELETION = 5000L
+        private const val DEBOUNCE_SEARCH_TIME = 800L
         const val DEFAULT_TITLE = "Wishlist Collection Detail"
     }
 
@@ -506,18 +520,40 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             activityWishlistV2 = arguments?.getString(PARAM_ACTIVITY_WISHLIST_V2, "") as String
             toasterMessageInitial = arguments?.getString(EXTRA_TOASTER_WISHLIST_COLLECTION_DETAIL, "") as String
 
-            viewLifecycleOwner.lifecycle.addObserver(wishlistCollectionDetailNavtoolbar)
-            wishlistCollectionDetailNavtoolbar.setupSearchbar(searchbarType = NavToolbar.Companion.SearchBarType.TYPE_EDITABLE, hints = arrayListOf(
-                    HintData(getString(Rv2.string.hint_cari_wishlist) )),
-                    editorActionCallback = { query ->
-                        searchQuery = query
-                        if (query.isNotEmpty()) {
-                            WishlistV2Analytics.submitSearchFromCariProduk(query)
+            wishlistCollectionDetailSearchbar.searchBarTextField.addTextChangedListener(object :
+                TextWatcher {
+                var searchFor = ""
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+                override fun afterTextChanged(s: Editable?) {
+                    detectTextChangeJob?.cancel()
+                    val searchText = s?.toString()?:"".trim()
+                    if (searchText == searchFor)
+                        return
+
+                    detectTextChangeJob = launchCatchError(block = {
+                        delay(DEBOUNCE_SEARCH_TIME)
+                        searchFor = searchText
+                        searchQuery = searchText
+                        if (searchText.isNotEmpty()) {
+                            WishlistV2Analytics.submitSearchFromCariProduk(searchText)
                         }
-                        wishlistCollectionDetailNavtoolbar.hideKeyboard()
+                        hideKeyboardFromSearchBar()
                         triggerSearch()
-                    }
-            )
+                    }, onError = {
+                        Timber.d(it)
+                    })
+                }
+            })
+
             val pageSource: String
             val icons: IconBuilder
             if(activityWishlistV2 != PARAM_HOME) {
@@ -557,6 +593,18 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
         if (toasterMessageInitial.isNotEmpty()) {
             showToasterInitial(toasterMessageInitial)
+        }
+    }
+
+    private fun hideKeyboardFromSearchBar() {
+        binding?.run {
+            wishlistCollectionDetailSearchbar.searchBarTextField.clearFocus()
+            val `in` =
+                context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            `in`.hideSoftInputFromWindow(
+                wishlistCollectionDetailSearchbar.searchBarTextField.windowToken,
+                0
+            )
         }
     }
 
@@ -1604,4 +1652,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             throwable.printStackTrace()
         }
     }
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main
 }
