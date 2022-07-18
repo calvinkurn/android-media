@@ -198,7 +198,6 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         observeCampaignQuota()
         observeSaveDraft()
         handlePageMode()
-        handleCoachMark()
         viewModel.getCurrentMonthRemainingQuota()
     }
 
@@ -216,6 +215,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
                     binding?.groupContent?.visible()
                     val remainingQuota = result.data
                     viewModel.setRemainingQuota(remainingQuota)
+                    handleCoachMark()
                 }
                 is Fail -> {
                     binding?.groupContent?.gone()
