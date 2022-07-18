@@ -31,7 +31,12 @@ import com.tokopedia.globalerror.GlobalError.Companion.SERVER_ERROR
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.clearImage
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
@@ -812,7 +817,7 @@ class UserProfileFragment @Inject constructor(
             )
             setOgImageUrl(viewModel.profileCover)
         }
-        universalShareBottomSheet?.show(fragmentManager, this, screenShotDetector)
+        universalShareBottomSheet?.show(childFragmentManager, this, screenShotDetector)
     }
 
     companion object {
@@ -906,7 +911,7 @@ class UserProfileFragment @Inject constructor(
                 override fun urlCreated(linkerShareData: LinkerShareResult?) {
                     context?.let {
 
-                        var shareString = desc + "\n" + linkerShareData?.shareUri
+                        val shareString = desc + "\n" + linkerShareData?.shareUri
                         SharingUtil.executeShareIntent(
                             shareModel,
                             linkerShareData,
