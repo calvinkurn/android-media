@@ -6,6 +6,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.home.beranda.di.module.query.DynamicChannelQuery
+import com.tokopedia.home.beranda.di.module.query.DynamicChannelQueryV2
 import com.tokopedia.home.beranda.domain.interactor.HomeRepository
 import com.tokopedia.home.beranda.domain.model.HomeChannelData
 import com.tokopedia.network.exception.MessageErrorException
@@ -13,12 +14,14 @@ import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 class HomeDynamicChannelsRepository @Inject constructor(
-        private val graphqlRepository: GraphqlRepository
+        private val graphqlRepository: GraphqlRepository,
+        private val isUsingV2: Boolean
 ): HomeRepository<HomeChannelData> {
     suspend fun getDynamicChannelData(params: RequestParams): HomeChannelData {
         try {
+            val gqlRequest = if(isUsingV2) buildRequestV2(params) else buildRequest(params)
             val gqlResponse = graphqlRepository.response(
-                    listOf(buildRequest(params)), GraphqlCacheStrategy
+                    listOf(gqlRequest), GraphqlCacheStrategy
                     .Builder(CacheType.ALWAYS_CLOUD).build())
             val errors = gqlResponse.getError(HomeChannelData::class.java)
             if (errors.isNullOrEmpty()) {
@@ -33,6 +36,10 @@ class HomeDynamicChannelsRepository @Inject constructor(
 
     private fun buildRequest(params: RequestParams): GraphqlRequest {
         return GraphqlRequest(DynamicChannelQuery(), HomeChannelData::class.java, params.parameters)
+    }
+
+    private fun buildRequestV2(params: RequestParams): GraphqlRequest {
+        return GraphqlRequest(DynamicChannelQueryV2(), HomeChannelData::class.java, params.parameters)
     }
 
     companion object{
