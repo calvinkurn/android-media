@@ -26,6 +26,7 @@ import com.tokopedia.feedcomponent.view.widget.shoprecom.adapter.ShopRecomAdapte
 import com.tokopedia.people.analytic.cordinator.ShopRecommendationImpressionCoordinator
 import com.tokopedia.feedcomponent.view.widget.shoprecom.listener.ShopRecommendationCallback
 import com.tokopedia.feedcomponent.view.widget.shoprecom.utils.getVisibleItems
+import com.tokopedia.feedcomponent.view.widget.shoprecom.decor.ShopRecomItemDecoration
 import com.tokopedia.globalerror.GlobalError.Companion.NO_CONNECTION
 import com.tokopedia.globalerror.GlobalError.Companion.PAGE_FULL
 import com.tokopedia.globalerror.GlobalError.Companion.PAGE_NOT_FOUND
