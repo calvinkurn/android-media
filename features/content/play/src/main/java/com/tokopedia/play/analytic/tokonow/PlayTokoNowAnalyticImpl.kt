@@ -149,19 +149,6 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
         )
     }
 
-    override fun clickGlobalToaster() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            mapOf(
-                KEY_EVENT to KEY_TRACK_CLICK_CONTENT,
-                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                KEY_EVENT_ACTION to "click - lihat keranjang",
-                KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-            )
-        )
-    }
-
     override fun clickProductBottomSheetNow(
         product: PlayProductUiModel.Product,
         sectionInfo: ProductSectionUiModel.Section,

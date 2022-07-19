@@ -19,7 +19,6 @@ interface PlayTokoNowAnalytic {
     fun impressNowToaster()
     fun clickLihatNowToaster()
     fun impressGlobalToaster()
-    fun clickGlobalToaster()
     fun clickProductBottomSheetNow(
         product: PlayProductUiModel.Product,
         sectionInfo: ProductSectionUiModel.Section,

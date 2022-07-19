@@ -593,7 +593,6 @@ class PlayBottomSheetFragment @Inject constructor(
                                         newAnalytic.clickLihatNowToaster()
                                         analytic.clickSeeToasterAfterAtc()
                                     }
-                                    else if(!event.product.isTokoNow) newAnalytic.clickGlobalToaster()
                                     else analytic.clickSeeToasterAfterAtc()
                                 }
                             )
