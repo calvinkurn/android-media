@@ -1,4 +1,6 @@
-package com.tokopedia.people.analytic
+package com.tokopedia.people.analytic.tracker
+
+import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
 
 interface UserProfileTracker {
 
@@ -84,9 +86,7 @@ interface UserProfileTracker {
 
     fun impressionProfileRecommendation(
         userId: String,
-        shopId: String,
-        imageUrl: String,
-        postPosition: Int
+        shops: List<Pair<ShopRecomUiModelItem, Int>>,
     )
 
     fun clickProfileRecommendation(
