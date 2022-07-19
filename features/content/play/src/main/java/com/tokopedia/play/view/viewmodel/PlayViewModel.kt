@@ -899,11 +899,8 @@ class PlayViewModel @AssistedInject constructor(
             is AtcProductAction -> handleBuyProduct(action.sectionInfo, action.product, ProductAction.AddToCart)
             is AtcProductVariantAction -> handleBuyProductVariant(action.id, ProductAction.AddToCart)
             is SelectVariantOptionAction -> handleSelectVariantOption(action.option)
-<<<<<<< HEAD
             PlayViewerNewAction.AutoOpenInteractive -> handleAutoOpen()
-=======
             is SendWarehouseId -> handleWarehouse(action.id, action.isOOC)
->>>>>>> c536a1b9ba6e11dc9a2e4707fc0faeecc6a68f67
         }
     }
 
