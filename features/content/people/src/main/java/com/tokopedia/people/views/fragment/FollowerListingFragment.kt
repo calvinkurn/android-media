@@ -23,7 +23,7 @@ import com.tokopedia.people.ErrorMessage
 import com.tokopedia.people.Loading
 import com.tokopedia.people.R
 import com.tokopedia.people.Success
-import com.tokopedia.people.analytic.UserProfileTracker
+import com.tokopedia.people.analytic.tracker.UserProfileTracker
 import com.tokopedia.people.listener.FollowerFollowingListener
 import com.tokopedia.people.listener.FollowerListenerTracker
 import com.tokopedia.people.viewmodels.FollowerFollowingViewModel
