@@ -8,14 +8,10 @@ import kotlinx.parcelize.Parcelize
 @SuppressLint("ParamFieldAnnotation")
 @Parcelize
 data class EditorParam(
-//    var imageUrls: ArrayList<String> = arrayListOf(),
     var ratioDefault: ImageRatioType = ImageRatioType.RATIO_1_1,
     var editorTools: ArrayList<Int> = createDefaultEditorTools(),
     var pickerParam: PickerParam = PickerParam()
 ) : Parcelable {
-
-//    fun imageUrls(url: List<String>) = imageUrls.addAll(url)
-
     fun ratio(ratio: ImageRatioType) = apply {
         ratioDefault = ratio
     }
