@@ -68,7 +68,7 @@ class ManageProductViewModel @Inject constructor(
         ManageProductMapper.filterInfoNotCompleted(it)
     }
 
-    var isCoachMarkShown = false
+    private var isCoachMarkShown = false
     
     var campaignName = ""
     var autoShowEditProduct = true
@@ -197,5 +197,9 @@ class ManageProductViewModel @Inject constructor(
 
     fun setIsCoachMarkShown(isShown: Boolean) {
         this.isCoachMarkShown = isShown
+    }
+
+    fun getIsCoachMarkShown(): Boolean {
+        return isCoachMarkShown
     }
 }

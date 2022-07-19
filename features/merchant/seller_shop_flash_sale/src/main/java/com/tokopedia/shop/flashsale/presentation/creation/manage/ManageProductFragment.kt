@@ -179,7 +179,7 @@ class ManageProductFragment : BaseDaggerFragment() {
     private fun handleCoachMark() {
         val shouldShowCoachMark = !sharedPreference.isManageProductCoachMarkDismissed()
         val hasProduct = manageProductListAdapter.itemCount.isMoreThanZero()
-        if (shouldShowCoachMark && !viewModel.isCoachMarkShown && hasProduct) {
+        if (shouldShowCoachMark && !viewModel.getIsCoachMarkShown() && hasProduct) {
             showCoachMark()
         }
     }
@@ -326,7 +326,7 @@ class ManageProductFragment : BaseDaggerFragment() {
             guidelineMarginFooter = guidelineMarginFooterMax
     }
 
-    private fun setGuidelineHeader(){
+    private fun setGuidelineHeader() {
         if (viewModel.bannerType.value == HIDE_BANNER) {
             binding?.guidelineHeader?.setGuidelineBegin(GUIDELINE_MARGIN_HEADER_MIN)
         } else {
@@ -494,42 +494,6 @@ class ManageProductFragment : BaseDaggerFragment() {
         CampaignListActivity.start(context, isSaveDraft = true, previousPageMode = pageMode)
     }
 
-    private fun handleScrollDownEvent() {
-        binding?.apply {
-            when (viewModel.bannerType.value) {
-                EMPTY_BANNER -> {
-                    cardIncompleteProductInfo.slideDown()
-                }
-                ERROR_BANNER -> {
-                    tickerErrorProductInfo.slideDown()
-                }
-                else -> {
-                    cardIncompleteProductInfo.gone()
-                    tickerErrorProductInfo.gone()
-                }
-            }
-            cardBottomButtonGroup.slideDown()
-        }
-    }
-
-    private fun handleScrollUpEvent() {
-        binding?.apply {
-            when (viewModel.bannerType.value) {
-                EMPTY_BANNER -> {
-                    cardIncompleteProductInfo.slideUp()
-                }
-                ERROR_BANNER -> {
-                    tickerErrorProductInfo.slideUp()
-                }
-                else -> {
-                    cardIncompleteProductInfo.gone()
-                    tickerErrorProductInfo.gone()
-                }
-            }
-            cardBottomButtonGroup.slideUp()
-        }
-    }
-
     private fun showShopClosedDialog() {
         val dialog = ShopClosedDialog(primaryCTAAction = ::goToShopSettings)
         dialog.setOnDismissListener {
@@ -556,38 +520,48 @@ class ManageProductFragment : BaseDaggerFragment() {
     }
 
     private fun animateScroll(scrollingAmount: Int) {
+        if (scrollingAmount.isMoreThanZero()) {
+            handleScrollDown()
+        } else {
+            handleScrollUp()
+        }
+    }
+
+    private fun handleScrollDown() {
         binding?.apply {
-            if (scrollingAmount.isMoreThanZero()) {
+            guidelineHeader.animateSlide(
+                guidelineMarginHeader,
+                GUIDELINE_MARGIN_HEADER_MIN,
+                true
+            )
+            guidelineFooter.animateSlide(
+                guidelineMarginFooter,
+                GUIDELINE_MARGIN_FOOTER_MIN,
+                false
+            )
+            guidelineMarginFooter = GUIDELINE_MARGIN_FOOTER_MIN
+            guidelineMarginHeader = GUIDELINE_MARGIN_HEADER_MIN
+        }
+    }
+
+    private fun handleScrollUp() {
+        binding?.apply {
+            if (viewModel.bannerType.value == HIDE_BANNER) {
+                guidelineHeader.setGuidelineBegin(GUIDELINE_MARGIN_HEADER_MIN)
+                guidelineMarginHeader = GUIDELINE_MARGIN_HEADER_MIN
+            } else {
                 guidelineHeader.animateSlide(
                     guidelineMarginHeader,
-                    GUIDELINE_MARGIN_HEADER_MIN,
+                    guidelineMarginHeaderMax,
                     true
                 )
                 guidelineFooter.animateSlide(
                     guidelineMarginFooter,
-                    GUIDELINE_MARGIN_FOOTER_MIN,
+                    guidelineMarginFooterMax,
                     false
                 )
-                guidelineMarginFooter = GUIDELINE_MARGIN_FOOTER_MIN
-                guidelineMarginHeader = GUIDELINE_MARGIN_HEADER_MIN
-            } else {
-                if (viewModel.bannerType.value == HIDE_BANNER) {
-                    guidelineHeader.setGuidelineBegin(GUIDELINE_MARGIN_HEADER_MIN)
-                    guidelineMarginHeader = GUIDELINE_MARGIN_HEADER_MIN
-                } else {
-                    guidelineHeader.animateSlide(
-                        guidelineMarginHeader,
-                        guidelineMarginHeaderMax,
-                        true
-                    )
-                    guidelineFooter.animateSlide(
-                        guidelineMarginFooter,
-                        guidelineMarginFooterMax,
-                        false
-                    )
-                    guidelineMarginFooter = guidelineMarginFooterMax
-                    guidelineMarginHeader = guidelineMarginHeaderMax
-                }
+                guidelineMarginFooter = guidelineMarginFooterMax
+                guidelineMarginHeader = guidelineMarginHeaderMax
             }
         }
     }
