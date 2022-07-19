@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingVertical="9dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <View
@@ -16,6 +17,7 @@
         android:id="@+id/dummy_container_balance_widget"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:visibility="invisible"
         app:layout_constraintStart_toEndOf="@id/divider_balance"
         app:layout_constraintTop_toTopOf="@id/divider_balance"
         app:layout_constraintBottom_toBottomOf="@id/divider_balance"

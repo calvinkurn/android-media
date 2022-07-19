@@ -59,20 +59,20 @@ class BalanceWidgetViewHolder(itemView: View, val listener: HomeCategoryListener
                         })
                 binding?.rvBalanceWidgetData?.adapter = balanceAdapter
             }
-            if (binding?.rvBalanceWidgetData?.itemDecorationCount == FIRST_ITEM_DECORATION) {
-                binding?.rvBalanceWidgetData?.addItemDecoration(
-                    BalanceWidgetItemDecoration(
-                        totalData
-                    )
-                )
-            } else {
-                binding?.rvBalanceWidgetData?.removeItemDecorationAt(FIRST_ITEM_DECORATION)
-                binding?.rvBalanceWidgetData?.addItemDecoration(
-                    BalanceWidgetItemDecoration(
-                        totalData
-                    )
-                )
-            }
+//            if (binding?.rvBalanceWidgetData?.itemDecorationCount == FIRST_ITEM_DECORATION) {
+//                binding?.rvBalanceWidgetData?.addItemDecoration(
+//                    BalanceWidgetItemDecoration(
+//                        totalData
+//                    )
+//                )
+//            } else {
+//                binding?.rvBalanceWidgetData?.removeItemDecorationAt(FIRST_ITEM_DECORATION)
+//                binding?.rvBalanceWidgetData?.addItemDecoration(
+//                    BalanceWidgetItemDecoration(
+//                        totalData
+//                    )
+//                )
+//            }
             val layoutManager = binding?.rvBalanceWidgetData?.layoutManager
             if (layoutManager != null && layoutManager is NpaGridLayoutManager && layoutManager.spanCount != totalData) {
                 binding?.rvBalanceWidgetData?.layoutManager = getLayoutManager(totalData)
