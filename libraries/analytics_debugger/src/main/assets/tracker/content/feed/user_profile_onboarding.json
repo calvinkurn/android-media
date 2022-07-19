@@ -302,13 +302,7 @@
         {
           "creative_name": ".*",
           "creative_slot": "\\d+",
-          "item_id": "\\d+",
-          "item_name": "/feed user profile - profile recommendations carousel"
-        },
-        {
-          "creative_name": ".*",
-          "creative_slot": "\\d+",
-          "item_id": "\\d+",
+          "item_id": ".*",
           "item_name": "/feed user profile - profile recommendations carousel"
         }
       ],
