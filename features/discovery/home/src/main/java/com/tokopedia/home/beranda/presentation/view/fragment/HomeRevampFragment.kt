@@ -12,6 +12,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.provider.Settings
+import android.text.Html
 import android.text.TextUtils
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -160,6 +161,7 @@ import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.locationmanager.DeviceLocation
@@ -625,7 +627,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     this.add(
                         CoachMark2Item(
                             it,
-                            subscriptionBalanceCoachMark.title,
+                            subscriptionBalanceCoachMark.title.parseAsHtml(),
                             subscriptionBalanceCoachMark.description
                         )
                     )
