@@ -31,13 +31,13 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
     private var channelType: PlayChannelType = PlayChannelType.Unknown
     private var channelName = ""
 
-    override fun sendData(channelId: String, channelType: PlayChannelType, channelName: String) {
+    override fun sendDataNow(channelId: String, channelType: PlayChannelType, channelName: String) {
         this.channelId = channelId
         this.channelType = channelType
         this.channelName = channelName
     }
 
-    override fun impressAddressWidget() {
+    override fun impressAddressWidgetNow() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
                 KEY_EVENT to KEY_TRACK_VIEW_CONTENT_IRIS,
@@ -54,7 +54,7 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
     /**
      * Button Ganti Alamat
      */
-    override fun impressChooseAddress() {
+    override fun impressChooseAddressNow() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
                 KEY_EVENT to KEY_TRACK_VIEW_CONTENT_IRIS,
@@ -67,7 +67,7 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
         )
     }
 
-    override fun clickChooseAddress() {
+    override fun clickChooseAddressNow() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
                 KEY_EVENT to KEY_TRACK_CLICK_CONTENT,
@@ -83,7 +83,7 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
     /**
      * Click cek jangkauan
      */
-    override fun clickInfoAddressWidget() {
+    override fun clickInfoAddressWidgetNow() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
                 KEY_EVENT to KEY_TRACK_CLICK_CONTENT,
@@ -162,7 +162,7 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
         )
     }
 
-    override fun clickProductBottomSheet(
+    override fun clickProductBottomSheetNow(
         product: PlayProductUiModel.Product,
         sectionInfo: ProductSectionUiModel.Section,
         position: Int,
@@ -185,7 +185,7 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
             generateBaseTracking())
     }
 
-    override fun clickFeaturedProduct(featuredProduct: PlayProductUiModel.Product, position: Int) {
+    override fun clickFeaturedProductNow(featuredProduct: PlayProductUiModel.Product, position: Int) {
         trackingQueue.putEETracking(
             EventModel(
                 "productClick",
@@ -216,7 +216,7 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
         )
     }
 
-    override fun impressProductBottomSheet(
+    override fun impressProductBottomSheetNow(
         products: List<Pair<PlayProductUiModel.Product, Int>>,
         sectionInfo: ProductSectionUiModel.Section,
     ) {
@@ -281,7 +281,7 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
         )
     }
 
-    override fun clickBeli(
+    override fun clickBeliNowProduct(
         product: PlayProductUiModel.Product,
         sectionInfo: ProductSectionUiModel.Section,
         cartId: String,
@@ -306,7 +306,7 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
         )
     }
 
-    override fun clickAtc(
+    override fun clickAtcNowProduct(
         product: PlayProductUiModel.Product,
         sectionInfo: ProductSectionUiModel.Section,
         cartId: String,
