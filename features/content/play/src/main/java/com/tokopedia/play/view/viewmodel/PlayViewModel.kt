@@ -253,13 +253,12 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private val _sortedTagItems = combine(_tagItems, _warehouseInfo) { tagItems, warehouseInfo ->
-        val notAllowedPredicate: (PlayProductUiModel.Product) -> Boolean = {
-            it.isTokoNow && warehouseInfo.isOOC
-        }
         val newSectionList = tagItems.product.productSectionList.map { section ->
             if (section is ProductSectionUiModel.Section) {
                 section.copy(
-                    productList = section.productList.filterNot(notAllowedPredicate)
+                    productList = section.productList.filterNot {
+                        it.isTokoNow && warehouseInfo.isOOC
+                    }
                 )
             } else section
         }
