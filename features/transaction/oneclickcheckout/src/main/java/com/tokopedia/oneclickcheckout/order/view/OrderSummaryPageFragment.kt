@@ -589,8 +589,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                             selectedServiceId: Int,
                             logisticPromo: LogisticPromoUiModel
                         ) {
-                            // todo onLogisticPromoClick is on OrderPreferenceCard
-                            onLogisticPromoClick(logisticPromo)
+                            // todo is calling onLogisticPromoClick from getOrderPreferenceCardListener safe?
+                            getOrderPreferenceCardListener().onLogisticPromoClick(logisticPromo)
                         }
                     })
         }
@@ -1423,41 +1423,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 } else if (currentSpId.isNotEmpty()) {
                     orderSummaryAnalytics.eventClickArrowToChangeDurationOption(currentSpId, userSession.get().userId)
                 }
-                activity?.let {
-                    ShippingDurationBottomsheet().show(it, parentFragmentManager, object : ShippingDurationBottomsheetListener {
-                        override fun onShippingDurationChoosen(
-                            shippingCourierUiModels: List<ShippingCourierUiModel>?,
-                            selectedCourier: ShippingCourierUiModel?,
-                            recipientAddressModel: RecipientAddressModel?,
-                            cartPosition: Int,
-                            selectedServiceId: Int,
-                            serviceData: ServiceData?,
-                            flagNeedToSetPinpoint: Boolean,
-                            isDurationClick: Boolean,
-                            isClearPromo: Boolean
-                        ) {
-                            if (selectedCourier != null && serviceData != null) {
-                                orderSummaryAnalytics.eventClickSelectedDurationOptionNew(selectedCourier.toString(), userSession.get().userId)
-                                val serviceId = if (flagNeedToSetPinpoint) selectedServiceId else serviceData.serviceId
-                                viewModel.chooseDuration(serviceId, selectedCourier, flagNeedToSetPinpoint)
-                            }
-                        }
-
-                        override fun onLogisticPromoChosen(
-                            shippingCourierUiModels: List<ShippingCourierUiModel>?,
-                            courierData: ShippingCourierUiModel?,
-                            recipientAddressModel: RecipientAddressModel?,
-                            cartPosition: Int,
-                            serviceData: ServiceData?,
-                            flagNeedToSetPinpoint: Boolean,
-                            promoCode: String?,
-                            selectedServiceId: Int,
-                            logisticPromo: LogisticPromoUiModel
-                        ) {
-                            onLogisticPromoClick(logisticPromo)
-                        }
-                    }, shippingRecommendationData, 0, true)
-                }
+                viewModel.getShippingBottomsheetParam()
             }
         }
 
