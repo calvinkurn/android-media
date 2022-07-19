@@ -110,9 +110,7 @@ class ProductSectionViewHolder(
             listener.onReminderClicked(item)
         }
 
-        btnReminder.addOnImpressionListener(item.impressHolder){
-            listener.onReminderImpressed(item)
-        }
+        if(btnReminder.isVisible && item.config.type == ProductSectionType.Upcoming) listener.onReminderImpressed(item)
 
         btnInfo.setOnClickListener {
             listener.onInformationClicked(item)
