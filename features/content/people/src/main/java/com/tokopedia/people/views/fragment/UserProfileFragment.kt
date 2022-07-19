@@ -198,11 +198,6 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        submitAction(UserProfileAction.LoadProfile())
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         mainBinding.appBarUserProfile.removeOnOffsetChangedListener(feedFloatingButtonManager.offsetListener)
@@ -427,6 +422,8 @@ class UserProfileFragment @Inject constructor(
     ) {
         if(prev == curr || curr == ProfileUiModel.Empty) return
 
+        binding.rootContainer.displayedChild = PAGE_CONTENT
+
         userProfileTracker.openUserProfile(
             viewModel.profileUserID,
             live = curr.liveInfo.isLive
@@ -435,9 +432,6 @@ class UserProfileFragment @Inject constructor(
         if(mainBinding.swipeRefreshLayout.isRefreshing) {
             mainBinding.swipeRefreshLayout.isRefreshing = false
         }
-
-        binding.rootContainer.displayedChild = PAGE_CONTENT
-
 
         /** Setup Profile Info */
         setProfileImg(curr)
@@ -646,7 +640,8 @@ class UserProfileFragment @Inject constructor(
     }
 
     private fun navigateToEditProfile() {
-        RouteManager.route(requireContext(), ApplinkConstInternalUserPlatform.SETTING_PROFILE)
+        val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalUserPlatform.SETTING_PROFILE)
+        startActivityForResult(intent, REQUEST_CODE_EDIT_PROFILE)
     }
 
     private fun doFollowUnfollow(isFromLogin: Boolean = false) {
@@ -761,7 +756,10 @@ class UserProfileFragment @Inject constructor(
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE_LOGIN_TO_FOLLOW && resultCode == Activity.RESULT_OK) {
+        if(requestCode == REQUEST_CODE_EDIT_PROFILE) {
+            refreshLandingPageData(isRefreshPost = false)
+        }
+        else if (requestCode == REQUEST_CODE_LOGIN_TO_FOLLOW && resultCode == Activity.RESULT_OK) {
             doFollowUnfollow(isFromLogin = true)
         }
         else if(requestCode == REQUEST_CODE_LOGIN_TO_SET_REMINDER && resultCode == Activity.RESULT_OK) {
@@ -813,6 +811,7 @@ class UserProfileFragment @Inject constructor(
         const val OFFSET_USERINFO = 136F
         const val REQUEST_CODE_LOGIN_TO_FOLLOW = 1
         const val REQUEST_CODE_LOGIN_TO_SET_REMINDER = 2
+        const val REQUEST_CODE_EDIT_PROFILE = 2423
         const val REQUEST_CODE_USER_PROFILE = 99
         const val EXTRA_POSITION_OF_PROFILE = "profile_position"
         const val EXTRA_FOLLOW_UNFOLLOW_STATUS = "follow_unfollow_status"
