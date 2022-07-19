@@ -48,6 +48,7 @@ class ShopProductUiModel : BaseShopProductViewModel, ImpressHolder {
     var isNewData: Boolean = false
     var stock: Int = 0
     var minimumOrder: Int = 0
+    var maximumOrder: Int = 0
     var parentId: String = ""
 
     override fun type(typeFactory: ShopProductAdapterTypeFactory?): Int {
