@@ -198,6 +198,11 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        submitAction(UserProfileAction.LoadProfile())
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         mainBinding.appBarUserProfile.removeOnOffsetChangedListener(feedFloatingButtonManager.offsetListener)
