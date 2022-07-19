@@ -834,6 +834,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     override fun onQuickReplyClicked(model: QuickReplyViewModel) {
         chatbotAnalytics.get().eventClick(ACTION_QUICK_REPLY_BUTTON_CLICKED)
         presenter.sendQuickReply(messageId, model, SendableUiModel.generateStartTime(), opponentId)
+        getViewState()?.hideQuickReplyOnClick()
     }
 
     override fun onImageUploadClicked(imageUrl: String, replyTime: String, isSecure: Boolean) {
@@ -885,10 +886,9 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     private fun submitRating(data: Intent?) {
-
-        getViewState()?.hideQuickReplyOnClick()
-
         var csatAttributes: Attributes?
+
+        getViewState()?.scrollToBottom()
 
         if (!(::mCsatResponse.isInitialized)) {
             csatAttributes = attribute
