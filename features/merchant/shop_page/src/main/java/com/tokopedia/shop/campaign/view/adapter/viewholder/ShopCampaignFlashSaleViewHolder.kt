@@ -224,12 +224,12 @@ class ShopCampaignFlashSaleViewHolder(
 
     private fun setupReminderIconAndWording(isRemindMe: Boolean) {
         if (isRemindMe) {
-            reminderBellView?.setImageResource(R.drawable.ic_fs_remind_me_true)
+            reminderBellView?.setImageResource(R.drawable.ic_campaign_fs_remind_me_true)
             reminderCountView?.gone()
         } else {
             reminderCountView?.show()
             reminderCountView?.text = itemView.context.getString(R.string.shop_page_label_remind_me)
-            reminderBellView?.setImageResource(R.drawable.ic_fs_remind_me_false)
+            reminderBellView?.setImageResource(R.drawable.ic_campaign_fs_remind_me_false)
         }
     }
 

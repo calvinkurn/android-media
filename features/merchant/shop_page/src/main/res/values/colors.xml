@@ -5,6 +5,7 @@
     <color name="fs_toko_bg_start_dms_gradient_color">#008849</color>
     <color name="clr_dms_EF144A">#EF144A</color>
     <color name="clr_dms_icon_white">#ffffff</color>
+    <color name="clr_dms_icon_flash_sale_notify_true">#2E3137</color>
     <color name="clr_dms_icon_fs_notify">#2E3137</color>
     <color name="clr_dms_fs_notify_wording">#AD31353B</color>
     <color name="clr_transparent">#00000000</color>
