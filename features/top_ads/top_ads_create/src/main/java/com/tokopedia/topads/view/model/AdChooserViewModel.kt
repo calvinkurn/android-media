@@ -25,10 +25,12 @@ import kotlinx.coroutines.withContext
 import org.json.JSONException
 import javax.inject.Inject
 
-class AdChooserViewModel @Inject constructor(private val context: Context,
-                                             private val userSession: UserSessionInterface,
-                                             private val dispatcher: CoroutineDispatchers,
-                                             private val repository: GraphqlRepository) : BaseViewModel(dispatcher.main) {
+class AdChooserViewModel @Inject constructor(
+    private val context: Context,
+    private val userSession: UserSessionInterface,
+    private val dispatcher: CoroutineDispatchers,
+    private val repository: GraphqlRepository,
+) : BaseViewModel(dispatcher.main) {
 
     private val CHANNEL = "topchat"
     private val SOURCE = "one_click_promo"
@@ -36,34 +38,36 @@ class AdChooserViewModel @Inject constructor(private val context: Context,
 
     fun getAdsState(onSuccess: ((AdCreationOption) -> Unit)) {
         launchCatchError(
-                block = {
-                    val data = withContext(dispatcher.io) {
-                        val request = RequestHelper.getGraphQlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.query_autoads_shop_info),
-                                AdCreationOption::class.java, hashMapOf(SHOP_Id to userSession.shopId.toIntOrZero()))
-                        val cacheStrategy = RequestHelper.getCacheStrategy()
-                        repository.response(listOf(request), cacheStrategy)
-                    }
-                    data.getSuccessData<AdCreationOption>().let {
-                        onSuccess(it)
-                    }
-                },
-                onError = {
-                    it.printStackTrace()
+            block = {
+                val data = withContext(dispatcher.io) {
+                    val request = RequestHelper.getGraphQlRequest(GraphqlHelper.loadRawString(
+                        context.resources,
+                        R.raw.query_autoads_shop_info),
+                        AdCreationOption::class.java,
+                        hashMapOf(SHOP_Id to userSession.shopId.toIntOrZero()))
+                    val cacheStrategy = RequestHelper.getCacheStrategy()
+                    repository.response(listOf(request), cacheStrategy)
                 }
+                data.getSuccessData<AdCreationOption>().let {
+                    onSuccess(it)
+                }
+            },
+            onError = {
+                it.printStackTrace()
+            }
         )
     }
 
     fun postAutoAds(toggle_status: String, budget: Int) {
         launchCatchError(block = {
             val param = AutoAdsParam(AutoAdsParam.Input(
-                    toggle_status,
-                    CHANNEL,
-                    budget,
-                    userSession.shopId.toInt(),
-                    SOURCE
+                toggle_status, CHANNEL, budget, userSession.shopId.toInt(), SOURCE
             ))
+
             val data = withContext(dispatcher.io) {
-                val request = RequestHelper.getGraphQlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.topads_common_query_post_autoads),
+                val request =
+                    RequestHelper.getGraphQlRequest(GraphqlHelper.loadRawString(context.resources,
+                        R.raw.topads_common_query_post_autoads),
                         TopAdsAutoAds.Response::class.java, getParams(param).parameters)
                 val cacheStrategy = RequestHelper.getCacheStrategy()
                 repository.response(listOf(request), cacheStrategy)
@@ -89,20 +93,23 @@ class AdChooserViewModel @Inject constructor(private val context: Context,
 
     fun getAutoAdsStatus(onSuccess: ((AutoAdsResponse) -> Unit)) {
         launchCatchError(
-                block = {
-                    val data = withContext(dispatcher.io) {
-                        val request = RequestHelper.getGraphQlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.query_auto_ads_status),
-                                AutoAdsResponse::class.java, hashMapOf(SHOP_Id to userSession.shopId.toIntOrZero()))
-                        val cacheStrategy = RequestHelper.getCacheStrategy()
-                        repository.response(listOf(request), cacheStrategy)
-                    }
-                    data.getSuccessData<AutoAdsResponse>().let {
-                        onSuccess(it)
-                    }
-                },
-                onError = {
-                    it.printStackTrace()
+            block = {
+                val data = withContext(dispatcher.io) {
+                    val request = RequestHelper.getGraphQlRequest(GraphqlHelper.loadRawString(
+                        context.resources,
+                        R.raw.query_auto_ads_status),
+                        AutoAdsResponse::class.java,
+                        hashMapOf(SHOP_Id to userSession.shopId.toIntOrZero()))
+                    val cacheStrategy = RequestHelper.getCacheStrategy()
+                    repository.response(listOf(request), cacheStrategy)
                 }
+                data.getSuccessData<AutoAdsResponse>().let {
+                    onSuccess(it)
+                }
+            },
+            onError = {
+                it.printStackTrace()
+            }
         )
     }
 }
