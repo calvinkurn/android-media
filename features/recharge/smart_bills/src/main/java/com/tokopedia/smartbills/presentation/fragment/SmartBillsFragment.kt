@@ -331,6 +331,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
             when(it){
                 is Success -> {
                     if (viewModel.isHighlightNotEmpty(it.data)){
+                        smartBillsAnalytics.viewHighlightWidget()
                         showHighlightCategory(it.data)
                     } else {
                         hideHighlightCategory()
@@ -869,6 +870,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     }
 
     override fun onClickCloseHighlightCategoryWidget(uiModel: HighlightCategoryUiModel) {
+        smartBillsAnalytics.closeHighlightWidget()
         setHeightSpace(true)
         viewModel.closeHighlight(
             viewModel.createParamCloseRecom(
@@ -879,6 +881,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     }
 
     override fun onClickHighlightCategoryWidget(uiModel: HighlightCategoryUiModel) {
+        smartBillsAnalytics.clickHighlightWidget()
         context?.let {
             RouteManager.route(it, uiModel.applink)
         }

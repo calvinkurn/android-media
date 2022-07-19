@@ -2,13 +2,20 @@ package com.tokopedia.smartbills.analytics
 
 import android.os.Bundle
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant
 import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant.addGeneralClick
+import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant.addGeneralDigitalView
 import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant.addGeneralView
 import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant.addGeneralViewAddBills
+import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant.addListBottomSheet
 import com.tokopedia.smartbills.analytics.SmartBillsAnalyticConstants.*
+import com.tokopedia.smartbills.analytics.SmartBillsAnalyticConstants.Action.Companion.CLICK_ON_HIGHLIGHT_CATEGORY
+import com.tokopedia.smartbills.analytics.SmartBillsAnalyticConstants.Action.Companion.CLICK_X_ON_HIGHLIGHT_CATEGORY
+import com.tokopedia.smartbills.analytics.SmartBillsAnalyticConstants.Action.Companion.VIEW_ON_HIGHLIGHT_CATEGORY
 import com.tokopedia.smartbills.analytics.SmartBillsAnalyticConstants.EnhanceEccomerce.Companion.NONE
 import com.tokopedia.smartbills.analytics.SmartBillsAnalyticConstants.Event.Companion.EVENT_VALUE_CHECKOUT_PROGRESS
 import com.tokopedia.smartbills.analytics.SmartBillsAnalyticConstants.Key.Companion.ITEMS
+import com.tokopedia.smartbills.analytics.SmartBillsAnalyticConstants.Key.Companion.TRACKER_ID
 import com.tokopedia.smartbills.data.RechargeBills
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
@@ -460,6 +467,43 @@ class SmartBillsAnalytics {
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
+    fun viewHighlightWidget() {
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, VIEW_ON_HIGHLIGHT_CATEGORY)
+            putString(TrackAppUtils.EVENT_LABEL, String.format(STRING_FORMAT_FOR_HIGHLIGHT_PRODUCT,
+                "//TODO ASK product category"))
+            putString(TRACKER_ID, TRACKER_ID_VIEW_HIGHLIGHT_PRODUCT)
+        }
+
+        eventDataLayer.addGeneralDigitalView()
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(CommonSmartBillsConstant.VIEW_DIGITAL_IRIS, eventDataLayer)
+    }
+
+    fun clickHighlightWidget() {
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, CLICK_ON_HIGHLIGHT_CATEGORY)
+            putString(TrackAppUtils.EVENT_LABEL, String.format(STRING_FORMAT_FOR_HIGHLIGHT_PRODUCT,
+                "//TODO ASK product category"))
+            putString(TRACKER_ID, TRACKER_ID_CLICK_HIGHLIGHT_PRODUCT)
+        }
+
+        eventDataLayer.addGeneralDigitalView()
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(CommonSmartBillsConstant.CLICK_DIGITAl, eventDataLayer)
+    }
+
+    fun closeHighlightWidget() {
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, CLICK_X_ON_HIGHLIGHT_CATEGORY)
+            putString(TrackAppUtils.EVENT_LABEL, String.format(STRING_FORMAT_FOR_HIGHLIGHT_PRODUCT,
+                "//TODO ASK product category"))
+            putString(TRACKER_ID, TRACKER_ID_CLOSE_HIGHLIGHT_PRODUCT)
+        }
+
+        eventDataLayer.addGeneralDigitalView()
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(CommonSmartBillsConstant.CLICK_DIGITAl, eventDataLayer)
+    }
+
+
     private fun getAdditionalData(businessUnit: String): Bundle =
         Bundle().apply {
             putString(Key.CURRENT_SITE, CURRENT_SITE_VALUE)
@@ -501,6 +545,11 @@ class SmartBillsAnalytics {
 
         private const val BUSINESS_UNIT_RECHARGE_VALUE = "recharge"
         private const val BUSINESS_UNIT_SBM_VALUE = "sbm"
+
+        private const val STRING_FORMAT_FOR_HIGHLIGHT_PRODUCT = "highlighted %s"
+        private const val TRACKER_ID_VIEW_HIGHLIGHT_PRODUCT = "34680"
+        private const val TRACKER_ID_CLOSE_HIGHLIGHT_PRODUCT = "34681"
+        private const val TRACKER_ID_CLICK_HIGHLIGHT_PRODUCT = "34682"
 
 
         val ADDITIONAL_INFO_MAP = mapOf(
