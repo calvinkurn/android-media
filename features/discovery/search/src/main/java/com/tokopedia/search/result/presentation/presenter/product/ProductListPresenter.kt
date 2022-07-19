@@ -1511,24 +1511,12 @@ class ProductListPresenter @Inject constructor(
 
     private fun createSortFilterItem(filter: Filter, options: List<Option>): SortFilterItem {
         val isChipSelected = options.any { view.isFilterSelected(it) }
-        val selectedOptionsOnCurrentFilter = options.filter { view.isFilterSelected(it) }
-        val item = SortFilterItem(createSortFilterTitle(filter, selectedOptionsOnCurrentFilter))
+        val item = SortFilterItem(filter.chipName)
 
         setSortFilterItemListener(item, filter, options)
         setSortFilterItemState(item, isChipSelected)
 
         return item
-    }
-
-    @Suppress("MagicNumber")
-    private fun createSortFilterTitle(filter: Filter, activeOptions: List<Option>): String {
-        val optionSize = activeOptions.size
-
-        return when {
-            optionSize == 1 -> activeOptions.first().name
-            optionSize > 1 -> "$optionSize ${filter.title}"
-            else -> filter.title
-        }
     }
 
     private fun setSortFilterItemState(item: SortFilterItem, isChipSelected: Boolean) {
