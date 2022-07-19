@@ -1,9 +1,12 @@
-package com.tokopedia.feedcomponent.view.widget.shoprecom.cordinator
+package com.tokopedia.people.analytic.cordinator
 
 import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
+import com.tokopedia.people.analytic.tracker.UserProfileTracker
 import javax.inject.Inject
 
-class ShopRecommendationImpressionCoordinator @Inject constructor() {
+class ShopRecommendationImpressionCoordinator @Inject constructor(
+    private val tracker: UserProfileTracker
+) {
 
     private val mShopRecomImpress = mutableListOf<Pair<ShopRecomUiModelItem, Int>>()
     private var mUserId: String = ""
@@ -18,8 +21,8 @@ class ShopRecommendationImpressionCoordinator @Inject constructor() {
 
         if (finalShopRecom.isEmpty()) return
 
-        analytic.impressionProfileRecommendation(mUserId, finalShopRecom)
-        analytic.sendAll()
+        tracker.impressionProfileRecommendation(mUserId, finalShopRecom)
+        tracker.sendAll()
 
         mUserId = ""
         mShopRecomImpress.clear()
