@@ -11,7 +11,7 @@ import dagger.Component
 @Component(
     modules = [
         HomeModule::class,
-        HomeViewModelModule::class
+        HomeViewModelModule::class,
     ],
     dependencies = [BaseAppComponent::class]
 )
