@@ -811,6 +811,8 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
 
     private fun showFeatureIntroductionDialog() {
+        if (!isAdded) return
+
         val dialog = ShopDecorationDialog()
         dialog.setOnPrimaryActionClick {
             viewModel.validateCampaignCreationEligibility()
