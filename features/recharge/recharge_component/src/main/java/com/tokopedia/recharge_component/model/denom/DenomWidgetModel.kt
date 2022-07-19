@@ -22,6 +22,7 @@ data class DenomData(
     val quotaInfo: String = "",
     val expiredDays: String = "",
     val expiredDate: String = "",
+    val activePeriod: String = "",
     val specialLabel: String = "",
     val discountLabel: String = "",
     val slashPrice: String = "",

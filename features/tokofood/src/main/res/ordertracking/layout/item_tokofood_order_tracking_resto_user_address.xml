@@ -22,21 +22,24 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        tools:text="Kopi Janji Jiwa, Permata Hijau"
+        tools:text="Kopi Janji Jiwa, Permata Hijau, Kopi Kenangan, Kopi Janji Jiwa, Permata Hijau "
         android:textColor="@color/Unify_NN950"
         app:typographyType="display_2"
         app:typographyWeight="bold"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/icOrderTrackingMerchant"
         app:layout_constraintStart_toEndOf="@id/icOrderTrackingMerchant"/>
 
-    <com.tokopedia.unifycomponents.ImageUnify
+    <View
         android:id="@+id/ivOrderTrackingDistance"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/ic_tokofood_distance_user_resto"
+        android:layout_height="0dp"
+        android:background="@drawable/ic_tokofood_distance_user_resto_line"
         app:layout_constraintStart_toStartOf="@id/icOrderTrackingMerchant"
         app:layout_constraintEnd_toEndOf="@id/icOrderTrackingMerchant"
-        app:layout_constraintTop_toBottomOf="@id/icOrderTrackingMerchant"/>
+        app:layout_constraintTop_toBottomOf="@id/icOrderTrackingMerchant"
+        app:layout_constraintBottom_toTopOf="@id/icOrderTrackingUserAddress"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvDistanceFromMerchant"
@@ -47,19 +50,21 @@
         app:typographyType="display_3"
         app:typographyWeight="reguler"
         tools:text="2.5 km dari tujuan"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/tvOrderTrackerMerchantName"
-        app:layout_constraintTop_toTopOf="@id/ivOrderTrackingDistance"/>
+        app:layout_constraintTop_toBottomOf="@id/tvOrderTrackerMerchantName"/>
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/icOrderTrackingUserAddress"
         android:layout_width="20dp"
         android:layout_height="20dp"
+        android:layout_marginTop="12dp"
         app:icon_name="LOCATION"
         app:icon_color_light_enable="@color/Unify_NN600"
         app:icon_color_night_enable="@color/Unify_NN600"
         app:layout_constraintStart_toStartOf="@id/icOrderTrackingMerchant"
         app:layout_constraintEnd_toEndOf="@id/icOrderTrackingMerchant"
-        app:layout_constraintTop_toBottomOf="@id/ivOrderTrackingDistance"/>
+        app:layout_constraintTop_toBottomOf="@id/tvDistanceFromMerchant"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvOrderTrackingAddressTitle"
@@ -72,7 +77,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/tvOrderTrackerMerchantName"
         app:layout_constraintTop_toTopOf="@id/icOrderTrackingUserAddress"
-        app:layout_constraintBottom_toBottomOf="@id/icOrderTrackingUserAddress"
         tools:text="Rumah"/>
 
     <com.tokopedia.unifyprinciples.Typography

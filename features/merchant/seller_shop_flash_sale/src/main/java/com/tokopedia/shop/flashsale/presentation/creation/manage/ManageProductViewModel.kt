@@ -67,6 +67,8 @@ class ManageProductViewModel @Inject constructor(
     val incompleteProducts = Transformations.map(products) {
         ManageProductMapper.filterInfoNotCompleted(it)
     }
+
+    private var isCoachMarkShown = false
     
     var campaignName = ""
     var autoShowEditProduct = true
@@ -191,5 +193,13 @@ class ManageProductViewModel @Inject constructor(
 
     fun onButtonProceedTapped() {
         tracker.sendClickButtonProceedOnManageProductPage()
+    }
+
+    fun setIsCoachMarkShown(isShown: Boolean) {
+        this.isCoachMarkShown = isShown
+    }
+
+    fun getIsCoachMarkShown(): Boolean {
+        return isCoachMarkShown
     }
 }

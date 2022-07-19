@@ -19,6 +19,8 @@ class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiM
     var onFreeShippingClicked: (() -> Unit)? = null
     var onProductCouponImpression: (() -> Unit)? = null
     var onProductCouponClicked: (() -> Unit)? = null
+    var onTokoMemberImpression: (() -> Unit)? = null
+    var onTokoMemberClicked: (() -> Unit)? = null
     var onFlashSaleTokoCLicked: ((String) -> Unit)? = null
 
     companion object {
@@ -71,6 +73,9 @@ class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiM
                     isProductCouponPromo(element.title) -> {
                         onProductCouponImpression?.invoke()
                     }
+                    isTokoMember(element.title) -> {
+                        onTokoMemberImpression?.invoke()
+                    }
                     else -> {
                         CentralizedPromoTracking.sendImpressionPromoCreation(element.title)
                     }
@@ -102,6 +107,9 @@ class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiM
             isFlashSaleToko(title) -> {
                 onFlashSaleTokoCLicked?.invoke(title)
             }
+            isTokoMember(title) -> {
+                onTokoMemberClicked?.invoke()
+            }
             else -> {
                 CentralizedPromoTracking.sendClickPromoCreation(title)
             }
@@ -114,6 +122,10 @@ class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiM
 
     private fun isProductCouponPromo(title: String): Boolean {
         return title == getString(R.string.centralized_promo_promo_creation_voucher_product_title)
+    }
+
+    private fun isTokoMember(title: String): Boolean {
+        return title == getString(R.string.centralized_promo_promo_creation_tokomember_title)
     }
 
     private fun isFlashSaleToko(title: String): Boolean {

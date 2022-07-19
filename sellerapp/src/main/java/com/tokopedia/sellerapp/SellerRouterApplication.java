@@ -92,6 +92,7 @@ import javax.inject.Inject;
 import dagger.Lazy;
 import io.hansel.hanselsdk.Hansel;
 import okhttp3.Response;
+import com.tokopedia.loginregister.goto_seamless.worker.TemporaryTokenWorker;
 
 /**
  * Created by normansyahputa on 12/15/16.
@@ -146,7 +147,15 @@ public abstract class SellerRouterApplication extends MainApplication implements
     private boolean initLibraries() {
         initCMPushNotification();
         initTetraDebugger();
+        initSeamlessLoginWorker();
         return true;
+    }
+
+    private void initSeamlessLoginWorker() {
+        UserSessionInterface userSession = new UserSession(context);
+        if(userSession.isLoggedIn()) {
+            TemporaryTokenWorker.Companion.scheduleWorker(this);
+        }
     }
 
     private void initResourceDownloadManager() {
