@@ -95,6 +95,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     var orderPreferenceData: OrderPreference = OrderPreference()
     val orderPreference: OccMutableLiveData<OccState<OrderPreference>> = OccMutableLiveData(OccState.Loading)
+    val orderShippingDuration: OccMutableLiveData<OccState<OrderShippingDuration>> = OccMutableLiveData(OccState.FirstLoad(
+        OrderShippingDuration()
+    ))
 
     val orderProfile: OccMutableLiveData<OrderProfile> = OccMutableLiveData(OrderProfile(enable = false))
     val orderShipment: OccMutableLiveData<OrderShipment> = OccMutableLiveData(OrderShipment())
@@ -941,16 +944,29 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         )
     }
 
-    suspend fun getShippingBottomsheetParam() : OrderShippingDuration {
-        val (orderCost, _) = calculator.calculateOrderCostWithoutPaymentFee(orderCart, orderShipment.value, validateUsePromoRevampUiModel, orderPayment.value)
-        val (shipmentDetailData, products) = logisticProcessor.generateShippingBottomsheetParam(orderCart, orderProfile.value, orderCost)
-        return OrderShippingDuration(
-            shipmentDetailData = shipmentDetailData,
-            shopShipmentList = orderShop.value.shopShipment,
-            selectedServiceId = orderShipment.value.serviceId.toZeroIfNull(),
-            products = products,
-            cartString = orderCart.cartString
-        )
+    fun getShippingBottomsheetParam() {
+        launch(executorDispatchers.immediate) {
+            val (orderCost, _) = calculator.calculateOrderCostWithoutPaymentFee(
+                orderCart,
+                orderShipment.value,
+                validateUsePromoRevampUiModel,
+                orderPayment.value
+            )
+            val (shipmentDetailData, products) = logisticProcessor.generateShippingBottomsheetParam(
+                orderCart,
+                orderProfile.value,
+                orderCost
+            )
+            orderShippingDuration.value = OccState.Success(
+                OrderShippingDuration(
+                    shipmentDetailData = shipmentDetailData,
+                    shopShipmentList = orderShop.value.shopShipment,
+                    selectedServiceId = orderShipment.value.serviceId.toZeroIfNull(),
+                    products = products,
+                    cartString = orderCart.cartString
+                )
+            )
+        }
     }
 
     override fun onCleared() {

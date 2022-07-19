@@ -137,22 +137,22 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         bundle?.putString(ARGUMENT_MVC, mvc)
     }
 
-    /* OCC */
-    fun show(
-        activity: Activity,
-        fragmentManager: FragmentManager,
-        shippingDurationBottomsheetListener: ShippingDurationBottomsheetListener?,
-        shippingRecommendationData: ShippingRecommendationData,
-        cartPosition: Int,
-        isDisableOrderPrioritas: Boolean
-    ) {
-        this.activity = activity
-        this.shippingDurationBottomsheetListener = shippingDurationBottomsheetListener
-        initBottomSheet(activity, shippingRecommendationData)
-        initView(activity)
-        initData(cartPosition, isDisableOrderPrioritas)
-        bottomSheet?.show(fragmentManager, this.javaClass.simpleName)
-    }
+//    /* OCC */
+//    fun show(
+//        activity: Activity,
+//        fragmentManager: FragmentManager,
+//        shippingDurationBottomsheetListener: ShippingDurationBottomsheetListener?,
+//        shippingRecommendationData: ShippingRecommendationData,
+//        cartPosition: Int,
+//        isDisableOrderPrioritas: Boolean
+//    ) {
+//        this.activity = activity
+//        this.shippingDurationBottomsheetListener = shippingDurationBottomsheetListener
+//        initBottomSheet(activity, shippingRecommendationData)
+//        initView(activity)
+//        initData(cartPosition, isDisableOrderPrioritas)
+//        bottomSheet?.show(fragmentManager, this.javaClass.simpleName)
+//    }
 
     private fun initBottomSheet(activity: Activity, shippingRecommendationData: ShippingRecommendationData) {
         bottomSheet = BottomSheetUnify().apply {
