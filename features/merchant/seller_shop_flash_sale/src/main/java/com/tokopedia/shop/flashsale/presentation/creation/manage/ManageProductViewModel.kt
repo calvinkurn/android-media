@@ -67,6 +67,8 @@ class ManageProductViewModel @Inject constructor(
     val incompleteProducts = Transformations.map(products) {
         ManageProductMapper.filterInfoNotCompleted(it)
     }
+
+    var isCoachMarkShown = false
     
     var campaignName = ""
     var autoShowEditProduct = true

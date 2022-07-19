@@ -122,8 +122,8 @@ class ManageProductListAdapter(
         }
 
         private fun Typography.setOriginalStock(product: Product) {
-            if (product.warehouseList.isNullOrEmpty()) {
-                this.text = HtmlCompat.fromHtml(
+            this.text = if (product.warehouseList.isNullOrEmpty()) {
+                HtmlCompat.fromHtml(
                     context.getString(
                         R.string.manage_product_item_stock_at_single_location_label,
                         product.productMapData.originalStock
@@ -131,8 +131,9 @@ class ManageProductListAdapter(
                     HtmlCompat.FROM_HTML_MODE_COMPACT
                 )
             } else {
+                binding.iconDilayaniTokopedia.visible()
                 product.warehouseList.firstOrNull { it.chosenWarehouse }?.let { warehouse ->
-                    this.text = HtmlCompat.fromHtml(
+                    HtmlCompat.fromHtml(
                         context.getString(
                             R.string.manage_product_item_stock_at_seller_location_label,
                             warehouse.stock,

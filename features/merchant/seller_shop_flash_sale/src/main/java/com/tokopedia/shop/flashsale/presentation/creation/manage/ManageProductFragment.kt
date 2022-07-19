@@ -84,8 +84,12 @@ class ManageProductFragment : BaseDaggerFragment() {
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ManageProductViewModel::class.java) }
-    private val campaignId by lazy { arguments?.getLong(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID).orZero() }
-    private val pageMode by lazy { arguments?.getParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE) ?: PageMode.CREATE }
+    private val campaignId by lazy {
+        arguments?.getLong(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID).orZero()
+    }
+    private val pageMode by lazy {
+        arguments?.getParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE) ?: PageMode.CREATE
+    }
 
     private val manageProductListAdapter by lazy {
         ManageProductListAdapter(
@@ -175,7 +179,7 @@ class ManageProductFragment : BaseDaggerFragment() {
 
     private fun handleCoachMark() {
         val shouldShowCoachMark = !sharedPreference.isManageProductCoachMarkDismissed()
-        if (shouldShowCoachMark && manageProductListAdapter.itemCount.isMoreThanZero()) {
+        if (shouldShowCoachMark && !viewModel.isCoachMarkShown && manageProductListAdapter.itemCount.isMoreThanZero()) {
             showCoachMark()
         }
     }
@@ -409,6 +413,7 @@ class ManageProductFragment : BaseDaggerFragment() {
 
                     val coachMark = activity?.let { it -> CoachMark2(it) }
                     coachMark?.showCoachMark(coachMarkItems)
+                    viewModel.isCoachMarkShown = true
                     coachMark?.onFinishListener = {
                         sharedPreference.markManageProductCoachMarkComplete()
                     }
@@ -542,8 +547,16 @@ class ManageProductFragment : BaseDaggerFragment() {
     private fun animateScroll(scrollingAmount: Int) {
         binding?.apply {
             if (scrollingAmount.isMoreThanZero()) {
-                guidelineHeader.animateSlide(guidelineMarginHeader, GUIDELINE_MARGIN_HEADER_MIN, true)
-                guidelineFooter.animateSlide(guidelineMarginFooter, GUIDELINE_MARGIN_FOOTER_MIN, false)
+                guidelineHeader.animateSlide(
+                    guidelineMarginHeader,
+                    GUIDELINE_MARGIN_HEADER_MIN,
+                    true
+                )
+                guidelineFooter.animateSlide(
+                    guidelineMarginFooter,
+                    GUIDELINE_MARGIN_FOOTER_MIN,
+                    false
+                )
                 guidelineMarginFooter = GUIDELINE_MARGIN_FOOTER_MIN
                 guidelineMarginHeader = GUIDELINE_MARGIN_HEADER_MIN
             } else {
@@ -551,8 +564,16 @@ class ManageProductFragment : BaseDaggerFragment() {
                     guidelineHeader.setGuidelineBegin(GUIDELINE_MARGIN_HEADER_MIN)
                     guidelineMarginHeader = GUIDELINE_MARGIN_HEADER_MIN
                 } else {
-                    guidelineHeader.animateSlide(guidelineMarginHeader, guidelineMarginHeaderMax, true)
-                    guidelineFooter.animateSlide(guidelineMarginFooter, guidelineMarginFooterMax, false)
+                    guidelineHeader.animateSlide(
+                        guidelineMarginHeader,
+                        guidelineMarginHeaderMax,
+                        true
+                    )
+                    guidelineFooter.animateSlide(
+                        guidelineMarginFooter,
+                        guidelineMarginFooterMax,
+                        false
+                    )
                     guidelineMarginFooter = guidelineMarginFooterMax
                     guidelineMarginHeader = guidelineMarginHeaderMax
                 }
