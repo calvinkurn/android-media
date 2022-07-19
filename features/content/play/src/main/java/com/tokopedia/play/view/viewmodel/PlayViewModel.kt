@@ -252,22 +252,13 @@ class PlayViewModel @AssistedInject constructor(
         )
     }
 
-    private val _sortedTagItems = combine(
-        _tagItems, _warehouseInfo, _partnerInfo
-    ) { tagItems, warehouseInfo, partnerInfo ->
+    private val _sortedTagItems = combine(_tagItems, _warehouseInfo) { tagItems, warehouseInfo ->
         val notAllowedPredicate: (PlayProductUiModel.Product) -> Boolean = {
-            it.isPinned &&
-                    partnerInfo.type == PartnerType.Tokopedia &&
-                    it.isTokoNow &&
-                    warehouseInfo.isOOC
+            it.isTokoNow && warehouseInfo.isOOC
         }
         val newSectionList = tagItems.product.productSectionList.map { section ->
             if (section is ProductSectionUiModel.Section) {
                 section.copy(
-//                    productList = section.productList.map { product ->
-//                        if (predicate(product)) product
-//                        else product.copy(isPinned = false)
-//                    }
                     productList = section.productList.filterNot(notAllowedPredicate)
                 )
             } else section
@@ -282,7 +273,7 @@ class PlayViewModel @AssistedInject constructor(
         .stateIn(
             viewModelScope,
             defaultSharingStarted,
-            TagItemUiModel.Empty,
+            _tagItems.value,
         )
 
     /**
@@ -1810,8 +1801,6 @@ class PlayViewModel @AssistedInject constructor(
         viewModelScope.launch {
             tapGiveawayFlow.emit(Unit)
         }
-
-        val giveaway = _interactive.value.interactive as? InteractiveUiModel.Giveaway ?: return
     }
 
     private fun handleQuizEnded() {

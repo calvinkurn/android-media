@@ -112,10 +112,13 @@ class ProductCarouselUiComponent(
         maxProducts: Int,
     ): List<PlayProductUiModel.Product> {
         var pinnedProduct: PlayProductUiModel.Product? = null
-        sectionList.forEach { section ->
-            if (section is ProductSectionUiModel.Section) {
-                pinnedProduct = section.productList.firstOrNull { it.isPinned }
-                if (pinnedProduct != null) return@forEach
+
+        run {
+            sectionList.forEach { section ->
+                if (section is ProductSectionUiModel.Section) {
+                    pinnedProduct = section.productList.firstOrNull { it.isPinned }
+                    if (pinnedProduct != null) return@run
+                }
             }
         }
 
