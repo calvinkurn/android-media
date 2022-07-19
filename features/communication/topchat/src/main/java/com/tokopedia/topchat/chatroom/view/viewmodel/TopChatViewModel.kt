@@ -768,7 +768,6 @@ open class TopChatViewModel @Inject constructor(
                     postalCode = userLocationInfo.postal_code,
                     latLon = userLocationInfo.latLong
                 )
-//                delaying()
                 chatSrwUseCase(param).collect {
                     _srw.postValue(it)
                 }

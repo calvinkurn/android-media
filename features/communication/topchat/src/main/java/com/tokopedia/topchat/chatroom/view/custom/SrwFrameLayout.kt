@@ -236,7 +236,7 @@ class SrwFrameLayout : FrameLayout {
         rvAdapter.updateSrwList(chatSmartReplyQuestion)
     }
 
-    private fun resetSrw() {
+    fun resetSrw() {
         chatSmartReplyQuestion = ChatSmartReplyQuestion()
         rvAdapter.resetSrwQuestions()
     }
