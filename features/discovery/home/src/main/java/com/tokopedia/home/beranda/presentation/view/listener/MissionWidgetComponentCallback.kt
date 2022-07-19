@@ -28,10 +28,8 @@ class MissionWidgetComponentCallback(
         horizontalPosition: Int
     ) {
         if (element.productID.isNotBlank()) {
-            //for pdp page
             MissionWidgetTracking.sendMissionWidgetClickedToPdp(element, horizontalPosition, homeCategoryListener.userId)
         } else {
-            //for discovery
             MissionWidgetTracking.sendMissionWidgetClicked(element, horizontalPosition, homeCategoryListener.userId)
         }
         homeCategoryListener.onDynamicChannelClicked(element.appLink)
