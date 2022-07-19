@@ -78,11 +78,8 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
              cartPosition: Int, codHistory: Int = -1,
              isLeasing: Boolean = false, pslCode: String = "",
              products: ArrayList<Product>, cartString: String,
-             // todo: always true for occ
              isDisableOrderPrioritas: Boolean,
-             // todo: always false for occ, default from rates param is false
              isTradeInDropOff: Boolean = false,
-             // todo: these two never used
              isFulFillment: Boolean = false, preOrderTime: Int = -1,
              mvc: String = "") {
         this.activity = activity

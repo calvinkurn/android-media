@@ -379,6 +379,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
         observeEligibilityForAnaRevamp()
 
+        observeOrderShippingDuration()
+
         // first load
         if (viewModel.orderProducts.value.isEmpty()) {
             val productIds = arguments?.getString(QUERY_PRODUCT_ID)

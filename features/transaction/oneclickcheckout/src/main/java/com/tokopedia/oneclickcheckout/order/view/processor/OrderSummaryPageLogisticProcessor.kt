@@ -126,6 +126,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
         } to 0.0
     }
 
+    // todo: adjust to support overweight case
     fun generateShippingBottomsheetParam(
         orderCart: OrderCart,
         orderProfile: OrderProfile,
