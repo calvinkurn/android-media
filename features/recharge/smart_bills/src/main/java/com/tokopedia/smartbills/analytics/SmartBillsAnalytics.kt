@@ -467,11 +467,11 @@ class SmartBillsAnalytics {
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
-    fun viewHighlightWidget() {
+    fun viewHighlightWidget(productCategory: String) {
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, VIEW_ON_HIGHLIGHT_CATEGORY)
             putString(TrackAppUtils.EVENT_LABEL, String.format(STRING_FORMAT_FOR_HIGHLIGHT_PRODUCT,
-                "//TODO ASK product category"))
+                productCategory))
             putString(TRACKER_ID, TRACKER_ID_VIEW_HIGHLIGHT_PRODUCT)
         }
 
@@ -479,11 +479,11 @@ class SmartBillsAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(CommonSmartBillsConstant.VIEW_DIGITAL_IRIS, eventDataLayer)
     }
 
-    fun clickHighlightWidget() {
+    fun clickHighlightWidget(productCategory: String) {
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, CLICK_ON_HIGHLIGHT_CATEGORY)
             putString(TrackAppUtils.EVENT_LABEL, String.format(STRING_FORMAT_FOR_HIGHLIGHT_PRODUCT,
-                "//TODO ASK product category"))
+                productCategory))
             putString(TRACKER_ID, TRACKER_ID_CLICK_HIGHLIGHT_PRODUCT)
         }
 
@@ -491,11 +491,11 @@ class SmartBillsAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(CommonSmartBillsConstant.CLICK_DIGITAl, eventDataLayer)
     }
 
-    fun closeHighlightWidget() {
+    fun closeHighlightWidget(productCategory: String) {
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, CLICK_X_ON_HIGHLIGHT_CATEGORY)
             putString(TrackAppUtils.EVENT_LABEL, String.format(STRING_FORMAT_FOR_HIGHLIGHT_PRODUCT,
-                "//TODO ASK product category"))
+                productCategory))
             putString(TRACKER_ID, TRACKER_ID_CLOSE_HIGHLIGHT_PRODUCT)
         }
 
