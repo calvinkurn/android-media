@@ -1,11 +1,19 @@
 package com.tokopedia.people.analytic
 
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.ContextAnalytics
 
 class UserProfileAnalytics {
-    val analyticTracker: ContextAnalytics
-        get() = TrackApp.getInstance().gtm
+
+    object Variable {
+        val analyticTracker: ContextAnalytics
+            get() = TrackApp.getInstance().gtm
+
+        val currentSite: String
+            get() = if (GlobalConfig.isSellerApp()) Constants.TOKOPEDIA_SELLER
+            else Constants.TOKOPEDIA_MARKETPLACE
+    }
 
 
     object Constants {
