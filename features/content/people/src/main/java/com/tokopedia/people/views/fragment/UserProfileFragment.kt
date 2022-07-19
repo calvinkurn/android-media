@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
@@ -22,8 +23,9 @@ import com.tokopedia.feedcomponent.onboarding.view.fragment.FeedUGCOnboardingPar
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
 import com.tokopedia.feedcomponent.view.widget.shoprecom.adapter.ShopRecomAdapter
-import com.tokopedia.feedcomponent.view.widget.shoprecom.decor.ShopRecomItemDecoration
+import com.tokopedia.people.analytic.cordinator.ShopRecommendationImpressionCoordinator
 import com.tokopedia.feedcomponent.view.widget.shoprecom.listener.ShopRecommendationCallback
+import com.tokopedia.feedcomponent.view.widget.shoprecom.utils.getVisibleItems
 import com.tokopedia.globalerror.GlobalError.Companion.NO_CONNECTION
 import com.tokopedia.globalerror.GlobalError.Companion.PAGE_FULL
 import com.tokopedia.globalerror.GlobalError.Companion.PAGE_NOT_FOUND
@@ -31,12 +33,7 @@ import com.tokopedia.globalerror.GlobalError.Companion.SERVER_ERROR
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.clearImage
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
@@ -49,7 +46,7 @@ import com.tokopedia.people.ErrorMessage
 import com.tokopedia.people.Loading
 import com.tokopedia.people.R
 import com.tokopedia.people.Success
-import com.tokopedia.people.analytic.UserProfileTracker
+import com.tokopedia.people.analytic.tracker.UserProfileTracker
 import com.tokopedia.people.databinding.UpFragmentUserProfileBinding
 import com.tokopedia.people.databinding.UpLayoutUserProfileHeaderBinding
 import com.tokopedia.people.utils.showErrorToast
@@ -89,6 +86,7 @@ class UserProfileFragment @Inject constructor(
     private var userProfileTracker: UserProfileTracker,
     private val userSession: UserSessionInterface,
     private val feedFloatingButtonManager: FeedFloatingButtonManager,
+    private val impressionCoordinator: ShopRecommendationImpressionCoordinator,
 ) : TkpdBaseV4Fragment(),
     AdapterCallback,
     ShareBottomsheetListener,
@@ -98,9 +96,7 @@ class UserProfileFragment @Inject constructor(
     ShopRecommendationCallback,
     FeedPlusContainerListener {
 
-    private val linearLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
-        LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
-    }
+    private lateinit var linearLayoutManager: LinearLayoutManager
 
     private val gridLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
         GridLayoutManager(activity, 2)
@@ -200,7 +196,8 @@ class UserProfileFragment @Inject constructor(
 
     override fun onPause() {
         super.onPause()
-        userProfileTracker.sendAll()
+        if (viewModel.visibleShopRecom) impressionCoordinator.sendShopRecomImpress()
+        else userProfileTracker.sendAll()
     }
 
     override fun onDestroyView() {
@@ -304,10 +301,18 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
-    private fun initShopRecommendation() = with(mainBinding.shopRecommendation.rvShopRecom) {
-        layoutManager = linearLayoutManager
-        adapter = mAdapterShopRecom
-        if (itemDecorationCount == 0) addItemDecoration(ShopRecomItemDecoration(requireContext()))
+    private fun initShopRecommendation() {
+        linearLayoutManager = object : LinearLayoutManager(requireContext(), HORIZONTAL, false) {
+            override fun onLayoutCompleted(state: RecyclerView.State?) {
+                super.onLayoutCompleted(state)
+                impressShopRecom()
+            }
+        }
+        with(mainBinding.shopRecommendation.rvShopRecom) {
+            layoutManager = linearLayoutManager
+            adapter = mAdapterShopRecom
+            if (itemDecorationCount == 0) addItemDecoration(ShopRecomItemDecoration(requireContext()))
+        }
     }
 
     private fun initUserPost(userId: String) {
@@ -744,6 +749,10 @@ class UserProfileFragment @Inject constructor(
         return bundle
     }
 
+    override fun onShopRecomImpression(itemID: Long, imageUrl: String, postPosition: Int) {
+        //
+    }
+
     override fun onShopRecomCloseClicked(itemID: Long) {
         submitAction(UserProfileAction.RemoveShopRecomItem(itemID))
     }
@@ -756,13 +765,14 @@ class UserProfileFragment @Inject constructor(
         submitAction(UserProfileAction.ClickFollowButtonShopRecom(itemID))
     }
 
-    override fun onShopRecomImpression(itemID: Long, imageUrl: String, postPosition: Int) {
-        userProfileTracker.impressionProfileRecommendation(
-            viewModel.profileUserID,
-            itemID.toString(),
-            imageUrl,
-            postPosition
-        )
+    private fun impressShopRecom() {
+        if (this::linearLayoutManager.isInitialized) {
+            val visibleProducts = linearLayoutManager.getVisibleItems(mAdapterShopRecom)
+            viewModel.visibleShopRecom = visibleProducts.isNotEmpty()
+            if (viewModel.visibleShopRecom) impressionCoordinator.saveShopRecomImpress(
+                viewModel.profileUserID, visibleProducts
+            )
+        }
     }
 
     override fun onShopRecomItemClicked(
