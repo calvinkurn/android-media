@@ -11,6 +11,7 @@ import com.tokopedia.broadcaster.widget.SurfaceAspectRatioView
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.InteractiveDataStoreImpl
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
@@ -1563,9 +1564,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             val result = repo.setPinProduct(channelId, product.id)
             if(result) {
                 updatePinProduct(product = product)
+            } else {
+                throw MessageErrorException("Gagal pin product")
             }
         }){
             updatePinProduct(product = product)
+            _uiEvent.emit(PlayBroadcastEvent.ShowError(it))
         }
     }
 
