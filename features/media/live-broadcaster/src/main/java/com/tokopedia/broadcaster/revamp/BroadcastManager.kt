@@ -173,17 +173,12 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
         // This is useful option for camera flip, for example if back camera can do 1280x720 HD
         // and front camera can only produce 640x480
 
-        // To get vertical video just swap width and height
-        // do not modify videoSize itself because Android camera is always landscape
-        // noinspection SuspiciousNameCombination
-        videoConfig.videoSize = Streamer.Size(videoSize.height, videoSize.width)
+        videoConfig.videoSize = getAndroidVideoSize(videoSize)
 
         // verify video resolution support by encoder
         val supportedSize = BroadcasterUtil.verifyResolution(videoConfig.type, videoConfig.videoSize)
         if (!videoConfig.videoSize.equals(supportedSize)) {
-            // do not modify videoSize itself because Android camera is always landscape
-            // noinspection SuspiciousNameCombination
-            videoConfig.videoSize = Streamer.Size(supportedSize.height, supportedSize.width)
+            videoConfig.videoSize = getAndroidVideoSize(supportedSize)
         }
 
         builder.setVideoConfig(videoConfig)
@@ -289,6 +284,17 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
         )
 
         broadcastInitStateChanged(BroadcastInitState.Initialized)
+    }
+
+    // To get vertical video just swap width and height
+    // do not modify videoSize itself because Android camera is always landscape
+    fun getAndroidVideoSize(videoSize: Streamer.Size): Streamer.Size {
+        return if(videoSize.height > videoSize.width) {
+            Streamer.Size(videoSize.width, videoSize.height)
+        } else {
+            // noinspection SuspiciousNameCombination
+            Streamer.Size(videoSize.height, videoSize.width)
+        }
     }
 
     override fun updateSurfaceSize(surfaceSize: Broadcaster.Size) {
