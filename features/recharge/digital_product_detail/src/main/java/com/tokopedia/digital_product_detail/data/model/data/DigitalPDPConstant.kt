@@ -36,4 +36,7 @@ object DigitalPDPConstant {
 
     const val CHECKOUT_NO_PROMO = "0"
     const val LOADER_DIALOG_TEXT = ""
+
+    const val RECOMMENDATION_GQL_CHANNEL_NAME_PULSA = "pulsa_pdp_last_transaction"
+    const val RECOMMENDATION_GQL_CHANNEL_NAME_DEFAULT = "recharge_pdp_last_trx_client_number"
 }

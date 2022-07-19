@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.carouselproductcard.CarouselProductCardView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.R
@@ -18,6 +19,7 @@ import com.tokopedia.shop.home.WidgetName.RECENT_ACTIVITY
 import com.tokopedia.shop.home.WidgetName.REMINDER
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.listener.ShopHomeCarouselProductListener
+import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel.Companion.IS_ATC
 import com.tokopedia.utils.view.binding.viewBinding
@@ -27,7 +29,8 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 class ShopHomeCarouselProductPersonalizationViewHolder (
         itemView: View,
-        val shopHomeCarouselProductListener: ShopHomeCarouselProductListener
+        val shopHomeCarouselProductListener: ShopHomeCarouselProductListener,
+        private val shopHomeListener: ShopHomeListener
 ) : AbstractViewHolder<ShopHomeCarousellProductUiModel>(itemView) {
 
     companion object {
@@ -92,6 +95,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
                     val productItem = element.productList.getOrNull(carouselProductCardPosition)
                         ?: return
                     if (productItem.isEnableDirectPurchase) {
+                        saveScrollPosition()
                         shopHomeCarouselProductListener.onProductAtcDefaultClick(
                             productItem,
                             productItem.minimumOrder,
@@ -125,6 +129,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
                     carouselProductCardPosition: Int,
                     quantity: Int
                 ) {
+                    saveScrollPosition()
                     val productItem = element.productList.getOrNull(carouselProductCardPosition)
                         ?: return
                     shopHomeCarouselProductListener.onProductAtcNonVariantQuantityEditorChanged(
@@ -142,6 +147,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
                     productCardModel: ProductCardModel,
                     carouselProductCardPosition: Int
                 ) {
+                    saveScrollPosition()
                     val productItem = element.productList.getOrNull(carouselProductCardPosition)
                         ?: return
                     shopHomeCarouselProductListener.onProductAtcVariantClick(productItem)
@@ -210,7 +216,8 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
 
             ADD_ONS -> {
                 recyclerView?.bindCarouselProductCardViewGrid(
-                        productCardModelList = carouselProductList,
+                    scrollToPosition = getScrollPosition(),
+                    productCardModelList = carouselProductList,
                         carouselProductCardOnItemAddToCartListener = productAddToCartListener,
                         carouselProductCardOnItemClickListener = productClickListener,
                         carouselProductCardOnItemImpressedListener = productImpressionListener
@@ -219,6 +226,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
 
             RECENT_ACTIVITY -> {
                 recyclerView?.bindCarouselProductCardViewGrid(
+                    scrollToPosition = getScrollPosition(),
                     productCardModelList = carouselProductList,
                     carouselProductCardOnItemAddToCartListener = productAddToCartDefaultListener,
                     carouselProductCardOnItemClickListener = productClickListener,
@@ -270,4 +278,16 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
     private fun isHasATC(
        element : ShopHomeCarousellProductUiModel?
     ) : Boolean = (element?.header?.isATC == IS_ATC)
+
+
+    fun saveScrollPosition() {
+        shopHomeListener.getWidgetCarouselPositionSavedState().put(
+            adapterPosition,
+            recyclerView?.getCurrentPosition().orZero()
+        )
+    }
+
+    private fun getScrollPosition(): Int {
+        return shopHomeListener.getWidgetCarouselPositionSavedState().get(adapterPosition)
+    }
 }

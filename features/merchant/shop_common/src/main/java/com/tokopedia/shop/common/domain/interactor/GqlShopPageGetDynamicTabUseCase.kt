@@ -55,7 +55,7 @@ class GqlShopPageGetDynamicTabUseCase @Inject constructor(
                 extParam: ${'$'}extParam
               ){
                 tabData {
-                   name
+                  name
                   isActive
                   isFocus
                   isDefault
@@ -64,6 +64,8 @@ class GqlShopPageGetDynamicTabUseCase @Inject constructor(
                   icon
                   iconFocus
                   type
+                  bgColors
+                  textColor
                   shopLayoutFeatures {
                     name
                     isActive
@@ -94,6 +96,28 @@ class GqlShopPageGetDynamicTabUseCase @Inject constructor(
                           }
                         }
                       }
+                    }
+                    ... on CampaignTabData {
+                       widgetIDList {
+                         widgetID
+                         widgetMasterID
+                         widgetType
+                         widgetName
+                         header {
+                           title
+                           ctaText
+                           ctaLink
+                           cover
+                           ratio
+                           sizeOption
+                           isATC
+                           isActive
+                           isBrokenLink
+                           errMsgBrokenLink
+                           etalaseID
+                           isShowEtalaseName
+                         }
+                       }
                     }
                   }
                 }

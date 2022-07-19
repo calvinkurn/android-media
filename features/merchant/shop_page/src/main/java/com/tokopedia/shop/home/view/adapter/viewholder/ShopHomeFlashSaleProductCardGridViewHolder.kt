@@ -20,16 +20,27 @@ class ShopHomeFlashSaleProductCardGridViewHolder(
 ) : RecyclerView.ViewHolder(itemView) {
 
     private var uiModel: ShopHomeProductUiModel? = null
+    private var fsUiModel: ShopHomeFlashSaleUiModel? = null
     private var productCardGrid: ProductCardGridView? = itemView.findViewById(R.id.fs_product_card_grid)
-    private var flashSaleWidgetUiModel: ShopHomeFlashSaleUiModel? = null
 
     init {
         setupClickListener(listener)
+        setupImpressionListener(listener)
+    }
+
+    private fun setupImpressionListener(listener: ShopHomeFlashSaleWidgetListener) {
+        uiModel?.let {
+            productCardGrid?.setImageProductViewHintListener(it, object : ViewHintListener {
+                override fun onViewHint() {
+                    listener.onFlashSaleProductImpression(it, fsUiModel, adapterPosition)
+                }
+            })
+        }
     }
 
     fun bindData(uiModel: ShopHomeProductUiModel, fsUiModel: ShopHomeFlashSaleUiModel?) {
         this.uiModel = uiModel
-        this.flashSaleWidgetUiModel = fsUiModel
+        this.fsUiModel = fsUiModel
         productCardGrid?.applyCarousel()
         productCardGrid?.layoutParams?.height = ViewGroup.LayoutParams.MATCH_PARENT
         val productCardModel = ShopPageHomeMapper.mapToProductCardCampaignModel(
@@ -57,7 +68,7 @@ class ShopHomeFlashSaleProductCardGridViewHolder(
                             listener.onImpressionProductAtc(
                                 productUiModel,
                                 adapterPosition,
-                                flashSaleWidgetUiModel?.name.orEmpty()
+                                fsUiModel?.name.orEmpty()
                             )
                         }
                     }
@@ -72,7 +83,7 @@ class ShopHomeFlashSaleProductCardGridViewHolder(
                     listener.onProductAtcNonVariantQuantityEditorChanged(
                         shopHomeProductUiModel,
                         quantity,
-                        flashSaleWidgetUiModel?.name.orEmpty()
+                        fsUiModel?.name.orEmpty()
                     )
                 }
             })
@@ -85,7 +96,7 @@ class ShopHomeFlashSaleProductCardGridViewHolder(
                 listener.onProductAtcDefaultClick(
                     shopHomeProductUiModel,
                     shopHomeProductUiModel.minimumOrder,
-                    flashSaleWidgetUiModel?.name.orEmpty()
+                    fsUiModel?.name.orEmpty()
                 )
             }
         }
@@ -93,7 +104,15 @@ class ShopHomeFlashSaleProductCardGridViewHolder(
 
     private fun setupClickListener(listener: ShopHomeFlashSaleWidgetListener) {
         productCardGrid?.setOnClickListener {
-            uiModel?.run { listener.onFlashSaleProductClicked(this) }
+            uiModel?.let { productModel ->
+                fsUiModel?.let { widgetModel ->
+                    listener.onFlashSaleProductClicked(
+                        model = productModel,
+                        widgetModel = widgetModel,
+                        position = adapterPosition
+                    )
+                }
+            }
         }
     }
 }

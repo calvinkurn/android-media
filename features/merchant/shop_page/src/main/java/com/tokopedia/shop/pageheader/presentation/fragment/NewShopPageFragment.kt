@@ -1,5 +1,6 @@
 package com.tokopedia.shop.pageheader.presentation.fragment
 
+import android.animation.Animator
 import android.app.Activity
 import android.content.ClipData
 import android.content.Context
@@ -22,6 +23,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
 import androidx.viewpager2.widget.ViewPager2
+import com.airbnb.lottie.LottieCompositionFactory
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayout
@@ -109,9 +111,12 @@ import com.tokopedia.shop.pageheader.di.component.ShopPageComponent
 import com.tokopedia.seller_migration_common.presentation.util.setOnClickLinkSpannable
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SHARE_BOTTOM_SHEET_FEATURE_NAME
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SHARE_BOTTOM_SHEET_PAGE_NAME
+import com.tokopedia.shop.campaign.view.fragment.ShopPageCampaignFragment
 import com.tokopedia.shop.common.constant.ShopPageConstant.ShopLayoutFeatures.DIRECT_PURCHASE
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HEADER_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
+import com.tokopedia.shop.common.data.model.HomeLayoutData
+import com.tokopedia.shop.common.data.model.ShopPageGetDynamicTabResponse
 import com.tokopedia.shop.common.util.ShopAsyncErrorException
 import com.tokopedia.shop.common.util.ShopLogger
 import com.tokopedia.shop.common.util.ShopUtil.isUsingNewShareBottomSheet
@@ -212,6 +217,7 @@ class NewShopPageFragment :
         const val SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE"
         const val SHOP_STICKY_LOGIN = "SHOP_STICKY_LOGIN"
         const val SAVED_INITIAL_FILTER = "saved_initial_filter"
+        const val SAVED_IS_CONFETTI_ALREADY_SHOWN = "saved_is_confetti_already_shown"
         const val FORCE_NOT_SHOWING_HOME_TAB = "FORCE_NOT_SHOWING_HOME_TAB"
         const val SHOP_PAGE_PREFERENCE = "SHOP_PAGE_PREFERENCE"
         private const val REQUEST_CODER_USER_LOGIN = 100
@@ -272,7 +278,8 @@ class NewShopPageFragment :
     private var stickyLoginView: StickyLoginView? = null
     private var shopPageFragmentHeaderViewHolder: NewShopPageFragmentHeaderViewHolder? = null
     private var viewPagerAdapter: ShopPageFragmentPagerAdapter? = null
-    private var errorTextView: TextView? = null
+    private var errorTextView: Typography? = null
+    private var subErrorTextView: Typography? = null
     private var errorButton: View? = null
     private var shopPageFab: FloatingButtonUnify? = null
     private var isForceNotShowingTab: Boolean = false
@@ -347,7 +354,7 @@ class NewShopPageFragment :
         get() = shopViewModel?.isUserSessionActive ?: false
 
     private val feedShopFragmentClassName = Class.forName(FEED_SHOP_FRAGMENT)
-
+    private var isConfettiAlreadyShown = false
     override fun getComponent() = activity?.run {
         DaggerShopPageComponent.builder().shopPageModule(ShopPageModule())
                 .shopComponent(ShopComponentHelper().getComponent(application, this)).build()
@@ -407,6 +414,7 @@ class NewShopPageFragment :
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putParcelable(SAVED_INITIAL_FILTER, initialProductFilterParameter)
+        outState.putBoolean(SAVED_IS_CONFETTI_ALREADY_SHOWN, isConfettiAlreadyShown)
     }
 
     private fun initViews(view: View) {
@@ -428,6 +436,7 @@ class NewShopPageFragment :
         miniCart = viewBinding?.miniCart
         //    we can't use viewbinding for the code below, since the layout from abstraction hasn't implement viewbinding
         errorTextView = shopPageErrorState?.findViewById(com.tokopedia.abstraction.R.id.message_retry)
+        subErrorTextView = shopPageErrorState?.findViewById(com.tokopedia.abstraction.R.id.sub_message_retry)
         errorButton = shopPageErrorState?.findViewById(com.tokopedia.abstraction.R.id.button_retry)
         setupBottomSheetSellerMigration(view)
         shopPageFragmentHeaderViewHolder = NewShopPageFragmentHeaderViewHolder(
@@ -567,7 +576,7 @@ class NewShopPageFragment :
                                 errType = SHOP_PAGE_HEADER_BUYER_FLOW_TAG
                         )
                     }
-                    onErrorGetShopPageTabData(throwable)
+                    onErrorGetShopPageTabData()
                 }
             }
             stopMonitoringPltCustomMetric(SHOP_TRACE_HEADER_SHOP_NAME_AND_PICTURE_RENDER)
@@ -628,7 +637,7 @@ class NewShopPageFragment :
                                 errType = SHOP_PAGE_HEADER_BUYER_FLOW_TAG
                         )
                     }
-                    onErrorGetShopPageTabData(throwable)
+                    onErrorGetShopPageTabData()
                 }
             }
         })
@@ -1042,6 +1051,7 @@ class NewShopPageFragment :
     private fun getSavedInstanceStateData(savedInstanceState: Bundle?) {
         savedInstanceState?.let {
             initialProductFilterParameter = it.getParcelable(SAVED_INITIAL_FILTER)
+            isConfettiAlreadyShown = it.getBoolean(SAVED_IS_CONFETTI_ALREADY_SHOWN)
         }
     }
 
@@ -1918,6 +1928,9 @@ class NewShopPageFragment :
                     )
                     reviewTabFragment
                 }
+                ShopPageTabName.CAMPAIGN -> {
+                    createCampaignTabFragment(it)
+                }
                 else -> {
                     null
                 }
@@ -1933,6 +1946,26 @@ class NewShopPageFragment :
             }
         }
         return listShopPageTabModel
+    }
+
+    private fun createCampaignTabFragment(
+        tabData: ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData
+    ): Fragment {
+        return ShopPageCampaignFragment.createInstance(
+            shopId,
+            shopPageHeaderDataModel?.isOfficial ?: false,
+            shopPageHeaderDataModel?.isGoldMerchant ?: false,
+            shopPageHeaderDataModel?.shopName.orEmpty(),
+            shopAttribution ?: "",
+            shopRef,
+            shopPageHeaderDataModel?.isEnableDirectPurchase.orFalse()
+        ).apply {
+            setListWidgetLayoutData(HomeLayoutData(
+                widgetIdList = tabData.data.widgetIdList
+            ))
+            setPageBackgroundColor(tabData.listBackgroundColor)
+            setPageTextColor(tabData.textColor)
+        }
     }
 
     private fun isShowHomeTab(): Boolean {
@@ -1970,10 +2003,21 @@ class NewShopPageFragment :
         }
     }
 
-    private fun onErrorGetShopPageTabData(e: Throwable?) {
+    private fun onErrorGetShopPageTabData() {
         context?.run {
             setViewState(VIEW_ERROR)
-            errorTextView?.text = ErrorHandler.getErrorMessage(this, e)
+            errorTextView?.apply {
+                setType(Typography.HEADING_2)
+                text = getString(R.string.shop_page_error_title_get_p1)
+            }
+            subErrorTextView?.apply {
+                setType(Typography.DISPLAY_2)
+                setTextColor(MethodChecker.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                ))
+                text = getString(R.string.shop_page_error_sub_title_get_p1)
+            }
             errorButton?.setOnClickListener {
                 isRefresh = true
                 getInitialData()
@@ -2867,6 +2911,37 @@ class NewShopPageFragment :
 
     override fun permissionAction(action: String, label: String) {
         shopPageTracking?.clickUniversalSharingPermission(action, label, shopId, userId)
+    }
+
+    fun setupShopPageLottieAnimation(lottieUrl: String) {
+        context?.let {
+            val lottieCompositionLottieTask = LottieCompositionFactory.fromUrl(it, lottieUrl)
+            lottieCompositionLottieTask.addListener { result ->
+                viewBinding?.shopPageLottie?.apply {
+                    show()
+                    setComposition(result)
+                    playAnimation()
+                    this.addAnimatorListener(object : Animator.AnimatorListener {
+                        override fun onAnimationStart(p0: Animator?) {}
+
+                        override fun onAnimationEnd(p0: Animator?) {
+                            hide()
+                        }
+
+                        override fun onAnimationCancel(p0: Animator?) {}
+                        override fun onAnimationRepeat(p0: Animator?) {}
+                    })
+                }
+            }
+        }
+    }
+
+    fun isShowConfetti(): Boolean {
+        return !isConfettiAlreadyShown
+    }
+
+    fun setConfettiAlreadyShown() {
+        isConfettiAlreadyShown = true
     }
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {

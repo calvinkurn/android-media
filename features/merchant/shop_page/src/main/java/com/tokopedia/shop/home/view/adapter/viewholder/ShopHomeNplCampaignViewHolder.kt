@@ -121,7 +121,7 @@ class ShopHomeNplCampaignViewHolder(
             if (productList.isNotEmpty()) {
                 layoutParams?.width = clickableBannerAreaWidth
                 setOnClickListener {
-                    shopHomeCampaignNplWidgetListener.onClickCampaignBannerAreaNplWidget(model)
+                    shopHomeCampaignNplWidgetListener.onClickCampaignBannerAreaNplWidget(model, adapterPosition)
                 }
                 show()
             } else {

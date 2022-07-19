@@ -45,6 +45,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
 import com.tokopedia.shop.home.view.model.ShopPageHomeWidgetLayoutUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.shop.common.data.model.ShopPageGetHomeType
+import com.tokopedia.shop.common.data.model.ShopPageWidgetLayoutUiModel
 import com.tokopedia.shop.home.WidgetName.RECENT_ACTIVITY
 import com.tokopedia.shop.home.WidgetName.REMINDER
 import com.tokopedia.shop.product.data.model.ShopProduct
@@ -961,7 +962,7 @@ object ShopPageHomeMapper {
             layoutId = response.layoutId,
             masterLayoutId = response.masterLayoutId.toIntOrZero().toString(),
             listWidgetLayout = response.widgetIdList.map {
-                ShopPageHomeWidgetLayoutUiModel.WidgetLayout(
+                ShopPageWidgetLayoutUiModel(
                     it.widgetId,
                     it.widgetMasterId,
                     it.widgetType,
@@ -972,7 +973,7 @@ object ShopPageHomeMapper {
     }
 
     fun mapShopHomeWidgetLayoutToListShopHomeWidget(
-            listWidgetLayout: List<ShopPageHomeWidgetLayoutUiModel.WidgetLayout>,
+            listWidgetLayout: List<ShopPageWidgetLayoutUiModel>,
             myShop: Boolean,
             isLoggedIn: Boolean,
             isThematicWidgetShown: Boolean,

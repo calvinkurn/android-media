@@ -81,6 +81,7 @@ object ShopPageProductListMapper {
                     it.etalaseId = etalaseId
                     it.labelGroupList = labelGroupList.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
                     it.etalaseType = etalaseType
+                    it.stock = stock
                     when (it.etalaseType) {
                         ShopEtalaseTypeDef.ETALASE_CAMPAIGN -> {
                             it.isUpcoming  = campaign.isUpcoming
@@ -96,6 +97,7 @@ object ShopPageProductListMapper {
                             it.hideGimmick = campaign.hideGimmick
                             it.displayedPrice = campaign.discountedPriceFmt.toFloatOrZero().getCurrencyFormatted()
                             it.originalPrice = campaign.originalPriceFmt.toFloatOrZero().getCurrencyFormatted()
+                            setStockAndSoldOutForCampaignEtalase(it, shopProduct)
                         }
                         ShopEtalaseTypeDef.ETALASE_FLASH_SALE -> {
                             it.isUpcoming  = campaign.isUpcoming
@@ -116,15 +118,24 @@ object ShopPageProductListMapper {
                                 it.displayedPrice = campaign.discountedPriceFmt
                             }
                             it.originalPrice = campaign.originalPriceFmt.toFloatOrZero().getCurrencyFormatted()
+                            setStockAndSoldOutForCampaignEtalase(it, shopProduct)
                         }
                     }
                     it.isEnableDirectPurchase = isEnableDirectPurchase
                     it.isVariant = hasVariant
                     it.minimumOrder = minimumOrder
-                    it.stock = stock
                     it.parentId = parentId
                 }
             }
+
+    private fun setStockAndSoldOutForCampaignEtalase(
+        shopProductUiModel: ShopProductUiModel,
+        shopProduct: ShopProduct
+    ) {
+        shopProductUiModel.stock = shopProduct.campaign.customStock.takeIf {!it.isZero()} ?: shopProduct.stock
+        shopProductUiModel.isSoldOut = shopProductUiModel.stock.isZero()
+        shopProductUiModel.maximumOrder = shopProduct.campaign.maxOrder
+    }
 
     private fun mapToLabelGroupViewModel(labelGroup: LabelGroup): LabelGroupUiModel {
         return LabelGroupUiModel(

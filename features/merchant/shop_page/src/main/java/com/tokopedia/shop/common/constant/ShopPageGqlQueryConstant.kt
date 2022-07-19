@@ -48,6 +48,8 @@ object ShopPageGqlQueryConstant {
                     discounted_price
                     is_upcoming
                     stock_sold_percentage
+                    custom_stock
+                    max_order
                   }
                   primary_image{
                     original
