@@ -1,11 +1,13 @@
 package com.tokopedia.people.analytic
 
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.people.analytic.UserProfileAnalytics.Action.CLICK_ACCESS_MEDIA
 import com.tokopedia.people.analytic.UserProfileAnalytics.Action.CLICK_BACK
 import com.tokopedia.people.analytic.UserProfileAnalytics.Action.CLICK_BURGER_MENU
 import com.tokopedia.people.analytic.UserProfileAnalytics.Action.CLICK_CHANNEL_SHARE_SCREENSHOT_BOTTOMSHEET
 import com.tokopedia.people.analytic.UserProfileAnalytics.Action.CLICK_CLOSE_SHARE_BUTTON
 import com.tokopedia.people.analytic.UserProfileAnalytics.Action.CLICK_CLOSE_SHARE_SCREENSHOT_BOTTOMSHEET
+import com.tokopedia.people.analytic.UserProfileAnalytics.Action.CLICK_CREATE_POST
 import com.tokopedia.people.analytic.UserProfileAnalytics.Action.CLICK_EDIT_PROFILE_BUTTON_IN_OWN_PROFILE
 import com.tokopedia.people.analytic.UserProfileAnalytics.Action.CLICK_FEED_TAB
 import com.tokopedia.people.analytic.UserProfileAnalytics.Action.CLICK_FOLLOW
@@ -15,6 +17,7 @@ import com.tokopedia.people.analytic.UserProfileAnalytics.Action.CLICK_FOLLOW_PR
 import com.tokopedia.people.analytic.UserProfileAnalytics.Action.CLICK_LANJUT_ONBOARDING_BOTTOMSHEET_WITHOUT_USERNAME
 import com.tokopedia.people.analytic.UserProfileAnalytics.Action.CLICK_LANJUT_ONBOARDING_BOTTOMSHEET_WITH_USERNAME
 import com.tokopedia.people.analytic.UserProfileAnalytics.Action.CLICK_POST
+import com.tokopedia.people.analytic.UserProfileAnalytics.Action.CLICK_PROFILE_COMPLETION_PROMPT
 import com.tokopedia.people.analytic.UserProfileAnalytics.Action.CLICK_PROFILE_PICTURE
 import com.tokopedia.people.analytic.UserProfileAnalytics.Action.CLICK_PROFILE_RECOMMENDATION
 import com.tokopedia.people.analytic.UserProfileAnalytics.Action.CLICK_SELENGKAPNYA
@@ -28,6 +31,8 @@ import com.tokopedia.people.analytic.UserProfileAnalytics.Action.CLICK_VIDEO_TAB
 import com.tokopedia.people.analytic.UserProfileAnalytics.Action.IMPRESSION_ONBOARDING_BOTTOMSHEET_WITHOUT_USERNAME
 import com.tokopedia.people.analytic.UserProfileAnalytics.Action.IMPRESSION_ONBOARDING_BOTTOMSHEET_WITH_USERNAME
 import com.tokopedia.people.analytic.UserProfileAnalytics.Action.IMPRESSION_POST
+import com.tokopedia.people.analytic.UserProfileAnalytics.Action.IMPRESSION_PROFILE_COMPLETION_PROMPT
+import com.tokopedia.people.analytic.UserProfileAnalytics.Action.IMPRESSION_PROFILE_RECOMMENDATIONS_CAROUSEL
 import com.tokopedia.people.analytic.UserProfileAnalytics.Action.IMPRESSION_VIDEO
 import com.tokopedia.people.analytic.UserProfileAnalytics.Action.VIEW_SHARE_CHANNEL
 import com.tokopedia.people.analytic.UserProfileAnalytics.Action.VIEW_SHARE_SCREENSHOT_BOTTOMSHEET
@@ -36,20 +41,22 @@ import com.tokopedia.people.analytic.UserProfileAnalytics.Category.FEED_USER_PRO
 import com.tokopedia.people.analytic.UserProfileAnalytics.Category.FEED_USER_PROFILE_ONBOARDING_BOTTOMSHEET
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.BUSINESS_UNIT
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.CONTENT
-import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.CREATIVE_NAME
-import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.CREATIVE_SLOT
+import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.CREATIVE
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.CURRENT_SITE
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.ECOMMERCE
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.EVENT
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.EVENT_ACTION
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.EVENT_CATEGORY
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.EVENT_LABEL
-import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.ITEM_ID
-import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.ITEM_NAME
+import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.ID
+import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.NAME
+import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.POSITION
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.PROMOTIONS
+import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.PROMO_CLICK
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.SCREEN_NAME
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.SESSION_IRIS
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.TOKOPEDIA_MARKETPLACE
+import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.TOKOPEDIA_SELLER
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.USER_ID
 import com.tokopedia.people.analytic.UserProfileAnalytics.Event.EVENT_CLICK_COMMUNICATION
 import com.tokopedia.people.analytic.UserProfileAnalytics.Event.EVENT_CLICK_FEED
@@ -78,7 +85,7 @@ class UserProfileTrackerImpl @Inject constructor(
         val map = mutableMapOf<String, Any>()
         map[EVENT] = EVENT_OPEN_SCREEN
         map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
+        map[CURRENT_SITE] = currentSite
         map[SCREEN_NAME] = "feed user profile - $label"
         map[USER_ID] = userId
 
@@ -99,7 +106,7 @@ class UserProfileTrackerImpl @Inject constructor(
         map[EVENT_LABEL] = "$userId - $label"
         map[USER_ID] = userId
         map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
+        map[CURRENT_SITE] = currentSite
 
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
 
@@ -119,7 +126,7 @@ class UserProfileTrackerImpl @Inject constructor(
 
         map[USER_ID] = userId
         map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
+        map[CURRENT_SITE] = currentSite
 
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
 
@@ -139,7 +146,7 @@ class UserProfileTrackerImpl @Inject constructor(
 
         map[USER_ID] = userId
         map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
+        map[CURRENT_SITE] = currentSite
 
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
 
@@ -158,7 +165,7 @@ class UserProfileTrackerImpl @Inject constructor(
         map[EVENT_LABEL] = "$activityId - $userId - $label - live"
         map[USER_ID] = userId
         map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
+        map[CURRENT_SITE] = currentSite
 
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
 
@@ -178,7 +185,7 @@ class UserProfileTrackerImpl @Inject constructor(
 
         map[USER_ID] = userId
         map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
+        map[CURRENT_SITE] = currentSite
 
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
 
@@ -198,7 +205,7 @@ class UserProfileTrackerImpl @Inject constructor(
 
         map[USER_ID] = userId
         map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
+        map[CURRENT_SITE] = currentSite
 
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
 
@@ -218,7 +225,7 @@ class UserProfileTrackerImpl @Inject constructor(
 
         map[USER_ID] = userId
         map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
+        map[CURRENT_SITE] = currentSite
 
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
 
@@ -238,7 +245,7 @@ class UserProfileTrackerImpl @Inject constructor(
 
         map[USER_ID] = userId
         map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
+        map[CURRENT_SITE] = currentSite
 
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
 
@@ -258,7 +265,7 @@ class UserProfileTrackerImpl @Inject constructor(
 
         map[USER_ID] = userId
         map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
+        map[CURRENT_SITE] = currentSite
 
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
 
@@ -278,7 +285,7 @@ class UserProfileTrackerImpl @Inject constructor(
 
         map[USER_ID] = userId
         map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
+        map[CURRENT_SITE] = currentSite
 
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
 
@@ -303,7 +310,7 @@ class UserProfileTrackerImpl @Inject constructor(
 
         map[USER_ID] = userId
         map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
+        map[CURRENT_SITE] = currentSite
         val promoMap = mutableMapOf<String, Any>()
         promoMap["creative_name"] = imageUrl
         promoMap["creative_slot"] = videoPosition
@@ -332,7 +339,7 @@ class UserProfileTrackerImpl @Inject constructor(
 
         map[USER_ID] = userId
         map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
+        map[CURRENT_SITE] = currentSite
         val promoMap = mutableMapOf<String, Any>()
         promoMap["creative_name"] = imageUrl
         promoMap["creative_slot"] = videoPosition
@@ -356,7 +363,7 @@ class UserProfileTrackerImpl @Inject constructor(
 
         map[USER_ID] = userId
         map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
+        map[CURRENT_SITE] = currentSite
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
@@ -374,7 +381,7 @@ class UserProfileTrackerImpl @Inject constructor(
 
         map[USER_ID] = userId
         map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
+        map[CURRENT_SITE] = currentSite
         val promoMap = mutableMapOf<String, Any>()
         promoMap["creative_name"] = imageUrl
         promoMap["creative_slot"] = postPosition
@@ -398,7 +405,7 @@ class UserProfileTrackerImpl @Inject constructor(
 
         map[USER_ID] = userId
         map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
+        map[CURRENT_SITE] = currentSite
         val promoMap = mutableMapOf<String, Any>()
         promoMap["creative_name"] = imageUrl
         promoMap["creative_slot"] = postPosition
@@ -422,7 +429,7 @@ class UserProfileTrackerImpl @Inject constructor(
 
         map[USER_ID] = userId
         map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
+        map[CURRENT_SITE] = currentSite
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
@@ -440,7 +447,7 @@ class UserProfileTrackerImpl @Inject constructor(
 
         map[USER_ID] = userId
         map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
+        map[CURRENT_SITE] = currentSite
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
@@ -458,7 +465,7 @@ class UserProfileTrackerImpl @Inject constructor(
 
         map[USER_ID] = userId
         map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
+        map[CURRENT_SITE] = currentSite
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
@@ -476,7 +483,7 @@ class UserProfileTrackerImpl @Inject constructor(
 
         map[USER_ID] = userId
         map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
+        map[CURRENT_SITE] = currentSite
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
@@ -494,7 +501,7 @@ class UserProfileTrackerImpl @Inject constructor(
 
         map[USER_ID] = userId
         map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
+        map[CURRENT_SITE] = currentSite
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
@@ -512,7 +519,7 @@ class UserProfileTrackerImpl @Inject constructor(
 
         map[USER_ID] = userId
         map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
+        map[CURRENT_SITE] = currentSite
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
@@ -530,7 +537,7 @@ class UserProfileTrackerImpl @Inject constructor(
 
         map[USER_ID] = userId
         map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
+        map[CURRENT_SITE] = currentSite
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
@@ -548,7 +555,7 @@ class UserProfileTrackerImpl @Inject constructor(
 
         map[USER_ID] = userId
         map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
+        map[CURRENT_SITE] = currentSite
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
@@ -559,7 +566,7 @@ class UserProfileTrackerImpl @Inject constructor(
 
         map[USER_ID] = userId
         map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
+        map[CURRENT_SITE] = currentSite
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
@@ -577,7 +584,7 @@ class UserProfileTrackerImpl @Inject constructor(
 
         map[USER_ID] = userId
         map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
+        map[CURRENT_SITE] = currentSite
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
@@ -595,7 +602,7 @@ class UserProfileTrackerImpl @Inject constructor(
 
         map[USER_ID] = userId
         map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
+        map[CURRENT_SITE] = currentSite
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
@@ -613,7 +620,7 @@ class UserProfileTrackerImpl @Inject constructor(
 
         map[USER_ID] = userId
         map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
+        map[CURRENT_SITE] = currentSite
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
@@ -624,7 +631,7 @@ class UserProfileTrackerImpl @Inject constructor(
 
         map[USER_ID] = userId
         map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
+        map[CURRENT_SITE] = currentSite
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
@@ -642,7 +649,7 @@ class UserProfileTrackerImpl @Inject constructor(
 
         map[USER_ID] = userId
         map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
+        map[CURRENT_SITE] = currentSite
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
@@ -660,7 +667,7 @@ class UserProfileTrackerImpl @Inject constructor(
 
         map[USER_ID] = userId
         map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
+        map[CURRENT_SITE] = currentSite
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
@@ -678,56 +685,77 @@ class UserProfileTrackerImpl @Inject constructor(
 
         map[USER_ID] = userId
         map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
+        map[CURRENT_SITE] = currentSite
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
     override fun impressionProfileCompletionPrompt(userId: String){
-        val map = mutableMapOf<String, Any>()
-        map[EVENT] = EVENT_VIEW_HOME_PAGE
-        map[EVENT_ACTION] = UserProfileAnalytics.Action.IMPRESSION_PROFILE_COMPLETION_PROMPT
-        map[EVENT_CATEGORY] = FEED_USER_PROFILE
-        map[EVENT_LABEL] = userId
-
-        map[USER_ID] = userId
-        map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
-        map[SESSION_IRIS] = TrackApp.getInstance().gtm.irisSessionId
-        UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_VIEW_HOME_PAGE,
+                category = FEED_USER_PROFILE,
+                action = IMPRESSION_PROFILE_COMPLETION_PROMPT,
+                label = userId
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT
+            )
+        )
     }
 
     override fun clickProfileCompletionPrompt(userId: String){
-        val map = mutableMapOf<String, Any>()
-        map[EVENT] = EVENT_CLICK_HOME_PAGE
-        map[EVENT_ACTION] = UserProfileAnalytics.Action.CLICK_PROFILE_COMPLETION_PROMPT
-        map[EVENT_CATEGORY] = FEED_USER_PROFILE
-        map[EVENT_LABEL] = userId
-
-        map[USER_ID] = userId
-        map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
-        map[SESSION_IRIS] = TrackApp.getInstance().gtm.irisSessionId
-        UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_CLICK_HOME_PAGE,
+                category = FEED_USER_PROFILE,
+                action = CLICK_PROFILE_COMPLETION_PROMPT,
+                label = userId
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT
+            )
+        )
     }
 
-    override fun impressionProfileRecommendation(userId: String, shopId: String, imageUrl: String, postPosition: Int){
-        val map = mutableMapOf<String, Any>()
-        map[EVENT] = EVENT_VIEW_ITEM
-        map[EVENT_ACTION] = UserProfileAnalytics.Action.IMPRESSION_PROFILE_RECOMMENDATIONS_CAROUSEL
-        map[EVENT_CATEGORY] = FEED_USER_PROFILE
-        map[EVENT_LABEL] = "$userId - $shopId"
-
-        map[USER_ID] = userId
-        map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
-        val promoMap = mutableMapOf<String, Any>()
-        promoMap[CREATIVE_NAME] = imageUrl
-        promoMap[CREATIVE_SLOT] = postPosition
-        promoMap[ITEM_ID] = shopId
-        promoMap[ITEM_NAME] = FEED_USER_PROFILE_PROFILE_RECOMMENDATION_CAROUSEL
-        map[PROMOTIONS] = listOf(promoMap)
-        map[SESSION_IRIS] = TrackApp.getInstance().gtm.irisSessionId
-        UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
+    override fun impressionProfileRecommendation(
+        userId: String,
+        shopId: String,
+        imageUrl: String,
+        postPosition: Int
+    ) {
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_VIEW_ITEM,
+                category = FEED_USER_PROFILE,
+                action = IMPRESSION_PROFILE_RECOMMENDATIONS_CAROUSEL,
+                label = "$userId - $shopId"
+            ),
+            hashMapOf(
+                ECOMMERCE to hashMapOf(
+                    EVENT_SELECT_CONTENT to hashMapOf(
+                        PROMOTIONS to listOf(
+                            convertToPromotionShopRecommendationCarousel(
+                                shopId,
+                                imageUrl,
+                                postPosition
+                            )
+                        )
+                    )
+                )
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT
+            )
+        )
     }
 
     override fun clickProfileRecommendation(
@@ -738,20 +766,26 @@ class UserProfileTrackerImpl @Inject constructor(
     ) {
         trackingQueue.putEETracking(
             EventModel(
-                event = EVENT_SELECT_CONTENT,
+                event = PROMO_CLICK,
                 category = FEED_USER_PROFILE,
                 action = CLICK_PROFILE_RECOMMENDATION,
-                label = shopId
+                label = "$userId - $shopId"
             ),
             hashMapOf(
                 ECOMMERCE to hashMapOf(
-                    EVENT_SELECT_CONTENT to hashMapOf(
-                        PROMOTIONS to listOf(convertToPromotion(shopId, imageUrl, postPosition))
+                    PROMO_CLICK to hashMapOf(
+                        PROMOTIONS to listOf(
+                            convertToPromotionShopRecommendationCarousel(
+                                shopId,
+                                imageUrl,
+                                postPosition
+                            )
+                        )
                     )
                 )
             ),
             hashMapOf(
-                CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+                CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
                 BUSINESS_UNIT to CONTENT
@@ -759,111 +793,144 @@ class UserProfileTrackerImpl @Inject constructor(
         )
     }
 
-    private fun convertToPromotion(imageUrl: String, shopID: String, position: Int): HashMap<String, Any> {
-        return hashMapOf(
-            CREATIVE_NAME to imageUrl,
-            CREATIVE_SLOT to position,
-            ITEM_ID to shopID,
-            ITEM_NAME to FEED_USER_PROFILE_PROFILE_RECOMMENDATION_CAROUSEL,
+    override fun clickFollowProfileRecommendation(userId: String, shopId: String){
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_CLICK_HOME_PAGE,
+                category = FEED_USER_PROFILE,
+                action = CLICK_FOLLOW_PROFILE_RECOMMENDATION,
+                label = "$userId - $shopId"
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT
+            )
         )
     }
 
-    override fun clickFollowProfileRecommendation(userId: String, shopId: String){
-        val map = mutableMapOf<String, Any>()
-        map[EVENT] = EVENT_CLICK_HOME_PAGE
-        map[EVENT_ACTION] = CLICK_FOLLOW_PROFILE_RECOMMENDATION
-        map[EVENT_CATEGORY] = FEED_USER_PROFILE
-        map[EVENT_LABEL] = "$userId - $shopId"
-
-        map[USER_ID] = userId
-        map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
-        map[SESSION_IRIS] = TrackApp.getInstance().gtm.irisSessionId
-        UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
-    }
-
     override fun clickCreatePost(userId: String){
-        val map = mutableMapOf<String, Any>()
-        map[EVENT] = EVENT_CLICK_HOME_PAGE
-        map[EVENT_ACTION] = UserProfileAnalytics.Action.CLICK_CREATE_POST
-        map[EVENT_CATEGORY] = FEED_USER_PROFILE
-        map[EVENT_LABEL] = userId
-
-        map[USER_ID] = userId
-        map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
-        map[SESSION_IRIS] = TrackApp.getInstance().gtm.irisSessionId
-        UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_CLICK_HOME_PAGE,
+                category = FEED_USER_PROFILE,
+                action = CLICK_CREATE_POST,
+                label = userId
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT
+            )
+        )
     }
 
     override fun impressionOnBoardingBottomSheetWithUsername(userId: String){
-        val map = mutableMapOf<String, Any>()
-        map[EVENT] = EVENT_VIEW_HOME_PAGE
-        map[EVENT_ACTION] = IMPRESSION_ONBOARDING_BOTTOMSHEET_WITH_USERNAME
-        map[EVENT_CATEGORY] = FEED_USER_PROFILE_ONBOARDING_BOTTOMSHEET
-        map[EVENT_LABEL] = userId
-
-        map[USER_ID] = userId
-        map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
-        UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_VIEW_HOME_PAGE,
+                category = FEED_USER_PROFILE_ONBOARDING_BOTTOMSHEET,
+                action = IMPRESSION_ONBOARDING_BOTTOMSHEET_WITH_USERNAME,
+                label = userId
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT
+            )
+        )
     }
 
     override fun clickLanjutOnBoardingBottomSheetWithUsername(userId: String){
-        val map = mutableMapOf<String, Any>()
-        map[EVENT] = EVENT_CLICK_HOME_PAGE
-        map[EVENT_ACTION] = CLICK_LANJUT_ONBOARDING_BOTTOMSHEET_WITH_USERNAME
-        map[EVENT_CATEGORY] = FEED_USER_PROFILE_ONBOARDING_BOTTOMSHEET
-        map[EVENT_LABEL] = userId
-
-        map[USER_ID] = userId
-        map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
-        UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_CLICK_HOME_PAGE,
+                category = FEED_USER_PROFILE_ONBOARDING_BOTTOMSHEET,
+                action = CLICK_LANJUT_ONBOARDING_BOTTOMSHEET_WITH_USERNAME,
+                label = userId
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT
+            )
+        )
     }
 
     override fun impressionOnBoardingBottomSheetWithoutUsername(userId: String){
-        val map = mutableMapOf<String, Any>()
-        map[EVENT] = EVENT_VIEW_HOME_PAGE
-        map[EVENT_ACTION] = IMPRESSION_ONBOARDING_BOTTOMSHEET_WITHOUT_USERNAME
-        map[EVENT_CATEGORY] = FEED_USER_PROFILE_ONBOARDING_BOTTOMSHEET
-        map[EVENT_LABEL] = userId
-
-        map[USER_ID] = userId
-        map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
-        UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_VIEW_HOME_PAGE,
+                category = FEED_USER_PROFILE_ONBOARDING_BOTTOMSHEET,
+                action = IMPRESSION_ONBOARDING_BOTTOMSHEET_WITHOUT_USERNAME,
+                label = userId
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT
+            )
+        )
     }
 
     override fun clickLanjutOnBoardingBottomSheetWithoutUsername(userId: String){
-        val map = mutableMapOf<String, Any>()
-        map[EVENT] = EVENT_CLICK_HOME_PAGE
-        map[EVENT_ACTION] = CLICK_LANJUT_ONBOARDING_BOTTOMSHEET_WITHOUT_USERNAME
-        map[EVENT_CATEGORY] = FEED_USER_PROFILE_ONBOARDING_BOTTOMSHEET
-        map[EVENT_LABEL] = userId
-
-        map[USER_ID] = userId
-        map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
-        UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_CLICK_HOME_PAGE,
+                category = FEED_USER_PROFILE_ONBOARDING_BOTTOMSHEET,
+                action = CLICK_LANJUT_ONBOARDING_BOTTOMSHEET_WITHOUT_USERNAME,
+                label = userId
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT
+            )
+        )
     }
 
     override fun clickEditProfileButtonInOwnProfile(userId: String) {
-        val map = mutableMapOf<String, Any>()
-        map[EVENT] = EVENT_CLICK_HOME_PAGE
-        map[EVENT_ACTION] = CLICK_EDIT_PROFILE_BUTTON_IN_OWN_PROFILE
-        map[EVENT_CATEGORY] = FEED_USER_PROFILE
-        map[EVENT_LABEL] = userId
-
-        map[USER_ID] = userId
-        map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
-        map[SESSION_IRIS] = TrackApp.getInstance().gtm.irisSessionId
-        UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_CLICK_HOME_PAGE,
+                category = FEED_USER_PROFILE,
+                action = CLICK_EDIT_PROFILE_BUTTON_IN_OWN_PROFILE,
+                label = userId
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT
+            )
+        )
     }
 
     override fun sendAll() {
         trackingQueue.sendAll()
+    }
+
+    val currentSite: String
+        get() = if (GlobalConfig.isSellerApp()) TOKOPEDIA_SELLER
+        else TOKOPEDIA_MARKETPLACE
+
+    private fun convertToPromotionShopRecommendationCarousel(
+        imageUrl: String,
+        shopID: String,
+        position: Int
+    ): HashMap<String, Any> {
+        return hashMapOf(
+            CREATIVE to imageUrl,
+            POSITION to position,
+            ID to shopID,
+            NAME to FEED_USER_PROFILE_PROFILE_RECOMMENDATION_CAROUSEL,
+        )
     }
 
 }
