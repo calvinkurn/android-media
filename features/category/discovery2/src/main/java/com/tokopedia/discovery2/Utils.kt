@@ -24,7 +24,6 @@ import com.tokopedia.discovery2.Constant.QueryParamConstants.RPC_TARGET_TITLE_ID
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.datamapper.getComponent
-import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.DYNAMIC_SUBTITLE
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_TITLE_ID
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -36,10 +35,11 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItemType
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.user.session.UserSession
+import java.net.URLDecoder
+import java.net.URLEncoder
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.regex.Matcher
 import java.util.regex.Pattern
 import kotlin.math.floor
 
@@ -100,6 +100,7 @@ class Utils {
         const val RPC_PAGE__SIZE = "rpc_page_size"
         const val RPC_NEXT_PAGE = "rpc_next_page"
         const val DARK_MODE = "dark_mode"
+        const val DEFAULT_ENCODING = "UTF-8"
 
 
         fun extractDimension(url: String?, dimension: String = "height"): Int? {
@@ -233,7 +234,7 @@ class Utils {
         fun addQueryParamMap(queryParameterMap: MutableMap<String, String?>): MutableMap<String, String> {
             val queryParamValues: MutableMap<String,String> = mutableMapOf()
             if(!queryParameterMap[DYNAMIC_SUBTITLE].isNullOrEmpty()){
-                queryParamValues[RPC_DYNAMIC_SUBTITLE] = queryParameterMap[DYNAMIC_SUBTITLE]!!
+                queryParamValues[RPC_DYNAMIC_SUBTITLE] = queryParameterMap[DYNAMIC_SUBTITLE]!!.toEncodedString()
             }
             if(!queryParameterMap[TARGET_TITLE_ID].isNullOrEmpty()){
                 queryParamValues[RPC_TARGET_TITLE_ID] = queryParameterMap[TARGET_TITLE_ID]!!
@@ -447,6 +448,22 @@ class Utils {
                 FirebaseCrashlytics.getInstance().recordException(Exception(t))
             } else {
                 t.printStackTrace()
+            }
+        }
+
+        fun String.toEncodedString(): String{
+            return try {
+                URLEncoder.encode(this,DEFAULT_ENCODING)
+            }catch (exception: Exception){
+                this
+            }
+        }
+
+        fun String.toDecodedString(): String{
+            return try {
+                URLDecoder.decode(this,DEFAULT_ENCODING)
+            }catch (exception: Exception){
+                this
             }
         }
     }

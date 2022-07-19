@@ -215,6 +215,8 @@ ext {
             promoMvcWidget                  : ":features:promo:mvc_widget",
             questWidget                     : ":features:promo:quest_widget",
             tokomember                      : ":features:promo:tokomember",
+            tokomemberSellerDashboard       : ":features:promo:tokomember_seller_dashboard",
+            tokomemberUiCommon              : ":features:promo:tokomember_common_widget",
 
             topAdsDashboard                 : ":features:top_ads:top_ads_dashboard",
             topAdsFreeClaim                 : ":features:top_ads:top_ads_free_claim",
@@ -285,7 +287,7 @@ ext {
             settingbank                     : ":features:user:settingbank",
             settingnotif                    : ":features:user:settingnotif",
             usercomponents                  : ":features:user:usercomponents",
-            topchat                         : ":features:user:topchat",
+            topchat                         : ":features:communication:topchat",
             updateinactivephone             : ":features:user:updateinactivephone",
             userIdentification              : ":features:user:user_identification",
             userIdentificationCommon        : ":features:user:user_identification_common",

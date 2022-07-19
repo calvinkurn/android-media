@@ -16,7 +16,6 @@ import com.tokopedia.tradein.TradeInGTMConstants.EVENT_LABEL
 import com.tokopedia.tradein.TradeInGTMConstants.KEY_BUSINESS_UNIT
 import com.tokopedia.tradein.TradeInGTMConstants.KEY_CURRENT_SITE
 import com.tokopedia.tradein.TradeInGTMConstants.KEY_LOGGED_IN
-import com.tokopedia.tradein.TradeInGTMConstants.KEY_PAGE_PATH
 import com.tokopedia.tradein.TradeInGTMConstants.KEY_SCREEN_NAME
 import com.tokopedia.tradein.TradeInGTMConstants.KEY_USER_ID
 import com.tokopedia.tradein.TradeInGTMConstants.OPEN_SCREEN
@@ -35,6 +34,7 @@ import com.tokopedia.tradein.TradeInGTMConstants.TRADE_IN_IMEI_IMPRESSION
 import com.tokopedia.tradein.TradeInGTMConstants.TRADE_IN_IMEI_SUCCESS
 import com.tokopedia.tradein.TradeInGTMConstants.TRADE_IN_START_PAGE
 import com.tokopedia.tradein.TradeInGTMConstants.VIEW_PG
+import com.tokopedia.tradein.model.TradeInDetailModel
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -270,15 +270,22 @@ class TradeInAnalytics @Inject constructor(
     }
 
     //16
-    fun errorScreen(errorCode : String) {
+    fun errorScreen(
+        errorMessage: String,
+        deviceAttribute: TradeInDetailModel.GetTradeInDetail.DeviceAttribute? = null
+    ) {
         getTracker().sendGeneralEvent(
             createGeneralEvent(
                 eventName = OPEN_SCREEN,
                 eventCategory = TRADE_IN_ERROR_PAGE_EVENT,
                 eventAction = TRADE_IN_ERROR_PAGE_IMPRESSION,
-                eventLabel = errorCode,
-                screenName = TRADE_IN_ERROR_PAGE))
-
+                screenName = "$TRADE_IN_ERROR_PAGE - $errorMessage" + if (deviceAttribute != null) {
+                    " - $deviceAttribute"
+                } else {
+                    ""
+                }
+            )
+        )
     }
 
     //17

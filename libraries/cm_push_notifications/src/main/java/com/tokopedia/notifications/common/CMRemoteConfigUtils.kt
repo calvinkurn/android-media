@@ -18,6 +18,9 @@ class CMRemoteConfigUtils(val context: Context) {
 
 }
 
+object CMRemoteConfigKey {
+    const val NOTIFICATION_TRAY_CLEAR_V1 = "app_notif_tray_clear"
+}
 
 object InAppRemoteConfigKey {
     const val ENABLE_NEW_INAPP_LOCAL_FETCH = "app_enable_new_inapp_local_fetch"

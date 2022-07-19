@@ -40,7 +40,7 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
 
     private val cartExtension = ProductCardCartExtension(this)
     private val video: VideoPlayerController by lazy {
-        VideoPlayerController(this, R.id.videoProduct, R.id.imageProduct)
+        VideoPlayerController(this, R.id.videoProduct, R.id.productCardImage)
     }
     private val cardViewProductCard: CardUnify2? by lazy(NONE) {
         findViewById(R.id.cardViewProductCard)
@@ -88,7 +88,7 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
         findViewById(R.id.textCategoryBottom)
     }
     private val imageProduct: ImageView? by lazy(NONE) {
-        findViewById(R.id.imageProduct)
+        findViewById(R.id.productCardImage)
     }
     private val mediaAnchorProduct: Space? by lazy(NONE) {
         findViewById(R.id.mediaAnchorProduct)

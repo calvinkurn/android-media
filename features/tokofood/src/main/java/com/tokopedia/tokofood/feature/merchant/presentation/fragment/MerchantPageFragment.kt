@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -32,6 +33,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -146,6 +148,18 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     private val merchantShareComponentUtil: MerchantShareComponentUtil? by lazy(LazyThreadSafetyMode.NONE) {
         context?.let { MerchantShareComponentUtil(it) }
+    }
+
+    private val toolbarHeight by lazy {
+        val tv = TypedValue()
+        context?.let {
+            if (it.theme?.resolveAttribute(android.R.attr.actionBarSize, tv, true) == true) {
+                val actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, it.resources.displayMetrics)
+                actionBarHeight
+            } else {
+                Int.ZERO
+            }
+        }.orZero()
     }
 
     // TODO: move states to view model
@@ -773,13 +787,17 @@ class MerchantPageFragment : BaseMultiFragment(),
                     }
                 }
                 UiEvent.EVENT_SUCCESS_VALIDATE_CHECKOUT -> {
-                    (it.data as? CheckoutTokoFoodData)?.let { data ->
+                    (it.data as? CheckoutTokoFoodData)?.let { checkOutTokoFoodData ->
                         if (it.source == SOURCE){
-                            val purchaseAmount = data.summaryDetail.totalPrice
-
+                            val products = checkOutTokoFoodData.getProductListFromCart()
+                            val purchaseAmount = checkOutTokoFoodData.summaryDetail.totalPrice
+                            val merchantId = checkOutTokoFoodData.shop.shopId
+                            val merchantName = checkOutTokoFoodData.shop.name
                             merchantPageAnalytics.clickCheckoutOnMiniCart(
+                                products,
                                 purchaseAmount,
-                                merchantId
+                                merchantId,
+                                merchantName
                             )
                             navigateToNewFragment(TokoFoodPurchaseFragment.createInstance())
                         }
@@ -1412,6 +1430,7 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     private fun toggleMiniCartVisibility(shouldShow: Boolean) {
         binding?.miniCartWidget?.showWithCondition(shouldShow)
+        setRecyclerViewPaddingBottom(shouldShow)
     }
 
     private fun isAddressManuallyUpdated(): Boolean = viewModel.isAddressManuallyUpdated
@@ -1463,6 +1482,18 @@ class MerchantPageFragment : BaseMultiFragment(),
             }
         }
         validateAddressData()
+    }
+
+    private fun setRecyclerViewPaddingBottom(isMiniCartShown: Boolean) {
+        val bottomPadding =
+            if (isMiniCartShown) {
+                toolbarHeight
+            } else {
+                Int.ZERO
+            }
+        binding?.rvProductList?.run {
+            setPadding(paddingLeft, paddingTop, paddingRight, bottomPadding)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
