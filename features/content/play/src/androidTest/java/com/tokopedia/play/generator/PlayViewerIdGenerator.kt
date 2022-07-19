@@ -124,7 +124,7 @@ class PlayViewerIdGenerator {
         )
 
         val mockChannelStorage = mockk<PlayChannelStateStorage>(relaxed = true)
-        coEvery { repo.getTagItem(any()) } returns tagItem
+        coEvery { repo.getTagItem(any(), any()) } returns tagItem
         every { mockChannelStorage.getChannelList() } returns listOf("12669")
         every { mockChannelStorage.getData(any()) } returns uiModelBuilder.buildChannelData(
             id = "12669",

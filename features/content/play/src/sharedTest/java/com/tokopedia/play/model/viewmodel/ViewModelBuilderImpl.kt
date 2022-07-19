@@ -9,6 +9,7 @@ import com.tokopedia.play.model.mapper.MapperBuilder
 import com.tokopedia.play.util.CastPlayerHelper
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
 import com.tokopedia.play.util.chat.ChatStreams
+import com.tokopedia.play.util.logger.PlayLog
 import com.tokopedia.play.util.share.PlayShareExperience
 import com.tokopedia.play.util.timer.TimerFactory
 import com.tokopedia.play.util.video.buffer.PlayViewerVideoBufferGovernor
@@ -18,6 +19,7 @@ import com.tokopedia.play.view.uimodel.mapper.PlaySocketToModelMapper
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
+import com.tokopedia.play_common.util.PlayLiveRoomMetricsCommon
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -55,7 +57,9 @@ class ViewModelBuilderImpl(
         timerFactory: TimerFactory = mockk(relaxed = true),
         castPlayerHelper: CastPlayerHelper = mockk(relaxed = true),
         playShareExperience: PlayShareExperience = mockk(relaxed = true),
+        playLog: PlayLog = mockk(relaxed = true),
         chatStreamsFactory: ChatStreams.Factory = mockk(relaxed = true),
+        liveRoomMetricsCommon : PlayLiveRoomMetricsCommon = mockk(relaxed = true),
     ) = PlayViewModel(
         channelId,
         playVideoBuilder,
@@ -76,6 +80,8 @@ class ViewModelBuilderImpl(
         timerFactory,
         castPlayerHelper,
         playShareExperience,
+        playLog,
         chatStreamsFactory,
+        liveRoomMetricsCommon,
     )
 }
