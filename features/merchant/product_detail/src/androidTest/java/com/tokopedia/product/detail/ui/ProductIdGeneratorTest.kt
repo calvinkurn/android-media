@@ -106,7 +106,10 @@ class ProductIdGeneratorTest : BaseProductDetailUiTest() {
         val rvSize = activityCommonRule.activity.getPdpFragment().productAdapter?.currentList?.size
                 ?: 0
 
+        Thread.sleep(2000)
+
         repeat(rvSize) {
+            Thread.sleep(500)
             findViewHolderAndDo(com.tokopedia.product.detail.R.id.rv_pdp, it) { viewResult ->
                 viewResult?.let { view ->
                     printCsvAndSave(view, "product_detail_vh_$it", vhViewPrinter)
