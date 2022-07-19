@@ -21,7 +21,9 @@ import com.tokopedia.unifycomponents.TabsUnify
 import javax.inject.Inject
 
 
-class FollowerFollowingListingFragment @Inject constructor() : TkpdBaseV4Fragment() {
+class FollowerFollowingListingFragment @Inject constructor(
+    private var userProfileTracker: UserProfileTracker,
+) : TkpdBaseV4Fragment() {
 
     private var userId = ""
 
@@ -141,12 +143,12 @@ class FollowerFollowingListingFragment @Inject constructor() : TkpdBaseV4Fragmen
 
             override fun onPageSelected(position: Int) {
                 if(position == 1) {
-                    UserProfileTracker().openFollowingTab(
+                    userProfileTracker.openFollowingTab(
                         userId
                     )
                 }
                 else{
-                    UserProfileTracker().openFollowersTab(
+                    userProfileTracker.openFollowersTab(
                         userId
                     )
                 }
