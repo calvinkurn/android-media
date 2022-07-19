@@ -2018,6 +2018,12 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 if (coachMarkIsShowing) {
                     coachmark?.dismissCoachMark()
                 }
+                if (tokonowCoachmarkIsShowing) {
+                    coachmarkTokonow?.hideCoachMark()
+                }
+                if (subscriptionCoachmarkIsShowing) {
+                    coachmarkSubscription?.hideCoachMark()
+                }
             }
         }
     }
