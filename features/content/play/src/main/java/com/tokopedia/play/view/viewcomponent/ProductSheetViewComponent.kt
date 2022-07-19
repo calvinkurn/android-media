@@ -28,6 +28,7 @@ import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayEmptyBottomSheetInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play_common.delegate.reusableJob
+import com.tokopedia.play_common.R as commonR
 import com.tokopedia.play_common.util.scroll.StopFlingScrollListener
 import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
@@ -50,7 +51,7 @@ class ProductSheetViewComponent(
     private val clProductContent: ConstraintLayout = findViewById(R.id.cl_product_content)
     private val clProductVoucher: FrameLayout = findViewById(R.id.cl_product_voucher_info)
     private val clVoucherContent: ConstraintLayout = findViewById(R.id.cl_product_voucher_content)
-    private val tvSheetTitle: TextView = findViewById(com.tokopedia.play_common.R.id.tv_sheet_title)
+    private val tvSheetTitle: TextView = findViewById(commonR.id.tv_sheet_title)
     private val rvProductList: RecyclerView = findViewById(R.id.rv_product_list)
     private val vBottomOverlay: View = findViewById(R.id.v_bottom_overlay)
 
@@ -97,6 +98,14 @@ class ProductSheetViewComponent(
             listener.onReminderImpressed(this@ProductSheetViewComponent, section)
         }
 
+        override fun onInformationClicked(section: ProductSectionUiModel.Section) {
+            listener.onInformationClicked(this@ProductSheetViewComponent)
+        }
+
+        override fun onInformationImpressed() {
+            listener.onInformationImpressed(this@ProductSheetViewComponent)
+        }
+
         override fun onProductChanged() {
             listener.onProductCountChanged(this@ProductSheetViewComponent)
         }
@@ -112,9 +121,9 @@ class ProductSheetViewComponent(
     private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
 
     init {
-        findViewById<ImageView>(com.tokopedia.play_common.R.id.iv_sheet_close)
+        findViewById<ImageView>(commonR.id.iv_sheet_close)
                 .setOnClickListener {
-                    listener.onCloseButtonClicked(this)
+                    listener.onCloseButtonClicked(this@ProductSheetViewComponent)
                 }
 
         rvProductList.apply {
@@ -273,5 +282,7 @@ class ProductSheetViewComponent(
         fun onInfoVoucherClicked(view: ProductSheetViewComponent)
         fun onReminderClicked(view: ProductSheetViewComponent, productSectionUiModel: ProductSectionUiModel.Section)
         fun onReminderImpressed(view: ProductSheetViewComponent, section: ProductSectionUiModel.Section)
+        fun onInformationClicked(view: ProductSheetViewComponent)
+        fun onInformationImpressed(view: ProductSheetViewComponent)
     }
 }

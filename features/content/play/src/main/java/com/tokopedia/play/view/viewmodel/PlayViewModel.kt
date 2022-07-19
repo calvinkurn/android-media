@@ -31,6 +31,7 @@ import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.CastPlayerHelper
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateListener
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
+import com.tokopedia.play.util.logger.PlayLog
 import com.tokopedia.play.util.chat.ChatStreams
 import com.tokopedia.play.util.setValue
 import com.tokopedia.play.util.share.PlayShareExperience
@@ -65,6 +66,7 @@ import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.sse.*
+import com.tokopedia.play_common.util.PlayLiveRoomMetricsCommon
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
@@ -109,7 +111,9 @@ class PlayViewModel @AssistedInject constructor(
     private val timerFactory: TimerFactory,
     private val castPlayerHelper: CastPlayerHelper,
     private val playShareExperience: PlayShareExperience,
+    private val playLog: PlayLog,
     chatStreamsFactory: ChatStreams.Factory,
+    private val liveRoomMetricsCommon : PlayLiveRoomMetricsCommon,
 ) : ViewModel() {
 
     @AssistedFactory
@@ -185,6 +189,7 @@ class PlayViewModel @AssistedInject constructor(
         NetworkResult.Loading
     )
     private val _loadingBuy = MutableStateFlow(false)
+    private val _warehouseInfo = MutableStateFlow(WarehouseInfoUiModel.Empty)
 
     /** Needed to decide whether we need to call setResult() or no when leaving play room */
     private val _isChannelReportLoaded = MutableStateFlow(false)
@@ -240,11 +245,35 @@ class PlayViewModel @AssistedInject constructor(
         )
     }.flowOn(dispatchers.computation)
 
-    private val _kebabMenuUiState = _bottomInsets.map {
-        PlayKebabMenuUiState(
-            shouldShow = !isFreezeOrBanned && !it.isKeyboardShown
+    private val _addressUiState = combine(_partnerInfo, _warehouseInfo) { partnerInfo, warehouseInfo ->
+        AddressWidgetUiState(
+            warehouseInfo = warehouseInfo,
+            shouldShow = partnerInfo.type == PartnerType.TokoNow && warehouseInfo.isOOC && (channelType.isLive || channelType.isVod) && !isFreezeOrBanned
+        )
+    }
+
+    private val _sortedTagItems = combine(_tagItems, _warehouseInfo) { tagItems, warehouseInfo ->
+        val newSectionList = tagItems.product.productSectionList.map { section ->
+            if (section is ProductSectionUiModel.Section) {
+                section.copy(
+                    productList = section.productList.filterNot {
+                        it.isTokoNow && warehouseInfo.isOOC
+                    }
+                )
+            } else section
+        }
+
+        tagItems.copy(
+            product = tagItems.product.copy(
+                productSectionList = newSectionList
+            ),
         )
     }.flowOn(dispatchers.computation)
+        .stateIn(
+            viewModelScope,
+            defaultSharingStarted,
+            _tagItems.value,
+        )
 
     /**
      * Until repeatOnLifecycle is available (by updating library version),
@@ -262,17 +291,15 @@ class PlayViewModel @AssistedInject constructor(
         _totalViewUiState.distinctUntilChanged(),
         _rtnUiState.distinctUntilChanged(),
         _titleUiState.distinctUntilChanged(),
-        _tagItems,
+        _sortedTagItems,
         _status,
         _quickReply,
-        _kebabMenuUiState.distinctUntilChanged(),
         _selectedVariant,
         _loadingBuy,
-        _leaderboard,
+        _addressUiState,
     ) { channelDetail, interactive, partner, winnerBadge, bottomInsets,
         like, totalView, rtn, title, tagItems,
-        status, quickReply, kebabMenu, selectedVariant, isLoadingBuy,
-        leaderboard ->
+        status, quickReply, selectedVariant, isLoadingBuy, address ->
         PlayViewerNewUiState(
             channel = channelDetail,
             interactive = interactive,
@@ -286,9 +313,9 @@ class PlayViewModel @AssistedInject constructor(
             tagItems = tagItems,
             status = status,
             quickReply = quickReply,
-            kebabMenu = kebabMenu,
             selectedVariant = selectedVariant,
             isLoadingBuy = isLoadingBuy,
+            address = address
         )
     }.flowOn(dispatchers.computation)
 
@@ -480,7 +507,11 @@ class PlayViewModel @AssistedInject constructor(
 
     private val videoPerformanceListener = object : PlayViewerVideoPerformanceListener {
         override fun onPlaying() {
-            if (videoLatencyPerformanceMonitoring.hasStarted) videoLatencyPerformanceMonitoring.stop()
+            if (videoLatencyPerformanceMonitoring.hasStarted) {
+                videoLatencyPerformanceMonitoring.stop()
+                val durationInSecond = videoLatencyPerformanceMonitoring.totalDuration / DURATION_DIVIDER
+                playLog.logTimeToFirstByte(durationInSecond.toInt())
+            }
         }
 
         override fun onError() {
@@ -853,8 +884,12 @@ class PlayViewModel @AssistedInject constructor(
             PlayViewerNewAction.StartPlayingInteractive -> handlePlayingInteractive(shouldPlay = true)
             PlayViewerNewAction.StopPlayingInteractive -> handlePlayingInteractive(shouldPlay = false)
             is PlayViewerNewAction.ClickQuizOptionAction -> handleClickQuizOption(action.item)
-            is PlayViewerNewAction.BuyProduct -> handleBuyProduct(action.product, ProductAction.Buy)
-            is PlayViewerNewAction.AtcProduct -> handleBuyProduct(action.product, ProductAction.AddToCart)
+            is PlayViewerNewAction.BuyProduct -> handleBuyProduct(
+                product = action.product, action = ProductAction.Buy,
+            )
+            is PlayViewerNewAction.AtcProduct -> handleBuyProduct(
+                product = action.product, action = ProductAction.AddToCart,
+            )
 
             is InteractiveWinnerBadgeClickedAction -> handleWinnerBadgeClicked(action.height)
             is InteractiveGameResultBadgeClickedAction -> showLeaderboardSheet(action.height)
@@ -884,6 +919,7 @@ class PlayViewModel @AssistedInject constructor(
             is AtcProductAction -> handleBuyProduct(action.sectionInfo, action.product, ProductAction.AddToCart)
             is AtcProductVariantAction -> handleBuyProductVariant(action.id, ProductAction.AddToCart)
             is SelectVariantOptionAction -> handleSelectVariantOption(action.option)
+            is SendWarehouseId -> handleWarehouse(action.id, action.isOOC)
         }
     }
 
@@ -951,6 +987,7 @@ class PlayViewModel @AssistedInject constructor(
         updateChannelStatus()
 
         updateChannelInfo(channelData)
+        sendInitialLog()
     }
 
     fun defocusPage(shouldPauseVideo: Boolean) {
@@ -1066,7 +1103,8 @@ class PlayViewModel @AssistedInject constructor(
         }
         _tagItems.update { it.copy(resultState = ResultState.Loading) }
         viewModelScope.launchCatchError(dispatchers.io, block = {
-            val tagItem = repo.getTagItem(channelId)
+            val warehouseId = _warehouseInfo.value.warehouseId
+            val tagItem = repo.getTagItem(channelId, warehouseId)
             _tagItems.value = tagItem
 
             checkReminderStatus()
@@ -1170,7 +1208,8 @@ class PlayViewModel @AssistedInject constructor(
             if (!isActive) return@launch
             connectWebSocket(
                     channelId = channelId,
-                    socketCredential = socketCredential
+                    socketCredential = socketCredential,
+                    warehouseId = _warehouseInfo.value.warehouseId
             )
 
             playChannelWebSocket.listenAsFlow()
@@ -1180,8 +1219,8 @@ class PlayViewModel @AssistedInject constructor(
         }
     }
 
-    private fun connectWebSocket(channelId: String, socketCredential: SocketCredential) {
-        playChannelWebSocket.connect(channelId, socketCredential.gcToken, WEB_SOCKET_SOURCE_PLAY_VIEWER)
+    private fun connectWebSocket(channelId: String, warehouseId: String, socketCredential: SocketCredential) {
+        playChannelWebSocket.connect(channelId, warehouseId, socketCredential.gcToken, WEB_SOCKET_SOURCE_PLAY_VIEWER)
     }
 
     private fun stopWebSocket() {
@@ -1485,7 +1524,7 @@ class PlayViewModel @AssistedInject constructor(
                 if (reason is WebSocketClosedReason.Error) {
                     playAnalytic.socketError(channelId, channelType, reason.error.localizedMessage.orEmpty())
 
-                    connectWebSocket(channelId, socketCredential)
+                    connectWebSocket(channelId, warehouseId = _warehouseInfo.value.warehouseId, socketCredential)
                 }
             }
         }
@@ -1761,8 +1800,6 @@ class PlayViewModel @AssistedInject constructor(
         viewModelScope.launch {
             tapGiveawayFlow.emit(Unit)
         }
-
-        val giveaway = _interactive.value.interactive as? InteractiveUiModel.Giveaway ?: return
     }
 
     private fun handleQuizEnded() {
@@ -1950,12 +1987,19 @@ class PlayViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleClickPartnerName(applink: String) {
+    fun openPage(appLink: String) {
         viewModelScope.launch {
-            val partnerInfo = _partnerInfo.value
-            if (partnerInfo.type == PartnerType.Shop) playAnalytic.clickShop(channelId, channelType, partnerInfo.id.toString())
-            _uiEvent.emit(OpenPageEvent(applink = applink, pipMode = true))
+            _uiEvent.emit(OpenPageEvent(applink = appLink, pipMode = true))
         }
+    }
+
+    private fun handleClickPartnerName(applink: String) {
+        val partnerInfo = _partnerInfo.value
+        if (partnerInfo.type == PartnerType.Shop) playAnalytic.clickShop(channelId, channelType, partnerInfo.id.toString())
+
+        if (partnerInfo.type == PartnerType.TokoNow) needLogin {
+            openPage(applink)
+        } else openPage(applink)
     }
 
     private fun handleClickRetryInteractive() {
@@ -1972,6 +2016,7 @@ class PlayViewModel @AssistedInject constructor(
             REQUEST_CODE_LOGIN_PLAY_INTERACTIVE -> handlePlayingInteractive(shouldPlay = true)
             REQUEST_CODE_USER_REPORT -> handleUserReport()
             REQUEST_CODE_LOGIN_UPCO_REMINDER -> handleSendReminder(selectedUpcomingCampaign, isFromLogin = true)
+            REQUEST_CODE_LOGIN_PLAY_TOKONOW -> updateTagItems()
             else -> {}
         }
     }
@@ -2216,24 +2261,12 @@ class PlayViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleBuyProduct(
-        product: PlayProductUiModel.Product,
-        action: ProductAction,
-    ) = needLogin {
-        addProductToCart(product) { cartId ->
-            _uiEvent.emit(
-                if (action == ProductAction.Buy) BuySuccessEvent(product, false, cartId, null)
-                else AtcSuccessEvent(product, false, cartId, null)
-            )
-        }
-    }
-
     /**
      * Handle buying product
      * @param productId the id of the product
      */
     private fun handleBuyProduct(
-        sectionInfo: ProductSectionUiModel.Section,
+        sectionInfo: ProductSectionUiModel.Section = ProductSectionUiModel.Section.Empty,
         product: PlayProductUiModel.Product,
         action: ProductAction
     ) {
@@ -2486,9 +2519,20 @@ class PlayViewModel @AssistedInject constructor(
         }
     }
 
+    private fun handleWarehouse(id: String, isOOC: Boolean) {
+        viewModelScope.launchCatchError(dispatchers.io, block = {
+            _warehouseInfo.value = WarehouseInfoUiModel(id, isOOC)
+        }) {}
+    }
+
     private fun cancelAllDelayFromSocketWinner() {
         if(delayQuizJob?.isActive == true) delayQuizJob?.cancel()
         if(delayTapJob?.isActive == true) delayTapJob?.cancel()
+    }
+
+    private fun sendInitialLog(){
+        playLog.logDownloadSpeed(liveRoomMetricsCommon.getInetSpeed())
+        playLog.sendAll(channelId, videoPlayer)
     }
 
     companion object {
@@ -2510,6 +2554,7 @@ class PlayViewModel @AssistedInject constructor(
         private const val REQUEST_CODE_LOGIN_UPCO_REMINDER = 574
         private const val REQUEST_CODE_USER_REPORT = 575
         private const val REQUEST_CODE_LOGIN_PLAY_INTERACTIVE = 576
+        private const val REQUEST_CODE_LOGIN_PLAY_TOKONOW = 577
 
         private const val WEB_SOCKET_SOURCE_PLAY_VIEWER = "Viewer"
 
@@ -2517,5 +2562,9 @@ class PlayViewModel @AssistedInject constructor(
          * Reminder
          */
         private const val INTERVAL_LIKE_REMINDER_IN_MIN = 5L
+        private const val DURATION_DIVIDER = 1000
+
+        private const val SUBSCRIBE_AWAY_THRESHOLD = 5000L
+        private val defaultSharingStarted = SharingStarted.WhileSubscribed(SUBSCRIBE_AWAY_THRESHOLD)
     }
 }

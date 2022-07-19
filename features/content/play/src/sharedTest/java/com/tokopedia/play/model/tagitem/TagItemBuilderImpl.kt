@@ -50,6 +50,7 @@ class TagItemBuilderImpl : TagItemBuilder {
         minQty: Int,
         isFreeShipping: Boolean,
         appLink: String,
+        isTokoNow: Boolean,
         isPinned: Boolean,
     ) = PlayProductUiModel.Product(
         id = id,
@@ -62,6 +63,7 @@ class TagItemBuilderImpl : TagItemBuilder {
         minQty = minQty,
         isFreeShipping = isFreeShipping,
         applink = appLink,
+        isTokoNow = isTokoNow,
         isPinned = isPinned,
     )
 

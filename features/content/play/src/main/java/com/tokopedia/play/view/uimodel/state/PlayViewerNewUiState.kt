@@ -2,6 +2,7 @@ package com.tokopedia.play.view.uimodel.state
 
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
+import com.tokopedia.play.view.uimodel.WarehouseInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayChannelDetailUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
 import com.tokopedia.play.view.uimodel.recom.PlayQuickReplyInfoUiModel
@@ -28,9 +29,9 @@ data class PlayViewerNewUiState(
     val tagItems: TagItemUiModel,
     val status: PlayStatusUiModel,
     val quickReply: PlayQuickReplyInfoUiModel,
-    val kebabMenu: PlayKebabMenuUiState,
     val selectedVariant: NetworkResult<VariantUiModel>,
     val isLoadingBuy: Boolean,
+    val address: AddressWidgetUiState,
 )
 
 data class PlayWinnerBadgeUiState(
@@ -66,13 +67,13 @@ data class PlayTitleUiState(
     val title: String
 )
 
-data class PlayKebabMenuUiState(
-    val shouldShow: Boolean
-)
-
 enum class KebabMenuType{
     ThreeDots,
     UserReportList,
     UserReportSubmission
 }
 
+data class AddressWidgetUiState(
+    val shouldShow: Boolean,
+    val warehouseInfo: WarehouseInfoUiModel
+)

@@ -83,7 +83,9 @@ class ProductCarouselUiView(
         binding.rvProductFeatured.addOnScrollListener(scrollListener)
     }
 
-    fun setProducts(products: List<PlayProductUiModel.Product>) {
+    fun setProducts(
+        products: List<PlayProductUiModel.Product>,
+    ) {
         if (products == adapter.getItems()) return
 
         invalidateItemDecorations()

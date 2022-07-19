@@ -38,6 +38,9 @@ class GlobalNavViewHolder(
             clickSeeAllUrl = element.seeAllUrl,
             itemList = element.itemList.map(::convertGlobalNavWidgetItemModel),
             info = element.info,
+            componentId = element.componentId,
+            trackingOption = element.trackingOption,
+            dimension90 = element.dimension90,
         )
     }
 
@@ -53,7 +56,11 @@ class GlobalNavViewHolder(
             strikethrough = item.strikethrough,
             backgroundUrl = item.backgroundUrl,
             logoUrl = item.logoUrl,
-            position = item.position
+            position = item.position,
+            componentId = item.componentId,
+            trackingOption = item.trackingOption,
+            keyword = item.keyword,
+            dimension90 = item.dimension90,
         )
     }
 
@@ -86,12 +93,15 @@ class GlobalNavViewHolder(
             globalNavWidgetModelItem.strikethrough,
             globalNavWidgetModelItem.backgroundUrl,
             globalNavWidgetModelItem.logoUrl,
-            globalNavWidgetModelItem.position
+            globalNavWidgetModelItem.position,
+            globalNavWidgetModelItem.componentId,
+            globalNavWidgetModelItem.trackingOption,
+            globalNavWidgetModelItem.keyword,
+            globalNavWidgetModelItem.dimension90,
         )
     }
 
     companion object {
-
         @LayoutRes
         @JvmField
         val LAYOUT = R.layout.search_global_nav_view_holder

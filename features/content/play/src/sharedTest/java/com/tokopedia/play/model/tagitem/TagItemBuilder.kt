@@ -39,6 +39,7 @@ interface TagItemBuilder {
         minQty: Int = 1,
         isFreeShipping: Boolean = false,
         appLink: String = "",
+        isTokoNow: Boolean = false,
         isPinned: Boolean = false,
     ): PlayProductUiModel.Product
 
@@ -60,7 +61,7 @@ interface TagItemBuilder {
             type = ProductSectionType.Unknown,
             title = "", timerInfo = "", serverTime = "", startTime = "", endTime = "",
             background = ProductSectionUiModel.Section.BackgroundUiModel(gradients = emptyList(), imageUrl = ""),
-            reminder = PlayUpcomingBellStatus.On(3L)
+            reminder = PlayUpcomingBellStatus.On(DEFAULT_CAMPAIGN_ID)
         ),
         id: String = "",
     ): ProductSectionUiModel.Section
@@ -76,4 +77,8 @@ interface TagItemBuilder {
             ProductSectionUiModel.Section.BackgroundUiModel(gradients = emptyList(), imageUrl = ""),
         reminderStatus: PlayUpcomingBellStatus = PlayUpcomingBellStatus.Unknown,
     ): ProductSectionUiModel.Section.ConfigUiModel
+
+    companion object {
+        private const val DEFAULT_CAMPAIGN_ID = 3L
+    }
 }

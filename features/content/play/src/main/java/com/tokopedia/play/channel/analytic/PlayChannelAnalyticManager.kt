@@ -3,8 +3,11 @@ package com.tokopedia.play.channel.analytic
 import androidx.lifecycle.Lifecycle
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.analytic.PlayAnalytic
+import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.analytic.ProductAnalyticHelper
+import com.tokopedia.play.channel.ui.component.KebabIconUiComponent
 import com.tokopedia.play.channel.ui.component.ProductCarouselUiComponent
+import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play_common.eventbus.EventBus
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -18,6 +21,7 @@ import kotlinx.coroutines.launch
  */
 class PlayChannelAnalyticManager @AssistedInject constructor(
     private val analytic: PlayAnalytic,
+    private val newAnalytic: PlayNewAnalytic,
     private val dispatchers: CoroutineDispatchers,
     @Assisted private val productAnalyticHelper: ProductAnalyticHelper,
 ) {
@@ -38,7 +42,9 @@ class PlayChannelAnalyticManager @AssistedInject constructor(
             event.subscribe().collect {
                 when (it) {
                     is ProductCarouselUiComponent.Event.OnClicked -> {
-                        analytic.clickFeaturedProduct(it.product, it.position)
+                        if(it.product.isTokoNow) {
+                            newAnalytic.clickFeaturedProduct(it.product, it.position)
+                        } else analytic.clickFeaturedProduct(it.product, it.position)
                     }
                     is ProductCarouselUiComponent.Event.OnImpressed -> {
                         if (!lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED) ||
@@ -46,12 +52,13 @@ class PlayChannelAnalyticManager @AssistedInject constructor(
 
                         productAnalyticHelper.trackImpressedProducts(it.products)
                     }
+                    KebabIconUiComponent.Event.OnClicked -> analytic.clickKebabMenu()
                 }
             }
         }
     }
 
-    fun sendPendingTrackers() {
-        productAnalyticHelper.sendImpressedFeaturedProducts()
+    fun sendPendingTrackers(partnerType: PartnerType) {
+        productAnalyticHelper.sendImpressedFeaturedProducts(partnerType)
     }
 }

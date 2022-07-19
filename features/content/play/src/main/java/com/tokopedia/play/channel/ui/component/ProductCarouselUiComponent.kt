@@ -2,7 +2,6 @@ package com.tokopedia.play.channel.ui.component
 
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.databinding.ViewProductFeaturedBinding
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.ui.component.UiComponent
@@ -13,14 +12,11 @@ import com.tokopedia.play.util.isNotChanged
 import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
-import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
-import com.tokopedia.play_common.delegate.reusableJob
 import com.tokopedia.play_common.eventbus.EventBus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 /**
  * Created by kenny.hadisaputra on 06/07/22
@@ -28,8 +24,7 @@ import kotlinx.coroutines.withContext
 class ProductCarouselUiComponent(
     binding: ViewProductFeaturedBinding,
     bus: EventBus<Any>,
-    private val scope: CoroutineScope,
-    private val dispatchers: CoroutineDispatchers,
+    scope: CoroutineScope,
 ) : UiComponent<PlayViewerNewUiState> {
 
     private val uiView = ProductCarouselUiView(
@@ -66,8 +61,6 @@ class ProductCarouselUiComponent(
         }
     )
 
-    private var setProductsJob by reusableJob()
-
     init {
         scope.launch {
             bus.subscribe().collect {
@@ -86,17 +79,20 @@ class ProductCarouselUiComponent(
         if (state.isNotChanged(
                 { it.tagItems },
                 { it.bottomInsets },
-                { it.tagItems },
-                { it.status.channelStatus.statusType })) return
+                { it.status.channelStatus.statusType },
+                { it.address })) return
 
         val tagItems = state.value.tagItems
 
         if (tagItems.resultState.isLoading && tagItems.product.productSectionList.isEmpty()) {
-            setProductsJob = scope.launch { uiView.setLoading() }
-        } else if (state.isChanged { it.tagItems.product.productSectionList }) {
-            setProductsJob = scope.launch {
-                uiView.setProducts(getFeaturedProducts(state.value.tagItems))
-            }
+            uiView.setLoading()
+        } else if (state.isChanged{ it.tagItems.product.productSectionList }) {
+            uiView.setProducts(
+                getFeaturedProducts(
+                    state.value.tagItems.product.productSectionList,
+                    state.value.tagItems.maxFeatured,
+                )
+            )
         }
 
         if (!tagItems.resultState.isLoading && tagItems.product.productSectionList.isEmpty()) {
@@ -105,28 +101,48 @@ class ProductCarouselUiComponent(
             !state.value.bottomInsets.isAnyShown &&
             !tagItems.resultState.isFail &&
             state.value.status.channelStatus.statusType.isActive &&
-            tagItems.product.productSectionList.isNotEmpty()
+            tagItems.product.productSectionList.isNotEmpty() &&
+            !state.value.address.shouldShow
         ) uiView.show()
         else uiView.hide()
     }
 
-    private suspend fun getFeaturedProducts(
-        tagItems: TagItemUiModel,
-    ): List<PlayProductUiModel.Product> = withContext(dispatchers.computation) {
-        val pinnedProductSection = tagItems.product.productSectionList.firstOrNull {
-            it is ProductSectionUiModel.Section && it.productList.any { product -> product.isPinned }
+    private fun getFeaturedProducts(
+        sectionList: List<ProductSectionUiModel>,
+        maxProducts: Int,
+    ): List<PlayProductUiModel.Product> {
+        var pinnedProduct: PlayProductUiModel.Product? = null
+
+        run {
+            sectionList.forEach { section ->
+                if (section is ProductSectionUiModel.Section) {
+                    pinnedProduct = section.productList.firstOrNull { it.isPinned }
+                    if (pinnedProduct != null) return@run
+                }
+            }
         }
-        val pinnedProduct = (pinnedProductSection as? ProductSectionUiModel.Section)?.productList
-            ?.first { it.isPinned }
 
-        val featuredProducts = tagItems.product.productSectionList
-            .filterIsInstance<ProductSectionUiModel.Section>()
-            .flatMap { it.productList }
-            .take(tagItems.maxFeatured)
-            .filter { !it.isPinned }
+        val rawFeaturedProducts = getRawFeaturedProducts(sectionList, maxProducts)
 
-        return@withContext if (pinnedProduct != null) listOf(pinnedProduct) + featuredProducts
-        else featuredProducts
+        return pinnedProduct?.let { pinned ->
+            listOf(pinned) + rawFeaturedProducts.filterNot { it.isPinned }
+        } ?: rawFeaturedProducts
+    }
+
+    private fun getRawFeaturedProducts(
+        sectionList: List<ProductSectionUiModel>,
+        maxProducts: Int,
+    ): List<PlayProductUiModel.Product> {
+        val products = mutableListOf<PlayProductUiModel.Product>()
+        sectionList.forEach { section ->
+            if (section is ProductSectionUiModel.Section) {
+                products.addAll(section.productList.take(maxProducts - products.size))
+            }
+
+            if (products.size >= maxProducts) return@forEach
+        }
+
+        return products
     }
 
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {

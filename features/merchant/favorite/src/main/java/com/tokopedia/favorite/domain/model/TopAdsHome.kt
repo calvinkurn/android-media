@@ -1,6 +1,7 @@
 package com.tokopedia.favorite.domain.model
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.topads.sdk.domain.model.ImageShop
 
 class TopAdsHome {
     @SerializedName("data")
@@ -53,6 +54,9 @@ class TopAdsHome {
         @SerializedName("uri")
         var uri: String? = null
 
+        @SerializedName("layout")
+        var layout: Int? = null
+
         @SerializedName("badges")
         var badges: List<*>? = null
 
@@ -61,7 +65,7 @@ class TopAdsHome {
             var fullUrl: String? = null
 
             @SerializedName("full_ecs")
-            private val fullEcs: String? = null
+            val fullEcs: String? = null
 
         }
     }
@@ -88,14 +92,17 @@ class TopAdsHome {
         @SerializedName("city")
         var city: String? = null
 
-        @SerializedName("gold_shop")
-        val isGoldShop = false
-
         @SerializedName("gold_shop_badge")
         private val goldShopBadge = false
 
         @SerializedName("shop_is_official")
-        private val shopIsOfficial = false
+        val shopIsOfficial = false
+
+        @SerializedName("pm_pro_shop")
+        val isPMPro = false
+
+        @SerializedName("gold_shop")
+        val isPowerMerchant = false
 
         @SerializedName("image_shop")
         val imageShop: ImageShop? = null
@@ -103,26 +110,8 @@ class TopAdsHome {
         @SerializedName("product")
         var product: List<Product>? = null
 
-        class ImageShop {
-            @SerializedName("cover")
-            var cover: String? = null
-
-            @SerializedName("s_url")
-            private val sUrl: String? = null
-
-            @SerializedName("xs_url")
-            val xsUrl: String? = null
-
-            @SerializedName("cover_ecs")
-            val coverEcs: String? = null
-
-            @SerializedName("s_ecs")
-            val sEcs: String? = null
-
-            @SerializedName("xs_ecs")
-            private val xsEcs: String? = null
-
-        }
+        @SerializedName("is_followed")
+        var is_followed: Boolean = false
 
         class Product {
             @SerializedName("id")
@@ -138,7 +127,7 @@ class TopAdsHome {
             var applinks: String? = null
 
             @SerializedName("image_product")
-            private val imageProduct: ImageProduct? = null
+            val imageProduct: ImageProduct? = null
 
             class ImageProduct {
                 @SerializedName("product_id")

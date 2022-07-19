@@ -23,6 +23,18 @@ class PlayProductTagUiMapper @Inject constructor() {
         id = input.id,
     )
 
+//    var index = 0
+//
+//    fun mapSection(input: Section): ProductSectionUiModel.Section {
+//        return ProductSectionUiModel.Section(
+//            productList = input.listOfProducts.map { product ->
+//                mapProduct(product, ProductSectionType.getSectionValue(sectionType = input.sectionType), index++ == 0)
+//            },
+//            config = mapConfig(input),
+//            id = input.id,
+//        )
+//    }
+
     private fun mapConfig(input: Section) = ProductSectionUiModel.Section.ConfigUiModel(
         title = input.sectionTitle,
         type = ProductSectionType.getSectionValue(sectionType = input.sectionType),
@@ -39,7 +51,10 @@ class PlayProductTagUiMapper @Inject constructor() {
 
     private fun mapReminder(hasReminder: Boolean, campaignId: Long) : PlayUpcomingBellStatus = if(hasReminder) PlayUpcomingBellStatus.Off(campaignId) else PlayUpcomingBellStatus.Unknown
 
-    private fun mapProduct(input: Product, sectionType: ProductSectionType = ProductSectionType.Unknown): PlayProductUiModel.Product {
+    private fun mapProduct(
+        input: Product,
+        sectionType: ProductSectionType = ProductSectionType.Unknown,
+    ): PlayProductUiModel.Product {
         return PlayProductUiModel.Product(
             id = input.id,
             shopId = input.shopId,
@@ -64,7 +79,9 @@ class PlayProductTagUiMapper @Inject constructor() {
             minQty = input.minimumQuantity,
             isFreeShipping = input.isFreeShipping,
             applink = input.appLink,
+            isTokoNow = input.isTokoNow,
             isPinned = input.isPinned,
+//            isPinned = isPinned,
         )
     }
 }
