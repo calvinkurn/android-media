@@ -14,7 +14,7 @@ data class TopAdsAutoAds(
 
     ) {
     data class Response(
-        @SerializedName(value = "topAdsGetAutoAds", alternate = ["topAdsPostAutoAds"])
+        @SerializedName(value = "topAdsPostAutoAdsV2")
         val autoAds: TopAdsAutoAds,
     )
 }

@@ -8,6 +8,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.topads.common.data.response.AutoAdsResponse
 import com.tokopedia.topads.common.data.response.TopAdsAutoAds
 import com.tokopedia.topads.common.data.response.TopAdsAutoAdsData
+import com.tokopedia.topads.common.domain.usecase.TopAdsQueryPostAutoadsUseCase
 import com.tokopedia.topads.data.response.AdCreationOption
 import com.tokopedia.topads.view.RequestHelper
 import com.tokopedia.unit.test.rule.CoroutineTestRule
@@ -34,13 +35,14 @@ class AdChooserViewModelTest {
     private lateinit var repository: GraphqlRepository
     private lateinit var context: Context
     private lateinit var userSession: UserSession
+    private val queryPostAutoadsUseCase : TopAdsQueryPostAutoadsUseCase = mockk(relaxed = true)
 
     @Before
     fun setUp() {
         repository = mockk()
         context = mockk(relaxed = true)
         userSession = mockk(relaxed = true)
-        viewModel = spyk(AdChooserViewModel(context, userSession, rule.dispatchers, repository))
+        viewModel = spyk(AdChooserViewModel(context, userSession, rule.dispatchers, repository,queryPostAutoadsUseCase))
         mockkObject(RequestHelper)
         every { RequestHelper.getGraphQlRequest(any(), any(), any()) } returns mockk(relaxed = true)
         every { RequestHelper.getCacheStrategy() } returns mockk(relaxed = true)

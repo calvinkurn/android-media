@@ -98,7 +98,7 @@ class DailyBudgetViewModelTest {
                 AutoAdsBaseBudgetFragment.TOGGLE_OFF,
                 AutoAdsBaseBudgetFragment.CHANNEL,
                 1000,
-                123,
+                "123",
                 AutoAdsBaseBudgetFragment.SOURCE)))
 
         assertEquals(viewModel.autoAdsData.value, null)
@@ -119,7 +119,7 @@ class DailyBudgetViewModelTest {
                 AutoAdsBaseBudgetFragment.TOGGLE_OFF,
                 AutoAdsBaseBudgetFragment.CHANNEL,
                 1000,
-                123,
+                "123",
                 AutoAdsBaseBudgetFragment.SOURCE)))
 
 

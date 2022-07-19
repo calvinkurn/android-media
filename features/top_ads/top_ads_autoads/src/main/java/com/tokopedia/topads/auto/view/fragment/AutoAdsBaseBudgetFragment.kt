@@ -222,11 +222,8 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
         isEditFlow = editAutoads == 1
         val budget = priceEditText.textFieldInput.text.toString().removeCommaRawString().toInt()
         budgetViewModel.postAutoAds(AutoAdsParam(AutoAdsParam.Input(
-                TOGGLE_ON,
-                CHANNEL,
-                budget,
-                userSession.shopId.toInt(),
-                SOURCE
+            TOGGLE_ON, CHANNEL,
+            budget, userSession.shopId, SOURCE
         )))
     }
 

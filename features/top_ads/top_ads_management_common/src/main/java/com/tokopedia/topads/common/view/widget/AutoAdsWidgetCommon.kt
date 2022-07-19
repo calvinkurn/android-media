@@ -20,7 +20,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
-import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.RouteManager
@@ -350,7 +349,7 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
 
     private fun switchToManual() {
         widgetViewModel.postAutoAds(AutoAdsParam(AutoAdsParam.Input(
-            TOGGLE_OFF, CHANNEL, currentBudget, userSession.shopId.toInt(), SOURCE))
+            TOGGLE_OFF, CHANNEL, currentBudget, userSession.shopId, SOURCE))
         )
     }
 
