@@ -6,8 +6,9 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.topads.common.data.response.AutoAdsResponse
+import com.tokopedia.topads.common.data.response.TopAdsAutoAds
+import com.tokopedia.topads.common.data.response.TopAdsAutoAdsData
 import com.tokopedia.topads.data.response.AdCreationOption
-import com.tokopedia.topads.data.response.TopAdsAutoAdsCreate
 import com.tokopedia.topads.view.RequestHelper
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSession
@@ -84,7 +85,7 @@ class AdChooserViewModelTest {
     fun `test result in postAutoAds`() {
         val expected = "status_desc"
         val data =
-            TopAdsAutoAdsCreate.Response(TopAdsAutoAdsCreate(TopAdsAutoAdsCreate.Response.TopAdsAutoAdsData(
+            TopAdsAutoAds.Response(TopAdsAutoAds(TopAdsAutoAdsData(
                 statusDesc = expected)))
         val response: GraphqlResponse = mockk(relaxed = true)
 
@@ -93,8 +94,8 @@ class AdChooserViewModelTest {
         mockkStatic(GraphqlHelper::class)
         every { GraphqlHelper.loadRawString(any(), any()) } returns ""
         coEvery { repository.response(any(), any()) } returns response
-        every { response.getError(TopAdsAutoAdsCreate.Response::class.java) } returns listOf()
-        every { response.getData<TopAdsAutoAdsCreate.Response>(TopAdsAutoAdsCreate.Response::class.java) } returns data
+        every { response.getError(TopAdsAutoAds.Response::class.java) } returns listOf()
+        every { response.getData<TopAdsAutoAds.Response>(TopAdsAutoAds.Response::class.java) } returns data
 
         viewModel.postAutoAds("toggle_status", budget = 1000)
 
