@@ -1861,9 +1861,24 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun onProductCarouselEvent(event: ProductCarouselUiComponent.Event) {
         when (event) {
             is ProductCarouselUiComponent.Event.OnBuyClicked -> {
+                //TODO("Temporary, maybe best to combine bottom sheet into this fragment")
+                if (event.product.isVariantAvailable) {
+                    playFragment.openVariantBottomSheet(
+                        ProductAction.Buy,
+                        event.product
+                    )
+                }
+
                 playViewModel.submitAction(PlayViewerNewAction.BuyProduct(event.product))
             }
             is ProductCarouselUiComponent.Event.OnAtcClicked -> {
+                if (event.product.isVariantAvailable) {
+                    playFragment.openVariantBottomSheet(
+                        ProductAction.AddToCart,
+                        event.product
+                    )
+                }
+
                 playViewModel.submitAction(PlayViewerNewAction.AtcProduct(event.product))
             }
             is ProductCarouselUiComponent.Event.OnClicked -> {

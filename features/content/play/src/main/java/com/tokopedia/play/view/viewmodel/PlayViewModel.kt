@@ -894,8 +894,12 @@ class PlayViewModel @AssistedInject constructor(
             PlayViewerNewAction.StartPlayingInteractive -> handlePlayingInteractive(shouldPlay = true)
             PlayViewerNewAction.StopPlayingInteractive -> handlePlayingInteractive(shouldPlay = false)
             is PlayViewerNewAction.ClickQuizOptionAction -> handleClickQuizOption(action.item)
-            is PlayViewerNewAction.BuyProduct -> handleBuyProduct(action.product, ProductAction.Buy)
-            is PlayViewerNewAction.AtcProduct -> handleBuyProduct(action.product, ProductAction.AddToCart)
+            is PlayViewerNewAction.BuyProduct -> handleBuyProduct(
+                product = action.product, action = ProductAction.Buy,
+            )
+            is PlayViewerNewAction.AtcProduct -> handleBuyProduct(
+                product = action.product, action = ProductAction.AddToCart,
+            )
 
             is InteractiveWinnerBadgeClickedAction -> handleWinnerBadgeClicked(action.height)
             is InteractiveGameResultBadgeClickedAction -> showLeaderboardSheet(action.height)
@@ -2269,24 +2273,12 @@ class PlayViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleBuyProduct(
-        product: PlayProductUiModel.Product,
-        action: ProductAction,
-    ) = needLogin {
-        addProductToCart(product) { cartId ->
-            _uiEvent.emit(
-                if (action == ProductAction.Buy) BuySuccessEvent(product, false, cartId, null)
-                else AtcSuccessEvent(product, false, cartId, null)
-            )
-        }
-    }
-
     /**
      * Handle buying product
      * @param productId the id of the product
      */
     private fun handleBuyProduct(
-        sectionInfo: ProductSectionUiModel.Section,
+        sectionInfo: ProductSectionUiModel.Section = ProductSectionUiModel.Section.Empty,
         product: PlayProductUiModel.Product,
         action: ProductAction
     ) {

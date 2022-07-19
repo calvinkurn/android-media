@@ -296,6 +296,14 @@ class PlayBottomSheetFragment @Inject constructor(
         analytic.scrollMerchantVoucher(lastPositionViewed)
     }
 
+    fun showVariantSheet(
+        action: ProductAction,
+        product: PlayProductUiModel.Product,
+    ) {
+        variantSheetView.setAction(action)
+        playViewModel.onShowVariantSheet(variantSheetMaxHeight, product, action)
+    }
+
     /**
      * Private methods
      */
@@ -324,8 +332,7 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private fun shouldCheckProductVariant(product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section, action: ProductAction) {
         if (product.isVariantAvailable) {
-            variantSheetView.setAction(action)
-            playViewModel.onShowVariantSheet(variantSheetMaxHeight, product, action)
+            showVariantSheet(action, product)
             analytic.clickActionProductWithVariant(product.id, action)
         }
 
@@ -452,12 +459,18 @@ class PlayBottomSheetFragment @Inject constructor(
     private fun observeBottomInsetsState() {
         playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, DistinctObserver {
             val productSheetState = it[BottomInsetsType.ProductSheet]
+            val variantSheetState = it[BottomInsetsType.VariantSheet]
             val leaderboardSheetState = it[BottomInsetsType.LeaderboardSheet]
 
             if (productSheetState != null && !productSheetState.isPreviousStateSame) {
                 when (productSheetState) {
                     is BottomInsetsState.Hidden -> if (!it.isAnyShown) playFragment.onBottomInsetsViewHidden()
                     is BottomInsetsState.Shown -> pushParentPlayBySheetHeight(productSheetState.estimatedInsetsHeight)
+                }
+            } else if (variantSheetState != null && !variantSheetState.isPreviousStateSame) {
+                when (variantSheetState) {
+                    is BottomInsetsState.Hidden -> if (!it.isAnyShown) playFragment.onBottomInsetsViewHidden()
+                    is BottomInsetsState.Shown -> pushParentPlayBySheetHeight(variantSheetState.estimatedInsetsHeight)
                 }
             } else if (leaderboardSheetState != null && !leaderboardSheetState.isPreviousStateSame) {
                 when (leaderboardSheetState) {
