@@ -14,7 +14,6 @@ import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
 class ManageProductActivity : BaseSimpleActivity() {
 
     companion object {
-        const val BUNDLE_KEY_CAMPAIGN_ID = "campaignId"
         const val SECOND_STEP = 2
 
         @JvmStatic

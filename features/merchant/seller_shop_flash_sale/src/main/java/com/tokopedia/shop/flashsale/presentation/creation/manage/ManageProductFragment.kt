@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -43,14 +44,12 @@ import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListActi
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.coroutines.GlobalScope
-import java.util.*
+import kotlinx.coroutines.MainScope
 import javax.inject.Inject
 
 class ManageProductFragment : BaseDaggerFragment() {
 
     companion object {
-        private const val SECOND_STEP = 2
         private const val PAGE_SIZE = 50
         private const val LIST_TYPE = 0
         private const val RECYCLERVIEW_ITEM_FIRST_INDEX = 0
@@ -105,7 +104,7 @@ class ManageProductFragment : BaseDaggerFragment() {
     private var guidelineMarginHeaderMax = GUIDELINE_MARGIN_HEADER_MIN
 
     private val animateScrollDebounce: (Int) -> Unit by lazy {
-        debounce(SCROLL_ANIMATION_DELAY, GlobalScope) {
+        debounce(SCROLL_ANIMATION_DELAY, lifecycleScope) {
             view?.post { animateScroll(it) }
         }
     }
@@ -307,25 +306,36 @@ class ManageProductFragment : BaseDaggerFragment() {
                     super.onScrolled(recyclerView, dx, dy)
                     guidelineMarginHeader -= dy
                     guidelineMarginFooter -= dy
-                    if (guidelineMarginHeader < GUIDELINE_MARGIN_HEADER_MIN)
-                        guidelineMarginHeader = GUIDELINE_MARGIN_HEADER_MIN
-                    if (guidelineMarginHeader > guidelineMarginHeaderMax)
-                        guidelineMarginHeader = guidelineMarginHeaderMax
-                    if (guidelineMarginFooter < GUIDELINE_MARGIN_FOOTER_MIN)
-                        guidelineMarginFooter = GUIDELINE_MARGIN_FOOTER_MIN
-                    if (guidelineMarginFooter > guidelineMarginFooterMax)
-                        guidelineMarginFooter = guidelineMarginFooterMax
-
-                    if (viewModel.bannerType.value == HIDE_BANNER) {
-                        binding?.guidelineHeader?.setGuidelineBegin(GUIDELINE_MARGIN_HEADER_MIN)
-                    } else {
-                        binding?.guidelineHeader?.setGuidelineBegin(guidelineMarginHeader)
-                    }
-                    guidelineFooter.setGuidelineEnd(guidelineMarginFooter)
+                    setGuidelineMinAndMax()
+                    setGuidelineHeader()
+                    setGuidelineFooter()
                     animateScrollDebounce.invoke(dy)
                 }
             })
         }
+    }
+
+    private fun setGuidelineMinAndMax() {
+        if (guidelineMarginHeader < GUIDELINE_MARGIN_HEADER_MIN)
+            guidelineMarginHeader = GUIDELINE_MARGIN_HEADER_MIN
+        if (guidelineMarginHeader > guidelineMarginHeaderMax)
+            guidelineMarginHeader = guidelineMarginHeaderMax
+        if (guidelineMarginFooter < GUIDELINE_MARGIN_FOOTER_MIN)
+            guidelineMarginFooter = GUIDELINE_MARGIN_FOOTER_MIN
+        if (guidelineMarginFooter > guidelineMarginFooterMax)
+            guidelineMarginFooter = guidelineMarginFooterMax
+    }
+
+    private fun setGuidelineHeader(){
+        if (viewModel.bannerType.value == HIDE_BANNER) {
+            binding?.guidelineHeader?.setGuidelineBegin(GUIDELINE_MARGIN_HEADER_MIN)
+        } else {
+            binding?.guidelineHeader?.setGuidelineBegin(guidelineMarginHeader)
+        }
+    }
+
+    private fun setGuidelineFooter() {
+        binding?.guidelineFooter?.setGuidelineEnd(guidelineMarginFooter)
     }
 
     private fun showEmptyState() {

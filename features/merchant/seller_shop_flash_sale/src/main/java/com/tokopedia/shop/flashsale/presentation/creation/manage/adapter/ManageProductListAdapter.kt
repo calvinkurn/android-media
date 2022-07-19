@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsItemManageProductBinding
@@ -125,23 +126,21 @@ class ManageProductListAdapter(
 
         private fun Typography.setOriginalStock(product: Product) {
             this.text = if (product.warehouseList.isNullOrEmpty()) {
-                HtmlCompat.fromHtml(
+                MethodChecker.fromHtml(
                     context.getString(
                         R.string.manage_product_item_stock_at_single_location_label,
                         product.productMapData.originalStock
-                    ),
-                    HtmlCompat.FROM_HTML_MODE_COMPACT
+                    )
                 )
             } else {
                 binding.iconDilayaniTokopedia.visible()
                 product.warehouseList.firstOrNull { it.chosenWarehouse }?.let { warehouse ->
-                    HtmlCompat.fromHtml(
+                    MethodChecker.fromHtml(
                         context.getString(
                             R.string.manage_product_item_stock_at_seller_location_label,
                             warehouse.stock,
                             warehouse.warehouseName
-                        ),
-                        HtmlCompat.FROM_HTML_MODE_COMPACT
+                        )
                     )
                 }
             }
@@ -151,12 +150,11 @@ class ManageProductListAdapter(
             if (campaignStock > 0) {
                 this.visible()
                 binding.tpgSeparator.visible()
-                this.text = HtmlCompat.fromHtml(
+                this.text = MethodChecker.fromHtml(
                     context.getString(
                         R.string.manage_product_item_campaign_stock_label,
                         campaignStock
-                    ),
-                    HtmlCompat.FROM_HTML_MODE_COMPACT
+                    )
                 )
             } else {
                 binding.tpgSeparator.gone()
@@ -167,9 +165,8 @@ class ManageProductListAdapter(
         private fun Typography.setMaxOrder(maxOrder: Int) {
             if (maxOrder.isMoreThanZero()) {
                 this.visible()
-                this.text = HtmlCompat.fromHtml(
-                    context.getString(R.string.manage_product_item_max_buy_label, maxOrder),
-                    HtmlCompat.FROM_HTML_MODE_COMPACT
+                this.text = MethodChecker.fromHtml(
+                    context.getString(R.string.manage_product_item_max_buy_label, maxOrder)
                 )
             } else {
                 this.gone()
