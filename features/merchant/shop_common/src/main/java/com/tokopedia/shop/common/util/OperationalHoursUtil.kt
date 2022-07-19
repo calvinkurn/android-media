@@ -32,7 +32,7 @@ object OperationalHoursUtil {
     private const val SUBSTRING_END_TIME_INDEX = 5
 
     // DateTime format
-    private const val ALL_DAY_HOURS = "24 Jam"
+    private const val ALL_DAY_HOURS = "24 jam"
     private const val DEFAULT_TIMEZONE = "WIB"
     const val ALL_DAY = "Buka $ALL_DAY_HOURS"
     const val HOLIDAY = "Libur rutin"
