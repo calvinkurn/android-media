@@ -627,7 +627,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         CoachMark2Item(
                             it,
                             subscriptionBalanceCoachMark.title.parseAsHtml(),
-                            subscriptionBalanceCoachMark.description
+                            subscriptionBalanceCoachMark.description.parseAsHtml()
                         )
                     )
                 }
