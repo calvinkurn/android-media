@@ -12,6 +12,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_APP_LINKED
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_APP_NOT_LINKED
 import com.tokopedia.home.databinding.ItemBalanceWidgetNewBinding
+import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
@@ -19,9 +20,13 @@ import com.tokopedia.utils.view.binding.viewBinding
 /**
  * Created by dhaba
  */
-class BalanceViewHolder(v: View) : RecyclerView.ViewHolder(v) {
+class BalanceViewHolder(v: View, private val totalItems: Int) : RecyclerView.ViewHolder(v) {
     companion object {
         private const val TITLE_HEADER_WEBSITE = "Tokopedia"
+        private const val BALANCE_WIDGET_2_ITEMS = 2
+        private const val POSITION_2 = 1
+        private val paddingLeftPosition2Size2 = 12f.toDpInt()
+        private val paddingBalanceWidget = 8f.toDpInt()
     }
 
     private val binding: ItemBalanceWidgetNewBinding? by viewBinding()
@@ -42,9 +47,30 @@ class BalanceViewHolder(v: View) : RecyclerView.ViewHolder(v) {
     }
 
     private fun renderDrawerItem(element: BalanceDrawerItemModel?) {
+        binding?.cardContainerBalance?.setCardUnifyBackgroundColor(
+            ContextCompat.getColor(
+                itemView.context,
+                com.tokopedia.home.R.color.home_dms_color_transparent
+            )
+        )
         when (element?.state) {
             BalanceDrawerItemModel.STATE_SUCCESS -> {
                 //load image
+                if (totalItems == BALANCE_WIDGET_2_ITEMS && adapterPosition == POSITION_2) {
+                    binding?.homeContainerBalance?.setPadding(
+                        paddingLeftPosition2Size2,
+                        paddingBalanceWidget,
+                        paddingBalanceWidget,
+                        paddingBalanceWidget
+                    )
+                } else  {
+                    binding?.homeContainerBalance?.setPadding(
+                        paddingBalanceWidget,
+                        paddingBalanceWidget,
+                        paddingBalanceWidget,
+                        paddingBalanceWidget
+                    )
+                }
                 element.defaultIconRes?.let {
                     binding?.homeIvLogoBalance?.setImageDrawable(itemView.context.getDrawable(it))
                 }

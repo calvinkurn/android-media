@@ -14,6 +14,7 @@ import com.tokopedia.home.beranda.domain.interactor.repository.HomeTokopointsLis
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeWalletAppRepository
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetUseCase
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_SUBSCRIPTION
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.navigation_common.usecase.pojo.walletapp.Balance
@@ -65,6 +66,19 @@ class HomeBalanceWidgetUseCaseTest {
                     "Langganan",
                     "subscription",
                     "{\"ResultStatus\":{\"Code\":\"200\",\"Message\":[\"Success\"],\"Reason\":\"OK\"},\"DrawerList\":{\"IconImageURL\":\"https://ecs7.tokopedia.net/img/tokopoints/benefit/BebasOngkir.png\",\"RedirectURL\":\"https://www.tokopedia.com/rewards\",\"RedirectAppLink\":\"tokopedia://rewards\",\"SectionContent\":[{\"Type\":\"text\",\"TextAttributes\":{\"Text\":\"GoToPlus\",\"Color\":\"#31353B\",\"IsBold\":true},\"TagAttributes\":{}},{\"Type\":\"text\",\"TextAttributes\":{\"Text\":\"Subscribe Now\",\"Color\":\"#03ac0e\"},\"TagAttributes\":{}}]}],\"CoachMarkList\":[{\"Type\":\"not_subscriber\",\"CoachMark\":[{\"IsShown\":true,\"Title\":\"Your loyalty levels have been maximized!\",\"Content\":\"Awesome! You leveled up to Juragan on GoClub because you're Platinum\",\"CTA\":{}}]}],\"IsShown\":true,\"IsSubscriber\": false}"
+                )
+            )
+        )
+    )
+    private val mockValueSuccessHomeBalanceWidgetIsShownFalse = GetHomeBalanceWidgetData(
+        getHomeBalanceList = GetHomeBalanceList(
+            balancesList = listOf(
+                GetHomeBalanceItem("Gopay", "gopay"),
+                GetHomeBalanceItem("Rewards", "rewards"), GetHomeBalanceItem
+                    (
+                    "Langganan",
+                    "subscription",
+                    "{\"ResultStatus\":{\"Code\":\"200\",\"Message\":[\"Success\"],\"Reason\":\"OK\"},\"DrawerList\":[{\"IconImageURL\":\"https://ecs7.tokopedia.net/img/tokopoints/benefit/BebasOngkir.png\",\"RedirectURL\":\"https://www.tokopedia.com/rewards\",\"RedirectAppLink\":\"tokopedia://rewards\",\"SectionContent\":[{\"Type\":\"text\",\"TextAttributes\":{\"Text\":\"GoToPlus\",\"Color\":\"#31353B\",\"IsBold\":true},\"TagAttributes\":{}},{\"Type\":\"text\",\"TextAttributes\":{\"Text\":\"Subscribe Now\",\"Color\":\"#03ac0e\"},\"TagAttributes\":{}}]}],\"CoachMarkList\":[{\"Type\":\"not_subscriber\",\"CoachMark\":[{\"IsShown\":true,\"Title\":\"Your loyalty levels have been maximized!\",\"Content\":\"Awesome! You leveled up to Juragan on GoClub because you're Platinum\",\"CTA\":{}}]}],\"IsShown\":false,\"IsSubscriber\": false}"
                 )
             )
         )
@@ -162,6 +176,38 @@ class HomeBalanceWidgetUseCaseTest {
     }
 
     @Test
+    fun `given balance widget contains subscription shown false when get balance widget then success get data subscription without data subscription`() {
+        val getHomeBalanceWidgetRepository = mockk<GetHomeBalanceWidgetRepository>(relaxed = true)
+        val homeWalletAppRepository = mockk<HomeWalletAppRepository>(relaxed = true)
+        val homeTokopointsListRepository = mockk<HomeTokopointsListRepository>(relaxed = true)
+        val homeBalanceWidgetUseCase = createBalanceWidgetUseCase(
+            homeTokopointsListRepository = homeTokopointsListRepository,
+            homeWalletAppRepository = homeWalletAppRepository,
+            getHomeBalanceWidgetRepository = getHomeBalanceWidgetRepository
+        )
+        `given walletapprepository tokopointsrepository and balance widget use case subscription shown false`(
+            homeWalletAppRepository,
+            getHomeBalanceWidgetRepository,
+            homeTokopointsListRepository
+        )
+        runBlocking {
+            val headerDataModel = homeBalanceWidgetUseCase.onGetBalanceWidgetData(HomeHeaderDataModel())
+            Assert.assertEquals(HomeBalanceModel.STATUS_SUCCESS, headerDataModel.headerDataModel?.homeBalanceModel?.status)
+            Assert.assertEquals(
+                mockValueSuccessHomeBalanceWidget.getHomeBalanceList.balancesList.size - 1,
+                headerDataModel.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.size
+            )
+            headerDataModel.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.filter { it.drawerItemType == TYPE_SUBSCRIPTION }
+                ?.isEmpty()
+                ?.let {
+                    Assert.assertTrue(
+                        it
+                    )
+                }
+        }
+    }
+
+    @Test
     fun `given balance widget contains subscription error data when get balance widget with failed parse data subscription then show error`() {
         val getHomeBalanceWidgetRepository = mockk<GetHomeBalanceWidgetRepository>(relaxed = true)
         val homeWalletAppRepository = mockk<HomeWalletAppRepository>(relaxed = true)
@@ -189,6 +235,16 @@ class HomeBalanceWidgetUseCaseTest {
     ) {
         coEvery { homeWalletAppRepository.getRemoteData(any()) } returns mockWalletAppData
         coEvery { getHomeBalanceWidgetRepository.getRemoteData(any()) } returns mockValueSuccessHomeBalanceWidget
+        coEvery { homeTokopointsListRepository.getRemoteData(any()) } returns mockTokopointsDrawerData
+    }
+
+    private fun `given walletapprepository tokopointsrepository and balance widget use case subscription shown false`(
+        homeWalletAppRepository: HomeWalletAppRepository,
+        getHomeBalanceWidgetRepository: GetHomeBalanceWidgetRepository,
+        homeTokopointsListRepository: HomeTokopointsListRepository
+    ) {
+        coEvery { homeWalletAppRepository.getRemoteData(any()) } returns mockWalletAppData
+        coEvery { getHomeBalanceWidgetRepository.getRemoteData(any()) } returns mockValueSuccessHomeBalanceWidgetIsShownFalse
         coEvery { homeTokopointsListRepository.getRemoteData(any()) } returns mockTokopointsDrawerData
     }
 
