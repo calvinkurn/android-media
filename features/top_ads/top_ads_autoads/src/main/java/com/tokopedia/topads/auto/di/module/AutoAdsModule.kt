@@ -47,9 +47,9 @@ class AutoAdsModule {
         query: Map<String, String>,
         topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
         bidInfoUseCase: BidInfoUseCase,
-        queryPostAutoadsUseCaseUseCase: TopAdsQueryPostAutoadsUseCase,
+        queryPostAutoadsUseCase: TopAdsQueryPostAutoadsUseCase,
     ): DailyBudgetViewModelFactory = DailyBudgetViewModelFactory(
         context, dispatcher, repository, query, topAdsGetShopDepositUseCase,
-        bidInfoUseCase, queryPostAutoadsUseCaseUseCase
+        bidInfoUseCase, queryPostAutoadsUseCase
     )
 }

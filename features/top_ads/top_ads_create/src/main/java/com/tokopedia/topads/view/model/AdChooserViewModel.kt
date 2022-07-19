@@ -26,7 +26,7 @@ class AdChooserViewModel @Inject constructor(
     private val userSession: UserSessionInterface,
     private val dispatcher: CoroutineDispatchers,
     private val repository: GraphqlRepository,
-    private val queryPostAutoadsUseCaseUseCase: TopAdsQueryPostAutoadsUseCase,
+    private val queryPostAutoadsUseCase: TopAdsQueryPostAutoadsUseCase,
 ) : BaseViewModel(dispatcher.main) {
 
     private val CHANNEL = "topchat"
@@ -60,7 +60,7 @@ class AdChooserViewModel @Inject constructor(
             toggle_status, CHANNEL, budget, userSession.shopId, SOURCE
         ))
 
-        queryPostAutoadsUseCaseUseCase.setParam(param).execute(
+        queryPostAutoadsUseCase.setParam(param).execute(
             onSuccess = { data ->
                 autoAdsData.postValue(data.autoAds.data)
             }, onError = {

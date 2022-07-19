@@ -38,7 +38,7 @@ class DailyBudgetViewModel @Inject constructor(
     private val rawQueries: Map<String, String>,
     private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
     private val bidInfoUseCase: BidInfoUseCase,
-    private val queryPostAutoadsUseCaseUseCase: TopAdsQueryPostAutoadsUseCase
+    private val queryPostAutoadsUseCase: TopAdsQueryPostAutoadsUseCase
 ) : BaseViewModel(dispatcher.main) {
 
     val autoAdsData = MutableLiveData<TopAdsAutoAdsData>()
@@ -66,7 +66,7 @@ class DailyBudgetViewModel @Inject constructor(
     }
 
     fun postAutoAds(param: AutoAdsParam) {
-        queryPostAutoadsUseCaseUseCase.setParam(param).execute(
+        queryPostAutoadsUseCase.setParam(param).execute(
             onSuccess = { data ->
                 autoAdsData.postValue(data.autoAds.data)
             }, onError = {

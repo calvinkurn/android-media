@@ -21,13 +21,13 @@ class DailyBudgetViewModelFactory @Inject constructor(
     private val query: Map<String, String>,
     private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
     private val bidInfoUseCase: BidInfoUseCase,
-    private val queryPostAutoadsUseCaseUseCase: TopAdsQueryPostAutoadsUseCase,
+    private val queryPostAutoadsUseCase: TopAdsQueryPostAutoadsUseCase,
 ) : ViewModelProvider.NewInstanceFactory() {
 
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         return DailyBudgetViewModel(
             context, dispatcher, repository, query, topAdsGetShopDepositUseCase,
-            bidInfoUseCase, queryPostAutoadsUseCaseUseCase
+            bidInfoUseCase, queryPostAutoadsUseCase
         ) as T
     }
 }

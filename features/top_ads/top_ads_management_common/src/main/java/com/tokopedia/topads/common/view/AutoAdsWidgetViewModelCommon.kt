@@ -34,7 +34,7 @@ class AutoAdsWidgetViewModelCommon @Inject constructor(
         private val dispatcher: CoroutineDispatcher,
         private val repository: GraphqlRepository,
         @ActivityContext private val context: Context,
-        private val queryPostAutoadsUseCaseUseCase: TopAdsQueryPostAutoadsUseCase
+        private val queryPostAutoadsUseCase: TopAdsQueryPostAutoadsUseCase
 ) : BaseViewModel(dispatcher) {
 
     val autoAdsData = MutableLiveData<TopAdsAutoAdsData>()
@@ -59,7 +59,7 @@ class AutoAdsWidgetViewModelCommon @Inject constructor(
     }
 
     fun postAutoAds(param: AutoAdsParam) {
-        queryPostAutoadsUseCaseUseCase.setParam(param).execute(
+        queryPostAutoadsUseCase.setParam(param).execute(
             onSuccess = { data ->
                 autoAdsData.postValue(data.autoAds.data)
             }, onError = {
