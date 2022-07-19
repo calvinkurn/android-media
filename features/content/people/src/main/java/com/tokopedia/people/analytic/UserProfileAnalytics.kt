@@ -25,6 +25,7 @@ class UserProfileAnalytics {
         const val USER_ID = "userId"
         const val CONTENT = "content"
         const val PROMOTIONS = "promotions"
+        const val ECOMMERCE = "ecommerce"
         const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
         const val ALLOW = "Allow"
         const val DENY = "Deny"
