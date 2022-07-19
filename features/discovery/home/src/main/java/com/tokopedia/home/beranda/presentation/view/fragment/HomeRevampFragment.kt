@@ -12,7 +12,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.provider.Settings
-import android.text.Html
 import android.text.TextUtils
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
