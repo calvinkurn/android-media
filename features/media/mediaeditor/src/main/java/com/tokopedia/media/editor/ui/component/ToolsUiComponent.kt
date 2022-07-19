@@ -1,5 +1,6 @@
 package com.tokopedia.media.editor.ui.component
 
+import android.annotation.SuppressLint
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -34,6 +35,7 @@ class ToolsUiComponent constructor(
         adapter.addItem(tools.create())
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setupActiveTools(editorStateList: List<EditorDetailUiModel>){
         adapter.stateList = editorStateList
         adapter.notifyDataSetChanged()
