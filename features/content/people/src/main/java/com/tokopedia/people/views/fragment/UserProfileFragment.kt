@@ -198,6 +198,11 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        userProfileTracker.sendAll()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         mainBinding.appBarUserProfile.removeOnOffsetChangedListener(feedFloatingButtonManager.offsetListener)
@@ -217,25 +222,25 @@ class UserProfileFragment @Inject constructor(
                     }
 
                     override fun impressOnboardingWithUsername() {
-                        UserProfileTracker().impressionOnBoardingBottomSheetWithUsername(
+                        userProfileTracker.impressionOnBoardingBottomSheetWithUsername(
                             viewModel.profileUserID
                         )
                     }
 
                     override fun impressOnboardingWithoutUsername() {
-                        UserProfileTracker().impressionOnBoardingBottomSheetWithoutUsername(
+                        userProfileTracker.impressionOnBoardingBottomSheetWithoutUsername(
                             viewModel.profileUserID
                         )
                     }
 
                     override fun clickNextWithUsername() {
-                        UserProfileTracker().clickLanjutOnBoardingBottomSheetWithUsername(
+                        userProfileTracker.clickLanjutOnBoardingBottomSheetWithUsername(
                             viewModel.profileUserID
                         )
                     }
 
                     override fun clickNextWithoutUsername() {
-                        UserProfileTracker().clickLanjutOnBoardingBottomSheetWithoutUsername(
+                        userProfileTracker.clickLanjutOnBoardingBottomSheetWithoutUsername(
                             viewModel.profileUserID
                         )
                     }
@@ -264,7 +269,7 @@ class UserProfileFragment @Inject constructor(
 
             btnAction.setOnClickListener {
                 if (viewModel.isSelfProfile) {
-                    UserProfileTracker().clickEditProfileButtonInOwnProfile(viewModel.profileUserID)
+                    userProfileTracker.clickEditProfileButtonInOwnProfile(viewModel.profileUserID)
                     navigateToEditProfile()
                     return@setOnClickListener
                 }
@@ -278,7 +283,7 @@ class UserProfileFragment @Inject constructor(
             }
 
             fabUserProfile.setOnClickListener {
-                UserProfileTracker().clickCreatePost(viewModel.profileUserID)
+                userProfileTracker.clickCreatePost(viewModel.profileUserID)
                 if(viewModel.needOnboarding) {
                     val bundle = Bundle().apply {
                         putString(FeedUGCOnboardingParentFragment.KEY_USERNAME, viewModel.profileUsername)
@@ -293,7 +298,7 @@ class UserProfileFragment @Inject constructor(
             }
 
             mainBinding.cardUserReminder.btnCompleteProfile.setOnClickListener {
-                UserProfileTracker().clickProfileCompletionPrompt(viewModel.profileUserID)
+                userProfileTracker.clickProfileCompletionPrompt(viewModel.profileUserID)
                 navigateToEditProfile()
             }
         }
@@ -536,7 +541,7 @@ class UserProfileFragment @Inject constructor(
             prev.profileType == value.profileType
         ) return
 
-        UserProfileTracker().impressionProfileCompletionPrompt(viewModel.profileUserID)
+        userProfileTracker.impressionProfileCompletionPrompt(viewModel.profileUserID)
 
         val usernameEmpty = value.profileInfo.username.isBlank()
         val biographyEmpty = value.profileInfo.biography.isBlank()
@@ -745,7 +750,7 @@ class UserProfileFragment @Inject constructor(
     }
 
     override fun onShopRecomFollowClicked(itemID: Long) {
-        UserProfileTracker().clickFollowProfileRecommendation(
+        userProfileTracker.clickFollowProfileRecommendation(
             viewModel.profileUserID,
             itemID.toString()
         )
@@ -753,7 +758,7 @@ class UserProfileFragment @Inject constructor(
     }
 
     override fun onShopRecomImpression(itemID: Long, imageUrl: String, postPosition: Int) {
-        UserProfileTracker().impressionProfileRecommendation(
+        userProfileTracker.impressionProfileRecommendation(
             viewModel.profileUserID,
             itemID.toString(),
             imageUrl,
@@ -767,7 +772,7 @@ class UserProfileFragment @Inject constructor(
         imageUrl: String,
         postPosition: Int
     ) {
-        UserProfileTracker().clickProfileRecommendation(
+        userProfileTracker.clickProfileRecommendation(
             viewModel.profileUserID,
             itemID.toString(),
             imageUrl,
@@ -992,10 +997,10 @@ class UserProfileFragment @Inject constructor(
         //this will give you the bottomsheet type : if it's screenshot or general
         when(UniversalShareBottomSheet.getShareBottomSheetType()){
             UniversalShareBottomSheet.SCREENSHOT_SHARE_SHEET ->{
-                userSession.userId.let { UserProfileTracker().clickCloseScreenshotShareBottomsheet(it, self = viewModel.isSelfProfile) }
+                userSession.userId.let { userProfileTracker.clickCloseScreenshotShareBottomsheet(it, self = viewModel.isSelfProfile) }
             }
             UniversalShareBottomSheet.CUSTOM_SHARE_SHEET ->{
-                userSession.userId.let { UserProfileTracker().clickCloseShareButton(it, self = viewModel.isSelfProfile) }
+                userSession.userId.let { userProfileTracker.clickCloseShareButton(it, self = viewModel.isSelfProfile) }
             }
         }
     }
