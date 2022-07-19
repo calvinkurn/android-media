@@ -541,14 +541,13 @@ class UserProfileFragment @Inject constructor(
             prev.profileType == value.profileType
         ) return
 
-        userProfileTracker.impressionProfileCompletionPrompt(viewModel.profileUserID)
-
         val usernameEmpty = value.profileInfo.username.isBlank()
         val biographyEmpty = value.profileInfo.biography.isBlank()
 
         val isShowProfileReminder = viewModel.isSelfProfile && usernameEmpty && biographyEmpty
 
         mainBinding.cardUserReminder.root.shouldShowWithAction(isShowProfileReminder) {
+            userProfileTracker.impressionProfileCompletionPrompt(viewModel.profileUserID)
             mainBinding.btnAction.hide()
         }
     }
