@@ -55,13 +55,6 @@ class TopAdsQueryPostAutoadsUseCase @Inject constructor(
     }
 
     fun setParam(input: AutoAdsParam) : TopAdsQueryPostAutoadsUseCase {
-//        val param = mapOf(
-//            "shopID" to "480967",
-//            "action" to "toggle_off",
-//            "dailyBudget" to 1000,
-//            "source" to "one_click_promo",
-//            "channel" to "topchat"
-//        )
         val param = mapOf("input" to input.input)
         setRequestParams(param)
         return this
