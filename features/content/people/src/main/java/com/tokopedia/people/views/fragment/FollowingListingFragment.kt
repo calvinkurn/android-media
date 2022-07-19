@@ -23,6 +23,8 @@ import com.tokopedia.people.ErrorMessage
 import com.tokopedia.people.Loading
 import com.tokopedia.people.R
 import com.tokopedia.people.Success
+import com.tokopedia.people.analytic.UserProfileTracker
+import com.tokopedia.people.listener.FollowFollowingTracker
 import com.tokopedia.people.listener.FollowerFollowingListener
 import com.tokopedia.people.viewmodels.FollowerFollowingViewModel
 import com.tokopedia.people.views.adapter.ProfileFollowingAdapter
@@ -36,9 +38,11 @@ import javax.inject.Inject
 class FollowingListingFragment @Inject constructor(
     private val viewModelFactory: ViewModelFactory,
     private val userSession: UserSessionInterface,
+    private val userProfileTracker: UserProfileTracker,
 ): TkpdBaseV4Fragment(),
     AdapterCallback,
-    FollowerFollowingListener {
+    FollowerFollowingListener,
+    FollowFollowingTracker {
 
     private var followersContainer: ViewFlipper? = null
     private var globalError: LocalLoad? = null
@@ -55,6 +59,7 @@ class FollowingListingFragment @Inject constructor(
             mPresenter,
             this,
             userSession,
+            this,
             this
         )
     }
@@ -294,5 +299,30 @@ class FollowingListingFragment @Inject constructor(
     override fun callstartActivityFromFragment(applink: String, requestCode: Int) {
         startActivityForResult(RouteManager.getIntent(context, applink), requestCode)
     }
+
+    override fun clickUnfollowFromFollowing(userId: String, self: Boolean) {
+        userProfileTracker.clickUnfollowFromFollowing(userId, self)
+    }
+
+    override fun clickFollowFromFollowing(userId: String, self: Boolean) {
+        userProfileTracker.clickFollowFromFollowing(userId, self)
+    }
+
+    override fun clickUserFollowing(userId: String, self: Boolean) {
+        userProfileTracker.clickUserFollowing(userId, self)
+    }
+
+    override fun clickUserFollowers(userId: String, self: Boolean) {
+        userProfileTracker.clickUserFollowers(userId, self)
+    }
+
+    override fun clickUnfollowFromFollowers(userId: String, self: Boolean) {
+        userProfileTracker.clickUnfollowFromFollowers(userId, self)
+    }
+
+    override fun clickFollowFromFollowers(userId: String, self: Boolean) {
+        userProfileTracker.clickFollowFromFollowers(userId, self)
+    }
+
 }
 
