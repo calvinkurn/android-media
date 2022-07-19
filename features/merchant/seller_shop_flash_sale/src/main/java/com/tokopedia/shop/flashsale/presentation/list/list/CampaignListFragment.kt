@@ -364,7 +364,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
             binding?.btnCreateCampaign.showLoading()
             viewModel.validateCampaignCreationEligibility()
         } else {
-            showFeatureIntroductionDialog()
+            showShopDecorationDialog()
         }
     }
 
@@ -810,7 +810,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     }
 
 
-    private fun showFeatureIntroductionDialog() {
+    private fun showShopDecorationDialog() {
         if (!isAdded) return
 
         val dialog = ShopDecorationDialog()
