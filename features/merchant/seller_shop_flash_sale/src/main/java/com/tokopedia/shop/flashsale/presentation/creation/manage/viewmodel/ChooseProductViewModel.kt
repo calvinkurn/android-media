@@ -75,8 +75,9 @@ class ChooseProductViewModel @Inject constructor(
                     ProductionSubmissionAction.RESERVE,
                     chosenProducts
                 )
-                _isAddProductSuccess.postValue(result.isSuccess)
-                if (result.errorMessage.isNotEmpty())
+                val isProductAddSuccess = result.errorMessage.isNotEmpty()
+                _isAddProductSuccess.postValue(isProductAddSuccess)
+                if (isProductAddSuccess)
                     _errors.postValue(MessageErrorException(result.errorMessage))
             },
             onError = { error ->
