@@ -69,12 +69,10 @@ class ChatBotProvideRatingFragment: BaseFragmentProvideRating() {
                     }
 
                     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                        if (s.toString().length >= minLength && s.toString().length <= maxLength) {
-                            disableSubmitButton()
+                        if (s.toString().length in minLength..maxLength) {
                             warning_text.show()
                         } else {
                             warning_text.hide()
-                            enableSubmitButton()
                         }
                     }
 

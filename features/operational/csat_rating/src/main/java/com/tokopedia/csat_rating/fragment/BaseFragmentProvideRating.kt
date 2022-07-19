@@ -17,7 +17,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.csat_rating.ProvideRatingContract
 import com.tokopedia.csat_rating.R
-import com.tokopedia.abstraction.R as RAbstraction
 import com.tokopedia.csat_rating.data.BadCsatReasonListItem
 import com.tokopedia.csat_rating.di.CsatComponent
 import com.tokopedia.csat_rating.di.CsatModule
@@ -27,7 +26,7 @@ import com.tokopedia.csat_rating.quickfilter.QuickSingleFilterView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
-import java.util.*
+import com.tokopedia.abstraction.R as RAbstraction
 
 
 open class BaseFragmentProvideRating : BaseDaggerFragment(), ProvideRatingContract.ProvideRatingView {
@@ -170,12 +169,7 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(), ProvideRatingContra
                         selectedOption.add(typeFilter)
                     }
                 }
-
-                if (mFilterReview.isAnyItemSelected) {
-                    enableSubmitButton()
-                } else {
-                    disableSubmitButton()
-                }
+                handleSubmitButtonState()
             }
         })
     }
@@ -245,6 +239,14 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(), ProvideRatingContra
     open fun getFeedbackQuestionId():Int = R.id.txt_feedback_question
     open fun getTextFinishedId():Int = R.id.txt_finished
     open fun getFilterReviewId():Int = R.id.filter_review
+
+    fun handleSubmitButtonState() {
+        if (mFilterReview.isAnyItemSelected) {
+            enableSubmitButton()
+        } else {
+            disableSubmitButton()
+        }
+    }
 
     fun disableSubmitButton() {
         mTxtFinished.setTextColor(MethodChecker.getColor(context, RAbstraction.color.grey_500))
