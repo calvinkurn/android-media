@@ -2,28 +2,21 @@ package com.tokopedia.play.channel.ui.component
 
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.databinding.ViewProductFeaturedBinding
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.ui.component.UiComponent
-import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.ui.view.carousel.ProductCarouselUiView
 import com.tokopedia.play.util.CachedState
-import com.tokopedia.play.util.isAnyChanged
 import com.tokopedia.play.util.isChanged
 import com.tokopedia.play.util.isNotChanged
 import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
-import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
-import com.tokopedia.play.view.uimodel.state.AddressWidgetUiState
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
-import com.tokopedia.play_common.delegate.reusableJob
 import com.tokopedia.play_common.eventbus.EventBus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 /**
  * Created by kenny.hadisaputra on 06/07/22
@@ -31,8 +24,7 @@ import kotlinx.coroutines.withContext
 class ProductCarouselUiComponent(
     binding: ViewProductFeaturedBinding,
     bus: EventBus<Any>,
-    private val scope: CoroutineScope,
-    private val dispatchers: CoroutineDispatchers,
+    scope: CoroutineScope,
 ) : UiComponent<PlayViewerNewUiState> {
 
     private val uiView = ProductCarouselUiView(
@@ -69,8 +61,6 @@ class ProductCarouselUiComponent(
         }
     )
 
-    private var setProductsJob by reusableJob()
-
     init {
         scope.launch {
             bus.subscribe().collect {
@@ -89,30 +79,20 @@ class ProductCarouselUiComponent(
         if (state.isNotChanged(
                 { it.tagItems },
                 { it.bottomInsets },
-                { it.tagItems },
                 { it.status.channelStatus.statusType },
-                { it.partner.type },
                 { it.address })) return
 
         val tagItems = state.value.tagItems
 
         if (tagItems.resultState.isLoading && tagItems.product.productSectionList.isEmpty()) {
-            setProductsJob = scope.launch { uiView.setLoading() }
-        } else if (state.isAnyChanged(
-                { it.tagItems.product.productSectionList },
-                { it.address },
-                { it.partner.type })
-        ) {
-            setProductsJob = scope.launch {
-                val pinnedPredicate = getPinnedPredicate(
-                    state.value.address,
-                    state.value.partner.type,
+            uiView.setLoading()
+        } else if (state.isChanged{ it.tagItems.product.productSectionList }) {
+            uiView.setProducts(
+                getFeaturedProducts(
+                    state.value.tagItems.product.productSectionList,
+                    state.value.tagItems.maxFeatured,
                 )
-                uiView.setProducts(
-                    getFeaturedProducts(state.value.tagItems, pinnedPredicate),
-                )
-                uiView.setPinnedPredicate(pinnedPredicate)
-            }
+            )
         }
 
         if (!tagItems.resultState.isLoading && tagItems.product.productSectionList.isEmpty()) {
@@ -127,37 +107,39 @@ class ProductCarouselUiComponent(
         else uiView.hide()
     }
 
-    private fun getPinnedPredicate(
-        address: AddressWidgetUiState,
-        partnerType: PartnerType,
-    ): (PlayProductUiModel.Product) -> Boolean {
-        return { product ->
-            product.isPinned &&
-                    !(product.isTokoNow &&
-                            address.warehouseInfo.isOOC &&
-                            partnerType == PartnerType.Tokopedia)
+    private fun getFeaturedProducts(
+        sectionList: List<ProductSectionUiModel>,
+        maxProducts: Int,
+    ): List<PlayProductUiModel.Product> {
+        var pinnedProduct: PlayProductUiModel.Product? = null
+        sectionList.forEach { section ->
+            if (section is ProductSectionUiModel.Section) {
+                pinnedProduct = section.productList.firstOrNull { it.isPinned }
+                if (pinnedProduct != null) return@forEach
+            }
         }
+
+        val rawFeaturedProducts = getRawFeaturedProducts(sectionList, maxProducts)
+
+        return pinnedProduct?.let { pinned ->
+            listOf(pinned) + rawFeaturedProducts.filterNot { it.isPinned }
+        } ?: rawFeaturedProducts
     }
 
-    private suspend fun getFeaturedProducts(
-        tagItems: TagItemUiModel,
-        pinnedPredicate: (PlayProductUiModel.Product) -> Boolean,
-    ): List<PlayProductUiModel.Product> = withContext(dispatchers.computation) {
-        val pinnedProductSection = tagItems.product.productSectionList.firstOrNull {
-            it is ProductSectionUiModel.Section &&
-                    it.productList.any(pinnedPredicate)
+    private fun getRawFeaturedProducts(
+        sectionList: List<ProductSectionUiModel>,
+        maxProducts: Int,
+    ): List<PlayProductUiModel.Product> {
+        val products = mutableListOf<PlayProductUiModel.Product>()
+        sectionList.forEach { section ->
+            if (section is ProductSectionUiModel.Section) {
+                products.addAll(section.productList.take(maxProducts - products.size))
+            }
+
+            if (products.size >= maxProducts) return@forEach
         }
-        val pinnedProduct = (pinnedProductSection as? ProductSectionUiModel.Section)?.productList
-            ?.first { it.isPinned }
 
-        val featuredProducts = tagItems.product.productSectionList
-            .filterIsInstance<ProductSectionUiModel.Section>()
-            .flatMap { it.productList }
-            .take(tagItems.maxFeatured)
-            .filterNot(pinnedPredicate)
-
-        return@withContext if (pinnedProduct != null) listOf(pinnedProduct) + featuredProducts
-        else featuredProducts
+        return products
     }
 
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {

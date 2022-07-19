@@ -15,15 +15,14 @@ import com.tokopedia.play.ui.view.carousel.viewholder.ProductCarouselViewHolder
  * Created by kenny.hadisaputra on 08/07/22
  */
 class ProductCarouselAdapter(
-    dataSource: DataSource,
     listener: ProductBasicViewHolder.Listener,
     pinnedProductListener: ProductCarouselViewHolder.PinnedProduct.Listener,
 ) : BaseDiffUtilAdapter<PlayProductUiModel>() {
 
     init {
         delegatesManager
-            .addDelegate(ProductDelegate(dataSource, listener))
-            .addDelegate(PinnedProductDelegate(dataSource, pinnedProductListener))
+            .addDelegate(ProductDelegate(listener))
+            .addDelegate(PinnedProductDelegate(pinnedProductListener))
             .addDelegate(ProductFeaturedPlaceholderAdapterDelegate())
     }
 
@@ -43,7 +42,6 @@ class ProductCarouselAdapter(
     }
 
     class ProductDelegate(
-        private val dataSource: DataSource,
         private val listener: ProductBasicViewHolder.Listener,
     ) : BaseAdapterDelegate<PlayProductUiModel.Product, PlayProductUiModel, ProductFeaturedViewHolder>(R.layout.view_play_empty) {
 
@@ -53,7 +51,7 @@ class ProductCarouselAdapter(
             isFlexibleType: Boolean
         ): Boolean {
             val item = itemList[position]
-            return item is PlayProductUiModel.Product && !dataSource.isPinned(item)
+            return item is PlayProductUiModel.Product && !item.isPinned
         }
 
         override fun onBindViewHolder(
@@ -75,7 +73,6 @@ class ProductCarouselAdapter(
     }
 
     class PinnedProductDelegate(
-        private val dataSource: DataSource,
         private val listener: ProductCarouselViewHolder.PinnedProduct.Listener,
     ) : BaseAdapterDelegate<PlayProductUiModel.Product, PlayProductUiModel, ProductCarouselViewHolder.PinnedProduct>(R.layout.view_play_empty) {
 
@@ -85,7 +82,7 @@ class ProductCarouselAdapter(
             isFlexibleType: Boolean
         ): Boolean {
             val item = itemList[position]
-            return item is PlayProductUiModel.Product && dataSource.isPinned(item)
+            return item is PlayProductUiModel.Product && item.isPinned
         }
 
         override fun onBindViewHolder(
@@ -104,9 +101,5 @@ class ProductCarouselAdapter(
                 listener,
             )
         }
-    }
-
-    interface DataSource {
-        fun isPinned(product: PlayProductUiModel.Product): Boolean
     }
 }

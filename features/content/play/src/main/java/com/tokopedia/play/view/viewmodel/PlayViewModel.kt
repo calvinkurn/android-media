@@ -252,6 +252,39 @@ class PlayViewModel @AssistedInject constructor(
         )
     }
 
+    private val _sortedTagItems = combine(
+        _tagItems, _warehouseInfo, _partnerInfo
+    ) { tagItems, warehouseInfo, partnerInfo ->
+        val notAllowedPredicate: (PlayProductUiModel.Product) -> Boolean = {
+            it.isPinned &&
+                    partnerInfo.type == PartnerType.Tokopedia &&
+                    it.isTokoNow &&
+                    warehouseInfo.isOOC
+        }
+        val newSectionList = tagItems.product.productSectionList.map { section ->
+            if (section is ProductSectionUiModel.Section) {
+                section.copy(
+//                    productList = section.productList.map { product ->
+//                        if (predicate(product)) product
+//                        else product.copy(isPinned = false)
+//                    }
+                    productList = section.productList.filterNot(notAllowedPredicate)
+                )
+            } else section
+        }
+
+        tagItems.copy(
+            product = tagItems.product.copy(
+                productSectionList = newSectionList
+            ),
+        )
+    }.flowOn(dispatchers.computation)
+        .stateIn(
+            viewModelScope,
+            defaultSharingStarted,
+            TagItemUiModel.Empty,
+        )
+
     /**
      * Until repeatOnLifecycle is available (by updating library version),
      * this can be used as an alternative to "complete" un-completable flow when page is not focused
@@ -268,15 +301,15 @@ class PlayViewModel @AssistedInject constructor(
         _totalViewUiState.distinctUntilChanged(),
         _rtnUiState.distinctUntilChanged(),
         _titleUiState.distinctUntilChanged(),
-        _tagItems,
+        _sortedTagItems,
         _status,
         _quickReply,
         _selectedVariant,
         _loadingBuy,
-        _leaderboard,
         _addressUiState,
-    ) { channelDetail, interactive, partner, winnerBadge, bottomInsets, like, totalView,
-        rtn, title, tagItems, status, quickReply, selectedVariant, isLoadingBuy, leaderboard, address ->
+    ) { channelDetail, interactive, partner, winnerBadge, bottomInsets,
+        like, totalView, rtn, title, tagItems,
+        status, quickReply, selectedVariant, isLoadingBuy, address ->
         PlayViewerNewUiState(
             channel = channelDetail,
             interactive = interactive,
@@ -2550,5 +2583,8 @@ class PlayViewModel @AssistedInject constructor(
          */
         private const val INTERVAL_LIKE_REMINDER_IN_MIN = 5L
         private const val DURATION_DIVIDER = 1000
+
+        private const val SUBSCRIBE_AWAY_THRESHOLD = 5000L
+        private val defaultSharingStarted = SharingStarted.WhileSubscribed(SUBSCRIBE_AWAY_THRESHOLD)
     }
 }
