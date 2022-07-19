@@ -1,5 +1,6 @@
-package com.tokopedia.people.analytic
+package com.tokopedia.people.analytic.tracker
 
+import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
 import com.tokopedia.people.analytic.UserProfileAnalytics.Action.CLICK_ACCESS_MEDIA
 import com.tokopedia.people.analytic.UserProfileAnalytics.Action.CLICK_BACK
 import com.tokopedia.people.analytic.UserProfileAnalytics.Action.CLICK_BURGER_MENU
@@ -57,6 +58,7 @@ import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.NOT_LIVE
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.POSITION
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.PROMOTIONS
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.PROMO_CLICK
+import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.PROMO_VIEW
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.SCREEN_NAME
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.SELF
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.SESSION_IRIS
@@ -684,27 +686,25 @@ class UserProfileTrackerImpl @Inject constructor(
 
     override fun impressionProfileRecommendation(
         userId: String,
-        shopId: String,
-        imageUrl: String,
-        postPosition: Int
+        shops: List<Pair<ShopRecomUiModelItem, Int>>,
     ) {
         trackingQueue.putEETracking(
             EventModel(
-                event = EVENT_VIEW_ITEM,
+                event = PROMO_VIEW,
                 category = FEED_USER_PROFILE,
                 action = IMPRESSION_PROFILE_RECOMMENDATIONS_CAROUSEL,
-                label = "$userId - $shopId"
+                label = "$userId - $userId"
             ),
             hashMapOf(
                 ECOMMERCE to hashMapOf(
-                    EVENT_SELECT_CONTENT to hashMapOf(
-                        PROMOTIONS to listOf(
+                    PROMO_VIEW to hashMapOf(
+                        PROMOTIONS to shops.map {
                             convertToPromotionShopRecommendationCarousel(
-                                shopId,
-                                imageUrl,
-                                postPosition
+                                it.first.id.toString(),
+                                it.first.logoImageURL,
+                                it.second + 1
                             )
-                        )
+                        }
                     )
                 )
             ),
@@ -876,14 +876,14 @@ class UserProfileTrackerImpl @Inject constructor(
     }
 
     private fun convertToPromotionShopRecommendationCarousel(
-        imageUrl: String,
         shopID: String,
+        imageUrl: String,
         position: Int
     ): HashMap<String, Any> {
         return hashMapOf(
+            ID to shopID,
             CREATIVE to imageUrl,
             POSITION to position,
-            ID to shopID,
             NAME to FEED_USER_PROFILE_PROFILE_RECOMMENDATION_CAROUSEL,
         )
     }
