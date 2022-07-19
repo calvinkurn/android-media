@@ -62,9 +62,8 @@ class EPharmacyPrescriptionGalleryItemViewHolder(private val viewItem: View) : R
     }
 
     private fun renderImageUi(model: PrescriptionImage) {
-        if(!model.prescriptionData?.value.isNullOrBlank()){
-            // TODO remove splitting
-            val splitBase64 = model.prescriptionData?.value?.split("base64,","Base64,")
+        if(!model.prescriptionData?.value.isNullOrBlank() && (isBase64Url(model.prescriptionData?.value))){
+            val splitBase64 = model.prescriptionData?.value?.split(",")
             if (splitBase64?.size ?: 0 > 1){
                 val base64StringImage = splitBase64?.get(1)
                 val imgByteArray: ByteArray = Base64.decode(base64StringImage, Base64.DEFAULT)
@@ -111,5 +110,17 @@ class EPharmacyPrescriptionGalleryItemViewHolder(private val viewItem: View) : R
             overlay.hide()
             reloadIcon.hide()
         }
+    }
+
+    private fun isBase64Url(imageUrl : String?) : Boolean{
+        if(!imageUrl.isNullOrBlank() && (imageUrl.startsWith("data:image/png;base64,")
+                    ||imageUrl.startsWith("data:image/*;base64,")
+                    || imageUrl.startsWith("data:image/jpg;base64,")
+                    || imageUrl.startsWith("data:image/jpeg;base64,")
+                    ))
+        {
+            return true
+        }
+        return false
     }
 }

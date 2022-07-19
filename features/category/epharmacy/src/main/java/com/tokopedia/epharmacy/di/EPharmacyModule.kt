@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.common.network.coroutines.RestRequestInteractor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.epharmacy.di.qualifier.CoroutineBackgroundDispatcher
-import com.tokopedia.epharmacy.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.epharmacy.usecase.UploadPrescriptionUseCase
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -29,10 +28,6 @@ class EPharmacyModule {
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
-
-    @Provides
-    @CoroutineMainDispatcher
-    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 
     @Provides
     @CoroutineBackgroundDispatcher
