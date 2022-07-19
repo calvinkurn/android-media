@@ -48,10 +48,8 @@ import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.CREATIVE
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.CURRENT_SITE
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.ECOMMERCE
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.EVENT
-import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.EVENT_ACTION
-import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.EVENT_CATEGORY
-import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.EVENT_LABEL
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.ID
+import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.IS_LOGGED_IN_STATUS
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.LIVE
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.NAME
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.NOT_LIVE
@@ -69,202 +67,203 @@ import com.tokopedia.people.analytic.UserProfileAnalytics.Event.EVENT_CLICK_COMM
 import com.tokopedia.people.analytic.UserProfileAnalytics.Event.EVENT_CLICK_FEED
 import com.tokopedia.people.analytic.UserProfileAnalytics.Event.EVENT_CLICK_HOME_PAGE
 import com.tokopedia.people.analytic.UserProfileAnalytics.Event.EVENT_OPEN_SCREEN
-import com.tokopedia.people.analytic.UserProfileAnalytics.Event.EVENT_SELECT_CONTENT
 import com.tokopedia.people.analytic.UserProfileAnalytics.Event.EVENT_VIEW_COMMUNICATION
 import com.tokopedia.people.analytic.UserProfileAnalytics.Event.EVENT_VIEW_HOME_PAGE
-import com.tokopedia.people.analytic.UserProfileAnalytics.Event.EVENT_VIEW_ITEM
 import com.tokopedia.people.analytic.UserProfileAnalytics.ScreenName.FEED_USER_PROFILE_PROFILE_RECOMMENDATION_CAROUSEL
 import com.tokopedia.people.analytic.UserProfileAnalytics.Variable.analyticTracker
 import com.tokopedia.people.analytic.UserProfileAnalytics.Variable.currentSite
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.trackingoptimizer.model.EventModel
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class UserProfileTrackerImpl @Inject constructor(
     private val trackingQueue: TrackingQueue,
+    private val userSession: UserSessionInterface,
 ) : UserProfileTracker {
 
     override fun openUserProfile(userId: String, live: Boolean) {
-        val label = if (live) LIVE
-        else NOT_LIVE
-
         val map = mutableMapOf<String, Any>()
         map[EVENT] = EVENT_OPEN_SCREEN
         map[BUSINESS_UNIT] = CONTENT
         map[CURRENT_SITE] = currentSite
-        map[SCREEN_NAME] = "$FEED_USER_PROFILE - $label"
+        map[IS_LOGGED_IN_STATUS] = "${userSession.isLoggedIn.not()}"
+        map[SCREEN_NAME] = "/$FEED_USER_PROFILE - ${if (live) LIVE else NOT_LIVE}"
+        map[SESSION_IRIS] = TrackApp.getInstance().gtm.irisSessionId
         map[USER_ID] = userId
 
         analyticTracker.sendGeneralEvent(map)
     }
 
     override fun clickBack(userId: String, self: Boolean) {
-        val label = if (self) SELF
-        else VISITOR
-
-        val map = mutableMapOf<String, Any>()
-        map[EVENT] = EVENT_CLICK_FEED
-        map[EVENT_ACTION] = CLICK_BACK
-        map[EVENT_CATEGORY] = FEED_USER_PROFILE
-        map[EVENT_LABEL] = "$userId - $label"
-        map[USER_ID] = userId
-        map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = currentSite
-
-        analyticTracker.sendGeneralEvent(map)
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_CLICK_FEED,
+                category = FEED_USER_PROFILE,
+                action = CLICK_BACK,
+                label = "$userId - ${if (self) SELF else VISITOR}"
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT
+            )
+        )
     }
 
     override fun clickShare(userId: String, self: Boolean) {
-        val label = if (self) SELF
-        else VISITOR
-
-        val map = mutableMapOf<String, Any>()
-        map[EVENT] = EVENT_CLICK_FEED
-        map[EVENT_ACTION] = CLICK_SHARE
-        map[EVENT_CATEGORY] = FEED_USER_PROFILE
-        map[EVENT_LABEL] = "$userId - $label"
-
-        map[USER_ID] = userId
-        map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = currentSite
-
-        analyticTracker.sendGeneralEvent(map)
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_CLICK_FEED,
+                category = FEED_USER_PROFILE,
+                action = CLICK_SHARE,
+                label = "$userId - ${if (self) SELF else VISITOR}"
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT
+            )
+        )
     }
 
     override fun clickBurgerMenu(userId: String, self: Boolean) {
-        val label = if (self) SELF
-        else VISITOR
-
-        val map = mutableMapOf<String, Any>()
-        map[EVENT] = EVENT_CLICK_FEED
-        map[EVENT_ACTION] = CLICK_BURGER_MENU
-        map[EVENT_CATEGORY] = FEED_USER_PROFILE
-        map[EVENT_LABEL] = "$userId - $label"
-
-        map[USER_ID] = userId
-        map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = currentSite
-
-        analyticTracker.sendGeneralEvent(map)
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_CLICK_HOME_PAGE,
+                category = FEED_USER_PROFILE,
+                action = CLICK_BURGER_MENU,
+                label = "$userId - ${if (self) SELF else VISITOR}"
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT
+            )
+        )
     }
 
     override fun clickProfilePicture(userId: String, self: Boolean, activityId: String) {
-        val label = if (self) SELF
-        else VISITOR
-
-        val map = mutableMapOf<String, Any>()
-        map[EVENT] = EVENT_CLICK_FEED
-        map[EVENT_ACTION] = CLICK_PROFILE_PICTURE
-        map[EVENT_CATEGORY] = FEED_USER_PROFILE
-        map[EVENT_LABEL] = "$activityId - $userId - $label - live"
-        map[USER_ID] = userId
-        map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = currentSite
-
-        analyticTracker.sendGeneralEvent(map)
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_CLICK_FEED,
+                category = FEED_USER_PROFILE,
+                action = CLICK_PROFILE_PICTURE,
+                label = "$activityId - $userId - ${if (self) SELF else VISITOR} - live"
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT
+            )
+        )
     }
 
     override fun clickFollowers(userId: String, self: Boolean) {
-        val label = if (self) SELF
-        else VISITOR
-
-        val map = mutableMapOf<String, Any>()
-        map[EVENT] = EVENT_CLICK_FEED
-        map[EVENT_ACTION] = CLICK_FOLLOWER
-        map[EVENT_CATEGORY] = FEED_USER_PROFILE
-        map[EVENT_LABEL] = "$userId - $label"
-
-        map[USER_ID] = userId
-        map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = currentSite
-
-        analyticTracker.sendGeneralEvent(map)
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_CLICK_FEED,
+                category = FEED_USER_PROFILE,
+                action = CLICK_FOLLOWER,
+                label = "$userId - ${if (self) SELF else VISITOR}"
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT
+            )
+        )
     }
 
     override fun clickFollowing(userId: String, self: Boolean) {
-        val label = if (self) SELF
-        else VISITOR
-
-        val map = mutableMapOf<String, Any>()
-        map[EVENT] = EVENT_CLICK_FEED
-        map[EVENT_ACTION] = CLICK_FOLLOWING
-        map[EVENT_CATEGORY] = FEED_USER_PROFILE
-        map[EVENT_LABEL] = "$userId - $label"
-
-        map[USER_ID] = userId
-        map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = currentSite
-
-        analyticTracker.sendGeneralEvent(map)
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_CLICK_FEED,
+                category = FEED_USER_PROFILE,
+                action = CLICK_FOLLOWING,
+                label = "$userId - ${if (self) SELF else VISITOR}"
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT
+            )
+        )
     }
 
     override fun clickSelengkapnya(userId: String, self: Boolean) {
-        val label = if (self) SELF
-        else VISITOR
-
-        val map = mutableMapOf<String, Any>()
-        map[EVENT] = EVENT_CLICK_FEED
-        map[EVENT_ACTION] = CLICK_SELENGKAPNYA
-        map[EVENT_CATEGORY] = FEED_USER_PROFILE
-        map[EVENT_LABEL] = "$userId - $label"
-
-        map[USER_ID] = userId
-        map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = currentSite
-
-        analyticTracker.sendGeneralEvent(map)
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_CLICK_FEED,
+                category = FEED_USER_PROFILE,
+                action = CLICK_SELENGKAPNYA,
+                label = "$userId - ${if (self) SELF else VISITOR}"
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT
+            )
+        )
     }
 
     override fun clickFollow(userId: String, self: Boolean) {
-        val label = if (self) SELF
-        else VISITOR
-
-        val map = mutableMapOf<String, Any>()
-        map[EVENT] = EVENT_CLICK_FEED
-        map[EVENT_ACTION] = CLICK_FOLLOW
-        map[EVENT_CATEGORY] = FEED_USER_PROFILE
-        map[EVENT_LABEL] = "$userId - $label"
-
-        map[USER_ID] = userId
-        map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = currentSite
-
-        analyticTracker.sendGeneralEvent(map)
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_CLICK_FEED,
+                category = FEED_USER_PROFILE,
+                action = CLICK_FOLLOW,
+                label = "$userId - ${if (self) SELF else VISITOR}"
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT
+            )
+        )
     }
 
     override fun clickUnfollow(userId: String, self: Boolean) {
-        val label = if (self) SELF
-        else VISITOR
-
-        val map = mutableMapOf<String, Any>()
-        map[EVENT] = EVENT_CLICK_FEED
-        map[EVENT_ACTION] = CLICK_UNFOLLOW
-        map[EVENT_CATEGORY] = FEED_USER_PROFILE
-        map[EVENT_LABEL] = "$userId - $label"
-
-        map[USER_ID] = userId
-        map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = currentSite
-
-        analyticTracker.sendGeneralEvent(map)
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_CLICK_FEED,
+                category = FEED_USER_PROFILE,
+                action = CLICK_UNFOLLOW,
+                label = "$userId - ${if (self) SELF else VISITOR}"
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT
+            )
+        )
     }
 
     override fun clickVideoTab(userId: String, self: Boolean) {
-        val label = if (self) SELF
-        else VISITOR
-
-        val map = mutableMapOf<String, Any>()
-        map[EVENT] = EVENT_CLICK_FEED
-        map[EVENT_ACTION] = CLICK_VIDEO_TAB
-        map[EVENT_CATEGORY] = FEED_USER_PROFILE
-        map[EVENT_LABEL] = "$userId - $label"
-
-        map[USER_ID] = userId
-        map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = currentSite
-
-        analyticTracker.sendGeneralEvent(map)
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_CLICK_FEED,
+                category = FEED_USER_PROFILE,
+                action = CLICK_VIDEO_TAB,
+                label = "$userId - ${if (self) SELF else VISITOR}"
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT
+            )
+        )
     }
 
     override fun impressionVideo(
@@ -275,28 +274,29 @@ class UserProfileTrackerImpl @Inject constructor(
         imageUrl: String,
         videoPosition: Int
     ) {
-        val label = if (self) SELF
-        else VISITOR
-
-        val labelLive = if (live) LIVE
-        else VOD
-
-        val map = mutableMapOf<String, Any>()
-        map[EVENT] = EVENT_VIEW_ITEM
-        map[EVENT_ACTION] = IMPRESSION_VIDEO
-        map[EVENT_CATEGORY] = FEED_USER_PROFILE
-        map[EVENT_LABEL] = "$activityId - $userId - $label - $labelLive"
-
-        map[USER_ID] = userId
-        map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = currentSite
-        val promoMap = mutableMapOf<String, Any>()
-        promoMap[CREATIVE] = imageUrl
-        promoMap[POSITION] = videoPosition
-        promoMap[ID] = activityId
-        promoMap[NAME] = FEED_USER_PROFILE_VIDEO
-        map[PROMOTIONS] = listOf(promoMap)
-        analyticTracker.sendGeneralEvent(map)
+        trackingQueue.putEETracking(
+            EventModel(
+                event = PROMO_VIEW,
+                category = FEED_USER_PROFILE,
+                action = IMPRESSION_VIDEO,
+                label = "$activityId - $userId - ${if (self) SELF else VISITOR} - ${if (live) LIVE else VOD}"
+            ),
+            hashMapOf(
+                ECOMMERCE to hashMapOf(
+                    PROMO_VIEW to hashMapOf(
+                        PROMOTIONS to listOf(
+                            convertToPromotion(activityId, imageUrl, videoPosition, FEED_USER_PROFILE_VIDEO)
+                        )
+                    )
+                )
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT
+            )
+        )
     }
 
     override fun clickVideo(
@@ -307,44 +307,46 @@ class UserProfileTrackerImpl @Inject constructor(
         imageUrl: String,
         videoPosition: Int
     ) {
-        val label = if (self) SELF
-        else VISITOR
-
-        val labelLive = if (live) LIVE
-        else VOD
-
-        val map = mutableMapOf<String, Any>()
-        map[EVENT] = EVENT_SELECT_CONTENT
-        map[EVENT_ACTION] = CLICK_VIDEO
-        map[EVENT_CATEGORY] = FEED_USER_PROFILE
-        map[EVENT_LABEL] = "$activityId - $userId - $label - $labelLive"
-
-        map[USER_ID] = userId
-        map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = currentSite
-        val promoMap = mutableMapOf<String, Any>()
-        promoMap[CREATIVE] = imageUrl
-        promoMap[POSITION] = videoPosition
-        promoMap[ID] = activityId
-        promoMap[NAME] = FEED_USER_PROFILE_VIDEO
-        map[PROMOTIONS] = listOf(promoMap)
-        analyticTracker.sendGeneralEvent(map)
+        trackingQueue.putEETracking(
+            EventModel(
+                event = PROMO_CLICK,
+                category = FEED_USER_PROFILE,
+                action = CLICK_VIDEO,
+                label = "$activityId - $userId - ${if (self) SELF else VISITOR} - ${if (live) LIVE else VOD}"
+            ),
+            hashMapOf(
+                ECOMMERCE to hashMapOf(
+                    PROMO_CLICK to hashMapOf(
+                        PROMOTIONS to listOf(
+                            convertToPromotion(activityId, imageUrl, videoPosition, FEED_USER_PROFILE_VIDEO)
+                        )
+                    )
+                )
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT
+            )
+        )
     }
 
     override fun clickFeedTab(userId: String, self: Boolean) {
-        val label = if (self) SELF
-        else VISITOR
-
-        val map = mutableMapOf<String, Any>()
-        map[EVENT] = EVENT_CLICK_FEED
-        map[EVENT_ACTION] = CLICK_FEED_TAB
-        map[EVENT_CATEGORY] = FEED_USER_PROFILE
-        map[EVENT_LABEL] = "$userId - $label"
-
-        map[USER_ID] = userId
-        map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = currentSite
-        analyticTracker.sendGeneralEvent(map)
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_CLICK_FEED,
+                category = FEED_USER_PROFILE,
+                action = CLICK_FEED_TAB,
+                label = "$userId - ${if (self) SELF else VISITOR}"
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT
+            )
+        )
     }
 
     override fun impressionPost(
@@ -355,25 +357,29 @@ class UserProfileTrackerImpl @Inject constructor(
         postPosition: Int,
         mediaType: String
     ) {
-        val label = if (self) SELF
-        else VISITOR
-
-        val map = mutableMapOf<String, Any>()
-        map[EVENT] = EVENT_VIEW_ITEM
-        map[EVENT_ACTION] = IMPRESSION_POST
-        map[EVENT_CATEGORY] = FEED_USER_PROFILE
-        map[EVENT_LABEL] = "$activityId - $userId - $label - $mediaType"
-
-        map[USER_ID] = userId
-        map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = currentSite
-        val promoMap = mutableMapOf<String, Any>()
-        promoMap[CREATIVE] = imageUrl
-        promoMap[POSITION] = postPosition
-        promoMap[ID] = activityId
-        promoMap[NAME] = FEED_USER_PROFILE_POST
-        map[PROMOTIONS] = listOf(promoMap)
-        analyticTracker.sendGeneralEvent(map)
+        trackingQueue.putEETracking(
+            EventModel(
+                event = PROMO_VIEW,
+                category = FEED_USER_PROFILE,
+                action = IMPRESSION_POST,
+                label = "$activityId - $userId - ${if (self) SELF else VISITOR} - $mediaType"
+            ),
+            hashMapOf(
+                ECOMMERCE to hashMapOf(
+                    PROMO_VIEW to hashMapOf(
+                        PROMOTIONS to listOf(
+                            convertToPromotion(activityId, imageUrl, postPosition, FEED_USER_PROFILE_POST)
+                        )
+                    )
+                )
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT
+            )
+        )
     }
 
     override fun clickPost(
@@ -384,152 +390,165 @@ class UserProfileTrackerImpl @Inject constructor(
         postPosition: Int,
         mediaType: String
     ) {
-        val label = if (self) SELF
-        else VISITOR
-
-        val map = mutableMapOf<String, Any>()
-        map[EVENT] = EVENT_SELECT_CONTENT
-        map[EVENT_ACTION] = CLICK_POST
-        map[EVENT_CATEGORY] = FEED_USER_PROFILE
-        map[EVENT_LABEL] = "$activityId - $userId - $label - $mediaType"
-
-        map[USER_ID] = userId
-        map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = currentSite
-        val promoMap = mutableMapOf<String, Any>()
-        promoMap[CREATIVE] = imageUrl
-        promoMap[POSITION] = postPosition
-        promoMap[ID] = activityId
-        promoMap[NAME] = FEED_USER_PROFILE_POST
-        map[PROMOTIONS] = listOf(promoMap)
-        analyticTracker.sendGeneralEvent(map)
+        trackingQueue.putEETracking(
+            EventModel(
+                event = PROMO_CLICK,
+                category = FEED_USER_PROFILE,
+                action = CLICK_POST,
+                label = "$activityId - $userId - ${if (self) SELF else VISITOR} - $mediaType"
+            ),
+            hashMapOf(
+                ECOMMERCE to hashMapOf(
+                    PROMO_CLICK to hashMapOf(
+                        PROMOTIONS to listOf(
+                            convertToPromotion(activityId, imageUrl, postPosition, FEED_USER_PROFILE_POST)
+                        )
+                    )
+                )
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT
+            )
+        )
     }
 
     override fun clickShareButton(userId: String, self: Boolean) {
-        val label = if (self) SELF
-        else VISITOR
-
-        val map = mutableMapOf<String, Any>()
-        map[EVENT] = EVENT_CLICK_COMMUNICATION
-        map[EVENT_ACTION] = CLICK_SHARE_BUTTON
-        map[EVENT_CATEGORY] = FEED_USER_PROFILE
-        map[EVENT_LABEL] = "$userId - $label"
-
-        map[USER_ID] = userId
-        map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = currentSite
-        analyticTracker.sendGeneralEvent(map)
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_CLICK_COMMUNICATION,
+                category = FEED_USER_PROFILE,
+                action = CLICK_SHARE_BUTTON,
+                label = "$userId - ${if (self) SELF else VISITOR}"
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT
+            )
+        )
     }
 
     override fun clickCloseShareButton(userId: String, self: Boolean) {
-        val label = if (self) SELF
-        else VISITOR
-
-        val map = mutableMapOf<String, Any>()
-        map[EVENT] = EVENT_CLICK_COMMUNICATION
-        map[EVENT_ACTION] = CLICK_CLOSE_SHARE_BUTTON
-        map[EVENT_CATEGORY] = FEED_USER_PROFILE
-        map[EVENT_LABEL] = "$userId - $label"
-
-        map[USER_ID] = userId
-        map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = currentSite
-        analyticTracker.sendGeneralEvent(map)
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_CLICK_COMMUNICATION,
+                category = FEED_USER_PROFILE,
+                action = CLICK_CLOSE_SHARE_BUTTON,
+                label = "$userId - ${if (self) SELF else VISITOR}"
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT
+            )
+        )
     }
 
     override fun clickShareChannel(userId: String, self: Boolean, channel: String) {
-        val label = if (self) SELF
-        else VISITOR
-
-        val map = mutableMapOf<String, Any>()
-        map[EVENT] = EVENT_CLICK_COMMUNICATION
-        map[EVENT_ACTION] = CLICK_SHARE_CHANNEL
-        map[EVENT_CATEGORY] = FEED_USER_PROFILE
-        map[EVENT_LABEL] = "$channel - $userId - $label"
-
-        map[USER_ID] = userId
-        map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = currentSite
-        analyticTracker.sendGeneralEvent(map)
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_CLICK_COMMUNICATION,
+                category = FEED_USER_PROFILE,
+                action = CLICK_SHARE_CHANNEL,
+                label = "$channel - $userId - ${if (self) SELF else VISITOR}"
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT
+            )
+        )
     }
 
     override fun viewShareChannel(userId: String, self: Boolean) {
-        val label = if (self) SELF
-        else VISITOR
-
-        val map = mutableMapOf<String, Any>()
-        map[EVENT] = EVENT_VIEW_COMMUNICATION
-        map[EVENT_ACTION] = VIEW_SHARE_CHANNEL
-        map[EVENT_CATEGORY] = FEED_USER_PROFILE
-        map[EVENT_LABEL] = "$userId - $label"
-
-        map[USER_ID] = userId
-        map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = currentSite
-        analyticTracker.sendGeneralEvent(map)
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_VIEW_COMMUNICATION,
+                category = FEED_USER_PROFILE,
+                action = VIEW_SHARE_CHANNEL,
+                label = "$userId - ${if (self) SELF else VISITOR}"
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT
+            )
+        )
     }
 
     override fun viewScreenshotShareBottomsheet(userId: String, self: Boolean) {
-        val label = if (self) SELF
-        else VISITOR
-
-        val map = mutableMapOf<String, Any>()
-        map[EVENT] = EVENT_VIEW_COMMUNICATION
-        map[EVENT_ACTION] = VIEW_SHARE_SCREENSHOT_BOTTOMSHEET
-        map[EVENT_CATEGORY] = FEED_USER_PROFILE
-        map[EVENT_LABEL] = "$userId - $label"
-
-        map[USER_ID] = userId
-        map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = currentSite
-        analyticTracker.sendGeneralEvent(map)
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_VIEW_COMMUNICATION,
+                category = FEED_USER_PROFILE,
+                action = VIEW_SHARE_SCREENSHOT_BOTTOMSHEET,
+                label = "$userId - ${if (self) SELF else VISITOR}"
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT
+            )
+        )
     }
 
     override fun clickCloseScreenshotShareBottomsheet(userId: String, self: Boolean) {
-        val label = if (self) SELF
-        else VISITOR
-
-        val map = mutableMapOf<String, Any>()
-        map[EVENT] = EVENT_CLICK_COMMUNICATION
-        map[EVENT_ACTION] = CLICK_CLOSE_SHARE_SCREENSHOT_BOTTOMSHEET
-        map[EVENT_CATEGORY] = FEED_USER_PROFILE
-        map[EVENT_LABEL] = "$userId - $label"
-
-        map[USER_ID] = userId
-        map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = currentSite
-        analyticTracker.sendGeneralEvent(map)
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_CLICK_COMMUNICATION,
+                category = FEED_USER_PROFILE,
+                action = CLICK_CLOSE_SHARE_SCREENSHOT_BOTTOMSHEET,
+                label = "$userId - ${if (self) SELF else VISITOR}"
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT
+            )
+        )
     }
 
     override fun clickChannelScreenshotShareBottomsheet(userId: String, self: Boolean) {
-        val label = if (self) SELF
-        else VISITOR
-        val map = mutableMapOf<String, Any>()
-        map[EVENT] = EVENT_CLICK_COMMUNICATION
-        map[EVENT_ACTION] = CLICK_CHANNEL_SHARE_SCREENSHOT_BOTTOMSHEET
-        map[EVENT_CATEGORY] = FEED_USER_PROFILE
-        map[EVENT_LABEL] = "$userId - $label"
-
-        map[USER_ID] = userId
-        map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = currentSite
-        analyticTracker.sendGeneralEvent(map)
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_CLICK_COMMUNICATION,
+                category = FEED_USER_PROFILE,
+                action = CLICK_CHANNEL_SHARE_SCREENSHOT_BOTTOMSHEET,
+                label = "$userId - ${if (self) SELF else VISITOR}"
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT
+            )
+        )
     }
 
     override fun clickAccessMedia(userId: String, self: Boolean, allow: String) {
-        val label = if (self) SELF
-        else VISITOR
-
-        val map = mutableMapOf<String, Any>()
-        map[EVENT] = EVENT_CLICK_COMMUNICATION
-        map[EVENT_ACTION] = CLICK_ACCESS_MEDIA
-        map[EVENT_CATEGORY] = FEED_USER_PROFILE
-        map[EVENT_LABEL] = "$allow - $userId - $label"
-
-        map[USER_ID] = userId
-        map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = currentSite
-        analyticTracker.sendGeneralEvent(map)
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_CLICK_COMMUNICATION,
+                category = FEED_USER_PROFILE,
+                action = CLICK_ACCESS_MEDIA,
+                label = "$allow - $userId - ${if (self) SELF else VISITOR}"
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT
+            )
+        )
     }
 
     override fun openFollowersTab(userId: String) {
@@ -544,51 +563,54 @@ class UserProfileTrackerImpl @Inject constructor(
     }
 
     override fun clickUserFollowers(userId: String, self: Boolean) {
-        val label = if (self) SELF
-        else VISITOR
-
-        val map = mutableMapOf<String, Any>()
-        map[EVENT] = EVENT_CLICK_FEED
-        map[EVENT_ACTION] = CLICK_USER
-        map[EVENT_CATEGORY] = FEED_USER_PROFILE_FOLLOWER_TAB
-        map[EVENT_LABEL] = "$userId - $label"
-
-        map[USER_ID] = userId
-        map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = currentSite
-        analyticTracker.sendGeneralEvent(map)
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_CLICK_FEED,
+                category = FEED_USER_PROFILE_FOLLOWER_TAB,
+                action = CLICK_USER,
+                label = "$userId - ${if (self) SELF else VISITOR}"
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT
+            )
+        )
     }
 
     override fun clickFollowFromFollowers(userId: String, self: Boolean) {
-        val label = if (self) SELF
-        else VISITOR
-
-        val map = mutableMapOf<String, Any>()
-        map[EVENT] = EVENT_CLICK_FEED
-        map[EVENT_ACTION] = CLICK_FOLLOW
-        map[EVENT_CATEGORY] = FEED_USER_PROFILE_FOLLOWER_TAB
-        map[EVENT_LABEL] = "$userId - $label"
-
-        map[USER_ID] = userId
-        map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = currentSite
-        analyticTracker.sendGeneralEvent(map)
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_CLICK_FEED,
+                category = FEED_USER_PROFILE_FOLLOWER_TAB,
+                action = CLICK_FOLLOW,
+                label = "$userId - ${if (self) SELF else VISITOR}"
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT
+            )
+        )
     }
 
     override fun clickUnfollowFromFollowers(userId: String, self: Boolean) {
-        val label = if (self) SELF
-        else VISITOR
-
-        val map = mutableMapOf<String, Any>()
-        map[EVENT] = EVENT_CLICK_FEED
-        map[EVENT_ACTION] = CLICK_UNFOLLOW
-        map[EVENT_CATEGORY] = FEED_USER_PROFILE_FOLLOWER_TAB
-        map[EVENT_LABEL] = "$userId - $label"
-
-        map[USER_ID] = userId
-        map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = currentSite
-        analyticTracker.sendGeneralEvent(map)
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_CLICK_FEED,
+                category = FEED_USER_PROFILE_FOLLOWER_TAB,
+                action = CLICK_UNFOLLOW,
+                label = "$userId - ${if (self) SELF else VISITOR}"
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT
+            )
+        )
     }
 
     override fun openFollowingTab(userId: String) {
@@ -603,51 +625,54 @@ class UserProfileTrackerImpl @Inject constructor(
     }
 
     override fun clickUserFollowing(userId: String, self: Boolean) {
-        val label = if (self) SELF
-        else VISITOR
-
-        val map = mutableMapOf<String, Any>()
-        map[EVENT] = EVENT_CLICK_FEED
-        map[EVENT_ACTION] = CLICK_USER
-        map[EVENT_CATEGORY] = FEED_USER_PROFILE_FOLLOWING_TAB
-        map[EVENT_LABEL] = "$userId - $label"
-
-        map[USER_ID] = userId
-        map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = currentSite
-        analyticTracker.sendGeneralEvent(map)
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_CLICK_FEED,
+                category = FEED_USER_PROFILE_FOLLOWING_TAB,
+                action = CLICK_USER,
+                label = "$userId - ${if (self) SELF else VISITOR}"
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT
+            )
+        )
     }
 
     override fun clickFollowFromFollowing(userId: String, self: Boolean) {
-        val label = if (self) SELF
-        else VISITOR
-
-        val map = mutableMapOf<String, Any>()
-        map[EVENT] = EVENT_CLICK_FEED
-        map[EVENT_ACTION] = CLICK_FOLLOW
-        map[EVENT_CATEGORY] = FEED_USER_PROFILE_FOLLOWING_TAB
-        map[EVENT_LABEL] = "$userId - $label"
-
-        map[USER_ID] = userId
-        map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = currentSite
-        analyticTracker.sendGeneralEvent(map)
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_CLICK_FEED,
+                category = FEED_USER_PROFILE_FOLLOWING_TAB,
+                action = CLICK_FOLLOW,
+                label = "$userId - ${if (self) SELF else VISITOR}"
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT
+            )
+        )
     }
 
     override fun clickUnfollowFromFollowing(userId: String, self: Boolean) {
-        val label = if (self) SELF
-        else VISITOR
-
-        val map = mutableMapOf<String, Any>()
-        map[EVENT] = EVENT_CLICK_FEED
-        map[EVENT_ACTION] = CLICK_UNFOLLOW
-        map[EVENT_CATEGORY] = FEED_USER_PROFILE_FOLLOWING_TAB
-        map[EVENT_LABEL] = "$userId - $label"
-
-        map[USER_ID] = userId
-        map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = currentSite
-        analyticTracker.sendGeneralEvent(map)
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_CLICK_FEED,
+                category = FEED_USER_PROFILE_FOLLOWING_TAB,
+                action = CLICK_UNFOLLOW,
+                label = "$userId - ${if (self) SELF else VISITOR}"
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT
+            )
+        )
     }
 
     override fun impressionProfileCompletionPrompt(userId: String) {
@@ -699,10 +724,11 @@ class UserProfileTrackerImpl @Inject constructor(
                 ECOMMERCE to hashMapOf(
                     PROMO_VIEW to hashMapOf(
                         PROMOTIONS to shops.map {
-                            convertToPromotionShopRecommendationCarousel(
+                            convertToPromotion(
                                 it.first.id.toString(),
                                 it.first.logoImageURL,
-                                it.second + 1
+                                it.second + 1,
+                                FEED_USER_PROFILE_PROFILE_RECOMMENDATION_CAROUSEL
                             )
                         }
                     )
@@ -734,10 +760,11 @@ class UserProfileTrackerImpl @Inject constructor(
                 ECOMMERCE to hashMapOf(
                     PROMO_CLICK to hashMapOf(
                         PROMOTIONS to listOf(
-                            convertToPromotionShopRecommendationCarousel(
+                            convertToPromotion(
                                 shopId,
                                 imageUrl,
-                                postPosition
+                                postPosition,
+                                FEED_USER_PROFILE_PROFILE_RECOMMENDATION_CAROUSEL
                             )
                         )
                     )
@@ -875,16 +902,17 @@ class UserProfileTrackerImpl @Inject constructor(
         trackingQueue.sendAll()
     }
 
-    private fun convertToPromotionShopRecommendationCarousel(
+    private fun convertToPromotion(
         shopID: String,
         imageUrl: String,
-        position: Int
+        position: Int,
+        name: String
     ): HashMap<String, Any> {
         return hashMapOf(
             ID to shopID,
             CREATIVE to imageUrl,
             POSITION to position,
-            NAME to FEED_USER_PROFILE_PROFILE_RECOMMENDATION_CAROUSEL,
+            NAME to name,
         )
     }
 
