@@ -2232,8 +2232,14 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     private fun createSomListEmptyStateModel(isTopAdsActive: Boolean): Visitable<SomListAdapterTypeFactory> {
-        return if (GlobalConfig.isSellerApp() && !isTopAdsActive && somListOrderStatusFilterTab?.isNewOrderFilterSelected() == true &&
-            somListSortFilterTab?.isFilterApplied() != true && somListHeaderBinding?.searchBarSomList?.searchBarTextField?.text.isNullOrEmpty()
+        val isSellerApp = GlobalConfig.isSellerApp()
+        val isNewOrderFilterSelected = somListOrderStatusFilterTab?.isNewOrderFilterSelected() == true
+        val isNonStatusOrderFilterApplied = somListSortFilterTab?.isNonStatusOrderFilterApplied(
+            somListOrderStatusFilterTab?.getSelectedFilterStatus()
+        ) == true
+        val isSearchQueryApplied = somListHeaderBinding?.searchBarSomList?.searchBarTextField?.text?.isNotBlank() == true
+        return if (isSellerApp && !isTopAdsActive && isNewOrderFilterSelected &&
+            !isNonStatusOrderFilterApplied && !isSearchQueryApplied
         ) {
             SomListEmptyStateUiModel(
                 imageUrl = SomConsts.SOM_LIST_EMPTY_STATE_NO_FILTER_ILLUSTRATION,
@@ -2243,7 +2249,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 buttonAppLink = ApplinkConstInternalTopAds.TOPADS_CREATE_ADS,
                 showButton = true
             )
-        } else if (somListSortFilterTab?.isFilterApplied() == true || !somListHeaderBinding?.searchBarSomList?.searchBarTextField?.text.isNullOrEmpty()) {
+        } else if (isNonStatusOrderFilterApplied || isSearchQueryApplied) {
             SomListEmptyStateUiModel(
                 imageUrl = SomConsts.SOM_LIST_EMPTY_STATE_WITH_FILTER_ILLUSTRATION,
                 title = context?.resources?.getString(R.string.som_list_empty_state_not_found_title).orEmpty()
@@ -2506,11 +2512,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         this.shouldScrollToTop = true
         isLoadingInitialData = true
         viewModel.updateSomFilterUiModelList(somFilterUiModelList)
-        somListSortFilterTab?.updateCounterSortFilter(
-            somFilterUiModelList = somFilterUiModelList,
-            startDate = filterData.startDate,
-            endDate = filterData.endDate
-        )
         val selectedStatusFilterKey = somFilterUiModelList.find {
             it.nameFilter == SomConsts.FILTER_STATUS_ORDER
         }?.somFilterData?.find {
@@ -2820,6 +2821,11 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             selectFilterTab(result, realtimeDataChangeCount)
             somListOrderStatusFilterTab?.show(result.data)
             somListSortFilterTab?.show(result.data)
+            somListSortFilterTab?.updateCounterSortFilter(
+                somFilterUiModelList = viewModel.getSomFilterUi(),
+                somListFilterUiModel = result.data,
+                somListGetOrderListParam = viewModel.getDataOrderListParams()
+            )
         }
         return if (!result.data.fromCache) realtimeDataChangeCount + 1 else realtimeDataChangeCount
     }
