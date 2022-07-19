@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.base.BaseEditorFragment
 import com.tokopedia.media.editor.data.repository.ContrastFilterRepositoryImpl
+import com.tokopedia.media.editor.data.repository.RotateFilterRepositoryImpl
 import com.tokopedia.media.editor.data.repository.WatermarkFilterRepositoryImpl
 import com.tokopedia.media.editor.databinding.FragmentDetailEditorBinding
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorActivity
@@ -26,6 +27,7 @@ import com.tokopedia.media.editor.ui.activity.detail.DetailEditorViewModel
 import com.tokopedia.media.editor.ui.component.BrightnessToolUiComponent
 import com.tokopedia.media.editor.ui.component.ContrastToolsUiComponent
 import com.tokopedia.media.editor.ui.component.RemoveBackgroundToolUiComponent
+import com.tokopedia.media.editor.ui.component.RotateToolUiComponent
 import com.tokopedia.media.editor.ui.component.WatermarkToolUiComponent
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.utils.getDestinationUri
@@ -44,7 +46,7 @@ import javax.inject.Inject
 class DetailEditorFragment @Inject constructor(
     viewModelFactory: ViewModelProvider.Factory,
 ) : BaseEditorFragment(), BrightnessToolUiComponent.Listener, ContrastToolsUiComponent.Listener,
-    RemoveBackgroundToolUiComponent.Listener, WatermarkToolUiComponent.Listener {
+    RemoveBackgroundToolUiComponent.Listener, WatermarkToolUiComponent.Listener, RotateToolUiComponent.Listener {
 
     private val viewBinding: FragmentDetailEditorBinding? by viewBinding()
     private val viewModel: DetailEditorViewModel by activityViewModels { viewModelFactory }
@@ -53,11 +55,14 @@ class DetailEditorFragment @Inject constructor(
     lateinit var contrastFilterRepositoryImpl: ContrastFilterRepositoryImpl
     @Inject
     lateinit var watermarkFilterRepositoryImpl: WatermarkFilterRepositoryImpl
+    @Inject
+    lateinit var rotateFilterRepositoryImpl: RotateFilterRepositoryImpl
 
     private val brightnessComponent by uiComponent { BrightnessToolUiComponent(it, this) }
     private val removeBgComponent by uiComponent { RemoveBackgroundToolUiComponent(it, this) }
     private val contrastComponent by uiComponent { ContrastToolsUiComponent(it, this) }
     private val watermarkComponent by uiComponent { WatermarkToolUiComponent(it, this) }
+    private val rotateComponent by uiComponent { RotateToolUiComponent(it, this) }
 
     private var data = EditorDetailUiModel()
 
@@ -102,6 +107,10 @@ class DetailEditorFragment @Inject constructor(
     override fun onWatermarkChanged(value: Int) {
         viewModel.setWatermark(value)
         data.watermarkMode = value
+    }
+
+    override fun onRotateValueChanged(value: Float) {
+        rotateFilterRepositoryImpl.rotate(rotateComponent.ucropView.cropImageView, value)
     }
 
     override fun initObserver() {
@@ -180,15 +189,17 @@ class DetailEditorFragment @Inject constructor(
 
     private fun renderUiComponent(@EditorToolType type: Int) {
         when (type) {
-            EditorToolType.BRIGHTNESS -> {
-                brightnessComponent.setupView(data.brightnessValue ?: 0f)
-            }
+            EditorToolType.BRIGHTNESS -> brightnessComponent.setupView(
+                data.brightnessValue ?: DEFAULT_VALUE_BRIGHTNESS
+            )
             EditorToolType.REMOVE_BACKGROUND -> removeBgComponent.setupView()
-            EditorToolType.CONTRAST -> {
-                contrastComponent.setupView(data.contrastValue ?: DEFAULT_VALUE_CONTRAST)
-            }
-            EditorToolType.WATERMARK -> {
-                watermarkComponent.setupView()
+            EditorToolType.CONTRAST -> contrastComponent.setupView(
+                data.contrastValue ?: DEFAULT_VALUE_CONTRAST
+            )
+            EditorToolType.WATERMARK -> watermarkComponent.setupView()
+            EditorToolType.ROTATE -> {
+                rotateComponent.setupView(data)
+                viewBinding?.imgPreview?.visibility = View.GONE
             }
         }
     }
@@ -305,6 +316,7 @@ class DetailEditorFragment @Inject constructor(
         private const val SCREEN_NAME = "Detail Editor"
 
         private const val DEFAULT_VALUE_CONTRAST = 10f
+        private const val DEFAULT_VALUE_BRIGHTNESS = 0f
     }
 
 }

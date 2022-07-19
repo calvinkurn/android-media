@@ -87,6 +87,8 @@ class EditorActivity : BaseEditorActivity() {
         }
     }
 
+
+
     companion object {
         private const val CACHE_PARAM_INTENT_DATA = "intent_data.param_editor"
     }
