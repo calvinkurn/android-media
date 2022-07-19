@@ -48,6 +48,7 @@ class HomeDynamicChannelsRepository @Inject constructor(
         const val NUM_OF_CHANNEL = "numOfChannel"
         const val PARAMS = "param"
         const val LOCATION = "location"
+        const val PAGE = "page"
 
         fun buildParams(groupIds: String = "", token: String = "", numOfChannel: Int = 0, queryParams: String = "", locationParams: String = "", doQueryHash: Boolean = false)
         :RequestParams{
@@ -60,6 +61,18 @@ class HomeDynamicChannelsRepository @Inject constructor(
             params.putString(LOCATION, locationParams)
             return params
         }
+
+        fun buildParamsV2(groupIds: String = "", page: String = "1", numOfChannel: String = "0", queryParams: String = "", locationParams: String = "", doQueryHash: Boolean = false)
+                :RequestParams{
+            val params = RequestParams.create()
+            params.parameters.clear()
+            params.putString(PARAMS, queryParams)
+            params.putString(GROUP_IDS, groupIds)
+            params.putString(PAGE, page)
+            params.putString(NUM_OF_CHANNEL, numOfChannel)
+            params.putString(LOCATION, locationParams)
+            return params
+        }
     }
 
     override suspend fun getRemoteData(bundle: Bundle): HomeChannelData {
@@ -68,16 +81,26 @@ class HomeDynamicChannelsRepository @Inject constructor(
         val numOfChannel = bundle.getInt(NUM_OF_CHANNEL, 0)
         val params = bundle.getString(PARAMS, "")
         val location = bundle.getString(LOCATION, "")
+        val page = bundle.getString(PAGE, "")
 
-        return getDynamicChannelData(
-                buildParams(
-                        groupIds = groupId,
-                        token = token,
-                        numOfChannel = numOfChannel,
-                        queryParams = params,
-                        locationParams = location
-                )
-        )
+        val requestParams = if(isUsingV2){
+            buildParamsV2(
+                groupIds = groupId,
+                page = page,
+                numOfChannel = numOfChannel.toString(),
+                queryParams = params,
+                locationParams = location
+            )
+        } else {
+            buildParams(
+                groupIds = groupId,
+                token = token,
+                numOfChannel = numOfChannel,
+                queryParams = params,
+                locationParams = location
+            )
+        }
+        return getDynamicChannelData(requestParams)
     }
 
     override suspend fun getCachedData(bundle: Bundle): HomeChannelData {
