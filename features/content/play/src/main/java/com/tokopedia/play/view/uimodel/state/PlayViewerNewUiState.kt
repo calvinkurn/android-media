@@ -29,7 +29,6 @@ data class PlayViewerNewUiState(
     val tagItems: TagItemUiModel,
     val status: PlayStatusUiModel,
     val quickReply: PlayQuickReplyInfoUiModel,
-    val kebabMenu: PlayKebabMenuUiState,
     val selectedVariant: NetworkResult<VariantUiModel>,
     val isLoadingBuy: Boolean,
     val address: AddressWidgetUiState,
@@ -66,10 +65,6 @@ data class PlayTotalViewUiState(
 
 data class PlayTitleUiState(
     val title: String
-)
-
-data class PlayKebabMenuUiState(
-    val shouldShow: Boolean
 )
 
 enum class KebabMenuType{

@@ -245,13 +245,7 @@ class PlayViewModel @AssistedInject constructor(
         )
     }.flowOn(dispatchers.computation)
 
-    private val _kebabMenuUiState = _bottomInsets.map {
-        PlayKebabMenuUiState(
-            shouldShow = !isFreezeOrBanned && !it.isKeyboardShown
-        )
-    }.flowOn(dispatchers.computation)
-
-    private val _addressUiState = combine(_partnerInfo, _warehouseInfo){ partnerInfo, warehouseInfo ->
+    private val _addressUiState = combine(_partnerInfo, _warehouseInfo) { partnerInfo, warehouseInfo ->
         AddressWidgetUiState(
             warehouseInfo = warehouseInfo,
             shouldShow = partnerInfo.type == PartnerType.TokoNow && warehouseInfo.isOOC && (channelType.isLive || channelType.isVod) && !isFreezeOrBanned
@@ -277,13 +271,12 @@ class PlayViewModel @AssistedInject constructor(
         _tagItems,
         _status,
         _quickReply,
-        _kebabMenuUiState.distinctUntilChanged(),
         _selectedVariant,
         _loadingBuy,
         _leaderboard,
         _addressUiState,
     ) { channelDetail, interactive, partner, winnerBadge, bottomInsets, like, totalView,
-        rtn, title, tagItems, status, quickReply, kebabMenu, selectedVariant, isLoadingBuy, leaderboard, address ->
+        rtn, title, tagItems, status, quickReply, selectedVariant, isLoadingBuy, leaderboard, address ->
         PlayViewerNewUiState(
             channel = channelDetail,
             interactive = interactive,
@@ -297,7 +290,6 @@ class PlayViewModel @AssistedInject constructor(
             tagItems = tagItems,
             status = status,
             quickReply = quickReply,
-            kebabMenu = kebabMenu,
             selectedVariant = selectedVariant,
             isLoadingBuy = isLoadingBuy,
             address = address

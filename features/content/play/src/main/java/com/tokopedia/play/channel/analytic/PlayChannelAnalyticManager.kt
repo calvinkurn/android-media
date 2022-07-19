@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.analytic.ProductAnalyticHelper
+import com.tokopedia.play.channel.ui.component.KebabIconUiComponent
 import com.tokopedia.play.channel.ui.component.ProductCarouselUiComponent
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play_common.eventbus.EventBus
@@ -51,6 +52,7 @@ class PlayChannelAnalyticManager @AssistedInject constructor(
 
                         productAnalyticHelper.trackImpressedProducts(it.products)
                     }
+                    KebabIconUiComponent.Event.OnClicked -> analytic.clickKebabMenu()
                 }
             }
         }

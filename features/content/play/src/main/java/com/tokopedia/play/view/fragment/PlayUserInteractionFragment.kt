@@ -35,6 +35,7 @@ import com.tokopedia.play.animation.PlayFadeInAnimation
 import com.tokopedia.play.animation.PlayFadeInFadeOutAnimation
 import com.tokopedia.play.animation.PlayFadeOutAnimation
 import com.tokopedia.play.channel.analytic.PlayChannelAnalyticManager
+import com.tokopedia.play.channel.ui.component.KebabIconUiComponent
 import com.tokopedia.play.channel.ui.component.ProductCarouselUiComponent
 import com.tokopedia.play.databinding.FragmentPlayInteractionBinding
 import com.tokopedia.play.extensions.*
@@ -132,7 +133,6 @@ class PlayUserInteractionFragment @Inject constructor(
         PiPViewComponent.Listener,
         CastViewComponent.Listener,
         ProductSeeMoreViewComponent.Listener,
-        KebabMenuViewComponent.Listener,
         InteractiveActiveViewComponent.Listener,
         InteractiveGameResultViewComponent.Listener,
         ChooseAddressViewComponent.Listener
@@ -166,7 +166,6 @@ class PlayUserInteractionFragment @Inject constructor(
         performanceClassConfig,
     ) }
     private val productSeeMoreView by viewComponentOrNull(isEagerInit = true) { ProductSeeMoreViewComponent(it, R.id.view_product_see_more, this) }
-    private val kebabMenuView by viewComponentOrNull(isEagerInit = true) { KebabMenuViewComponent(it, R.id.view_kebab_menu, this) }
     private val chooseAddressView by viewComponentOrNull { ChooseAddressViewComponent(it, this, childFragmentManager) }
 
     /**
@@ -598,6 +597,16 @@ class PlayUserInteractionFragment @Inject constructor(
             )
         }
 
+        val kebabIconBinding = binding.viewKebabMenu
+        if (kebabIconBinding != null) {
+            components.add(
+                KebabIconUiComponent(
+                    binding = kebabIconBinding,
+                    bus = eventBus,
+                )
+            )
+        }
+
         fun setupLandscapeView() {
             container.setOnTouchListener(PlayClickTouchListener(INTERACTION_TOUCH_CLICK_TOLERANCE))
             container.setOnClickListener {
@@ -853,9 +862,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 renderStatsInfoView(state.totalView)
                 renderRealTimeNotificationView(state.rtn)
                 renderViewAllProductView(state.tagItems, state.bottomInsets, state.address, state.partner)
-//                renderFeaturedProductView(prevState?.tagItems, state.tagItems, state.bottomInsets, state.status, state.address)
                 renderQuickReplyView(prevState?.quickReply, state.quickReply, prevState?.bottomInsets, state.bottomInsets, state.channel)
-                renderKebabMenuView(state.kebabMenu)
                 renderAddressWidget(state.address)
 
                 renderInteractiveDialog(prevState?.interactive, state.interactive)
@@ -983,6 +990,7 @@ class PlayUserInteractionFragment @Inject constructor(
             eventBus.subscribe().collect { event ->
                 when (event) {
                     is ProductCarouselUiComponent.Event -> onProductCarouselEvent(event)
+                    is KebabIconUiComponent.Event -> onKebabIconEvent(event)
                 }
             }
         }
@@ -1710,11 +1718,6 @@ class PlayUserInteractionFragment @Inject constructor(
         }
     }
 
-    private fun renderKebabMenuView(kebabMenuUiState: PlayKebabMenuUiState) {
-        if(kebabMenuUiState.shouldShow) kebabMenuView?.show()
-        else kebabMenuView?.hide()
-    }
-
     private fun renderAddressWidget(addressUiState: AddressWidgetUiState){
         chooseAddressView?.rootView?.showWithCondition(addressUiState.shouldShow)
     }
@@ -1806,11 +1809,6 @@ class PlayUserInteractionFragment @Inject constructor(
         return existing ?: childFragmentManager.fragmentFactory.instantiate(requireActivity().classLoader, InteractiveWinningDialogFragment::class.java.name) as InteractiveWinningDialogFragment
     }
 
-    override fun onKebabMenuClick(view: KebabMenuViewComponent) {
-        analytic.clickKebabMenu()
-        playViewModel.submitAction(OpenKebabAction)
-    }
-
     /***
      * Choose Address
      */
@@ -1875,8 +1873,14 @@ class PlayUserInteractionFragment @Inject constructor(
                     event.product.applink,
                 )
             }
-            is ProductCarouselUiComponent.Event.OnImpressed -> {
+            else -> {}
+        }
+    }
 
+    private fun onKebabIconEvent(event: KebabIconUiComponent.Event) {
+        when (event) {
+            KebabIconUiComponent.Event.OnClicked -> {
+                playViewModel.submitAction(OpenKebabAction)
             }
         }
     }
