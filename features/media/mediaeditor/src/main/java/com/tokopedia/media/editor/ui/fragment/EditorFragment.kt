@@ -154,7 +154,7 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
         val editList = viewModel.getEditState(originalUrl)
         renderUndoText(editList!!)
 
-        viewBinding?.imgMainPreview?.loadImage(editList?.getImageUrl()) {
+        viewBinding?.imgMainPreview?.loadImage(editList.getImageUrl()) {
             centerCrop()
         }
     }
@@ -168,13 +168,15 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
 
     private fun observeUpdateIndex() {
         viewModel.updatedIndexItem.observe(viewLifecycleOwner) {
-            val x =  viewModel.editStateList.values.toList()
-            thumbnailDrawerComponent.refreshItem(it, x)
+            val editList =  viewModel.editStateList.values.toList()
+            thumbnailDrawerComponent.refreshItem(it, editList)
 
             val editorUiModel = viewModel.getEditState(activeImageUrl)
             if (editorUiModel != null) {
                 renderUndoText(editorUiModel)
                 renderRedoText(editorUiModel)
+
+                editorToolComponent.setupActiveTools(editorUiModel.editList)
             }
         }
     }

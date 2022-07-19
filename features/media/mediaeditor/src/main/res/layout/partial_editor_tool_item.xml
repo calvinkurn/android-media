@@ -8,11 +8,31 @@
     android:gravity="center"
     android:orientation="vertical">
 
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/ic_tool"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginBottom="4dp"/>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.iconunify.IconUnify
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:id="@+id/ic_tool"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginBottom="4dp"/>
+
+        <com.tokopedia.unifycomponents.NotificationUnify
+            android:id="@+id/ic_tool_notification"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            tools:visibility="visible"
+            android:visibility="gone"
+            app:notificationType="none_type"
+            app:notificationColor="color_secondary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_name"

@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.ui.adapter.EditorToolAdapter
 import com.tokopedia.media.editor.ui.adapter.EditorToolViewHolder
+import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.ToolUiModel.Companion.create
 import com.tokopedia.picker.common.basecomponent.UiComponent
 import com.tokopedia.picker.common.types.EditorToolType
@@ -31,6 +32,11 @@ class ToolsUiComponent constructor(
         lstTool.adapter = adapter
 
         adapter.addItem(tools.create())
+    }
+
+    fun setupActiveTools(editorStateList: List<EditorDetailUiModel>){
+        adapter.stateList = editorStateList
+        adapter.notifyDataSetChanged()
     }
 
     override fun onItemClicked(type: Int) {
