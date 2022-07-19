@@ -41,6 +41,8 @@ class ShopRecomAdapter(
         diffResult.dispatchUpdatesTo(this)
     }
 
+    fun getItems() = shopRecomItem
+
     override fun onShopRecomCloseClicked(itemID: Long) {
         shopRecomCallback.onShopRecomCloseClicked(itemID)
     }
