@@ -31,8 +31,7 @@ class DynamicIconViewHolder (itemView: View, private val listener: DynamicIconCo
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_component_dynamic_icon
-
-
+        private const val FIRST_POSITION = 1
         private const val SCROLLABLE_ITEM = 5
     }
 
@@ -63,6 +62,14 @@ class DynamicIconViewHolder (itemView: View, private val listener: DynamicIconCo
                     isScrollItem = icons.size > SCROLLABLE_ITEM,
                     spanCount = icons.size
             )
+            val layoutParams = iconRecyclerView?.layoutParams as RecyclerView.LayoutParams
+            layoutParams.setMargins(
+                0,
+                if (adapterPosition == FIRST_POSITION) 0f.toDpInt() else 8f.toDpInt(),
+                0,
+                layoutParams.bottomMargin
+            )
+            iconRecyclerView?.layoutParams = layoutParams
             iconRecyclerView?.clearOnScrollListeners()
             iconRecyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
