@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.shop.flashsale.common.util.DiscountUtil
 import com.tokopedia.shop.flashsale.common.util.ProductErrorStatusHandler
 import com.tokopedia.shop.flashsale.domain.entity.ProductSubmissionResult
@@ -16,6 +17,8 @@ import com.tokopedia.shop.flashsale.presentation.creation.manage.mapper.Warehous
 import com.tokopedia.shop.flashsale.presentation.creation.manage.model.EditProductInputModel
 import com.tokopedia.shop.flashsale.presentation.creation.manage.model.WarehouseUiModel
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 class EditProductInfoViewModel @Inject constructor(
@@ -25,6 +28,10 @@ class EditProductInfoViewModel @Inject constructor(
     private val doSellerCampaignProductSubmissionUseCase: DoSellerCampaignProductSubmissionUseCase
 ) : BaseViewModel(dispatchers.main) {
 
+    companion object {
+        private const val VALIDATE_DEBOUNCE_DURATION = 500L
+    }
+
     private var _product = MutableLiveData<SellerCampaignProductList.Product>()
     val product: LiveData<SellerCampaignProductList.Product>
         get() = _product
@@ -32,19 +39,6 @@ class EditProductInfoViewModel @Inject constructor(
     private var _warehouseList = MutableLiveData<List<WarehouseUiModel>>()
     val warehouseList: LiveData<List<WarehouseUiModel>>
         get() = _warehouseList
-
-    private var _productInputData = MutableLiveData<EditProductInputModel>()
-    val productInputData: LiveData<EditProductInputModel>
-        get() = _productInputData
-
-    private var _campaignPrice = MutableLiveData<Long>()
-    private var _campaignPricePercent = MutableLiveData<Long>()
-    val campaignPrice = Transformations.map(_campaignPricePercent) {
-        DiscountUtil.getDiscountPrice(it, product.value?.price)
-    }
-    val campaignPricePercent = Transformations.map(_campaignPrice) {
-        DiscountUtil.getDiscountPercentThresholded(it, product.value?.price)
-    }
 
     private var _editProductResult = MutableLiveData<ProductSubmissionResult>()
     val editProductResult: LiveData<ProductSubmissionResult>
@@ -62,31 +56,53 @@ class EditProductInfoViewModel @Inject constructor(
         warehouseUiModelMapper.isShopMultiloc(it)
     }
 
-    val validationResult = Transformations.map(productInputData) {
-        productErrorStatusHandler.getErrorInputType(it)
-    }
+    var productInputData = EditProductInputModel()
+    var isUsingPercentage = false
+
+    private var _campaignPrice = MutableStateFlow("")
+    private var _campaignPricePercent = MutableStateFlow("")
+    private var _campaignStock = MutableStateFlow("")
+    private var _campaignMaxOrder = MutableStateFlow("")
+
+    val campaignPrice = _campaignPricePercent.map {
+        DiscountUtil.getDiscountPrice(it.toLongOrZero(), product.value?.price)
+    }.distinctUntilChanged().flowOn(dispatchers.computation)
+
+    val campaignPricePercent = _campaignPrice.map {
+        DiscountUtil.getDiscountPercentThresholded(it.toLongOrZero(), product.value?.price)
+    }.distinctUntilChanged().flowOn(dispatchers.computation)
+
+    @FlowPreview
+    val isValid = combine(
+        campaignPrice,
+        _campaignPrice,
+        _campaignStock,
+        _campaignMaxOrder
+    ) { priceFromDiscount, price, stock, maxOrder ->
+        productInputData.price = if (isUsingPercentage) priceFromDiscount else price.toLongOrNull()
+        productInputData.stock = stock.toLongOrNull()
+        productInputData.maxOrder = maxOrder.toIntOrNull()
+
+        productErrorStatusHandler.getErrorInputType(productInputData)
+    }.debounce(VALIDATE_DEBOUNCE_DURATION).flowOn(dispatchers.computation)
 
     fun setProduct(product: SellerCampaignProductList.Product) {
         val warehouseList = warehouseUiModelMapper.map(product.warehouseList)
         val inputData = EditProductMapper.mapInputData(product, warehouseList)
         _product.postValue(product)
         _warehouseList.postValue(warehouseList)
-        _productInputData.postValue(inputData)
+        productInputData = inputData
     }
 
-    fun setProductInput(input: EditProductInputModel) {
-        _productInputData.postValue(input)
-    }
-
-    fun editProduct(campaignId: String) {
+    fun editProduct() {
         _isLoading.value = true
         launchCatchError(
             dispatchers.io,
             block = {
                 val result = doSellerCampaignProductSubmissionUseCase.execute(
-                    campaignId,
+                    productInputData.productMapData.campaignId,
                     ProductionSubmissionAction.SUBMIT,
-                    EditProductMapper.map(productInputData.value)
+                    EditProductMapper.map(productInputData)
                 )
                 _editProductResult.postValue(result)
                 _isLoading.postValue(false)
@@ -102,11 +118,19 @@ class EditProductInfoViewModel @Inject constructor(
         _warehouseList.postValue(warehouseList)
     }
 
-    fun setCampaignPrice(price: Long) {
+    fun setCampaignPrice(price: String) {
         _campaignPrice.value = price
     }
 
-    fun setCampaignPricePercent(percent: Long) {
+    fun setCampaignPricePercent(percent: String) {
         _campaignPricePercent.value = percent
+    }
+
+    fun setCampaignStock(stock: String) {
+        _campaignStock.value = stock
+    }
+
+    fun setCampaignMaxOrder(maxOrder: String) {
+        _campaignMaxOrder.value = maxOrder
     }
 }
