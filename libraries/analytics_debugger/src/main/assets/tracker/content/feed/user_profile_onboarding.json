@@ -5,7 +5,7 @@
     {
       "event": "openScreen",
       "businessUnit": "content",
-      "currentSite": "tokopediamarketplace",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "isLoggedInStatus": ".*",
       "screenName": "/feed user profile - .*",
       "sessionIris": ".*",
@@ -17,7 +17,7 @@
       "eventCategory": "feed user profile",
       "eventLabel": ".* - .*",
       "businessUnit": "content",
-      "currentSite": "tokopediamarketplace",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "sessionIris": ".*",
       "userId": ".*"
     },
@@ -27,7 +27,7 @@
       "eventCategory": "feed user profile",
       "eventLabel": ".* - .*",
       "businessUnit": "content",
-      "currentSite": "tokopediamarketplace",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "sessionIris": ".*",
       "userId": ".*"
     },
@@ -37,7 +37,7 @@
       "eventCategory": "feed user profile",
       "eventLabel": ".* - .*",
       "businessUnit": "content",
-      "currentSite": "tokopediamarketplace",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "sessionIris": ".*",
       "userId": ".*"
     },
@@ -47,7 +47,7 @@
       "eventCategory": "feed user profile",
       "eventLabel": ".* - .* - .* - live",
       "businessUnit": "content",
-      "currentSite": "tokopediamarketplace",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "sessionIris": ".*",
       "userId": ".*"
     },
@@ -57,7 +57,7 @@
       "eventCategory": "feed user profile",
       "eventLabel": ".* - .*",
       "businessUnit": "content",
-      "currentSite": "tokopediamarketplace",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "sessionIris": ".*",
       "userId": ".*"
     },
@@ -67,7 +67,7 @@
       "eventCategory": "feed user profile",
       "eventLabel": ".* - .*",
       "businessUnit": "content",
-      "currentSite": "tokopediamarketplace",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "sessionIris": ".*",
       "userId": ".*"
     },
@@ -77,7 +77,7 @@
       "eventCategory": "feed user profile",
       "eventLabel": ".* - .*",
       "businessUnit": "content",
-      "currentSite": "tokopediamarketplace",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "sessionIris": ".*",
       "userId": ".*"
     },
@@ -87,7 +87,7 @@
       "eventCategory": "feed user profile",
       "eventLabel": ".* - .*",
       "businessUnit": "content",
-      "currentSite": "tokopediamarketplace",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "sessionIris": ".*",
       "userId": ".*"
     },
@@ -97,7 +97,7 @@
       "eventCategory": "feed user profile",
       "eventLabel": ".* - .*",
       "businessUnit": "content",
-      "currentSite": "tokopediamarketplace",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "sessionIris": ".*",
       "userId": ".*"
     },
@@ -107,7 +107,7 @@
       "eventCategory": "feed user profile",
       "eventLabel": ".* - .*",
       "businessUnit": "content",
-      "currentSite": "tokopediamarketplace",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "sessionIris": ".*",
       "userId": ".*"
     },
@@ -117,7 +117,7 @@
       "eventCategory": "feed user profile",
       "eventLabel": ".* - .* - .* - .*",
       "businessUnit": "content",
-      "currentSite": "tokopediamarketplace",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "promotions": [
         {
           "creative_name": ".*",
@@ -135,7 +135,7 @@
       "eventCategory": "feed user profile",
       "eventLabel": ".* - .* - .* - .*",
       "businessUnit": "content",
-      "currentSite": "tokopediamarketplace",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "promotions": [
         {
           "creative_name": ".*",
@@ -153,7 +153,7 @@
       "eventCategory": "feed user profile",
       "eventLabel": ".* - .*",
       "businessUnit": "content",
-      "currentSite": "tokopediamarketplace",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "sessionIris": ".*",
       "userId": ".*"
     },
@@ -163,7 +163,7 @@
       "eventCategory": "feed user profile",
       "eventLabel": ".*  - .* - .* - .*",
       "businessUnit": "content",
-      "currentSite": "tokopediamarketplace",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "promotions": [
         {
           "creative_name": ".*",
@@ -181,7 +181,7 @@
       "eventCategory": "feed user profile",
       "eventLabel": ".*  - .* - .* - .*",
       "businessUnit": "content",
-      "currentSite": "tokopediamarketplace",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "promotions": [
         {
           "creative_name": ".*",
@@ -196,7 +196,7 @@
     {
       "event": "openScreen",
       "businessUnit": "content",
-      "currentSite": "tokopediamarketplace",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "isLoggedInStatus": ".*",
       "screenName": "/feed user profile - follower tab",
       "sessionIris": ".*",
@@ -208,7 +208,7 @@
       "eventCategory": "feed user profile - follower tab",
       "eventLabel": ".* - .*",
       "businessUnit": "content",
-      "currentSite": "tokopediamarketplace",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "sessionIris": ".*",
       "userId": ".*"
     },
@@ -218,7 +218,7 @@
       "eventCategory": "feed user profile - follower tab",
       "eventLabel": ".* - .*",
       "businessUnit": "content",
-      "currentSite": "tokopediamarketplace",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "sessionIris": ".*",
       "userId": ".*"
     },
@@ -228,14 +228,14 @@
       "eventCategory": "feed user profile - follower tab",
       "eventLabel": ".* - .*",
       "businessUnit": "content",
-      "currentSite": "tokopediamarketplace",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "sessionIris": ".*",
       "userId": ".*"
     },
     {
       "event": "openScreen",
       "businessUnit": "content",
-      "currentSite": "tokopediamarketplace",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "isLoggedInStatus": ".*",
       "screenName": "/feed user profile - following tab",
       "sessionIris": ".*",
@@ -247,7 +247,7 @@
       "eventCategory": "feed user profile - following tab",
       "eventLabel": ".* - .*",
       "businessUnit": "content",
-      "currentSite": "tokopediamarketplace",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "sessionIris": ".*",
       "userId": ".*"
     },
@@ -257,7 +257,7 @@
       "eventCategory": "feed user profile - following tab",
       "eventLabel": ".* - .*",
       "businessUnit": "content",
-      "currentSite": "tokopediamarketplace",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "sessionIris": ".*",
       "userId": ".*"
     },
@@ -267,7 +267,7 @@
       "eventCategory": "feed user profile - following tab",
       "eventLabel": ".* - .*",
       "businessUnit": "content",
-      "currentSite": "tokopediamarketplace",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "sessionIris": ".*",
       "userId": ".*"
     },
@@ -277,7 +277,7 @@
       "eventCategory": "feed user profile",
       "eventLabel": ".*",
       "businessUnit": "content",
-      "currentSite": "tokopediamarketplace",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "sessionIris": ".*",
       "userId": ".*"
     },
@@ -287,7 +287,7 @@
       "eventCategory": "feed user profile",
       "eventLabel": ".*",
       "businessUnit": "content",
-      "currentSite": "tokopediamarketplace",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "sessionIris": ".*",
       "userId": ".*"
     },
@@ -297,7 +297,7 @@
       "eventCategory": "feed user profile",
       "eventLabel": ".* - .*",
       "businessUnit": "content",
-      "currentSite": "tokopediamarketplace",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "promotions": [
         {
           "creative_name": ".*",
@@ -315,7 +315,7 @@
       "eventCategory": "feed user profile",
       "eventLabel": ".* - .*",
       "businessUnit": "content",
-      "currentSite": "tokopediamarketplace",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "promotions": [
         {
           "creative_name": ".*",
@@ -333,7 +333,7 @@
       "eventCategory": "feed user profile",
       "eventLabel": ".* - \\d+",
       "businessUnit": "content",
-      "currentSite": "tokopediamarketplace",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "sessionIris": ".*",
       "userId": ".*"
     },
@@ -343,7 +343,7 @@
       "eventCategory": "feed user profile",
       "eventLabel": ".*",
       "businessUnit": "content",
-      "currentSite": "tokopediamarketplace",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "sessionIris": ".*",
       "userId": ".*"
     },
@@ -353,7 +353,7 @@
       "eventCategory": "feed user profile - onboarding bottomsheet",
       "eventLabel": ".*",
       "businessUnit": "content",
-      "currentSite": "tokopediamarketplace",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "sessionIris": ".*",
       "userId": ".*"
     },
@@ -363,7 +363,7 @@
       "eventCategory": "feed user profile - onboarding bottomsheet",
       "eventLabel": ".*",
       "businessUnit": "content",
-      "currentSite": "tokopediamarketplace",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "sessionIris": ".*",
       "userId": ".*"
     },
@@ -373,7 +373,7 @@
       "eventCategory": "feed user profile - onboarding bottomsheet",
       "eventLabel": ".*",
       "businessUnit": "content",
-      "currentSite": "tokopediamarketplace",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "sessionIris": ".*",
       "userId": ".*"
     },
@@ -383,7 +383,7 @@
       "eventCategory": "feed user profile - onboarding bottomsheet",
       "eventLabel": ".*",
       "businessUnit": "content",
-      "currentSite": "tokopediamarketplace",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "sessionIris": ".*",
       "userId": ".*"
     },
