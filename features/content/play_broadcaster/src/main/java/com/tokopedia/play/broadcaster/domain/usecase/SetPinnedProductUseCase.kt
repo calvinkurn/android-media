@@ -5,6 +5,7 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.broadcaster.domain.model.SetPinnedProduct
 import com.tokopedia.play_common.domain.usecase.RetryableGraphqlUseCase
 import kotlinx.coroutines.withContext
@@ -33,8 +34,8 @@ class SetPinnedProductUseCase @Inject constructor(
 
     fun createParam(channelId: String, productId: String): Map<String, Any> {
         return mapOf(
-            PARAM_CHANNEL_ID to channelId,
-            PARAM_PRODUCT_ID to productId,
+            PARAM_CHANNEL_ID to channelId.toLongOrZero(),
+            PARAM_PRODUCT_ID to productId.toLongOrZero(),
         )
     }
 
