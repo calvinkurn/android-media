@@ -2,10 +2,12 @@ package com.tokopedia.sellerorder.list.presentation.filtertabs
 
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUtil
+import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 import com.tokopedia.sellerorder.list.presentation.models.SomListFilterUiModel
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
@@ -18,7 +20,6 @@ class SomListSortFilterTab(
 ) {
 
     private var filterItems: ArrayList<SortFilterItem> = arrayListOf()
-    private var somListFilterUiModel: SomListFilterUiModel? = null
     private var selectedCount: Int = Int.ZERO
 
     init {
@@ -97,40 +98,50 @@ class SomListSortFilterTab(
 
     fun updateCounterSortFilter(
         somFilterUiModelList: List<SomFilterUiModel>,
-        startDate: String,
-        endDate: String
+        somListFilterUiModel: SomListFilterUiModel,
+        somListGetOrderListParam: SomListGetOrderListParam
     ) {
-        val selectedOrderStatusFilter = somFilterUiModelList.find {
-            it.nameFilter == SomConsts.FILTER_STATUS_ORDER
-        }?.somFilterData?.firstOrNull { it.isSelected }?.key ?: SomConsts.STATUS_ALL_ORDER
-        val defaultDateFilter = SomFilterUtil.getDefaultDateFilter()
-        val defaultSortByFilter = SomFilterUtil.getDefaultSortBy(selectedOrderStatusFilter)
         var count = 0
-        somFilterUiModelList.forEach {
-            if (it.nameFilter == SomConsts.FILTER_SORT) {
-                it.somFilterData.forEach {
-                    if (it.isSelected && it.id != defaultSortByFilter) count++
-                }
-            } else {
-                it.somFilterData.forEach {
-                    if (it.isSelected) count++
+        if (somFilterUiModelList.isNotEmpty()) {
+            val selectedOrderStatusFilter = somFilterUiModelList.find {
+                it.nameFilter == SomConsts.FILTER_STATUS_ORDER
+            }?.somFilterData?.firstOrNull { it.isSelected }?.key ?: SomConsts.STATUS_ALL_ORDER
+            val defaultSortByFilter = SomFilterUtil.getDefaultSortBy(selectedOrderStatusFilter)
+            somFilterUiModelList.forEach {
+                if (it.nameFilter == SomConsts.FILTER_SORT) {
+                    it.somFilterData.forEach {
+                        if (it.isSelected && it.id != defaultSortByFilter) count++
+                    }
+                } else {
+                    it.somFilterData.forEach {
+                        if (it.isSelected) count++
+                    }
                 }
             }
+        } else {
+            val selectedOrderStatusFilter = somListFilterUiModel.statusList.firstOrNull {
+                it.isChecked
+            }?.key ?: SomConsts.STATUS_ALL_ORDER
+            if (selectedOrderStatusFilter != SomConsts.STATUS_ALL_ORDER) count++
+            count += filterItems.count { it.type == ChipsUnify.TYPE_SELECTED }
         }
-        if (startDate != defaultDateFilter.first || endDate != defaultDateFilter.second) count++
+        val defaultDateFilter = SomFilterUtil.getDefaultDateFilter()
+        if (somListGetOrderListParam.startDate != defaultDateFilter.first || somListGetOrderListParam.endDate != defaultDateFilter.second) count++
         selectedCount = count
         updateCounter()
     }
 
     fun show(somListFilterUiModel: SomListFilterUiModel) {
-        this.somListFilterUiModel = somListFilterUiModel
         updateTabs(somListFilterUiModel.quickFilterList)
         sortFilter.show()
-        updateCounter()
     }
 
-    fun isFilterApplied(): Boolean {
-        return sortFilter.indicatorCounter.isMoreThanZero()
+    fun isNonStatusOrderFilterApplied(selectedFilterStatus: String?): Boolean {
+        val nonAllOrderStatusFilterSelected = selectedFilterStatus?.isNotBlank() == true && selectedFilterStatus != SomConsts.STATUS_ALL_ORDER
+        val nonStatusOrderFilterCount = sortFilter.indicatorCounter - 1.takeIf {
+            nonAllOrderStatusFilterSelected
+        }.orZero()
+        return nonStatusOrderFilterCount.isMoreThanZero()
     }
 
     fun isEmpty(): Boolean {
