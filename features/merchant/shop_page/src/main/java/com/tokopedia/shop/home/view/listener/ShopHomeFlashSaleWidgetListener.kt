@@ -13,9 +13,15 @@ interface ShopHomeFlashSaleWidgetListener {
 
     fun onTimerFinished(model: ShopHomeFlashSaleUiModel)
 
-    fun onFlashSaleProductClicked(model: ShopHomeProductUiModel)
+    fun onFlashSaleProductClicked(model: ShopHomeProductUiModel, widgetModel: ShopHomeFlashSaleUiModel, position: Int)
 
     fun onFlashSaleWidgetImpressed(model : ShopHomeFlashSaleUiModel, position: Int)
 
     fun onPlaceHolderClickSeeAll(model: ShopHomeFlashSaleUiModel)
+
+    fun onFlashSaleProductImpression(
+        shopHomeProductUiModel: ShopHomeProductUiModel,
+        flashSaleUiModel: ShopHomeFlashSaleUiModel?,
+        position: Int
+    )
 }

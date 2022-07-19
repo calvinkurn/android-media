@@ -35,9 +35,10 @@ class PlayViewerTagItemRepositoryImpl @Inject constructor(
 
     override suspend fun getTagItem(
         channelId: String,
+        warehouseId: String,
     ): TagItemUiModel = withContext(dispatchers.io) {
         val response = getProductTagItemsUseCase.apply {
-            setRequestParams(GetProductTagItemSectionUseCase.createParam(channelId).parameters)
+            setRequestParams(GetProductTagItemSectionUseCase.createParam(channelId, warehouseId).parameters)
         }.executeOnBackground()
 
         val productList = mapper.mapProductSection(response.playGetTagsItem.sectionList)

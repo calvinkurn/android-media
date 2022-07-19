@@ -42,13 +42,20 @@ class GetWithdrawalInfoUseCase
 
     private fun getFeeDetailData(data: WithdrawalInfoData) =
         arrayListOf(
-            FeeDetailData(context.getString(R.string.saldo_withdrawal_amount), data.amount),
-            FeeDetailData(context.getString(R.string.saldo_withdrawal_fee), data.fee),
-            FeeDetailData(context.getString(R.string.saldo_transferred_amount), data.transferredAmount)
+            FeeDetailData(context.getString(R.string.saldo_withdrawal_amount), data.amount,DEFAULT_LATE_STATUS,
+                DEFAULT_LATE_MESSAGE),
+            FeeDetailData(context.getString(R.string.saldo_withdrawal_fee), data.fee,DEFAULT_LATE_STATUS,DEFAULT_LATE_MESSAGE),
+            FeeDetailData(context.getString(R.string.saldo_transferred_amount), data.transferredAmount,DEFAULT_LATE_STATUS,DEFAULT_LATE_MESSAGE)
         )
 
     private fun getRequestParams(withdrawalId: String) =
         mutableMapOf(
             WITHDRAWAL_ID to withdrawalId,
         )
+
+    companion object
+    {
+        const val DEFAULT_LATE_STATUS = false
+        const val DEFAULT_LATE_MESSAGE=""
+    }
 }
