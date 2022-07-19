@@ -74,7 +74,7 @@
     <string name="shop_operational_hour_is_on_holiday_until">sampai %1$s</string>
     <string name="shop_operational_hour_delete_holiday_text">Hapus tanggal libur</string>
     <string name="shop_operational_hour_selected_holiday_date_text">%1$s, %2$s</string>
-    <string name="shop_operational_hour_ticker_description_auto_chat">Balas chat pembeli secara otomatis ketika tokomu libur. <![CDATA[<a href="%1$s">Atur di Sini</a>]]></string>
+    <string name="shop_operational_hour_ticker_description_auto_chat">Balas chat pembeli secara otomatis ketika tokomu libur. <![CDATA[<a href="%1$s"><b>Atur di Sini</b></a>]]></string>
     <string name="shop_operational_hour_set_holiday_schedule_success">Tanggal toko libur disimpan.</string>
     <string name="shop_operational_hour_abort_holiday_schedule_success">Tanggal toko libur dihapus.</string>
     <string name="shop_operational_hour_create_holiday_schedule_fail">Oops, tanggal libur tidak tersimpan. Cek koneksi dan ulangi lagi, ya.</string>
