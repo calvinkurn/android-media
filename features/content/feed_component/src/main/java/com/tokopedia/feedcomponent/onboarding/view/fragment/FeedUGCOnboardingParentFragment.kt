@@ -90,7 +90,7 @@ class FeedUGCOnboardingParentFragment @Inject constructor(
     }
 
     private fun showBottomSheet() {
-        if(usernameArg.isNotEmpty()) {
+        if(usernameArg.isEmpty()) {
             mListener?.impressOnboardingWithoutUsername()
             FeedUserCompleteOnboardingBottomSheet.getFragment(
                 childFragmentManager,
