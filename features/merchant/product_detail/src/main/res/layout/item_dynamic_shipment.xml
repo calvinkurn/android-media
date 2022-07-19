@@ -40,7 +40,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/ic_pdp_shipment_title"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="heading_5"
+            app:typographyType="display_1"
+            app:typographyWeight="bold"
             tools:text="Bebas Ongkir Extra (Rp0)" />
 
         <com.tokopedia.unifyprinciples.Typography
