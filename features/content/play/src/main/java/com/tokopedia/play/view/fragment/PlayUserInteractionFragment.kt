@@ -327,6 +327,7 @@ class PlayUserInteractionFragment @Inject constructor(
         super.onResume()
         isOpened = true
         invalidateSystemUiVisibility()
+        initAddress()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
