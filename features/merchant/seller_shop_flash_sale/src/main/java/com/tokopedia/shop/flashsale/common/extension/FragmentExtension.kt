@@ -2,8 +2,7 @@ package com.tokopedia.shop.flashsale.common.extension
 
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -17,7 +16,7 @@ fun Fragment.setFragmentToUnifyBgColor() {
 }
 
 fun Fragment.doOnDelayFinished(delay : Long, block: () -> Unit) {
-    CoroutineScope(Dispatchers.Main).launch {
+    viewLifecycleOwner.lifecycleScope.launch {
         delay(delay)
         block()
     }
