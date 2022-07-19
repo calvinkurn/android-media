@@ -227,7 +227,7 @@ open class HomeRevampViewModel @Inject constructor(
                 val initialHeaderModel = headerModel.copy(
                         headerDataModel = headerDataModel)
                 updateHeaderData(initialHeaderModel, index)
-                val currentHeaderDataModel = homeBalanceWidgetUseCase.get().onGetBalanceWidgetData(HomeHeaderDataModel())
+                val currentHeaderDataModel = homeBalanceWidgetUseCase.get().onGetBalanceWidgetData()
                 val visitable = updateHeaderData(currentHeaderDataModel, index)
                 visitable?.let {
                     homeDataModel.updateWidgetModel(visitableToChange = visitable, visitable = currentHeaderDataModel, position = index) {

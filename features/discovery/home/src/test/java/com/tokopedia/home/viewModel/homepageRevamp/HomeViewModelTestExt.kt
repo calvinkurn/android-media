@@ -291,7 +291,7 @@ fun HomeRechargeBuWidgetUseCase.givenOnGetRechargeBuWidgetFromHolderError() {
 }
 
 fun HomeBalanceWidgetUseCase.givenGetHomeBalanceWidgetReturn(homeHeaderDataModel: HomeHeaderDataModel) {
-    coEvery { onGetBalanceWidgetData(any()) } returns homeHeaderDataModel
+    coEvery { onGetBalanceWidgetData() } returns homeHeaderDataModel
 }
 
 fun HomeSearchUseCase.givenSearchPlaceHolderReturn(isFirstInstall: Boolean) {
@@ -308,8 +308,8 @@ fun HomeBalanceWidgetUseCase.givenGetBalanceWidgetDataReturn(homeHeaderDataModel
     coEvery { onGetWalletAppData(any(), any(), any()) } returns homeHeaderDataModel
 }
 
-fun HomeBalanceWidgetUseCase.givenGetBalanceWidgetFailed(homeHeaderDataModel: HomeHeaderDataModel) {
-    coEvery { onGetBalanceWidgetData(homeHeaderDataModel) } throws NetworkErrorException()
+fun HomeBalanceWidgetUseCase.givenGetBalanceWidgetFailed() {
+    coEvery { onGetBalanceWidgetData() } throws NetworkErrorException()
 }
 
 fun HomeDynamicChannelUseCase.givenGetHomeDataReturn(homeDynamicChannelModel: HomeDynamicChannelModel, newHomeDynamicChannelModel: HomeDynamicChannelModel) {
