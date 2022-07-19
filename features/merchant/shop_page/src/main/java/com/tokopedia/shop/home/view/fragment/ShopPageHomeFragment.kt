@@ -244,16 +244,16 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
     @Inject
     lateinit var dispatcher: CoroutineDispatchers
 
-    private var viewModel: ShopHomeViewModel? = null
-    private var extParam: String = ""
-    private var shopId: String = ""
-    private var isOfficialStore: Boolean = false
-    private var isGoldMerchant: Boolean = false
-    private var shopName: String = ""
-    private var shopAttribution: String = ""
-    private var shopRef: String = ""
+    var viewModel: ShopHomeViewModel? = null
+    var extParam: String = ""
+    var shopId: String = ""
+    var isOfficialStore: Boolean = false
+    var isGoldMerchant: Boolean = false
+    var shopName: String = ""
+    var shopAttribution: String = ""
+    var shopRef: String = ""
     var isThematicWidgetShown: Boolean = false
-    private var isEnableDirectPurchase: Boolean = false
+    var isEnableDirectPurchase: Boolean = false
     private var productListName: String = ""
     private var decodeExtParam: String = ""
     private var sortId

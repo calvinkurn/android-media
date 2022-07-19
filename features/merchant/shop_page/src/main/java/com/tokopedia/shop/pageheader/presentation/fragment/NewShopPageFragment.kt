@@ -1957,7 +1957,8 @@ class NewShopPageFragment :
             shopPageHeaderDataModel?.isGoldMerchant ?: false,
             shopPageHeaderDataModel?.shopName.orEmpty(),
             shopAttribution ?: "",
-            shopRef
+            shopRef,
+            shopPageHeaderDataModel?.isEnableDirectPurchase.orFalse()
         ).apply {
             setListWidgetLayoutData(HomeLayoutData(
                 widgetIdList = tabData.data.widgetIdList
