@@ -62,5 +62,12 @@
     <string name="update_collection_bottomsheet_button">Simpan Perubahan</string>
 
     <string name="wishlist_collection_detail_delete_confirmation_title">Hapus Koleksi \"%s\"</string>
+    <string name="collection_item_delete_confirmation_title">Hapus barang dari Wishlist?</string>
+    <string name="collection_item_delete_confirmation_desc">Barang akan terhapus juga dari semua Koleksi.</string>
+
+    <string name="collection_inside_delete_confirmation_title">Hapus %d barang</string>
+    <string name="collection_inside_delete_confirmation_desc">Jika hapus dari Koleksi saja, barang akan tetap tersimpan di Wishlist.</string>
+    <string name="collection_inside_delete_confirmation_button_primary">Hapus dari Koleksi Saja</string>
+    <string name="collection_inside_delete_confirmation_button_secondary">Hapus dari Semua Wishlist</string>
 
 </resources>

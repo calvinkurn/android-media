@@ -153,6 +153,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
     private var collectionId = ""
     private var detectTextChangeJob: Job? = null
+    private var countDelete = 1
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -277,6 +278,87 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         observingWishlistCollectionItems()
         observingCollectionItemsData()
         observingDeleteWishlistV2()
+        observingBulkDeleteWishlistV2()
+        observingDeleteCollectionItems()
+    }
+
+    private fun observingDeleteCollectionItems() {
+        wishlistCollectionDetailViewModel.deleteCollectionItemsResult.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    result.data.let { deleteCollectionItems ->
+                        if (deleteCollectionItems.data.success && deleteCollectionItems.status == OK) {
+                            showToaster(deleteCollectionItems.data.message, "", Toaster.TYPE_NORMAL)
+                            setRefreshing()
+                        } else {
+                            var errorMessage = context?.getString(Rv2.string.wishlist_v2_common_error_msg)
+                            if (deleteCollectionItems.data.message.isNotEmpty()) errorMessage = deleteCollectionItems.data.message
+                            errorMessage?.let { showToaster(it, "", Toaster.TYPE_ERROR) }
+                        }
+                    }
+                }
+                is Fail -> {
+                    val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                    showToaster(errorMessage, "", Toaster.TYPE_ERROR)
+                }
+            }
+        }
+    }
+
+    private fun observingBulkDeleteWishlistV2() {
+        wishlistCollectionDetailViewModel.bulkDeleteWishlistV2Result.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    result.data.let { bulkDeleteWishlistV2 ->
+                        if (bulkDeleteWishlistV2.success) {
+                            if (bulkDeleteMode == 0) {
+                                // normal bulk delete
+                                val listId = bulkDeleteWishlistV2.id.replace("[", "").replace("]", "").split(",").toList()
+                                var msg = getString(Rv2.string.wishlist_v2_bulk_delete_msg_toaster, listId.size)
+                                if (bulkDeleteWishlistV2.message.isNotEmpty()) {
+                                    msg = bulkDeleteWishlistV2.message
+                                }
+
+                                var btnText = getString(Rv2.string.wishlist_oke_label)
+                                if (bulkDeleteWishlistV2.button.text.isNotEmpty()) {
+                                    btnText = bulkDeleteWishlistV2.button.text
+                                }
+
+                                showToaster(msg, btnText, Toaster.TYPE_NORMAL)
+                                setRefreshing()
+                            } else {
+                                // bulkDeleteMode == 1 (manual choose via cleaner bottomsheet)
+                                // bulkDeleteMode == 2 (choose automatic deletion)
+                                turnOffBulkDeleteCleanMode()
+                                hideTotalLabel()
+                                binding?.run { rvWishlistCollectionDetail.scrollToPosition(0) }
+                            }
+                            setSwipeRefreshLayout()
+
+                        } else {
+                            var errorMessage = context?.getString(Rv2.string.wishlist_v2_common_error_msg)
+                            if (bulkDeleteWishlistV2.message.isNotEmpty()) errorMessage = bulkDeleteWishlistV2.message
+                            errorMessage?.let { showToaster(it, "", Toaster.TYPE_ERROR) }
+                        }
+                    }
+                }
+                is Fail -> {
+                    finishDeletionWidget(DeleteWishlistProgressV2Response.Data.DeleteWishlistProgress.DataDeleteWishlistProgress())
+                    val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                    showToaster(errorMessage, "", Toaster.TYPE_ERROR)
+
+                    val labelError = String.format(
+                        getString(Rv2.string.on_error_observing_bulk_delete_wishlist_v2_string_builder),
+                        userSession.userId ?: "",
+                        errorMessage,
+                        result.throwable.message ?: "")
+                    // log error type to newrelic
+                    ServerLogger.log(Priority.P2, "WISHLIST_V2_ERROR", mapOf("type" to labelError))
+                    // log to crashlytics
+                    logToCrashlytics(labelError, result.throwable)
+                }
+            }
+        }
     }
 
     private fun observingWishlistCollectionItems() {
@@ -1083,10 +1165,12 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                             )
                         }
                         MENU_DELETE_WISHLIST -> {
-                            wishlistCollectionDetailViewModel.deleteWishlistV2(
-                                productId = wishlistItem.id,
-                                userId = userSession.userId
-                            )
+                            if (paramGetCollectionItems.collectionId == "0") {
+                                showDeleteConfirmationDialog(wishlistItem.id)
+                            } else {
+                                showDeleteCollectionItemConfirmationDialog(countDelete, wishlistItem.id)
+                            }
+
                         }
                         MENU_ADD_ITEM_TO_COLLECTION -> {
                             val applinkCollection =
@@ -1104,6 +1188,59 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             }
         })
         bottomSheetThreeDotsMenu.show(childFragmentManager)
+    }
+
+    private fun showDeleteConfirmationDialog(productId: String) {
+        val dialog = context?.let { DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE) }
+        dialog?.setTitle(getString(Rv2.string.collection_item_delete_confirmation_title))
+        dialog?.setDescription(getString(Rv2.string.collection_item_delete_confirmation_desc))
+        dialog?.setPrimaryCTAText(getString(Rv2.string.wishlist_delete_label))
+        dialog?.setPrimaryCTAClickListener {
+            dialog.dismiss()
+            doDeleteSingleWishlistItem(productId)
+        }
+        dialog?.setSecondaryCTAText(getString(Rv2.string.wishlist_cancel_manage_label))
+        dialog?.setSecondaryCTAClickListener {
+            dialog.dismiss()
+            WishlistV2Analytics.clickBatalOnPopUpMultipleWishlistProduct()
+        }
+        dialog?.show()
+    }
+
+    private fun showDeleteCollectionItemConfirmationDialog(count: Int, productId: String) {
+        val dialog = context?.let { DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE) }
+        dialog?.setTitle(getString(Rv2.string.collection_inside_delete_confirmation_title, count))
+        dialog?.setDescription(getString(Rv2.string.collection_inside_delete_confirmation_desc))
+        dialog?.setPrimaryCTAText(getString(Rv2.string.collection_inside_delete_confirmation_button_primary))
+        dialog?.setPrimaryCTAClickListener {
+            dialog.dismiss()
+            doDeleteBulkCollectionItems(productId)
+        }
+        dialog?.setSecondaryCTAText(getString(Rv2.string.collection_inside_delete_confirmation_button_secondary))
+        dialog?.setSecondaryCTAClickListener {
+            dialog.dismiss()
+            doDeleteCollectionItems(productId)
+        }
+        dialog?.show()
+    }
+
+    private fun doDeleteSingleWishlistItem(productId: String) {
+        wishlistCollectionDetailViewModel.deleteWishlistV2(
+            productId = productId,
+            userId = userSession.userId
+        )
+    }
+
+    private fun doDeleteBulkCollectionItems(productId: String) {
+        val listProduct = arrayListOf<String>()
+        listProduct.add(productId)
+        wishlistCollectionDetailViewModel.bulkDeleteWishlistV2(listProduct, userSession.userId, bulkDeleteMode)
+    }
+
+    private fun doDeleteCollectionItems(productId: String) {
+        val listProduct = arrayListOf<String>()
+        listProduct.add(productId)
+        wishlistCollectionDetailViewModel.deleteWishlistCollectionItems(listProduct)
     }
 
     private fun showBottomSheetCleaner(cleanerBottomSheet: WishlistV2UiModel.StorageCleanerBottomSheet) {

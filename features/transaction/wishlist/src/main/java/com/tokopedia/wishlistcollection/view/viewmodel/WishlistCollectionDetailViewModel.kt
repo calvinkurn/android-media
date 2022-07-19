@@ -11,8 +11,11 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.wishlist.data.model.WishlistV2BulkRemoveAdditionalParams
 import com.tokopedia.wishlist.data.model.WishlistV2RecommendationDataModel
 import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
+import com.tokopedia.wishlist.data.model.response.BulkDeleteWishlistV2Response
+import com.tokopedia.wishlist.domain.BulkDeleteWishlistV2UseCase
 import com.tokopedia.wishlist.util.WishlistV2Consts
 import com.tokopedia.wishlist.util.WishlistV2Consts.EMPTY_WISHLIST_PAGE_NAME
 import com.tokopedia.wishlist.util.WishlistV2Consts.WISHLIST_TOPADS_ADS_COUNT
@@ -22,7 +25,9 @@ import com.tokopedia.wishlist.util.WishlistV2Utils.convertCollectionItemsIntoWis
 import com.tokopedia.wishlist.util.WishlistV2Utils.convertRecommendationIntoProductDataModel
 import com.tokopedia.wishlist.util.WishlistV2Utils.organizeWishlistV2Data
 import com.tokopedia.wishlistcollection.data.params.GetWishlistCollectionItemsParams
+import com.tokopedia.wishlistcollection.data.response.DeleteWishlistCollectionItemsResponse
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionItemsResponse
+import com.tokopedia.wishlistcollection.domain.DeleteWishlistCollectionItemsUseCase
 import com.tokopedia.wishlistcollection.domain.GetWishlistCollectionItemsUseCase
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -33,7 +38,9 @@ class WishlistCollectionDetailViewModel @Inject constructor(
     private val getWishlistCollectionItemsUseCase: GetWishlistCollectionItemsUseCase,
     private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
     private val singleRecommendationUseCase: GetSingleRecommendationUseCase,
-    private val deleteWishlistV2UseCase: com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
+    private val deleteWishlistV2UseCase: com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase,
+    private val bulkDeleteWishlistV2UseCase: BulkDeleteWishlistV2UseCase,
+    private val deleteCollectionItemsUseCase: DeleteWishlistCollectionItemsUseCase
 ) : BaseViewModel(dispatcher.main) {
 
     private val _collectionItems =
@@ -49,6 +56,14 @@ class WishlistCollectionDetailViewModel @Inject constructor(
         MutableLiveData<Result<com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response.Data.WishlistRemoveV2>>()
     val deleteWishlistV2Result: LiveData<Result<com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response.Data.WishlistRemoveV2>>
         get() = _deleteWishlistV2Result
+
+    private val _bulkDeleteWishlistV2Result = MutableLiveData<Result<BulkDeleteWishlistV2Response.Data.WishlistBulkRemoveV2>>()
+    val bulkDeleteWishlistV2Result: LiveData<Result<BulkDeleteWishlistV2Response.Data.WishlistBulkRemoveV2>>
+        get() = _bulkDeleteWishlistV2Result
+
+    private val _deleteCollectionItemsResult = MutableLiveData<Result<DeleteWishlistCollectionItemsResponse.Data.DeleteWishlistCollectionItems>>()
+    val deleteCollectionItemsResult: LiveData<Result<DeleteWishlistCollectionItemsResponse.Data.DeleteWishlistCollectionItems>>
+        get() = _deleteCollectionItemsResult
 
     fun getWishlistCollectionItems(
         params: GetWishlistCollectionItemsParams,
@@ -135,6 +150,28 @@ class WishlistCollectionDetailViewModel @Inject constructor(
             deleteWishlistV2UseCase.setParams(productId, userId)
             _deleteWishlistV2Result.value =
                 deleteWishlistV2UseCase.executeOnBackground()
+        }
+    }
+
+    fun bulkDeleteWishlistV2(listProductId: List<String>, userId: String, mode: Int) {
+        launch {
+            _bulkDeleteWishlistV2Result.value = bulkDeleteWishlistV2UseCase.executeSuspend(listProductId, userId, mode, WishlistV2BulkRemoveAdditionalParams())
+        }
+    }
+
+    fun deleteWishlistCollectionItems(listProductId: List<String>) {
+        launch(dispatcher.main) {
+            val result =
+                withContext(dispatcher.io) {
+                    deleteCollectionItemsUseCase.setParams(listProductId)
+                    deleteCollectionItemsUseCase.executeOnBackground()
+                }
+            if (result is Success) {
+                _deleteCollectionItemsResult.value = result
+            } else {
+                val error = (result as Fail).throwable
+                _deleteCollectionItemsResult.value = Fail(error)
+            }
         }
     }
 }

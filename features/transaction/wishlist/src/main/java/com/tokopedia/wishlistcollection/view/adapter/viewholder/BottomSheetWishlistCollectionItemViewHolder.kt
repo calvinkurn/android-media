@@ -27,6 +27,13 @@ class BottomSheetWishlistCollectionItemViewHolder(
             binding.mainCollectionItemName.text = item.dataObject.name
             binding.mainCollectionTotalItem.text =
                 "${item.dataObject.totalItem} ${item.dataObject.itemText}"
+
+            if (item.dataObject.isContainProduct) {
+                binding.icCheck.visible()
+            } else {
+                binding.icCheck.gone()
+            }
+
             binding.root.setOnClickListener { actionListener?.onCollectionItemClicked(item.dataObject.name, item.dataObject.id) }
         }
     }

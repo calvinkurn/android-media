@@ -340,3 +340,15 @@ package com.tokopedia.wishlistcommon.util
                     }
                   }
                 }"""
+
+    const val GQL_DELETE_WISHLIST_COLLECTION_ITEMS = """
+             mutation DeleteBulkCollectionItems(${'$'}productIDs: [SuperInteger]) {
+                  delete_wishlist_collection_items(productIDs: ${'$'}productIDs) {
+                    status
+                    error_message
+                    data {
+                      success
+                      message
+                    }
+                  }
+                }"""
