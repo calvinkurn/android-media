@@ -10,8 +10,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="18dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/image_product_item"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/guidelineStarter"
         app:layout_constraintTop_toTopOf="@+id/image_product_item" />
 
     <com.tokopedia.unifycomponents.ImageUnify
@@ -113,23 +114,22 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/icon_dilayani_tokopedia"
-        android:layout_width="20dp"
+        android:layout_width="wrap_content"
         android:layout_height="20dp"
         android:layout_marginTop="16dp"
         android:paddingEnd="4dp"
-        android:visibility="gone"
         android:src="@drawable/ic_sfs_dilayani_tokopedia_gs"
-        app:layout_constraintStart_toStartOf="@+id/tpg_complete_product_info_desc"
+        android:visibility="gone"
+        app:layout_constraintStart_toEndOf="@+id/guidelineStarter"
         app:layout_constraintTop_toBottomOf="@+id/tpg_complete_product_info_desc" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpg_stock_product"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="18dp"
         android:layout_marginTop="16dp"
         android:textColor="@color/grey_600"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/icon_dilayani_tokopedia"
         app:layout_constraintTop_toBottomOf="@+id/tpg_complete_product_info_desc"
         app:typographyType="paragraph_2"
         tools:text="@string/manage_product_item_stock_at_seller_location_label" />
@@ -216,7 +216,14 @@
         android:id="@+id/barrier_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:barrierDirection="bottom"
-        app:constraint_referenced_ids="tpg_error_copy, label_belum_lengkap"/>
+        app:barrierDirection="start"
+        app:constraint_referenced_ids="icon_dilayani_tokopedia"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineStarter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="18dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

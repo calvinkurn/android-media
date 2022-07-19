@@ -1,14 +1,17 @@
 package com.tokopedia.shop.flashsale.presentation.creation.manage.adapter
 
+import android.annotation.SuppressLint
 import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsItemManageProductBinding
-import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList.Product
+import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
+import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList.*
 import com.tokopedia.unifyprinciples.Typography
 
 class ManageProductListAdapter(
@@ -72,13 +75,15 @@ class ManageProductListAdapter(
                         tpgDiscountedPrice.text =
                             product.productMapData.discountedPrice.getCurrencyFormatted()
                         labelDiscount.text = "${product.productMapData.discountPercentage}%"
-                        tpgOriginalPrice.text = product.formattedPrice
+                        tpgOriginalPrice.text =
+                            product.productMapData.originalPrice.getCurrencyFormatted()
                         tpgOriginalPrice.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
                     }
                     else -> {
                         labelDiscount.gone()
                         tpgDiscountedPrice.gone()
-                        tpgOriginalPrice.text = product.formattedPrice
+                        tpgOriginalPrice.text =
+                            product.productMapData.originalPrice.getCurrencyFormatted()
                     }
                 }
 
@@ -105,9 +110,7 @@ class ManageProductListAdapter(
                     }
                 }
 
-
-
-                tpgStockProduct.setOriginalStock(product.productMapData.originalStock)
+                tpgStockProduct.setOriginalStock(product)
                 tpgStockCampaign.setCampaignStock(product.productMapData.originalCustomStock)
                 tpgMaxOrder.setMaxOrder(product.productMapData.maxOrder)
 
@@ -121,26 +124,37 @@ class ManageProductListAdapter(
             }
         }
 
-        private fun Typography.setOriginalStock(originalStock: Int) {
-            this.text = HtmlCompat.fromHtml(
-                context.getString(
-                    R.string.manage_product_item_stock_at_seller_location_label,
-                    originalStock
-                ),
-                HtmlCompat.FROM_HTML_MODE_COMPACT
-            )
+        private fun Typography.setOriginalStock(product: Product) {
+            this.text = if (product.warehouseList.isNullOrEmpty()) {
+                MethodChecker.fromHtml(
+                    context.getString(
+                        R.string.manage_product_item_stock_at_single_location_label,
+                        product.productMapData.originalStock
+                    )
+                )
+            } else {
+                binding.iconDilayaniTokopedia.visible()
+                product.warehouseList.firstOrNull { it.chosenWarehouse }?.let { warehouse ->
+                    MethodChecker.fromHtml(
+                        context.getString(
+                            R.string.manage_product_item_stock_at_seller_location_label,
+                            warehouse.stock,
+                            warehouse.warehouseName
+                        )
+                    )
+                }
+            }
         }
 
         private fun Typography.setCampaignStock(campaignStock: Int) {
             if (campaignStock > 0) {
                 this.visible()
                 binding.tpgSeparator.visible()
-                this.text = HtmlCompat.fromHtml(
+                this.text = MethodChecker.fromHtml(
                     context.getString(
                         R.string.manage_product_item_campaign_stock_label,
                         campaignStock
-                    ),
-                    HtmlCompat.FROM_HTML_MODE_COMPACT
+                    )
                 )
             } else {
                 binding.tpgSeparator.gone()
@@ -151,9 +165,8 @@ class ManageProductListAdapter(
         private fun Typography.setMaxOrder(maxOrder: Int) {
             if (maxOrder.isMoreThanZero()) {
                 this.visible()
-                this.text = HtmlCompat.fromHtml(
-                    context.getString(R.string.manage_product_item_max_buy_label, maxOrder),
-                    HtmlCompat.FROM_HTML_MODE_COMPACT
+                this.text = MethodChecker.fromHtml(
+                    context.getString(R.string.manage_product_item_max_buy_label, maxOrder)
                 )
             } else {
                 this.gone()
