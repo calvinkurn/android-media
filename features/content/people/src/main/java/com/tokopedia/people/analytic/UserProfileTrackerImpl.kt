@@ -38,7 +38,10 @@ import com.tokopedia.people.analytic.UserProfileAnalytics.Action.VIEW_SHARE_CHAN
 import com.tokopedia.people.analytic.UserProfileAnalytics.Action.VIEW_SHARE_SCREENSHOT_BOTTOMSHEET
 import com.tokopedia.people.analytic.UserProfileAnalytics.Category.FEED_USER_PROFILE
 import com.tokopedia.people.analytic.UserProfileAnalytics.Category.FEED_USER_PROFILE_FOLLOWER_TAB
+import com.tokopedia.people.analytic.UserProfileAnalytics.Category.FEED_USER_PROFILE_FOLLOWING_TAB
 import com.tokopedia.people.analytic.UserProfileAnalytics.Category.FEED_USER_PROFILE_ONBOARDING_BOTTOMSHEET
+import com.tokopedia.people.analytic.UserProfileAnalytics.Category.FEED_USER_PROFILE_POST
+import com.tokopedia.people.analytic.UserProfileAnalytics.Category.FEED_USER_PROFILE_VIDEO
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.BUSINESS_UNIT
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.CONTENT
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.CREATIVE
@@ -49,15 +52,20 @@ import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.EVENT_ACTION
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.EVENT_CATEGORY
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.EVENT_LABEL
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.ID
+import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.LIVE
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.NAME
+import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.NOT_LIVE
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.POSITION
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.PROMOTIONS
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.PROMO_CLICK
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.SCREEN_NAME
+import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.SELF
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.SESSION_IRIS
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.TOKOPEDIA_MARKETPLACE
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.TOKOPEDIA_SELLER
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.USER_ID
+import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.VISITOR
+import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.VOD
 import com.tokopedia.people.analytic.UserProfileAnalytics.Event.EVENT_CLICK_COMMUNICATION
 import com.tokopedia.people.analytic.UserProfileAnalytics.Event.EVENT_CLICK_FEED
 import com.tokopedia.people.analytic.UserProfileAnalytics.Event.EVENT_CLICK_HOME_PAGE
@@ -74,31 +82,27 @@ import javax.inject.Inject
 
 class UserProfileTrackerImpl @Inject constructor(
     private val trackingQueue: TrackingQueue,
-): UserProfileTracker {
+) : UserProfileTracker {
 
-    override fun openUserProfile(userId: String, live: Boolean){
-        val label = if(live){
-            "live"
-        } else{
-            "not live"
-        }
+    override fun openUserProfile(userId: String, live: Boolean) {
+        val label = if (live) LIVE
+        else NOT_LIVE
+        
         val map = mutableMapOf<String, Any>()
         map[EVENT] = EVENT_OPEN_SCREEN
         map[BUSINESS_UNIT] = CONTENT
         map[CURRENT_SITE] = currentSite
-        map[SCREEN_NAME] = "feed user profile - $label"
+        map[SCREEN_NAME] = "$FEED_USER_PROFILE - $label"
         map[USER_ID] = userId
 
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
 
     }
 
-    override fun clickBack(userId: String, self: Boolean){
-        val label = if(self){
-            "self"
-        } else{
-            "visitor"
-        }
+    override fun clickBack(userId: String, self: Boolean) {
+        val label = if (self) SELF
+        else VISITOR
+
         val map = mutableMapOf<String, Any>()
         map[EVENT] = EVENT_CLICK_FEED
         map[EVENT_ACTION] = CLICK_BACK
@@ -112,12 +116,10 @@ class UserProfileTrackerImpl @Inject constructor(
 
     }
 
-    override fun clickShare(userId: String, self: Boolean){
-        val label = if(self){
-            "self"
-        } else{
-            "visitor"
-        }
+    override fun clickShare(userId: String, self: Boolean) {
+        val label = if (self) SELF
+        else VISITOR
+
         val map = mutableMapOf<String, Any>()
         map[EVENT] = EVENT_CLICK_FEED
         map[EVENT_ACTION] = CLICK_SHARE
@@ -132,12 +134,10 @@ class UserProfileTrackerImpl @Inject constructor(
 
     }
 
-    override fun clickBurgerMenu(userId: String, self: Boolean){
-        val label = if(self){
-            "self"
-        } else{
-            "visitor"
-        }
+    override fun clickBurgerMenu(userId: String, self: Boolean) {
+        val label = if (self) SELF
+        else VISITOR
+
         val map = mutableMapOf<String, Any>()
         map[EVENT] = EVENT_CLICK_FEED
         map[EVENT_ACTION] = CLICK_BURGER_MENU
@@ -152,12 +152,10 @@ class UserProfileTrackerImpl @Inject constructor(
 
     }
 
-    override fun clickProfilePicture(userId: String, self: Boolean, activityId: String){
-        val label = if(self){
-            "self"
-        } else{
-            "visitor"
-        }
+    override fun clickProfilePicture(userId: String, self: Boolean, activityId: String) {
+        val label = if (self) SELF
+        else VISITOR
+
         val map = mutableMapOf<String, Any>()
         map[EVENT] = EVENT_CLICK_FEED
         map[EVENT_ACTION] = CLICK_PROFILE_PICTURE
@@ -171,12 +169,10 @@ class UserProfileTrackerImpl @Inject constructor(
 
     }
 
-    override fun clickFollowers(userId: String, self: Boolean){
-        val label = if(self){
-            "self"
-        } else{
-            "visitor"
-        }
+    override fun clickFollowers(userId: String, self: Boolean) {
+        val label = if (self) SELF
+        else VISITOR
+
         val map = mutableMapOf<String, Any>()
         map[EVENT] = EVENT_CLICK_FEED
         map[EVENT_ACTION] = CLICK_FOLLOWER
@@ -191,12 +187,10 @@ class UserProfileTrackerImpl @Inject constructor(
 
     }
 
-    override fun clickFollowing(userId: String, self: Boolean){
-        val label = if(self){
-            "self"
-        } else{
-            "visitor"
-        }
+    override fun clickFollowing(userId: String, self: Boolean) {
+        val label = if (self) SELF
+        else VISITOR
+
         val map = mutableMapOf<String, Any>()
         map[EVENT] = EVENT_CLICK_FEED
         map[EVENT_ACTION] = CLICK_FOLLOWING
@@ -211,12 +205,10 @@ class UserProfileTrackerImpl @Inject constructor(
 
     }
 
-    override fun clickSelengkapnya(userId: String, self: Boolean){
-        val label = if(self){
-            "self"
-        } else{
-            "visitor"
-        }
+    override fun clickSelengkapnya(userId: String, self: Boolean) {
+        val label = if (self) SELF
+        else VISITOR
+
         val map = mutableMapOf<String, Any>()
         map[EVENT] = EVENT_CLICK_FEED
         map[EVENT_ACTION] = CLICK_SELENGKAPNYA
@@ -231,12 +223,10 @@ class UserProfileTrackerImpl @Inject constructor(
 
     }
 
-    override fun clickFollow(userId: String, self: Boolean){
-        val label = if(self){
-            "self"
-        } else{
-            "visitor"
-        }
+    override fun clickFollow(userId: String, self: Boolean) {
+        val label = if (self) SELF
+        else VISITOR
+
         val map = mutableMapOf<String, Any>()
         map[EVENT] = EVENT_CLICK_FEED
         map[EVENT_ACTION] = CLICK_FOLLOW
@@ -251,12 +241,10 @@ class UserProfileTrackerImpl @Inject constructor(
 
     }
 
-    override fun clickUnfollow(userId: String, self: Boolean){
-        val label = if(self){
-            "self"
-        } else{
-            "visitor"
-        }
+    override fun clickUnfollow(userId: String, self: Boolean) {
+        val label = if (self) SELF
+        else VISITOR
+
         val map = mutableMapOf<String, Any>()
         map[EVENT] = EVENT_CLICK_FEED
         map[EVENT_ACTION] = CLICK_UNFOLLOW
@@ -271,12 +259,10 @@ class UserProfileTrackerImpl @Inject constructor(
 
     }
 
-    override fun clickVideoTab(userId: String, self: Boolean){
-        val label = if(self){
-            "self"
-        } else{
-            "visitor"
-        }
+    override fun clickVideoTab(userId: String, self: Boolean) {
+        val label = if (self) SELF
+        else VISITOR
+
         val map = mutableMapOf<String, Any>()
         map[EVENT] = EVENT_CLICK_FEED
         map[EVENT_ACTION] = CLICK_VIDEO_TAB
@@ -291,17 +277,20 @@ class UserProfileTrackerImpl @Inject constructor(
 
     }
 
-    override fun impressionVideo(userId: String, self: Boolean, live: Boolean, activityId: String, imageUrl: String, videoPosition: Int){
-        val label = if(self){
-            "self"
-        } else{
-            "visitor"
-        }
-        val labelLive = if(live){
-            "live"
-        } else{
-            "vod"
-        }
+    override fun impressionVideo(
+        userId: String,
+        self: Boolean,
+        live: Boolean,
+        activityId: String,
+        imageUrl: String,
+        videoPosition: Int
+    ) {
+        val label = if (self) SELF
+        else VISITOR
+        
+        val labelLive = if (live) LIVE
+        else VOD
+        
         val map = mutableMapOf<String, Any>()
         map[EVENT] = EVENT_VIEW_ITEM
         map[EVENT_ACTION] = IMPRESSION_VIDEO
@@ -312,25 +301,28 @@ class UserProfileTrackerImpl @Inject constructor(
         map[BUSINESS_UNIT] = CONTENT
         map[CURRENT_SITE] = currentSite
         val promoMap = mutableMapOf<String, Any>()
-        promoMap["creative_name"] = imageUrl
-        promoMap["creative_slot"] = videoPosition
-        promoMap["item_id"] = activityId
-        promoMap["item_name"] = "feed user profile - video"
+        promoMap[CREATIVE] = imageUrl
+        promoMap[POSITION] = videoPosition
+        promoMap[ID] = activityId
+        promoMap[NAME] = FEED_USER_PROFILE_VIDEO
         map[PROMOTIONS] = listOf(promoMap)
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    override fun clickVideo(userId: String, self: Boolean, live: Boolean, activityId: String, imageUrl: String, videoPosition: Int){
-        val label = if(self){
-            "self"
-        } else{
-            "visitor"
-        }
-        val labelLive = if(live){
-            "live"
-        } else{
-            "vod"
-        }
+    override fun clickVideo(
+        userId: String,
+        self: Boolean,
+        live: Boolean,
+        activityId: String,
+        imageUrl: String,
+        videoPosition: Int
+    ) {
+        val label = if (self) SELF
+        else VISITOR
+
+        val labelLive = if (live) LIVE
+        else VOD
+        
         val map = mutableMapOf<String, Any>()
         map[EVENT] = EVENT_SELECT_CONTENT
         map[EVENT_ACTION] = CLICK_VIDEO
@@ -341,20 +333,18 @@ class UserProfileTrackerImpl @Inject constructor(
         map[BUSINESS_UNIT] = CONTENT
         map[CURRENT_SITE] = currentSite
         val promoMap = mutableMapOf<String, Any>()
-        promoMap["creative_name"] = imageUrl
-        promoMap["creative_slot"] = videoPosition
-        promoMap["item_id"] = activityId
-        promoMap["item_name"] = "feed user profile - video"
+        promoMap[CREATIVE] = imageUrl
+        promoMap[POSITION] = videoPosition
+        promoMap[ID] = activityId
+        promoMap[NAME] = FEED_USER_PROFILE_VIDEO
         map[PROMOTIONS] = listOf(promoMap)
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    override fun clickFeedTab(userId: String, self: Boolean){
-        val label = if(self){
-            "self"
-        } else{
-            "visitor"
-        }
+    override fun clickFeedTab(userId: String, self: Boolean) {
+        val label = if (self) SELF
+        else VISITOR
+
         val map = mutableMapOf<String, Any>()
         map[EVENT] = EVENT_CLICK_FEED
         map[EVENT_ACTION] = CLICK_FEED_TAB
@@ -367,12 +357,17 @@ class UserProfileTrackerImpl @Inject constructor(
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    override fun impressionPost(userId: String, self: Boolean, activityId: String, imageUrl: String, postPosition: Int, mediaType: String){
-        val label = if(self){
-            "self"
-        } else{
-            "visitor"
-        }
+    override fun impressionPost(
+        userId: String,
+        self: Boolean,
+        activityId: String,
+        imageUrl: String,
+        postPosition: Int,
+        mediaType: String
+    ) {
+        val label = if (self) SELF
+        else VISITOR
+
         val map = mutableMapOf<String, Any>()
         map[EVENT] = EVENT_VIEW_ITEM
         map[EVENT_ACTION] = IMPRESSION_POST
@@ -383,20 +378,25 @@ class UserProfileTrackerImpl @Inject constructor(
         map[BUSINESS_UNIT] = CONTENT
         map[CURRENT_SITE] = currentSite
         val promoMap = mutableMapOf<String, Any>()
-        promoMap["creative_name"] = imageUrl
-        promoMap["creative_slot"] = postPosition
-        promoMap["item_id"] = activityId
-        promoMap["item_name"] = "feed user profile - post"
+        promoMap[CREATIVE] = imageUrl
+        promoMap[POSITION] = postPosition
+        promoMap[ID] = activityId
+        promoMap[NAME] = FEED_USER_PROFILE_POST
         map[PROMOTIONS] = listOf(promoMap)
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    override fun clickPost(userId: String, self: Boolean, activityId: String, imageUrl: String, postPosition: Int, mediaType: String){
-        val label = if(self){
-            "self"
-        } else{
-            "visitor"
-        }
+    override fun clickPost(
+        userId: String,
+        self: Boolean,
+        activityId: String,
+        imageUrl: String,
+        postPosition: Int,
+        mediaType: String
+    ) {
+        val label = if (self) SELF
+        else VISITOR
+
         val map = mutableMapOf<String, Any>()
         map[EVENT] = EVENT_SELECT_CONTENT
         map[EVENT_ACTION] = CLICK_POST
@@ -407,20 +407,18 @@ class UserProfileTrackerImpl @Inject constructor(
         map[BUSINESS_UNIT] = CONTENT
         map[CURRENT_SITE] = currentSite
         val promoMap = mutableMapOf<String, Any>()
-        promoMap["creative_name"] = imageUrl
-        promoMap["creative_slot"] = postPosition
-        promoMap["item_id"] = activityId
-        promoMap["item_name"] = "feed user profile - post"
+        promoMap[CREATIVE] = imageUrl
+        promoMap[POSITION] = postPosition
+        promoMap[ID] = activityId
+        promoMap[NAME] = FEED_USER_PROFILE_POST
         map[PROMOTIONS] = listOf(promoMap)
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    override fun clickShareButton(userId: String, self: Boolean){
-        val label = if(self){
-            "self"
-        } else{
-            "visitor"
-        }
+    override fun clickShareButton(userId: String, self: Boolean) {
+        val label = if (self) SELF
+        else VISITOR
+
         val map = mutableMapOf<String, Any>()
         map[EVENT] = EVENT_CLICK_COMMUNICATION
         map[EVENT_ACTION] = CLICK_SHARE_BUTTON
@@ -433,12 +431,10 @@ class UserProfileTrackerImpl @Inject constructor(
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    override fun clickCloseShareButton(userId: String, self: Boolean){
-        val label = if(self){
-            "self"
-        } else{
-            "visitor"
-        }
+    override fun clickCloseShareButton(userId: String, self: Boolean) {
+        val label = if (self) SELF
+        else VISITOR
+
         val map = mutableMapOf<String, Any>()
         map[EVENT] = EVENT_CLICK_COMMUNICATION
         map[EVENT_ACTION] = CLICK_CLOSE_SHARE_BUTTON
@@ -451,12 +447,10 @@ class UserProfileTrackerImpl @Inject constructor(
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    override fun clickShareChannel(userId: String, self: Boolean, channel: String){
-        val label = if(self){
-            "self"
-        } else{
-            "visitor"
-        }
+    override fun clickShareChannel(userId: String, self: Boolean, channel: String) {
+        val label = if (self) SELF
+        else VISITOR
+
         val map = mutableMapOf<String, Any>()
         map[EVENT] = EVENT_CLICK_COMMUNICATION
         map[EVENT_ACTION] = CLICK_SHARE_CHANNEL
@@ -469,12 +463,10 @@ class UserProfileTrackerImpl @Inject constructor(
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    override fun viewShareChannel(userId: String, self: Boolean){
-        val label = if(self){
-            "self"
-        } else{
-            "visitor"
-        }
+    override fun viewShareChannel(userId: String, self: Boolean) {
+        val label = if (self) SELF
+        else VISITOR
+
         val map = mutableMapOf<String, Any>()
         map[EVENT] = EVENT_VIEW_COMMUNICATION
         map[EVENT_ACTION] = VIEW_SHARE_CHANNEL
@@ -487,12 +479,10 @@ class UserProfileTrackerImpl @Inject constructor(
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    override fun viewScreenshotShareBottomsheet(userId: String, self: Boolean){
-        val label = if(self){
-            "self"
-        } else{
-            "visitor"
-        }
+    override fun viewScreenshotShareBottomsheet(userId: String, self: Boolean) {
+        val label = if (self) SELF
+        else VISITOR
+
         val map = mutableMapOf<String, Any>()
         map[EVENT] = EVENT_VIEW_COMMUNICATION
         map[EVENT_ACTION] = VIEW_SHARE_SCREENSHOT_BOTTOMSHEET
@@ -505,12 +495,10 @@ class UserProfileTrackerImpl @Inject constructor(
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    override fun clickCloseScreenshotShareBottomsheet(userId: String, self: Boolean){
-        val label = if(self){
-            "self"
-        } else{
-            "visitor"
-        }
+    override fun clickCloseScreenshotShareBottomsheet(userId: String, self: Boolean) {
+        val label = if (self) SELF
+        else VISITOR
+
         val map = mutableMapOf<String, Any>()
         map[EVENT] = EVENT_CLICK_COMMUNICATION
         map[EVENT_ACTION] = CLICK_CLOSE_SHARE_SCREENSHOT_BOTTOMSHEET
@@ -523,12 +511,9 @@ class UserProfileTrackerImpl @Inject constructor(
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    override fun clickChannelScreenshotShareBottomsheet(userId: String, self: Boolean){
-        val label = if(self){
-            "self"
-        } else{
-            "visitor"
-        }
+    override fun clickChannelScreenshotShareBottomsheet(userId: String, self: Boolean) {
+        val label = if (self) SELF
+        else VISITOR
         val map = mutableMapOf<String, Any>()
         map[EVENT] = EVENT_CLICK_COMMUNICATION
         map[EVENT_ACTION] = CLICK_CHANNEL_SHARE_SCREENSHOT_BOTTOMSHEET
@@ -541,12 +526,10 @@ class UserProfileTrackerImpl @Inject constructor(
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    override fun clickAccessMedia(userId: String, self: Boolean, allow:String){
-        val label = if(self){
-            "self"
-        } else{
-            "visitor"
-        }
+    override fun clickAccessMedia(userId: String, self: Boolean, allow: String) {
+        val label = if (self) SELF
+        else VISITOR
+
         val map = mutableMapOf<String, Any>()
         map[EVENT] = EVENT_CLICK_COMMUNICATION
         map[EVENT_ACTION] = CLICK_ACCESS_MEDIA
@@ -559,10 +542,10 @@ class UserProfileTrackerImpl @Inject constructor(
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    override fun openFollowersTab(userId: String){
+    override fun openFollowersTab(userId: String) {
         val map = mutableMapOf<String, Any>()
         map[EVENT] = EVENT_OPEN_SCREEN
-        map[SCREEN_NAME] = "feed user profile - follower tab"
+        map[SCREEN_NAME] = FEED_USER_PROFILE_FOLLOWER_TAB
 
         map[USER_ID] = userId
         map[BUSINESS_UNIT] = CONTENT
@@ -570,12 +553,10 @@ class UserProfileTrackerImpl @Inject constructor(
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    override fun clickUserFollowers(userId: String, self: Boolean){
-        val label = if(self){
-            "self"
-        } else{
-            "visitor"
-        }
+    override fun clickUserFollowers(userId: String, self: Boolean) {
+        val label = if (self) SELF
+        else VISITOR
+
         val map = mutableMapOf<String, Any>()
         map[EVENT] = EVENT_CLICK_FEED
         map[EVENT_ACTION] = CLICK_USER
@@ -588,12 +569,10 @@ class UserProfileTrackerImpl @Inject constructor(
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    override fun clickFollowFromFollowers(userId: String, self: Boolean){
-        val label = if(self){
-            "self"
-        } else{
-            "visitor"
-        }
+    override fun clickFollowFromFollowers(userId: String, self: Boolean) {
+        val label = if (self) SELF
+        else VISITOR
+
         val map = mutableMapOf<String, Any>()
         map[EVENT] = EVENT_CLICK_FEED
         map[EVENT_ACTION] = CLICK_FOLLOW
@@ -606,12 +585,10 @@ class UserProfileTrackerImpl @Inject constructor(
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    override fun clickUnfollowFromFollowers(userId: String, self: Boolean){
-        val label = if(self){
-            "self"
-        } else{
-            "visitor"
-        }
+    override fun clickUnfollowFromFollowers(userId: String, self: Boolean) {
+        val label = if (self) SELF
+        else VISITOR
+
         val map = mutableMapOf<String, Any>()
         map[EVENT] = EVENT_CLICK_FEED
         map[EVENT_ACTION] = CLICK_UNFOLLOW
@@ -624,10 +601,10 @@ class UserProfileTrackerImpl @Inject constructor(
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    override fun openFollowingTab(userId: String){
+    override fun openFollowingTab(userId: String) {
         val map = mutableMapOf<String, Any>()
         map[EVENT] = EVENT_OPEN_SCREEN
-        map[SCREEN_NAME] = "feed user profile - following tab"
+        map[SCREEN_NAME] = FEED_USER_PROFILE_FOLLOWING_TAB
 
         map[USER_ID] = userId
         map[BUSINESS_UNIT] = CONTENT
@@ -635,16 +612,14 @@ class UserProfileTrackerImpl @Inject constructor(
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    override fun clickUserFollowing(userId: String, self: Boolean){
-        val label = if(self){
-            "self"
-        } else{
-            "visitor"
-        }
+    override fun clickUserFollowing(userId: String, self: Boolean) {
+        val label = if (self) SELF
+        else VISITOR
+
         val map = mutableMapOf<String, Any>()
         map[EVENT] = EVENT_CLICK_FEED
         map[EVENT_ACTION] = CLICK_USER
-        map[EVENT_CATEGORY] = UserProfileAnalytics.Category.FEED_USER_PROFILE_FOLLOWING_TAB
+        map[EVENT_CATEGORY] = FEED_USER_PROFILE_FOLLOWING_TAB
         map[EVENT_LABEL] = "$userId - $label"
 
         map[USER_ID] = userId
@@ -653,16 +628,14 @@ class UserProfileTrackerImpl @Inject constructor(
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    override fun clickFollowFromFollowing(userId: String, self: Boolean){
-        val label = if(self){
-            "self"
-        } else{
-            "visitor"
-        }
+    override fun clickFollowFromFollowing(userId: String, self: Boolean) {
+        val label = if (self) SELF
+        else VISITOR
+
         val map = mutableMapOf<String, Any>()
         map[EVENT] = EVENT_CLICK_FEED
         map[EVENT_ACTION] = CLICK_FOLLOW
-        map[EVENT_CATEGORY] = UserProfileAnalytics.Category.FEED_USER_PROFILE_FOLLOWING_TAB
+        map[EVENT_CATEGORY] = FEED_USER_PROFILE_FOLLOWING_TAB
         map[EVENT_LABEL] = "$userId - $label"
 
         map[USER_ID] = userId
@@ -671,16 +644,14 @@ class UserProfileTrackerImpl @Inject constructor(
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    override fun clickUnfollowFromFollowing(userId: String, self: Boolean){
-        val label = if(self){
-            "self"
-        } else{
-            "visitor"
-        }
+    override fun clickUnfollowFromFollowing(userId: String, self: Boolean) {
+        val label = if (self) SELF
+        else VISITOR
+
         val map = mutableMapOf<String, Any>()
         map[EVENT] = EVENT_CLICK_FEED
         map[EVENT_ACTION] = CLICK_UNFOLLOW
-        map[EVENT_CATEGORY] = UserProfileAnalytics.Category.FEED_USER_PROFILE_FOLLOWING_TAB
+        map[EVENT_CATEGORY] = FEED_USER_PROFILE_FOLLOWING_TAB
         map[EVENT_LABEL] = "$userId - $label"
 
         map[USER_ID] = userId
@@ -689,7 +660,7 @@ class UserProfileTrackerImpl @Inject constructor(
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    override fun impressionProfileCompletionPrompt(userId: String){
+    override fun impressionProfileCompletionPrompt(userId: String) {
         trackingQueue.putEETracking(
             EventModel(
                 event = EVENT_VIEW_HOME_PAGE,
@@ -706,7 +677,7 @@ class UserProfileTrackerImpl @Inject constructor(
         )
     }
 
-    override fun clickProfileCompletionPrompt(userId: String){
+    override fun clickProfileCompletionPrompt(userId: String) {
         trackingQueue.putEETracking(
             EventModel(
                 event = EVENT_CLICK_HOME_PAGE,
@@ -793,7 +764,7 @@ class UserProfileTrackerImpl @Inject constructor(
         )
     }
 
-    override fun clickFollowProfileRecommendation(userId: String, shopId: String){
+    override fun clickFollowProfileRecommendation(userId: String, shopId: String) {
         trackingQueue.putEETracking(
             EventModel(
                 event = EVENT_CLICK_HOME_PAGE,
@@ -810,7 +781,7 @@ class UserProfileTrackerImpl @Inject constructor(
         )
     }
 
-    override fun clickCreatePost(userId: String){
+    override fun clickCreatePost(userId: String) {
         trackingQueue.putEETracking(
             EventModel(
                 event = EVENT_CLICK_HOME_PAGE,
@@ -827,7 +798,7 @@ class UserProfileTrackerImpl @Inject constructor(
         )
     }
 
-    override fun impressionOnBoardingBottomSheetWithUsername(userId: String){
+    override fun impressionOnBoardingBottomSheetWithUsername(userId: String) {
         trackingQueue.putEETracking(
             EventModel(
                 event = EVENT_VIEW_HOME_PAGE,
@@ -844,7 +815,7 @@ class UserProfileTrackerImpl @Inject constructor(
         )
     }
 
-    override fun clickLanjutOnBoardingBottomSheetWithUsername(userId: String){
+    override fun clickLanjutOnBoardingBottomSheetWithUsername(userId: String) {
         trackingQueue.putEETracking(
             EventModel(
                 event = EVENT_CLICK_HOME_PAGE,
@@ -861,7 +832,7 @@ class UserProfileTrackerImpl @Inject constructor(
         )
     }
 
-    override fun impressionOnBoardingBottomSheetWithoutUsername(userId: String){
+    override fun impressionOnBoardingBottomSheetWithoutUsername(userId: String) {
         trackingQueue.putEETracking(
             EventModel(
                 event = EVENT_VIEW_HOME_PAGE,
@@ -878,7 +849,7 @@ class UserProfileTrackerImpl @Inject constructor(
         )
     }
 
-    override fun clickLanjutOnBoardingBottomSheetWithoutUsername(userId: String){
+    override fun clickLanjutOnBoardingBottomSheetWithoutUsername(userId: String) {
         trackingQueue.putEETracking(
             EventModel(
                 event = EVENT_CLICK_HOME_PAGE,

@@ -32,6 +32,11 @@ class UserProfileAnalytics {
         const val ALLOW = "Allow"
         const val DENY = "Deny"
         const val IZINKAN_AKSES = "Izinkan Akses"
+        const val SELF = "self"
+        const val VISITOR = "visitor"
+        const val LIVE = "live"
+        const val NOT_LIVE = "not live"
+        const val VOD = "vod"
         const val LAIN_KALI = "Lain Kali"
     }
 
@@ -99,6 +104,8 @@ class UserProfileAnalytics {
 
     object Category {
         const val FEED_USER_PROFILE = "feed user profile"
+        const val FEED_USER_PROFILE_POST = "feed user profile - post"
+        const val FEED_USER_PROFILE_VIDEO = "feed user profile - video"
         const val FEED_USER_PROFILE_ONBOARDING_BOTTOMSHEET = "feed user profile - onboarding bottomsheet"
         const val FEED_USER_PROFILE_FOLLOWER_TAB = "feed user profile - follower tab"
         const val FEED_USER_PROFILE_FOLLOWING_TAB = "feed user profile - following tab"
