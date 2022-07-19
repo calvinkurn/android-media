@@ -22,6 +22,7 @@ import com.tokopedia.topads.common.data.response.TopAdsAutoAdsData
 import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsQueryPostAutoadsUseCase
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.withContext
 import org.json.JSONException
@@ -31,19 +32,24 @@ import javax.inject.Inject
  * Author errysuprayogi on 09,May,2019
  */
 class DailyBudgetViewModel @Inject constructor(
-        private val context: Context,
-        private val dispatcher: CoroutineDispatchers,
-        private val repository: GraphqlRepository,
-        private val rawQueries: Map<String, String>,
-        private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
-        private val bidInfoUseCase: BidInfoUseCase) : BaseViewModel(dispatcher.main) {
+    private val context: Context,
+    private val dispatcher: CoroutineDispatchers,
+    private val repository: GraphqlRepository,
+    private val rawQueries: Map<String, String>,
+    private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
+    private val bidInfoUseCase: BidInfoUseCase,
+    private val queryPostAutoadsUseCaseUseCase: TopAdsQueryPostAutoadsUseCase
+) : BaseViewModel(dispatcher.main) {
 
     val autoAdsData = MutableLiveData<TopAdsAutoAdsData>()
-    private val topAdsDeposit : MutableLiveData<Int> = MutableLiveData()
+    private val topAdsDeposit: MutableLiveData<Int> = MutableLiveData()
+    fun getTopAdsDepositLiveData(): LiveData<Int> = topAdsDeposit
 
-    fun getTopAdsDepositLiveData() : LiveData<Int> = topAdsDeposit
-
-    fun getBudgetInfo(requestType: String, source: String, onSuccess: (ResponseBidInfo.Result) -> Unit) {
+    fun getBudgetInfo(
+        requestType: String,
+        source: String,
+        onSuccess: (ResponseBidInfo.Result) -> Unit,
+    ) {
         launchCatchError(block = {
             val dummyId: MutableList<String> = mutableListOf()
             val suggestionsDefault = ArrayList<DataSuggestions>()
@@ -60,37 +66,37 @@ class DailyBudgetViewModel @Inject constructor(
     }
 
     fun postAutoAds(param: AutoAdsParam) {
-        launchCatchError(block = {
-            val data = withContext(dispatcher.io) {
-                val request = RequestHelper.getGraphQlRequest(rawQueries[RawQueryKeyObject.QUERY_POST_AUTO_ADS],
-                        TopAdsAutoAds.Response::class.java, getParams(param).parameters)
-                val cacheStrategy = RequestHelper.getCacheStrategy()
-                repository.response(listOf(request), cacheStrategy)
+        queryPostAutoadsUseCaseUseCase.setParam(param).execute(
+            onSuccess = { data ->
+                autoAdsData.postValue(data.autoAds.data)
+            }, onError = {
+                it.printStackTrace()
             }
-            data.getSuccessData<TopAdsAutoAds.Response>().autoAds.data.let {
-                autoAdsData.postValue(it)
-            }
-        }) {
-            it.printStackTrace()
-        }
+        )
     }
 
     fun getTopAdsDeposit() {
         launchCatchError(
-                block = {
-                    val response = topAdsGetShopDepositUseCase.executeOnBackground()
-                    topAdsDeposit.value = response.topadsDashboardDeposits.data.amount
-                },
-                onError = {
-                    it.printStackTrace()
-                })
+            block = {
+                val response = topAdsGetShopDepositUseCase.executeOnBackground()
+                topAdsDeposit.value = response.topadsDashboardDeposits.data.amount
+            },
+            onError = {
+                it.printStackTrace()
+            })
     }
 
-    fun topadsStatisticsEstimationPotentialReach(onSuccess: (EstimationResponse.TopadsStatisticsEstimationAttribute.DataItem) -> Unit, shopId: String, source: String) {
+    fun topadsStatisticsEstimationPotentialReach(
+        onSuccess: (EstimationResponse.TopadsStatisticsEstimationAttribute.DataItem) -> Unit,
+        shopId: String,
+        source: String,
+    ) {
         launchCatchError(block = {
             val data = withContext(dispatcher.io) {
-                val request = RequestHelper.getGraphQlRequest(rawQueries[RawQueryKeyObject.QUERY_POTENTIAL_REACH_ESTIMATION],
-                        EstimationResponse::class.java, hashMapOf(SHOP_ID to shopId, TYPE to 1, SOURCE to source))
+                val request =
+                    RequestHelper.getGraphQlRequest(rawQueries[RawQueryKeyObject.QUERY_POTENTIAL_REACH_ESTIMATION],
+                        EstimationResponse::class.java,
+                        hashMapOf(SHOP_ID to shopId, TYPE to 1, SOURCE to source))
                 val cacheStrategy = RequestHelper.getCacheStrategy()
                 repository.response(listOf(request), cacheStrategy)
             }

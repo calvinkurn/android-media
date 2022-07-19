@@ -1,6 +1,7 @@
 package com.tokopedia.topads.common.view
 
 import android.content.Context
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -17,6 +18,7 @@ import com.tokopedia.topads.common.data.response.TopAdsAutoAds
 import com.tokopedia.topads.common.data.response.TopAdsAutoAdsData
 import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.common.di.ActivityContext
+import com.tokopedia.topads.common.domain.usecase.TopAdsQueryPostAutoadsUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.CoroutineDispatcher
@@ -31,7 +33,8 @@ import javax.inject.Inject
 class AutoAdsWidgetViewModelCommon @Inject constructor(
         private val dispatcher: CoroutineDispatcher,
         private val repository: GraphqlRepository,
-        @ActivityContext private val context: Context
+        @ActivityContext private val context: Context,
+        private val queryPostAutoadsUseCaseUseCase: TopAdsQueryPostAutoadsUseCase
 ) : BaseViewModel(dispatcher) {
 
     val autoAdsData = MutableLiveData<TopAdsAutoAdsData>()
@@ -56,19 +59,13 @@ class AutoAdsWidgetViewModelCommon @Inject constructor(
     }
 
     fun postAutoAds(param: AutoAdsParam) {
-        launchCatchError(block = {
-            val data = withContext(dispatcher) {
-                val request = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,R.raw.topads_common_query_post_autoads),
-                        TopAdsAutoAds.Response::class.java, getParams(param).parameters)
-                val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE).build()
-                repository.response(listOf(request), cacheStrategy)
+        queryPostAutoadsUseCaseUseCase.setParam(param).execute(
+            onSuccess = { data ->
+                autoAdsData.postValue(data.autoAds.data)
+            }, onError = {
+                it.printStackTrace()
             }
-            data.getSuccessData<TopAdsAutoAds.Response>().autoAds.data.let {
-                autoAdsStatus.postValue(it)
-            }
-        }) {
-            it.printStackTrace()
-        }
+        )
     }
 
     fun getNotDeliveredReason(shopID: String) {

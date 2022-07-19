@@ -26,7 +26,7 @@ class AdChooserViewModel @Inject constructor(
     private val userSession: UserSessionInterface,
     private val dispatcher: CoroutineDispatchers,
     private val repository: GraphqlRepository,
-    private val queryPostAutoadsUseCaseUseCase: TopAdsQueryPostAutoadsUseCase
+    private val queryPostAutoadsUseCaseUseCase: TopAdsQueryPostAutoadsUseCase,
 ) : BaseViewModel(dispatcher.main) {
 
     private val CHANNEL = "topchat"
