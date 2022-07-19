@@ -129,7 +129,7 @@ class HomeBalanceWidgetUseCaseTest {
         )
         coEvery { getHomeBalanceWidgetRepository.getRemoteData(any()) } returns mockValueErrorHomeBalanceWidget
         runBlocking {
-            val headerDataModel = homeBalanceWidgetUseCase.onGetBalanceWidgetData(HomeHeaderDataModel())
+            val headerDataModel = homeBalanceWidgetUseCase.onGetBalanceWidgetData()
             Assert.assertEquals(HomeBalanceModel.STATUS_ERROR, headerDataModel.headerDataModel?.homeBalanceModel?.status)
         }
     }
@@ -150,7 +150,7 @@ class HomeBalanceWidgetUseCaseTest {
             homeTokopointsListRepository
         )
         runBlocking {
-            val headerDataModel = homeBalanceWidgetUseCase.onGetBalanceWidgetData(HomeHeaderDataModel())
+            val headerDataModel = homeBalanceWidgetUseCase.onGetBalanceWidgetData()
             Assert.assertEquals(HomeBalanceModel.STATUS_SUCCESS, headerDataModel.headerDataModel?.homeBalanceModel?.status)
             Assert.assertEquals(
                 mockValueSuccessHomeBalanceWidget.getHomeBalanceList.balancesList.size,
@@ -191,7 +191,7 @@ class HomeBalanceWidgetUseCaseTest {
             homeTokopointsListRepository
         )
         runBlocking {
-            val headerDataModel = homeBalanceWidgetUseCase.onGetBalanceWidgetData(HomeHeaderDataModel())
+            val headerDataModel = homeBalanceWidgetUseCase.onGetBalanceWidgetData()
             Assert.assertEquals(HomeBalanceModel.STATUS_SUCCESS, headerDataModel.headerDataModel?.homeBalanceModel?.status)
             Assert.assertEquals(
                 mockValueSuccessHomeBalanceWidget.getHomeBalanceList.balancesList.size - 1,
@@ -223,7 +223,7 @@ class HomeBalanceWidgetUseCaseTest {
             homeTokopointsListRepository
         )
         runBlocking {
-            val headerDataModel = homeBalanceWidgetUseCase.onGetBalanceWidgetData(HomeHeaderDataModel())
+            val headerDataModel = homeBalanceWidgetUseCase.onGetBalanceWidgetData()
             Assert.assertEquals(HomeBalanceModel.STATUS_ERROR, headerDataModel.headerDataModel?.homeBalanceModel?.status)
         }
     }
@@ -403,7 +403,7 @@ class HomeBalanceWidgetUseCaseTest {
     }
 
     suspend fun `when onGetBalanceWidgetData`(homeBalanceWidgetUseCase: HomeBalanceWidgetUseCase): HomeHeaderDataModel {
-        return homeBalanceWidgetUseCase.onGetBalanceWidgetData(HomeHeaderDataModel())
+        return homeBalanceWidgetUseCase.onGetBalanceWidgetData()
     }
 
     private fun checkHeaderContainsPemudaPointsReserveBalance(data: HomeHeaderDataModel): Boolean {

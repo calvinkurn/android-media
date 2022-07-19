@@ -42,16 +42,17 @@ class HomeBalanceWidgetUseCase @Inject constructor(
         }
     }
 
-    suspend fun onGetBalanceWidgetData(currentHeaderDataModel: HomeHeaderDataModel): HomeHeaderDataModel {
-        if (!userSession.isLoggedIn) return currentHeaderDataModel
+    suspend fun onGetBalanceWidgetData(): HomeHeaderDataModel {
+        val homeHeaderDataModel = HomeHeaderDataModel()
+        if (!userSession.isLoggedIn) return homeHeaderDataModel
 
         try {
             val getHomeBalanceWidget = getHomeBalanceWidgetRepository.getRemoteData()
             if (getHomeBalanceWidget.getHomeBalanceList.error.isNotBlank()) {
                 throw Exception(getHomeBalanceWidget.getHomeBalanceList.error)
             } else {
-                currentHeaderDataModel.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.clear()
-                var homeBalanceModel = getHomeBalanceModel(currentHeaderDataModel)
+                homeHeaderDataModel.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.clear()
+                var homeBalanceModel = getHomeBalanceModel(homeHeaderDataModel)
                 getHomeBalanceWidget.getHomeBalanceList.balancesList.forEachIndexed { index, getHomeBalanceItem ->
                     when (getHomeBalanceItem.type) {
                         BALANCE_TYPE_GOPAY -> {
@@ -73,8 +74,8 @@ class HomeBalanceWidgetUseCase @Inject constructor(
                     }
                 }
 
-                return currentHeaderDataModel.copy(
-                    headerDataModel = currentHeaderDataModel.headerDataModel?.copy(
+                return homeHeaderDataModel.copy(
+                    headerDataModel = homeHeaderDataModel.headerDataModel?.copy(
                         homeBalanceModel = homeBalanceModel.copy(status = HomeBalanceModel.STATUS_SUCCESS),
                         isUserLogin = userSession.isLoggedIn
                     )
@@ -86,9 +87,9 @@ class HomeBalanceWidgetUseCase @Inject constructor(
                 throwable = MessageErrorException(e.localizedMessage),
                 reason = ERROR_UNABLE_TO_PARSE_BALANCE_WIDGET
             )
-            currentHeaderDataModel.headerDataModel?.homeBalanceModel?.status = HomeBalanceModel.STATUS_ERROR
-            currentHeaderDataModel.headerDataModel?.isUserLogin = userSession.isLoggedIn
-            return currentHeaderDataModel
+            homeHeaderDataModel.headerDataModel?.homeBalanceModel?.status = HomeBalanceModel.STATUS_ERROR
+            homeHeaderDataModel.headerDataModel?.isUserLogin = userSession.isLoggedIn
+            return homeHeaderDataModel
         }
     }
 
