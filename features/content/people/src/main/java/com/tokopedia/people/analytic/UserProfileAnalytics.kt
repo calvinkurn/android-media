@@ -37,6 +37,7 @@ class UserProfileAnalytics {
         const val TOKOPEDIA_SELLER = "tokopediaseller"
         const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
         const val PROMO_CLICK = "promoClick"
+        const val PROMO_VIEW = "promoView"
         const val ALLOW = "Allow"
         const val DENY = "Deny"
         const val IZINKAN_AKSES = "Izinkan Akses"
