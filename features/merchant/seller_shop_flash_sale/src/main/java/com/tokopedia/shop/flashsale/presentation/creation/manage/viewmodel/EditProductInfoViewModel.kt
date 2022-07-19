@@ -56,8 +56,10 @@ class EditProductInfoViewModel @Inject constructor(
         warehouseUiModelMapper.isShopMultiloc(it)
     }
 
-    var productInputData = EditProductInputModel()
-    var isUsingPercentage = false
+    private var _productInputData = EditProductInputModel()
+    val productInputData get() = _productInputData
+
+    private var isUsingPricePercentage = false
 
     private var _campaignPrice = MutableStateFlow("")
     private var _campaignPricePercent = MutableStateFlow("")
@@ -79,11 +81,11 @@ class EditProductInfoViewModel @Inject constructor(
         _campaignStock,
         _campaignMaxOrder
     ) { priceFromDiscount, price, stock, maxOrder ->
-        productInputData.price = if (isUsingPercentage) priceFromDiscount else price.toLongOrNull()
-        productInputData.stock = stock.toLongOrNull()
-        productInputData.maxOrder = maxOrder.toIntOrNull()
+        _productInputData.price = if (isUsingPricePercentage) priceFromDiscount else price.toLongOrNull()
+        _productInputData.stock = stock.toLongOrNull()
+        _productInputData.maxOrder = maxOrder.toIntOrNull()
 
-        productErrorStatusHandler.getErrorInputType(productInputData)
+        productErrorStatusHandler.getErrorInputType(_productInputData)
     }.debounce(VALIDATE_DEBOUNCE_DURATION).flowOn(dispatchers.computation)
 
     fun setProduct(product: SellerCampaignProductList.Product) {
@@ -91,7 +93,7 @@ class EditProductInfoViewModel @Inject constructor(
         val inputData = EditProductMapper.mapInputData(product, warehouseList)
         _product.postValue(product)
         _warehouseList.postValue(warehouseList)
-        productInputData = inputData
+        _productInputData = inputData
     }
 
     fun editProduct() {
@@ -100,9 +102,9 @@ class EditProductInfoViewModel @Inject constructor(
             dispatchers.io,
             block = {
                 val result = doSellerCampaignProductSubmissionUseCase.execute(
-                    productInputData.productMapData.campaignId,
+                    _productInputData.productMapData.campaignId,
                     ProductionSubmissionAction.SUBMIT,
-                    EditProductMapper.map(productInputData)
+                    EditProductMapper.map(_productInputData)
                 )
                 _editProductResult.postValue(result)
                 _isLoading.postValue(false)
@@ -132,5 +134,17 @@ class EditProductInfoViewModel @Inject constructor(
 
     fun setCampaignMaxOrder(maxOrder: String) {
         _campaignMaxOrder.value = maxOrder
+    }
+
+    fun setUsingPricePercentage(enabled: Boolean) {
+        isUsingPricePercentage = enabled
+    }
+
+    fun setInputWarehouseId(id: String) {
+        _productInputData.warehouseId = id
+    }
+
+    fun setInputOriginalStock(stock: Long) {
+        _productInputData.originalStock = stock
     }
 }

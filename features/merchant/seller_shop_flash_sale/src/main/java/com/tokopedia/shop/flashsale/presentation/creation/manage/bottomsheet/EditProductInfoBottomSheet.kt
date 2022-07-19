@@ -177,10 +177,8 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
     private fun setupWarehouseListObserver() {
         viewModel.warehouseList.observe(viewLifecycleOwner) { warehouseList ->
             warehouseList.firstOrNull { it.isSelected }?.let { selectedWarehouse ->
-                viewModel.productInputData.apply {
-                    warehouseId = selectedWarehouse.id
-                    originalStock = selectedWarehouse.stock
-                }
+                viewModel.setInputWarehouseId(selectedWarehouse.id)
+                viewModel.setInputOriginalStock(selectedWarehouse.stock)
                 binding?.spinnerShopLocation?.text = selectedWarehouse.name
                 binding?.tfStock?.setMessage(getString(R.string.editproduct_stock_total_text, selectedWarehouse.stock))
             }
@@ -226,7 +224,7 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
             switchPrice.setOnCheckedChangeListener { _, isChecked ->
                 tfCampaignPrice.enabledEditing = !isChecked
                 tfCampaignPricePercent.enabledEditing = isChecked
-                viewModel.isUsingPercentage = isChecked
+                viewModel.setUsingPricePercentage(isChecked)
             }
             tfCampaignPrice.textField?.editText?.afterTextChanged {
                 if (switchPrice.isChecked || isDataFirstLoaded) return@afterTextChanged
