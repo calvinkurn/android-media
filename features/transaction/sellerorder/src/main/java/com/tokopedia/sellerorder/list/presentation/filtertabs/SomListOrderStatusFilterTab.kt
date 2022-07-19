@@ -42,7 +42,10 @@ class SomListOrderStatusFilterTab(
 
     private fun updateTabsCounter(statusList: List<SomListFilterUiModel.Status>) {
         statusList.forEachIndexed { index, status ->
-            filterTabs[index].setCustomText(createNewTabs(status))
+            filterTabs[index].run {
+                setCustomText(createNewTabs(status))
+                if (status.isChecked && !isSelected) select()
+            }
         }
     }
 
