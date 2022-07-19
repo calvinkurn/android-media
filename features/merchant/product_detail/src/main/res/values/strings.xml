@@ -179,8 +179,6 @@
 
     <string name="pdp_shipping_cod_label">COD</string>
     <string name="pdp_shipping_choose_courier_label">Lihat Pilihan Kurir</string>
-    <string name="pdp_shipping_other_courier_label">Kurir lainnya:</string>
-    <string name="pdp_shipping_khusus_label">Khusus:</string>
     <string name="pdp_shipping_dilayani_label">Dilayani oleh</string>
     <string name="pdp_shipping_failed_label">Ongkir gagal ditampilkan</string>
     <string name="pdp_shipping_success_change_address">Alamat berhasil dipilih. Nikmati pengalaman belanja yang sesuai dengan alamatmu!</string>
