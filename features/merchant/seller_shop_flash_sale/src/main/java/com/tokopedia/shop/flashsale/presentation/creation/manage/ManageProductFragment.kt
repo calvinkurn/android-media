@@ -179,7 +179,8 @@ class ManageProductFragment : BaseDaggerFragment() {
 
     private fun handleCoachMark() {
         val shouldShowCoachMark = !sharedPreference.isManageProductCoachMarkDismissed()
-        if (shouldShowCoachMark && !viewModel.isCoachMarkShown && manageProductListAdapter.itemCount.isMoreThanZero()) {
+        val hasProduct = manageProductListAdapter.itemCount.isMoreThanZero()
+        if (shouldShowCoachMark && !viewModel.isCoachMarkShown && hasProduct) {
             showCoachMark()
         }
     }
@@ -413,7 +414,7 @@ class ManageProductFragment : BaseDaggerFragment() {
 
                     val coachMark = activity?.let { it -> CoachMark2(it) }
                     coachMark?.showCoachMark(coachMarkItems)
-                    viewModel.isCoachMarkShown = true
+                    viewModel.setIsCoachMarkShown(true)
                     coachMark?.onFinishListener = {
                         sharedPreference.markManageProductCoachMarkComplete()
                     }

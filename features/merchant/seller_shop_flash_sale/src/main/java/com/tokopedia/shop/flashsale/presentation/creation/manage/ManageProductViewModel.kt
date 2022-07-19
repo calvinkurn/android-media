@@ -194,4 +194,8 @@ class ManageProductViewModel @Inject constructor(
     fun onButtonProceedTapped() {
         tracker.sendClickButtonProceedOnManageProductPage()
     }
+
+    fun setIsCoachMarkShown(isShown: Boolean) {
+        this.isCoachMarkShown = isShown
+    }
 }
