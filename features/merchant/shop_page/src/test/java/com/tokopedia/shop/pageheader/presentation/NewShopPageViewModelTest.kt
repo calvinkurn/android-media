@@ -177,12 +177,12 @@ class NewShopPageViewModelTest {
     }
 
     @Test
-    fun `check whether shopPageP1Data value is Success2`() {
+    fun `check whether shopPageP1Data value is Success when shopId same as user session shopId`() {
         coEvery { userSessionInterface.shopId } returns SAMPLE_SHOP_ID
         coEvery { getShopPageP1DataUseCase.get().executeOnBackground() } returns ShopPageHeaderP1(
             shopInfoHomeTypeData = ShopPageGetHomeType(
-                homeLayoutData = ShopPageGetHomeType.HomeLayoutData(
-                    widgetIdList = listOf(ShopPageGetHomeType.HomeLayoutData.WidgetIdList())
+                homeLayoutData = HomeLayoutData(
+                    widgetIdList = listOf(WidgetIdList())
                 )
             )
         )
