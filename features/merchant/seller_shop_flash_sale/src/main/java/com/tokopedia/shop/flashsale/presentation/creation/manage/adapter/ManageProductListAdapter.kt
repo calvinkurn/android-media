@@ -74,13 +74,15 @@ class ManageProductListAdapter(
                         tpgDiscountedPrice.text =
                             product.productMapData.discountedPrice.getCurrencyFormatted()
                         labelDiscount.text = "${product.productMapData.discountPercentage}%"
-                        tpgOriginalPrice.text = product.formattedPrice
+                        tpgOriginalPrice.text =
+                            product.productMapData.originalPrice.getCurrencyFormatted()
                         tpgOriginalPrice.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
                     }
                     else -> {
                         labelDiscount.gone()
                         tpgDiscountedPrice.gone()
-                        tpgOriginalPrice.text = product.formattedPrice
+                        tpgOriginalPrice.text =
+                            product.productMapData.originalPrice.getCurrencyFormatted()
                     }
                 }
 
