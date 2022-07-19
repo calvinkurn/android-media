@@ -3,4 +3,5 @@
     <color name="message_color_bad">#ff4f00</color>
     <color name="message_color_neutral">#fec100</color>
     <color name="message_color_good">#00ac47</color>
+    <color name="csat_dms_reaction_green">#03AC0E</color>
 </resources>
