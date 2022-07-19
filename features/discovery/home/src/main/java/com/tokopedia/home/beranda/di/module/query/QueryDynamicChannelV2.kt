@@ -7,8 +7,8 @@ import com.tokopedia.home.beranda.di.module.query.QueryDynamicChannelV2.DYNAMIC_
 @GqlQuery(DYNAMIC_CHANNEL_V2_QUERY_NAME, DYNAMIC_CHANNEL_V2_QUERY)
 internal object QueryDynamicChannelV2 {
     const val DYNAMIC_CHANNEL_V2_QUERY_NAME = "DynamicChannelQueryV2"
-    const val DYNAMIC_CHANNEL_V2_QUERY = "query getDynamicChannelV2(\$groupIDs: String!, \$numOfChannel: Int!, \$token: String!, \$param: String!, \$location: String){\n" +
-            "  getHomeChannelV2(\$groupIDs: groupIDs, \$numOfChannel: numOfChannel, \$token: token, \$param: param, \$location: location) {\n" +
+    const val DYNAMIC_CHANNEL_V2_QUERY = "query getDynamicChannelV2(\$groupIDs: String!, \$channelIDs: String!, \$page: String!, \$param: String!, \$location: String){\n" +
+            "  getHomeChannelV2(groupIDs: \$groupIDs, channelIDs: \$channelIDs, page: \$page, param: \$param, location: \$location) {\n" +
             "    channels {\n" +
             "      id\n" +
             "      name\n" +
