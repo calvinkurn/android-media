@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:theme="@style/Theme.WhiteUnify"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:layout_height="match_parent">
 
     <com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -25,7 +25,7 @@
         android:visibility="visible"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="transaction_card,transaction_date_header,transaction_date,divider"/>
+        app:constraint_referenced_ids="transaction_card,transaction_date_header,transaction_date,promotion_link_header,promotion_link,divider"/>
     <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/transaction_card"
         android:layout_width="match_parent"
@@ -118,9 +118,10 @@
         android:id="@+id/transaction_date_header"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:padding="@dimen/spacing_lvl4"
+        android:paddingHorizontal="@dimen/spacing_lvl4"
         android:text="@string/affiliate_transaksi_selesai"
         android:textColor="@color/Unify_NN600"
+        android:layout_marginTop="@dimen/unify_space_8"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/transaction_date"
         app:layout_constraintTop_toBottomOf="@+id/transaction_card"
@@ -131,20 +132,49 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="end"
-        android:padding="@dimen/spacing_lvl4"
+        android:paddingHorizontal="@dimen/spacing_lvl4"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintLeft_toRightOf="@id/transaction_date_header"
         app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/transaction_date_header"
         app:layout_constraintTop_toTopOf="@+id/transaction_date_header"
         app:typographyType="body_2"
         tools:text="22 Des 2020, 10:30 WIB" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/promotion_link_header"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="@dimen/spacing_lvl4"
+        android:text="@string/affiliate_link_promosi"
+        android:layout_marginTop="@dimen/unify_space_8"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/promotion_link"
+        app:layout_constraintTop_toBottomOf="@+id/transaction_date_header"
+        app:typographyType="body_2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/promotion_link"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:paddingHorizontal="@dimen/spacing_lvl4"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintLeft_toRightOf="@id/promotion_link_header"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/promotion_link_header"
+        app:layout_constraintBottom_toBottomOf="@id/promotion_link_header"
+        app:typographyType="body_2"
+        tools:text="Toko" />
 
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/unify_space_24"
         android:background="@color/affiliate_dms_divider"
-        app:layout_constraintTop_toBottomOf="@id/transaction_date_header" />
+        app:layout_constraintTop_toBottomOf="@id/promotion_link_header" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:paddingBottom="@dimen/unify_space_64"

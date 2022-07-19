@@ -69,27 +69,27 @@ class AffiliateTransactionDetailFragment: BaseViewModelFragment<AffiliateTransac
     }
 
     private fun initObserver() {
-        affiliateVM.getErrorMessage().observe(viewLifecycleOwner , {
+        affiliateVM.getErrorMessage().observe(viewLifecycleOwner) {
             hideView()
             showError(it)
-        })
-        affiliateVM.getCommissionData().observe(viewLifecycleOwner,{
+        }
+        affiliateVM.getCommissionData().observe(viewLifecycleOwner) {
             setData(it)
-        })
-        affiliateVM.getDetailList().observe(viewLifecycleOwner,{
-            if(it?.isNotEmpty() == true) {
+        }
+        affiliateVM.getDetailList().observe(viewLifecycleOwner) {
+            if (it?.isNotEmpty() == true) {
                 listCount += it.size
                 adapter.addMoreData(it)
                 loadMoreTriggerListener?.updateStateAfterGetData()
             }
-        })
-        affiliateVM.getShimmerVisibility().observe(viewLifecycleOwner,{shimmer ->
+        }
+        affiliateVM.getShimmerVisibility().observe(viewLifecycleOwner) { shimmer ->
             shimmer?.let {
-                if(it)adapter.addShimmer(false)
+                if (it) adapter.addShimmer(false)
                 else adapter.removeShimmer(listCount)
             }
-        })
-        affiliateVM.progressBar().observe(viewLifecycleOwner, { visibility ->
+        }
+        affiliateVM.progressBar().observe(viewLifecycleOwner) { visibility ->
             if (visibility != null) {
                 if (visibility) {
                     view?.findViewById<LoaderUnify>(R.id.affiliate_progress_bar)?.show()
@@ -98,12 +98,12 @@ class AffiliateTransactionDetailFragment: BaseViewModelFragment<AffiliateTransac
                     view?.findViewById<LoaderUnify>(R.id.affiliate_progress_bar)?.gone()
                 }
             }
-        })
-        affiliateVM.getDetailTitle().observe(viewLifecycleOwner,{ title ->
+        }
+        affiliateVM.getDetailTitle().observe(viewLifecycleOwner) { title ->
             title?.let {
                 view?.findViewById<NavToolbar>(R.id.transaction_navToolbar)?.setToolbarTitle(it)
             }
-        })
+        }
     }
 
     private fun showError(it: Throwable?) {
@@ -167,6 +167,12 @@ class AffiliateTransactionDetailFragment: BaseViewModelFragment<AffiliateTransac
             commissionData?.data?.cardDetail?.shopName
         view?.findViewById<Typography>(R.id.transaction_date)?.text =
             commissionData?.data?.createdAtFormatted
+        view?.findViewById<Typography>(R.id.promotion_link)?.text =
+           when(commissionData?.data?.pageType?.uppercase()){
+               PAGE_PDP -> "Produk"
+               PAGE_SHOP -> "Toko"
+               else -> "None"
+           }
     }
 
     private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory(affiliateInfoClickInterfaces = this))
@@ -210,6 +216,8 @@ class AffiliateTransactionDetailFragment: BaseViewModelFragment<AffiliateTransac
 
     companion object {
         private const val PARAM_TRANSACTION = "PARAM_TRANSACTION"
+        private const val PAGE_PDP = "PDP"
+        private const val PAGE_SHOP = "SHOP"
         fun newInstance(transactionId: String?): Fragment{
             return AffiliateTransactionDetailFragment().apply {
                 arguments = Bundle().apply {
