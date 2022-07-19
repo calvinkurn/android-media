@@ -13,10 +13,11 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.data.internal.ParamObject.SHOP_Id
 import com.tokopedia.topads.common.data.model.AutoAdsParam
 import com.tokopedia.topads.common.data.response.AutoAdsResponse
+import com.tokopedia.topads.common.data.response.TopAdsAutoAds
+import com.tokopedia.topads.common.data.response.TopAdsAutoAdsData
 import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.response.AdCreationOption
-import com.tokopedia.topads.data.response.TopAdsAutoAdsCreate
 import com.tokopedia.topads.view.RequestHelper
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
@@ -31,7 +32,7 @@ class AdChooserViewModel @Inject constructor(private val context: Context,
 
     private val CHANNEL = "topchat"
     private val SOURCE = "one_click_promo"
-    val autoAdsData = MutableLiveData<TopAdsAutoAdsCreate.Response.TopAdsAutoAdsData>()
+    val autoAdsData = MutableLiveData<TopAdsAutoAdsData>()
 
     fun getAdsState(onSuccess: ((AdCreationOption) -> Unit)) {
         launchCatchError(
@@ -63,11 +64,11 @@ class AdChooserViewModel @Inject constructor(private val context: Context,
             ))
             val data = withContext(dispatcher.io) {
                 val request = RequestHelper.getGraphQlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.topads_common_query_post_autoads),
-                        TopAdsAutoAdsCreate.Response::class.java, getParams(param).parameters)
+                        TopAdsAutoAds.Response::class.java, getParams(param).parameters)
                 val cacheStrategy = RequestHelper.getCacheStrategy()
                 repository.response(listOf(request), cacheStrategy)
             }
-            data.getSuccessData<TopAdsAutoAdsCreate.Response>().autoAds.data.let {
+            data.getSuccessData<TopAdsAutoAds.Response>().autoAds.data.let {
                 autoAdsData.postValue(it)
             }
         }) {
