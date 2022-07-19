@@ -92,13 +92,13 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
         setupErrorThrowableObserver()
         setupIsLoadingObserver()
         setupEditProductResultObserver()
-        setupCampaignPriceObserver()
-        setupCampaignPricePercentObserver()
+        setupCampaignIsValidObserver()
+        setupCampaignPriceInputObserver()
         handleCoachMark()
         loadNextData()
     }
 
-    private fun setupCampaignPricePercentObserver() {
+    private fun setupCampaignPriceInputObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.campaignPrice.collect {
                 if (!isDataFirstLoaded) binding?.tfCampaignPrice?.text = it.toString()
@@ -112,7 +112,7 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
     }
 
     @FlowPreview
-    private fun setupCampaignPriceObserver() {
+    private fun setupCampaignIsValidObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.isValid.collectLatest {
                 val isSuccess = it.errorList.isEmpty()
