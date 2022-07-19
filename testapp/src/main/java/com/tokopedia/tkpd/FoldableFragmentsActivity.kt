@@ -5,6 +5,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.window.FoldingFeature
 import com.tokopedia.foldable.FoldableInfo
 import com.tokopedia.foldable.FoldableSupportManager
 
@@ -36,7 +37,7 @@ class FoldableFragmentsActivity : AppCompatActivity(), FoldableSupportManager.Fo
     }
 
     override fun onChangeLayout(foldableInfo: FoldableInfo) {
-        if (foldableInfo.isFoldableDevice()) {
+        if (foldableInfo.isFoldableDevice() && foldableInfo.foldingFeature?.orientation == FoldingFeature.ORIENTATION_VERTICAL) {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.container_2, FoldableFragment2.getInstance("1"), "")
                 .addToBackStack("fragment2")
