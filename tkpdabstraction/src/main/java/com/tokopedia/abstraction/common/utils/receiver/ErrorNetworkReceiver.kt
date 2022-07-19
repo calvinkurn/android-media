@@ -1,65 +1,85 @@
-package com.tokopedia.abstraction.common.utils.receiver;
+package com.tokopedia.abstraction.common.utils.receiver
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-
-import com.tokopedia.logger.ServerLogger;
-import com.tokopedia.logger.utils.Priority;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import timber.log.Timber;
+import android.content.BroadcastReceiver
+import android.content.Context
+import com.tokopedia.logger.ServerLogger.log
+import com.tokopedia.abstraction.common.utils.receiver.ErrorNetworkReceiver.ReceiveListener
+import android.content.Intent
+import com.tokopedia.abstraction.common.utils.receiver.ErrorNetworkReceiver
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
+import java.util.HashMap
 
 /**
  * Created by ricoharisin on 7/26/16.
  */
-public class ErrorNetworkReceiver extends BroadcastReceiver {
+class ErrorNetworkReceiver : BroadcastReceiver() {
+    private var mReceiver: ReceiveListener? = null
 
-    private ReceiveListener mReceiver;
-    private static final String ACCESS_TOKEN = "accessToken";
-    private static final String PATH = "path";
-
-    @Override
-    public void onReceive(Context context, Intent intent) {
+    override fun onReceive(context: Context, intent: Intent) {
         if (mReceiver != null && intent != null) {
-            String action = intent.getAction();
-            String accessToken = "";
-            String path = "";
-            if(intent.getStringExtra(ACCESS_TOKEN) != null) {
-                accessToken = intent.getStringExtra(ACCESS_TOKEN);
+            val action = intent.action
+            var accessToken: String? = ""
+            var path: String? = ""
+            if (intent.getStringExtra(ACCESS_TOKEN) != null) {
+                accessToken = intent.getStringExtra(ACCESS_TOKEN)
             }
-            if(intent.getStringExtra(PATH) != null) {
-                path = intent.getStringExtra(PATH);
+            if (intent.getStringExtra(PATH) != null) {
+                path = intent.getStringExtra(PATH)
             }
-            Map<String, String> messageMap = new HashMap<>();
-            messageMap.put("type", "ErrorNetworkReceiver");
-            messageMap.put("action", action);
-            messageMap.put("accessToken", accessToken);
-            messageMap.put("path", path);
-            ServerLogger.log(Priority.P1, "BROADCAST_RECEIVER", messageMap);
+            val messageMap = mutableMapOf(
+                "type" to "ErrorNetworkReceiver",
+                "action" to action.orEmpty(),
+                "accessToken" to accessToken.orEmpty()
+            )
+            messageMap["path"] = path ?: "/"
+
+            if (path?.startsWith("FORCE_LOGOUT_INFO") == true) {
+                messageMap["path"] = "/"
+            } else {
+                messageMap["path"] = path ?: "/"
+            }
+
+            log(Priority.P1, "BROADCAST_RECEIVER", messageMap)
+
             if (action == null) {
-                return;
+                return
             }
-            if (action.equals("com.tokopedia.tkpd.FORCE_LOGOUT")) {
-                mReceiver.onForceLogout();
-            } else if (action.equals("com.tokopedia.tkpd.SERVER_ERROR")) {
-                mReceiver.onServerError();
-            } else if (action.equals("com.tokopedia.tkpd.TIMEZONE_ERROR")) {
-                mReceiver.onTimezoneError();
+
+            when (action) {
+                "com.tokopedia.tkpd.FORCE_LOGOUT" -> {
+                    if (path?.startsWith("FORCE_LOGOUT_INFO") == true) {
+                        val data = path.split(",").toTypedArray()
+                        val title = data[1]
+                        val description = data[2]
+                        val url = data[3]
+                        mReceiver?.onForceLogout(title = title, description = description, url = url)
+                    } else {
+                        mReceiver?.onForceLogout()
+                    }
+                }
+                "com.tokopedia.tkpd.SERVER_ERROR" -> {
+                    mReceiver?.onServerError()
+                }
+                "com.tokopedia.tkpd.TIMEZONE_ERROR" -> {
+                    mReceiver?.onTimezoneError()
+                }
             }
         }
     }
 
-    public interface ReceiveListener {
-        void onForceLogout();
-        void onServerError();
-        void onTimezoneError();
+    interface ReceiveListener {
+        fun onForceLogout(title: String = "", description: String = "", url: String = "")
+        fun onServerError()
+        fun onTimezoneError()
     }
 
-    public void setReceiver(ErrorNetworkReceiver.ReceiveListener receiver) {
-        this.mReceiver = receiver;
+    fun setReceiver(receiver: ReceiveListener?) {
+        mReceiver = receiver
     }
 
+    companion object {
+        private const val ACCESS_TOKEN = "accessToken"
+        private const val PATH = "path"
+    }
 }

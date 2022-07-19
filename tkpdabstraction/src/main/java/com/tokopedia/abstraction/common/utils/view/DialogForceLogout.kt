@@ -1,66 +1,113 @@
-package com.tokopedia.abstraction.common.utils.view;
+package com.tokopedia.abstraction.common.utils.view
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import androidx.annotation.Nullable;
-
-import com.tokopedia.abstraction.R;
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
-import com.tokopedia.track.TrackApp;
+import android.app.AlertDialog
+import android.content.Context
+import com.tokopedia.abstraction.R
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.track.TrackApp
 
 /**
  * @author ricoharisin
  */
-public class DialogForceLogout {
-    private static final String TAG = DialogForceLogout.class.getSimpleName();
-    private static final String IS_DIALOG_SHOWN_STORAGE = "IS_DIALOG_SHOWN_STORAGE";
-    private static final String IS_DIALOG_SHOWN = "IS_DIALOG_SHOWN";
 
-    public static void createShow(Context context, String screenName, @Nullable final ActionListener listener) {
-        AlertDialog alertDialog = create(context, listener, screenName);
-        alertDialog.show();
-        setIsDialogShown(context, true);
+object DialogForceLogout {
+    private val TAG = DialogForceLogout::class.java.simpleName
+    private const val IS_DIALOG_SHOWN_STORAGE = "IS_DIALOG_SHOWN_STORAGE"
+    private const val IS_DIALOG_SHOWN = "IS_DIALOG_SHOWN"
+
+    @JvmStatic
+    fun createShow(context: Context, screenName: String?, listener: ActionListener?) {
+        val alertDialog = create(context, listener, screenName)
+        alertDialog.show()
+        setIsDialogShown(context, true)
     }
 
-    public static AlertDialog create(final Context context, final ActionListener listener,
-                                     String screenName) {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-        dialog.setMessage(R.string.title_session_expired);
-        dialog.setPositiveButton(context.getString(R.string.title_ok),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        listener.onDialogClicked();
-                        dialog.dismiss();
-                        setIsDialogShown(context, false);
-
-                        String screen = screenName != null ? screenName : "";
-                        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                                "clickLogout",
-                                "force logout",
-                                "get session expired pop up",
-                                screen
-                                );
-
-                    }
-                });
-        dialog.setCancelable(false);
-        return dialog.create();
+    @JvmStatic
+    fun showDialogUnify(
+        context: Context,
+        screenName: String,
+        listener: ActionListener?,
+        title: String = "",
+        description: String = "",
+        url: String = ""
+    ) {
+        val alertDialog = createDialogWithCustomContent(context, listener, screenName, title, description, url)
+        alertDialog.show()
+        setIsDialogShown(context, true)
     }
 
-    public static void setIsDialogShown(Context context, Boolean status) {
-        LocalCacheHandler cache = new LocalCacheHandler(context, IS_DIALOG_SHOWN_STORAGE);
-        cache.putBoolean(IS_DIALOG_SHOWN, status);
-        cache.applyEditor();
+    fun create(
+        context: Context, listener: ActionListener?,
+        screenName: String?
+    ): AlertDialog {
+        val dialog = AlertDialog.Builder(context)
+        dialog.setMessage(R.string.title_session_expired)
+        dialog.setPositiveButton(
+            context.getString(R.string.title_ok)
+        ) { dialog, which ->
+            listener!!.onDialogClicked()
+            dialog.dismiss()
+            setIsDialogShown(context, false)
+            val screen = screenName ?: ""
+            TrackApp.getInstance().gtm.sendGeneralEvent(
+                "clickLogout",
+                "force logout",
+                "get session expired pop up",
+                screen
+            )
+        }
+        dialog.setCancelable(false)
+        return dialog.create()
     }
 
-    public static Boolean isDialogShown(Context context) {
-        LocalCacheHandler cache = new LocalCacheHandler(context, IS_DIALOG_SHOWN_STORAGE);
-        return cache.getBoolean(IS_DIALOG_SHOWN, false);
+    fun createDialogWithCustomContent(
+        context: Context,
+        listener: ActionListener?,
+        screenName: String = "",
+        title: String = "",
+        description: String = "",
+        url: String = ""
+    ): DialogUnify {
+        val dialog = DialogUnify(context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+        dialog.setTitle(title)
+        dialog.setDescription(description)
+        dialog.setPrimaryCTAText("Cek Informasi Lengkap")
+        dialog.setPrimaryCTAClickListener {
+            listener?.onDialogClicked()
+            dialog.dismiss()
+            setIsDialogShown(context, false)
+            TrackApp.getInstance().gtm.sendGeneralEvent(
+                "clickLogout",
+                "force logout",
+                "get session expired pop up",
+                screenName
+            )
+//            RouteManager.route(
+//                context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url)
+//            )
+        }
+        dialog.setCancelable(false)
+        dialog.setSecondaryCTAText("Batal")
+        dialog.setSecondaryCTAClickListener {
+            dialog.dismiss()
+        }
+        return dialog
     }
 
-    public interface ActionListener {
-        void onDialogClicked();
+    fun setIsDialogShown(context: Context?, status: Boolean?) {
+        val cache = LocalCacheHandler(context, IS_DIALOG_SHOWN_STORAGE)
+        cache.putBoolean(IS_DIALOG_SHOWN, status)
+        cache.applyEditor()
+    }
+
+    @JvmStatic
+    fun isDialogShown(context: Context?): Boolean {
+        val cache = LocalCacheHandler(context, IS_DIALOG_SHOWN_STORAGE)
+        return cache.getBoolean(IS_DIALOG_SHOWN, false)
+    }
+
+    interface ActionListener {
+        fun onDialogClicked()
     }
 }
