@@ -28,7 +28,7 @@ class PlayProductTagUiMapper @Inject constructor() {
 //    fun mapSection(input: Section): ProductSectionUiModel.Section {
 //        return ProductSectionUiModel.Section(
 //            productList = input.listOfProducts.map { product ->
-//                mapProduct(product, ProductSectionType.getSectionValue(sectionType = input.sectionType), index++ == 0)
+//                mapProduct(product, ProductSectionType.getSectionValue(sectionType = input.sectionType), index++ == 1)
 //            },
 //            config = mapConfig(input),
 //            id = input.id,

@@ -252,29 +252,6 @@ class PlayViewModel @AssistedInject constructor(
         )
     }
 
-    private val _sortedTagItems = combine(_tagItems, _warehouseInfo) { tagItems, warehouseInfo ->
-        val newSectionList = tagItems.product.productSectionList.map { section ->
-            if (section is ProductSectionUiModel.Section) {
-                section.copy(
-                    productList = section.productList.filterNot {
-                        it.isTokoNow && warehouseInfo.isOOC
-                    }
-                )
-            } else section
-        }
-
-        tagItems.copy(
-            product = tagItems.product.copy(
-                productSectionList = newSectionList
-            ),
-        )
-    }.flowOn(dispatchers.computation)
-        .stateIn(
-            viewModelScope,
-            defaultSharingStarted,
-            _tagItems.value,
-        )
-
     /**
      * Until repeatOnLifecycle is available (by updating library version),
      * this can be used as an alternative to "complete" un-completable flow when page is not focused
@@ -291,7 +268,7 @@ class PlayViewModel @AssistedInject constructor(
         _totalViewUiState.distinctUntilChanged(),
         _rtnUiState.distinctUntilChanged(),
         _titleUiState.distinctUntilChanged(),
-        _sortedTagItems,
+        _tagItems,
         _status,
         _quickReply,
         _selectedVariant,
