@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.exoplayer2.util.Util
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.iconunify.IconUnify
@@ -20,9 +21,12 @@ import com.tokopedia.review.feature.media.player.controller.di.qualifier.ReviewM
 import com.tokopedia.review.feature.media.player.controller.presentation.uistate.ReviewMediaPlayerControllerUiState
 import com.tokopedia.review.feature.media.player.controller.presentation.viewmodel.ReviewMediaPlayerControllerViewModel
 import com.tokopedia.reviewcommon.feature.media.player.video.presentation.widget.ReviewVideoPlayer
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
+import java.util.Formatter
+import java.util.Locale
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -47,6 +51,14 @@ class ReviewMediaPlayerControllerFragment : BaseDaggerFragment(), CoroutineScope
     lateinit var videoPlayer: ReviewVideoPlayer
 
     private var binding by viewBinding(FragmentReviewMediaPlayerControllerBinding::bind)
+    private val stringBuilder = StringBuilder()
+    private val formatter = Formatter(stringBuilder, Locale.getDefault())
+
+    private var tvDurationView: Typography? = null
+    private var icMaximizeControl: IconUnify? = null
+    private var icMinimizeControl: IconUnify? = null
+    private var icVolumeMutedControl: IconUnify? = null
+    private var icVolumeUnMutedControl: IconUnify? = null
 
     private val reviewMediaPlayerControllerViewModel by lazy(LazyThreadSafetyMode.NONE) {
         ViewModelProvider(
@@ -83,6 +95,7 @@ class ReviewMediaPlayerControllerFragment : BaseDaggerFragment(), CoroutineScope
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        bindViews(view)
         setupLayout()
         initUiStateCollectors()
     }
@@ -100,6 +113,14 @@ class ReviewMediaPlayerControllerFragment : BaseDaggerFragment(), CoroutineScope
         ReviewMediaPlayerControllerComponentInstance.getInstance(requireContext()).inject(this)
     }
 
+    private fun bindViews(view: View) {
+        tvDurationView = view.findViewById(com.google.android.exoplayer2.ui.R.id.exo_duration)
+        icMaximizeControl = view.findViewById(R.id.review_media_gallery_maximize_control)
+        icMinimizeControl = view.findViewById(R.id.review_media_gallery_minimize_control)
+        icVolumeMutedControl = view.findViewById(R.id.review_media_gallery_volume_muted_control)
+        icVolumeUnMutedControl = view.findViewById(R.id.review_media_gallery_volume_unmuted_control)
+    }
+
     private fun setupLayout() {
         binding?.run {
             setupVideoPlayer()
@@ -113,6 +134,7 @@ class ReviewMediaPlayerControllerFragment : BaseDaggerFragment(), CoroutineScope
         collectDetailedReviewMediaGalleryResultUpdate()
         collectOrientationUiStateUpdate()
         collectOverlayVisibilityUpdate()
+        collectVideoPlayingDurationUpdate()
     }
 
     private fun collectUiStateUpdate() {
@@ -145,19 +167,21 @@ class ReviewMediaPlayerControllerFragment : BaseDaggerFragment(), CoroutineScope
         }
     }
 
+    private fun collectVideoPlayingDurationUpdate() {
+        viewLifecycleOwner.collectLatestWhenResumed(sharedReviewMediaGalleryViewModel.videoDurationMillis) {
+            reviewMediaPlayerControllerViewModel.updateVideoDurationMillis(it)
+        }
+    }
+
     private fun FragmentReviewMediaPlayerControllerBinding.setupVideoPlayerController() {
-        view?.findViewById<IconUnify>(R.id.review_media_gallery_maximize_control)?.setOnClickListener {
+        icMaximizeControl?.setOnClickListener {
             sharedReviewMediaGalleryViewModel.requestLandscapeMode()
         }
-        view?.findViewById<IconUnify>(R.id.review_media_gallery_minimize_control)?.setOnClickListener {
+        icMinimizeControl?.setOnClickListener {
             sharedReviewMediaGalleryViewModel.requestPortraitMode()
         }
-        view?.findViewById<IconUnify>(R.id.review_media_gallery_volume_muted_control)?.setOnClickListener {
-            reviewMediaPlayerControllerViewModel.unmute()
-        }
-        view?.findViewById<IconUnify>(R.id.review_media_gallery_volume_unmuted_control)?.setOnClickListener {
-            reviewMediaPlayerControllerViewModel.mute()
-        }
+        icVolumeMutedControl?.setOnClickListener { reviewMediaPlayerControllerViewModel.unmute() }
+        icVolumeUnMutedControl?.setOnClickListener { reviewMediaPlayerControllerViewModel.mute() }
         playerControlViewReviewMediaGallery.hide()
     }
 
@@ -173,10 +197,13 @@ class ReviewMediaPlayerControllerFragment : BaseDaggerFragment(), CoroutineScope
             dividerReviewMediaGalleryBottomController.gone()
             playerControlViewReviewMediaGallery.hide()
         }
-        view?.findViewById<IconUnify>(R.id.review_media_gallery_maximize_control)?.showWithCondition(uiState.orientationUiState.isPortrait())
-        view?.findViewById<IconUnify>(R.id.review_media_gallery_minimize_control)?.showWithCondition(uiState.orientationUiState.isLandscape())
-        view?.findViewById<IconUnify>(R.id.review_media_gallery_volume_muted_control)?.showWithCondition(uiState.muted)
-        view?.findViewById<IconUnify>(R.id.review_media_gallery_volume_unmuted_control)?.showWithCondition(!uiState.muted)
+        tvDurationView?.text = Util.getStringForTime(
+            stringBuilder, formatter, uiState.videoDurationMillis
+        )
+        icMaximizeControl?.showWithCondition(uiState.orientationUiState.isPortrait())
+        icMinimizeControl?.showWithCondition(uiState.orientationUiState.isLandscape())
+        icVolumeMutedControl?.showWithCondition(uiState.muted)
+        icVolumeUnMutedControl?.showWithCondition(!uiState.muted)
         if (uiState.muted) {
             videoPlayer.mute()
         } else {
