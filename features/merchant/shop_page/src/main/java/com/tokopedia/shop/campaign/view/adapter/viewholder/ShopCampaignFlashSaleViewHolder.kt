@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
@@ -22,11 +23,12 @@ import com.tokopedia.shop.home.view.listener.ShopHomeFlashSaleWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeFlashSaleUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import java.math.RoundingMode
-import java.util.Date
 import java.util.Calendar
+import java.util.Date
 
 class ShopCampaignFlashSaleViewHolder(
     itemView: View,
@@ -41,10 +43,9 @@ class ShopCampaignFlashSaleViewHolder(
     private val singleBackGroundView: View? = itemView.findViewById(R.id.bg_single)
     private val doubleBackGroundView: View? = itemView.findViewById(R.id.bg_double)
     private val multipleBackGroundView: View? = itemView.findViewById(R.id.bg_multiple)
-    private val countDownLayout: View? = itemView.findViewById(R.id.flash_sale_count_down_layout)
     private val timerDescriptionView: Typography? = itemView.findViewById(R.id.tgp_flash_sale_timer_desc)
     private val timerView: TimerUnifySingle? = itemView.findViewById(R.id.tus_flash_sale_timer)
-    private val flashSaleReminderView: View? = itemView.findViewById(R.id.flash_sale_reminder_view)
+    private val flashSaleReminderView: CardUnify2? = itemView.findViewById(R.id.flash_sale_reminder_view)
     private val reminderBellView: AppCompatImageView? = itemView.findViewById(R.id.iv_remind_me_bell)
     private val reminderCountView: Typography? = itemView.findViewById(R.id.tgp_remind_me)
     private val productCarouselView: RecyclerView? = itemView.findViewById(R.id.rv_flash_sale_product_carousel)
@@ -75,7 +76,7 @@ class ShopCampaignFlashSaleViewHolder(
         val flashSaleItem = element.data?.firstOrNull()
         val productSize = flashSaleItem?.productList?.size ?: 0
         setupHeader(element.header.title ?: "")
-        setupCtaSeeAll(productSize)
+        setupCtaSeeAll(productSize, element.data?.firstOrNull()?.statusCampaign)
         setupFlashSaleBackgroundView(productList = flashSaleItem?.productList.orEmpty())
         setupFlashSaleCountDownTimer(element)
         if (!GlobalConfig.isSellerApp())
@@ -131,8 +132,9 @@ class ShopCampaignFlashSaleViewHolder(
         ctaSeeAllView?.setTextColor(widgetConfigListener.getWidgetTextColor())
     }
 
-    private fun setupCtaSeeAll(productSize: Int) {
-        if (productSize == SINGLE) ctaSeeAllView?.hide()
+    private fun setupCtaSeeAll(productSize: Int, statusCampaign: String?) {
+        val isUpcoming = isStatusCampaignUpcoming(statusCampaign.orEmpty())
+        if (productSize == SINGLE || isUpcoming) ctaSeeAllView?.hide()
         else ctaSeeAllView?.show()
     }
 
@@ -161,8 +163,9 @@ class ShopCampaignFlashSaleViewHolder(
                 val timeDescription = model.data?.firstOrNull()?.timeDescription ?: ""
                 val timeCounter = model.data?.firstOrNull()?.timeCounter ?: ""
                 timerDescriptionView?.text = timeDescription
-                countDownLayout?.show()
                 if (timeCounter.toLong() != 0L) {
+                    timerDescriptionView?.show()
+                    timerView?.show()
                     when {
                         isStatusCampaignUpcoming(statusCampaign) -> {
                             val startDate = DateHelper.getDateFromString(model.data?.firstOrNull()?.startDate ?: "").time
@@ -181,10 +184,12 @@ class ShopCampaignFlashSaleViewHolder(
                     timerView?.gone()
                 }
             } else {
-                countDownLayout?.hide()
+                timerDescriptionView?.gone()
+                timerView?.gone()
             }
         } catch (e: Throwable) {
-            countDownLayout?.hide()
+            timerDescriptionView?.gone()
+            timerView?.gone()
         }
     }
 
@@ -213,14 +218,16 @@ class ShopCampaignFlashSaleViewHolder(
         return if (totalNotify > VALUE_INT_HUNDREDS) {
             totalNotify.thousandFormatted(1, RoundingMode.DOWN)
         } else {
-            ""
+            itemView.context.getString(R.string.shop_page_label_remind_me)
         }
     }
 
     private fun setupReminderIconAndWording(isRemindMe: Boolean) {
         if (isRemindMe) {
             reminderBellView?.setImageResource(R.drawable.ic_fs_remind_me_true)
+            reminderCountView?.gone()
         } else {
+            reminderCountView?.show()
             reminderCountView?.text = itemView.context.getString(R.string.shop_page_label_remind_me)
             reminderBellView?.setImageResource(R.drawable.ic_fs_remind_me_false)
         }
@@ -230,6 +237,7 @@ class ShopCampaignFlashSaleViewHolder(
         if (isOngoing) {
             flashSaleReminderView?.hide()
         } else {
+            flashSaleReminderView?.setCardUnifyBackgroundColor(MethodChecker.getColor(itemView.context, R.color.clr_dms_icon_white))
             flashSaleReminderView?.show()
         }
     }
