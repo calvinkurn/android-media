@@ -23,6 +23,7 @@ const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
                 text
                 left_icon_url
                 right_icon_url
+                checkout_id
               }
               open_prerequisite_site
               eligible_new_shipping_experience
