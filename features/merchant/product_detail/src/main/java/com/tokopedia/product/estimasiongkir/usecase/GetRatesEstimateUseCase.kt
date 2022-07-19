@@ -65,11 +65,9 @@ class GetRatesEstimateUseCase @Inject constructor(private val graphqlRepository:
                 BO_PLUS_DT -> {
                     val isTokoNow = freeShippingFlag == BO_TOKONOW
                             || freeShippingFlag == BO_TOKONOW_15
-                    FIELD_BO_METADATA.apply {
-                        replace("${'$'}boType", freeShippingFlag.toString())
-                        replace("${'$'}isTokoNow", isTokoNow.toString())
-                        replace("${'$'}boCampaignIDs", boCampaignIDs)
-                    }
+                    FIELD_BO_METADATA.replace("${'$'}boType", freeShippingFlag.toString())
+                        .replace("${'$'}isTokoNow", isTokoNow.toString())
+                        .replace("${'$'}boCampaignIDs", boCampaignIDs)
                 }
                 else -> ""
             }
