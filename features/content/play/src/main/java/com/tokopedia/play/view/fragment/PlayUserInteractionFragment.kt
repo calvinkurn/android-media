@@ -231,7 +231,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private lateinit var productAnalyticHelper: ProductAnalyticHelper
 
-    private lateinit var localCache: LocalCacheModel = LocalCacheModel()
+    private var localCache: LocalCacheModel = LocalCacheModel()
 
     /**
      * Animation
