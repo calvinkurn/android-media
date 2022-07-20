@@ -34,12 +34,15 @@ import com.tokopedia.topads.common.data.model.AutoAdsParam
 import com.tokopedia.topads.common.di.DaggerTopAdsCommonComponent
 import com.tokopedia.topads.common.di.TopAdsCommonComponent
 import com.tokopedia.topads.common.di.module.TopAdsCommonModule
+import com.tokopedia.topads.common.utils.TopadsCommonUtil.showErrorAutoAds
 import com.tokopedia.topads.common.view.AutoAdsWidgetViewModelCommon
 import com.tokopedia.topads.common.view.sheet.ManualAdsConfirmationCommonSheet
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -100,11 +103,19 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
 
     private fun renderUI() {
         widgetViewModel.autoAdsData.observe(context as BaseActivity, {
-            currentBudget = it.dailyBudget
-            if (it.status == AutoAdsStatus.STATUS_NOT_DELIVERED) {
-                widgetViewModel.getNotDeliveredReason(userSession.shopId)
-            } else
-                setUiComponent(it.status, it.dailyUsage)
+            when(it) {
+                is Success -> {
+                    val data = it.data
+                    currentBudget = data.dailyBudget
+                    if (it.status == AutoAdsStatus.STATUS_NOT_DELIVERED) {
+                        widgetViewModel.getNotDeliveredReason(userSession.shopId)
+                    } else
+                        setUiComponent(data.status, data.dailyUsage)
+                }
+                is Fail -> it.throwable.message?.let { errorMessage ->
+                    context?.showErrorAutoAds(errorMessage)
+                }
+            }
         })
         widgetViewModel.adsDeliveryStatus.observe(context as BaseActivity, {
             if (it.status == 2)

@@ -24,6 +24,9 @@ import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsQueryPostAutoadsUseCase
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.withContext
 import org.json.JSONException
 import javax.inject.Inject
@@ -41,7 +44,7 @@ class DailyBudgetViewModel @Inject constructor(
     private val queryPostAutoadsUseCase: TopAdsQueryPostAutoadsUseCase
 ) : BaseViewModel(dispatcher.main) {
 
-    val autoAdsData = MutableLiveData<TopAdsAutoAdsData>()
+    val autoAdsData : MutableLiveData<Result<TopAdsAutoAdsData>> = MutableLiveData()
     private val topAdsDeposit: MutableLiveData<Int> = MutableLiveData()
     fun getTopAdsDepositLiveData(): LiveData<Int> = topAdsDeposit
 
@@ -68,7 +71,13 @@ class DailyBudgetViewModel @Inject constructor(
     fun postAutoAds(param: AutoAdsParam) {
         queryPostAutoadsUseCase.setParam(param).execute(
             onSuccess = { data ->
-                autoAdsData.postValue(data.autoAds.data)
+                autoAdsData.postValue(
+                    if(data.autoAds.data != null) {
+                        Success(data = data.autoAds.data!!)
+                    } else {
+                        Fail(Throwable(data.autoAds.error.firstOrNull()?.detail))
+                    }
+                )
             }, onError = {
                 it.printStackTrace()
             }

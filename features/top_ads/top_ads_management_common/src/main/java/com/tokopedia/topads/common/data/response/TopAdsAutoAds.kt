@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
 data class TopAdsAutoAds(
 
     @SerializedName("data")
-    val data: TopAdsAutoAdsData = TopAdsAutoAdsData(),
+    val data: TopAdsAutoAdsData? = TopAdsAutoAdsData(),
     @SerializedName("errors")
     val error: List<Error> = listOf(),
 

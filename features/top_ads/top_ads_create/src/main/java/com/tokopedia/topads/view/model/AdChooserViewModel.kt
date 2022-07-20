@@ -17,6 +17,9 @@ import com.tokopedia.topads.common.domain.usecase.TopAdsQueryPostAutoadsUseCase
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.response.AdCreationOption
 import com.tokopedia.topads.view.RequestHelper
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -31,7 +34,7 @@ class AdChooserViewModel @Inject constructor(
 
     private val CHANNEL = "topchat"
     private val SOURCE = "one_click_promo"
-    val autoAdsData = MutableLiveData<TopAdsAutoAdsData>()
+    val autoAdsData : MutableLiveData<Result<TopAdsAutoAdsData>> = MutableLiveData()
 
     fun getAdsState(onSuccess: ((AdCreationOption) -> Unit)) {
         launchCatchError(
@@ -62,7 +65,13 @@ class AdChooserViewModel @Inject constructor(
 
         queryPostAutoadsUseCase.setParam(param).execute(
             onSuccess = { data ->
-                autoAdsData.postValue(data.autoAds.data)
+                autoAdsData.postValue(
+                    if(data.autoAds.data != null) {
+                        Success(data = data.autoAds.data!!)
+                    } else {
+                        Fail(Throwable(data.autoAds.error.firstOrNull()?.detail))
+                    }
+                )
             }, onError = {
                 it.printStackTrace()
             }

@@ -22,6 +22,7 @@ import com.tokopedia.topads.common.data.response.AutoAdsResponse
 import com.tokopedia.topads.common.getSellerMigrationFeatureName
 import com.tokopedia.topads.common.getSellerMigrationRedirectionApplinks
 import com.tokopedia.topads.common.isFromPdpSellerMigration
+import com.tokopedia.topads.common.utils.TopadsCommonUtil.showErrorAutoAds
 import com.tokopedia.topads.common.view.sheet.ManualAdsConfirmationCommonSheet
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.response.AdCreationOption
@@ -31,6 +32,8 @@ import com.tokopedia.topads.view.model.AdChooserViewModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 private const val CLICK_MULAI_IKLAN = "click-mulai iklan otomatis"
@@ -138,8 +141,12 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel.autoAdsData.observe(viewLifecycleOwner, Observer {
-            viewModel.getAutoAdsStatus(this::onSuccessAutoAds)
-
+            when (it) {
+                is Success -> viewModel.getAutoAdsStatus(this::onSuccessAutoAds)
+                is Fail -> it.throwable.message?.let { errorMessage ->
+                    context?.showErrorAutoAds(errorMessage)
+                }
+            }
         })
         imageView7?.setImageDrawable(view.context.getResDrawable(R.drawable.ill_header))
         context?.let {
