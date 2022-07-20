@@ -39,7 +39,7 @@ data class Campaign(
 
         @SerializedName("custom_stock")
         @Expose
-        val customStock: Int = 0,
+        val customStock: String = "",
 
         @SerializedName("max_order")
         @Expose
