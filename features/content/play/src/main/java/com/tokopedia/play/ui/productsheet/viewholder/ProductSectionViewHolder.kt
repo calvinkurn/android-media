@@ -137,7 +137,6 @@ class ProductSectionViewHolder(
     }
 
     private fun setupTimer(item : ProductSectionUiModel.Section) {
-        timerSection.pause()
         timerTime = if(item.config.type == ProductSectionType.Active) item.config.endTime else item.config.startTime
 
         timerSection.timerVariant = if(item.config.type == ProductSectionType.Active) TimerUnifySingle.VARIANT_MAIN else TimerUnifySingle.VARIANT_INFORMATIVE
@@ -152,7 +151,6 @@ class ProductSectionViewHolder(
                 add(Calendar.HOUR, (((diff / 1000) / 60) / 60).toInt())
             }
             timerSection.targetDate = dt
-        timerSection.resume()
     }
 
     private fun isProductCountChanged(productSize: Int): Boolean {
