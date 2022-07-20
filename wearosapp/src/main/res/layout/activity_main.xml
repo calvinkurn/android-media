@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:typographyType="heading_6"
-            android:textColor="@color/white"
+            android:textColor="@color/Unify_Static_White"
             android:text="Received message: "
             />
         <com.tokopedia.unifyprinciples.Typography
@@ -27,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:typographyType="body_3"
-            android:textColor="@color/white"
+            android:textColor="@color/Unify_Static_White"
             tools:text="Message.."
             />
 
@@ -36,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:typographyType="heading_6"
-            android:textColor="@color/white"
+            android:textColor="@color/Unify_Static_White"
             android:text="Received data: "
             />
         <com.tokopedia.unifyprinciples.Typography
@@ -44,7 +44,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:typographyType="body_3"
-            android:textColor="@color/white"
+            android:textColor="@color/Unify_Static_White"
             tools:text="Message.."
             />
 
