@@ -498,7 +498,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 freeOngkir = ProductCardModel.FreeOngkir(product.freeOngkir.isActive, product.freeOngkir.imageUrl),
                 labelGroupList = ArrayList<ProductCardModel.LabelGroup>().apply {
                     product.labelGroupList.map {
-                        add(ProductCardModel.LabelGroup(it.position, it.title, it.type))
+                        add(ProductCardModel.LabelGroup(it.position, it.title, it.type, it.imageUrl))
                     }
                 },
                 hasAddToCartButton = this.hasAddToCartButton,
