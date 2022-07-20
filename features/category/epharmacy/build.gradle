@@ -41,7 +41,6 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation rootProject.ext.miscDependencies.cameraView
     implementation rootProject.ext.networkDependencies.glide
 
 
@@ -51,6 +50,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.tkpdInternalLibDependencies.url
+    implementation rootProject.ext.firebase.crashlytics
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
@@ -59,6 +59,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation rootProject.ext.miscDependencies.coroutineCore
+
 }
 
 project.ext {

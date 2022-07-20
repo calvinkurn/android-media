@@ -12,8 +12,6 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
-import com.tokopedia.checkout.view.ShipmentFragment
-import com.tokopedia.checkout.view.viewholder.UploadPrescriptionViewHolder
 import com.tokopedia.tkpd.testgql.TestGqlUseCase
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
@@ -117,29 +115,16 @@ class MainActivity : AppCompatActivity() {
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
-        val uploadPrescriptionIntent = RouteManager.getIntent(
-            this,
-            UploadPrescriptionViewHolder.EPharmacyAppLink
-        )
-        uploadPrescriptionIntent.putExtra(
-            ShipmentFragment.EXTRA_CHECKOUT_ID_STRING,
-            "01fda8a4f47b3261fe0f85e633971a3e"
-        )
-        startActivityForResult(
-            uploadPrescriptionIntent,
-            ShipmentFragment.REQUEST_CODE_UPLOAD_PRESCRIPTION
-        )
-
-//        val appLink = etAppLink.text.toString()
-//        if(appLink.isNotBlank())
-//            RouteManager.route(this, appLink)
-//        else Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
+        val appLink = etAppLink.text.toString()
+        if(appLink.isNotBlank())
+            RouteManager.route(this, appLink)
+        else Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
     }
 
     private fun getDefaultAppLink(): String {
         /*
          * Put your default applink here
          */
-        return "tokopedia://epharmacy/543554"
+        return ""
     }
 }

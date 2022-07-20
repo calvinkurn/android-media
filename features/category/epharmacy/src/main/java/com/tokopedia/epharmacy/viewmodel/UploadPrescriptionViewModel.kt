@@ -209,7 +209,7 @@ class UploadPrescriptionViewModel @Inject constructor(
 
     private suspend fun uploadImageToServer(uniquePositionId: Int, localFilePath : String) {
         if (localFilePath.isNotBlank()){
-            uploadPrescriptionUseCase.setBase64Image(uniquePositionId.toLong(),localFilePath)
+            uploadPrescriptionUseCase.setBase64Image((uniquePositionId + 1).toLong(),localFilePath)
             val result = withContext(dispatcherBackground) {
                 convertToUploadImageResponse(uploadPrescriptionUseCase.executeOnBackground())
             }
