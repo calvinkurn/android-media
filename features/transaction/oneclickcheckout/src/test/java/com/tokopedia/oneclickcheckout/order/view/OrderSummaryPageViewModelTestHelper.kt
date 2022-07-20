@@ -151,4 +151,8 @@ class OrderSummaryPageViewModelTestHelper {
             addOns = emptyList()
     )
 
+    val paymentFeeDetails = listOf(
+        OrderPaymentFee(fee = 500.0),
+        OrderPaymentFee(fee = 1000.0)
+    )
 }
