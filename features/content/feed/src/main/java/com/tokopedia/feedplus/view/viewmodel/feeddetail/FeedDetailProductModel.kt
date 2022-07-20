@@ -1,10 +1,10 @@
-package com.tokopedia.feedplus.view.adapter.viewholder.feeddetail
+package com.tokopedia.feedplus.view.viewmodel.feeddetail
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedplus.view.adapter.typefactory.feeddetail.FeedPlusDetailTypeFactory
 
-data class ProductFeedDetailViewModelNew (
+data class FeedDetailProductModel (
         val id: String ,
         val text: String ,
         val imgUrl:String ,

@@ -35,7 +35,7 @@ data class FeedXProduct(
         @SerializedName("name")
         var name: String = "",
         @SerializedName("price")
-        var price: Int = 0,
+        val price: Int = 0,
         @SerializedName("priceDiscount")
         var priceDiscount: Int = 0,
         @SerializedName("priceDiscountFmt")
