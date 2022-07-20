@@ -76,7 +76,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
     companion object {
         private const val FOURTH_STEP = 4
         private const val RELATED_CAMPAIGN_OFFSET_DP = 8
-        private const val REDIRECTION_TO_CAMPAIGN_LIST_PAGE_DELAY : Long = 1000
+        private const val REDIRECTION_TO_CAMPAIGN_LIST_PAGE_DELAY: Long = 1000
 
         @JvmStatic
         fun newInstance(campaignId: Long, pageMode: PageMode): CampaignRuleFragment {
@@ -93,7 +93,9 @@ class CampaignRuleFragment : BaseDaggerFragment(),
     lateinit var viewModelFactory: ViewModelFactory
 
     private val campaignId by lazy { arguments?.getLong(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID) }
-    private val pageMode by lazy { arguments?.getParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE) ?: PageMode.CREATE }
+    private val pageMode by lazy {
+        arguments?.getParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE) ?: PageMode.CREATE
+    }
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(CampaignRuleViewModel::class.java) }
 
@@ -311,13 +313,14 @@ class CampaignRuleFragment : BaseDaggerFragment(),
         BuyerSettingBottomSheet().show(childFragmentManager)
     }
 
-    @SuppressLint("ResourcePackage")
     private fun setUpUniqueAccountTips() {
         val binding = binding ?: return
-        binding.tgUniqueAccountPoint1.text =
-            SpannableString(getString(R.string.campaign_rule_unique_account_tips_point_1)).toBulletSpan()
-        binding.tgUniqueAccountPoint2.text =
-            SpannableString(getString(R.string.campaign_rule_unique_account_tips_point_2)).toBulletSpan()
+        binding.tgUniqueAccountPoint1.text = SpannableString(
+            getText(R.string.campaign_rule_unique_account_tips_point_1)
+        ).toBulletSpan()
+        binding.tgUniqueAccountPoint2.text = SpannableString(
+            getText(R.string.campaign_rule_unique_account_tips_point_2)
+        ).toBulletSpan()
     }
 
     private fun observeUniqueAccountSelected() {
@@ -727,7 +730,10 @@ class CampaignRuleFragment : BaseDaggerFragment(),
     }
 
     private fun showChooseRelatedCampaignBottomSheet(request: AddRelatedCampaignRequest) {
-        ChooseRelatedCampaignBottomSheet.createInstance(request.campaignId, request.selectedRelatedCampaign)
+        ChooseRelatedCampaignBottomSheet.createInstance(
+            request.campaignId,
+            request.selectedRelatedCampaign
+        )
             .show(childFragmentManager)
     }
 
