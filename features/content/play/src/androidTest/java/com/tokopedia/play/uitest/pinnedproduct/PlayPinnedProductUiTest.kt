@@ -81,8 +81,8 @@ class PlayPinnedProductUiTest {
     }
 
     @Test
-    fun pinnedProduct_productCarouselView_noPinned() {
-        val tagItem = buildTagItemWithPinned(hasPinned = false)
+    fun pinnedProduct_productCarouselView_oneSection_noPinned() {
+        val tagItem = buildTagItemWithPinned(hasPinned = { _, _ -> false })
 
         coEvery { repo.getTagItem(any(), any()) } returns tagItem
 
@@ -91,18 +91,97 @@ class PlayPinnedProductUiTest {
     }
 
     @Test
-    fun pinnedProduct_productCarouselView_hasPinned() {
-        val tagItem = buildTagItemWithPinned(hasPinned = true)
+    fun pinnedProduct_productCarouselView_oneSection_hasPinned() {
+        val sectionPinned = 0
+        val productPinned = 3
+        val tagItem = buildTagItemWithPinned(
+            hasPinned = { sectionIndex, productIndex ->
+                sectionIndex == sectionPinned && productIndex == productPinned
+            }
+        )
 
         coEvery { repo.getTagItem(any(), any()) } returns tagItem
 
         val robot = PlayActivityRobot(channelId)
-        robot.assertHasPinnedItemInCarousel(true)
+        robot.assertHasPinnedItemInCarousel(
+            true,
+            buildMockProductName(sectionPinned, productPinned)
+        )
     }
 
     @Test
-    fun pinnedProduct_productBottomSheet_noPinned() {
-        val tagItem = buildTagItemWithPinned(hasPinned = false)
+    fun pinnedProduct_productCarouselView_threeSections_noPinned() {
+        val tagItem = buildTagItemWithPinned(hasPinned = { _, _ -> false })
+
+        coEvery { repo.getTagItem(any(), any()) } returns tagItem
+
+        val robot = PlayActivityRobot(channelId)
+        robot.assertHasPinnedItemInCarousel(false)
+    }
+
+    @Test
+    fun pinnedProduct_productCarouselView_threeSections_hasPinned_sectionOne_productTwo() {
+        val sectionPinned = 0
+        val productPinned = 1
+        val tagItem = buildTagItemWithPinned(
+            numOfSections = 3,
+            hasPinned = { sectionIndex, productIndex ->
+                sectionIndex == sectionPinned && productIndex == productPinned
+            }
+        )
+
+        coEvery { repo.getTagItem(any(), any()) } returns tagItem
+
+        val robot = PlayActivityRobot(channelId)
+        robot.assertHasPinnedItemInCarousel(
+            true,
+            buildMockProductName(sectionPinned, productPinned)
+        )
+    }
+
+    @Test
+    fun pinnedProduct_productCarouselView_threeSections_hasPinned_sectionTwo_productOne() {
+        val sectionPinned = 1
+        val productPinned = 0
+        val tagItem = buildTagItemWithPinned(
+            numOfSections = 3,
+            hasPinned = { sectionIndex, productIndex ->
+                sectionIndex == sectionPinned && productIndex == productPinned
+            }
+        )
+
+        coEvery { repo.getTagItem(any(), any()) } returns tagItem
+
+        val robot = PlayActivityRobot(channelId)
+        robot.assertHasPinnedItemInCarousel(
+            true,
+            buildMockProductName(sectionPinned, productPinned)
+        )
+    }
+
+    @Test
+    fun pinnedProduct_productCarouselView_threeSections_hasPinned_sectionThree_productThree() {
+        val sectionPinned = 2
+        val productPinned = 2
+        val tagItem = buildTagItemWithPinned(
+            numOfSections = 3,
+            hasPinned = { sectionIndex, productIndex ->
+                sectionIndex == sectionPinned && productIndex == productPinned
+            }
+        )
+
+        coEvery { repo.getTagItem(any(), any()) } returns tagItem
+
+        val robot = PlayActivityRobot(channelId)
+        robot.assertHasPinnedItemInCarousel(
+            true,
+            buildMockProductName(sectionPinned, productPinned)
+        )
+    }
+
+    @Test
+    fun pinnedProduct_productBottomSheet_oneSection_noPinned() {
+        val tagItem = buildTagItemWithPinned(hasPinned = { _, _ -> false })
 
         coEvery { repo.getTagItem(any(), any()) } returns tagItem
 
@@ -113,34 +192,69 @@ class PlayPinnedProductUiTest {
     }
 
     @Test
-    fun pinnedProduct_productBottomSheet_hasPinned() {
-        val tagItem = buildTagItemWithPinned(hasPinned = true)
+    fun pinnedProduct_productBottomSheet_oneSection_hasPinned() {
+        val sectionPinned = 0
+        val productPinned = 3
+        val tagItem = buildTagItemWithPinned(
+            hasPinned = { sectionIndex, productIndex ->
+                sectionIndex == sectionPinned && productIndex == productPinned
+            }
+        )
 
         coEvery { repo.getTagItem(any(), any()) } returns tagItem
 
         val robot = PlayActivityRobot(channelId)
         robot
             .openProductBottomSheet()
-            .assertHasPinnedItemInProductBottomSheet(true)
+            .assertHasPinnedItemInProductBottomSheet(
+                buildMockProductName(sectionPinned, productPinned),
+                true,
+            )
     }
 
-    private fun buildTagItemWithPinned(hasPinned: Boolean): TagItemUiModel {
+    @Test
+    fun pinnedProduct_productBottomSheet_threeSections_hasPinned_sectionThree_productThree() {
+        val sectionPinned = 2
+        val productPinned = 2
+        val tagItem = buildTagItemWithPinned(
+            numOfSections = 3,
+            hasPinned = { sectionIndex, productIndex ->
+                sectionIndex == sectionPinned && productIndex == productPinned
+            }
+        )
+
+        coEvery { repo.getTagItem(any(), any()) } returns tagItem
+
+        val robot = PlayActivityRobot(channelId)
+        robot
+            .openProductBottomSheet()
+            .assertHasPinnedItemInCarousel(
+            true,
+            buildMockProductName(sectionPinned, productPinned)
+        )
+    }
+
+    private fun buildTagItemWithPinned(
+        numOfSections: Int = 1,
+        numOfProducts: Int = 5,
+        hasPinned: (Int, Int) -> Boolean,
+    ): TagItemUiModel {
         return uiModelBuilder.buildTagItem(
             product = uiModelBuilder.buildProductModel(
-                productList = listOf(
+                productList = List(numOfSections) { sectionIndex ->
                     uiModelBuilder.buildProductSection(
-                        productList = List(5) {
+                        productList = List(numOfProducts) { productIndex ->
                             uiModelBuilder.buildProduct(
-                                id = "$it",
+                                id = "$sectionIndex, $productIndex",
                                 shopId = "2",
-                                title = "Barang $it",
+                                title = buildMockProductName(sectionIndex, productIndex),
                                 stock = StockAvailable(1),
-                                price = OriginalPrice("${it}000", it*1000.0),
-                                isPinned = if (hasPinned) it == 3 else false,
+                                price = OriginalPrice("${productIndex}000", productIndex * 1000.0),
+                                isPinned = hasPinned(sectionIndex, productIndex),
                             )
                         }
-                    ),
-                ),
+                    )
+                },
                 canShow = true,
             ),
             maxFeatured = 3,
@@ -148,4 +262,9 @@ class PlayPinnedProductUiTest {
             resultState = ResultState.Success,
         )
     }
+
+    private fun buildMockProductName(
+        sectionIndex: Int,
+        productIndex: Int,
+    ) = "Barang $sectionIndex, $productIndex"
 }

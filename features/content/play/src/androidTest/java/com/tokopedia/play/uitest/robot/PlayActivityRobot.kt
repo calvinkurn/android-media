@@ -10,6 +10,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
+import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -19,6 +20,7 @@ import com.tokopedia.play.R
 import com.tokopedia.play.test.espresso.delay
 import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.test.application.matcher.RecyclerViewMatcher
+import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.CoreMatchers.not
 
@@ -52,14 +54,24 @@ class PlayActivityRobot(
     /**
      * Assertion
      */
-    fun assertHasPinnedItemInCarousel(hasPinned: Boolean) = chainable {
+    fun assertHasPinnedItemInCarousel(
+        hasPinned: Boolean,
+        productName: String? = null,
+    ) = chainable {
         val viewMatcher = hasDescendant(withText(containsString("Pin Dipasang")))
-        Espresso.onView(
+        val interaction = Espresso.onView(
             RecyclerViewMatcher(R.id.rv_product_featured)
                 .atPosition(0)
         ).check(
             if (hasPinned) matches(viewMatcher)
             else matches(not(viewMatcher))
+        )
+
+        if (!hasPinned || productName == null) return@chainable
+        interaction.check(
+            matches(
+                hasDescendant(withText(containsString(productName)))
+            )
         )
     }
 
@@ -68,6 +80,24 @@ class PlayActivityRobot(
         Espresso.onView(
             RecyclerViewMatcher(R.id.rv_product)
                 .atPosition(0)
+        ).check(
+            if (hasPinned) matches(viewMatcher)
+            else matches(not(viewMatcher))
+        )
+    }
+
+    fun assertHasPinnedItemInProductBottomSheet(
+        productName: String,
+        hasPinned: Boolean,
+    ) = chainable {
+        val viewMatcher = hasDescendant(withText(containsString("Pin Dipasang")))
+
+        Espresso.onView(
+            allOf(
+                RecyclerViewMatcher(R.id.rv_product)
+                    .atPosition(0),
+                hasDescendant(withText(containsString(productName)))
+            )
         ).check(
             if (hasPinned) matches(viewMatcher)
             else matches(not(viewMatcher))
