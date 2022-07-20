@@ -166,19 +166,19 @@ class UserProfileFragment @Inject constructor(
             activity?.finish()
         }
 
-        mainBinding.swipeRefreshLayout.setOnRefreshListener {
+        binding.swipeRefreshLayout.setOnRefreshListener {
             if (viewModel.isShopRecomShow) showLoadingShopRecom()
             refreshLandingPageData(true)
         }
 
         refreshLandingPageData(true)
-        binding.rootContainer.displayedChild = PAGE_LOADING
+        binding.viewFlipper.displayedChild = PAGE_LOADING
 
         mainBinding.appBarUserProfile.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
             shouldRefreshRecyclerView = verticalOffset == 0
         })
 
-        mainBinding.swipeRefreshLayout.setOnChildScrollUpCallback { _, _ ->
+        binding.swipeRefreshLayout.setOnChildScrollUpCallback { _, _ ->
             mainBinding.rvPost.canScrollVertically(-1) || !shouldRefreshRecyclerView
         }
 
@@ -427,12 +427,11 @@ class UserProfileFragment @Inject constructor(
             live = curr.liveInfo.isLive
         )
 
-        if(mainBinding.swipeRefreshLayout.isRefreshing) {
-            mainBinding.swipeRefreshLayout.isRefreshing = false
+        if(binding.swipeRefreshLayout.isRefreshing) {
+            binding.swipeRefreshLayout.isRefreshing = false
         }
 
-        binding.rootContainer.displayedChild = PAGE_CONTENT
-
+        binding.viewFlipper.displayedChild = PAGE_CONTENT
 
         /** Setup Profile Info */
         setProfileImg(curr)
@@ -460,9 +459,9 @@ class UserProfileFragment @Inject constructor(
                     textSeeMore.show()
                 }
             } else textSeeMore.hide()
-
-            headerProfile.title = curr.name
         }
+        binding.headerProfile.title = curr.name
+        binding.headerProfile.alpha = 1F
     }
 
     private fun renderButtonAction(
@@ -595,7 +594,7 @@ class UserProfileFragment @Inject constructor(
     }
 
     private fun setHeader() {
-        mainBinding.headerProfile.apply {
+        binding.headerProfile.apply {
             setNavigationOnClickListener {
                 activity?.onBackPressed()
                 userProfileTracker.clickBack(userSession.userId, self = viewModel.isSelfProfile)
@@ -608,7 +607,7 @@ class UserProfileFragment @Inject constructor(
             imgShare.setColorFilter(
                 ContextCompat.getColor(
                     requireContext(),
-                    com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN1000
                 ),
                 android.graphics.PorterDuff.Mode.MULTIPLY
             )
@@ -628,7 +627,7 @@ class UserProfileFragment @Inject constructor(
             imgMenu.setColorFilter(
                 ContextCompat.getColor(
                     requireContext(),
-                    com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN1000
                 ),
                 android.graphics.PorterDuff.Mode.MULTIPLY
             )
@@ -654,12 +653,12 @@ class UserProfileFragment @Inject constructor(
 
     private fun showGlobalError(type: Int) {
         with(binding) {
-            rootContainer.displayedChild = PAGE_ERROR
+            viewFlipper.displayedChild = PAGE_ERROR
             globalError.setType(type)
             globalError.show()
 
             globalError.setActionClickListener {
-                binding.rootContainer.displayedChild = PAGE_LOADING
+                binding.viewFlipper.displayedChild = PAGE_LOADING
                 refreshLandingPageData()
             }
         }
