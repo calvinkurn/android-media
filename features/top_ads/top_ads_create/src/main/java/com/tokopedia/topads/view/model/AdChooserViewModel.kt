@@ -1,6 +1,7 @@
 package com.tokopedia.topads.view.model
 
 import android.content.Context
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -34,7 +35,9 @@ class AdChooserViewModel @Inject constructor(
 
     private val CHANNEL = "topchat"
     private val SOURCE = "one_click_promo"
-    val autoAdsData : MutableLiveData<Result<TopAdsAutoAdsData>> = MutableLiveData()
+
+    private val _autoAdsData : MutableLiveData<Result<TopAdsAutoAdsData>> = MutableLiveData()
+    val autoAdsData : LiveData<Result<TopAdsAutoAdsData>> = _autoAdsData
 
     fun getAdsState(onSuccess: ((AdCreationOption) -> Unit)) {
         launchCatchError(
@@ -65,7 +68,7 @@ class AdChooserViewModel @Inject constructor(
 
         queryPostAutoadsUseCase.setParam(param).execute(
             onSuccess = { data ->
-                autoAdsData.postValue(
+                _autoAdsData.postValue(
                     if(data.autoAds.data != null) {
                         Success(data = data.autoAds.data!!)
                     } else {

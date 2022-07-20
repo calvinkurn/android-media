@@ -40,7 +40,8 @@ class AutoAdsWidgetViewModelCommon @Inject constructor(
         private val queryPostAutoadsUseCase: TopAdsQueryPostAutoadsUseCase
 ) : BaseViewModel(dispatcher) {
 
-    val autoAdsData : MutableLiveData<Result<TopAdsAutoAdsData>> = MutableLiveData()
+    private val _autoAdsData : MutableLiveData<Result<TopAdsAutoAdsData>> = MutableLiveData()
+    val autoAdsData : LiveData<Result<TopAdsAutoAdsData>> = _autoAdsData
     val autoAdsStatus = MutableLiveData<TopAdsAutoAdsData>()
     val adsDeliveryStatus = MutableLiveData<NonDeliveryResponse.TopAdsGetShopStatus.DataItem>()
 
@@ -54,7 +55,7 @@ class AutoAdsWidgetViewModelCommon @Inject constructor(
                 repository.response(listOf(request), cacheStrategy)
             }
             data.getSuccessData<TopAdsAutoAds.Response>().autoAds.data?.let {
-                autoAdsData.postValue(Success(it))
+                _autoAdsData.postValue(Success(it))
             }
         }) {
             it.printStackTrace()
@@ -64,7 +65,7 @@ class AutoAdsWidgetViewModelCommon @Inject constructor(
     fun postAutoAds(param: AutoAdsParam) {
         queryPostAutoadsUseCase.setParam(param).execute(
             onSuccess = { data ->
-                autoAdsData.postValue(
+                _autoAdsData.postValue(
                     if(data.autoAds.data != null) {
                         Success(data = data.autoAds.data)
                     } else {
