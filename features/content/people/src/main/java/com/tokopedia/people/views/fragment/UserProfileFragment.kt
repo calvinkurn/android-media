@@ -756,21 +756,22 @@ class UserProfileFragment @Inject constructor(
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == REQUEST_CODE_EDIT_PROFILE) {
-            refreshLandingPageData(isRefreshPost = false)
-        }
-        else if (requestCode == REQUEST_CODE_LOGIN_TO_FOLLOW && resultCode == Activity.RESULT_OK) {
-            doFollowUnfollow(isFromLogin = true)
-        }
-        else if(requestCode == REQUEST_CODE_LOGIN_TO_SET_REMINDER && resultCode == Activity.RESULT_OK) {
-            submitAction(UserProfileAction.ClickUpdateReminder(true))
-        }
-        else if(requestCode == REQUEST_CODE_PLAY_ROOM && resultCode == Activity.RESULT_OK) {
-            val channelId = data?.extras?.getString(EXTRA_CHANNEL_ID) ?: return
-            val totalView = data.extras?.getString(EXTRA_TOTAL_VIEW)
-            val isReminderSet = data.extras?.getBoolean(EXTRA_IS_REMINDER, false)
 
-            mAdapter.updatePlayWidgetLatestData(channelId, totalView, isReminderSet)
+        /** No need to check resultCode since edit profile page doesn't give specific result code */
+        if(requestCode == REQUEST_CODE_EDIT_PROFILE) refreshLandingPageData(isRefreshPost = false)
+
+        if(resultCode != Activity.RESULT_OK) return
+
+        when(requestCode) {
+            REQUEST_CODE_LOGIN_TO_FOLLOW -> doFollowUnfollow(isFromLogin = true)
+            REQUEST_CODE_LOGIN_TO_SET_REMINDER -> submitAction(UserProfileAction.ClickUpdateReminder(isFromLogin = true))
+            REQUEST_CODE_PLAY_ROOM -> {
+                val channelId = data?.extras?.getString(EXTRA_CHANNEL_ID) ?: return
+                val totalView = data.extras?.getString(EXTRA_TOTAL_VIEW)
+                val isReminderSet = data.extras?.getBoolean(EXTRA_IS_REMINDER, false)
+
+                mAdapter.updatePlayWidgetLatestData(channelId, totalView, isReminderSet)
+            }
         }
     }
 
