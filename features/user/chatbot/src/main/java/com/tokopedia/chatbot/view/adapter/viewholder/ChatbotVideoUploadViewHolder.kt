@@ -2,7 +2,6 @@ package com.tokopedia.chatbot.view.adapter.viewholder
 
 import android.net.Uri
 import android.text.TextUtils
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
@@ -75,8 +74,6 @@ class ChatbotVideoUploadViewHolder(
     override fun bind(element: VideoUploadUiModel) {
         if (element == null) return
         super.bind(element)
-        Log.d("FATAL", "Bind: ${System.currentTimeMillis()} , {$adapterPosition}")
-
         prerequisiteUISetup()
         setupChatBubbleAlignment(chatBalloon, element)
         setDefaultVideoDuration()
@@ -104,7 +101,6 @@ class ChatbotVideoUploadViewHolder(
                 if (playbackState == Player.STATE_READY) {
                     var duration = chatbotExoPlayer.getExoPlayer().duration.orZero()
                     setTimeData(duration)
-                    Log.d("FATAL", "onPlayerStateChanged: $duration")
                 }
             }
         })
@@ -128,9 +124,9 @@ class ChatbotVideoUploadViewHolder(
     }
 
     private fun convertVideoLength(totalLength: Long): String {
-        var hours = TimeUnit.MILLISECONDS.toHours(totalLength) % 24
-        var minutes = TimeUnit.MILLISECONDS.toMinutes(totalLength) % 60
-        var seconds = TimeUnit.MILLISECONDS.toSeconds(totalLength) % 60
+        var hours = TimeUnit.MILLISECONDS.toHours(totalLength) % HOURS
+        var minutes = TimeUnit.MILLISECONDS.toMinutes(totalLength) % MINUTES
+        var seconds = TimeUnit.MILLISECONDS.toSeconds(totalLength) % SECONDS
 
         return when {
             hours == 0L -> String.format("%02d:%02d", minutes, seconds)
@@ -268,5 +264,8 @@ class ChatbotVideoUploadViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_chatbot_chat_video_upload
+        const val HOURS = 24
+        const val MINUTES = 60
+        const val SECONDS = 60
     }
 }

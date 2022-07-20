@@ -29,7 +29,7 @@ object VideoUtil {
 
     fun findVideoSize(videoFile: File) : String {
         return try {
-            videoFile.length() / 1024
+            videoFile.length() / SIZE_KB
         } catch (e: Exception) {
             0
         }.toString()
@@ -42,5 +42,7 @@ object VideoUtil {
             ""
         }
     }
+
+    const val SIZE_KB = 1024
 
 }
