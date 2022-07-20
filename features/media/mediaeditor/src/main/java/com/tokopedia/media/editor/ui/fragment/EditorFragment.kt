@@ -69,6 +69,11 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
 
             renderUndoText(it)
             renderRedoText(it)
+
+            editorToolComponent.setupActiveTools(it.editList, it.backValue)
+            viewModel.updatedIndexItem.value?.let { updatedIndex ->
+                thumbnailDrawerComponent.refreshItem(updatedIndex, viewModel.editStateList.values.toList())
+            }
         }
     }
 
@@ -84,6 +89,11 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
 
             renderUndoText(it)
             renderRedoText(it)
+
+            editorToolComponent.setupActiveTools(it.editList, it.backValue)
+            viewModel.updatedIndexItem.value?.let { updatedIndex ->
+                thumbnailDrawerComponent.refreshItem(updatedIndex, viewModel.editStateList.values.toList())
+            }
         }
     }
 
