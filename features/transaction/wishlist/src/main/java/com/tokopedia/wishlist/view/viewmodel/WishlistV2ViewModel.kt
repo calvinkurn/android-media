@@ -76,7 +76,7 @@ class WishlistV2ViewModel @Inject constructor(private val dispatcher: CoroutineD
                 _wishlistV2.value = Success(wishlistV2Response)
                 _wishlistV2Data.value = Success(organizeWishlistV2Data(
                     convertWishlistV2IntoWishlistUiModel(wishlistV2Response),
-                    typeLayout, isAutomaticDelete, getRecommendationWishlistV2(1, listOf(), EMPTY_WISHLIST_PAGE_NAME), getTopAdsData()))
+                    typeLayout, isAutomaticDelete, getRecommendationWishlistV2(1, listOf(), EMPTY_WISHLIST_PAGE_NAME), getTopAdsData(), false))
             } catch (e: Exception) {
                 _wishlistV2.value = Fail(e)
                 _wishlistV2Data.value = Fail(e)
@@ -150,7 +150,12 @@ class WishlistV2ViewModel @Inject constructor(private val dispatcher: CoroutineD
     }
 
     suspend fun getTopAdsData(): TopAdsImageViewModel?  {
-        return topAdsImageViewUseCase.getImageData(topAdsImageViewUseCase.getQueryMap("",
+        return try {
+            topAdsImageViewUseCase.getImageData(topAdsImageViewUseCase.getQueryMap("",
                 WISHLIST_TOPADS_SOURCE, "", WISHLIST_TOPADS_ADS_COUNT, WISHLIST_TOPADS_DIMENS, "")).firstOrNull()
+        } catch (e: Exception) {
+            Timber.d(e)
+            return null
+        }
     }
 }

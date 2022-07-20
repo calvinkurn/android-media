@@ -31,6 +31,7 @@ import com.tokopedia.wishlistcollection.domain.DeleteWishlistCollectionItemsUseC
 import com.tokopedia.wishlistcollection.domain.GetWishlistCollectionItemsUseCase
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 
 class WishlistCollectionDetailViewModel @Inject constructor(
@@ -87,7 +88,7 @@ class WishlistCollectionDetailViewModel @Inject constructor(
                             1, listOf(),
                             EMPTY_WISHLIST_PAGE_NAME
                         ),
-                        getTopAdsData()
+                        getTopAdsData(), true
                     )
                 )
             } else {
@@ -138,11 +139,20 @@ class WishlistCollectionDetailViewModel @Inject constructor(
         )
     }
 
-    suspend fun getTopAdsData(): TopAdsImageViewModel?  {
-        return topAdsImageViewUseCase.getImageData(topAdsImageViewUseCase.getQueryMap("",
-            WISHLIST_TOPADS_SOURCE, "",
-            WISHLIST_TOPADS_ADS_COUNT,
-            WISHLIST_TOPADS_DIMENS, "")).firstOrNull()
+    suspend fun getTopAdsData(): TopAdsImageViewModel? {
+        return try {
+            topAdsImageViewUseCase.getImageData(
+                topAdsImageViewUseCase.getQueryMap(
+                    "",
+                    WISHLIST_TOPADS_SOURCE, "",
+                    WISHLIST_TOPADS_ADS_COUNT,
+                    WISHLIST_TOPADS_DIMENS, ""
+                )
+            ).firstOrNull()
+        } catch (e: Exception) {
+            Timber.d(e)
+            return null
+        }
     }
 
     fun deleteWishlistV2(productId: String, userId: String) {

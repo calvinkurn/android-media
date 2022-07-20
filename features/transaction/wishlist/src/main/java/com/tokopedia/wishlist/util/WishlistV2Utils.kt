@@ -25,8 +25,8 @@ object WishlistV2Utils {
         typeLayout: String?,
         isAutomaticDelete: Boolean,
         recomm: WishlistV2RecommendationDataModel,
-        topadsData: TopAdsImageViewModel?
-    ): List<WishlistV2TypeLayoutData> {
+        topadsData: TopAdsImageViewModel?,
+        isUsingCollection: Boolean): List<WishlistV2TypeLayoutData> {
         var listData = arrayListOf<WishlistV2TypeLayoutData>()
 
         var isFilterActive = false
@@ -36,7 +36,7 @@ object WishlistV2Utils {
 
         // empty wishlist
         if (wishlistV2UiModel.items.isEmpty() && wishlistV2UiModel.page == 1) {
-            listData = mapToEmptyState(wishlistV2UiModel, listData, isFilterActive, recomm)
+            listData = mapToEmptyState(wishlistV2UiModel, listData, isFilterActive, recomm, isUsingCollection)
 
         } else {
             if (wishlistV2UiModel.page == 1) {
@@ -113,33 +113,61 @@ object WishlistV2Utils {
     private fun mapToEmptyState(
         wishlistV2Response: WishlistV2UiModel,
         listData: ArrayList<WishlistV2TypeLayoutData>,
-        isFilterActive: Boolean, recomm: WishlistV2RecommendationDataModel
+        isFilterActive: Boolean,
+        recomm: WishlistV2RecommendationDataModel,
+        isUsingCollection: Boolean
     ): ArrayList<WishlistV2TypeLayoutData> {
-        if (wishlistV2Response.query.isNotEmpty()) {
-            listData.add(
-                WishlistV2TypeLayoutData(
-                    wishlistV2Response.query,
-                    WishlistV2Consts.TYPE_EMPTY_NOT_FOUND
+        if (isUsingCollection) {
+            val listEmptyButton = arrayListOf<WishlistCollectionEmptyStateData.Button>()
+            if (wishlistV2Response.emptyState.button.isNotEmpty()) {
+                wishlistV2Response.emptyState.button.forEach { dataButton ->
+                    val button = WishlistCollectionEmptyStateData.Button(
+                        text = dataButton.text,
+                        action = dataButton.action,
+                        url = dataButton.url
+                    )
+                    listEmptyButton.add(button)
+                }
+            }
+            var emptyData = WishlistCollectionEmptyStateData()
+            if (wishlistV2Response.emptyState.messages.isNotEmpty()) {
+                emptyData = WishlistCollectionEmptyStateData(
+                    img = wishlistV2Response.emptyState.messages[0].imageUrl,
+                    desc = wishlistV2Response.emptyState.messages[0].description,
+                    title = wishlistV2Response.emptyState.messages[0].title,
+                    listButton = listEmptyButton
                 )
-            )
+            }
 
-        } else if (isFilterActive) {
-            val wishlistV2Empty = WishlistV2EmptyStateData(
-                R.string.empty_state_img,
-                R.string.empty_state_desc,
-                R.string.empty_state_title,
-                R.string.empty_state_button
-            )
-            listData.add(
-                WishlistV2TypeLayoutData(
-                    wishlistV2Empty,
-                    WishlistV2Consts.TYPE_EMPTY_STATE
+            listData.add(WishlistV2TypeLayoutData(emptyData, WishlistV2Consts.TYPE_EMPTY_STATE_COLLECTION))
+        } else {
+            if (wishlistV2Response.query.isNotEmpty()) {
+                listData.add(
+                    WishlistV2TypeLayoutData(
+                        wishlistV2Response.query,
+                        WishlistV2Consts.TYPE_EMPTY_NOT_FOUND
+                    )
                 )
-            )
 
-        } else if (!isFilterActive && wishlistV2Response.query.isEmpty()) {
-            listData.add(WishlistV2TypeLayoutData("", WishlistV2Consts.TYPE_EMPTY_STATE_CAROUSEL))
+            } else if (isFilterActive) {
+                val wishlistV2Empty = WishlistV2EmptyStateData(
+                    R.string.empty_state_img,
+                    R.string.empty_state_desc,
+                    R.string.empty_state_title,
+                    R.string.empty_state_button
+                )
+                listData.add(
+                    WishlistV2TypeLayoutData(
+                        wishlistV2Empty,
+                        WishlistV2Consts.TYPE_EMPTY_STATE
+                    )
+                )
+
+            } else if (!isFilterActive && wishlistV2Response.query.isEmpty()) {
+                listData.add(WishlistV2TypeLayoutData("", WishlistV2Consts.TYPE_EMPTY_STATE_CAROUSEL))
+            }
         }
+
         listData.add(
             WishlistV2TypeLayoutData(
                 recomm.title,

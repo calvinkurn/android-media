@@ -16,6 +16,7 @@ import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_DELETION_PROGRESS_WIDGE
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_EMPTY_NOT_FOUND
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_EMPTY_STATE
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_EMPTY_STATE_CAROUSEL
+import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_EMPTY_STATE_COLLECTION
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_GRID
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_LIST
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_LOADER_GRID
@@ -56,6 +57,7 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         const val LAYOUT_DELETION_PROGRESS_WIDGET = 14
         const val START_LOADER = 0
         const val TOTAL_LOADER = 5
+        const val LAYOUT_EMPTY_STATE_COLLECTION = 15
     }
 
     interface ActionListener {
@@ -80,6 +82,8 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         fun onTickerCTAShowBottomSheet(bottomSheetCleanerData: WishlistV2UiModel.StorageCleanerBottomSheet)
         fun onTickerCTASortFromLatest()
         fun onTickerCloseIconClicked()
+        fun goToWishlistAll()
+        fun onChangeCollectionName()
     }
 
     init { setHasStableIds(true) }
@@ -145,6 +149,10 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             LAYOUT_DELETION_PROGRESS_WIDGET -> {
                 val binding = WishlistV2CountDeletionItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 WishlistV2DeletionProgressWidgetItemViewHolder(binding)
+            }
+            LAYOUT_EMPTY_STATE_COLLECTION -> {
+                val binding = WishlistV2EmptyStateItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                WishlistCollectionEmptyStateViewHolder(binding, actionListener)
             }
             else -> throw IllegalArgumentException("Invalid view type")
         }
@@ -248,6 +256,12 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     holder.itemView.layoutParams = params
                     (holder as WishlistV2DeletionProgressWidgetItemViewHolder).bind(element)
                 }
+                TYPE_EMPTY_STATE_COLLECTION -> {
+                    val params = (holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams)
+                    params.isFullSpan = true
+                    holder.itemView.layoutParams = params
+                    (holder as WishlistCollectionEmptyStateViewHolder).bind(element)
+                }
             }
         }
     }
@@ -277,6 +291,7 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             TYPE_RECOMMENDATION_TITLE_WITH_MARGIN -> LAYOUT_RECOMMENDATION_TITLE_WITH_MARGIN
             TYPE_TICKER -> LAYOUT_TICKER
             TYPE_DELETION_PROGRESS_WIDGET -> LAYOUT_DELETION_PROGRESS_WIDGET
+            TYPE_EMPTY_STATE_COLLECTION -> LAYOUT_EMPTY_STATE_COLLECTION
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }

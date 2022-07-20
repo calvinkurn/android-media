@@ -28,6 +28,7 @@ import com.tokopedia.wishlist.R
 import com.tokopedia.wishlist.databinding.BottomsheetCreateNewWishlistCollectionBinding
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionNamesResponse
 import com.tokopedia.wishlistcollection.di.*
+import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionDetailFragment
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionFragment
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OK
 import com.tokopedia.wishlistcollection.view.viewmodel.BottomSheetUpdateWishlistCollectionNameViewModel
@@ -74,6 +75,10 @@ class BottomSheetUpdateWishlistCollectionName: BottomSheetUnify(), HasComponent<
     }
 
     fun setListener(fragment: WishlistCollectionFragment) {
+        this.actionListener = fragment
+    }
+
+    fun setListener(fragment: WishlistCollectionDetailFragment) {
         this.actionListener = fragment
     }
 

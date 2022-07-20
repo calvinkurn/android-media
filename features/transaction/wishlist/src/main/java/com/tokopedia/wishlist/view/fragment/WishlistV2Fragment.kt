@@ -1360,6 +1360,14 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         wishlistV2Adapter.hideTicker()
     }
 
+    override fun goToWishlistAll() {
+        // wishlist collection only
+    }
+
+    override fun onChangeCollectionName() {
+        // wishlist collection only
+    }
+
     override fun onThreeDotsMenuClicked(itemWishlist: WishlistV2UiModel.Item) {
         showBottomSheetThreeDotsMenu(itemWishlist)
         WishlistV2Analytics.clickThreeDotsOnProductCard()

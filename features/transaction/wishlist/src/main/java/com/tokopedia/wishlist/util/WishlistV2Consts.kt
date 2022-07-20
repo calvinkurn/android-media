@@ -13,6 +13,7 @@ object WishlistV2Consts {
     const val TYPE_LOADER_GRID = "loader_grid"
     const val TYPE_EMPTY_STATE = "empty_state"
     const val TYPE_EMPTY_STATE_CAROUSEL = "empty_state_carousel"
+    const val TYPE_EMPTY_STATE_COLLECTION = "empty_state_collection"
     const val TYPE_EMPTY_NOT_FOUND = "not_found"
     const val TYPE_RECOMMENDATION_TITLE = "recommendation_title"
     const val TYPE_RECOMMENDATION_LIST = "recommendation_list"
@@ -54,4 +55,7 @@ object WishlistV2Consts {
     const val MENU_ADD_ITEM_TO_COLLECTION = "ADD_ITEM_TO_COLLECTION"
     const val MENU_DELETE_WISHLIST = "DELETE_WISHLIST"
     const val MENU_LABEL_BARU = "BARU"
+
+    const val ACTION_ADD_ITEM_TO_COLLECTION = "ADD_ITEM_TO_COLLECTION"
+    const val ACTION_UPDATE_COLLECTION_NAME = "UPDATE_COLLECTION_NAME"
 }

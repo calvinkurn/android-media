@@ -102,6 +102,7 @@ import com.tokopedia.wishlistcollection.data.params.GetWishlistCollectionItemsPa
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionItemsResponse
 import com.tokopedia.wishlistcollection.di.DaggerWishlistCollectionDetailComponent
 import com.tokopedia.wishlistcollection.di.WishlistCollectionDetailModule
+import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetUpdateWishlistCollectionName
 import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionDetailViewModel
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import kotlinx.coroutines.CoroutineScope
@@ -118,7 +119,7 @@ import com.tokopedia.wishlist.R as Rv2
 
 @Keep
 class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListener,
-    CoroutineScope {
+    CoroutineScope, BottomSheetUpdateWishlistCollectionName.ActionListener {
     private var binding by autoClearedNullable<FragmentWishlistCollectionDetailBinding>()
     private lateinit var collectionItemsAdapter: WishlistV2Adapter
     private lateinit var rvScrollListener: EndlessRecyclerViewScrollListener
@@ -152,6 +153,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         getCountDeletionProgress()
     }
     private var collectionId = ""
+    private var collectionName = ""
     private var detectTextChangeJob: Job? = null
     private var countDelete = 1
 
@@ -387,8 +389,9 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                             if (collectionDetail.sortFilters.isEmpty() && collectionDetail.items.isEmpty()) {
                                 onFailedGetWishlistV2(ResponseErrorException())
                             } else {
-                                hideLoader(collectionDetail. showDeleteProgress)
+                                hideLoader(collectionDetail.showDeleteProgress)
                                 showRvWishlist()
+                                hideSearchBar()
                                 isFetchRecommendation = true
                                 hideTotalLabel()
                                 hideSortFilter(collectionDetail.sortFilters)
@@ -396,6 +399,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                         } else {
                             hideLoader(collectionDetail.showDeleteProgress)
                             showRvWishlist()
+                            showSearchBar()
                             if (!collectionDetail.showDeleteProgress) updateTotalLabel(collectionDetail.totalData)
                         }
 
@@ -451,6 +455,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             binding?.run {
                 wishlistCollectionDetailLoaderLayout.root.gone()
                 rvWishlistCollectionDetail.gone()
+                wishlistCollectionDetailSearchbar.gone()
                 globalErrorWishlistCollectionDetail.gone()
                 emptyStateGlobalWishlistCollectionDetail.apply {
                     visible()
@@ -461,6 +466,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             binding?.run {
                 wishlistCollectionDetailLoaderLayout.root.gone()
                 rvWishlistCollectionDetail.gone()
+                wishlistCollectionDetailSearchbar.gone()
                 emptyStateGlobalWishlistCollectionDetail.gone()
                 clWishlistCollectionDetailHeader.gone()
                 hideTotalLabel()
@@ -666,6 +672,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     private fun updateToolbarTitle(title: String) {
+        collectionName = title
         binding?.run {
             wishlistCollectionDetailNavtoolbar.setToolbarTitle(title)
         }
@@ -899,6 +906,18 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     private fun hideTotalLabel() {
         binding?.run {
             wishlistCollectionDetailStickyCountManageLabel.rlWishlistCollectionDetailManage.gone()
+        }
+    }
+
+    private fun hideSearchBar() {
+        binding?.run {
+            wishlistCollectionDetailSearchbar.gone()
+        }
+    }
+
+    private fun showSearchBar() {
+        binding?.run {
+            wishlistCollectionDetailSearchbar.visible()
         }
     }
 
@@ -1492,6 +1511,29 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
     override fun onTickerCloseIconClicked() {
         collectionItemsAdapter.hideTicker()
+    }
+
+    override fun goToWishlistAll() {
+        val detailCollection =
+            "${ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL}?${ApplinkConstInternalPurchasePlatform.PATH_COLLECTION_ID}=0"
+        val intentCollectionDetail = RouteManager.getIntent(context, detailCollection)
+        startActivity(intentCollectionDetail)
+    }
+
+    override fun onChangeCollectionName() {
+        showUpdateWishlistCollectionNameBottomSheet(collectionId, collectionName)
+    }
+
+    private fun showUpdateWishlistCollectionNameBottomSheet(collectionId: String, collectionName: String) {
+        val bottomSheetUpdateWishlistCollectionName = BottomSheetUpdateWishlistCollectionName.newInstance(collectionId, collectionName)
+        bottomSheetUpdateWishlistCollectionName.setListener(this@WishlistCollectionDetailFragment)
+        if (bottomSheetUpdateWishlistCollectionName.isAdded || childFragmentManager.isStateSaved) return
+        bottomSheetUpdateWishlistCollectionName.show(childFragmentManager)
+    }
+
+    override fun onSuccessUpdateCollectionName(message: String) {
+        setRefreshing()
+        showToaster(message, "", Toaster.TYPE_NORMAL)
     }
 
     override fun onThreeDotsMenuClicked(itemWishlist: WishlistV2UiModel.Item) {
