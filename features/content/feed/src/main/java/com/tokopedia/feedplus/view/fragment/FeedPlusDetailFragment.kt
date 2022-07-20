@@ -35,7 +35,7 @@ import com.tokopedia.feedplus.view.activity.FeedPlusDetailActivity
 import com.tokopedia.feedplus.view.adapter.typefactory.feeddetail.FeedPlusDetailTypeFactory
 import com.tokopedia.feedplus.view.adapter.typefactory.feeddetail.FeedPlusDetailTypeFactoryImpl
 import com.tokopedia.feedplus.view.adapter.viewholder.feeddetail.DetailFeedAdapter
-import com.tokopedia.feedplus.view.adapter.viewholder.feeddetail.ProductFeedDetailViewModelNew
+import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailProductModel
 import com.tokopedia.feedplus.view.analytics.FeedAnalytics
 import com.tokopedia.feedplus.view.analytics.FeedDetailAnalytics.Companion.feedDetailAnalytics
 import com.tokopedia.feedplus.view.analytics.FeedTrackingEventLabel
@@ -56,15 +56,12 @@ import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
-import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import kotlinx.android.synthetic.main.feed_detail_header.view.*
 import timber.log.Timber
@@ -418,9 +415,9 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     }
 
     override fun onBottomSheetMenuClicked(
-            item: ProductFeedDetailViewModelNew,
-            context: Context,
-            shopId: String
+        item: FeedDetailProductModel,
+        context: Context,
+        shopId: String
     ) {
         val finalID = if (item.postType == TYPE_FEED_X_CARD_PLAY) item.playChannelId else item.postId.toString()
         feedAnalytics.eventClickBottomSheetMenu(
@@ -701,24 +698,24 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         adapter.dismissLoadingMore()
     }
 
-    override fun onGoToProductDetail(feedDetailViewModel: ProductFeedDetailViewModelNew, adapterPosition: Int) {
+    override fun onGoToProductDetail(feedDetailProductModel: FeedDetailProductModel, adapterPosition: Int) {
         if (activity != null && activity?.applicationContext != null && arguments != null) {
 
             analytics.eventDetailProductClick(
                 ProductEcommerce(
-                    feedDetailViewModel.id,
-                    feedDetailViewModel.text,
-                    if (feedDetailViewModel.isDiscount) feedDetailViewModel.priceDiscount else feedDetailViewModel.price,
+                    feedDetailProductModel.id,
+                    feedDetailProductModel.text,
+                    if (feedDetailProductModel.isDiscount) feedDetailProductModel.priceDiscount else feedDetailProductModel.price,
                     adapterPosition
                 ),
                 userSession.userId?.toIntOrNull() ?: 0,
-                feedDetailViewModel.shopId,
-                feedDetailViewModel.postId.toString(),
-                feedDetailViewModel.postType,
-                feedDetailViewModel.isFollowed
+                feedDetailProductModel.shopId,
+                feedDetailProductModel.postId.toString(),
+                feedDetailProductModel.postType,
+                feedDetailProductModel.isFollowed
             )
             activity?.startActivityForResult(
-                getProductIntent(feedDetailViewModel.id),
+                getProductIntent(feedDetailProductModel.id),
                 REQUEST_OPEN_PDP
             )
         }
@@ -808,17 +805,17 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             feedDetailAnalytics.eventShareCategory(shareParam[0], shareParam[1].toString() + "-" + KEY_OTHER)
         }
     }
-    private fun mapPostTag(postTagItemList: List<FeedXProduct>): MutableList<ProductFeedDetailViewModelNew> {
+    private fun mapPostTag(postTagItemList: List<FeedXProduct>): MutableList<FeedDetailProductModel> {
         var postDescription = ""
         var adClickUrl = ""
         val desc = context?.getString(com.tokopedia.feedcomponent.R.string.feed_share_default_text)
-        val itemList: MutableList<ProductFeedDetailViewModelNew> = ArrayList()
+        val itemList: MutableList<FeedDetailProductModel> = ArrayList()
         for (postTagItem in postTagItemList) {
             if (postTagItem.isTopads){
                 postDescription = desc?.replace("%s", postTagItem.authorName).toString()
                 adClickUrl = postTagItem.adClickUrl
             }
-            val item = ProductFeedDetailViewModelNew(
+            val item = FeedDetailProductModel(
                     id = postTagItem.id,
                     text = postTagItem.name,
                     imgUrl = postTagItem.coverURL,
