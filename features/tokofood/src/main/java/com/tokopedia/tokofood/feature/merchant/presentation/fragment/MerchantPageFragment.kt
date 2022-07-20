@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.Menu
@@ -419,11 +421,14 @@ class MerchantPageFragment : BaseMultiFragment(),
             val productListItem = productListAdapter?.getProductListItems()?.find { productList -> productList.productUiModel.id == sharedProductId }
             val position = productListAdapter?.getProductListItems()?.indexOf(productListItem)
             if (position != null && position != RecyclerView.NO_POSITION) {
-                scrollToCategorySection(position)
-                productListItem?.run {
-                    // adapter dataset position should be the same at the start
-                    onProductCardClicked(productListItem, position to position)
-                }
+                // post delayed runnable using the main looper; allowing rv to have enough data to be scrolled
+                Handler(Looper.getMainLooper()).postDelayed({
+                    scrollToCategorySection(position)
+                    productListItem?.run {
+                        // adapter dataset position should be the same at the start
+                        onProductCardClicked(productListItem, position to position)
+                    }
+                }, DELAY_TIME_HUNDRED_MILLIS)
             }
         }
     }
@@ -1525,6 +1530,7 @@ class MerchantPageFragment : BaseMultiFragment(),
         private const val SOURCE_ADDESS = "tokofood"
         private const val EMPTY_COORDINATE = "0.0"
         private const val EMPTY_ADDRESS_ID = "0"
+        private const val DELAY_TIME_HUNDRED_MILLIS = 100L
 
         private const val REQUEST_CODE_LOGIN = 123
         private const val SOURCE = "merchant_page"
