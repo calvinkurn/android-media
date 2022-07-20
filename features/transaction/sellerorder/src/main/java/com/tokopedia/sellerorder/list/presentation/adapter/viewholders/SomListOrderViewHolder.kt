@@ -18,7 +18,6 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_ACCEPT_ORDER
@@ -380,7 +379,7 @@ open class SomListOrderViewHolder(
                 Unit
             }
             showWithCondition(showOrderPlusRibbon)
-            loadImage(element.orderPlusData?.logoUrl.orEmpty())
+            urlSrc = element.orderPlusData?.logoUrl.orEmpty()
         }
     }
 

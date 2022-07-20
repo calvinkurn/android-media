@@ -5,22 +5,44 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/icSomListOrderPlusRibbon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/containerSomListOrderPlusRibbon"
+        android:layout_width="60dp"
+        android:layout_height="30dp"
         android:layout_marginStart="6dp"
         android:layout_marginTop="6dp"
         app:layout_constraintStart_toStartOf="@id/cardSomOrder"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@drawable/ic_som_list_order_plus_ribbon" />
+        tools:background="@drawable/ic_som_list_order_plus_ribbon">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/icSomListOrderPlusRibbon"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="14dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loader_ic_som_list_order_plus_ribbon"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:loader_type="rect" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/cardSomOrder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        app:layout_constraintTop_toTopOf="@id/icSomListOrderPlusRibbon">
+        app:layout_constraintTop_toTopOf="@id/containerSomListOrderPlusRibbon">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -131,8 +153,8 @@
                         android:layout_height="16dp"
                         android:layout_marginEnd="4dp"
                         android:contentDescription="Ikon tenggat waktu"
-                        app:icon_color_night_enable="@color/Unify_Static_White"
                         app:icon_color_light_enable="@color/Unify_Static_White"
+                        app:icon_color_night_enable="@color/Unify_Static_White"
                         app:icon_name="CLOCK"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/tvSomListDeadline"
