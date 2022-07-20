@@ -43,6 +43,10 @@ data class CheckoutTokoFood(
      */
     fun isEnabled(): Boolean = isSuccess() && data.errorTickers.top.message.isEmpty()
 
+    fun isEmptyProducts(): Boolean {
+        return data.availableSection.products.isEmpty() && data.unavailableSections.firstOrNull()?.products.isNullOrEmpty()
+    }
+
 }
 
 data class CheckoutTokoFoodData(
