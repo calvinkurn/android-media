@@ -13,14 +13,14 @@ class ShopRecomImpressCoordinator @Inject constructor(
 
     fun initiateShopImpress(userId: String, shopImpress: ShopRecomUiModelItem, position: Int) {
         val findShopRecom = mShopRecomImpress.filter { it.id == shopImpress.id }
-        if (findShopRecom.isNotEmpty()) return
+        if (!findShopRecom.isNullOrEmpty()) return
         tracker.impressionProfileRecommendation(userId, shopImpress, position)
         mShopRecomImpress.add(shopImpress)
     }
 
     fun sendTracker() {
         tracker.sendAll()
-        if (mShopRecomImpress.isNotEmpty()) mShopRecomImpress.clear()
+        if (!mShopRecomImpress.isNullOrEmpty()) mShopRecomImpress.clear()
     }
 
 }
