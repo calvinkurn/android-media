@@ -9,9 +9,8 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/Unify_Background"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_height="wrap_content"
+        android:background="@color/Unify_Background">
 
         <com.tokopedia.header.HeaderUnify
             android:id="@+id/header_profile"
@@ -278,12 +277,12 @@
 
                         <include
                             android:id="@+id/card_user_reminder"
+                            layout="@layout/up_layout_user_profile_reminder"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:visibility="gone"
-                            layout="@layout/up_layout_user_profile_reminder"
+                            android:layout_marginHorizontal="@dimen/unify_space_16"
                             android:layout_marginTop="@dimen/unify_space_8"
-                            android:layout_marginHorizontal="@dimen/unify_space_16"/>
+                            android:visibility="gone" />
 
                         <com.tokopedia.unifycomponents.UnifyButton
                             android:id="@+id/btn_action"
@@ -312,7 +311,7 @@
                         layout="@layout/layout_shop_recommendation"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                        android:layout_marginTop="@dimen/unify_space_4"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/linear_button" />
@@ -327,10 +326,7 @@
             android:id="@+id/user_post_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/shop_recommendation">
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_post"
