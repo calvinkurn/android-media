@@ -274,6 +274,7 @@ class PlayUserInteractionFragment @Inject constructor(
     override fun onStart() {
         super.onStart()
         viewSize.rootView.requestApplyInsetsWhenAttached()
+        initAddress()
     }
 
     override fun onPause() {
