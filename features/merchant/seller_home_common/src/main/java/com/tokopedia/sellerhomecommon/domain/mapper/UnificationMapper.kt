@@ -1,8 +1,15 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
+import com.google.gson.Gson
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPrefInterface
 import com.tokopedia.sellerhomecommon.domain.model.GetUnificationDataResponse
+import com.tokopedia.sellerhomecommon.domain.model.UnificationTabModel
+import com.tokopedia.sellerhomecommon.domain.model.WidgetModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.UnificationTabUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.WidgetConfigUiModel
 import javax.inject.Inject
 
 /**
@@ -12,12 +19,52 @@ import javax.inject.Inject
 class UnificationMapper @Inject constructor(
     lastUpdatedSharedPref: WidgetLastUpdatedSharedPrefInterface,
     lastUpdatedEnabled: Boolean
-) : BaseResponseMapper<GetUnificationDataResponse, List<UnificationDataUiModel>> {
+) : BaseWidgetMapper(lastUpdatedSharedPref, lastUpdatedEnabled),
+    BaseResponseMapper<GetUnificationDataResponse, List<UnificationDataUiModel>> {
 
     override fun mapRemoteDataToUiData(
         response: GetUnificationDataResponse,
         isFromCache: Boolean
     ): List<UnificationDataUiModel> {
-        return listOf()
+        return response.navigationTab.data.map { data ->
+            UnificationDataUiModel(
+                dataKey = data.dataKey,
+                error = data.errorMsg,
+                isFromCache = isFromCache,
+                showWidget = data.showWidget,
+                lastUpdated = getLastUpdatedMillis(data.dataKey, isFromCache),
+                tabs = data.tabs.mapIndexed { index, tab ->
+                    getTabUiModel(tab, index == Int.ZERO)
+                }
+            )
+        }
+    }
+
+    private fun getTabUiModel(
+        tab: UnificationTabModel,
+        isSelected: Boolean
+    ): UnificationTabUiModel {
+        return UnificationTabUiModel(
+            data = null,
+            title = tab.title,
+            isNew = tab.isNew,
+            widgetType = tab.content.widgetType,
+            dataKey = tab.content.dataKey,
+            metricParam = tab.content.metricsParam,
+            isSelected = isSelected,
+            config = getTabConfig(tab.content.configuration)
+        )
+    }
+
+    private fun getTabConfig(configStr: String): WidgetConfigUiModel {
+        val configModel: WidgetModel = Gson().fromJson(configStr, WidgetModel::class.java)
+        return WidgetConfigUiModel(
+            title = configModel.title.orEmpty(),
+            appLink = configModel.appLink.orEmpty(),
+            ctaText = configModel.ctaText.orEmpty(),
+            maxData = configModel.maxData.orZero(),
+            maxDisplay = configModel.maxDisplay.orZero(),
+            emptyStateUiModel = configModel.emptyStateModel.mapToUiModel()
+        )
     }
 }

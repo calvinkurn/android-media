@@ -2,6 +2,7 @@ package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.R
@@ -71,6 +72,7 @@ class UnificationViewHolder(
 
     private fun showSuccessState(element: UnificationWidgetUiModel) {
         successStateBinding.containerShcUnificationSuccess.visible()
+        loadingStateBinding.containerShcRecommendationLoading.gone()
 
     }
 }

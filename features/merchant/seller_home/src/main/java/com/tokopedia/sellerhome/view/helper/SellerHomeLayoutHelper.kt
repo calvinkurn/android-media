@@ -4,11 +4,11 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant
 import com.tokopedia.sellerhome.common.config.SellerHomeRemoteConfig
-import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.common.const.WidgetHeight
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
+import com.tokopedia.sellerhomecommon.domain.model.UnificationDataFetchModel
 import com.tokopedia.sellerhomecommon.domain.usecase.BaseGqlUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetAnnouncementDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetBarChartDataUseCase
@@ -58,6 +58,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.UnificationDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationWidgetUiModel
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.sellerhomecommon.utils.Utils
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -85,6 +86,7 @@ class SellerHomeLayoutHelper @Inject constructor(
     private val getMilestoneDataUseCase: Lazy<GetMilestoneDataUseCase>,
     private val getCalendarDataUseCase: Lazy<GetCalendarDataUseCase>,
     private val getUnificationDataUseCase: Lazy<GetUnificationDataUseCase>,
+    private val userSession: Lazy<UserSessionInterface>,
     private val remoteConfig: Lazy<SellerHomeRemoteConfig>,
     private val dispatcher: CoroutineDispatchers
 ) {
@@ -243,12 +245,16 @@ class SellerHomeLayoutHelper @Inject constructor(
             WidgetType.CALENDAR,
             isFromCache
         )
+        val unificationDataFlow = groupedWidgets.getWidgetDataByType<UnificationDataUiModel>(
+            WidgetType.UNIFICATION,
+            isFromCache
+        )
 
         return combine(
             lineGraphDataFlow, announcementDataFlow, cardDataFlow, progressDataFlow,
             carouselDataFlow, postDataFlow, tableDataFlow, pieChartDataFlow,
             barChartDataFlow, multiLineGraphDataFlow, recommendationDataFlow, milestoneDataFlow,
-            calendarDataFlow
+            calendarDataFlow, unificationDataFlow
         ) { widgetDataList ->
             val widgetsData = widgetDataList.flatMap { it }
             widgetsData.mapToWidgetModel(widgets)
@@ -566,9 +572,18 @@ class SellerHomeLayoutHelper @Inject constructor(
 
     private suspend fun getUnificationData(widgets: List<BaseWidgetUiModel<*>>): List<UnificationDataUiModel> {
         widgets.setLoading()
-        val dataKeys = Utils.getWidgetDataKeys<UnificationWidgetUiModel>(widgets)
+        val dataKeys = widgets.filterIsInstance<UnificationWidgetUiModel>()
+            .map { widget ->
+                UnificationDataFetchModel(
+                    unificationDataKey = widget.dataKey,
+                    shopId = userSession.get().shopId,
+                    tabDataKey = widget.data?.tabs?.firstOrNull {
+                        it.isSelected
+                    }?.dataKey.orEmpty()
+                )
+            }
         val useCase = getUnificationDataUseCase.get()
-        useCase.params = GetUnificationDataUseCase.createParams(dataKeys)
+        useCase.setParam(dataKeys, dynamicParameter)
         withContext(dispatcher.main) {
             startWidgetCustomMetricTag.value =
                 SellerHomePerformanceMonitoringConstant.SELLER_HOME_UNIFICATION_TRACE

@@ -5,11 +5,19 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhomecommon.domain.mapper.UnificationMapper
+import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
+import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.model.GetUnificationDataResponse
+import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
+import com.tokopedia.sellerhomecommon.domain.model.UnificationDataFetchModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationDataUiModel
 import com.tokopedia.usecase.RequestParams
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 
 /**
  * Created by @ilhamsuaib on 08/07/22.
@@ -18,17 +26,25 @@ import com.tokopedia.usecase.RequestParams
 @GqlQuery("GetUnificationDataGqlQuery", GetUnificationDataUseCase.QUERY)
 class GetUnificationDataUseCase(
     gqlRepository: GraphqlRepository,
-    getTableDataUseCase: GetTableDataUseCase,
     unificationMapper: UnificationMapper,
-    dispatchers: CoroutineDispatchers
+    dispatchers: CoroutineDispatchers,
+    private val getTableDataUseCase: GetTableDataUseCase
 ) : CloudAndCacheGraphqlUseCase<GetUnificationDataResponse, List<UnificationDataUiModel>>(
-    gqlRepository, unificationMapper, dispatchers, GetMilestoneDataGqlQuery()
+    gqlRepository, unificationMapper, dispatchers, GetUnificationDataGqlQuery()
 ) {
+
+    private var unificationParams: List<UnificationDataFetchModel> = emptyList()
+    private var dynamicParameter: DynamicParameterModel = DynamicParameterModel()
 
     override val classType: Class<GetUnificationDataResponse>
         get() = GetUnificationDataResponse::class.java
 
     override suspend fun executeOnBackground(): List<UnificationDataUiModel> {
+        initRequestParam()
+        if (params.parameters.isEmpty()) {
+            throw RuntimeException(PARAM_ERROR_MESSAGE)
+        }
+
         val gqlRequest = GraphqlRequest(
             graphqlQuery,
             classType,
@@ -38,12 +54,67 @@ class GetUnificationDataUseCase(
 
         val errors = gqlResponse.getError(classType)
         if (errors.isNullOrEmpty()) {
-            val data = gqlResponse.getData<GetUnificationDataResponse>()
+            val data: GetUnificationDataResponse = gqlResponse.getData(classType)
             val isFromCache = cacheStrategy.type == CacheType.CACHE_ONLY
-            return mapper.mapRemoteDataToUiData(data, isFromCache)
+            val unificationUiModel = mapper.mapRemoteDataToUiData(data, isFromCache)
+            return fetchTabData(unificationUiModel, isFromCache)
         } else {
             throw MessageErrorException(errors.firstOrNull()?.message.orEmpty())
         }
+    }
+
+    fun setParam(
+        params: List<UnificationDataFetchModel>,
+        dynamicParameter: DynamicParameterModel
+    ) {
+        this.unificationParams = params
+        this.dynamicParameter = dynamicParameter
+    }
+
+    private fun initRequestParam() {
+        val dataKeys = unificationParams.map {
+            DataKeyModel(
+                key = it.unificationDataKey,
+                jsonParams = String.format(UNIFICATION_PARAMS, it.shopId)
+            )
+        }
+        this.params = RequestParams.create().apply {
+            putObject(DATA_KEYS, dataKeys)
+        }
+    }
+
+    private suspend fun fetchTabData(
+        unificationUiModels: List<UnificationDataUiModel>,
+        isFromCache: Boolean
+    ): List<UnificationDataUiModel> {
+        return unificationUiModels
+            .filter { it.tabs.isNotEmpty() }
+            .map { model ->
+                val param = unificationParams.firstOrNull {
+                    model.dataKey == it.unificationDataKey
+                }
+                val tab = model.tabs.firstOrNull {
+                    it.data?.dataKey == param?.tabDataKey
+                } ?: model.tabs.first()
+
+                val dataKeyModel = TableAndPostDataKey(
+                    dataKey = tab.dataKey,
+                    filter = String.EMPTY,
+                    maxData = tab.config.maxData,
+                    maxDisplayPerPage = tab.config.maxDisplay
+                )
+
+                return@map coroutineScope {
+                    async {
+                        getTableDataUseCase.params = GetTableDataUseCase.getRequestParams(
+                            listOf(dataKeyModel), dynamicParameter
+                        )
+                        getTableDataUseCase.setUseCache(isFromCache)
+                        tab.data = getTableDataUseCase.executeOnBackground().firstOrNull()
+                        return@async model
+                    }
+                }
+            }.awaitAll()
     }
 
     companion object {
@@ -55,6 +126,7 @@ class GetUnificationDataUseCase(
                   tabs {
                     title
                     isNew
+                    itemCount
                     content {
                       widget_type
                       datakey
@@ -69,8 +141,9 @@ class GetUnificationDataUseCase(
             }
         """
 
-        fun createParams(dataKeys: List<String>): RequestParams {
-            return RequestParams.create()
-        }
+        private const val DATA_KEYS = "dataKeys"
+        private const val UNIFICATION_PARAMS = "{\"shop_id\":%s}"
+        private const val PARAM_ERROR_MESSAGE =
+            "the parameter still empty, please use the setParam(...) method to assign it"
     }
 }

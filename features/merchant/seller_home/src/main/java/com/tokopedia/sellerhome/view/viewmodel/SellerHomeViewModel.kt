@@ -15,6 +15,7 @@ import com.tokopedia.sellerhome.view.model.ShopShareDataUiModel
 import com.tokopedia.sellerhomecommon.common.const.DateFilterType
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
+import com.tokopedia.sellerhomecommon.domain.model.UnificationDataFetchModel
 import com.tokopedia.sellerhomecommon.domain.usecase.*
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
@@ -355,11 +356,10 @@ class SellerHomeViewModel @Inject constructor(
         })
     }
 
-    fun getUnificationWidgetData(dataKeys: List<String>) {
+    fun getUnificationWidgetData(dataKeys: List<UnificationDataFetchModel>) {
         launchCatchError(block = {
-            val params = GetUnificationDataUseCase.createParams(dataKeys)
             val useCase = getUnificationDataUseCase.get()
-            useCase.params = params
+            useCase.setParam(dataKeys, dynamicParameter)
             getDataFromUseCase(useCase, _unificationWidgetData)
         }, onError = {
             _unificationWidgetData.value = Fail(it)

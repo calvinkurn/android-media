@@ -19,7 +19,7 @@ data class UnificationWidgetUiModel(
     override val ctaText: String,
     override val gridSize: Int,
     override val isShowEmpty: Boolean,
-    override var data: BaseDataUiModel?,
+    override var data: UnificationDataUiModel?,
     override var isLoaded: Boolean,
     override var isLoading: Boolean,
     override var isFromCache: Boolean,
@@ -27,14 +27,13 @@ data class UnificationWidgetUiModel(
     override var impressHolder: ImpressHolder = ImpressHolder(),
     override var isNeedToBeRemoved: Boolean = false,
     override var showLoadingState: Boolean = false
+) : BaseWidgetUiModel<UnificationDataUiModel> {
 
-) : BaseWidgetUiModel<BaseDataUiModel> {
-
-    override fun copyWidget(): BaseWidgetUiModel<BaseDataUiModel> {
-        return this.copyWidget()
+    override fun copyWidget(): BaseWidgetUiModel<UnificationDataUiModel> {
+        return this.copy()
     }
 
-    override fun needToRefreshData(other: BaseWidgetUiModel<BaseDataUiModel>): Boolean {
+    override fun needToRefreshData(other: BaseWidgetUiModel<UnificationDataUiModel>): Boolean {
         return dataKey != other.dataKey
     }
 

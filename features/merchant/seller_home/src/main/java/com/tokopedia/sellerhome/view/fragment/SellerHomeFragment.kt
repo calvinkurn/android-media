@@ -77,6 +77,7 @@ import com.tokopedia.sellerhomecommon.common.WidgetListener
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.common.const.SellerHomeUrl
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
+import com.tokopedia.sellerhomecommon.domain.model.UnificationDataFetchModel
 import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactoryImpl
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.CalendarWidgetDateFilterBottomSheet
@@ -1087,7 +1088,16 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private fun getUnificationData(widgets: List<BaseWidgetUiModel<*>>) {
         startCustomMetric(SELLER_HOME_UNIFICATION_TRACE)
         widgets.setLoading()
-        val dataKeys = Utils.getWidgetDataKeys<UnificationWidgetUiModel>(widgets)
+        val dataKeys = widgets.filterIsInstance<UnificationWidgetUiModel>()
+            .map { widget ->
+                UnificationDataFetchModel(
+                    unificationDataKey = widget.dataKey,
+                    shopId = userSession.shopId,
+                    tabDataKey = widget.data?.tabs?.firstOrNull {
+                        it.isSelected
+                    }?.dataKey.orEmpty()
+                )
+            }
         sellerHomeViewModel.getUnificationWidgetData(dataKeys)
     }
 
