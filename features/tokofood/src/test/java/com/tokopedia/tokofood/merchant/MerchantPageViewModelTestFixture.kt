@@ -1,0 +1,51 @@
+package com.tokopedia.tokofood.merchant
+
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
+import com.tokopedia.tokofood.common.util.ResourceProvider
+import com.tokopedia.tokofood.feature.home.presentation.viewmodel.TokoFoodHomeViewModel
+import com.tokopedia.tokofood.feature.merchant.domain.usecase.GetMerchantDataUseCase
+import com.tokopedia.tokofood.feature.merchant.presentation.viewmodel.MerchantPageViewModel
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import io.mockk.MockKAnnotations
+import io.mockk.impl.annotations.RelaxedMockK
+import org.junit.Before
+import org.junit.Rule
+
+abstract class MerchantPageViewModelTestFixture {
+
+    @RelaxedMockK
+    lateinit var resourceProvider: ResourceProvider
+    @RelaxedMockK
+    lateinit var getMerchantDataUseCase: GetMerchantDataUseCase
+    @RelaxedMockK
+    lateinit var getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase
+
+    @get:Rule
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
+
+    protected lateinit var viewModel: MerchantPageViewModel
+
+    @Before
+    fun setup() {
+        MockKAnnotations.init(this)
+        viewModel = MerchantPageViewModel(
+                resourceProvider = resourceProvider,
+                dispatchers = CoroutineTestDispatchersProvider,
+                getMerchantDataUseCase = getMerchantDataUseCase,
+                getChooseAddressWarehouseLocUseCase = getChooseAddressWarehouseLocUseCase
+        )
+    }
+
+    inline fun <reified T>Any.getPrivateField(name: String): T {
+        return this::class.java.getDeclaredField(name).let {
+            it.isAccessible = true
+            return@let it.get(this) as T
+        }
+    }
+
+    companion object {
+        const val GET_MERCHANT_DATA_SUCCESS_JSON = "json/merchant/get_merchant_data_success.json"
+        private const val MERCHANT_PAGE_SOURCE = "checkout_page"
+    }
+}
