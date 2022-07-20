@@ -120,9 +120,7 @@ class ProductSectionViewHolder(
             listener.onProductImpressed(sectionInfo = item, product = getFinalProduct(item.productList))
         }
 
-        btnInfo.addOnImpressionListener(item.impressHolder){
-            if(btnInfo.isVisible) listener.onInformationImpressed()
-        }
+        if(btnInfo.isVisible && item.config.type == ProductSectionType.TokoNow) listener.onInformationImpressed()
     }
 
     private fun getFinalProduct(productList: List<PlayProductUiModel.Product>): List<Pair<PlayProductUiModel.Product, Int>> =
