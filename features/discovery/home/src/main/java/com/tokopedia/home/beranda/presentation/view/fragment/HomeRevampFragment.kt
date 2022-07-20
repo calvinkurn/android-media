@@ -1966,12 +1966,12 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun onRetryMembership(position: Int, headerTitle: String) {
-        startShimmeringBalanceWidget()
+//        startShimmeringBalanceWidget()
         getHomeViewModel().onRefreshMembership(position, headerTitle)
     }
 
     override fun onRetryWalletApp(position: Int, headerTitle: String) {
-        startShimmeringBalanceWidget()
+//        startShimmeringBalanceWidget()
         getHomeViewModel().onRefreshWalletApp(position, headerTitle)
     }
 

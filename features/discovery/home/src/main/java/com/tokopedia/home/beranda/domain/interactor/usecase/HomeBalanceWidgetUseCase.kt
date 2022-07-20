@@ -8,6 +8,9 @@ import com.tokopedia.home.beranda.domain.interactor.repository.HomeTokopointsLis
 import com.tokopedia.home.beranda.domain.interactor.repository.GetHomeBalanceWidgetRepository
 import com.tokopedia.home.beranda.domain.model.InjectCouponTimeBased
 import com.tokopedia.home.beranda.helper.Result
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_REWARDS
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_APP_LINKED
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel.Companion.DEFAULT_BALANCE_POSITION
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
@@ -56,12 +59,18 @@ class HomeBalanceWidgetUseCase @Inject constructor(
                 getHomeBalanceWidget.getHomeBalanceList.balancesList.forEachIndexed { index, getHomeBalanceItem ->
                     when (getHomeBalanceItem.type) {
                         BALANCE_TYPE_GOPAY -> {
-                            homeBalanceModel =
-                                getDataUsingWalletApp(homeBalanceModel, getHomeBalanceItem.title)
+                            val placeHolderLoadingGopay = BalanceDrawerItemModel(
+                                drawerItemType = TYPE_WALLET_APP_LINKED,
+                                headerTitle = getHomeBalanceItem.title
+                            )
+                            homeBalanceModel.balanceDrawerItemModels.add(placeHolderLoadingGopay)
                         }
                         BALANCE_TYPE_REWARDS -> {
-                            homeBalanceModel =
-                                getTokopointData(homeBalanceModel, getHomeBalanceItem.title)
+                            val placeHolderLoadingRewards = BalanceDrawerItemModel(
+                                drawerItemType = TYPE_REWARDS,
+                                headerTitle = getHomeBalanceItem.title
+                            )
+                            homeBalanceModel.balanceDrawerItemModels.add(placeHolderLoadingRewards)
                         }
                         BALANCE_TYPE_SUBSCRIPTIONS -> {
                             homeBalanceModel = getSubscriptionsData(
