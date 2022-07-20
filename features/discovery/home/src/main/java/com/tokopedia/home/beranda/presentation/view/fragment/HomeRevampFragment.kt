@@ -19,6 +19,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.util.Pair
@@ -161,6 +162,7 @@ import com.tokopedia.iris.util.KEY_SESSION_IRIS
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.locationmanager.DeviceLocation
@@ -179,6 +181,7 @@ import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.reminded
+import com.tokopedia.play_common.util.extension.marginLp
 import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEggButtonFragment
 import com.tokopedia.quest_widget.constants.QuestUrls.QUEST_URL
 import com.tokopedia.quest_widget.listeners.QuestWidgetCallbacks
@@ -404,6 +407,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private var scrollPositionY = 0
     private var positionWidgetSubscription = 0
     private var positionWidgetTokonow = 0
+    private val marginTopCoachMarkSubscription = 10f.toDpInt()
 
     private var bannerCarouselCallback: BannerComponentCallback? = null
 
@@ -680,6 +684,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                                 setSubscriptionCoachmarkShown(it)
                                 showTokonowCoachmark()
                             }
+                            setMarginCoachMarkSubscription()
                             subscriptionCoachmark.showCoachMark(step = coachMarkItemSubscription, index = COACHMARK_FIRST_INDEX)
                             subscriptionCoachmarkIsShowing = true
                         }
@@ -808,8 +813,22 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 if (scrollPositionY > positionWidgetSubscription && subscriptionCoachmarkIsShowing)
                     subscriptionCoachmark.hideCoachMark()
                 else if (!isSubscriptionCoachmarkShown(ctx)) {
+                    setMarginCoachMarkSubscription()
                     subscriptionCoachmark.showCoachMark(coachMarkItemSubscription)
                 }
+            }
+        }
+    }
+
+    private fun setMarginCoachMarkSubscription() {
+        coachmarkSubscription?.container?.layoutParams?.let {
+            if (it is LinearLayout.LayoutParams) {
+                coachmarkSubscription?.container?.setMargin(
+                    it.leftMargin,
+                    marginTopCoachMarkSubscription,
+                    it.rightMargin,
+                    it.bottomMargin
+                )
             }
         }
     }
