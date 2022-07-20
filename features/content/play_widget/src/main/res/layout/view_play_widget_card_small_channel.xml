@@ -196,6 +196,8 @@
         android:id="@+id/tv_contextual_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constrainedWidth="true"
+        android:ellipsize="end"
         android:background="@drawable/bg_play_widget_small_live_context"
         android:paddingStart="@dimen/spacing_lvl2"
         android:paddingTop="@dimen/spacing_lvl1"
@@ -208,6 +210,7 @@
         app:layout_constraintTop_toBottomOf="@id/fl_border"
         app:typographyType="small"
         app:typographyWeight="bold"
+        android:gravity="center"
         tools:text="Kejar Diskon"
         />
 
