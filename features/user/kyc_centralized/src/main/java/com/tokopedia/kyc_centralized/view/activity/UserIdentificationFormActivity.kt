@@ -128,14 +128,17 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
                     throw Exception()
                 }
             }
+
             fragmentList[actualPosition] = fragment
-            val fragmentArguments = fragment.arguments
-            val bundle: Bundle = fragmentArguments ?: Bundle()
-            bundle.putParcelable(STEPPER_MODEL_EXTRA, stepperModel)
-            fragment.arguments = bundle
-            supportFragmentManager.beginTransaction()
-                .replace(parentView, fragment, fragment.javaClass.simpleName)
-                .commit()
+            fragment.arguments = Bundle().apply {
+                putParcelable(STEPPER_MODEL_EXTRA, stepperModel)
+            }
+
+            if (savedinstancestate == null) {
+                supportFragmentManager.beginTransaction()
+                    .replace(parentView, fragment, fragment.javaClass.simpleName)
+                    .commit()
+            }
         }
     }
 
