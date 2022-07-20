@@ -110,9 +110,7 @@ class ProductSectionViewHolder(
             listener.onReminderClicked(item)
         }
 
-        btnReminder.addOnImpressionListener(item.impressHolder){
-            listener.onReminderImpressed(item)
-        }
+        if(btnReminder.isVisible && item.config.type == ProductSectionType.Upcoming) listener.onReminderImpressed(item)
 
         btnInfo.setOnClickListener {
             listener.onInformationClicked(item)
@@ -122,9 +120,7 @@ class ProductSectionViewHolder(
             listener.onProductImpressed(sectionInfo = item, product = getFinalProduct(item.productList))
         }
 
-        btnInfo.addOnImpressionListener(item.impressHolder){
-            if(btnInfo.isVisible) listener.onInformationImpressed()
-        }
+        if(btnInfo.isVisible && item.config.type == ProductSectionType.TokoNow) listener.onInformationImpressed()
     }
 
     private fun getFinalProduct(productList: List<PlayProductUiModel.Product>): List<Pair<PlayProductUiModel.Product, Int>> =
