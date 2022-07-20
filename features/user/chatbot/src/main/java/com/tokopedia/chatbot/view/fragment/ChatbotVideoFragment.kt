@@ -61,6 +61,17 @@ class ChatbotVideoFragment : BaseDaggerFragment(), ChatbotExoPlayer.ChatbotVideo
         videoPlayerView.player = chatbotExoPlayer.getExoPlayer()
         chatbotExoPlayer.start(videoUrl)
         chatbotExoPlayer.videoStateListener = this
+        initListenerForVideoPlayer()
+    }
+
+    private fun initListenerForVideoPlayer() {
+        videoPlayerView.videoSurfaceView?.setOnClickListener {
+            if (chatbotExoPlayer.getExoPlayer().isPlaying) {
+                chatbotExoPlayer.pause()
+            } else {
+                chatbotExoPlayer.resume()
+            }
+        }
     }
 
     private fun onErrorVideoLoad(){

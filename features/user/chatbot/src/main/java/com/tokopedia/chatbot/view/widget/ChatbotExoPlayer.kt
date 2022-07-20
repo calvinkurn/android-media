@@ -22,13 +22,12 @@ class ChatbotExoPlayer(val context : Context, var videoControl: ChatbotVideoCont
 
     private var loadControl: LoadControl = DefaultLoadControl.Builder()
         .setBufferDurationsMs(
-            50,
-            50,
-            50,
-            50
+            minBufferMs,
+            maxBufferMs,
+            bufferForPlaybackMs,
+            bufferForPlaybackAfterRebufferMs
         )
         .createDefaultLoadControl()
-
 
     var videoStateListener: ChatbotVideoStateListener? = null
 
@@ -63,7 +62,6 @@ class ChatbotExoPlayer(val context : Context, var videoControl: ChatbotVideoCont
                     }
                 }
                 if (!exoPlayer.playWhenReady && exoPlayer.currentPosition != VIDEO_AT_FIRST_POSITION) {
-                    //Track only when video stop
                     videoStateListener?.onVideoStateChange(
                         exoPlayer.currentPosition,
                         exoPlayer.duration
@@ -136,6 +134,11 @@ class ChatbotExoPlayer(val context : Context, var videoControl: ChatbotVideoCont
         const val UNMUTE_VOLUME = 1F
 
         const val VIDEO_AT_FIRST_POSITION = 0L
+
+        const val minBufferMs = 50
+        const val maxBufferMs = 50
+        const val bufferForPlaybackMs = 50
+        const val bufferForPlaybackAfterRebufferMs = 50
     }
 
     override fun onCenterPlayButtonClicked() {

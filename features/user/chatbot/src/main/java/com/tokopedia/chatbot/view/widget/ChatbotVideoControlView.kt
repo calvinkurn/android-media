@@ -1,6 +1,8 @@
 package com.tokopedia.chatbot.view.widget
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.util.AttributeSet
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -22,6 +24,7 @@ class ChatbotVideoControlView(context: Context, attributeSet: AttributeSet) :
     private val centerPlayButton: ImageView = findViewById(R.id.video_center_play_button)
     private val centerPauseButton: ImageView = findViewById(R.id.video_center_pause_button)
     private val videoControlContainer: LinearLayout = findViewById(R.id.nav_container)
+    private val videoPauseButtonHandler = Handler(Looper.getMainLooper())
 
     var listener: Listener? = null
         set(value) {
@@ -44,7 +47,11 @@ class ChatbotVideoControlView(context: Context, attributeSet: AttributeSet) :
 
     private fun centerPauseButtonConditionalShow(isShowing: Boolean) {
         centerPauseButton.showWithCondition(isShowing)
-        if (isShowing) centerPauseButton.hide()
+        if (isShowing) {
+            videoPauseButtonHandler.postDelayed({
+                centerPauseButtonConditionalShow(false)
+            }, HIDE_DELAY)
+        }
     }
 
     private fun setUpListener() {
@@ -82,12 +89,21 @@ class ChatbotVideoControlView(context: Context, attributeSet: AttributeSet) :
         videoControlContainer.showWithCondition(toShow)
     }
 
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        videoPauseButtonHandler.removeCallbacksAndMessages(null)
+    }
+
     interface Listener {
         fun onCenterPlayButtonClicked()
         fun onCenterPauseButtonClicked()
         fun onScrubStart()
         fun onScrubStop()
         fun onScrubMove(position: Long)
+    }
+
+    companion object {
+        const val HIDE_DELAY = 1000L
     }
 
 }
