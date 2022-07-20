@@ -25,56 +25,75 @@ class PreviewPhotoOnlyUiTest : PreviewTest() {
 
     @Test
     fun should_return_selected_media_onUploadClicked() {
+        // Given
         startPreviewPage()
 
+        // When
         onView(withId(R.id.btn_done)).perform(click())
         val uploadResult =
             activityTestRule.activityResult.resultData.extras?.get(EXTRA_RESULT_PICKER) as PickerResult
 
+        // Then
         PreviewAssert.assertUploadImageResult(uploadResult)
     }
 
     @Test
     fun should_finish_preview_activity_onBackClicked() {
+        // Given
         startPreviewPage()
 
+        // When
         onView(withId(R.id.btn_action)).perform(click())
 
+        // Then
         PreviewAssert.assertActivityFinish(this)
     }
 
     @Test
     fun should_match_drawer_item_size_with_provided_list_onInitialize() {
+        // Given
         startPreviewPage()
 
+        // When
+
+        // Then
         PreviewAssert.assertImageListInitialization()
     }
 
     @Test
     fun should_delete_drawer_item_onCloseClicked() {
+        // Given
         startPreviewPage()
 
+        // When
         PreviewRobot.clickCloseThumbnailItem(0)
 
+        // Then
         PreviewAssert.assertDeletedDrawerSelectionItem()
     }
 
     @Test
     fun should_delete_all_drawer_item_onCloseClicked() {
+        // Given
         startPreviewPage()
 
+        // When
         PreviewRobot.clickCloseAllThumbnailItem()
 
+        // Then
         PreviewAssert.assertActivityFinish(this)
     }
 
     @Test
     fun should_update_preview_item_onDrawerSelectionItemClicked() {
+        // Given
         startPreviewPage()
-
         val clickIndex = 0
+
+        // When
         PreviewRobot.clickThumbnailItem(clickIndex)
 
+        // Then
         PreviewAssert.assertSelectedAndPreviewIndex(clickIndex)
     }
 

@@ -24,105 +24,141 @@ class PreviewPageUiTest : PreviewTest() {
 
     @Test
     fun should_return_selected_media_onUploadClicked() {
+        // Given
         startPreviewPage()
 
+        // When
         Espresso.onView(ViewMatchers.withId(R.id.btn_done)).perform(ViewActions.click())
         val uploadResult =
             activityTestRule.activityResult.resultData.extras?.get(EXTRA_RESULT_PICKER) as PickerResult
 
+        // Then
         PreviewPageTest.Assert.assertUploadVideoResult(uploadResult)
     }
 
     @Test
     fun should_finish_preview_activity_onBackClicked() {
+        // Given
         startPreviewPage()
 
+        // When
         Espresso.onView(ViewMatchers.withId(R.id.btn_action)).perform(ViewActions.click())
 
+        // Then
         PreviewPageTest.Assert.assertActivityFinish(this)
     }
 
     @Test
     fun should_match_drawer_item_size_with_provided_list_onInitialize() {
+        // Given
         startPreviewPage()
 
+        // When
+
+        // Then
         PreviewPageTest.Assert.assertVideoListInitialization()
     }
 
     @Test
     fun should_delete_drawer_item_onCloseClicked() {
+        // Given
         startPreviewPage()
 
+        // When
         PreviewPageTest.Robot.clickCloseThumbnailItem(0)
 
+        // Then
         PreviewPageTest.Assert.assertDeletedDrawerSelectionItem()
     }
 
     @Test
     fun should_delete_all_drawer_item_onCloseClicked() {
+        // Given
         startPreviewPage()
 
+        // When
         PreviewPageTest.Robot.clickCloseAllThumbnailItem()
 
+        // Then
         PreviewPageTest.Assert.assertActivityFinish(this)
     }
 
     @Test
     fun should_update_preview_item_onDrawerSelectionItemClicked() {
+        // Given
         startPreviewPage()
-
         val clickIndex = 0
+
+        // When
         PreviewPageTest.Robot.clickThumbnailItem(clickIndex)
 
+        // Then
         PreviewPageTest.Assert.assertSelectedAndPreviewIndex(clickIndex)
     }
 
     @Test
     fun should_auto_play_if_media_video() {
+        // Given
         startPreviewPage()
 
+        // When
         PreviewPageTest.Robot.waitExoPlayerInitialize()
+
+        // Then
         PreviewPageTest.Assert.assertVideoIsPlay()
     }
 
     @Test
     fun should_stop_video_onPlayerPauseButtonClicked() {
+        // Given
         startPreviewPage()
 
+        // When
         PreviewPageTest.Robot.waitExoPlayerInitialize()
         PreviewPageTest.Robot.clickPlayerPauseButton()
 
+        // Then
         PreviewPageTest.Assert.assertVideoIsPause()
     }
 
     @Test
     fun should_play_video_onPlayerPlayButtonClicked() {
+        // Given
         startPreviewPage()
 
+        // When
         PreviewPageTest.Robot.waitExoPlayerInitialize()
         PreviewPageTest.Robot.clickPlayerPauseButton()
         PreviewPageTest.Robot.clickPlayerPlayButton()
 
+        // Then
         PreviewPageTest.Assert.assertVideoIsPlay()
     }
 
     @Test
     fun should_show_video_control_onPreviewViewClicked() {
+        // Given
         startPreviewPage()
 
+        // When
         PreviewPageTest.Robot.waitExoPlayerInitialize()
         PreviewPageTest.Robot.clickPreviewView()
         PreviewPageTest.Robot.clickPreviewView()
+
+        // Then
         PreviewPageTest.Assert.assertVideoControllerShow()
     }
 
     @Test
     fun should_move_video_time_onScrubberMove() {
+        // Given
         startPreviewPage()
 
+        // When
         PreviewPageTest.Robot.waitExoPlayerInitialize()
         PreviewPageTest.Robot.clickVideoTimeBar()
 
+        // Then
         PreviewPageTest.Assert.assertVideoCurrentDuration()
     }
 

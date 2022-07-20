@@ -38,8 +38,10 @@ class CameraVideoOnlyUiTest : CameraPageTest() {
 
     @Test
     fun should_show_thumbnail_from_captured_video_onCaptureButtonClicked() {
-        // When
+        // Given
         startCameraPage()
+
+        // When
         Robot.clickCaptureVideo(CAPTURED_VIDEO_DURATION)
 
         // Then
@@ -48,8 +50,10 @@ class CameraVideoOnlyUiTest : CameraPageTest() {
 
     @Test
     fun should_flip_camera_and_hide_flash_button_onFlipButtonClicked() {
-        // When
+        // Given
         startCameraPage()
+
+        // When
         Robot.clickFlipCameraButton()
 
         // Then
@@ -58,8 +62,10 @@ class CameraVideoOnlyUiTest : CameraPageTest() {
 
     @Test
     fun should_close_activity_onCloseClicked() {
-        // When
+        // Given
         startCameraPage()
+
+        // When
         Robot.clickCloseButton()
 
         // Then
@@ -68,8 +74,10 @@ class CameraVideoOnlyUiTest : CameraPageTest() {
 
     @Test
     fun should_open_preview_activity_onLanjutClicked() {
-        // When
+        // Given
         startCameraPage()
+
+        // When
         Robot.clickCaptureVideo(CAPTURED_VIDEO_DURATION)
         Robot.clickLanjutButton()
 
@@ -79,8 +87,10 @@ class CameraVideoOnlyUiTest : CameraPageTest() {
 
     @Test
     fun should_update_flash_state_onFlashButtonClicked() {
-        // When
+        // Given
         startCameraPage()
+
+        // When
         val flashState = Robot.clickFlashButton()
 
         // Then
@@ -91,8 +101,10 @@ class CameraVideoOnlyUiTest : CameraPageTest() {
 
     @Test
     fun should_open_preview_activity_onThumbnailClicked() {
-        // When
+        // Given
         startCameraPage()
+
+        // When
         Robot.clickCaptureVideo(CAPTURED_VIDEO_DURATION)
         Robot.clickPreviewThumbnail()
 

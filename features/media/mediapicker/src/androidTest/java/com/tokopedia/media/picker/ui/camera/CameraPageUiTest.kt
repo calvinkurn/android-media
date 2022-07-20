@@ -39,8 +39,10 @@ class CameraPageUiTest : CameraPageTest() {
 
     @Test
     fun should_show_thumbnail_from_captured_video_onCaptureButtonClicked() {
-        // When
+        // Given
         startCameraPage()
+
+        // When
         Robot.swipeLeftCameraMode()
         Robot.clickCaptureVideo(CAPTURED_VIDEO_DURATION)
 
@@ -50,8 +52,10 @@ class CameraPageUiTest : CameraPageTest() {
 
     @Test
     fun should_show_thumbnail_from_captured_photo_onCaptureButtonClicked() {
-        // When
+        // Given
         startCameraPage()
+
+        // When
         Robot.clickCapturePhoto()
 
         // Then
@@ -60,8 +64,10 @@ class CameraPageUiTest : CameraPageTest() {
 
     @Test
     fun should_flip_camera_and_hide_flash_button_onFlipButtonClicked() {
-        // When
+        // Given
         startCameraPage()
+
+        // When
         Robot.clickFlipCameraButton()
 
         // Then
@@ -70,8 +76,10 @@ class CameraPageUiTest : CameraPageTest() {
 
     @Test
     fun should_close_activity_onCloseClicked() {
-        // When
+        //Given
         startCameraPage()
+
+        // When
         Robot.clickCloseButton()
 
         // Then
@@ -81,8 +89,10 @@ class CameraPageUiTest : CameraPageTest() {
 
     @Test
     fun should_open_image_preview_activity_onLanjutClicked() {
-        // When
+        // Given
         startCameraPage()
+
+        // When
         Robot.clickCapturePhoto()
         Robot.clickLanjutButton()
 
@@ -92,8 +102,10 @@ class CameraPageUiTest : CameraPageTest() {
 
     @Test
     fun should_open_video_preview_activity_onLanjutClicked() {
-        // When
+        // Given
         startCameraPage()
+
+        // When
         Robot.swipeLeftCameraMode()
         Robot.clickCaptureVideo(CAPTURED_VIDEO_DURATION)
         Robot.clickLanjutButton()
@@ -104,8 +116,10 @@ class CameraPageUiTest : CameraPageTest() {
 
     @Test
     fun should_update_flash_state_onFlashButtonClicked() {
-        // When
+        // Given
         startCameraPage()
+
+        // When
         val flashState = Robot.clickFlashButton()
 
         // Then
@@ -116,8 +130,10 @@ class CameraPageUiTest : CameraPageTest() {
 
     @Test
     fun should_open_gallery_fragment_onGalleryTabClicked() {
-        // When
+        // Given
         startCameraPage()
+
+        // When
         Robot.clickGalleryTab()
 
         // Then
@@ -126,8 +142,10 @@ class CameraPageUiTest : CameraPageTest() {
 
     @Test
     fun should_open_preview_activity_onThumbnailClicker() {
-        // When
+        // Given
         startCameraPage()
+
+        // When
         Robot.clickCapturePhoto()
         Robot.clickPreviewThumbnail()
 
