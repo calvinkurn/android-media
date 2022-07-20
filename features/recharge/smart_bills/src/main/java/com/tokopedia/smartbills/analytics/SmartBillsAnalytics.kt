@@ -2,8 +2,6 @@ package com.tokopedia.smartbills.analytics
 
 import android.os.Bundle
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant
-import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant.addGeneralDigitalView
 import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant.addGeneralClick
 import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant.addGeneralView
 import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant.addGeneralViewAddBills
@@ -15,6 +13,8 @@ import com.tokopedia.smartbills.analytics.SmartBillsAnalyticConstants.Key.Compan
 import com.tokopedia.smartbills.analytics.SmartBillsAnalyticConstants.Action.Companion.CLICK_ON_HIGHLIGHT_CATEGORY
 import com.tokopedia.smartbills.analytics.SmartBillsAnalyticConstants.Action.Companion.CLICK_X_ON_HIGHLIGHT_CATEGORY
 import com.tokopedia.smartbills.analytics.SmartBillsAnalyticConstants.Action.Companion.VIEW_ON_HIGHLIGHT_CATEGORY
+import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant
+import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant.addGeneralDigitalView
 import com.tokopedia.smartbills.data.RechargeBills
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
