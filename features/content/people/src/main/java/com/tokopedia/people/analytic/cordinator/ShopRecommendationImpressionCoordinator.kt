@@ -11,12 +11,10 @@ class ShopRecommendationImpressionCoordinator @Inject constructor(
     private val mShopRecomImpress = mutableListOf<Pair<ShopRecomUiModelItem, Int>>()
     private var mUserId: String = ""
 
-    fun saveShopRecomImpress(userId: String, shopImpress: List<Pair<ShopRecomUiModelItem, Int>>) {
+    fun sendShopRecomImpress(userId: String, shopImpress: List<Pair<ShopRecomUiModelItem, Int>>) {
         if (mUserId.isEmpty()) mUserId = userId
         mShopRecomImpress.addAll(shopImpress)
-    }
 
-    fun sendShopRecomImpress() {
         val finalShopRecom = mShopRecomImpress.distinctBy { it.first.id }
 
         if (finalShopRecom.isEmpty()) return
@@ -27,4 +25,5 @@ class ShopRecommendationImpressionCoordinator @Inject constructor(
         mUserId = ""
         mShopRecomImpress.clear()
     }
+
 }

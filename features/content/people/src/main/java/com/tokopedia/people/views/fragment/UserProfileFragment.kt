@@ -197,8 +197,7 @@ class UserProfileFragment @Inject constructor(
 
     override fun onPause() {
         super.onPause()
-        if (viewModel.visibleShopRecom) impressionCoordinator.sendShopRecomImpress()
-        else userProfileTracker.sendAll()
+        userProfileTracker.sendAll()
     }
 
     override fun onDestroyView() {
@@ -750,10 +749,6 @@ class UserProfileFragment @Inject constructor(
         return bundle
     }
 
-    override fun onShopRecomImpression(itemID: Long, imageUrl: String, postPosition: Int) {
-        //
-    }
-
     override fun onShopRecomCloseClicked(itemID: Long) {
         submitAction(UserProfileAction.RemoveShopRecomItem(itemID))
     }
@@ -770,7 +765,7 @@ class UserProfileFragment @Inject constructor(
         if (this::linearLayoutManager.isInitialized) {
             val visibleProducts = linearLayoutManager.getVisibleItems(mAdapterShopRecom)
             viewModel.visibleShopRecom = visibleProducts.isNotEmpty()
-            if (viewModel.visibleShopRecom) impressionCoordinator.saveShopRecomImpress(
+            if (viewModel.visibleShopRecom) impressionCoordinator.sendShopRecomImpress(
                 viewModel.profileUserID, visibleProducts
             )
         }

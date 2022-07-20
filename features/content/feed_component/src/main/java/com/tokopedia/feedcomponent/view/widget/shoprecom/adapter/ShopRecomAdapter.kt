@@ -21,11 +21,6 @@ class ShopRecomAdapter(
     }
 
     override fun onBindViewHolder(holder: ShopRecomViewHolder, position: Int) {
-        shopRecomCallback.onShopRecomImpression(
-            shopRecomItem[position].id,
-            shopRecomItem[position].logoImageURL,
-            position + 1
-        )
         holder.bindData(shopRecomItem[position])
     }
 
@@ -53,10 +48,6 @@ class ShopRecomAdapter(
 
     override fun onShopRecomItemClicked(itemID: Long, appLink: String, imageUrl: String, postPosition: Int) {
         shopRecomCallback.onShopRecomItemClicked(itemID, appLink, imageUrl, postPosition)
-    }
-
-    override fun onShopRecomImpression(itemID: Long, imageUrl: String, postPosition: Int) {
-        shopRecomCallback.onShopRecomImpression(itemID, imageUrl, postPosition)
     }
 
 }
