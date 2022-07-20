@@ -131,7 +131,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
         orderCart: OrderCart,
         orderProfile: OrderProfile,
         orderCost: OrderCost
-    ): Pair<ShipmentDetailData?, ArrayList<Product>> {
+    ): Pair<ShipmentDetailData, ArrayList<Product>> {
         val address = orderProfile.address
         val orderShop = orderCart.shop
         val orderProducts = orderCart.products
@@ -161,10 +161,10 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                 productList.add(Product(it.productId, it.isFreeOngkir, it.isFreeOngkirExtra))
             }
         }
-        if (orderShop.shouldValidateWeight() && totalWeight > orderShop.maximumWeight) {
-            // overweight
-            return null to productList
-        }
+//        if (orderShop.shouldValidateWeight() && totalWeight > orderShop.maximumWeight) {
+//            // overweight
+//            return null to (totalWeight - orderShop.maximumWeight)
+//        }
         return ShipmentDetailData().apply {
             shopId = orderShop.shopId.toString()
             preorder = preOrder

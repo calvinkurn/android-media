@@ -957,19 +957,15 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 orderProfile.value,
                 orderCost
             )
-            if (shipmentDetailData != null) {
-                orderShippingDuration.value = OccState.Success(
-                    OrderShippingDuration(
-                        shipmentDetailData = shipmentDetailData,
-                        shopShipmentList = orderShop.value.shopShipment,
-                        selectedServiceId = orderShipment.value.serviceId.toZeroIfNull(),
-                        products = products,
-                        cartString = orderCart.cartString
-                    )
+            orderShippingDuration.value = OccState.Success(
+                OrderShippingDuration(
+                    shipmentDetailData = shipmentDetailData,
+                    shopShipmentList = orderShop.value.shopShipment,
+                    selectedServiceId = orderShipment.value.serviceId.toZeroIfNull(),
+                    products = products,
+                    cartString = orderCart.cartString
                 )
-            } else {
-                orderShippingDuration.value = OccState.Failed()
-            }
+            )
         }
     }
 
