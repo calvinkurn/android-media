@@ -10,6 +10,6 @@ object TopadsCommonUtil {
             view = this,
             text = error,
             type = Toaster.TYPE_ERROR
-        )
+        ).show()
     }
 }
