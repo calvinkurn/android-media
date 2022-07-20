@@ -49,6 +49,7 @@
         android:id="@+id/ll_promo_detail"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/play_widget_badge_height"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
         android:background="@drawable/bg_promo_detail_badge"
         android:gravity="center_vertical"
         android:orientation="horizontal"
