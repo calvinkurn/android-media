@@ -139,7 +139,7 @@ class AnalyticsDebuggerFragment : Fragment() {
                         val lastVisibleItem = lm.findLastVisibleItemPosition()
 
                         if (dy > 0 && lastVisibleItem + VISIBLE_THRESHOLD >= totalItemCount) {
-                            offer(lastVisibleItem)
+                            trySend(lastVisibleItem).isSuccess
                         }
                     }
                 }
