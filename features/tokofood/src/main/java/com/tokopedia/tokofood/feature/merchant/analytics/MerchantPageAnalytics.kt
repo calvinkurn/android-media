@@ -4,8 +4,10 @@ import android.os.Bundle
 import com.tokopedia.atc_common.domain.analytics.AddToCartExternalAnalytics
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants
 import com.tokopedia.tokofood.common.constants.ShareComponentConstants
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProduct
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductListItem
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
@@ -298,18 +300,37 @@ class MerchantPageAnalytics @Inject constructor(private val userSession: UserSes
         tracker.sendEnhanceEcommerceEvent(TokoFoodAnalyticsConstants.ADD_TO_CART, eventDataLayer)
     }
 
-    fun clickCheckoutOnMiniCart(purchaseAmount: String, merchantId: String) {
-        val mapData = mapOf(
-            TrackAppUtils.EVENT to TokoFoodAnalyticsConstants.CLICK_PG,
-            TrackAppUtils.EVENT_ACTION to TokoFoodAnalyticsConstants.CLICK_ON_CHECKOUT_MINICART,
-            TrackAppUtils.EVENT_CATEGORY to TokoFoodAnalyticsConstants.TOKOFOOD_MERCHANT_PAGE,
-            TrackAppUtils.EVENT_LABEL to purchaseAmount,
-            TokoFoodAnalyticsConstants.BUSSINESS_UNIT to TokoFoodAnalyticsConstants.PHYSICAL_GOODS,
-            TokoFoodAnalyticsConstants.CURRENT_SITE to TokoFoodAnalyticsConstants.TOKOPEDIA_MARKETPLACE,
-            TokoFoodAnalyticsConstants.SHOP_ID to merchantId,
-            TokoFoodAnalyticsConstants.USER_ID to userSession.userId
-        )
-        tracker.sendGeneralEvent(mapData)
+    fun clickCheckoutOnMiniCart(productList: List<CheckoutTokoFoodProduct>,
+                                purchaseAmount: String,
+                                merchantId: String,
+                                merchantName: String) {
+        val productBundleList =
+            ArrayList(
+                productList.map { getMiniCartItemsBundle(it, merchantId, merchantName) }
+            )
+
+        val cartIds = productList.joinToString(separator = COMMA_SEPARATOR) { it.cartId }
+        val productIds = productList.joinToString(separator = COMMA_SEPARATOR) { it.productId }
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT, TokoFoodAnalytics.EVENT_BEGIN_CHECKOUT)
+            putString(TrackAppUtils.EVENT_ACTION, TokoFoodAnalyticsConstants.CLICK_ON_CHECKOUT_MINICART)
+            putString(TrackAppUtils.EVENT_CATEGORY, TokoFoodAnalyticsConstants.TOKOFOOD_MERCHANT_PAGE)
+            putString(TrackAppUtils.EVENT_LABEL, "{$purchaseAmount} - {$cartIds}")
+            putString(TokoFoodAnalytics.KEY_TRACKER_ID, MINICART_TRACKER_ID)
+            putString(TokoFoodAnalyticsConstants.BUSSINESS_UNIT, TokoFoodAnalyticsConstants.PHYSICAL_GOODS)
+            putString(TokoFoodAnalyticsConstants.CURRENT_SITE, TokoFoodAnalyticsConstants.TOKOPEDIA_MARKETPLACE)
+            putString(TokoFoodAnalyticsConstants.PRODUCT_ID, productIds)
+            putString(TokoFoodAnalyticsConstants.SHOP_ID, merchantId)
+            putString(TokoFoodAnalyticsConstants.USER_ID, userSession.userId)
+            putString(
+                TokoFoodAnalytics.KEY_CHECKOUT_OPTION,
+                TokoFoodAnalyticsConstants.CLICK_ON_CHECKOUT_BUTTON_ON_MINICART
+            )
+            putString(TokoFoodAnalytics.KEY_CHECKOUT_STEP, TokoFoodAnalytics.CHECKOUT_STEP_1)
+            putParcelableArrayList(AddToCartExternalAnalytics.EE_VALUE_ITEMS, productBundleList)
+        }
+
+        tracker.sendEnhanceEcommerceEvent(TokoFoodAnalytics.EVENT_BEGIN_CHECKOUT, eventDataLayer)
     }
 
     fun impressShareBottomSheet(itemId: String, userId: String) {
@@ -389,7 +410,7 @@ class MerchantPageAnalytics @Inject constructor(private val userSession: UserSes
             )
             putString(
                 AddToCartExternalAnalytics.EE_PARAM_ITEM_VARIANT,
-                foodItem.customListItems.joinToString(separator = ",") { it.addOnUiModel?.name.orEmpty() }
+                foodItem.customListItems.joinToString(separator = COMMA_SEPARATOR) { it.addOnUiModel?.name.orEmpty() }
             )
             putInt(AddToCartExternalAnalytics.EE_PARAM_PRICE, foodItem.price.toInt())
         }
@@ -426,7 +447,7 @@ class MerchantPageAnalytics @Inject constructor(private val userSession: UserSes
             )
             putString(
                 AddToCartExternalAnalytics.EE_PARAM_ITEM_VARIANT,
-                foodItem.customListItems.joinToString(separator = ",") { it.addOnUiModel?.name.orEmpty() }
+                foodItem.customListItems.joinToString(separator = COMMA_SEPARATOR) { it.addOnUiModel?.name.orEmpty() }
             )
             putString(AddToCartExternalAnalytics.EE_PARAM_PRICE, foodItem.price.toString())
             putString(AddToCartExternalAnalytics.EE_PARAM_QUANTITY, quantity)
@@ -437,4 +458,36 @@ class MerchantPageAnalytics @Inject constructor(private val userSession: UserSes
             )
         }
     }
+
+    private fun getMiniCartItemsBundle(
+        product: CheckoutTokoFoodProduct,
+        merchantId: String,
+        merchantName: String
+    ): Bundle {
+        val selectedOptions =
+            product.variants.flatMap { it.options }.filter { it.isSelected }.map { it.optionId }
+        return Bundle().apply {
+            putString(TokoFoodAnalytics.KEY_DIMENSION_45, product.cartId)
+            putString(AddToCartExternalAnalytics.EE_PARAM_ITEM_BRAND, String.EMPTY)
+            putString(AddToCartExternalAnalytics.EE_PARAM_ITEM_CATEGORY, product.categoryId)
+            putString(AddToCartExternalAnalytics.EE_PARAM_ITEM_ID, product.productId)
+            putString(AddToCartExternalAnalytics.EE_PARAM_ITEM_NAME, product.productName)
+            putString(
+                AddToCartExternalAnalytics.EE_PARAM_ITEM_VARIANT,
+                selectedOptions.joinToString(separator = COMMA_SEPARATOR)
+            )
+            putString(AddToCartExternalAnalytics.EE_PARAM_PRICE, product.price.toString())
+            putString(AddToCartExternalAnalytics.EE_PARAM_QUANTITY, product.quantity.toString())
+            putString(AddToCartExternalAnalytics.EE_PARAM_SHOP_ID, merchantId)
+            putString(AddToCartExternalAnalytics.EE_PARAM_SHOP_NAME, merchantName)
+            putString(AddToCartExternalAnalytics.EE_PARAM_SHOP_TYPE, String.EMPTY)
+        }
+    }
+
+    companion object {
+        private const val MINICART_TRACKER_ID = "31320"
+
+        private const val COMMA_SEPARATOR = ","
+    }
+
 }

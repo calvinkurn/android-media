@@ -533,6 +533,7 @@ public interface ApplinkConst {
         String REVIEW_REMINDER = "sellerapp://review-reminder";
         String SHOP_SCORE_DETAIL = "sellerapp://shop-score-detail";
         String SHOP_DISCOUNT = "sellerapp://shop-discount";
+        String TOKOMEMBER = "sellerapp://tokomember";
         String ADMIN_INVITATION = "sellerapp://shop-admin/invitation-page";
         String ADMIN_ACCEPTED = "sellerapp://shop-admin/accepted-page";
         String ADMIN_REDIRECTION = "sellerapp://shop-admin/redirection-page";
