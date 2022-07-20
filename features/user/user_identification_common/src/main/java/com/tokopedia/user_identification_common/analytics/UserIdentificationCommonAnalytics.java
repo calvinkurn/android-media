@@ -518,7 +518,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.CLICK_ACCOUNT,
                 Category.KYC_LIVENESS_FAILED_PAGE,
                 Action.CLICK_ON_BUTTON_COBA_LAGI,
-                Label.labelConnectionTimeout
+                Label.labelConnectionTimeout + " - " + projectID + " - " + getKycType(String.valueOf(projectID))
         ));
     }
 
@@ -527,7 +527,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.CLICK_ACCOUNT,
                 Category.KYC_LIVENESS_FAILED_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                Label.labelConnectionTimeout
+                Label.labelConnectionTimeout + " - " + projectID + " - " + getKycType(String.valueOf(projectID))
         ));
     }
 
