@@ -16,7 +16,12 @@ class BrightnessToolUiComponent constructor(
     fun setupView(sliderInitValue: Float) {
         container().show()
 
-        brightnessSlider.setRangeSliderValue(0, 200, 1, sliderInitValue.toInt())
+        brightnessSlider.setRangeSliderValue(
+            BRIGHTNESS_SLIDER_START_VALUE,
+            BRIGHTNESS_SLIDER_RANGE,
+            BRIGHTNESS_SLIDER_STEP_VALUE,
+            sliderInitValue.toInt()
+        )
         brightnessSlider.listener = this
     }
 
@@ -26,6 +31,20 @@ class BrightnessToolUiComponent constructor(
 
     interface Listener {
         fun onBrightnessValueChanged(value: Float)
+    }
+
+    companion object {
+        private const val BRIGHTNESS_SLIDER_RANGE = 200
+        private const val BRIGHTNESS_SLIDER_STEP_VALUE = 1
+        private const val BRIGHTNESS_SLIDER_START_VALUE = 0
+        private const val BRIGHTNESS_MAX_REAL_VALUE = 255
+
+        /**
+         * convert slider value -100...100 to brightness value -255...255
+         */
+        fun sliderValueToBrightness(value: Float): Float{
+            return (value / (BRIGHTNESS_SLIDER_RANGE / 2)) * BRIGHTNESS_MAX_REAL_VALUE
+        }
     }
 
 }
