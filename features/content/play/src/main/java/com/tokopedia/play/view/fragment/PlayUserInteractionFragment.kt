@@ -231,7 +231,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private lateinit var productAnalyticHelper: ProductAnalyticHelper
 
-    private lateinit var localCache: LocalCacheModel
+    private lateinit var localCache: LocalCacheModel = LocalCacheModel()
 
     /**
      * Animation
@@ -1799,13 +1799,14 @@ class PlayUserInteractionFragment @Inject constructor(
      */
 
     private fun initAddress() {
-        localCache = ChooseAddressUtils.getLocalizingAddressData(context = requireContext())
+        if(ChooseAddressUtils.isLocalizingAddressHasUpdated(context = requireContext(), localizingAddressStateData = localCache)) {
+            localCache = ChooseAddressUtils.getLocalizingAddressData(context = requireContext())
+            val warehouseId = localCache.warehouses.find {
+                it.service_type == localCache.service_type
+            }?.warehouse_id ?: 0
 
-        val warehouseId = localCache.warehouses.find {
-            it.service_type == localCache.service_type
-        }?.warehouse_id ?: 0
-
-        playViewModel.submitAction(SendWarehouseId(isOOC = localCache.isOutOfCoverage(), id = warehouseId.toString()))
+            playViewModel.submitAction(SendWarehouseId(isOOC = localCache.isOutOfCoverage(), id = warehouseId.toString()))
+        }
     }
 
     override fun onAddressUpdated(view: ChooseAddressViewComponent) {
