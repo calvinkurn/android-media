@@ -413,6 +413,21 @@ class MerchantPageFragment : BaseMultiFragment(),
         binding?.tvCategoryPlaceholder?.text = filterNameSelected
     }
 
+    private fun openSharedProductDetail(sharedProductId: String) {
+        if (sharedProductId.isBlank()) return
+        else {
+            val productListItem = productListAdapter?.getProductListItems()?.find { productList -> productList.productUiModel.id == sharedProductId }
+            val position = productListAdapter?.getProductListItems()?.indexOf(productListItem)
+            if (position != null && position != RecyclerView.NO_POSITION) {
+                scrollToCategorySection(position)
+                productListItem?.run {
+                    // adapter dataset position should be the same at the start
+                    onProductCardClicked(productListItem, position to position)
+                }
+            }
+        }
+    }
+
     private fun fetchMerchantData() {
         showLoader()
         getMerchantData()
@@ -598,6 +613,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                         )
                         renderProductList(finalProductListItems)
                         setCategoryPlaceholder(viewModel.filterNameSelected)
+                        openSharedProductDetail(sharedProductId = productId)
                     } else {
                         navigateToNewFragment(
                             ManageLocationFragment.createInstance(
