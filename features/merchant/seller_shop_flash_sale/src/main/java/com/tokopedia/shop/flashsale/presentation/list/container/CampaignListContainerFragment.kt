@@ -89,8 +89,8 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
         setupTabs()
         observeTabsMeta()
         observeSellerEligibility()
-        val targetTabPosition = findTargetTabDestination() ?: return
-        viewModel.getPrerequisiteData(targetTabPosition.position)
+        val targetTabPosition = findTargetTabDestination()?.position ?: return
+        viewModel.getPrerequisiteData(targetTabPosition)
     }
 
     private fun observeSellerEligibility() {
