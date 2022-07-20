@@ -130,6 +130,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private FirebaseMessagingManager fcmManager;
 
+    private int REDIRECTION_HOME = 1;
+    private int REDIRECTION_WEBVIEW = 2;
+    private int REDIRECTION_DEFAULT= 0;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -308,6 +312,29 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         Intent intent = new Intent(context, ConsumerSplashScreen.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+    }
+
+    @Override
+    public void onForceLogout(Activity activity, int redirectionType) {
+        forceLogout();
+        if(redirectionType == REDIRECTION_WEBVIEW) {
+            Intent homeIntent = new Intent(this, ApplinkConst.HOME);
+            homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            Intent webViewIntent = RouteManager.getIntent(this, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url));
+            TaskStackBuilder task = TaskStackBuilder.create(this);
+            task.addNextIntent(homeIntent);
+            task.addNextIntent(webViewIntent);
+            task.startActivities();
+        } else if(redirectionType == REDIRECTION_HOME) {
+            Intent intent = RouteManager.getIntent(this, ApplinkConst.HOME);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
+        else {
+            Intent intent = new Intent(context, ConsumerSplashScreen.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
     }
 
     @Override

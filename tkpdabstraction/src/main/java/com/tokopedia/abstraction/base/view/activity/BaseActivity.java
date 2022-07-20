@@ -1,6 +1,7 @@
 package com.tokopedia.abstraction.base.view.activity;
 
 
+import android.app.TaskStackBuilder;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -35,11 +36,14 @@ import com.tokopedia.abstraction.common.utils.view.DialogForceLogout;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import kotlin.Unit;
 import timber.log.Timber;
 
 
@@ -62,6 +66,10 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
     private final ArrayList<DebugVolumeListener> debugVolumeListeners = new ArrayList<>();
     private final ArrayList<DispatchTouchListener> dispatchTouchListeners = new ArrayList<>();
+
+    private int REDIRECTION_HOME = 1;
+    private int REDIRECTION_WEBVIEW = 2;
+    private int REDIRECTION_DEFAULT = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -200,22 +208,42 @@ public abstract class BaseActivity extends AppCompatActivity implements
                     @Override
                     public void onDialogClicked() {
                         if (getApplication() instanceof AbstractionRouter) {
-                            ((AbstractionRouter) getApplication()).onForceLogout(BaseActivity.this);
+                            ((AbstractionRouter) getApplication()).onForceLogout(BaseActivity.this, REDIRECTION_DEFAULT);
                         }
                     }
                 });
     }
 
     public void showForceLogoutDialogUnify(String title, String description, String url) {
-        DialogForceLogout.showDialogUnify(this, getScreenName(),
-                new DialogForceLogout.ActionListener() {
-                    @Override
-                    public void onDialogClicked() {
-                        if (getApplication() instanceof AbstractionRouter) {
-                            ((AbstractionRouter) getApplication()).onForceLogout(BaseActivity.this);
-                        }
-                    }
-                }, title, description, url);
+        removeUserSession();
+        DialogForceLogout.showDialogUnify(this, getScreenName(), title, description, new DialogForceLogout.UnifyActionListener() {
+            @Override
+            public void onPrimaryBtnClicked() {
+                if (getApplication() instanceof AbstractionRouter) {
+                    ((AbstractionRouter) getApplication()).onForceLogout(BaseActivity.this, REDIRECTION_WEBVIEW);
+                }
+            }
+            @Override
+            public void onSecondaryBtnClicked() {
+                if (getApplication() instanceof AbstractionRouter) {
+                    ((AbstractionRouter) getApplication()).onForceLogout(BaseActivity.this, REDIRECTION_HOME);
+                }
+            }
+            @Override
+            public void onDismiss() {}
+        });
+    }
+
+    public void removeUserSession() {
+        TrackApp.getInstance().getMoEngage().logoutEvent();
+        UserSessionInterface userSession = new UserSession(this);
+        userSession.logoutSession();
+    }
+
+    public void redirectToHome() {
+//        Intent intent = RouteManager.getIntent(this, ApplinkConst.HOME);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+//        startActivity(intent);
     }
 
     public void checkIfForceLogoutMustShow() {

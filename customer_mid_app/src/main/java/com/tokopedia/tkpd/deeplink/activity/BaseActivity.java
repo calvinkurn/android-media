@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
-import androidx.annotation.NonNull;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -153,24 +152,8 @@ public class BaseActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onForceLogout(@NonNull String title, @NonNull String description, @NonNull String url) {
-        if(!title.isEmpty()) {
-            if (!DialogForceLogout.isDialogShown(this)) showForceLogoutDialogUnify(title, description, url);
-        } else {
-            if (!DialogForceLogout.isDialogShown(this)) showForceLogoutDialog();
-        }
-    }
-
-    public void showForceLogoutDialogUnify(String title, String description, String url) {
-        DialogForceLogout.showDialogUnify(this, getScreenName(),
-                new DialogForceLogout.ActionListener() {
-                    @Override
-                    public void onDialogClicked() {
-                        if (getApplication() instanceof AbstractionRouter) {
-                            ((AbstractionRouter) getApplication()).onForceLogout(BaseActivity.this);
-                        }
-                    }
-                }, title, description, url);
+    public void onForceLogout() {
+        if (!DialogForceLogout.isDialogShown(this)) showForceLogoutDialog();
     }
 
     @SuppressWarnings("Range")

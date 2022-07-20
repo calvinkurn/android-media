@@ -26,19 +26,39 @@ object DialogForceLogout {
     @JvmStatic
     fun showDialogUnify(
         context: Context,
-        screenName: String,
-        listener: ActionListener?,
+        screenName: String = "",
         title: String = "",
         description: String = "",
-        url: String = ""
+        listener: UnifyActionListener?,
     ) {
-        val alertDialog = createDialogWithCustomContent(context, listener, screenName, title, description, url)
-        alertDialog.show()
+        val dialog = DialogUnify(context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+        dialog.setTitle(title)
+        dialog.setDescription(description)
+        dialog.setPrimaryCTAText("Cek Informasi Lengkap")
+        dialog.setPrimaryCTAClickListener {
+            dialog.dismiss()
+            setIsDialogShown(context, false)
+            TrackApp.getInstance().gtm.sendGeneralEvent(
+                "clickLogout",
+                "force logout",
+                "get session expired pop up",
+                screenName
+            )
+            listener?.onPrimaryBtnClicked()
+        }
+        dialog.setSecondaryCTAText("Batal")
+        dialog.setSecondaryCTAClickListener {
+            dialog.dismiss()
+            listener?.onSecondaryBtnClicked()
+        }
+        dialog.setOnDismissListener { listener?.onDismiss() }
+        dialog.show()
         setIsDialogShown(context, true)
     }
 
     fun create(
-        context: Context, listener: ActionListener?,
+        context: Context,
+        listener: ActionListener?,
         screenName: String?
     ): AlertDialog {
         val dialog = AlertDialog.Builder(context)
@@ -61,40 +81,6 @@ object DialogForceLogout {
         return dialog.create()
     }
 
-    fun createDialogWithCustomContent(
-        context: Context,
-        listener: ActionListener?,
-        screenName: String = "",
-        title: String = "",
-        description: String = "",
-        url: String = ""
-    ): DialogUnify {
-        val dialog = DialogUnify(context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-        dialog.setTitle(title)
-        dialog.setDescription(description)
-        dialog.setPrimaryCTAText("Cek Informasi Lengkap")
-        dialog.setPrimaryCTAClickListener {
-            listener?.onDialogClicked()
-            dialog.dismiss()
-            setIsDialogShown(context, false)
-            TrackApp.getInstance().gtm.sendGeneralEvent(
-                "clickLogout",
-                "force logout",
-                "get session expired pop up",
-                screenName
-            )
-//            RouteManager.route(
-//                context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url)
-//            )
-        }
-        dialog.setCancelable(false)
-        dialog.setSecondaryCTAText("Batal")
-        dialog.setSecondaryCTAClickListener {
-            dialog.dismiss()
-        }
-        return dialog
-    }
-
     fun setIsDialogShown(context: Context?, status: Boolean?) {
         val cache = LocalCacheHandler(context, IS_DIALOG_SHOWN_STORAGE)
         cache.putBoolean(IS_DIALOG_SHOWN, status)
@@ -110,4 +96,11 @@ object DialogForceLogout {
     interface ActionListener {
         fun onDialogClicked()
     }
+
+    interface UnifyActionListener {
+        fun onPrimaryBtnClicked()
+        fun onSecondaryBtnClicked()
+        fun onDismiss()
+    }
+
 }
