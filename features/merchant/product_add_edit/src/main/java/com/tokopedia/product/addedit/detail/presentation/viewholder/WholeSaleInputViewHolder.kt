@@ -17,7 +17,7 @@ class WholeSaleInputViewHolder(itemView: View,
     : RecyclerView.ViewHolder(itemView) {
 
     companion object {
-        private const val MIN_CHAR_QTY = 5
+        private const val MIN_CHAR_QTY = 6
     }
 
     interface OnDeleteButtonClickListener {
