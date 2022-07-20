@@ -120,7 +120,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.VIEW_KYC,
                 Category.KYC_PAGE,
                 Action.VIEW_SELFIE_PAGE,
-                ""
+                "success - " + projectID + " - " + getKycType(String.valueOf(projectID))
         ));
     }
 
@@ -142,7 +142,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.VIEW_KYC,
                 Category.KYC_PAGE,
                 Action.VIEW_OPEN_CAMERA_KTP,
-                ""
+                "success - " + projectID + " - " + getKycType(String.valueOf(projectID))
         ));
     }
 
@@ -151,7 +151,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.VIEW_KYC,
                 Category.KYC_PAGE,
                 Action.VIEW_OPEN_CAMERA_SELFIE,
-                ""
+                "success - " + projectID + " - " + getKycType(String.valueOf(projectID))
         ));
     }
 
@@ -169,7 +169,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.CLICK_KYC,
                 Category.KYC_PAGE,
                 Action.CLICK_BACK_CAMERA_SELFIE,
-                ""
+                "success - " + projectID + " - " + getKycType(String.valueOf(projectID))
         ));
     }
 
@@ -182,7 +182,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.CLICK_KYC,
                 Category.KYC_PAGE,
                 Action.CLICK_FLIP_CAMERA_KTP,
-                ""
+                "success - " + projectID + " - " + getKycType(String.valueOf(projectID))
         ));
     }
 
@@ -208,7 +208,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.CLICK_KYC,
                 Category.KYC_PAGE,
                 Action.CLICK_SHUTTER_CAMERA_SELFIE,
-                ""
+                "success - " + projectID + " - " + getKycType(String.valueOf(projectID))
         ));
     }
 
@@ -239,7 +239,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.CLICK_KYC,
                 Category.KYC_PAGE,
                 Action.CLICK_FLIP_CAMERA_SELFIE,
-                ""
+                "success - " + projectID + " - " + getKycType(String.valueOf(projectID))
         ));
     }
 
@@ -248,7 +248,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.VIEW_KYC,
                 Category.KYC_PAGE,
                 Action.VIEW_IMAGE_PREVIEW_KTP,
-                ""
+                "success - " + projectID + " - " + getKycType(String.valueOf(projectID))
         ));
     }
 
@@ -257,7 +257,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.VIEW_KYC,
                 Category.KYC_PAGE,
                 Action.VIEW_IMAGE_PREVIEW_SELFIE,
-                ""
+                "success - " + projectID + " - " + getKycType(String.valueOf(projectID))
         ));
     }
 
@@ -275,7 +275,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.CLICK_KYC,
                 Category.KYC_PAGE,
                 Action.CLICK_CLOSE_IMAGE_PREVIEW_SELFIE,
-                ""
+                "success - " + projectID + " - " + getKycType(String.valueOf(projectID))
         ));
     }
 
@@ -301,7 +301,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.CLICK_KYC,
                 Category.KYC_PAGE,
                 Action.CLICK_RECAPTURE_SELFIE,
-                ""
+                "success - " + projectID + " - " + getKycType(String.valueOf(projectID))
         ));
     }
 
@@ -327,7 +327,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.CLICK_KYC,
                 Category.KYC_PAGE,
                 Action.CLICK_NEXT_IMAGE_PREVIEW_SELFIE,
-                ""
+                "success - " + projectID + " - " + getKycType(String.valueOf(projectID))
         ));
     }
 
@@ -340,7 +340,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.VIEW_KYC,
                 Category.KYC_PAGE,
                 Action.VIEW_FINAL_FORM_PAGE,
-                ""
+                "success - " + projectID + " - " + getKycType(String.valueOf(projectID))
         ));
     }
 
@@ -439,7 +439,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.CLICK_KYC,
                 Category.KYC_PAGE,
                 Action.CLICK_BACK_FINAL_FORM_PAGE,
-                ""
+                "success - " + projectID + " - " + getKycType(String.valueOf(projectID))
         ));
     }
 
@@ -452,7 +452,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.VIEW_KYC,
                 Category.KYC_PAGE,
                 Action.VIEW_KTP_PAGE,
-                ""
+                "success - " + projectID + " - " + getKycType(String.valueOf(projectID))
         ));
     }
 

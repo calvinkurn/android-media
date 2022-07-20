@@ -61,7 +61,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.VIEW_KYC,
                 Category.KYC_PAGE,
                 Action.VIEW_KYC_ONBOARDING,
-                ""
+            "success - $projectID - ${getKycType(projectID.toString())}"
         ))
     }
 
@@ -79,7 +79,8 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
             Event.CLICK_VERIFICATION,
             Category.KYC_PAGE,
             Action.CLICK_ON_TNC_KYC,
-            if(isChecked) Label.LABEL_CHECK else Label.LABEL_UNCHECK
+            if(isChecked) "${Label.LABEL_CHECK} - $projectID - ${getKycType(projectID.toString())}"
+            else "${Label.LABEL_UNCHECK} - $projectID - ${getKycType(projectID.toString())}"
         )
 
         data[KEY_BUSINESS_UNIT] = BUSSINESS_UNIT
@@ -106,7 +107,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.VIEW_KYC,
                 Category.KYC_PAGE,
                 Action.VIEW_PENDING_PAGE,
-                ""
+            "success - $projectID - ${getKycType(projectID.toString())}"
         ))
     }
 
@@ -133,7 +134,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.VIEW_KYC,
                 Category.KYC_PAGE,
                 Action.VIEW_SUCCESS_SNACKBAR_PENDING_PAGE,
-                ""
+            "success - $projectID - ${getKycType(projectID.toString())}"
         ))
     }
 
@@ -142,7 +143,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.VIEW_KYC,
                 Category.KYC_PAGE,
                 Action.VIEW_REJECTED_PAGE,
-                ""
+            "success - $projectID - ${getKycType(projectID.toString())}"
         ))
     }
 
@@ -187,7 +188,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.VIEW_KYC,
                 Category.KYC_PAGE,
                 Action.VIEW_SUCCES_PAGE,
-                ""
+            "success - $projectID - ${getKycType(projectID.toString())}"
         ))
     }
 
@@ -196,7 +197,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.CLICK_KYC,
                 Category.KYC_PAGE,
                 Action.CLICK_BACK_SUCCESS_PAGE,
-                ""
+            "success - $projectID - ${getKycType(projectID.toString())}"
         ))
     }
 
@@ -205,7 +206,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.CLICK_KYC,
                 Category.KYC_PAGE,
                 Action.CLICK_TERMS_AND_CONDITION_SUCCESS_PAGE,
-                ""
+            "success - $projectID - ${getKycType(projectID.toString())}"
         ))
     }
 
