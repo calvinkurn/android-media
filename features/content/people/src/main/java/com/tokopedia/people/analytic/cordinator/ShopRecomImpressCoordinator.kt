@@ -11,12 +11,16 @@ class ShopRecomImpressCoordinator @Inject constructor(
 
     private val mShopRecomImpress = mutableListOf<ShopRecomUiModelItem>()
 
-    fun sendShopRecomImpress(userId: String, shopImpress: ShopRecomUiModelItem, position: Int) {
+    fun initiateShopImpress(userId: String, shopImpress: ShopRecomUiModelItem, position: Int) {
         val findShopRecom = mShopRecomImpress.filter { it.id == shopImpress.id }
         if (findShopRecom.isNotEmpty()) return
         tracker.impressionProfileRecommendation(userId, shopImpress, position)
         mShopRecomImpress.add(shopImpress)
+    }
+
+    fun sendTracker() {
         tracker.sendAll()
+        if (mShopRecomImpress.isNotEmpty()) mShopRecomImpress.clear()
     }
 
 }

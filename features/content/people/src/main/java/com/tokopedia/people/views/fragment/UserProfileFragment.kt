@@ -199,7 +199,7 @@ class UserProfileFragment @Inject constructor(
 
     override fun onPause() {
         super.onPause()
-        userProfileTracker.sendAll()
+        impressionCoordinator.sendTracker()
     }
 
     override fun onDestroyView() {
@@ -771,7 +771,7 @@ class UserProfileFragment @Inject constructor(
     }
 
     override fun onShopRecomItemImpress(item: ShopRecomUiModelItem, postPosition: Int) {
-        impressionCoordinator.sendShopRecomImpress(viewModel.profileUserID, item, postPosition)
+        impressionCoordinator.initiateShopImpress(viewModel.profileUserID, item, postPosition)
     }
 
     override fun onRetryPageLoad(pageNumber: Int) {
