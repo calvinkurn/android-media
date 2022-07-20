@@ -837,8 +837,8 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
                         val productWholeSalePriceField: TextFieldUnify? = productWholeSaleFormView?.findViewById(R.id.tfu_wholesale_price)
                         val productWholeSaleQuantityField: TextFieldUnify? = productWholeSaleFormView?.findViewById(R.id.tfu_wholesale_quantity)
                         val item = WholeSaleInputModel(
-                                productWholeSalePriceField.getText(),
-                                productWholeSaleQuantityField.getText()
+                                productWholeSalePriceField.getTextIntOrZero().toString(),
+                                productWholeSaleQuantityField.getTextIntOrZero().toString()
                         )
                         inputResult.add(item)
                     }
