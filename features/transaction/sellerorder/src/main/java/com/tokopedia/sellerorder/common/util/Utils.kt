@@ -76,6 +76,22 @@ object Utils {
         return drawable
     }
 
+    fun getColoredDeadlineBackground(context: Context, colorHex: String, defaultColor: Int): Drawable? {
+        val color = if (colorHex.length > 1) {
+            try {
+                Color.parseColor(colorHex)
+            } catch (t: Throwable) {
+                defaultColor
+            }
+        } else {
+            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        }
+        val drawable = MethodChecker.getDrawable(context, R.drawable.bg_order_deadline)
+        val filter: ColorFilter = LightingColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black), color)
+        drawable.colorFilter = filter
+        return drawable
+    }
+
     fun getLocale(): Locale {
         return Locale("id")
     }
