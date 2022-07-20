@@ -2541,19 +2541,27 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun showToasterSuccessWishlist() {
-        showToasterWithAction(
-            message = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg),
-            typeToaster = TYPE_NORMAL,
-            actionText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
-            clickListener = View.OnClickListener {
-                RouteManager.route(context, ApplinkConst.WISHLIST)
-            })
+        if(activity?.isFinishing == false) {
+            showToasterWithAction(
+                message = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg),
+                typeToaster = TYPE_NORMAL,
+                actionText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
+                clickListener = View.OnClickListener {
+                    RouteManager.route(context, ApplinkConst.WISHLIST)
+                })
+        }
     }
 
     private fun showToasterSuccessWishlistV2(wishlistResult: ProductCardOptionsModel.WishlistResult) {
         context?.let { context ->
             view?.let { v ->
-                AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(wishlistResult, context, v)
+                if(activity?.isFinishing == false) {
+                    AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(
+                        wishlistResult,
+                        context,
+                        v
+                    )
+                }
             }
         }
     }
@@ -2764,7 +2772,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         if (errorToaster == null || errorToaster?.isShown == false) {
             Toaster.toasterCustomBottomHeight = 56f.toDpInt()
             errorToaster = build(root, message, Snackbar.LENGTH_LONG, typeToaster, actionText, clickListener)
-            errorToaster?.show()
+            if(activity?.isFinishing == false) {
+                errorToaster?.show()
+            }
         }
     }
 
