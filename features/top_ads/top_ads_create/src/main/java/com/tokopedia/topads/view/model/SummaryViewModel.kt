@@ -8,6 +8,7 @@ import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.topads.common.data.internal.ParamObject
+import com.tokopedia.topads.common.data.internal.ParamObject.PUBLISHED
 import com.tokopedia.topads.common.data.response.DepositAmount
 import com.tokopedia.topads.common.data.response.FinalAdResponse
 import com.tokopedia.topads.common.data.response.ResponseGroupValidateName
@@ -56,7 +57,7 @@ class SummaryViewModel @Inject constructor(
     ) {
         launchCatchError(block = {
             val param =
-                topAdsCreateUseCase.setParam(ParamObject.CREATE_PAGE, dataPro, dataKey, dataGrp)
+                topAdsCreateUseCase.setParam(ParamObject.CREATE_PAGE, dataPro, dataKey, dataGrp, status = PUBLISHED)
 
             val topadsManageGroupAds = topAdsCreateUseCase.execute(param).topadsManageGroupAds
             val dataGroup = topadsManageGroupAds.groupResponse
