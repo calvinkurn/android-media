@@ -96,7 +96,6 @@ dependencies {
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.networkDependencies.okHttp
 
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.flexBoxLayout
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.liveDataKtx
@@ -108,11 +107,9 @@ dependencies {
     implementation rootProject.ext.miscDependencies.rxJava
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
-    implementation rootProject.ext.miscDependencies.localBroadcastManager
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.supportLibDependencies.design
-    implementation rootProject.ext.supportLibDependencies.cardViewV7
     implementation rootProject.ext.supportLibDependencies.appCompactV7
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
 

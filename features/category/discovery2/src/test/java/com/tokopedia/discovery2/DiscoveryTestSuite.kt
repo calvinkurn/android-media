@@ -30,26 +30,29 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.dyna
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.lihatflashsaletimerwidget.LihatFlashSaleTimerViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.lihatsemua.LihatSemuaViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.loadmore.LoadMoreViewModelTest
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mycoupon.MyCouponItemModelTest
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mycoupon.MyCouponModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvoucher.DiscoMerchantVoucherViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchercarousel.MerchantVoucherCarouselItemViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchercarousel.MerchantVoucherCarouselViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchercarousel.MerchantVoucherListViewModelTest
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mycoupon.MyCouponItemModelTest
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mycoupon.MyCouponModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.navigationChips.NavigationChipsViewModelTest
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.playwidget.DiscoveryPlayWidgetViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.MixLeftEmptyViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.ProductCardCarouselViewModelTest
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardsingle.ProductCardSingleViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.EmptyStateViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardrevamp.ProductCardRevampViewModelTest
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardsingle.ProductCardSingleViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickcoupon.QuickCouponViewModelTest
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickfilter.QuickFilterViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.section.SectionViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shimmer.ShimmerViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopbannerinfinite.ShopBannerInfiniteItemModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopbannerinfinite.ShopBannerInfiniteModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcard.ShopCardItemModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcard.ShopCardModelTest
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcardinfinite.ShopCardInfiniteModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.sliderbanner.SliderBannerViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.spacing.SpacingViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsItemViewModelTest
@@ -61,12 +64,12 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.toko
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.topadsheadline.TopAdsHeadlineViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.topquest.TopQuestViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.YouTubeViewViewModelTest
+import com.tokopedia.discovery2.viewmodel.DiscoveryViewModelTest
 import org.junit.runner.RunWith
 import org.junit.runners.Suite
 
 @RunWith(Suite::class)
 @Suite.SuiteClasses(
-        CategoryBestSellerViewModelTest::class,
         MultiBannerViewModelTest::class,
         TimerSprintSaleItemViewModelTest::class,
         UtilsTest::class,
@@ -131,6 +134,11 @@ import org.junit.runners.Suite
         ChipsFilterViewModelTest::class,
         ShopBannerInfiniteModelTest::class,
         ShopBannerInfiniteItemModelTest::class,
+        CategoryBestSellerViewModelTest::class,
+        ShopCardInfiniteModelTest::class,
+        DiscoveryPlayWidgetViewModelTest::class,
+        QuickFilterViewModelTest::class,
+        DiscoveryViewModelTest::class,
 )
 
 

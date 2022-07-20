@@ -9,7 +9,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.topads_dash_no_products_sheet_layout.*
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifyprinciples.Typography
 
 class NoProductBottomSheet : BottomSheetUnify() {
 
@@ -17,7 +18,11 @@ class NoProductBottomSheet : BottomSheetUnify() {
         fun newInstance() = NoProductBottomSheet()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View? {
         val contentView = View.inflate(context, R.layout.topads_dash_no_products_sheet_layout, null)
         setChild(contentView)
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -25,8 +30,9 @@ class NoProductBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        imageEmpty.setImageDrawable(context?.getResDrawable(R.drawable.topads_dash_grey_circle))
-        addProductBtn.setOnClickListener {
+        view.findViewById<ImageUnify>(R.id.imageEmpty)
+            ?.setImageDrawable(context?.getResDrawable(R.drawable.topads_dash_grey_circle))
+        view.findViewById<Typography>(R.id.addProductBtn)?.setOnClickListener {
             RouteManager.route(context, ApplinkConst.PRODUCT_MANAGE)
         }
     }

@@ -1,5 +1,6 @@
 package com.tokopedia.webview
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ResolveInfo
@@ -7,18 +8,25 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.url.TokopediaUrl
-import com.tokopedia.webview.ext.decode
 
 /**
  * Class act as intermediary/bridging to redirect to browser or native activity (webview)
  * tokopedia-android-internal://global/browser
  */
-class BrowserRedirectActivity: AppCompatActivity() {
+class BrowserRedirectActivity : AppCompatActivity() {
+    @SuppressLint("QueryPermissionsNeeded")
     override fun onCreate(savedInstanceState: Bundle?) {
         val uri = intent.data
         if (uri != null) {
             val redirectIntent = getCallingIntentOpenBrowser(this, uri)
-            startActivity(redirectIntent)
+            if (redirectIntent.resolveActivity(packageManager) != null) {
+                try {
+                    startActivity(redirectIntent)
+                } catch (ignored: Exception) {
+                    //exception happen because activity
+                    // does not have permission query to open
+                }
+            }
         }
         super.onCreate(savedInstanceState)
         finish()
@@ -55,17 +63,23 @@ class BrowserRedirectActivity: AppCompatActivity() {
         // return when the device has a browser app
         return if (resolveInfos.size >= 1) {
             // open chrome app by default
+            // Only redirect to chrome because currently only chrome is defined in queries
+            // see https://developer.android.com/training/package-visibility
             val resolveInfo = resolveInfos.find { it.resolvePackageName == DeeplinkIntent.CHROME_PACKAGE }
-                ?: resolveInfos.first()
             getBrowserIntent(resolveInfo, webUri)
         } else getSimpleWebViewActivityIntent(context, webUrl)
     }
 
-    private fun getBrowserIntent(resolveInfo: ResolveInfo, webUri: Uri) =
-        Intent().apply {
-            setClassName(resolveInfo.activityInfo.packageName, resolveInfo.activityInfo.name)
-            data = webUri
+    private fun getBrowserIntent(resolveInfo: ResolveInfo?, webUri: Uri):Intent {
+        return if (resolveInfo != null) {
+            Intent().apply {
+                setClassName(resolveInfo.activityInfo.packageName, resolveInfo.activityInfo.name)
+                data = webUri
+            }
+        } else {
+            Intent(Intent.ACTION_VIEW).apply { data = webUri }
         }
+    }
 
     private fun getSimpleWebViewActivityIntent(context: Context, webUrl: String) =
         // param external set to false (if any) is to

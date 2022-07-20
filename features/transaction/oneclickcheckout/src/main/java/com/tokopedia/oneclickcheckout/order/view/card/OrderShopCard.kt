@@ -7,6 +7,7 @@ import com.tokopedia.oneclickcheckout.databinding.CardOrderShopBinding
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop.Companion.MAXIMUM_WEIGHT_WORDING_REPLACE_KEY
+import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.unifycomponents.ticker.Ticker
 import java.text.NumberFormat
 import java.util.*
@@ -24,7 +25,7 @@ class OrderShopCard(private val binding: CardOrderShopBinding,
     fun setShop(orderShop: OrderShop) {
         this.shop = orderShop
         binding.apply {
-            tvShopName.text = shop.shopName
+            tvShopName.text = Utils.getHtmlFormat(shop.shopName)
             if (shop.shopBadge.isNotEmpty()) {
                 ivShopBadge.setImageUrl(shop.shopBadge)
                 ivShopBadge.visible()

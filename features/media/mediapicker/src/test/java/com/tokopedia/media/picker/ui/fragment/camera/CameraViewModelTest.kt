@@ -8,6 +8,7 @@ import com.tokopedia.media.picker.ui.observer.stateOnRemovePublished
 import com.tokopedia.picker.common.observer.EventFlowFactory
 import com.tokopedia.picker.common.observer.EventState
 import com.tokopedia.picker.common.uimodel.MediaUiModel
+import com.tokopedia.picker.common.utils.wrapper.PickerFile
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
@@ -93,10 +94,10 @@ class CameraViewModelTest {
 
     companion object {
         val mediaUiModelMockCollection = listOf(
-            MediaUiModel(1, "media 1", "sdcard/images/media1.jpg"),
-            MediaUiModel(2, "media 2", "sdcard/images/media2.jpg"),
-            MediaUiModel(3, "media 3", "sdcard/images/media3.jpg"),
-            MediaUiModel(4, "media 4", "sdcard/images/media4.jpg")
+            MediaUiModel(1, PickerFile("sdcard/images/media1.jpg")),
+            MediaUiModel(2, PickerFile("sdcard/images/media2.jpg")),
+            MediaUiModel(3, PickerFile("sdcard/images/media3.jpg")),
+            MediaUiModel(4, PickerFile("sdcard/images/media4.jpg"))
         )
     }
 

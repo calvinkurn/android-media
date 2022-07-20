@@ -13,9 +13,6 @@ class ChooseAddressViewDelegate(
 ): ChooseAddressView,
     ContextProvider by WeakReferenceContextProvider(context) {
 
-    @Deprecated("isEnableChooseAddress is always true")
-    override val isChooseAddressWidgetEnabled: Boolean = true
-
     override val chooseAddressData: LocalCacheModel
         get() = context?.let {
             try {

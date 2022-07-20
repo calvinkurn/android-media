@@ -3,19 +3,20 @@ package com.tokopedia.product.manage.feature.list.view.mapper
 import androidx.lifecycle.LiveData
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.product.manage.common.feature.list.data.model.PriceUiModel
+import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
+import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
+import com.tokopedia.product.manage.common.feature.list.data.model.TopAdsInfo
 import com.tokopedia.product.manage.common.feature.list.data.model.filter.Tab
 import com.tokopedia.product.manage.feature.list.view.model.FilterTabUiModel
 import com.tokopedia.product.manage.feature.list.view.model.FilterTabUiModel.*
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.ShowFilterTab
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.UpdateFilterTab
-import com.tokopedia.product.manage.common.feature.list.data.model.PriceUiModel
-import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
-import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
-import com.tokopedia.product.manage.common.feature.list.data.model.TopAdsInfo
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
-import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus.*
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus.MODERATED
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus.VIOLATION
 import com.tokopedia.usecase.coroutines.Result
 
 object ProductMapper {
@@ -58,7 +59,11 @@ object ProductMapper {
                 access = access,
                 isCampaign = it.isCampaign,
                 campaignTypeList = it.campaignTypeList,
-                isProductBundling = it.getIsProductBundling()
+                isProductBundling = it.getIsProductBundling(),
+                suspendLevel = it.suspendLevel,
+                hasStockAlert = it.hasStockAlert,
+                stockAlertActive = it.stockAlertActive,
+                stockAlertCount = it.stockAlertCount
             )
         } ?: emptyList()
     }

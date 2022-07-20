@@ -37,7 +37,7 @@ class TopAdsInsightViewModel @Inject constructor(
                 _recommendedKeyword.postValue(it)
             }
             keyword?.suggestion?.errors?.let {
-                _error.postValue(it[0]?.detail)
+                _error.postValue(it.getOrNull(0)?.detail)
             }
         }, onError = {
             _error.postValue(it.message)
@@ -54,7 +54,7 @@ class TopAdsInsightViewModel @Inject constructor(
                     _applyKeyword.postValue(input.operation.group.keywordOperations.size)
                 }
                 if (response.topadsManageHeadlineAd.errors.isNotEmpty()) {
-                    _error.postValue(response.topadsManageHeadlineAd.errors[0].detail)
+                    _error.postValue(response.topadsManageHeadlineAd.errors.getOrNull(0)?.detail)
                 }
             },
             onError = {

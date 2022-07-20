@@ -14,7 +14,7 @@ class TNCInfoUseCase @Inject constructor(
         return repository.getGQLData(GqlFetchTnc.GQL_QUERY, TnCInfoModel::class.java, createRequestParams(type))
     }
 
-    fun createRequestParams(type: Int): Map<String, Any> {
+    private fun createRequestParams(type: Int): Map<String, Any> {
         return mapOf("type" to type)
     }
 }

@@ -2,8 +2,10 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.lih
 
 import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.timerbanners.SaleCountDownTimer
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -48,6 +50,15 @@ class LihatFlashSaleTimerViewModelTest {
 
         verify(exactly = 1) { viewModel.navigate(any(), any()) }
     }
+
+    @Test
+    fun `onLihatSemuaClicked when data is null`() {
+        every { componentsItem.data } returns null
+
+        viewModel.onLihatSemuaClicked(mockk())
+
+        verify(inverse = true) { viewModel.navigate(any(), any()) }
+    }
     /**************************** onLihatSemuaClicked() *******************************************/
 
     /**************************** onStop() *******************************************/
@@ -60,6 +71,20 @@ class LihatFlashSaleTimerViewModelTest {
     }
 
     /**************************** onStop() *******************************************/
+
+    /**************************** startTimer() *******************************************/
+
+    @Test
+    fun `startTimer`() {
+        val list = ArrayList<DataItem>()
+        val item = DataItem(ongoingCampaignEndTime = "2032-08-12T20:17:46")
+        list.add(item)
+        every { componentsItem.data } returns list
+
+        viewModel.startTimer()
+
+        verify(exactly = 1) { viewModel.startTimer() }
+    }
 
 
     @After

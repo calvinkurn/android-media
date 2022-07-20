@@ -825,12 +825,21 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     }
 
     private fun displayShareBottomSheet(coupon: CouponUiModel, productImageUrls : List<String>, shop: ShopBasicDataResult) {
-        val title = String.format(getString(R.string.placeholder_share_component_outgoing_title), shop.shopName)
+        val formattedShopName = MethodChecker.fromHtml(shop.shopName).toString()
+        val title = String.format(
+            getString(R.string.placeholder_share_component_outgoing_title),
+            formattedShopName
+        )
         val endDate = coupon.finishTime.toDate(DateTimeUtils.TIME_STAMP_FORMAT)
             .parseTo(DateTimeUtils.DATE_FORMAT)
         val endHour = coupon.finishTime.toDate(DateTimeUtils.TIME_STAMP_FORMAT)
             .parseTo(DateTimeUtils.HOUR_FORMAT)
-        val description = String.format(getString(R.string.placeholder_share_component_text_description), shop.shopName, endDate, endHour)
+        val description = String.format(
+            getString(R.string.placeholder_share_component_text_description),
+            formattedShopName,
+            endDate,
+            endHour
+        )
 
 
         shareComponentBottomSheet = shareComponentInstanceBuilder.build(

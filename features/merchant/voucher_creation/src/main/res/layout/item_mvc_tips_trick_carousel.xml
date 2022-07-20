@@ -10,18 +10,16 @@
     <ImageView
         android:id="@+id/imgMvcVoucherCarousel"
         android:layout_width="wrap_content"
+        android:contentDescription="@string/mvc_voucher_usage_preview"
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/layout_lvl2"
         tools:src="@tools:sample/avatars" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvMvcVoucherCarousel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/mvc_dimen_12dp"
         android:gravity="center"
-        android:textColor="@color/light_N700_96"
-        android:textSize="@dimen/fontSize_lvl3"
-        android:textStyle="bold"
         tools:text="Download Voucher" />
 </LinearLayout>

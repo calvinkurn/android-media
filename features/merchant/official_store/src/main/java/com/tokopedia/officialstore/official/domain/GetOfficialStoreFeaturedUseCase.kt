@@ -4,15 +4,13 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.officialstore.GQLQueryConstant.QUERY_OFFICIAL_STORE_FEATURED_SHOPS
 import com.tokopedia.officialstore.official.data.model.OfficialStoreFeaturedShop
+import com.tokopedia.officialstore.official.di.query.OSFeaturedShopQuery
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
-import javax.inject.Named
 
-class   GetOfficialStoreFeaturedUseCase @Inject constructor(
-        private val graphqlUseCase: MultiRequestGraphqlUseCase,
-        @Named(QUERY_OFFICIAL_STORE_FEATURED_SHOPS) val query: String
+class GetOfficialStoreFeaturedUseCase @Inject constructor(
+        private val graphqlUseCase: MultiRequestGraphqlUseCase
 ): UseCase<OfficialStoreFeaturedShop>() {
 
     init {
@@ -22,7 +20,7 @@ class   GetOfficialStoreFeaturedUseCase @Inject constructor(
     var params: Map<String, Any> = mapOf()
 
     override suspend fun executeOnBackground(): OfficialStoreFeaturedShop {
-        val gqlRequest  = GraphqlRequest(query, OfficialStoreFeaturedShop.Response::class.java, params, false)
+        val gqlRequest  = GraphqlRequest(OSFeaturedShopQuery(), OfficialStoreFeaturedShop.Response::class.java, params, false)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(gqlRequest)
         val graphqlResponse = graphqlUseCase.executeOnBackground()

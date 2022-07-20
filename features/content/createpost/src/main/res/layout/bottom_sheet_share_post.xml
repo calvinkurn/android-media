@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="heading_4"
         tools:text="@string/cp_share_title" />
 
@@ -21,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="body_3"
         tools:text="@string/cp_share_subtitle" />
 
@@ -47,7 +47,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/cp_share_post"
-            android:textColor="@color/WhiteText"
+            android:textColor="@color/Unify_N0"
             app:typographyType="heading_5"
             tools:text="Sip, Share Aja!" />
     </LinearLayout>

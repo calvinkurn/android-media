@@ -104,4 +104,9 @@ public class DealDetailsActivity extends DealsBaseActivity implements DealFragme
         return dealDetail;
     }
 
+    @Override
+    public void hideMainToolbar() {
+        toolbar.setVisibility(View.GONE);
+    }
+
 }

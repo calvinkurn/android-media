@@ -8,30 +8,33 @@
     android:gravity="center_vertical"
     android:orientation="horizontal">
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/vg_input_dropdown_icon"
         android:layout_width="@dimen/layout_lvl6"
         android:layout_height="@dimen/layout_lvl6"
-        android:layout_marginRight="@dimen/unify_space_12"
+        android:layout_marginEnd="@dimen/unify_space_12"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        app:unify_image_type="rect"
         android:visibility="gone"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/vg_input_dropdown_label"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:ellipsize="end"
         android:maxLines="2"
-        app:typographyType="body_2"
-        app:typographyWeight="bold"
+        app:typographyType="heading_5"
         tools:text="463274678324" />
 
-    <ImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/vg_input_dropdown_selected"
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
-        android:src="@drawable/ic_action_check"
+        app:icon_color_light_enable="@color/Unify_G500"
+        app:icon_name="CHECK_BIG"
         android:visibility="gone"
         tools:visibility="visible" />
 

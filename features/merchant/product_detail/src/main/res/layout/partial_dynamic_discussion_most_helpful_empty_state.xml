@@ -29,7 +29,7 @@
         android:layout_marginRight="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:textColor="@color/Unify_N700_68"
-        app:typographyType="body_2"
+        app:typographyType="display_2"
         app:typographyWeight="reguler"
         app:layout_constraintTop_toBottomOf="@id/product_detail_discussion_empty_subtitle"
         app:layout_constraintStart_toStartOf="parent"
@@ -40,7 +40,8 @@
         android:layout_width="@dimen/dp_114"
         android:layout_height="@dimen/dp_110"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="productDetailDiscussionEmptyImage" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/productDetailDiscussionEmptyButton"

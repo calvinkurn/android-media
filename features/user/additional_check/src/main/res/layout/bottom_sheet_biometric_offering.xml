@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/Unify_Static_White"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/unify_space_12">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/bottom_sheet_biometric_offering_img"
+            android:layout_width="250dp"
+            android:layout_height="200dp"
+            android:scaleType="fitCenter" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_16"
+            android:text="@string/biometric_offering_title"
+            android:textAlignment="center"
+            app:typographyType="heading_2" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:text="@string/biometric_offering_subtitle"
+            android:textAlignment="center"
+            app:typographyType="body_2" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/bottom_sheet_biometric_offering_primary_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_24"
+            android:layout_marginBottom="@dimen/unify_space_12"
+            android:text="@string/biometric_offering_btn_primary_text" />
+
+    </LinearLayout>
+
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/bottom_sheet_biometric_offering_toolbar"
+        app:unify_header_is_show_back_button="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="top" />
+
+</FrameLayout>

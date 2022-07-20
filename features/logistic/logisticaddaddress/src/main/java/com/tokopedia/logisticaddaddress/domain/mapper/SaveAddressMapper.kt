@@ -7,16 +7,17 @@ import javax.inject.Inject
 
 class SaveAddressMapper @Inject constructor() {
 
-    fun map(autoFillModel: Data, zipCodes: MutableList<String>?): SaveAddressDataModel {
-        val saveAddressDataModel = SaveAddressDataModel()
+    fun map(autoFillModel: Data, zipCodes: MutableList<String>?, existingModel: SaveAddressDataModel? = null): SaveAddressDataModel {
+        val saveAddressDataModel = existingModel ?: SaveAddressDataModel()
         saveAddressDataModel.title = autoFillModel.title
-        saveAddressDataModel.formattedAddress = autoFillModel.formattedAddress
+        saveAddressDataModel.formattedAddress = "${autoFillModel.districtName}, ${autoFillModel.cityName}, ${autoFillModel.provinceName}"
         saveAddressDataModel.districtId = autoFillModel.districtId
         saveAddressDataModel.provinceId = autoFillModel.provinceId
         saveAddressDataModel.cityId = autoFillModel.cityId
         saveAddressDataModel.postalCode = autoFillModel.postalCode
         saveAddressDataModel.latitude = autoFillModel.latitude
         saveAddressDataModel.longitude = autoFillModel.longitude
+        saveAddressDataModel.address2 = "${autoFillModel.latitude},${autoFillModel.longitude}"
         saveAddressDataModel.selectedDistrict = autoFillModel.formattedAddress
         if (zipCodes != null) {
             saveAddressDataModel.zipCodes = zipCodes
@@ -24,10 +25,10 @@ class SaveAddressMapper @Inject constructor() {
         return saveAddressDataModel
     }
 
-    fun map(getDistrictDataUiModel: GetDistrictDataUiModel, zipCodes: MutableList<String>?): SaveAddressDataModel {
-        val saveAddressDataModel = SaveAddressDataModel()
+    fun map(getDistrictDataUiModel: GetDistrictDataUiModel, zipCodes: MutableList<String>?, existingModel: SaveAddressDataModel? = null): SaveAddressDataModel {
+        val saveAddressDataModel = existingModel ?: SaveAddressDataModel()
         saveAddressDataModel.title = getDistrictDataUiModel.title
-        saveAddressDataModel.formattedAddress = getDistrictDataUiModel.formattedAddress
+        saveAddressDataModel.formattedAddress = "${getDistrictDataUiModel.districtName}, ${getDistrictDataUiModel.cityName}, ${getDistrictDataUiModel.provinceName}"
         saveAddressDataModel.districtId = getDistrictDataUiModel.districtId
         saveAddressDataModel.provinceId = getDistrictDataUiModel.provinceId
         saveAddressDataModel.cityId = getDistrictDataUiModel.cityId

@@ -403,6 +403,7 @@ object CartUiModelMapper {
             productCashBack = product.productCashback
             notes = product.productNotes
             originalNotes = notes
+            placeholderNote = cartData.placeholderNote
             maxNotesLength = cartData.maxCharNote
             isBundlingItem = cartDetail.bundleDetail.bundleId.isNotBlankOrZero()
             if (isBundlingItem) {
@@ -432,6 +433,7 @@ object CartUiModelMapper {
                 bundleOriginalPrice = cartDetail.bundleDetail.bundleOriginalPrice
                 editBundleApplink = cartDetail.bundleDetail.editBundleApplink
                 bundleIconUrl = cartDetail.bundleDetail.bundleIconUrl
+                bundleGrayscaleIconUrl = cartDetail.bundleDetail.bundleGrayscaleIconUrl
                 bundlingItemPosition = if (cartDetail.products.firstOrNull()?.productId == productId) {
                     CartItemHolderData.BUNDLING_ITEM_HEADER
                 } else if (cartDetail.products.lastOrNull()?.productId == productId) {

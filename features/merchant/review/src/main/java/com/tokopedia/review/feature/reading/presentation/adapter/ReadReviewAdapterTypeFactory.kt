@@ -2,6 +2,7 @@ package com.tokopedia.review.feature.reading.presentation.adapter
 
 
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
@@ -12,11 +13,14 @@ import com.tokopedia.review.feature.reading.presentation.adapter.viewholder.Read
 import com.tokopedia.review.feature.reading.presentation.adapter.viewholder.ReadReviewViewHolder
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewAttachedImagesListener
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewItemListener
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
 
 class ReadReviewAdapterTypeFactory(
     private val readReviewItemListener: ReadReviewItemListener,
     private val attachedImagesClickListener: ReadReviewAttachedImagesListener,
-    private val reviewBasicInfoListener: ReviewBasicInfoListener
+    private val reviewBasicInfoListener: ReviewBasicInfoListener,
+    private val reviewMediaThumbnailListener: ReviewMediaThumbnailTypeFactory.Listener,
+    private val reviewMediaThumbnailRecycledViewPool: RecyclerView.RecycledViewPool
 ) : ReadReviewTypeFactory, BaseAdapterTypeFactory() {
 
     override fun type(loadingMoreModel: LoadingMoreModel): Int {
@@ -31,8 +35,9 @@ class ReadReviewAdapterTypeFactory(
         return when (type) {
             ReadReviewViewHolder.LAYOUT -> ReadReviewViewHolder(
                 parent,
+                reviewMediaThumbnailRecycledViewPool,
+                reviewMediaThumbnailListener,
                 readReviewItemListener,
-                attachedImagesClickListener,
                 reviewBasicInfoListener
             )
             ReadReviewLoadingViewHolder.LAYOUT -> ReadReviewLoadingViewHolder(parent)

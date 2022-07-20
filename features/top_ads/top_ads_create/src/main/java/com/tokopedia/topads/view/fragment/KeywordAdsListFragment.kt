@@ -7,16 +7,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.tkpd.remoteresourcerequest.view.DeferredImageView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
-import com.tokopedia.topads.common.constant.TopAdsCommonConstant.UNKNOWN_SEARCH
 import com.tokopedia.topads.common.data.response.KeywordData
 import com.tokopedia.topads.common.data.response.KeywordDataItem
 import com.tokopedia.topads.common.data.response.SearchData
@@ -28,12 +31,10 @@ import com.tokopedia.topads.view.adapter.keyword.KeywordListAdapter
 import com.tokopedia.topads.view.adapter.keyword.KeywordSearchAdapter
 import com.tokopedia.topads.view.model.KeywordAdsViewModel
 import com.tokopedia.topads.view.sheet.KeyTipsSheet
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.SearchBarUnify
+import com.tokopedia.unifycomponents.*
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
-import kotlinx.android.synthetic.main.topads_create_layout_keyword_list.*
-import kotlinx.android.synthetic.main.topads_create_layout_keyword_list_empty_tip.view.*
 import javax.inject.Inject
 
 /**
@@ -53,6 +54,30 @@ private const val EVENT_CLICK_ON_SEARCH = "kata kunci yang ditambahkan manual"
 
 
 class KeywordAdsListFragment : BaseDaggerFragment() {
+
+    private var loading: LoaderUnify? = null
+    private var searchBar: SearchBarUnify? = null
+    private var dividerManual: DividerUnify? = null
+    private var headlineList: ConstraintLayout? = null
+    private var searchLoading: Typography? = null
+    private var manualAdTxt: Typography? = null
+    private var manualAd: Typography? = null
+    private var keywordList: RecyclerView? = null
+    private var searchList: RecyclerView? = null
+    private var fabTip: FloatingButtonUnify? = null
+    private var btnNext: UnifyButton? = null
+    private var selectedInfo: Typography? = null
+    private var emptyImage: DeferredImageView? = null
+    private var titleEmpty: Typography? = null
+    private var descEmpty: Typography? = null
+    private var emptyLayout: CardView? = null
+    private var imageTip: ImageUnify? = null
+    private var imageView2: ImageUnify? = null
+    private var imageView3: ImageUnify? = null
+    private var imageView4: ImageUnify? = null
+    private var tvToolTipText: Typography? = null
+    private var imgTooltipIcon: ImageUnify? = null
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var viewModel: KeywordAdsViewModel
@@ -60,12 +85,10 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     private lateinit var keywordSearchAdapter: KeywordSearchAdapter
     private var userID: String = ""
     private var shopID = ""
-    private var tvToolTipText: Typography? = null
-    private var imgTooltipIcon: ImageUnify? = null
     private var stepModel: CreateManualAdsStepperModel? = null
 
     companion object {
-
+        private const val KEYWORD_SELECTION_LIMIT = 50
         fun createInstance(extras: Bundle?): Fragment {
             val fragment = KeywordAdsListFragment()
             fragment.arguments = extras
@@ -76,7 +99,8 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.let {
-            viewModel = ViewModelProvider(this, viewModelFactory).get(KeywordAdsViewModel::class.java)
+            viewModel =
+                ViewModelProvider(this, viewModelFactory).get(KeywordAdsViewModel::class.java)
             it.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
         }
         keywordListAdapter = KeywordListAdapter(::onKeywordSelected)
@@ -110,7 +134,8 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         keywordListAdapter.items.clear()
-        viewModel.getSuggestionKeyword(getProductIds(), 0, this::onSuccessSuggestion, this::onEmptySuggestion)
+        viewModel.getSuggestionKeyword(getProductIds(),
+            0, this::onSuccessSuggestion, this::onEmptySuggestion)
     }
 
     private fun removeFromRecommended() {
@@ -118,8 +143,8 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
         while (iterator.hasNext()) {
             val key = iterator.next()
             if (stepModel?.selectedKeywordStage?.find { item ->
-                        key.keyword == item.keyword
-                    } != null) {
+                    key.keyword == item.keyword
+                } != null) {
                 iterator.remove()
             }
         }
@@ -133,17 +158,23 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
             } else {
                 "$UNSELECT - $shopID - $EVENT_LIST_CHECKBOX"
             }
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_CHECKBOX, eventLabel, userID)
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_CHECKBOX,
+                eventLabel, userID)
             showSelectMessage()
         }
     }
 
     private fun showSelectMessage() {
         val count = keywordListAdapter.getSelectedItems().count()
-        selected_info?.text = MethodChecker.fromHtml(String.format(getString(R.string.topads_common_kata_kunci_lihat), count))
-        if(count == 0)
-            selected_info?.text = getString(R.string.topads_common_kata_kunci_dipilih_no_keyword)
-        btn_next?.isEnabled = count < 50
+        selectedInfo?.text =
+            MethodChecker.fromHtml(String.format(
+                getString(com.tokopedia.topads.common.R.string.topads_common_kata_kunci_lihat),
+                count
+            ))
+        if (count == 0)
+            selectedInfo?.text =
+                getString(com.tokopedia.topads.common.R.string.topads_common_kata_kunci_dipilih_no_keyword)
+        btnNext?.isEnabled = count < KEYWORD_SELECTION_LIMIT
     }
 
     private fun onSuccessSuggestion(keywords: List<KeywordData>) {
@@ -168,14 +199,18 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
 
     private fun onEmptySuggestion() {
         startLoading(false)
-        setEmptyView()
+        if (stepModel?.selectedKeywordStage?.isNullOrEmpty() == true)
+            setEmptyView()
+        else
+            getAlreadySelected()
         showSelectMessage()
     }
 
     private fun gotoNextPage() {
         stepModel?.selectedKeywordStage = keywordListAdapter.getSelectedItems().toMutableList()
         val eventLabel = "$shopID - $EVENT_CLICK_LAJUKTAN"
-        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_PILIH_KEYWORD, eventLabel, userID)
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_PILIH_KEYWORD,
+            eventLabel, userID)
         val intent = Intent()
         intent.putExtra("model", stepModel)
         activity?.setResult(Activity.RESULT_OK, intent)
@@ -190,8 +225,35 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
         getComponent(CreateAdsComponent::class.java).inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.topads_create_layout_keyword_list, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
+    ): View? {
+        val view = inflater.inflate(R.layout.topads_create_layout_keyword_list, container, false)
+        setUpView(view)
+        return view
+    }
+
+    private fun setUpView(view: View) {
+        loading = view.findViewById(R.id.loading)
+        searchBar = view.findViewById(R.id.searchBar)
+        dividerManual = view.findViewById(R.id.dividerManual)
+        headlineList = view.findViewById(R.id.headlineList)
+        searchLoading = view.findViewById(R.id.searchLoading)
+        manualAdTxt = view.findViewById(R.id.manualAdTxt)
+        manualAd = view.findViewById(R.id.manualAd)
+        keywordList = view.findViewById(R.id.keyword_list)
+        searchList = view.findViewById(R.id.searchList)
+        fabTip = view.findViewById(R.id.tip_btn)
+        btnNext = view.findViewById(R.id.btn_next)
+        selectedInfo = view.findViewById(R.id.selected_info)
+        emptyImage = view.findViewById(R.id.emptyImage)
+        titleEmpty = view.findViewById(R.id.title_empty)
+        descEmpty = view.findViewById(R.id.desc_empty)
+        emptyLayout = view.findViewById(R.id.emptyLayout)
+        imageTip = emptyLayout?.findViewById(R.id.ic_tip)
+        imageView2 = emptyLayout?.findViewById(R.id.imageView2)
+        imageView3 = emptyLayout?.findViewById(R.id.imageView3)
+        imageView4 = emptyLayout?.findViewById(R.id.imageView4)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -202,10 +264,10 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
         startLoading(true)
         setTipLayout()
         setEmptyLayout()
-        btn_next.setOnClickListener {
+        btnNext?.setOnClickListener {
             gotoNextPage()
         }
-        selected_info?.setOnClickListener {
+        selectedInfo?.setOnClickListener {
             goToFinalStage()
         }
         setSearchAction()
@@ -214,11 +276,13 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     private fun setSearchAction() {
         view?.let {
             val searchBar = it.findViewById<SearchBarUnify>(R.id.searchBar)
-            searchBar?.searchBarTextField?.setOnFocusChangeListener { v, hasFocus ->
+            searchBar?.searchBarTextField?.setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
                     val eventLabel = "$shopID - $EVENT_CLICK_ON_SEARCH"
-                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_ON_SEARCH, eventLabel, userID)
-                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsCreateEvent(CLICK_ON_SEARCH_CREATE, "")
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_ON_SEARCH,
+                        eventLabel, userID)
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsCreateEvent(
+                        CLICK_ON_SEARCH_CREATE, "")
                 }
             }
             Utils.setSearchListener(searchBar, context, it, ::fetchData)
@@ -226,37 +290,41 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     }
 
     private fun setEmptyLayout() {
-        emptyLayout.ic_tip.setImageDrawable(view?.context?.getResDrawable(com.tokopedia.topads.common.R.drawable.ic_bulp_fill))
-        emptyLayout.imageView2.setImageDrawable(view?.context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
-        emptyLayout.imageView3.setImageDrawable(view?.context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
-        emptyLayout.imageView4.setImageDrawable(view?.context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
+        imageTip?.setImageDrawable(view?.context?.getResDrawable(com.tokopedia.topads.common.R.drawable.ic_bulp_fill))
+        imageView2?.setImageDrawable(view?.context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
+        imageView3?.setImageDrawable(view?.context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
+        imageView4?.setImageDrawable(view?.context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
     }
 
     private fun setTipLayout() {
-        val tooltipView = layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null).apply {
-            tvToolTipText = this.findViewById(R.id.tooltip_text)
-            tvToolTipText?.text = getString(com.tokopedia.topads.common.R.string.topads_empty_tip_memilih_kata_kunci_title)
-            imgTooltipIcon = this.findViewById(R.id.tooltip_icon)
-            imgTooltipIcon?.setImageDrawable(view?.context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_tips))
-        }
-        tip_btn?.addItem(tooltipView)
-        tip_btn.setOnClickListener {
+        val tooltipView =
+            layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null)
+                .apply {
+                    tvToolTipText = this.findViewById(R.id.tooltip_text)
+                    tvToolTipText?.text =
+                        getString(com.tokopedia.topads.common.R.string.topads_empty_tip_memilih_kata_kunci_title)
+                    imgTooltipIcon = this.findViewById(R.id.tooltip_icon)
+                    imgTooltipIcon?.setImageDrawable(view?.context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_tips))
+                }
+        fabTip?.addItem(tooltipView)
+        fabTip?.setOnClickListener {
             KeyTipsSheet().show(childFragmentManager, KeywordAdsListFragment::class.java.name)
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIPS_KEYWORD, shopID, userID)
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIPS_KEYWORD,
+                shopID,
+                userID)
         }
     }
 
     private fun goToFinalStage() {
-        keyword_list?.visible()
+        keywordList?.visible()
         searchList?.gone()
         sortFinalList()
     }
 
     private fun sortFinalList() {
-        keywordListAdapter.items.sortWith(Comparator
-        { lhs, rhs ->
+        keywordListAdapter.items.sortWith { lhs, rhs ->
             (lhs.onChecked.compareTo(rhs.onChecked))
-        })
+        }
         keywordListAdapter.items.reverse()
         keywordListAdapter.notifyDataSetChanged()
     }
@@ -266,7 +334,10 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
             manualAd?.visible()
             manualAdTxt?.visible()
             dividerManual?.visible()
-            manualAdTxt.text = MethodChecker.fromHtml(String.format(getString(R.string.topads_common_new_manual_key), searchBar?.searchBarTextField?.text.toString()))
+            manualAdTxt?.text = MethodChecker.fromHtml(String.format(
+                getString(com.tokopedia.topads.common.R.string.topads_common_new_manual_key),
+                    searchBar?.searchBarTextField?.text.toString()
+            ))
             manualAd?.setOnClickListener {
                 addManualKeyword()
                 searchBar?.searchBarTextField?.text?.clear()
@@ -275,12 +346,12 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     }
 
     private fun addManualKeyword() {
-        headlineList.visible()
-        manualAd.gone()
+        headlineList?.visible()
+        manualAd?.gone()
         manualAdTxt?.gone()
         dividerManual?.gone()
         val item = KeywordDataItem()
-        item.keyword = searchBar.searchBarTextField.text.toString()
+        item.keyword = searchBar?.searchBarTextField?.text.toString()
         item.onChecked = true
         item.totalSearch = "-"
         keywordSearchAdapter.items.add(0, item)
@@ -292,20 +363,20 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
 
     private fun startLoading(isLoading: Boolean, search: Boolean = false) {
         if (isLoading) {
-            loading.visible()
+            loading?.visible()
             if (search) {
                 searchLoading?.visible()
             }
         } else {
-            loading.gone()
+            loading?.gone()
             searchLoading?.gone()
-            headlineList.visibility = View.VISIBLE
+            headlineList?.visibility = View.VISIBLE
         }
     }
 
     private fun setAdapters() {
-        keyword_list?.adapter = keywordListAdapter
-        keyword_list?.layoutManager = LinearLayoutManager(context)
+        keywordList?.adapter = keywordListAdapter
+        keywordList?.layoutManager = LinearLayoutManager(context)
         searchList?.adapter = keywordSearchAdapter
         searchList?.layoutManager = LinearLayoutManager(context)
     }
@@ -320,14 +391,16 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
 
     private fun fetchData() {
         setSearchLayout()
-        if (searchBar.searchBarTextField.text.toString().isNotEmpty()) {
-            viewModel.searchKeyword(searchBar.searchBarTextField.text.toString(), getProductIds(), ::showSearchResult)
+        if (searchBar?.searchBarTextField?.text.toString().isNotEmpty()) {
+            viewModel.searchKeyword(searchBar?.searchBarTextField?.text.toString(),
+                getProductIds(),
+                ::showSearchResult)
         }
     }
 
     private fun setSearchLayout() {
         startLoading(true, search = true)
-        keyword_list?.gone()
+        keywordList?.gone()
         searchList?.visible()
     }
 
@@ -336,13 +409,13 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
         emptyLayout?.gone()
         startLoading(false)
         val listKeywords: MutableList<String> = mutableListOf()
-        if (searchBar.searchBarTextField.text.toString().isNotEmpty() && data.isNotEmpty()) {
+        if (searchBar?.searchBarTextField?.text.toString().isNotEmpty() && data.isNotEmpty()) {
             val list: MutableList<KeywordDataItem> = mutableListOf()
             data.forEach { item ->
                 listKeywords.add(item.keyword ?: "")
                 list.add(KeywordDataItem(item.bidSuggest, item.totalSearch.toString(), item.keyword
-                        ?: "", item.source ?: "", item.competition
-                        ?: "", item.onChecked, fromSearch = true))
+                    ?: "", item.source ?: "", item.competition
+                    ?: "", item.onChecked, fromSearch = true))
             }
             keywordSearchAdapter.setSearchList(list)
         }
@@ -352,13 +425,13 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     private fun setEmpty(setEmpty: Boolean) {
         if (setEmpty) {
             emptyImage?.visible()
-            title_empty?.visible()
-            desc_empty?.visible()
+            titleEmpty?.visible()
+            descEmpty?.visible()
             headlineList?.gone()
         } else {
             emptyImage?.gone()
-            title_empty?.gone()
-            desc_empty?.gone()
+            titleEmpty?.gone()
+            descEmpty?.gone()
             headlineList?.visible()
             emptyLayout?.gone()
         }

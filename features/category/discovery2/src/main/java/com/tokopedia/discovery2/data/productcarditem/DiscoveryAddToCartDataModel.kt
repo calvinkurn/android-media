@@ -4,5 +4,5 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 
 data class DiscoveryAddToCartDataModel(
     val addToCartDataModel: AddToCartDataModel,
-    val isGeneralCartATC: Boolean
+    val requestParams: DiscoATCRequestParams
 )

@@ -6,9 +6,10 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.media.picker.ui.activity.album.AlbumViewModel
-import com.tokopedia.media.picker.ui.activity.main.PickerViewModel
+import com.tokopedia.media.picker.ui.activity.picker.PickerViewModel
 import com.tokopedia.media.picker.ui.fragment.camera.CameraViewModel
 import com.tokopedia.media.picker.ui.fragment.gallery.GalleryViewModel
+import com.tokopedia.media.picker.ui.fragment.permission.PermissionViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -52,6 +53,14 @@ abstract class PickerViewModelModule {
     @ViewModelKey(GalleryViewModel::class)
     internal abstract fun getGalleryViewModel(
         viewModel: GalleryViewModel
+    ): ViewModel
+
+    @Binds
+    @IntoMap
+    @ActivityScope
+    @ViewModelKey(PermissionViewModel::class)
+    internal abstract fun getPermissionViewModel(
+        viewModel: PermissionViewModel
     ): ViewModel
 
 }

@@ -2,7 +2,7 @@ package com.tokopedia.media.preview.managers
 
 import android.content.Context
 import com.tokopedia.picker.common.utils.ImageCompressor
-import com.tokopedia.picker.common.utils.isVideoFormat
+import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFile
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -17,14 +17,14 @@ class ImageCompressionManagerImpl(
     override fun compress(paths: List<String>): Flow<List<String>> {
         return flow {
             emit(
-                paths
-                    .filterNot { isVideoFormat(it) }
-                    .map {
-                        ImageCompressor.compress(
-                            context,
-                            it
-                        ).toString()
-                    }
+                paths.filterNot {
+                    it.asPickerFile().isVideo()
+                }.map {
+                    ImageCompressor.compress(
+                        context,
+                        it
+                    ).toString()
+                }
             )
         }
     }

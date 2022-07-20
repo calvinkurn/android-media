@@ -2,6 +2,7 @@ package com.tokopedia.buyerorder.recharge.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.buyerorder.recharge.data.request.RechargeOrderDetailRequest
+import com.tokopedia.buyerorder.recharge.domain.RechargeEmoneyVoidUseCase
 import com.tokopedia.buyerorder.recharge.domain.RechargeOrderDetailUseCase
 import com.tokopedia.buyerorder.recharge.presentation.model.*
 import com.tokopedia.digital.digital_recommendation.domain.DigitalRecommendationUseCase
@@ -35,6 +36,7 @@ class RechargeOrderDetailViewModelTest {
     private lateinit var viewModel: RechargeOrderDetailViewModel
 
     private val orderDetailUseCase: RechargeOrderDetailUseCase = mockk()
+    private val emoneyVoidUseCase: RechargeEmoneyVoidUseCase = mockk()
     private val getRecommendationUseCaseCoroutine: GetRecommendationUseCase = mockk()
     private val bestSellerMapper: BestSellerMapper = mockk()
     private val recommendationUseCase: DigitalRecommendationUseCase = mockk()
@@ -42,11 +44,12 @@ class RechargeOrderDetailViewModelTest {
     @Before
     fun setUp() {
         viewModel = RechargeOrderDetailViewModel(
-                orderDetailUseCase,
-                getRecommendationUseCaseCoroutine,
-                bestSellerMapper,
-                recommendationUseCase,
-                dispatcher
+            orderDetailUseCase,
+            emoneyVoidUseCase,
+            getRecommendationUseCaseCoroutine,
+            bestSellerMapper,
+            recommendationUseCase,
+            dispatcher
         )
     }
 
@@ -116,10 +119,12 @@ class RechargeOrderDetailViewModelTest {
         coEvery {
             recommendationUseCase.getRecommendationPosition(any(), any(), any())
         } coAnswers {
-            Success(listOf(
-                "dg_order_detail_dgu",
-                "pg_order_detail_dgu"
-            ))
+            Success(
+                listOf(
+                    "dg_order_detail_dgu",
+                    "pg_order_detail_dgu"
+                )
+            )
         }
 
         // when
@@ -141,10 +146,12 @@ class RechargeOrderDetailViewModelTest {
         coEvery {
             recommendationUseCase.getRecommendationPosition(any(), any(), any())
         } coAnswers {
-            Success(listOf(
-                "pg_order_detail_dgu",
-                "dg_order_detail_dgu"
-            ))
+            Success(
+                listOf(
+                    "pg_order_detail_dgu",
+                    "dg_order_detail_dgu"
+                )
+            )
         }
 
         // when
@@ -238,6 +245,16 @@ class RechargeOrderDetailViewModelTest {
         } coAnswers {
             Fail(Throwable())
         }
+        coEvery {
+            recommendationUseCase.getRecommendationPosition(any(), any(), any())
+        } coAnswers {
+            Success(
+                listOf(
+                    "dg_order_detail_dgu",
+                    "pg_order_detail_dgu"
+                )
+            )
+        }
 
         // when
         viewModel.fetchData(RechargeOrderDetailRequest("", ""))
@@ -251,40 +268,40 @@ class RechargeOrderDetailViewModelTest {
     fun getOrderDetailResultData_whenOrderDetailSuccess_shouldReturnData() {
         // given
         val orderDetailResponse = RechargeOrderDetailModel(
-                topSectionModel = RechargeOrderDetailTopSectionModel(
-                        labelStatusColor = "",
-                        textStatusColor = "",
-                        textStatus = "",
-                        tickerData = RechargeOrderDetailTickerModel(
-                                title = "",
-                                text = "",
-                                urlDetail = "",
-                                type = 0
-                        ),
-                        invoiceRefNum = "",
-                        invoiceUrl = "",
-                        titleData = emptyList()
+            topSectionModel = RechargeOrderDetailTopSectionModel(
+                labelStatusColor = "",
+                textStatusColor = "",
+                textStatus = "",
+                tickerData = RechargeOrderDetailTickerModel(
+                    title = "",
+                    text = "",
+                    urlDetail = "",
+                    type = 0
                 ),
-                detailsSection = RechargeOrderDetailSectionModel(
-                        detailList = emptyList()
+                invoiceRefNum = "",
+                invoiceUrl = "",
+                titleData = emptyList()
+            ),
+            detailsSection = RechargeOrderDetailSectionModel(
+                detailList = emptyList()
+            ),
+            paymentSectionModel = RechargeOrderDetailPaymentModel(
+                paymentMethod = RechargeOrderDetailSimpleModel(
+                    label = "",
+                    detail = "",
+                    isTitleBold = false,
+                    isDetailBold = false,
+                    alignment = RechargeSimpleAlignment.RIGHT
                 ),
-                paymentSectionModel = RechargeOrderDetailPaymentModel(
-                        paymentMethod = RechargeOrderDetailSimpleModel(
-                                label = "",
-                                detail = "",
-                                isTitleBold = false,
-                                isDetailBold = false,
-                                alignment = RechargeSimpleAlignment.RIGHT
-                        ),
-                        paymentDetails = emptyList(),
-                        totalPriceLabel = "",
-                        totalPrice = "",
-                        additionalTicker = null
-                ),
-                helpUrl = "",
-                actionButtonList = RechargeOrderDetailActionButtonListModel(
-                        actionButtons = emptyList()
-                )
+                paymentDetails = emptyList(),
+                totalPriceLabel = "",
+                totalPrice = "",
+                additionalTicker = null
+            ),
+            helpUrl = "",
+            actionButtonList = RechargeOrderDetailActionButtonListModel(
+                actionButtons = emptyList()
+            )
         )
         coEvery {
             orderDetailUseCase.execute(any())
@@ -295,6 +312,16 @@ class RechargeOrderDetailViewModelTest {
             recommendationUseCase.execute(any(), any(), any())
         } coAnswers {
             Fail(Throwable())
+        }
+        coEvery {
+            recommendationUseCase.getRecommendationPosition(any(), any(), any())
+        } coAnswers {
+            Success(
+                listOf(
+                    "dg_order_detail_dgu",
+                    "pg_order_detail_dgu"
+                )
+            )
         }
 
         // when
@@ -337,29 +364,29 @@ class RechargeOrderDetailViewModelTest {
     fun getTopAdsData_whenResponseSuccess_shouldReturnData() {
         // given
         val bestSellerDataModel = BestSellerDataModel(
-                title = "",
-                subtitle = "",
-                height = 0,
-                pageName = "",
-                productCardModelList = emptyList(),
-                recommendationItemList = emptyList(),
-                filterChip = emptyList(),
-                seeMoreAppLink = ""
+            title = "",
+            subtitle = "",
+            height = 0,
+            pageName = "",
+            productCardModelList = emptyList(),
+            recommendationItemList = emptyList(),
+            filterChip = emptyList(),
+            seeMoreAppLink = ""
         )
         coEvery {
             getRecommendationUseCaseCoroutine.getData(any())
         } returns
                 listOf(
-                        RecommendationWidget(
-                                title = "",
-                                subtitle = "",
-                                pageName = "",
-                                recommendationFilterChips = emptyList(),
-                                seeMoreAppLink = "",
-                                recommendationItemList = listOf(
-                                        RecommendationItem()
-                                )
+                    RecommendationWidget(
+                        title = "",
+                        subtitle = "",
+                        pageName = "",
+                        recommendationFilterChips = emptyList(),
+                        seeMoreAppLink = "",
+                        recommendationItemList = listOf(
+                            RecommendationItem()
                         )
+                    )
                 )
         coEvery {
             bestSellerMapper.mappingRecommendationWidget(any())
@@ -371,6 +398,15 @@ class RechargeOrderDetailViewModelTest {
 
         // then
         assertEquals(topAdsData, bestSellerDataModel)
+    }
+
+    @Test
+    fun onResetOrderDetailData() {
+        // when
+        viewModel.resetOrderDetailData()
+
+        // then
+        assert(viewModel.orderDetailData.value == null)
     }
 
 }

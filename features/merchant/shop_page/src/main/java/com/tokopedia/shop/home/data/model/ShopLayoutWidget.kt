@@ -143,6 +143,8 @@ data class ShopLayoutWidget(
                 val labelGroups: List<LabelGroup> = listOf(),
                 @SerializedName("recommendationType")
                 val recommendationType: String = "",
+                @SerializedName("categoryBreadcrumbs")
+                val categoryBreadcrumbs: String = "",
                 @SerializedName("minimumOrder")
                 val minimumOrder: Int? = 1
 

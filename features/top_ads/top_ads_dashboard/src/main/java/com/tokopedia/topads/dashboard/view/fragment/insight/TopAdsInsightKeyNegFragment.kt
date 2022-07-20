@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.dashboard.R
@@ -23,12 +24,20 @@ import com.tokopedia.topads.dashboard.view.adapter.insight.TopAdsInsightNegKeyAd
 import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsInsightKeyBidFragment.Companion.COUNT
 import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsInsightKeyBidFragment.Companion.VALUE
 import com.tokopedia.topads.dashboard.view.sheet.InsightKeyBottomSheet
-import kotlinx.android.synthetic.main.topads_dash_fragment_pos_key_insight.*
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Created by Pika on 21/7/20.
  */
 class TopAdsInsightKeyNegFragment : BaseDaggerFragment() {
+
+    private var insightTitle: Typography? = null
+    private var toolTip: ImageUnify? = null
+    private var insightDesc: Typography? = null
+    private var btnTambah: UnifyButton? = null
+    private var insightListPosKey: RecyclerView? = null
 
     private lateinit var adapter: TopAdsInsightNegKeyAdapter
     private var itemCountCallBack: OnKeywordAdded? = null
@@ -52,32 +61,41 @@ class TopAdsInsightKeyNegFragment : BaseDaggerFragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.topads_dash_fragment_pos_key_insight, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
+    ): View? {
+        val view = inflater.inflate(R.layout.topads_dash_fragment_pos_key_insight, container, false)
+        insightTitle = view.findViewById(R.id.insight_title)
+        toolTip = view.findViewById(R.id.toolTip)
+        insightDesc = view.findViewById(R.id.insight_desc)
+        btnTambah = view.findViewById(R.id.btnTambah)
+        insightListPosKey = view.findViewById(R.id.insightListPosKey)
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        adapter = TopAdsInsightNegKeyAdapter(this::butttonClicked)
+        adapter = TopAdsInsightNegKeyAdapter(this::buttonClicked)
         setView()
-        toolTip.setImageDrawable(context?.getResDrawable(R.drawable.topads_dash_info_tooltip))
-        toolTip.setOnClickListener {
+        toolTip?.setImageDrawable(context?.getResDrawable(R.drawable.topads_dash_info_tooltip))
+        toolTip?.setOnClickListener {
             val sheet = InsightKeyBottomSheet.createInstance(1)
             sheet.show(fragmentManager!!, "")
         }
-        insightListPosKey.adapter = adapter
-        insightListPosKey.layoutManager = LinearLayoutManager(context)
+        insightListPosKey?.adapter = adapter
+        insightListPosKey?.layoutManager = LinearLayoutManager(context)
     }
 
-    private fun butttonClicked(position: Int) {
+    private fun buttonClicked(position: Int) {
         itemCountCallBack?.onButtonClickedNeg(listOf(adapter.items[position].mutationData), key
-                ?: "", 1, false)
+            ?: "", 1, false)
     }
 
     private fun getfromArguments() {
         key = arguments?.getString(KEY_INSIGHT)
         data = arguments?.getParcelable(INSIGHT_DATA_HEADER)
-        dataInsight = arguments?.getSerializable(DATA_INSIGHT) as HashMap<String, KeywordInsightDataMain>
+        dataInsight =
+            arguments?.getSerializable(DATA_INSIGHT) as HashMap<String, KeywordInsightDataMain>
     }
 
     private fun setView() {
@@ -90,21 +108,23 @@ class TopAdsInsightKeyNegFragment : BaseDaggerFragment() {
             totalPotential += (it.data?.get(TopAdsDashboardConstant.INDEX_4)?.value) as Double
         }
         setHeader(totalPotential)
-        btnTambah.setOnClickListener {
+        btnTambah?.setOnClickListener {
             itemCountCallBack?.onButtonClickedNeg(mutationList, key
-                    ?: "", dataInsight?.get(key)?.negative?.size ?: 0, true)
+                ?: "", dataInsight?.get(key)?.negative?.size ?: 0, true)
         }
         adapter.notifyDataSetChanged()
     }
 
     private fun setHeader(totalPotential: Double) {
-        insight_title.text = data?.negative?.box?.title
+        insightTitle?.text = data?.negative?.box?.title
         val text = data?.negative?.box?.desc
-        val withValue = text?.replace(COUNT, dataInsight?.get(key)?.negative?.size.toString())?.replace(VALUE, "Rp"+Utils.convertToCurrencyString(totalPotential.toLong()))
-        insight_desc.text = Html.fromHtml(withValue)
-        btnTambah.text = data?.negative?.box?.button?.title?.replace(COUNT, dataInsight?.get(key)?.negative?.size.toString())
+        val withValue = text?.replace(COUNT, dataInsight?.get(key)?.negative?.size.toString())
+            ?.replace(VALUE, "Rp" + Utils.convertToCurrencyString(totalPotential.toLong()))
+        insightDesc?.text = Html.fromHtml(withValue)
+        btnTambah?.text = data?.negative?.box?.button?.title?.replace(COUNT,
+            dataInsight?.get(key)?.negative?.size.toString())
         if (dataInsight?.get(key)?.negative?.size == 0)
-            btnTambah.isEnabled = false
+            btnTambah?.isEnabled = false
     }
 
     override fun onAttach(context: Context) {
@@ -120,7 +140,12 @@ class TopAdsInsightKeyNegFragment : BaseDaggerFragment() {
     }
 
     interface OnKeywordAdded {
-        fun onButtonClickedNeg(data: List<MutationData>, groupId: String, countToAdd: Int, forAllButton: Boolean)
+        fun onButtonClickedNeg(
+            data: List<MutationData>,
+            groupId: String,
+            countToAdd: Int,
+            forAllButton: Boolean,
+        )
     }
 
 }

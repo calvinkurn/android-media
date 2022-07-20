@@ -62,10 +62,6 @@ data class ShopInfo(
         @Expose
         val freeOngkir: FreeOngkir = FreeOngkir(),
 
-        @SerializedName("addressData")
-        @Expose
-        val addressData: AddressData = AddressData(),
-
         @SerializedName("shopHomeType")
         @Expose
         val shopHomeType: String = "",
@@ -113,6 +109,10 @@ data class ShopInfo(
         @SerializedName("epharmacyInfo")
         @Expose
         val epharmacyInfo: EPharmacyInfo = EPharmacyInfo(),
+
+        @SerializedName("shopMultilocation")
+        @Expose
+        val shopMultilocation: ProductShopMultilocation = ProductShopMultilocation()
 ) {
     fun isShopInfoNotEmpty():Boolean {
         return shopCore.shopID.isNotEmpty()
@@ -299,36 +299,6 @@ data class ShopInfo(
             @SerializedName("topURL")
             @Expose
             val topUrl: String = ""
-    )
-
-    data class AddressData(
-            @SerializedName("id")
-            @Expose
-            val id: String = "",
-
-            @SerializedName("name")
-            @Expose
-            val name: String = "",
-
-            @SerializedName("address")
-            @Expose
-            val address: String = "",
-
-            @SerializedName("area")
-            @Expose
-            val area: String = "",
-
-            @SerializedName("email")
-            @Expose
-            val email: String = "",
-
-            @SerializedName("phone")
-            @Expose
-            val phone: String = "",
-
-            @SerializedName("fax")
-            @Expose
-            val fax: String = ""
     )
 
     data class ShopStats(

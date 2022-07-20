@@ -5,5 +5,6 @@ import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 data class RemoveFromCartDomainModel(
         var removeFromCartData: RemoveFromCartData = RemoveFromCartData(),
         var isLastItem: Boolean = false,
-        var isBulkDelete: Boolean = false
+        var isBulkDelete: Boolean = false,
+        var isFromEditBundle: Boolean = false,
 )

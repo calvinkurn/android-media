@@ -118,6 +118,7 @@ class ProductListAdapter(
 
     private fun isStaggeredGridFullSpan(viewType: Int): Boolean {
         return viewType != SmallGridProductItemViewHolder.LAYOUT
+                && viewType != SmallGridProductItemViewHolder.LAYOUT_WITH_VIEW_STUB
                 && viewType != RecommendationItemViewHolder.LAYOUT
                 && viewType != SmallGridInspirationCardViewHolder.LAYOUT
     }

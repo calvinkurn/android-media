@@ -11,6 +11,8 @@ import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
 import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleListener
 import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleListener
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductBundleParentWidgetViewHolder
+import com.tokopedia.shop.home.WidgetName.ADD_ONS
 import com.tokopedia.shop.home.WidgetName.BUY_AGAIN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_DOUBLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_SINGLE_COLUMN
@@ -46,7 +48,6 @@ import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeMultipleImageColu
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeMultipleImageColumnViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeNplCampaignPlaceholderViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeNplCampaignViewHolder
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductBundleParentWidgetViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductChangeGridSectionViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductEtalaseTitleViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductItemBigGridViewHolder
@@ -86,7 +87,7 @@ import com.tokopedia.shop_widget.thematicwidget.typefactory.ThematicWidgetTypeFa
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
 import com.tokopedia.shop_widget.thematicwidget.viewholder.ThematicWidgetLoadingStateViewHolder
 
-class ShopHomeAdapterTypeFactory(
+open class ShopHomeAdapterTypeFactory(
         private val listener: ShopHomeDisplayWidgetListener,
         private val onMerchantVoucherListWidgetListener: ShopHomeVoucherViewHolder.ShopHomeVoucherViewHolderListener,
         private val shopHomeEndlessProductListener: ShopHomeEndlessProductListener,
@@ -117,7 +118,7 @@ class ShopHomeAdapterTypeFactory(
             VIDEO -> ShopHomeVideoViewHolder.LAYOUT_RES
             PRODUCT -> getShopHomeCarousellProductViewHolder(baseShopHomeWidgetUiModel)
             VOUCHER_STATIC -> ShopHomeVoucherViewHolder.LAYOUT
-            RECENT_ACTIVITY, BUY_AGAIN, REMINDER -> getShopHomeCarouselProductPersonalizationViewHolder(baseShopHomeWidgetUiModel)
+            RECENT_ACTIVITY, BUY_AGAIN, REMINDER, ADD_ONS -> getShopHomeCarouselProductPersonalizationViewHolder(baseShopHomeWidgetUiModel)
             NEW_PRODUCT_LAUNCH_CAMPAIGN -> getShopHomeNplCampaignViewHolder(baseShopHomeWidgetUiModel)
             FLASH_SALE_TOKO -> ShopHomeFlashSaleViewHolder.LAYOUT
             PLAY_CAROUSEL_WIDGET -> CarouselPlayWidgetViewHolder.LAYOUT
@@ -143,7 +144,7 @@ class ShopHomeAdapterTypeFactory(
         }
     }
 
-    private fun getShopHomeNplCampaignViewHolder(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
+    open fun getShopHomeNplCampaignViewHolder(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
         return if(isShowHomeWidgetPlaceHolder(baseShopHomeWidgetUiModel))
             ShopHomeNplCampaignPlaceholderViewHolder.LAYOUT
         else
@@ -185,11 +186,11 @@ class ShopHomeAdapterTypeFactory(
             ShopHomeMultipleImageColumnViewHolder.LAYOUT_RES
     }
 
-    private fun isShowHomeWidgetPlaceHolder(model: BaseShopHomeWidgetUiModel): Boolean {
+    fun isShowHomeWidgetPlaceHolder(model: BaseShopHomeWidgetUiModel): Boolean {
         return model.widgetState == WidgetState.PLACEHOLDER || model.widgetState == WidgetState.LOADING
     }
 
-    private fun isShowThematicWidgetPlaceHolder(model: ThematicWidgetUiModel): Boolean {
+    fun isShowThematicWidgetPlaceHolder(model: ThematicWidgetUiModel): Boolean {
         return model.widgetState == WidgetState.PLACEHOLDER || model.widgetState == WidgetState.LOADING
     }
 

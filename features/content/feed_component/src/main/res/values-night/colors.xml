@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="cardview_dms_background_color">@color/Unify_NN50</color>
+    <color name="feed_dms_produk_tag_background">#2E3137</color>
+    <color name="feed_dms_produk_tag_white_bg">#FFFFFF</color>
+    <color name="feed_dms_produk_tag_white_stroke">#D6DFEB</color>
+    <color name="feed_dms_produk_tag_heading_color">#FFFFFF</color>
+    <color name="feed_dms_produk_tag_price_color">#AAB4C8</color>
+    <color name="feed_dms_discount_bg">#FFCCD9</color>
+    <color name="feed_dms_discount_text">#EF144A</color>
+    <color name="feed_dms_asgc_discount_toko_btn_bg_color">#F94D63</color>
 </resources>

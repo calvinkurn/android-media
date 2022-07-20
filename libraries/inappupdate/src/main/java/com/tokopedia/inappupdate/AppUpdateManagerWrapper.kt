@@ -17,17 +17,15 @@ import com.google.android.play.core.install.model.UpdateAvailability
 import java.lang.ref.WeakReference
 
 object AppUpdateManagerWrapper {
-    @JvmField
-    val REQUEST_CODE_IMMEDIATE = 12135
+    private const val REQUEST_CODE_IMMEDIATE = 12135
+    private const val REQUEST_CODE_FLEXIBLE = 12136
+
     private var INAPP_UPDATE = "inappupdate"
     private var INAPP_UPDATE_PREF = "inappupdate_pref"
     private var KEY_INAPP_TYPE = "inapp_type"
 
     private var LOG_UPDATE_TYPE_FLEXIBLE = "flexible"
     private var LOG_UPDATE_TYPE_IMMEDIATE = "immediate"
-
-    @JvmField
-    val REQUEST_CODE_FLEXIBLE = 12136
 
     private var appUpdateManager: AppUpdateManager? = null
 
@@ -203,17 +201,22 @@ object AppUpdateManagerWrapper {
      */
     @JvmStatic
     fun checkUpdateInFlexibleProgressOrCompleted(activity: Activity, onSuccessGetInfo: ((isInProgress: Boolean) -> (Unit))) {
-        val appContext = activity.applicationContext
-        val appUpdateManager = getInstance(appContext) ?: return
-        appUpdateManager.appUpdateInfo.addOnSuccessListener {
-            if ((it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS &&
-                    getPrefInAppType(appContext) == AppUpdateType.FLEXIBLE) ||
-                it.installStatus() == InstallStatus.DOWNLOADED) {
-                onSuccessGetInfo(true)
-            } else {
+        try {
+            val appContext = activity.applicationContext
+            val appUpdateManager = getInstance(appContext) ?: return
+            appUpdateManager.appUpdateInfo.addOnSuccessListener {
+                if ((it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS &&
+                            getPrefInAppType(appContext) == AppUpdateType.FLEXIBLE) ||
+                    it.installStatus() == InstallStatus.DOWNLOADED) {
+                    onSuccessGetInfo(true)
+                } else {
+                    onSuccessGetInfo(false)
+                }
+            }.addOnFailureListener {
                 onSuccessGetInfo(false)
             }
-        }.addOnFailureListener {
+        } catch (e: Exception) {
+            InAppUpdateLogUtil.logStatusFailure(LOG_UPDATE_TYPE_FLEXIBLE, e.toString())
             onSuccessGetInfo(false)
         }
     }
@@ -258,7 +261,7 @@ object AppUpdateManagerWrapper {
             appUpdateManager.completeUpdate()
             clearInAppPref(appContext)
         }
-        snackbar.setActionTextColor(ContextCompat.getColor(activity, R.color.snackbar_action_green))
+        snackbar.setActionTextColor(ContextCompat.getColor(activity, R.color.snackbar_action_dms_green))
         snackbar.show()
     }
 

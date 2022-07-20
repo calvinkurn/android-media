@@ -6,16 +6,17 @@
     android:paddingEnd="@dimen/spacing_lvl4"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loadImageView"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginTop="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:corners="4"/>
+        app:loader_corner_radius="2dp"
+        app:loader_type="rect"/>
     
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loadTvTitle"
         android:layout_width="0dp"
         android:layout_height="@dimen/layout_lvl2"
@@ -25,9 +26,10 @@
         app:layout_constraintStart_toEndOf="@id/loadImageView"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent="0.65"
-        app:corners="4"/>
+        app:loader_corner_radius="2dp"
+        app:loader_type="rect" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loadTvDesc"
         android:layout_width="0dp"
         android:layout_height="12dp"
@@ -37,6 +39,7 @@
         app:layout_constraintStart_toEndOf="@id/loadImageView"
         app:layout_constraintTop_toBottomOf="@id/loadTvTitle"
         app:layout_constraintWidth_percent="0.3"
-        app:corners="4"/>
+        app:loader_corner_radius="2dp"
+        app:loader_type="rect"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

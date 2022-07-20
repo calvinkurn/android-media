@@ -1,5 +1,6 @@
 package com.tokopedia.vouchercreation.product.share
 
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
@@ -41,6 +42,7 @@ class SharingComponentInstanceBuilder @Inject constructor(
         onShareOptionsClicked: (ShareModel) -> Unit,
         onCloseOptionClicked: () -> Unit
     ): UniversalShareBottomSheet {
+        val formattedShopName = MethodChecker.fromHtml(shopName).toString()
         return UniversalShareBottomSheet.createInstance().apply {
             val listener = object : ShareBottomsheetListener {
                 override fun onShareOptionClicked(shareModel: ShareModel) {
@@ -153,7 +155,7 @@ class SharingComponentInstanceBuilder @Inject constructor(
             )
             addImageGeneratorData(
                 key = ImageGeneratorConstants.ImageGeneratorKeys.SHOP_NAME_MVC,
-                value = shopName
+                value = formattedShopName
             )
             addImageGeneratorData(
                 key = ImageGeneratorConstants.ImageGeneratorKeys.VOUCHER_CODE,

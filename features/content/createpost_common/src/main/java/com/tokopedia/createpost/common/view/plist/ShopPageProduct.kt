@@ -1,5 +1,6 @@
 package com.tokopedia.createpost.common.view.plist
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.library.baseadapter.BaseItem
 import java.io.Serializable
@@ -11,6 +12,7 @@ class ShopPageProduct : BaseItem() , Serializable {
     @field:SerializedName("primary_image")
     val pImage: PrimaryImage? = null
 
+    @SuppressLint("Invalid Data Type")
     @field:SerializedName("price")
     val price: SPrice? = null
 

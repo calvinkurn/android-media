@@ -422,19 +422,19 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     fun setUpHomeButton(homeButton: TextView?) {
         if (thanksPageData.configFlagData?.shouldHideHomeButton == false) {
             homeButton?.let {
-                thanksPageData.thanksCustomization?.let {
-                    it.customHomeButtonTitle?.apply {
+                thanksPageData.customDataMessage?.let {
+                    it.titleHomeButton?.apply {
                         if (isNotBlank())
                             homeButton.text = this
                     }
                 }
 
                 homeButton.setOnClickListener {
-                    thanksPageData.thanksCustomization?.let {
-                        if (it.customHomeUrlApp.isNullOrBlank())
+                    thanksPageData.customDataAppLink?.let {
+                        if (it.home.isNullOrBlank())
                             gotoHomePage()
                         else
-                            launchApplink(it.customHomeUrlApp)
+                            launchApplink(it.home)
                     } ?: run {
                         gotoHomePage()
                     }

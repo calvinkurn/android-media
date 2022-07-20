@@ -1,11 +1,11 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation
 
-import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.feedcomponent.R
@@ -14,6 +14,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.recommendation.RecommendationC
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.kotlin.extensions.view.*
 import kotlinx.android.synthetic.main.item_recommendation_card.view.*
+import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
  * @author by milhamj on 20/12/18.
@@ -71,7 +72,7 @@ class RecommendationCardAdapter(val list: MutableList<RecommendationCardViewMode
                 itemView.ivProfile.loadImageCircle(element.profileImageUrl)
             } else {
                 itemView.ivProfile.setImageDrawable(
-                        MethodChecker.getDrawable(itemView.context, R.drawable.error_drawable)
+                        MethodChecker.getDrawable(itemView.context, com.tokopedia.abstraction.R.drawable.error_drawable)
                 )
             }
 
@@ -112,10 +113,10 @@ class RecommendationCardAdapter(val list: MutableList<RecommendationCardViewMode
             if (!TextUtils.isEmpty(badgeUrl)) {
                 itemView.ivBadge.show()
                 itemView.ivBadge.loadImage(badgeUrl)
-                layoutParams.leftMargin = itemView.context.resources.getDimension(R.dimen.dp_4).toInt()
+                layoutParams.leftMargin = itemView.context.resources.getDimension(unifyR.dimen.spacing_lvl2).toInt()
             } else {
                 itemView.ivBadge.hide()
-                layoutParams.leftMargin = itemView.context.resources.getDimension(R.dimen.dp_0).toInt()
+                layoutParams.leftMargin = itemView.context.resources.getDimension(unifyR.dimen.unify_space_0).toInt()
             }
         }
 

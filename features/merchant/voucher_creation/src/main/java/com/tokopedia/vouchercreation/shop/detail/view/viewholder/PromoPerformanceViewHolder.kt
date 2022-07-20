@@ -4,9 +4,10 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.databinding.ItemMvcVoucherPromoPerformanceBinding
 import com.tokopedia.vouchercreation.shop.detail.model.PromoPerformanceUiModel
-import kotlinx.android.synthetic.main.item_mvc_voucher_promo_performance.view.*
 
 /**
  * Created By @ilhamsuaib on 05/05/20
@@ -22,8 +23,10 @@ class PromoPerformanceViewHolder(
         val RES_LAYOUT = R.layout.item_mvc_voucher_promo_performance
     }
 
+    private var binding: ItemMvcVoucherPromoPerformanceBinding? by viewBinding()
+
     override fun bind(element: PromoPerformanceUiModel) {
-        with(itemView) {
+        binding?.apply {
             tvMvcNominalTotalSpending.text = element.totalSpending
             tvMvcPromoUsedQuota.text = element.voucherUsed.toString()
             tvMvcPromoTotalQuota.text = String.format("/%d",element.voucherQuota)

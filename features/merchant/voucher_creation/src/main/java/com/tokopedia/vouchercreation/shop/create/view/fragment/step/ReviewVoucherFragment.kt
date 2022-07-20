@@ -18,6 +18,7 @@ import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.signature.ObjectKey
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -32,6 +33,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
@@ -41,6 +43,7 @@ import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationCo
 import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getDisplayedDateString
 import com.tokopedia.vouchercreation.common.utils.dismissBottomSheetWithTags
+import com.tokopedia.vouchercreation.databinding.FragmentMvcBaseListBinding
 import com.tokopedia.vouchercreation.shop.create.domain.model.CreateVoucherParam
 import com.tokopedia.vouchercreation.shop.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.shop.create.view.activity.CreateMerchantVoucherStepsActivity
@@ -65,7 +68,6 @@ import com.tokopedia.vouchercreation.shop.detail.model.*
 import com.tokopedia.vouchercreation.shop.detail.view.adapter.factory.VoucherDetailAdapterFactoryImpl
 import com.tokopedia.vouchercreation.shop.detail.view.fragment.BaseDetailFragment
 import com.tokopedia.vouchercreation.shop.voucherlist.view.activity.VoucherListActivity
-import kotlinx.android.synthetic.main.fragment_mvc_base_list.*
 import javax.inject.Inject
 
 class ReviewVoucherFragment : BaseDetailFragment() {
@@ -146,6 +148,8 @@ class ReviewVoucherFragment : BaseDetailFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
+    private var binding by autoClearedNullable<FragmentMvcBaseListBinding>()
+
     private val viewModelProvider by lazy {
         ViewModelProvider(this, viewModelFactory)
     }
@@ -156,7 +160,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
 
     private val termsAndConditionBottomSheet by lazy {
         context?.run {
-            TermsAndConditionBottomSheetFragment.createInstance(this).apply {
+            TermsAndConditionBottomSheetFragment.createInstance().apply {
                 setCloseClickListener {
                     this.dismiss()
                 }
@@ -165,7 +169,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
     }
 
     private val generalExpenseBottomSheet by lazy {
-        GeneralExpensesInfoBottomSheetFragment.createInstance(context)
+        GeneralExpensesInfoBottomSheetFragment.createInstance()
     }
 
     private val publicVoucherTipsAndTrickBottomSheet by lazy {
@@ -222,7 +226,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
     private var squareVoucherBitmap: Bitmap? = null
         set(value) {
             if (field == null && isDuplicate) {
-                recycler_view?.scrollToPosition(adapter.dataSize - 1)
+                binding?.recyclerView?.scrollToPosition(adapter.dataSize - 1)
             }
             field = value
         }
@@ -232,7 +236,8 @@ class ReviewVoucherFragment : BaseDetailFragment() {
     private var isPromoCodeEligible = true
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_mvc_base_list, container, false)
+        binding = FragmentMvcBaseListBinding.inflate(LayoutInflater.from(context), container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -535,7 +540,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
             )
 
             with(voucherReviewUiModel) {
-                postVoucherUiModel = getVoucherPreviewSection(voucherType, voucherName, shopAvatarUrl, shopName, displayedPromoCode, postDisplayedDate).also {
+                postVoucherUiModel = getVoucherPreviewSection(voucherType, voucherName, shopAvatarUrl, MethodChecker.fromHtml(shopName).toString() , displayedPromoCode, postDisplayedDate).also {
                     reviewInfoList.add(0, it)
                 }
             }

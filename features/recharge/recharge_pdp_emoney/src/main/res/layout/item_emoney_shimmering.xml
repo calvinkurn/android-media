@@ -8,14 +8,16 @@
     tools:ignore="Overdraw"
     android:background="@color/Unify_Background">
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loaderUnify1"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl1"
-        android:layout_marginHorizontal="@dimen/spacing_lvl2"
+        android:layout_marginHorizontal="16dp"
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginBottom="@dimen/spacing_lvl3"
-        app:corners="4"
-        app:width_weight="0.6" />
+        app:layout_constraintWidth_percent="0.6"
+        app:loader_corner_radius="2dp"
+        app:loader_type="rect" />
 
     <include layout="@layout/item_emoney_shimmering_layout" />
 

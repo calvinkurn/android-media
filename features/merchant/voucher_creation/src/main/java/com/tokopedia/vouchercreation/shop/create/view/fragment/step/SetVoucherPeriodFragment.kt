@@ -32,6 +32,7 @@ import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
@@ -46,6 +47,7 @@ import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getToday
 import com.tokopedia.vouchercreation.common.utils.convertUnsafeDateTime
 import com.tokopedia.vouchercreation.common.utils.dismissBottomSheetWithTags
 import com.tokopedia.vouchercreation.common.utils.showErrorToaster
+import com.tokopedia.vouchercreation.databinding.MvcSetVoucherPeriodFragmentBinding
 import com.tokopedia.vouchercreation.shop.create.view.enums.VoucherCreationStep
 import com.tokopedia.vouchercreation.shop.create.view.enums.VoucherImageType
 import com.tokopedia.vouchercreation.shop.create.view.painter.VoucherPreviewPainter
@@ -53,7 +55,6 @@ import com.tokopedia.vouchercreation.shop.create.view.uimodel.initiation.BannerB
 import com.tokopedia.vouchercreation.shop.create.view.uimodel.voucherimage.BannerVoucherUiModel
 import com.tokopedia.vouchercreation.shop.create.view.uimodel.voucherreview.VoucherReviewUiModel
 import com.tokopedia.vouchercreation.shop.create.view.viewmodel.SetVoucherPeriodViewModel
-import kotlinx.android.synthetic.main.mvc_set_voucher_period_fragment.*
 import java.util.*
 import javax.inject.Inject
 
@@ -121,6 +122,8 @@ class SetVoucherPeriodFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
+    private var binding by autoClearedNullable<MvcSetVoucherPeriodFragmentBinding>()
+
     private val viewModelProvider by lazy {
         ViewModelProvider(this, viewModelFactory)
     }
@@ -164,7 +167,8 @@ class SetVoucherPeriodFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.mvc_set_voucher_period_fragment, container, false)
+        binding = MvcSetVoucherPeriodFragmentBinding.inflate(LayoutInflater.from(context), container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -194,55 +198,58 @@ class SetVoucherPeriodFragment : Fragment() {
     }
 
     private fun setupView() {
-        startDateTextField?.textFieldInput?.run{
-            // Fix blank color when dark mode activated.
-            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700))
+        binding?.apply {
+            startDateTextField.textFieldInput.run{
+                // Fix blank color when dark mode activated.
+                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700))
 
-            setOnClickListener {
-                VoucherCreationTracking.sendCreateVoucherClickTracking(
+                setOnClickListener {
+                    VoucherCreationTracking.sendCreateVoucherClickTracking(
                         step = VoucherCreationStep.PERIOD,
                         action = VoucherCreationAnalyticConstant.EventAction.Click.CALENDAR_START,
                         userId = userSession.userId
-                )
-                getStartDateTimePicker()?.show(childFragmentManager, START_DATE_TIME_PICKER_TAG)
+                    )
+                    getStartDateTimePicker()?.show(childFragmentManager, START_DATE_TIME_PICKER_TAG)
+                }
+                isFocusable = false
+                isClickable = true
             }
-            isFocusable = false
-            isClickable = true
-        }
-        endDateTextField?.textFieldInput?.run {
-            // Fix blank color when dark mode activated.
-            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700))
+            endDateTextField.textFieldInput.run {
+                // Fix blank color when dark mode activated.
+                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700))
 
-            setOnClickListener {
-                VoucherCreationTracking.sendCreateVoucherClickTracking(
+                setOnClickListener {
+                    VoucherCreationTracking.sendCreateVoucherClickTracking(
                         step = VoucherCreationStep.PERIOD,
                         action = VoucherCreationAnalyticConstant.EventAction.Click.CALENDAR_END,
                         userId = userSession.userId
-                )
-                getEndDateTimePicker()?.show(childFragmentManager, END_DATE_TIME_PICKER_TAG)
+                    )
+                    getEndDateTimePicker()?.show(childFragmentManager, END_DATE_TIME_PICKER_TAG)
+                }
+                isFocusable = false
+                isClickable = true
             }
-            isFocusable = false
-            isClickable = true
-        }
-        observeLiveData()
-        disableTextFieldEdit()
-        setDateNextButton?.run {
-            setOnClickListener {
-                VoucherCreationTracking.sendCreateVoucherClickTracking(
+            observeLiveData()
+            disableTextFieldEdit()
+            setDateNextButton.run {
+                setOnClickListener {
+                    VoucherCreationTracking.sendCreateVoucherClickTracking(
                         step = VoucherCreationStep.PERIOD,
                         action = VoucherCreationAnalyticConstant.EventAction.Click.CONTINUE,
                         userId = userSession.userId
-                )
-                isLoading = true
-                onNextClicked()
+                    )
+                    isLoading = true
+                    onNextClicked()
+                }
             }
+            setInitialDate()
         }
-        setInitialDate()
+
     }
 
     private fun onSuccessGetBitmap(bitmap: Bitmap) {
         activity?.runOnUiThread {
-            periodBannerImage?.setImageBitmap(bitmap)
+            binding?.periodBannerImage?.setImageBitmap(bitmap)
             onSuccessGetBannerBitmap(bitmap)
         }
     }
@@ -250,48 +257,50 @@ class SetVoucherPeriodFragment : Fragment() {
     private fun observeLiveData() {
         viewLifecycleOwner.run {
             observe(viewModel.periodValidationLiveData) { result ->
-                if (isWaitingForValidation) {
-                    when(result) {
-                        is Success -> {
-                            val validation = result.data
-                            if (!validation.getIsHaveError()) {
-                                startDateTextField?.removeError()
-                                endDateTextField?.removeError()
-                                activity?.run {
-                                    KeyboardHandler.hideSoftKeyboard(this)
-                                }
-                                onNext(startDate, endDate, startHour, endHour)
-                            } else {
-                                if (validation.dateStartError.isNotBlank() || validation.hourStartError.isNotBlank()) {
-                                    startDateTextField?.run {
-                                        setError(true)
-                                        setMessage(validation.dateStartError)
+                binding?.apply {
+                    if (isWaitingForValidation) {
+                        when(result) {
+                            is Success -> {
+                                val validation = result.data
+                                if (!validation.getIsHaveError()) {
+                                    startDateTextField.removeError()
+                                    endDateTextField.removeError()
+                                    activity?.run {
+                                        KeyboardHandler.hideSoftKeyboard(this)
                                     }
+                                    onNext(startDate, endDate, startHour, endHour)
                                 } else {
-                                    startDateTextField?.removeError()
-                                }
-                                if (validation.dateEndError.isNotBlank() || validation.hourEndError.isNotBlank()) {
-                                    endDateTextField?.run {
-                                        setError(true)
-                                        setMessage(validation.dateEndError)
+                                    if (validation.dateStartError.isNotBlank() || validation.hourStartError.isNotBlank()) {
+                                        startDateTextField.run {
+                                            setError(true)
+                                            setMessage(validation.dateStartError)
+                                        }
+                                    } else {
+                                        startDateTextField.removeError()
                                     }
-                                } else {
-                                    endDateTextField?.removeError()
+                                    if (validation.dateEndError.isNotBlank() || validation.hourEndError.isNotBlank()) {
+                                        endDateTextField.run {
+                                            setError(true)
+                                            setMessage(validation.dateEndError)
+                                        }
+                                    } else {
+                                        endDateTextField.removeError()
+                                    }
                                 }
                             }
+                            is Fail -> {
+                                // show user friendly error message to user
+                                val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                                view?.showErrorToaster(errorMessage)
+                                // send crash report to firebase crashlytics
+                                MvcErrorHandler.logToCrashlytics(result.throwable, PERIOD_VALIDATION_ERROR)
+                                // log error type to scalyr
+                                ServerLogger.log(Priority.P2, "MVC_PERIOD_VALIDATION_ERROR", mapOf("type" to errorMessage))
+                            }
                         }
-                        is Fail -> {
-                            // show user friendly error message to user
-                            val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
-                            view?.showErrorToaster(errorMessage)
-                            // send crash report to firebase crashlytics
-                            MvcErrorHandler.logToCrashlytics(result.throwable, PERIOD_VALIDATION_ERROR)
-                            // log error type to scalyr
-                            ServerLogger.log(Priority.P2, "MVC_PERIOD_VALIDATION_ERROR", mapOf("type" to errorMessage))
-                        }
+                        isWaitingForValidation = false
+                        setDateNextButton.isLoading = false
                     }
-                    isWaitingForValidation = false
-                    setDateNextButton?.isLoading = false
                 }
             }
 
@@ -299,13 +308,13 @@ class SetVoucherPeriodFragment : Fragment() {
                 startCalendar = startDate as? GregorianCalendar
                 endDateString = startDate.time.toFormattedString(DATE_OF_WEEK_FORMAT, locale)
                 val formattedDate = startDate.time.toFormattedString(FULL_DAY_FORMAT, locale)
-                startDateTextField?.textFieldInput?.setText(formattedDate)
+                binding?.startDateTextField?.textFieldInput?.setText(formattedDate)
             }
 
             observe(viewModel.endDateCalendarLiveData) { endDate ->
                 endCalendar = endDate as? GregorianCalendar
                 val formattedDate = endDate.time.toFormattedString(FULL_DAY_FORMAT, locale)
-                endDateTextField?.textFieldInput?.setText(formattedDate)
+                binding?.endDateTextField?.textFieldInput?.setText(formattedDate)
             }
 
             observe(viewModel.dateStartLiveData) { date ->
@@ -324,8 +333,10 @@ class SetVoucherPeriodFragment : Fragment() {
     }
 
     private fun disableTextFieldEdit() {
-        startDateTextField?.textFieldInput?.keyListener = null
-        endDateTextField?.textFieldInput?.keyListener = null
+        binding?.apply {
+            startDateTextField.textFieldInput.keyListener = null
+            endDateTextField.textFieldInput.keyListener = null
+        }
     }
 
     private fun setInitialDate() {

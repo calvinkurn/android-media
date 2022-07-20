@@ -10,7 +10,9 @@ import com.tokopedia.discovery2.usecase.AnchorTabsUseCase
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -216,6 +218,14 @@ class AnchorTabsItemViewModelTest {
         viewModel.onAttachToViewHolder()
         assert(componentsItem.shouldRefreshComponent == null)
 
+    }
+
+    @After
+    @Throws(Exception::class)
+    fun tearDown() {
+        Dispatchers.resetMain()
+
+        unmockkStatic(::getComponent)
     }
 
 

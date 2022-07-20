@@ -98,6 +98,7 @@ data class ComponentsItem(
         var shouldRefreshComponent : Boolean? = null ,
         var autoPlayController: AutoPlayController? = null,
         var verticalProductFailState: Boolean = false,
+        var errorState: ErrorState? = null,
         var userAddressData: LocalCacheModel? = null,
         var nextPageKey:String? = "",
         var horizontalProductFailState: Boolean = false,

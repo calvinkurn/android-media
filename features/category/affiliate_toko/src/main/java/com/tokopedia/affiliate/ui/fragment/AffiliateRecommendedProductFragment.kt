@@ -11,8 +11,9 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
-import com.tokopedia.affiliate.AFFILIATE_LIHAT_KATEGORI
 import com.tokopedia.affiliate.AffiliateAnalytics
+import com.tokopedia.affiliate.ON_REGISTERED
+import com.tokopedia.affiliate.ON_REVIEWED
 import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
@@ -22,19 +23,16 @@ import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.PromotionClickInterface
 import com.tokopedia.affiliate.model.response.AffiliateSearchData
-import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateStaggeredPromotionCardModel
+import com.tokopedia.affiliate.viewmodel.AffiliatePromoViewModel
 import com.tokopedia.affiliate.viewmodel.AffiliateRecommendedProductViewModel
 import com.tokopedia.affiliate_toko.R
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.affiliate_recommended_product_fragment_layout.*
 import java.util.*
@@ -50,6 +48,9 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
 
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
+
+    private val viewModelFragmentProvider by lazy { ViewModelProvider(requireParentFragment(), viewModelProvider) }
+    private lateinit var affiliatePromoSharedViewModel: AffiliatePromoViewModel
 
     @Inject
     lateinit var userSessionInterface : UserSessionInterface
@@ -72,27 +73,20 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setObservers()
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.affiliate_recommended_product_fragment_layout, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        afterViewCreated()
+        affiliatePromoSharedViewModel = viewModelFragmentProvider[AffiliatePromoViewModel::class.java]
+        setObservers()
     }
 
     private fun afterViewCreated() {
         setUpRecyclerView()
         setUpEmptyState()
         sendScreenEvent()
-        setupTickerView(getString(R.string.affiliate_black_list_title),
-                getString(R.string.affiliate_black_list_description))
-        affiliateRecommendedProductViewModel.isUserBlackListed = (activity as? AffiliateActivity)?.getBlackListedStatus() ?: false
         affiliateRecommendedProductViewModel.getAffiliateRecommendedProduct(identifier,PAGE_ZERO)
     }
 
@@ -184,7 +178,10 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
     }
 
     private fun setObservers() {
-        affiliateRecommendedProductViewModel.getShimmerVisibility().observe(this, { visibility ->
+        affiliatePromoSharedViewModel.getValidateUserType().observe(viewLifecycleOwner,{
+            onGetValidateUserType(it)
+        })
+        affiliateRecommendedProductViewModel.getShimmerVisibility().observe(viewLifecycleOwner, { visibility ->
             if (visibility != null) {
                 if (visibility)
                     adapter.addShimmer(true)
@@ -194,7 +191,7 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
             }
         })
 
-        affiliateRecommendedProductViewModel.getAffiliateDataItems().observe(this ,{ dataList ->
+        affiliateRecommendedProductViewModel.getAffiliateDataItems().observe(viewLifecycleOwner ,{ dataList ->
             adapter.removeShimmer(listSize)
             if(isSwipeRefresh){
                 swipe_refresh_layout.isRefreshing = false
@@ -214,16 +211,22 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
             }
         })
 
-        affiliateRecommendedProductViewModel.getAffiliateItemCount().observe(this, { pageInfo ->
+        affiliateRecommendedProductViewModel.getAffiliateItemCount().observe(viewLifecycleOwner, { pageInfo ->
             currentPageNumber = pageInfo.currentPage ?: 0
             recommendationHasNextPage = pageInfo.hasNext ?: false
         })
 
-        affiliateRecommendedProductViewModel.getErrorMessage().observe(this, { errorMessage ->
+        affiliateRecommendedProductViewModel.getErrorMessage().observe(viewLifecycleOwner, {
             swipe_refresh_layout.hide()
             showErrorGroup()
             showEmptyState()
         })
+    }
+
+    private fun onGetValidateUserType(type: String?) {
+        when(type){
+            ON_REGISTERED,ON_REVIEWED -> afterViewCreated()
+        }
     }
 
     var lastItem : AffiliateStaggeredPromotionCardModel? = null
@@ -245,28 +248,6 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
         recommended_global_error.hide()
         affiliate_no_product_bought_iv.hide()
         affiliate_no_product_seen_iv.hide()
-    }
-
-    private fun setupTickerView(title: String?,desc :String?)
-    {
-        if((activity as AffiliateActivity).getBlackListedStatus()){
-            affiliate_announcement_ticker_cv.show()
-            affiliate_announcement_ticker.tickerTitle = title
-            desc?.let {
-                affiliate_announcement_ticker.setHtmlDescription(
-                        it
-                )
-            }
-            affiliate_announcement_ticker.tickerType = Ticker.TYPE_ERROR
-            affiliate_announcement_ticker.setDescriptionClickEvent(object: TickerCallback {
-                override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    RouteManager.routeNoFallbackCheck(context, AFFILIATE_LIHAT_KATEGORI, AFFILIATE_LIHAT_KATEGORI)
-                }
-                override fun onDismiss() {}
-            })
-        }else {
-            affiliate_announcement_ticker_cv.hide()
-        }
     }
 
     override fun getVMFactory(): ViewModelProvider.Factory {
@@ -295,13 +276,13 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
 
     }
 
-    override fun onPromotionClick(productId: String, shopId : String, productName: String, productImage: String, productUrl: String, productIdentifier: String, position: Int, commison: String,status: String) {
-        pushPromosikanEvent(productId,productName,position,commison)
+    override fun onPromotionClick(itemID: String, itemName: String, itemImage: String, itemURL: String, position: Int, commison: String, status: String,type: String?) {
+        pushPromosikanEvent(itemID,itemName,position,commison)
         val origin = if(identifier == BOUGHT_IDENTIFIER) AffiliatePromotionBottomSheet.ORIGIN_PERNAH_DIBELI_PROMOSIKA else AffiliatePromotionBottomSheet.ORIGIN_TERAKHIR_DILIHAT
         AffiliatePromotionBottomSheet.newInstance(AffiliatePromotionBottomSheet.Companion.SheetType.LINK_GENERATION,
                 null,null,
-                productId, productName, productImage, productUrl,
-                productIdentifier,origin,commission = commison).show(childFragmentManager, "")
+                itemID, itemName, itemImage, itemURL,
+                "",origin,commission = commison).show(childFragmentManager, "")
     }
 
     private fun pushPromosikanEvent(

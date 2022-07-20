@@ -96,6 +96,7 @@ enum class ComponentsList(val id: Int, val componentName: String) {
 
     CarouselErrorLoad(R.layout.discovery_carousel_error_load, ComponentNames.CarouselErrorLoad.componentName),
     ProductListErrorLoad(R.layout.discovery_product_list_error_load, ComponentNames.ProductListErrorLoad.componentName),
+    ProductListNetworkErrorLoad(R.layout.discovery_list_2_buttons_empty_state, ComponentNames.ProductListNetworkErrorLoad.componentName),
 
     //Category Best Seller
     CategoryBestSeller(R.layout.carousel_best_seller_recycler_view, ComponentNames.CategoryBestSeller.componentName),
@@ -122,6 +123,7 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     MyCoupon(R.layout.component_my_coupon_layout,ComponentNames.MyCoupon.componentName),
     MyCouponItem(R.layout.item_disco_my_coupon,ComponentNames.MyCouponItem.componentName),
     BannerInfinite(R.layout.disco_merchant_voucher_list,ComponentNames.BannerInfinite.componentName),
-    BannerInfiniteItem(R.layout.disco_infinite_shop_banner_item,ComponentNames.BannerInfiniteItem.componentName)
+    BannerInfiniteItem(R.layout.disco_infinite_shop_banner_item,ComponentNames.BannerInfiniteItem.componentName),
+    ShopCardInfinite(R.layout.disco_merchant_voucher_list,ComponentNames.ShopCardInfinite.componentName)
 
 }

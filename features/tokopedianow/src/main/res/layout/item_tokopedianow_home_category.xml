@@ -34,7 +34,7 @@
         app:layout_constraintEnd_toEndOf="@+id/siv_category"
         app:layout_constraintStart_toStartOf="@+id/siv_category"
         app:layout_constraintTop_toBottomOf="@+id/siv_category"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         tools:text="Long Category Title" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -52,7 +52,8 @@
         app:layout_constraintBottom_toBottomOf="@+id/siv_category"
         app:layout_constraintEnd_toStartOf="@+id/iu_chevron"
         app:layout_constraintStart_toStartOf="@+id/siv_category"
-        app:typographyType="heading_6"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
         tools:text="Semua Kategori" />
 
     <com.tokopedia.iconunify.IconUnify

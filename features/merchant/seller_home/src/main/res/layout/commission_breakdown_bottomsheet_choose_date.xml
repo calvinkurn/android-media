@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/header_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.tokopedia.unifycomponents.TextFieldUnify2
+                android:id="@+id/tvSahCommissionStartDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                app:unify_text_field_label="Mulai"
+                app:unify_text_field_label_static="true"
+                app:unify_text_field_placeholder="Pilih tanggal" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <com.tokopedia.unifycomponents.TextFieldUnify2
+                android:id="@+id/tvSahCommissionEndDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                app:unify_text_field_label="Hingga"
+                app:unify_text_field_label_static="true"
+                app:unify_text_field_placeholder="Pilih tanggal" />
+        </LinearLayout>
+
+        <com.tokopedia.calendar.UnifyCalendar
+            android:id="@+id/calendarSahCommission"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintBottom_toTopOf="@+id/unifyButtonSelect"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/header_date" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/unifyButtonSelect"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:text="@string/saldo_save_date"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:unifyButtonSize="medium"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="filled" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

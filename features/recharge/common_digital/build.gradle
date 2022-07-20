@@ -54,6 +54,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
 
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     implementation rootProject.ext.miscDependencies.dagger

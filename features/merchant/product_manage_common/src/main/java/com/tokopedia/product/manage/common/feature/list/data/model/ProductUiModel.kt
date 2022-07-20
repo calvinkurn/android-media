@@ -26,6 +26,10 @@ data class ProductUiModel(
     val isCampaign: Boolean,
     val campaignTypeList: List<ProductCampaignType>?,
     val isProductBundling: Boolean,
+    val suspendLevel: Int,
+    val hasStockAlert:Boolean,
+    val stockAlertActive: Boolean,
+    val stockAlertCount:Int
 ) : Visitable<ProductManageAdapterFactory> {
     override fun type(typeFactory: ProductManageAdapterFactory): Int {
         return typeFactory.type(this)
@@ -37,6 +41,7 @@ data class ProductUiModel(
     fun isInactive(): Boolean = status == ProductStatus.INACTIVE
     fun isViolation(): Boolean =
         status == ProductStatus.VIOLATION || status == ProductStatus.MODERATED
+
     fun isNotViolation(): Boolean = !(isViolation() || isPending())
     fun isPending(): Boolean = status == ProductStatus.PENDING
     fun isEmpty(): Boolean = status == ProductStatus.EMPTY || stock == 0
@@ -46,4 +51,8 @@ data class ProductUiModel(
     fun hasEditProductAccess() = access?.editProduct == true
 
     fun getCampaignTypeCount() = campaignTypeList?.count().orZero()
+    fun isSuspend(): Boolean = suspendLevel != 0
+    fun isSuspendLevelTwoUntilFour(): Boolean = suspendLevel > 1
+    fun isNotSuspendLevelTwoUntilFour(): Boolean = !(isSuspendLevelTwoUntilFour())
+
 }

@@ -2,7 +2,9 @@ package tokopedia.applink.deeplink
 
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
+import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -13,67 +15,67 @@ class DeepLinkMapperFromHttpTest: DeepLinkMapperTestFixture() {
 
     @Test
     fun `check link url of pulsa then should be equal to the actual`() {
-        val expectedDeepLink = "${ApplinkConsInternalDigital.TELCO_PREPAID_DIGITAL}?category_id=1&menu_id=2&template=telcopre"
+        val expectedDeepLink = "${ApplinkConsInternalDigital.DIGITAL_PDP_PULSA}?category_id=1&menu_id=289&template=pulsav2"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.PULSA_LINK_URL, expectedDeepLink)
     }
 
     @Test
     fun `check link url of pulsa axis then should be equal to the actual`() {
-        val expectedDeepLink = "${ApplinkConsInternalDigital.TELCO_PREPAID_DIGITAL}?category_id=1&menu_id=2&template=telcopre"
+        val expectedDeepLink = "${ApplinkConsInternalDigital.DIGITAL_PDP_PULSA}?category_id=1&menu_id=289&template=pulsav2&client_number=0838"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.AXIS, expectedDeepLink)
     }
 
     @Test
     fun `check link url of pulsa IM3 then should be equal to the actual`() {
-        val expectedDeepLink = "${ApplinkConsInternalDigital.TELCO_PREPAID_DIGITAL}?category_id=1&menu_id=2&template=telcopre"
-        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.AXIS, expectedDeepLink)
+        val expectedDeepLink = "${ApplinkConsInternalDigital.DIGITAL_PDP_PULSA}?category_id=1&menu_id=289&template=pulsav2&client_number=0856"
+        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.IM3, expectedDeepLink)
     }
 
     @Test
     fun `check link url of pulsa bolt then should be equal to the actual`() {
-        val expectedDeepLink = "${ApplinkConsInternalDigital.TELCO_PREPAID_DIGITAL}?category_id=1&menu_id=2&template=telcopre"
-        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.BOLT, expectedDeepLink)
+        val expectedDeepLink = "${ApplinkConsInternalDigital.DIGITAL_PDP_PULSA}?category_id=1&menu_id=289&template=pulsav2"
+        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.PULSA_LINK_URL, expectedDeepLink)
     }
 
     @Test
     fun `check link url of pulsa tri then should be equal to the actual`() {
-        val expectedDeepLink = "${ApplinkConsInternalDigital.TELCO_PREPAID_DIGITAL}?category_id=1&menu_id=2&template=telcopre"
+        val expectedDeepLink = "${ApplinkConsInternalDigital.DIGITAL_PDP_PULSA}?category_id=1&menu_id=289&template=pulsav2&client_number=0897"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.TRI, expectedDeepLink)
     }
 
     @Test
     fun `check link url of pulsa xl then should be equal to the actual`() {
-        val expectedDeepLink = "${ApplinkConsInternalDigital.TELCO_PREPAID_DIGITAL}?category_id=1&menu_id=2&template=telcopre"
+        val expectedDeepLink = "${ApplinkConsInternalDigital.DIGITAL_PDP_PULSA}?category_id=1&menu_id=289&template=pulsav2&client_number=0817"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.XL, expectedDeepLink)
     }
 
     @Test
     fun `check link url of pulsa smartfren then should be equal to the actual`() {
-        val expectedDeepLink = "${ApplinkConsInternalDigital.TELCO_PREPAID_DIGITAL}?category_id=1&menu_id=2&template=telcopre"
+        val expectedDeepLink = "${ApplinkConsInternalDigital.DIGITAL_PDP_PULSA}?category_id=1&menu_id=289&template=pulsav2&client_number=0888"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.SMARTFREN, expectedDeepLink)
     }
 
     @Test
     fun `check link url of pulsa simpati then should be equal to the actual`() {
-        val expectedDeepLink = "${ApplinkConsInternalDigital.TELCO_PREPAID_DIGITAL}?category_id=1&menu_id=2&template=telcopre"
+        val expectedDeepLink = "${ApplinkConsInternalDigital.DIGITAL_PDP_PULSA}?category_id=1&menu_id=289&template=pulsav2&client_number=0812"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.SIMPATI, expectedDeepLink)
     }
 
     @Test
     fun `check link url of pulsa as then should be equal to the actual`() {
-        val expectedDeepLink = "${ApplinkConsInternalDigital.TELCO_PREPAID_DIGITAL}?category_id=1&menu_id=2&template=telcopre"
+        val expectedDeepLink = "${ApplinkConsInternalDigital.DIGITAL_PDP_PULSA}?category_id=1&menu_id=289&template=pulsav2&client_number=0812"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.AS, expectedDeepLink)
     }
 
     @Test
     fun `check link url of pulsa mentari then should be equal to the actual`() {
-        val expectedDeepLink = "${ApplinkConsInternalDigital.TELCO_PREPAID_DIGITAL}?category_id=1&menu_id=2&template=telcopre"
+        val expectedDeepLink = "${ApplinkConsInternalDigital.DIGITAL_PDP_PULSA}?category_id=1&menu_id=289&template=pulsav2&client_number=0856"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.MENTARI, expectedDeepLink)
     }
 
     @Test
     fun `check link url of paket data then should be equal to the actual`() {
-        val expectedDeepLink = "${ApplinkConsInternalDigital.TELCO_PREPAID_DIGITAL}?category_id=2&menu_id=2&template=telcopre"
+        val expectedDeepLink = "${ApplinkConsInternalDigital.DIGITAL_PDP_PAKET_DATA}?category_id=2&menu_id=290&template=paketdatav2"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PAKET_DATA, expectedDeepLink)
     }
 
@@ -85,7 +87,7 @@ class DeepLinkMapperFromHttpTest: DeepLinkMapperTestFixture() {
 
     @Test
     fun `check link url of pulsa im3 then should be equal to the actual`() {
-        val expectedDeepLink = "${ApplinkConsInternalDigital.TELCO_PREPAID_DIGITAL}?category_id=1&menu_id=2&template=telcopre"
+        val expectedDeepLink = "${ApplinkConsInternalDigital.DIGITAL_PDP_PULSA}?category_id=1&menu_id=289&template=pulsav2&client_number=0856"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.IM3, expectedDeepLink)
     }
 
@@ -361,25 +363,25 @@ class DeepLinkMapperFromHttpTest: DeepLinkMapperTestFixture() {
 
     @Test
     fun `check link url of roaming then should be equal to the actual`() {
-        val expectedDeepLink = "${ApplinkConsInternalDigital.TELCO_PREPAID_DIGITAL}?category_id=20&menu_id=2&template=telcopre"
+        val expectedDeepLink = "${ApplinkConsInternalDigital.DIGITAL_PDP_PAKET_DATA}?category_id=20&menu_id=314&template=roamingv2"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.ROAMING, expectedDeepLink)
     }
 
     @Test
     fun `check link url of roaming indosat then should be equal to the actual`() {
-        val expectedDeepLink = "${ApplinkConsInternalDigital.TELCO_PREPAID_DIGITAL}?category_id=20&menu_id=2&template=telcopre"
+        val expectedDeepLink = "${ApplinkConsInternalDigital.DIGITAL_PDP_PAKET_DATA}?category_id=20&menu_id=314&template=roamingv2&client_number=0856"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.ROAMING_INDOSAT, expectedDeepLink)
     }
 
     @Test
     fun `check link url of roaming xl then should be equal to the actual`() {
-        val expectedDeepLink = "${ApplinkConsInternalDigital.TELCO_PREPAID_DIGITAL}?category_id=20&menu_id=2&template=telcopre"
+        val expectedDeepLink = "${ApplinkConsInternalDigital.DIGITAL_PDP_PAKET_DATA}?category_id=20&menu_id=314&template=roamingv2&client_number=0817"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.ROAMING_XL, expectedDeepLink)
     }
 
     @Test
     fun `check link url of roaming telkomsel then should be equal to the actual`() {
-        val expectedDeepLink = "${ApplinkConsInternalDigital.TELCO_PREPAID_DIGITAL}?category_id=20&menu_id=2&template=telcopre"
+        val expectedDeepLink = "${ApplinkConsInternalDigital.DIGITAL_PDP_PAKET_DATA}?category_id=20&menu_id=314&template=roamingv2&client_number=0812"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.ROAMING_TELKOMSEL, expectedDeepLink)
     }
 
@@ -403,49 +405,49 @@ class DeepLinkMapperFromHttpTest: DeepLinkMapperTestFixture() {
 
     @Test
     fun `check link url of paket data telkomsel then should be equal to the actual`() {
-        val expectedDeepLink = "${ApplinkConsInternalDigital.TELCO_PREPAID_DIGITAL}?category_id=2&menu_id=2&template=telcopre"
+        val expectedDeepLink = "${ApplinkConsInternalDigital.DIGITAL_PDP_PAKET_DATA}?category_id=2&menu_id=290&template=paketdatav2&client_number=0812"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PAKET_DATA_TELKOMSEL, expectedDeepLink)
     }
 
     @Test
     fun `check link url of paket data indosat then should be equal to the actual`() {
-        val expectedDeepLink = "${ApplinkConsInternalDigital.TELCO_PREPAID_DIGITAL}?category_id=2&menu_id=2&template=telcopre"
+        val expectedDeepLink = "${ApplinkConsInternalDigital.DIGITAL_PDP_PAKET_DATA}?category_id=2&menu_id=290&template=paketdatav2&client_number=0856"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PAKET_DATA_INDOSAT, expectedDeepLink)
     }
 
     @Test
     fun `check link url of paket data xl then should be equal to the actual`() {
-        val expectedDeepLink = "${ApplinkConsInternalDigital.TELCO_PREPAID_DIGITAL}?category_id=2&menu_id=2&template=telcopre"
+        val expectedDeepLink = "${ApplinkConsInternalDigital.DIGITAL_PDP_PAKET_DATA}?category_id=2&menu_id=290&template=paketdatav2&client_number=0817"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PAKET_DATA_XL, expectedDeepLink)
     }
 
     @Test
     fun `check link url of paket data axis then should be equal to the actual`() {
-        val expectedDeepLink = "${ApplinkConsInternalDigital.TELCO_PREPAID_DIGITAL}?category_id=2&menu_id=2&template=telcopre"
+        val expectedDeepLink = "${ApplinkConsInternalDigital.DIGITAL_PDP_PAKET_DATA}?category_id=2&menu_id=290&template=paketdatav2&client_number=0838"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PAKET_DATA_AXIS, expectedDeepLink)
     }
 
     @Test
     fun `check link url of paket data im3 then should be equal to the actual`() {
-        val expectedDeepLink = "${ApplinkConsInternalDigital.TELCO_PREPAID_DIGITAL}?category_id=2&menu_id=2&template=telcopre"
+        val expectedDeepLink = "${ApplinkConsInternalDigital.DIGITAL_PDP_PAKET_DATA}?category_id=2&menu_id=290&template=paketdatav2&client_number=0856"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PAKET_DATA_IM3, expectedDeepLink)
     }
 
     @Test
     fun `check link url of paket data mentari then should be equal to the actual`() {
-        val expectedDeepLink = "${ApplinkConsInternalDigital.TELCO_PREPAID_DIGITAL}?category_id=2&menu_id=2&template=telcopre"
+        val expectedDeepLink = "${ApplinkConsInternalDigital.DIGITAL_PDP_PAKET_DATA}?category_id=2&menu_id=290&template=paketdatav2&client_number=0856"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PAKET_DATA_MENTARI, expectedDeepLink)
     }
 
     @Test
     fun `check link url of paket data tri then should be equal to the actual`() {
-        val expectedDeepLink = "${ApplinkConsInternalDigital.TELCO_PREPAID_DIGITAL}?category_id=2&menu_id=2&template=telcopre"
+        val expectedDeepLink = "${ApplinkConsInternalDigital.DIGITAL_PDP_PAKET_DATA}?category_id=2&menu_id=290&template=paketdatav2&client_number=0897"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PAKET_DATA_TRI, expectedDeepLink)
     }
 
     @Test
     fun `check link url of paket data bolt then should be equal to the actual`() {
-        val expectedDeepLink = "${ApplinkConsInternalDigital.TELCO_PREPAID_DIGITAL}?category_id=2&menu_id=2&template=telcopre"
+        val expectedDeepLink = "${ApplinkConsInternalDigital.DIGITAL_PDP_PAKET_DATA}?category_id=2&menu_id=290&template=paketdatav2"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PAKET_DATA_BOLT, expectedDeepLink)
     }
 
@@ -615,5 +617,23 @@ class DeepLinkMapperFromHttpTest: DeepLinkMapperTestFixture() {
     fun `check link url of play room with starting time then should be equal to the actual`() {
         val expectedDeepLink = "${ApplinkConstInternalContent.INTERNAL_PLAY}/${DeepLinkUrlConstant.CONTENT.PLAY_CHANNEL_ID}?start_time=60000"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.CONTENT.PLAY_WITH_START_TIME, expectedDeepLink)
+    }
+
+    @Test
+    fun `check link url of recommendation with id then should be redirected to discovery page with id`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://${ApplinkConsInternalHome.AUTHORITY_DISCOVERY}/${ApplinkConsInternalHome.PATH_REKOMENDASI}?recomProdId=3190804069"
+        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.RECOMMENDATION.RECOMMENDATION_WITH_ID, expectedDeepLink)
+    }
+
+    @Test
+    fun `check link url of recommendation with id and param then should be redirected to discovery page with id and param`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://${ApplinkConsInternalHome.AUTHORITY_DISCOVERY}/${ApplinkConsInternalHome.PATH_REKOMENDASI}?recomProdId=2137719991&msrc=product-feed&utm_source=facebook&utm_medium=ocpm&utm_campaign=alon-smda-DPO-WIB-SER-18-55-MF-AUTO-180-SMDA-NWB-PG-11110000-0020-alon-smda&ref=fbdpa"
+        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.RECOMMENDATION.RECOMMENDATION_WITH_ID_AND_QUERY, expectedDeepLink)
+    }
+
+    @Test
+    fun `check link url of searching something on now page should be equal to the actual`() {
+        val expectedDeepLink = "${ApplinkConstInternalTokopediaNow.SEARCH}?q=jj%20royal"
+        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.TOKOPEDIANOW_SEARCH_LINK_URL, expectedDeepLink)
     }
 }

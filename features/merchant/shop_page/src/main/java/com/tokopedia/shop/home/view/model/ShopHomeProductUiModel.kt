@@ -43,6 +43,7 @@ class ShopHomeProductUiModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder 
     var hideGimmick: Boolean = false
     var stockSoldPercentage: Int = 0
     var recommendationType: String? = null
+    var categoryBreadcrumbs: String? = null
     var minimumOrder: Int = 1
     var isProductPlaceHolder: Boolean = false
     var totalProduct: Int = 0

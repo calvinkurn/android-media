@@ -28,7 +28,7 @@ class HomeListDiffer : BaseTokopediaNowDiffer() {
         } else if (oldItem is TokoNowCategoryGridUiModel && newItem is TokoNowCategoryGridUiModel) {
             oldItem.id == newItem.id
         } else if (oldItem is HomeSharingReferralWidgetUiModel && newItem is HomeSharingReferralWidgetUiModel) {
-            oldItem.isButtonLoading == newItem.isButtonLoading
+            oldItem.id == newItem.id
         } else {
             oldItem == newItem
         }

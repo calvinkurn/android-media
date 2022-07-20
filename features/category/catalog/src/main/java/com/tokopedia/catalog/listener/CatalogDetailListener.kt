@@ -67,4 +67,8 @@ interface CatalogDetailListener {
 
     fun sendWidgetTrackEvent(actionName: String) { }
 
+    fun setLastDetachedItemPosition(adapterPosition: Int) {}
+
+    fun setLastAttachItemPosition(adapterPosition: Int) {}
+
 }

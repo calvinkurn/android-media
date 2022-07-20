@@ -4,7 +4,25 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.DeeplinkDFMapper
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
-import com.tokopedia.applink.internal.*
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital
+import com.tokopedia.applink.internal.ApplinkConsInternalHome
+import com.tokopedia.applink.internal.ApplinkConstInternalCategory
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
+import com.tokopedia.applink.internal.ApplinkConstInternalDeals
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
+import com.tokopedia.applink.internal.ApplinkConstInternalNotification
+import com.tokopedia.applink.internal.ApplinkConstInternalPayment
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.applink.internal.ApplinkConstInternalSalam
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import org.junit.Test
 
 class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
@@ -233,7 +251,7 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
 
     @Test
     fun `check global internal digital deal brand detail base appLink then should return DF_ENTERTAINMENT in customerapp`() {
-        val appLink = "${ApplinkConstInternalGlobal.INTERNAL_GLOBAL}/deals-brand/"
+        val appLink = "${ApplinkConstInternalDeals.INTERNAL_DEALS}/brand-detail-new/"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_ENTERTAINMENT)
     }
 
@@ -414,6 +432,18 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     @Test
     fun `check power merchant subscribe internal appLink then should return DF_MERCHANT_SELLER in customerapp`() {
         val appLink = "${ApplinkConstInternalMarketplace.INTERNAL_MARKETPLACE}/power-merchant-subscribe"
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_MERCHANT_SELLER)
+    }
+
+    @Test
+    fun `check admin invitation internal appLink then should return DF_MERCHANT_SELLER in sellerapp`() {
+        val appLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://shop-admin/invitation-page"
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_MERCHANT_SELLER)
+    }
+
+    @Test
+    fun `check admin accepted internal appLink then should return DF_MERCHANT_SELLER in customerapp`() {
+        val appLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://shop-admin/accepted-page"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_MERCHANT_SELLER)
     }
 
@@ -1020,5 +1050,32 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     fun `check telephony masking appLink then should return DF_OPERATIONAL_CONTACT_US in customerapp`() {
         val internalApplink = "${ApplinkConstInternalGlobal.INTERNAL_GLOBAL}/telephony-masking"
         assertEqualDeepLinkCustomerApp(internalApplink, DeeplinkDFMapper.DF_OPERATIONAL_CONTACT_US)
+    }
+
+    @Test
+    fun `check tokofood home appLink then should return DF_TOKOFOOD in customerapp`() {
+        val internalApplink = "${DeeplinkConstant.SCHEME_INTERNAL}://food/home"
+        assertEqualDeepLinkCustomerApp(internalApplink, DeeplinkDFMapper.DF_TOKOFOOD)
+    }
+
+    @Test
+    fun `check tokofood discovery appLink then should return DF_TOKOFOOD in customerapp`() {
+        val internalApplink = "${DeeplinkConstant.SCHEME_INTERNAL}://food/category"
+        assertEqualDeepLinkCustomerApp(internalApplink, DeeplinkDFMapper.DF_TOKOFOOD)
+    }
+
+    @Test
+    fun `check tokofood merchant appLink then should return DF_TOKOFOOD in customerapp`() {
+        val orderId = "cbdb87be-acca-439e-ae0f-4829a608b811"
+        val internalApplink = "${DeeplinkConstant.SCHEME_INTERNAL}://food/merchant/$orderId"
+        assertEqualDeepLinkCustomerApp(internalApplink, DeeplinkDFMapper.DF_TOKOFOOD)
+    }
+
+    @Test
+    fun `check tokofood post purchase appLink then should return DF_TOKOFOOD in customerapp`() {
+        val orderId = "123"
+        val internalAppLink =
+            "${ApplinkConstInternalTokoFood.POST_PURCHASE}?orderId=${orderId}"
+        assertEqualDeepLinkCustomerApp(internalAppLink, DeeplinkDFMapper.DF_TOKOFOOD)
     }
 }

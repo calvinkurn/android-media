@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.people.ErrorMessage
 import com.tokopedia.people.Loading
@@ -81,7 +82,7 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        followersContainer = view.findViewById(R.id.container)
+        followersContainer = view.findViewById(R.id.container_follower_list)
         globalError = view?.findViewById(R.id.ge_followers)
         initObserver()
         initMainUi()
@@ -259,8 +260,13 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
         val textTitle = view?.findViewById<TextView>(R.id.text_error_empty_title)
         val textDescription = view?.findViewById<TextView>(R.id.text_error_empty_desc)
 
-        textTitle?.text = getString(com.tokopedia.people.R.string.up_lb_no_following)
-        textDescription?.hide()
+        val currentUserId = arguments?.getString(UserProfileFragment.EXTRA_USER_ID)
+        if (currentUserId == userSessionInterface.userId)
+            textTitle?.text = getString(com.tokopedia.people.R.string.up_empty_page_my_following_title)
+        else
+            textTitle?.text = getString(com.tokopedia.people.R.string.up_empty_page_following_title)
+        textDescription?.showWithCondition(currentUserId == userSessionInterface.userId)
+        textDescription?.text = getString(com.tokopedia.people.R.string.up_empty_page_my_following_desc)
     }
 
     override fun onStartFirstPageLoad() {

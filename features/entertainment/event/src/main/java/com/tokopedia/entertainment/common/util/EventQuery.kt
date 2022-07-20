@@ -54,6 +54,10 @@ object EventQuery {
                     min_start_date
                 }
             }
+            ticker{
+              devices
+              message
+            }
         }
     }"""
 

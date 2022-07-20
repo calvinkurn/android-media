@@ -9,10 +9,6 @@
         <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
-    <style name="TextView.Big.BlackPrimary">
-        <item name="android:textColor">@color/Unify_N700_68</item>
-    </style>
-
     <style name="TextView.Big.FontMedium.BlackPrimary">
         <item name="android:textColor">@color/Unify_N700_68</item>
     </style>
@@ -27,34 +23,8 @@
         <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
-    <style name="TextView.Medium.BlackPrimary">
-        <item name="android:textColor">@color/Unify_N700_68</item>
-    </style>
-
     <style name="TextView.Medium.FontMedium.BlackPrimary">
         <item name="android:textColor">@color/Unify_N700_68</item>
-    </style>
-
-
-    <style name="TextView.Medium.Green">
-        <item name="android:textColor">@color/Unify_G400</item>
-    </style>
-
-    <style name="TextView.Medium.FontMedium.Green">
-        <item name="android:textColor">@color/Unify_G400</item>
-    </style>
-
-    <style name="TextView.Title.FontMedium">
-        <item name="android:fontFamily">sans-serif-medium</item>
-    </style>
-
-    <style name="TextView.Title.FontMedium.BlackPrimary">
-        <item name="android:textColor">@color/Unify_N700_68</item>
-    </style>
-
-    <style name="TextView.Small.Black38">
-        <item name="android:textColor">@color/Unify_N700_32</item>
-
     </style>
 
     <style name="TextView.Small.Black40">
@@ -65,43 +35,17 @@
         <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
-    <style name="TextView.Small.FontMedium.Black40">
-        <item name="android:textColor">@color/Unify_N700_44</item>
-    </style>
-
 
     <style name="TextView.Small.FontMedium.BlackPrimary">
         <item name="android:textColor">@color/Unify_N700_68</item>
-    </style>
-
-
-    <style name="TextView.Small.FontMedium.Green">
-        <item name="android:textColor">@color/Unify_G400</item>
-    </style>
-
-    <style name="TextView.Small.FontMedium.WhitePrimary">
-        <item name="android:textColor">@color/Unify_N0</item>
-    </style>
-
-
-    <style name="TextView.Small.FontMedium.White">
-        <item name="android:textColor">@color/Unify_N0</item>
     </style>
 
     <style name="TextView.Micro.Black40">
         <item name="android:textColor">@color/Unify_N700_44</item>
     </style>
 
-    <style name="TextView.Micro.Bold.Black40">
-        <item name="android:textColor">@color/Unify_N700_44</item>
-    </style>
-
     <style name="TextView.Micro.FontMedium">
         <item name="android:fontFamily">sans-serif-medium</item>
-    </style>
-
-    <style name="TextView.Micro.FontMedium.Bold">
-        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="TextView.Micro.FontMedium.Black40">
@@ -116,30 +60,9 @@
         <item name="android:textColor">@color/Unify_N700_68</item>
     </style>
 
-    <style name="TextView.Micro.FontMedium.BlackSecondary">
-        <item name="android:textColor">@color/Unify_N700_44</item>
-    </style>
-
-    <style name="TextView.Micro.FontMedium.BlackSecondary.Bold">
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="TextView.Micro.FontMedium.BlackDisabled">
-        <item name="android:textColor">@color/Unify_N700_32</item>
-    </style>
-
-
     <style name="TextView.Micro11">
         <item name="android:fontFamily">sans-serif</item>
         <item name="android:textSize">@dimen/sp_11</item>
-    </style>
-
-    <style name="TextView.Micro11.Black40">
-        <item name="android:textColor">@color/Unify_N700_44</item>
-    </style>
-
-    <style name="TextView.Micro11.Red">
-        <item name="android:textColor">@color/Unify_R500</item>
     </style>
 
     <style name="TextView.Micro11.Bold">
@@ -154,33 +77,8 @@
         <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
-    <style name="TextView.Micro11.FontMedium.Bold">
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="TextView.Micro11.FontMedium.Green">
-        <item name="android:textColor">@color/Unify_G400</item>
-    </style>
-
     <style name="TextView.Micro11.FontMedium.White">
         <item name="android:textColor">@color/Unify_N0</item>
     </style>
-
-    <style name="TextView.Micro11.FontMedium.BlackPrimary">
-        <item name="android:textColor">@color/Unify_N700_68</item>
-    </style>
-
-    <style name="TextView.Micro11.FontMedium.BlackSecondary">
-        <item name="android:textColor">@color/Unify_N700_44</item>
-    </style>
-
-    <style name="TextView.Micro11.FontMedium.BlackSecondary.Bold">
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="TextView.Micro11.FontMedium.BlackDisabled">
-        <item name="android:textColor">@color/Unify_N700_32</item>
-    </style>
-
 
 </resources>

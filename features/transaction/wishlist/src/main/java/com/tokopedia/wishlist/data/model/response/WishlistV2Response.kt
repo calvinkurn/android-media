@@ -4,12 +4,12 @@ import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class WishlistV2Response(
-	@SerializedName("data")
-	val data: Data = Data()
+		@SerializedName("data")
+		val data: Data = Data()
 ) {
 	data class Data(
-		@SerializedName("wishlist_v2")
-		val wishlistV2: WishlistV2 = WishlistV2()
+			@SerializedName("wishlist_v2")
+			val wishlistV2: WishlistV2 = WishlistV2()
 	) {
 		data class WishlistV2(
 				@SerializedName("error_message")
@@ -43,7 +43,19 @@ data class WishlistV2Response(
 				val items: List<Item> = emptyList(),
 
 				@SerializedName("empty_state")
-				val emptyState: EmptyState = EmptyState()
+				val emptyState: EmptyState = EmptyState(),
+
+				@SerializedName("ticker")
+				val ticker: TickerState = TickerState(),
+
+				@SerializedName("storage_cleaner_bottomsheet")
+				val storageCleanerBottomSheet: StorageCleanerBottomSheet = StorageCleanerBottomSheet(),
+
+				@SerializedName("count_removable_items")
+				val countRemovableItems: Int = 0,
+
+				@SerializedName("show_delete_progress")
+				val showDeleteProgress: Boolean = false
 		) {
 			data class Item(
 
@@ -250,6 +262,56 @@ data class WishlistV2Response(
 							val url: String = ""
 					)
 				}
+			}
+
+			data class TickerState(
+
+				@SerializedName("message")
+				val message: String = "",
+
+				@SerializedName("type")
+				val type: String = "",
+
+				@SerializedName("button")
+				val button: ButtonTicker = ButtonTicker()
+			) {
+				data class ButtonTicker(
+
+					@SerializedName("action")
+					val action: String = "",
+
+					@SerializedName("text")
+					val text: String = ""
+				)
+			}
+
+			data class StorageCleanerBottomSheet(
+
+				@SerializedName("title")
+				val title: String = "",
+
+				@SerializedName("description")
+				val description: String = "",
+
+				@SerializedName("options")
+				val options: List<OptionCleanerBottomsheet> = emptyList(),
+
+				@SerializedName("button")
+				val btnCleanBottomSheet: ButtonCleanBottomSheet = ButtonCleanBottomSheet()
+			) {
+				data class OptionCleanerBottomsheet(
+
+					@SerializedName("name")
+					val name: String = "",
+
+					@SerializedName("description")
+					val description: String = "")
+
+				data class ButtonCleanBottomSheet(
+
+					@SerializedName("text")
+					val text: String = ""
+				)
 			}
 
 			data class EmptyState(

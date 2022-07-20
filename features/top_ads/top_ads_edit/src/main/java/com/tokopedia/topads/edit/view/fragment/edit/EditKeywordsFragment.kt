@@ -22,10 +22,12 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_POSITIVE
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_TYPE
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.DEFAULT_NEW_KEYWORD_VALUE
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.EXACT_POSITIVE
 import com.tokopedia.topads.common.data.internal.ParamObject.GROUP
 import com.tokopedia.topads.common.data.internal.ParamObject.GROUPID
@@ -170,7 +172,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(
-            resources.getLayout(com.tokopedia.topads.common.R.layout.topads_create_fragment_budget_list),
+            context?.resources?.getLayout(com.tokopedia.topads.common.R.layout.topads_create_fragment_budget_list),
             container,
             false
         )
@@ -189,15 +191,9 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         minSuggestedBidPencerian = view.findViewById(com.tokopedia.topads.common.R.id.min_suggested_bid_pencerian)
         minSuggestedBidRekomendasi = view.findViewById(com.tokopedia.topads.common.R.id.min_suggested_bid_rekomendasi)
 
-        if(sharedViewModel.getIsWhiteListedUser()) {
-            biayaRekomendasi.visibility = View.VISIBLE
-            budgetInputRekomendasi.visibility = View.VISIBLE
-            biayaPencerian.text = getString(com.tokopedia.topads.common.R.string.topads_group_detail_budget_pancarian)
-        } else {
-            biayaRekomendasi.visibility = View.GONE
-            budgetInputRekomendasi.visibility = View.GONE
-            biayaPencerian.text = getString(com.tokopedia.topads.common.R.string.topads_create_bs_title2)
-        }
+        biayaRekomendasi.visibility = View.VISIBLE
+        budgetInputRekomendasi.visibility = View.VISIBLE
+        biayaPencerian.text = getString(com.tokopedia.topads.common.R.string.topads_group_detail_budget_pancarian)
 
         setAdapter()
         return view
@@ -395,23 +391,37 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     private fun onEditType(pos: Int) {
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEditEvent(CLICK_EDIT_KEYWORD_TYPE, "")
         val sheet = ChooseKeyBottomSheet.newInstance()
-        val type = (adapter.items[pos] as EditKeywordItemViewModel).data.typeInt
-        sheet.show(childFragmentManager, type)
+        val item = (adapter.items.getOrNull(pos) as? EditKeywordItemViewModel)
+
+        val type = item?.data?.typeInt
+        if (type != null) {
+            sheet.show(childFragmentManager, type)
+        }
+
         sheet.onSelect = { typeKey ->
             val typeInt = if (typeKey == BROAD_TYPE)
                 BROAD_POSITIVE
             else
                 EXACT_POSITIVE
-            (adapter.items[pos] as EditKeywordItemViewModel).data.typeInt = typeInt
-            if ((adapter.items[pos] as EditKeywordItemViewModel).data.typeInt != type) {
-                actionStatusChange(pos)
+
+
+            item?.let {
+                item.data.typeInt = typeInt
+                if (item.data.typeInt != type) {
+                    actionStatusChange(pos)
+                }
             }
+
             adapter.notifyItemChanged(pos)
         }
     }
 
     private fun actionEnable(isEnable: Boolean) {
-        callBack.buttonDisable(!budgetInput.isTextFieldError && !budgetInputRekomendasi.isTextFieldError)
+        var isValid = !budgetInput.isTextFieldError
+        if (budgetInputRekomendasi.isVisible) {
+            isValid = isValid && (!budgetInputRekomendasi.isTextFieldError)
+        }
+        callBack.buttonDisable(isValid)
     }
 
     private fun setMessageErrorField(error: String, bid: String, bool: Boolean, forRekommendedBid: Boolean) {
@@ -643,12 +653,12 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         info2.setImageDrawable(getIconUnifyDrawable(view.context, IconUnify.INFORMATION))
         info1.setOnClickListener {
             InfoBottomSheet(
-                InfoBottomSheet.TYPE_DASAR, sharedViewModel.getIsWhiteListedUser()
+                InfoBottomSheet.TYPE_DASAR
             ).show(childFragmentManager)
         }
         info2.setOnClickListener {
             InfoBottomSheet(
-                InfoBottomSheet.TYPE_KATA_KUNCI, sharedViewModel.getIsWhiteListedUser()
+                InfoBottomSheet.TYPE_KATA_KUNCI
             ).show(childFragmentManager)
         }
         addKeyword.setOnClickListener {
@@ -801,7 +811,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         selectedKeywords?.forEach {
             if (adapter.items.find { item -> it.keyword == (item as EditKeywordItemViewModel).data.name } == null) {
                 if (it.bidSuggest == "0")
-                    it.bidSuggest = minSuggestKeyword
+                    it.bidSuggest = DEFAULT_NEW_KEYWORD_VALUE
                 adapter.items.add(EditKeywordItemViewModel(mapToSharedModel(it)))
                 initialBudget.add(it.bidSuggest)
                 isnewlyAddded.add(true)
@@ -851,15 +861,9 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         }
         bidTypeData?.clear()
         bidTypeData?.add(TopAdsBidSettingsModel(PRODUCT_SEARCH, getCurrentBid().toFloat()))
-        if(sharedViewModel.getIsWhiteListedUser()) {
-            bidTypeData?.add(
-                TopAdsBidSettingsModel(PRODUCT_BROWSE, getCurrentRekommendedBid().toFloat())
-            )
-        } else {
-            bidTypeData?.add(
-                TopAdsBidSettingsModel(PRODUCT_BROWSE, getCurrentBid().toFloat())
-            )
-        }
+        bidTypeData?.add(
+            TopAdsBidSettingsModel(PRODUCT_BROWSE, getCurrentRekommendedBid().toFloat())
+        )
         bundle.putParcelableArrayList(BID_TYPE, bidTypeData)
         bundle.putParcelableArrayList(POSITIVE_CREATE, addedKeywords)
         bundle.putParcelableArrayList(POSITIVE_DELETE, deletedKeywords)

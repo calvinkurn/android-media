@@ -70,6 +70,8 @@ open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
         const val PIN_PRODUCT = "pinProduct"
         const val CATEGORY_ID = "category_id"
         const val EMBED_CATEGORY = "embedCategory"
+        const val DYNAMIC_SUBTITLE= "dynamicSubtitle"
+        const val TARGET_TITLE_ID= "targetTitleID"
 
         @JvmStatic
         fun createDiscoveryIntent(context: Context, endpoint: String): Intent {
@@ -144,61 +146,6 @@ open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
         this.javaClass.canonicalName?.let { className ->
             if (!GlobalConfig.DEBUG) FirebaseCrashlytics.getInstance().log(className + " " + intent?.data?.lastPathSegment)
         }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        handleProductCardOptionsActivityResult(requestCode, resultCode, data, object : ProductCardOptionsWishlistCallback {
-            override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
-                handleWishlistAction(productCardOptionsModel)
-            }
-        },
-        visitShopCallback = object : ProductCardOptionsResult{
-            override fun onReceiveResult(productCardOptionsModel: ProductCardOptionsModel) {
-                if (productCardOptionsModel.shopId.isNotEmpty())
-                    RouteManager.route(
-                        this@DiscoveryActivity,
-                        (ApplinkConst.SHOP.replace("{shop_id}", productCardOptionsModel.shopId))
-                    )
-            }
-        })
-    }
-
-    private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel) {
-        if (productCardOptionsModel.wishlistResult.isUserLoggedIn) {
-            if (productCardOptionsModel.wishlistResult.isAddWishlist) {
-                if (productCardOptionsModel.wishlistResult.isSuccess) {
-                    if (isFromCategory())
-                        NetworkErrorHelper.showSnackbar(this, getString(R.string.discovery_msg_success_add_wishlist))
-                    else
-                        showToasterForWishlistAddSuccess()
-                    discoveryViewModel.updateWishlist(productCardOptionsModel)
-                } else {
-                    NetworkErrorHelper.showSnackbar(this, getString(R.string.discovery_msg_error_add_wishlist))
-                }
-            } else {
-                if (productCardOptionsModel.wishlistResult.isSuccess) {
-                    discoveryViewModel.updateWishlist(productCardOptionsModel)
-                    NetworkErrorHelper.showSnackbar(this, getString(R.string.discovery_msg_success_remove_wishlist))
-                } else {
-                    NetworkErrorHelper.showSnackbar(this, getString(R.string.discovery_msg_error_remove_wishlist))
-                }
-            }
-        } else {
-            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), LOGIN_REQUEST_CODE)
-        }
-    }
-
-    private fun showToasterForWishlistAddSuccess (){
-        findViewById<View>(android.R.id.content)?.let {
-            Toaster.build(it, getString(R.string.discovery_msg_success_add_wishlist), Snackbar.LENGTH_LONG,
-                Toaster.TYPE_NORMAL, actionText = getString(R.string.discovery_msg_success_add_wishlist_CTA)) { goToWishlistPage() }.show()
-        }
-    }
-
-    private fun goToWishlistPage() {
-        RouteManager.route(this, ApplinkConst.NEW_WISHLIST)
     }
 
     override fun onStop() {

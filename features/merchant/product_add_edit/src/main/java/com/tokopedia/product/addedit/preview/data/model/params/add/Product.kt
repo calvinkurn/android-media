@@ -1,34 +1,31 @@
 package com.tokopedia.product.addedit.preview.data.model.params.add
 
+import android.annotation.SuppressLint
 import android.os.Parcelable
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import java.math.BigInteger
 
 @Parcelize
+@SuppressLint("Invalid Data Type")
 data class Product (
-
         @SerializedName("combination")
-        @Expose
         var combination: List<Int> = emptyList(),
+        @SuppressLint("Invalid Data Type") // price currently using Integer at server
         @SerializedName("price")
-        @Expose
         var price: BigInteger = 0.toBigInteger(),
         @SerializedName("sku")
-        @Expose
         var sku: String = "",
         @SerializedName("status")
-        @Expose
         var status: String = "",
         @SerializedName("stock")
-        @Expose
         var stock: Int? = 0,
         @SerializedName("isPrimary")
-        @Expose
         var isPrimary: Boolean = false,
         @SerializedName("pictures")
-        @Expose
-        var pictures: List<Picture> = emptyList()
-
+        var pictures: List<Picture> = emptyList(),
+        @SerializedName("weight")
+        var weight: Int = 0,
+        @SerializedName("weightUnit")
+        var weightUnit: String = ""
 ) : Parcelable

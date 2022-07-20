@@ -29,6 +29,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
@@ -102,6 +103,7 @@ import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
+import com.tokopedia.telemetry.ITelemetryActivity;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSession;
@@ -133,7 +135,8 @@ public class MainParentActivity extends BaseActivity implements
         HomePerformanceMonitoringListener,
         OfficialStorePerformanceMonitoringListener,
         IBottomClickListener,
-        MainParentStateListener
+        MainParentStateListener,
+        ITelemetryActivity
 {
 
     public static final String MO_ENGAGE_COUPON_CODE = "coupon_code";
@@ -297,7 +300,6 @@ public class MainParentActivity extends BaseActivity implements
     private void runRiskWorker() {
         // Most of workers do nothing if it has already succeed previously.
         SubmitDeviceWorker.Companion.scheduleWorker(getApplicationContext(), false);
-        DataVisorWorker.Companion.scheduleWorker(getApplicationContext(), false);
         AppAuthWorker.Companion.scheduleWorker(getApplicationContext(), false);
     }
 
@@ -313,9 +315,11 @@ public class MainParentActivity extends BaseActivity implements
         if (userSession.get().hasShop()) {
             moduleNameList.add(DeeplinkDFMapper.DF_MERCHANT_SELLER);
         }
+        moduleNameList.add(DeeplinkDFMapper.DF_DIGITAL);
         moduleNameList.add(DeeplinkDFMapper.DF_TRAVEL);
         moduleNameList.add(DeeplinkDFMapper.DF_ENTERTAINMENT);
         moduleNameList.add(DeeplinkDFMapper.DF_TOKOPEDIA_NOW);
+        moduleNameList.add(DeeplinkDFMapper.DF_TOKOFOOD);
         moduleNameList.add(DeeplinkDFMapper.DF_MERCHANT_NONLOGIN);
         if (BuildConfig.VERSION_NAME.endsWith(SUFFIX_ALPHA) && remoteConfig.get().getBoolean(RemoteConfigKey.ENABLE_APLHA_OBSERVER, true)) {
             moduleNameList.add(DeeplinkDFMapper.DF_ALPHA_TESTING);
@@ -1429,5 +1433,11 @@ public class MainParentActivity extends BaseActivity implements
 
         startActivities(new Intent[]{intentHome, intentNewUser});
         finish();
+    }
+
+    @NonNull
+    @Override
+    public String getTelemetrySectionName() {
+        return "home";
     }
 }

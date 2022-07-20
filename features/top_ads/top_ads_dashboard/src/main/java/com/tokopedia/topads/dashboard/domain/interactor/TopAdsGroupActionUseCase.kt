@@ -1,9 +1,10 @@
 package com.tokopedia.topads.dashboard.domain.interactor
 
 import com.google.gson.reflect.TypeToken
+import com.tokopedia.common.network.coroutines.RestRequestInteractor
+import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestRequest
-import com.tokopedia.common.network.domain.RestRequestUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
@@ -25,18 +26,24 @@ import javax.inject.Inject
  */
 
 
-class TopAdsGroupActionUseCase @Inject constructor(val userSession: UserSessionInterface) : RestRequestUseCase() {
+class TopAdsGroupActionUseCase @Inject constructor(private val userSession: UserSessionInterface) {
 
-    private var query = ""
+    private val restRepository: RestRepository by lazy { RestRequestInteractor.getInstance().restRepository }
 
-    fun setQuery(queryString: String) {
-        query = queryString
+    suspend fun execute(query: String, requestParams: RequestParams?): GroupActionResponse {
+        val token = object : TypeToken<DataResponse<GroupActionResponse>>() {}.type
+        val request =
+            GraphqlRequest(query, GroupActionResponse::class.java, requestParams?.parameters)
+        val restRequest = RestRequest.Builder(TopAdsCommonConstant.TOPADS_GRAPHQL_TA_URL, token)
+            .setBody(request)
+            .setRequestType(RequestType.POST)
+            .build()
+        return restRepository.getResponse(restRequest)
+            .getData<DataResponse<GroupActionResponse>>().data
     }
 
     fun setParams(action: String, groupIds: List<String>): RequestParams {
-
-        var requestParams = RequestParams.create()
-
+        val requestParams = RequestParams.create()
         val group: ArrayList<Map<String, String?>> = arrayListOf()
         groupIds.forEach {
             val map = mapOf(GROUPID to it, PRICE_BID to null, PRICE_DAILY to null)
@@ -49,18 +56,5 @@ class TopAdsGroupActionUseCase @Inject constructor(val userSession: UserSessionI
         queryMap[GROUPS] = group
         requestParams.putAll(queryMap)
         return requestParams
-    }
-
-    override fun buildRequest(requestParams: RequestParams?): MutableList<RestRequest> {
-        val tempRequest = java.util.ArrayList<RestRequest>()
-        val token = object : TypeToken<DataResponse<GroupActionResponse>>() {}.type
-
-        var request: GraphqlRequest = GraphqlRequest(query, GroupActionResponse::class.java, requestParams?.parameters)
-        val restReferralRequest = RestRequest.Builder(TopAdsCommonConstant.TOPADS_GRAPHQL_TA_URL, token)
-                .setBody(request)
-                .setRequestType(RequestType.POST)
-                .build()
-        tempRequest.add(restReferralRequest)
-        return tempRequest
     }
 }

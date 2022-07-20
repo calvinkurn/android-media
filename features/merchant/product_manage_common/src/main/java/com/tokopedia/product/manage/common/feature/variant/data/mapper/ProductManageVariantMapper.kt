@@ -76,15 +76,23 @@ object ProductManageVariantMapper {
         return copy(editStock = editStock, editStatus = editStatus)
     }
 
-    fun mapResultToUpdateParam(shopId: String, result: EditVariantResult): UpdateVariantParam {
+    fun mapResultToUpdateParam(shopId: String,
+                               result: EditVariantResult,
+                               shouldSetStock: Boolean = true): UpdateVariantParam {
         val productInput = result.variants.map {
+            val stock =
+                if (shouldSetStock) {
+                    it.stock
+                } else {
+                    null
+                }
             VariantProductInput(
                     it.status,
                     it.combination,
                     it.isPrimary,
                     it.price.toInt().orZero(),
                     it.sku,
-                    it.stock,
+                    stock,
                     it.pictures
             )
         }

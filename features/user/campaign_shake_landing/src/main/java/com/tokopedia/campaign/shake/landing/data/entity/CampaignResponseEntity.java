@@ -19,7 +19,7 @@ public class CampaignResponseEntity {
 	private String createdAt;
 
 	@SerializedName("id")
-	private int id;
+	private String id;
 
 	@SerializedName("title")
 	private String title;
@@ -86,11 +86,11 @@ public class CampaignResponseEntity {
 		return createdAt;
 	}
 
-	public void setId(int id){
+	public void setId(String id){
 		this.id = id;
 	}
 
-	public int getId(){
+	public String getId(){
 		return id;
 	}
 

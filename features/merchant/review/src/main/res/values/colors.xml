@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="review_dms_star_rating_static_color_enabled">#FFC400</color>
+    <color name="review_dms_star_rating_static_color_disabled">#BFC9D9</color>
+    <color name="review_dms_star_rating_shimmer_static_color_enabled">#40454C</color>
+    <color name="review_dms_star_rating_shimmer_static_color_disabled">#40454C</color>
+    <color name="review_dms_n700_68">#AD31353B</color>
+    <color name="review_dms_fragment_review_detail_common_background">#CC000000</color>
+</resources>

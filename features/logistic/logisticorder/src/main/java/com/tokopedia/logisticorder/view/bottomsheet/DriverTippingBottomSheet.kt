@@ -36,6 +36,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
 
@@ -129,7 +130,6 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
                 val chipsLayoutManagerTipping = ChipsLayoutManager.newBuilder(binding.root.context)
                         .setOrientation(ChipsLayoutManager.HORIZONTAL)
                         .setRowStrategy(ChipsLayoutManager.STRATEGY_FILL_VIEW)
-                        .withLastRow(true)
                         .build()
 
                 ViewCompat.setLayoutDirection(binding.rvChipsTip, ViewCompat.LAYOUT_DIRECTION_LTR)
@@ -139,10 +139,10 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
                 binding.rvChipsTip.apply {
                     layoutManager = chipsLayoutManagerTipping
                     adapter = tippingValueAdapter
-                    addItemDecoration( object : SpacingItemDecoration(8,8) {
+                    addItemDecoration( object : SpacingItemDecoration(TIPPING_SPACING, TIPPING_SPACING) {
                         override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
                             super.getItemOffsets(outRect, view, parent, state)
-                            val itemWidth = parent.measuredWidth / 4
+                            val itemWidth = parent.measuredWidth / TIPPING_WIDTH_DIVIDER
                             view.layoutParams.width = itemWidth
                         }
                     })
@@ -153,8 +153,10 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
                     descriptionView.elevation = 2f
                     description = setTippingDescription(logisticDriverModel.prepayment.info)
                 }
-
-                binding.etNominalTip.editText.addTextChangedListener(setWrapperWatcherTipping(binding.etNominalTip.textInputLayout))
+                binding.etNominalTip.run {
+                    setMessage(getString(R.string.nominal_tip_message, CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(logisticDriverModel.prepayment.minAmount), CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(logisticDriverModel.prepayment.maxAmount)))
+                    editText.addTextChangedListener(setWrapperWatcherTipping(binding.etNominalTip.textInputLayout, logisticDriverModel.prepayment.minAmount, logisticDriverModel.prepayment.maxAmount))
+                }
 
                 binding.btnTipping.setOnClickListener {
                     val paymentApplink = logisticDriverModel.prepayment.paymentLink.replace("{{amount}}", binding.etNominalTip.editText.text.toString())
@@ -208,12 +210,12 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
         descriptionList.forEach { desc ->
             val start = description.indexOf(desc, last)
             last = start + desc.length
-            result.setSpan(BulletSpan(16), start, last, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            result.setSpan(BulletSpan(TIPPING_DESCRIPTION_BULLET_GAP_WIDTH), start, last, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
         return result
     }
 
-    private fun setWrapperWatcherTipping(wrapper: TextInputLayout): TextWatcher {
+    private fun setWrapperWatcherTipping(wrapper: TextInputLayout, minAmount: Int, maxAmount: Int): TextWatcher {
         return object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
 
@@ -221,11 +223,11 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 val text = binding.etNominalTip.editText.text.toString()
-                if (s.isNotEmpty() && text.toInt() < 1000) {
-                    setWrapperError(wrapper, getString(com.tokopedia.logisticorder.R.string.minimum_tipping))
+                if (s.isNotEmpty() && text.toInt() < minAmount) {
+                    setWrapperError(wrapper, getString(com.tokopedia.logisticorder.R.string.minimum_tipping, CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(minAmount)))
                     binding.btnTipping.isEnabled = false
-                } else if (s.isNotEmpty() && text.toInt() > 20000) {
-                    setWrapperError(wrapper, getString(com.tokopedia.logisticorder.R.string.maksimum_tipping))
+                } else if (s.isNotEmpty() && text.toInt() > maxAmount) {
+                    setWrapperError(wrapper, getString(com.tokopedia.logisticorder.R.string.maksimum_tipping, CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(maxAmount)))
                     binding.btnTipping.isEnabled = false
                 } else {
                     setWrapperError(wrapper, null)
@@ -263,5 +265,11 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
     private fun showSoftError(error: Throwable) {
         val message = ErrorHandler.getErrorMessage(context, error)
         view?.let { Toaster.build(it, message, Toaster.LENGTH_SHORT).show() }
+    }
+
+    companion object {
+        private const val TIPPING_SPACING = 8
+        private const val TIPPING_WIDTH_DIVIDER = 4
+        private const val TIPPING_DESCRIPTION_BULLET_GAP_WIDTH = 16
     }
 }

@@ -48,6 +48,10 @@ afterEvaluate {
 
 task("runJacoco")
 task("runUnitTest")
+task("runLintReport")
+task("runLintPr")
+
+def lintPrTaskFile = rootProject.file("tasks.txt")
 
 subprojects {
     tasks.withType(Test) {
@@ -90,6 +94,8 @@ subprojects {
                 substitute module('org.jetbrains.kotlin:kotlin-stdlib-jdk7') with module("org.jetbrains.kotlin:kotlin-stdlib-jdk7:${kotlinVersion}")
                 substitute module('org.jetbrains.kotlin:kotlin-stdlib-jdk8') with module("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
                 substitute module('com.google.code.gson:gson') with module("com.google.code.gson:gson:$gsonDebugVersion")
+                substitute module("androidx.room:room-runtime") with module("androidx.room:room-runtime:$roomVersion")
+                substitute module("androidx.room:room-compiler") with module("androidx.room:room-compiler:$roomVersion")
 
                 if (!rootProject.ext.debugToolsEnabled) {
                     substitute module(rootProject.ext.debugToolsDependencies.chuck) with module(rootProject.ext.debugToolsDependencies.chuckNoop)
@@ -111,6 +117,20 @@ subprojects {
             } else if (isLibrary && !isDF ){
                 task = project.path + ":testDebugUnitTest"
                 rootProject.tasks.runUnitTest.dependsOn(task)
+            }
+        }
+        if (project.tasks.findByName("lint")!= null) {
+            def lintTask = null
+            if (isApp) {
+                lintTask = project.path + ":lintLiveDevDebug"
+            } else if (isLibrary && !isDF ){
+                lintTask = project.path + ":lintDebug"
+            }
+            if (lintTask != null) {
+                rootProject.tasks.runLintReport.dependsOn(lintTask)
+            }
+            if (lintPrTaskFile.exists() && lintPrTaskFile.readLines().contains(lintTask)) {
+                rootProject.tasks.runLintPr.dependsOn(lintTask)
             }
         }
         try {

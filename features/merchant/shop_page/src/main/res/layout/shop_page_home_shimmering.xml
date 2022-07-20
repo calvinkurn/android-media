@@ -8,265 +8,288 @@
     android:layout_marginEnd="@dimen/dp_minus12"
     android:layout_marginRight="@dimen/dp_minus12">
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loaderImageMultipleImageColumn"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_110"
+        app:loader_corner_radius="0dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loaderTitleSliderSquare"
         android:layout_width="0dp"
         android:layout_height="16dp"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl6"
-        app:corners="4"
+        app:loader_corner_radius="2dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/loaderImageMultipleImageColumn"
         app:layout_constraintWidth_percent="0.3" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loaderImageOneSliderSquare"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_128"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginTop="20dp"
-        app:corners="8"
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/loaderTitleSliderSquare"
         app:layout_constraintWidth_percent="0.4" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loaderTitleOneSliderSquare"
         android:layout_width="0dp"
         android:layout_height="12dp"
         android:layout_marginStart="@dimen/spacing_lvl5"
         android:layout_marginLeft="@dimen/spacing_lvl5"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        app:corners="4"
+        app:loader_corner_radius="2dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/loaderImageOneSliderSquare"
         app:layout_constraintWidth_percent="0.35" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loaderPriceOneSliderSquare"
         android:layout_width="0dp"
         android:layout_height="12dp"
         android:layout_marginStart="@dimen/spacing_lvl5"
         android:layout_marginLeft="@dimen/spacing_lvl5"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        app:corners="4"
+        app:loader_corner_radius="2dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/loaderTitleOneSliderSquare"
         app:layout_constraintWidth_percent="0.3" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loaderRatingOneSliderSquare"
         android:layout_width="0dp"
         android:layout_height="12dp"
         android:layout_marginStart="@dimen/spacing_lvl5"
         android:layout_marginLeft="@dimen/spacing_lvl5"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        app:corners="4"
+        app:loader_corner_radius="2dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/loaderPriceOneSliderSquare"
         app:layout_constraintWidth_percent="0.2" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loaderImageTwoSliderSquare"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_128"
         android:layout_marginStart="@dimen/spacing_lvl3"
         android:layout_marginLeft="@dimen/spacing_lvl3"
         android:layout_marginTop="20dp"
-        app:corners="8"
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toEndOf="@id/loaderImageOneSliderSquare"
         app:layout_constraintTop_toBottomOf="@id/loaderTitleSliderSquare"
         app:layout_constraintWidth_percent="0.4" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loaderTitleTwoSliderSquare"
         android:layout_width="0dp"
         android:layout_height="12dp"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        app:corners="4"
+        app:loader_corner_radius="2dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toEndOf="@id/loaderImageOneSliderSquare"
         app:layout_constraintTop_toBottomOf="@id/loaderImageTwoSliderSquare"
         app:layout_constraintWidth_percent="0.35" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loaderPriceTwoSliderSquare"
         android:layout_width="0dp"
         android:layout_height="12dp"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        app:corners="4"
+        app:loader_corner_radius="2dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toEndOf="@id/loaderImageOneSliderSquare"
         app:layout_constraintTop_toBottomOf="@id/loaderTitleOneSliderSquare"
         app:layout_constraintWidth_percent="0.3" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loaderRatingTwoSliderSquare"
         android:layout_width="0dp"
         android:layout_height="12dp"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        app:corners="4"
+        app:loader_corner_radius="2dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toEndOf="@id/loaderImageOneSliderSquare"
         app:layout_constraintTop_toBottomOf="@id/loaderPriceTwoSliderSquare"
         app:layout_constraintWidth_percent="0.2" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loaderImageThreeSliderSquare"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_128"
         android:layout_marginStart="@dimen/spacing_lvl3"
         android:layout_marginLeft="@dimen/spacing_lvl3"
         android:layout_marginTop="20dp"
-        app:corners="8"
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toEndOf="@id/loaderImageTwoSliderSquare"
         app:layout_constraintTop_toBottomOf="@id/loaderTitleSliderSquare"
         app:layout_constraintWidth_percent="0.3" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loaderTitleThreeSliderSquare"
         android:layout_width="0dp"
         android:layout_height="12dp"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        app:corners="4"
+        app:loader_corner_radius="2dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toEndOf="@id/loaderImageTwoSliderSquare"
         app:layout_constraintTop_toBottomOf="@id/loaderImageThreeSliderSquare"
         app:layout_constraintWidth_percent="0.3" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loaderPriceThreeSliderSquare"
         android:layout_width="0dp"
         android:layout_height="12dp"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        app:corners="4"
+        app:loader_corner_radius="2dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toEndOf="@id/loaderImageTwoSliderSquare"
         app:layout_constraintTop_toBottomOf="@id/loaderTitleTwoSliderSquare"
         app:layout_constraintWidth_percent="0.2" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loaderRatingThreeSliderSquare"
         android:layout_width="0dp"
         android:layout_height="12dp"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        app:corners="4"
+        app:loader_corner_radius="2dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toEndOf="@id/loaderImageTwoSliderSquare"
         app:layout_constraintTop_toBottomOf="@id/loaderPriceThreeSliderSquare"
         app:layout_constraintWidth_percent="0.15" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loaderTitleSliderBanner"
         android:layout_width="0dp"
         android:layout_height="16dp"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginTop="48dp"
-        app:corners="4"
+        app:loader_corner_radius="2dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/loaderPriceOneSliderSquare"
         app:layout_constraintWidth_percent="0.36" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loaderImageOneSliderBanner"
         android:layout_width="0dp"
         android:layout_height="68dp"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl4"
-        app:corners="8"
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/loaderTitleSliderBanner"
         app:layout_constraintWidth_percent="0.7" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loaderImageTwoSliderBanner"
         android:layout_width="216dp"
         android:layout_height="68dp"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl4"
-        app:corners="8"
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toEndOf="@id/loaderImageOneSliderBanner"
         app:layout_constraintTop_toBottomOf="@id/loaderTitleSliderBanner" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loaderTitleListProduct"
         android:layout_width="0dp"
         android:layout_height="@dimen/spacing_lvl4"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl6"
-        app:corners="4"
+        app:loader_corner_radius="2dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/loaderImageOneSliderBanner"
         app:layout_constraintWidth_percent="0.36" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loaderImageOneListProduct"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_140"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginTop="12dp"
-        app:corners="8"
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/loaderTitleListProduct"
         app:layout_constraintWidth_percent="0.45" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loaderTitleOneListProduct"
         android:layout_width="0dp"
         android:layout_height="12dp"
         android:layout_marginStart="@dimen/spacing_lvl5"
         android:layout_marginLeft="@dimen/spacing_lvl5"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        app:corners="4"
+        app:loader_corner_radius="2dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/loaderImageOneListProduct"
         app:layout_constraintWidth_percent="0.4" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loaderPriceOneListProduct"
         android:layout_width="0dp"
         android:layout_height="12dp"
         android:layout_marginStart="@dimen/spacing_lvl5"
         android:layout_marginLeft="@dimen/spacing_lvl5"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        app:corners="4"
+        app:loader_corner_radius="2dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/loaderTitleOneListProduct"
         app:layout_constraintWidth_percent="0.3" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loaderRatingOneListProduct"
         android:layout_width="0dp"
         android:layout_height="12dp"
         android:layout_marginStart="@dimen/spacing_lvl5"
         android:layout_marginLeft="@dimen/spacing_lvl5"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        app:corners="4"
+        app:loader_corner_radius="2dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/loaderPriceOneListProduct"
         app:layout_constraintWidth_percent="0.2" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loaderImageTwoListProduct"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_140"
@@ -275,44 +298,48 @@
         android:layout_marginTop="12dp"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
-        app:corners="8"
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/loaderImageOneListProduct"
         app:layout_constraintTop_toBottomOf="@id/loaderTitleListProduct"
         app:layout_constraintWidth_percent="0.45" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loaderTitleTwoListProduct"
         android:layout_width="0dp"
         android:layout_height="12dp"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        app:corners="4"
+        app:loader_corner_radius="2dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toEndOf="@id/loaderImageOneListProduct"
         app:layout_constraintTop_toBottomOf="@id/loaderImageTwoListProduct"
         app:layout_constraintWidth_percent="0.4" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loaderPriceTwoListProduct"
         android:layout_width="0dp"
         android:layout_height="12dp"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        app:corners="4"
+        app:loader_corner_radius="2dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toEndOf="@id/loaderImageOneListProduct"
         app:layout_constraintTop_toBottomOf="@id/loaderTitleTwoListProduct"
         app:layout_constraintWidth_percent="0.3" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loaderRatingTwoListProduct"
         android:layout_width="0dp"
         android:layout_height="12dp"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        app:corners="4"
+        app:loader_corner_radius="2dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toEndOf="@id/loaderImageOneListProduct"
         app:layout_constraintTop_toBottomOf="@id/loaderPriceTwoListProduct"
         app:layout_constraintWidth_percent="0.2" />

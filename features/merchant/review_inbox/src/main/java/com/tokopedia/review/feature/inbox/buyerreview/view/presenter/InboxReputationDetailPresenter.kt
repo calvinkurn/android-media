@@ -7,7 +7,6 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputat
 import com.tokopedia.review.feature.inbox.buyerreview.view.subscriber.GetInboxReputationDetailSubscriber
 import com.tokopedia.review.feature.inbox.buyerreview.view.subscriber.RefreshInboxReputationDetailSubscriber
 import com.tokopedia.review.feature.inbox.buyerreview.view.subscriber.SendSmileySubscriber
-import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**
@@ -15,8 +14,7 @@ import javax.inject.Inject
  */
 class InboxReputationDetailPresenter @Inject internal constructor(
     private val getInboxReputationDetailUseCase: GetInboxReputationDetailUseCase,
-    private val sendSmileyReputationUseCase: SendSmileyReputationUseCase,
-    private val userSession: UserSessionInterface
+    private val sendSmileyReputationUseCase: SendSmileyReputationUseCase
 ) : BaseDaggerPresenter<InboxReputationDetail.View>(), InboxReputationDetail.Presenter {
 
     private var viewListener: InboxReputationDetail.View? = null
@@ -37,7 +35,6 @@ class InboxReputationDetailPresenter @Inject internal constructor(
         getInboxReputationDetailUseCase.execute(
             GetInboxReputationDetailUseCase.getParam(
                 id,
-                userSession.userId,
                 anInt
             ),
             viewListener?.let { GetInboxReputationDetailSubscriber(it) }
@@ -61,7 +58,6 @@ class InboxReputationDetailPresenter @Inject internal constructor(
         getInboxReputationDetailUseCase.execute(
             GetInboxReputationDetailUseCase.getParam(
                 reputationId,
-                userSession.userId,
                 tab
             ),
             viewListener?.let { RefreshInboxReputationDetailSubscriber(it) }

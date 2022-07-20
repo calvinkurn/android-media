@@ -77,7 +77,7 @@ abstract class BaseListrikScreenShotTest: BaseRechargeGeneralScreenShotTest() {
         )
 
         Thread.sleep(1000)
-        Espresso.onView(ViewMatchers.withText("08121111111"))
+        Espresso.onView(ViewMatchers.withText("111111111111"))
                 .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
                 .perform(ViewActions.click())
     }

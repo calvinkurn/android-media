@@ -13,17 +13,21 @@ import com.tokopedia.search.result.presentation.model.BroadMatch
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchProduct
+import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.presentation.model.DynamicCarouselOption
 import com.tokopedia.search.result.presentation.model.DynamicCarouselProduct
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.SeparatorDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
-import com.tokopedia.search.result.presentation.model.SearchProductCountDataView
 import com.tokopedia.search.result.shop.presentation.viewmodel.shouldBeInstanceOf
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.shouldBeInstanceOf
-import io.mockk.*
+import io.mockk.every
+import io.mockk.just
+import io.mockk.runs
+import io.mockk.slot
+import io.mockk.verifyOrder
 import org.junit.Test
 import rx.Subscriber
 
@@ -99,7 +103,7 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
     private fun `Then verify visitable list has correct inspiration carousel and product sequence on first page`(searchProductModel: SearchProductModel) {
         val visitableList = visitableListSlot.captured
 
-        // 0 -> search product count data
+        // 0 -> choose address data
         // 1 -> product
         // 2 -> product
         // 3 -> product
@@ -122,8 +126,8 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
         visitableList.forEachIndexed { index, visitable ->
             when (index) {
                 0 -> {
-                    visitable.shouldBeInstanceOf<SearchProductCountDataView>(
-                        "visitable list at index $index should be SearchProductCountViewModel"
+                    visitable.shouldBeInstanceOf<ChooseAddressDataView>(
+                        "visitable list at index $index should be ChooseAddressDataViewModel"
                     )
                 }
                 5 -> {
@@ -339,7 +343,7 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
     private fun `Then verify visitable list has correct inspiration carousel position for search result first page without Top Ads product`(searchProductModel: SearchProductModel) {
         val visitableList = visitableListSlot.captured
 
-        // 0 -> search product count data
+        // 0 -> choose address data
         // 1 -> product
         // 2 -> product
         // 3 -> product
@@ -356,8 +360,8 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
         visitableList.forEachIndexed { index, visitable ->
             when (index) {
                 0 -> {
-                    visitable.shouldBeInstanceOf<SearchProductCountDataView>(
-                        "visitable list at index $index should be SearchProductCountViewModel"
+                    visitable.shouldBeInstanceOf<ChooseAddressDataView>(
+                        "visitable list at index $index should be ChooseAddressDataViewModel"
                     )
                 }
                 5 -> {
@@ -440,7 +444,7 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
     private fun `Then verify visitable list has correct inspiration carousel in the same position`(searchProductModel: SearchProductModel) {
         val visitableList = visitableListSlot.captured
 
-        // 0 -> search product count data
+        // 0 -> choose address data
         // 1 -> product
         // 2 -> product
         // 3 -> product
@@ -464,8 +468,8 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
         visitableList.forEachIndexed { index, visitable ->
             when (index) {
                 0 -> {
-                    visitable.shouldBeInstanceOf<SearchProductCountDataView>(
-                        "visitable list at index $index should be SearchProductCountViewModel"
+                    visitable.shouldBeInstanceOf<ChooseAddressDataView>(
+                        "visitable list at index $index should be ChooseAddressDataViewModel"
                     )
                 }
                 5 -> {
@@ -530,7 +534,7 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
     private fun `Then verify visitable list does not render unknown carousel layout`() {
         val visitableList = visitableListSlot.captured
 
-        // 0 -> search product count data
+        // 0 -> choose address data
         // 1 -> product
         // 2 -> product
         // 3 -> product
@@ -551,8 +555,8 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
         visitableList.forEachIndexed { index, visitable ->
             when (index) {
                 0 -> {
-                    visitable.shouldBeInstanceOf<SearchProductCountDataView>(
-                        "visitable list at index $index should be SearchProductCountViewModel"
+                    visitable.shouldBeInstanceOf<ChooseAddressDataView>(
+                        "visitable list at index $index should be ChooseAddressDataViewModel"
                     )
                 }
                 9 -> {
@@ -591,8 +595,8 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
             // Position 6 should not be rendered because no product list
             when (index) {
                 0 -> {
-                    visitable.shouldBeInstanceOf<SearchProductCountDataView>(
-                        "visitable list at index $index should be SearchProductCountViewModel"
+                    visitable.shouldBeInstanceOf<ChooseAddressDataView>(
+                        "visitable list at index $index should be ChooseAddressDataViewModel"
                     )
                 }
                 5 -> {

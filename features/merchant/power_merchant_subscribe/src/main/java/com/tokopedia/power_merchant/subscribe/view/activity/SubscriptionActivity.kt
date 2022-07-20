@@ -2,33 +2,36 @@ package com.tokopedia.power_merchant.subscribe.view.activity
 
 import android.app.Activity
 import android.content.Intent
-import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.gm.common.constant.KYCStatusId
 import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.constant.PMStatusConst
 import com.tokopedia.gm.common.data.source.local.model.PowerMerchantBasicInfoUiModel
-import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.kotlin.extensions.view.getResColor
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.setLightStatusBar
+import com.tokopedia.kotlin.extensions.view.setStatusBarColor
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.analytics.performance.PMPerformanceMonitoring
 import com.tokopedia.power_merchant.subscribe.analytics.performance.PerformanceMonitoringConst
 import com.tokopedia.power_merchant.subscribe.analytics.tracking.PowerMerchantTracking
-import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantErrorLogger
 import com.tokopedia.power_merchant.subscribe.databinding.ActivityPmSubsriptionBinding
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
@@ -37,7 +40,6 @@ import com.tokopedia.power_merchant.subscribe.view.bottomsheet.PMTermAndConditio
 import com.tokopedia.power_merchant.subscribe.view.fragment.PMRegistrationFragment
 import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantSubscriptionFragment
 import com.tokopedia.power_merchant.subscribe.view.helper.PMRegistrationTermHelper
-import com.tokopedia.power_merchant.subscribe.view.helper.PMViewPagerAdapter
 import com.tokopedia.power_merchant.subscribe.view.model.ModerationShopStatusUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.RegistrationTermUiModel
 import com.tokopedia.power_merchant.subscribe.view.viewmodel.PowerMerchantSharedViewModel
@@ -60,11 +62,7 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
     SubscriptionActivityInterface {
 
     companion object {
-        private const val PM_TAB_INDEX = 0
-        private const val PM_PRO_TAB_INDEX = 1
         private const val REQUEST_LOGIN = 1313
-        private const val TAB_PARAM = "tab"
-        private const val TAB_PM_PRO = "pm_pro"
     }
 
     @Inject
@@ -83,20 +81,11 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
         ViewModelProvider(this, viewModelFactory).get(PowerMerchantSharedViewModel::class.java)
     }
 
-    private var pmActiveStatePage: PowerMerchantSubscriptionFragment? = null
-    private val pmRegistrationPage: Pair<String, PMRegistrationFragment> by lazy {
-        val title = getString(R.string.pm_power_merchant)
-        val rpmTire = PMConstant.PMTierType.POWER_MERCHANT
-        Pair(title, PMRegistrationFragment.createInstance(rpmTire))
+    private val pmActiveStatePage: PowerMerchantSubscriptionFragment by lazy {
+        PowerMerchantSubscriptionFragment.createInstance()
     }
-    private val pmProRegistrationPage: Pair<String, PMRegistrationFragment> by lazy {
-        val title = getString(R.string.pm_power_merchant_pro)
-        val pmProTire = PMConstant.PMTierType.POWER_MERCHANT_PRO
-        Pair(title, PMRegistrationFragment.createInstance(pmProTire))
-    }
-
-    private val viewPagerAdapter by lazy {
-        PMViewPagerAdapter(supportFragmentManager)
+    private val pmRegistrationPage: PMRegistrationFragment by lazy {
+        PMRegistrationFragment.createInstance()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -151,11 +140,7 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
     override fun setViewForPmSuccessState() {
         binding?.run {
             loaderPmSubscription.gone()
-            imgPmHeaderBackdrop.gone()
-            imgPmHeaderImage.gone()
-            tvPmHeaderDesc.gone()
-            tabPmSubscription.gone()
-            viewPagerPmSubscription.visible()
+            framePmFragment.visible()
             globalErrorPmSubscription.gone()
         }
     }
@@ -163,11 +148,7 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
     override fun setViewForRegistrationPage() {
         binding?.run {
             loaderPmSubscription.gone()
-            imgPmHeaderBackdrop.visible()
-            imgPmHeaderImage.visible()
-            tvPmHeaderDesc.visible()
-            tabPmSubscription.visible()
-            viewPagerPmSubscription.visible()
+            framePmFragment.visible()
             globalErrorPmSubscription.gone()
         }
     }
@@ -175,11 +156,7 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
     override fun showLoadingState() {
         binding?.run {
             loaderPmSubscription.visible()
-            imgPmHeaderBackdrop.gone()
-            imgPmHeaderImage.gone()
-            tvPmHeaderDesc.gone()
-            tabPmSubscription.gone()
-            viewPagerPmSubscription.gone()
+            framePmFragment.gone()
             globalErrorPmSubscription.gone()
         }
     }
@@ -187,11 +164,6 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
     override fun showErrorState(throwable: Throwable) {
         binding?.run {
             loaderPmSubscription.gone()
-            imgPmHeaderBackdrop.gone()
-            imgPmHeaderImage.gone()
-            tvPmHeaderDesc.gone()
-            tabPmSubscription.gone()
-            viewPagerPmSubscription.gone()
             globalErrorPmSubscription.visible()
             globalErrorPmSubscription.setActionClickListener {
                 fetchPmBasicInfo(false)
@@ -303,141 +275,41 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
             else -> setupActiveState()
         }
 
-        binding?.run {
-            viewPagerPmSubscription.adapter = viewPagerAdapter
-            tabPmSubscription.tabLayout.removeAllTabs()
-            viewPagerAdapter.getTitles().forEach {
-                tabPmSubscription.addNewTab(it)
-            }
-
-            tabPmSubscription.tabLayout.tabRippleColor = ColorStateList.valueOf(Color.TRANSPARENT)
-            tabPmSubscription.tabLayout.addOnTabSelectedListener(object :
-                TabLayout.OnTabSelectedListener {
-                override fun onTabSelected(tab: TabLayout.Tab?) {
-                    val tabIndex = tabPmSubscription.tabLayout.selectedTabPosition
-                    setOnTabIndexSelected(data, tabIndex)
-                    sendTrackerOnPMTabClicked(tabIndex)
-                }
-
-                override fun onTabUnselected(tab: TabLayout.Tab?) {
-
-                }
-
-                override fun onTabReselected(tab: TabLayout.Tab?) {
-
-                }
-            })
-            tabPmSubscription.setupWithViewPager(viewPagerPmSubscription)
-
-            val defaultTabIndex = if (data.shopInfo.isEligiblePmPro) {
-                PM_PRO_TAB_INDEX
-            } else {
-                PM_TAB_INDEX
-            }
-            setOnTabIndexSelected(data, defaultTabIndex)
-            tabPmSubscription.tabLayout.getTabAt(defaultTabIndex)?.select()
-
-            val isSingleOrEmptyTab = viewPagerAdapter.getTitles().size <= 1
-            tabPmSubscription.isVisible = !isSingleOrEmptyTab
-
-            if (!isSingleOrEmptyTab) {
-                setSelectedTab()
-            }
-        }
-    }
-
-    private fun setSelectedTab() {
-        val tab = intent.data?.let {
-            val params = UriUtil.uriQueryParamsToMap(it)
-            params[TAB_PARAM].orEmpty()
-        }
-        val tabIndex = if (tab?.equals(TAB_PM_PRO, true) == true) {
-            PM_PRO_TAB_INDEX
-        } else {
-            PM_TAB_INDEX
-        }
-        binding?.viewPagerPmSubscription?.currentItem = tabIndex
-    }
-
-    private fun sendTrackerOnPMTabClicked(tabIndex: Int) {
-        if (tabIndex == PM_PRO_TAB_INDEX) {
-            powerMerchantTracking.sendEventClickTabPowerMerchantPro()
-        }
+        setupFooterView(data)
     }
 
     private fun setupActiveState() {
         binding?.pmRegistrationFooterView?.gone()
         setViewForPmSuccessState()
-        viewPagerAdapter.clearFragment()
-        if (pmActiveStatePage == null) {
-            pmActiveStatePage = PowerMerchantSubscriptionFragment.createInstance()
-        }
-        pmActiveStatePage?.let {
-            viewPagerAdapter.addFragment(it, getString(R.string.pm_power_merchant))
-        }
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.framePmFragment, pmActiveStatePage)
+            .commit()
     }
 
     private fun setupRegistrationPage() {
         setViewForRegistrationPage()
-        viewPagerAdapter.clearFragment()
-        viewPagerAdapter.addFragment(pmRegistrationPage.second, pmRegistrationPage.first)
-        viewPagerAdapter.addFragment(pmProRegistrationPage.second, pmProRegistrationPage.first)
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.framePmFragment, pmRegistrationPage)
+            .commit()
     }
 
-    private fun setOnTabIndexSelected(data: PowerMerchantBasicInfoUiModel, tabIndex: Int) {
-        val isPmProSelected = tabIndex == 1
-        val isNewSeller = data.shopInfo.isNewSeller
-
-        binding?.run {
-            if (isPmProSelected) {
-                imgPmHeaderBackdrop.loadImage(Constant.Image.PM_BG_REGISTRATION_PM_PRO)
-                imgPmHeaderImage.loadImage(PMConstant.Images.PM_PRO_BADGE)
-                if (isNewSeller) {
-                    tvPmHeaderDesc.setText(R.string.pm_registration_header_pm_pro_new_seller)
-                } else {
-                    tvPmHeaderDesc.setText(R.string.pm_registration_header_pm_pro)
-                }
-            } else {
-                imgPmHeaderBackdrop.loadImage(Constant.Image.PM_BG_REGISTRATION_PM)
-                imgPmHeaderImage.loadImage(PMConstant.Images.PM_BADGE)
-                if (isNewSeller) {
-                    tvPmHeaderDesc.setText(R.string.pm_registration_header_pm_new_seller)
-                } else {
-                    tvPmHeaderDesc.setText(R.string.pm_registration_header_pm)
-                }
-            }
-        }
-
-        setupFooterView(data, isPmProSelected)
-    }
-
-    private fun setupFooterView(data: PowerMerchantBasicInfoUiModel, isPmProSelected: Boolean) {
+    private fun setupFooterView(data: PowerMerchantBasicInfoUiModel) {
         if (data.pmStatus.status != PMStatusConst.INACTIVE) {
             binding?.pmRegistrationFooterView?.gone()
             return
         }
 
         val shopInfo = data.shopInfo
-
         val isRegularMerchant = data.pmStatus.pmTier == PMConstant.PMTierType.POWER_MERCHANT &&
                 data.pmStatus.status == PMStatusConst.INACTIVE
-        val isRMNewSeller = data.shopInfo.isNewSeller &&
-                isRegularMerchant
 
-        val registrationTerms = if (isPmProSelected) {
-            PMRegistrationTermHelper.getPmProRegistrationTerms(this, shopInfo, isPmProSelected)
-        } else {
-            PMRegistrationTermHelper.getPmRegistrationTerms(
-                this,
-                shopInfo,
-                isPmProSelected,
-                isRegularMerchant
-            )
-        }
+        val registrationTerms = PMRegistrationTermHelper.getPmRegistrationTerms(
+            this,
+            shopInfo,
+            isRegularMerchant
+        )
 
-        val isEligiblePm =
-            (if (isPmProSelected) shopInfo.isEligiblePmPro else shopInfo.isEligiblePm)
-                    && !registrationTerms.any { !it.isChecked }
+        val isEligiblePm = shopInfo.isEligiblePm && !registrationTerms.any { !it.isChecked }
 
         val firstPriorityTerm = registrationTerms.filter {
             if (!shopInfo.isNewSeller) {
@@ -457,38 +329,22 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
         }
 
         binding?.pmRegistrationFooterView?.run {
-            val isHideCta = isRMNewSeller && isPmProSelected
             if (shopInfo.kycStatusId == KYCStatusId.PENDING) gone() else visible()
             setCtaText(ctaText)
-            if (isHideCta) {
-                setTnCVisibility(false)
-            } else {
-                setTnCVisibility(needTnC)
-            }
+            setTnCVisibility(needTnC)
             setOnTickboxCheckedListener {
                 powerMerchantTracking.sendEventClickTickBox()
             }
             setOnCtaClickListener { tncAgreed ->
-                if (isPmProSelected) {
-                    pmProRegistrationPage.second.setOnFooterCtaClickedListener(
-                        firstPriorityTerm,
-                        isEligiblePm,
-                        tncAgreed,
-                        PMConstant.ShopTierType.POWER_MERCHANT_PRO
-                    )
-                } else {
-                    pmRegistrationPage.second.setOnFooterCtaClickedListener(
-                        firstPriorityTerm,
-                        isEligiblePm,
-                        tncAgreed,
-                        PMConstant.ShopTierType.POWER_MERCHANT
-                    )
-                }
+                pmRegistrationPage.setOnFooterCtaClickedListener(
+                    firstPriorityTerm,
+                    isEligiblePm,
+                    tncAgreed
+                )
             }
             setOnTncClickListener {
                 showPmTermAndCondition()
             }
-            if (isHideCta) hide() else show()
         }
     }
 

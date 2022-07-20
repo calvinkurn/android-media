@@ -14,6 +14,7 @@ import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop_showcase.databinding.ShopShowcaseItemPickerBinding
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+import com.tokopedia.unifyprinciples.Typography
 
 class ShopShowcasePickerAdapter(
         private val listener: PickerClickListener,
@@ -73,7 +74,7 @@ class ShopShowcasePickerAdapter(
 
         var btnRadioPicker: RadioButtonUnify? = null
         private var btnCheckboxPicker: CheckboxUnify? = null
-        private var tvShowcaseNamePicker: TextView? = null
+        private var tvShowcaseNamePicker: Typography? = null
 
         init {
             itemViewBinding.apply {

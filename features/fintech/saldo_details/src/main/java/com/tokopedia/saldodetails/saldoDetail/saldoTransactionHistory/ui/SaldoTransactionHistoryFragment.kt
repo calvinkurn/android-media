@@ -127,7 +127,7 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
         //penjualan tab
         saldoTabItems.add(SaldoHistoryTabItem().apply {
             title = TransactionTitle.SALDO_SALES
-            fragment = BaseSaldoTransactionListFragment.getInstance(TransactionTitle.SALDO_SALES)
+            fragment = SellerSaldoTransactionListFragment.getInstance(TransactionTitle.SALDO_SALES)
         })
 
         saldoTransactionTabsUnify.run {

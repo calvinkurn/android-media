@@ -85,6 +85,19 @@
             android:layout_marginRight="@dimen/spacing_lvl4"
             app:layout_constraintTop_toBottomOf="@id/add_edit_product_specification_layout" />
 
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/add_edit_product_price_variant_ticker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginHorizontal="16dp"
+            android:visibility="gone"
+            app:descriptionText="@string/text_has_variant_price_ticker"
+            app:closeButtonVisibility="gone"
+            app:tickerShapeType="loose"
+            app:tickerType="announcement"
+            app:layout_constraintTop_toBottomOf="@id/add_edit_product_price_layout" />
+
         <com.tokopedia.product.addedit.tooltip.presentation.TooltipCardViewSelectable
             android:id="@+id/add_edit_product_product_recommendation_layout"
             app:textTitle="@string/title_price_recommendation"
@@ -99,7 +112,7 @@
             android:layout_marginRight="@dimen/spacing_lvl4"
             android:visibility="gone"
             tools:visibility="visible"
-            app:layout_constraintTop_toBottomOf="@id/add_edit_product_price_layout" />
+            app:layout_constraintTop_toBottomOf="@id/add_edit_product_price_variant_ticker" />
 
         <include
             android:id="@+id/add_edit_product_wholesale_layout"

@@ -83,4 +83,13 @@
     <string name="af_indicator_media">%1$d dari %2$d</string>
     <string name="kol_failed_load_video">Oops, videonya gagal dimuat</string>
     <string name="kol_lets_shop">Belanja yuk!</string>
+    <string name="kol_close_btn_content_desc">Close Button</string>
+    <string name="kol_badge_content_desc">Author badge</string>
+    <string name="kol_video_play_btn_content_desc">Video Play Button</string>
+    <string name="kol_video_pause_btn_content_desc">Video Pause Button</string>
+    <string name="kol_video_vol_control_btn_content_desc">Volume Control Button</string>
+    <string name="kol_empty_state_content_desc">Empty Page Image</string>
+    <string name="kol_next_image_content_desc">Action Next Image</string>
+    <string name="kol_prev_image_content_desc">Action Previous Image</string>
+
 </resources>
