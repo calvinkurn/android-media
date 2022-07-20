@@ -5,11 +5,13 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.Utils.generateHapticFeedback
 import com.tokopedia.sellerorder.databinding.DetailShippingItemBinding
@@ -125,6 +127,11 @@ class SomDetailShippingViewHolder(
                                     receiverProvinceText))
                         }
                     }
+                }
+
+                item.dataObject.shipmentLogo.isNotEmpty().let { isNotEmpty ->
+                    ivOrderDetailFreeShippingBadge.loadImage(item.dataObject.shipmentLogo)
+                    ivOrderDetailFreeShippingBadge.showWithCondition(isNotEmpty)
                 }
 
                 if (item.dataObject.awb.isNotEmpty()) {
