@@ -345,7 +345,7 @@ class DetailEditorFragment @Inject constructor(
     companion object {
         private const val SCREEN_NAME = "Detail Editor"
 
-        private const val DEFAULT_VALUE_CONTRAST = 10f
+        private const val DEFAULT_VALUE_CONTRAST = 0f
         private const val DEFAULT_VALUE_BRIGHTNESS = 0f
     }
 

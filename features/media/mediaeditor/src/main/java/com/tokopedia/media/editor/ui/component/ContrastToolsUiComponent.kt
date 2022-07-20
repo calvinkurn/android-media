@@ -17,9 +17,9 @@ class ContrastToolsUiComponent constructor(
         container().show()
 
         contrastSlider.setRangeSliderValue(
-            50,
-            100,
-            1,
+            CONTRAST_SLIDER_START_VALUE,
+            CONTRAST_SLIDER_RANGE * 2,
+            CONTRAST_SLIDER_STEP_VALUE,
             sliderInitValue.toInt()
         )
         contrastSlider.listener = this
@@ -36,11 +36,26 @@ class ContrastToolsUiComponent constructor(
     }
 
     companion object {
-        private const val CONTRAST_SLIDER_VALUE_DIVIDER = 10
+        // contrast can be adjust from 0...10, current product requirement need to cap it on scale 3
+        private const val CONTRAST_REAL_POSITIVE_VALUE = 2
 
-        // convert raw value (storage value & slider value is raw value) to contrast range [0..10]
+        private const val CONTRAST_SLIDER_RANGE = 100
+        private const val CONTRAST_SLIDER_STEP_VALUE = 1
+        private const val CONTRAST_SLIDER_START_VALUE = 0
+
+        /**
+         * convert slider value -100...100 to contrast value 0...3
+         * -100...1 => 0...1
+         * 0...100 => 1...3
+         */
         fun contrastRawToStdValue(rawStorageValue: Float): Float {
-            return rawStorageValue / CONTRAST_SLIDER_VALUE_DIVIDER
+            return if (rawStorageValue >= 0) {
+                // 1...3
+                ((rawStorageValue / CONTRAST_SLIDER_RANGE) * CONTRAST_REAL_POSITIVE_VALUE) + 1
+            } else {
+                // 0...0.99
+                ((rawStorageValue + CONTRAST_SLIDER_RANGE) / CONTRAST_SLIDER_RANGE)
+            }
         }
     }
 }
