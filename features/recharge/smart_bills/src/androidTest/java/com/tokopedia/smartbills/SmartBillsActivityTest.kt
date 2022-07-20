@@ -99,6 +99,8 @@ class SmartBillsActivityTest {
         click_add_bills()
         click_delete_cancel()
         click_delete_success()
+        click_highlight_widget()
+        close_highlight_widget()
 
         MatcherAssert.assertThat(
             cassavaTestRule.validate(SMART_BILLS_VALIDATOR_QUERY),
@@ -219,6 +221,17 @@ class SmartBillsActivityTest {
     private fun click_ok_dialog(){
         Thread.sleep(3000)
         onView(withId(R.id.dialog_btn_primary)).perform(click())
+    }
+
+    private fun click_highlight_widget() {
+        Intents.intending(IntentMatchers.isInternal()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        Thread.sleep(3000)
+        onView(withId(R.id.highlight_category)).perform(click())
+    }
+
+    private fun close_highlight_widget() {
+        Thread.sleep(3000)
+        onView(withId(R.id.icon_highlighted_category_close)).perform(click())
     }
 
     @After
