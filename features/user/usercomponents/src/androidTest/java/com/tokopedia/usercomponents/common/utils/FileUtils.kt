@@ -1,4 +1,4 @@
-package com.tokopedia.usercomponents.utils
+package com.tokopedia.usercomponents.common.utils
 
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.gson.Gson

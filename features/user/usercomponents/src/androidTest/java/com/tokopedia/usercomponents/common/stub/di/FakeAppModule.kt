@@ -1,4 +1,4 @@
-package com.tokopedia.usercomponents.stub.di
+package com.tokopedia.usercomponents.common.stub.di
 
 import android.content.Context
 import com.tokopedia.abstraction.AbstractionRouter
@@ -8,12 +8,10 @@ import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.cachemanager.CacheManager
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.graphql.domain.GraphqlUseCaseInterface
 import com.tokopedia.test.application.datastore.TestUserSessionDataStore
 import com.tokopedia.user.session.datastore.UserSessionDataStore
-import com.tokopedia.usercomponents.explicit.stub.data.ExplicitRepositoryStub
 import dagger.Module
 import dagger.Provides
 
@@ -50,13 +48,6 @@ class FakeAppModule(private val context: Context) {
     @Provides
     fun provideGraphqlUseCase(): GraphqlUseCaseInterface {
         return GraphqlUseCase()
-    }
-
-    @Provides
-    @ApplicationContext
-    @ApplicationScope
-    fun provideGraphqlRepository(): GraphqlRepository {
-        return ExplicitRepositoryStub()
     }
 
     @ApplicationScope
