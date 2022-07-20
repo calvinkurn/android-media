@@ -444,5 +444,10 @@ class GetDynamicFeedNewUseCase @Inject constructor(@ApplicationContext context: 
         val shouldShowNewTopadsOnly = context?.let { TopadsRollenceUtil.shouldShowFeedNewDesignValue(it) }?:true
         return DynamicFeedNewMapper.map(dynamicFeedResponse.feedXHome, cursor, shouldShowNewTopadsOnly)
     }
+    suspend fun executeForCDP(cursor: String = "", limit: Int = 5, detailId: String = ""):
+            FeedXData {
+        this.setParams(cursor, limit, detailId)
+        return executeOnBackground()
+    }
 
 }

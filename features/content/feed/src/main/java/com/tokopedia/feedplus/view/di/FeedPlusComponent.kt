@@ -23,7 +23,7 @@ import com.tokopedia.feedcomponent.di.FeedFloatingButtonManagerModule
         ViewModelModule::class,
         InterestPickCommonModule::class,
         PlayWidgetModule::class,
-        FeedFloatingButtonManagerModule::class,
+        FeedFloatingButtonManagerModule::class
      ],
     dependencies = [BaseAppComponent::class]
 )
