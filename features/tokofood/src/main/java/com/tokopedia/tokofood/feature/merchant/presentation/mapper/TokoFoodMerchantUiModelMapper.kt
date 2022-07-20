@@ -183,8 +183,8 @@ object TokoFoodMerchantUiModelMapper {
     }
 
     fun getMerchantFoodAppLink(merchantId: String, productId: String): String {
-        return UriUtil.buildUri(ApplinkConst.TokoFood.MERCHANT, mapOf(ShareComponentConstants.Merchant.MERCHANT_ID to merchantId)).apply {
-            UriUtil.buildUriAppendParam(this, mapOf(ShareComponentConstants.Merchant.PRODUCT_ID to productId))
+        return UriUtil.buildUri(ApplinkConst.TokoFood.MERCHANT, mapOf("{"+ShareComponentConstants.Merchant.MERCHANT_ID+"}" to merchantId)).apply {
+            UriUtil.buildUriAppendParam(this, mapOf("{"+ShareComponentConstants.Merchant.PRODUCT_ID+"}" to productId))
         }
     }
 }
