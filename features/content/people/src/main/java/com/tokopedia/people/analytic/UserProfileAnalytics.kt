@@ -116,7 +116,7 @@ class UserProfileAnalytics {
         const val FEED_USER_PROFILE_POST = "feed user profile - post"
         const val FEED_USER_PROFILE_VIDEO = "feed user profile - video"
         const val FEED_USER_PROFILE_ONBOARDING_BOTTOMSHEET = "feed user profile - onboarding bottomsheet"
-        const val FEED_USER_PROFILE_FOLLOWER_TAB = "/feed user profile - follower tab"
-        const val FEED_USER_PROFILE_FOLLOWING_TAB = "/feed user profile - following tab"
+        const val FEED_USER_PROFILE_FOLLOWER_TAB = "feed user profile - follower tab"
+        const val FEED_USER_PROFILE_FOLLOWING_TAB = "feed user profile - following tab"
     }
 }

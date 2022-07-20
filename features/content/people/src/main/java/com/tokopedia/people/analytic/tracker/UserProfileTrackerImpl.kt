@@ -554,8 +554,8 @@ class UserProfileTrackerImpl @Inject constructor(
     override fun openFollowersTab(userId: String) {
         val map = mutableMapOf<String, Any>()
         map[EVENT] = EVENT_OPEN_SCREEN
-        map[SCREEN_NAME] = FEED_USER_PROFILE_FOLLOWER_TAB
-
+        map[SCREEN_NAME] = "/$FEED_USER_PROFILE_FOLLOWER_TAB"
+        map[IS_LOGGED_IN_STATUS] = "${userSession.isLoggedIn.not()}"
         map[USER_ID] = userId
         map[BUSINESS_UNIT] = CONTENT
         map[CURRENT_SITE] = currentSite
@@ -616,8 +616,8 @@ class UserProfileTrackerImpl @Inject constructor(
     override fun openFollowingTab(userId: String) {
         val map = mutableMapOf<String, Any>()
         map[EVENT] = EVENT_OPEN_SCREEN
-        map[SCREEN_NAME] = FEED_USER_PROFILE_FOLLOWING_TAB
-
+        map[SCREEN_NAME] = "/$FEED_USER_PROFILE_FOLLOWING_TAB"
+        map[IS_LOGGED_IN_STATUS] = "${userSession.isLoggedIn.not()}"
         map[USER_ID] = userId
         map[BUSINESS_UNIT] = CONTENT
         map[CURRENT_SITE] = currentSite
