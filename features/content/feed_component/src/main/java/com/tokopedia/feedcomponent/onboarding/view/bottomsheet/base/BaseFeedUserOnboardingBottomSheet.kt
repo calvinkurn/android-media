@@ -10,6 +10,7 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -76,6 +77,8 @@ abstract class BaseFeedUserOnboardingBottomSheet : BottomSheetUnify() {
         isSkipCollapseState = true
         isHideable = true
         clearContentPadding = true
+
+        dialog?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
 
         return super.onCreateView(inflater, container, savedInstanceState)
     }
