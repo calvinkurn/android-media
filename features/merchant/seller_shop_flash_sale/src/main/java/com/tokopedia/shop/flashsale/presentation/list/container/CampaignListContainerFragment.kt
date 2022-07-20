@@ -89,7 +89,7 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
         setupTabs()
         observeTabsMeta()
         observeSellerEligibility()
-        val targetTabPosition = findTargetTabDestination()
+        val targetTabPosition = findTargetTabDestination() ?: return
         viewModel.getPrerequisiteData(targetTabPosition.position)
     }
 
@@ -308,8 +308,8 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
         RouteManager.route(activity ?: return, route)
     }
 
-    private fun findTargetTabDestination(): CampaignListTab {
-        if (activity == null) return CampaignListTab.ACTIVE_CAMPAIGN
+    private fun findTargetTabDestination(): CampaignListTab? {
+        if (activity == null) return null
 
         val appLinkData = RouteManager.getIntent(activity, activity?.intent?.data.toString()).data
         val lastPathSegment = appLinkData?.lastPathSegment.orEmpty()
