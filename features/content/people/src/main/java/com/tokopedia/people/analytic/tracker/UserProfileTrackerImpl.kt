@@ -50,25 +50,23 @@ import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.ECOMMERCE
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.EVENT
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.ID
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.IS_LOGGED_IN_STATUS
-import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.LIVE
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.NAME
-import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.NOT_LIVE
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.POSITION
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.PROMOTIONS
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.PROMO_CLICK
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.PROMO_VIEW
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.SCREEN_NAME
-import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.SELF
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.SESSION_IRIS
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.USER_ID
-import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.VISITOR
-import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.VOD
 import com.tokopedia.people.analytic.UserProfileAnalytics.Event.EVENT_CLICK_COMMUNICATION
 import com.tokopedia.people.analytic.UserProfileAnalytics.Event.EVENT_CLICK_FEED
 import com.tokopedia.people.analytic.UserProfileAnalytics.Event.EVENT_CLICK_HOME_PAGE
 import com.tokopedia.people.analytic.UserProfileAnalytics.Event.EVENT_OPEN_SCREEN
 import com.tokopedia.people.analytic.UserProfileAnalytics.Event.EVENT_VIEW_COMMUNICATION
 import com.tokopedia.people.analytic.UserProfileAnalytics.Event.EVENT_VIEW_HOME_PAGE
+import com.tokopedia.people.analytic.UserProfileAnalytics.Function.isLiveOrNotLive
+import com.tokopedia.people.analytic.UserProfileAnalytics.Function.isLiveOrVod
+import com.tokopedia.people.analytic.UserProfileAnalytics.Function.isSelfOrVisitor
 import com.tokopedia.people.analytic.UserProfileAnalytics.ScreenName.FEED_USER_PROFILE_PROFILE_RECOMMENDATION_CAROUSEL
 import com.tokopedia.people.analytic.UserProfileAnalytics.Variable.analyticTracker
 import com.tokopedia.people.analytic.UserProfileAnalytics.Variable.currentSite
@@ -89,7 +87,7 @@ class UserProfileTrackerImpl @Inject constructor(
         map[BUSINESS_UNIT] = CONTENT
         map[CURRENT_SITE] = currentSite
         map[IS_LOGGED_IN_STATUS] = "${userSession.isLoggedIn.not()}"
-        map[SCREEN_NAME] = "/$FEED_USER_PROFILE - ${if (live) LIVE else NOT_LIVE}"
+        map[SCREEN_NAME] = "/$FEED_USER_PROFILE - ${live.isLiveOrNotLive()}"
         map[SESSION_IRIS] = TrackApp.getInstance().gtm.irisSessionId
         map[USER_ID] = userId
 
@@ -102,7 +100,7 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_FEED,
                 category = FEED_USER_PROFILE,
                 action = CLICK_BACK,
-                label = "$userId - ${if (self) SELF else VISITOR}"
+                label = "$userId - ${self.isSelfOrVisitor()}"
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
@@ -119,7 +117,7 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_FEED,
                 category = FEED_USER_PROFILE,
                 action = CLICK_SHARE,
-                label = "$userId - ${if (self) SELF else VISITOR}"
+                label = "$userId - ${self.isSelfOrVisitor()}"
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
@@ -136,7 +134,7 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_HOME_PAGE,
                 category = FEED_USER_PROFILE,
                 action = CLICK_BURGER_MENU,
-                label = "$userId - ${if (self) SELF else VISITOR}"
+                label = "$userId - ${self.isSelfOrVisitor()}"
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
@@ -153,7 +151,7 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_FEED,
                 category = FEED_USER_PROFILE,
                 action = CLICK_PROFILE_PICTURE,
-                label = "$activityId - $userId - ${if (self) SELF else VISITOR} - live"
+                label = "$activityId - $userId - ${self.isSelfOrVisitor()} - live"
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
@@ -170,7 +168,7 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_FEED,
                 category = FEED_USER_PROFILE,
                 action = CLICK_FOLLOWER,
-                label = "$userId - ${if (self) SELF else VISITOR}"
+                label = "$userId - ${self.isSelfOrVisitor()}"
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
@@ -187,7 +185,7 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_FEED,
                 category = FEED_USER_PROFILE,
                 action = CLICK_FOLLOWING,
-                label = "$userId - ${if (self) SELF else VISITOR}"
+                label = "$userId - ${self.isSelfOrVisitor()}"
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
@@ -204,7 +202,7 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_FEED,
                 category = FEED_USER_PROFILE,
                 action = CLICK_SELENGKAPNYA,
-                label = "$userId - ${if (self) SELF else VISITOR}"
+                label = "$userId - ${self.isSelfOrVisitor()}"
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
@@ -221,7 +219,7 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_FEED,
                 category = FEED_USER_PROFILE,
                 action = CLICK_FOLLOW,
-                label = "$userId - ${if (self) SELF else VISITOR}"
+                label = "$userId - ${self.isSelfOrVisitor()}"
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
@@ -238,7 +236,7 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_FEED,
                 category = FEED_USER_PROFILE,
                 action = CLICK_UNFOLLOW,
-                label = "$userId - ${if (self) SELF else VISITOR}"
+                label = "$userId - ${self.isSelfOrVisitor()}"
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
@@ -255,7 +253,7 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_FEED,
                 category = FEED_USER_PROFILE,
                 action = CLICK_VIDEO_TAB,
-                label = "$userId - ${if (self) SELF else VISITOR}"
+                label = "$userId - ${self.isSelfOrVisitor()}"
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
@@ -279,7 +277,7 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = PROMO_VIEW,
                 category = FEED_USER_PROFILE,
                 action = IMPRESSION_VIDEO,
-                label = "$activityId - $userId - ${if (self) SELF else VISITOR} - ${if (live) LIVE else VOD}"
+                label = "$activityId - $userId - ${self.isSelfOrVisitor()} - ${live.isLiveOrVod()}"
             ),
             hashMapOf(
                 ECOMMERCE to hashMapOf(
@@ -312,7 +310,7 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = PROMO_CLICK,
                 category = FEED_USER_PROFILE,
                 action = CLICK_VIDEO,
-                label = "$activityId - $userId - ${if (self) SELF else VISITOR} - ${if (live) LIVE else VOD}"
+                label = "$activityId - $userId - ${self.isSelfOrVisitor()} - ${live.isLiveOrVod()}"
             ),
             hashMapOf(
                 ECOMMERCE to hashMapOf(
@@ -338,7 +336,7 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_FEED,
                 category = FEED_USER_PROFILE,
                 action = CLICK_FEED_TAB,
-                label = "$userId - ${if (self) SELF else VISITOR}"
+                label = "$userId - ${self.isSelfOrVisitor()}"
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
@@ -362,7 +360,7 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = PROMO_VIEW,
                 category = FEED_USER_PROFILE,
                 action = IMPRESSION_POST,
-                label = "$activityId - $userId - ${if (self) SELF else VISITOR} - $mediaType"
+                label = "$activityId - $userId - ${self.isSelfOrVisitor()} - $mediaType"
             ),
             hashMapOf(
                 ECOMMERCE to hashMapOf(
@@ -395,7 +393,7 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = PROMO_CLICK,
                 category = FEED_USER_PROFILE,
                 action = CLICK_POST,
-                label = "$activityId - $userId - ${if (self) SELF else VISITOR} - $mediaType"
+                label = "$activityId - $userId - ${self.isSelfOrVisitor()} - $mediaType"
             ),
             hashMapOf(
                 ECOMMERCE to hashMapOf(
@@ -421,7 +419,7 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_COMMUNICATION,
                 category = FEED_USER_PROFILE,
                 action = CLICK_SHARE_BUTTON,
-                label = "$userId - ${if (self) SELF else VISITOR}"
+                label = "$userId - ${self.isSelfOrVisitor()}"
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
@@ -438,7 +436,7 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_COMMUNICATION,
                 category = FEED_USER_PROFILE,
                 action = CLICK_CLOSE_SHARE_BUTTON,
-                label = "$userId - ${if (self) SELF else VISITOR}"
+                label = "$userId - ${self.isSelfOrVisitor()}"
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
@@ -455,7 +453,7 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_COMMUNICATION,
                 category = FEED_USER_PROFILE,
                 action = CLICK_SHARE_CHANNEL,
-                label = "$channel - $userId - ${if (self) SELF else VISITOR}"
+                label = "$channel - $userId - ${self.isSelfOrVisitor()}"
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
@@ -472,7 +470,7 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_VIEW_COMMUNICATION,
                 category = FEED_USER_PROFILE,
                 action = VIEW_SHARE_CHANNEL,
-                label = "$userId - ${if (self) SELF else VISITOR}"
+                label = "$userId - ${self.isSelfOrVisitor()}"
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
@@ -489,7 +487,7 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_VIEW_COMMUNICATION,
                 category = FEED_USER_PROFILE,
                 action = VIEW_SHARE_SCREENSHOT_BOTTOMSHEET,
-                label = "$userId - ${if (self) SELF else VISITOR}"
+                label = "$userId - ${self.isSelfOrVisitor()}"
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
@@ -506,7 +504,7 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_COMMUNICATION,
                 category = FEED_USER_PROFILE,
                 action = CLICK_CLOSE_SHARE_SCREENSHOT_BOTTOMSHEET,
-                label = "$userId - ${if (self) SELF else VISITOR}"
+                label = "$userId - ${self.isSelfOrVisitor()}"
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
@@ -523,7 +521,7 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_COMMUNICATION,
                 category = FEED_USER_PROFILE,
                 action = CLICK_CHANNEL_SHARE_SCREENSHOT_BOTTOMSHEET,
-                label = "$userId - ${if (self) SELF else VISITOR}"
+                label = "$userId - ${self.isSelfOrVisitor()}"
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
@@ -540,7 +538,7 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_COMMUNICATION,
                 category = FEED_USER_PROFILE,
                 action = CLICK_ACCESS_MEDIA,
-                label = "$allow - $userId - ${if (self) SELF else VISITOR}"
+                label = "$allow - $userId - ${self.isSelfOrVisitor()}"
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
@@ -568,7 +566,7 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_FEED,
                 category = FEED_USER_PROFILE_FOLLOWER_TAB,
                 action = CLICK_USER,
-                label = "$userId - ${if (self) SELF else VISITOR}"
+                label = "$userId - ${self.isSelfOrVisitor()}"
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
@@ -585,7 +583,7 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_FEED,
                 category = FEED_USER_PROFILE_FOLLOWER_TAB,
                 action = CLICK_FOLLOW,
-                label = "$userId - ${if (self) SELF else VISITOR}"
+                label = "$userId - ${self.isSelfOrVisitor()}"
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
@@ -602,7 +600,7 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_FEED,
                 category = FEED_USER_PROFILE_FOLLOWER_TAB,
                 action = CLICK_UNFOLLOW,
-                label = "$userId - ${if (self) SELF else VISITOR}"
+                label = "$userId - ${self.isSelfOrVisitor()}"
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
@@ -630,7 +628,7 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_FEED,
                 category = FEED_USER_PROFILE_FOLLOWING_TAB,
                 action = CLICK_USER,
-                label = "$userId - ${if (self) SELF else VISITOR}"
+                label = "$userId - ${self.isSelfOrVisitor()}"
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
@@ -647,7 +645,7 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_FEED,
                 category = FEED_USER_PROFILE_FOLLOWING_TAB,
                 action = CLICK_FOLLOW,
-                label = "$userId - ${if (self) SELF else VISITOR}"
+                label = "$userId - ${self.isSelfOrVisitor()}"
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
@@ -664,7 +662,7 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_FEED,
                 category = FEED_USER_PROFILE_FOLLOWING_TAB,
                 action = CLICK_UNFOLLOW,
-                label = "$userId - ${if (self) SELF else VISITOR}"
+                label = "$userId - ${self.isSelfOrVisitor()}"
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
