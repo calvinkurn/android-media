@@ -7,7 +7,9 @@ import android.net.Uri
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -49,12 +51,6 @@ class VideoPictureView @JvmOverloads constructor(
     init {
         addView(binding.root)
         binding.pdpViewPager.offscreenPageLimit = VIDEO_PICTURE_PAGE_LIMIT
-        measureScreenHeight(binding)
-    }
-
-    private fun measureScreenHeight(binding: WidgetVideoPictureBinding) {
-        val screenWidth = binding.root.resources.displayMetrics.widthPixels
-        binding.viewPagerContainer.layoutParams.height = screenWidth
     }
 
     private fun showThumbnail() {
@@ -175,10 +171,37 @@ class VideoPictureView @JvmOverloads constructor(
                 mListener,
                 componentTrackDataModel)
 
-        binding.pdpViewPager.adapter = videoPictureAdapter
-        binding.pdpViewPager.setPageTransformer { _, _ ->
+        val viewPager = binding.pdpViewPager
+        viewPager.adapter = videoPictureAdapter
+        viewPager.setPageTransformer { _, _ ->
             //NO OP DONT DELETE THIS, DISABLE ITEM ANIMATOR
         }
+
+        viewPager.post {
+            viewPager.updateLayoutParams<ConstraintLayout.LayoutParams> {
+                if (this != null) {
+                    // TODO change from media list response api 
+                    dimensionRatio = "H,1:1"
+                }
+            }
+        }
+    }
+
+
+    /**
+     * Executes [block] with a typed version of the View's layoutParams and reassigns the
+     * layoutParams with the updated version.
+     *
+     * @see View.getLayoutParams
+     * @see View.setLayoutParams
+     **/
+    @JvmName("updateLayoutParamsTyped")
+    private inline fun <reified T : ViewGroup.LayoutParams> View.updateLayoutParams(
+        block: T?.() -> Unit
+    ) {
+        val params = layoutParams as? T
+        block(params)
+        layoutParams = params
     }
 
     private fun renderVideoOnceAtPosition(position: Int) {
