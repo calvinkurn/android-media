@@ -34,6 +34,7 @@ yang ditemukan</string>
     <string name="string_general_error">Terjadi kesalahan, mohon coba kembali.</string>
     <string name="error_no_connection_retrying">Tunggu sebentar, ya. Kami sedang menghubungkanmu.</string>
     <string name="title_time_machine_message">Tokopedia</string>
+    <string name="chat_performance_ticker">Performa chat perlu ditingkatkan</string>
 
     <!-- Chat Room -->
     <string name="time_machine_chat">Untuk melihat percakapan sebelumnya, kunjungi\nRiwayat

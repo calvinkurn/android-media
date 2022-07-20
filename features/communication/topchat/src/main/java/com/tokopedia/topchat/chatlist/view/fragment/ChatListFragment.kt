@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import androidx.annotation.StringRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
@@ -107,6 +108,7 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     private var filterChecked = 0
     private var filterMenu = FilterMenu()
     private var chatBannedSellerTicker: Ticker? = null
+    private var chatPerformanceSellerTicker: ConstraintLayout? = null
     private var rv: RecyclerView? = null
     private var emptyUiModel: Visitable<*>? = null
     private var menu: Menu? = null
@@ -282,6 +284,7 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
         showLoading()
         broadCastButton = view.findViewById(R.id.fab_broadcast)
         chatBannedSellerTicker = view.findViewById(R.id.ticker_ban_status)
+        chatPerformanceSellerTicker = view.findViewById(R.id.layout_ticker_chat_performance)
         rv = view.findViewById(R.id.recycler_view)
     }
 
@@ -297,14 +300,19 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     }
 
     private fun setObserver() {
-        chatItemListViewModel.mutateChatList.observe(viewLifecycleOwner, Observer {
+        chatItemListViewModel.mutateChatList.observe(viewLifecycleOwner, {
             when (it) {
-                is Success -> onSuccessGetChatList(it.data.data)
+                is Success -> {
+                    onSuccessGetChatList(it.data.data)
+                    if (isTabSeller()) {
+                        chatItemListViewModel.getOperationalInsight(userSession.shopId)
+                    }
+                }
                 is Fail -> onFailGetChatList(it.throwable)
             }
         })
 
-        chatItemListViewModel.deleteChat.observe(viewLifecycleOwner, Observer { result ->
+        chatItemListViewModel.deleteChat.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> {
                     adapter?.deleteItem(itemPositionLongClicked, emptyUiModel)
@@ -330,6 +338,22 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
                 }
                 is Fail -> {
                     showGetListError(result.throwable)
+                }
+            }
+        }
+
+        chatItemListViewModel.chatOperationalInsight.observe(viewLifecycleOwner) {
+            when(it) {
+                is Success -> {
+                    if (it.data.showTicker == true) {
+                        chatPerformanceSellerTicker?.show()
+                    } else {
+                        chatPerformanceSellerTicker?.hide()
+                    }
+                }
+                is Fail -> {
+                    it.throwable.printStackTrace()
+                    chatPerformanceSellerTicker?.hide()
                 }
             }
         }

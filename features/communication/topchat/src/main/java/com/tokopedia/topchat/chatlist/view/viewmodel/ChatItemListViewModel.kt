@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -28,10 +29,12 @@ import com.tokopedia.topchat.chatlist.domain.pojo.ChatDelete
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatListPojo
 import com.tokopedia.topchat.chatlist.domain.pojo.chatblastseller.BlastSellerMetaDataResponse
 import com.tokopedia.topchat.chatlist.domain.pojo.chatblastseller.ChatBlastSellerMetadata
+import com.tokopedia.topchat.chatlist.domain.pojo.operational_insight.ShopChatTicker
 import com.tokopedia.topchat.chatlist.domain.pojo.whitelist.ChatWhitelistFeatureResponse
 import com.tokopedia.topchat.chatlist.domain.usecase.ChatBanedSellerUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.GetChatListMessageUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.GetChatWhitelistFeature
+import com.tokopedia.topchat.chatlist.domain.usecase.GetOperationalInsightUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.MutationPinChatUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.MutationUnpinChatUseCase
 import com.tokopedia.topchat.chatroom.view.uimodel.ReplyParcelableModel
@@ -74,9 +77,10 @@ class ChatItemListViewModel @Inject constructor(
     private val getChatListUseCase: GetChatListMessageUseCase,
     private val authorizeAccessUseCase: AuthorizeAccessUseCase,
     private val moveChatToTrashUseCase: MutationMoveChatToTrashUseCase,
+    private val operationalInsightUseCase: GetOperationalInsightUseCase,
     private val userSession: UserSessionInterface,
-    private val dispatcher: CoroutineDispatcher
-) : BaseViewModel(dispatcher), ChatItemListContract {
+    private val dispatcher: CoroutineDispatchers
+) : BaseViewModel(dispatcher.main), ChatItemListContract {
 
     var filter: String = PARAM_FILTER_ALL
         set(value) {
@@ -111,6 +115,10 @@ class ChatItemListViewModel @Inject constructor(
     private val _isChatAdminEligible = MutableLiveData<Result<Boolean>>()
     val isChatAdminEligible: LiveData<Result<Boolean>>
         get() = _isChatAdminEligible
+
+    private val _chatOperationalInsight = MutableLiveData<Result<ShopChatTicker>>()
+    val chatOperationalInsight: LiveData<Result<ShopChatTicker>>
+        get()= _chatOperationalInsight
 
     private var getChatAdminAccessJob: Job? = null
 
@@ -175,9 +183,9 @@ class ChatItemListViewModel @Inject constructor(
             getChatAdminAccessJob =
                     launchCatchError(
                             block = {
-                                _isChatAdminEligible.value = withContext(dispatcher) {
+                                _isChatAdminEligible.postValue(withContext(dispatcher.io) {
                                     Success(getIsChatAdminAccessAuthorized())
-                                }
+                                })
                             },
                             onError = {
                                 _isChatAdminEligible.value = Fail(it)
@@ -272,7 +280,7 @@ class ChatItemListViewModel @Inject constructor(
         val params = mapOf(PARAM_MESSAGE_IDS to msgIds)
 
         launchCatchError(block = {
-            val data = withContext(dispatcher) {
+            val data = withContext(dispatcher.io) {
                 val request = GraphqlRequest(query, ChatChangeStateResponse::class.java, params)
                 repository.response(listOf(request))
             }.getSuccessData<ChatChangeStateResponse>()
@@ -286,7 +294,7 @@ class ChatItemListViewModel @Inject constructor(
     fun loadChatBlastSellerMetaData() {
         val query = QUERY_CHAT_BLAST_SELLER_METADATA
         launchCatchError(block = {
-            val data = withContext(dispatcher) {
+            val data = withContext(dispatcher.io) {
                 val request = GraphqlRequest(query, BlastSellerMetaDataResponse::class.java, emptyMap())
                 repository.response(listOf(request))
             }.getSuccessData<BlastSellerMetaDataResponse>()
@@ -365,6 +373,18 @@ class ChatItemListViewModel @Inject constructor(
     private fun cancelAllUseCase() {
         getChatListUseCase.cancelRunningOperation()
         coroutineContext.cancelChildren()
+    }
+
+    fun getOperationalInsight(shopId: String) {
+        launchCatchError(block = {
+            val dataResponse = operationalInsightUseCase(shopId)
+            dataResponse.shopChatTicker?.showTicker = true
+            dataResponse.shopChatTicker?.let {
+                _chatOperationalInsight.value = Success(it)
+            }
+        }, onError = {
+            _chatOperationalInsight.value = Fail(it)
+        })
     }
 
     companion object {
